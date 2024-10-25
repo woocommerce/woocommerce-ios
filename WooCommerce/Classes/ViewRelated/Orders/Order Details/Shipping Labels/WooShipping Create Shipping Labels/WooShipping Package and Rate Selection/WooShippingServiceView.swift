@@ -19,8 +19,28 @@ struct WooShippingServiceView: View {
                 Text(Localization.shippingService)
                     .headlineStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal)
+                Menu {
+                    ForEach(WooShippingServiceViewModel.SortOrder.allCases, id: \.self) { option in
+                        Button {
+                            viewModel.sortShipping(by: option)
+                        } label: {
+                            HStack {
+                                Text(option.displayName)
+                                if viewModel.sortOrder == option {
+                                    Image(uiImage: .checkmarkStyledImage)
+                                }
+                            }
+                        }
+                    }
+                } label: {
+                    HStack {
+                        Text(Localization.sortBy)
+                        Image(systemName: "chevron.up.chevron.down")
+                    }
+                    .foregroundStyle(Color(.primary))
+                }
             }
+            .padding(.horizontal)
             TopTabView(tabs: carriers,
                        tabsContainerHorizontalPadding: 16,
                        unselectedStateColor: .secondary,
@@ -52,6 +72,9 @@ private extension WooShippingServiceView {
         static let shippingService = NSLocalizedString("wooShipping.createLabels.rates.shippingService",
                                                        value: "Shipping service",
                                                        comment: "Heading for the shipping service section in the shipping label creation screen.")
+        static let sortBy = NSLocalizedString("wooShipping.createLabels.rates.sortBy",
+                                              value: "Sort by",
+                                              comment: "Label for the menu to select a sort order for shipping rates in the shipping label creation screen.")
     }
 }
 

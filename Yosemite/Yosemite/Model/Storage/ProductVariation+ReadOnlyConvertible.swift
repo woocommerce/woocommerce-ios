@@ -89,6 +89,7 @@ extension Storage.ProductVariation: ReadOnlyConvertible {
                                 status: ProductStatus(rawValue: statusKey),
                                 description: fullDescription,
                                 sku: sku,
+                                globalUniqueID: globalUniqueID,
                                 price: price,
                                 regularPrice: regularPrice,
                                 salePrice: salePrice,

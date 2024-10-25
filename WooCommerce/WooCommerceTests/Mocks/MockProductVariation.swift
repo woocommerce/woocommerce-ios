@@ -16,6 +16,7 @@ final class MockProductVariation {
                                 status: .published,
                                 description: "",
                                 sku: "",
+								globalUniqueID: "",
                                 price: "",
                                 regularPrice: "",
                                 salePrice: "",

@@ -49,6 +49,7 @@ private extension ProductFactory {
                 fullDescription: "",
                 shortDescription: "",
                 sku: "",
+                globalUniqueID: "",
                 price: "",
                 regularPrice: "",
                 salePrice: "",

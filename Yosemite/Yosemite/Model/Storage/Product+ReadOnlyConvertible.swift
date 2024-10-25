@@ -136,6 +136,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        fullDescription: fullDescription,
                        shortDescription: briefDescription,
                        sku: sku,
+                       globalUniqueID: globalUniqueID,
                        price: price,
                        regularPrice: regularPrice,
                        salePrice: salePrice,

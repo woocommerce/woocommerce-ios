@@ -265,6 +265,7 @@ extension MockObjectGraph {
             fullDescription: nil,
             shortDescription: nil,
             sku: nil,
+            globalUniqueID: nil,
             price: priceFormatter.string(from: price as NSNumber)!,
             regularPrice: nil,
             salePrice: salePrice == nil ? nil : priceFormatter.string(from: salePrice! as NSNumber)!,

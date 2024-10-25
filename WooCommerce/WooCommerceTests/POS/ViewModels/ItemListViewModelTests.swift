@@ -24,27 +24,27 @@ final class ItemListViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_itemListViewModel_when_populatePointOfSaleItems_is_called_then_items_are_populated() async {
+    func test_itemListViewModel_when_loadInitialItems_then_items_are_populated() async {
         // Given
         XCTAssertEqual(sut.items.count, 0)
         let expectedItems = Self.makeItems()
 
         // When
-        await sut.populatePointOfSaleItems()
+        await sut.loadInitialItems()
 
         // Then
         XCTAssertEqual(sut.items.count, expectedItems.count)
     }
 
-    func test_itemListViewModel_when_populatePointOfSaleItems_is_called_multiple_times_then_items_are_not_aggregated() async {
+    func test_itemListViewModel_when_loadInitialItems_is_called_multiple_times_then_items_are_not_aggregated() async {
         // Given
         XCTAssertEqual(sut.items.count, 0)
         let expectedItems = Self.makeItems()
 
         // When
-        await sut.populatePointOfSaleItems()
-        await sut.populatePointOfSaleItems()
-        await sut.populatePointOfSaleItems()
+        await sut.loadInitialItems()
+        await sut.loadInitialItems()
+        await sut.loadInitialItems()
 
         // Then
         XCTAssertEqual(sut.items.count, expectedItems.count)
@@ -103,20 +103,20 @@ final class ItemListViewModelTests: XCTestCase {
         XCTAssertEqual(sut.state, .loading)
     }
 
-    func test_itemListViewModel_when_populatePointOfSaleItems_then_state_is_loaded() async {
+    func test_itemListViewModel_when_loadInitialItems_then_state_is_loaded() async {
         // Given
         let expectedItems = Self.makeItems()
 
         XCTAssertEqual(sut.state, .loading)
 
         // When
-        await sut.populatePointOfSaleItems()
+        await sut.loadInitialItems()
 
         // Then
         XCTAssertEqual(sut.state, .loaded(expectedItems))
     }
 
-    func test_itemListViewModel_when_populatePointOfSaleItems_has_no_items_then_state_is_loaded_empty() async {
+    func test_itemListViewModel_when_loadInitialItems_has_no_items_then_state_is_loaded_empty() async {
         // Given
         let itemProvider = MockPOSItemProvider()
         itemProvider.shouldReturnZeroItems = true
@@ -125,13 +125,13 @@ final class ItemListViewModelTests: XCTestCase {
         XCTAssertEqual(sut.state, .loading)
 
         // When
-        await sut.populatePointOfSaleItems()
+        await sut.loadInitialItems()
 
         // Then
         XCTAssertEqual(sut.state, .empty)
     }
 
-    func test_itemListViewModel_when_populatePointOfSaleItems_throws_error_then_state_is_error() async {
+    func test_itemListViewModel_when_loadInitialItems_throws_error_then_state_is_error() async {
         // Given
         let itemProvider = MockPOSItemProvider()
         itemProvider.shouldThrowError = true
@@ -143,7 +143,7 @@ final class ItemListViewModelTests: XCTestCase {
         XCTAssertEqual(sut.state, .loading)
 
         // When
-        await sut.populatePointOfSaleItems()
+        await sut.loadInitialItems()
 
         // Then
         XCTAssertEqual(sut.state, .error(expectedError))
@@ -198,7 +198,7 @@ final class ItemListViewModelTests: XCTestCase {
 
     func test_shouldShowHeaderBanner_when_itemListViewModel_is_loading_has_items_then_returns_true() async {
         // Given the list is already populated with items
-        await sut.populatePointOfSaleItems()
+        await sut.loadInitialItems()
         XCTAssertTrue(sut.items.isNotEmpty)
 
         // When we refresh the list again
@@ -210,7 +210,7 @@ final class ItemListViewModelTests: XCTestCase {
             }
         }
         .store(in: &cancellables)
-        await sut.populatePointOfSaleItems()
+        await sut.loadInitialItems()
 
         // Then banner shoud be shown
         await fulfillment(of: [expectation], timeout: 1)
@@ -226,7 +226,7 @@ final class ItemListViewModelTests: XCTestCase {
                                                          buttonText: "Retry")
 
         // When
-        await sut.populatePointOfSaleItems()
+        await sut.loadInitialItems()
 
         // Then
         XCTAssertEqual(sut.state, .error(expectedError))
@@ -235,7 +235,7 @@ final class ItemListViewModelTests: XCTestCase {
 
     func test_state_when_itemListViewModel_loaded_normally_then_returns_isLoaded_true() async {
         // Given/When
-        await sut.populatePointOfSaleItems()
+        await sut.loadInitialItems()
 
         // Then
         XCTAssertEqual(sut.state.isLoaded, true)
@@ -248,13 +248,13 @@ final class ItemListViewModelTests: XCTestCase {
         let sut = ItemListViewModel(itemProvider: itemProvider)
 
         // When
-        await sut.populatePointOfSaleItems()
+        await sut.loadInitialItems()
 
         // Then
         XCTAssertEqual(sut.state.isLoaded, false)
     }
 
-    func test_populatePointOfSaleItems_when_no_items_are_loaded_then_itemsPublisher_emits_no_items() async throws {
+    func test_loadInitialItems_when_no_items_are_loaded_then_itemsPublisher_emits_no_items() async throws {
         let itemProvider = MockPOSItemProvider()
         itemProvider.shouldReturnZeroItems = true
         let sut = ItemListViewModel(itemProvider: itemProvider)
@@ -268,14 +268,14 @@ final class ItemListViewModelTests: XCTestCase {
         .store(in: &cancellables)
 
         // When
-        await sut.populatePointOfSaleItems()
+        await sut.loadInitialItems()
 
         // Then
         XCTAssertTrue(sut.state == .empty)
         XCTAssertTrue(receivedItems.isEmpty)
     }
 
-    func test_populatePointOfSaleItems_when_items_are_loaded_then_itemsPublisher_emits_items() async throws {
+    func test_loadInitialItems_when_items_are_loaded_then_itemsPublisher_emits_items() async throws {
         // Given
         let items = Self.makeItems()
         let expectation = XCTestExpectation(description: "Publisher should emit populated items")
@@ -287,7 +287,7 @@ final class ItemListViewModelTests: XCTestCase {
         .store(in: &cancellables)
 
         // When
-        await sut.populatePointOfSaleItems()
+        await sut.loadInitialItems()
         guard let firstItem = items.first, let lastItem = items.last else {
             return XCTFail("Expected two items, got \(receivedItems).")
         }
@@ -298,7 +298,7 @@ final class ItemListViewModelTests: XCTestCase {
         XCTAssertEqual(receivedItems.last?.productID, lastItem.productID)
     }
 
-    func test_populatePointOfSaleItems_when_no_items_are_loaded_then_statePublisher_emits_expected_empty_state() async throws {
+    func test_loadInitialItems_when_no_items_are_loaded_then_statePublisher_emits_expected_empty_state() async throws {
         // Given
         XCTAssertEqual(sut.state, .loading, "Initial state")
 
@@ -317,13 +317,13 @@ final class ItemListViewModelTests: XCTestCase {
         .store(in: &cancellables)
 
         // When
-        await sut.populatePointOfSaleItems()
+        await sut.loadInitialItems()
 
         // Then
         XCTAssertEqual(receivedStates, [.loading, .empty])
     }
 
-    func test_populatePointOfSaleItems_when_items_are_loaded_then_statePublisher_emits_expected_loaded_state() async throws {
+    func test_loadInitialItems_when_items_are_loaded_then_statePublisher_emits_expected_loaded_state() async throws {
         // Given
         XCTAssertEqual(sut.state, .loading, "Initial state")
         let expectation = XCTestExpectation(description: "Publisher should emit state changes")
@@ -339,7 +339,7 @@ final class ItemListViewModelTests: XCTestCase {
         .store(in: &cancellables)
 
         // When
-        await sut.populatePointOfSaleItems()
+        await sut.loadInitialItems()
 
         // Then
         XCTAssertEqual(receivedStates, [.loading, .loaded(items)])
@@ -353,20 +353,20 @@ final class ItemListViewModelTests: XCTestCase {
         XCTAssertTrue(sut.showSimpleProductsModal)
     }
 
-    func test_currentPage_when_populatePointOfSaleItems_is_invoked_multiple_times_then_updates_to_next_page() async {
-        XCTAssertTrue(sut.currentPage == 0, "Initial state.")
+    func test_currentPage_when_loadNextItems_is_invoked_then_updates_to_next_page() async {
+        XCTAssertTrue(sut.currentPage == 1, "Initial state.")
 
         // When/Then
-        await sut.populatePointOfSaleItems()
-        XCTAssertTrue(sut.currentPage == 1)
+        await sut.loadInitialItems()
+        XCTAssertTrue(sut.currentPage == 1, "Loading initial items does not update pagination.")
 
         // When/Then
-        await sut.populatePointOfSaleItems()
-        XCTAssertTrue(sut.currentPage == 2)
+        await sut.loadNextItems()
+        XCTAssertTrue(sut.currentPage == 2, "Loading subsequent items updates pagination.")
     }
 
     func test_currentPage_when_reload_is_invoked_multiple_times_then_stays_on_first_page() async {
-        XCTAssertTrue(sut.currentPage == 0, "Initial state.")
+        XCTAssertTrue(sut.currentPage == 1, "Initial state.")
 
         // When/Then
         await sut.reload()

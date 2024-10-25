@@ -10,7 +10,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     @Published private(set) var isHeaderBannerDismissed: Bool = false
     @Published var showSimpleProductsModal: Bool = false
 
-    @Published private(set) var currentPage: Int = 0
+    @Published private(set) var currentPage: Int = Constants.initialPage
 
     var shouldShowHeaderBanner: Bool {
         // The banner it's shown as long as it hasn't already been dismissed once:
@@ -38,11 +38,33 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     }
 
     @MainActor
-    func populatePointOfSaleItems() async {
-        let nextPage = currentPage + 1
+    func loadInitialItems() async {
         do {
             state = .loading
-            let newItems = try await itemProvider.providePointOfSaleItems(pageNumber: nextPage)
+            items = try await itemProvider.providePointOfSaleItems(pageNumber: Constants.initialPage)
+            if items.count == 0 {
+                state = .empty
+            } else {
+                state = .loaded(items)
+            }
+        } catch {
+            state = .error(ErrorModel.errorOnLoadingProducts())
+        }
+    }
+
+    @MainActor
+    func loadNextItems() async {
+        // TODO:
+        // Optimize API calls. gh-14186
+        let nextPage = currentPage + 1
+        await fetchPage(pageNumber: nextPage)
+    }
+
+    @MainActor
+    private func fetchPage(pageNumber: Int) async {
+        do {
+            state = .loading
+            let newItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
             let uniqueNewItems = newItems.filter { newItem in
                 !items.contains(where: { $0.productID == newItem.productID })
             }
@@ -52,22 +74,18 @@ final class ItemListViewModel: ItemListViewModelProtocol {
                 state = .empty
             } else {
                 state = .loaded(items)
-                currentPage = nextPage
+                currentPage = pageNumber
             }
         } catch {
-            DDLogError("Error on load while fetching product data: \(error)")
-            let itemListError = ErrorModel(title: Constants.failedToLoadTitle,
-                                      subtitle: Constants.failedToLoadSubtitle,
-                                      buttonText: Constants.failedToLoadButtonTitle)
-            state = .error(itemListError)
+            state = .error(ErrorModel.errorOnLoadingProducts())
         }
     }
 
     @MainActor
     func reload() async {
-        currentPage = 0
+        currentPage = Constants.initialPage
         items.removeAll()
-        await populatePointOfSaleItems()
+        await loadInitialItems()
     }
 
     func dismissBanner() {
@@ -137,6 +155,12 @@ extension ItemListViewModel {
         let title: String
         let subtitle: String
         let buttonText: String
+
+        static func errorOnLoadingProducts() -> Self {
+            ErrorModel(title: Constants.failedToLoadTitle,
+                       subtitle: Constants.failedToLoadSubtitle,
+                       buttonText: Constants.failedToLoadButtonTitle)
+        }
     }
 
     struct BannerState {
@@ -161,5 +185,6 @@ private extension ItemListViewModel {
             value: "Retry",
             comment: "Text for the button appearing on the item list screen when there's an error loading products."
         )
+        static let initialPage: Int = 1
     }
 }

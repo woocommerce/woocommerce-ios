@@ -133,6 +133,20 @@ private extension ItemListView {
             }
             .padding(.bottom, floatingControlAreaSize.height)
             .padding(.horizontal, Constants.itemListPadding)
+            .background(GeometryReader { proxy in
+                Color.clear
+                    .onChange(of: proxy.frame(in: .global).maxY) { maxY in
+                        if viewModel.state == .loading {
+                            return
+                        }
+                        let viewHeight = UIScreen.main.bounds.height
+                        if maxY < viewHeight {
+                            Task {
+                                await viewModel.populatePointOfSaleItems()
+                            }
+                        }
+                    }
+            })
         }
     }
 }

@@ -84,6 +84,10 @@ final class TitleAndTextFieldTableViewCell: UITableViewCell {
         super.updateConfiguration(using: state)
         updateDefaultBackgroundConfiguration(using: state)
     }
+
+    func setSpacingBetweenTitleAndTextField(_ spacing: CGFloat) {
+        contentStackView.spacing = spacing
+    }
 }
 
 private extension TitleAndTextFieldTableViewCell {
@@ -103,7 +107,7 @@ private extension TitleAndTextFieldTableViewCell {
     }
 
     func configureContentStackView() {
-        contentStackView.spacing = 30
+        setSpacingBetweenTitleAndTextField(30)
     }
 
     func configureTapGestureRecognizer() {

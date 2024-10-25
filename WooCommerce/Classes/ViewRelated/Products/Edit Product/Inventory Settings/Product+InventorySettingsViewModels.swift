@@ -12,6 +12,20 @@ extension Product {
                                                         onTextChange: onTextChange)
     }
 
+    static func createGlobalUniqueIdentifierViewModel(onTextChange: @escaping (_ text: String?) -> Void) -> TitleAndTextFieldTableViewCell.ViewModel {
+        let title = NSLocalizedString("productInventorySettings.globalUniqueIdentifier.title",
+                                      value: "GTIN, UPC, EAN, ISBN",
+                                      comment: "Title of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN")
+        let placeholder = NSLocalizedString("productInventorySettings.globalUniqueIdentifier.placeholder",
+                                            value: "Optional",
+                                            comment: "Placeholder of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN")
+        return TitleAndTextFieldTableViewCell.ViewModel(title: title,
+                                                        text: "",
+                                                        placeholder: placeholder,
+                                                        textFieldAlignment: .leading,
+                                                        onTextChange: onTextChange)
+    }
+
     static func createStockQuantityViewModel(stockQuantity: Decimal?, onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
         let title = NSLocalizedString("Quantity", comment: "Title of the cell in Product Inventory Settings > Quantity")
         let stockQuantity = stockQuantity ?? 0

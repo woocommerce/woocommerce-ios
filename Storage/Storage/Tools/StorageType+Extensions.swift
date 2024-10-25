@@ -35,6 +35,14 @@ public extension StorageType {
 
     // MARK: - Orders
 
+    /// Retrieves the Stored Orders given the IDs.
+    ///
+    func loadOrders(siteID: Int64, orderIDs: [Int64]) -> [Order] {
+        let predicate = NSPredicate(format: "siteID == %lld && orderID in %@", siteID, orderIDs)
+        let descriptor = NSSortDescriptor(keyPath: \Order.orderID, ascending: false)
+        return allObjects(ofType: Order.self, matching: predicate, sortedBy: [descriptor])
+    }
+
     /// Retrieves the Stored Order.
     ///
     func loadOrder(siteID: Int64, orderID: Int64) -> Order? {
@@ -295,6 +303,13 @@ public extension StorageType {
     func loadProductAttribute(siteID: Int64, attributeID: Int64) -> ProductAttribute? {
         let predicate = \ProductAttribute.siteID == siteID && \ProductAttribute.attributeID == attributeID
         return firstObject(ofType: ProductAttribute.self, matching: predicate)
+    }
+
+    /// Retrieves all Stored Product Attribute Term by siteID and attributeID.
+    ///
+    func loadProductAttributeTerms(siteID: Int64, attributeID: Int64) -> [ProductAttributeTerm] {
+        let predicate = \ProductAttributeTerm.siteID == siteID && \ProductAttributeTerm.attribute?.attributeID == attributeID
+        return allObjects(ofType: ProductAttributeTerm.self, matching: predicate, sortedBy: nil)
     }
 
     /// Retrieves the Stored Product Attribute Term by, attribute and term ID.

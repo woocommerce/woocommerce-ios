@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-10-14 16:54:13+0000 */
+/* Translation-Revision-Date: 2024-10-22 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -10359,9 +10359,11 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '7 days'. */
 "days" = "gün";
 
-/* Details text for the Custom Fields row
-   Title for the Custom Fields row */
-"defaultProductFormTableViewModel.customFieldsDetails" = "Özel Alanlar";
+/* Details text for the Custom Fields row */
+"defaultProductFormTableViewModel.customFieldsRowDetails" = "Ürünün özel alanlarını görüntüleyin ve düzenleyin";
+
+/* Title for the Custom Fields row */
+"defaultProductFormTableViewModel.customFieldsRowTitle" = "Özel Alanlar";
 
 /* Title for Subscription expiry row in the product form screen. */
 "defaultProductFormTableViewModel.expireAfter" = "Şundan sonra sona erer:";
@@ -11736,6 +11738,12 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for empty product ratings */
 "productForm.quantityRules.placeholder" = "Miktar Kuralı Yok";
 
+/* Subtitle of the product form bottom sheet action for custom fields */
+"productFormBottomSheetAction.customFieldsSubtitle" = "Özel alanları görüntüleyin ve düzenleyin";
+
+/* Title of the product form bottom sheet action for custom fields */
+"productFormBottomSheetAction.customFieldsTitle" = "Özel Alanlar";
+
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "her %1$@";
 
@@ -12461,8 +12469,11 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the total for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.total" = "Toplam";
 
-/* Total number of items to ship during shipping label creation. Reads like: '3 items' */
+/* Label for plural items to ship during shipping label creation. Reads like: '3 items' */
 "wooShipping.createLabels.items.count" = "%1$@ öğe";
+
+/* Label for singular item to ship during shipping label creation. Reads like: '1 item' */
+"wooShipping.createLabels.items.countSingular" = "%1$@ öğe";
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";

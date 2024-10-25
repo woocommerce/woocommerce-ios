@@ -25,7 +25,7 @@ final class GoogleAdsCampaignListMapperTests: XCTestCase {
         XCTAssertEqual(secondItem.rawStatus, "disabled")
         XCTAssertEqual(secondItem.rawType, "performance_max")
         XCTAssertEqual(secondItem.amount, 30)
-        XCTAssertEqual(secondItem.country, "US")
+        XCTAssertNil(secondItem.country)
         XCTAssertEqual(secondItem.targetedLocations, ["US"])
         XCTAssertEqual(secondItem.status, .disabled)
     }
@@ -52,7 +52,7 @@ final class GoogleAdsCampaignListMapperTests: XCTestCase {
         XCTAssertEqual(secondItem.rawStatus, "disabled")
         XCTAssertEqual(secondItem.rawType, "performance_max")
         XCTAssertEqual(secondItem.amount, 30)
-        XCTAssertEqual(secondItem.country, "US")
+        XCTAssertNil(secondItem.country)
         XCTAssertEqual(secondItem.targetedLocations, ["US"])
         XCTAssertEqual(secondItem.status, .disabled)
     }

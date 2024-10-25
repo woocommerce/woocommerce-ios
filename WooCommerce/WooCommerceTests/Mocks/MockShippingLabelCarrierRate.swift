@@ -7,7 +7,9 @@ final class MockShippingLabelCarrierRate {
 
     static func makeRate(title: String = "USPS - Parcel Select Mail",
                          rate: Double = 40.060000000000002,
-                         insurance: String = "0") -> ShippingLabelCarrierRate {
+                         insurance: String = "0",
+                         hasTracking: Bool = true,
+                         isPickupFree: Bool = true) -> ShippingLabelCarrierRate {
         return ShippingLabelCarrierRate(title: title,
                                         insurance: insurance,
                                         retailRate: rate,
@@ -16,9 +18,9 @@ final class MockShippingLabelCarrierRate {
                                         serviceID: "ParcelSelect",
                                         carrierID: "usps",
                                         shipmentID: "shp_e0e3c2f4606c4b198d0cbd6294baed56",
-                                        hasTracking: true,
+                                        hasTracking: hasTracking,
                                         isSelected: false,
-                                        isPickupFree: true,
+                                        isPickupFree: isPickupFree,
                                         deliveryDays: 2,
                                         deliveryDateGuaranteed: false)
     }

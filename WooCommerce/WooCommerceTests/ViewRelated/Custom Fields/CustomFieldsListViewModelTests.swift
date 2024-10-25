@@ -1,17 +1,31 @@
 import XCTest
 @testable import WooCommerce
+@testable import Networking
+@testable import Yosemite
 
 final class CustomFieldsListViewModelTests: XCTestCase {
+    private let originalMetadata = [
+            MetaData(metadataID: 1, key: "Key1", value: "Value1"),
+            MetaData(metadataID: 2, key: "Key2", value: "Value2")
+        ]
+    private var originalFields: [CustomFieldViewModel] {
+        originalMetadata.map(CustomFieldViewModel.init)
+    }
+    private let sampleSiteID: Int64 = 1
+    private let sampleParentItemID: Int64 = 1
+    private let sampleCustomFieldType = MetaDataType.product
+    private var stores: MockStoresManager!
 
     private var viewModel: CustomFieldsListViewModel!
 
     override func setUp() {
         super.setUp()
-        let customFields = [
-            CustomFieldViewModel(id: 1, title: "Key1", content: "Value1"),
-            CustomFieldViewModel(id: 2, title: "Key2", content: "Value2")
-        ]
-        viewModel = CustomFieldsListViewModel(customFields: customFields)
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        viewModel = CustomFieldsListViewModel(customFields: originalFields,
+                                              siteID: sampleSiteID,
+                                              parentItemID: sampleParentItemID,
+                                              customFieldType: sampleCustomFieldType,
+                                              stores: stores)
     }
 
     override func tearDown() {
@@ -75,6 +89,34 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.combinedList[0].value, "EditedValue1")
         XCTAssertEqual(viewModel.combinedList[2].key, "NewKey")
         XCTAssertEqual(viewModel.combinedList[2].value, "NewValue")
+    }
+
+    func test_given_existingField_when_deleteFieldCalled_then_displayedItemsAndPendingChangesAreUpdated() {
+        // Given: the field to delete
+        let fieldToDelete = CustomFieldsListViewModel.CustomFieldUI(key: originalFields[0].title,
+                                                                    value: originalFields[0].content,
+                                                                    fieldId: originalFields[0].id)
+
+        // When: Deleting the field
+        viewModel.deleteField(fieldToDelete)
+
+        // Then: The number of displayed items remains the same as before and the value is edited correctly
+        XCTAssertEqual(viewModel.combinedList.count, 1)
+        XCTAssertEqual(viewModel.combinedList[0].fieldId, originalFields[1].id)
+        XCTAssertTrue(viewModel.hasChanges)
+    }
+
+    func test_given_newField_when_deleteFieldCalled_then_displayedItemsAndPendingChangesAreUpdated() {
+        // Given: A new field to delete
+        let newField = CustomFieldsListViewModel.CustomFieldUI(key: "NewKey", value: "NewValue")
+
+        // When: Deleting the new field
+        viewModel.addField(newField)
+        viewModel.deleteField(newField)
+
+        // Then: The displayed items should be updated
+        XCTAssertEqual(viewModel.combinedList.count, 2)
+        XCTAssertFalse(viewModel.hasChanges)
     }
 
     func test_given_variousChanges_when_pendingChangesUpdated_then_hasChangesReflectsCorrectState() {
@@ -154,5 +196,62 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.combinedList.last?.key, "NewKey")
         XCTAssertEqual(viewModel.combinedList.last?.value, "NewValue")
         XCTAssertNil(viewModel.combinedList.last?.fieldId)
+    }
+
+    func test_given_savingSucceeds_when_saveChangesCalled_then_changesAreSaved() async {
+        // Given: successfully saving the changes
+        let newField = MetaData(metadataID: 10, key: "NewKey", value: "NewValue")
+        stores.whenReceivingAction(ofType: MetaDataAction.self) { [self] action in
+            switch action {
+                case let .updateMetaData(_, _, _, _, onCompletion):
+                    onCompletion(.success(originalMetadata + [newField]))
+            }
+        }
+
+        // When: Saving the changes
+        viewModel.saveField(key: newField.key, value: newField.value, fieldId: nil)
+        await viewModel.saveChanges()
+
+        // Then: The changes should be saved
+        XCTAssertEqual(viewModel.combinedList.count, originalFields.count + 1)
+        XCTAssertEqual(viewModel.combinedList.last?.key, newField.key)
+        XCTAssertEqual(viewModel.combinedList.last?.value, newField.value)
+        XCTAssertEqual(viewModel.combinedList.last?.fieldId, newField.metadataID)
+        XCTAssertFalse(viewModel.hasChanges)
+    }
+
+    func test_given_savingFails_when_saveChangesCalled_then_changesAreNotSaved() async {
+        // Given: failing to save the changes
+        stores.whenReceivingAction(ofType: MetaDataAction.self) { action in
+            switch action {
+                case let .updateMetaData(_, _, _, _, onCompletion):
+                    onCompletion(.failure(NetworkError.timeout()))
+            }
+        }
+
+        // When: Saving the changes
+        viewModel.saveField(key: "NewKey", value: "NewValue", fieldId: nil)
+        await viewModel.saveChanges()
+
+        // Then: The changes should not be saved
+        XCTAssertEqual(viewModel.combinedList.count, originalFields.count + 1)
+        XCTAssertTrue(viewModel.hasChanges)
+    }
+
+    func test_given_savingFails_when_saveChangesCalled_then_errorIsThrown() async {
+        // Given: failing to save the changes
+        stores.whenReceivingAction(ofType: MetaDataAction.self) { action in
+            switch action {
+                case let .updateMetaData(_, _, _, _, onCompletion):
+                    onCompletion(.failure(NetworkError.timeout()))
+            }
+        }
+
+        // When: Saving the changes
+        viewModel.saveField(key: "NewKey", value: "NewValue", fieldId: nil)
+        await viewModel.saveChanges()
+
+        // Then: An error should be thrown
+        XCTAssertNotNil(viewModel.notice)
     }
 }

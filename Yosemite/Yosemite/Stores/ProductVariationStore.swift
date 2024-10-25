@@ -114,14 +114,13 @@ private extension ProductVariationStore {
                 return
             }
 
-            if pageNumber == Default.firstPageNumber {
-                self?.productVariationStorageManager.deleteStoredProductVariations(siteID: siteID,
-                                                    productID: productID)
-            }
-
-            self?.productVariationStorageManager.upsertStoredProductVariationsInBackground(readOnlyProductVariations: productVariations,
-                                                            siteID: siteID,
-                                                            productID: productID) {
+            let shouldDeleteAll = pageNumber == Default.firstPageNumber
+            self?.productVariationStorageManager.upsertStoredProductVariationsInBackground(
+                readOnlyProductVariations: productVariations,
+                siteID: siteID,
+                productID: productID,
+                shouldDeleteAllStoredVariations: shouldDeleteAll
+            ) {
                 let couldBeMoreVariationsToFetch = productVariations.count == pageSize
                 onCompletion(.success(couldBeMoreVariationsToFetch))
             }
@@ -348,8 +347,9 @@ private extension ProductVariationStore {
             switch result {
             case .success(let productVariation):
                 self.productVariationStorageManager.deleteStoredProductVariation(siteID: productVariation.siteID,
-                                                                                 productVariationID: productVariation.productVariationID)
-                onCompletion(.success(()))
+                                                                                 productVariationID: productVariation.productVariationID) {
+                    onCompletion(.success(()))
+                }
             case .failure(let error):
                 onCompletion(.failure(ProductUpdateError(error: error)))
             }

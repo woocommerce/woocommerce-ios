@@ -9,10 +9,6 @@ public final class ProductAttributeTermStore: Store {
     /// Set the size of the page size request for this store
     var pageSizeRequest = Constants.defaultMaxPageSize
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ProductAttributeTermRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -61,21 +57,22 @@ private extension ProductAttributeTermStore {
                                          attributeID: attributeID,
                                          pageNumber: fromPageNumber,
                                          pageSize: pageSizeRequest) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
 
             // If terms count is less than the requested page size, end the recursion and call `onCompletion`
             case let .success(terms) where terms.count < self.pageSizeRequest:
-                self.deleteStaleTerms(siteID: siteID, attributeID: attributeID, activeTerms: synchronizedTerms + terms)
-                onCompletion(nil)
+                deleteStaleTerms(siteID: siteID, attributeID: attributeID, activeTerms: synchronizedTerms + terms) {
+                    onCompletion(nil)
+                }
 
             // If there could be more(non-empty) terms, request the next page recursively.
             case let .success(terms):
-                self.synchronizeAllProductAttributeTerms(siteID: siteID,
-                                                         attributeID: attributeID,
-                                                         synchronizedTerms: synchronizedTerms + terms,
-                                                         fromPageNumber: fromPageNumber + 1,
-                                                         onCompletion: onCompletion)
+                synchronizeAllProductAttributeTerms(siteID: siteID,
+                                                    attributeID: attributeID,
+                                                    synchronizedTerms: synchronizedTerms + terms,
+                                                    fromPageNumber: fromPageNumber + 1,
+                                                    onCompletion: onCompletion)
 
             // If there is an error, end the recursion and call `onCompletion`
             case let .failure(error):
@@ -134,14 +131,9 @@ private extension ProductAttributeTermStore {
                                                        siteID: Int64,
                                                        attributeID: Int64,
                                                        onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            self?.upsertStoredProductAttributeTerms(readOnlyTerms, in: derivedStorage, siteID: siteID, attributeID: attributeID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ [weak self] storage in
+            self?.upsertStoredProductAttributeTerms(readOnlyTerms, in: storage, siteID: siteID, attributeID: attributeID)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly `ProductAttributeTerm` entities into the Storage Layer.
@@ -155,10 +147,12 @@ private extension ProductAttributeTermStore {
             return
         }
 
+        let storageTerms = storage.loadProductAttributeTerms(siteID: siteID, attributeID: attributeID)
+
         // Upserts the ProductAttributeTerm models from the read-only version
         readOnlyTerms.forEach { term in
             let storedTerm: Storage.ProductAttributeTerm = {
-                guard let storedTerm = storage.loadProductAttributeTerm(siteID: siteID, termID: term.termID, attributeID: attributeID) else {
+                guard let storedTerm = storageTerms.first(where: { $0.termID == term.termID }) else {
                     return storage.insertNewObject(ofType: Storage.ProductAttributeTerm.self)
                 }
                 return storedTerm
@@ -170,23 +164,23 @@ private extension ProductAttributeTermStore {
 
     /// Deletes previously stored terms that where not retrieved during the synchronization.
     ///
-    func deleteStaleTerms(siteID: Int64, attributeID: Int64, activeTerms: [Yosemite.ProductAttributeTerm]) {
-        let storage = storageManager.viewStorage
-        guard let attribute = storage.loadProductAttribute(siteID: siteID, attributeID: attributeID),
-              let previousTerms = attribute.terms else {
-            return
-        }
+    func deleteStaleTerms(siteID: Int64, attributeID: Int64, activeTerms: [Yosemite.ProductAttributeTerm], onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            guard let attribute = storage.loadProductAttribute(siteID: siteID, attributeID: attributeID),
+                  let previousTerms = attribute.terms else {
+                return
+            }
 
-        // Filter `previousTerms` that are not in `activeTerms`
-        let staleTerms = previousTerms.filter { previousTerm -> Bool in
-            !activeTerms.contains(where: { $0.termID == previousTerm.termID })
-        }
+            // Filter `previousTerms` that are not in `activeTerms`
+            let staleTerms = previousTerms.filter { previousTerm -> Bool in
+                !activeTerms.contains(where: { $0.termID == previousTerm.termID })
+            }
 
-        // Delete stale terms
-        staleTerms.forEach { staleTerm in
-            storage.deleteObject(staleTerm)
-        }
-        storage.saveIfNeeded()
+            // Delete stale terms
+            staleTerms.forEach { staleTerm in
+                storage.deleteObject(staleTerm)
+            }
+        }, completion: onCompletion, on: .main)
     }
 }
 

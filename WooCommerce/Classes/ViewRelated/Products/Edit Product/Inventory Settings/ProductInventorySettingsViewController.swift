@@ -256,6 +256,8 @@ private extension ProductInventorySettingsViewController {
         switch cell {
         case let cell as TitleAndTextFieldTableViewCell where row == .sku:
             configureSKU(cell: cell)
+        case let cell as TitleAndTextFieldTableViewCell where row == .globalUniqueIdentifier:
+            configureGlobalUniqueIdentifier(cell: cell)
         case let cell as SwitchTableViewCell where row == .manageStock:
             configureManageStock(cell: cell)
         case let cell as SwitchTableViewCell where row == .limitOnePerOrder:
@@ -300,6 +302,29 @@ private extension ProductInventorySettingsViewController {
             "Scans barcodes that are associated with a product SKU for stock management.",
             comment: "VoiceOver accessibility hint, informing the user the button can be used to scan products."
         )
+        cell.accessoryView = button
+    }
+
+    func configureGlobalUniqueIdentifier(cell: TitleAndTextFieldTableViewCell) {
+        let cellViewModel = Product.createGlobalUniqueIdentifierViewModel() { _ in
+        }
+
+        cell.configure(viewModel: cellViewModel)
+
+        /// Global Unique Identifiers are usually long, let's make a bit more of room to display it at once without truncating it
+        cell.setSpacingBetweenTitleAndTextField(20)
+
+        // Configures accessory view for adding SKU from barcode scanner if camera is available.
+        guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
+            return
+        }
+
+        let button = UIButton(type: .detailDisclosure)
+        button.applyIconButtonStyle(icon: .scanImage)
+        button.accessibilityLabel = NSLocalizedString("Scan products", comment: "Scan Products")
+        button.accessibilityHint = NSLocalizedString("productInventorySettings.GlobalUniqueIdentifier.ScanButton",
+                                                     value: "Scans barcodes that are associated with a product Global Unique Identifier for stock management.",
+                                                     comment: "VoiceOver accessibility hint, informing the user the button can be used to scan products.")
         cell.accessoryView = button
     }
 
@@ -414,6 +439,7 @@ extension ProductInventorySettingsViewController {
 
     enum Row: CaseIterable {
         case sku
+        case globalUniqueIdentifier
         case manageStock
         case limitOnePerOrder
         // Manage stock is enabled.
@@ -424,7 +450,7 @@ extension ProductInventorySettingsViewController {
 
         fileprivate var type: UITableViewCell.Type {
             switch self {
-            case .sku:
+            case .sku, .globalUniqueIdentifier:
                 return TitleAndTextFieldTableViewCell.self
             case .manageStock, .limitOnePerOrder:
                 return SwitchTableViewCell.self

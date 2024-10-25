@@ -1,6 +1,18 @@
 import SwiftUI
 
+/// View to display the available shipping services (carriers and rates) with the Woo Shipping extension.
 struct WooShippingServiceView: View {
+    @ObservedObject var viewModel: WooShippingServiceViewModel
+
+    private var carriers: [TopTabItem<WooShippingServiceCardListView>] {
+        viewModel.serviceTabs.map { tab in
+            TopTabItem(name: tab.id.name,
+                       icon: tab.id.logo) {
+                WooShippingServiceCardListView(cards: tab.cards)
+            }
+        }
+    }
+
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -8,17 +20,28 @@ struct WooShippingServiceView: View {
                     .headlineStyle()
                 Spacer()
             }
-            WooShippingServiceCardView(carrierLogo: UIImage(named: "shipping-label-usps-logo"),
-                                       title: "USPS - Media Mail",
-                                       rate: "$7.63",
-                                       daysToDelivery: "7 business days",
-                                       extraInfo: "Includes tracking, insurance (up to $100.00), free pickup",
-                                       trackingLabel: "Tracking",
-                                       insuranceLabel: "Insurance (up to $100.00)",
-                                       freePickupLabel: "Free pickup",
-                                       signatureRequiredLabel: "Signature Required (+$3.70)",
-                                       adultSignatureRequiredLabel: "Adult Signature Required (+$9.35)")
+            TopTabView(tabs: carriers,
+                       unselectedStateColor: .secondary,
+                       tabsNameFont: .subheadline.bold(),
+                       tabItemContentHorizontalPadding: 16,
+                       tabItemContentVerticalPadding: 12)
         }
+    }
+}
+
+/// View to display a provided list of shipping rate cards with the Woo Shipping extension.
+private struct WooShippingServiceCardListView: View {
+    var cards: [WooShippingServiceCardViewModel]
+
+    var body: some View {
+        VStack {
+            ForEach(cards) { card in
+                WooShippingServiceCardView(viewModel: card)
+                    .fixedSize(horizontal: false, vertical: true) // Prevents card text from being truncated
+            }
+            Spacer()
+        }
+        .padding(.vertical)
     }
 }
 
@@ -31,5 +54,5 @@ private extension WooShippingServiceView {
 }
 
 #Preview {
-    WooShippingServiceView()
+    WooShippingServiceView(viewModel: .init())
 }

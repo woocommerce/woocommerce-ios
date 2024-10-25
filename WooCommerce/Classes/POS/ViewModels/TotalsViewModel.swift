@@ -21,6 +21,7 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     }
 
     @Published var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
+    @Published var cardPresentPaymentOnboardingURL: URL?
     private var onOnboardingCancellation: (() -> Void)?
     @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?

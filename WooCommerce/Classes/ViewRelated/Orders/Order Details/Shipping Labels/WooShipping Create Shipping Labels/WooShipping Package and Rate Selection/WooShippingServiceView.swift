@@ -18,12 +18,14 @@ struct WooShippingServiceView: View {
             HStack {
                 Text(Localization.shippingService)
                     .headlineStyle()
-                Spacer()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal)
             }
             TopTabView(tabs: carriers,
+                       tabsContainerHorizontalPadding: 16,
                        unselectedStateColor: .secondary,
                        tabsNameFont: .subheadline.bold(),
-                       tabItemContentHorizontalPadding: 16,
+                       tabItemContentHorizontalPadding: 6,
                        tabItemContentVerticalPadding: 12)
         }
     }
@@ -39,9 +41,9 @@ private struct WooShippingServiceCardListView: View {
                 WooShippingServiceCardView(viewModel: card)
                     .fixedSize(horizontal: false, vertical: true) // Prevents card text from being truncated
             }
-            Spacer()
         }
-        .padding(.vertical)
+        .frame(maxHeight: .infinity, alignment: .top)
+        .padding()
     }
 }
 

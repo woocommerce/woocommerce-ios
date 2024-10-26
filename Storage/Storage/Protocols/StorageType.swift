@@ -7,8 +7,6 @@ import CoreData.NSFetchRequest
 ///
 public protocol StorageType: AnyObject {
 
-    var parentStorage: StorageType? {get}
-
     /// Returns all of the available objects of a given Type, matching the specified Predicate (and sorted with a given collection of
     /// SortDescriptors).
     ///

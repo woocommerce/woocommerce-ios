@@ -17,7 +17,7 @@ The default implementation of the `StorageManagerType` and `StorageType` protoco
 
 When clients of this class request a `StorageType`, `CoreDataManager` will return an `NSManagedObjectContext`. 
 
-When `CoreDataManager` is requested a  `viewContext`, it will provide  the persistent container’s `viewContext`. `viewContext` should only be used for reading and not writing.
+When `CoreDataManager` is requested a  `viewContext`, it will provide the persistent container’s `viewContext`. `viewContext` should only be used for reading and not writing.
 
 `CoreDataManager` manages a single background context for write operations, which cannot be accessed directly. Instead, there are two versions of `performAndSave` methods to use for writing - depending on whether you need to send a result back to the completion closure or not. 
 Note: For thread safety, do not send any `NSManagedObject` instance to the completion closure of `performAndSave`. There's an assertion to ensure at debug runtime this does not happen.

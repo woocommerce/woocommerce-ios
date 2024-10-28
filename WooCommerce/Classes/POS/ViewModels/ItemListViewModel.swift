@@ -6,7 +6,7 @@ import protocol Yosemite.POSItemProvider
 final class ItemListViewModel: ItemListViewModelProtocol {
 
     @Published private(set) var items: [POSItem] = []
-    @Published private(set) var state: ItemListState = .loading
+    @Published private(set) var state: ItemListState = .initialLoading
     @Published private(set) var isHeaderBannerDismissed: Bool = false
     @Published var showSimpleProductsModal: Bool = false
 
@@ -17,7 +17,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
         if UserDefaults.standard.bool(forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey) == true {
             return false
         }
-        return !isHeaderBannerDismissed && (state.isLoaded || state.isLoading) && items.isNotEmpty
+        return !isHeaderBannerDismissed && (state.isLoaded || state.isInitialLoading || state.isLoading) && items.isNotEmpty
     }
 
     private let itemProvider: POSItemProvider
@@ -41,7 +41,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     func loadInitialItems() async {
         currentPage = Constants.initialPage
         do {
-            state = .loading
+            state = .initialLoading
             items = try await itemProvider.providePointOfSaleItems(pageNumber: currentPage)
             if items.count == 0 {
                 state = .empty
@@ -101,6 +101,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 extension ItemListViewModel {
     enum ItemListState: Equatable {
         case empty
+        case initialLoading
         case loading
         case loaded([POSItem])
         case error(ErrorModel)
@@ -123,6 +124,15 @@ extension ItemListViewModel {
             }
         }
 
+        var isInitialLoading: Bool {
+            switch self {
+            case .initialLoading:
+                return true
+            default:
+                return false
+            }
+        }
+
         var hasError: ErrorModel {
             switch self {
             case .error(let errorModel):
@@ -139,7 +149,7 @@ extension ItemListViewModel {
             switch (lhs, rhs) {
             case (.empty, .empty):
                 return true
-            case (.loading, .loading):
+            case (.initialLoading, .initialLoading):
                 return true
             case (.loaded(let lhsItems), .loaded(let rhsItems)):
                 return lhsItems.map { $0.itemID } == rhsItems.map { $0.itemID }

@@ -18,7 +18,7 @@ struct ItemListView: View {
                 // These cases are handled directly in the dashboard, we do not render
                 // a specific view within the ItemListView to handle them
                 EmptyView()
-            case .loading, .loaded:
+            case .initialLoading, .loading, .loaded:
                 listView(viewModel.items)
             }
         }

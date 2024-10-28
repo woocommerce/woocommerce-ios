@@ -112,7 +112,7 @@ struct CustomFieldEditorView: View {
                         saveChanges()
                         dismiss()
                     } label: {
-                        Text(Localization.saveButton)
+                        Text(Localization.doneButton)
                     }
                     .disabled(!hasUnsavedChanges)
 
@@ -174,10 +174,10 @@ private extension CustomFieldEditorView {
             comment: "Label for the Cancel button to close the editor"
         )
 
-        static let saveButton = NSLocalizedString(
-            "customFieldEditorView.save",
-            value: "Save",
-            comment: "Label for the Save button to save changes"
+        static let doneButton = NSLocalizedString(
+            "customFieldEditorView.done",
+            value: "Done",
+            comment: "Label for the Done button to save changes"
         )
 
         static let keyLabel = NSLocalizedString(

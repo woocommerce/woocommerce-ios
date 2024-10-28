@@ -14,7 +14,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     let hasPackage: Bool = false
 
     /// View model for the label shipping service.
-    @Published private(set) var shippingService = WooShippingServiceViewModel()
+    let shippingService = WooShippingServiceViewModel()
 
     /// Address to ship from (store address), formatted for display.
     let originAddress: String

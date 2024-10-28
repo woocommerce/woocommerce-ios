@@ -6,11 +6,11 @@ final class WooShippingServiceViewModel: ObservableObject {
     @Published private(set) var serviceTabs: [WooShippingServiceTab] = []
 
     /// Selected standard shipping service rate.
-    private(set) var selectedStandardRate: ShippingLabelCarrierRate?
+    @Published private(set) var selectedStandardRate: ShippingLabelCarrierRate?
     /// Selected signature shipping service rate (if signature is required).
-    private(set) var selectedSignatureRate: ShippingLabelCarrierRate?
+    @Published private(set) var selectedSignatureRate: ShippingLabelCarrierRate?
     /// Selected adult signature shipping service rate (if adult signature is required).
-    private(set) var selectedAdultSignatureRate: ShippingLabelCarrierRate?
+    @Published private(set) var selectedAdultSignatureRate: ShippingLabelCarrierRate?
 
     /// Available standard shipping rates.
     private let standardRates: [ShippingLabelCarrierRate]

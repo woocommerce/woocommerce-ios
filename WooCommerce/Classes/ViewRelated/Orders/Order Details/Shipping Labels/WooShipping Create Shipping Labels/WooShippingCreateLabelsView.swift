@@ -63,20 +63,19 @@ struct WooShippingCreateLabelsView: View {
                         CollapsibleHStack(spacing: Layout.bottomSheetSpacing) {
                             Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
                                 .font(.subheadline)
-
-                            Button {
-                                viewModel.purchaseLabel()
-                            } label: {
-                                Text(Localization.BottomSheet.purchase)
-                            }
-                            .buttonStyle(PrimaryButtonStyle())
-                            .disabled(true) // TODO: 13556 - Enable button when shipping label is ready to purchase
+                            purchaseButton
                         }
                         .padding(.horizontal, Layout.bottomSheetPadding)
                     } else {
-                        Text(Localization.BottomSheet.shipmentDetails)
-                            .foregroundStyle(Color(.primary))
-                            .bold()
+                        VStack {
+                            Text(Localization.BottomSheet.shipmentDetails)
+                                .foregroundStyle(Color(.primary))
+                                .bold()
+                            if viewModel.hasPackage {
+                                purchaseButton
+                            }
+                        }
+                        .padding(.horizontal, Layout.bottomSheetPadding)
                     }
                 } expandableContent: {
                     VStack(alignment: .leading, spacing: Layout.bottomSheetSpacing) {
@@ -205,6 +204,17 @@ private extension WooShippingCreateLabelsView {
             }
             .frame(idealHeight: Layout.rowHeight)
         }
+    }
+
+    /// View showing the shipping label purchase button.
+    var purchaseButton: some View {
+        Button {
+            viewModel.purchaseLabel()
+        } label: {
+            Text(Localization.BottomSheet.purchase)
+        }
+        .buttonStyle(PrimaryButtonStyle())
+        .disabled(true)
     }
 }
 

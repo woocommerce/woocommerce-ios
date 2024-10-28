@@ -80,7 +80,7 @@ struct PointOfSaleDashboardView: View {
             supportForm
         }
         .task {
-            await viewModel.itemListViewModel.populatePointOfSaleItems()
+            await viewModel.itemListViewModel.loadInitialItems()
         }
     }
 

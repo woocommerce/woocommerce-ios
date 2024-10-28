@@ -20,7 +20,10 @@ class MockItemListViewModel: ItemListViewModelProtocol {
     func select(_ item: any Yosemite.POSItem) {
     }
 
-    func populatePointOfSaleItems() async {
+    func loadInitialItems() async {
+    }
+
+    func loadNextItems() async {
     }
 
     func reload() async {

@@ -18,8 +18,9 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
     func testReadonlyValuesAreAsExpectedAfterInitializingAProductWithManageStockEnabled() {
         // Arrange
         let sku = "134"
+        let globalUniqueID = "12345"
         let product = Product.fake()
-            .copy(sku: sku, manageStock: true, stockQuantity: 12, backordersKey: ProductBackordersSetting.allowed.rawValue, soldIndividually: true)
+            .copy(sku: sku, globalUniqueID: globalUniqueID, manageStock: true, stockQuantity: 12, backordersKey: ProductBackordersSetting.allowed.rawValue, soldIndividually: true)
         let model = EditableProductModel(product: product)
 
         // Act
@@ -38,6 +39,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         ]
         XCTAssertEqual(sections, expectedSections)
         XCTAssertEqual(viewModel.sku, sku)
+        XCTAssertEqual(viewModel.globalUniqueID, globalUniqueID)
         XCTAssertTrue(viewModel.manageStockEnabled)
         XCTAssertEqual(viewModel.soldIndividually, true)
         XCTAssertEqual(viewModel.stockQuantity, 12)
@@ -48,8 +50,9 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
     func testReadonlyValuesAreAsExpectedAfterInitializingAProductWithManageStockDisabled() {
         // Arrange
         let sku = "134"
+        let globalUniqueID = "12345"
         let product = Product.fake()
-            .copy(sku: sku, manageStock: false, stockStatusKey: ProductStockStatus.onBackOrder.rawValue, soldIndividually: true)
+            .copy(sku: sku, globalUniqueID: globalUniqueID, manageStock: false, stockStatusKey: ProductStockStatus.onBackOrder.rawValue, soldIndividually: true)
         let model = EditableProductModel(product: product)
 
         // Act
@@ -68,6 +71,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         ]
         XCTAssertEqual(sections, expectedSections)
         XCTAssertEqual(viewModel.sku, sku)
+        XCTAssertEqual(viewModel.globalUniqueID, globalUniqueID)
         XCTAssertFalse(viewModel.manageStockEnabled)
         XCTAssertEqual(viewModel.soldIndividually, true)
         XCTAssertEqual(viewModel.stockStatus, .onBackOrder)
@@ -96,9 +100,9 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         XCTAssertEqual(sections, expectedSections)
     }
 
-    func testOnlySKUSectionIsVisibleForSKUFormType() {
+    func testOnlySKUAndGlobalUniqueIdentifierSectionsAreVisibleForSKUFormType() {
         // Arrange
-        let product = Product.fake().copy(sku: "134")
+        let product = Product.fake().copy(sku: "134", globalUniqueID: "12345")
         let model = EditableProductModel(product: product)
 
         // Act
@@ -115,6 +119,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         ]
         XCTAssertEqual(sections, expectedSections)
         XCTAssertEqual(viewModel.sku, "134")
+        XCTAssertEqual(viewModel.globalUniqueID, "12345")
     }
 
     // MARK: - `handleSKUChange`

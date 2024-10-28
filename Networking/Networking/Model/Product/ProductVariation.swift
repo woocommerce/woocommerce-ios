@@ -23,6 +23,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
 
     public let description: String?
     public let sku: String?
+    public let globalUniqueID: String?
 
     public let price: String
     public let regularPrice: String?
@@ -101,6 +102,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
                 status: ProductStatus,
                 description: String?,
                 sku: String?,
+                globalUniqueID: String?,
                 price: String,
                 regularPrice: String?,
                 salePrice: String?,
@@ -142,6 +144,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         self.status = status
         self.description = description
         self.sku = sku
+        self.globalUniqueID = globalUniqueID
         self.price = price
         self.regularPrice = regularPrice
         self.salePrice = salePrice
@@ -206,6 +209,8 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         let statusKey = try container.decode(String.self, forKey: .statusKey)
         let status = ProductStatus(rawValue: statusKey)
         let description = try container.decodeIfPresent(String.self, forKey: .description)
+
+        let globalUniqueID = try container.decodeIfPresent(String.self, forKey: .globalUniqueID)
 
         // Even though a plain install of WooCommerce Core provides String values,
         // some plugins alter the field value from String to Int or Decimal.
@@ -327,6 +332,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
                   status: status,
                   description: description,
                   sku: sku,
+                  globalUniqueID: globalUniqueID,
                   price: price,
                   regularPrice: regularPrice,
                   salePrice: salePrice,
@@ -398,6 +404,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
 
         // Inventory Settings.
         try container.encode(sku, forKey: .sku)
+        try container.encode(globalUniqueID, forKey: .globalUniqueID)
         try container.encode(manageStock, forKey: .manageStock)
         try container.encode(stockStatus.rawValue, forKey: .stockStatusKey)
         if hasIntegerStockQuantity {
@@ -448,6 +455,7 @@ extension ProductVariation {
 
         case sku
         case price
+        case globalUniqueID = "global_unique_id"
         case regularPrice   = "regular_price"
         case salePrice      = "sale_price"
         case onSale         = "on_sale"

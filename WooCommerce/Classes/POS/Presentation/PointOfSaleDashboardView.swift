@@ -128,9 +128,16 @@ private extension PointOfSaleDashboardView {
         .navigationViewStyle(.stack)
     }
 
-    func paymentsOnboardingView(from viewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
-        NavigationStack {
-            CardPresentPaymentsOnboardingView(viewModel: viewModel)
+    func paymentsOnboardingView(from onboardingViewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
+        onboardingViewModel.showSupport = {
+            totalsViewModel.cardPresentPaymentOnboardingViewModel = nil
+            viewModel.showSupport = true
+        }
+        onboardingViewModel.showURL = { url in
+            totalsViewModel.cardPresentPaymentOnboardingURL = url
+        }
+        return NavigationStack {
+            CardPresentPaymentsOnboardingView(viewModel: onboardingViewModel)
                 .navigationBarTitleDisplayMode(.inline)
                 .interactiveDismissDisabled()
                 .toolbar {
@@ -140,6 +147,7 @@ private extension PointOfSaleDashboardView {
                         Text(Localization.cancelOnboarding)
                     }
                 }
+                .safariSheet(url: $totalsViewModel.cardPresentPaymentOnboardingURL)
                 .onDisappear {
                     totalsViewModel.cancelOnboarding()
                 }

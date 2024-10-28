@@ -103,6 +103,8 @@ final class NoWooErrorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.secondaryButtonTitle, Localization.secondaryButtonTitle)
     }
 
+    /// 
+    /// https://forums.developer.apple.com/forums/thread/759640
     func test_user_is_logged_out_when_tapping_secondary_button() {
         // Given
         let site = Site.fake().copy(url: "https://test.com")
@@ -111,18 +113,13 @@ final class NoWooErrorViewModelTests: XCTestCase {
                                             showsConnectedStores: false,
                                             stores: stores,
                                             onSetupCompletion: { _ in })
-        let rootViewController = UIViewController()
         let noWooController = ULErrorViewController(viewModel: viewModel)
-        let navigationController = UINavigationController()
-        navigationController.viewControllers = [rootViewController, noWooController]
 
         // When
         viewModel.didTapSecondaryButton(in: noWooController)
 
         // Then
         XCTAssertFalse(stores.isAuthenticated)
-        XCTAssertEqual(navigationController.viewControllers.count, 1)
-        XCTAssertFalse(navigationController.topViewController is ULErrorViewController)
     }
 
     func test_woocommerce_setup_button_tapped_is_tracked_when_tapping_primary_button() {

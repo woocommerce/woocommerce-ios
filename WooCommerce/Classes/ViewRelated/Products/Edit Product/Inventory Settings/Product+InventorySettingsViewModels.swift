@@ -13,7 +13,7 @@ extension Product {
     }
 
 	static func createGlobalUniqueIdentifierViewModel(globalUniqueID: String?,
-													  onTextChange: @escaping (_ text: String?) -> Void) -> TitleAndTextFieldTableViewCell.ViewModel {
+                                                      onTextChange: @escaping (_ text: String?) -> Void) -> TitleAndTextFieldTableViewCell.ViewModel {
         let title = NSLocalizedString("productInventorySettings.globalUniqueIdentifier.title",
                                       value: "GTIN, UPC, EAN, ISBN",
                                       comment: "Title of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN")

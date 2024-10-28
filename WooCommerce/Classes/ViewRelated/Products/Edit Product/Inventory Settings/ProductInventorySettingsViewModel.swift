@@ -68,7 +68,7 @@ final class ProductInventorySettingsViewModel: ProductInventorySettingsViewModel
     // Editable data - shared.
     //
     private(set) var sku: String?
-	private(set) var globalUniqueID: String?
+    private(set) var globalUniqueID: String?
     private(set) var manageStockEnabled: Bool
     // Optional: only editable in `Product`
     private(set) var soldIndividually: Bool?

@@ -12,6 +12,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.markOrderComplete)
+        XCTAssertFalse(viewModel.canPurchaseLabel)
     }
 
     func test_site_address_converted_to_formatted_originAddress() {
@@ -84,6 +85,20 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(markOrderComplete)
+    }
+
+    func test_canPurchaseLabel_true_after_shipping_rate_is_selected() throws {
+        // Given
+        let order = Order.fake()
+        let viewModel = WooShippingCreateLabelsViewModel(order: order)
+        XCTAssertFalse(viewModel.canPurchaseLabel)
+
+        // When
+        let card = try XCTUnwrap(viewModel.shippingService.serviceTabs.first?.cards.first)
+        card.selectRate()
+
+        // Then
+        XCTAssertTrue(viewModel.canPurchaseLabel)
     }
 }
 

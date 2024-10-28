@@ -28,6 +28,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Whether to mark the order as complete after the label is purchased.
     @Published var markOrderComplete: Bool = false
 
+    /// If the purchase button should be enabled.
+    @Published private(set) var canPurchaseLabel: Bool = false
+
     /// Closure to execute after the label is successfully purchased.
     let onLabelPurchase: ((_ markOrderComplete: Bool) -> Void)?
 
@@ -39,6 +42,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.originAddress = Self.formatOriginAddress(siteAddress: siteAddress)
         self.destinationAddressLines = (order.shippingAddress?.formattedPostalAddress ?? "").components(separatedBy: .newlines)
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0) })
+        bindViewModelsToProperties()
     }
 
     /// Purchases a shipping label with the provided label details and settings.
@@ -49,6 +53,14 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 }
 
 private extension WooShippingCreateLabelsViewModel {
+    func bindViewModelsToProperties() {
+        shippingService.$selectedRate
+            .map { selectedRate in
+                selectedRate != nil
+            }
+            .assign(to: &$canPurchaseLabel)
+    }
+
     /// Formats the origin address from the provided `SiteAddress`.
     static func formatOriginAddress(siteAddress: SiteAddress) -> String {
         let address = Address(firstName: "",

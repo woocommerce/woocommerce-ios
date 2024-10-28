@@ -103,8 +103,6 @@ final class NoWooErrorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.secondaryButtonTitle, Localization.secondaryButtonTitle)
     }
 
-    /// 
-    /// https://forums.developer.apple.com/forums/thread/759640
     func test_user_is_logged_out_when_tapping_secondary_button() {
         // Given
         let site = Site.fake().copy(url: "https://test.com")

@@ -62,6 +62,10 @@ final class InAppPurchaseStoreTests: XCTestCase {
         XCTAssertTrue(result)
     }
 
+    /// Skipped
+    /// Setting storefront value in Xcode 16 in one test no longer resets in other tests, even when resetToDefaultState is called
+    /// Reason unknown
+    /// https://forums.developer.apple.com/forums/thread/764937
     func test_iap_supported_in_canada() throws {
         // Given
         storeKitSession.storefront = "CAN"
@@ -96,6 +100,9 @@ final class InAppPurchaseStoreTests: XCTestCase {
         XCTAssertEqual(products.first?.id, sampleProductID)
     }
 
+    /// Skipped
+    /// Setting storefront value in Xcode 16 in one test no longer resets in other tests, even when resetToDefaultState is called
+    /// Reason unknown
     func test_load_products_fails_if_iap_unsupported() throws {
         // Given
         storeKitSession.storefront = "CAN"

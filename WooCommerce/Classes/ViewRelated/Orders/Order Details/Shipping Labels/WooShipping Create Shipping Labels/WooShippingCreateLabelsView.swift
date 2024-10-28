@@ -211,7 +211,7 @@ private extension WooShippingCreateLabelsView {
         Button {
             viewModel.purchaseLabel()
         } label: {
-            Text(Localization.BottomSheet.purchase)
+            Text(Localization.BottomSheet.purchaseLabel(with: viewModel.totalCost))
         }
         .buttonStyle(PrimaryButtonStyle())
         .disabled(!viewModel.canPurchaseLabel)
@@ -268,9 +268,18 @@ private extension WooShippingCreateLabelsView {
             static let paperSize = NSLocalizedString("wooShipping.createLabels.bottomSheet.paperSize",
                                                      value: "Choose label paper size",
                                                      comment: "Label for the menu to select a paper size on the shipping label creation screen")
+            static func purchaseLabel(with price: String?) -> String {
+                guard let price else {
+                    return purchase
+                }
+                return String.localizedStringWithFormat(purchaseFormat, price)
+            }
             static let purchase = NSLocalizedString("wooShipping.createLabels.bottomSheet.purchase",
                                                     value: "Purchase Label",
                                                     comment: "Label for button to purchase the shipping label on the shipping label creation screen")
+            static let purchaseFormat = NSLocalizedString("wooShipping.createLabels.bottomSheet.purchaseFormat",
+                                                          value: "Purchase Label · %1$@",
+                                                          comment: "Label for button to purchase the shipping label on the shipping label creation screen, including the label price. Reads like: 'Purchase Label · $7.63'")
         }
     }
 }

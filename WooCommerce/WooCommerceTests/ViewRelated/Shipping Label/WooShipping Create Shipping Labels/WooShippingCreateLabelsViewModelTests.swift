@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
 @testable import Networking
+import WooFoundation
 
 final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     func test_inits_with_expected_values() {
@@ -13,6 +14,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.markOrderComplete)
         XCTAssertFalse(viewModel.canPurchaseLabel)
+        XCTAssertNil(viewModel.totalCost)
     }
 
     func test_site_address_converted_to_formatted_originAddress() {
@@ -99,6 +101,19 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.canPurchaseLabel)
+    }
+
+    func test_selecting_shipping_rate_sets_totalCost() throws {
+        // Given
+        let order = Order.fake()
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, currencySettings: CurrencySettings())
+
+        // When
+        let card = try XCTUnwrap(viewModel.shippingService.serviceTabs.first?.cards.first)
+        card.selectRate()
+
+        // Then
+        XCTAssertEqual(viewModel.totalCost, "$7.53")
     }
 }
 

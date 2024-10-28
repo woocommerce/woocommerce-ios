@@ -20,7 +20,12 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let sku = "134"
         let globalUniqueID = "12345"
         let product = Product.fake()
-            .copy(sku: sku, globalUniqueID: globalUniqueID, manageStock: true, stockQuantity: 12, backordersKey: ProductBackordersSetting.allowed.rawValue, soldIndividually: true)
+            .copy(sku: sku,
+                  globalUniqueID: globalUniqueID,
+                  manageStock: true,
+                  stockQuantity: 12,
+                  backordersKey: ProductBackordersSetting.allowed.rawValue,
+                  soldIndividually: true)
         let model = EditableProductModel(product: product)
 
         // Act

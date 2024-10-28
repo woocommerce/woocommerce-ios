@@ -130,6 +130,8 @@ private extension ItemListView {
                         ItemCardView(item: item)
                     })
                 }
+                GhostItemCardView()
+                    .renderedIf(viewModel.state == .loading)
             }
             .padding(.bottom, floatingControlAreaSize.height)
             .padding(.horizontal, Constants.itemListPadding)
@@ -148,6 +150,25 @@ private extension ItemListView {
                     }
             })
         }
+    }
+}
+
+struct GhostItemCardView: View {
+    @ScaledMetric private var scale: CGFloat = 1.0
+
+    var body: some View {
+        RoundedRectangle(cornerRadius: Constants.cornerRadius)
+            .frame(height: Constants.productCardSize * scale)
+            .foregroundColor(Constants.foregroundColor)
+            .shimmering()
+    }
+}
+
+private extension GhostItemCardView {
+    enum Constants {
+        static let cornerRadius: CGFloat = 8
+        static let foregroundColor: Color = Color.gray.opacity(0.5)
+        static let productCardSize: CGFloat = 112
     }
 }
 

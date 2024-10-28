@@ -92,7 +92,7 @@ steps:
   # UI Tests
   #################
   - label: ":microscope: UI Tests (iPhone)"
-    command: .buildkite/commands/run-ui-tests.sh UITests 'iPhone 16 (18.1)'
+    command: .buildkite/commands/run-ui-tests.sh UITests 'iPhone 16'
     depends_on: build
     plugins: [$CI_TOOLKIT]
     artifact_paths:
@@ -102,7 +102,7 @@ steps:
           context: UI Tests (iPhone)
 
   - label: ":microscope: UI Tests (iPad)"
-    command: .buildkite/commands/run-ui-tests.sh UITests "iPad (10th generation) (18.1)"
+    command: .buildkite/commands/run-ui-tests.sh UITests "iPad (10th generation)"
     depends_on: build
     plugins: [$CI_TOOLKIT]
     artifact_paths:

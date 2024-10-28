@@ -1,6 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+21.0
+-----
+
+
 20.9
 -----
 - [internal] Updated storage usage in ProductCategoryStore [https://github.com/woocommerce/woocommerce-ios/pull/14151]
@@ -13,6 +17,8 @@
 - [internal] Additions to TopTabView for customization options [https://github.com/woocommerce/woocommerce-ios/pull/14192]
 - [internal] Shipping Labels: Updated design to use responsive DHL logo [https://github.com/woocommerce/woocommerce-ios/pull/14206]
 - [*] Payments: Tap to Pay now requires iOS 16.7 as a minimum [https://github.com/woocommerce/woocommerce-ios/pull/14205]
+- [**] Fixed issue loading Google Ads dashboard card [https://github.com/woocommerce/woocommerce-ios/pull/14214]
+- [internal] Reset CoreDataManager in the background and optimized logout [https://github.com/woocommerce/woocommerce-ios/pull/14154]
 
 20.8
 -----

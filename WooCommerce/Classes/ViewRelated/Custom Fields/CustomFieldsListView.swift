@@ -58,8 +58,9 @@ private extension CustomFieldsListHostingController {
     }
 
     @objc func saveCustomField() {
-        // todo: call viewmodel's save function
-        navigationController?.popViewController(animated: true)
+        Task {
+            await viewModel.saveChanges()
+        }
     }
 
     func observeStateChange() {
@@ -68,6 +69,31 @@ private extension CustomFieldsListHostingController {
                 self?.saveCustomFieldButtonItem.isEnabled = hasChanges
             }
             .store(in: &subscriptions)
+
+        viewModel.$isSavingChanges
+            .sink { [weak self] isSavingChanges in
+                if isSavingChanges {
+                    self?.displayInProgressController()
+                } else {
+                    self?.dismissInProgressController()
+                }
+            }
+            .store(in: &subscriptions)
+    }
+
+    func displayInProgressController() {
+        let inProgressController = InProgressViewController(
+            viewProperties: InProgressViewProperties(
+                title: Localization.inProgressTitle,
+                message: Localization.inProgressMessage
+            )
+        )
+        inProgressController.modalPresentationStyle = .overFullScreen
+        present(inProgressController, animated: true)
+    }
+
+    func dismissInProgressController() {
+        dismiss(animated: true)
     }
 }
 
@@ -99,6 +125,7 @@ struct CustomFieldsListView: View {
         .sheet(isPresented: $viewModel.isAddingNewField) {
             buildCustomFieldEditorView(customField: nil)
         }
+        .notice($viewModel.notice)
     }
 }
 
@@ -175,7 +202,10 @@ private extension CustomFieldsListView {
                         value: updatedValue,
                         fieldId: customField?.fieldId
                     )
-                }
+                },
+                onDelete: customField != nil ? {
+                    viewModel.deleteField(customField!)
+                } : nil
             )
         }
     }
@@ -183,7 +213,7 @@ private extension CustomFieldsListView {
 
 // MARK: - Constants
 //
-private extension CustomFieldsListHostingController {
+extension CustomFieldsListHostingController {
     enum Localization {
         static let title = NSLocalizedString(
             "customFieldsListHostingController.title",
@@ -204,6 +234,41 @@ private extension CustomFieldsListHostingController {
             "customFieldsListHostingController.save",
             value: "Save",
             comment: "Button to save the changes on Custom Fields list")
+        static let deleteNoticeTitle = NSLocalizedString(
+            "customFieldsListHostingController.deleteNoticeTitle",
+            value: "Custom field deleted",
+             comment: "Title for the notice when a custom field is deleted"
+             )
+        static let deleteNoticeUndo = NSLocalizedString(
+            "customFieldsListHostingController.deleteNoticeUndo",
+            value: "Undo",
+            comment: "Action to undo the deletion of a custom field"
+        )
+        static let inProgressTitle = NSLocalizedString(
+            "customFieldsListHostingController.inProgressTitle",
+            value: "Saving...",
+            comment: "Title for the in progress view shown when saving changes"
+        )
+        static let inProgressMessage = NSLocalizedString(
+            "customFieldsListHostingController.inProgressMessage",
+            value: "Please wait while we save your changes",
+            comment: "Message for the in progress view shown when saving changes"
+        )
+        static let saveSuccessTitle = NSLocalizedString(
+            "customFieldsListHostingController.saveSuccessTitle",
+            value: "Changes saved",
+            comment: "Title for the success message when saving changes"
+        )
+        static let saveErrorTitle = NSLocalizedString(
+            "customFieldsListHostingController.saveErrorTitle",
+            value: "Error saving changes",
+            comment: "Title for the error message when saving changes"
+        )
+        static let saveErrorMessage = NSLocalizedString(
+            "customFieldsListHostingController.saveErrorMessage",
+            value: "There was an error saving your changes. Please try again.",
+            comment: "Message for the error message when saving changes"
+        )
     }
 }
 
@@ -225,7 +290,11 @@ struct OrderCustomFieldsDetails_Previews: PreviewProvider {
                 customFields: [
                     CustomFieldViewModel(id: 0, title: "First Title", content: "First Content"),
                     CustomFieldViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woocommerce.com/"))
-                ]))
+                ],
+                siteID: 0,
+                parentItemID: 0,
+                customFieldType: .order
+                ))
     }
 }
 

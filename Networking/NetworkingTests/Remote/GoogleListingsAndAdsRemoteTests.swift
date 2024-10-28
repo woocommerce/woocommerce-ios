@@ -83,7 +83,7 @@ final class GoogleListingsAndAdsRemoteTests: XCTestCase {
                               rawStatus: "disabled",
                               rawType: "performance_max",
                               amount: 30,
-                              country: "US",
+                              country: nil,
                               targetedLocations: ["US"])
         ]
         XCTAssertEqual(results, expectedCampaigns)

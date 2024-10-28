@@ -45,10 +45,11 @@ final class MetaDataStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(MetaDataAction.updateOrderMetaData(siteID: self.sampleSiteID,
-                                                              orderID: self.sampleOrderID,
-                                                              metadata: self.newMetadataArray,
-                                                              onCompletion: { result in
+            store.onAction(MetaDataAction.updateMetaData(siteID: self.sampleSiteID,
+                                                         parentItemID: self.sampleOrderID,
+                                                         metaDataType: .order,
+                                                         metadata: self.newMetadataArray,
+                                                         onCompletion: { result in
                 promise(result)
             }))
         }
@@ -71,9 +72,13 @@ final class MetaDataStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(MetaDataAction.updateOrderMetaData(siteID: self.sampleSiteID, orderID: self.sampleOrderID, metadata: metadata, onCompletion: { result in
-                promise(result)
-            }))
+            store.onAction(MetaDataAction.updateMetaData(siteID: self.sampleSiteID,
+                                                         parentItemID: self.sampleOrderID,
+                                                         metaDataType: .order,
+                                                         metadata: metadata,
+                                                         onCompletion: { result in
+                                                             promise(result)
+                                                         }))
         }
 
         // Then
@@ -93,12 +98,13 @@ final class MetaDataStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(MetaDataAction.updateProductMetaData(siteID: self.sampleSiteID,
-                                                                productID: self.sampleProductID,
-                                                                metadata: self.newMetadataArray,
-                                                                onCompletion: { result in
-                promise(result)
-            }))
+            store.onAction(MetaDataAction.updateMetaData(siteID: self.sampleSiteID,
+                                                         parentItemID: self.sampleOrderID,
+                                                         metaDataType: .order,
+                                                         metadata: self.newMetadataArray,
+                                                         onCompletion: { result in
+                                                             promise(result)
+                                                         }))
         }
 
         // Then
@@ -119,12 +125,13 @@ final class MetaDataStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(MetaDataAction.updateProductMetaData(siteID: self.sampleSiteID,
-                                                                productID: self.sampleProductID,
-                                                                metadata: metadata,
-                                                                onCompletion: { result in
-                promise(result)
-            }))
+            store.onAction(MetaDataAction.updateMetaData(siteID: self.sampleSiteID,
+                                                         parentItemID: self.sampleOrderID,
+                                                         metaDataType: .order,
+                                                         metadata: metadata,
+                                                         onCompletion: { result in
+                                                             promise(result)
+                                                         }))
         }
 
         // Then

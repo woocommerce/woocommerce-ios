@@ -12,6 +12,7 @@ struct CustomFieldEditorView: View {
     private let initialValue: String
     private let isReadOnlyValue: Bool
     private let onSave: (String, String) -> Void
+    private let onDelete: (() -> Void)?
 
     private var hasUnsavedChanges: Bool {
         key != initialKey || value != initialValue
@@ -23,13 +24,19 @@ struct CustomFieldEditorView: View {
     ///  - value: The value for the custom field
     ///  - isReadOnlyValue: Whether the value is read-only or not. To be used if the value is not string but JSON.
     ///  - onSave: Closure to handle save action
-    init(key: String, value: String, isReadOnlyValue: Bool = false, onSave: @escaping (String, String) -> Void) {
+    ///  - onDelete: Closure to handle delete action, defaults to nil when the editor doesn't support deleting.
+    init(key: String,
+         value: String,
+         isReadOnlyValue: Bool = false,
+         onSave: @escaping (String, String) -> Void,
+         onDelete: (() -> Void)? = nil) {
         self._key = State(initialValue: key)
         self._value = State(initialValue: value)
         self.initialKey = key
         self.initialValue = value
         self.isReadOnlyValue = isReadOnlyValue
         self.onSave = onSave
+        self.onDelete = onDelete
     }
 
     var body: some View {
@@ -142,8 +149,11 @@ struct CustomFieldEditorView: View {
             // todo-13493: Show a notice that the value was copied
         }
 
-        Button("Delete Custom Field", role: .destructive) { // todo-13493: set String to be translatable
-            // todo-13493: Implement delete action
+        if let onDelete = onDelete {
+            Button(Localization.deleteButton, role: .destructive) {
+                onDelete()
+                dismiss()
+            }
         }
     }
 
@@ -210,9 +220,15 @@ private extension CustomFieldEditorView {
             value: "HTML",
             comment: "Picker option for using Text Editor"
         )
+
+        static let deleteButton = NSLocalizedString(
+            "customFieldEditorView.deleteButton",
+            value: "Delete custom field",
+            comment: "Button title for deleting a custom field"
+        )
     }
 }
 
 #Preview {
-    CustomFieldEditorView(key: "title", value: "value", onSave: { _, _ in })
+    CustomFieldEditorView(key: "title", value: "value", onSave: { _, _ in }, onDelete: {})
 }

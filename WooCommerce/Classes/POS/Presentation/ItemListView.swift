@@ -142,7 +142,7 @@ private extension ItemListView {
                         let viewHeight = UIScreen.main.bounds.height
                         if maxY < viewHeight {
                             Task {
-                                await viewModel.populatePointOfSaleItems()
+                                await viewModel.loadNextItems()
                             }
                         }
                     }

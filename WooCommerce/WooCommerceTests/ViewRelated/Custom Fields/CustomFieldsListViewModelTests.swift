@@ -253,4 +253,25 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         // Then: An error should be thrown
         XCTAssertNotNil(viewModel.notice)
     }
+
+    func test_given_savingSucceeds_when_saveChangesCalled_then_callListener() async {
+        // Given: successfully saving the changes
+        stores.whenReceivingAction(ofType: MetaDataAction.self) { [self] action in
+            switch action {
+                case let .updateMetaData(_, _, _, _, onCompletion):
+                    onCompletion(.success(originalMetadata))
+            }
+        }
+        var listenerReceivedItems: [MetaData]? = nil
+        viewModel = CustomFieldsListViewModel(customFields: originalFields,
+                                              siteID: sampleSiteID,
+                                              parentItemID: sampleParentItemID,
+                                              customFieldType: sampleCustomFieldType,
+                                              onChangesSaved: { listenerReceivedItems = $0 },
+                                              stores: stores)
+        // When: Saving the changes
+        await viewModel.saveChanges()
+        // Then: The listener should be called
+        XCTAssertEqual(listenerReceivedItems, originalMetadata)
+    }
 }

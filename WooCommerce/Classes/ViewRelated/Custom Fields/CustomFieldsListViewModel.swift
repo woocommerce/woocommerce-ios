@@ -9,6 +9,7 @@ final class CustomFieldsListViewModel: ObservableObject {
     private let customFieldsType: MetaDataType
     private let siteID: Int64
     private let parentItemID: Int64
+    private let onChangesSaved: (([MetaData]) -> Void)?
 
     @Published var selectedCustomField: CustomFieldUI? = nil
     @Published var isAddingNewField: Bool = false
@@ -36,12 +37,14 @@ final class CustomFieldsListViewModel: ObservableObject {
          siteID: Int64,
          parentItemID: Int64,
          customFieldType: MetaDataType,
+         onChangesSaved: (([MetaData]) -> Void)? = nil,
          stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
         self.originalCustomFields = customFields
         self.siteID = siteID
         self.parentItemID = parentItemID
         self.customFieldsType = customFieldType
+        self.onChangesSaved = onChangesSaved
 
         observePendingChanges()
     }
@@ -115,6 +118,7 @@ extension CustomFieldsListViewModel {
             pendingChanges = PendingCustomFieldsChanges()
             notice = Notice(title: CustomFieldsListHostingController.Localization.saveSuccessTitle,
                             feedbackType: .success)
+            onChangesSaved?(result)
         } catch {
             notice = Notice(title: CustomFieldsListHostingController.Localization.saveErrorTitle,
                             message: CustomFieldsListHostingController.Localization.saveErrorMessage,

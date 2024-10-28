@@ -70,7 +70,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
                 !items.contains(where: { $0.productID == newItem.productID })
             }
             // If there are no new items, we just return what was already in memory
-            if (currentPage == pageNumber) && uniqueNewItems.count == 0 {
+            if uniqueNewItems.count == 0 {
                 state = .loaded(items)
             } else {
                 items.append(contentsOf: uniqueNewItems)

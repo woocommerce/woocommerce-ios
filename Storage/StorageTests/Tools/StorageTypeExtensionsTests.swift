@@ -273,6 +273,21 @@ final class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(metadata, storedMetaData)
     }
 
+    func test_loadOrderMetaData_by_siteID_orderID() throws {
+        // Given
+        let metadata = storage.insertNewObject(ofType: MetaData.self)
+
+        let order = storage.insertNewObject(ofType: Order.self)
+        order.siteID = sampleSiteID
+        order.addToCustomFields(metadata)
+
+        // When
+        let storedMetaData = try XCTUnwrap(storage.loadOrderMetaData(siteID: sampleSiteID, orderID: order.orderID))
+
+        // Then
+        XCTAssertEqual([metadata], storedMetaData)
+    }
+
     func test_loadProductMetaData_by_siteID_productID_metadataID() throws {
         // Given
         let metadataID: Int64 = 123
@@ -288,6 +303,21 @@ final class StorageTypeExtensionsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(metadata, storedMetaData)
+    }
+
+    func test_loadProductMetaData_by_siteID_productID() throws {
+        // Given
+        let metadata = storage.insertNewObject(ofType: MetaData.self)
+
+        let product = storage.insertNewObject(ofType: Product.self)
+        product.siteID = sampleSiteID
+        product.addToCustomFields(metadata)
+
+        // When
+        let storedMetaData = try XCTUnwrap(storage.loadProductMetaData(siteID: sampleSiteID, productID: product.productID))
+
+        // Then
+        XCTAssertEqual([metadata], storedMetaData)
     }
 
     func test_loadTopEarnerStats_by_date_granularity() throws {

@@ -39,9 +39,10 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     @MainActor
     func loadInitialItems() async {
+        currentPage = Constants.initialPage
         do {
             state = .loading
-            items = try await itemProvider.providePointOfSaleItems(pageNumber: Constants.initialPage)
+            items = try await itemProvider.providePointOfSaleItems(pageNumber: currentPage)
             if items.count == 0 {
                 state = .empty
             } else {
@@ -83,7 +84,6 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     @MainActor
     func reload() async {
-        currentPage = Constants.initialPage
         items.removeAll()
         await loadInitialItems()
     }

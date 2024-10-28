@@ -57,6 +57,15 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         // TODO: 13556 - Add action to purchase label remotely
         onLabelPurchase?(markOrderComplete) // TODO: 13556 - Only call this closure if the remote purchase is successful
     }
+
+    /// Provides the formatted amount for the given shipping rate.
+    func formatAmount(for rate: ShippingLabelCarrierRate) -> String {
+        guard let baseRate = shippingService.selectedRate?.rate else {
+            return ""
+        }
+        let amount = rate == baseRate ? rate.rate : rate.rate - baseRate.rate
+        return currencyFormatter.formatAmount(Decimal(amount)) ?? amount.description
+    }
 }
 
 private extension WooShippingCreateLabelsViewModel {

@@ -42,9 +42,18 @@ struct WooShippingCreateLabelsView: View {
 
                     WooShippingHazmat()
 
-                    WooShippingPackageAndRatePlaceholder()
+                    if viewModel.hasPackage {
+                        // TODO: Display package section
+                        // Package heading and edit button
+                        // Selected package details
+                        // Total shipment weight field
+                        WooShippingServiceView(viewModel: viewModel.shippingService)
+                            .padding(.horizontal, -16)
+                    } else {
+                        WooShippingPackageAndRatePlaceholder()
+                    }
                 }
-                .padding()
+                .padding(16)
             }
             .safeAreaInset(edge: .bottom) {
                 ExpandableBottomSheet(onChangeOfExpansion: { isExpanded in

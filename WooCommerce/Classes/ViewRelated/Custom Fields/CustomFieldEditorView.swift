@@ -106,13 +106,6 @@ struct CustomFieldEditorView: View {
         }
         .background(Color(.listBackground))
         .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button {
-                    dismiss()
-                } label: {
-                    Text(Localization.cancelButton)
-                }
-            }
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack {
                     Button {
@@ -135,6 +128,8 @@ struct CustomFieldEditorView: View {
                 }
             }
         }
+        .closeButtonWithDiscardChangesPrompt(hasChanges: hasUnsavedChanges,
+                                             closeButtonLabel: { Text(Localization.cancelButton) })
     }
 
     @ViewBuilder

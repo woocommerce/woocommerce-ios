@@ -20,7 +20,7 @@ protocol ProductInventorySettingsViewModelOutput {
     //
     var sku: String? { get }
 
-	var globalUniqueID: String? { get }
+    var globalUniqueID: String? { get }
 
     var manageStockEnabled: Bool { get }
     // Optional: only editable in `Product`
@@ -108,7 +108,7 @@ final class ProductInventorySettingsViewModel: ProductInventorySettingsViewModel
         self.siteID = productModel.siteID
 
         self.sku = productModel.sku
-		self.globalUniqueID = productModel.globalUniqueID
+        self.globalUniqueID = productModel.globalUniqueID
         self.manageStockEnabled = productModel.manageStock
         self.soldIndividually = productModel.soldIndividually
 

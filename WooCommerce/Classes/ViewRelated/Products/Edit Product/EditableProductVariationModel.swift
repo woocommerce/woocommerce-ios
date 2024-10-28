@@ -139,7 +139,7 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
     }
 
 	var globalUniqueID: String? {
-		productVariation.globalUniqueID
+        productVariation.globalUniqueID
 	}
 
     var manageStock: Bool {

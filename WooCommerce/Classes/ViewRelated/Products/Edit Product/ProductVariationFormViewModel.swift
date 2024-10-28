@@ -389,6 +389,10 @@ extension ProductVariationFormViewModel {
                                                          parentProductSKU: parentProductSKU,
                                                          parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
     }
+
+    func updateProductCustomFields(customFields: [MetaData]) {
+        // no-op
+    }
 }
 
 // MARK: Remote actions

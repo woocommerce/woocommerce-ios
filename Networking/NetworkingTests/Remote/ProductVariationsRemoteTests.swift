@@ -48,6 +48,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
             }
             XCTAssertEqual(expectedVariation.description, "<p>Nutty chocolate marble, 99% and organic.</p>\n")
             XCTAssertEqual(expectedVariation.sku, "99%-nuts-marble")
+            XCTAssertEqual(expectedVariation.globalUniqueID, "12345")
             XCTAssertEqual(expectedVariation.permalink, "https://chocolate.com/marble")
 
             XCTAssertEqual(expectedVariation.dateCreated, DateFormatter.dateFromString(with: "2019-11-14T12:40:55"))

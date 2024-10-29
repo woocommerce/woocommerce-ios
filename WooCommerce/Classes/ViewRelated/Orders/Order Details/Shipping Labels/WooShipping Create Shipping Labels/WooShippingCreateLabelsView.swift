@@ -38,6 +38,10 @@ struct WooShippingCreateLabelsView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: Layout.verticalSpacing) {
+                    if viewModel.displayPostPurchase {
+                        WooShippingPostPurchaseView()
+                    }
+
                     WooShippingItems(viewModel: viewModel.items)
 
                     WooShippingHazmat()

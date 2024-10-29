@@ -146,6 +146,20 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(formattedAmount, "$2.70")
     }
+
+    func test_displayPostPurchase_true_when_shipping_label_exists() {
+        // Given
+        let order = Order.fake()
+        let label = ShippingLabel.fake()
+
+        // When
+        let newLabelViewModel = WooShippingCreateLabelsViewModel(order: order)
+        let existingLabelViewModel = WooShippingCreateLabelsViewModel(order: order, shippingLabel: label)
+
+        // Then
+        XCTAssertFalse(newLabelViewModel.displayPostPurchase)
+        XCTAssertTrue(existingLabelViewModel.displayPostPurchase)
+    }
 }
 
 private extension WooShippingCreateLabelsViewModelTests {

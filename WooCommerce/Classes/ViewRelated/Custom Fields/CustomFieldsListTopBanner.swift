@@ -36,7 +36,7 @@ struct CustomFieldsListTopBanner: UIViewRepresentable {
                                                                infoText: Localization.description,
                                                                icon: .speakerIcon.withRenderingMode(.alwaysTemplate),
                                                                iconTintColor: .primary,
-                                                               isExpanded: UIDevice.current.orientation.isPortrait, // Expanded by default in portrait mode
+                                                               isExpanded: !UIDevice.current.orientation.isLandscape, // Collapsed by default in landscape mode
                                                                topButton: expandButton,
                                                                actionButtons: [dismissButton])
         let mainBanner = TopBannerView(viewModel: viewModel)

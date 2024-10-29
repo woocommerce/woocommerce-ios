@@ -322,6 +322,9 @@ private extension ProductInventorySettingsViewController {
         }
 
         let button = UIButton(type: .detailDisclosure)
+        button.addAction(UIAction(handler: { [weak self] _ in
+            self?.scanGlobalUniqueIdentifierButtonTapped()
+        }), for: .touchUpInside)
         button.applyIconButtonStyle(icon: .scanImage)
         button.accessibilityLabel = NSLocalizedString("Scan products", comment: "Scan Products")
         button.accessibilityHint = NSLocalizedString("productInventorySettings.GlobalUniqueIdentifier.ScanButton",
@@ -374,16 +377,34 @@ private extension ProductInventorySettingsViewController {
 //
 private extension ProductInventorySettingsViewController {
     func scanSKUButtonTapped() {
+        ServiceLocator.analytics.track(.productInventorySettingsSKUScannerButtonTapped)
+
+        startBarcodeScanning(onCompletion: { [weak self] barcode in
+            ServiceLocator.analytics.track(.productInventorySettingsSKUScanned)
+            self?.onSKUBarcodeScanned(barcode: barcode)
+        })
+    }
+
+    func scanGlobalUniqueIdentifierButtonTapped() {
+        ServiceLocator.analytics.track(.productInventorySettingsSKUScannerButtonTapped)
+
+        startBarcodeScanning(onCompletion: { [weak self] barcode in
+            ServiceLocator.analytics.track(.productInventorySettingsSKUScanned)
+            self?.viewModel.handleGlobalUniqueIdentifierFromBarcodeScanner(barcode)
+        })
+    }
+
+    func startBarcodeScanning(onCompletion: @escaping (_ barcode: String) -> Void) {
         guard let navigationController = navigationController else {
             return
         }
 
         ServiceLocator.analytics.track(.productInventorySettingsSKUScannerButtonTapped)
 
-        let coordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController) { [weak self] barcode in
-            ServiceLocator.analytics.track(.productInventorySettingsSKUScanned)
-            self?.onSKUBarcodeScanned(barcode: barcode.payloadStringValue)
+        let coordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController) { barcode in
+            onCompletion(barcode.payloadStringValue)
         }
+
         view.endEditing(true)
         skuBarcodeScannerCoordinator = coordinator
         coordinator.start()

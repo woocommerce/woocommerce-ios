@@ -9,7 +9,6 @@ protocol ItemListViewModelProtocol: ObservableObject {
     var shouldShowHeaderBanner: Bool { get }
 
     var selectedItemPublisher: AnyPublisher<POSItem, Never> { get }
-    var itemsPublisher: Published<[POSItem]>.Publisher { get }
     var statePublisher: Published<ItemListViewModel.ItemListState>.Publisher { get }
 
     func select(_ item: POSItem)

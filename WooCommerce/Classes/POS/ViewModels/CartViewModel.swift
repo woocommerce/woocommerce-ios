@@ -4,77 +4,59 @@ import protocol Yosemite.POSItem
 import protocol WooFoundation.Analytics
 
 final class CartViewModel: CartViewModelProtocol {
-    /// Emits cart items when the CTA is tapped to submit the cart.
-    let cartSubmissionPublisher: AnyPublisher<[CartItem], Never>
-    private let cartSubmissionSubject: PassthroughSubject<[CartItem], Never> = .init()
+    var canDeleteItemsFromCart: Bool {
+        posModel.orderStage == .building
+    }
 
-    /// Emits a signal when the CTA is tapped to update the cart.
-    let addMoreToCartActionPublisher: AnyPublisher<Void, Never>
-    private let addMoreToCartActionSubject: PassthroughSubject<Void, Never> = .init()
-
-    @Published private(set) var itemsInCart: [CartItem] = []
-    var itemsInCartPublisher: Published<[CartItem]>.Publisher { $itemsInCart }
-
-    @Published var canDeleteItemsFromCart: Bool = true
-    @Published private(set) var shouldShowClearCartButton: Bool = false
-
-    var isCartEmpty: Bool {
-        return itemsInCart.isEmpty
+    var shouldShowClearCartButton: Bool {
+        posModel.itemsInCart.isNotEmpty && canDeleteItemsFromCart
     }
 
     private var analytics: Analytics
+    private var posModel: PointOfSaleAggregateModel
 
-    init(analytics: Analytics) {
+    init(analytics: Analytics,
+         posModel: PointOfSaleAggregateModel) {
         self.analytics = analytics
-
-        cartSubmissionPublisher = cartSubmissionSubject.eraseToAnyPublisher()
-        addMoreToCartActionPublisher = addMoreToCartActionSubject.eraseToAnyPublisher()
-        assignClearCartButtonVisibility()
-    }
-
-    private func assignClearCartButtonVisibility() {
-        $canDeleteItemsFromCart
-            .combineLatest($itemsInCart)
-            .map { canDelete, itemsInCart in
-                return canDelete && itemsInCart.isNotEmpty
-            }
-            .assign(to: &$shouldShowClearCartButton)
+        self.posModel = posModel
     }
 
     func addItemToCart(_ item: POSItem) {
         let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
-        itemsInCart.insert(cartItem, at: 0)
+        posModel.addItemToCart(cartItem)
         itemToScrollToWhenCartUpdated = cartItem
 
         analytics.track(.pointOfSaleAddItemToCart)
     }
 
     func removeItemFromCart(_ cartItem: CartItem) {
-        itemsInCart.removeAll(where: { $0.id == cartItem.id })
+        posModel.removeItemFromCart(cartItem)
     }
 
     func removeAllItemsFromCart() {
-        itemsInCart.removeAll()
+        posModel.removeAllItemsFromCart()
     }
 
     var itemToScrollToWhenCartUpdated: CartItem?
 
     var itemsInCartLabel: String? {
-        switch itemsInCart.count {
+        switch posModel.itemsInCart.count {
         case 0:
             return nil
         default:
-            return String.pluralize(itemsInCart.count,
+            return String.pluralize(posModel.itemsInCart.count,
                                     singular: "%1$d item",
                                     plural: "%1$d items")
         }
     }
 
     func submitCart() {
-        cartSubmissionSubject.send(itemsInCart)
+        Task { @MainActor in
+            await posModel.submitCart()
+        }
     }
 
     func addMoreToCart() {
-        addMoreToCartActionSubject.send(())
+        posModel.addMoreToCart()
     }
 }

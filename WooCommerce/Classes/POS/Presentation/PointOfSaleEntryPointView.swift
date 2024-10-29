@@ -10,6 +10,7 @@ struct PointOfSaleEntryPointView: View {
     @StateObject private var cartViewModel: CartViewModel
     @StateObject private var itemListViewModel: ItemListViewModel
     @StateObject private var posModalManager = POSModalManager()
+    @StateObject private var posModel: PointOfSaleAggregateModel
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
 
@@ -21,14 +22,21 @@ struct PointOfSaleEntryPointView: View {
          analytics: Analytics) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
-        let totalsViewModel = TotalsViewModel(orderService: orderService,
-                                              cardPresentPaymentService: cardPresentPaymentService,
-                                              currencyFormatter: currencyFormatter,
-                                              paymentState: .acceptingCard)
-        let cartViewModel = CartViewModel(analytics: analytics)
-        let itemListViewModel = ItemListViewModel(itemProvider: itemProvider)
+        let posModel = PointOfSaleAggregateModel(
+            itemProvider: itemProvider,
+            cardPresentPaymentService: cardPresentPaymentService,
+            orderService: orderService)
+
+        let totalsViewModel = TotalsViewModel(
+            posModel: posModel,
+            currencyFormatter: currencyFormatter)
+        let cartViewModel = CartViewModel(
+            analytics: analytics,
+            posModel: posModel)
+        let itemListViewModel = ItemListViewModel(posModel: posModel)
 
         self._viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
+            posModel: posModel,
             cardPresentPaymentService: cardPresentPaymentService,
             totalsViewModel: totalsViewModel,
             cartViewModel: cartViewModel,
@@ -38,13 +46,15 @@ struct PointOfSaleEntryPointView: View {
         self._cartViewModel = StateObject(wrappedValue: cartViewModel)
         self._totalsViewModel = StateObject(wrappedValue: totalsViewModel)
         self._itemListViewModel = StateObject(wrappedValue: itemListViewModel)
+        self._posModel = StateObject(wrappedValue: posModel)
     }
 
     var body: some View {
         PointOfSaleDashboardView(viewModel: viewModel,
                                  totalsViewModel: totalsViewModel,
                                  cartViewModel: cartViewModel,
-                                 itemListViewModel: itemListViewModel)
+                                 itemListViewModel: itemListViewModel,
+                                 posModel: posModel)
         .environmentObject(posModalManager)
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)

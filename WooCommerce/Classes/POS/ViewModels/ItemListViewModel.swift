@@ -1,11 +1,14 @@
 import Combine
 import SwiftUI
 import protocol Yosemite.POSItem
-import protocol Yosemite.POSItemProvider
 
 final class ItemListViewModel: ItemListViewModelProtocol {
+    let posModel: PointOfSaleAggregateModel
 
-    @Published private(set) var items: [POSItem] = []
+    var items: [POSItem] {
+        posModel.allItems
+    }
+
     @Published private(set) var state: ItemListState = .loading
     @Published private(set) var isHeaderBannerDismissed: Bool = false
     @Published var showSimpleProductsModal: Bool = false
@@ -20,16 +23,14 @@ final class ItemListViewModel: ItemListViewModelProtocol {
         return !isHeaderBannerDismissed && (state.isLoaded || state.isLoading) && items.isNotEmpty
     }
 
-    private let itemProvider: POSItemProvider
     private let selectedItemSubject: PassthroughSubject<POSItem, Never> = .init()
 
     let selectedItemPublisher: AnyPublisher<POSItem, Never>
 
-    var itemsPublisher: Published<[POSItem]>.Publisher { $items }
     var statePublisher: Published<ItemListViewModel.ItemListState>.Publisher { $state }
 
-    init(itemProvider: POSItemProvider) {
-        self.itemProvider = itemProvider
+    init(posModel: PointOfSaleAggregateModel) {
+        self.posModel = posModel
         selectedItemPublisher = selectedItemSubject.eraseToAnyPublisher()
     }
 
@@ -42,7 +43,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
         currentPage = Constants.initialPage
         do {
             state = .loading
-            items = try await itemProvider.providePointOfSaleItems(pageNumber: currentPage)
+            try await posModel.loadItems(pageNumber: currentPage)
             if items.count == 0 {
                 state = .empty
             } else {
@@ -65,18 +66,9 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     private func fetchPage(pageNumber: Int) async {
         do {
             state = .loading
-            let newItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
-            let uniqueNewItems = newItems.filter { newItem in
-                !items.contains(where: { $0.productID == newItem.productID })
-            }
-            // If there are no new items, we just return what was already in memory
-            if uniqueNewItems.count == 0 {
-                state = .loaded(items)
-            } else {
-                items.append(contentsOf: uniqueNewItems)
-                state = .loaded(items)
-                currentPage = pageNumber
-            }
+            try await posModel.loadItems(pageNumber: pageNumber)
+            state = .loaded(items)
+            currentPage = pageNumber
         } catch {
             state = .error(ErrorModel.errorOnLoadingProducts())
         }
@@ -84,7 +76,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     @MainActor
     func reload() async {
-        items.removeAll()
+        posModel.removeAllItems()
         await loadInitialItems()
     }
 

@@ -828,6 +828,9 @@
 		20AE33C52B0510BF00527B60 /* PaymentsMenuDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20AE33C42B0510BF00527B60 /* PaymentsMenuDestination.swift */; };
 		20AE33C72B0510D200527B60 /* HubMenuDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20AE33C62B0510D200527B60 /* HubMenuDestination.swift */; };
 		20B0D65E2AD45BDE0059735A /* AboutTapToPayContactlessLimitViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B0D65D2AD45BDE0059735A /* AboutTapToPayContactlessLimitViewModelTests.swift */; };
+		20B7E3132CCFFEB4007FD997 /* PointOfSaleAggregateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B7E3122CCFFEB4007FD997 /* PointOfSaleAggregateModel.swift */; };
+		20B7E3152CD0DDDA007FD997 /* PointOfSaleOrderState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B7E3142CD0DDDA007FD997 /* PointOfSaleOrderState.swift */; };
+		20B7E3172CD100DC007FD997 /* PointOfSalePaymentState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B7E3162CD100DC007FD997 /* PointOfSalePaymentState.swift */; };
 		20BBD62C2B3060A300A903F6 /* AddOrderComponentsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BBD62B2B3060A300A903F6 /* AddOrderComponentsSection.swift */; };
 		20BCF6EE2B0E478B00954840 /* WooPaymentsDepositsOverviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BCF6ED2B0E478B00954840 /* WooPaymentsDepositsOverviewViewModel.swift */; };
 		20BCF6F02B0E48CC00954840 /* WooPaymentsDepositsOverviewViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BCF6EF2B0E48CC00954840 /* WooPaymentsDepositsOverviewViewModelTests.swift */; };
@@ -3916,6 +3919,9 @@
 		20AE33C42B0510BF00527B60 /* PaymentsMenuDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsMenuDestination.swift; sourceTree = "<group>"; };
 		20AE33C62B0510D200527B60 /* HubMenuDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubMenuDestination.swift; sourceTree = "<group>"; };
 		20B0D65D2AD45BDE0059735A /* AboutTapToPayContactlessLimitViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutTapToPayContactlessLimitViewModelTests.swift; sourceTree = "<group>"; };
+		20B7E3122CCFFEB4007FD997 /* PointOfSaleAggregateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleAggregateModel.swift; sourceTree = "<group>"; };
+		20B7E3142CD0DDDA007FD997 /* PointOfSaleOrderState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleOrderState.swift; sourceTree = "<group>"; };
+		20B7E3162CD100DC007FD997 /* PointOfSalePaymentState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSalePaymentState.swift; sourceTree = "<group>"; };
 		20BBD62B2B3060A300A903F6 /* AddOrderComponentsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOrderComponentsSection.swift; sourceTree = "<group>"; };
 		20BCF6ED2B0E478B00954840 /* WooPaymentsDepositsOverviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsOverviewViewModel.swift; sourceTree = "<group>"; };
 		20BCF6EF2B0E48CC00954840 /* WooPaymentsDepositsOverviewViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsOverviewViewModelTests.swift; sourceTree = "<group>"; };
@@ -7095,6 +7101,9 @@
 				026826912BF59D7A0036F959 /* ViewModels */,
 				026826972BF59D9E0036F959 /* Utils */,
 				026826A12BF59DED0036F959 /* Presentation */,
+				20B7E3122CCFFEB4007FD997 /* PointOfSaleAggregateModel.swift */,
+				20B7E3162CD100DC007FD997 /* PointOfSalePaymentState.swift */,
+				20B7E3142CD0DDDA007FD997 /* PointOfSaleOrderState.swift */,
 			);
 			path = POS;
 			sourceTree = "<group>";
@@ -14756,6 +14765,7 @@
 				02F3A6842A618CD7004CD2E8 /* WordPressMediaLibraryPickerCoordinator.swift in Sources */,
 				DE6F99802BEE04310007B2DD /* InboxDashboardCardViewModel.swift in Sources */,
 				026D68492A0E060A00D8C22C /* LocalNotificationScheduler.swift in Sources */,
+				20B7E3172CD100DC007FD997 /* PointOfSalePaymentState.swift in Sources */,
 				02CA63DB23D1ADD100BBF148 /* MediaPickingCoordinator.swift in Sources */,
 				028FA466257E021100F88A48 /* RefundShippingLabelViewModel.swift in Sources */,
 				DE2FE5882925DD950018040A /* JetpackInstallHeaderView.swift in Sources */,
@@ -15159,6 +15169,7 @@
 				454B28BE23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift in Sources */,
 				AE6DBE3B2732CAAD00957E7A /* AdaptiveStack.swift in Sources */,
 				03A6C18628B8CC7F00AADF23 /* InPersonPaymentsOnboardingErrorButtonViewModel.swift in Sources */,
+				20B7E3152CD0DDDA007FD997 /* PointOfSaleOrderState.swift in Sources */,
 				024DF3052372ADCD006658FE /* KeyboardScrollable.swift in Sources */,
 				BAE4F8432734325C00871344 /* SettingsViewModel.swift in Sources */,
 				26CE6F342B7D4C27008DB858 /* Error+Timeout.swift in Sources */,
@@ -16395,6 +16406,7 @@
 				ABC3521A374A2355001E3CD6 /* CardReaderSettingsSearchingViewController.swift in Sources */,
 				2004E2E52C0A206800D62521 /* CardPresentPaymentsAlertPresenterAdaptor.swift in Sources */,
 				B9F1489A2AD586E5008FC795 /* FormattableAmountTextFieldViewModel.swift in Sources */,
+				20B7E3132CCFFEB4007FD997 /* PointOfSaleAggregateModel.swift in Sources */,
 				532842FC64B572D4545BD98E /* OrderFormCustomerNoteViewModel.swift in Sources */,
 				532846FAFFFCA93169B5E0BC /* WaitingTimeTracker.swift in Sources */,
 				53284E9AB1C65FD79E803694 /* EUShippingNoticeTopBannerFactory.swift in Sources */,

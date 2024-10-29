@@ -2,6 +2,7 @@ import SwiftUI
 
 struct TotalsView: View {
     @ObservedObject private var viewModel: TotalsViewModel
+    @ObservedObject private var posModel: PointOfSaleAggregateModel
 
     /// Used together with .matchedGeometryEffect to synchronize the animations of shimmeringLineView and text fields.
     /// This makes SwiftUI treat these views as a single entity in the context of animation.
@@ -14,8 +15,10 @@ struct TotalsView: View {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
 
-    init(viewModel: TotalsViewModel) {
+    init(viewModel: TotalsViewModel,
+         posModel: PointOfSaleAggregateModel) {
         self.viewModel = viewModel
+        self.posModel = posModel
         self.isShowingTotalsFields = viewModel.isShowingTotalsFields
     }
 
@@ -64,7 +67,7 @@ struct TotalsView: View {
             }
         }
         .background(backgroundColor)
-        .animation(.default, value: viewModel.paymentState)
+        .animation(.default, value: posModel.paymentState)
         .animation(.default, value: viewModel.orderState.isError)
         .onDisappear {
             viewModel.onTotalsViewDisappearance()
@@ -74,7 +77,7 @@ struct TotalsView: View {
     }
 
     private var backgroundColor: Color {
-        switch viewModel.paymentState {
+        switch posModel.paymentState {
         case .cardPaymentSuccessful:
             .posSecondaryBackground
         case .processingPayment:
@@ -178,7 +181,7 @@ private extension TotalsView {
     /// Hide totals fields with animation after a delay when starting to processing a payment
     /// - Parameter isShowing
     private func hideTotalsFieldsWithDelay(_ isShowing: Bool) {
-        guard !isShowing && viewModel.paymentState == .processingPayment else {
+        guard !isShowing && posModel.paymentState == .processingPayment else {
             self.isShowingTotalsFields = isShowing
             return
         }
@@ -208,7 +211,7 @@ private extension TotalsView {
 
     @ViewBuilder
     private var paymentsActionButtons: some View {
-        if viewModel.paymentState == .cardPaymentSuccessful {
+        if posModel.paymentState == .cardPaymentSuccessful {
             if isShowingPaymentsButtonSpacing {
                 Spacer().frame(height: Constants.paymentsButtonSpacing)
             }
@@ -227,7 +230,7 @@ private extension TotalsView {
     }
 
     @ViewBuilder private var cardReaderView: some View {
-        switch viewModel.connectionStatus {
+        switch posModel.connectionStatus {
         case .connected, .disconnecting, .cancellingConnection:
             if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
                 HStack(alignment: .center) {
@@ -239,7 +242,7 @@ private extension TotalsView {
                 EmptyView()
             }
         case .disconnected:
-            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(viewModel: .init(connectReaderAction: viewModel.connectReaderTapped))
+            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(viewModel: .init(connectReaderAction: posModel.connectCardReader))
         }
     }
 }
@@ -275,7 +278,7 @@ private extension TotalsView {
             return .primary
         }
 
-        switch viewModel.paymentState {
+        switch posModel.paymentState {
         case .validatingOrderError:
             return .outlined
         case .paymentError:
@@ -289,7 +292,7 @@ private extension TotalsView {
             break
         }
 
-        if viewModel.connectionStatus == .disconnected {
+        if posModel.connectionStatus == .disconnected {
             return .outlined
         }
 
@@ -387,10 +390,14 @@ private extension View {
 
 #if DEBUG
 #Preview {
-    let totalsVM = TotalsViewModel(orderService: POSOrderPreviewService(),
-                                   cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                   currencyFormatter: .init(currencySettings: .init()),
-                                    paymentState: .acceptingCard)
-    return TotalsView(viewModel: totalsVM)
+    let posModel = PointOfSaleAggregateModel(
+        itemProvider: POSItemProviderPreview(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderService: POSOrderPreviewService())
+    let totalsVM = TotalsViewModel(
+        posModel: posModel,
+        currencyFormatter: .init(currencySettings: .init()))
+    TotalsView(viewModel: totalsVM,
+               posModel: posModel)
 }
 #endif

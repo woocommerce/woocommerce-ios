@@ -6,14 +6,18 @@ struct PointOfSaleDashboardView: View {
     @ObservedObject private var cartViewModel: CartViewModel
     @ObservedObject private var itemListViewModel: ItemListViewModel
 
+    @ObservedObject private var posModel: PointOfSaleAggregateModel
+
     init(viewModel: PointOfSaleDashboardViewModel,
          totalsViewModel: TotalsViewModel,
          cartViewModel: CartViewModel,
-         itemListViewModel: ItemListViewModel) {
+         itemListViewModel: ItemListViewModel,
+         posModel: PointOfSaleAggregateModel) {
         self.viewModel = viewModel
         self.totalsViewModel = totalsViewModel
         self.cartViewModel = cartViewModel
         self.itemListViewModel = itemListViewModel
+        self.posModel = posModel
     }
 
     @State private var floatingSize: CGSize = .zero
@@ -53,7 +57,7 @@ struct PointOfSaleDashboardView: View {
         .environment(\.floatingControlAreaSize,
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
-        .environment(\.posBackgroundAppearance, totalsViewModel.paymentState != .processingPayment ? .primary : .secondary)
+        .environment(\.posBackgroundAppearance, posModel.paymentState != .processingPayment ? .primary : .secondary)
         .animation(.easeInOut, value: viewModel.isInitialLoading)
         .animation(.easeInOut(duration: Constants.connectivityAnimationDuration), value: viewModel.showsConnectivityError)
         .background(Color.posPrimaryBackground)
@@ -87,7 +91,7 @@ struct PointOfSaleDashboardView: View {
     private var contentView: some View {
         GeometryReader { geometry in
             HStack {
-                if viewModel.orderStage == .building {
+                if posModel.orderStage == .building {
                     productListView
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .leading))
@@ -100,13 +104,13 @@ struct PointOfSaleDashboardView: View {
                         .ignoresSafeArea(edges: .bottom)
                 }
 
-                if viewModel.orderStage == .finalizing {
+                if posModel.orderStage == .finalizing {
                     totalsView
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .trailing))
                 }
             }
-            .animation(.default, value: viewModel.orderStage)
+            .animation(.default, value: posModel.orderStage)
             .animation(.default, value: viewModel.isTotalsViewFullScreen)
         }
     }
@@ -195,11 +199,13 @@ private extension PointOfSaleDashboardView {
 /// Helpers to generate all Dashboard subviews
 private extension PointOfSaleDashboardView {
     var cartView: some View {
-        CartView(viewModel: viewModel, cartViewModel: cartViewModel)
+        CartView(posModel: posModel,
+                 viewModel: viewModel,
+                 cartViewModel: cartViewModel)
     }
 
     var totalsView: some View {
-        TotalsView(viewModel: totalsViewModel)
+        TotalsView(viewModel: totalsViewModel, posModel: posModel)
     }
 
     var productListView: some View {
@@ -212,23 +218,31 @@ import class WooFoundation.MockAnalyticsPreview
 import class WooFoundation.MockAnalyticsProviderPreview
 
 #Preview {
-    let totalsVM = TotalsViewModel(orderService: POSOrderPreviewService(),
-                                   cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                   currencyFormatter: .init(currencySettings: .init()),
-                                   paymentState: .acceptingCard)
-    let cartVM = CartViewModel(analytics: MockAnalyticsPreview())
-    let itemsListVM = ItemListViewModel(itemProvider: POSItemProviderPreview())
-    let posVM = PointOfSaleDashboardViewModel(cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                              totalsViewModel: totalsVM,
-                                              cartViewModel: cartVM,
-                                              itemListViewModel: itemsListVM,
-                                              connectivityObserver: POSConnectivityObserverPreview())
 
-    return NavigationStack {
+    let posModel = PointOfSaleAggregateModel(
+        itemProvider: POSItemProviderPreview(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderService: POSOrderPreviewService())
+    let totalsVM = TotalsViewModel(
+        posModel: posModel,
+        currencyFormatter: .init(currencySettings: .init()))
+    let cartVM = CartViewModel(analytics: MockAnalyticsPreview(),
+                               posModel: posModel)
+    let itemsListVM = ItemListViewModel(posModel: posModel)
+    let posVM = PointOfSaleDashboardViewModel(
+        posModel: posModel,
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        totalsViewModel: totalsVM,
+        cartViewModel: cartVM,
+        itemListViewModel: itemsListVM,
+        connectivityObserver: POSConnectivityObserverPreview())
+
+    NavigationStack {
         PointOfSaleDashboardView(viewModel: posVM,
                                  totalsViewModel: totalsVM,
                                  cartViewModel: cartVM,
-                                 itemListViewModel: itemsListVM)
+                                 itemListViewModel: itemsListVM,
+                                 posModel: posModel)
     }
 }
 #endif

@@ -141,8 +141,8 @@ private extension ItemListView {
                         if viewModel.state == .loading {
                             return
                         }
-                        let viewHeight = UIScreen.main.bounds.height
-                        if maxY < viewHeight {
+                        let threshold = Constants.viewHeight * Constants.scrollThresholdMultiplier
+                        if maxY < threshold {
                             Task {
                                 await viewModel.loadNextItems()
                             }
@@ -207,6 +207,8 @@ private extension ItemListView {
         static let iconPadding: CGFloat = 26
         static let itemListPadding: CGFloat = 16
         static let bannerCardPadding: CGFloat = 16
+        static let viewHeight: CGFloat = UIScreen.main.bounds.height
+        static let scrollThresholdMultiplier: CGFloat = 1.7
     }
 
     enum Localization {

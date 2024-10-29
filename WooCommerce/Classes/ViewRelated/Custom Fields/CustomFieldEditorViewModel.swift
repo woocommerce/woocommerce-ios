@@ -54,7 +54,7 @@ final class CustomFieldEditorViewModel: ObservableObject {
     func validateKey(_ newValue: String) {
         if newValue.hasPrefix("_") {
             keyErrorMessage = Localization.keyErrorPrefix
-        } else if disallowedKeys.contains(newValue) {
+        } else if disallowedKeys.first(where: { $0 == newValue }) != nil {
             keyErrorMessage = Localization.keyErrorDisallowedKey
         } else {
             keyErrorMessage = nil

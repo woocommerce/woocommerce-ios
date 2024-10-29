@@ -12,6 +12,11 @@ final class CustomFieldEditorViewModel: ObservableObject {
 
     private let initialKey: String
     private let initialValue: String
+
+    /// Due to the API limitation, when creating a new field, the new key should not be the same as existing custom fields's key value. Those existing key values should be
+    /// provided here. Note that this rule only applies for new field creation, not when editing.
+    private let disallowedKeys: [String]
+
     private let onSave: (String, String) -> Void
 
     /// Closure invoked during field deletion. Optional as it's not needed when creating a new field. Not private because it is used in the view for display logic.
@@ -22,17 +27,21 @@ final class CustomFieldEditorViewModel: ObservableObject {
     }
 
     var hasValidKey: Bool {
-        !key.isEmpty && !key.hasPrefix("_")
+        !key.isEmpty &&
+        !key.hasPrefix("_") &&
+        !disallowedKeys.contains(key)
     }
 
     init(key: String,
          value: String,
+         disallowedKeys: [String] = [],
          onSave: @escaping (String, String) -> Void,
          onDelete: (() -> Void)? = nil) {
         self.key = key
         self.value = value
         self.initialKey = key
         self.initialValue = value
+        self.disallowedKeys = disallowedKeys
         self.onSave = onSave
         self.onDelete = onDelete
     }
@@ -40,6 +49,8 @@ final class CustomFieldEditorViewModel: ObservableObject {
     func validateKey(_ newValue: String) {
         if newValue.hasPrefix("_") {
             keyErrorMessage = Localization.keyErrorPrefix
+        } else if disallowedKeys.contains(newValue) {
+            keyErrorMessage = Localization.keyErrorDisallowedKey
         } else {
             keyErrorMessage = nil
         }
@@ -61,6 +72,13 @@ private extension CustomFieldEditorViewModel {
             "customFieldEditorView.keyErrorPrefix",
             value: "Invalid key: please remove the '_' character from the beginning.",
             comment: "Error message shown when key starts with underscore"
+        )
+
+        static let keyErrorDisallowedKey = NSLocalizedString(
+            "customFieldEditorView.keyErrorDisallowedKey",
+            value: "Invalid key: This key is already used for another custom field. \n" +
+            "The app currently does not support creating duplicate keys. Please use wp-admin to duplicate a key if needed.",
+            comment: "Error message shown when the entered key is identical to an existing key."
         )
     }
 }

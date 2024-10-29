@@ -19,9 +19,9 @@ final class PointOfSaleCardPresentPaymentOnboardingViewModelTests: XCTestCase {
 
     func test_onboardingURL_is_set_when_onboarding_vm_showURL_is_invoked() throws {
         // Given
-        var isDismissTapInvoked = false
         let onboardingViewModel = CardPresentPaymentsOnboardingViewModel(fixedState: .noConnectionError)
         let sut = PointOfSaleCardPresentPaymentOnboardingViewModel(onboardingViewModel: onboardingViewModel, onDismissTap: nil)
+        XCTAssertNil(sut.onboardingURL)
 
         // When
         let url = try XCTUnwrap(URL(string: "https://example.com"))

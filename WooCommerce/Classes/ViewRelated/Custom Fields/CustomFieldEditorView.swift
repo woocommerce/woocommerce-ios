@@ -128,12 +128,12 @@ struct CustomFieldEditorView: View {
     private var actionSheetContent: some View {
         Button(Localization.copyKeyButton) {
             UIPasteboard.general.string = viewModel.key
-            viewModel.notice = Notice(title: Localization.keycopiedNotice)
+            viewModel.notice = Notice(title: Localization.keyCopiedNotice)
         }
 
         Button(Localization.copyValueButton) {
             UIPasteboard.general.string = viewModel.value
-            viewModel.notice = Notice(title: Localization.valuecopiedNotice)
+            viewModel.notice = Notice(title: Localization.valueCopiedNotice)
         }
 
         // Do not show Delete button if there's no callback, i.e: when creating a new field.
@@ -229,13 +229,13 @@ private extension CustomFieldEditorView {
             comment: "Button title for copying the custom field value"
         )
 
-        static let keycopiedNotice = NSLocalizedString(
+        static let keyCopiedNotice = NSLocalizedString(
             "customFieldEditorView.keyCopiedNotice",
             value: "Key copied to clipboard",
             comment: "Notice shown when the key has been copied to clipboard"
         )
 
-        static let valuecopiedNotice = NSLocalizedString(
+        static let valueCopiedNotice = NSLocalizedString(
             "customFieldEditorView.valueCopiedNotice",
             value: "Value copied to clipboard",
             comment: "Notice shown when the value has been copied to clipboard"

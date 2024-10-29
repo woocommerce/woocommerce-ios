@@ -379,17 +379,9 @@ struct ContentView_Previews: PreviewProvider {
             .previewDisplayName("Carrier Packages Without Content Dark Style")
         let oneTab: [TopTabItem] = [
             TopTabItem(name: "A tab name", content: {
-                List {
-                    Text("Content for Tab 1")
-                        .font(.largeTitle)
-                        .padding()
-                    Text("Content for Tab 1")
-                        .font(.largeTitle)
-                        .padding()
-                    Text("Content for Tab 1")
-                        .font(.largeTitle)
-                        .padding()
-                }
+                Text("Content for Tab 1")
+                    .font(.largeTitle)
+                    .padding()
             })
         ]
         TopTabView(tabs: oneTab)

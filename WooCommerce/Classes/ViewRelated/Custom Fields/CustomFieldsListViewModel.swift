@@ -5,7 +5,7 @@ import Yosemite
 
 final class CustomFieldsListViewModel: ObservableObject {
     private let stores: StoresManager
-    @Published private(set) var originalCustomFields: [CustomFieldViewModel]
+    @Published private var originalCustomFields: [CustomFieldViewModel]
     private let customFieldsType: MetaDataType
     private let siteID: Int64
     private let parentItemID: Int64

@@ -47,6 +47,20 @@ final class CustomFieldsListHostingController: UIHostingController<CustomFieldsL
     }
 }
 
+extension CustomFieldsListHostingController {
+    override func shouldPopOnBackButton() -> Bool {
+        if viewModel.hasChanges {
+            presentBackNavigationActionSheet()
+            return false
+        }
+        return true
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
+    }
+}
+
 private extension CustomFieldsListHostingController {
     func configureNavigation() {
         title = Localization.title
@@ -94,6 +108,12 @@ private extension CustomFieldsListHostingController {
 
     func dismissInProgressController() {
         dismiss(animated: true)
+    }
+
+    func presentBackNavigationActionSheet() {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        })
     }
 }
 

@@ -121,18 +121,19 @@ struct CustomFieldEditorView: View {
                 }
             }
         }
+        .notice($viewModel.notice)
     }
 
     @ViewBuilder
     private var actionSheetContent: some View {
         Button(Localization.copyKeyButton) {
             UIPasteboard.general.string = viewModel.key
-            // todo-13493: Show a notice that the key was copied using Localization.keycopiedNotice
+            viewModel.notice = Notice(title: Localization.keycopiedNotice)
         }
 
         Button(Localization.copyValueButton) {
             UIPasteboard.general.string = viewModel.value
-            // todo-13493: Show a notice that the value was copied using Localization.valuecopiedNotice
+            viewModel.notice = Notice(title: Localization.valuecopiedNotice)
         }
 
         // Do not show Delete button if there's no callback, i.e: when creating a new field.

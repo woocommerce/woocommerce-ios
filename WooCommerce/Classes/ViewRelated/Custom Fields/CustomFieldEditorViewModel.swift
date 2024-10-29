@@ -10,11 +10,14 @@ final class CustomFieldEditorViewModel: ObservableObject {
     @Published var value: String
     @Published private(set) var keyErrorMessage: String?
 
+    /// To be set by the View
+    @Published var notice: Notice?
+
     private let initialKey: String
     private let initialValue: String
 
-    /// Due to the API limitation, when creating a new field, the new key should not be the same as existing custom fields's key value. Those existing key values should be
-    /// provided here. Note that this rule only applies for new field creation, not when editing.
+    /// Due to the API limitation, when creating a new field, the new key should not be the same as existing custom fields's key value.
+    /// Those existing key values should be provided here. Note that this rule only applies for new field creation, not when editing.
     private let disallowedKeys: [String]
 
     private let onSave: (String, String) -> Void

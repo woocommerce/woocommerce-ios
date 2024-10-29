@@ -67,6 +67,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
                                       taxStatus: product.productTaxStatus,
                                       taxClass: taxClass)
         viewModel.updateInventorySettings(sku: product.sku,
+                                          globalUniqueIdentifier: product.globalUniqueID,
                                           manageStock: product.manageStock,
                                           soldIndividually: product.soldIndividually,
                                           stockQuantity: product.stockQuantity,
@@ -230,6 +231,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         // When
         viewModel.updateInventorySettings(
             sku: "",
+            globalUniqueIdentifier: "",
             manageStock: false,
             soldIndividually: true,
             stockQuantity: 888888,

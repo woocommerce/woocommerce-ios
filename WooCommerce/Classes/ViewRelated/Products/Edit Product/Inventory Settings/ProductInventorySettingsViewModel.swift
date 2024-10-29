@@ -218,6 +218,7 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
 
         // Checks general settings regardless of whether stock management is enabled.
         let hasChangesInGeneralSettings = sku != productModel.sku
+            || globalUniqueID != productModel.globalUniqueID
             || manageStockEnabled != productModel.manageStock
             || soldIndividually != productModel.soldIndividually
 

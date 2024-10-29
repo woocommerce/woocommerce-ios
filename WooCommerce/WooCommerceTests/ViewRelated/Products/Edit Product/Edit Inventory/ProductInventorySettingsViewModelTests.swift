@@ -268,6 +268,19 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
+    func testViewModelHasUnsavedChangesAfterUpdatingGlobalUniqueId() {
+        // Arrange
+        let product = Product.fake().copy(globalUniqueID: "321")
+        let model = EditableProductModel(product: product)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+
+        // Act
+        viewModel.handleGlobalUniqueIdentifierChange("123")
+
+        // Assert
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
+
     func testViewModelHasNoUnsavedChangesAfterUpdatingWithTheOriginalValues() {
         // Arrange
         let product = Product.fake()

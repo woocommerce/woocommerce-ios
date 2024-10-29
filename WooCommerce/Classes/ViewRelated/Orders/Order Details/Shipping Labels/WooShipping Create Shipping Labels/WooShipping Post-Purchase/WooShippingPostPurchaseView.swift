@@ -41,8 +41,9 @@ struct WooShippingPostPurchaseView: View {
                         .bold()
                 }
                 .buttonStyle(HighlightButtonStyle(background: Layout.panelHighlight, backgroundPressed: Layout.buttonPressed))
-                Button {
-                    // TODO: Open instructions for how to print
+                NavigationLink {
+                    ShippingLabelPrintingInstructionsView()
+                        .navigationTitle(Localization.infoTitle)
                 } label: {
                     HStack {
                         Image(systemName: "info.circle")
@@ -117,6 +118,10 @@ private extension WooShippingPostPurchaseView {
         static let info = NSLocalizedString("wooShipping.createLabels.postPurchase.info",
                                             value: "Learn how to print from your mobile device",
                                             comment: "Link for more information about how to print a purchased shipping label on the shipping label screen")
+        static let infoTitle =
+            NSLocalizedString("wooShipping.createLabels.postPurchase.infoTitle",
+                              value: "Print from your mobile device",
+                              comment: "Navigation bar title of shipping label printing instructions screen")
         static let trackShipment = NSLocalizedString("wooShipping.createLabels.postPurchase.trackShipment",
                                                      value: "Track shipment",
                                                      comment: "Link to track a shipment for a purchase shipping label on the shipping label screen")

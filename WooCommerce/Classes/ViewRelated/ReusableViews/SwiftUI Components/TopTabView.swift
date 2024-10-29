@@ -171,12 +171,12 @@ struct TopTabView<Content: View>: View {
                     // behaviour of setting the frame to zero (and hiding the content.)
                     GeometryReader { contentGeometry in
                         Color.clear
-                            .onAppear {
-                                contentSize = contentGeometry.size
-                            }
-                            .onChange(of: contentGeometry.size) { newSize in
-                                contentSize = newSize
-                            }
+                        .onAppear {
+                            contentSize = contentGeometry.size
+                        }
+                        .onChange(of: contentGeometry.size) { newSize in
+                            contentSize = newSize
+                        }
                     })
                 .offset(x: self.dragOffset(width: geometry.size.width))
                 .animation(.interactiveSpring(), value: dragOffset(width: geometry.size.width))

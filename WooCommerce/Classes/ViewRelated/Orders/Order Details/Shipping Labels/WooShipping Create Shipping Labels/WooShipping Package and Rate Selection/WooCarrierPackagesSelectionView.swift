@@ -81,7 +81,7 @@ struct WooCarrierPackagesSelectionView: View {
     let carriersPackages: [WooShippingPackagesCarrierTab]
     let tabs: [TopTabItem<EmptyView>]
 
-    @State private var selectedTab: Int = 0
+    @State private var selectedTabIndex: Int?
     @State private var selectedPackageId: UUID? = nil
 
     init(carriersPackages: [WooShippingPackagesCarrierTab]) {
@@ -91,14 +91,15 @@ struct WooCarrierPackagesSelectionView: View {
                 EmptyView()
             })
         }
+        _selectedTabIndex = State(initialValue: carriersPackages.isEmpty ? nil : 0)
     }
 
     var body: some View {
-        if tabs.isNotEmpty {
+        if let selectedTabIndex, tabs.isNotEmpty {
             VStack(spacing: 0) {
-                TopTabView(selectedTab: $selectedTab,
-                           tabs: tabs,
+                TopTabView(tabs: tabs,
                            showContent: .constant(false),
+                           selectedTabIndex: $selectedTabIndex,
                            tabsContainerHorizontalPadding: nil,
                            selectedStateColor: Color.accentColor,
                            unselectedStateColor: .secondary,
@@ -107,7 +108,7 @@ struct WooCarrierPackagesSelectionView: View {
                            tabsNameFont: Font.subheadline.bold(),
                            tabItemContentHorizontalPadding: Constants.tabItemContentHorizontalPadding,
                            tabItemContentVerticalPadding: Constants.tabItemContentVerticalPadding)
-                WooCarrierPackagesTabView(carrierTab: carriersPackages[selectedTab],
+                WooCarrierPackagesTabView(carrierTab: carriersPackages[selectedTabIndex],
                                           selectedPackageId: $selectedPackageId)
                 Spacer()
                 Divider()

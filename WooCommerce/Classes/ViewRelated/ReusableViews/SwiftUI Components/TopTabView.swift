@@ -18,7 +18,7 @@ struct TopTabItem<Content: View> {
 }
 
 struct TopTabView<Content: View>: View {
-    @Binding var selectedTab: Int
+    @State private var selectedTab = 0
     @State private var underlineOffset: CGFloat = 0
     @State private var tabWidths: [CGFloat]
     @GestureState private var dragState: DragState = .inactive
@@ -26,6 +26,7 @@ struct TopTabView<Content: View>: View {
 
     @Binding var showTabs: Bool
     @Binding var showContent: Bool
+    @Binding var selectedTabIndex: Int?
 
     let tabs: [TopTabItem<Content>]
 
@@ -51,10 +52,10 @@ struct TopTabView<Content: View>: View {
     let tabItemContentHorizontalPadding: CGFloat?
     let tabItemContentVerticalPadding: CGFloat?
 
-    init(selectedTab: Binding<Int> = .constant(0),
-         tabs: [TopTabItem<Content>],
+    init(tabs: [TopTabItem<Content>],
          showTabs: Binding<Bool> = .constant(true),
          showContent: Binding<Bool> = .constant(true),
+         selectedTabIndex: Binding<Int?> = .constant(nil),
          tabsContainerHorizontalPadding: CGFloat? = 0.0,
          selectedStateColor: Color = Colors.selected,
          unselectedStateColor: Color = .primary,
@@ -64,10 +65,10 @@ struct TopTabView<Content: View>: View {
          tabsIconSize: CGFloat? = 20.0,
          tabItemContentHorizontalPadding: CGFloat? = nil,
          tabItemContentVerticalPadding: CGFloat? = nil) {
-        self._selectedTab = selectedTab
         self.tabs = tabs
         self._showTabs = showTabs
         self._showContent = showContent
+        self._selectedTabIndex = selectedTabIndex
         _tabWidths = State(initialValue: [CGFloat](repeating: 0, count: tabs.count))
         self.tabsContainerHorizontalPadding = tabsContainerHorizontalPadding
         self.selectedStateColor = selectedStateColor
@@ -142,6 +143,7 @@ struct TopTabView<Content: View>: View {
                                 alignment: .bottomLeading
                             )
                             .onChange(of: selectedTab, perform: { newSelectedTab in
+                                selectedTabIndex = newSelectedTab
                                 withAnimation {
                                     scrollViewProxy.scrollTo(newSelectedTab, anchor: .center)
                                     underlineOffset = calculateOffset(index: newSelectedTab)
@@ -158,7 +160,7 @@ struct TopTabView<Content: View>: View {
                 // Display all the tabs in an HStack, each tab the same width as the TopTabView
                 // This GeometryReader is used to set the width and drag offsets for swiping between views
                 GeometryReader { geometry in
-                    HStack(spacing: 0) {
+                    HStack(alignment: .top, spacing: 0) {
                         ForEach(0..<tabs.count, id: \.self) { index in
                             // Tab content as passed to the TopTabView at init
                             tabs[index].content()
@@ -379,17 +381,9 @@ struct ContentView_Previews: PreviewProvider {
             .previewDisplayName("Carrier Packages Without Content Dark Style")
         let oneTab: [TopTabItem] = [
             TopTabItem(name: "A tab name", content: {
-                List {
-                    Text("Content for Tab 1")
-                        .font(.largeTitle)
-                        .padding()
-                    Text("Content for Tab 1")
-                        .font(.largeTitle)
-                        .padding()
-                    Text("Content for Tab 1")
-                        .font(.largeTitle)
-                        .padding()
-                }
+                Text("Content for Tab 1")
+                    .font(.largeTitle)
+                    .padding()
             })
         ]
         TopTabView(tabs: oneTab)

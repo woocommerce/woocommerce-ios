@@ -19,7 +19,7 @@ final class PointOfSaleAggregateModel: ObservableObject {
 
     @Published private(set) var orderStage: OrderStage = .building
     @Published private(set) var allItems: [POSItem] = []
-    @Published private(set) var itemsInCart: [CartItem] = []
+    @Published private(set) var cart: [CartItem] = []
     @Published private(set) var orderState: PointOfSaleOrderState = .idle
     @Published private(set) var order: Order? = nil
     @Published private(set) var connectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
@@ -48,7 +48,7 @@ final class PointOfSaleAggregateModel: ObservableObject {
     }
 
     private func observeCartItemsToCheckIfCartIsEmpty() {
-        $itemsInCart
+        $cart
             .filter { $0.isEmpty }
             .sink { [weak self] _ in
                 self?.orderStage = .building
@@ -89,21 +89,21 @@ final class PointOfSaleAggregateModel: ObservableObject {
     }
 
     func addItemToCart(_ item: CartItem) {
-        itemsInCart.insert(item, at: 0)
+        cart.insert(item, at: 0)
     }
 
     func removeItemFromCart(_ cartItem: CartItem) {
-        itemsInCart.removeAll(where: { $0.id == cartItem.id })
+        cart.removeAll(where: { $0.id == cartItem.id })
     }
 
     func removeAllItemsFromCart() {
-        itemsInCart.removeAll()
+        cart.removeAll()
     }
 
     @MainActor
     func submitCart() async {
         orderStage = .finalizing
-        await startSyncingOrder(with: itemsInCart, allItems: allItems)
+        await startSyncingOrder(with: cart, allItems: allItems)
     }
 
     private func startSyncingOrder(with cartItems: [CartItem], allItems: [POSItem]) async {

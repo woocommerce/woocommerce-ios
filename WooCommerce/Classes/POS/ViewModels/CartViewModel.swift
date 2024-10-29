@@ -9,7 +9,7 @@ final class CartViewModel: CartViewModelProtocol {
     }
 
     var shouldShowClearCartButton: Bool {
-        posModel.itemsInCart.isNotEmpty && canDeleteItemsFromCart
+        posModel.cart.isNotEmpty && canDeleteItemsFromCart
     }
 
     private var analytics: Analytics
@@ -30,15 +30,15 @@ final class CartViewModel: CartViewModelProtocol {
     }
 
     var itemToScrollToWhenCartUpdated: CartItem? {
-        posModel.itemsInCart.first
+        posModel.cart.first
     }
 
     var itemsInCartLabel: String? {
-        switch posModel.itemsInCart.count {
+        switch posModel.cart.count {
         case 0:
             return nil
         default:
-            return String.pluralize(posModel.itemsInCart.count,
+            return String.pluralize(posModel.cart.count,
                                     singular: "%1$d item",
                                     plural: "%1$d items")
         }

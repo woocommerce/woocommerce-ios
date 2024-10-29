@@ -13,7 +13,7 @@ struct CartView: View {
     @State private var offSetPosition: CGFloat = 0.0
     private var coordinateSpace: CoordinateSpace = .named(Constants.scrollViewCoordinateSpaceIdentifier)
     private var shouldApplyHeaderBottomShadow: Bool {
-        !posModel.itemsInCart.isEmpty && offSetPosition < 0
+        !posModel.cart.isEmpty && offSetPosition < 0
     }
 
     init(posModel: PointOfSaleAggregateModel,
@@ -35,7 +35,7 @@ struct CartView: View {
                     HStack {
                         Text(Localization.cartTitle)
                             .font(Constants.primaryFont)
-                            .foregroundColor(posModel.itemsInCart.isEmpty ? .posSecondaryText : .posPrimaryText)
+                            .foregroundColor(posModel.cart.isEmpty ? .posSecondaryText : .posPrimaryText)
                             .accessibilityAddTraits(.isHeader)
 
                         Spacer()
@@ -74,11 +74,11 @@ struct CartView: View {
             .padding(.vertical, POSHeaderLayoutConstants.sectionVerticalPadding)
             .if(shouldApplyHeaderBottomShadow, transform: { $0.applyBottomShadow() })
 
-            if posModel.itemsInCart.isNotEmpty {
+            if posModel.cart.isNotEmpty {
                 ScrollViewReader { proxy in
                     ScrollView {
                         VStack(spacing: 0) {
-                            ForEach(posModel.itemsInCart, id: \.id) { cartItem in
+                            ForEach(posModel.cart, id: \.id) { cartItem in
                                 ItemRowView(cartItem: cartItem,
                                             onItemRemoveTapped: cartViewModel.canDeleteItemsFromCart ? {
                                     cartViewModel.removeItemFromCart(cartItem)
@@ -87,7 +87,7 @@ struct CartView: View {
                                 .transition(.opacity)
                             }
                         }
-                        .animation(Constants.cartAnimation, value: posModel.itemsInCart.map(\.id))
+                        .animation(Constants.cartAnimation, value: posModel.cart.map(\.id))
                         .padding(.bottom, floatingControlAreaSize.height)
                         .background(GeometryReader { geometry in
                             Color.clear.preference(key: ScrollOffSetPreferenceKey.self,
@@ -111,7 +111,7 @@ struct CartView: View {
             Spacer()
             switch posModel.orderStage {
             case .building:
-                if posModel.itemsInCart.isEmpty {
+                if posModel.cart.isEmpty {
                     EmptyView()
                 } else {
                     checkoutButton
@@ -123,10 +123,10 @@ struct CartView: View {
                 EmptyView()
             }
         }
-        .animation(Constants.cartAnimation, value: posModel.itemsInCart.isEmpty)
+        .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
         .frame(maxWidth: .infinity)
         .background(content: {
-            if posModel.itemsInCart.isEmpty {
+            if posModel.cart.isEmpty {
                 cartEmptyView
             }
         })
@@ -149,7 +149,7 @@ private extension CartView {
         case .dark:
             return Color.posSecondaryBackground
         default:
-            return posModel.itemsInCart.isEmpty ? Color.posTertiaryBackground : Color.posSecondaryBackground
+            return posModel.cart.isEmpty ? Color.posTertiaryBackground : Color.posSecondaryBackground
         }
     }
 }

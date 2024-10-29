@@ -26,10 +26,9 @@ final class CustomFieldEditorViewModel: ObservableObject {
         key != initialKey || value != initialValue
     }
 
+    /// Note that `isEmpty` is validated separately, because we don't want to show error message when it's still empty, and instead just disable the button.
     var hasValidKey: Bool {
-        !key.isEmpty &&
-        !key.hasPrefix("_") &&
-        !disallowedKeys.contains(key)
+        !key.isEmpty && keyErrorMessage == nil
     }
 
     init(key: String,

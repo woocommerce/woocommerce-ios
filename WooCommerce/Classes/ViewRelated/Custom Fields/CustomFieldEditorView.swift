@@ -7,6 +7,7 @@ struct CustomFieldEditorView: View {
     @State private var value: String
     @State private var showRichTextEditor = false
     @State private var showingActionSheet = false
+    @State private var keyErrorMessage: String? = nil
 
     private let initialKey: String
     private let initialValue: String
@@ -16,6 +17,10 @@ struct CustomFieldEditorView: View {
 
     private var hasUnsavedChanges: Bool {
         key != initialKey || value != initialValue
+    }
+
+    private var hasValidKey: Bool {
+        !key.isEmpty && !key.hasPrefix("_")
     }
 
     /// Initializer for custom field editor
@@ -54,9 +59,19 @@ struct CustomFieldEditorView: View {
                         .padding(insets: Layout.inputInsets)
                         .background(Color(.listForeground(modal: false)))
                         .overlay(
-                            RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
+                            RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                                .stroke(keyErrorMessage != nil ? Color(.error) : Color(.separator))
                         )
                         .cornerRadius(Layout.cornerRadius)
+                        .onChange(of: key) { newValue in
+                            validateKey(newValue)
+                        }
+
+                    if let error = keyErrorMessage {
+                        Text(error)
+                            .foregroundColor(Color(.error))
+                            .font(.caption)
+                    }
                 }
 
                 // Value Input
@@ -121,7 +136,7 @@ struct CustomFieldEditorView: View {
                     } label: {
                         Text(Localization.saveButton)
                     }
-                    .disabled(!hasUnsavedChanges)
+                    .disabled(!hasUnsavedChanges || !hasValidKey)
 
                     Button(action: {
                         showingActionSheet = true
@@ -159,6 +174,14 @@ struct CustomFieldEditorView: View {
 
     private func saveChanges() {
         onSave(key, value)
+    }
+
+    private func validateKey(_ newValue: String) {
+        if newValue.hasPrefix("_") {
+            keyErrorMessage = Localization.keyErrorPrefix
+        } else {
+            keyErrorMessage = nil
+        }
     }
 }
 
@@ -225,6 +248,12 @@ private extension CustomFieldEditorView {
             "customFieldEditorView.deleteButton",
             value: "Delete custom field",
             comment: "Button title for deleting a custom field"
+        )
+
+        static let keyErrorPrefix = NSLocalizedString(
+            "customFieldEditorView.keyErrorPrefix",
+            value: "Invalid key: please remove the '_' character from the beginning.",
+            comment: "Error message shown when key starts with underscore"
         )
     }
 }

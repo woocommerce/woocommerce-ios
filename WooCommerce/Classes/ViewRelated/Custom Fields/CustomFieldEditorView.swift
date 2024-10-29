@@ -115,7 +115,7 @@ struct CustomFieldEditorView: View {
                         Image(systemName: "ellipsis")
                             .renderingMode(.template)
                     })
-                    .confirmationDialog("More Options", isPresented: $showActionSheet) {
+                    .confirmationDialog(Localization.actionSheetTitle, isPresented: $showActionSheet) {
                         actionSheetContent
                     }
                 }
@@ -125,14 +125,14 @@ struct CustomFieldEditorView: View {
 
     @ViewBuilder
     private var actionSheetContent: some View {
-        Button("Copy Key") { // todo-13493: set String to be translatable
+        Button(Localization.copyKeyButton) {
             UIPasteboard.general.string = viewModel.key
-            // todo-13493: Show a notice that the key was copied
+            // todo-13493: Show a notice that the key was copied using Localization.keycopiedNotice
         }
 
-        Button("Copy Value") { // todo-13493: set String to be translatable
+        Button(Localization.copyValueButton) {
             UIPasteboard.general.string = viewModel.value
-            // todo-13493: Show a notice that the value was copied
+            // todo-13493: Show a notice that the value was copied using Localization.valuecopiedNotice
         }
 
         // Do not show Delete button if there's no callback, i.e: when creating a new field.
@@ -208,6 +208,36 @@ private extension CustomFieldEditorView {
             "customFieldEditorView.deleteButton",
             value: "Delete custom field",
             comment: "Button title for deleting a custom field"
+        )
+
+        static let actionSheetTitle = NSLocalizedString(
+            "customFieldEditorView.actionSheetTitle",
+            value: "More Options",
+            comment: "Title for the action sheet with additional options"
+        )
+
+        static let copyKeyButton = NSLocalizedString(
+            "customFieldEditorView.copyKeyButton",
+            value: "Copy Key",
+            comment: "Button title for copying the custom field key"
+        )
+
+        static let copyValueButton = NSLocalizedString(
+            "customFieldEditorView.copyValueButton",
+            value: "Copy Value",
+            comment: "Button title for copying the custom field value"
+        )
+
+        static let keycopiedNotice = NSLocalizedString(
+            "customFieldEditorView.keyCopiedNotice",
+            value: "Key copied to clipboard",
+            comment: "Notice shown when the key has been copied to clipboard"
+        )
+
+        static let valuecopiedNotice = NSLocalizedString(
+            "customFieldEditorView.valueCopiedNotice",
+            value: "Value copied to clipboard",
+            comment: "Notice shown when the value has been copied to clipboard"
         )
     }
 }

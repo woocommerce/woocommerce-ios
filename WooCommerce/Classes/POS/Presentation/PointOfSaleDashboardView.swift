@@ -62,7 +62,6 @@ struct PointOfSaleDashboardView: View {
             totalsViewModel.cancelOnboarding()
         }) { viewModel in
             paymentsOnboardingView(from: viewModel)
-                .posInteractiveDismissDisabled(true)
         }
         .posModal(item: $totalsViewModel.cardPresentPaymentAlertViewModel,
                   onDismiss: {

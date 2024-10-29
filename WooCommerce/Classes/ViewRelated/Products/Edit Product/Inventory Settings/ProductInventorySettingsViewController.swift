@@ -286,6 +286,7 @@ private extension ProductInventorySettingsViewController {
             break
         }
         cell.configure(viewModel: cellViewModel)
+        cell.setSpacingBetweenTitleAndTextField(30)
 
         // Configures accessory view for adding SKU from barcode scanner if camera is available.
         guard UIImagePickerController.isSourceTypeAvailable(.camera) else {

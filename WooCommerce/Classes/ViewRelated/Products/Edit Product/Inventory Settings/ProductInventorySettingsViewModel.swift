@@ -163,7 +163,6 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
 
     func handleGlobalUniqueIdentifierChange(_ globalUniqueID: String?) {
         self.globalUniqueID = globalUniqueID
-        reloadSections()
     }
 
     func handleSKUFromBarcodeScanner(_ sku: String?, onValidation: @escaping (Bool, Bool) -> Void) {

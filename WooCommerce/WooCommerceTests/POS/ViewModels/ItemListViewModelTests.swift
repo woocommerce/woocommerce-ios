@@ -410,6 +410,65 @@ final class ItemListViewModelTests: XCTestCase {
         XCTAssertEqual(receivedStates, [.initialLoading, .loaded(items)])
     }
 
+    func test_sut_when_there_are_no_items_then_statePublisher_emits_expected_state() async {
+        let itemProvider = MockPOSItemProvider()
+        itemProvider.shouldReturnZeroItems = true
+        let sut = ItemListViewModel(itemProvider: itemProvider)
+
+        let expectation = XCTestExpectation(description: "Publisher should emit state changes")
+
+        var receivedStates: [ItemListViewModel.ItemListState] = []
+        let expectedStates: [ItemListViewModel.ItemListState] = [
+            .initialLoading,
+            .empty,
+            .loading,
+            .loaded([])
+        ]
+
+        sut.statePublisher
+            .removeDuplicates()
+            .sink { state in
+                receivedStates.append(state)
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+
+        // When
+        await sut.loadInitialItems()
+        await sut.loadNextItems()
+
+        // Then
+        XCTAssertEqual(receivedStates, expectedStates)
+    }
+
+    func test_sut_when_there_are_items_then_statePublisher_emits_expected_state() async {
+        let items = Self.makeInitialItems()
+        let expectation = XCTestExpectation(description: "Publisher should emit state changes")
+
+        var receivedStates: [ItemListViewModel.ItemListState] = []
+        let expectedStates: [ItemListViewModel.ItemListState] = [
+            .initialLoading,
+            .loaded(items),
+            .loading,
+            .loaded(items)
+        ]
+
+        sut.statePublisher
+            .removeDuplicates()
+            .sink { state in
+                receivedStates.append(state)
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+
+        // When
+        await sut.loadInitialItems()
+        await sut.loadNextItems()
+
+        // Then
+        XCTAssertEqual(receivedStates, expectedStates)
+    }
+
     func test_simpleProductsInfoButtonTapped_when_tapped_then_showSimpleProductsModal_toggled() {
         XCTAssertFalse(sut.showSimpleProductsModal)
 

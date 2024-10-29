@@ -148,7 +148,11 @@ extension CardPresentPaymentsOnboardingViewModel: Equatable {
         lhs.state == rhs.state &&
         lhs.userIsAdministrator == rhs.userIsAdministrator &&
         lhs.learnMoreURL == rhs.learnMoreURL &&
-        lhs.shouldShow == rhs.shouldShow
+        lhs.shouldShow == rhs.shouldShow &&
+        (lhs.showSupport != nil) == (rhs.showSupport != nil) &&
+        (lhs.showURL != nil) == (rhs.showURL != nil) &&
+        (lhs.didChangeShouldShow != nil) == (rhs.didChangeShouldShow != nil) &&
+        (lhs.didUpdate != nil) == (rhs.didUpdate != nil)
     }
 }
 

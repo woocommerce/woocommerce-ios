@@ -1619,6 +1619,7 @@ private extension ProductFormViewController {
             return
         }
         viewModel.updateInventorySettings(sku: data.sku,
+                                          globalUniqueIdentifier: data.globalUniqueIdentifier,
                                           manageStock: data.manageStock,
                                           soldIndividually: data.soldIndividually,
                                           stockQuantity: data.stockQuantity,

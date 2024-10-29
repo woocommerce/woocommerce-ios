@@ -4,6 +4,7 @@ import Yosemite
 ///
 struct ProductInventoryEditableData: Equatable {
     let sku: String?
+    let globalUniqueIdentifier: String?
     let manageStock: Bool
     let soldIndividually: Bool?
     let stockQuantity: Decimal?
@@ -14,6 +15,7 @@ struct ProductInventoryEditableData: Equatable {
 extension ProductInventoryEditableData {
     init(productModel: ProductFormDataModel) {
         self.sku = productModel.sku
+        self.globalUniqueIdentifier = productModel.globalUniqueID
         self.manageStock = productModel.manageStock
         self.soldIndividually = productModel.soldIndividually
         self.stockQuantity = productModel.stockQuantity

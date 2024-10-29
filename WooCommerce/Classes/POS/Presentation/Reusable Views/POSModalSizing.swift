@@ -68,12 +68,3 @@ private extension POSModalSizing {
             .last
     }
 }
-
-private extension POSModalSizing {
-    enum Localization {
-        static let defaultAccessibilityLabel = NSLocalizedString(
-            "pointOfSale.cardPresentPayment.connection.modal.close.button.accessibilityLabel.default",
-            value: "Close",
-            comment: "The default accessibility label for an `x` close button on a card reader connection modal.")
-    }
-}

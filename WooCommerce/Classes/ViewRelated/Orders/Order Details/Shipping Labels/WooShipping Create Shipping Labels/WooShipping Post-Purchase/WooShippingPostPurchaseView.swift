@@ -22,7 +22,7 @@ struct WooShippingPostPurchaseView: View {
                         } label: {
                             Text(labelSize.description)
                             if labelSize == selectedLabelSize {
-                                Image(uiImage: .checkmarkStyledImage.withTintColor(UIColor(Layout.panelHighlight)))
+                                Image(systemName: "checkmark")
                             }
                         }
                     }
@@ -47,20 +47,29 @@ struct WooShippingPostPurchaseView: View {
                 Button {
                     // TODO: Open instructions for how to print
                 } label: {
-                    Text(Localization.info)
-                        .font(.footnote)
+                    HStack {
+                        Image(systemName: "info.circle")
+                        Text(Localization.info)
+                            .font(.footnote)
+                    }
                 }
                 Divider()
                 Group {
                     Button {
                         // TODO: Open link for shipment tracking
                     } label: {
-                        Text(Localization.trackShipment)
+                        HStack {
+                            Text(Localization.trackShipment)
+                            Image(systemName: "arrow.up.right.square")
+                        }
                     }
                     Button {
                         // TODO: Open link to schedule pickup
                     } label: {
-                        Text(Localization.schedulePickup)
+                        HStack {
+                            Text(Localization.schedulePickup)
+                            Image(systemName: "arrow.up.right.square")
+                        }
                     }
                     Button {
                         // TODO: Request label refund

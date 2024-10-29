@@ -15,7 +15,7 @@ public struct GoogleAdsCampaign: Decodable, Equatable, GeneratedFakeable, Genera
 
     public let amount: Double
 
-    public let country: String
+    public let country: String?
 
     public let targetedLocations: [String]
 
@@ -28,7 +28,7 @@ public struct GoogleAdsCampaign: Decodable, Equatable, GeneratedFakeable, Genera
                 rawStatus: String,
                 rawType: String,
                 amount: Double,
-                country: String,
+                country: String?,
                 targetedLocations: [String]) {
         self.id = id
         self.name = name

@@ -8,7 +8,7 @@ final class WooShippingServiceCardViewModelTests: XCTestCase {
     func test_it_inits_with_expected_values() {
         // Given
         let viewModel = WooShippingServiceCardViewModel(selected: true,
-                                                        signatureRequirement: .signatureRequired,
+                                                        signatureRequired: true,
                                                         rate: MockShippingLabelCarrierRate.makeRate(rate: 40.33, insurance: "100"),
                                                         signatureRate: MockShippingLabelCarrierRate.makeRate(rate: 45.99),
                                                         adultSignatureRate: MockShippingLabelCarrierRate.makeRate(rate: 51.33),
@@ -60,8 +60,7 @@ final class WooShippingServiceCardViewModelTests: XCTestCase {
     func test_handleTap_enables_newly_selected_rate() {
         // Given
         let newSelection: WooShippingServiceCardViewModel.SignatureRequirement = .signatureRequired
-        let viewModel = WooShippingServiceCardViewModel(signatureRequirement: .none,
-                                                        rate: MockShippingLabelCarrierRate.makeRate(rate: 40.33, insurance: "100"),
+        let viewModel = WooShippingServiceCardViewModel(rate: MockShippingLabelCarrierRate.makeRate(rate: 40.33, insurance: "100"),
                                                         signatureRate: MockShippingLabelCarrierRate.makeRate(rate: 45.99),
                                                         adultSignatureRate: MockShippingLabelCarrierRate.makeRate(rate: 51.33))
 
@@ -74,17 +73,37 @@ final class WooShippingServiceCardViewModelTests: XCTestCase {
 
     func test_handleTap_disables_previously_selected_rate() {
         // Given
-        let previousSelection: WooShippingServiceCardViewModel.SignatureRequirement = .adultSignatureRequired
-        let viewModel = WooShippingServiceCardViewModel(signatureRequirement: previousSelection,
+        let viewModel = WooShippingServiceCardViewModel(adultSignatureRequired: true,
                                                         rate: MockShippingLabelCarrierRate.makeRate(rate: 40.33, insurance: "100"),
                                                         signatureRate: MockShippingLabelCarrierRate.makeRate(rate: 45.99),
                                                         adultSignatureRate: MockShippingLabelCarrierRate.makeRate(rate: 51.33))
 
         // When
-        viewModel.handleTap(on: previousSelection)
+        viewModel.handleTap(on: .adultSignatureRequired)
 
         // Then
         XCTAssertEqual(viewModel.signatureRequirement, .none)
+    }
+
+    func test_selectRate_calls_completion_block_with_rate_title_and_signature_requirement() {
+        // Given
+        let rate = MockShippingLabelCarrierRate.makeRate(rate: 40.33, insurance: "100")
+        var completionRateTitle: String? = nil
+        var completionSignatureRequirement: WooShippingServiceCardViewModel.SignatureRequirement? = nil
+        let viewModel = WooShippingServiceCardViewModel(adultSignatureRequired: true,
+                                                        rate: rate,
+                                                        signatureRate: MockShippingLabelCarrierRate.makeRate(rate: 45.99),
+                                                        adultSignatureRate: MockShippingLabelCarrierRate.makeRate(rate: 51.33)) { title, signature in
+            completionRateTitle = title
+            completionSignatureRequirement = signature
+        }
+
+        // When
+        viewModel.selectRate()
+
+        // Then
+        XCTAssertEqual(completionRateTitle, rate.title)
+        XCTAssertEqual(completionSignatureRequirement, .adultSignatureRequired)
     }
 
 }

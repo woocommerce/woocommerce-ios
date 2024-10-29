@@ -10,6 +10,8 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     @Published private(set) var isHeaderBannerDismissed: Bool = false
     @Published var showSimpleProductsModal: Bool = false
 
+    @Published private var currentPage: Int = Constants.initialPage
+
     var shouldShowHeaderBanner: Bool {
         // The banner it's shown as long as it hasn't already been dismissed once:
         if UserDefaults.standard.bool(forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey) == true {
@@ -36,27 +38,54 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     }
 
     @MainActor
-    func populatePointOfSaleItems() async {
+    func loadInitialItems() async {
+        currentPage = Constants.initialPage
         do {
             state = .loading
-            items = try await itemProvider.providePointOfSaleItems(pageNumber: Constants.firstPageNumber)
+            items = try await itemProvider.providePointOfSaleItems(pageNumber: currentPage)
             if items.count == 0 {
                 state = .empty
             } else {
                 state = .loaded(items)
             }
         } catch {
-            DDLogError("Error on load while fetching product data: \(error)")
-            let itemListError = ErrorModel(title: Constants.failedToLoadTitle,
-                                      subtitle: Constants.failedToLoadSubtitle,
-                                      buttonText: Constants.failedToLoadButtonTitle)
-            state = .error(itemListError)
+            state = .error(ErrorModel.errorOnLoadingProducts())
+        }
+    }
+
+    @MainActor
+    func loadNextItems() async {
+        // TODO: Optimize API calls. gh-14186
+        // If there are no more pages to fetch, we can avoid the next call.
+        let nextPage = currentPage + 1
+        await fetchPage(pageNumber: nextPage)
+    }
+
+    @MainActor
+    private func fetchPage(pageNumber: Int) async {
+        do {
+            state = .loading
+            let newItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
+            let uniqueNewItems = newItems.filter { newItem in
+                !items.contains(where: { $0.productID == newItem.productID })
+            }
+            // If there are no new items, we just return what was already in memory
+            if uniqueNewItems.count == 0 {
+                state = .loaded(items)
+            } else {
+                items.append(contentsOf: uniqueNewItems)
+                state = .loaded(items)
+                currentPage = pageNumber
+            }
+        } catch {
+            state = .error(ErrorModel.errorOnLoadingProducts())
         }
     }
 
     @MainActor
     func reload() async {
-        await populatePointOfSaleItems()
+        items.removeAll()
+        await loadInitialItems()
     }
 
     func dismissBanner() {
@@ -126,6 +155,12 @@ extension ItemListViewModel {
         let title: String
         let subtitle: String
         let buttonText: String
+
+        static func errorOnLoadingProducts() -> Self {
+            ErrorModel(title: Constants.failedToLoadTitle,
+                       subtitle: Constants.failedToLoadSubtitle,
+                       buttonText: Constants.failedToLoadButtonTitle)
+        }
     }
 
     struct BannerState {
@@ -150,6 +185,6 @@ private extension ItemListViewModel {
             value: "Retry",
             comment: "Text for the button appearing on the item list screen when there's an error loading products."
         )
-        static let firstPageNumber: Int = 1
+        static let initialPage: Int = 1
     }
 }

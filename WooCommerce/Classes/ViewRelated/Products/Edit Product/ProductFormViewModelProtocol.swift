@@ -155,6 +155,8 @@ protocol ProductFormViewModelProtocol {
 
     func updateQuantityRules(minQuantity: String, maxQuantity: String, groupOf: String)
 
+    func updateProductCustomFields(customFields: [MetaData])
+
     // Remote action
 
     /// Creates/updates a product remotely given an optional product status to override.

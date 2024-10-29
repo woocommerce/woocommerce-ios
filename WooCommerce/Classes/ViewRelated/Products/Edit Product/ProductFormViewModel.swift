@@ -557,6 +557,14 @@ extension ProductFormViewModel {
     func updateQuantityRules(minQuantity: String, maxQuantity: String, groupOf: String) {
         product = EditableProductModel(product: product.product.copy(minAllowedQuantity: minQuantity, maxAllowedQuantity: maxQuantity, groupOfQuantity: groupOf))
     }
+
+    func updateProductCustomFields(customFields: [MetaData]) {
+        // Keep a reference to the edited product
+        let productWithChanges = product.product.copy(customFields: customFields)
+
+        resetProduct(EditableProductModel(product: originalProduct.product.copy(customFields: customFields)))
+        product = EditableProductModel(product: productWithChanges)
+    }
 }
 
 // MARK: Remote actions

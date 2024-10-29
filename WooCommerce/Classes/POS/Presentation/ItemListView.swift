@@ -130,10 +130,65 @@ private extension ItemListView {
                         ItemCardView(item: item)
                     })
                 }
+                GhostItemCardView()
+                    .renderedIf(viewModel.state == .loading)
             }
             .padding(.bottom, floatingControlAreaSize.height)
             .padding(.horizontal, Constants.itemListPadding)
+            .background(GeometryReader { proxy in
+                Color.clear
+                    .onChange(of: proxy.frame(in: .global).maxY) { maxY in
+                        if viewModel.state == .loading {
+                            return
+                        }
+                        let viewHeight = UIScreen.main.bounds.height
+                        if maxY < viewHeight {
+                            Task {
+                                await viewModel.loadNextItems()
+                            }
+                        }
+                    }
+            })
         }
+    }
+}
+
+struct GhostItemCardView: View {
+    @ScaledMetric private var scale: CGFloat = 1.0
+
+    var body: some View {
+        HStack(spacing: 0) {
+            Rectangle()
+                .frame(width: Constants.productCardSize * scale, height: Constants.productCardSize * scale)
+            HStack {
+                Rectangle()
+                    .foregroundColor(Constants.textForegroundColor)
+                    .frame(width: Constants.textWidth * 2 * scale, height: Constants.textHeight * scale)
+                    .padding(.horizontal)
+                Spacer()
+                Rectangle()
+                    .foregroundColor(Constants.textForegroundColor)
+                    .frame(width: Constants.textWidth * scale, height: Constants.textHeight * scale)
+                    .padding(.horizontal)
+            }
+            .frame(height: Constants.productCardSize * scale)
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: Constants.cornerRadius)
+        }
+        .foregroundColor(Constants.cardForegroundColor)
+        .shimmering()
+    }
+}
+
+private extension GhostItemCardView {
+    enum Constants {
+        static let cornerRadius: CGFloat = 8
+        static let cardForegroundColor: Color = Color.gray.opacity(0.5)
+        static let textForegroundColor: Color = Color.gray.opacity(0.8)
+        static let productCardSize: CGFloat = 112
+        static let textWidth: CGFloat = 112
+        static let textHeight: CGFloat = 32
     }
 }
 

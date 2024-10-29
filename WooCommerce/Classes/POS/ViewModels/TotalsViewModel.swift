@@ -20,6 +20,9 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         case cardPaymentSuccessful
     }
 
+    @Published var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
+    @Published var cardPresentPaymentOnboardingURL: URL?
+    private var onOnboardingCancellation: (() -> Void)?
     @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     @Published private(set) var isShowingCardReaderStatus: Bool = false
@@ -125,6 +128,11 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         clearOrder()
         cardPresentPaymentInlineMessage = nil
         startNewOrderActionSubject.send(())
+    }
+
+    /// Called when the onboarding UI is dismissed.
+    func cancelOnboarding() {
+        onOnboardingCancellation?()
     }
 
     private func editOrder() {
@@ -311,6 +319,17 @@ private extension TotalsViewModel {
     }
 
     func observeCardPresentPaymentEvents() {
+        cardPresentPaymentService.paymentEventPublisher
+            .map { [weak self] event -> CardPresentPaymentsOnboardingViewModel? in
+                guard let self else { return nil }
+                guard case let .showOnboarding(viewModel, onCancel) = event else {
+                    return nil
+                }
+                onOnboardingCancellation = onCancel
+                return viewModel
+            }
+            .assign(to: &$cardPresentPaymentOnboardingViewModel)
+
         cardPresentPaymentService.paymentEventPublisher
             .map { [weak self] event -> PointOfSaleCardPresentPaymentAlertType? in
                 guard let self else { return nil }

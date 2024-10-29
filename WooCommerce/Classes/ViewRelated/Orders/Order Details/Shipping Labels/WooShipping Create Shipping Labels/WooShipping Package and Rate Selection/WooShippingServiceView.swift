@@ -18,12 +18,34 @@ struct WooShippingServiceView: View {
             HStack {
                 Text(Localization.shippingService)
                     .headlineStyle()
-                Spacer()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Menu {
+                    ForEach(WooShippingServiceViewModel.SortOrder.allCases, id: \.self) { option in
+                        Button {
+                            viewModel.sortShipping(by: option)
+                        } label: {
+                            HStack {
+                                Text(option.displayName)
+                                if viewModel.sortOrder == option {
+                                    Image(uiImage: .checkmarkStyledImage)
+                                }
+                            }
+                        }
+                    }
+                } label: {
+                    HStack {
+                        Text(Localization.sortBy)
+                        Image(systemName: "chevron.up.chevron.down")
+                    }
+                    .foregroundStyle(Color(.primary))
+                }
             }
+            .padding(.horizontal)
             TopTabView(tabs: carriers,
+                       tabsContainerHorizontalPadding: 16,
                        unselectedStateColor: .secondary,
                        tabsNameFont: .subheadline.bold(),
-                       tabItemContentHorizontalPadding: 16,
+                       tabItemContentHorizontalPadding: 6,
                        tabItemContentVerticalPadding: 12)
         }
     }
@@ -39,9 +61,9 @@ private struct WooShippingServiceCardListView: View {
                 WooShippingServiceCardView(viewModel: card)
                     .fixedSize(horizontal: false, vertical: true) // Prevents card text from being truncated
             }
-            Spacer()
         }
-        .padding(.vertical)
+        .frame(maxHeight: .infinity, alignment: .top)
+        .padding()
     }
 }
 
@@ -50,6 +72,9 @@ private extension WooShippingServiceView {
         static let shippingService = NSLocalizedString("wooShipping.createLabels.rates.shippingService",
                                                        value: "Shipping service",
                                                        comment: "Heading for the shipping service section in the shipping label creation screen.")
+        static let sortBy = NSLocalizedString("wooShipping.createLabels.rates.sortBy",
+                                              value: "Sort by",
+                                              comment: "Label for the menu to select a sort order for shipping rates in the shipping label creation screen.")
     }
 }
 

@@ -81,13 +81,14 @@ struct DiscardChangesWrapper<Content: View>: UIViewControllerRepresentable {
     }
 }
 
-struct CloseButtonWithDiscardPrompt: ViewModifier {
+struct CloseButtonWithDiscardPrompt<Label>: ViewModifier where Label: View {
     let title: String
     let message: String
     let discardButtonTitle: String
     let cancelButtonTitle: String
 
     let showPrompt: Bool
+    let closeButtonLabel: () -> Label
     let didDismiss: (() -> Void)?
 
     @State private var isShowingPrompt: Bool = false
@@ -104,10 +105,7 @@ struct CloseButtonWithDiscardPrompt: ViewModifier {
                             didDismiss?()
                             dismiss()
                         }
-                    }, label: {
-                        Image(uiImage: .closeButton)
-                            .secondaryBodyStyle()
-                    })
+                    }, label: closeButtonLabel)
                 }
             })
             .interactiveDismissDisabled()
@@ -155,18 +153,21 @@ extension View {
     ///   - discardButtonTitle: Title for the discard changes button on the action sheet. Defaults to "Discard changes".
     ///   - cancelButtonTitle: Title for the cancel button on the action sheet. Defaults to "Cancel".
     ///   - hasChanges: Whether there are changes to be discarded.
+    ///   - closeButtonLabel: Customize the close button shown in the toolbar, defaults to a close icon.
     ///   - didDismiss: Optional method to be invoked when the view is dismissed.
-    func closeButtonWithDiscardChangesPrompt(title: String = "",
-                                             message: String = Localization.message,
-                                             discardButtonTitle: String = Localization.discard,
-                                             cancelButtonTitle: String = Localization.cancel,
-                                             hasChanges: Bool,
-                                             didDismiss: (() -> Void)? = nil) -> some View {
+    func closeButtonWithDiscardChangesPrompt<Label: View>(title: String = "",
+                                                          message: String = Localization.message,
+                                                          discardButtonTitle: String = Localization.discard,
+                                                          cancelButtonTitle: String = Localization.cancel,
+                                                          hasChanges: Bool,
+                                                          closeButtonLabel: @escaping () -> Label = { Image(uiImage: .closeButton).secondaryBodyStyle() },
+                                                          didDismiss: (() -> Void)? = nil) -> some View {
         ModifiedContent(content: self, modifier: CloseButtonWithDiscardPrompt(title: title,
                                                                               message: message,
                                                                               discardButtonTitle: discardButtonTitle,
                                                                               cancelButtonTitle: cancelButtonTitle,
                                                                               showPrompt: hasChanges,
+                                                                              closeButtonLabel: closeButtonLabel,
                                                                               didDismiss: didDismiss))
     }
 }

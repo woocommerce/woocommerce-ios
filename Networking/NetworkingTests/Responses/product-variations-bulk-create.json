@@ -9,6 +9,7 @@
             "description": "<p>Nutty chocolate marble, 99% and organic.</p>\n",
             "permalink": "https://chocolate.com/marble",
             "sku": "87%-strawberry-marble",
+            "global_unique_id": "12345",
             "price": "14.99",
             "regular_price": "14.99",
             "sale_price": "",

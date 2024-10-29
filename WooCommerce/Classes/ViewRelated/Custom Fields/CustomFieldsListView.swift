@@ -212,7 +212,10 @@ private struct CustomFieldRow: View {
 // MARK: - Helpers
 //
 private extension CustomFieldsListView {
-    /// Builds the Custom Field Editor View.
+    /// Builds the Custom Field Editor View. There are two possible modes for the editor:
+    /// - Creating a new custom field: the Key and Value fields will be empty, and deleting option should be hidden.
+    /// - Editing an existing custom field: the Key and Value fields will use the values from the provided `customField`
+    ///
     /// Parameters:
     /// - `customField`: Provide one when editing an existing field, otherwise (i.e: when creating a new field) keep it nil.
     /// - `disallowedKeys`: List of String that can't be used when editing a custom field key.
@@ -231,6 +234,7 @@ private extension CustomFieldsListView {
                     )
                 },
                 onDelete: customField != nil ? {
+                    // Only provide delete callback when editing existing field
                     viewModel.deleteField(customField!)
                 } : nil
             ))

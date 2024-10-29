@@ -131,8 +131,7 @@ struct CustomFieldEditorView: View {
             viewModel.notice = Notice(title: Localization.valueCopiedNotice)
         }
 
-        // Do not show Delete button if there's no callback, i.e: when creating a new field.
-        if viewModel.onDelete != nil {
+        if viewModel.showDeleteButton {
             Button(Localization.deleteButton, role: .destructive) {
                 viewModel.deleteField()
                 dismiss()

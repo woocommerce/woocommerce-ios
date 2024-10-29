@@ -20,8 +20,13 @@ final class CustomFieldEditorViewModel: ObservableObject {
 
     private let onSave: (String, String) -> Void
 
-    /// Closure invoked during field deletion. Optional as it's not needed when creating a new field. Not private because it is used in the view for display logic.
-    let onDelete: (() -> Void)?
+    /// Closure invoked during field deletion. Optional as it's not needed when creating a new field.
+    private let onDelete: (() -> Void)?
+
+    var showDeleteButton: Bool {
+        onDelete != nil
+    }
+
 
     var hasUnsavedChanges: Bool {
         key != initialKey || value != initialValue

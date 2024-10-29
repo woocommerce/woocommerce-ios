@@ -2284,6 +2284,7 @@
 		CEA7C32D2C47C9BD00528450 /* GoogleAdsCampaignStatsTotals+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA7C32C2C47C9BD00528450 /* GoogleAdsCampaignStatsTotals+UI.swift */; };
 		CEA9C8E02B6D323A000FE114 /* AnalyticsWebReportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA9C8DF2B6D323A000FE114 /* AnalyticsWebReportTests.swift */; };
 		CEAB739C2C81E3F600A7EB39 /* WooShippingCreateLabelsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAB739B2C81E3F600A7EB39 /* WooShippingCreateLabelsView.swift */; };
+		CEAEB75A2CD0F9A300C3E117 /* WooShippingPostPurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAEB7592CD0F9A300C3E117 /* WooShippingPostPurchaseView.swift */; };
 		CEC3CC6B2C92FDB700B93FBE /* WooShippingItemRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC3CC6A2C92FDB700B93FBE /* WooShippingItemRowViewModel.swift */; };
 		CEC3CC6D2C93127300B93FBE /* WooShippingItemsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC3CC6C2C93127300B93FBE /* WooShippingItemsViewModel.swift */; };
 		CEC3CC6F2C93146700B93FBE /* WooShippingCreateLabelsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC3CC6E2C93146700B93FBE /* WooShippingCreateLabelsViewModel.swift */; };
@@ -5345,6 +5346,7 @@
 		CEA7C32C2C47C9BD00528450 /* GoogleAdsCampaignStatsTotals+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GoogleAdsCampaignStatsTotals+UI.swift"; sourceTree = "<group>"; };
 		CEA9C8DF2B6D323A000FE114 /* AnalyticsWebReportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsWebReportTests.swift; sourceTree = "<group>"; };
 		CEAB739B2C81E3F600A7EB39 /* WooShippingCreateLabelsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingCreateLabelsView.swift; sourceTree = "<group>"; };
+		CEAEB7592CD0F9A300C3E117 /* WooShippingPostPurchaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingPostPurchaseView.swift; sourceTree = "<group>"; };
 		CEC3CC6A2C92FDB700B93FBE /* WooShippingItemRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingItemRowViewModel.swift; sourceTree = "<group>"; };
 		CEC3CC6C2C93127300B93FBE /* WooShippingItemsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingItemsViewModel.swift; sourceTree = "<group>"; };
 		CEC3CC6E2C93146700B93FBE /* WooShippingCreateLabelsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingCreateLabelsViewModel.swift; sourceTree = "<group>"; };
@@ -11883,11 +11885,20 @@
 				CE6E11092C91DA3D00563DD4 /* WooShipping Items Section */,
 				CE7B4A592CA1BF7800F764EB /* WooShipping Hazmat Section */,
 				CECEFA6B2CA2CE990071C7DB /* WooShipping Package and Rate Selection */,
+				CEAEB7582CD0F96800C3E117 /* WooShipping Post-Purchase */,
 				CEAB739B2C81E3F600A7EB39 /* WooShippingCreateLabelsView.swift */,
 				CEC3CC6E2C93146700B93FBE /* WooShippingCreateLabelsViewModel.swift */,
 				CE49C4742CBEC84C00EA5C84 /* WooShipping_ShippingLineViewModel.swift */,
 			);
 			path = "WooShipping Create Shipping Labels";
+			sourceTree = "<group>";
+		};
+		CEAEB7582CD0F96800C3E117 /* WooShipping Post-Purchase */ = {
+			isa = PBXGroup;
+			children = (
+				CEAEB7592CD0F9A300C3E117 /* WooShippingPostPurchaseView.swift */,
+			);
+			path = "WooShipping Post-Purchase";
 			sourceTree = "<group>";
 		};
 		CEC3CC722C9343BC00B93FBE /* WooShipping Create Shipping Labels */ = {
@@ -15269,6 +15280,7 @@
 				039298C82A45EE3900F393D5 /* MyStoreRoute.swift in Sources */,
 				0221121E288973C20028F0AF /* LocalNotification.swift in Sources */,
 				451A04E62386CE8700E368C9 /* ProductImagesHeaderTableViewCell.swift in Sources */,
+				CEAEB75A2CD0F9A300C3E117 /* WooShippingPostPurchaseView.swift in Sources */,
 				02E19B9C284743A40010B254 /* ProductImageUploader.swift in Sources */,
 				B59C09D92188CBB100AB41D6 /* Array+Notes.swift in Sources */,
 				CC857C7129B23A6C00E19D1E /* BundledProductsListViewController.swift in Sources */,

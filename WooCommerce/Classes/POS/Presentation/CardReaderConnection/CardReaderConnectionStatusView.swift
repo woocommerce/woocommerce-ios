@@ -2,12 +2,12 @@ import SwiftUI
 
 struct CardReaderConnectionStatusView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
-    @ObservedObject private var connectionViewModel: CardReaderConnectionViewModel
+    @ObservedObject private var posModel: PointOfSaleAggregateModel
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.isEnabled) var isEnabled
 
-    init(connectionViewModel: CardReaderConnectionViewModel) {
-        self.connectionViewModel = connectionViewModel
+    init(posModel: PointOfSaleAggregateModel) {
+        self.posModel = posModel
     }
 
     @ViewBuilder
@@ -21,11 +21,11 @@ struct CardReaderConnectionStatusView: View {
 
     var body: some View {
         Group {
-            switch connectionViewModel.connectionStatus {
+            switch posModel.connectionStatus {
             case .connected:
                 Menu {
                     Button {
-                        connectionViewModel.disconnectReader()
+                        posModel.disconnectReader()
                     } label: {
                         Text(Localization.disconnectCardReader)
                     }
@@ -44,7 +44,7 @@ struct CardReaderConnectionStatusView: View {
                 progressIndicatingCardReaderStatus(title: Localization.pleaseWait)
             case .disconnected:
                 Button {
-                    connectionViewModel.connectReader()
+                    posModel.connectReader()
                 } label: {
                     HStack(spacing: Constants.buttonImageAndTextSpacing) {
                         circleIcon(with: Color(.wooCommerceAmber(.shade60)))
@@ -161,8 +161,12 @@ private extension CardReaderConnectionStatusView {
 #if DEBUG
 
 #Preview {
+    let posModel = PointOfSaleAggregateModel(
+        itemProvider: POSItemProviderPreview(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderService: POSOrderPreviewService())
     VStack {
-        CardReaderConnectionStatusView(connectionViewModel: .init(cardPresentPayment: CardPresentPaymentPreviewService()))
+        CardReaderConnectionStatusView(posModel: posModel)
     }
 }
 

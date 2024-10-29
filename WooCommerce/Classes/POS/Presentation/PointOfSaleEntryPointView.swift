@@ -37,7 +37,6 @@ struct PointOfSaleEntryPointView: View {
 
         self._viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
             posModel: posModel,
-            cardPresentPaymentService: cardPresentPaymentService,
             totalsViewModel: totalsViewModel,
             cartViewModel: cartViewModel,
             itemListViewModel: itemListViewModel,

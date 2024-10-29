@@ -51,6 +51,7 @@ final class PointOfSaleAggregateModel: ObservableObject {
             .store(in: &cancellables)
     }
 
+    @MainActor
     func loadItems(pageNumber: Int) async throws {
         let newItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
         let uniqueNewItems = newItems.filter { newItem in
@@ -106,16 +107,6 @@ final class PointOfSaleAggregateModel: ObservableObject {
     func addMoreToCart() {
         orderStage = .building
     }
-
-    func connectCardReader() {
-        Task { @MainActor in
-            do {
-                let _ = try await cardPresentPaymentService.connectReader(using: .bluetooth)
-            } catch {
-                DDLogError("🔴 POS reader connection error: \(error)")
-            }
-        }
-    }
 }
 
 // MARK: - Order syncing
@@ -167,6 +158,28 @@ extension PointOfSaleAggregateModel {
             .compactMap { paymentEvent in
                 return PointOfSalePaymentState(from: paymentEvent) }
             .assign(to: &$paymentState)
+    }
+
+    func connectReader() {
+        guard connectionStatus == .disconnected else {
+            return
+        }
+        Task { @MainActor in
+            do {
+                let _ = try await cardPresentPaymentService.connectReader(using: .bluetooth)
+            } catch {
+                DDLogError("🔴 POS reader connection error: \(error)")
+            }
+        }
+    }
+
+    func disconnectReader() {
+        guard case .connected = connectionStatus else {
+            return
+        }
+        Task { @MainActor in
+            await cardPresentPaymentService.disconnectReader()
+        }
     }
 
     @MainActor

@@ -2,18 +2,24 @@ import SwiftUI
 
 struct POSFloatingControlView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
-    @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
+    @ObservedObject private var posModel: PointOfSaleAggregateModel
     @Environment(\.colorScheme) var colorScheme
+    @Binding var showExitPOSModal: Bool
+    @Binding var showSupport: Bool
 
-    init(viewModel: PointOfSaleDashboardViewModel) {
-        self.viewModel = viewModel
+    init(posModel: PointOfSaleAggregateModel,
+         showExitPOSModal: Binding<Bool>,
+         showSupport: Binding<Bool>) {
+        self.posModel = posModel
+        self._showExitPOSModal = showExitPOSModal
+        self._showSupport = showSupport
     }
 
     var body: some View {
         HStack {
             Menu {
                 Button {
-                    viewModel.showExitPOSModal = true
+                    showExitPOSModal = true
                 } label: {
                     Label(
                         title: { Text(Localization.exitPointOfSale) },
@@ -21,7 +27,7 @@ struct POSFloatingControlView: View {
                     )
                 }
                 Button {
-                    viewModel.showSupport = true
+                    showSupport = true
                 } label: {
                     Label(
                         title: { Text(Localization.getSupport) },
@@ -40,13 +46,13 @@ struct POSFloatingControlView: View {
             }
             .background(backgroundColor)
             .cornerRadius(Constants.cornerRadius)
-            .disabled(viewModel.isExitPOSDisabled)
+            .disabled(posModel.paymentState.cardHasBeenTapped)
 
-            CardReaderConnectionStatusView(connectionViewModel: viewModel.cardReaderConnectionViewModel)
+            CardReaderConnectionStatusView(posModel: posModel)
                 .foregroundStyle(fontColor)
                 .background(backgroundColor)
                 .cornerRadius(Constants.cornerRadius)
-                .disabled(viewModel.isReaderDisconnectionDisabled)
+                .disabled(posModel.paymentState.cardHasBeenTapped)
         }
         .frame(height: Constants.size)
         .background(Color.clear)

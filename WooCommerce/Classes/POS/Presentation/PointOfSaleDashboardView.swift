@@ -8,6 +8,9 @@ struct PointOfSaleDashboardView: View {
 
     @ObservedObject private var posModel: PointOfSaleAggregateModel
 
+    @State var showExitPOSModal: Bool = false
+    @State var showSupport: Bool = false
+
     init(viewModel: PointOfSaleDashboardViewModel,
          totalsViewModel: TotalsViewModel,
          cartViewModel: CartViewModel,
@@ -41,7 +44,9 @@ struct PointOfSaleDashboardView: View {
                 contentView
                     .accessibilitySortPriority(2)
             }
-            POSFloatingControlView(viewModel: viewModel)
+            POSFloatingControlView(posModel: posModel,
+                                   showExitPOSModal: $showExitPOSModal,
+                                   showSupport: $showSupport)
                 .shadow(color: Color.black.opacity(0.12), radius: 4, y: 2)
                 .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
                 .trackSize(size: $floatingSize)
@@ -75,12 +80,12 @@ struct PointOfSaleDashboardView: View {
         .posModal(isPresented: $itemListViewModel.showSimpleProductsModal) {
             SimpleProductsOnlyInformation(isPresented: $itemListViewModel.showSimpleProductsModal)
         }
-        .posModal(isPresented: $viewModel.showExitPOSModal) {
-            PointOfSaleExitPosAlertView(isPresented: $viewModel.showExitPOSModal)
+        .posModal(isPresented: $showExitPOSModal) {
+            PointOfSaleExitPosAlertView(isPresented: $showExitPOSModal)
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         }
         .posRootModal()
-        .sheet(isPresented: $viewModel.showSupport) {
+        .sheet(isPresented: $showSupport) {
             supportForm
         }
         .task {
@@ -119,12 +124,12 @@ struct PointOfSaleDashboardView: View {
 private extension PointOfSaleDashboardView {
     var supportForm: some View {
         NavigationView {
-            SupportForm(isPresented: $viewModel.showSupport,
+            SupportForm(isPresented: $showSupport,
                         viewModel: SupportFormViewModel(sourceTag: Constants.supportTag))
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(Localization.supportDone) {
-                        viewModel.showSupport = false
+                        showSupport = false
                     }
                 }
             }
@@ -135,7 +140,7 @@ private extension PointOfSaleDashboardView {
     func paymentsOnboardingView(from onboardingViewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
         onboardingViewModel.showSupport = {
             totalsViewModel.cardPresentPaymentOnboardingViewModel = nil
-            viewModel.showSupport = true
+            showSupport = true
         }
         onboardingViewModel.showURL = { url in
             totalsViewModel.cardPresentPaymentOnboardingURL = url
@@ -231,7 +236,6 @@ import class WooFoundation.MockAnalyticsProviderPreview
     let itemsListVM = ItemListViewModel(posModel: posModel)
     let posVM = PointOfSaleDashboardViewModel(
         posModel: posModel,
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
         totalsViewModel: totalsVM,
         cartViewModel: cartVM,
         itemListViewModel: itemsListVM,

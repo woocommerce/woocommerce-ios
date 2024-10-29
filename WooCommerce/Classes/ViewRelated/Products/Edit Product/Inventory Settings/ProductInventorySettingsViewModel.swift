@@ -19,6 +19,9 @@ protocol ProductInventorySettingsViewModelOutput {
     // Editable data - shared.
     //
     var sku: String? { get }
+
+    var globalUniqueID: String? { get }
+
     var manageStockEnabled: Bool { get }
     // Optional: only editable in `Product`
     var soldIndividually: Bool? { get }
@@ -65,6 +68,7 @@ final class ProductInventorySettingsViewModel: ProductInventorySettingsViewModel
     // Editable data - shared.
     //
     private(set) var sku: String?
+    private(set) var globalUniqueID: String?
     private(set) var manageStockEnabled: Bool
     // Optional: only editable in `Product`
     private(set) var soldIndividually: Bool?
@@ -104,6 +108,7 @@ final class ProductInventorySettingsViewModel: ProductInventorySettingsViewModel
         self.siteID = productModel.siteID
 
         self.sku = productModel.sku
+        self.globalUniqueID = productModel.globalUniqueID
         self.manageStockEnabled = productModel.manageStock
         self.soldIndividually = productModel.soldIndividually
 

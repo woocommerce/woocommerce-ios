@@ -62,6 +62,7 @@ final class GeneralAppSettingsTests: XCTestCase {
             FeatureAnnouncementCampaign.linkedProductsPromo:
                 FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: nil)]
         let sitesWithAtLeastOneIPPTransactionFinished: Set<Int64> = [1234, 123, 12, 1]
+        let isCustomFieldsTopBannerDismissed = true
         let previousSettings = GeneralAppSettings(installationDate: installationDate,
                                                   feedbacks: feedbackSettings,
                                                   isViewAddOnsSwitchEnabled: true,
@@ -71,7 +72,8 @@ final class GeneralAppSettingsTests: XCTestCase {
                                                   lastJetpackBenefitsBannerDismissedTime: jetpackBannerDismissedDate,
                                                   featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
                                                   sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
-                                                  isEUShippingNoticeDismissed: false)
+                                                  isEUShippingNoticeDismissed: false,
+                                                  isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed)
 
         let previousEncodedSettings = try JSONEncoder().encode(previousSettings)
         var previousSettingsJson = try JSONSerialization.jsonObject(with: previousEncodedSettings, options: .allowFragments) as? [String: Any]
@@ -90,6 +92,7 @@ final class GeneralAppSettingsTests: XCTestCase {
         assertEqual(newSettings.lastJetpackBenefitsBannerDismissedTime, jetpackBannerDismissedDate)
         assertEqual(newSettings.featureAnnouncementCampaignSettings, featureAnnouncementCampaignSettings)
         assertEqual(newSettings.sitesWithAtLeastOneIPPTransactionFinished, sitesWithAtLeastOneIPPTransactionFinished)
+        assertEqual(newSettings.isCustomFieldsTopBannerDismissed, isCustomFieldsTopBannerDismissed)
     }
 }
 
@@ -107,7 +110,8 @@ private extension GeneralAppSettingsTests {
                                   lastJetpackBenefitsBannerDismissedTime: Date? = nil,
                                   featureAnnouncementCampaignSettings: [Campaign: CampaignSettings] = [:],
                                   sitesWithAtLeastOneIPPTransactionFinished: Set<Int64> = [],
-                                  isEUShippingNoticeDismissed: Bool = false
+                                  isEUShippingNoticeDismissed: Bool = false,
+                                  isCustomFieldsTopBannerDismissed: Bool = false
     ) -> GeneralAppSettings {
         GeneralAppSettings(installationDate: installationDate,
                            feedbacks: feedbacks,
@@ -118,6 +122,7 @@ private extension GeneralAppSettingsTests {
                            lastJetpackBenefitsBannerDismissedTime: lastJetpackBenefitsBannerDismissedTime,
                            featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
                            sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
-                           isEUShippingNoticeDismissed: isEUShippingNoticeDismissed)
+                           isEUShippingNoticeDismissed: isEUShippingNoticeDismissed,
+                           isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed)
     }
 }

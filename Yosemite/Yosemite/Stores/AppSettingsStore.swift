@@ -244,6 +244,10 @@ public class AppSettingsStore: Store {
             removeProductIDAsFavorite(productID: productID, siteID: siteID)
         case .loadFavoriteProductIDs(let siteID, let onCompletion):
             loadFavoriteProductIDs(for: siteID, onCompletion: onCompletion)
+        case .dismissCustomFieldsTopBanner(let onCompletion):
+            dismissCustomFieldsTopBanner(onCompletion: onCompletion)
+        case .loadCustomFieldsTopBannerDismissState(let onCompletion):
+            loadCustomFieldsTopBannerDismissState(onCompletion: onCompletion)
         }
     }
 }
@@ -1061,6 +1065,23 @@ private extension AppSettingsStore {
 
     func loadFavoriteProductIDs(for siteID: Int64, onCompletion: ([Int64]) -> Void) {
         onCompletion(getStoreSettings(for: siteID).favoriteProductIDs)
+    }
+}
+
+// MARK: - Custom Fields
+//
+private extension AppSettingsStore {
+    func dismissCustomFieldsTopBanner(onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            try generalAppSettings.setValue(true, for: \.isCustomFieldsTopBannerDismissed)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    func loadCustomFieldsTopBannerDismissState(onCompletion: (Bool) -> Void) {
+        onCompletion(generalAppSettings.value(for: \.isCustomFieldsTopBannerDismissed))
     }
 }
 

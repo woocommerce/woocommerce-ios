@@ -6,30 +6,20 @@ struct PointOfSaleCardPresentPaymentOnboardingView: View {
 
     var body: some View {
         VStack(spacing: Constants.verticalSpacing) {
-            HStack {
-                Spacer()
-                Button {
-                    viewModel.cancelOnboarding()
-                } label: {
-                    Image(systemName: "xmark")
-                        .font(.posButtonSymbol)
-                }
-                .accessibilityLabel(Localization.cancelOnboarding)
-                .foregroundColor(Color.posTertiaryText)
-            }
             CardPresentPaymentsOnboardingView(viewModel: viewModel.onboardingViewModel)
                 // Hides the navigation bar title `navigationTitle` in `CardPresentPaymentsOnboardingView`.
                 .toolbar(.hidden)
         }
-        .padding(Constants.padding)
+        .posModalCloseButton(action: viewModel.cancelOnboarding,
+                             accessibilityLabel: Localization.cancelOnboarding)
         .safariSheet(url: $viewModel.onboardingURL)
+        .posModalSizing()
     }
 }
 
 private extension PointOfSaleCardPresentPaymentOnboardingView {
     enum Constants {
         static let verticalSpacing: CGFloat = 20.0
-        static let padding: CGFloat = 40.0
     }
 
     enum Localization {

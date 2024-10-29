@@ -2,46 +2,20 @@ import SwiftUI
 
 struct CustomFieldEditorView: View {
     @Environment(\.dismiss) private var dismiss
+    @ObservedObject private var viewModel: CustomFieldEditorViewModel
 
-    @State private var key: String
-    @State private var value: String
     @State private var showRichTextEditor = false
-    @State private var showingActionSheet = false
-    @State private var keyErrorMessage: String? = nil
+    @State private var showActionSheet = false
 
-    private let initialKey: String
-    private let initialValue: String
     private let isReadOnlyValue: Bool
-    private let onSave: (String, String) -> Void
-    private let onDelete: (() -> Void)?
-
-    private var hasUnsavedChanges: Bool {
-        key != initialKey || value != initialValue
-    }
-
-    private var hasValidKey: Bool {
-        !key.isEmpty && !key.hasPrefix("_")
-    }
 
     /// Initializer for custom field editor
     /// - Parameters:
-    ///  - key: The key for the custom field
-    ///  - value: The value for the custom field
+    ///  - viewModel: The viewModel for this View.
     ///  - isReadOnlyValue: Whether the value is read-only or not. To be used if the value is not string but JSON.
-    ///  - onSave: Closure to handle save action
-    ///  - onDelete: Closure to handle delete action, defaults to nil when the editor doesn't support deleting.
-    init(key: String,
-         value: String,
-         isReadOnlyValue: Bool = false,
-         onSave: @escaping (String, String) -> Void,
-         onDelete: (() -> Void)? = nil) {
-        self._key = State(initialValue: key)
-        self._value = State(initialValue: value)
-        self.initialKey = key
-        self.initialValue = value
+    init(viewModel: CustomFieldEditorViewModel, isReadOnlyValue: Bool = false) {
+        self.viewModel = viewModel
         self.isReadOnlyValue = isReadOnlyValue
-        self.onSave = onSave
-        self.onDelete = onDelete
     }
 
     var body: some View {
@@ -53,21 +27,18 @@ struct CustomFieldEditorView: View {
                         .foregroundColor(Color(.text))
                         .subheadlineStyle()
 
-                    TextField(Localization.keyPlaceholder, text: $key)
+                    TextField(Localization.keyPlaceholder, text: $viewModel.key)
                         .foregroundColor(Color(.text))
                         .subheadlineStyle()
                         .padding(insets: Layout.inputInsets)
                         .background(Color(.listForeground(modal: false)))
                         .overlay(
                             RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                                .stroke(keyErrorMessage != nil ? Color(.error) : Color(.separator))
+                                .stroke(viewModel.keyErrorMessage != nil ? Color(.error) : Color(.separator))
                         )
                         .cornerRadius(Layout.cornerRadius)
-                        .onChange(of: key) { newValue in
-                            validateKey(newValue)
-                        }
 
-                    if let error = keyErrorMessage {
+                    if let error = viewModel.keyErrorMessage {
                         Text(error)
                             .foregroundColor(Color(.error))
                             .font(.caption)
@@ -94,7 +65,7 @@ struct CustomFieldEditorView: View {
                     }
 
                     if showRichTextEditor {
-                        AztecEditorView(content: $value)
+                        AztecEditorView(content: $viewModel.value)
                         .frame(minHeight: Layout.minimumEditorSize)
                         .clipped()
                         .padding(insets: Layout.inputInsets)
@@ -104,7 +75,7 @@ struct CustomFieldEditorView: View {
                         )
                         .cornerRadius(Layout.cornerRadius)
                     } else {
-                        TextEditor(text: isReadOnlyValue ? .constant(value) : $value)
+                        TextEditor(text: isReadOnlyValue ? .constant(viewModel.value) : $viewModel.value)
                             .foregroundColor(Color(.text))
                             .subheadlineStyle()
                             .frame(minHeight: Layout.minimumEditorSize)
@@ -131,20 +102,20 @@ struct CustomFieldEditorView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack {
                     Button {
-                        saveChanges()
+                        viewModel.saveChanges()
                         dismiss()
                     } label: {
                         Text(Localization.saveButton)
                     }
-                    .disabled(!hasUnsavedChanges || !hasValidKey)
+                    .disabled(!viewModel.hasUnsavedChanges || !viewModel.hasValidKey)
 
                     Button(action: {
-                        showingActionSheet = true
+                        showActionSheet = true
                     }, label: {
                         Image(systemName: "ellipsis")
                             .renderingMode(.template)
                     })
-                    .confirmationDialog("More Options", isPresented: $showingActionSheet) {
+                    .confirmationDialog("More Options", isPresented: $showActionSheet) {
                         actionSheetContent
                     }
                 }
@@ -155,32 +126,21 @@ struct CustomFieldEditorView: View {
     @ViewBuilder
     private var actionSheetContent: some View {
         Button("Copy Key") { // todo-13493: set String to be translatable
-            UIPasteboard.general.string = key
+            UIPasteboard.general.string = viewModel.key
             // todo-13493: Show a notice that the key was copied
         }
 
         Button("Copy Value") { // todo-13493: set String to be translatable
-            UIPasteboard.general.string = value
+            UIPasteboard.general.string = viewModel.value
             // todo-13493: Show a notice that the value was copied
         }
 
-        if let onDelete = onDelete {
+        // Do not show Delete button if there's no callback, i.e: when creating a new field.
+        if viewModel.onDelete != nil {
             Button(Localization.deleteButton, role: .destructive) {
-                onDelete()
+                viewModel.deleteField()
                 dismiss()
             }
-        }
-    }
-
-    private func saveChanges() {
-        onSave(key, value)
-    }
-
-    private func validateKey(_ newValue: String) {
-        if newValue.hasPrefix("_") {
-            keyErrorMessage = Localization.keyErrorPrefix
-        } else {
-            keyErrorMessage = nil
         }
     }
 }
@@ -249,15 +209,9 @@ private extension CustomFieldEditorView {
             value: "Delete custom field",
             comment: "Button title for deleting a custom field"
         )
-
-        static let keyErrorPrefix = NSLocalizedString(
-            "customFieldEditorView.keyErrorPrefix",
-            value: "Invalid key: please remove the '_' character from the beginning.",
-            comment: "Error message shown when key starts with underscore"
-        )
     }
 }
 
 #Preview {
-    CustomFieldEditorView(key: "title", value: "value", onSave: { _, _ in }, onDelete: {})
+    CustomFieldEditorView(viewModel: CustomFieldEditorViewModel(key: "title", value: "value", onSave: { _, _ in }, onDelete: {}))
 }

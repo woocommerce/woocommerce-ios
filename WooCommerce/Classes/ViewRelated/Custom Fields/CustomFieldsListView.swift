@@ -193,7 +193,7 @@ private extension CustomFieldsListView {
     /// - When `customField` is nil, it configures the editor for creating a new field
     func buildCustomFieldEditorView(customField: CustomFieldsListViewModel.CustomFieldUI?) -> some View {
         NavigationView {
-            CustomFieldEditorView(
+            CustomFieldEditorView(viewModel: CustomFieldEditorViewModel(
                 key: customField?.key ?? "",
                 value: customField?.value ?? "",
                 onSave: { updatedKey, updatedValue in
@@ -206,7 +206,7 @@ private extension CustomFieldsListView {
                 onDelete: customField != nil ? {
                     viewModel.deleteField(customField!)
                 } : nil
-            )
+            ))
         }
     }
 }

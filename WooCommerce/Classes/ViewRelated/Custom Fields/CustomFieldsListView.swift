@@ -133,7 +133,9 @@ struct CustomFieldsListView: View {
         GeometryReader { geometry in
             VStack(spacing: .zero) {
                 CustomFieldsListTopBanner(width: geometry.size.width)
+                    .onDismiss { viewModel.dismissTopBanner() }
                     .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
+                    .renderedIf(viewModel.shouldShowTopBanner)
                 List(viewModel.combinedList) { customField in
                     Button(action: { viewModel.selectedCustomField = customField }) {
                         CustomFieldRow(isEditable: isEditable,

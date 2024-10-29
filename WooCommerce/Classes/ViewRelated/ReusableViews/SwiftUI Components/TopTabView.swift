@@ -154,73 +154,71 @@ struct TopTabView<Content: View>: View {
                 Divider()
             }
 
-            if showContent {
-                // Display all the tabs in an HStack, each tab the same width as the TopTabView
-                // This GeometryReader is used to set the width and drag offsets for swiping between views
-                GeometryReader { geometry in
-                    HStack(spacing: 0) {
-                        ForEach(0..<tabs.count, id: \.self) { index in
-                            // Tab content as passed to the TopTabView at init
-                            tabs[index].content()
-                                .frame(width: geometry.size.width)
-                                .frame(height: max(geometry.size.height, contentSize.height))
-                        }
+            // Display all the tabs in an HStack, each tab the same width as the TopTabView
+            // This GeometryReader is used to set the width and drag offsets for swiping between views
+            GeometryReader { geometry in
+                HStack(spacing: 0) {
+                    ForEach(0..<tabs.count, id: \.self) { index in
+                        // Tab content as passed to the TopTabView at init
+                        tabs[index].content()
+                            .frame(width: geometry.size.width)
+                            .frame(height: max(geometry.size.height, contentSize.height))
                     }
-                    .background(
-                        // Use a background GeometryReader to get the height of the tab content.
-                        // This is used later as the height of the top-level GeometryReader, to override the default
-                        // behaviour of setting the frame to zero (and hiding the content.)
-                        GeometryReader { contentGeometry in
-                            Color.clear
-                                .onAppear {
-                                    contentSize = contentGeometry.size
-                                }
-                                .onChange(of: contentGeometry.size) { newSize in
-                                    contentSize = newSize
-                                }
-                        })
-                    .offset(x: self.dragOffset(width: geometry.size.width))
-                    .animation(.interactiveSpring(), value: dragOffset(width: geometry.size.width))
-                    // Allows swipes to be started on any part of the content view area, not just occupied space e.g. Text.
-                    .contentShape(Rectangle())
-                    // The gesture could be simultaneous with an external scroll view
-                    .simultaneousGesture(
-                        DragGesture()
-                            .updating($dragState) { drag, state, transaction in
-                                let isHorizontalDrag = abs(drag.translation.width) > abs(drag.translation.height)
-                                if isHorizontalDrag {
-                                    state = .dragging(translation: drag.translation)
-                                }
-                            }
-                            .onEnded { drag in
-                                // We use `predictedEndTranslation` to account for velocity as the user ends the drag
-                                // For fast, short swipes, this will likely be higher than `translation`, and lead to a
-                                // more natural feeling animation.
-                                let horizontalAmount = drag.predictedEndTranslation.width as CGFloat
-                                let threshold: CGFloat = geometry.size.width / 2
-                                let newIndex: Int
-                                if horizontalAmount > threshold {
-                                    // A swipe more than 50% to the right: move back
-                                    newIndex = max(selectedTab - 1, 0)
-                                } else if horizontalAmount < -threshold {
-                                    // A swipe more than 50% to the left: move forward
-                                    newIndex = min(selectedTab + 1, tabs.count - 1)
-                                } else {
-                                    newIndex = selectedTab
-                                }
-                                // Notifiy the new tab that it's been selected, but only if it's changed
-                                if newIndex != selectedTab {
-                                    tabs[newIndex].onSelected?()
-                                }
-                                // Update the selected tab to the new index
-                                withAnimation(.easeOut) {
-                                    selectedTab = newIndex
-                                }
-                            }
-                    )
                 }
-                .frame(height: contentSize.height)
+                .background(
+                    // Use a background GeometryReader to get the height of the tab content.
+                    // This is used later as the height of the top-level GeometryReader, to override the default
+                    // behaviour of setting the frame to zero (and hiding the content.)
+                    GeometryReader { contentGeometry in
+                        Color.clear
+                            .onAppear {
+                                contentSize = contentGeometry.size
+                            }
+                            .onChange(of: contentGeometry.size) { newSize in
+                                contentSize = newSize
+                            }
+                    })
+                .offset(x: self.dragOffset(width: geometry.size.width))
+                .animation(.interactiveSpring(), value: dragOffset(width: geometry.size.width))
+                // Allows swipes to be started on any part of the content view area, not just occupied space e.g. Text.
+                .contentShape(Rectangle())
+                // The gesture could be simultaneous with an external scroll view
+                .simultaneousGesture(
+                    DragGesture()
+                        .updating($dragState) { drag, state, transaction in
+                            let isHorizontalDrag = abs(drag.translation.width) > abs(drag.translation.height)
+                            if isHorizontalDrag {
+                                state = .dragging(translation: drag.translation)
+                            }
+                        }
+                        .onEnded { drag in
+                            // We use `predictedEndTranslation` to account for velocity as the user ends the drag
+                            // For fast, short swipes, this will likely be higher than `translation`, and lead to a
+                            // more natural feeling animation.
+                            let horizontalAmount = drag.predictedEndTranslation.width as CGFloat
+                            let threshold: CGFloat = geometry.size.width / 2
+                            let newIndex: Int
+                            if horizontalAmount > threshold {
+                                // A swipe more than 50% to the right: move back
+                                newIndex = max(selectedTab - 1, 0)
+                            } else if horizontalAmount < -threshold {
+                                // A swipe more than 50% to the left: move forward
+                                newIndex = min(selectedTab + 1, tabs.count - 1)
+                            } else {
+                                newIndex = selectedTab
+                            }
+                            // Notifiy the new tab that it's been selected, but only if it's changed
+                            if newIndex != selectedTab {
+                                tabs[newIndex].onSelected?()
+                            }
+                            // Update the selected tab to the new index
+                            withAnimation(.easeOut) {
+                                selectedTab = newIndex
+                            }
+                        }
+                )
             }
+            .frame(height: contentSize.height)
         }
     }
 
@@ -366,7 +364,18 @@ struct ContentView_Previews: PreviewProvider {
             .previewLayout(.sizeThatFits)
             .preferredColorScheme(.dark)
             .previewDisplayName("Carrier Packages Dark Style")
-
+        TopTabView(tabs: carrierTabs,
+                   showContent: .constant(false),
+                   tabsContainerHorizontalPadding: nil,
+                   unselectedStateColor: .secondary,
+                   selectedTabIndicatorHeight: 3.0,
+                   tabPadding: 0,
+                   tabsNameFont: Font.subheadline.bold(),
+                   tabItemContentHorizontalPadding: 16.0,
+                   tabItemContentVerticalPadding: 9.0)
+            .previewLayout(.sizeThatFits)
+            .preferredColorScheme(.dark)
+            .previewDisplayName("Carrier Packages Without Content Dark Style")
         let oneTab: [TopTabItem] = [
             TopTabItem(name: "A tab name", content: {
                 List {
@@ -380,20 +389,7 @@ struct ContentView_Previews: PreviewProvider {
                         .font(.largeTitle)
                         .padding()
                 }
-            }),
-            TopTabItem(name: "A tab name", content: {
-                List {
-                    Text("Content for Tab 1")
-                        .font(.largeTitle)
-                        .padding()
-                    Text("Content for Tab 1")
-                        .font(.largeTitle)
-                        .padding()
-                    Text("Content for Tab 1")
-                        .font(.largeTitle)
-                        .padding()
-                }
-            }),
+            })
         ]
         TopTabView(tabs: oneTab)
             .previewLayout(.sizeThatFits)

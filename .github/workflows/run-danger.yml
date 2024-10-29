@@ -2,12 +2,12 @@ name: ☢️ Trigger Danger On Buildkite
 
 on:
   pull_request:
-    types: [labeled, unlabeled, milestoned, demilestoned]
+    types: [labeled, unlabeled, milestoned, demilestoned, ready_for_review]
 
 jobs:
   dangermattic:
     if: ${{ (github.event.pull_request.draft == false) }}
-    uses: Automattic/dangermattic/.github/workflows/reusable-retry-buildkite-step-on-events.yml@v1.1.0
+    uses: Automattic/dangermattic/.github/workflows/reusable-retry-buildkite-step-on-events.yml@v1.1.2.1
     with:
       org-slug: "automattic"
       pipeline-slug: "woocommerce-ios"

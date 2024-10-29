@@ -50,6 +50,7 @@ extension ProductVariation {
     @NSManaged public var product: Product?
     @NSManaged public var attributes: NSOrderedSet
     @NSManaged public var subscription: ProductSubscription?
+    @NSManaged public var globalUniqueID: String?
 
 }
 

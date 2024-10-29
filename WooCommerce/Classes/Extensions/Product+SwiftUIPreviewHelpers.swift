@@ -22,6 +22,7 @@ extension Product {
                 fullDescription: "Test full description",
                 shortDescription: "Test short description",
                 sku: "sku",
+                globalUniqueID: "1234567890",
                 price: "0",
                 regularPrice: "32.5",
                 salePrice: "17.6",

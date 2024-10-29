@@ -8,6 +8,14 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// View model for the items to ship.
     @Published private(set) var items: WooShippingItemsViewModel
 
+    // TODO: Update this to a property that refers to the package, when selected
+    /// Whether there is a package selected for the shipping label.
+    /// Temporary property that can be set to `true` to enable features that require a selected package, until package feature is complete.
+    let hasPackage: Bool = false
+
+    /// View model for the label shipping service.
+    let shippingService = WooShippingServiceViewModel()
+
     /// Address to ship from (store address), formatted for display.
     let originAddress: String
 

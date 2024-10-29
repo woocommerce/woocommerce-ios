@@ -11,6 +11,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     @Published var showSimpleProductsModal: Bool = false
 
     @Published private var currentPage: Int = Constants.initialPage
+    @Published private(set) var hasMoreItems: Bool = true
 
     var shouldShowHeaderBanner: Bool {
         // The banner it's shown as long as it hasn't already been dismissed once:
@@ -44,6 +45,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
             state = .loading
             items = try await itemProvider.providePointOfSaleItems(pageNumber: currentPage)
             if items.count == 0 {
+                hasMoreItems = false
                 state = .empty
             } else {
                 state = .loaded(items)
@@ -71,6 +73,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
             }
             // If there are no new items, we just return what was already in memory
             if uniqueNewItems.count == 0 {
+                hasMoreItems = false
                 state = .loaded(items)
             } else {
                 items.append(contentsOf: uniqueNewItems)

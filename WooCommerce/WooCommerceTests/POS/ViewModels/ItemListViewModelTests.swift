@@ -417,6 +417,41 @@ final class ItemListViewModelTests: XCTestCase {
 
         XCTAssertTrue(sut.showSimpleProductsModal)
     }
+
+    func test_viewModel_when_has_items_then_hasMoreItems_is_true() async {
+        // Given/When
+        await sut.loadInitialItems()
+
+        // Then
+        XCTAssertTrue(sut.hasMoreItems)
+    }
+
+    func test_viewModel_when_has_no_items_then_hasMoreItems_is_false() async {
+        // Given
+        let itemProvider = MockPOSItemProvider()
+        itemProvider.shouldReturnZeroItems = true
+        let sut = ItemListViewModel(itemProvider: itemProvider)
+
+        // When
+        await sut.loadInitialItems()
+
+        // Then
+        XCTAssertFalse(sut.hasMoreItems)
+    }
+
+    func test_viewModel_when_loadNextItems_has_no_new_items_then_hasMoreItems_is_false() async {
+        // Given/When
+        await sut.loadInitialItems()
+
+        XCTAssertTrue(sut.hasMoreItems)
+        XCTAssertEqual(sut.items.count, 2, "Initial state")
+
+        await sut.loadNextItems()
+
+        // Then
+        XCTAssertEqual(sut.items.count, 2, "Check there are no new items")
+        XCTAssertFalse(sut.hasMoreItems)
+    }
 }
 
 private extension ItemListViewModelTests {

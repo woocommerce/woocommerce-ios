@@ -48,6 +48,7 @@ struct WooShippingPostPurchaseView: View {
                         Image(systemName: "info.circle")
                         Text(Localization.info)
                             .font(.footnote)
+                            .multilineTextAlignment(.leading)
                     }
                 }
                 Divider()
@@ -57,6 +58,7 @@ struct WooShippingPostPurchaseView: View {
                     } label: {
                         HStack {
                             Text(Localization.trackShipment)
+                                .multilineTextAlignment(.leading)
                             Image(systemName: "arrow.up.right.square")
                         }
                     }
@@ -65,6 +67,7 @@ struct WooShippingPostPurchaseView: View {
                     } label: {
                         HStack {
                             Text(Localization.schedulePickup)
+                                .multilineTextAlignment(.leading)
                             Image(systemName: "arrow.up.right.square")
                         }
                     }
@@ -74,6 +77,7 @@ struct WooShippingPostPurchaseView: View {
                         Text(Localization.requestRefund)
                     }
                 }
+                .fixedSize(horizontal: false, vertical: true)
                 .font(.subheadline)
                 .bold()
             }

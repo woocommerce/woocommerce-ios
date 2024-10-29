@@ -114,7 +114,7 @@ struct CustomFieldEditorView: View {
                 }
             }
         }
-        .closeButtonWithDiscardChangesPrompt(hasChanges: hasUnsavedChanges,
+        .closeButtonWithDiscardChangesPrompt(hasChanges: viewModel.hasUnsavedChanges,
                                              closeButtonLabel: { Text(Localization.cancelButton) })
         .notice($viewModel.notice)
     }

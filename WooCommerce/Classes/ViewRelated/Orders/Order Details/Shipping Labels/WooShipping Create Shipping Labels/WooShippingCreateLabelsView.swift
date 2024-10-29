@@ -122,7 +122,7 @@ struct WooShippingCreateLabelsView: View {
                                 shipmentDetails
                             }
                         } else {
-                            HStack(spacing: Layout.bottomSheetPadding) {
+                            HStack(alignment: .top, spacing: Layout.bottomSheetPadding) {
                                 orderDetails
                                 Divider()
                                     .padding(.trailing, Layout.bottomSheetPadding * -1)

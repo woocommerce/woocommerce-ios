@@ -1717,6 +1717,7 @@
 		93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */ = {isa = PBXBuildFile; fileRef = 93BCF01E20DC2CE200EBF7A1 /* bash_secrets.tpl */; };
 		93FA787221CD2A1A00B663E5 /* CurrencySettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93FA787121CD2A1A00B663E5 /* CurrencySettingsTests.swift */; };
 		953728F82B23635300FDF1D1 /* UIAlertController+helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953728F72B23635300FDF1D1 /* UIAlertController+helpers.swift */; };
+		95968A512CD109D6001F0DA1 /* CustomFieldsListTopBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95968A502CD109D6001F0DA1 /* CustomFieldsListTopBanner.swift */; };
 		A650BE862578E76600C655E0 /* MockStorageManager+Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = A650BE842578E76600C655E0 /* MockStorageManager+Sample.swift */; };
 		A650BE872578E76600C655E0 /* MockStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A650BE852578E76600C655E0 /* MockStorageManager.swift */; };
 		A6557218258B7510008AE7CA /* OrderListCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6557217258B7510008AE7CA /* OrderListCellViewModel.swift */; };
@@ -4750,6 +4751,7 @@
 		93BCF01E20DC2CE200EBF7A1 /* bash_secrets.tpl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bash_secrets.tpl; sourceTree = "<group>"; };
 		93FA787121CD2A1A00B663E5 /* CurrencySettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencySettingsTests.swift; sourceTree = "<group>"; };
 		953728F72B23635300FDF1D1 /* UIAlertController+helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIAlertController+helpers.swift"; sourceTree = "<group>"; };
+		95968A502CD109D6001F0DA1 /* CustomFieldsListTopBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFieldsListTopBanner.swift; sourceTree = "<group>"; };
 		9D2992FEF3D1246B8CCC2EBB /* Pods-WooCommerceTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A650BE842578E76600C655E0 /* MockStorageManager+Sample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MockStorageManager+Sample.swift"; path = "../../../Yosemite/YosemiteTests/Mocks/MockStorageManager+Sample.swift"; sourceTree = "<group>"; };
 		A650BE852578E76600C655E0 /* MockStorageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockStorageManager.swift; path = ../../../Yosemite/YosemiteTests/Mocks/MockStorageManager.swift; sourceTree = "<group>"; };
@@ -10572,6 +10574,7 @@
 				86F9D3632C897FFE00B1835B /* CustomFieldEditorView.swift */,
 				86F5FFE12CA302B300C767C4 /* CustomFieldsListViewModel.swift */,
 				86EC6EB62CD0A53E00D7D2FE /* CustomFieldEditorViewModel.swift */,
+				95968A502CD109D6001F0DA1 /* CustomFieldsListTopBanner.swift */,
 			);
 			path = "Custom Fields";
 			sourceTree = "<group>";
@@ -16347,6 +16350,7 @@
 				D817586422BDD81600289CFE /* OrderDetailsDataSource.swift in Sources */,
 				7E7C5F872719A93C00315B61 /* ProductCategoryListViewController.swift in Sources */,
 				2631D4FE29F2141D00F13F20 /* StorePlanBannerPresenter.swift in Sources */,
+				95968A512CD109D6001F0DA1 /* CustomFieldsListTopBanner.swift in Sources */,
 				68DF5A8D2CB38EEA000154C9 /* EditableOrderCouponLineViewModel.swift in Sources */,
 				CEC3CC762C934F5500B93FBE /* WooShippingItemsDataSource.swift in Sources */,
 				DEC51B06276B3F3C009F3DF4 /* Int64+Helpers.swift in Sources */,

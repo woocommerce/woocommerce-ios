@@ -16,8 +16,6 @@ final class CustomFieldEditorViewModel: ObservableObject {
     private let initialKey: String
     private let initialValue: String
 
-    /// Due to the API limitation, when creating a new field, the new key should not be the same as existing custom fields's key value.
-    /// Those existing key values should be provided here. Note that this rule only applies for new field creation, not when editing.
     private let disallowedKeys: [String]
 
     private let onSave: (String, String) -> Void

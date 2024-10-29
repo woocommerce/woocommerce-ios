@@ -102,13 +102,11 @@ struct CustomFieldsListView: View {
     @ObservedObject private var viewModel: CustomFieldsListViewModel
 
     let isEditable: Bool
-    let disallowedKeysForCeation: [String]
 
     init(isEditable: Bool,
          viewModel: CustomFieldsListViewModel) {
         self.isEditable = isEditable
         self.viewModel = viewModel
-        self.disallowedKeysForCeation = viewModel.originalCustomFields.map(\.title)
     }
 
     var body: some View {
@@ -123,13 +121,13 @@ struct CustomFieldsListView: View {
         .listStyle(.plain)
         .sheet(item: $viewModel.selectedCustomField) { customField in
             /// When editing a newly added and unsaved custom field (identified by it having nil `fieldId`), provide disallowed keys.
-            let disallowedKeys = customField.fieldId == nil ? disallowedKeysForCeation : []
+            let disallowedKeys = customField.fieldId == nil ? viewModel.disallowedKeysForCreation : []
 
             buildCustomFieldEditorView(customField: customField,
                                        disallowedKeys: disallowedKeys)
         }
         .sheet(isPresented: $viewModel.isAddingNewField) {
-            buildCustomFieldEditorView(customField: nil, disallowedKeys: disallowedKeysForCeation)
+            buildCustomFieldEditorView(customField: nil, disallowedKeys: viewModel.disallowedKeysForCreation)
         }
         .notice($viewModel.notice)
     }

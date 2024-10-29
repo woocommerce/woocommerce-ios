@@ -1,10 +1,7 @@
 import SwiftUI
-import Yosemite
 
 struct WooShippingPostPurchaseView: View {
-    private let labelSizes: [ShippingLabelPaperSize] = [.label, .letter, .legal]
-
-    @State var selectedLabelSize: ShippingLabelPaperSize = .label
+    @State private var viewModel = WooShippingPostPurchaseViewModel()
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -16,19 +13,19 @@ struct WooShippingPostPurchaseView: View {
 
             VStack(alignment: .leading, spacing: 16) {
                 Menu {
-                    ForEach(labelSizes, id: \.self) { labelSize in
+                    ForEach(viewModel.labelSizes, id: \.self) { labelSize in
                         Button {
-                            selectedLabelSize = labelSize
+                            viewModel.selectedLabelSize = labelSize
                         } label: {
                             Text(labelSize.description)
-                            if labelSize == selectedLabelSize {
+                            if labelSize == viewModel.selectedLabelSize {
                                 Image(systemName: "checkmark")
                             }
                         }
                     }
                 } label: {
                     HStack {
-                        Text(selectedLabelSize.description)
+                        Text(viewModel.selectedLabelSize.description)
                             .bodyStyle()
                         Spacer()
                         Image(systemName: "chevron.up.chevron.down")

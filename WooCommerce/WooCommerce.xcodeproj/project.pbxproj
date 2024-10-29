@@ -1702,6 +1702,8 @@
 		86DBBB0BDEA3488E2BEBB314 /* Pods_WooCommerce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */; };
 		86DE68822B4BA47A00B437A6 /* BlazeAdDestinationSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE68812B4BA47900B437A6 /* BlazeAdDestinationSettingViewModel.swift */; };
 		86E40AED2B597DEC00990365 /* BlazeCampaignCreationCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E40AEC2B597DEC00990365 /* BlazeCampaignCreationCoordinatorTests.swift */; };
+		86EC6EB72CD0A53E00D7D2FE /* CustomFieldEditorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86EC6EB62CD0A53E00D7D2FE /* CustomFieldEditorViewModel.swift */; };
+		86EC6EB92CD0BA6A00D7D2FE /* CustomFieldEditorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86EC6EB82CD0BA6A00D7D2FE /* CustomFieldEditorViewModelTests.swift */; };
 		86F0896F2B307D7E00D668A1 /* ThemesPreviewViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F0896E2B307D7E00D668A1 /* ThemesPreviewViewModelTests.swift */; };
 		86F5FFE22CA302B300C767C4 /* CustomFieldsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F5FFE12CA302B300C767C4 /* CustomFieldsListViewModel.swift */; };
 		86F5FFE42CA30D9200C767C4 /* CustomFieldsListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F5FFE32CA30D9200C767C4 /* CustomFieldsListViewModelTests.swift */; };
@@ -4728,6 +4730,8 @@
 		86B3E2562C6B249C0002420B /* HelpAndSupportViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpAndSupportViewModelTests.swift; sourceTree = "<group>"; };
 		86DE68812B4BA47900B437A6 /* BlazeAdDestinationSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAdDestinationSettingViewModel.swift; sourceTree = "<group>"; };
 		86E40AEC2B597DEC00990365 /* BlazeCampaignCreationCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignCreationCoordinatorTests.swift; sourceTree = "<group>"; };
+		86EC6EB62CD0A53E00D7D2FE /* CustomFieldEditorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFieldEditorViewModel.swift; sourceTree = "<group>"; };
+		86EC6EB82CD0BA6A00D7D2FE /* CustomFieldEditorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFieldEditorViewModelTests.swift; sourceTree = "<group>"; };
 		86F0896E2B307D7E00D668A1 /* ThemesPreviewViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesPreviewViewModelTests.swift; sourceTree = "<group>"; };
 		86F5FFE12CA302B300C767C4 /* CustomFieldsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFieldsListViewModel.swift; sourceTree = "<group>"; };
 		86F5FFE32CA30D9200C767C4 /* CustomFieldsListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFieldsListViewModelTests.swift; sourceTree = "<group>"; };
@@ -9762,6 +9766,7 @@
 			children = (
 				CC5BA5F4287EDC900072F307 /* CustomFieldViewModelTests.swift */,
 				86F5FFE32CA30D9200C767C4 /* CustomFieldsListViewModelTests.swift */,
+				86EC6EB82CD0BA6A00D7D2FE /* CustomFieldEditorViewModelTests.swift */,
 			);
 			path = "Custom Fields";
 			sourceTree = "<group>";
@@ -10566,6 +10571,7 @@
 				B6C838DD28793B3A003AB786 /* CustomFieldViewModel.swift */,
 				86F9D3632C897FFE00B1835B /* CustomFieldEditorView.swift */,
 				86F5FFE12CA302B300C767C4 /* CustomFieldsListViewModel.swift */,
+				86EC6EB62CD0A53E00D7D2FE /* CustomFieldEditorViewModel.swift */,
 			);
 			path = "Custom Fields";
 			sourceTree = "<group>";
@@ -15976,6 +15982,7 @@
 				02F36F472978349500D97EA0 /* DomainPurchaseSuccessView.swift in Sources */,
 				B9DA153C280EC7D700FC67DD /* OrderRefundsOptionsDeterminer.swift in Sources */,
 				02FE734B2B21613D00CD486B /* ProductWithQuantityStepperView.swift in Sources */,
+				86EC6EB72CD0A53E00D7D2FE /* CustomFieldEditorViewModel.swift in Sources */,
 				DEDA8DBC2B1983570076BF0F /* ThemeSettingView.swift in Sources */,
 				03825FE92A97B63800363BDA /* AdaptiveImage.swift in Sources */,
 				453227B723C4D6EC00D816B3 /* TimeZone+Woo.swift in Sources */,
@@ -16574,6 +16581,7 @@
 				B55BC1F321A8790F0011A0C0 /* StringHTMLTests.swift in Sources */,
 				0375799D2822F9040083F2E1 /* MockCardPresentPaymentsOnboardingPresenter.swift in Sources */,
 				455800CC24C6F83F00A8D117 /* ProductSettingsSectionsTests.swift in Sources */,
+				86EC6EB92CD0BA6A00D7D2FE /* CustomFieldEditorViewModelTests.swift in Sources */,
 				CE86C8332CC8F9BB00B1764D /* WooShippingServiceCardViewModelTests.swift in Sources */,
 				26F92DBE2C7ECAB20074A208 /* EditOrderFormTests.swift in Sources */,
 				D85B833F2230F268002168F3 /* SummaryTableViewCellTests.swift in Sources */,

@@ -23,19 +23,14 @@ final class ItemListViewModel: ItemListViewModelProtocol {
         return !isHeaderBannerDismissed && (state.isLoaded || state.isLoading) && items.isNotEmpty
     }
 
-    private let selectedItemSubject: PassthroughSubject<POSItem, Never> = .init()
-
-    let selectedItemPublisher: AnyPublisher<POSItem, Never>
-
     var statePublisher: Published<ItemListViewModel.ItemListState>.Publisher { $state }
 
     init(posModel: PointOfSaleAggregateModel) {
         self.posModel = posModel
-        selectedItemPublisher = selectedItemSubject.eraseToAnyPublisher()
     }
 
     func select(_ item: POSItem) {
-        selectedItemSubject.send(item)
+        posModel.selected(item: item)
     }
 
     @MainActor

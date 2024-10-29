@@ -21,14 +21,6 @@ final class CartViewModel: CartViewModelProtocol {
         self.posModel = posModel
     }
 
-    func addItemToCart(_ item: POSItem) {
-        let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
-        posModel.addItemToCart(cartItem)
-        itemToScrollToWhenCartUpdated = cartItem
-
-        analytics.track(.pointOfSaleAddItemToCart)
-    }
-
     func removeItemFromCart(_ cartItem: CartItem) {
         posModel.removeItemFromCart(cartItem)
     }
@@ -37,7 +29,9 @@ final class CartViewModel: CartViewModelProtocol {
         posModel.removeAllItemsFromCart()
     }
 
-    var itemToScrollToWhenCartUpdated: CartItem?
+    var itemToScrollToWhenCartUpdated: CartItem? {
+        posModel.itemsInCart.first
+    }
 
     var itemsInCartLabel: String? {
         switch posModel.itemsInCart.count {

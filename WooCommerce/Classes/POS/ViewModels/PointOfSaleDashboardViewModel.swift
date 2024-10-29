@@ -61,21 +61,12 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         self.cartViewModel = cartViewModel
         self.connectivityObserver = connectivityObserver
 
-        observeSelectedItemToAddToCart()
         observeItemListState()
         observeConnectivity()
     }
 }
 
 private extension PointOfSaleDashboardViewModel {
-    func observeSelectedItemToAddToCart() {
-        itemListViewModel.selectedItemPublisher
-            .sink { [weak self] selectedItem in
-                self?.cartViewModel.addItemToCart(selectedItem)
-            }
-            .store(in: &cancellables)
-    }
-
     func observeItemListState() {
         Publishers.CombineLatest(itemListViewModel.statePublisher, posModel.$allItems)
             .receive(on: DispatchQueue.main)

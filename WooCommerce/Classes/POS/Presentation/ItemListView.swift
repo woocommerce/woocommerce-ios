@@ -203,11 +203,13 @@ private extension ItemListView {
 }
 
 #if DEBUG
+import class WooFoundation.MockAnalyticsPreview
 #Preview {
     let posModel = PointOfSaleAggregateModel(
         itemProvider: POSItemProviderPreview(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderService: POSOrderPreviewService())
+        orderService: POSOrderPreviewService(),
+        analytics: MockAnalyticsPreview())
     ItemListView(viewModel: ItemListViewModel(posModel: posModel))
 }
 #endif

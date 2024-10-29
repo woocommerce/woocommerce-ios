@@ -8,6 +8,8 @@ import struct Yosemite.Order
 import struct Yosemite.OrderItem
 import struct Yosemite.POSCartItem
 
+import protocol WooFoundation.Analytics
+
 final class PointOfSaleAggregateModel: ObservableObject {
 
     enum OrderStage {
@@ -26,6 +28,7 @@ final class PointOfSaleAggregateModel: ObservableObject {
     private let orderService: POSOrderServiceProtocol
     let cardPresentPaymentService: CardPresentPaymentFacade
     private let itemProvider: POSItemProvider
+    private let analytics: Analytics
 
     private var cancellables: Set<AnyCancellable> = []
     private var startPaymentOnReaderConnection: AnyCancellable?
@@ -33,10 +36,12 @@ final class PointOfSaleAggregateModel: ObservableObject {
 
     init(itemProvider: POSItemProvider,
          cardPresentPaymentService: CardPresentPaymentFacade,
-         orderService: POSOrderServiceProtocol) {
+         orderService: POSOrderServiceProtocol,
+         analytics: Analytics) {
         self.itemProvider = itemProvider
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderService = orderService
+        self.analytics = analytics
         observeCartItemsToCheckIfCartIsEmpty()
         observeCardPresentPaymentEvents()
         observeReaderConnectionStatus()
@@ -75,6 +80,12 @@ final class PointOfSaleAggregateModel: ObservableObject {
     func editOrder() {
         orderStage = .building
         paymentState = .idle
+    }
+
+    func selected(item: POSItem) {
+        let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
+        addItemToCart(cartItem)
+        analytics.track(.pointOfSaleAddItemToCart)
     }
 
     func addItemToCart(_ item: CartItem) {

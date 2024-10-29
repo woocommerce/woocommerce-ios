@@ -257,7 +257,8 @@ import class WooFoundation.MockAnalyticsProviderPreview
     let posModel = PointOfSaleAggregateModel(
         itemProvider: POSItemProviderPreview(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderService: POSOrderPreviewService())
+        orderService: POSOrderPreviewService(),
+        analytics: MockAnalyticsPreview())
     let totalsViewModel = TotalsViewModel(
         posModel: posModel,
         currencyFormatter: .init(currencySettings: .init()))

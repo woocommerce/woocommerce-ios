@@ -22,7 +22,17 @@ final class PaymentsTests: XCTestCase {
     }
 
     func test_load_learn_more_link() throws {
-        try PaymentsScreen().tapLearnMoreIPPLink()
+        guard UIDevice.current.userInterfaceIdiom == .pad else {
+            throw XCTSkip(
+                """
+                Skipping on the iPhone.
+                Calling tap() on a link within attributed text no longer works in UI tests on Xcode 16.
+                Using click() instead, which is only supported on iPad.
+                """
+            )
+        }
+
+        try PaymentsScreen().clickLearnMoreIPPLink()
             .verifyIPPDocumentationLoadedInWebView()
     }
 

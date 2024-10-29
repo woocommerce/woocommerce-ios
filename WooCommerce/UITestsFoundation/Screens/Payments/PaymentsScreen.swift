@@ -75,7 +75,7 @@ public final class PaymentsScreen: ScreenObject {
         return try CardReaderManualsScreen()
     }
 
-    public func tapLearnMoreIPPLink() throws -> Self {
+    public func clickLearnMoreIPPLink() throws -> Self {
         learnMoreButton.coordinate(withNormalizedOffset: CGVector(dx: 0.1, dy: 0.5)).click()
         return self
     }

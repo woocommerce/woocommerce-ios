@@ -385,7 +385,7 @@ extension OrderDetailsDataSource: UITableViewDataSource {
                     "sectionTitle": section.title ?? "nil"
                 ],
                 level: .error
-            )            
+            )
             return UITableViewCell()
         }
         let row = section.rows[indexPath.row]

@@ -51,3 +51,20 @@ extension PointOfSalePaymentState {
         }
     }
 }
+
+extension PointOfSalePaymentState {
+    var cardHasBeenTapped: Bool {
+        switch self {
+        case .processingPayment,
+                .paymentError,
+                .cardPaymentSuccessful:
+            return true
+        case .idle,
+                .validatingOrder,
+                .validatingOrderError,
+                .preparingReader,
+                .acceptingCard:
+            return false
+        }
+    }
+}

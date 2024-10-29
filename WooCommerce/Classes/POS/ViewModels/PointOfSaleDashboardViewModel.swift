@@ -15,11 +15,34 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     private let connectivityObserver: ConnectivityObserver
 
-    @Published private(set) var isAddMoreDisabled: Bool = false
-    @Published var isExitPOSDisabled: Bool = false
-    @Published var isReaderDisconnectionDisabled: Bool = false
-    /// This boolean is used to determine if the whole totals/payments view is occupying the full screen (cart is not showed)
-    @Published var isTotalsViewFullScreen: Bool = false
+    var isAddMoreDisabled: Bool {
+        switch posModel.paymentState {
+        case .processingPayment,
+                .paymentError,
+                .cardPaymentSuccessful,
+                .validatingOrder,
+                .preparingReader:
+            return true
+        case .idle, .validatingOrderError, .acceptingCard:
+            return posModel.orderState.isSyncing
+        }
+    }
+
+    var isExitPOSDisabled: Bool {
+        switch posModel.paymentState {
+        case .processingPayment:
+            return true
+        case .idle,
+                .acceptingCard,
+                .validatingOrder,
+                .validatingOrderError,
+                .preparingReader,
+                .paymentError,
+                .cardPaymentSuccessful:
+            return false
+        }
+    }
+
     @Published var isInitialLoading: Bool = false
     @Published var isError: Bool = false
     @Published var isEmpty: Bool = false
@@ -39,7 +62,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         self.connectivityObserver = connectivityObserver
 
         observeSelectedItemToAddToCart()
-        observePaymentStateForButtonDisabledProperties()
         observeItemListState()
         observeConnectivity()
     }
@@ -52,64 +74,6 @@ private extension PointOfSaleDashboardViewModel {
                 self?.cartViewModel.addItemToCart(selectedItem)
             }
             .store(in: &cancellables)
-    }
-
-    func observePaymentStateForButtonDisabledProperties() {
-        Publishers.CombineLatest(posModel.$paymentState, posModel.$orderState)
-            .map { paymentState, orderState in
-                switch paymentState {
-                case .processingPayment,
-                        .paymentError,
-                        .cardPaymentSuccessful,
-                        .validatingOrder,
-                        .preparingReader:
-                    return true
-                case .idle, .validatingOrderError, .acceptingCard:
-                    return orderState.isSyncing
-                }
-            }
-            .assign(to: &$isAddMoreDisabled)
-
-        posModel.$paymentState
-            .map { paymentState in
-                switch paymentState {
-                case .processingPayment:
-                    return true
-                case .idle,
-                        .acceptingCard,
-                        .validatingOrder,
-                        .validatingOrderError,
-                        .preparingReader,
-                        .paymentError,
-                        .cardPaymentSuccessful:
-                    return false
-                }
-            }
-            .assign(to: &$isExitPOSDisabled)
-
-        let afterCardTapPaymentStates = posModel.$paymentState
-            .map { paymentState in
-                switch paymentState {
-                case .processingPayment,
-                        .paymentError,
-                        .cardPaymentSuccessful:
-                    return true
-                case .idle,
-                        .validatingOrder,
-                        .validatingOrderError,
-                        .preparingReader,
-                        .acceptingCard:
-                    return false
-                }
-            }
-            .share()
-
-        afterCardTapPaymentStates
-            .assign(to: &$isTotalsViewFullScreen)
-
-        afterCardTapPaymentStates
-            .assign(to: &$isReaderDisconnectionDisabled)
-
     }
 
     func observeItemListState() {

@@ -31,7 +31,7 @@ final class ProductSKUBarcodeScannerCoordinatorTests: XCTestCase {
         let permissionChecker = MockCaptureDevicePermissionChecker(authorizationStatus: .notDetermined)
         // Grants access.
         permissionChecker.whenRequestingAccess(thenReturn: true)
-        let coordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
+        let coordinator = ProducBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                               permissionChecker: permissionChecker,
                                                               onSKUBarcodeScanned: { _ in })
 
@@ -47,7 +47,7 @@ final class ProductSKUBarcodeScannerCoordinatorTests: XCTestCase {
         let permissionChecker = MockCaptureDevicePermissionChecker(authorizationStatus: .notDetermined)
         // Denies access.
         permissionChecker.whenRequestingAccess(thenReturn: false)
-        let coordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
+        let coordinator = ProducBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                               permissionChecker: permissionChecker,
                                                               onSKUBarcodeScanned: { _ in })
 
@@ -61,7 +61,7 @@ final class ProductSKUBarcodeScannerCoordinatorTests: XCTestCase {
 
     func test_coordinator_shows_sku_scanner_when_permission_is_authorized() {
         // Given
-        let coordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
+        let coordinator = ProducBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                               permissionChecker: MockCaptureDevicePermissionChecker(authorizationStatus: .authorized),
                                                               onSKUBarcodeScanned: { _ in })
 
@@ -74,7 +74,7 @@ final class ProductSKUBarcodeScannerCoordinatorTests: XCTestCase {
 
     func test_coordinator_shows_alert_when_permission_is_denied() {
         // Given
-        let coordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
+        let coordinator = ProducBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                               permissionChecker: MockCaptureDevicePermissionChecker(authorizationStatus: .denied),
                                                               onSKUBarcodeScanned: { _ in })
 
@@ -88,7 +88,7 @@ final class ProductSKUBarcodeScannerCoordinatorTests: XCTestCase {
 
     func test_coordinator_shows_alert_when_permission_is_restricted() {
         // Given
-        let coordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
+        let coordinator = ProducBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                               permissionChecker: MockCaptureDevicePermissionChecker(authorizationStatus: .restricted),
                                                               onSKUBarcodeScanned: { _ in })
 

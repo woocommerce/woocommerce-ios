@@ -1032,7 +1032,7 @@ private struct ProductSKUInputScannerView: UIViewControllerRepresentable {
     let onBarcodeScanned: ((ScannedBarcode) -> Void)?
 
     func makeUIViewController(context: Context) -> ScannerContainerViewController {
-        SKUCodeScannerProvider.SKUCodeScanner(onBarcodeScanned: { barcode in
+        ProductBarcodeScannerProvider.barcodeScanner(onBarcodeScanned: { barcode in
             onBarcodeScanned?(barcode)
         })
     }

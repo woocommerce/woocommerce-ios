@@ -27,7 +27,7 @@ final class ProductInventorySettingsViewController: UIViewController {
     typealias Completion = (_ data: ProductInventoryEditableData) -> Void
     private let onCompletion: Completion
 
-    private var skuBarcodeScannerCoordinator: ProductSKUBarcodeScannerCoordinator?
+    private var skuBarcodeScannerCoordinator: ProducBarcodeScannerCoordinator?
 
     private var sectionsSubscription: AnyCancellable?
 
@@ -386,10 +386,10 @@ private extension ProductInventorySettingsViewController {
     }
 
     func scanGlobalUniqueIdentifierButtonTapped() {
-        ServiceLocator.analytics.track(.productInventorySettingsSKUScannerButtonTapped)
+        ServiceLocator.analytics.track(.productInventorySettingsGlobalUniqueIDScannerButtonTapped)
 
         startBarcodeScanning(onCompletion: { [weak self] barcode in
-            ServiceLocator.analytics.track(.productInventorySettingsSKUScanned)
+            ServiceLocator.analytics.track(.productInventorySettingsGlobalUniqueIDScanned)
             self?.viewModel.handleGlobalUniqueIdentifierFromBarcodeScanner(barcode)
         })
     }
@@ -399,9 +399,7 @@ private extension ProductInventorySettingsViewController {
             return
         }
 
-        ServiceLocator.analytics.track(.productInventorySettingsSKUScannerButtonTapped)
-
-        let coordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController) { barcode in
+        let coordinator = ProducBarcodeScannerCoordinator(sourceNavigationController: navigationController) { barcode in
             onCompletion(barcode.payloadStringValue)
         }
 

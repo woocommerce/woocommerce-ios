@@ -136,6 +136,7 @@ struct CustomFieldsListView: View {
                     .onDismiss { viewModel.dismissTopBanner() }
                     .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
                     .renderedIf(viewModel.shouldShowTopBanner)
+
                 List(viewModel.combinedList) { customField in
                     Button(action: { viewModel.selectedCustomField = customField }) {
                         CustomFieldRow(isEditable: isEditable,
@@ -143,7 +144,8 @@ struct CustomFieldsListView: View {
                                     content: customField.value.removedHTMLTags,
                                     contentURL: nil)
                     }
-                }.listStyle(.plain)
+                }
+                .listStyle(.plain)
             }
             .sheet(item: $viewModel.selectedCustomField) { customField in
 	            /// When editing a newly added and unsaved custom field (identified by it having nil `fieldId`), provide disallowed keys.

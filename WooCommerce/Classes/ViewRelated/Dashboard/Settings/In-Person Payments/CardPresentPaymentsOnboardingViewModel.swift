@@ -147,7 +147,8 @@ extension CardPresentPaymentsOnboardingViewModel: Equatable {
     static func == (lhs: CardPresentPaymentsOnboardingViewModel, rhs: CardPresentPaymentsOnboardingViewModel) -> Bool {
         lhs.state == rhs.state &&
         lhs.userIsAdministrator == rhs.userIsAdministrator &&
-        lhs.learnMoreURL == rhs.learnMoreURL
+        lhs.learnMoreURL == rhs.learnMoreURL &&
+        lhs.shouldShow == rhs.shouldShow
     }
 }
 

@@ -38,6 +38,7 @@ struct WooCarrierPackagesTabView: View {
                                 selectedPackageId = selectedPackageId == package.id ? nil : package.id
                             },
                             starAction: {
+                                // Just temporary, will be replaced with proper logic
                                 if starredPackages.contains(package.id) {
                                     starredPackages.remove(package.id)
                                 }

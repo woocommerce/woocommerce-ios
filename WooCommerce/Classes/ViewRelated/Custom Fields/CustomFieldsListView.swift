@@ -140,10 +140,14 @@ struct CustomFieldsListView: View {
         }
         .listStyle(.plain)
         .sheet(item: $viewModel.selectedCustomField) { customField in
-            buildCustomFieldEditorView(customField: customField)
+            /// When editing a newly added and unsaved custom field (identified by it having nil `fieldId`), provide disallowed keys.
+            let disallowedKeys = customField.fieldId == nil ? viewModel.disallowedKeysForCreation : []
+
+            buildCustomFieldEditorView(customField: customField,
+                                       disallowedKeys: disallowedKeys)
         }
         .sheet(isPresented: $viewModel.isAddingNewField) {
-            buildCustomFieldEditorView(customField: nil)
+            buildCustomFieldEditorView(customField: nil, disallowedKeys: viewModel.disallowedKeysForCreation)
         }
         .notice($viewModel.notice)
     }
@@ -208,14 +212,20 @@ private struct CustomFieldRow: View {
 // MARK: - Helpers
 //
 private extension CustomFieldsListView {
-    /// Builds the Custom Field Editor View.
-    /// - When `customField` is provided, it configures the editor for editing an existing field
-    /// - When `customField` is nil, it configures the editor for creating a new field
-    func buildCustomFieldEditorView(customField: CustomFieldsListViewModel.CustomFieldUI?) -> some View {
+    /// Builds the Custom Field Editor View. There are two possible modes for the editor:
+    /// - Creating a new custom field: the Key and Value fields will be empty, and deleting option should be hidden.
+    /// - Editing an existing custom field: the Key and Value fields will use the values from the provided `customField`
+    ///
+    /// Parameters:
+    /// - `customField`: Provide one when editing an existing field, otherwise (i.e: when creating a new field) keep it nil.
+    /// - `disallowedKeys`: List of String that can't be used when editing a custom field key.
+    func buildCustomFieldEditorView(customField: CustomFieldsListViewModel.CustomFieldUI?,
+                                    disallowedKeys: [String] = []) -> some View {
         NavigationView {
-            CustomFieldEditorView(
+            CustomFieldEditorView(viewModel: CustomFieldEditorViewModel(
                 key: customField?.key ?? "",
                 value: customField?.value ?? "",
+                disallowedKeys: disallowedKeys,
                 onSave: { updatedKey, updatedValue in
                     viewModel.saveField(
                         key: updatedKey,
@@ -224,9 +234,10 @@ private extension CustomFieldsListView {
                     )
                 },
                 onDelete: customField != nil ? {
+                    // Only provide delete callback when editing existing field
                     viewModel.deleteField(customField!)
                 } : nil
-            )
+            ))
         }
     }
 }

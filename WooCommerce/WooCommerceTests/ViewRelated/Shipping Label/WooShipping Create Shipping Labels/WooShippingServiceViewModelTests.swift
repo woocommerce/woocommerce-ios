@@ -8,7 +8,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         let viewModel = WooShippingServiceViewModel()
 
         // Then
-        XCTAssertNil(viewModel.selectedStandardRate)
+        XCTAssertNil(viewModel.selectedRate)
     }
 
     func test_generateServiceTabs_returns_expected_data() throws {
@@ -67,17 +67,17 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         // Given
         let viewModel = WooShippingServiceViewModel()
         let card = viewModel.serviceTabs[0].cards[1]
-        XCTAssertNil(viewModel.selectedStandardRate)
+        XCTAssertNil(viewModel.selectedRate)
         XCTAssertFalse(card.selected)
 
         // When
         card.selectRate()
 
         // Then
-        XCTAssertNotNil(viewModel.selectedStandardRate)
-        XCTAssertNil(viewModel.selectedSignatureRate)
-        XCTAssertNil(viewModel.selectedAdultSignatureRate)
-        XCTAssertEqual(viewModel.selectedStandardRate?.title, card.title)
+        XCTAssertNotNil(viewModel.selectedRate)
+        XCTAssertNil(viewModel.selectedRate?.signatureRate)
+        XCTAssertNil(viewModel.selectedRate?.adultSignatureRate)
+        XCTAssertEqual(viewModel.selectedRate?.rate.title, card.title)
         XCTAssertEqual(viewModel.serviceTabs[0].cards[1].selected, true)
     }
 
@@ -85,8 +85,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         // Given
         let viewModel = WooShippingServiceViewModel()
         let card = viewModel.serviceTabs[0].cards[1]
-        XCTAssertNil(viewModel.selectedStandardRate)
-        XCTAssertNil(viewModel.selectedSignatureRate)
+        XCTAssertNil(viewModel.selectedRate)
         XCTAssertFalse(card.selected)
 
         // When
@@ -94,9 +93,9 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         card.selectRate()
 
         // Then
-        XCTAssertNotNil(viewModel.selectedStandardRate)
-        XCTAssertNotNil(viewModel.selectedSignatureRate)
-        XCTAssertNil(viewModel.selectedAdultSignatureRate)
+        XCTAssertNotNil(viewModel.selectedRate)
+        XCTAssertNotNil(viewModel.selectedRate?.signatureRate)
+        XCTAssertNil(viewModel.selectedRate?.adultSignatureRate)
         XCTAssertEqual(viewModel.serviceTabs[0].cards[1].selected, true)
     }
 
@@ -104,8 +103,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         // Given
         let viewModel = WooShippingServiceViewModel()
         let card = viewModel.serviceTabs[0].cards[1]
-        XCTAssertNil(viewModel.selectedStandardRate)
-        XCTAssertNil(viewModel.selectedAdultSignatureRate)
+        XCTAssertNil(viewModel.selectedRate)
         XCTAssertFalse(card.selected)
 
         // When
@@ -113,9 +111,9 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         card.selectRate()
 
         // Then
-        XCTAssertNotNil(viewModel.selectedStandardRate)
-        XCTAssertNil(viewModel.selectedSignatureRate)
-        XCTAssertNotNil(viewModel.selectedAdultSignatureRate)
+        XCTAssertNotNil(viewModel.selectedRate)
+        XCTAssertNil(viewModel.selectedRate?.signatureRate)
+        XCTAssertNotNil(viewModel.selectedRate?.adultSignatureRate)
         XCTAssertEqual(viewModel.serviceTabs[0].cards[1].selected, true)
     }
 

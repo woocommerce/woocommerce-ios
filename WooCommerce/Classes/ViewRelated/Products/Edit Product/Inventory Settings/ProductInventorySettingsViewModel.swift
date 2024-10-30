@@ -46,6 +46,7 @@ protocol ProductInventorySettingsActionHandler {
     func handleSKUChange(_ sku: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void)
     func handleGlobalUniqueIdentifierChange(_ globalUniqueID: String?)
     func handleSKUFromBarcodeScanner(_ sku: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void)
+    func handleGlobalUniqueIdentifierFromBarcodeScanner(_ globalUniqueID: String?)
     func handleManageStockEnabledChange(_ manageStockEnabled: Bool)
     func handleSoldIndividuallyChange(_ soldIndividually: Bool?)
     func handleStockQuantityChange(_ stockQuantity: String?)
@@ -170,6 +171,11 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
         self.sku = sku
         reloadSections()
         handleSKUChange(sku, onValidation: onValidation)
+    }
+
+    func handleGlobalUniqueIdentifierFromBarcodeScanner(_ globalUniqueID: String?) {
+        handleGlobalUniqueIdentifierChange(globalUniqueID)
+        reloadSections()
     }
 
     func handleManageStockEnabledChange(_ manageStockEnabled: Bool) {

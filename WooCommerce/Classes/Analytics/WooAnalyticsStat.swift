@@ -751,6 +751,8 @@ enum WooAnalyticsStat: String {
     case productDetailViewProductAddOnsTapped = "product_detail_view_product_addons_tapped"
     case productInventorySettingsSKUScannerButtonTapped = "product_inventory_settings_sku_scanner_button_tapped"
     case productInventorySettingsSKUScanned = "product_inventory_settings_sku_scanned"
+    case productInventorySettingsGlobalUniqueIDScannerButtonTapped = "product_inventory_settings_global_unique_id_scanner_button_tapped"
+    case productInventorySettingsGlobalUniqueIDScanned = "product_inventory_settings_global_unique_id_scanned"
     case productDetailPreviewTapped = "product_detail_preview_tapped"
     case productDetailPreviewFailed = "product_detail_preview_failed"
     case productDetailViewBundledProductsTapped = "product_detail_view_bundled_products_tapped"

@@ -511,7 +511,7 @@
 		02CA63DC23D1ADD100BBF148 /* DeviceMediaLibraryPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CA63D823D1ADD100BBF148 /* DeviceMediaLibraryPicker.swift */; };
 		02CA63DD23D1ADD100BBF148 /* MediaPickingContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CA63D923D1ADD100BBF148 /* MediaPickingContext.swift */; };
 		02CD3BFE2C35D04C00E575C4 /* MockCardPresentPaymentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CD3BFD2C35D04C00E575C4 /* MockCardPresentPaymentService.swift */; };
-		02CE43022768CBF60006EAEF /* ProductSKUBarcodeScannerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CE43012768CBF60006EAEF /* ProductSKUBarcodeScannerCoordinator.swift */; };
+		02CE43022768CBF60006EAEF /* ProducBarcodeScannerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CE43012768CBF60006EAEF /* ProducBarcodeScannerCoordinator.swift */; };
 		02CE4304276993DA0006EAEF /* CaptureDevicePermissionChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CE4303276993DA0006EAEF /* CaptureDevicePermissionChecker.swift */; };
 		02CE4307276994920006EAEF /* ProductSKUBarcodeScannerCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CE4306276994920006EAEF /* ProductSKUBarcodeScannerCoordinatorTests.swift */; };
 		02CE43092769953D0006EAEF /* MockCaptureDevicePermissionChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CE43082769953D0006EAEF /* MockCaptureDevicePermissionChecker.swift */; };
@@ -1717,6 +1717,7 @@
 		93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */ = {isa = PBXBuildFile; fileRef = 93BCF01E20DC2CE200EBF7A1 /* bash_secrets.tpl */; };
 		93FA787221CD2A1A00B663E5 /* CurrencySettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93FA787121CD2A1A00B663E5 /* CurrencySettingsTests.swift */; };
 		953728F82B23635300FDF1D1 /* UIAlertController+helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953728F72B23635300FDF1D1 /* UIAlertController+helpers.swift */; };
+		95968A512CD109D6001F0DA1 /* CustomFieldsListTopBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95968A502CD109D6001F0DA1 /* CustomFieldsListTopBanner.swift */; };
 		A650BE862578E76600C655E0 /* MockStorageManager+Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = A650BE842578E76600C655E0 /* MockStorageManager+Sample.swift */; };
 		A650BE872578E76600C655E0 /* MockStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A650BE852578E76600C655E0 /* MockStorageManager.swift */; };
 		A6557218258B7510008AE7CA /* OrderListCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6557217258B7510008AE7CA /* OrderListCellViewModel.swift */; };
@@ -3603,7 +3604,7 @@
 		02CA63D823D1ADD100BBF148 /* DeviceMediaLibraryPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceMediaLibraryPicker.swift; sourceTree = "<group>"; };
 		02CA63D923D1ADD100BBF148 /* MediaPickingContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaPickingContext.swift; sourceTree = "<group>"; };
 		02CD3BFD2C35D04C00E575C4 /* MockCardPresentPaymentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCardPresentPaymentService.swift; sourceTree = "<group>"; };
-		02CE43012768CBF60006EAEF /* ProductSKUBarcodeScannerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSKUBarcodeScannerCoordinator.swift; sourceTree = "<group>"; };
+		02CE43012768CBF60006EAEF /* ProducBarcodeScannerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProducBarcodeScannerCoordinator.swift; sourceTree = "<group>"; };
 		02CE4303276993DA0006EAEF /* CaptureDevicePermissionChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureDevicePermissionChecker.swift; sourceTree = "<group>"; };
 		02CE4306276994920006EAEF /* ProductSKUBarcodeScannerCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSKUBarcodeScannerCoordinatorTests.swift; sourceTree = "<group>"; };
 		02CE43082769953D0006EAEF /* MockCaptureDevicePermissionChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCaptureDevicePermissionChecker.swift; sourceTree = "<group>"; };
@@ -4755,6 +4756,7 @@
 		93BCF01E20DC2CE200EBF7A1 /* bash_secrets.tpl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bash_secrets.tpl; sourceTree = "<group>"; };
 		93FA787121CD2A1A00B663E5 /* CurrencySettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencySettingsTests.swift; sourceTree = "<group>"; };
 		953728F72B23635300FDF1D1 /* UIAlertController+helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIAlertController+helpers.swift"; sourceTree = "<group>"; };
+		95968A502CD109D6001F0DA1 /* CustomFieldsListTopBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFieldsListTopBanner.swift; sourceTree = "<group>"; };
 		9D2992FEF3D1246B8CCC2EBB /* Pods-WooCommerceTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A650BE842578E76600C655E0 /* MockStorageManager+Sample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MockStorageManager+Sample.swift"; path = "../../../Yosemite/YosemiteTests/Mocks/MockStorageManager+Sample.swift"; sourceTree = "<group>"; };
 		A650BE852578E76600C655E0 /* MockStorageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockStorageManager.swift; path = ../../../Yosemite/YosemiteTests/Mocks/MockStorageManager.swift; sourceTree = "<group>"; };
@@ -6710,7 +6712,7 @@
 				025C00652550DE4700FAC222 /* CodeScannerViewController.xib */,
 				025C00642550DE4600FAC222 /* ScannerContainerViewController.swift */,
 				025C00662550DE4700FAC222 /* ProductSKUInputScannerViewController.xib */,
-				02CE43012768CBF60006EAEF /* ProductSKUBarcodeScannerCoordinator.swift */,
+				02CE43012768CBF60006EAEF /* ProducBarcodeScannerCoordinator.swift */,
 				02CE4303276993DA0006EAEF /* CaptureDevicePermissionChecker.swift */,
 				B90DACBF2A30AEF000365897 /* BarcodeSKUScannerItemFinder.swift */,
 				B9CB14DB2A41FACD005912C2 /* BarcodeSKUScannerErrorNoticeFactory.swift */,
@@ -10582,6 +10584,7 @@
 				86F9D3632C897FFE00B1835B /* CustomFieldEditorView.swift */,
 				86F5FFE12CA302B300C767C4 /* CustomFieldsListViewModel.swift */,
 				86EC6EB62CD0A53E00D7D2FE /* CustomFieldEditorViewModel.swift */,
+				95968A502CD109D6001F0DA1 /* CustomFieldsListTopBanner.swift */,
 			);
 			path = "Custom Fields";
 			sourceTree = "<group>";
@@ -15070,7 +15073,7 @@
 				4569317F2653E82B009ED69D /* ShippingLabelCarriers.swift in Sources */,
 				EE2A57D729E399CC009F61E1 /* CaseIterable+Helpers.swift in Sources */,
 				024DF30B23742297006658FE /* AztecFormatBarCommand.swift in Sources */,
-				02CE43022768CBF60006EAEF /* ProductSKUBarcodeScannerCoordinator.swift in Sources */,
+				02CE43022768CBF60006EAEF /* ProducBarcodeScannerCoordinator.swift in Sources */,
 				CC254F3426C4113B005F3C82 /* ShippingLabelPackageSelection.swift in Sources */,
 				AECD57D226DFDF7500A3B580 /* EditOrderAddressForm.swift in Sources */,
 				26C6E8EC26E8FF4800C7BB0F /* LazyNavigationLink.swift in Sources */,
@@ -16375,6 +16378,7 @@
 				D817586422BDD81600289CFE /* OrderDetailsDataSource.swift in Sources */,
 				7E7C5F872719A93C00315B61 /* ProductCategoryListViewController.swift in Sources */,
 				2631D4FE29F2141D00F13F20 /* StorePlanBannerPresenter.swift in Sources */,
+				95968A512CD109D6001F0DA1 /* CustomFieldsListTopBanner.swift in Sources */,
 				68DF5A8D2CB38EEA000154C9 /* EditableOrderCouponLineViewModel.swift in Sources */,
 				CEC3CC762C934F5500B93FBE /* WooShippingItemsDataSource.swift in Sources */,
 				DEC51B06276B3F3C009F3DF4 /* Int64+Helpers.swift in Sources */,

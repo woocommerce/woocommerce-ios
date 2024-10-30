@@ -1,20 +1,20 @@
 import Experiments
 import UIKit
 
-/// Coordinates navigation for product SKU barcode scanner based on camera permission.
-final class ProductSKUBarcodeScannerCoordinator: Coordinator {
+/// Coordinates navigation for product barcode scanner based on camera permission.
+final class ProducBarcodeScannerCoordinator: Coordinator {
     let navigationController: UINavigationController
     private let permissionChecker: CaptureDevicePermissionChecker
-    private let onSKUBarcodeScanned: (_ barcode: ScannedBarcode) -> Void
+    private let onBarcodeScanned: (_ barcode: ScannedBarcode) -> Void
     private let onPermissionsDenied: (() -> Void)?
 
     init(sourceNavigationController: UINavigationController,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
-         onSKUBarcodeScanned: @escaping (_ barcode: ScannedBarcode) -> Void,
+         onBarcodeScanned: @escaping (_ barcode: ScannedBarcode) -> Void,
          onPermissionsDenied: (() -> Void)? = nil) {
         self.navigationController = sourceNavigationController
         self.permissionChecker = permissionChecker
-        self.onSKUBarcodeScanned = onSKUBarcodeScanned
+        self.onBarcodeScanned = onBarcodeScanned
         self.onPermissionsDenied = onPermissionsDenied
     }
 
@@ -29,19 +29,19 @@ final class ProductSKUBarcodeScannerCoordinator: Coordinator {
         case .notDetermined:
             permissionChecker.requestAccess(for: .video) { [weak self] granted in
                 if granted {
-                    self?.showSKUScanner()
+                    self?.showScanner()
                 }
             }
         default:
-            showSKUScanner()
+            showScanner()
         }
     }
 }
 
-private extension ProductSKUBarcodeScannerCoordinator {
-    func showSKUScanner() {
-        let scannerViewController = SKUCodeScannerProvider.SKUCodeScanner(onBarcodeScanned: { [weak self] barcode in
-            self?.onSKUBarcodeScanned(barcode)
+private extension ProducBarcodeScannerCoordinator {
+    func showScanner() {
+        let scannerViewController = ProductBarcodeScannerProvider.barcodeScanner(onBarcodeScanned: { [weak self] barcode in
+            self?.onBarcodeScanned(barcode)
             self?.navigationController.dismiss(animated: true)
         })
 

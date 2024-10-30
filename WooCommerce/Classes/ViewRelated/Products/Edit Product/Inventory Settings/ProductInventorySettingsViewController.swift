@@ -27,7 +27,7 @@ final class ProductInventorySettingsViewController: UIViewController {
     typealias Completion = (_ data: ProductInventoryEditableData) -> Void
     private let onCompletion: Completion
 
-    private var skuBarcodeScannerCoordinator: ProductSKUBarcodeScannerCoordinator?
+    private var skuBarcodeScannerCoordinator: ProducBarcodeScannerCoordinator?
 
     private var sectionsSubscription: AnyCancellable?
 
@@ -286,6 +286,7 @@ private extension ProductInventorySettingsViewController {
             break
         }
         cell.configure(viewModel: cellViewModel)
+        cell.setSpacingBetweenTitleAndTextField(30)
 
         // Configures accessory view for adding SKU from barcode scanner if camera is available.
         guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
@@ -306,7 +307,8 @@ private extension ProductInventorySettingsViewController {
     }
 
     func configureGlobalUniqueIdentifier(cell: TitleAndTextFieldTableViewCell) {
-        let cellViewModel = Product.createGlobalUniqueIdentifierViewModel(globalUniqueID: viewModel.globalUniqueID) { _ in
+        let cellViewModel = Product.createGlobalUniqueIdentifierViewModel(globalUniqueID: viewModel.globalUniqueID) { [weak self] value in
+            self?.viewModel.handleGlobalUniqueIdentifierChange(value)
         }
 
         cell.configure(viewModel: cellViewModel)
@@ -320,6 +322,9 @@ private extension ProductInventorySettingsViewController {
         }
 
         let button = UIButton(type: .detailDisclosure)
+        button.addAction(UIAction(handler: { [weak self] _ in
+            self?.scanGlobalUniqueIdentifierButtonTapped()
+        }), for: .touchUpInside)
         button.applyIconButtonStyle(icon: .scanImage)
         button.accessibilityLabel = NSLocalizedString("Scan products", comment: "Scan Products")
         button.accessibilityHint = NSLocalizedString("productInventorySettings.GlobalUniqueIdentifier.ScanButton",
@@ -372,16 +377,32 @@ private extension ProductInventorySettingsViewController {
 //
 private extension ProductInventorySettingsViewController {
     func scanSKUButtonTapped() {
+        ServiceLocator.analytics.track(.productInventorySettingsSKUScannerButtonTapped)
+
+        startBarcodeScanning(onCompletion: { [weak self] barcode in
+            ServiceLocator.analytics.track(.productInventorySettingsSKUScanned)
+            self?.onSKUBarcodeScanned(barcode: barcode)
+        })
+    }
+
+    func scanGlobalUniqueIdentifierButtonTapped() {
+        ServiceLocator.analytics.track(.productInventorySettingsGlobalUniqueIDScannerButtonTapped)
+
+        startBarcodeScanning(onCompletion: { [weak self] barcode in
+            ServiceLocator.analytics.track(.productInventorySettingsGlobalUniqueIDScanned)
+            self?.viewModel.handleGlobalUniqueIdentifierFromBarcodeScanner(barcode)
+        })
+    }
+
+    func startBarcodeScanning(onCompletion: @escaping (_ barcode: String) -> Void) {
         guard let navigationController = navigationController else {
             return
         }
 
-        ServiceLocator.analytics.track(.productInventorySettingsSKUScannerButtonTapped)
-
-        let coordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController) { [weak self] barcode in
-            ServiceLocator.analytics.track(.productInventorySettingsSKUScanned)
-            self?.onSKUBarcodeScanned(barcode: barcode.payloadStringValue)
+        let coordinator = ProducBarcodeScannerCoordinator(sourceNavigationController: navigationController) { barcode in
+            onCompletion(barcode.payloadStringValue)
         }
+
         view.endEditing(true)
         skuBarcodeScannerCoordinator = coordinator
         coordinator.start()

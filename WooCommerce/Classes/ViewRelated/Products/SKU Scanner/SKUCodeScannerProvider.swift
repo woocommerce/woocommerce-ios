@@ -1,22 +1,22 @@
 import Foundation
 
-/// Provides a `ScannerContainerViewController` customized to find Product SKU strings
+/// Provides a `ScannerContainerViewController` customized to find Product Barcode strings
 ///
-class SKUCodeScannerProvider {
-    static func SKUCodeScanner(onBarcodeScanned: @escaping (ScannedBarcode) -> Void) -> ScannerContainerViewController {
+class ProductBarcodeScannerProvider {
+    static func barcodeScanner(onBarcodeScanned: @escaping (ScannedBarcode) -> Void) -> ScannerContainerViewController {
         ScannerContainerViewController(navigationTitle: Localization.title,
                                        instructionText: Localization.instructionText,
                                        onBarcodeScanned: onBarcodeScanned)
     }
 }
 
-private extension SKUCodeScannerProvider {
+private extension ProductBarcodeScannerProvider {
     enum Localization {
-        static let title = NSLocalizedString("ProductSKUInputScanner.titleView",
-                                             value: "Scan barcode or QR Code to update SKU",
-                                             comment: "Navigation bar title for scanning a barcode or QR Code to use as a product's SKU.")
-        static let instructionText = NSLocalizedString("ProductSKUInputScanner.instructionText",
+        static let title = NSLocalizedString("ProductBarcodeInputScanner.titleView",
+                                             value: "Scan barcode or QR Code",
+                                             comment: "Navigation bar title for scanning a barcode or QR Code to use as a product's barcode.")
+        static let instructionText = NSLocalizedString("ProductBarcodeInputScanner.instructionText",
                                                        value: "Scan product barcode or QR Code",
-                                                       comment: "The instruction text below the scan area in the barcode scanner for product SKU.")
+                                                       comment: "The instruction text below the scan area in the barcode scanner for product barcode.")
     }
 }

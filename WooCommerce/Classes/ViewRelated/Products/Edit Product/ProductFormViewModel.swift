@@ -400,12 +400,14 @@ extension ProductFormViewModel {
     }
 
     func updateInventorySettings(sku: String?,
+                                 globalUniqueIdentifier: String?,
                                  manageStock: Bool,
                                  soldIndividually: Bool?,
                                  stockQuantity: Decimal?,
                                  backordersSetting: ProductBackordersSetting?,
                                  stockStatus: ProductStockStatus?) {
         product = EditableProductModel(product: product.product.copy(sku: sku,
+                                                                     globalUniqueID: globalUniqueIdentifier,
                                                                      manageStock: manageStock,
                                                                      stockQuantity: stockQuantity,
                                                                      stockStatusKey: stockStatus?.rawValue,

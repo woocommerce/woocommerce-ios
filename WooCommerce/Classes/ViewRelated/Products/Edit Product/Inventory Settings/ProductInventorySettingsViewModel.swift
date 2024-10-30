@@ -44,7 +44,9 @@ protocol ProductInventorySettingsViewModelOutput {
 protocol ProductInventorySettingsActionHandler {
     // Input field actions
     func handleSKUChange(_ sku: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void)
+    func handleGlobalUniqueIdentifierChange(_ globalUniqueID: String?)
     func handleSKUFromBarcodeScanner(_ sku: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void)
+    func handleGlobalUniqueIdentifierFromBarcodeScanner(_ globalUniqueID: String?)
     func handleManageStockEnabledChange(_ manageStockEnabled: Bool)
     func handleSoldIndividuallyChange(_ soldIndividually: Bool?)
     func handleStockQuantityChange(_ stockQuantity: String?)
@@ -160,11 +162,20 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
         }
     }
 
+    func handleGlobalUniqueIdentifierChange(_ globalUniqueID: String?) {
+        self.globalUniqueID = globalUniqueID
+    }
+
     func handleSKUFromBarcodeScanner(_ sku: String?, onValidation: @escaping (Bool, Bool) -> Void) {
         // Displays SKU before validation.
         self.sku = sku
         reloadSections()
         handleSKUChange(sku, onValidation: onValidation)
+    }
+
+    func handleGlobalUniqueIdentifierFromBarcodeScanner(_ globalUniqueID: String?) {
+        handleGlobalUniqueIdentifierChange(globalUniqueID)
+        reloadSections()
     }
 
     func handleManageStockEnabledChange(_ manageStockEnabled: Bool) {
@@ -196,6 +207,7 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
     func completeUpdating(onCompletion: (ProductInventoryEditableData) -> Void) {
         if skuIsValid {
             let data = ProductInventoryEditableData(sku: sku,
+                                                    globalUniqueIdentifier: globalUniqueID,
                                                     manageStock: manageStockEnabled,
                                                     soldIndividually: soldIndividually,
                                                     stockQuantity: stockQuantity,
@@ -212,6 +224,7 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
 
         // Checks general settings regardless of whether stock management is enabled.
         let hasChangesInGeneralSettings = sku != productModel.sku
+            || globalUniqueID != productModel.globalUniqueID
             || manageStockEnabled != productModel.manageStock
             || soldIndividually != productModel.soldIndividually
 

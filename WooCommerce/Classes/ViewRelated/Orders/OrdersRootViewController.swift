@@ -68,7 +68,7 @@ final class OrdersRootViewController: UIViewController {
 
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
-    private var barcodeScannerCoordinator: ProductSKUBarcodeScannerCoordinator?
+    private var barcodeScannerCoordinator: ProducBarcodeScannerCoordinator?
 
     private let switchDetailsHandler: OrderListViewController.SelectOrderDetails
 
@@ -251,8 +251,8 @@ final class OrdersRootViewController: UIViewController {
             return
         }
 
-        let productSKUBarcodeScannerCoordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
-                                                                                      onSKUBarcodeScanned: { [weak self] scannedBarcode in
+        let productSKUBarcodeScannerCoordinator = ProducBarcodeScannerCoordinator(sourceNavigationController: navigationController,
+                                                                                  onBarcodeScanned: { [weak self] scannedBarcode in
             self?.analytics.track(event: .BarcodeScanning.barcodeScanningSuccess(from: .orderList))
 
             self?.navigationItem.configureLeftBarButtonItemAsLoader()

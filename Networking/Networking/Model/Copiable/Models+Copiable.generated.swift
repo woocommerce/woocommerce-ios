@@ -2658,6 +2658,7 @@ extension Networking.ProductVariation {
         status: CopiableProp<ProductStatus> = .copy,
         description: NullableCopiableProp<String> = .copy,
         sku: NullableCopiableProp<String> = .copy,
+        globalUniqueID: NullableCopiableProp<String> = .copy,
         price: CopiableProp<String> = .copy,
         regularPrice: NullableCopiableProp<String> = .copy,
         salePrice: NullableCopiableProp<String> = .copy,
@@ -2700,6 +2701,7 @@ extension Networking.ProductVariation {
         let status = status ?? self.status
         let description = description ?? self.description
         let sku = sku ?? self.sku
+        let globalUniqueID = globalUniqueID ?? self.globalUniqueID
         let price = price ?? self.price
         let regularPrice = regularPrice ?? self.regularPrice
         let salePrice = salePrice ?? self.salePrice

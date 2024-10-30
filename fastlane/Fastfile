@@ -24,10 +24,8 @@ DERIVED_DATA_DIR = File.join(FASTLANE_DIR, 'DerivedData')
 SCREENSHOTS_DIR =  File.join(FASTLANE_DIR, 'screenshots')
 FASTLANE_METADATA_FOLDER = File.join(FASTLANE_DIR, 'metadata')
 WORKSPACE_PATH = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce.xcworkspace')
-BUILDKITE_CONFIG_DIR_PATH = File.join(PROJECT_ROOT_FOLDER, '.buildkite')
-BUILDKITE_SHARED_PIPELINE_VARS_FILE_PATH = File.join(BUILDKITE_CONFIG_DIR_PATH, 'shared-pipeline-vars')
 BUILDKITE_RELEASE_PIPELINE = 'release-builds.yml'
-BUILDKITE_RELEASE_PIPELINE_FILE_PATH = File.join(BUILDKITE_CONFIG_DIR_PATH, BUILDKITE_RELEASE_PIPELINE)
+BUILDKITE_RELEASE_PIPELINE_FILE_PATH = File.join('.buildkite', BUILDKITE_RELEASE_PIPELINE)
 IOS_LOCALES = %w[ar de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
 SIMULATOR_VERSION = '15.5' # For screenshots
 SCREENSHOTS_SCHEME = 'WooCommerceScreenshots'
@@ -1329,13 +1327,14 @@ end
 # -----------------------------------------------------------------------------------
 def trigger_buildkite_release_build(branch:, beta:)
   beta = beta.to_s
+  environment = { 'BUILDKITE_BETA_RELEASE' => beta }
 
   # If we're running on CI, we can directly start the release pipeline jobs within the same build
   if is_ci
     buildkite_pipeline_upload(
       pipeline_file: BUILDKITE_RELEASE_PIPELINE_FILE_PATH,
       env_file: BUILDKITE_SHARED_PIPELINE_VARS_FILE_PATH,
-      environment: { 'BUILDKITE_BETA_RELEASE' => beta }
+      environment: environment
     )
   else
     build_url = buildkite_trigger_build(
@@ -1343,7 +1342,7 @@ def trigger_buildkite_release_build(branch:, beta:)
       buildkite_pipeline: 'woocommerce-ios',
       branch: branch,
       pipeline_file: BUILDKITE_RELEASE_PIPELINE,
-      environment: { 'BUILDKITE_BETA_RELEASE' => beta }
+      environment: environment
     )
 
     UI.success("Release build triggered on #{branch}: #{build_url}")

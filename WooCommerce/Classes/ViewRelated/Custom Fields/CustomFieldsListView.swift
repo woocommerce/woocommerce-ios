@@ -65,6 +65,8 @@ private extension CustomFieldsListHostingController {
     func configureNavigation() {
         title = Localization.title
         navigationItem.rightBarButtonItems = [saveCustomFieldButtonItem, addCustomFieldButtonItem]
+
+        rootView.emptyStateButtonAction = displayLearnMoreWebContent
     }
 
     @objc func openAddCustomFieldScreen() {
@@ -115,6 +117,10 @@ private extension CustomFieldsListHostingController {
             self?.navigationController?.popViewController(animated: true)
         })
     }
+
+    func displayLearnMoreWebContent() {
+        WebviewHelper.launch(WooConstants.URLs.customFieldsLearnMore.asURL(), with: self)
+    }
 }
 
 struct CustomFieldsListView: View {
@@ -122,6 +128,7 @@ struct CustomFieldsListView: View {
     @ObservedObject private var viewModel: CustomFieldsListViewModel
 
     let isEditable: Bool
+    var emptyStateButtonAction: (() -> Void)?
 
     init(isEditable: Bool,
          viewModel: CustomFieldsListViewModel) {
@@ -142,7 +149,7 @@ struct CustomFieldsListView: View {
                                description: CustomFieldsListHostingController.Localization.emptyStateDescription,
                                image: .customerSearchImage,
                                buttonTitle: CustomFieldsListHostingController.Localization.emptyStateButton,
-                               buttonAction: { })
+                               buttonAction: emptyStateButtonAction)
                         .frame(maxHeight: .infinity)
                 } else {
                     List(viewModel.combinedList) { customField in

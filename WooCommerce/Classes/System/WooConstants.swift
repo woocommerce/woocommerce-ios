@@ -366,6 +366,8 @@ extension WooConstants {
 
         case ordersScreen = "https://woocommerce.com/mobile/orders"
 
+        case customFieldsLearnMore = "https://woocommerce.com/document/custom-product-fields/"
+
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {

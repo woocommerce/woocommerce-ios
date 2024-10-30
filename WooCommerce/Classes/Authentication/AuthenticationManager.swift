@@ -62,18 +62,22 @@ class AuthenticationManager: Authentication {
     /// Injected for unit test purposes
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol?
 
+    private let userDefaults: UserDefaults
+
     init(stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          abTestVariationProvider: ABTestVariationProvider = CachedABTestVariationProvider(),
-         switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil) {
+         switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
+         userDefaults: UserDefaults = .standard) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.analytics = analytics
         self.abTestVariationProvider = abTestVariationProvider
         self.switchStoreUseCase = switchStoreUseCase
+        self.userDefaults = userDefaults
     }
 
     /// Initializes the WordPress Authenticator.

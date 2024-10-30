@@ -448,6 +448,27 @@ final class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[.blazeSelectedCampaignObjective])
     }
 
+    /// Verifies that `wpcomSiteSuspended` is set to `nil` upon reset
+    ///
+    func test_wpcomSiteSuspended_is_set_to_nil_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[.wpcomSiteSuspended] = true
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(defaults.wpcomSiteSuspended()))
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[UserDefaults.Key.wpcomSiteSuspended])
+    }
+
     /// Verifies that image cache is cleared upon reset
     ///
     func test_image_cache_is_cleared_upon_reset() throws {

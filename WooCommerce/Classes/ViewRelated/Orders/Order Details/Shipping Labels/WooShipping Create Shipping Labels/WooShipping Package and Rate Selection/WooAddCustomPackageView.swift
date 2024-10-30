@@ -145,6 +145,16 @@ struct WooAddCustomPackageView: View {
         }
     }
 
+    private func unitInputView(for unitType: WooShippingPackageUnitType, unit: String) -> some View {
+        WooShippingAddPackageUnitInputView(unitType: unitType,
+                                           unit: unit,
+                                           fieldValue: Binding(get: {
+            return self.customPackageViewModel.fieldValues[unitType] ?? ""
+        }, set: { value in
+            self.customPackageViewModel.fieldValues[unitType] = value
+        }), focusedField: _focusedField)
+    }
+
     // MARK: - actions
 
     private func addPackageButtonTapped() {
@@ -159,16 +169,6 @@ struct WooAddCustomPackageView: View {
             // call addPackageAction with data
             addPackageAction(packageData)
         }
-    }
-
-    private func unitInputView(for unitType: WooShippingPackageUnitType, unit: String) -> some View {
-        WooShippingAddPackageUnitInputView(unitType: unitType,
-                                           unit: unit,
-                                           fieldValue: Binding(get: {
-            return self.customPackageViewModel.fieldValues[unitType] ?? ""
-        }, set: { value in
-            self.customPackageViewModel.fieldValues[unitType] = value
-        }), focusedField: _focusedField)
     }
 
     private func onBackwardButtonTapped() {

@@ -5,6 +5,8 @@ struct EmptyState: View {
     @State var title: String
     @State var description: String?
     @State var image: UIImage?
+    @State var buttonTitle: String?
+    @State var buttonAction: (() -> Void)?
 
     var body: some View {
         VStack(spacing: Constants.verticalSpacing) {
@@ -23,6 +25,13 @@ struct EmptyState: View {
                     .multilineTextAlignment(.center)
                     .bodyStyle()
                     .fixedSize(horizontal: false, vertical: true)
+            }
+
+            if let buttonTitle {
+                Button(buttonTitle) {
+                    buttonAction?()
+                }
+                .buttonStyle(PrimaryButtonStyle())
             }
         }
         .frame(maxWidth: .infinity, alignment: .center)

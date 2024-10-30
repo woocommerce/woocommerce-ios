@@ -50,7 +50,16 @@ struct InPersonPaymentsPluginNotSetup: View {
             InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel(tappedAnalyticEvent: learnMoreAnalyticEvent))
                 .padding(.vertical, 8)
         }
-        .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
+        .sheet(item: $presentedSetupURL) { setupURL in
+            // For WPCOM login, wp-admin URL gets redirected to a WPCOM page in a webview and cannot be pre-authenticated easily.
+            // For site credentials login, wp-admin URL can be pre-authenticated in a webview.
+            // Therefore, authenticated webview is only enabled for site credentials login.
+            WebViewSheet(viewModel: .init(url: setupURL,
+                                          navigationTitle: Localization.webviewSetupTitle,
+                                          authenticated: ServiceLocator.stores.isAuthenticatedWithoutWPCom)) {
+                presentedSetupURL = nil
+            }
+        }
     }
 
     private var setupURL: URL? {
@@ -80,6 +89,10 @@ private enum Localization {
 
     static let refreshButton = NSLocalizedString(
         "Refresh",
+        comment: "Button to refresh the state of the in-person payments setup")
+
+    static let webviewSetupTitle = NSLocalizedString(
+        "payments.plugin.setup.webview.title", value: "Payments Setup",
         comment: "Button to refresh the state of the in-person payments setup")
 }
 

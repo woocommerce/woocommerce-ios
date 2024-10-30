@@ -15,23 +15,16 @@ final class MetaDataMapperTests: XCTestCase {
         let metadata = try mapper.map(response: data)
 
         // Then
-        XCTAssertEqual(metadata.count, 4)
+        XCTAssertEqual(metadata.count, 7)
 
-        XCTAssertEqual(metadata[0].metadataID, 1)
-        XCTAssertEqual(metadata[0].key, "lorem_key_1")
-        XCTAssertEqual(metadata[0].value, "Lorem ipsum")
-
-        XCTAssertEqual(metadata[1].metadataID, 2)
-        XCTAssertEqual(metadata[1].key, "ipsum_key_2")
-        XCTAssertEqual(metadata[1].value, "dolor sit amet")
-
-        XCTAssertEqual(metadata[2].metadataID, 3)
-        XCTAssertEqual(metadata[2].key, "dolor_key_3")
-        XCTAssertEqual(metadata[2].value, "consectetur adipiscing elit")
-
-        XCTAssertEqual(metadata[3].metadataID, 4)
-        XCTAssertEqual(metadata[3].key, "sit_key_4")
-        XCTAssertEqual(metadata[3].value, "Nisi ut aliquip")
+        XCTAssertEqual(metadata[0], MetaData(metadataID: 1, key: "text_field", value: "Lorem ipsum"))
+        XCTAssertEqual(metadata[1], MetaData(metadataID: 2, key: "json_field", value: "{\"key\":\"value\"}"))
+        XCTAssertEqual(metadata[2], MetaData(metadataID: 3, key: "json_array_field", value: "[{\"key\":\"value\"}]"))
+        // For now, the iOS implementation doesn't differentiate between wrapped and unwrapped JSON.
+        XCTAssertEqual(metadata[3], MetaData(metadataID: 4, key: "json_field_wrapped", value: "{\"key\":\"value\"}"))
+        XCTAssertEqual(metadata[4], MetaData(metadataID: 5, key: "boolean_field", value: "true"))
+        XCTAssertEqual(metadata[5], MetaData(metadataID: 6, key: "number_field", value: "42"))
+        XCTAssertEqual(metadata[6], MetaData(metadataID: 7, key: "empty_field", value: ""))
     }
 
     /// Tests that MetaData is correctly mapped from a meta_data nested in data response.
@@ -46,23 +39,16 @@ final class MetaDataMapperTests: XCTestCase {
         let metadata = try mapper.map(response: data)
 
         // Then
-        XCTAssertEqual(metadata.count, 4)
+        XCTAssertEqual(metadata.count, 7)
 
-        XCTAssertEqual(metadata[0].metadataID, 1)
-        XCTAssertEqual(metadata[0].key, "lorem_key_1")
-        XCTAssertEqual(metadata[0].value, "Lorem ipsum")
-
-        XCTAssertEqual(metadata[1].metadataID, 2)
-        XCTAssertEqual(metadata[1].key, "ipsum_key_2")
-        XCTAssertEqual(metadata[1].value, "dolor sit amet")
-
-        XCTAssertEqual(metadata[2].metadataID, 3)
-        XCTAssertEqual(metadata[2].key, "dolor_key_3")
-        XCTAssertEqual(metadata[2].value, "consectetur adipiscing elit")
-
-        XCTAssertEqual(metadata[3].metadataID, 4)
-        XCTAssertEqual(metadata[3].key, "sit_key_4")
-        XCTAssertEqual(metadata[3].value, "Nisi ut aliquip")
+        XCTAssertEqual(metadata[0], MetaData(metadataID: 1, key: "text_field", value: "Lorem ipsum"))
+        XCTAssertEqual(metadata[1], MetaData(metadataID: 2, key: "json_field", value: "{\"key\":\"value\"}"))
+        XCTAssertEqual(metadata[2], MetaData(metadataID: 3, key: "json_array_field", value: "[{\"key\":\"value\"}]"))
+        // For now, the iOS implementation doesn't differentiate between wrapped and unwrapped JSON.
+        XCTAssertEqual(metadata[3], MetaData(metadataID: 4, key: "json_field_wrapped", value: "{\"key\":\"value\"}"))
+        XCTAssertEqual(metadata[4], MetaData(metadataID: 5, key: "boolean_field", value: "true"))
+        XCTAssertEqual(metadata[5], MetaData(metadataID: 6, key: "number_field", value: "42"))
+        XCTAssertEqual(metadata[6], MetaData(metadataID: 7, key: "empty_field", value: ""))
     }
 }
 

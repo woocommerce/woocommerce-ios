@@ -887,6 +887,19 @@ private extension AuthenticationManager {
     }
 }
 
+
+// MARK: - User defaults helpers
+//
+extension UserDefaults {
+    func setWPCOMSiteSuspended(_ suspended: Bool) {
+        self[.wpcomSiteSuspended] = suspended
+    }
+
+    @objc dynamic var wpcomSiteSuspended: Bool {
+        bool(forKey: Key.wpcomSiteSuspended.rawValue)
+    }
+}
+
 // MARK: - Help and support helpers
 private extension AuthenticationManager {
 

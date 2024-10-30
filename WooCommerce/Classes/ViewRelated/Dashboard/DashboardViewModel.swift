@@ -60,6 +60,8 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
 
+    @Published private(set) var isSiteEligibleToInstallJetpack = true
+
     @Published private var hasOrders = false
 
     @Published private(set) var isEligibleForInbox = false
@@ -156,6 +158,7 @@ final class DashboardViewModel: ObservableObject {
 
         configureOrdersResultController()
         setupDashboardCards()
+        observeWPCOMSiteSuspendedState()
     }
 
     /// Must be called by the `View` during the `onAppear()` event. This will
@@ -491,6 +494,12 @@ private extension DashboardViewModel {
                                      hasOrders: hasOrders)
             }
             .store(in: &subscriptions)
+    }
+
+    func observeWPCOMSiteSuspendedState() {
+        userDefaults.publisher(for: \.wpcomSiteSuspended)
+            .map { !$0 }
+            .assign(to: &$isSiteEligibleToInstallJetpack)
     }
 
     /// Checks for Just In Time Messages and prepares the announcement if needed.

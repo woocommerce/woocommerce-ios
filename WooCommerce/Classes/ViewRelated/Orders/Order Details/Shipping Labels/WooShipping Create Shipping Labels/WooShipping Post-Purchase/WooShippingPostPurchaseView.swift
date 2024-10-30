@@ -66,13 +66,16 @@ struct WooShippingPostPurchaseView: View {
                             }
                         }
                     }
-                    Button {
-                        // TODO: Open link to schedule pickup
-                    } label: {
-                        HStack {
-                            Text(Localization.schedulePickup)
-                                .multilineTextAlignment(.leading)
-                            Image(systemName: "arrow.up.right.square")
+                    if let pickupURL = viewModel.pickupURL {
+                        NavigationLink {
+                            WebView(isPresented: .constant(true), url: pickupURL)
+                                .navigationTitle(Localization.schedulePickup)
+                        } label: {
+                            HStack {
+                                Text(Localization.schedulePickup)
+                                    .multilineTextAlignment(.leading)
+                                Image(systemName: "arrow.up.right.square")
+                            }
                         }
                     }
                     Button {
@@ -142,11 +145,12 @@ private extension WooShippingPostPurchaseView {
 
 #Preview {
     WooShippingPostPurchaseView(viewModel: WooShippingPostPurchaseViewModel(labelSizes: [.label, .legal, .a4],
-                                                                            trackingURL: URL(string: "https://woocommerce.com")))
+                                                                            trackingURL: URL(string: "https://woocommerce.com"),
+                                                                            pickupURL: WooShippingCarrier.usps.pickupURL))
         .padding()
 }
 
 #Preview("Label without links") {
-    WooShippingPostPurchaseView(viewModel: WooShippingPostPurchaseViewModel(labelSizes: [.label, .legal, .a4], trackingURL: nil))
+    WooShippingPostPurchaseView(viewModel: WooShippingPostPurchaseViewModel(labelSizes: [.label, .legal, .a4], trackingURL: nil, pickupURL: nil))
         .padding()
 }

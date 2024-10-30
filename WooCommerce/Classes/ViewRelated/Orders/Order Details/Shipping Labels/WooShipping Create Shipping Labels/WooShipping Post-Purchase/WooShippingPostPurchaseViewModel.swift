@@ -11,10 +11,15 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
     /// Tracking URL for the shipping label.
     let trackingURL: URL?
 
+    /// Shipment pickup URL for the shipping label.
+    let pickupURL: URL?
+
     init(labelSizes: [ShippingLabelPaperSize],
-         trackingURL: URL?) {
+         trackingURL: URL?,
+         pickupURL: URL?) {
         self.labelSizes = labelSizes
         self.trackingURL = trackingURL
+        self.pickupURL = pickupURL
     }
 
     convenience init(shippingLabel: ShippingLabel,
@@ -28,8 +33,10 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
             return availableLabelSizes
         }()
         let trackingURL = ShippingLabelTrackingURLGenerator.url(for: shippingLabel)
+        let pickupURL = WooShippingCarrier(rawValue: shippingLabel.carrierID)?.pickupURL
 
         self.init(labelSizes: labelSizes,
-                  trackingURL: trackingURL)
+                  trackingURL: trackingURL,
+                  pickupURL: pickupURL)
     }
 }

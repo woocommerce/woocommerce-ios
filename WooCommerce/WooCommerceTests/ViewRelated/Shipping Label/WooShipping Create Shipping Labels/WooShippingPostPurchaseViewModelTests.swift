@@ -8,13 +8,15 @@ final class WooShippingPostPurchaseViewModelTests: XCTestCase {
         // Given
         let labelSizes: [ShippingLabelPaperSize] = [.label, .letter, .a4]
         let trackingURL = URL(string: "https://woocommerce.com")
+        let pickupURL = WooShippingCarrier.usps.pickupURL
 
         // When
-        let viewModel = WooShippingPostPurchaseViewModel(labelSizes: labelSizes, trackingURL: trackingURL)
+        let viewModel = WooShippingPostPurchaseViewModel(labelSizes: labelSizes, trackingURL: trackingURL, pickupURL: pickupURL)
 
         // Then
         XCTAssertEqual(viewModel.labelSizes, labelSizes)
         XCTAssertEqual(viewModel.trackingURL, trackingURL)
+        XCTAssertEqual(viewModel.pickupURL, pickupURL)
     }
 
     func test_labelSizes_includes_expected_default_values() {
@@ -53,6 +55,17 @@ final class WooShippingPostPurchaseViewModelTests: XCTestCase {
         // Then
         let expectedTrackingURL = ShippingLabelTrackingURLGenerator.url(for: shippingLabel)
         XCTAssertEqual(viewModel.trackingURL, expectedTrackingURL)
+    }
+
+    func test_pickupUP_parsed_from_shipping_label() {
+        // Given
+        let shippingLabel = ShippingLabel.fake().copy(carrierID: "usps")
+
+        // When
+        let viewModel = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
+
+        // Then
+        XCTAssertEqual(viewModel.pickupURL, WooShippingCarrier.usps.pickupURL)
     }
 
 }

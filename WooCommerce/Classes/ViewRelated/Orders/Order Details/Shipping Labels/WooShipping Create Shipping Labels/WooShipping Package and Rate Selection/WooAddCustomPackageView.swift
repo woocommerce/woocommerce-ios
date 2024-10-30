@@ -14,6 +14,32 @@ struct WooAddCustomPackageView: View {
 
     let addPackageAction: (WooPackageDataRepresentable) -> Void
 
+    private var packageTypeSelectionView: some View {
+        Menu {
+            // show selection
+            ForEach(WooShippingPackageType.allCases, id: \.self) { option in
+                Button {
+                    customPackageViewModel.packageType = option
+                } label: {
+                    Text(option.name)
+                        .bodyStyle()
+                    if customPackageViewModel.packageType == option {
+                        Image(uiImage: .checkmarkStyledImage)
+                    }
+                }
+            }
+        } label: {
+            HStack {
+                Text(customPackageViewModel.packageType.name)
+                    .bodyStyle()
+                Spacer()
+                Image(systemName: "chevron.up.chevron.down")
+            }
+            .padding()
+        }
+        .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
+    }
+
     var body: some View {
         GeometryReader { geometry in
             ScrollViewReader { proxy in
@@ -24,29 +50,7 @@ struct WooAddCustomPackageView: View {
                                 .font(.subheadline)
                             Spacer()
                         }
-                        Menu {
-                            // show selection
-                            ForEach(WooShippingPackageType.allCases, id: \.self) { option in
-                                Button {
-                                    customPackageViewModel.packageType = option
-                                } label: {
-                                    Text(option.name)
-                                        .bodyStyle()
-                                    if customPackageViewModel.packageType == option {
-                                        Image(uiImage: .checkmarkStyledImage)
-                                    }
-                                }
-                            }
-                        } label: {
-                            HStack {
-                                Text(customPackageViewModel.packageType.name)
-                                    .bodyStyle()
-                                Spacer()
-                                Image(systemName: "chevron.up.chevron.down")
-                            }
-                            .padding()
-                        }
-                        .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
+                        packageTypeSelectionView
                         VStack {
                             AdaptiveStack(spacing: 8) {
                                 ForEach(WooShippingPackageUnitType.dimensionUnits, id: \.self) { dimensionUnit in

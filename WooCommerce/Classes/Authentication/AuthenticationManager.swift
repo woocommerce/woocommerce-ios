@@ -265,6 +265,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func createdWordPressComAccount(username: String, authToken: String) { }
 
     func shouldHandleError(_ error: Error) -> Bool {
+        updateUserDefaultsIfSuspendedSiteError(error)
         return isSupportedError(error)
     }
 
@@ -882,6 +883,13 @@ private extension AuthenticationManager {
                 }
                 return .unknown
             }
+        }
+    }
+
+    func updateUserDefaultsIfSuspendedSiteError(_ error: Error) {
+        if let serviceError = error as? WordPressComBlogServiceError,
+           serviceError == .wpcomSiteSuspended {
+            userDefaults.setWPCOMSiteSuspended(true)
         }
     }
 

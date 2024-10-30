@@ -33,6 +33,14 @@ final class CustomFieldsListViewModel: ObservableObject {
     }
     @Published private(set) var hasChanges: Bool = false
 
+    /// Due to the API limitation, when creating a new field, the new key should not be the same as an existing custom fields's key.
+    /// We also don't want newly added fields to have duplicate key, because that way the API only accepts saving one of them.
+    /// Note that this rule only applies to new field creation, and duplicates are allowed when editing existing fields.
+    var disallowedKeysForCreation: [String] {
+        originalCustomFields.map { $0.title }
+        + addedFields.map { $0.key }
+    }
+
     init(customFields: [CustomFieldViewModel],
          siteID: Int64,
          parentItemID: Int64,

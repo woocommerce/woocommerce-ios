@@ -1933,6 +1933,7 @@ extension Networking.Product {
         fullDescription: NullableCopiableProp<String> = .copy,
         shortDescription: NullableCopiableProp<String> = .copy,
         sku: NullableCopiableProp<String> = .copy,
+        globalUniqueID: NullableCopiableProp<String> = .copy,
         price: CopiableProp<String> = .copy,
         regularPrice: NullableCopiableProp<String> = .copy,
         salePrice: NullableCopiableProp<String> = .copy,
@@ -2011,6 +2012,7 @@ extension Networking.Product {
         let fullDescription = fullDescription ?? self.fullDescription
         let shortDescription = shortDescription ?? self.shortDescription
         let sku = sku ?? self.sku
+        let globalUniqueID = globalUniqueID ?? self.globalUniqueID
         let price = price ?? self.price
         let regularPrice = regularPrice ?? self.regularPrice
         let salePrice = salePrice ?? self.salePrice

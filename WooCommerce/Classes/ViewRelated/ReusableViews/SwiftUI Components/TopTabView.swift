@@ -151,7 +151,7 @@ struct TopTabView<Content: View>: View {
             // Display all the tabs in an HStack, each tab the same width as the TopTabView
             // This GeometryReader is used to set the width and drag offsets for swiping between views
             GeometryReader { geometry in
-                HStack(spacing: 0) {
+                HStack(alignment: .top, spacing: 0) {
                     ForEach(0..<tabs.count, id: \.self) { index in
                         // Tab content as passed to the TopTabView at init
                         tabs[index].content()

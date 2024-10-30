@@ -6,7 +6,7 @@ import protocol Yosemite.POSItemProvider
 final class ItemListViewModel: ItemListViewModelProtocol {
 
     @Published private(set) var items: [POSItem] = []
-    @Published private(set) var state: ItemListState = .loading
+    @Published private(set) var state: ItemListState = .initialLoading
     @Published private(set) var isHeaderBannerDismissed: Bool = false
     @Published var showSimpleProductsModal: Bool = false
 
@@ -42,7 +42,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     func loadInitialItems() async {
         currentPage = Constants.initialPage
         do {
-            state = .loading
+            state = .initialLoading
             items = try await itemProvider.providePointOfSaleItems(pageNumber: currentPage)
             if items.count == 0 {
                 hasMoreItems = false
@@ -104,6 +104,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 extension ItemListViewModel {
     enum ItemListState: Equatable {
         case empty
+        case initialLoading
         case loading
         case loaded([POSItem])
         case error(ErrorModel)
@@ -119,7 +120,7 @@ extension ItemListViewModel {
 
         var isLoading: Bool {
             switch self {
-            case .loading:
+            case .initialLoading, .loading:
                 return true
             default:
                 return false
@@ -141,6 +142,8 @@ extension ItemListViewModel {
         static func == (lhs: ItemListViewModel.ItemListState, rhs: ItemListViewModel.ItemListState) -> Bool {
             switch (lhs, rhs) {
             case (.empty, .empty):
+                return true
+            case (.initialLoading, .initialLoading):
                 return true
             case (.loading, .loading):
                 return true

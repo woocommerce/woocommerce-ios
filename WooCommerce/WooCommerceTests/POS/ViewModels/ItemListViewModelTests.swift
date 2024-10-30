@@ -415,8 +415,6 @@ final class ItemListViewModelTests: XCTestCase {
         itemProvider.shouldReturnZeroItems = true
         let sut = ItemListViewModel(itemProvider: itemProvider)
 
-        let expectation = XCTestExpectation(description: "Publisher should emit state changes")
-
         var receivedStates: [ItemListViewModel.ItemListState] = []
         let expectedStates: [ItemListViewModel.ItemListState] = [
             .initialLoading,
@@ -429,7 +427,6 @@ final class ItemListViewModelTests: XCTestCase {
             .removeDuplicates()
             .sink { state in
                 receivedStates.append(state)
-                expectation.fulfill()
             }
             .store(in: &cancellables)
 
@@ -443,7 +440,6 @@ final class ItemListViewModelTests: XCTestCase {
 
     func test_sut_when_there_are_items_then_statePublisher_emits_expected_state() async {
         let items = Self.makeInitialItems()
-        let expectation = XCTestExpectation(description: "Publisher should emit state changes")
 
         var receivedStates: [ItemListViewModel.ItemListState] = []
         let expectedStates: [ItemListViewModel.ItemListState] = [
@@ -457,7 +453,6 @@ final class ItemListViewModelTests: XCTestCase {
             .removeDuplicates()
             .sink { state in
                 receivedStates.append(state)
-                expectation.fulfill()
             }
             .store(in: &cancellables)
 

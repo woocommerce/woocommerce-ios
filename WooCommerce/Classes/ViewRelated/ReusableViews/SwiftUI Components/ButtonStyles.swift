@@ -165,19 +165,6 @@ struct PrimaryLoadingButtonStyle: PrimitiveButtonStyle {
     }
 }
 
-/// Creates a button with a solid background in the provided highlight color.
-struct HighlightButtonStyle: ButtonStyle {
-    /// Background color for the button.
-    let background: Color
-
-    /// Background color when the button is pressed.
-    let backgroundPressed: Color
-
-    func makeBody(configuration: Configuration) -> some View {
-        HighlightButton(configuration: configuration, background: background, backgroundPressed: backgroundPressed)
-    }
-}
-
 private struct BaseButton: View {
     let configuration: ButtonStyleConfiguration
 
@@ -447,34 +434,6 @@ private struct RoundedBorderedButton: View {
                         lineWidth: Style.defaultBorderWidth
                     )
             )
-    }
-}
-
-private struct HighlightButton: View {
-    let configuration: ButtonStyleConfiguration
-
-    /// Background color for the button.
-    let background: Color
-
-    /// Background color when the button is pressed.
-    let backgroundPressed: Color
-
-    var body: some View {
-        BaseButton(configuration: configuration)
-            .foregroundColor(Color(.primaryButtonTitle))
-            .font(.headline)
-            .background(
-                RoundedRectangle(cornerRadius: Style.defaultCornerRadius)
-                    .fill(backgroundColor)
-            )
-    }
-
-    var backgroundColor: Color {
-        if configuration.isPressed {
-            return backgroundPressed
-        } else {
-            return background
-        }
     }
 }
 

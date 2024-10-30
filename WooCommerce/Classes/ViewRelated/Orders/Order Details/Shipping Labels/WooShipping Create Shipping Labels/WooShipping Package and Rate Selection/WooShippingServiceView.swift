@@ -62,6 +62,7 @@ private struct WooShippingServiceCardListView: View {
                     .fixedSize(horizontal: false, vertical: true) // Prevents card text from being truncated
             }
         }
+        .frame(maxHeight: .infinity, alignment: .top)
         .padding()
     }
 }

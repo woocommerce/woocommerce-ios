@@ -1659,8 +1659,7 @@ private extension AppSettingsStoreTests {
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: [:],
             sitesWithAtLeastOneIPPTransactionFinished: [],
-            isEUShippingNoticeDismissed: false,
-            isCustomFieldsTopBannerDismissed: false
+            isEUShippingNoticeDismissed: false
         )
         return (settings, feedback)
     }
@@ -1674,8 +1673,7 @@ private extension AppSettingsStoreTests {
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
             sitesWithAtLeastOneIPPTransactionFinished: [],
-            isEUShippingNoticeDismissed: false,
-            isCustomFieldsTopBannerDismissed: false
+            isEUShippingNoticeDismissed: false
         )
         return settings
     }

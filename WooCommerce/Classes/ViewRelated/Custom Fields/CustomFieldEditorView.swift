@@ -2,20 +2,41 @@ import SwiftUI
 
 struct CustomFieldEditorView: View {
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject private var viewModel: CustomFieldEditorViewModel
 
+    @State private var key: String
+    @State private var value: String
     @State private var showRichTextEditor = false
-    @State private var showActionSheet = false
+    @State private var showingActionSheet = false
 
+    private let initialKey: String
+    private let initialValue: String
     private let isReadOnlyValue: Bool
+    private let onSave: (String, String) -> Void
+    private let onDelete: (() -> Void)?
+
+    private var hasUnsavedChanges: Bool {
+        key != initialKey || value != initialValue
+    }
 
     /// Initializer for custom field editor
     /// - Parameters:
-    ///  - viewModel: The viewModel for this View.
+    ///  - key: The key for the custom field
+    ///  - value: The value for the custom field
     ///  - isReadOnlyValue: Whether the value is read-only or not. To be used if the value is not string but JSON.
-    init(viewModel: CustomFieldEditorViewModel, isReadOnlyValue: Bool = false) {
-        self.viewModel = viewModel
+    ///  - onSave: Closure to handle save action
+    ///  - onDelete: Closure to handle delete action, defaults to nil when the editor doesn't support deleting.
+    init(key: String,
+         value: String,
+         isReadOnlyValue: Bool = false,
+         onSave: @escaping (String, String) -> Void,
+         onDelete: (() -> Void)? = nil) {
+        self._key = State(initialValue: key)
+        self._value = State(initialValue: value)
+        self.initialKey = key
+        self.initialValue = value
         self.isReadOnlyValue = isReadOnlyValue
+        self.onSave = onSave
+        self.onDelete = onDelete
     }
 
     var body: some View {
@@ -27,22 +48,15 @@ struct CustomFieldEditorView: View {
                         .foregroundColor(Color(.text))
                         .subheadlineStyle()
 
-                    TextField(Localization.keyPlaceholder, text: $viewModel.key)
+                    TextField(Localization.keyPlaceholder, text: $key)
                         .foregroundColor(Color(.text))
                         .subheadlineStyle()
                         .padding(insets: Layout.inputInsets)
                         .background(Color(.listForeground(modal: false)))
                         .overlay(
-                            RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                                .stroke(viewModel.keyErrorMessage != nil ? Color(.error) : Color(.separator))
+                            RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                         )
                         .cornerRadius(Layout.cornerRadius)
-
-                    if let error = viewModel.keyErrorMessage {
-                        Text(error)
-                            .foregroundColor(Color(.error))
-                            .font(.caption)
-                    }
                 }
 
                 // Value Input
@@ -65,7 +79,7 @@ struct CustomFieldEditorView: View {
                     }
 
                     if showRichTextEditor {
-                        AztecEditorView(content: $viewModel.value)
+                        AztecEditorView(content: $value)
                         .frame(minHeight: Layout.minimumEditorSize)
                         .clipped()
                         .padding(insets: Layout.inputInsets)
@@ -75,7 +89,7 @@ struct CustomFieldEditorView: View {
                         )
                         .cornerRadius(Layout.cornerRadius)
                     } else {
-                        TextEditor(text: isReadOnlyValue ? .constant(viewModel.value) : $viewModel.value)
+                        TextEditor(text: isReadOnlyValue ? .constant(value) : $value)
                             .foregroundColor(Color(.text))
                             .subheadlineStyle()
                             .frame(minHeight: Layout.minimumEditorSize)
@@ -95,48 +109,51 @@ struct CustomFieldEditorView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack {
                     Button {
-                        viewModel.saveChanges()
+                        saveChanges()
                         dismiss()
                     } label: {
                         Text(Localization.doneButton)
                     }
-                    .disabled(!viewModel.hasUnsavedChanges || !viewModel.hasValidKey)
+                    .disabled(!hasUnsavedChanges)
 
                     Button(action: {
-                        showActionSheet = true
+                        showingActionSheet = true
                     }, label: {
                         Image(systemName: "ellipsis")
                             .renderingMode(.template)
                     })
-                    .confirmationDialog(Localization.actionSheetTitle, isPresented: $showActionSheet) {
+                    .confirmationDialog("More Options", isPresented: $showingActionSheet) {
                         actionSheetContent
                     }
                 }
             }
         }
-        .closeButtonWithDiscardChangesPrompt(hasChanges: viewModel.hasUnsavedChanges,
+        .closeButtonWithDiscardChangesPrompt(hasChanges: hasUnsavedChanges,
                                              closeButtonLabel: { Text(Localization.cancelButton) })
-        .notice($viewModel.notice)
     }
 
     @ViewBuilder
     private var actionSheetContent: some View {
-        Button(Localization.copyKeyButton) {
-            UIPasteboard.general.string = viewModel.key
-            viewModel.notice = Notice(title: Localization.keyCopiedNotice)
+        Button("Copy Key") { // todo-13493: set String to be translatable
+            UIPasteboard.general.string = key
+            // todo-13493: Show a notice that the key was copied
         }
 
-        Button(Localization.copyValueButton) {
-            UIPasteboard.general.string = viewModel.value
-            viewModel.notice = Notice(title: Localization.valueCopiedNotice)
+        Button("Copy Value") { // todo-13493: set String to be translatable
+            UIPasteboard.general.string = value
+            // todo-13493: Show a notice that the value was copied
         }
 
-        if viewModel.showDeleteButton {
+        if let onDelete = onDelete {
             Button(Localization.deleteButton, role: .destructive) {
-                viewModel.deleteField()
+                onDelete()
                 dismiss()
             }
         }
+    }
+
+    private func saveChanges() {
+        onSave(key, value)
     }
 }
 
@@ -204,39 +221,9 @@ private extension CustomFieldEditorView {
             value: "Delete custom field",
             comment: "Button title for deleting a custom field"
         )
-
-        static let actionSheetTitle = NSLocalizedString(
-            "customFieldEditorView.actionSheetTitle",
-            value: "More Options",
-            comment: "Title for the action sheet with additional options"
-        )
-
-        static let copyKeyButton = NSLocalizedString(
-            "customFieldEditorView.copyKeyButton",
-            value: "Copy Key",
-            comment: "Button title for copying the custom field key"
-        )
-
-        static let copyValueButton = NSLocalizedString(
-            "customFieldEditorView.copyValueButton",
-            value: "Copy Value",
-            comment: "Button title for copying the custom field value"
-        )
-
-        static let keyCopiedNotice = NSLocalizedString(
-            "customFieldEditorView.keyCopiedNotice",
-            value: "Key copied to clipboard",
-            comment: "Notice shown when the key has been copied to clipboard"
-        )
-
-        static let valueCopiedNotice = NSLocalizedString(
-            "customFieldEditorView.valueCopiedNotice",
-            value: "Value copied to clipboard",
-            comment: "Notice shown when the value has been copied to clipboard"
-        )
     }
 }
 
 #Preview {
-    CustomFieldEditorView(viewModel: CustomFieldEditorViewModel(key: "title", value: "value", onSave: { _, _ in }, onDelete: {}))
+    CustomFieldEditorView(key: "title", value: "value", onSave: { _, _ in }, onDelete: {})
 }

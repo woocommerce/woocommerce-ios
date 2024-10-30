@@ -52,10 +52,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var isEUShippingNoticeDismissed: Bool
 
-    /// Whether the Custom Fields top banner was dismissed
-    ///
-    public var isCustomFieldsTopBannerDismissed: Bool
-
     public init(installationDate: Date?,
                 feedbacks: [FeedbackType: FeedbackSettings],
                 isViewAddOnsSwitchEnabled: Bool,
@@ -65,8 +61,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
                 lastJetpackBenefitsBannerDismissedTime: Date? = nil,
                 featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings],
                 sitesWithAtLeastOneIPPTransactionFinished: Set<Int64>,
-                isEUShippingNoticeDismissed: Bool,
-                isCustomFieldsTopBannerDismissed: Bool) {
+                isEUShippingNoticeDismissed: Bool) {
         self.installationDate = installationDate
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
@@ -77,7 +72,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.isInAppPurchasesSwitchEnabled = isInAppPurchasesSwitchEnabled
         self.sitesWithAtLeastOneIPPTransactionFinished = sitesWithAtLeastOneIPPTransactionFinished
         self.isEUShippingNoticeDismissed = isEUShippingNoticeDismissed
-        self.isCustomFieldsTopBannerDismissed = isCustomFieldsTopBannerDismissed
     }
 
     public static var `default`: Self {
@@ -89,8 +83,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
               lastEligibilityErrorInfo: nil,
               featureAnnouncementCampaignSettings: [:],
               sitesWithAtLeastOneIPPTransactionFinished: [],
-              isEUShippingNoticeDismissed: false,
-              isCustomFieldsTopBannerDismissed: false)
+              isEUShippingNoticeDismissed: false)
     }
 
     /// Returns the status of a given feedback type. If the feedback is not stored in the feedback array. it is assumed that it has a pending status.
@@ -119,8 +112,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
             sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
-            isEUShippingNoticeDismissed: isEUShippingNoticeDismissed,
-            isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed
+            isEUShippingNoticeDismissed: isEUShippingNoticeDismissed
         )
     }
 
@@ -140,8 +132,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
             featureAnnouncementCampaignSettings: updatedSettings,
             sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
-            isEUShippingNoticeDismissed: isEUShippingNoticeDismissed,
-            isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed
+            isEUShippingNoticeDismissed: isEUShippingNoticeDismissed
         )
     }
 }
@@ -166,7 +157,6 @@ extension GeneralAppSettings {
         self.sitesWithAtLeastOneIPPTransactionFinished = try container.decodeIfPresent(Set<Int64>.self,
                                                                                         forKey: .sitesWithAtLeastOneIPPTransactionFinished) ?? Set<Int64>([])
         self.isEUShippingNoticeDismissed = try container.decodeIfPresent(Bool.self, forKey: .isEUShippingNoticeDismissed) ?? false
-        self.isCustomFieldsTopBannerDismissed = try container.decodeIfPresent(Bool.self, forKey: .isCustomFieldsTopBannerDismissed) ?? false
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

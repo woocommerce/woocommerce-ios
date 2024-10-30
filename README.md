@@ -107,6 +107,7 @@ Please, remember to not add this information on your commits and PRs.
     - [UI Tests](WooCommerce/WooCommerceUITests/README.md)
     - [Testing Card Present Payments](docs/stripe-tests.md)
     - [Beta Testing](https://woocommercehalo.wordpress.com/setup/join-ios-beta/)
+    - [Issue Triage](docs/issue-triage.md)
 - Features
     - [In-app Feedback](docs/in-app-feedback.md)
     - [Card Present Payments](docs/card-present-payments.md)

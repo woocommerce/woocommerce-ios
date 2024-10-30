@@ -189,7 +189,7 @@ private extension PointOfSaleDashboardViewModel {
             .sink { [weak self] state, items in
                 guard let self = self else { return }
 
-                self.isInitialLoading = (state == .initialLoading && items.isEmpty)
+                self.isInitialLoading = (state == .loading && items.isEmpty)
 
                 switch state {
                 case .error:

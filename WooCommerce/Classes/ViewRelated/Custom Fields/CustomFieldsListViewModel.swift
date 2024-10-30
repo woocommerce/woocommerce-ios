@@ -10,14 +10,10 @@ final class CustomFieldsListViewModel: ObservableObject {
     private let siteID: Int64
     private let parentItemID: Int64
     private let onChangesSaved: (([MetaData]) -> Void)?
-    @Published private var isTopBannerDismissed: Bool = false
 
     @Published var selectedCustomField: CustomFieldUI? = nil
     @Published var isAddingNewField: Bool = false
     @Published var isSavingChanges: Bool = false
-    var shouldShowTopBanner: Bool {
-        hasChanges && !isTopBannerDismissed
-    }
 
     @Published private(set) var combinedList: [CustomFieldUI] = []
     @Published var notice: Notice?
@@ -37,14 +33,6 @@ final class CustomFieldsListViewModel: ObservableObject {
     }
     @Published private(set) var hasChanges: Bool = false
 
-    /// Due to the API limitation, when creating a new field, the new key should not be the same as an existing custom fields's key.
-    /// We also don't want newly added fields to have duplicate key, because that way the API only accepts saving one of them.
-    /// Note that this rule only applies to new field creation, and duplicates are allowed when editing existing fields.
-    var disallowedKeysForCreation: [String] {
-        originalCustomFields.map { $0.title }
-        + addedFields.map { $0.key }
-    }
-
     init(customFields: [CustomFieldViewModel],
          siteID: Int64,
          parentItemID: Int64,
@@ -59,7 +47,6 @@ final class CustomFieldsListViewModel: ObservableObject {
         self.onChangesSaved = onChangesSaved
 
         observePendingChanges()
-        loadTopBannerDismissState()
     }
 }
 
@@ -118,15 +105,6 @@ extension CustomFieldsListViewModel {
         }
     }
 
-    func dismissTopBanner() {
-        stores.dispatch(AppSettingsAction.dismissCustomFieldsTopBanner { [weak self] result in
-            guard let self else { return }
-            if result.isSuccess {
-                isTopBannerDismissed = true
-            }
-        })
-    }
-
     /// Save changes to the server, uses async/await
     @MainActor
     func saveChanges() async {
@@ -183,13 +161,6 @@ private extension CustomFieldsListViewModel {
         } else {
             addedFields.append(field)
         }
-    }
-
-    func loadTopBannerDismissState() {
-        stores.dispatch(AppSettingsAction.loadCustomFieldsTopBannerDismissState { [weak self] result in
-            guard let self else { return }
-            isTopBannerDismissed = result
-        })
     }
 
     func observePendingChanges() {

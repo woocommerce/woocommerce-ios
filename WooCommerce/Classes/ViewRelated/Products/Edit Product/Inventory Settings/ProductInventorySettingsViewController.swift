@@ -310,8 +310,7 @@ private extension ProductInventorySettingsViewController {
     func configureGlobalUniqueIdentifier(cell: TitleAndTextFieldTableViewCell) {
         var cellViewModel = Product.createGlobalUniqueIdentifierViewModel(globalUniqueID: viewModel.globalUniqueID) { [weak self] value in
             self?.viewModel.handleGlobalUniqueIdentifierChange(value) { [weak self] isValid in
-                self?.enableDoneButton(isValid)
-                self?.getTitleAndTextFieldCell(from: .globalUniqueIdentifier)?.textFieldBecomeFirstResponder()
+                self?.handleGlobalUniqueIdentifierValidation(isValid: isValid)
             }
         }
 
@@ -398,7 +397,8 @@ private extension ProductInventorySettingsViewController {
 
         startBarcodeScanning(onCompletion: { [weak self] barcode in
             ServiceLocator.analytics.track(.productInventorySettingsGlobalUniqueIDScanned)
-            self?.viewModel.handleGlobalUniqueIdentifierFromBarcodeScanner(barcode, onValidation: {_ in })
+            self?.viewModel.handleGlobalUniqueIdentifierFromBarcodeScanner(barcode, onValidation: {[weak self] isValid in
+                self?.handleGlobalUniqueIdentifierValidation(isValid: isValid)})
         })
     }
 
@@ -429,6 +429,11 @@ private extension ProductInventorySettingsViewController {
         if shouldBringUpKeyboard {
             getTitleAndTextFieldCell(from: .sku)?.textFieldBecomeFirstResponder()
         }
+    }
+
+    func handleGlobalUniqueIdentifierValidation(isValid: Bool) {
+        enableDoneButton(isValid)
+        getTitleAndTextFieldCell(from: .globalUniqueIdentifier)?.textFieldBecomeFirstResponder()
     }
 }
 

@@ -20,7 +20,7 @@ class WordPressComBlogService {
 
         remote.fetchSiteInfo(forAddress: address, success: { response in
             guard let response = response else {
-                failure(ServiceError.unknown)
+                failure(WordPressComBlogServiceError.unknown)
                 return
             }
 
@@ -28,7 +28,7 @@ class WordPressComBlogService {
             success(site)
 
         }, failure: { error in
-            let result = error ?? ServiceError.unknown
+            let result = error ?? WordPressComBlogServiceError.unknown
             failure(result)
         })
     }
@@ -37,13 +37,13 @@ class WordPressComBlogService {
         let remote = BlogServiceRemoteREST(wordPressComRestApi: anonymousAPI, siteID: 0)
         remote.fetchUnauthenticatedSiteInfo(forAddress: address, success: { response in
             guard let response = response else {
-                failure(ServiceError.unknown)
+                failure(WordPressComBlogServiceError.unknown)
                 return
             }
 
             let site = WordPressComSiteInfo(remote: response)
             guard site.url != Constants.wordPressBlogURL else {
-                failure(ServiceError.invalidWordPressAddress)
+                failure(WordPressComBlogServiceError.invalidWordPressAddress)
                 return
             }
             success(site)
@@ -60,9 +60,12 @@ extension WordPressComBlogService {
     enum Constants {
         static let wordPressBlogURL = "https://wordpress.com/blog"
     }
+}
 
-    enum ServiceError: Error {
-        case unknown
-        case invalidWordPressAddress
-    }
+public enum WordPressComBlogServiceError: Error {
+    case unknown
+    case invalidWordPressAddress
+    /// Whether the site is suspended on WordPress.com and can't be connected using Jetpack
+    ///
+    case wpcomSiteSuspended
 }

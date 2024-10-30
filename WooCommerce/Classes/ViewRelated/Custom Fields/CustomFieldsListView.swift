@@ -137,15 +137,24 @@ struct CustomFieldsListView: View {
                     .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
                     .renderedIf(viewModel.shouldShowTopBanner)
 
-                List(viewModel.combinedList) { customField in
-                    Button(action: { viewModel.selectedCustomField = customField }) {
-                        CustomFieldRow(isEditable: isEditable,
-                                    title: customField.key,
-                                    content: customField.value.removedHTMLTags,
-                                    contentURL: nil)
+                if viewModel.combinedList.isEmpty {
+                    EmptyState(title: CustomFieldsListHostingController.Localization.emptyStateTitle,
+                               description: CustomFieldsListHostingController.Localization.emptyStateDescription,
+                               image: .customerSearchImage,
+                               buttonTitle: CustomFieldsListHostingController.Localization.emptyStateButton,
+                               buttonAction: { })
+                        .frame(maxHeight: .infinity)
+                } else {
+                    List(viewModel.combinedList) { customField in
+                        Button(action: { viewModel.selectedCustomField = customField }) {
+                            CustomFieldRow(isEditable: isEditable,
+                                           title: customField.key,
+                                           content: customField.value.removedHTMLTags,
+                                           contentURL: nil)
+                        }
                     }
+                    .listStyle(.plain)
                 }
-                .listStyle(.plain)
             }
             .sheet(item: $viewModel.selectedCustomField) { customField in
 	            /// When editing a newly added and unsaved custom field (identified by it having nil `fieldId`), provide disallowed keys.
@@ -308,6 +317,22 @@ extension CustomFieldsListHostingController {
             "customFieldsListHostingController.saveErrorMessage",
             value: "There was an error saving your changes. Please try again.",
             comment: "Message for the error message when saving changes"
+        )
+        static let emptyStateTitle = NSLocalizedString(
+            "customFieldsListHostingController.emptyStateTitle",
+            value: "No custom fields found",
+            comment: "Title for the message when the list is empty."
+        )
+        static let emptyStateDescription = NSLocalizedString(
+            "customFieldsListHostingController.emptyStateDescription",
+            value: "Custom fields are optional metadata to display extra information or customize "
+            + "your store's shopping experience",
+            comment: "Message when the list is empty."
+        )
+        static let emptyStateButton = NSLocalizedString(
+            "customFieldsListHostingController.emptyStateButton",
+            value: "Learn more",
+            comment: "Text for button that's shown when the list is empty."
         )
     }
 }

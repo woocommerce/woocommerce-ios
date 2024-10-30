@@ -10,10 +10,14 @@ final class CustomFieldsListViewModel: ObservableObject {
     private let siteID: Int64
     private let parentItemID: Int64
     private let onChangesSaved: (([MetaData]) -> Void)?
+    @Published private var isTopBannerDismissed: Bool = false
 
     @Published var selectedCustomField: CustomFieldUI? = nil
     @Published var isAddingNewField: Bool = false
     @Published var isSavingChanges: Bool = false
+    var shouldShowTopBanner: Bool {
+        hasChanges && !isTopBannerDismissed
+    }
 
     @Published private(set) var combinedList: [CustomFieldUI] = []
     @Published var notice: Notice?
@@ -55,6 +59,7 @@ final class CustomFieldsListViewModel: ObservableObject {
         self.onChangesSaved = onChangesSaved
 
         observePendingChanges()
+        loadTopBannerDismissState()
     }
 }
 
@@ -113,6 +118,15 @@ extension CustomFieldsListViewModel {
         }
     }
 
+    func dismissTopBanner() {
+        stores.dispatch(AppSettingsAction.dismissCustomFieldsTopBanner { [weak self] result in
+            guard let self else { return }
+            if result.isSuccess {
+                isTopBannerDismissed = true
+            }
+        })
+    }
+
     /// Save changes to the server, uses async/await
     @MainActor
     func saveChanges() async {
@@ -169,6 +183,13 @@ private extension CustomFieldsListViewModel {
         } else {
             addedFields.append(field)
         }
+    }
+
+    func loadTopBannerDismissState() {
+        stores.dispatch(AppSettingsAction.loadCustomFieldsTopBannerDismissState { [weak self] result in
+            guard let self else { return }
+            isTopBannerDismissed = result
+        })
     }
 
     func observePendingChanges() {

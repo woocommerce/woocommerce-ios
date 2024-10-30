@@ -16,6 +16,7 @@ struct WooCarrierPackageData: WooPackageDataRepresentable {
     let id: UUID = UUID()
     let name: String
     let type: String
+    let packageType: String
     let dimensions: String
     let weight: String
 }
@@ -33,8 +34,8 @@ struct WooCarrierPackagesTabView: View {
                         PackageOptionView(
                             isSelected: selectedPackageId == package.id, // Check if this package is selected
                             package: package,
-                            packageType: nil,
                             showTopDivider: false,
+                            showType: false,
                             tapAction: {
                                 selectedPackageId = selectedPackageId == package.id ? nil : package.id
                             },

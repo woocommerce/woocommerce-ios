@@ -6,12 +6,14 @@ protocol WooPackageDataRepresentable {
     var dimensions: String { get }
     var weight: String { get }
     var type: String { get }
+    var packageType: String { get }
 }
 
 struct WooSavedPackageData: WooPackageDataRepresentable {
     let id: UUID = UUID()
     let name: String
     let type: String
+    let packageType: String
     let dimensions: String
     let weight: String
 }
@@ -28,8 +30,8 @@ struct WooSavedPackagesSelectionView: View {
                     PackageOptionView(
                         isSelected: selectedPackageId == package.id, // Check if this package is selected
                         package: package,
-                        packageType: package.type,
                         showTopDivider: false,
+                        showType: true,
                         tapAction: {
                             selectedPackageId = selectedPackageId == package.id ? nil : package.id
                         }
@@ -68,8 +70,8 @@ struct PackageOptionView: View {
 
     var isSelected: Bool
     var package: WooPackageDataRepresentable
-    var packageType: String?
     var showTopDivider: Bool
+    var showType: Bool
     var tapAction: () -> Void
     var starAction: (() -> Void)?
     var starred: Bool?
@@ -81,8 +83,8 @@ struct PackageOptionView: View {
                     .foregroundColor(isSelected ? Color(.withColorStudio(.wooCommercePurple, shade: .shade60)) : .gray)
                     .font(.title)
                 VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                    if let packageType {
-                        Text(packageType)
+                    if showType, package.type.isNotEmpty {
+                        Text(package.type)
                             .captionStyle()
                     }
                     Text(package.name)

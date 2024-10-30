@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct WooShippingPostPurchaseView: View {
-    @State private var viewModel = WooShippingPostPurchaseViewModel()
+    @ObservedObject private(set) var viewModel: WooShippingPostPurchaseViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -54,13 +54,16 @@ struct WooShippingPostPurchaseView: View {
                 }
                 Divider()
                 Group {
-                    Button {
-                        // TODO: Open link for shipment tracking
-                    } label: {
-                        HStack {
-                            Text(Localization.trackShipment)
-                                .multilineTextAlignment(.leading)
-                            Image(systemName: "arrow.up.right.square")
+                    if let trackingURL = viewModel.trackingURL {
+                        NavigationLink {
+                            WebView(isPresented: .constant(true), url: trackingURL)
+                                .navigationTitle(Localization.trackShipment)
+                        } label: {
+                            HStack {
+                                Text(Localization.trackShipment)
+                                    .multilineTextAlignment(.leading)
+                                Image(systemName: "arrow.up.right.square")
+                            }
                         }
                     }
                     Button {
@@ -138,6 +141,12 @@ private extension WooShippingPostPurchaseView {
 }
 
 #Preview {
-    WooShippingPostPurchaseView()
+    WooShippingPostPurchaseView(viewModel: WooShippingPostPurchaseViewModel(labelSizes: [.label, .legal, .a4],
+                                                                            trackingURL: URL(string: "https://woocommerce.com")))
+        .padding()
+}
+
+#Preview("Label without links") {
+    WooShippingPostPurchaseView(viewModel: WooShippingPostPurchaseViewModel(labelSizes: [.label, .legal, .a4], trackingURL: nil))
         .padding()
 }

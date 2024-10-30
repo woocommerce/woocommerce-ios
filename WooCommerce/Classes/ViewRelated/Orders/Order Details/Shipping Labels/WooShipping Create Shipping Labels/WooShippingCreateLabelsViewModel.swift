@@ -15,6 +15,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         shippingLabel != nil
     }
 
+    var postPurchase: WooShippingPostPurchaseViewModel? {
+        guard let shippingLabel else { return nil }
+        return WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
+    }
+
     /// View model for the items to ship.
     @Published private(set) var items: WooShippingItemsViewModel
 

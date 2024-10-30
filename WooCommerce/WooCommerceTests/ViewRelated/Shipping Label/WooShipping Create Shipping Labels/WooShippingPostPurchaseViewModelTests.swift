@@ -4,6 +4,19 @@ import Yosemite
 
 final class WooShippingPostPurchaseViewModelTests: XCTestCase {
 
+    func test_inits_with_provided_properties() {
+        // Given
+        let labelSizes: [ShippingLabelPaperSize] = [.label, .letter, .a4]
+        let trackingURL = URL(string: "https://woocommerce.com")
+
+        // When
+        let viewModel = WooShippingPostPurchaseViewModel(labelSizes: labelSizes, trackingURL: trackingURL)
+
+        // Then
+        XCTAssertEqual(viewModel.labelSizes, labelSizes)
+        XCTAssertEqual(viewModel.trackingURL, trackingURL)
+    }
+
     func test_labelSizes_includes_expected_default_values() {
         // Given
         let countrySetting = SiteSetting.fake().copy(settingID: "woocommerce_default_country",
@@ -11,7 +24,7 @@ final class WooShippingPostPurchaseViewModelTests: XCTestCase {
         let siteAddress = SiteAddress(siteSettings: [countrySetting])
 
         // When
-        let viewModel = WooShippingPostPurchaseViewModel(siteAddress: siteAddress)
+        let viewModel = WooShippingPostPurchaseViewModel(shippingLabel: ShippingLabel.fake(), siteAddress: siteAddress)
 
         // Then
         assertEqual([.label, .letter], viewModel.labelSizes)
@@ -24,10 +37,22 @@ final class WooShippingPostPurchaseViewModelTests: XCTestCase {
         let siteAddress = SiteAddress(siteSettings: [countrySetting])
 
         // When
-        let viewModel = WooShippingPostPurchaseViewModel(siteAddress: siteAddress)
+        let viewModel = WooShippingPostPurchaseViewModel(shippingLabel: ShippingLabel.fake(), siteAddress: siteAddress)
 
         // Then
         assertEqual([.label, .letter, .a4], viewModel.labelSizes)
+    }
+
+    func test_trackingURL_parsed_from_shipping_label() {
+        // Given
+        let shippingLabel = ShippingLabel.fake().copy(carrierID: "usps", trackingNumber: "1234567890")
+
+        // When
+        let viewModel = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
+
+        // Then
+        let expectedTrackingURL = ShippingLabelTrackingURLGenerator.url(for: shippingLabel)
+        XCTAssertEqual(viewModel.trackingURL, expectedTrackingURL)
     }
 
 }

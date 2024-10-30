@@ -286,6 +286,7 @@ private extension ProductInventorySettingsViewController {
             break
         }
         cell.configure(viewModel: cellViewModel)
+        cell.setSpacingBetweenTitleAndTextField(30)
 
         // Configures accessory view for adding SKU from barcode scanner if camera is available.
         guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
@@ -306,7 +307,8 @@ private extension ProductInventorySettingsViewController {
     }
 
     func configureGlobalUniqueIdentifier(cell: TitleAndTextFieldTableViewCell) {
-        let cellViewModel = Product.createGlobalUniqueIdentifierViewModel(globalUniqueID: viewModel.globalUniqueID) { _ in
+        let cellViewModel = Product.createGlobalUniqueIdentifierViewModel(globalUniqueID: viewModel.globalUniqueID) { [weak self] value in
+            self?.viewModel.handleGlobalUniqueIdentifierChange(value)
         }
 
         cell.configure(viewModel: cellViewModel)

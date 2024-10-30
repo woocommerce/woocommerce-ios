@@ -113,6 +113,7 @@ protocol ProductFormViewModelProtocol {
                              taxClass: TaxClass?)
 
     func updateInventorySettings(sku: String?,
+                                 globalUniqueIdentifier: String?,
                                  manageStock: Bool,
                                  soldIndividually: Bool?,
                                  stockQuantity: Decimal?,

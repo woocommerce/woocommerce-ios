@@ -44,6 +44,19 @@ public class WordPressComSiteInfo {
     ///
     public let exists: Bool
 
+    public init(name: String, tagline: String, url: String, hasJetpack: Bool, isJetpackActive: Bool, isJetpackConnected: Bool, icon: String, isWPCom: Bool, isWP: Bool, exists: Bool) {
+        self.name = name
+        self.tagline = tagline
+        self.url = url
+        self.hasJetpack = hasJetpack
+        self.isJetpackActive = isJetpackActive
+        self.isJetpackConnected = isJetpackConnected
+        self.icon = icon
+        self.isWPCom = isWPCom
+        self.isWP = isWP
+        self.exists = exists
+    }
+
     /// Initializes the current SiteInfo instance with a raw dictionary.
     ///
     public init(remote: [AnyHashable: Any]) {

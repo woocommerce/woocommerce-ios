@@ -131,7 +131,7 @@ private extension ItemListView {
                     })
                 }
                 GhostItemCardView()
-                    .renderedIf(viewModel.state == .loading && viewModel.hasMoreItems)
+                    .renderedIf(viewModel.shouldRenderGhostItemCard)
             }
             .padding(.bottom, floatingControlAreaSize.height)
             .padding(.horizontal, Constants.itemListPadding)

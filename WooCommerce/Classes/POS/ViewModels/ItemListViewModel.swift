@@ -21,6 +21,12 @@ final class ItemListViewModel: ItemListViewModelProtocol {
         return !isHeaderBannerDismissed && (state.isLoaded || state.isLoading) && items.isNotEmpty
     }
 
+    var shouldRenderGhostItemCard: Bool {
+        state == .loading && 
+        hasMoreItems &&
+        items.count != 0
+    }
+
     private let itemProvider: POSItemProvider
     private let selectedItemSubject: PassthroughSubject<POSItem, Never> = .init()
 

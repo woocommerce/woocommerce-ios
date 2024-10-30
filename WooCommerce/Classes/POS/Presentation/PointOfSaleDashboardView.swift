@@ -27,23 +27,24 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            if posModel.itemListState == .initialLoading {
+            switch posModel.itemListState {
+            case .initialLoading:
                 PointOfSaleLoadingView()
                     .transition(.opacity)
                     .ignoresSafeArea()
-            } else if viewModel.isError {
-                let errorContents = posModel.itemListState.hasError
+            case .error(let errorContents):
                 PointOfSaleItemListErrorView(error: errorContents, onRetry: {
                     Task {
                         await posModel.reloadItems()
                     }
                 })
-            } else if viewModel.isEmpty {
+            case .empty:
                 PointOfSaleItemListEmptyView()
-            } else {
+            case .loading, .loaded:
                 contentView
                     .accessibilitySortPriority(2)
             }
+
             POSFloatingControlView(posModel: posModel,
                                    showExitPOSModal: $showExitPOSModal,
                                    showSupport: $showSupport)

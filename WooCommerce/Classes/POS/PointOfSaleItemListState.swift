@@ -7,35 +7,6 @@ enum PointOfSaleItemListState: Equatable {
     case loaded([POSItem])
     case error(PointOfSaleErrorState)
 
-    var isLoaded: Bool {
-        switch self {
-        case .loaded:
-            return true
-        default:
-            return false
-        }
-    }
-
-    var isLoading: Bool {
-        switch self {
-        case .loading:
-            return true
-        default:
-            return false
-        }
-    }
-
-    var hasError: PointOfSaleErrorState {
-        switch self {
-        case .error(let errorModel):
-            return errorModel
-        default:
-            return PointOfSaleErrorState(title: "Unknown error",
-                                         subtitle: "Unknown error",
-                                         buttonText: "Retry")
-        }
-    }
-
     // Equatable conformance for testing:
     static func == (lhs: PointOfSaleItemListState, rhs: PointOfSaleItemListState) -> Bool {
         switch (lhs, rhs) {

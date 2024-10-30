@@ -22,7 +22,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     }
 
     var shouldRenderGhostItemCard: Bool {
-        state == .loading && 
+        state == .loading &&
         hasMoreItems &&
         items.count != 0
     }

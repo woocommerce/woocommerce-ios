@@ -15,6 +15,7 @@ struct WooPackageGroup {
 struct WooCarrierPackageData: WooPackageDataRepresentable {
     let id: UUID = UUID()
     let name: String
+    let type: String
     let dimensions: String
     let weight: String
 }

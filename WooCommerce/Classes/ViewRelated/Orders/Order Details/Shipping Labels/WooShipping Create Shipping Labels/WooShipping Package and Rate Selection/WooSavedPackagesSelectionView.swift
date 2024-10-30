@@ -5,13 +5,10 @@ protocol WooPackageDataRepresentable {
     var name: String { get }
     var dimensions: String { get }
     var weight: String { get }
-}
-
-protocol WooSavedPackageDataRepresentable: WooPackageDataRepresentable {
     var type: String { get }
 }
 
-struct WooSavedPackageData: WooSavedPackageDataRepresentable {
+struct WooSavedPackageData: WooPackageDataRepresentable {
     let id: UUID = UUID()
     let name: String
     let type: String
@@ -21,7 +18,7 @@ struct WooSavedPackageData: WooSavedPackageDataRepresentable {
 
 struct WooSavedPackagesSelectionView: View {
     @State private var selectedPackageId: UUID? = nil  // Track the selected package index
-    let packages: [any WooSavedPackageDataRepresentable]
+    let packages: [any WooPackageDataRepresentable]
 
     var body: some View {
         VStack(spacing: 0) {

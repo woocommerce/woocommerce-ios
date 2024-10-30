@@ -288,6 +288,7 @@ private extension ProductInventorySettingsViewController {
         }
         cell.configure(viewModel: cellViewModel)
         cell.setSpacingBetweenTitleAndTextField(30)
+        cell.setKeyboardType(keyboardType: .default)
 
         // Configures accessory view for adding SKU from barcode scanner if camera is available.
         guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
@@ -309,8 +310,8 @@ private extension ProductInventorySettingsViewController {
 
     func configureGlobalUniqueIdentifier(cell: TitleAndTextFieldTableViewCell) {
         var cellViewModel = Product.createGlobalUniqueIdentifierViewModel(globalUniqueID: viewModel.globalUniqueID) { [weak self] value in
-            self?.viewModel.handleGlobalUniqueIdentifierChange(value) { [weak self] isValid in
-                self?.handleGlobalUniqueIdentifierValidation(isValid: isValid)
+            self?.viewModel.handleGlobalUniqueIdentifierChange(value) { [weak self] isValid, shouldBringUpKeyboard in
+                self?.handleGlobalUniqueIdentifierValidation(isValid: isValid, shouldBringUpKeyboard: shouldBringUpKeyboard)
             }
         }
 
@@ -322,8 +323,9 @@ private extension ProductInventorySettingsViewController {
 
         /// Global Unique Identifiers are usually long, let's make a bit more of room to display it at once without truncating it
         cell.setSpacingBetweenTitleAndTextField(20)
+        cell.setKeyboardType(keyboardType: .numbersAndPunctuation)
 
-        // Configures accessory view for adding SKU from barcode scanner if camera is available.
+        // Configures accessory view for adding value from barcode scanner if camera is available.
         guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
             return
         }
@@ -397,8 +399,8 @@ private extension ProductInventorySettingsViewController {
 
         startBarcodeScanning(onCompletion: { [weak self] barcode in
             ServiceLocator.analytics.track(.productInventorySettingsGlobalUniqueIDScanned)
-            self?.viewModel.handleGlobalUniqueIdentifierFromBarcodeScanner(barcode, onValidation: {[weak self] isValid in
-                self?.handleGlobalUniqueIdentifierValidation(isValid: isValid)})
+            self?.viewModel.handleGlobalUniqueIdentifierFromBarcodeScanner(barcode, onValidation: {[weak self] isValid, shouldBringUpKeyboard in
+                self?.handleGlobalUniqueIdentifierValidation(isValid: isValid, shouldBringUpKeyboard: shouldBringUpKeyboard)})
         })
     }
 
@@ -431,9 +433,12 @@ private extension ProductInventorySettingsViewController {
         }
     }
 
-    func handleGlobalUniqueIdentifierValidation(isValid: Bool) {
+    func handleGlobalUniqueIdentifierValidation(isValid: Bool, shouldBringUpKeyboard: Bool) {
         enableDoneButton(isValid)
-        getTitleAndTextFieldCell(from: .globalUniqueIdentifier)?.textFieldBecomeFirstResponder()
+        if shouldBringUpKeyboard {
+            getTitleAndTextFieldCell(from: .globalUniqueIdentifier)?.textFieldBecomeFirstResponder()
+        }
+
     }
 }
 

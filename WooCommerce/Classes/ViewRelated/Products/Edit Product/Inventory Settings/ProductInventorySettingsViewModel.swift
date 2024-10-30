@@ -44,9 +44,9 @@ protocol ProductInventorySettingsViewModelOutput {
 protocol ProductInventorySettingsActionHandler {
     // Input field actions
     func handleSKUChange(_ sku: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void)
-    func handleGlobalUniqueIdentifierChange(_ globalUniqueID: String?, onValidation: @escaping (Bool) -> Void)
+    func handleGlobalUniqueIdentifierChange(_ globalUniqueID: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void)
     func handleSKUFromBarcodeScanner(_ sku: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void)
-    func handleGlobalUniqueIdentifierFromBarcodeScanner(_ globalUniqueID: String?, onValidation: @escaping (Bool) -> Void)
+    func handleGlobalUniqueIdentifierFromBarcodeScanner(_ globalUniqueID: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void)
     func handleManageStockEnabledChange(_ manageStockEnabled: Bool)
     func handleSoldIndividuallyChange(_ soldIndividually: Bool?)
     func handleStockQuantityChange(_ stockQuantity: String?)
@@ -163,22 +163,31 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
         }
     }
 
-    func handleGlobalUniqueIdentifierChange(_ globalUniqueID: String?, onValidation: @escaping (Bool) -> Void) {
+    func handleGlobalUniqueIdentifierChange(_ globalUniqueID: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void) {
         self.globalUniqueID = globalUniqueID
 
         guard let newGlobalUniqueID = globalUniqueID,
-              containsOnlyNumbersAndHyphens(newGlobalUniqueID) else {
+              globalUniqueIdentifierIsValid(newGlobalUniqueID) else {
+
+            var shouldBringUpKeyboard = false
+            // If the error was already shown there's no need to show it again
+            if error != .invalidGlobalUniqueIdentifier {
+                displayError(error: .invalidGlobalUniqueIdentifier)
+                // After reloading the sections the keyboard was dismissed, let's bring it back again
+                shouldBringUpKeyboard = true
+            }
 
             globalUniqueIdIsValid = false
-            displayError(error: .invalidGlobalUniqueIdentifier)
-            onValidation(false)
+            onValidation(false, shouldBringUpKeyboard)
 
             return
         }
 
+        // Bring keyboard up if the error was shown, so they user can keep typing when the sections are reloaded to remove the error message
+        let shouldBringUpKeyboard = error == .invalidGlobalUniqueIdentifier
         hideError()
         globalUniqueIdIsValid = true
-        onValidation(true)
+        onValidation(true, shouldBringUpKeyboard)
     }
 
     func handleSKUFromBarcodeScanner(_ sku: String?, onValidation: @escaping (Bool, Bool) -> Void) {
@@ -188,7 +197,7 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
         handleSKUChange(sku, onValidation: onValidation)
     }
 
-    func handleGlobalUniqueIdentifierFromBarcodeScanner(_ globalUniqueID: String?, onValidation: @escaping (Bool) -> Void) {
+    func handleGlobalUniqueIdentifierFromBarcodeScanner(_ globalUniqueID: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void) {
         handleGlobalUniqueIdentifierChange(globalUniqueID, onValidation: onValidation)
         reloadSections()
     }
@@ -327,7 +336,12 @@ private extension ProductInventorySettingsViewModel {
         }
     }
 
-    func containsOnlyNumbersAndHyphens(_ input: String) -> Bool {
+    func globalUniqueIdentifierIsValid(_ input: String) -> Bool {
+        guard input.isNotEmpty else {
+            return true
+        }
+
+        // Only contains numbers and hyphens
         let pattern = "^[0-9-]+$"
         let predicate = NSPredicate(format: "SELF MATCHES %@", pattern)
 

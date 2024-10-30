@@ -246,16 +246,70 @@ struct WooShippingAddPackageView: View {
         packageTemplateNameFieldFocused = false
     }
 
+    private func carriersPackages() -> [WooShippingPackagesCarrierTab] {
+        // TODO: dummy data for UI creation
+        let uspsPackageGroups: [WooPackageGroup] = [
+            WooPackageGroup(name: "Flat Rate Boxes 1", packages: [
+                WooCarrierPackageData(name: "Small Flat Rate Box", type: "usps", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg")
+            ]),
+            WooPackageGroup(name: "Flat Rate Boxes 2", packages: [
+                WooCarrierPackageData(name: "Small Flat Rate Box", type: "usps", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
+                WooCarrierPackageData(name: "Small Flat Rate Box", type: "usps", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
+                WooCarrierPackageData(name: "Small Flat Rate Box", type: "usps", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg")
+            ])
+        ]
+        let dhlPackageGroups: [WooPackageGroup] = [
+            WooPackageGroup(name: "Flat Rate Boxes 1", packages: [
+                WooCarrierPackageData(name: "Small Flat Rate Box", type: "DHL Express", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
+                WooCarrierPackageData(name: "Small Flat Rate Box", type: "DHL Express", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
+                WooCarrierPackageData(name: "Small Flat Rate Box", type: "DHL Express", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
+                WooCarrierPackageData(name: "Small Flat Rate Box", type: "DHL Express", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
+            ]),
+            WooPackageGroup(name: "Flat Rate Boxes 2", packages: [
+                WooCarrierPackageData(name: "Small Flat Rate Box", type: "DHL Express", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg")
+            ])
+        ]
+        let uspsCarrier: WooShippingPackagesCarrierTab = WooShippingPackagesCarrierTab(id: WooShippingCarrier.usps, packageGroups: uspsPackageGroups)
+        let dhlCarrier: WooShippingPackagesCarrierTab = WooShippingPackagesCarrierTab(id: WooShippingCarrier.dhlExpress, packageGroups: dhlPackageGroups)
+
+        return [uspsCarrier, dhlCarrier]
+    }
+
     @ViewBuilder
     private var carrierPackageView: some View {
-        // TODO: just a placeholder
-        Spacer()
+        WooCarrierPackagesSelectionView(carriersPackages: carriersPackages())
     }
 
     @ViewBuilder
     private var savedPackageView: some View {
-        // TODO: just a placeholder
-        Spacer()
+        // TODO: dummy data for UI creation
+        WooSavedPackagesSelectionView(packages: [
+            WooSavedPackageData(name: "Small Flat Rate Box",
+                                type: "Custom package",
+                                packageType: "box",
+                                dimensions: "21.92 × 13.67 × 4.14 cm",
+                                weight: "5 kg"),
+            WooSavedPackageData(name: "Small Flat Rate Box",
+                                type: "DHL Express",
+                                packageType: "box",
+                                dimensions: "21.92 × 13.67 × 4.14 cm",
+                                weight: "5 kg"),
+            WooSavedPackageData(name: "Small Flat Rate Box",
+                                type: "Custom package",
+                                packageType: "box",
+                                dimensions: "21.92 × 13.67 × 4.14 cm",
+                                weight: "5 kg"),
+            WooSavedPackageData(name: "Small Flat Rate Box",
+                                type: "USPS Priority Mail Flat Rate Boxes",
+                                packageType: "box",
+                                dimensions: "21.92 × 13.67 × 4.14 cm",
+                                weight: "5 kg"),
+            WooSavedPackageData(name: "Small Flat Rate Box",
+                                type: "Custom package",
+                                packageType: "box",
+                                dimensions: "21.92 × 13.67 × 4.14 cm",
+                                weight: "5 kg"),
+        ])
     }
 
     // MARK: - actions

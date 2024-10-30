@@ -48,7 +48,17 @@ class WordPressComBlogService {
             }
             success(site)
         }, failure: { error in
-            let result = error ?? ServiceError.unknown
+            let result: Error = {
+                /// Check whether the site is suspended on WordPress.com and can't be connected using Jetpack
+                ///
+                if let apiError = error as? WordPressAPIError<WordPressComRestApiEndpointError>,
+                   case let .endpointError(endpointError) = apiError,
+                   endpointError.apiErrorCode == "connection_disabled" {
+                    return WordPressComBlogServiceError.wpcomSiteSuspended
+                }
+
+                return error ?? WordPressComBlogServiceError.unknown
+            }()
             failure(result)
         })
     }

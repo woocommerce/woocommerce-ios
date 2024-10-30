@@ -7,6 +7,14 @@ import WooFoundation
 final class WooShippingCreateLabelsViewModel: ObservableObject {
     private let currencyFormatter: CurrencyFormatter
 
+    /// The purchased shipping label.
+    let shippingLabel: ShippingLabel?
+
+    /// Whether an existing label can be viewed (and printed, tracked, refunded, etc.).
+    var canViewLabel: Bool {
+        shippingLabel != nil
+    }
+
     /// View model for the items to ship.
     @Published private(set) var items: WooShippingItemsViewModel
 
@@ -40,9 +48,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     let onLabelPurchase: ((_ markOrderComplete: Bool) -> Void)?
 
     init(order: Order,
+         shippingLabel: ShippingLabel? = nil,
          siteAddress: SiteAddress = SiteAddress(),
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          onLabelPurchase: ((Bool) -> Void)? = nil) {
+        self.shippingLabel = shippingLabel
         self.items = WooShippingItemsViewModel(dataSource: DefaultWooShippingItemsDataSource(order: order))
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.onLabelPurchase = onLabelPurchase

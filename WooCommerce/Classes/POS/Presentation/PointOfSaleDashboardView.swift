@@ -3,8 +3,8 @@ import SwiftUI
 struct PointOfSaleDashboardView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var totalsViewModel: TotalsViewModel
-    @ObservedObject private var cartViewModel: CartViewModel
-    @ObservedObject private var itemListViewModel: ItemListViewModel
+    private let cartViewModel: CartViewModel
+    private let itemListViewModel: ItemListViewModel
 
     @ObservedObject private var posModel: PointOfSaleAggregateModel
 
@@ -27,15 +27,15 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            if viewModel.isInitialLoading {
+            if posModel.itemListState == .initialLoading {
                 PointOfSaleLoadingView()
                     .transition(.opacity)
                     .ignoresSafeArea()
             } else if viewModel.isError {
-                let errorContents = viewModel.itemListViewModel.state.hasError
+                let errorContents = posModel.itemListState.hasError
                 PointOfSaleItemListErrorView(error: errorContents, onRetry: {
                     Task {
-                        await viewModel.itemListViewModel.reload()
+                        await posModel.reloadItems()
                     }
                 })
             } else if viewModel.isEmpty {
@@ -51,7 +51,7 @@ struct PointOfSaleDashboardView: View {
                 .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
                 .trackSize(size: $floatingSize)
                 .accessibilitySortPriority(1)
-                .renderedIf(!viewModel.isInitialLoading)
+                .renderedIf(posModel.itemListState != .initialLoading)
 
             POSConnectivityView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -63,7 +63,7 @@ struct PointOfSaleDashboardView: View {
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .environment(\.posBackgroundAppearance, posModel.paymentState != .processingPayment ? .primary : .secondary)
-        .animation(.easeInOut, value: viewModel.isInitialLoading)
+        .animation(.easeInOut, value: posModel.itemListState == .initialLoading)
         .animation(.easeInOut(duration: Constants.connectivityAnimationDuration), value: viewModel.showsConnectivityError)
         .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
@@ -77,9 +77,6 @@ struct PointOfSaleDashboardView: View {
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)
                 .posInteractiveDismissDisabled(alertType.isDismissDisabled)
         }
-        .posModal(isPresented: $itemListViewModel.showSimpleProductsModal) {
-            SimpleProductsOnlyInformation(isPresented: $itemListViewModel.showSimpleProductsModal)
-        }
         .posModal(isPresented: $showExitPOSModal) {
             PointOfSaleExitPosAlertView(isPresented: $showExitPOSModal)
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
@@ -89,7 +86,7 @@ struct PointOfSaleDashboardView: View {
             supportForm
         }
         .task {
-            await viewModel.itemListViewModel.loadInitialItems()
+            await posModel.loadInitialItems()
         }
     }
 
@@ -214,7 +211,7 @@ private extension PointOfSaleDashboardView {
     }
 
     var productListView: some View {
-        ItemListView(viewModel: itemListViewModel)
+        ItemListView(viewModel: itemListViewModel, posModel: posModel)
     }
 }
 
@@ -237,9 +234,6 @@ import class WooFoundation.MockAnalyticsProviderPreview
     let itemsListVM = ItemListViewModel(posModel: posModel)
     let posVM = PointOfSaleDashboardViewModel(
         posModel: posModel,
-        totalsViewModel: totalsVM,
-        cartViewModel: cartVM,
-        itemListViewModel: itemsListVM,
         connectivityObserver: POSConnectivityObserverPreview())
 
     NavigationStack {

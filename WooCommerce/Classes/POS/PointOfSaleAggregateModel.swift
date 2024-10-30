@@ -24,6 +24,7 @@ final class PointOfSaleAggregateModel: ObservableObject {
     @Published private(set) var order: Order? = nil
     @Published private(set) var connectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
     @Published private(set) var paymentState: PointOfSalePaymentState = .acceptingCard
+    @Published private(set) var itemListState: PointOfSaleItemListState = .initialLoading
 
     private let orderService: POSOrderServiceProtocol
     let cardPresentPaymentService: CardPresentPaymentFacade
@@ -57,13 +58,45 @@ final class PointOfSaleAggregateModel: ObservableObject {
     }
 
     @MainActor
-    func loadItems(pageNumber: Int) async throws {
+    func loadInitialItems() async {
+        do {
+            itemListState = .initialLoading
+            try await fetchItems(pageNumber: 1)
+        } catch {
+            itemListState = .error(PointOfSaleErrorState.errorOnLoadingProducts())
+        }
+    }
+
+    @MainActor
+    func loadItems(pageNumber: Int) async {
+        do {
+            itemListState = .loading
+            try await fetchItems(pageNumber: pageNumber)
+        } catch {
+            itemListState = .error(PointOfSaleErrorState.errorOnLoadingProducts())
+        }
+    }
+
+    @MainActor
+    private func fetchItems(pageNumber: Int) async throws {
         let newItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
         let uniqueNewItems = newItems.filter { newItem in
             !allItems.contains(where: { $0.productID == newItem.productID })
         }
 
         allItems.append(contentsOf: uniqueNewItems)
+
+        if allItems.count == 0 {
+            itemListState = .empty
+        } else {
+            itemListState = .loaded(allItems)
+        }
+    }
+
+    @MainActor
+    func reloadItems() async {
+        removeAllItems()
+        await loadItems(pageNumber: 1)
     }
 
     func removeAllItems() {
@@ -255,5 +288,35 @@ extension PointOfSaleAggregateModel {
         Task { [weak self] in
             await self?.collectPayment()
         }
+    }
+}
+
+struct PointOfSaleErrorState: Equatable {
+    let title: String
+    let subtitle: String
+    let buttonText: String
+
+    static func errorOnLoadingProducts() -> Self {
+        PointOfSaleErrorState(title: Constants.failedToLoadTitle,
+                              subtitle: Constants.failedToLoadSubtitle,
+                              buttonText: Constants.failedToLoadButtonTitle)
+    }
+
+    enum Constants {
+        static let failedToLoadTitle = NSLocalizedString(
+            "pos.itemList.failedToLoadTitle",
+            value: "Error loading products",
+            comment: "Text appearing on the item list screen when there's an error loading products."
+        )
+        static let failedToLoadSubtitle = NSLocalizedString(
+            "pos.itemList.failedToLoadSubtitle",
+            value: "Give it another go?",
+            comment: "Text appearing on the item list screen as subtitle when there's an error loading products."
+        )
+        static let failedToLoadButtonTitle = NSLocalizedString(
+            "pos.itemList.failedToLoadButtonTitle",
+            value: "Retry",
+            comment: "Text for the button appearing on the item list screen when there's an error loading products."
+        )
     }
 }

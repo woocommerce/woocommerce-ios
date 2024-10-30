@@ -11,9 +11,24 @@ struct CartView: View {
     @Environment(\.colorScheme) var colorScheme
 
     @State private var offSetPosition: CGFloat = 0.0
+
     private var coordinateSpace: CoordinateSpace = .named(Constants.scrollViewCoordinateSpaceIdentifier)
+
     private var shouldApplyHeaderBottomShadow: Bool {
         !posModel.cart.isEmpty && offSetPosition < 0
+    }
+
+    private var isAddMoreDisabled: Bool {
+        switch posModel.paymentState {
+        case .processingPayment,
+                .paymentError,
+                .cardPaymentSuccessful,
+                .validatingOrder,
+                .preparingReader:
+            return true
+        case .idle, .validatingOrderError, .acceptingCard:
+            return posModel.orderState.isSyncing
+        }
     }
 
     init(posModel: PointOfSaleAggregateModel,
@@ -29,8 +44,8 @@ struct CartView: View {
             DynamicHStack(spacing: Constants.cartHeaderSpacing) {
                 HStack(spacing: Constants.cartHeaderElementSpacing) {
                     backAddMoreButton
-                        .disabled(viewModel.isAddMoreDisabled)
-                        .shimmering(active: viewModel.isAddMoreDisabled)
+                        .disabled(isAddMoreDisabled)
+                        .shimmering(active: isAddMoreDisabled)
 
                     HStack {
                         Text(Localization.cartTitle)
@@ -267,9 +282,6 @@ import class WooFoundation.MockAnalyticsProviderPreview
     let itemsListViewModel = ItemListViewModel(posModel: posModel)
     let dashboardViewModel = PointOfSaleDashboardViewModel(
         posModel: posModel,
-        totalsViewModel: totalsViewModel,
-        cartViewModel: cartViewModel,
-        itemListViewModel: itemsListViewModel,
         connectivityObserver: POSConnectivityObserverPreview())
     CartView(posModel: posModel,
              viewModel: dashboardViewModel,

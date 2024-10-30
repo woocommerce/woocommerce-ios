@@ -7,43 +7,10 @@ import struct Yosemite.POSCartItem
 import struct Yosemite.Order
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
-    let cartViewModel: any CartViewModelProtocol
-    let totalsViewModel: any TotalsViewModelProtocol
-    let itemListViewModel: any ItemListViewModelProtocol
-
     let posModel: PointOfSaleAggregateModel
 
     private let connectivityObserver: ConnectivityObserver
 
-    var isAddMoreDisabled: Bool {
-        switch posModel.paymentState {
-        case .processingPayment,
-                .paymentError,
-                .cardPaymentSuccessful,
-                .validatingOrder,
-                .preparingReader:
-            return true
-        case .idle, .validatingOrderError, .acceptingCard:
-            return posModel.orderState.isSyncing
-        }
-    }
-
-    var isExitPOSDisabled: Bool {
-        switch posModel.paymentState {
-        case .processingPayment:
-            return true
-        case .idle,
-                .acceptingCard,
-                .validatingOrder,
-                .validatingOrderError,
-                .preparingReader,
-                .paymentError,
-                .cardPaymentSuccessful:
-            return false
-        }
-    }
-
-    @Published var isInitialLoading: Bool = false
     @Published var isError: Bool = false
     @Published var isEmpty: Bool = false
     @Published var showsConnectivityError: Bool = false
@@ -51,14 +18,8 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
 
     init(posModel: PointOfSaleAggregateModel,
-         totalsViewModel: any TotalsViewModelProtocol,
-         cartViewModel: any CartViewModelProtocol,
-         itemListViewModel: any ItemListViewModelProtocol,
          connectivityObserver: ConnectivityObserver) {
         self.posModel = posModel
-        self.itemListViewModel = itemListViewModel
-        self.totalsViewModel = totalsViewModel
-        self.cartViewModel = cartViewModel
         self.connectivityObserver = connectivityObserver
 
         observeItemListState()
@@ -68,13 +29,10 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
 private extension PointOfSaleDashboardViewModel {
     func observeItemListState() {
-        Publishers.CombineLatest(itemListViewModel.statePublisher, posModel.$allItems)
+        posModel.$itemListState
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] state, items in
+            .sink { [weak self] state in
                 guard let self = self else { return }
-
-                self.isInitialLoading = (state == .loading && items.isEmpty)
-
                 switch state {
                 case .error:
                     self.isError = true

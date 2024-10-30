@@ -3,18 +3,24 @@ import protocol Yosemite.POSItem
 
 struct ItemListView: View {
     @ObservedObject var viewModel: ItemListViewModel
+    @ObservedObject var posModel: PointOfSaleAggregateModel
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    init(viewModel: ItemListViewModel) {
+    init(viewModel: ItemListViewModel,
+         posModel: PointOfSaleAggregateModel) {
         self.viewModel = viewModel
+        self.posModel = posModel
     }
 
     var body: some View {
         VStack {
             headerView
-            switch viewModel.state {
-            case .empty, .error:
+                .posModal(isPresented: $viewModel.showSimpleProductsModal) {
+                    SimpleProductsOnlyInformation(isPresented: $viewModel.showSimpleProductsModal)
+                }
+            switch posModel.itemListState {
+            case .initialLoading, .empty, .error:
                 // These cases are handled directly in the dashboard, we do not render
                 // a specific view within the ItemListView to handle them
                 EmptyView()
@@ -23,7 +29,7 @@ struct ItemListView: View {
             }
         }
         .refreshable {
-            await viewModel.reload()
+            await posModel.reloadItems()
         }
         .background(Color.posPrimaryBackground)
         .accessibilityElement(children: .contain)
@@ -136,7 +142,7 @@ private extension ItemListView {
             .background(GeometryReader { proxy in
                 Color.clear
                     .onChange(of: proxy.frame(in: .global).maxY) { maxY in
-                        if viewModel.state == .loading {
+                        if posModel.itemListState == .loading {
                             return
                         }
                         let viewHeight = UIScreen.main.bounds.height
@@ -210,6 +216,7 @@ import class WooFoundation.MockAnalyticsPreview
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderService: POSOrderPreviewService(),
         analytics: MockAnalyticsPreview())
-    ItemListView(viewModel: ItemListViewModel(posModel: posModel))
+    ItemListView(viewModel: ItemListViewModel(posModel: posModel),
+                 posModel: posModel)
 }
 #endif

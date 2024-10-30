@@ -7,6 +7,21 @@ struct POSFloatingControlView: View {
     @Binding var showExitPOSModal: Bool
     @Binding var showSupport: Bool
 
+    private var isExitPOSDisabled: Bool {
+        switch posModel.paymentState {
+        case .processingPayment:
+            return true
+        case .idle,
+                .acceptingCard,
+                .validatingOrder,
+                .validatingOrderError,
+                .preparingReader,
+                .paymentError,
+                .cardPaymentSuccessful:
+            return false
+        }
+    }
+
     init(posModel: PointOfSaleAggregateModel,
          showExitPOSModal: Binding<Bool>,
          showSupport: Binding<Bool>) {
@@ -46,7 +61,7 @@ struct POSFloatingControlView: View {
             }
             .background(backgroundColor)
             .cornerRadius(Constants.cornerRadius)
-            .disabled(posModel.paymentState.cardHasBeenTapped)
+            .disabled(isExitPOSDisabled)
 
             CardReaderConnectionStatusView(posModel: posModel)
                 .foregroundStyle(fontColor)

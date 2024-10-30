@@ -4,15 +4,10 @@ import protocol Yosemite.POSItem
 
 protocol ItemListViewModelProtocol: ObservableObject {
     var items: [POSItem] { get }
-    var state: ItemListViewModel.ItemListState { get }
     var isHeaderBannerDismissed: Bool { get }
     var shouldShowHeaderBanner: Bool { get }
 
-    var statePublisher: Published<ItemListViewModel.ItemListState>.Publisher { get }
-
     func select(_ item: POSItem)
-    func loadInitialItems() async
     func loadNextItems() async
-    func reload() async
     func dismissBanner()
 }

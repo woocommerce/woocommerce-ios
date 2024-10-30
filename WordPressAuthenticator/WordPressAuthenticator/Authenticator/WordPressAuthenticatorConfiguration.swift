@@ -178,6 +178,10 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let enableSiteCreationGuide: Bool
 
+    /// If enabled allows login into sites marked as suspended in WordPress.com
+    ///
+    let enableSiteCredentialsLoginForWPCOMSuspendedSites: Bool
+
     /// Designated Initializer
     ///
     public init (wpcomClientId: String,
@@ -215,7 +219,8 @@ public struct WordPressAuthenticatorConfiguration {
                  enableManualErrorHandlingForSiteCredentialLogin: Bool = false,
                  useEnterEmailAddressAsStepValueForGetStartedVC: Bool = false,
                  enableSiteAddressLoginOnlyInPrologue: Bool = false,
-                 enableSiteCreationGuide: Bool = false
+                 enableSiteCreationGuide: Bool = false,
+                 enableSiteCredentialsLoginForWPCOMSuspendedSites: Bool = false
     ) {
 
         self.wpcomClientId = wpcomClientId
@@ -254,5 +259,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.useEnterEmailAddressAsStepValueForGetStartedVC = useEnterEmailAddressAsStepValueForGetStartedVC
         self.enableSiteAddressLoginOnlyInPrologue = enableSiteAddressLoginOnlyInPrologue
         self.enableSiteCreationGuide = enableSiteCreationGuide
+        self.enableSiteCredentialsLoginForWPCOMSuspendedSites = enableSiteCredentialsLoginForWPCOMSuspendedSites
     }
 }

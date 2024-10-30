@@ -111,7 +111,7 @@ struct WooShippingAddPackageView: View {
     @ViewBuilder
     private var savedPackageView: some View {
         // TODO: dummy data for UI creation
-        WooSavedPackagesSelectionView(packages: [
+        let packages: [WooSavedPackageData] = [
             WooSavedPackageData(name: "Small Flat Rate Box",
                                 type: "Custom package",
                                 packageType: "box",
@@ -137,7 +137,8 @@ struct WooShippingAddPackageView: View {
                                 packageType: "box",
                                 dimensions: "21.92 × 13.67 × 4.14 cm",
                                 weight: "5 kg"),
-        ]) { packageData in
+        ]
+        WooSavedPackagesSelectionView(packages: packages) { packageData in
             addPackageAction(packageData)
         }
     }

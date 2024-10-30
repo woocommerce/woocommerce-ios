@@ -33,12 +33,12 @@ struct CustomFieldsListTopBanner: UIViewRepresentable {
         }
 
         let viewModel = TopBannerViewModel(title: Localization.title,
-                                                               infoText: Localization.description,
-                                                               icon: .speakerIcon.withRenderingMode(.alwaysTemplate),
-                                                               iconTintColor: .primary,
-                                                               isExpanded: !UIDevice.current.orientation.isLandscape, // Collapsed by default in landscape mode
-                                                               topButton: expandButton,
-                                                               actionButtons: [dismissButton])
+                                           infoText: Localization.description,
+                                           icon: .speakerIcon.withRenderingMode(.alwaysTemplate),
+                                           iconTintColor: .wooCommercePurple(.shade50),
+                                           isExpanded: !UIDevice.current.orientation.isLandscape, // Collapsed by default in landscape mode
+                                           topButton: expandButton,
+                                           actionButtons: [dismissButton])
         let mainBanner = TopBannerView(viewModel: viewModel)
 
         // Set the current super view width and the real view to be displayed inside the wrapper.

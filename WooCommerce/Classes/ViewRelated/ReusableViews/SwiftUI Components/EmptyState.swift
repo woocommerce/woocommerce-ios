@@ -32,6 +32,8 @@ struct EmptyState: View {
                     buttonAction?()
                 }
                 .buttonStyle(PrimaryButtonStyle())
+                .padding(.top, Constants.verticalSpacing)
+                .frame(maxWidth: Constants.buttonWidth)
             }
         }
         .frame(maxWidth: .infinity, alignment: .center)
@@ -44,6 +46,7 @@ private extension EmptyState {
         static let verticalSpacing: CGFloat = 16
         static let horizontalSpacing: CGFloat = 24
         static let width: CGFloat = 168
+        static let buttonWidth: CGFloat = 228
     }
 }
 

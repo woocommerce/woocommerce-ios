@@ -52,20 +52,44 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
         packageTemplateName = ""
     }
 
-    func addPackageAction() {
+    private var dimensionsDescription: String {
+        return "\(fieldValues[.length] ?? "")\(dimensionUnit) x \(fieldValues[.width] ?? "")\(dimensionUnit) x \(fieldValues[.height] ?? "")\(dimensionUnit)"
+    }
+
+    private var weightDescription: String {
+        return "\(fieldValues[.weight] ?? "")\(weightUnit)"
+    }
+
+    private var packageDataFromCurrentData: WooPackageDataRepresentable {
+        return WooSavedPackageData(name: packageTemplateName,
+                                   type: "custom",
+                                   packageType: packageType.name,
+                                   dimensions: dimensionsDescription,
+                                   weight: weightDescription)
+    }
+
+    func addPackageAction() -> WooPackageDataRepresentable? {
         // TODO: implement adding a package
-        guard validateCustomPackageInputFields() else { return }
+        guard validateCustomPackageInputFields() else { return nil }
+
+        let packageData = packageDataFromCurrentData
 
         // Cleanup after adding package
         resetValues()
+
+        return packageData
     }
 
-    func savePackageAsTemplateAction() {
+    func savePackageAsTemplateAction() -> WooPackageDataRepresentable? {
         // TODO: implement saving package as a template
-        guard validateCustomPackageInputFields() else { return }
+        guard validateCustomPackageInputFields() else { return nil }
+
+        let packageData = packageDataFromCurrentData
 
         // Cleanup after saving package template
         resetValues()
+
+        return packageData
     }
 
     func validateCustomPackageInputFields() -> Bool {

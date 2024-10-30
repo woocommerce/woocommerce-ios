@@ -21,6 +21,7 @@ struct WooSavedPackageData: WooPackageDataRepresentable {
 struct WooSavedPackagesSelectionView: View {
     @State private var selectedPackageId: UUID? = nil  // Track the selected package index
     let packages: [any WooPackageDataRepresentable]
+    let addPackageAction: (WooPackageDataRepresentable) -> Void
 
     var body: some View {
         VStack(spacing: 0) {
@@ -53,10 +54,23 @@ struct WooSavedPackagesSelectionView: View {
             .listStyle(.plain)
             Divider()
             Button(WooShippingAddPackageView.Localization.addPackage) {
+                addPackageButtonTapped()
             }
             .disabled(selectedPackageId == nil || packages.isEmpty)
             .buttonStyle(PrimaryButtonStyle())
             .padding()
+        }
+    }
+
+    private func addPackageButtonTapped() {
+        // call addPackageAction with data
+        if let selectedPackageId {
+            for packageItem in packages {
+                if selectedPackageId == packageItem.id {
+                    addPackageAction(packageItem)
+                    return
+                }
+            }
         }
     }
 }

@@ -21,7 +21,7 @@ struct WooCarrierPackageData: WooPackageDataRepresentable {
     let weight: String
 }
 
-struct WooCarrierPackagesTabView: View {
+struct WooCarrierPackagesView: View {
     let carrierTab: WooShippingPackagesCarrierTab
     @Binding var selectedPackageId: UUID?  // Track the selected package index
     @State private var starredPackages: Set<UUID> = []
@@ -82,11 +82,13 @@ struct WooCarrierPackagesSelectionView: View {
 
     let carriersPackages: [WooShippingPackagesCarrierTab]
     let tabs: [TopTabItem<EmptyView>]
+    let addPackageAction: (WooPackageDataRepresentable) -> Void
 
     @State private var selectedTabIndex: Int?
     @State private var selectedPackageId: UUID? = nil
 
-    init(carriersPackages: [WooShippingPackagesCarrierTab]) {
+    init(carriersPackages: [WooShippingPackagesCarrierTab],
+         addPackageAction: @escaping (WooPackageDataRepresentable) -> Void) {
         self.carriersPackages = carriersPackages
         self.tabs = carriersPackages.map { carrierTab in
             return TopTabItem(name: carrierTab.id.name, icon: carrierTab.id.logo, content: {
@@ -94,6 +96,7 @@ struct WooCarrierPackagesSelectionView: View {
             })
         }
         _selectedTabIndex = State(initialValue: carriersPackages.isEmpty ? nil : 0)
+        self.addPackageAction = addPackageAction
     }
 
     var body: some View {
@@ -110,11 +113,12 @@ struct WooCarrierPackagesSelectionView: View {
                            tabsNameFont: Font.subheadline.bold(),
                            tabItemContentHorizontalPadding: Constants.tabItemContentHorizontalPadding,
                            tabItemContentVerticalPadding: Constants.tabItemContentVerticalPadding)
-                WooCarrierPackagesTabView(carrierTab: carriersPackages[selectedTabIndex],
-                                          selectedPackageId: $selectedPackageId)
+                WooCarrierPackagesView(carrierTab: carriersPackages[selectedTabIndex],
+                                       selectedPackageId: $selectedPackageId)
                 Spacer()
                 Divider()
                 Button(WooShippingAddPackageView.Localization.addPackage) {
+                    addPackageButtonTapped()
                 }
                 .disabled(selectedPackageId == nil)
                 .buttonStyle(PrimaryButtonStyle())
@@ -124,6 +128,22 @@ struct WooCarrierPackagesSelectionView: View {
         else {
             // TODO: add some kind of empty state view
             EmptyView()
+        }
+    }
+
+    private func addPackageButtonTapped() {
+        // call addPackageAction with data
+        if let selectedPackageId {
+            for carriersPackage in carriersPackages {
+                for packageGroup in carriersPackage.packageGroups {
+                    for packageItem in packageGroup.packages {
+                        if selectedPackageId == packageItem.id {
+                            addPackageAction(packageItem)
+                            return
+                        }
+                    }
+                }
+            }
         }
     }
 }

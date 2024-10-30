@@ -166,11 +166,13 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
 
         // When
         viewModel.fillWithDummyFieldValues()
-        viewModel.addPackageAction()
+        let packageData = viewModel.addPackageAction()
 
         // Then
         viewModel.checkDefaultInitProperties()
         XCTAssertEqual(viewModel.validateCustomPackageInputFields(), false)
+        XCTAssertNotNil(packageData)
+        XCTAssertNil(viewModel.addPackageAction())
     }
 
     func test_save_package_as_template_action() {
@@ -181,11 +183,13 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         viewModel.fillWithDummyFieldValues()
         viewModel.showSaveTemplate = true
         viewModel.packageTemplateName = "a"
-        viewModel.savePackageAsTemplateAction()
+        let packageData = viewModel.savePackageAsTemplateAction()
 
         // Then
         viewModel.checkDefaultInitProperties()
         XCTAssertEqual(viewModel.validateCustomPackageInputFields(), false)
+        XCTAssertNotNil(packageData)
+        XCTAssertNil(viewModel.savePackageAsTemplateAction())
     }
 }
 

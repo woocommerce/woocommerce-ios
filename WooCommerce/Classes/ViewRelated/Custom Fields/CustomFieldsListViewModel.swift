@@ -120,7 +120,7 @@ extension CustomFieldsListViewModel {
 
     func dismissTopBanner() {
         stores.dispatch(AppSettingsAction.dismissCustomFieldsTopBanner { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             if result.isSuccess {
                 isTopBannerDismissed = true
             }

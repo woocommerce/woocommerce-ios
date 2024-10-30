@@ -13,7 +13,8 @@ protocol ItemListViewModelProtocol: ObservableObject {
     var statePublisher: Published<ItemListViewModel.ItemListState>.Publisher { get }
 
     func select(_ item: POSItem)
-    func populatePointOfSaleItems() async
+    func loadInitialItems() async
+    func loadNextItems() async
     func reload() async
     func dismissBanner()
 }

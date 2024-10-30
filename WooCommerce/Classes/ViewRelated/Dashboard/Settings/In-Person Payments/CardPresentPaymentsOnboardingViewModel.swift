@@ -3,7 +3,7 @@ import Yosemite
 import Experiments
 import WooFoundation
 
-final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSettingsFlowPresentedViewModel {
+final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSettingsFlowPresentedViewModel, Identifiable {
     @Published var state: CardPresentPaymentOnboardingState
     var userIsAdministrator: Bool
     var learnMoreURL: URL? = nil

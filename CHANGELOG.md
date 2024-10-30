@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 20.9
+We've tightened the nuts and bolts in our WooCommerce mobile app to serve you better. We've squashed a bug that could cause a crash when configuring the product scanner's camera swap button. The Tap to Pay feature has been enhanced for better performance and now requires minimum iOS 16.7. Also, we resolved an issue with the Google Ads dashboard card for smoother loading. Updating brings out the best in our app!
+
 ## 20.8
 This release includes several bug fixes and improvements to make your experience smoother. We're committed to continuously improving the WooCommerce app, and we have some exciting updates coming in the next few weeks. Stay tuned!
 

@@ -301,6 +301,21 @@ final class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(metadata, storedMetaData)
     }
 
+    func test_loadOrderMetaData_by_siteID_orderID() throws {
+        // Given
+        let metadata = storage.insertNewObject(ofType: MetaData.self)
+
+        let order = storage.insertNewObject(ofType: Order.self)
+        order.siteID = sampleSiteID
+        order.addToCustomFields(metadata)
+
+        // When
+        let storedMetaData = try XCTUnwrap(storage.loadOrderMetaData(siteID: sampleSiteID, orderID: order.orderID))
+
+        // Then
+        XCTAssertEqual([metadata], storedMetaData)
+    }
+
     func test_loadProductMetaData_by_siteID_productID_metadataID() throws {
         // Given
         let metadataID: Int64 = 123
@@ -316,6 +331,21 @@ final class StorageTypeExtensionsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(metadata, storedMetaData)
+    }
+
+    func test_loadProductMetaData_by_siteID_productID() throws {
+        // Given
+        let metadata = storage.insertNewObject(ofType: MetaData.self)
+
+        let product = storage.insertNewObject(ofType: Product.self)
+        product.siteID = sampleSiteID
+        product.addToCustomFields(metadata)
+
+        // When
+        let storedMetaData = try XCTUnwrap(storage.loadProductMetaData(siteID: sampleSiteID, productID: product.productID))
+
+        // Then
+        XCTAssertEqual([metadata], storedMetaData)
     }
 
     func test_loadTopEarnerStats_by_date_granularity() throws {
@@ -669,6 +699,41 @@ final class StorageTypeExtensionsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(Set([productAttribute1, productAttribute2]), Set(storedProductAttribute))
+    }
+
+    func test_loadProductAttributeTerms_by_siteID_and_attributeID_returns_correct_data() throws {
+        // Given
+        let term1 = storage.insertNewObject(ofType: ProductAttributeTerm.self)
+        term1.termID = 123
+        term1.siteID = sampleSiteID
+
+        let term2 = storage.insertNewObject(ofType: ProductAttributeTerm.self)
+        term2.termID = 124
+        term2.siteID = sampleSiteID
+
+        let attributeID1: Int64 = 1234
+        let attribute1 = storage.insertNewObject(ofType: ProductAttribute.self)
+        attribute1.attributeID = attributeID1
+        attribute1.addToTerms(term1)
+        attribute1.addToTerms(term2)
+
+        let term3 = storage.insertNewObject(ofType: ProductAttributeTerm.self)
+        term3.termID = 126
+        term3.siteID = sampleSiteID
+
+        let attributeID2: Int64 = 12346
+        let attribute2 = storage.insertNewObject(ofType: ProductAttribute.self)
+        attribute2.attributeID = attributeID2
+        attribute2.addToTerms(term3)
+        attribute2.addToTerms(term3)
+
+        // When
+        let storedTerms = try XCTUnwrap(storage.loadProductAttributeTerms(siteID: sampleSiteID, attributeID: attributeID1))
+
+        // Then
+        XCTAssert(storedTerms.contains(term1))
+        XCTAssert(storedTerms.contains(term2))
+        XCTAssert(storedTerms.contains(term3) == false)
     }
 
     func test_loadProductAttributeTerm_by_siteID_termID_attributeID() throws {

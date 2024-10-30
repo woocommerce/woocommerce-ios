@@ -31,6 +31,7 @@ final class ProductVariationListMapperTests: XCTestCase {
 
             XCTAssertEqual(productVariation.description, "<p>Nutty chocolate marble, 99% and organic.</p>\n")
             XCTAssertEqual(productVariation.sku, "99%-nuts-marble")
+            XCTAssertEqual(productVariation.globalUniqueID, "12345")
 
             XCTAssertEqual(productVariation.price, "12")
             XCTAssertEqual(productVariation.regularPrice, "12")

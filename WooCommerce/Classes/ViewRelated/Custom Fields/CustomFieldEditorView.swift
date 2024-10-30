@@ -1,34 +1,21 @@
 import SwiftUI
 
 struct CustomFieldEditorView: View {
-    @Environment(\.presentationMode) var presentationMode
-    @State private var key: String
-    @State private var value: String
+    @Environment(\.dismiss) private var dismiss
+    @ObservedObject private var viewModel: CustomFieldEditorViewModel
+
     @State private var showRichTextEditor = false
-    @State private var showingActionSheet = false
+    @State private var showActionSheet = false
 
-    private let initialKey: String
-    private let initialValue: String
     private let isReadOnlyValue: Bool
-    private let onSave: (String, String) -> Void
-
-    private var hasUnsavedChanges: Bool {
-        key != initialKey || value != initialValue
-    }
 
     /// Initializer for custom field editor
     /// - Parameters:
-    ///  - key: The key for the custom field
-    ///  - value: The value for the custom field
+    ///  - viewModel: The viewModel for this View.
     ///  - isReadOnlyValue: Whether the value is read-only or not. To be used if the value is not string but JSON.
-    ///  - onSave: Closure to handle save action
-    init(key: String, value: String, isReadOnlyValue: Bool = false, onSave: @escaping (String, String) -> Void) {
-        self._key = State(initialValue: key)
-        self._value = State(initialValue: value)
-        self.initialKey = key
-        self.initialValue = value
+    init(viewModel: CustomFieldEditorViewModel, isReadOnlyValue: Bool = false) {
+        self.viewModel = viewModel
         self.isReadOnlyValue = isReadOnlyValue
-        self.onSave = onSave
     }
 
     var body: some View {
@@ -40,15 +27,22 @@ struct CustomFieldEditorView: View {
                         .foregroundColor(Color(.text))
                         .subheadlineStyle()
 
-                    TextField(Localization.keyPlaceholder, text: $key)
+                    TextField(Localization.keyPlaceholder, text: $viewModel.key)
                         .foregroundColor(Color(.text))
                         .subheadlineStyle()
                         .padding(insets: Layout.inputInsets)
                         .background(Color(.listForeground(modal: false)))
                         .overlay(
-                            RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
+                            RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                                .stroke(viewModel.keyErrorMessage != nil ? Color(.error) : Color(.separator))
                         )
                         .cornerRadius(Layout.cornerRadius)
+
+                    if let error = viewModel.keyErrorMessage {
+                        Text(error)
+                            .foregroundColor(Color(.error))
+                            .font(.caption)
+                    }
                 }
 
                 // Value Input
@@ -71,7 +65,7 @@ struct CustomFieldEditorView: View {
                     }
 
                     if showRichTextEditor {
-                        AztecEditorView(content: $value)
+                        AztecEditorView(content: $viewModel.value)
                         .frame(minHeight: Layout.minimumEditorSize)
                         .clipped()
                         .padding(insets: Layout.inputInsets)
@@ -81,7 +75,7 @@ struct CustomFieldEditorView: View {
                         )
                         .cornerRadius(Layout.cornerRadius)
                     } else {
-                        TextEditor(text: isReadOnlyValue ? .constant(value) : $value)
+                        TextEditor(text: isReadOnlyValue ? .constant(viewModel.value) : $viewModel.value)
                             .foregroundColor(Color(.text))
                             .subheadlineStyle()
                             .frame(minHeight: Layout.minimumEditorSize)
@@ -101,46 +95,48 @@ struct CustomFieldEditorView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack {
                     Button {
-                        saveChanges()
-                        presentationMode.wrappedValue.dismiss()
+                        viewModel.saveChanges()
+                        dismiss()
                     } label: {
-                        Text("Save") // todo-13493: set String to be translatable
+                        Text(Localization.doneButton)
                     }
-                    .disabled(!hasUnsavedChanges)
+                    .disabled(!viewModel.hasUnsavedChanges || !viewModel.hasValidKey)
 
                     Button(action: {
-                        showingActionSheet = true
+                        showActionSheet = true
                     }, label: {
                         Image(systemName: "ellipsis")
                             .renderingMode(.template)
                     })
-                    .confirmationDialog("More Options", isPresented: $showingActionSheet) {
+                    .confirmationDialog(Localization.actionSheetTitle, isPresented: $showActionSheet) {
                         actionSheetContent
                     }
                 }
             }
         }
+        .closeButtonWithDiscardChangesPrompt(hasChanges: viewModel.hasUnsavedChanges,
+                                             closeButtonLabel: { Text(Localization.cancelButton) })
+        .notice($viewModel.notice)
     }
 
     @ViewBuilder
     private var actionSheetContent: some View {
-        Button("Copy Key") { // todo-13493: set String to be translatable
-            UIPasteboard.general.string = key
-            // todo-13493: Show a notice that the key was copied
+        Button(Localization.copyKeyButton) {
+            UIPasteboard.general.string = viewModel.key
+            viewModel.notice = Notice(title: Localization.keyCopiedNotice)
         }
 
-        Button("Copy Value") { // todo-13493: set String to be translatable
-            UIPasteboard.general.string = value
-            // todo-13493: Show a notice that the value was copied
+        Button(Localization.copyValueButton) {
+            UIPasteboard.general.string = viewModel.value
+            viewModel.notice = Notice(title: Localization.valueCopiedNotice)
         }
 
-        Button("Delete Custom Field", role: .destructive) { // todo-13493: set String to be translatable
-            // todo-13493: Implement delete action
+        if viewModel.showDeleteButton {
+            Button(Localization.deleteButton, role: .destructive) {
+                viewModel.deleteField()
+                dismiss()
+            }
         }
-    }
-
-    private func saveChanges() {
-        onSave(key, value)
     }
 }
 
@@ -155,6 +151,18 @@ private extension CustomFieldEditorView {
     }
 
     enum Localization {
+        static let cancelButton = NSLocalizedString(
+            "customFieldEditorView.cancel",
+            value: "Cancel",
+            comment: "Label for the Cancel button to close the editor"
+        )
+
+        static let doneButton = NSLocalizedString(
+            "customFieldEditorView.done",
+            value: "Done",
+            comment: "Label for the Done button to save changes"
+        )
+
         static let keyLabel = NSLocalizedString(
             "customFieldEditorView.keyLabel",
             value: "Key",
@@ -190,9 +198,45 @@ private extension CustomFieldEditorView {
             value: "HTML",
             comment: "Picker option for using Text Editor"
         )
+
+        static let deleteButton = NSLocalizedString(
+            "customFieldEditorView.deleteButton",
+            value: "Delete custom field",
+            comment: "Button title for deleting a custom field"
+        )
+
+        static let actionSheetTitle = NSLocalizedString(
+            "customFieldEditorView.actionSheetTitle",
+            value: "More Options",
+            comment: "Title for the action sheet with additional options"
+        )
+
+        static let copyKeyButton = NSLocalizedString(
+            "customFieldEditorView.copyKeyButton",
+            value: "Copy Key",
+            comment: "Button title for copying the custom field key"
+        )
+
+        static let copyValueButton = NSLocalizedString(
+            "customFieldEditorView.copyValueButton",
+            value: "Copy Value",
+            comment: "Button title for copying the custom field value"
+        )
+
+        static let keyCopiedNotice = NSLocalizedString(
+            "customFieldEditorView.keyCopiedNotice",
+            value: "Key copied to clipboard",
+            comment: "Notice shown when the key has been copied to clipboard"
+        )
+
+        static let valueCopiedNotice = NSLocalizedString(
+            "customFieldEditorView.valueCopiedNotice",
+            value: "Value copied to clipboard",
+            comment: "Notice shown when the value has been copied to clipboard"
+        )
     }
 }
 
 #Preview {
-    CustomFieldEditorView(key: "title", value: "value", onSave: { _, _ in })
+    CustomFieldEditorView(viewModel: CustomFieldEditorViewModel(key: "title", value: "value", onSave: { _, _ in }, onDelete: {}))
 }

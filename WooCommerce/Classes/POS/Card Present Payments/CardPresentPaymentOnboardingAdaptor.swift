@@ -45,7 +45,9 @@ final class CardPresentPaymentsOnboardingPresenterAdaptor: CardPresentPaymentsOn
     }
 
     private func showOnboarding(readyToCollectPayment completion: @escaping () -> Void) {
-        onboardingScreenViewModelSubject.send(.showOnboarding(onboardingViewModel))
+        onboardingScreenViewModelSubject.send(.showOnboarding(viewModel: onboardingViewModel, onCancel: { [weak self] in
+            self?.readinessSubscription = nil
+        }))
 
         readinessSubscription = readinessUseCase.$readiness
             .subscribe(on: DispatchQueue.main)

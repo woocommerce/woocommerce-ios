@@ -6,10 +6,6 @@ import WooFoundation
 ///
 extension NSManagedObjectContext: StorageType {
 
-    public var parentStorage: StorageType? {
-        return parent
-    }
-
     /// Returns all of the entities that match with a given predicate.
     ///
     /// - Parameters:

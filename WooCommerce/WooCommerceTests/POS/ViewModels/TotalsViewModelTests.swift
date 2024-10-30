@@ -279,6 +279,21 @@ final class TotalsViewModelTests: XCTestCase {
         editOrderAction?()
         XCTAssertTrue(editOrderCalled)
     }
+
+    // MARK: Onboarding
+
+    func test_cardPresentPaymentOnboardingViewModel_is_non_nil_when_onboarding_is_required() {
+        // Given
+        let onboardingViewModel = CardPresentPaymentsOnboardingViewModel(fixedState: .pluginNotActivated(plugin: .stripe))
+        cardPresentPaymentService.paymentEvent = .idle
+        XCTAssertNil(sut.cardPresentPaymentOnboardingViewModel)
+
+        // When
+        cardPresentPaymentService.paymentEvent = .showOnboarding(onboardingViewModel: onboardingViewModel, onCancel: {})
+
+        // Then
+        XCTAssertEqual(sut.cardPresentPaymentOnboardingViewModel?.state, .pluginNotActivated(plugin: .stripe))
+    }
 }
 
 private extension TotalsViewModelTests {

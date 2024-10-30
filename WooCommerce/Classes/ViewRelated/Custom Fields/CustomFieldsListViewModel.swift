@@ -1,24 +1,60 @@
+import Combine
 import Foundation
+import enum Networking.MetaDataType
+import Yosemite
 
 final class CustomFieldsListViewModel: ObservableObject {
-    private let originalCustomFields: [CustomFieldViewModel]
+    private let stores: StoresManager
+    @Published private var originalCustomFields: [CustomFieldViewModel]
+    private let customFieldsType: MetaDataType
+    private let siteID: Int64
+    private let parentItemID: Int64
+    private let onChangesSaved: (([MetaData]) -> Void)?
 
-    var shouldShowErrorState: Bool {
-        savingError != nil
-    }
+    @Published var selectedCustomField: CustomFieldUI? = nil
+    @Published var isAddingNewField: Bool = false
+    @Published var isSavingChanges: Bool = false
 
-    @Published private(set) var savingError: Error?
     @Published private(set) var combinedList: [CustomFieldUI] = []
+    @Published var notice: Notice?
 
-    @Published private var editedFields: [CustomFieldUI] = []
-    @Published private var addedFields: [CustomFieldUI] = []
-    var hasChanges: Bool {
-        !editedFields.isEmpty || !addedFields.isEmpty
+    @Published private var pendingChanges = PendingCustomFieldsChanges()
+    private var editedFields: [CustomFieldUI] {
+        get { pendingChanges.editedFields }
+        set { pendingChanges = pendingChanges.copy(editedFields: newValue) }
+    }
+    private var addedFields: [CustomFieldUI] {
+        get { pendingChanges.addedFields }
+        set { pendingChanges = pendingChanges.copy(addedFields: newValue) }
+    }
+    private var deletedFieldIds: [Int64] {
+        get { pendingChanges.deletedFieldIds }
+        set { pendingChanges = pendingChanges.copy(deletedFieldIds: newValue) }
+    }
+    @Published private(set) var hasChanges: Bool = false
+
+    /// Due to the API limitation, when creating a new field, the new key should not be the same as an existing custom fields's key.
+    /// We also don't want newly added fields to have duplicate key, because that way the API only accepts saving one of them.
+    /// Note that this rule only applies to new field creation, and duplicates are allowed when editing existing fields.
+    var disallowedKeysForCreation: [String] {
+        originalCustomFields.map { $0.title }
+        + addedFields.map { $0.key }
     }
 
-    init(customFields: [CustomFieldViewModel]) {
+    init(customFields: [CustomFieldViewModel],
+         siteID: Int64,
+         parentItemID: Int64,
+         customFieldType: MetaDataType,
+         onChangesSaved: (([MetaData]) -> Void)? = nil,
+         stores: StoresManager = ServiceLocator.stores) {
+        self.stores = stores
         self.originalCustomFields = customFields
-        updateCombinedList()
+        self.siteID = siteID
+        self.parentItemID = parentItemID
+        self.customFieldsType = customFieldType
+        self.onChangesSaved = onChangesSaved
+
+        observePendingChanges()
     }
 }
 
@@ -44,13 +80,26 @@ extension CustomFieldsListViewModel {
                 DDLogError("⛔️ Error: Trying to edit an existing field but it has no id. It might be the wrong field to edit.")
             }
         }
-
-        updateCombinedList()
     }
 
     func addField(_ field: CustomFieldUI) {
         addedFields.append(field)
-        updateCombinedList()
+    }
+
+    func deleteField(_ field: CustomFieldUI) {
+        if let fieldId = field.fieldId {
+            deletedFieldIds.append(fieldId)
+        } else {
+            // The deleted field is not yet saved on the server, so we remove it from the added fields
+            addedFields.removeAll { $0.id == field.id }
+        }
+
+        notice = Notice(title: CustomFieldsListHostingController.Localization.deleteNoticeTitle,
+                        feedbackType: .success,
+                        actionTitle: CustomFieldsListHostingController.Localization.deleteNoticeUndo,
+                        actionHandler: { [weak self] in
+                            self?.undoDeletion(of: field)
+                        })
     }
 
     func saveField(key: String, value: String, fieldId: Int64?) {
@@ -63,11 +112,34 @@ extension CustomFieldsListViewModel {
             addField(newField)
         }
     }
+
+    /// Save changes to the server, uses async/await
+    @MainActor
+    func saveChanges() async {
+        isSavingChanges = true
+        // Remove any existing notice before saving changes
+        notice = nil
+
+        do {
+            let result = try await dispatchSavingChanges()
+            originalCustomFields = result.map { CustomFieldViewModel(metadata: $0) }
+            pendingChanges = PendingCustomFieldsChanges()
+            notice = Notice(title: CustomFieldsListHostingController.Localization.saveSuccessTitle,
+                            feedbackType: .success)
+            onChangesSaved?(result)
+        } catch {
+            notice = Notice(title: CustomFieldsListHostingController.Localization.saveErrorTitle,
+                            message: CustomFieldsListHostingController.Localization.saveErrorMessage,
+                            feedbackType: .error)
+        }
+
+        isSavingChanges = false
+    }
 }
 
 private extension CustomFieldsListViewModel {
     func editLocallyAddedField(oldField: CustomFieldUI, newField: CustomFieldUI) {
-        if let index = addedFields.firstIndex(where: { $0.key == oldField.key }) {
+        if let index = pendingChanges.addedFields.firstIndex(where: { $0.key == oldField.key }) {
             addedFields[index] = newField
         } else {
             // This shouldn't happen in normal flow, but logging just in case
@@ -91,11 +163,42 @@ private extension CustomFieldsListViewModel {
         }
     }
 
-    func updateCombinedList() {
-        let editedList = originalCustomFields.map { field in
-            editedFields.first { $0.fieldId == field.id } ?? CustomFieldUI(customField: field)
+    func undoDeletion(of field: CustomFieldUI) {
+        if let fieldId = field.fieldId {
+            deletedFieldIds.removeAll { $0 == fieldId }
+        } else {
+            addedFields.append(field)
         }
-        combinedList = editedList + addedFields
+    }
+
+    func observePendingChanges() {
+        $pendingChanges
+            .combineLatest($originalCustomFields)
+            .map { (pendingChanges, originalFields) in
+                return originalFields
+                    .filter { field in !pendingChanges.deletedFieldIds.contains(where: { $0 == field.id }) }
+                    .map { field in pendingChanges.editedFields.first(where: { $0.fieldId == field.id }) ?? CustomFieldUI(customField: field) }
+                    + pendingChanges.addedFields
+            }
+            .assign(to: &$combinedList)
+
+        $pendingChanges
+            .map { $0.hasChanges }
+            .assign(to: &$hasChanges)
+    }
+
+    @MainActor
+    func dispatchSavingChanges() async throws -> [MetaData] {
+        return try await withCheckedThrowingContinuation { continuation in
+            let action = MetaDataAction.updateMetaData(siteID: siteID,
+                                                       parentItemID: parentItemID,
+                                                       metaDataType: customFieldsType,
+                                                       metadata: pendingChanges.asDictionary()) { result in
+                continuation.resume(with: result)
+            }
+
+            stores.dispatch(action)
+        }
     }
 }
 
@@ -116,6 +219,48 @@ extension CustomFieldsListViewModel {
             self.key = customField.title
             self.value = customField.content
             self.fieldId = customField.id
+        }
+
+        func asDictionary() -> [String: Any] {
+            var json: [String: Any] = [:]
+                if let fieldId = fieldId {
+                    json["id"] = fieldId
+                }
+                json["key"] = key
+                json["value"] = value
+            return json
+        }
+    }
+
+    struct PendingCustomFieldsChanges {
+        let editedFields: [CustomFieldUI]
+        let addedFields: [CustomFieldUI]
+        let deletedFieldIds: [Int64]
+
+        var hasChanges: Bool {
+            editedFields.isNotEmpty || addedFields.isNotEmpty || deletedFieldIds.isNotEmpty
+        }
+
+        init(editedFields: [CustomFieldUI] = [],
+             addedFields: [CustomFieldUI] = [],
+             deletedFieldIds: [Int64] = []) {
+            self.editedFields = editedFields
+            self.addedFields = addedFields
+            self.deletedFieldIds = deletedFieldIds
+        }
+
+        func copy(editedFields: [CustomFieldUI]? = nil,
+                  addedFields: [CustomFieldUI]? = nil,
+                  deletedFieldIds: [Int64]? = nil) -> PendingCustomFieldsChanges {
+            PendingCustomFieldsChanges(editedFields: editedFields ?? self.editedFields,
+                                       addedFields: addedFields ?? self.addedFields,
+                                       deletedFieldIds: deletedFieldIds ?? self.deletedFieldIds)
+        }
+
+        func asDictionary() -> [[String: Any?]] {
+            return editedFields.map { $0.asDictionary() } +
+                addedFields.map { $0.asDictionary() } +
+                deletedFieldIds.map { ["id": $0, "value": nil] }
         }
     }
 }

@@ -88,6 +88,7 @@ extension Product {
     @NSManaged public var subscription: ProductSubscription?
     @NSManaged public var isSampleItem: Bool
     @NSManaged public var password: String?
+    @NSManaged public var globalUniqueID: String?
 }
 
 // MARK: Generated accessors for attributes

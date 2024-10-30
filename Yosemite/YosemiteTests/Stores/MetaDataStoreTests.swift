@@ -45,10 +45,11 @@ final class MetaDataStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(MetaDataAction.updateOrderMetaData(siteID: self.sampleSiteID,
-                                                              orderID: self.sampleOrderID,
-                                                              metadata: self.newMetadataArray,
-                                                              onCompletion: { result in
+            store.onAction(MetaDataAction.updateMetaData(siteID: self.sampleSiteID,
+                                                         parentItemID: self.sampleOrderID,
+                                                         metaDataType: .order,
+                                                         metadata: self.newMetadataArray,
+                                                         onCompletion: { result in
                 promise(result)
             }))
         }
@@ -71,14 +72,46 @@ final class MetaDataStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(MetaDataAction.updateOrderMetaData(siteID: self.sampleSiteID, orderID: self.sampleOrderID, metadata: metadata, onCompletion: { result in
-                promise(result)
-            }))
+            store.onAction(MetaDataAction.updateMetaData(siteID: self.sampleSiteID,
+                                                         parentItemID: self.sampleOrderID,
+                                                         metaDataType: .order,
+                                                         metadata: metadata,
+                                                         onCompletion: { result in
+                                                             promise(result)
+                                                         }))
         }
 
         // Then
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
+
+    func test_updateOrderMetaData_removes_deleted_items() {
+        // Given
+        let metaData = [MetaData.fake().copy(metadataID: 1, key: "key", value: "value"),
+                        MetaData.fake().copy(metadataID: 2, key: "key", value: "value")]
+        let order = Yosemite.Order.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID, customFields: metaData)
+        storageManager.insertSampleOrder(readOnlyOrder: order)
+
+        remote.whenUpdatingMetaData(thenReturn: .success([metaData.last!]))
+        let store = MetaDataStore(dispatcher: Dispatcher(),
+                                  storageManager: storageManager,
+                                  network: network,
+                                  remote: remote)
+
+        // When
+        waitFor { promise in
+            store.onAction(MetaDataAction.updateMetaData(siteID: self.sampleSiteID,
+                                                         parentItemID: self.sampleOrderID,
+                                                         metaDataType: .order,
+                                                         metadata: [["id": 1, "value": nil]],
+                                                         onCompletion: { _ in promise(()) }))
+        }
+
+        // Then
+        let updatedOrder = storageManager.viewStorage.loadOrder(siteID: order.siteID, orderID: order.orderID)?.toReadOnly()
+        XCTAssertEqual(updatedOrder?.customFields.count, 1)
+        XCTAssertEqual(updatedOrder?.customFields.first, metaData.last)
     }
 
     // MARK: - Update Product MetaData
@@ -93,12 +126,13 @@ final class MetaDataStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(MetaDataAction.updateProductMetaData(siteID: self.sampleSiteID,
-                                                                productID: self.sampleProductID,
-                                                                metadata: self.newMetadataArray,
-                                                                onCompletion: { result in
-                promise(result)
-            }))
+            store.onAction(MetaDataAction.updateMetaData(siteID: self.sampleSiteID,
+                                                         parentItemID: self.sampleOrderID,
+                                                         metaDataType: .order,
+                                                         metadata: self.newMetadataArray,
+                                                         onCompletion: { result in
+                                                             promise(result)
+                                                         }))
         }
 
         // Then
@@ -119,16 +153,54 @@ final class MetaDataStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(MetaDataAction.updateProductMetaData(siteID: self.sampleSiteID,
-                                                                productID: self.sampleProductID,
-                                                                metadata: metadata,
-                                                                onCompletion: { result in
-                promise(result)
-            }))
+            store.onAction(MetaDataAction.updateMetaData(siteID: self.sampleSiteID,
+                                                         parentItemID: self.sampleOrderID,
+                                                         metaDataType: .order,
+                                                         metadata: metadata,
+                                                         onCompletion: { result in
+                                                             promise(result)
+                                                         }))
         }
 
         // Then
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
+
+
+    func test_updateProductMetaData_removes_deleted_items() {
+        // Given
+        let metaData = [MetaData.fake().copy(metadataID: 1, key: "key", value: "value"),
+                        MetaData.fake().copy(metadataID: 2, key: "key", value: "value")]
+        let product = Yosemite.Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, customFields: metaData)
+        // Insert product with metadata
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+
+        remote.whenUpdatingMetaData(thenReturn: .success([metaData.last!]))
+        let store = MetaDataStore(dispatcher: Dispatcher(),
+                                  storageManager: storageManager,
+                                  network: network,
+                                  remote: remote)
+
+        // When
+        waitFor { promise in
+            store.onAction(MetaDataAction.updateMetaData(siteID: self.sampleSiteID,
+                                                         parentItemID: self.sampleProductID,
+                                                         metaDataType: .product,
+                                                         metadata: [["id": 1, "value": nil]],
+                                                         onCompletion: { _ in promise(()) }))
+        }
+
+        // Then
+        let updatedProduct = storageManager.viewStorage.loadProduct(siteID: product.siteID, productID: product.productID)?.toReadOnly()
+        XCTAssertEqual(updatedProduct?.customFields.count, 1)
+        XCTAssertEqual(updatedProduct?.customFields.first?.key, metaData.last!.key)
+    }
+}
+
+private extension MockStorageManager {
+    func insertSampleMetaData(_ metaData: Networking.MetaData) {
+        let storageObj = viewStorage.insertNewObject(ofType: MetaData.self)
+        storageObj.update(with: metaData)
     }
 }

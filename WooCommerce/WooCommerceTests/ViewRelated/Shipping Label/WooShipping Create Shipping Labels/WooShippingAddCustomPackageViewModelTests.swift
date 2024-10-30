@@ -12,15 +12,18 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         viewModel.checkDefaultInitProperties()
     }
 
-    func test_it_inits_with_dimension_unit() {
+    func test_it_inits_with_dimension_weight_unit() {
         // Given/When
         let expectedDimensionUnit = "in"
-        let viewModel = WooShippingAddCustomPackageViewModel(dimensionUnit: expectedDimensionUnit)
+        let expectedWeightUnit = "in"
+        let viewModel = WooShippingAddCustomPackageViewModel(dimensionUnit: expectedDimensionUnit,
+                                                             weightUnit: expectedWeightUnit)
 
         // Then
         XCTAssertNotNil(viewModel)
         viewModel.checkDefaultInitProperties()
         XCTAssertEqual(viewModel.dimensionUnit, expectedDimensionUnit)
+        XCTAssertEqual(viewModel.weightUnit, expectedWeightUnit)
     }
 
     func test_clear_field_values() {
@@ -74,6 +77,45 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         // When
         viewModel.fillWithDummyFieldValues()
 
+        // Then
+        XCTAssertEqual(viewModel.fieldValues.isEmpty, false)
+        XCTAssertEqual(viewModel.areFieldValuesInvalid, false)
+    }
+
+    func test_it_with_all_dimension_field_values_set_not_saving_template() {
+        // Given
+        let viewModel = WooShippingAddCustomPackageViewModel()
+
+        // When
+        viewModel.fillWithDummyDimensionFieldValues()
+        viewModel.showSaveTemplate = false
+
+        // Then
+        XCTAssertEqual(viewModel.fieldValues.isEmpty, false)
+        XCTAssertEqual(viewModel.areFieldValuesInvalid, false)
+    }
+
+    func test_it_with_all_dimension_field_values_set_saving_template() {
+        // Given
+        let viewModel = WooShippingAddCustomPackageViewModel()
+
+        // When
+        viewModel.fillWithDummyDimensionFieldValues()
+        viewModel.showSaveTemplate = true
+
+        // Then
+        XCTAssertEqual(viewModel.fieldValues.isEmpty, false)
+        XCTAssertEqual(viewModel.areFieldValuesInvalid, true)
+    }
+
+    func test_it_with_all_dimension_weight_field_values_set() {
+        // Given
+        let viewModel = WooShippingAddCustomPackageViewModel()
+
+        // When
+        viewModel.fillWithDummyDimensionFieldValues()
+        viewModel.showSaveTemplate = true
+        viewModel.fieldValues[.weight] = "1"
         // Then
         XCTAssertEqual(viewModel.fieldValues.isEmpty, false)
         XCTAssertEqual(viewModel.areFieldValuesInvalid, false)
@@ -149,7 +191,13 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
 
 extension WooShippingAddCustomPackageViewModel {
     func fillWithDummyFieldValues() {
-        for dimensionType in WooShippingPackageDimensionType.allCases {
+        for dimensionType in WooShippingPackageUnitType.allCases {
+            fieldValues[dimensionType] = "1"
+        }
+    }
+
+    func fillWithDummyDimensionFieldValues() {
+        for dimensionType in WooShippingPackageUnitType.dimensionUnits {
             fieldValues[dimensionType] = "1"
         }
     }

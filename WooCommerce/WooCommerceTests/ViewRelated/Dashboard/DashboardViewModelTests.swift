@@ -30,7 +30,7 @@ final class DashboardViewModelTests: XCTestCase {
     override func setUpWithError() throws {
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         userDefaults = try XCTUnwrap(UserDefaults(suiteName: "DashboardViewModelTests"))
         storageManager = MockStorageManager()
     }

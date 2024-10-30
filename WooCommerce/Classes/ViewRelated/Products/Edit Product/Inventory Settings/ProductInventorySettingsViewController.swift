@@ -226,6 +226,7 @@ extension ProductInventorySettingsViewController: UITableViewDelegate {
             fatalError()
         }
         headerView.configure(title: errorTitle)
+        headerView.addTopSpacing()
         UIAccessibility.post(notification: .layoutChanged, argument: headerView)
         return headerView
     }
@@ -307,8 +308,15 @@ private extension ProductInventorySettingsViewController {
     }
 
     func configureGlobalUniqueIdentifier(cell: TitleAndTextFieldTableViewCell) {
-        let cellViewModel = Product.createGlobalUniqueIdentifierViewModel(globalUniqueID: viewModel.globalUniqueID) { [weak self] value in
-            self?.viewModel.handleGlobalUniqueIdentifierChange(value)
+        var cellViewModel = Product.createGlobalUniqueIdentifierViewModel(globalUniqueID: viewModel.globalUniqueID) { [weak self] value in
+            self?.viewModel.handleGlobalUniqueIdentifierChange(value) { [weak self] isValid in
+                self?.enableDoneButton(isValid)
+                self?.getTitleAndTextFieldCell(from: .globalUniqueIdentifier)?.textFieldBecomeFirstResponder()
+            }
+        }
+
+        if viewModel.error == .invalidGlobalUniqueIdentifier {
+            cellViewModel = cellViewModel.stateUpdated(state: .error)
         }
 
         cell.configure(viewModel: cellViewModel)
@@ -390,7 +398,7 @@ private extension ProductInventorySettingsViewController {
 
         startBarcodeScanning(onCompletion: { [weak self] barcode in
             ServiceLocator.analytics.track(.productInventorySettingsGlobalUniqueIDScanned)
-            self?.viewModel.handleGlobalUniqueIdentifierFromBarcodeScanner(barcode)
+            self?.viewModel.handleGlobalUniqueIdentifierFromBarcodeScanner(barcode, onValidation: {_ in })
         })
     }
 
@@ -419,7 +427,7 @@ private extension ProductInventorySettingsViewController {
     func handleSKUValidation(isValid: Bool, shouldBringUpKeyboard: Bool) {
         enableDoneButton(isValid)
         if shouldBringUpKeyboard {
-            getSkuCell()?.textFieldBecomeFirstResponder()
+            getTitleAndTextFieldCell(from: .sku)?.textFieldBecomeFirstResponder()
         }
     }
 }
@@ -432,11 +440,12 @@ private extension ProductInventorySettingsViewController {
         return sections[indexPath.section].rows[indexPath.row]
     }
 
-    func getSkuCell() -> TitleAndTextFieldTableViewCell? {
-        guard let indexPath = sections.indexPathForRow(.sku) else {
+    func getTitleAndTextFieldCell(from row: Row) -> TitleAndTextFieldTableViewCell? {
+        guard let indexPath = sections.indexPathForRow(row) else {
             return nil
         }
         return tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell
+
     }
 }
 

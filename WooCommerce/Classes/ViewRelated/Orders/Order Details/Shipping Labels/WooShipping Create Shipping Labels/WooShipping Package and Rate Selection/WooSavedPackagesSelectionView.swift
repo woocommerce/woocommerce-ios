@@ -63,7 +63,7 @@ struct WooSavedPackagesSelectionView: View {
     }
 
     private func addPackageButtonTapped() {
-        // call addPackageAction with data
+        // call addPackageAction with data from selected package
         if let selectedPackageId {
             for packageItem in packages {
                 if selectedPackageId == packageItem.id {

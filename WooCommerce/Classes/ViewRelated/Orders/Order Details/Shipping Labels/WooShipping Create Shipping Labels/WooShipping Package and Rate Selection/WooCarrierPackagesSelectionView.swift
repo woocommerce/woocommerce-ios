@@ -132,7 +132,7 @@ struct WooCarrierPackagesSelectionView: View {
     }
 
     private func addPackageButtonTapped() {
-        // call addPackageAction with data
+        // call addPackageAction with data from selected package
         if let selectedPackageId {
             for carriersPackage in carriersPackages {
                 for packageGroup in carriersPackage.packageGroups {

@@ -93,7 +93,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     @MainActor
     func reload() async {
-        items.removeAll()
+        hasMoreItems = true
         await loadInitialItems()
     }
 

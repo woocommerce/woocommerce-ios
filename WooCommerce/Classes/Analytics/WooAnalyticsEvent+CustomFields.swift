@@ -13,6 +13,13 @@ extension WooAnalyticsEvent {
             static let editedFieldCount = "edited_field_count"
             static let addedFieldCount = "added_field_count"
             static let deletedFieldCount = "deleted_field_count"
+            static let errorContext = "error_context"
+            static let errorDescription = "error_description"
+        }
+
+        enum CustomFieldsType: String {
+            case product = "product"
+            case order = "order"
         }
 
         enum EditorType: String {
@@ -23,6 +30,72 @@ extension WooAnalyticsEvent {
         enum EditorPicker: String {
             case text = "text"
             case aztec = "aztec"
+        }
+
+        /// Tracked when the Custom Fields row in Product Details is tapped
+        static func productDetailCustomFieldsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailCustomFieldsTapped,
+                           properties: [:])
+        }
+
+        /// Tracked when the Custom Fields List view is opened
+        static func customFieldsListLoaded(
+            type: CustomFieldsType,
+            fieldsCount: Int64,
+            fieldsSize: Int64,
+            has_json_fields: Bool
+        ) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customFieldsListLoaded,
+                              properties: [
+                                Keys.type: type.rawValue,
+                                Keys.fieldsCount: fieldsCount,
+                                Keys.fieldsSize: fieldsSize,
+                                Keys.hasJsonFields: has_json_fields
+                              ])
+        }
+
+        /// Tracked when a single Custom Field in the list is tapped
+        static func customFieldTapped(isJson: Bool, hasHtml: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customFieldTapped,
+                              properties: [
+                                Keys.isJson: isJson,
+                                Keys.has_html: hasHtml
+                              ])
+        }
+
+        /// Tracked when the add custom field button is tapped
+        static func addCustomFieldTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .addCustomFieldTapped,
+                              properties: [:])
+        }
+
+        /// Tracked when the save custom field button is tapped
+        static func saveCustomFieldTapped(
+            editedFieldCount: Int,
+            addedFieldCount: Int,
+            deletedFieldCount: Int
+        ) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .saveCustomFieldTapped,
+                              properties: [
+                                Keys.editedFieldCount: editedFieldCount,
+                                Keys.addedFieldCount: addedFieldCount,
+                                Keys.deletedFieldCount: deletedFieldCount
+                              ])
+        }
+
+        /// Tracked when save custom fields action is completed successfully
+        static func customFieldsSavedSuccessfully() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customFieldsSavedSuccessfully,
+                              properties: [:])
+        }
+
+        /// Tracked when save custom fields action is failed
+        static func customFieldsSavingFailed(errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customFieldsSavingFailed,
+                              properties: [
+                                Keys.errorContext: errorContext,
+                                Keys.errorDescription: errorDescription
+                              ])
         }
     }
 }

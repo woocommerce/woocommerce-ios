@@ -26,6 +26,7 @@ final class WooCarrierPackagesSelectionViewModel: ObservableObject {
                 }
             }
         }
+
         return nil
     }
 

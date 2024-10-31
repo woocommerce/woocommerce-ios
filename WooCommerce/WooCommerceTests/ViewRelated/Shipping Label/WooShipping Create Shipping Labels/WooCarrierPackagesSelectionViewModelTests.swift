@@ -18,7 +18,7 @@ final class WooCarrierPackagesSelectionViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.carrierTabs.count, 2)
         XCTAssertEqual(viewModel.tabs.count, 2)
         XCTAssertEqual(viewModel.selectedTabIndex, 0)
-        XCTAssertEqual(viewModel.selectedPackageId, nil)
+        XCTAssertNil(viewModel.selectedPackageId)
         XCTAssertNotNil(viewModel.selectedCarrierTab)
         XCTAssertNil(viewModel.selectedPackage)
     }
@@ -30,8 +30,8 @@ final class WooCarrierPackagesSelectionViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.carrierTabs.count, 0)
         XCTAssertEqual(viewModel.tabs.count, 0)
-        XCTAssertEqual(viewModel.selectedTabIndex, nil)
-        XCTAssertEqual(viewModel.selectedPackageId, nil)
+        XCTAssertNil(viewModel.selectedTabIndex)
+        XCTAssertNil(viewModel.selectedPackageId)
         XCTAssertNil(viewModel.selectedCarrierTab)
         XCTAssertNil(viewModel.selectedPackage)
     }

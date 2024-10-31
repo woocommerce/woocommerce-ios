@@ -138,7 +138,7 @@ struct WooShippingAddPackageView: View {
                                 dimensions: "21.92 × 13.67 × 4.14 cm",
                                 weight: "5 kg"),
         ]
-        WooSavedPackagesSelectionView(packages: packages) { packageData in
+        WooSavedPackagesSelectionView(viewModel: WooSavedPackagesSelectionViewModel(packages: packages)) { packageData in
             addPackageAction(packageData)
         }
     }

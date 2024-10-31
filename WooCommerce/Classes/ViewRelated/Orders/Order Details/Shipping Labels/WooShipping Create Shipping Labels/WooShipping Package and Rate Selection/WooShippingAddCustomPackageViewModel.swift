@@ -68,8 +68,7 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
                                    weight: weightDescription)
     }
 
-    func addPackageAction() -> WooPackageDataRepresentable? {
-        // TODO: implement adding a package
+    private func preparePackageData() -> WooPackageDataRepresentable? {
         guard validateCustomPackageInputFields() else { return nil }
 
         let packageData = packageDataFromCurrentData
@@ -80,15 +79,15 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
         return packageData
     }
 
+    func addPackageAction() -> WooPackageDataRepresentable? {
+        let packageData = preparePackageData()
+        // TODO: implement adding a package with the package data
+        return packageData
+    }
+
     func savePackageAsTemplateAction() -> WooPackageDataRepresentable? {
-        // TODO: implement saving package as a template
-        guard validateCustomPackageInputFields() else { return nil }
-
-        let packageData = packageDataFromCurrentData
-
-        // Cleanup after saving package template
-        resetValues()
-
+        let packageData = preparePackageData()
+        // TODO: implement saving package as a template with the package data
         return packageData
     }
 

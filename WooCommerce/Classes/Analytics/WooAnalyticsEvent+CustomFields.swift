@@ -97,5 +97,35 @@ extension WooAnalyticsEvent {
                                 Keys.errorDescription: errorDescription
                               ])
         }
+
+        /// Tracked when Custom Field Editor is loaded
+        static func customFieldEditorLoaded(editorType: EditorType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customFieldEditorLoaded,
+                              properties: [
+                                Keys.type: editorType.rawValue,
+                              ])
+        }
+
+        /// Tracked when Custom Field Editor picker is tapped
+        static func customFieldEditorPickerTapped(pickerType: EditorPicker) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customFieldEditorPickerTapped,
+                              properties: [
+                                Keys.type: pickerType.rawValue,
+                              ])
+        }
+
+        /// Tracked when Custom Field Editor Delete button is tapped
+        static func customFieldEditorDeleteTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customFieldEditorDeleteTapped,
+                              properties: [:])
+        }
+
+        /// Tracked when Custom Field Editor Done button is tapped
+        static func customFieldEditorDoneTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customFieldEditorDoneTapped,
+                              properties: [:])
+        }
+
+
     }
 }

@@ -1259,10 +1259,10 @@ enum WooAnalyticsStat: String {
     case customFieldsSavingFailed = "custom_fields_saving failed"
 
     // Custom Field Editor
-    case customFieldsEditorLoaded = "custom_field_editor_loaded"
-    case customFieldsEditorPickerTapped = "custom_field_editor_picker_tapped"
-    case customFieldsEditorDeleteTapped = "custom_field_editor_delete_tapped"
-    case customFieldsEditorDoneTapped = "custom_field_editor_done_tapped"
+    case customFieldEditorLoaded = "custom_field_editor_loaded"
+    case customFieldEditorPickerTapped = "custom_field_editor_picker_tapped"
+    case customFieldEditorDeleteTapped = "custom_field_editor_delete_tapped"
+    case customFieldEditorDoneTapped = "custom_field_editor_done_tapped"
 }
 
 extension WooAnalyticsStat {

@@ -23,7 +23,7 @@ final class CustomFieldsListHostingController: UIHostingController<CustomFieldsL
                 type: viewModel.customFieldsType.analyticsValue,
                 fieldsCount: viewModel.originalCustomFieldsCount,
                 fieldsSize: viewModel.originalCustomFieldsSize,
-                has_json_fields: false) // TODO: #14273 has_json_fields logic
+                has_json_fields: viewModel.combinedList.contains(where: { $0.isJson }))
         )
 
         configureNavigation()

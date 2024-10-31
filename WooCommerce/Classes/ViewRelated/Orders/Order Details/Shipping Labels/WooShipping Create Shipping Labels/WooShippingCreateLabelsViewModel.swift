@@ -69,6 +69,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Purchases a shipping label with the provided label details and settings.
     func purchaseLabel() {
+        guard canPurchaseLabel else {
+            return
+        }
         // TODO: 13556 - Add action to purchase label remotely
         onLabelPurchase?(markOrderComplete) // TODO: 13556 - Only call this closure if the remote purchase is successful
     }

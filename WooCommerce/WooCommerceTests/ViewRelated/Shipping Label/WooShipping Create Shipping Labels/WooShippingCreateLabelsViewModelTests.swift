@@ -55,15 +55,16 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(order.shippingLines.map({ $0.shippingID }), viewModel.shippingLines.map({ $0.id }))
     }
 
-    func test_onLabelPurchase_notifies_when_order_should_not_be_marked_complete() {
+    func test_onLabelPurchase_notifies_when_order_should_not_be_marked_complete() throws {
         // Given
         let order = Order.fake()
 
         // When
-        let markOrderComplete: Bool = waitFor { promise in
+        let markOrderComplete: Bool = try waitFor { promise in
             let viewModel = WooShippingCreateLabelsViewModel(order: order, onLabelPurchase: { complete in
                 promise(complete)
             })
+            try viewModel.selectShippingRate()
             viewModel.markOrderComplete = false
             viewModel.purchaseLabel()
         }
@@ -72,15 +73,16 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertFalse(markOrderComplete)
     }
 
-    func test_onLabelPurchase_notifies_when_order_should_be_marked_complete() {
+    func test_onLabelPurchase_notifies_when_order_should_be_marked_complete() throws {
         // Given
         let order = Order.fake()
 
         // When
-        let markOrderComplete: Bool = waitFor { promise in
+        let markOrderComplete: Bool = try waitFor { promise in
             let viewModel = WooShippingCreateLabelsViewModel(order: order, onLabelPurchase: { complete in
                 promise(complete)
             })
+            try viewModel.selectShippingRate()
             viewModel.markOrderComplete = true
             viewModel.purchaseLabel()
         }
@@ -96,8 +98,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.canPurchaseLabel)
 
         // When
-        let card = try XCTUnwrap(viewModel.shippingService.serviceTabs.first?.cards.first)
-        card.selectRate()
+        try viewModel.selectShippingRate()
 
         // Then
         XCTAssertTrue(viewModel.canPurchaseLabel)
@@ -109,8 +110,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         let viewModel = WooShippingCreateLabelsViewModel(order: order, currencySettings: CurrencySettings())
 
         // When
-        let card = try XCTUnwrap(viewModel.shippingService.serviceTabs.first?.cards.first)
-        card.selectRate()
+        try viewModel.selectShippingRate()
 
         // Then
         XCTAssertEqual(viewModel.totalCost, "$7.53")
@@ -177,5 +177,13 @@ private extension WooShippingCreateLabelsViewModelTests {
     ///
     func mapLoadGeneralSiteSettingsResponse() -> [SiteSetting] {
         return mapGeneralSettings(from: "settings-general")
+    }
+}
+
+private extension WooShippingCreateLabelsViewModel {
+    /// Selects the first available shipping rate.
+    func selectShippingRate() throws {
+        let card = try XCTUnwrap(self.shippingService.serviceTabs.first?.cards.first)
+        card.selectRate()
     }
 }

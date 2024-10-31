@@ -16,7 +16,6 @@ struct CustomFieldEditorView: View {
     init(viewModel: CustomFieldEditorViewModel, isReadOnlyValue: Bool = false) {
         self.viewModel = viewModel
         self.isReadOnlyValue = isReadOnlyValue
-        viewModel.trackEditorViewLoaded()
     }
 
     var body: some View {
@@ -121,6 +120,9 @@ struct CustomFieldEditorView: View {
         .closeButtonWithDiscardChangesPrompt(hasChanges: viewModel.hasUnsavedChanges,
                                              closeButtonLabel: { Text(Localization.cancelButton) })
         .notice($viewModel.notice)
+        .onAppear {
+            viewModel.trackEditorViewLoaded()
+        }
     }
 
     @ViewBuilder

@@ -3,7 +3,7 @@
 
 21.0
 -----
-
+- [***] Merchants can now view and edit custom fields of their products and orders from the app [https://github.com/woocommerce/woocommerce-ios/issues/13493]
 
 20.9
 -----

@@ -2,20 +2,21 @@ import SwiftUI
 
 struct CustomFieldEditorView: View {
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject private var viewModel: CustomFieldEditorViewModel
+    @StateObject private var viewModel: CustomFieldEditorViewModel
 
     @State private var showRichTextEditor = false
     @State private var showActionSheet = false
 
-    private let isReadOnlyValue: Bool
+    private var isReadOnlyValue: Bool {
+        viewModel.isReadOnlyValue
+    }
 
     /// Initializer for custom field editor
     /// - Parameters:
     ///  - viewModel: The viewModel for this View.
     ///  - isReadOnlyValue: Whether the value is read-only or not. To be used if the value is not string but JSON.
     init(viewModel: CustomFieldEditorViewModel, isReadOnlyValue: Bool = false) {
-        self.viewModel = viewModel
-        self.isReadOnlyValue = isReadOnlyValue
+        self._viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
@@ -27,7 +28,7 @@ struct CustomFieldEditorView: View {
                         .foregroundColor(Color(.text))
                         .subheadlineStyle()
 
-                    TextField(Localization.keyPlaceholder, text: $viewModel.key)
+                    TextField(Localization.keyPlaceholder, text: isReadOnlyValue ? .constant(viewModel.key) : $viewModel.key)
                         .foregroundColor(Color(.text))
                         .subheadlineStyle()
                         .padding(insets: Layout.inputInsets)
@@ -104,6 +105,7 @@ struct CustomFieldEditorView: View {
                         Text(Localization.doneButton)
                     }
                     .disabled(!viewModel.hasUnsavedChanges || !viewModel.hasValidKey)
+                    .renderedIf(!isReadOnlyValue)
 
                     Button(action: {
                         showActionSheet = true
@@ -118,7 +120,7 @@ struct CustomFieldEditorView: View {
             }
         }
         .closeButtonWithDiscardChangesPrompt(hasChanges: viewModel.hasUnsavedChanges,
-                                             closeButtonLabel: { Text(Localization.cancelButton) })
+                                             closeButtonLabel: { Text(isReadOnlyValue ? Localization.doneButton : Localization.cancelButton) })
         .notice($viewModel.notice)
         .onAppear {
             viewModel.trackEditorViewLoaded()
@@ -137,7 +139,7 @@ struct CustomFieldEditorView: View {
             viewModel.notice = Notice(title: Localization.valueCopiedNotice)
         }
 
-        if viewModel.showDeleteButton {
+        if viewModel.showDeleteButton && !isReadOnlyValue {
             Button(Localization.deleteButton, role: .destructive) {
                 viewModel.deleteField()
                 dismiss()

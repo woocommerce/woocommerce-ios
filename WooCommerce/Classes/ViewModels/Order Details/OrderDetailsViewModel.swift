@@ -466,8 +466,14 @@ extension OrderDetailsViewModel {
             guard let shippingLabel = dataSource.shippingLabel(at: indexPath) else {
                 return
             }
-            let shippingLabelDetailsViewController = ShippingLabelDetailsViewController(shippingLabel: shippingLabel)
-            viewController.show(shippingLabelDetailsViewController, sender: viewController)
+            if dataSource.isEligibleForWooShipping {
+                let viewModel = WooShippingCreateLabelsViewModel(order: order, shippingLabel: shippingLabel)
+                let shippingLabelDetailsViewController = WooShippingCreateLabelsViewHostingController(viewModel: viewModel)
+                viewController.present(shippingLabelDetailsViewController, animated: true)
+            } else {
+                let shippingLabelDetailsViewController = ShippingLabelDetailsViewController(shippingLabel: shippingLabel)
+                viewController.show(shippingLabelDetailsViewController, sender: viewController)
+            }
         case .shippingLabelPrintingInfo:
             let printingInstructionsViewController = ShippingLabelPrintingInstructionsViewController()
             let navigationController = WooNavigationController(rootViewController: printingInstructionsViewController)

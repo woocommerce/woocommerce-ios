@@ -27,6 +27,8 @@ final class CustomFieldEditorViewModel: ObservableObject {
         onDelete != nil
     }
 
+    let isReadOnlyValue: Bool
+
     var hasUnsavedChanges: Bool {
         key != initialKey || value != initialValue
     }
@@ -42,13 +44,15 @@ final class CustomFieldEditorViewModel: ObservableObject {
 
     init(key: String,
          value: String,
+         isJsonField: Bool = false,
          disallowedKeys: [String] = [],
          onSave: @escaping (String, String) -> Void,
          onDelete: (() -> Void)? = nil) {
         self.key = key
-        self.value = value
+        self.value = isJsonField ? value.prettyPrint() : value
         self.initialKey = key
-        self.initialValue = value
+        self.initialValue = isJsonField ? value.prettyPrint() : value
+        self.isReadOnlyValue = isJsonField
         self.disallowedKeys = disallowedKeys
         self.onSave = onSave
         self.onDelete = onDelete
@@ -96,6 +100,15 @@ final class CustomFieldEditorViewModel: ObservableObject {
                 WooAnalyticsEvent.CustomFields.EditorPicker.text
             )
         )
+    }
+}
+
+private extension String {
+    func prettyPrint() -> String {
+        return (try? JSONSerialization.jsonObject(with: self.data(using: .utf8) ?? Data()))
+            .flatMap { try? JSONSerialization.data(withJSONObject: $0, options: .prettyPrinted) }
+            .flatMap { String(data: $0, encoding: .utf8) }
+            ?? self
     }
 }
 

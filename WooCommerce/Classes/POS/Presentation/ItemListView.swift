@@ -24,8 +24,8 @@ struct ItemListView: View {
                 // These cases are handled directly in the dashboard, we do not render
                 // a specific view within the ItemListView to handle them
                 EmptyView()
-            case .loading, .loaded:
-                listView(viewModel.items)
+            case .loading(let items), .loaded(let items):
+                listView(items)
             }
         }
         .refreshable {
@@ -123,18 +123,14 @@ private extension ItemListView {
     }
 
     @ViewBuilder
-    func listView(_ items: [POSItem]) -> some View {
+    func listView(_ items: [any POSDisplayableItem]) -> some View {
         ScrollView {
             VStack {
                 if dynamicTypeSize.isAccessibilitySize, viewModel.shouldShowHeaderBanner {
                     bannerCardView
                 }
-                ForEach(items, id: \.productID) { item in
-                    Button(action: {
-                        viewModel.select(item)
-                    }, label: {
-                        ItemCardView(item: item)
-                    })
+                ForEach(items, id: \.id) { item in
+                    AnyView(item.view)
                 }
             }
             .padding(.bottom, floatingControlAreaSize.height)
@@ -142,7 +138,7 @@ private extension ItemListView {
             .background(GeometryReader { proxy in
                 Color.clear
                     .onChange(of: proxy.frame(in: .global).maxY) { maxY in
-                        if posModel.itemListState == .loading {
+                        if case .loading = posModel.itemListState {
                             return
                         }
                         let viewHeight = UIScreen.main.bounds.height

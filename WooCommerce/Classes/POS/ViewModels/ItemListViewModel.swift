@@ -5,10 +5,6 @@ import protocol Yosemite.POSItem
 final class ItemListViewModel: ItemListViewModelProtocol {
     let posModel: PointOfSaleAggregateModel
 
-    var items: [POSItem] {
-        posModel.allItems
-    }
-
     @Published private(set) var isHeaderBannerDismissed: Bool = false
     @Published var showSimpleProductsModal: Bool = false
 
@@ -19,15 +15,11 @@ final class ItemListViewModel: ItemListViewModelProtocol {
         if UserDefaults.standard.bool(forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey) == true {
             return false
         }
-        return !isHeaderBannerDismissed && items.isNotEmpty
+        return !isHeaderBannerDismissed && posModel.allItems.isNotEmpty
     }
 
     init(posModel: PointOfSaleAggregateModel) {
         self.posModel = posModel
-    }
-
-    func select(_ item: POSItem) {
-        posModel.selected(item: item)
     }
 
     @MainActor

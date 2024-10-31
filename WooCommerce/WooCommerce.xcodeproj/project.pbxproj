@@ -831,6 +831,7 @@
 		20B7E3152CD0DDDA007FD997 /* PointOfSaleOrderState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B7E3142CD0DDDA007FD997 /* PointOfSaleOrderState.swift */; };
 		20B7E3172CD100DC007FD997 /* PointOfSalePaymentState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B7E3162CD100DC007FD997 /* PointOfSalePaymentState.swift */; };
 		20B7E3192CD13CE3007FD997 /* PointOfSaleItemListState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B7E3182CD13CE3007FD997 /* PointOfSaleItemListState.swift */; };
+		20B7E3512CD3DAB5007FD997 /* POSDisplayableItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B7E3502CD3DAB5007FD997 /* POSDisplayableItem.swift */; };
 		20BBD62C2B3060A300A903F6 /* AddOrderComponentsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BBD62B2B3060A300A903F6 /* AddOrderComponentsSection.swift */; };
 		20BCF6EE2B0E478B00954840 /* WooPaymentsDepositsOverviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BCF6ED2B0E478B00954840 /* WooPaymentsDepositsOverviewViewModel.swift */; };
 		20BCF6F02B0E48CC00954840 /* WooPaymentsDepositsOverviewViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BCF6EF2B0E48CC00954840 /* WooPaymentsDepositsOverviewViewModelTests.swift */; };
@@ -3922,6 +3923,7 @@
 		20B7E3142CD0DDDA007FD997 /* PointOfSaleOrderState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleOrderState.swift; sourceTree = "<group>"; };
 		20B7E3162CD100DC007FD997 /* PointOfSalePaymentState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSalePaymentState.swift; sourceTree = "<group>"; };
 		20B7E3182CD13CE3007FD997 /* PointOfSaleItemListState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleItemListState.swift; sourceTree = "<group>"; };
+		20B7E3502CD3DAB5007FD997 /* POSDisplayableItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSDisplayableItem.swift; sourceTree = "<group>"; };
 		20BBD62B2B3060A300A903F6 /* AddOrderComponentsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOrderComponentsSection.swift; sourceTree = "<group>"; };
 		20BCF6ED2B0E478B00954840 /* WooPaymentsDepositsOverviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsOverviewViewModel.swift; sourceTree = "<group>"; };
 		20BCF6EF2B0E48CC00954840 /* WooPaymentsDepositsOverviewViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsOverviewViewModelTests.swift; sourceTree = "<group>"; };
@@ -7101,6 +7103,7 @@
 				026826972BF59D9E0036F959 /* Utils */,
 				026826A12BF59DED0036F959 /* Presentation */,
 				20B7E3122CCFFEB4007FD997 /* PointOfSaleAggregateModel.swift */,
+				20B7E3502CD3DAB5007FD997 /* POSDisplayableItem.swift */,
 				20B7E3182CD13CE3007FD997 /* PointOfSaleItemListState.swift */,
 				20B7E3162CD100DC007FD997 /* PointOfSalePaymentState.swift */,
 				20B7E3142CD0DDDA007FD997 /* PointOfSaleOrderState.swift */,
@@ -14731,6 +14734,7 @@
 				31FE28C225E6D338003519F2 /* LearnMoreTableViewCell.swift in Sources */,
 				02D45647231CB1FB008CF0A9 /* UIImage+Dot.swift in Sources */,
 				680BA59A2A4C377900F5559D /* UpgradeViewState.swift in Sources */,
+				20B7E3512CD3DAB5007FD997 /* POSDisplayableItem.swift in Sources */,
 				E11228BE2707267F004E9F2D /* CardPresentModalUpdateFailedNonRetryable.swift in Sources */,
 				86DE68822B4BA47A00B437A6 /* BlazeAdDestinationSettingViewModel.swift in Sources */,
 				EEC5E01129A70CC300416CAC /* StoreSetupProgressView.swift in Sources */,

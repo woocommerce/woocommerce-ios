@@ -18,7 +18,7 @@ final class PointOfSaleAggregateModel: ObservableObject {
     }
 
     @Published private(set) var orderStage: OrderStage = .building
-    @Published private(set) var allItems: [POSItem] = []
+    @Published private(set) var allItems: [any POSDisplayableItem] = []
     @Published private(set) var cart: [CartItem] = []
     @Published private(set) var orderState: PointOfSaleOrderState = .idle
     @Published private(set) var order: Order? = nil
@@ -70,7 +70,7 @@ final class PointOfSaleAggregateModel: ObservableObject {
     @MainActor
     func loadItems(pageNumber: Int) async {
         do {
-            itemListState = .loading
+            itemListState = .loading(allItems)
             try await fetchItems(pageNumber: pageNumber)
         } catch {
             itemListState = .error(PointOfSaleErrorState.errorOnLoadingProducts())
@@ -80,9 +80,14 @@ final class PointOfSaleAggregateModel: ObservableObject {
     @MainActor
     private func fetchItems(pageNumber: Int) async throws {
         let newItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
-        let uniqueNewItems = newItems.filter { newItem in
-            !allItems.contains(where: { $0.productID == newItem.productID })
-        }
+        let uniqueNewItems = newItems
+            .filter { newItem in
+                !allItems.contains(where: { $0.id == newItem.productID })
+            }
+            .compactMap { [weak self] item -> (any POSDisplayableItem)? in
+                guard let self else { return nil }
+                return POSProductItem(item: item, addItemToCart: addItemToCart(_:))
+            }
 
         allItems.append(contentsOf: uniqueNewItems)
 
@@ -115,14 +120,9 @@ final class PointOfSaleAggregateModel: ObservableObject {
         paymentState = .idle
     }
 
-    func selected(item: POSItem) {
-        let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
-        addItemToCart(cartItem)
-        analytics.track(.pointOfSaleAddItemToCart)
-    }
-
     func addItemToCart(_ item: CartItem) {
         cart.insert(item, at: 0)
+        analytics.track(.pointOfSaleAddItemToCart)
     }
 
     func removeItemFromCart(_ cartItem: CartItem) {
@@ -136,7 +136,7 @@ final class PointOfSaleAggregateModel: ObservableObject {
     @MainActor
     func submitCart() async {
         orderStage = .finalizing
-        await startSyncingOrder(with: cart, allItems: allItems)
+        await startSyncingOrder(with: cart, allItems: allItems.map { $0.item })
     }
 
     private func startSyncingOrder(with cartItems: [CartItem], allItems: [POSItem]) async {

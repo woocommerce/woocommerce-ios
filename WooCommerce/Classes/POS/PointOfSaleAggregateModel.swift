@@ -4,6 +4,7 @@ import Combine
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSItem
 import protocol Yosemite.POSItemProvider
+import struct Yosemite.POSProduct
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
 import struct Yosemite.POSCartItem
@@ -79,14 +80,24 @@ final class PointOfSaleAggregateModel: ObservableObject {
 
     @MainActor
     private func fetchItems(pageNumber: Int) async throws {
-        let newItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
+        var newItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
+        if pageNumber == 1 {
+            newItems.insert(POSDiscount(), at: 0)
+        }
         let uniqueNewItems = newItems
             .filter { newItem in
-                !allItems.contains(where: { $0.id == newItem.productID })
+                !allItems.contains(where: { $0.id == newItem.itemID })
             }
             .compactMap { [weak self] item -> (any POSDisplayableItem)? in
                 guard let self else { return nil }
-                return POSProductItem(item: item, addItemToCart: addItemToCart(_:))
+                switch item {
+                case is POSProduct:
+                    return POSProductItem(item: item, addItemToCart: addItemToCart(_:))
+                case is POSDiscount:
+                    return POSDiscountItem(item: item)
+                default:
+                    return nil
+                }
             }
 
         allItems.append(contentsOf: uniqueNewItems)

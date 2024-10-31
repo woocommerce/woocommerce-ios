@@ -237,7 +237,8 @@ private extension CustomFieldsListView {
                     // Only provide delete callback when editing existing field
                     viewModel.deleteField(customField!)
                 } : nil
-            ))
+            ),
+            isReadOnlyValue: customField?.isJson ?? false)
         }
     }
 }

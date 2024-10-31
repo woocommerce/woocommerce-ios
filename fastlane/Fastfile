@@ -1325,7 +1325,10 @@ end
 # Kicks off a Buildkite build
 # -----------------------------------------------------------------------------------
 def trigger_buildkite_release_build(branch:, beta:)
-  environment = { BUILDKITE_BETA_RELEASE: beta }
+  environment = {
+    IS_BETA_RELEASE: beta,
+    RELEASE_VERSION: release_version_current
+  }
 
   # If we're running on CI, we can directly start the release pipeline jobs within the same build
   if is_ci

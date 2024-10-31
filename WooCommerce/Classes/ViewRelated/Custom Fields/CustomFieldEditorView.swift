@@ -7,15 +7,15 @@ struct CustomFieldEditorView: View {
     @State private var showRichTextEditor = false
     @State private var showActionSheet = false
 
-    private let isReadOnlyValue: Bool
+    private var isReadOnlyValue: Bool {
+        viewModel.isReadOnlyValue
+    }
 
     /// Initializer for custom field editor
     /// - Parameters:
     ///  - viewModel: The viewModel for this View.
-    ///  - isReadOnlyValue: Whether the value is read-only or not. To be used if the value is not string but JSON.
-    init(viewModel: CustomFieldEditorViewModel, isReadOnlyValue: Bool = false) {
+    init(viewModel: CustomFieldEditorViewModel) {
         self.viewModel = viewModel
-        self.isReadOnlyValue = isReadOnlyValue
     }
 
     var body: some View {

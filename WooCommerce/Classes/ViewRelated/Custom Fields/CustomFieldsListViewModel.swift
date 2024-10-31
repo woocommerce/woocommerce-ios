@@ -247,10 +247,10 @@ private extension CustomFieldsListViewModel {
     }
 }
 
-// MARK - Analytics
+// MARK: - Analytics
 extension CustomFieldsListViewModel {
     func trackCustomFieldTapped() {
-        
+
         // TODO update `isJson` and `hasHtml` value
         ServiceLocator.analytics.track(
             event: WooAnalyticsEvent.CustomFields.customFieldTapped(

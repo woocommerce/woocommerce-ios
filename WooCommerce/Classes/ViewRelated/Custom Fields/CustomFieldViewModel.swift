@@ -25,7 +25,7 @@ struct CustomFieldViewModel: Identifiable {
         (try? JSONSerialization.jsonObject(with: value.data(using: .utf8) ?? Data())) != nil
     }
 
-    init(id: Int64?, key: String, value: String, valueURL: URL? = nil) {
+    init(id: Int64? = nil, key: String, value: String, valueURL: URL? = nil) {
         self.fieldID = id
         self.key = key
         self.value = value

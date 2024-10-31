@@ -269,9 +269,7 @@ private extension CustomFieldsListView {
                                     disallowedKeys: [String] = []) -> some View {
         NavigationView {
             CustomFieldEditorView(viewModel: CustomFieldEditorViewModel(
-                key: customField?.key ?? "",
-                value: customField?.value ?? "",
-                isJsonField: customField?.isJson ?? false,
+                customField: customField,
                 disallowedKeys: disallowedKeys,
                 onSave: { updatedKey, updatedValue in
                     viewModel.saveField(

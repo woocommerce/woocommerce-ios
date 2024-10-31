@@ -246,5 +246,5 @@ private extension CustomFieldEditorView {
 }
 
 #Preview {
-    CustomFieldEditorView(viewModel: CustomFieldEditorViewModel(key: "title", value: "value", onSave: { _, _ in }, onDelete: {}))
+    CustomFieldEditorView(viewModel: CustomFieldEditorViewModel(customField: CustomFieldViewModel(key: "title", value: "value"), onSave: { _, _ in }, onDelete: {}))
 }

@@ -65,7 +65,7 @@ struct WooShippingCreateLabelsView: View {
                 ExpandableBottomSheet(onChangeOfExpansion: { isExpanded in
                     isShipmentDetailsExpanded = isExpanded
                 }) {
-                    if isShipmentDetailsExpanded {
+                    if isShipmentDetailsExpanded && !viewModel.canViewLabel {
                         CollapsibleHStack(spacing: Layout.bottomSheetSpacing) {
                             Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
                                 .font(.subheadline)
@@ -77,7 +77,7 @@ struct WooShippingCreateLabelsView: View {
                             Text(Localization.BottomSheet.shipmentDetails)
                                 .foregroundStyle(Color(.primary))
                                 .bold()
-                            if viewModel.hasPackage {
+                            if viewModel.hasPackage && !viewModel.canViewLabel {
                                 purchaseButton
                             }
                         }

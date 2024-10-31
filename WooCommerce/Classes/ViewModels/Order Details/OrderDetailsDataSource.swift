@@ -1027,7 +1027,7 @@ private extension OrderDetailsDataSource {
 
     private func configureShippingLine(cell: HostingConfigurationTableViewCell<ShippingLineRowView>, at indexPath: IndexPath) {
         let shippingLine = shippingLines[indexPath.row]
-        let viewModel = ShippingLineRowViewModel(shippingLine: shippingLine, shippingMethods: siteShippingMethods, editable: false)
+        let viewModel = ShippingLineRowViewModel(shippingLine: shippingLine, currency: order.currency, shippingMethods: siteShippingMethods, editable: false)
         let view = ShippingLineRowView(viewModel: viewModel)
 
         // Reduce cell padding between rows

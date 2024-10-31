@@ -2,7 +2,7 @@ import SwiftUI
 
 struct CustomFieldEditorView: View {
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject private var viewModel: CustomFieldEditorViewModel
+    @StateObject private var viewModel: CustomFieldEditorViewModel
 
     @State private var showRichTextEditor = false
     @State private var showActionSheet = false
@@ -14,8 +14,9 @@ struct CustomFieldEditorView: View {
     /// Initializer for custom field editor
     /// - Parameters:
     ///  - viewModel: The viewModel for this View.
-    init(viewModel: CustomFieldEditorViewModel) {
-        self.viewModel = viewModel
+    ///  - isReadOnlyValue: Whether the value is read-only or not. To be used if the value is not string but JSON.
+    init(viewModel: CustomFieldEditorViewModel, isReadOnlyValue: Bool = false) {
+        self._viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {

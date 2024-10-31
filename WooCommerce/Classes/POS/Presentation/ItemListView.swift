@@ -130,7 +130,7 @@ private extension ItemListView {
                     bannerCardView
                 }
                 ForEach(items, id: \.id) { item in
-                    AnyView(item.view)
+                    AnyView(item)
                 }
             }
             .padding(.bottom, floatingControlAreaSize.height)

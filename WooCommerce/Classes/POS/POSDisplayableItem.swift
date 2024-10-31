@@ -3,11 +3,9 @@ import struct Yosemite.POSProduct
 import protocol Yosemite.POSItem
 import enum Yosemite.ProductType
 
-protocol POSDisplayableItem: Identifiable, Equatable {
+protocol POSDisplayableItem: View, Identifiable, Equatable {
     var id: UUID { get }
     var item: POSItem { get }
-    associatedtype ItemView: View
-    @ViewBuilder var view: ItemView { get }
 }
 
 struct POSProductItem: POSDisplayableItem {
@@ -26,8 +24,7 @@ struct POSProductItem: POSDisplayableItem {
         self.addItemToCart = addItemToCart
     }
 
-    @ViewBuilder
-    var view: some View {
+    var body: some View {
         Button(action: {
             let cartItem = CartItem(id: UUID(), item: product, quantity: 1)
             addItemToCart(cartItem)
@@ -73,8 +70,7 @@ struct POSDiscountItem: POSDisplayableItem {
         self.discount = discount
     }
 
-    @ViewBuilder
-    var view: some View {
+    var body: some View {
         HStack(spacing: Constants.cardSpacing) {
                 Rectangle()
                 .overlay {

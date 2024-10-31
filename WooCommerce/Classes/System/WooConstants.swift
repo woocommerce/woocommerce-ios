@@ -366,7 +366,8 @@ extension WooConstants {
 
         case ordersScreen = "https://woocommerce.com/mobile/orders"
 
-        case customFieldsLearnMore = "https://woocommerce.com/document/custom-product-fields/"
+        case customFieldsProductLearnMore = "https://woocommerce.com/document/custom-product-fields/"
+        case customFieldsOrderLearnMore = "https://woocommerce.com/document/managing-orders/view-edit-or-add-an-order/#custom-fields"
 
         /// Returns the URL version of the receiver
         ///

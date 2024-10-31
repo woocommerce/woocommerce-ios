@@ -119,7 +119,12 @@ private extension CustomFieldsListHostingController {
     }
 
     func displayLearnMoreWebContent() {
-        WebviewHelper.launch(WooConstants.URLs.customFieldsLearnMore.asURL(), with: self)
+        switch viewModel.customFieldsType {
+        case .order:
+            WebviewHelper.launch(WooConstants.URLs.customFieldsOrderLearnMore.asURL(), with: self)
+        case .product:
+            WebviewHelper.launch(WooConstants.URLs.customFieldsProductLearnMore.asURL(), with: self)
+        }
     }
 }
 

@@ -13,6 +13,7 @@ final class CustomFieldsListViewModel: ObservableObject {
 
     var originalCustomFieldsSize: Int64 {
         Int64(
+            // Total byte size of custom field values
             originalCustomFields.map { $0.content.utf8.count }.reduce(0, +)
         )
     }

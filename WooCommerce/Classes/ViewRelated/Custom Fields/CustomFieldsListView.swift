@@ -176,8 +176,8 @@ struct CustomFieldsListView: View {
 							viewModel.trackCustomFieldTapped()
 						}) {
                             CustomFieldRow(isEditable: isEditable,
-                                           title: customField.title,
-                                           content: customField.content.removedHTMLTags,
+                                           title: customField.key,
+                                           content: customField.value.removedHTMLTags,
                                            contentURL: nil)
                         }
                     }
@@ -185,8 +185,8 @@ struct CustomFieldsListView: View {
                 }
             }
             .sheet(item: $viewModel.selectedCustomField) { customField in
-                /// When editing a newly added and unsaved custom field (identified by it having nil `fieldId`), provide disallowed keys.
-                let disallowedKeys = customField.fieldId == nil ? viewModel.disallowedKeysForCreation : []
+	            /// When editing a newly added and unsaved custom field (identified by it having nil `fieldID`), provide disallowed keys.
+	            let disallowedKeys = customField.fieldID == nil ? viewModel.disallowedKeysForCreation : []
 
                 buildCustomFieldEditorView(customField: customField,
                                            disallowedKeys: disallowedKeys)
@@ -269,15 +269,15 @@ private extension CustomFieldsListView {
                                     disallowedKeys: [String] = []) -> some View {
         NavigationView {
             CustomFieldEditorView(viewModel: CustomFieldEditorViewModel(
-                key: customField?.title ?? "",
-                value: customField?.content ?? "",
+                key: customField?.key ?? "",
+                value: customField?.value ?? "",
                 isJsonField: customField?.isJson ?? false,
                 disallowedKeys: disallowedKeys,
                 onSave: { updatedKey, updatedValue in
                     viewModel.saveField(
                         key: updatedKey,
                         value: updatedValue,
-                        fieldId: customField?.fieldId
+                        fieldID: customField?.fieldID
                     )
                 },
                 onDelete: customField != nil ? {
@@ -382,8 +382,8 @@ struct OrderCustomFieldsDetails_Previews: PreviewProvider {
             isEditable: true,
             viewModel: CustomFieldsListViewModel(
                 customFields: [
-                    CustomFieldViewModel(id: 0, title: "First Title", content: "First Content"),
-                    CustomFieldViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woocommerce.com/"))
+                    CustomFieldViewModel(id: 0, key: "First Title", value: "First Content"),
+                    CustomFieldViewModel(id: 1, key: "Second Title", value: "Second Content", valueURL: URL(string: "https://woocommerce.com/"))
                 ],
                 siteID: 0,
                 parentItemID: 0,

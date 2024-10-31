@@ -7,54 +7,54 @@ struct CustomFieldViewModel: Identifiable {
     ///
     let id = UUID()
 
-    let fieldId: Int64?
+    let fieldID: Int64?
 
-    /// The title for the Custom Field mapped from the metadata key
+    /// The key for the Custom Field
     ///
-    let title: String
+    let key: String
 
-    /// The content for the Custom Field mapped from the metadata value
+    /// The value for the Custom Field
     ///
-    let content: String
+    let value: String
 
-    /// Optional URL used for linking the Custom Field content
+    /// Optional URL used for linking the Custom Field value
     ///
-    let contentURL: URL?
+    let valueURL: URL?
 
     var isJson: Bool {
-        (try? JSONSerialization.jsonObject(with: content.data(using: .utf8) ?? Data())) != nil
+        (try? JSONSerialization.jsonObject(with: value.data(using: .utf8) ?? Data())) != nil
     }
 
-    init(id: Int64?, title: String, content: String, contentURL: URL? = nil) {
-        self.fieldId = id
-        self.title = title
-        self.content = content
-        self.contentURL = contentURL
+    init(id: Int64?, key: String, value: String, valueURL: URL? = nil) {
+        self.fieldID = id
+        self.key = key
+        self.value = value
+        self.valueURL = valueURL
 
     }
 
     init(metadata: MetaData) {
         // Create a URL out of the metadata value, if it is a valid URL that can be opened on device
-        var contentURL: URL?
+        var valueURL: URL?
         if metadata.value.isValidURL(), let url = URL(string: metadata.value), UIApplication.shared.canOpenURL(url) {
-            contentURL = url
+            valueURL = url
         }
 
         self.init(
             id: metadata.metadataID,
-            title: metadata.key,
-            content: metadata.value,
-            contentURL: contentURL
+            key: metadata.key,
+            value: metadata.value,
+            valueURL: valueURL
         )
     }
 
     func asDictionary() -> [String: Any] {
         var json: [String: Any] = [:]
-            if let fieldId = fieldId {
-                json["id"] = fieldId
+            if let fieldID = fieldID {
+                json["id"] = fieldID
             }
-            json["key"] = title
-            json["value"] = content
+            json["key"] = key
+            json["value"] = value
         return json
     }
 }

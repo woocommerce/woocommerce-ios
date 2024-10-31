@@ -380,8 +380,8 @@ struct OrderCustomFieldsDetails_Previews: PreviewProvider {
             isEditable: true,
             viewModel: CustomFieldsListViewModel(
                 customFields: [
-                    CustomFieldViewModel(id: 0, key: "First Title", value: "First Content"),
-                    CustomFieldViewModel(id: 1, key: "Second Title", value: "Second Content", valueURL: URL(string: "https://woocommerce.com/"))
+                    CustomFieldViewModel(fieldID: 0, key: "First Title", value: "First Content"),
+                    CustomFieldViewModel(fieldID: 1, key: "Second Title", value: "Second Content", valueURL: URL(string: "https://woocommerce.com/"))
                 ],
                 siteID: 0,
                 parentItemID: 0,

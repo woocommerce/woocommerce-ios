@@ -2,7 +2,7 @@ import Foundation
 import Yosemite
 
 /// ViewModel for an individual custom field
-struct CustomFieldViewModel: Identifiable {
+struct CustomFieldViewModel: Identifiable, Equatable {
     /// Unique identifier, required by `SwiftUI`
     ///
     let id = UUID()
@@ -25,8 +25,8 @@ struct CustomFieldViewModel: Identifiable {
         (try? JSONSerialization.jsonObject(with: value.data(using: .utf8) ?? Data())) != nil
     }
 
-    init(id: Int64? = nil, key: String, value: String, valueURL: URL? = nil) {
-        self.fieldID = id
+    init(fieldID: Int64? = nil, key: String, value: String, valueURL: URL? = nil) {
+        self.fieldID = fieldID
         self.key = key
         self.value = value
         self.valueURL = valueURL
@@ -41,7 +41,7 @@ struct CustomFieldViewModel: Identifiable {
         }
 
         self.init(
-            id: metadata.metadataID,
+            fieldID: metadata.metadataID,
             key: metadata.key,
             value: metadata.value,
             valueURL: valueURL

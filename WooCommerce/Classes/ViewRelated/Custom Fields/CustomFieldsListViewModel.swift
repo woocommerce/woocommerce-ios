@@ -78,7 +78,7 @@ final class CustomFieldsListViewModel: ObservableObject {
 // MARK: - Items actions
 extension CustomFieldsListViewModel {
     func saveField(key: String, value: String, fieldID: Int64?) {
-        let newField = CustomFieldViewModel(id: fieldID, key: key, value: value)
+        let newField = CustomFieldViewModel(fieldID: fieldID, key: key, value: value)
         if let fieldID = fieldID {
             if let index = combinedList.firstIndex(where: { $0.fieldID == fieldID }) {
                 editField(at: index, newField: newField)

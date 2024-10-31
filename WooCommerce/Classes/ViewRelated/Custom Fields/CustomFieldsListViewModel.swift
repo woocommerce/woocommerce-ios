@@ -230,6 +230,10 @@ extension CustomFieldsListViewModel {
         let value: String
         let fieldId: Int64?
 
+        var isJson: Bool {
+            (try? JSONSerialization.jsonObject(with: value.data(using: .utf8) ?? Data())) != nil
+        }
+
         init(key: String, value: String, fieldId: Int64? = nil) {
             self.key = key
             self.value = value

@@ -255,6 +255,7 @@ private extension CustomFieldsListView {
             CustomFieldEditorView(viewModel: CustomFieldEditorViewModel(
                 key: customField?.key ?? "",
                 value: customField?.value ?? "",
+                isJsonField: customField?.isJson ?? false,
                 disallowedKeys: disallowedKeys,
                 onSave: { updatedKey, updatedValue in
                     viewModel.saveField(

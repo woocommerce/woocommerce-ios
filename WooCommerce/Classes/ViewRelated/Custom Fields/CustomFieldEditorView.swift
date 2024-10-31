@@ -27,7 +27,7 @@ struct CustomFieldEditorView: View {
                         .foregroundColor(Color(.text))
                         .subheadlineStyle()
 
-                    TextField(Localization.keyPlaceholder, text: $viewModel.key)
+                    TextField(Localization.keyPlaceholder, text: isReadOnlyValue ? .constant(viewModel.key) : $viewModel.key)
                         .foregroundColor(Color(.text))
                         .subheadlineStyle()
                         .padding(insets: Layout.inputInsets)
@@ -101,6 +101,7 @@ struct CustomFieldEditorView: View {
                         Text(Localization.doneButton)
                     }
                     .disabled(!viewModel.hasUnsavedChanges || !viewModel.hasValidKey)
+                    .renderedIf(!isReadOnlyValue)
 
                     Button(action: {
                         showActionSheet = true
@@ -115,7 +116,7 @@ struct CustomFieldEditorView: View {
             }
         }
         .closeButtonWithDiscardChangesPrompt(hasChanges: viewModel.hasUnsavedChanges,
-                                             closeButtonLabel: { Text(Localization.cancelButton) })
+                                             closeButtonLabel: { Text(isReadOnlyValue ? Localization.doneButton : Localization.cancelButton) })
         .notice($viewModel.notice)
     }
 
@@ -131,7 +132,7 @@ struct CustomFieldEditorView: View {
             viewModel.notice = Notice(title: Localization.valueCopiedNotice)
         }
 
-        if viewModel.showDeleteButton {
+        if viewModel.showDeleteButton && !isReadOnlyValue {
             Button(Localization.deleteButton, role: .destructive) {
                 viewModel.deleteField()
                 dismiss()

@@ -2,8 +2,12 @@ import SwiftUI
 
 // Holds the data needed to display a tab in list of Carrier packages.
 struct WooShippingPackagesCarrierTab: Identifiable {
-    let id: WooShippingCarrier
+    let carrier: WooShippingCarrier
     let packageGroups: [WooPackageGroup]
+
+    var id: String {
+        return carrier.name
+    }
 }
 
 struct WooPackageGroup {
@@ -80,31 +84,26 @@ struct WooCarrierPackagesSelectionView: View {
         static let tabPadding: CGFloat = 9.0
     }
 
-    let carriersPackages: [WooShippingPackagesCarrierTab]
-    let tabs: [TopTabItem<EmptyView>]
+    @ObservedObject private var viewModel: WooCarrierPackagesSelectionViewModel
     let addPackageAction: (WooPackageDataRepresentable) -> Void
 
-    @State private var selectedTabIndex: Int?
-    @State private var selectedPackageId: UUID? = nil
-
-    init(carriersPackages: [WooShippingPackagesCarrierTab],
+    init(carrierTabs: [WooShippingPackagesCarrierTab],
          addPackageAction: @escaping (WooPackageDataRepresentable) -> Void) {
-        self.carriersPackages = carriersPackages
-        self.tabs = carriersPackages.map { carrierTab in
-            return TopTabItem(name: carrierTab.id.name, icon: carrierTab.id.logo, content: {
+        let tabs = carrierTabs.map { carrierTab in
+            return TopTabItem(name: carrierTab.carrier.name, icon: carrierTab.carrier.logo, content: {
                 EmptyView()
             })
         }
-        _selectedTabIndex = State(initialValue: carriersPackages.isEmpty ? nil : 0)
+        viewModel = WooCarrierPackagesSelectionViewModel(carrierTabs: carrierTabs, tabs: tabs)
         self.addPackageAction = addPackageAction
     }
 
     var body: some View {
-        if let selectedTabIndex, tabs.isNotEmpty {
+        if viewModel.selectedTabIndex != nil, viewModel.tabs.isNotEmpty {
             VStack(spacing: 0) {
-                TopTabView(tabs: tabs,
+                TopTabView(tabs: viewModel.tabs,
                            showContent: .constant(false),
-                           selectedTabIndex: $selectedTabIndex,
+                           selectedTabIndex: $viewModel.selectedTabIndex,
                            tabsContainerHorizontalPadding: nil,
                            selectedStateColor: Color.accentColor,
                            unselectedStateColor: .secondary,
@@ -113,14 +112,16 @@ struct WooCarrierPackagesSelectionView: View {
                            tabsNameFont: Font.subheadline.bold(),
                            tabItemContentHorizontalPadding: Constants.tabItemContentHorizontalPadding,
                            tabItemContentVerticalPadding: Constants.tabItemContentVerticalPadding)
-                WooCarrierPackagesView(carrierTab: carriersPackages[selectedTabIndex],
-                                       selectedPackageId: $selectedPackageId)
+                if let selectedCarrierTab = viewModel.selectedCarrierTab {
+                    WooCarrierPackagesView(carrierTab: selectedCarrierTab,
+                                           selectedPackageId: $viewModel.selectedPackageId)
+                }
                 Spacer()
                 Divider()
                 Button(WooShippingAddPackageView.Localization.addPackage) {
                     addPackageButtonTapped()
                 }
-                .disabled(selectedPackageId == nil)
+                .disabled(viewModel.selectedPackageId == nil)
                 .buttonStyle(PrimaryButtonStyle())
                 .padding()
             }
@@ -133,17 +134,8 @@ struct WooCarrierPackagesSelectionView: View {
 
     private func addPackageButtonTapped() {
         // call addPackageAction with data from selected package
-        if let selectedPackageId {
-            for carriersPackage in carriersPackages {
-                for packageGroup in carriersPackage.packageGroups {
-                    for packageItem in packageGroup.packages {
-                        if selectedPackageId == packageItem.id {
-                            addPackageAction(packageItem)
-                            return
-                        }
-                    }
-                }
-            }
-        }
+        guard let selectedPackage = viewModel.selectedPackage else { return }
+
+        addPackageAction(selectedPackage)
     }
 }

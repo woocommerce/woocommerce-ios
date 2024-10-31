@@ -72,7 +72,7 @@ struct WooShippingAddPackageView: View {
         }
     }
 
-    private func carriersPackages() -> [WooShippingPackagesCarrierTab] {
+    private func carrierTabs() -> [WooShippingPackagesCarrierTab] {
         // TODO: dummy data for UI creation
         let uspsPackageGroups: [WooPackageGroup] = [
             WooPackageGroup(name: "Flat Rate Boxes 1", packages: [
@@ -95,15 +95,15 @@ struct WooShippingAddPackageView: View {
                 WooCarrierPackageData(name: "Small Flat Rate Box", type: "DHL Express", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg")
             ])
         ]
-        let uspsCarrier: WooShippingPackagesCarrierTab = WooShippingPackagesCarrierTab(id: WooShippingCarrier.usps, packageGroups: uspsPackageGroups)
-        let dhlCarrier: WooShippingPackagesCarrierTab = WooShippingPackagesCarrierTab(id: WooShippingCarrier.dhlExpress, packageGroups: dhlPackageGroups)
+        let uspsCarrier: WooShippingPackagesCarrierTab = WooShippingPackagesCarrierTab(carrier: WooShippingCarrier.usps, packageGroups: uspsPackageGroups)
+        let dhlCarrier: WooShippingPackagesCarrierTab = WooShippingPackagesCarrierTab(carrier: WooShippingCarrier.dhlExpress, packageGroups: dhlPackageGroups)
 
         return [uspsCarrier, dhlCarrier]
     }
 
     @ViewBuilder
     private var carrierPackageView: some View {
-        WooCarrierPackagesSelectionView(carriersPackages: carriersPackages()) { packageData in
+        WooCarrierPackagesSelectionView(carrierTabs: carrierTabs()) { packageData in
             addPackageAction(packageData)
         }
     }

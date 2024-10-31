@@ -1233,10 +1233,6 @@ extension OrderDetailsDataSource {
         }()
 
         let customFields: Section? = {
-            guard order.customFields.isNotEmpty else {
-                return nil
-            }
-
             return Section(category: .customFields, row: .customFields)
         }()
 

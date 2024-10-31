@@ -5,11 +5,14 @@ import WordPressAuthenticator
 /// modeling an error when application password is disabled.
 ///
 struct ApplicationPasswordDisabledViewModel: ULErrorViewModel {
-    init(siteURL: String) {
+    init(siteURL: String,
+         authentication: Authentication = ServiceLocator.authenticationManager) {
         self.siteURL = siteURL
+        self.authentication = authentication
     }
 
     let siteURL: String
+    let authentication: Authentication
     let image: UIImage = .errorImage // TODO: update this if needed
 
     var text: NSAttributedString {
@@ -55,6 +58,17 @@ struct ApplicationPasswordDisabledViewModel: ULErrorViewModel {
         }
         WebviewHelper.launch(Constants.applicationPasswordLink, with: viewController)
     }
+
+    var rightBarButtonItemTitle: String? {
+        return Localization.helpButtonTitle
+    }
+
+    func didTapRightBarButtonItem(in viewController: UIViewController?) {
+        guard let viewController else {
+            return
+        }
+        authentication.presentSupport(from: viewController, screen: .noWooError)
+    }
 }
 
 private extension ApplicationPasswordDisabledViewModel {
@@ -77,6 +91,10 @@ private extension ApplicationPasswordDisabledViewModel {
         static let primaryButtonTitle = NSLocalizedString(
             "Log in with WordPress.com",
             comment: "Button that will navigate to the authentication flow with WP.com"
+        )
+        static let helpButtonTitle = NSLocalizedString(
+            "Help",
+            comment: "Button that will navigate to the support area"
         )
     }
     enum Constants {

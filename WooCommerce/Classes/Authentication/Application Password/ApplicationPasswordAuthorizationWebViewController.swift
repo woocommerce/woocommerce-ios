@@ -157,7 +157,20 @@ private extension ApplicationPasswordAuthorizationWebViewController {
                 guard let url = try await viewModel.fetchAuthURL() else {
                     DDLogError("⛔️ No authorization URL found for application passwords")
                     analytics.track(.applicationPasswordAuthorizationURLNotAvailable)
-                    return showErrorAlert(message: Localization.applicationPasswordDisabled)
+
+                    let errorUI = applicationPasswordDisabledUI(for: viewModel.siteURL)
+                    // When the error view controller is popped, also pop the web view
+                    errorUI.navigationItem.leftBarButtonItem = UIBarButtonItem(
+                        image: UIImage(systemName: "chevron.backward"),
+                        style: .plain,
+                        target: self,
+                        action: #selector(popBothControllers)
+                    )
+
+                    // Push instead of present
+                    navigationController?.pushViewController(errorUI, animated: true)
+
+                    return
                 }
                 loadAuthorizationPage(url: url)
             } catch {
@@ -169,6 +182,12 @@ private extension ApplicationPasswordAuthorizationWebViewController {
             }
             activityIndicator.stopAnimating()
         }
+    }
+
+    @objc private func popBothControllers() {
+        // Pop back two view controllers to remove both error and web view
+        navigationController?.popViewController(animated: false)
+        navigationController?.popViewController(animated: true)
     }
 
     func loadAuthorizationPage(url: URL) {
@@ -220,6 +239,14 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         }
         present(alertController, animated: true)
     }
+
+    /// The error screen to be displayed when the user tries to log in with site credentials
+    /// with application password disabled.
+    ///
+    func applicationPasswordDisabledUI(for siteURL: String) -> UIViewController {
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: siteURL)
+        return ULErrorViewController(viewModel: viewModel)
+    }
 }
 
 extension ApplicationPasswordAuthorizationWebViewController: WKNavigationDelegate {
@@ -251,6 +278,13 @@ extension ApplicationPasswordAuthorizationWebViewController: WKNavigationDelegat
         onSuccess(applicationPassword, navigationController)
         DDLogInfo("✅ Application password authorized")
         return .cancel
+    }
+}
+
+extension ApplicationPasswordAuthorizationWebViewController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        // This will be called when the error UI is dismissed
+        navigationController?.dismiss(animated: true)
     }
 }
 

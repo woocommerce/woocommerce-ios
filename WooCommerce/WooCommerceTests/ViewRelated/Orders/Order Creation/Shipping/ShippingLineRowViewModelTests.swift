@@ -30,17 +30,22 @@ final class ShippingLineRowViewModelTests: XCTestCase {
         // Given
         let shippingLine = ShippingLine(shippingID: 1, methodTitle: "Package 1", methodID: "flat_rate", total: "5", totalTax: "0", taxes: [])
         let shippingMethod = ShippingMethod(siteID: 12345, methodID: "flat_rate", title: "Flat Rate")
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+        let currency = "EUR"
 
         // When
         let viewModel = ShippingLineRowViewModel(shippingLine: shippingLine,
+                                                 currency: currency,
                                                  shippingMethods: [shippingMethod],
                                                  editable: false,
                                                  currencyFormatter: CurrencyFormatter(currencySettings: CurrencySettings()))
 
         // Then
+        let expectedFormattedAmount = currencyFormatter.formatAmount(shippingLine.total, with: currency)
+
         assertEqual(shippingLine.methodTitle, viewModel.shippingTitle)
         assertEqual(shippingMethod.title, viewModel.shippingMethod)
-        assertEqual("$5.00", viewModel.shippingAmount)
+        assertEqual(expectedFormattedAmount, viewModel.shippingAmount)
         XCTAssertFalse(viewModel.editable)
     }
 

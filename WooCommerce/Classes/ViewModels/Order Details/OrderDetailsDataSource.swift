@@ -737,14 +737,13 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureShippingLabelDetail(cell: WooBasicTableViewCell) {
-        let showRevampedShippingLabelCreation = featureFlags.isFeatureFlagEnabled(.revampedShippingLabelCreation)
-        cell.bodyLabel?.text = showRevampedShippingLabelCreation ? Footer.viewShippingLabel : Footer.showShippingLabelDetails
+        cell.bodyLabel?.text = isEligibleForWooShipping ? Footer.viewShippingLabel : Footer.showShippingLabelDetails
         cell.applyPlainTextStyle()
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
 
         cell.accessibilityTraits = .button
-        if showRevampedShippingLabelCreation {
+        if isEligibleForWooShipping {
             cell.accessibilityLabel = Footer.viewShippingLabel
         } else {
             cell.accessibilityLabel = NSLocalizedString(

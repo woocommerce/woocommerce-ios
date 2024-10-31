@@ -466,7 +466,7 @@ extension OrderDetailsViewModel {
             guard let shippingLabel = dataSource.shippingLabel(at: indexPath) else {
                 return
             }
-            if featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation) {
+            if dataSource.isEligibleForWooShipping {
                 let viewModel = WooShippingCreateLabelsViewModel(order: order, shippingLabel: shippingLabel)
                 let shippingLabelDetailsViewController = WooShippingCreateLabelsViewHostingController(viewModel: viewModel)
                 viewController.present(shippingLabelDetailsViewController, animated: true)

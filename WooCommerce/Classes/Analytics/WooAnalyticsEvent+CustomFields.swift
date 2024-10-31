@@ -6,7 +6,7 @@ extension WooAnalyticsEvent {
         /// Event property keys
         private enum Keys {
             static let type = "type"
-            static let fieldsCount = "field_count"
+            static let fieldsCount = "fields_count"
             static let fieldsSize = "fields_size"
             static let hasJsonFields = "has_json_fields"
             static let isJson = "is_json"

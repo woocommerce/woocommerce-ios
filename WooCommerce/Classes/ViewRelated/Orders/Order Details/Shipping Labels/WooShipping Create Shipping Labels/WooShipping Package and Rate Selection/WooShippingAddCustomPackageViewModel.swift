@@ -53,11 +53,11 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     }
 
     private var dimensionsDescription: String {
-        return "\(fieldValues[.length] ?? "")\(dimensionUnit) x \(fieldValues[.width] ?? "")\(dimensionUnit) x \(fieldValues[.height] ?? "")\(dimensionUnit)"
+        return "\(fieldValues[.length] ?? "") x \(fieldValues[.width] ?? "") x \(fieldValues[.height] ?? "") \(dimensionUnit)"
     }
 
     private var weightDescription: String {
-        return "\(fieldValues[.weight] ?? "")\(weightUnit)"
+        return "\(fieldValues[.weight] ?? "") \(weightUnit)"
     }
 
     private var packageDataFromCurrentData: WooPackageDataRepresentable {

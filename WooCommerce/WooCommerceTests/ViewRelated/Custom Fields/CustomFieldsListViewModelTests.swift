@@ -413,6 +413,75 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.disallowedKeysForCreation.contains("Key2"))
     }
 
+    // MARK: - Top Banner
+    func test_given_bannerNotDismissed_when_hasChanges_then_showBanner() async {
+        // Given: The banner is not dismissed
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+                case let .loadCustomFieldsTopBannerDismissState(onCompletion):
+                    onCompletion(false)
+                default:
+                    break
+            }
+        }
+        viewModel = CustomFieldsListViewModel(customFields: originalFields,
+                                              siteID: sampleSiteID,
+                                              parentItemID: sampleParentItemID,
+                                              customFieldType: sampleCustomFieldType,
+                                              stores: stores)
+
+        // When: Making changes
+        viewModel.addField(CustomFieldsListViewModel.CustomFieldUI(key: "NewKey", value: "NewValue"))
+
+        // Then: The banner should be shown
+        XCTAssertTrue(viewModel.shouldShowTopBanner)
+    }
+
+    func test_given_bannerDismissed_when_hasChanges_then_hideBanner() async {
+        // Given: The banner is dismissed
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+                case let .loadCustomFieldsTopBannerDismissState(onCompletion):
+                    onCompletion(true)
+                default:
+                    break
+            }
+        }
+        viewModel = CustomFieldsListViewModel(customFields: originalFields,
+                                              siteID: sampleSiteID,
+                                              parentItemID: sampleParentItemID,
+                                              customFieldType: sampleCustomFieldType,
+                                              stores: stores)
+
+        // When: Making changes
+        viewModel.addField(CustomFieldsListViewModel.CustomFieldUI(key: "NewKey", value: "NewValue"))
+
+        // Then: The banner should not be shown
+        XCTAssertFalse(viewModel.shouldShowTopBanner)
+    }
+
+    func test_given_bannerShown_when_dismissBannerCalled_then_bannerIsDismissed() async {
+        // Given: The banner is shown
+        var wasDismissed = false
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+                case let .loadCustomFieldsTopBannerDismissState(onCompletion):
+                    onCompletion(false)
+                case let .dismissCustomFieldsTopBanner(onCompletion):
+                    wasDismissed = true
+                    onCompletion(.success(()))
+                default:
+                    break
+            }
+        }
+
+        // When: Dismissing the banner
+        viewModel.dismissTopBanner()
+
+        // Then: The banner should be dismissed
+        XCTAssertTrue(wasDismissed)
+	}
+
     func test_when_isJson_called_then_return_correct_value() {
         let jsonField = CustomFieldsListViewModel.CustomFieldUI(key: "key", value: "{\"key\":\"value\"}")
         XCTAssertTrue(jsonField.isJson)

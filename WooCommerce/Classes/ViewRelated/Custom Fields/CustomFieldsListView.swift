@@ -130,26 +130,35 @@ struct CustomFieldsListView: View {
     }
 
     var body: some View {
-        List(viewModel.combinedList) { customField in
-            Button(action: { viewModel.selectedCustomField = customField }) {
-                CustomFieldRow(isEditable: isEditable,
-                               title: customField.key,
-                               content: customField.value.removedHTMLTags,
-                               contentURL: nil)
-            }
-        }
-        .listStyle(.plain)
-        .sheet(item: $viewModel.selectedCustomField) { customField in
-            /// When editing a newly added and unsaved custom field (identified by it having nil `fieldId`), provide disallowed keys.
-            let disallowedKeys = customField.fieldId == nil ? viewModel.disallowedKeysForCreation : []
+        GeometryReader { geometry in
+            VStack(spacing: .zero) {
+                CustomFieldsListTopBanner(width: geometry.size.width)
+                    .onDismiss { viewModel.dismissTopBanner() }
+                    .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
+                    .renderedIf(viewModel.shouldShowTopBanner)
 
-            buildCustomFieldEditorView(customField: customField,
-                                       disallowedKeys: disallowedKeys)
+                List(viewModel.combinedList) { customField in
+                    Button(action: { viewModel.selectedCustomField = customField }) {
+                        CustomFieldRow(isEditable: isEditable,
+                                    title: customField.key,
+                                    content: customField.value.removedHTMLTags,
+                                    contentURL: nil)
+                    }
+                }
+                .listStyle(.plain)
+            }
+            .sheet(item: $viewModel.selectedCustomField) { customField in
+	            /// When editing a newly added and unsaved custom field (identified by it having nil `fieldId`), provide disallowed keys.
+	            let disallowedKeys = customField.fieldId == nil ? viewModel.disallowedKeysForCreation : []
+
+	            buildCustomFieldEditorView(customField: customField,
+	                                       disallowedKeys: disallowedKeys)
+            }
+            .sheet(isPresented: $viewModel.isAddingNewField) {
+	            buildCustomFieldEditorView(customField: nil, disallowedKeys: viewModel.disallowedKeysForCreation)
+            }
+            .notice($viewModel.notice)
         }
-        .sheet(isPresented: $viewModel.isAddingNewField) {
-            buildCustomFieldEditorView(customField: nil, disallowedKeys: viewModel.disallowedKeysForCreation)
-        }
-        .notice($viewModel.notice)
     }
 }
 

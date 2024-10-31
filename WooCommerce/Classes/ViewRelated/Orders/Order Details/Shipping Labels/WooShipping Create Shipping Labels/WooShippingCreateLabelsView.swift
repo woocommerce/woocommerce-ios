@@ -38,6 +38,10 @@ struct WooShippingCreateLabelsView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: Layout.verticalSpacing) {
+                    if viewModel.canViewLabel {
+                        WooShippingPostPurchaseView()
+                    }
+
                     WooShippingItems(viewModel: viewModel.items)
 
                     WooShippingHazmat()
@@ -134,11 +138,11 @@ struct WooShippingCreateLabelsView: View {
                 }
                 .ignoresSafeArea(edges: .horizontal)
             }
-            .navigationTitle(Localization.title)
+            .navigationTitle(viewModel.canViewLabel ? Localization.viewLabelTitle : Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(Localization.cancel) {
+                    Button(viewModel.canViewLabel ? Localization.close : Localization.cancel) {
                         dismiss()
                     }
                 }
@@ -254,9 +258,15 @@ private extension WooShippingCreateLabelsView {
         static let title = NSLocalizedString("wooShipping.createLabels.title",
                                              value: "Create Shipping Labels",
                                              comment: "Title for the screen to create a shipping label")
+        static let viewLabelTitle = NSLocalizedString("wooShipping.createLabels.viewLabelTitle",
+                                                      value: "View Shipping Label",
+                                                      comment: "Title for the screen to view a shipping label")
         static let cancel = NSLocalizedString("wooShipping.createLabel.cancelButton",
                                               value: "Cancel",
                                               comment: "Title of the button to dismiss the shipping label creation screen")
+        static let close = NSLocalizedString("wooShipping.createLabel.closeButton",
+                                             value: "Close",
+                                             comment: "Title of the button to dismiss the shipping label screen")
 
         enum BottomSheet {
             static let shipmentDetails = NSLocalizedString("wooShipping.createLabels.bottomSheet.title",

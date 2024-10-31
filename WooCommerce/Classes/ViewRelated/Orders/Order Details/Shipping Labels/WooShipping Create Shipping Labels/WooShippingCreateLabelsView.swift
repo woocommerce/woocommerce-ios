@@ -46,7 +46,9 @@ struct WooShippingCreateLabelsView: View {
 
                     WooShippingHazmat(enabled: !viewModel.canViewLabel)
 
-                    if viewModel.hasPackage {
+                    if viewModel.canViewLabel {
+                        EmptyView()
+                    } else if viewModel.hasPackage {
                         // TODO: Display package section
                         // Package heading and edit button
                         // Selected package details

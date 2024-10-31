@@ -27,7 +27,6 @@ final class CustomFieldEditorViewModel: ObservableObject {
         onDelete != nil
     }
 
-
     var hasUnsavedChanges: Bool {
         key != initialKey || value != initialValue
     }
@@ -35,6 +34,10 @@ final class CustomFieldEditorViewModel: ObservableObject {
     /// Note that `isEmpty` is validated separately, because we don't want to show error message when it's still empty, and instead just disable the button.
     var hasValidKey: Bool {
         !key.isEmpty && keyErrorMessage == nil
+    }
+
+    var isNewCreationMode: Bool {
+        initialKey == "" && initialValue == ""
     }
 
     init(key: String,
@@ -62,11 +65,37 @@ final class CustomFieldEditorViewModel: ObservableObject {
     }
 
     func saveChanges() {
+        ServiceLocator.analytics.track(
+            event: WooAnalyticsEvent.CustomFields.customFieldEditorDoneTapped()
+        )
         onSave(key, value)
     }
 
     func deleteField() {
+        ServiceLocator.analytics.track(
+            event: WooAnalyticsEvent.CustomFields.customFieldEditorDeleteTapped()
+        )
         onDelete?()
+    }
+
+    func trackEditorViewLoaded() {
+        ServiceLocator.analytics.track(
+            event: WooAnalyticsEvent.CustomFields.customFieldEditorLoaded(
+                editorType: isNewCreationMode ?
+                            WooAnalyticsEvent.CustomFields.EditorType.new :
+                            WooAnalyticsEvent.CustomFields.EditorType.edit
+            )
+        )
+    }
+
+    func trackEditorPickerTapped(showRichTextEditor: Bool) {
+        ServiceLocator.analytics.track(
+            event: WooAnalyticsEvent.CustomFields.customFieldEditorPickerTapped(
+                pickerType: showRichTextEditor ?
+                WooAnalyticsEvent.CustomFields.EditorPicker.aztec :
+                WooAnalyticsEvent.CustomFields.EditorPicker.text
+            )
+        )
     }
 }
 

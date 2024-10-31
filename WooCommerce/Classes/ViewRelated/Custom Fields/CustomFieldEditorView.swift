@@ -16,6 +16,7 @@ struct CustomFieldEditorView: View {
     init(viewModel: CustomFieldEditorViewModel, isReadOnlyValue: Bool = false) {
         self.viewModel = viewModel
         self.isReadOnlyValue = isReadOnlyValue
+        viewModel.trackEditorViewLoaded()
     }
 
     var body: some View {
@@ -61,6 +62,9 @@ struct CustomFieldEditorView: View {
                                 Text(Localization.editorPickerHTML).tag(true)
                             }
                             .pickerStyle(.segmented)
+                            .onChange(of: showRichTextEditor) { newValue in
+                                viewModel.trackEditorPickerTapped(showRichTextEditor: newValue)
+                            }
                         }
                     }
 

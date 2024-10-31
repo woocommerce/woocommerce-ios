@@ -153,8 +153,7 @@ private extension CustomFieldEditorViewModelTests {
         onDelete: (() -> Void)? = nil
     ) -> CustomFieldEditorViewModel {
         CustomFieldEditorViewModel(
-            key: key,
-            value: value,
+            customField: CustomFieldViewModel(key: key, value: value),
             disallowedKeys: disallowedKeys,
             onSave: { newKey, newValue in
                 self.savedKey = newKey

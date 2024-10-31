@@ -171,7 +171,7 @@ struct CustomFieldsListView: View {
                         .frame(maxHeight: .infinity)
                 } else {
                     List(viewModel.combinedList) { customField in
-                        Button(action: { 
+                        Button(action: {
 							viewModel.selectedCustomField = customField
 							viewModel.trackCustomFieldTapped()
 						}) {

@@ -44,7 +44,7 @@ struct WooShippingCreateLabelsView: View {
 
                     WooShippingItems(viewModel: viewModel.items)
 
-                    WooShippingHazmat()
+                    WooShippingHazmat(enabled: !viewModel.canViewLabel)
 
                     if viewModel.hasPackage {
                         // TODO: Display package section

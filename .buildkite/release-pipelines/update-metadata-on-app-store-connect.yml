@@ -11,7 +11,7 @@ steps:
   - label: Update Metadata on App Store Connect
     plugins: [$CI_TOOLKIT]
     command: |
-      echo '--- :robot_face: Use bot for git operations'
+      echo '--- :robot_face: Use bot for Git operations'
       source use-bot-for-git
 
       echo '--- :git: Checkout Release Branch'

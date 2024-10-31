@@ -6,7 +6,18 @@ import Yosemite
 final class CustomFieldsListViewModel: ObservableObject {
     private let stores: StoresManager
     @Published private var originalCustomFields: [CustomFieldViewModel]
-    private let customFieldsType: MetaDataType
+
+    var originalCustomFieldsCount: Int64 {
+        Int64(originalCustomFields.count)
+    }
+
+    var originalCustomFieldsSize: Int64 {
+        Int64(
+            originalCustomFields.map { $0.content.utf8.count }.reduce(0, +)
+        )
+    }
+
+    let customFieldsType: MetaDataType
     private let siteID: Int64
     private let parentItemID: Int64
     private let onChangesSaved: (([MetaData]) -> Void)?
@@ -140,11 +151,23 @@ extension CustomFieldsListViewModel {
             pendingChanges = PendingCustomFieldsChanges()
             notice = Notice(title: CustomFieldsListHostingController.Localization.saveSuccessTitle,
                             feedbackType: .success)
+
+            ServiceLocator.analytics.track(
+                event: WooAnalyticsEvent.CustomFields.customFieldsSavedSuccessfully()
+            )
+
             onChangesSaved?(result)
         } catch {
             notice = Notice(title: CustomFieldsListHostingController.Localization.saveErrorTitle,
                             message: CustomFieldsListHostingController.Localization.saveErrorMessage,
                             feedbackType: .error)
+
+            ServiceLocator.analytics.track(
+                event: WooAnalyticsEvent.CustomFields.customFieldsSavingFailed(
+                    errorContext: String(describing: error),
+                    errorDescription: error.localizedDescription
+                )
+            )
         }
 
         isSavingChanges = false
@@ -220,6 +243,36 @@ private extension CustomFieldsListViewModel {
 
             stores.dispatch(action)
         }
+    }
+}
+
+// MARK - Analytics
+extension CustomFieldsListViewModel {
+    func trackCustomFieldTapped() {
+        
+        // TODO update `isJson` and `hasHtml` value
+        ServiceLocator.analytics.track(
+            event: WooAnalyticsEvent.CustomFields.customFieldTapped(
+                isJson: false,
+                hasHtml: false
+            )
+        )
+    }
+
+    func trackAddCustomFieldTapped() {
+        ServiceLocator.analytics.track(
+            event: WooAnalyticsEvent.CustomFields.addCustomFieldTapped()
+        )
+    }
+
+    func trackSaveCustomFieldTapped() {
+        ServiceLocator.analytics.track(
+            event: WooAnalyticsEvent.CustomFields.saveCustomFieldTapped(
+                editedFieldCount: editedFields.count,
+                addedFieldCount: addedFields.count,
+                deletedFieldCount: deletedFieldIds.count
+            )
+        )
     }
 }
 

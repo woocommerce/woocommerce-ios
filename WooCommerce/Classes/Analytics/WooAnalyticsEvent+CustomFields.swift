@@ -1,4 +1,5 @@
 import Foundation
+import enum Networking.MetaDataType
 
 extension WooAnalyticsEvent {
     enum CustomFields {
@@ -15,11 +16,6 @@ extension WooAnalyticsEvent {
             static let deletedFieldCount = "deleted_field_count"
             static let errorContext = "error_context"
             static let errorDescription = "error_description"
-        }
-
-        enum CustomFieldsType: String {
-            case product = "product"
-            case order = "order"
         }
 
         enum EditorType: String {
@@ -40,14 +36,14 @@ extension WooAnalyticsEvent {
 
         /// Tracked when the Custom Fields List view is opened
         static func customFieldsListLoaded(
-            type: CustomFieldsType,
+            type: String,
             fieldsCount: Int64,
             fieldsSize: Int64,
             has_json_fields: Bool
         ) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .customFieldsListLoaded,
                               properties: [
-                                Keys.type: type.rawValue,
+                                Keys.type: type,
                                 Keys.fieldsCount: fieldsCount,
                                 Keys.fieldsSize: fieldsSize,
                                 Keys.hasJsonFields: has_json_fields
@@ -127,5 +123,16 @@ extension WooAnalyticsEvent {
         }
 
 
+    }
+}
+
+extension MetaDataType {
+    var analyticsValue: String {
+        switch self {
+        case .order:
+            return "order"
+        case .product:
+            return "product"
+        }
     }
 }

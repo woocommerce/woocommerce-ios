@@ -255,7 +255,7 @@ extension CustomFieldsListViewModel {
         ServiceLocator.analytics.track(
             event: WooAnalyticsEvent.CustomFields.customFieldTapped(
                 isJson: false,
-                hasHtml: false
+                hasHtml: selectedCustomField?.value.removedHTMLTags != selectedCustomField?.value
             )
         )
     }

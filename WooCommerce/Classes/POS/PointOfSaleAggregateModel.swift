@@ -19,7 +19,7 @@ final class PointOfSaleAggregateModel: ObservableObject {
     }
 
     @Published private(set) var orderStage: OrderStage = .building
-    @Published private(set) var allItems: [any POSDisplayableItem] = []
+    private var allItems: [any POSDisplayableItem] = []
     @Published private(set) var cart: [CartItem] = []
     @Published private(set) var orderState: PointOfSaleOrderState = .idle
     @Published private(set) var order: Order? = nil

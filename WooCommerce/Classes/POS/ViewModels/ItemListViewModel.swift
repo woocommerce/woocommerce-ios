@@ -15,7 +15,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
         if UserDefaults.standard.bool(forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey) == true {
             return false
         }
-        return !isHeaderBannerDismissed && posModel.allItems.isNotEmpty
+        return !isHeaderBannerDismissed && posModel.itemListState != .empty
     }
 
     init(posModel: PointOfSaleAggregateModel) {

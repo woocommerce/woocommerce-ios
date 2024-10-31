@@ -737,21 +737,25 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureShippingLabelDetail(cell: WooBasicTableViewCell) {
-        cell.bodyLabel?.text = Footer.showShippingLabelDetails
+        cell.bodyLabel?.text = isEligibleForWooShipping ? Footer.viewShippingLabel : Footer.showShippingLabelDetails
         cell.applyPlainTextStyle()
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
 
         cell.accessibilityTraits = .button
-        cell.accessibilityLabel = NSLocalizedString(
-            "View Shipment Details",
-            comment: "Accessibility label for the 'View Shipment Details' button"
-        )
+        if isEligibleForWooShipping {
+            cell.accessibilityLabel = Footer.viewShippingLabel
+        } else {
+            cell.accessibilityLabel = NSLocalizedString(
+                "View Shipment Details",
+                comment: "Accessibility label for the 'View Shipment Details' button"
+            )
 
-        cell.accessibilityHint = NSLocalizedString(
-            "Show the shipment details for this shipping label.",
-            comment: "VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details."
-        )
+            cell.accessibilityHint = NSLocalizedString(
+                "Show the shipment details for this shipping label.",
+                comment: "VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details."
+            )
+        }
     }
 
     private func configureShippingLabelPrintingInfo(cell: ImageAndTitleAndTextTableViewCell) {
@@ -1756,6 +1760,9 @@ extension OrderDetailsDataSource {
                                                    comment: "Button on bottom of Customer's information to show the billing details")
         static let showShippingLabelDetails = NSLocalizedString("View Shipment Details",
                                                                 comment: "Button on bottom of shipping label package card to show shipping details")
+        static let viewShippingLabel = NSLocalizedString("orderDetailsDataSource.shippingLabels.viewLabel",
+                                                         value: "View purchased shipping label",
+                                                         comment: "Button on bottom of shipping label card to view the shipping label")
     }
 
     enum Accessibility {

@@ -269,9 +269,9 @@ extension CustomFieldsListViewModel {
     func trackSaveCustomFieldTapped() {
         ServiceLocator.analytics.track(
             event: WooAnalyticsEvent.CustomFields.saveCustomFieldTapped(
-                editedFieldCount: editedFields.count,
-                addedFieldCount: addedFields.count,
-                deletedFieldCount: deletedFieldIds.count
+                editedFieldsCount: editedFields.count,
+                addedFieldsCount: addedFields.count,
+                deletedFieldsCount: deletedFieldIds.count
             )
         )
     }

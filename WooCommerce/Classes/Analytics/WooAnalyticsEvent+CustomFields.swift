@@ -11,9 +11,9 @@ extension WooAnalyticsEvent {
             static let hasJsonFields = "has_json_fields"
             static let isJson = "is_json"
             static let has_html = "has_html"
-            static let editedFieldCount = "edited_field_count"
-            static let addedFieldCount = "added_field_count"
-            static let deletedFieldCount = "deleted_field_count"
+            static let editedFielsdCount = "edited_fields_count"
+            static let addedFieldsCount = "added_fields_count"
+            static let deletedFieldsCount = "deleted_fields_count"
             static let errorContext = "error_context"
             static let errorDescription = "error_description"
         }
@@ -67,15 +67,15 @@ extension WooAnalyticsEvent {
 
         /// Tracked when the save custom field button is tapped
         static func saveCustomFieldTapped(
-            editedFieldCount: Int,
-            addedFieldCount: Int,
-            deletedFieldCount: Int
+            editedFieldsCount: Int,
+            addedFieldsCount: Int,
+            deletedFieldsCount: Int
         ) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .saveCustomFieldTapped,
                               properties: [
-                                Keys.editedFieldCount: editedFieldCount,
-                                Keys.addedFieldCount: addedFieldCount,
-                                Keys.deletedFieldCount: deletedFieldCount
+                                Keys.editedFielsdCount: editedFieldsCount,
+                                Keys.addedFieldsCount: addedFieldsCount,
+                                Keys.deletedFieldsCount: deletedFieldsCount
                               ])
         }
 

@@ -37,9 +37,7 @@ struct HubMenu: View {
     /// Handle navigation when tapping a list menu row.
     ///
     private func handleTap(menu: HubMenuItem) {
-        ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [
-            Constants.trackingOptionKey: menu.trackingOption
-        ])
+        viewModel.trackMenuItemTapEvent(menu: menu)
 
         switch menu.id {
         case HubMenuViewModel.GoogleAds.id:
@@ -376,7 +374,6 @@ private extension HubMenu {
         static let avatarSize: CGFloat = 40
         static let chevronSize: CGFloat = 20
         static let iconSize: CGFloat = 20
-        static let trackingOptionKey = "option"
         static let dotBadgePadding = EdgeInsets(top: 6, leading: 0, bottom: 0, trailing: 2)
         static let dotBadgeSize: CGFloat = 6
 

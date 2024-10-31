@@ -412,4 +412,12 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.disallowedKeysForCreation.contains("Key1"))
         XCTAssertTrue(viewModel.disallowedKeysForCreation.contains("Key2"))
     }
+
+    func test_when_isJson_called_then_return_correct_value() {
+        let jsonField = CustomFieldsListViewModel.CustomFieldUI(key: "key", value: "{\"key\":\"value\"}")
+        XCTAssertTrue(jsonField.isJson)
+
+        let nonJsonField = CustomFieldsListViewModel.CustomFieldUI(key: "key", value: "value")
+        XCTAssertFalse(nonJsonField.isJson)
+    }
 }

@@ -5,7 +5,9 @@ import Yosemite
 struct CustomFieldViewModel: Identifiable {
     /// Unique identifier, required by `SwiftUI`
     ///
-    let id: Int64
+    let id = UUID()
+
+    let fieldId: Int64?
 
     /// The title for the Custom Field mapped from the metadata key
     ///
@@ -19,8 +21,12 @@ struct CustomFieldViewModel: Identifiable {
     ///
     let contentURL: URL?
 
-    init(id: Int64, title: String, content: String, contentURL: URL? = nil) {
-        self.id = id
+    var isJson: Bool {
+        (try? JSONSerialization.jsonObject(with: content.data(using: .utf8) ?? Data())) != nil
+    }
+
+    init(id: Int64?, title: String, content: String, contentURL: URL? = nil) {
+        self.fieldId = id
         self.title = title
         self.content = content
         self.contentURL = contentURL
@@ -40,5 +46,15 @@ struct CustomFieldViewModel: Identifiable {
             content: metadata.value,
             contentURL: contentURL
         )
+    }
+
+    func asDictionary() -> [String: Any] {
+        var json: [String: Any] = [:]
+            if let fieldId = fieldId {
+                json["id"] = fieldId
+            }
+            json["key"] = title
+            json["value"] = content
+        return json
     }
 }

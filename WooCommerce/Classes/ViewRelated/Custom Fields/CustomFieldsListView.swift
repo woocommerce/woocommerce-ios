@@ -176,8 +176,8 @@ struct CustomFieldsListView: View {
 							viewModel.trackCustomFieldTapped()
 						}) {
                             CustomFieldRow(isEditable: isEditable,
-                                           title: customField.key,
-                                           content: customField.value.removedHTMLTags,
+                                           title: customField.title,
+                                           content: customField.content.removedHTMLTags,
                                            contentURL: nil)
                         }
                     }
@@ -265,12 +265,12 @@ private extension CustomFieldsListView {
     /// Parameters:
     /// - `customField`: Provide one when editing an existing field, otherwise (i.e: when creating a new field) keep it nil.
     /// - `disallowedKeys`: List of String that can't be used when editing a custom field key.
-    func buildCustomFieldEditorView(customField: CustomFieldsListViewModel.CustomFieldUI?,
+    func buildCustomFieldEditorView(customField: CustomFieldViewModel?,
                                     disallowedKeys: [String] = []) -> some View {
         NavigationView {
             CustomFieldEditorView(viewModel: CustomFieldEditorViewModel(
-                key: customField?.key ?? "",
-                value: customField?.value ?? "",
+                key: customField?.title ?? "",
+                value: customField?.content ?? "",
                 isJsonField: customField?.isJson ?? false,
                 disallowedKeys: disallowedKeys,
                 onSave: { updatedKey, updatedValue in

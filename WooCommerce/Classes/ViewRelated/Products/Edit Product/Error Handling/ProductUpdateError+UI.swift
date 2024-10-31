@@ -15,7 +15,7 @@ extension ProductUpdateError {
     }
 }
 
-extension ProductUpdateError: @retroactive LocalizedError {
+extension ProductUpdateError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .duplicatedSKU:

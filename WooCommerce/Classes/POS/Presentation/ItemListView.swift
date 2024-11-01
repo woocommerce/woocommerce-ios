@@ -25,6 +25,9 @@ struct ItemListView: View {
             }
         }
         .refreshable {
+            if viewModel.state.isLoading {
+                return
+            }
             await viewModel.reload()
         }
         .background(Color.posPrimaryBackground)

@@ -116,35 +116,54 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.totalCost, "$7.53")
     }
 
-    func test_formatAmount_for_standard_shipping_rate_returns_formatted_rate() throws {
+    func test_selecting_standard_shipping_rate_sets_expected_shippingRates() throws {
         // Given
         let order = Order.fake()
         let viewModel = WooShippingCreateLabelsViewModel(order: order, currencySettings: CurrencySettings())
-        let card = try XCTUnwrap(viewModel.shippingService.serviceTabs.first?.cards[1])
-        card.selectRate()
 
         // When
-        let selectedRate = try XCTUnwrap(viewModel.shippingService.selectedRate)
-        let formattedAmount = viewModel.formatAmount(for: selectedRate.rate)
+        try viewModel.selectShippingRate()
 
         // Then
-        XCTAssertEqual(formattedAmount, "$40.06")
+        XCTAssertEqual(viewModel.shippingRates.count, 1)
+        XCTAssertEqual(viewModel.shippingRates.first?.title, "USPS - Media Mail")
+        XCTAssertEqual(viewModel.shippingRates.first?.amount, "$7.53")
     }
 
-    func test_formatAmount_for_signature_shipping_rate_returns_formatted_difference_from_base_rate() throws {
+    func test_selecting_signature_shipping_rate_sets_expected_shippingRates() throws {
         // Given
         let order = Order.fake()
         let viewModel = WooShippingCreateLabelsViewModel(order: order, currencySettings: CurrencySettings())
         let card = try XCTUnwrap(viewModel.shippingService.serviceTabs.first?.cards[1])
         card.signatureRequirement = .signatureRequired
-        card.selectRate()
 
         // When
-        let signatureRate = try XCTUnwrap(viewModel.shippingService.selectedRate?.signatureRate)
-        let formattedAmount = viewModel.formatAmount(for: signatureRate)
+        card.selectRate()
 
         // Then
-        XCTAssertEqual(formattedAmount, "$2.70")
+        XCTAssertEqual(viewModel.shippingRates.count, 2)
+        XCTAssertEqual(viewModel.shippingRates[0].title, "USPS - Parcel Select Mail (base fee)")
+        XCTAssertEqual(viewModel.shippingRates[0].amount, "$40.06")
+        XCTAssertEqual(viewModel.shippingRates[1].title, "Signature Required")
+        XCTAssertEqual(viewModel.shippingRates[1].amount, "$2.70")
+    }
+
+    func test_selecting_adult_signature_shipping_rate_sets_expected_shippingRates() throws {
+        // Given
+        let order = Order.fake()
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, currencySettings: CurrencySettings())
+        let card = try XCTUnwrap(viewModel.shippingService.serviceTabs.first?.cards[1])
+        card.signatureRequirement = .adultSignatureRequired
+
+        // When
+        card.selectRate()
+
+        // Then
+        XCTAssertEqual(viewModel.shippingRates.count, 2)
+        XCTAssertEqual(viewModel.shippingRates[0].title, "USPS - Parcel Select Mail (base fee)")
+        XCTAssertEqual(viewModel.shippingRates[0].amount, "$40.06")
+        XCTAssertEqual(viewModel.shippingRates[1].title, "Adult Signature Required")
+        XCTAssertEqual(viewModel.shippingRates[1].amount, "$6.90")
     }
 
     func test_canViewLabel_true_when_shipping_label_exists() {

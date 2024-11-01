@@ -50,7 +50,9 @@ struct InPersonPaymentsPluginNotSetup: View {
             InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel(tappedAnalyticEvent: learnMoreAnalyticEvent))
                 .padding(.vertical, 8)
         }
-        .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
+        .cardPresentPaymentSetupSheet(url: $presentedSetupURL) {
+            presentedSetupURL = nil
+        }
     }
 
     private var setupURL: URL? {

@@ -38,8 +38,8 @@ struct WooShippingCreateLabelsView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: Layout.verticalSpacing) {
-                    if viewModel.canViewLabel {
-                        WooShippingPostPurchaseView()
+                    if viewModel.canViewLabel, let postPurchase = viewModel.postPurchase {
+                        WooShippingPostPurchaseView(viewModel: postPurchase)
                     }
 
                     WooShippingItems(viewModel: viewModel.items)

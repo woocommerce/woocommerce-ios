@@ -58,7 +58,9 @@ struct PointOfSaleDashboardView: View {
         .animation(.easeInOut(duration: Constants.connectivityAnimationDuration), value: viewModel.showsConnectivityError)
         .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
-        .sheet(item: $totalsViewModel.cardPresentPaymentOnboardingViewModel) { viewModel in
+        .posModal(item: $totalsViewModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
+            totalsViewModel.cancelOnboarding()
+        }) { viewModel in
             paymentsOnboardingView(from: viewModel)
         }
         .posModal(item: $totalsViewModel.cardPresentPaymentAlertViewModel,
@@ -133,25 +135,10 @@ private extension PointOfSaleDashboardView {
             totalsViewModel.cardPresentPaymentOnboardingViewModel = nil
             viewModel.showSupport = true
         }
-        onboardingViewModel.showURL = { url in
-            totalsViewModel.cardPresentPaymentOnboardingURL = url
-        }
-        return NavigationStack {
-            CardPresentPaymentsOnboardingView(viewModel: onboardingViewModel)
-                .navigationBarTitleDisplayMode(.inline)
-                .interactiveDismissDisabled()
-                .toolbar {
-                    Button(action: {
-                        totalsViewModel.cardPresentPaymentOnboardingViewModel = nil
-                    }) {
-                        Text(Localization.cancelOnboarding)
-                    }
-                }
-                .safariSheet(url: $totalsViewModel.cardPresentPaymentOnboardingURL)
-                .onDisappear {
-                    totalsViewModel.cancelOnboarding()
-                }
-        }
+        return PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(onboardingViewModel: onboardingViewModel,
+                                                                            onDismissTap: {
+            totalsViewModel.cardPresentPaymentOnboardingViewModel = nil
+        }))
     }
 }
 
@@ -183,11 +170,6 @@ private extension PointOfSaleDashboardView {
             "pointOfSaleDashboard.support.done",
             value: "Done",
             comment: "Button to dismiss the support form from the POS dashboard."
-        )
-        static let cancelOnboarding = NSLocalizedString(
-            "pointOfSaleDashboard.payments.onboarding.cancel",
-            value: "Cancel",
-            comment: "Button to dismiss the payments onboarding sheet from the POS dashboard."
         )
     }
 }

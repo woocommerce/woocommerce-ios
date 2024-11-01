@@ -847,7 +847,7 @@ extension Networking.GoogleAdsCampaign {
         rawStatus: CopiableProp<String> = .copy,
         rawType: CopiableProp<String> = .copy,
         amount: CopiableProp<Double> = .copy,
-        country: CopiableProp<String> = .copy,
+        country: NullableCopiableProp<String> = .copy,
         targetedLocations: CopiableProp<[String]> = .copy
     ) -> Networking.GoogleAdsCampaign {
         let id = id ?? self.id
@@ -1153,7 +1153,7 @@ extension Networking.MetaData {
     public func copy(
         metadataID: CopiableProp<Int64> = .copy,
         key: CopiableProp<String> = .copy,
-        value: CopiableProp<String> = .copy
+        value: CopiableProp<MetaDataValue> = .copy
     ) -> Networking.MetaData {
         let metadataID = metadataID ?? self.metadataID
         let key = key ?? self.key

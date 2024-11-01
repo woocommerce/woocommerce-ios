@@ -7,11 +7,19 @@ import Codegen
 public struct MetaData: Codable, Equatable, Sendable, GeneratedCopiable, GeneratedFakeable {
     public let metadataID: Int64
     public let key: String
-    public let value: String
+    public let value: MetaDataValue
 
     /// MetaData struct initializer.
     ///
     public init(metadataID: Int64, key: String, value: String) {
+        self.metadataID = metadataID
+        self.key = key
+        self.value = MetaDataValue(rawValue: value)
+    }
+
+    /// MetaData struct initializer.
+    ///
+    public init(metadataID: Int64, key: String, value: MetaDataValue) {
         self.metadataID = metadataID
         self.key = key
         self.value = value
@@ -24,8 +32,9 @@ public struct MetaData: Codable, Equatable, Sendable, GeneratedCopiable, Generat
         let metadataID = try container.decode(Int64.self, forKey: .metadataID)
         let key = try container.decode(String.self, forKey: .key)
         let rawValue = container.failsafeDecodeIfPresent(AnyCodable.self, forKey: .value) ?? ""
+        let value = rawValue.getJsonValue()
 
-        self.init(metadataID: metadataID, key: key, value: rawValue.getAsString())
+		self.init(metadataID: metadataID, key: key, value: value)
     }
 }
 
@@ -40,17 +49,55 @@ private extension MetaData {
 }
 
 private extension AnyCodable {
-    func getAsString() -> String {
-        switch value {
-        case let string as String:
-            return string
+    func getJsonValue()-> MetaDataValue {
+        let result: MetaDataValue
+
+        switch self.value {
+        case let value as String:
+            result = MetaDataValue(rawValue: value)
+        case is Bool:
+            result = MetaDataValue.string(description)
+        case is any Numeric:
+            result = MetaDataValue.string(description)
         default:
             if JSONSerialization.isValidJSONObject(value) {
                 let data = (try? JSONSerialization.data(withJSONObject: value)) ?? Data()
-                return String(data: data, encoding: .utf8) ?? ""
+                result = MetaDataValue.json(String(data: data, encoding: .utf8) ?? "")
             } else {
-                return "\(value)"
+                result = MetaDataValue.string("")
             }
+        }
+
+        return result
+    }
+}
+
+public enum MetaDataValue: Codable, Equatable, Sendable, GeneratedCopiable {
+    case string(_ value: String)
+    case json(_ json: String)
+
+    public var stringValue: String {
+        switch self {
+        case .string(let value):
+            return value
+        case .json(let json):
+            return json
+        }
+    }
+    public var rawValue: String {
+        switch self {
+        case .string(let value):
+            return "\"\(value)\""
+        case .json(let json):
+            return json
+        }
+    }
+
+    public init(rawValue: String) {
+        if let data = rawValue.data(using: .utf8), (try? JSONSerialization.jsonObject(with: data)) != nil {
+            self = .json(rawValue)
+        } else {
+            self = .string(rawValue.removingPrefix("\"").removingSuffix("\""))
         }
     }
 }

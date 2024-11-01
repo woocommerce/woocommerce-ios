@@ -14,9 +14,6 @@ struct PointOfSaleCardPresentPaymentOnboardingView: View {
                              accessibilityLabel: Localization.cancelOnboarding)
         .safariSheet(url: $viewModel.onboardingURL)
         .posModalSizing()
-        .onAppear {
-            viewModel.trackOnboardingShown()
-        }
     }
 }
 

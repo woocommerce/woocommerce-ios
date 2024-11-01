@@ -139,6 +139,9 @@ private extension PointOfSaleDashboardView {
                                                                             onDismissTap: {
             totalsViewModel.cardPresentPaymentOnboardingViewModel = nil
         }))
+        .onAppear {
+            totalsViewModel.trackOnboardingShown()
+        }
     }
 }
 

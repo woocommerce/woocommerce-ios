@@ -1,5 +1,6 @@
 import SwiftUI
 import Combine
+import protocol WooFoundation.Analytics
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSItem
 import struct Yosemite.Order
@@ -68,15 +69,18 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     private let orderService: POSOrderServiceProtocol
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let currencyFormatter: CurrencyFormatter
+    private let analytics: Analytics
 
     init(orderService: POSOrderServiceProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          currencyFormatter: CurrencyFormatter,
-         paymentState: PaymentState) {
+         paymentState: PaymentState,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.orderService = orderService
         self.cardPresentPaymentService = cardPresentPaymentService
         self.currencyFormatter = currencyFormatter
         self.paymentState = paymentState
+        self.analytics = analytics
         self.formattedCartTotalPrice = nil
         self.formattedOrderTotalPrice = nil
         self.formattedOrderTotalTaxPrice = nil
@@ -132,7 +136,15 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     /// Called when the onboarding UI is dismissed.
     /// It is set when receiving an onboarding view model to display, and necessary to reset the internal onboarding state on UI dismissal.
     func cancelOnboarding() {
+        if let onboardingViewModel = cardPresentPaymentOnboardingViewModel {
+            analytics.track(event: .PointOfSale.paymentsOnboardingDismissed(onboardingState: onboardingViewModel.state))
+        }
         onOnboardingCancellation?()
+    }
+
+    /// Tracks when the onboarding UI is shown.
+    func trackOnboardingShown() {
+        analytics.track(event: .PointOfSale.paymentsOnboardingShown())
     }
 
     private func editOrder() {

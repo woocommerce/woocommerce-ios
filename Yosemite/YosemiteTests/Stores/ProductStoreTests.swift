@@ -3574,22 +3574,22 @@ private extension ProductStoreTests {
     }
 
     func sampleCustomFields() -> [Networking.MetaData] {
-        let meta1 = MetaData.fake().copy(metadataID: 4060,
-                                         key: "my_custom_field",
-                                         value: "10")
-        let meta2 = MetaData.fake().copy(metadataID: 4061,
-                                         key: "privileges",
-                                         value: "xyz")
+        let meta1 = MetaData(metadataID: 4060,
+                             key: "my_custom_field",
+                             value: "10")
+        let meta2 = MetaData(metadataID: 4061,
+                             key: "privileges",
+                             value: "xyz")
         return [meta1, meta2]
     }
 
     func sampleCustomFieldsMutated() -> [Networking.MetaData] {
-        let meta1 = MetaData.fake().copy(metadataID: 4060,
-                                         key: "my_custom_field_mutated",
-                                         value: "2")
-        let meta2 = MetaData.fake().copy(metadataID: 4061,
-                                         key: "privileges_mutated",
-                                         value: "zyx")
+        let meta1 = MetaData(metadataID: 4060,
+                            key: "my_custom_field_mutated",
+                            value: "2")
+        let meta2 = MetaData(metadataID: 4061,
+                            key: "privileges_mutated",
+                            value: "zyx")
         return [meta1, meta2]
     }
 }

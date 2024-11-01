@@ -487,7 +487,7 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(product.customFields.count, 1)
         XCTAssertEqual(product.customFields.first?.metadataID, 6000)
         XCTAssertEqual(product.customFields.first?.key, "just_a_custom_field")
-        XCTAssertEqual(product.customFields.first?.value, "10")
+        XCTAssertEqual(product.customFields.first?.value.stringValue, "10")
     }
 
     /// Test that metadata and subscription are properly encoded.
@@ -544,10 +544,10 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(encodedMetadata?[7]["value"] as? String, subscription.oneTimeShipping ? "yes" : "no")
         XCTAssertEqual(Int64(encodedMetadata?[8]["id"] as? String ?? ""), customFields[0].metadataID)
         XCTAssertEqual(encodedMetadata?[8]["key"] as? String, customFields[0].key)
-        XCTAssertEqual(encodedMetadata?[8]["value"] as? String, customFields[0].value)
+        XCTAssertEqual(encodedMetadata?[8]["value"] as? String, customFields[0].value.stringValue)
         XCTAssertEqual(Int64(encodedMetadata?[9]["id"] as? String ?? ""), customFields[1].metadataID)
         XCTAssertEqual(encodedMetadata?[9]["key"] as? String, customFields[1].key)
-        XCTAssertEqual(encodedMetadata?[9]["value"] as? String, customFields[1].value)
+        XCTAssertEqual(encodedMetadata?[9]["value"] as? String, customFields[1].value.stringValue)
     }
 
     /// Test that attributes are properly encoded.

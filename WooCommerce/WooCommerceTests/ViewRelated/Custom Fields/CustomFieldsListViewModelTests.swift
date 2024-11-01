@@ -50,7 +50,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
     func test_given_existingField_when_editFieldCalled_then_displayedItemsAndPendingChangesAreUpdated() {
         // Given: A custom field UI to edit an existing field
-        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1", value: "EditedValue1"))
+        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1", value: .string("EditedValue1")))
 
         // When: Editing the field
         viewModel.saveField(key: editedField.key, value: editedField.value, fieldID: editedField.fieldID)
@@ -76,7 +76,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
     func test_given_editedAndNewFields_when_updatingDisplayedItems_then_changesAreReflected() {
         // Given: An edited field and a new field
-        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1", value: "EditedValue1"))
+        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1", value: .string("EditedValue1")))
         let newField = CustomFieldViewModel(key: "NewKey", value: "NewValue")
 
         // When: Editing and adding fields
@@ -123,7 +123,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.hasChanges)
 
         // When: Editing a field
-        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1", value: "EditedValue1"))
+        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1", value: .string("EditedValue1")))
         viewModel.saveField(key: editedField.key, value: editedField.value, fieldID: editedField.fieldID)
 
         // Then: hasChanges should be true
@@ -193,13 +193,13 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         }
 
         // When: Saving the changes
-        viewModel.saveField(key: newField.key, value: newField.value, fieldID: nil)
+        viewModel.saveField(key: newField.key, value: newField.value.stringValue, fieldID: nil)
         await viewModel.saveChanges()
 
         // Then: The changes should be saved
         XCTAssertEqual(viewModel.combinedList.count, originalFields.count + 1)
         XCTAssertEqual(viewModel.combinedList.last?.key, newField.key)
-        XCTAssertEqual(viewModel.combinedList.last?.value, newField.value)
+        XCTAssertEqual(viewModel.combinedList.last?.value, newField.value.stringValue)
         XCTAssertEqual(viewModel.combinedList.last?.fieldID, newField.metadataID)
         XCTAssertFalse(viewModel.hasChanges)
     }
@@ -278,7 +278,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
     func test_given_editedFields_then_disallowedKeysForCreationStillContainsOriginalKeys() {
         // Given: Original fields and an edited field
-        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1", value: "EditedValue1"))
+        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1", value: .string("EditedValue1")))
 
         // When: Editing a field (not yet saved remotely)
         viewModel.saveField(key: editedField.key, value: editedField.value, fieldID: editedField.fieldID)
@@ -304,7 +304,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
     func test_given_multipleChanges_then_disallowedKeysForCreationReflectsOriginalAndAddedKeys() {
         // Given: Original fields
-        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1", value: "EditedValue1"))
+        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1", value: .string("EditedValue1")))
         let newField = CustomFieldViewModel(key: "NewKey", value: "NewValue")
         let fieldToDelete = originalFields[1]
 
@@ -350,7 +350,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         // Given: Initial state with two fields ("Key1", "Key2")
 
         let editedMetadata = MetaData(metadataID: 1, key: "EditedKey1", value: "EditedValue1")
-        viewModel.saveField(key: editedMetadata.key, value: editedMetadata.value, fieldID: editedMetadata.metadataID)
+        viewModel.saveField(key: editedMetadata.key, value: editedMetadata.value.stringValue, fieldID: editedMetadata.metadataID)
 
         stores.whenReceivingAction(ofType: MetaDataAction.self) { [originalMetadata] action in
             switch action {

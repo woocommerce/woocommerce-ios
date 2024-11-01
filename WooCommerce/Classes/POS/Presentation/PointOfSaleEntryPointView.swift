@@ -53,6 +53,7 @@ struct PointOfSaleEntryPointView: View {
                                  itemListViewModel: itemListViewModel,
                                  posModel: posModel)
         .environmentObject(posModalManager)
+        .environmentObject(posModel)
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)
         }

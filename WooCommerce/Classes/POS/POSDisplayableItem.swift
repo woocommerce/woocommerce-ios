@@ -14,20 +14,19 @@ struct POSProductItem: POSDisplayableItem {
     }
     var product: POSProduct
     var item: POSItem { product }
-    let addItemToCart: (CartItem) -> Void
+    @EnvironmentObject var posModel: PointOfSaleAggregateModel
 
-    init?(item: POSItem, addItemToCart: @escaping(CartItem) -> Void) {
+    init?(item: POSItem) {
         guard let product = item as? POSProduct else {
             return nil
         }
         self.product = product
-        self.addItemToCart = addItemToCart
     }
 
     var body: some View {
         Button(action: {
             let cartItem = CartItem(id: UUID(), item: product, quantity: 1)
-            addItemToCart(cartItem)
+            posModel.addItemToCart(cartItem)
         }, label: {
             ItemCardView(item: product)
         })

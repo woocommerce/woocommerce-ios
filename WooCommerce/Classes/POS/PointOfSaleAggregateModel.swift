@@ -92,7 +92,7 @@ final class PointOfSaleAggregateModel: ObservableObject {
                 guard let self else { return nil }
                 switch item {
                 case is POSProduct:
-                    return POSProductItem(item: item, addItemToCart: addItemToCart(_:))
+                    return POSProductItem(item: item)
                 case is POSDiscount:
                     return POSDiscountItem(item: item)
                 default:

@@ -8,9 +8,9 @@ struct PointOfSaleEntryPointView: View {
     @StateObject private var viewModel: PointOfSaleDashboardViewModel
     @StateObject private var totalsViewModel: TotalsViewModel
     @StateObject private var cartViewModel: CartViewModel
-    @StateObject private var itemListViewModel: ItemListViewModel
     @StateObject private var posModalManager = POSModalManager()
     @StateObject private var posModel: PointOfSaleAggregateModel
+    private var itemProvider: POSItemProvider
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
 
@@ -22,8 +22,9 @@ struct PointOfSaleEntryPointView: View {
          analytics: Analytics) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
+        self.itemProvider = itemProvider
+
         let posModel = PointOfSaleAggregateModel(
-            itemProvider: itemProvider,
             cardPresentPaymentService: cardPresentPaymentService,
             orderService: orderService,
             analytics: analytics)
@@ -34,7 +35,6 @@ struct PointOfSaleEntryPointView: View {
         let cartViewModel = CartViewModel(
             analytics: analytics,
             posModel: posModel)
-        let itemListViewModel = ItemListViewModel(posModel: posModel)
 
         self._viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
             posModel: posModel,
@@ -42,7 +42,6 @@ struct PointOfSaleEntryPointView: View {
         )
         self._cartViewModel = StateObject(wrappedValue: cartViewModel)
         self._totalsViewModel = StateObject(wrappedValue: totalsViewModel)
-        self._itemListViewModel = StateObject(wrappedValue: itemListViewModel)
         self._posModel = StateObject(wrappedValue: posModel)
     }
 
@@ -50,8 +49,8 @@ struct PointOfSaleEntryPointView: View {
         PointOfSaleDashboardView(viewModel: viewModel,
                                  totalsViewModel: totalsViewModel,
                                  cartViewModel: cartViewModel,
-                                 itemListViewModel: itemListViewModel,
-                                 posModel: posModel)
+                                 posModel: posModel,
+                                 itemsService: POSItemsService(itemProvider: itemProvider))
         .environmentObject(posModalManager)
         .environmentObject(posModel)
         .onAppear {

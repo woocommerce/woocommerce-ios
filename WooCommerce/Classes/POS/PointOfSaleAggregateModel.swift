@@ -3,7 +3,6 @@ import Combine
 
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSItem
-import protocol Yosemite.POSItemProvider
 import struct Yosemite.POSProduct
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
@@ -19,28 +18,23 @@ final class PointOfSaleAggregateModel: ObservableObject {
     }
 
     @Published private(set) var orderStage: OrderStage = .building
-    private var allItems: [any POSDisplayableItem] = []
     @Published private(set) var cart: [CartItem] = []
     @Published private(set) var orderState: PointOfSaleOrderState = .idle
     @Published private(set) var order: Order? = nil
     @Published private(set) var connectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
     @Published private(set) var paymentState: PointOfSalePaymentState = .acceptingCard
-    @Published private(set) var itemListState: PointOfSaleItemListState = .initialLoading
 
     private let orderService: POSOrderServiceProtocol
     let cardPresentPaymentService: CardPresentPaymentFacade
-    private let itemProvider: POSItemProvider
     private let analytics: Analytics
 
     private var cancellables: Set<AnyCancellable> = []
     private var startPaymentOnReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
 
-    init(itemProvider: POSItemProvider,
-         cardPresentPaymentService: CardPresentPaymentFacade,
+    init(cardPresentPaymentService: CardPresentPaymentFacade,
          orderService: POSOrderServiceProtocol,
          analytics: Analytics) {
-        self.itemProvider = itemProvider
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderService = orderService
         self.analytics = analytics
@@ -56,57 +50,6 @@ final class PointOfSaleAggregateModel: ObservableObject {
                 self?.orderStage = .building
             }
             .store(in: &cancellables)
-    }
-
-    @MainActor
-    func loadInitialItems() async {
-        do {
-            itemListState = .initialLoading
-            try await fetchItems(pageNumber: 1)
-        } catch {
-            itemListState = .error(PointOfSaleErrorState.errorOnLoadingProducts())
-        }
-    }
-
-    @MainActor
-    func loadItems(pageNumber: Int) async {
-        do {
-            itemListState = .loading(allItems)
-            try await fetchItems(pageNumber: pageNumber)
-        } catch {
-            itemListState = .error(PointOfSaleErrorState.errorOnLoadingProducts())
-        }
-    }
-
-    @MainActor
-    private func fetchItems(pageNumber: Int) async throws {
-        var newItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
-        if pageNumber == 1 {
-            newItems.insert(POSDiscount(), at: 0)
-        }
-        let uniqueNewItems = newItems
-            .filter { newItem in
-                !allItems.contains(where: { $0.id == newItem.itemID })
-            }
-            .compactMap(createPOSDisplayableItem(for:))
-
-        allItems.append(contentsOf: uniqueNewItems)
-
-        if allItems.count == 0 {
-            itemListState = .empty
-        } else {
-            itemListState = .loaded(allItems)
-        }
-    }
-
-    @MainActor
-    func reloadItems() async {
-        removeAllItems()
-        await loadItems(pageNumber: 1)
-    }
-
-    func removeAllItems() {
-        allItems.removeAll()
     }
 
     func startNewOrder() {
@@ -137,7 +80,7 @@ final class PointOfSaleAggregateModel: ObservableObject {
     @MainActor
     func submitCart() async {
         orderStage = .finalizing
-        await startSyncingOrder(with: cart, allItems: allItems.map { $0.item })
+        await startSyncingOrder(with: cart, allItems: cart.map { $0.item })
     }
 
     private func startSyncingOrder(with cartItems: [CartItem], allItems: [POSItem]) async {

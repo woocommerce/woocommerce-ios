@@ -270,7 +270,6 @@ import class WooFoundation.MockAnalyticsProviderPreview
     // TODO:
     // Simplify this by mocking `CartViewModel`
     let posModel = PointOfSaleAggregateModel(
-        itemProvider: POSItemProviderPreview(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderService: POSOrderPreviewService(),
         analytics: MockAnalyticsPreview())
@@ -279,7 +278,6 @@ import class WooFoundation.MockAnalyticsProviderPreview
         currencyFormatter: .init(currencySettings: .init()))
     let cartViewModel = CartViewModel(analytics: MockAnalyticsPreview(),
                                       posModel: posModel)
-    let itemsListViewModel = ItemListViewModel(posModel: posModel)
     let dashboardViewModel = PointOfSaleDashboardViewModel(
         posModel: posModel,
         connectivityObserver: POSConnectivityObserverPreview())

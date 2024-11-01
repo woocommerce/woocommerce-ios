@@ -162,7 +162,6 @@ private extension CardReaderConnectionStatusView {
 import class WooFoundation.MockAnalyticsPreview
 #Preview {
     let posModel = PointOfSaleAggregateModel(
-        itemProvider: POSItemProviderPreview(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderService: POSOrderPreviewService(),
         analytics: MockAnalyticsPreview())

@@ -11,8 +11,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     private let connectivityObserver: ConnectivityObserver
 
-    @Published var isError: Bool = false
-    @Published var isEmpty: Bool = false
     @Published var showsConnectivityError: Bool = false
 
     private var cancellables: Set<AnyCancellable> = []
@@ -22,28 +20,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         self.posModel = posModel
         self.connectivityObserver = connectivityObserver
 
-        observeItemListState()
         observeConnectivity()
-    }
-}
-
-private extension PointOfSaleDashboardViewModel {
-    func observeItemListState() {
-        posModel.$itemListState
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] state in
-                guard let self = self else { return }
-                switch state {
-                case .error:
-                    self.isError = true
-                case .empty:
-                    self.isEmpty = true
-                default:
-                    self.isError = false
-                    self.isEmpty = false
-                }
-            }
-            .store(in: &cancellables)
     }
 }
 

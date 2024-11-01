@@ -88,17 +88,7 @@ final class PointOfSaleAggregateModel: ObservableObject {
             .filter { newItem in
                 !allItems.contains(where: { $0.id == newItem.itemID })
             }
-            .compactMap { [weak self] item -> (any POSDisplayableItem)? in
-                guard let self else { return nil }
-                switch item {
-                case is POSProduct:
-                    return POSProductItem(item: item)
-                case is POSDiscount:
-                    return POSDiscountItem(item: item)
-                default:
-                    return nil
-                }
-            }
+            .compactMap(createPOSDisplayableItem(for:))
 
         allItems.append(contentsOf: uniqueNewItems)
 

@@ -8,6 +8,17 @@ protocol POSDisplayableItem: View, Identifiable, Equatable {
     var item: POSItem { get }
 }
 
+func createPOSDisplayableItem(for item: POSItem) -> (any POSDisplayableItem)? {
+    switch item {
+    case is POSProduct:
+        return POSProductItem(item: item)
+    case is POSDiscount:
+        return POSDiscountItem(item: item)
+    default:
+        return nil
+    }
+}
+
 struct POSProductItem: POSDisplayableItem {
     var id: UUID {
         product.itemID

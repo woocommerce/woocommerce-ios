@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-10-22 18:54:03+0000 */
+/* Translation-Revision-Date: 2024-10-28 20:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -1561,7 +1561,6 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the Coupon Creation Success screen
    Navigation bar action to close the gift card code scanner.
    Text for the close button in the Add Product screen
-   Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
    Title of the Close action on the Jetpack Install view */
 "Close" = "Fechar";
@@ -1908,10 +1907,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the Origin Country row in Customs screen of Shipping Label flow */
 "Country where the product was manufactured or assembled" = "País onde o produto foi fabricado ou montado";
 
-/* Title for the coupon field on the Coupon Details screen during order creation
-   Title for the Coupon screen during order creation */
-"Coupon" = "Cupom";
-
 /* The singular coupon summary. Reads like: Coupon (code1) */
 "Coupon (%1$@)" = "Cupom (%1$@)";
 
@@ -1942,9 +1937,6 @@ which should be translated separately and considered part of this sentence. */
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
 "Coupons" = "Cupons";
-
-/* The plural coupon summary. Reads like: Coupon (code1, code2) */
-"Coupons (%1$@)" = "Cupons (%1$@)";
 
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "Falhar de imediato";
@@ -2074,9 +2066,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title in custom range date picker */
 "Custom Date Range" = "Período personalizado";
-
-/* Title for the order custom fields list */
-"Custom Fields" = "Campos personalizados";
 
 /* Custom line index in Customs Form of Shipping Label flow */
 "Custom Line %1$d" = "Linha personalizada %1$d";
@@ -2381,7 +2370,6 @@ which should be translated separately and considered part of this sentence. */
    Edit product downloadable files screen - button title to apply changes to downloadable files
    Navigation bar button on the domain settings screen to leave the flow.
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
-   Text for the done button in the Coupon Details screen
    Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
@@ -4870,6 +4858,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the the row showing the total cost of the order */
 "Order total" = "Total de pedidos";
 
+/* Title of the section that display coupons applied to an order, within the order creation screen. */
+"OrderCouponSectionView.header.coupons" = "Cupons";
+
 /* Retry Action inside notice */
 "OrderDetail.retry.notice.button" = "Tentar novamente";
 
@@ -5161,7 +5152,7 @@ which should be translated separately and considered part of this sentence. */
 "Please charge reader" = "Carregue o leitor";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
-"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.4 or above. Contact support if this error shows on a supported device." = "Verifique se o seu telefone atende a estes requisitos: iPhone XS ou mais recente com iOS 16.4 ou superior. Entre em contato com o suporte se esse erro aparecer em um dispositivo compatível.";
+"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.7 or above. Contact support if this error shows on a supported device." = "Verifique se o seu telefone atende a estes requisitos: iPhone XS ou mais recente com iOS 16.7 ou superior. Entre em contato com o suporte se esse erro aparecer em um dispositivo compatível.";
 
 /* Order gift card error notice message when the gift card is invalid. */
 "Please check the remaining balance of the gift card." = "Verifique o saldo restante do vale-presente.";
@@ -5842,9 +5833,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message from the in-person payment card reader prompting user to remove their card */
 "Remove Card" = "Remova o cartão";
-
-/* Text for the button to remove a Coupon from the order during order creation */
-"Remove Coupon from Order" = "Remover cupom do pedido";
 
 /* Text for button to remove a discount in the discounts details screen
    Title for the Remove button in Details screen during order creation */
@@ -10122,6 +10110,12 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Editar valor";
 
+/* Label for the Cancel button to close the editor */
+"customFieldEditorView.cancel" = "Cancelar";
+
+/* Button title for deleting a custom field */
+"customFieldEditorView.deleteButton" = "Excluir campo personalizado";
+
 /* Picker option for using Text Editor */
 "customFieldEditorView.editorPickerHTML" = "HTML";
 
@@ -10137,8 +10131,44 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the Key field */
 "customFieldEditorView.keyPlaceholder" = "Insira a chave";
 
+/* Label for the Save button to save changes */
+"customFieldEditorView.save" = "Salvar";
+
 /* Label for the Value field */
 "customFieldEditorView.valueLabel" = "Valor";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to add custom field. */
+"customFieldsListHostingController.accessibilityHintAddCustomField" = "Adicionar um novo campo personalizado à lista";
+
+/* Accessibility label for the Add Custom Field button */
+"customFieldsListHostingController.accessibilityLabelAddCustomField" = "Adicionar campo personalizado";
+
+/* Title for the notice when a custom field is deleted */
+"customFieldsListHostingController.deleteNoticeTitle" = "Campo personalizado excluído";
+
+/* Action to undo the deletion of a custom field */
+"customFieldsListHostingController.deleteNoticeUndo" = "Desfazer";
+
+/* Message for the in progress view shown when saving changes */
+"customFieldsListHostingController.inProgressMessage" = "Aguarde enquanto salvamos suas alterações";
+
+/* Title for the in progress view shown when saving changes */
+"customFieldsListHostingController.inProgressTitle" = "Salvando...";
+
+/* Button to save the changes on Custom Fields list */
+"customFieldsListHostingController.save" = "Salvar";
+
+/* Message for the error message when saving changes */
+"customFieldsListHostingController.saveErrorMessage" = "Ocorreu um erro ao salvar as alterações. Tente novamente.";
+
+/* Title for the error message when saving changes */
+"customFieldsListHostingController.saveErrorTitle" = "Erro ao salvar alterações";
+
+/* Title for the success message when saving changes */
+"customFieldsListHostingController.saveSuccessTitle" = "Alterações salvas";
+
+/* Title for the order custom fields list */
+"customFieldsListHostingController.title" = "Campos personalizados";
 
 /* Accessibility title for the search button on the customer section. */
 "customer.search.button.accessibilityLabel" = "Pesquisar cliente";
@@ -11450,6 +11480,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Não foi possível carregar o total";
 
+/* Button to dismiss the payments onboarding sheet from the POS dashboard. */
+"pointOfSaleDashboard.payments.onboarding.cancel" = "Cancelar";
+
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.done" = "Concluir";
 
@@ -11776,6 +11809,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the suggested product on the Blaze dashboard view. */
 "productInfoView.suggestedProductLabel" = "Produto sugerido";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
+"productInventorySettings.GlobalUniqueIdentifier.ScanButton" = "Verifica códigos de barra associados ao identificador global único de um produto para gerenciamento de estoque.";
+
+/* Placeholder of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
+"productInventorySettings.globalUniqueIdentifier.placeholder" = "Opcional";
+
+/* Title of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
+"productInventorySettings.globalUniqueIdentifier.title" = "GTIN, UPC, EAN, ISBN";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "Intervalo de cobrança";
@@ -12406,17 +12448,26 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for height input field */
 "wooShipping.createLabel.addPackage.height" = "Altura";
 
+/* The title for a button to dismiss the keyboard on the order creation/editing screen */
+"wooShipping.createLabel.addPackage.keyboard.toolbar.done.button.title" = "Concluído";
+
 /* Info label for length input field */
 "wooShipping.createLabel.addPackage.length" = "Comprimento";
 
 /* Info label for selecting package type */
 "wooShipping.createLabel.addPackage.packageType" = "Tipo de pacote";
 
+/* Info label for weight input field */
+"wooShipping.createLabel.addPackage.packageWeight" = "Peso do pacote";
+
 /* Info label for saving package as a new template toggle */
 "wooShipping.createLabel.addPackage.saveNewPackageTemplate" = "Salvar isto como um novo modelo de pacote";
 
 /* Button for saving package as a new template */
 "wooShipping.createLabel.addPackage.savePackageTemplate" = "Salvar modelo de pacote";
+
+/* Placeholder text for package name field */
+"wooShipping.createLabel.addPackage.savePackageTemplatePlaceholder" = "Insira um nome de pacote exclusivo";
 
 /* Info label for saved package option */
 "wooShipping.createLabel.addPackage.saved" = "Salvo";
@@ -12477,6 +12528,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
+
+/* Heading for the shipping service section in the shipping label creation screen. */
+"wooShipping.createLabels.rates.shippingService" = "Serviço de envio";
+
+/* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
+"wooShipping.createLabels.shippingService.adultSignatureRequired" = "Assinatura de um adulto obrigatória (+%1$@)";
+
+/* Singular format of number of business days in Woo Shipping label creation flow. Reads like: '1 business day' */
+"wooShipping.createLabels.shippingService.deliveryDaySingular" = "%1$d dia útil";
+
+/* Plural format of number of business days in Woo Shipping label creation flow. Reads like: '3 business days' */
+"wooShipping.createLabels.shippingService.deliveryDaysPlural" = "%1$d dias úteis";
+
+/* Label when shipping rate includes free pickup in Woo Shipping label creation flow. */
+"wooShipping.createLabels.shippingService.freePickup" = "Retirada gratuita";
+
+/* Label when shipping rate includes tracking in Woo Shipping label creation flow. */
+"wooShipping.createLabels.shippingService.includesTracking" = "Inclui rastreamento";
+
+/* Label when shipping rate includes insurance in Woo Shipping label creation flow. Placeholder is an amount. Reads like: 'Insurance (up to $100)' */
+"wooShipping.createLabels.shippingService.insuranceAmount" = "Seguro (até %1$@)";
+
+/* Label when shipping rate includes insurance in Woo Shipping label creation flow. Placeholder is a literal. Reads like: 'Insurance (limited)' */
+"wooShipping.createLabels.shippingService.insuranceLiteral" = "Seguro (%1$@)";
+
+/* Label when shipping rate has option to require a signature in Woo Shipping label creation flow. Reads like: 'Signature required (+$3.70)' */
+"wooShipping.createLabels.shippingService.signatureRequired" = "Assinatura obrigatória (+%1$@)";
+
+/* Label when shipping rate includes tracking in Woo Shipping label creation flow. */
+"wooShipping.createLabels.shippingService.tracking" = "Rastreamento";
 
 /* Title for the screen to create a shipping label */
 "wooShipping.createLabels.title" = "Criar etiquetas de envio";

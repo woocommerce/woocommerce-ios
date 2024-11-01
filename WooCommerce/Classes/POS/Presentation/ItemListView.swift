@@ -2,24 +2,16 @@ import SwiftUI
 import protocol Yosemite.POSItem
 
 struct ItemListView: View {
-    @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
+    @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    @Binding var itemListContainerState: ItemListContainerViewState
+    @Binding var itemListState: PointOfSaleItemListState
+
+    var loadNextItems: () async -> Void
+    var reloadItems: () async -> Void
 
     @State private var isHeaderBannerDismissed: Bool = UserDefaults.standard.bool(forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey)
     @State private var showSimpleProductsModal: Bool = false
-
-    @State private var itemListState: PointOfSaleItemListState = .initializing
-    let itemsService: POSItemsService
-    @State private var allItems: [any POSDisplayableItem] = []
-    private var currentPage: Int = Constants.initialPage
-
-    init(itemListContainerState: Binding<ItemListContainerViewState>,
-         itemsService: POSItemsService) {
-        self._itemListContainerState = itemListContainerState
-        self.itemsService = itemsService
-    }
 
     var body: some View {
         VStack {
@@ -28,29 +20,14 @@ struct ItemListView: View {
                     SimpleProductsOnlyInformation(isPresented: $showSimpleProductsModal)
                 }
             switch itemListState {
-            case .initializing, .initialLoading, .empty, .error:
-                // These cases are shown in the dashboard, we do not render
-                // a specific view within the ItemListView to handle them, we just set bindings
+            case .initialLoading, .empty, .error:
+                // These cases are handled directly in the dashboard, we do not render
+                // a specific view within the ItemListView to handle them
                 EmptyView()
             case .loading(let items), .loaded(let items):
                 listView(items)
             }
         }
-        .task {
-            await loadInitialItems()
-        }
-        .onChange(of: itemListState, perform: { newValue in
-            switch newValue {
-            case .initialLoading:
-                itemListContainerState = .initialLoading
-            case .empty:
-                itemListContainerState = .empty
-            case .error(let errorState):
-                itemListContainerState = .error(errorState, reloadItems)
-            case .initializing, .loaded, .loading:
-                itemListContainerState = .show
-            }
-        })
         .refreshable {
             await reloadItems()
         }
@@ -177,64 +154,6 @@ private extension ItemListView {
     }
 }
 
-private extension ItemListView {
-    @MainActor
-    func loadInitialItems() async {
-        do {
-            itemListState = .initialLoading
-            try await fetchItems(pageNumber: 1)
-        } catch {
-            itemListState = .error(PointOfSaleErrorState.errorOnLoadingProducts())
-        }
-    }
-
-    @MainActor
-    func loadNextItems() async {
-        // TODO: Optimize API calls. gh-14186
-        // If there are no more pages to fetch, we can avoid the next call.
-        let nextPage = currentPage + 1
-        await loadItems(pageNumber: nextPage)
-    }
-
-    @MainActor
-    func loadItems(pageNumber: Int) async {
-        do {
-            itemListState = .loading(allItems)
-            try await fetchItems(pageNumber: pageNumber)
-        } catch {
-            itemListState = .error(PointOfSaleErrorState.errorOnLoadingProducts())
-        }
-    }
-
-    @MainActor
-    func fetchItems(pageNumber: Int) async throws {
-        let newItems = try await itemsService.fetchItems(pageNumber: pageNumber)
-        let uniqueNewItems = newItems
-            .filter { newItem in
-                !allItems.contains(where: { $0.id == newItem.itemID })
-            }
-            .compactMap(createPOSDisplayableItem(for:))
-
-        allItems.append(contentsOf: uniqueNewItems)
-
-        if allItems.count == 0 {
-            itemListState = .empty
-        } else {
-            itemListState = .loaded(allItems)
-        }
-    }
-
-    @MainActor
-    func reloadItems() async {
-        removeAllItems()
-        await loadItems(pageNumber: 1)
-    }
-
-    func removeAllItems() {
-        allItems.removeAll()
-    }
-}
-
 /// Constants
 ///
 private extension ItemListView {
@@ -250,8 +169,6 @@ private extension ItemListView {
         static let iconPadding: CGFloat = 26
         static let itemListPadding: CGFloat = 16
         static let bannerCardPadding: CGFloat = 16
-
-        static let initialPage: Int = 1
     }
 
     enum Localization {
@@ -298,7 +215,8 @@ extension ItemListView {
 #if DEBUG
 import class WooFoundation.MockAnalyticsPreview
 #Preview {
-    ItemListView(itemListContainerState: .constant(.show),
-                 itemsService: POSItemsService(itemProvider: POSItemProviderPreview()))
+    ItemListView(itemListState: .constant(.initialLoading),
+                 loadNextItems: {},
+                 reloadItems: {})
 }
 #endif

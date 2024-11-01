@@ -1244,6 +1244,8 @@ enum WooAnalyticsStat: String {
 
     // MARK: Point of Sale events
     case pointOfSaleAddItemToCart = "pos_item_added_to_cart"
+    case pointOfSalePaymentsOnboardingShown = "pos_payments_onboarding_shown"
+    case pointOfSalePaymentsOnboardingDismissed = "pos_payments_onboarding_dismissed"
 }
 
 extension WooAnalyticsStat {

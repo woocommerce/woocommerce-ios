@@ -1705,6 +1705,7 @@
 		86E40AED2B597DEC00990365 /* BlazeCampaignCreationCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E40AEC2B597DEC00990365 /* BlazeCampaignCreationCoordinatorTests.swift */; };
 		86EC6EB72CD0A53E00D7D2FE /* CustomFieldEditorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86EC6EB62CD0A53E00D7D2FE /* CustomFieldEditorViewModel.swift */; };
 		86EC6EB92CD0BA6A00D7D2FE /* CustomFieldEditorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86EC6EB82CD0BA6A00D7D2FE /* CustomFieldEditorViewModelTests.swift */; };
+		86EC6EBD2CD3882900D7D2FE /* WooAnalyticsEvent+CustomFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86EC6EBC2CD3882900D7D2FE /* WooAnalyticsEvent+CustomFields.swift */; };
 		86F0896F2B307D7E00D668A1 /* ThemesPreviewViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F0896E2B307D7E00D668A1 /* ThemesPreviewViewModelTests.swift */; };
 		86F5FFE22CA302B300C767C4 /* CustomFieldsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F5FFE12CA302B300C767C4 /* CustomFieldsListViewModel.swift */; };
 		86F5FFE42CA30D9200C767C4 /* CustomFieldsListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F5FFE32CA30D9200C767C4 /* CustomFieldsListViewModelTests.swift */; };
@@ -4740,6 +4741,7 @@
 		86E40AEC2B597DEC00990365 /* BlazeCampaignCreationCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignCreationCoordinatorTests.swift; sourceTree = "<group>"; };
 		86EC6EB62CD0A53E00D7D2FE /* CustomFieldEditorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFieldEditorViewModel.swift; sourceTree = "<group>"; };
 		86EC6EB82CD0BA6A00D7D2FE /* CustomFieldEditorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFieldEditorViewModelTests.swift; sourceTree = "<group>"; };
+		86EC6EBC2CD3882900D7D2FE /* WooAnalyticsEvent+CustomFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+CustomFields.swift"; sourceTree = "<group>"; };
 		86F0896E2B307D7E00D668A1 /* ThemesPreviewViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesPreviewViewModelTests.swift; sourceTree = "<group>"; };
 		86F5FFE12CA302B300C767C4 /* CustomFieldsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFieldsListViewModel.swift; sourceTree = "<group>"; };
 		86F5FFE32CA30D9200C767C4 /* CustomFieldsListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFieldsListViewModelTests.swift; sourceTree = "<group>"; };
@@ -9573,6 +9575,7 @@
 				DE74A45C2BDA203E0009C415 /* WooAnalyticsEvent+DynamicDashboard.swift */,
 				DE6D84A82C3D07850014FBFF /* WooAnalyticsEvent+GoogleAds.swift */,
 				262562342C52A6410075A8CC /* WooAnalyticsEvent+BackgroudUpdates.swift */,
+				86EC6EBC2CD3882900D7D2FE /* WooAnalyticsEvent+CustomFields.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -15379,6 +15382,7 @@
 				CEFA16F12B74F64D00512782 /* AnalyticsHubCustomizeView.swift in Sources */,
 				68C31B712A8617C500AE5C5A /* NewNoteViewModel.swift in Sources */,
 				D41C9F2E26D9A0E900993558 /* WhatsNewViewModel.swift in Sources */,
+				86EC6EBD2CD3882900D7D2FE /* WooAnalyticsEvent+CustomFields.swift in Sources */,
 				02ECD1E424FF5E0B00735BE5 /* AddProductCoordinator.swift in Sources */,
 				45381B4527341B8A003FEC5F /* DateRangeFilterViewController.swift in Sources */,
 				20203AB22B31EEF1009D0C11 /* ExpandableBottomSheet.swift in Sources */,

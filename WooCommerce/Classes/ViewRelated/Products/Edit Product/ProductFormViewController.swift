@@ -457,6 +457,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 eventLogger.logPriceSettingsTapped()
                 editPriceSettings()
             case .customFields:
+                ServiceLocator.analytics.track(.productDetailCustomFieldsTapped)
                 showCustomFields()
             case .reviews:
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)

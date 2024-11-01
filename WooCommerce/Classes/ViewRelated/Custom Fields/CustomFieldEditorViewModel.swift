@@ -38,6 +38,10 @@ final class CustomFieldEditorViewModel: ObservableObject {
         !key.isEmpty && keyErrorMessage == nil
     }
 
+    var isNewCreationMode: Bool {
+        initialKey == "" && initialValue == ""
+    }
+
     init(key: String,
          value: String,
          isJsonField: Bool = false,
@@ -65,11 +69,37 @@ final class CustomFieldEditorViewModel: ObservableObject {
     }
 
     func saveChanges() {
+        ServiceLocator.analytics.track(
+            event: WooAnalyticsEvent.CustomFields.customFieldEditorDoneTapped()
+        )
         onSave(key, value)
     }
 
     func deleteField() {
+        ServiceLocator.analytics.track(
+            event: WooAnalyticsEvent.CustomFields.customFieldEditorDeleteTapped()
+        )
         onDelete?()
+    }
+
+    func trackEditorViewLoaded() {
+        ServiceLocator.analytics.track(
+            event: WooAnalyticsEvent.CustomFields.customFieldEditorLoaded(
+                editorType: isNewCreationMode ?
+                            WooAnalyticsEvent.CustomFields.EditorType.new :
+                            WooAnalyticsEvent.CustomFields.EditorType.edit
+            )
+        )
+    }
+
+    func trackEditorPickerTapped(showRichTextEditor: Bool) {
+        ServiceLocator.analytics.track(
+            event: WooAnalyticsEvent.CustomFields.customFieldEditorPickerTapped(
+                pickerType: showRichTextEditor ?
+                WooAnalyticsEvent.CustomFields.EditorPicker.aztec :
+                WooAnalyticsEvent.CustomFields.EditorPicker.text
+            )
+        )
     }
 }
 

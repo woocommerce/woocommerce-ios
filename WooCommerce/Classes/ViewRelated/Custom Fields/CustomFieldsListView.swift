@@ -1,12 +1,15 @@
 import Combine
 import SwiftUI
+import protocol WooFoundation.Analytics
 
 final class CustomFieldsListHostingController: UIHostingController<CustomFieldsListView> {
     private let viewModel: CustomFieldsListViewModel
+    private let analytics: Analytics
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(isEditable: Bool, viewModel: CustomFieldsListViewModel) {
+    init(isEditable: Bool, viewModel: CustomFieldsListViewModel, analytics: Analytics = ServiceLocator.analytics) {
         self.viewModel = viewModel
+        self.analytics = analytics
         super.init(rootView: CustomFieldsListView(isEditable: isEditable,
                                                   viewModel: viewModel)
         )
@@ -14,6 +17,14 @@ final class CustomFieldsListHostingController: UIHostingController<CustomFieldsL
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        analytics.track(
+            event: .CustomFields.customFieldsListLoaded(
+                type: viewModel.customFieldsType.analyticsValue,
+                fieldsCount: viewModel.originalCustomFieldsCount,
+                fieldsSize: viewModel.originalCustomFieldsSize,
+                has_json_fields: viewModel.combinedList.contains(where: { $0.isJson }))
+        )
 
         configureNavigation()
         observeStateChange()
@@ -70,10 +81,12 @@ private extension CustomFieldsListHostingController {
     }
 
     @objc func openAddCustomFieldScreen() {
+        viewModel.trackAddCustomFieldTapped()
         viewModel.isAddingNewField = true
     }
 
     @objc func saveCustomField() {
+        viewModel.trackSaveCustomFieldTapped()
         Task {
             await viewModel.saveChanges()
         }
@@ -158,7 +171,10 @@ struct CustomFieldsListView: View {
                         .frame(maxHeight: .infinity)
                 } else {
                     List(viewModel.combinedList) { customField in
-                        Button(action: { viewModel.selectedCustomField = customField }) {
+                        Button(action: {
+							viewModel.selectedCustomField = customField
+							viewModel.trackCustomFieldTapped()
+						}) {
                             CustomFieldRow(isEditable: isEditable,
                                            title: customField.key,
                                            content: customField.value.removedHTMLTags,
@@ -169,14 +185,14 @@ struct CustomFieldsListView: View {
                 }
             }
             .sheet(item: $viewModel.selectedCustomField) { customField in
-	            /// When editing a newly added and unsaved custom field (identified by it having nil `fieldId`), provide disallowed keys.
-	            let disallowedKeys = customField.fieldId == nil ? viewModel.disallowedKeysForCreation : []
+                /// When editing a newly added and unsaved custom field (identified by it having nil `fieldId`), provide disallowed keys.
+                let disallowedKeys = customField.fieldId == nil ? viewModel.disallowedKeysForCreation : []
 
-	            buildCustomFieldEditorView(customField: customField,
-	                                       disallowedKeys: disallowedKeys)
+                buildCustomFieldEditorView(customField: customField,
+                                           disallowedKeys: disallowedKeys)
             }
             .sheet(isPresented: $viewModel.isAddingNewField) {
-	            buildCustomFieldEditorView(customField: nil, disallowedKeys: viewModel.disallowedKeysForCreation)
+                buildCustomFieldEditorView(customField: nil, disallowedKeys: viewModel.disallowedKeysForCreation)
             }
             .notice($viewModel.notice)
         }

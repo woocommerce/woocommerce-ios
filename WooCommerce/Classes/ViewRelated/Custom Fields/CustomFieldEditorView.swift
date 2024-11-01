@@ -62,6 +62,9 @@ struct CustomFieldEditorView: View {
                                 Text(Localization.editorPickerHTML).tag(true)
                             }
                             .pickerStyle(.segmented)
+                            .onChange(of: showRichTextEditor) { newValue in
+                                viewModel.trackEditorPickerTapped(showRichTextEditor: newValue)
+                            }
                         }
                     }
 
@@ -119,6 +122,9 @@ struct CustomFieldEditorView: View {
         .closeButtonWithDiscardChangesPrompt(hasChanges: viewModel.hasUnsavedChanges,
                                              closeButtonLabel: { Text(isReadOnlyValue ? Localization.doneButton : Localization.cancelButton) })
         .notice($viewModel.notice)
+        .onAppear {
+            viewModel.trackEditorViewLoaded()
+        }
     }
 
     @ViewBuilder

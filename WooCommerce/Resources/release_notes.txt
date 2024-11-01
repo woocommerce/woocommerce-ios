@@ -1,1 +1,3 @@
-We've tightened the nuts and bolts in our WooCommerce mobile app to serve you better. We've squashed a bug that could cause a crash when configuring the product scanner's camera swap button. The Tap to Pay feature has been enhanced for better performance and now requires minimum iOS 16.7. Also, we resolved an issue with the Google Ads dashboard card for smoother loading. Updating brings out the best in our app!
+- [***] Merchants can now view and edit custom fields of their products and orders from the app [https://github.com/woocommerce/woocommerce-ios/issues/13493]
+- [*] Payments onboarding: for two onboarding errors that show a wp-admin Payments setup URL in a webview ("Payments plugin not setup" and "Stripe overdue" errors that can occur to both WooPayments and Stripe Extension), the webview is now pre-authenticated for merchants with site credentials login [https://github.com/woocommerce/woocommerce-ios/pull/14252]
+

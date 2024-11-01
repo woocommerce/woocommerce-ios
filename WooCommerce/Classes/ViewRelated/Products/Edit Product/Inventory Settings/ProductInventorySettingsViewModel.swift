@@ -19,6 +19,9 @@ protocol ProductInventorySettingsViewModelOutput {
     // Editable data - shared.
     //
     var sku: String? { get }
+
+    var globalUniqueID: String? { get }
+
     var manageStockEnabled: Bool { get }
     // Optional: only editable in `Product`
     var soldIndividually: Bool? { get }
@@ -41,7 +44,10 @@ protocol ProductInventorySettingsViewModelOutput {
 protocol ProductInventorySettingsActionHandler {
     // Input field actions
     func handleSKUChange(_ sku: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void)
+    func handleGlobalUniqueIdentifierChange(_ globalUniqueID: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void)
     func handleSKUFromBarcodeScanner(_ sku: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void)
+    func handleGlobalUniqueIdentifierFromBarcodeScanner(_ globalUniqueID: String?,
+                                                        onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void)
     func handleManageStockEnabledChange(_ manageStockEnabled: Bool)
     func handleSoldIndividuallyChange(_ soldIndividually: Bool?)
     func handleStockQuantityChange(_ stockQuantity: String?)
@@ -65,6 +71,7 @@ final class ProductInventorySettingsViewModel: ProductInventorySettingsViewModel
     // Editable data - shared.
     //
     private(set) var sku: String?
+    private(set) var globalUniqueID: String?
     private(set) var manageStockEnabled: Bool
     // Optional: only editable in `Product`
     private(set) var soldIndividually: Bool?
@@ -89,6 +96,7 @@ final class ProductInventorySettingsViewModel: ProductInventorySettingsViewModel
 
     // Sku validation
     private var skuIsValid: Bool = true
+    private var globalUniqueIdIsValid: Bool = true
     private lazy var throttler: Throttler = Throttler(seconds: 0.5)
 
     private let stores: StoresManager
@@ -104,6 +112,7 @@ final class ProductInventorySettingsViewModel: ProductInventorySettingsViewModel
         self.siteID = productModel.siteID
 
         self.sku = productModel.sku
+        self.globalUniqueID = productModel.globalUniqueID
         self.manageStockEnabled = productModel.manageStock
         self.soldIndividually = productModel.soldIndividually
 
@@ -155,11 +164,44 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
         }
     }
 
+    func handleGlobalUniqueIdentifierChange(_ globalUniqueID: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void) {
+        self.globalUniqueID = globalUniqueID
+
+        guard let newGlobalUniqueID = globalUniqueID,
+              globalUniqueIdentifierIsValid(newGlobalUniqueID) else {
+
+            var shouldBringUpKeyboard = false
+            // If the error was already shown there's no need to show it again
+            if error != .invalidGlobalUniqueIdentifier {
+                displayError(error: .invalidGlobalUniqueIdentifier)
+                // After reloading the sections the keyboard was dismissed, let's bring it back again
+                shouldBringUpKeyboard = true
+            }
+
+            globalUniqueIdIsValid = false
+            onValidation(false, shouldBringUpKeyboard)
+
+            return
+        }
+
+        // Bring keyboard up if the error was shown, so they user can keep typing when the sections are reloaded to remove the error message
+        let shouldBringUpKeyboard = error == .invalidGlobalUniqueIdentifier
+        hideError()
+        globalUniqueIdIsValid = true
+        onValidation(true, shouldBringUpKeyboard)
+    }
+
     func handleSKUFromBarcodeScanner(_ sku: String?, onValidation: @escaping (Bool, Bool) -> Void) {
         // Displays SKU before validation.
         self.sku = sku
         reloadSections()
         handleSKUChange(sku, onValidation: onValidation)
+    }
+
+    func handleGlobalUniqueIdentifierFromBarcodeScanner(_ globalUniqueID: String?,
+                                                        onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void) {
+        handleGlobalUniqueIdentifierChange(globalUniqueID, onValidation: onValidation)
+        reloadSections()
     }
 
     func handleManageStockEnabledChange(_ manageStockEnabled: Bool) {
@@ -189,8 +231,9 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
     }
 
     func completeUpdating(onCompletion: (ProductInventoryEditableData) -> Void) {
-        if skuIsValid {
+        if skuIsValid && globalUniqueIdIsValid {
             let data = ProductInventoryEditableData(sku: sku,
+                                                    globalUniqueIdentifier: globalUniqueID,
                                                     manageStock: manageStockEnabled,
                                                     soldIndividually: soldIndividually,
                                                     stockQuantity: stockQuantity,
@@ -201,12 +244,14 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
     }
 
     func hasUnsavedChanges() -> Bool {
-        guard skuIsValid else {
+        guard skuIsValid,
+              globalUniqueIdIsValid else {
             return true
         }
 
         // Checks general settings regardless of whether stock management is enabled.
         let hasChangesInGeneralSettings = sku != productModel.sku
+            || globalUniqueID != productModel.globalUniqueID
             || manageStockEnabled != productModel.manageStock
             || soldIndividually != productModel.soldIndividually
 
@@ -291,5 +336,17 @@ private extension ProductInventorySettingsViewModel {
             error = nil
             reloadSections()
         }
+    }
+
+    func globalUniqueIdentifierIsValid(_ input: String) -> Bool {
+        guard input.isNotEmpty else {
+            return true
+        }
+
+        // Only contains numbers and hyphens
+        let pattern = "^[0-9-]+$"
+        let predicate = NSPredicate(format: "SELF MATCHES %@", pattern)
+
+        return predicate.evaluate(with: input)
     }
 }

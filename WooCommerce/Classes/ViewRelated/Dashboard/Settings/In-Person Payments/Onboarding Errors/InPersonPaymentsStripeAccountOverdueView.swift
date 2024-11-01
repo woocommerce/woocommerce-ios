@@ -32,7 +32,9 @@ struct InPersonPaymentsStripeAccountOverdue: View {
                                                                                      plugin: plugin,
                                                                                      action: onRefresh)
         )
-        .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
+        .cardPresentPaymentSetupSheet(url: $presentedSetupURL) {
+            presentedSetupURL = nil
+        }
      }
 
     private var setupURL: URL? {

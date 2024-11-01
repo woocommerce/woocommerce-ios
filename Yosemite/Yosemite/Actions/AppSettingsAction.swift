@@ -144,6 +144,14 @@ public enum AppSettingsAction: Action {
     ///
     case loadEUShippingNoticeDismissState(onCompletion: (Result<Bool, Error>) -> Void)
 
+    /// Sets the dismiss state for the Custom Fields top banner
+    ///
+    case dismissCustomFieldsTopBanner(onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Loads the dismiss state of the Custom Fields top banner
+    ///
+    case loadCustomFieldsTopBannerDismissState(onCompletion: (Bool) -> Void)
+
     // MARK: - General Store Settings
 
     /// Sets the store uuid.

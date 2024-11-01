@@ -29,6 +29,7 @@ extension Storage.ProductVariation: ReadOnlyConvertible {
 
         fullDescription = productVariation.description
         sku = productVariation.sku
+        globalUniqueID = productVariation.globalUniqueID
 
         price = productVariation.price
         regularPrice = productVariation.regularPrice
@@ -89,6 +90,7 @@ extension Storage.ProductVariation: ReadOnlyConvertible {
                                 status: ProductStatus(rawValue: statusKey),
                                 description: fullDescription,
                                 sku: sku,
+                                globalUniqueID: globalUniqueID,
                                 price: price,
                                 regularPrice: regularPrice,
                                 salePrice: salePrice,

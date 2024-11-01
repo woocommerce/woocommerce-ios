@@ -799,6 +799,18 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.productModel.downloadable)
     }
 
+    func test_updateCustomFields_updated_originalProduct_and_productModel() {
+        // Given
+        let product = Product.fake().copy(customFields: [])
+        let viewModel = createViewModel(product: product, formType: .edit)
+        // When
+        let customFields = [MetaData(metadataID: 0, key: "key", value: "value")]
+        viewModel.updateProductCustomFields(customFields: customFields)
+        // Then
+        XCTAssertEqual(viewModel.productModel.product.customFields, customFields)
+        XCTAssertEqual(viewModel.originalProductModel.product.customFields, customFields)
+    }
+
 
     // MARK: Subscription Free trial
 

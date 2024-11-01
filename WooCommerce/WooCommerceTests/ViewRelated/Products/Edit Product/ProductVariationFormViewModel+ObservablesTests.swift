@@ -64,6 +64,7 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
                                       taxStatus: model.productTaxStatus,
                                       taxClass: nil)
         viewModel.updateInventorySettings(sku: productVariation.sku,
+                                          globalUniqueIdentifier: productVariation.globalUniqueID,
                                           manageStock: productVariation.manageStock,
                                           soldIndividually: nil,
                                           stockQuantity: productVariation.stockQuantity,

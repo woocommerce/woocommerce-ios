@@ -53,6 +53,7 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
                                       taxStatus: model.productTaxStatus,
                                       taxClass: nil)
         viewModel.updateInventorySettings(sku: productVariation.sku,
+                                          globalUniqueIdentifier: productVariation.globalUniqueID,
                                           manageStock: productVariation.manageStock,
                                           soldIndividually: nil,
                                           stockQuantity: productVariation.stockQuantity,
@@ -158,7 +159,13 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
 
     func test_product_variation_has_unsaved_changes_from_editing_inventory_settings() {
         // Action
-        viewModel.updateInventorySettings(sku: "", manageStock: false, soldIndividually: nil, stockQuantity: 888888, backordersSetting: nil, stockStatus: nil)
+        viewModel.updateInventorySettings(sku: "",
+                                          globalUniqueIdentifier: "",
+                                          manageStock: false,
+                                          soldIndividually: nil,
+                                          stockQuantity: 888888,
+                                          backordersSetting: nil,
+                                          stockStatus: nil)
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())

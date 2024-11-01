@@ -254,4 +254,239 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         // Then: An error should be thrown
         XCTAssertNotNil(viewModel.notice)
     }
+
+    func test_given_savingSucceeds_when_saveChangesCalled_then_callListener() async {
+        // Given: successfully saving the changes
+        stores.whenReceivingAction(ofType: MetaDataAction.self) { [self] action in
+            switch action {
+                case let .updateMetaData(_, _, _, _, onCompletion):
+                    onCompletion(.success(originalMetadata))
+            }
+        }
+        var listenerReceivedItems: [MetaData]? = nil
+        viewModel = CustomFieldsListViewModel(customFields: originalFields,
+                                              siteID: sampleSiteID,
+                                              parentItemID: sampleParentItemID,
+                                              customFieldType: sampleCustomFieldType,
+                                              onChangesSaved: { listenerReceivedItems = $0 },
+                                              stores: stores)
+        // When: Saving the changes
+        await viewModel.saveChanges()
+        // Then: The listener should be called
+        XCTAssertEqual(listenerReceivedItems, originalMetadata)
+    }
+
+    // MARK: - Disallowed Keys for Creation with local changes
+
+    func test_given_originalAndAddedFields_then_disallowedKeysForCreationContainsAllKeys() {
+        // Given: Original fields from setup and a new field
+        let newField = CustomFieldsListViewModel.CustomFieldUI(key: "NewKey", value: "NewValue")
+
+        // When: Adding the new field
+        viewModel.addField(newField)
+
+        // Then: disallowedKeysForCreation should contain both original and new keys
+        XCTAssertEqual(viewModel.disallowedKeysForCreation.count, 3)
+        XCTAssertTrue(viewModel.disallowedKeysForCreation.contains("Key1"))
+        XCTAssertTrue(viewModel.disallowedKeysForCreation.contains("Key2"))
+        XCTAssertTrue(viewModel.disallowedKeysForCreation.contains("NewKey"))
+    }
+
+    func test_given_editedFields_then_disallowedKeysForCreationStillContainsOriginalKeys() {
+        // Given: Original fields and an edited field
+        let editedField = CustomFieldsListViewModel.CustomFieldUI(key: "EditedKey1", value: "EditedValue1", fieldId: 1)
+
+        // When: Editing a field (not yet saved remotely)
+        viewModel.editField(at: 0, newField: editedField)
+
+        // Then: disallowedKeysForCreation should contain original keys since changes aren't saved
+        XCTAssertEqual(viewModel.disallowedKeysForCreation.count, 2)
+        XCTAssertTrue(viewModel.disallowedKeysForCreation.contains("Key1"))
+        XCTAssertTrue(viewModel.disallowedKeysForCreation.contains("Key2"))
+    }
+
+    func test_given_deletedField_then_disallowedKeysForCreationStillContainsOriginalKey() {
+        // Given: A field to delete
+        let fieldToDelete = CustomFieldsListViewModel.CustomFieldUI(key: originalFields[0].title,
+                                                                  value: originalFields[0].content,
+                                                                  fieldId: originalFields[0].id)
+
+        // When: Deleting the field (not yet saved remotely)
+        viewModel.deleteField(fieldToDelete)
+
+        // Then: disallowedKeysForCreation should still contain all original keys since deletion isn't saved yet
+        XCTAssertEqual(viewModel.disallowedKeysForCreation.count, 2)
+        XCTAssertTrue(viewModel.disallowedKeysForCreation.contains("Key1"))
+        XCTAssertTrue(viewModel.disallowedKeysForCreation.contains("Key2"))
+    }
+
+    func test_given_multipleChanges_then_disallowedKeysForCreationReflectsOriginalAndAddedKeys() {
+        // Given: Original fields
+        let editedField = CustomFieldsListViewModel.CustomFieldUI(key: "EditedKey1", value: "EditedValue1", fieldId: 1)
+        let newField = CustomFieldsListViewModel.CustomFieldUI(key: "NewKey", value: "NewValue")
+        let fieldToDelete = CustomFieldsListViewModel.CustomFieldUI(key: originalFields[1].title,
+                                                                  value: originalFields[1].content,
+                                                                  fieldId: originalFields[1].id)
+
+        // When: Making multiple changes (not yet saved remotely)
+        viewModel.editField(at: 0, newField: editedField)
+        viewModel.addField(newField)
+        viewModel.deleteField(fieldToDelete)
+
+        // Then: disallowedKeysForCreation should contain all original keys plus new keys
+        XCTAssertEqual(viewModel.disallowedKeysForCreation.count, 3)
+        XCTAssertTrue(viewModel.disallowedKeysForCreation.contains("Key1"))
+        XCTAssertTrue(viewModel.disallowedKeysForCreation.contains("Key2"))
+        XCTAssertTrue(viewModel.disallowedKeysForCreation.contains("NewKey"))
+    }
+
+    // MARK: - Disallowed Keys for Creation with remote changes
+
+    func test_given_addField_then_saveChanges_then_disallowedKeysUpdates() async {
+        // Given: Initial state with two fields ("Key1", "Key2")
+
+        let newMetadata = MetaData(metadataID: 3, key: "NewKey", value: "NewValue")
+        let newField = CustomFieldsListViewModel.CustomFieldUI(key: newMetadata.key, value: newMetadata.value)
+        viewModel.addField(newField)
+
+        stores.whenReceivingAction(ofType: MetaDataAction.self) { [originalMetadata] action in
+            switch action {
+                case let .updateMetaData(_, _, _, _, onCompletion):
+                    onCompletion(.success(originalMetadata + [newMetadata]))
+            }
+        }
+
+        // When: Saving changes
+        await viewModel.saveChanges()
+
+        // Then: disallowedKeysForCreation includes the new saved field
+        XCTAssertEqual(viewModel.disallowedKeysForCreation.count, 3)
+        XCTAssertTrue(viewModel.disallowedKeysForCreation.contains("Key1"))
+        XCTAssertTrue(viewModel.disallowedKeysForCreation.contains("Key2"))
+        XCTAssertTrue(viewModel.disallowedKeysForCreation.contains("NewKey"))
+    }
+
+    func test_given_saveField_then_saveChanges_then_disallowedKeysUpdates() async {
+        // Given: Initial state with two fields ("Key1", "Key2")
+
+        let editedMetadata = MetaData(metadataID: 1, key: "EditedKey1", value: "EditedValue1")
+        viewModel.saveField(key: editedMetadata.key, value: editedMetadata.value, fieldId: editedMetadata.metadataID)
+
+        stores.whenReceivingAction(ofType: MetaDataAction.self) { [originalMetadata] action in
+            switch action {
+                case let .updateMetaData(_, _, _, _, onCompletion):
+                    let updatedMetadata = originalMetadata.map { $0.metadataID == 1 ? editedMetadata : $0 }
+                    onCompletion(.success(updatedMetadata))
+            }
+        }
+
+        // When: Saving changes
+        await viewModel.saveChanges()
+
+        // Then: disallowedKeysForCreation reflects the edited field
+        XCTAssertEqual(viewModel.disallowedKeysForCreation.count, 2)
+        XCTAssertTrue(viewModel.disallowedKeysForCreation.contains("EditedKey1"))
+        XCTAssertTrue(viewModel.disallowedKeysForCreation.contains("Key2"))
+    }
+
+    func test_given_deleteField_then_saveChanges_then_disallowedKeysUpdates() async {
+        // Given: Initial state with two fields ("Key1", "Key2")
+        let fieldToDelete = CustomFieldsListViewModel.CustomFieldUI(key: originalFields[0].title,
+                                                                  value: originalFields[0].content,
+                                                                  fieldId: originalFields[0].id)
+        viewModel.deleteField(fieldToDelete)
+
+        stores.whenReceivingAction(ofType: MetaDataAction.self) { [originalMetadata] action in
+            switch action {
+                case let .updateMetaData(_, _, _, _, onCompletion):
+                    let updatedMetadata = originalMetadata.filter { $0.metadataID != fieldToDelete.fieldId }
+                    onCompletion(.success(updatedMetadata))
+            }
+        }
+
+        // When: Saving changes
+        await viewModel.saveChanges()
+
+        // Then: disallowedKeysForCreation excludes the deleted field
+        XCTAssertEqual(viewModel.disallowedKeysForCreation.count, 1)
+        XCTAssertFalse(viewModel.disallowedKeysForCreation.contains("Key1"))
+        XCTAssertTrue(viewModel.disallowedKeysForCreation.contains("Key2"))
+    }
+
+    // MARK: - Top Banner
+    func test_given_bannerNotDismissed_when_hasChanges_then_showBanner() async {
+        // Given: The banner is not dismissed
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+                case let .loadCustomFieldsTopBannerDismissState(onCompletion):
+                    onCompletion(false)
+                default:
+                    break
+            }
+        }
+        viewModel = CustomFieldsListViewModel(customFields: originalFields,
+                                              siteID: sampleSiteID,
+                                              parentItemID: sampleParentItemID,
+                                              customFieldType: sampleCustomFieldType,
+                                              stores: stores)
+
+        // When: Making changes
+        viewModel.addField(CustomFieldsListViewModel.CustomFieldUI(key: "NewKey", value: "NewValue"))
+
+        // Then: The banner should be shown
+        XCTAssertTrue(viewModel.shouldShowTopBanner)
+    }
+
+    func test_given_bannerDismissed_when_hasChanges_then_hideBanner() async {
+        // Given: The banner is dismissed
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+                case let .loadCustomFieldsTopBannerDismissState(onCompletion):
+                    onCompletion(true)
+                default:
+                    break
+            }
+        }
+        viewModel = CustomFieldsListViewModel(customFields: originalFields,
+                                              siteID: sampleSiteID,
+                                              parentItemID: sampleParentItemID,
+                                              customFieldType: sampleCustomFieldType,
+                                              stores: stores)
+
+        // When: Making changes
+        viewModel.addField(CustomFieldsListViewModel.CustomFieldUI(key: "NewKey", value: "NewValue"))
+
+        // Then: The banner should not be shown
+        XCTAssertFalse(viewModel.shouldShowTopBanner)
+    }
+
+    func test_given_bannerShown_when_dismissBannerCalled_then_bannerIsDismissed() async {
+        // Given: The banner is shown
+        var wasDismissed = false
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+                case let .loadCustomFieldsTopBannerDismissState(onCompletion):
+                    onCompletion(false)
+                case let .dismissCustomFieldsTopBanner(onCompletion):
+                    wasDismissed = true
+                    onCompletion(.success(()))
+                default:
+                    break
+            }
+        }
+
+        // When: Dismissing the banner
+        viewModel.dismissTopBanner()
+
+        // Then: The banner should be dismissed
+        XCTAssertTrue(wasDismissed)
+	}
+
+    func test_when_isJson_called_then_return_correct_value() {
+        let jsonField = CustomFieldsListViewModel.CustomFieldUI(key: "key", value: "{\"key\":\"value\"}")
+        XCTAssertTrue(jsonField.isJson)
+
+        let nonJsonField = CustomFieldsListViewModel.CustomFieldUI(key: "key", value: "value")
+        XCTAssertFalse(nonJsonField.isJson)
+    }
 }

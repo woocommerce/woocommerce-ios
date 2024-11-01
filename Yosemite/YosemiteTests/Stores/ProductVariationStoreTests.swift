@@ -1027,6 +1027,7 @@ private extension ProductVariationStoreTests {
                                 status: .published,
                                 description: "<p>Nutty chocolate marble, 99% and organic.</p>\n",
                                 sku: "99%-nuts-marble",
+                                globalUniqueID: "12345",
                                 price: "12",
                                 regularPrice: "12",
                                 salePrice: "8",

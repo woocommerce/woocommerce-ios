@@ -5,8 +5,31 @@ import WooFoundation
 /// Provides view data for `WooShippingCreateLabelsView`.
 ///
 final class WooShippingCreateLabelsViewModel: ObservableObject {
+    private let currencyFormatter: CurrencyFormatter
+
+    /// The purchased shipping label.
+    let shippingLabel: ShippingLabel?
+
+    /// Whether an existing label can be viewed (and printed, tracked, refunded, etc.).
+    var canViewLabel: Bool {
+        shippingLabel != nil
+    }
+
+    var postPurchase: WooShippingPostPurchaseViewModel? {
+        guard let shippingLabel else { return nil }
+        return WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
+    }
+
     /// View model for the items to ship.
     @Published private(set) var items: WooShippingItemsViewModel
+
+    // TODO: Update this to a property that refers to the package, when selected
+    /// Whether there is a package selected for the shipping label.
+    /// Temporary property that can be set to `true` to enable features that require a selected package, until package feature is complete.
+    let hasPackage: Bool = false
+
+    /// View model for the label shipping service.
+    let shippingService = WooShippingServiceViewModel()
 
     /// Address to ship from (store address), formatted for display.
     let originAddress: String
@@ -20,17 +43,28 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Whether to mark the order as complete after the label is purchased.
     @Published var markOrderComplete: Bool = false
 
+    /// If the purchase button should be enabled.
+    @Published private(set) var canPurchaseLabel: Bool = false
+
+    /// Total cost of the shipping label, formatted for display.
+    @Published private(set) var totalCost: String?
+
     /// Closure to execute after the label is successfully purchased.
     let onLabelPurchase: ((_ markOrderComplete: Bool) -> Void)?
 
     init(order: Order,
+         shippingLabel: ShippingLabel? = nil,
          siteAddress: SiteAddress = SiteAddress(),
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          onLabelPurchase: ((Bool) -> Void)? = nil) {
+        self.shippingLabel = shippingLabel
         self.items = WooShippingItemsViewModel(dataSource: DefaultWooShippingItemsDataSource(order: order))
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.onLabelPurchase = onLabelPurchase
         self.originAddress = Self.formatOriginAddress(siteAddress: siteAddress)
         self.destinationAddressLines = (order.shippingAddress?.formattedPostalAddress ?? "").components(separatedBy: .newlines)
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0) })
+        bindViewModelsToProperties()
     }
 
     /// Purchases a shipping label with the provided label details and settings.
@@ -38,9 +72,33 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         // TODO: 13556 - Add action to purchase label remotely
         onLabelPurchase?(markOrderComplete) // TODO: 13556 - Only call this closure if the remote purchase is successful
     }
+
+    /// Provides the formatted amount for the given shipping rate.
+    func formatAmount(for rate: ShippingLabelCarrierRate) -> String {
+        guard let baseRate = shippingService.selectedRate?.rate else {
+            return ""
+        }
+        let amount = rate == baseRate ? rate.rate : rate.rate - baseRate.rate
+        return currencyFormatter.formatAmount(Decimal(amount)) ?? amount.description
+    }
 }
 
 private extension WooShippingCreateLabelsViewModel {
+    func bindViewModelsToProperties() {
+        shippingService.$selectedRate
+            .map { selectedRate in
+                selectedRate != nil
+            }
+            .assign(to: &$canPurchaseLabel)
+
+        shippingService.$selectedRate
+            .map { [weak self] selectedRate -> String? in
+                guard let self, let selectedRate else { return nil }
+                return currencyFormatter.formatAmount(Decimal(selectedRate.totalRate))
+            }
+            .assign(to: &$totalCost)
+    }
+
     /// Formats the origin address from the provided `SiteAddress`.
     static func formatOriginAddress(siteAddress: SiteAddress) -> String {
         let address = Address(firstName: "",

@@ -457,6 +457,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 eventLogger.logPriceSettingsTapped()
                 editPriceSettings()
             case .customFields:
+                ServiceLocator.analytics.track(.productDetailCustomFieldsTapped)
                 showCustomFields()
             case .reviews:
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
@@ -1494,7 +1495,14 @@ private extension ProductFormViewController {
             CustomFieldViewModel(metadata: $0)
         }
 
-        let viewModel = CustomFieldsListViewModel(customFields: customFields, siteID: product.siteID, parentItemID: product.productID, customFieldType: .product)
+        let viewModel = CustomFieldsListViewModel(customFields: customFields,
+                                                  siteID: product.siteID,
+                                                  parentItemID: product.productID,
+                                                  customFieldType: .product,
+                                                  onChangesSaved: { [weak self] customFields in
+            guard let self else { return }
+            self.viewModel.updateProductCustomFields(customFields: customFields)
+        })
 
         let customFieldsListViewController = CustomFieldsListHostingController(isEditable: true,
                                                                                viewModel: viewModel)
@@ -1612,6 +1620,7 @@ private extension ProductFormViewController {
             return
         }
         viewModel.updateInventorySettings(sku: data.sku,
+                                          globalUniqueIdentifier: data.globalUniqueIdentifier,
                                           manageStock: data.manageStock,
                                           soldIndividually: data.soldIndividually,
                                           stockQuantity: data.stockQuantity,

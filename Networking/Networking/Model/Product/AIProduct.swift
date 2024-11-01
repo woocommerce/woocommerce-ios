@@ -143,6 +143,7 @@ public extension Product {
                   fullDescription: fullDescription,
                   shortDescription: shortDescription,
                   sku: "",
+                  globalUniqueID: "",
                   price: "",
                   regularPrice: aiProduct.price,
                   salePrice: "",

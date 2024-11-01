@@ -130,12 +130,14 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
 
         // Action
         let newSKU = "94115"
+        let newGlobalUniqueID = "22341"
         let newManageStock = !product.manageStock
         let newSoldIndividually = !product.soldIndividually
         let newStockQuantity: Decimal = 17
         let newBackordersSetting = ProductBackordersSetting.allowedAndNotifyCustomer
         let newStockStatus = ProductStockStatus.onBackOrder
         viewModel.updateInventorySettings(sku: newSKU,
+                                          globalUniqueIdentifier: newGlobalUniqueID,
                                           manageStock: newManageStock,
                                           soldIndividually: newSoldIndividually,
                                           stockQuantity: newStockQuantity,
@@ -144,6 +146,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(viewModel.productModel.sku, newSKU)
+        XCTAssertEqual(viewModel.productModel.globalUniqueID, newGlobalUniqueID)
         XCTAssertEqual(viewModel.productModel.manageStock, newManageStock)
         XCTAssertEqual(viewModel.productModel.product.soldIndividually, newSoldIndividually)
         XCTAssertEqual(viewModel.productModel.stockQuantity, newStockQuantity)

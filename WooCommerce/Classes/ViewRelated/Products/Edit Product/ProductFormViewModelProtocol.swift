@@ -113,6 +113,7 @@ protocol ProductFormViewModelProtocol {
                              taxClass: TaxClass?)
 
     func updateInventorySettings(sku: String?,
+                                 globalUniqueIdentifier: String?,
                                  manageStock: Bool,
                                  soldIndividually: Bool?,
                                  stockQuantity: Decimal?,
@@ -154,6 +155,8 @@ protocol ProductFormViewModelProtocol {
     func updateSubscriptionExpirySettings(length: String)
 
     func updateQuantityRules(minQuantity: String, maxQuantity: String, groupOf: String)
+
+    func updateProductCustomFields(customFields: [MetaData])
 
     // Remote action
 

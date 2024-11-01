@@ -4,7 +4,7 @@ import XCTest
 import WooFoundation
 
 final class WooShippingCreateLabelsViewModelTests: XCTestCase {
-    func test_inits_with_expected_values() {
+    func test_inits_with_expected_values_for_shipping_label_creation() {
         // Given
         let order = Order.fake()
 
@@ -15,6 +15,23 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.markOrderComplete)
         XCTAssertFalse(viewModel.canPurchaseLabel)
         XCTAssertNil(viewModel.totalCost)
+        XCTAssertFalse(viewModel.canViewLabel)
+    }
+
+    func test_inits_with_expected_values_for_viewing_purchased_label() {
+        // Given
+        let order = Order.fake()
+        let label = ShippingLabel.fake()
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, shippingLabel: label)
+
+        // Then
+        XCTAssertNotNil(viewModel.postPurchase)
+        XCTAssertFalse(viewModel.canPurchaseLabel)
+        XCTAssertNotNil(viewModel.totalCost)
+        XCTAssertTrue(viewModel.canViewLabel)
+        XCTAssertEqual(viewModel.shippingRates.count, 1)
     }
 
     func test_site_address_converted_to_formatted_originAddress() {
@@ -164,20 +181,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shippingRates[0].amount, "$40.06")
         XCTAssertEqual(viewModel.shippingRates[1].title, "Adult Signature Required")
         XCTAssertEqual(viewModel.shippingRates[1].amount, "$6.90")
-    }
-
-    func test_canViewLabel_true_when_shipping_label_exists() {
-        // Given
-        let order = Order.fake()
-        let label = ShippingLabel.fake()
-
-        // When
-        let newLabelViewModel = WooShippingCreateLabelsViewModel(order: order)
-        let existingLabelViewModel = WooShippingCreateLabelsViewModel(order: order, shippingLabel: label)
-
-        // Then
-        XCTAssertFalse(newLabelViewModel.canViewLabel)
-        XCTAssertTrue(existingLabelViewModel.canViewLabel)
     }
 }
 

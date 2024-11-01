@@ -16,10 +16,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     }
 
     /// View model for the section displayed after a shipping label is purchased.
-    var postPurchase: WooShippingPostPurchaseViewModel? {
-        guard let shippingLabel else { return nil }
-        return WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
-    }
+    @Published private(set) var postPurchase: WooShippingPostPurchaseViewModel?
 
     /// View model for the items to ship.
     @Published private(set) var items: WooShippingItemsViewModel
@@ -90,6 +87,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          onLabelPurchase: ((Bool) -> Void)? = nil) {
         self.shippingLabel = shippingLabel
+        if let shippingLabel {
+            self.postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
+        }
         self.items = WooShippingItemsViewModel(dataSource: DefaultWooShippingItemsDataSource(order: order))
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.onLabelPurchase = onLabelPurchase
@@ -104,7 +104,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             return
         }
         // TODO: 13556 - Add action to purchase label remotely
-        onLabelPurchase?(markOrderComplete) // TODO: 13556 - Only call this closure if the remote purchase is successful
+        // TODO: 13556 - If the remote purchase is successful:
+            onLabelPurchase?(markOrderComplete)
+        if let shippingLabel {
+            postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
+        }
     }
 }
 

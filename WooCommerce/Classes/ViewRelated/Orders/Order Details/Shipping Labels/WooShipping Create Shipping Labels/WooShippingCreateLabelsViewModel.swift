@@ -10,11 +10,12 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// The purchased shipping label.
     @Published private var shippingLabel: ShippingLabel?
 
-    /// Whether an existing label can be viewed (and printed, tracked, refunded, etc.).
+    /// Whether a purchased shipping label can be viewed (and printed, tracked, refunded, etc.).
     var canViewLabel: Bool {
         shippingLabel != nil
     }
 
+    /// View model for the section displayed after a shipping label is purchased.
     var postPurchase: WooShippingPostPurchaseViewModel? {
         guard let shippingLabel else { return nil }
         return WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)

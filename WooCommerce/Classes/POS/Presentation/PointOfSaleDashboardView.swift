@@ -1,50 +1,53 @@
 import SwiftUI
+import protocol Yosemite.POSItemProvider
 
 struct PointOfSaleDashboardView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var totalsViewModel: TotalsViewModel
     private let cartViewModel: CartViewModel
 
+    private var itemProvider: POSItemProvider
+
     @ObservedObject private var posModel: PointOfSaleAggregateModel
 
+    @State private var itemListContainerState: ItemListContainerViewState = .initializing
     @State var showExitPOSModal: Bool = false
     @State var showSupport: Bool = false
-    @State private var itemListState: PointOfSaleItemListState = .initialLoading
-
-    private let itemsService: POSItemsService
-    @State private var allItems: [any POSDisplayableItem] = []
-    private var currentPage: Int = Constants.initialPage
 
     init(viewModel: PointOfSaleDashboardViewModel,
          totalsViewModel: TotalsViewModel,
          cartViewModel: CartViewModel,
          posModel: PointOfSaleAggregateModel,
-         itemsService: POSItemsService) {
+         itemProvider: POSItemProvider) {
         self.viewModel = viewModel
         self.totalsViewModel = totalsViewModel
         self.cartViewModel = cartViewModel
         self.posModel = posModel
-        self.itemsService = itemsService
+        self.itemProvider = itemProvider
     }
 
     @State private var floatingSize: CGSize = .zero
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            switch itemListState {
+            switch itemListContainerState {
             case .initialLoading:
-                PointOfSaleLoadingView()
-                    .transition(.opacity)
-                    .ignoresSafeArea()
-            case .error(let errorContents):
-                PointOfSaleItemListErrorView(error: errorContents, onRetry: {
+                contentView
+                    .accessibilitySortPriority(2)
+                    .overlay {
+                        PointOfSaleLoadingView()
+                            .transition(.opacity)
+                            .ignoresSafeArea()
+                    }
+            case .error(let errorState, let reloadItems):
+                PointOfSaleItemListErrorView(error: errorState, onRetry: {
                     Task {
                         await reloadItems()
                     }
                 })
             case .empty:
                 PointOfSaleItemListEmptyView()
-            case .loading, .loaded:
+            case .initializing, .show:
                 contentView
                     .accessibilitySortPriority(2)
             }
@@ -56,7 +59,7 @@ struct PointOfSaleDashboardView: View {
                 .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
                 .trackSize(size: $floatingSize)
                 .accessibilitySortPriority(1)
-                .renderedIf(itemListState != .initialLoading)
+                .renderedIf(itemListContainerState != .initialLoading)
 
             POSConnectivityView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -68,7 +71,7 @@ struct PointOfSaleDashboardView: View {
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .environment(\.posBackgroundAppearance, posModel.paymentState != .processingPayment ? .primary : .secondary)
-        .animation(.easeInOut, value: itemListState == .initialLoading)
+        .animation(.easeInOut, value: itemListContainerState == .initialLoading)
         .animation(.easeInOut(duration: Constants.connectivityAnimationDuration), value: viewModel.showsConnectivityError)
         .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
@@ -90,18 +93,16 @@ struct PointOfSaleDashboardView: View {
         .sheet(isPresented: $showSupport) {
             supportForm
         }
-        .task {
-            await loadInitialItems()
-        }
     }
 
     private var contentView: some View {
         GeometryReader { geometry in
             HStack {
                 if posModel.orderStage == .building {
-                    productListView
-                        .accessibilitySortPriority(2)
-                        .transition(.move(edge: .leading))
+                    ItemListView(itemListContainerState: $itemListContainerState,
+                                 itemsService: POSItemsService(itemProvider: itemProvider))
+                    .accessibilitySortPriority(2)
+                    .transition(.move(edge: .leading))
                 }
 
                 if !posModel.paymentState.cardHasBeenTapped {
@@ -166,63 +167,7 @@ private extension PointOfSaleDashboardView {
     }
 }
 
-private extension PointOfSaleDashboardView {
-    @MainActor
-    func loadInitialItems() async {
-        do {
-            itemListState = .initialLoading
-            try await fetchItems(pageNumber: 1)
-        } catch {
-            itemListState = .error(PointOfSaleErrorState.errorOnLoadingProducts())
-        }
-    }
 
-    @MainActor
-    func loadNextItems() async {
-        // TODO: Optimize API calls. gh-14186
-        // If there are no more pages to fetch, we can avoid the next call.
-        let nextPage = currentPage + 1
-        await loadItems(pageNumber: nextPage)
-    }
-
-    @MainActor
-    func loadItems(pageNumber: Int) async {
-        do {
-            itemListState = .loading(allItems)
-            try await fetchItems(pageNumber: pageNumber)
-        } catch {
-            itemListState = .error(PointOfSaleErrorState.errorOnLoadingProducts())
-        }
-    }
-
-    @MainActor
-    func fetchItems(pageNumber: Int) async throws {
-        let newItems = try await itemsService.fetchItems(pageNumber: pageNumber)
-        let uniqueNewItems = newItems
-            .filter { newItem in
-                !allItems.contains(where: { $0.id == newItem.itemID })
-            }
-            .compactMap(createPOSDisplayableItem(for:))
-
-        allItems.append(contentsOf: uniqueNewItems)
-
-        if allItems.count == 0 {
-            itemListState = .empty
-        } else {
-            itemListState = .loaded(allItems)
-        }
-    }
-
-    @MainActor
-    func reloadItems() async {
-        removeAllItems()
-        await loadItems(pageNumber: 1)
-    }
-
-    func removeAllItems() {
-        allItems.removeAll()
-    }
-}
 
 struct FloatingControlAreaSizeKey: EnvironmentKey {
     static let defaultValue = CGSize.zero
@@ -245,8 +190,6 @@ private extension PointOfSaleDashboardView {
         static let exitPOSSheetMaxWidth: CGFloat = 900.0
         static let supportTag = "origin:point-of-sale"
         static let connectivityAnimationDuration: CGFloat = 1.0
-
-        static let initialPage: Int = 1
     }
 
     enum Localization {
@@ -274,11 +217,27 @@ private extension PointOfSaleDashboardView {
     var totalsView: some View {
         TotalsView(viewModel: totalsViewModel, posModel: posModel)
     }
+}
 
-    var productListView: some View {
-        ItemListView(itemListState: $itemListState,
-                     loadNextItems: loadNextItems,
-                     reloadItems: reloadItems)
+enum ItemListContainerViewState: Equatable {
+    case initializing
+    case initialLoading
+    case empty
+    case error(_ errorState: PointOfSaleErrorState, _ reloadItems: () async -> Void)
+    case show
+
+    static func ==(lhs: ItemListContainerViewState, rhs: ItemListContainerViewState) -> Bool {
+        switch (lhs, rhs) {
+        case (.initializing, .initializing),
+            (.initialLoading, .initialLoading),
+            (.empty, .empty),
+            (.show, .show):
+            return true
+        case (.error(let lhsErrorState, _), .error(let rhsErrorState, _)):
+            return lhsErrorState == rhsErrorState
+        default:
+            return false
+        }
     }
 }
 
@@ -306,7 +265,7 @@ import class WooFoundation.MockAnalyticsProviderPreview
                                  totalsViewModel: totalsVM,
                                  cartViewModel: cartVM,
                                  posModel: posModel,
-                                 itemsService: POSItemsService(itemProvider: POSItemProviderPreview()))
+                                 itemProvider: POSItemProviderPreview())
     }
 }
 #endif

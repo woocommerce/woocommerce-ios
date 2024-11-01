@@ -50,7 +50,7 @@ struct PointOfSaleEntryPointView: View {
                                  totalsViewModel: totalsViewModel,
                                  cartViewModel: cartViewModel,
                                  posModel: posModel,
-                                 itemsService: POSItemsService(itemProvider: itemProvider))
+                                 itemProvider: itemProvider)
         .environmentObject(posModalManager)
         .environmentObject(posModel)
         .onAppear {

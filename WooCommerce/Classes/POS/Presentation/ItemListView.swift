@@ -6,6 +6,8 @@ struct ItemListView: View {
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
+    @State private var lastScrollPosition: CGFloat = 0
+
     init(viewModel: ItemListViewModel) {
         self.viewModel = viewModel
     }
@@ -142,11 +144,12 @@ private extension ItemListView {
                             return
                         }
                         let threshold = Constants.viewHeight * Constants.scrollThresholdMultiplier
-                        if maxY < threshold {
+                        if maxY < threshold && maxY < lastScrollPosition {
                             Task {
                                 await viewModel.loadNextItems()
                             }
                         }
+                        lastScrollPosition = maxY
                     }
             })
         }

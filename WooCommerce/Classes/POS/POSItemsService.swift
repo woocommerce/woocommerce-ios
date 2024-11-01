@@ -11,12 +11,20 @@ struct POSItemsService {
     }
 
     @MainActor
-    func fetchItems(pageNumber: Int) async throws -> [any POSItem] {
+    func fetchItems(pageNumber: Int,
+                    currentItems: [any POSDisplayableItem]) async throws -> [any POSDisplayableItem] {
         var newItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
         if pageNumber == 1 {
             newItems.insert(POSDiscount(), at: 0)
         }
 
-        return newItems
+        let uniqueNewItems = newItems
+            .filter { newItem in
+                !currentItems.contains(where: { $0.id == newItem.itemID })
+            }
+            .compactMap(createPOSDisplayableItem(for:))
+
+        let allItems = currentItems + uniqueNewItems
+        return allItems
     }
 }

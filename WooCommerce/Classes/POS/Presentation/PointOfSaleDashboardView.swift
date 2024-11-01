@@ -12,7 +12,6 @@ struct PointOfSaleDashboardView: View {
     @State private var itemListState: PointOfSaleItemListState = .initialLoading
 
     private let itemsService: POSItemsService
-    @State private var allItems: [any POSDisplayableItem] = []
     private var currentPage: Int = Constants.initialPage
 
     init(viewModel: PointOfSaleDashboardViewModel,
@@ -171,7 +170,7 @@ private extension PointOfSaleDashboardView {
     func loadInitialItems() async {
         do {
             itemListState = .initialLoading
-            try await fetchItems(pageNumber: 1)
+            try await fetchItems(pageNumber: 1, currentItems: [])
         } catch {
             itemListState = .error(PointOfSaleErrorState.errorOnLoadingProducts())
         }
@@ -181,30 +180,27 @@ private extension PointOfSaleDashboardView {
     func loadNextItems() async {
         // TODO: Optimize API calls. gh-14186
         // If there are no more pages to fetch, we can avoid the next call.
+        guard case .loaded(let currentItems) = itemListState else {
+            return
+        }
         let nextPage = currentPage + 1
-        await loadItems(pageNumber: nextPage)
+        await loadItems(pageNumber: nextPage, currentItems: currentItems)
     }
 
     @MainActor
-    func loadItems(pageNumber: Int) async {
+    func loadItems(pageNumber: Int, currentItems: [any POSDisplayableItem]) async {
         do {
-            itemListState = .loading(allItems)
-            try await fetchItems(pageNumber: pageNumber)
+            itemListState = .loading(currentItems)
+            try await fetchItems(pageNumber: pageNumber, currentItems: currentItems)
         } catch {
             itemListState = .error(PointOfSaleErrorState.errorOnLoadingProducts())
         }
     }
 
     @MainActor
-    func fetchItems(pageNumber: Int) async throws {
-        let newItems = try await itemsService.fetchItems(pageNumber: pageNumber)
-        let uniqueNewItems = newItems
-            .filter { newItem in
-                !allItems.contains(where: { $0.id == newItem.itemID })
-            }
-            .compactMap(createPOSDisplayableItem(for:))
-
-        allItems.append(contentsOf: uniqueNewItems)
+    func fetchItems(pageNumber: Int, currentItems: [any POSDisplayableItem]) async throws {
+        let allItems = try await itemsService.fetchItems(pageNumber: pageNumber,
+                                                         currentItems: currentItems)
 
         if allItems.count == 0 {
             itemListState = .empty
@@ -215,12 +211,7 @@ private extension PointOfSaleDashboardView {
 
     @MainActor
     func reloadItems() async {
-        removeAllItems()
-        await loadItems(pageNumber: 1)
-    }
-
-    func removeAllItems() {
-        allItems.removeAll()
+        await loadItems(pageNumber: 1, currentItems: [])
     }
 }
 

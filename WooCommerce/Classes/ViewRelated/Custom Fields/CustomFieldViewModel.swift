@@ -21,16 +21,14 @@ struct CustomFieldViewModel: Identifiable, Equatable {
     ///
     let valueURL: URL?
 
-    var isJson: Bool {
-        (try? JSONSerialization.jsonObject(with: value.data(using: .utf8) ?? Data())) != nil
-    }
+    let isJson: Bool
 
-    init(fieldID: Int64? = nil, key: String, value: String, valueURL: URL? = nil) {
+    init(fieldID: Int64? = nil, key: String, value: String, valueURL: URL? = nil, isJson: Bool = false) {
         self.fieldID = fieldID
         self.key = key
         self.value = value
         self.valueURL = valueURL
-
+        self.isJson = isJson
     }
 
     init(metadata: MetaData) {
@@ -44,7 +42,8 @@ struct CustomFieldViewModel: Identifiable, Equatable {
             fieldID: metadata.metadataID,
             key: metadata.key,
             value: metadata.value.stringValue,
-            valueURL: valueURL
+            valueURL: valueURL,
+            isJson: metadata.value.isJson
         )
     }
 

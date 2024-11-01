@@ -30,10 +30,10 @@ class CustomFieldViewModelTests: XCTestCase {
     }
 
     func test_when_isJson_called_then_return_correct_value() {
-        let jsonField = CustomFieldViewModel(key: "key", value: "{\"key\":\"value\"}")
+        let jsonField = CustomFieldViewModel(metadata: MetaData(metadataID: 0, key: "key", value: .json("{\"key\":\"value\"}")))
         XCTAssertTrue(jsonField.isJson)
 
-        let nonJsonField = CustomFieldViewModel(key: "key", value: "value")
+        let nonJsonField = CustomFieldViewModel(metadata: MetaData(metadataID: 0, key: "key", value: .string("value")))
         XCTAssertFalse(nonJsonField.isJson)
     }
 }

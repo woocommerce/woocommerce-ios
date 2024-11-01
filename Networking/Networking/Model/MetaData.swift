@@ -67,6 +67,14 @@ public enum MetaDataValue: Codable, Equatable, Sendable, GeneratedCopiable {
             return json
         }
     }
+    public var isJson: Bool {
+        switch self {
+        case .string:
+            return false
+        case .json:
+            return true
+        }
+    }
 
     public init(rawValue: String) {
         if let data = rawValue.data(using: .utf8), (try? JSONSerialization.jsonObject(with: data)) != nil {

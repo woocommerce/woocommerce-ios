@@ -31,8 +31,7 @@ public struct MetaData: Codable, Equatable, Sendable, GeneratedCopiable, Generat
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let metadataID = try container.decode(Int64.self, forKey: .metadataID)
         let key = try container.decode(String.self, forKey: .key)
-        let rawValue = container.failsafeDecodeIfPresent(AnyCodable.self, forKey: .value) ?? ""
-        let value = rawValue.getJsonValue()
+        let value = try MetaDataValue(from: container.superDecoder(forKey: CodingKeys.value))
 
 		self.init(metadataID: metadataID, key: key, value: value)
     }
@@ -45,30 +44,6 @@ private extension MetaData {
         case metadataID = "id"
         case key
         case value
-    }
-}
-
-private extension AnyCodable {
-    func getJsonValue()-> MetaDataValue {
-        let result: MetaDataValue
-
-        switch self.value {
-        case let value as String:
-            result = MetaDataValue(rawValue: value)
-        case is Bool:
-            result = MetaDataValue.string(description)
-        case is any Numeric:
-            result = MetaDataValue.string(description)
-        default:
-            if JSONSerialization.isValidJSONObject(value) {
-                let data = (try? JSONSerialization.data(withJSONObject: value)) ?? Data()
-                result = MetaDataValue.json(String(data: data, encoding: .utf8) ?? "")
-            } else {
-                result = MetaDataValue.string("")
-            }
-        }
-
-        return result
     }
 }
 
@@ -98,6 +73,26 @@ public enum MetaDataValue: Codable, Equatable, Sendable, GeneratedCopiable {
             self = .json(rawValue)
         } else {
             self = .string(rawValue.removingPrefix("\"").removingSuffix("\""))
+        }
+    }
+
+    public init(from decoder: Decoder) throws {
+        let decodable = try decoder.singleValueContainer().decode(AnyDecodable.self)
+
+        switch decodable.value {
+        case let value as String:
+            self = .string(value)
+        case is Bool:
+            self = MetaDataValue.string(decodable.description)
+        case is any Numeric:
+            self = MetaDataValue.string(decodable.description)
+        default:
+            if JSONSerialization.isValidJSONObject(decodable.value) {
+                let data = (try? JSONSerialization.data(withJSONObject: decodable.value)) ?? Data()
+                self = MetaDataValue.json(String(data: data, encoding: .utf8) ?? "")
+            } else {
+                self = MetaDataValue.string("")
+            }
         }
     }
 }

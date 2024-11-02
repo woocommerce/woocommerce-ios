@@ -33,7 +33,7 @@ public struct MetaData: Codable, Equatable, Sendable, GeneratedCopiable, Generat
         let key = try container.decode(String.self, forKey: .key)
         let value = try MetaDataValue(from: container.superDecoder(forKey: CodingKeys.value))
 
-		self.init(metadataID: metadataID, key: key, value: value)
+        self.init(metadataID: metadataID, key: key, value: value)
     }
 }
 
@@ -47,28 +47,18 @@ private extension MetaData {
     }
 }
 
-public enum MetaDataValue: Codable, Equatable, Sendable, GeneratedCopiable {
-    case string(_ value: String)
-    case json(_ json: String)
+public struct MetaDataValue: Codable, Equatable, Sendable {
+    private let valueHolder: ValueHolder
 
     public var stringValue: String {
-        switch self {
-        case .string(let value):
-            return value
-        case .json(let json):
-            return json
-        }
+        valueHolder.stringValue
     }
     public var rawValue: String {
-        switch self {
-        case .string(let value):
-            return "\"\(value)\""
-        case .json(let json):
-            return json
-        }
+        valueHolder.rawValue
     }
+
     public var isJson: Bool {
-        switch self {
+        switch valueHolder {
         case .string:
             return false
         case .json:
@@ -77,30 +67,72 @@ public enum MetaDataValue: Codable, Equatable, Sendable, GeneratedCopiable {
     }
 
     public init(rawValue: String) {
-        if let data = rawValue.data(using: .utf8), (try? JSONSerialization.jsonObject(with: data)) != nil {
-            self = .json(rawValue)
+        let data = Data(rawValue.utf8)
+        if let jsonObject = try? JSONDecoder().decode(AnyCodable.self, from: data) {
+            valueHolder = try! ValueHolder(from: jsonObject.value)
         } else {
-            self = .string(rawValue.removingPrefix("\"").removingSuffix("\""))
+            valueHolder = .string(rawValue.removingPrefix("\"").removingSuffix("\""))
         }
     }
 
     public init(from decoder: Decoder) throws {
-        let decodable = try decoder.singleValueContainer().decode(AnyDecodable.self)
+        let codable = try decoder.singleValueContainer().decode(AnyCodable.self)
+        valueHolder = try ValueHolder(from: codable.value)
+    }
 
-        switch decodable.value {
-        case let value as String:
-            self = .string(value)
-        case is Bool:
-            self = MetaDataValue.string(decodable.description)
-        case is any Numeric:
-            self = MetaDataValue.string(decodable.description)
-        default:
-            if JSONSerialization.isValidJSONObject(decodable.value) {
-                let data = (try? JSONSerialization.data(withJSONObject: decodable.value)) ?? Data()
-                self = MetaDataValue.json(String(data: data, encoding: .utf8) ?? "")
-            } else {
-                self = MetaDataValue.string("")
+    public func encode(to encoder: Encoder) throws {
+        switch valueHolder {
+        case .string(let value):
+            try value.encode(to: encoder)
+        case .json(let json):
+            let encodable = try JSONDecoder().decode(AnyCodable.self, from: Data(json.utf8))
+            try encodable.encode(to: encoder)
+        }
+    }
+}
+
+private extension MetaDataValue {
+    private enum ValueHolder: Codable, Equatable {
+        case string(_ value: String)
+        case json(_ json: String)
+
+        public var stringValue: String {
+            switch self {
+            case .string(let value):
+                return value
+            case .json(let json):
+                return json
             }
         }
+
+        public var rawValue: String {
+            switch self {
+            case .string(let value):
+                return "\"\(value)\""
+            case .json(let json):
+                return json
+            }
+        }
+
+        init(from object: Any) throws {
+            switch object {
+            case let value as String:
+                self = .string(value)
+            case is Bool:
+                self = .string(String(describing: object))
+            case is any Numeric:
+                self = .string(String(describing: object))
+            default:
+                let encodedJson = try AnyCodable(object).encodeAsJSON()
+                self = .json(encodedJson)
+            }
+        }
+    }
+}
+
+private extension Encodable {
+    func encodeAsJSON() throws -> String {
+        let data = try JSONEncoder().encode(self)
+        return String(data: data, encoding: .utf8) ?? ""
     }
 }

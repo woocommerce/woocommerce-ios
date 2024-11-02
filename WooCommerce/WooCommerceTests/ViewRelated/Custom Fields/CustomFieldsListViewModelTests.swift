@@ -50,7 +50,8 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
     func test_given_existingField_when_editFieldCalled_then_displayedItemsAndPendingChangesAreUpdated() {
         // Given: A custom field UI to edit an existing field
-        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1", value: .string("EditedValue1")))
+        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1",
+                                                                                  value: MetaDataValue(rawValue: "EditedValue1")))
 
         // When: Editing the field
         viewModel.saveField(key: editedField.key, value: editedField.value, fieldID: editedField.fieldID)
@@ -76,7 +77,8 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
     func test_given_editedAndNewFields_when_updatingDisplayedItems_then_changesAreReflected() {
         // Given: An edited field and a new field
-        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1", value: .string("EditedValue1")))
+        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1",
+                                                                                  value: MetaDataValue(rawValue: "EditedValue1")))
         let newField = CustomFieldViewModel(key: "NewKey", value: "NewValue")
 
         // When: Editing and adding fields
@@ -123,7 +125,8 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.hasChanges)
 
         // When: Editing a field
-        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1", value: .string("EditedValue1")))
+        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1",
+                                                                                  value: MetaDataValue(rawValue: "EditedValue1")))
         viewModel.saveField(key: editedField.key, value: editedField.value, fieldID: editedField.fieldID)
 
         // Then: hasChanges should be true
@@ -278,7 +281,8 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
     func test_given_editedFields_then_disallowedKeysForCreationStillContainsOriginalKeys() {
         // Given: Original fields and an edited field
-        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1", value: .string("EditedValue1")))
+        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1",
+                                                                                  value: MetaDataValue(rawValue: "EditedValue1")))
 
         // When: Editing a field (not yet saved remotely)
         viewModel.saveField(key: editedField.key, value: editedField.value, fieldID: editedField.fieldID)
@@ -304,7 +308,8 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
     func test_given_multipleChanges_then_disallowedKeysForCreationReflectsOriginalAndAddedKeys() {
         // Given: Original fields
-        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1", value: .string("EditedValue1")))
+        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1",
+                                                                                  value: MetaDataValue(rawValue: "EditedValue1")))
         let newField = CustomFieldViewModel(key: "NewKey", value: "NewValue")
         let fieldToDelete = originalFields[1]
 

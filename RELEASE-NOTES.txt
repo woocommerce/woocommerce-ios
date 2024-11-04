@@ -3,6 +3,7 @@
 
 21.1
 -----
+- [*] Payments onboarding: for two onboarding errors that show a wp-admin Payments setup URL in a webview ("Payments plugin not setup" and "Stripe overdue" errors that can occur to both WooPayments and Stripe Extension), the webview is now set to Payments Connect instead of Payments Overview. [https://github.com/woocommerce/woocommerce-ios/pull/14297]
 
 
 21.0

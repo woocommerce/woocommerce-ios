@@ -23,9 +23,9 @@ public struct MetaData: Codable, Equatable, Sendable, GeneratedCopiable, Generat
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let metadataID = try container.decode(Int64.self, forKey: .metadataID)
         let key = try container.decode(String.self, forKey: .key)
-        let value = container.failsafeDecodeIfPresent(String.self, forKey: .value) ?? ""
+        let rawValue = container.failsafeDecodeIfPresent(AnyCodable.self, forKey: .value) ?? ""
 
-        self.init(metadataID: metadataID, key: key, value: value)
+        self.init(metadataID: metadataID, key: key, value: rawValue.getAsString())
     }
 }
 
@@ -36,5 +36,21 @@ private extension MetaData {
         case metadataID = "id"
         case key
         case value
+    }
+}
+
+private extension AnyCodable {
+    func getAsString() -> String {
+        switch value {
+        case let string as String:
+            return string
+        default:
+            if JSONSerialization.isValidJSONObject(value) {
+                let data = (try? JSONSerialization.data(withJSONObject: value)) ?? Data()
+                return String(data: data, encoding: .utf8) ?? ""
+            } else {
+                return "\(value)"
+            }
+        }
     }
 }

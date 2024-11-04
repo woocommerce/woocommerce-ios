@@ -5,12 +5,8 @@ final class WooShippingServiceViewModel: ObservableObject {
     /// Contains the data about available shipping rates, grouped by carrier.
     @Published private(set) var serviceTabs: [WooShippingServiceTab] = []
 
-    /// Selected standard shipping service rate.
-    private(set) var selectedStandardRate: ShippingLabelCarrierRate?
-    /// Selected signature shipping service rate (if signature is required).
-    private(set) var selectedSignatureRate: ShippingLabelCarrierRate?
-    /// Selected adult signature shipping service rate (if adult signature is required).
-    private(set) var selectedAdultSignatureRate: ShippingLabelCarrierRate?
+    /// Selected shipping service rate.
+    @Published private(set) var selectedRate: WooShippingSelectedRate?
 
     /// Available standard shipping rates.
     private let standardRates: [ShippingLabelCarrierRate]
@@ -120,30 +116,19 @@ final class WooShippingServiceViewModel: ObservableObject {
                     .map { rate in
                         let signature = signatureRates.first { rate.title == $0.title }
                         let adultSignature = adultSignatureRates.first { rate.title == $0.title }
-                        return WooShippingServiceCardViewModel(selected: selectedStandardRate?.title == rate.title,
-                                                               signatureRequired: signature != nil && selectedSignatureRate == signature,
-                                                               adultSignatureRequired: adultSignature != nil && selectedAdultSignatureRate == adultSignature,
+                        return WooShippingServiceCardViewModel(selected: selectedRate?.rate.title == rate.title,
+                                                               signatureRequired: signature != nil && selectedRate?.signatureRate == signature,
+                                                               adultSignatureRequired: adultSignature != nil && selectedRate?.adultSignatureRate == adultSignature,
                                                                rate: rate,
                                                                signatureRate: signature,
                                                                adultSignatureRate: adultSignature) { [weak self] rateTitle, signatureRequirement in
-                            guard let self else { return }
-                            let standardRate = standardRates.first(where: { $0.title == rateTitle })
-                            let signatureRate = signatureRates.first(where: { $0.title == rateTitle })
-                            let adultSignatureRate = adultSignatureRates.first(where: { $0.title == rateTitle })
-                            switch signatureRequirement {
-                            case .none:
-                                selectedStandardRate = standardRate
-                                selectedSignatureRate = nil
-                                selectedAdultSignatureRate = nil
-                            case .signatureRequired:
-                                selectedStandardRate = standardRate
-                                selectedSignatureRate = signatureRate
-                                selectedAdultSignatureRate = nil
-                            case .adultSignatureRequired:
-                                selectedStandardRate = standardRate
-                                selectedSignatureRate = nil
-                                selectedAdultSignatureRate = adultSignatureRate
-                            }
+                            guard let self, let rate = standardRates.first(where: { $0.title == rateTitle }) else { return }
+                            let signatureRate = signatureRequirement == .signatureRequired ? signatureRates.first(where: { $0.title == rateTitle }) : nil
+                            let adultSignatureRate = signatureRequirement == .adultSignatureRequired ?
+                                adultSignatureRates.first(where: { $0.title == rateTitle }) : nil
+                            selectedRate = WooShippingSelectedRate(rate: rate,
+                                                                   signatureRate: signatureRate,
+                                                                   adultSignatureRate: adultSignatureRate)
                             self.generateServiceTabs()
                         }
                     }

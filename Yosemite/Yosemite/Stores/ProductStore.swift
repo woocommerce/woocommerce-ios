@@ -1301,6 +1301,7 @@ extension ProductStore {
 public enum ProductUpdateError: Error, Equatable {
     case duplicatedSKU
     case invalidSKU
+    case invalidGlobalUniqueIdentifier
     case passwordCannotBeUpdated
     case notFoundInStorage
     case variationInvalidImageId

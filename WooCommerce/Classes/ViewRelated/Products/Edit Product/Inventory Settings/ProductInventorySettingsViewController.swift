@@ -27,7 +27,7 @@ final class ProductInventorySettingsViewController: UIViewController {
     typealias Completion = (_ data: ProductInventoryEditableData) -> Void
     private let onCompletion: Completion
 
-    private var skuBarcodeScannerCoordinator: ProductSKUBarcodeScannerCoordinator?
+    private var skuBarcodeScannerCoordinator: ProducBarcodeScannerCoordinator?
 
     private var sectionsSubscription: AnyCancellable?
 
@@ -226,6 +226,7 @@ extension ProductInventorySettingsViewController: UITableViewDelegate {
             fatalError()
         }
         headerView.configure(title: errorTitle)
+        headerView.addTopSpacing()
         UIAccessibility.post(notification: .layoutChanged, argument: headerView)
         return headerView
     }
@@ -286,6 +287,8 @@ private extension ProductInventorySettingsViewController {
             break
         }
         cell.configure(viewModel: cellViewModel)
+        cell.setSpacingBetweenTitleAndTextField(30)
+        cell.setKeyboardType(keyboardType: .default)
 
         // Configures accessory view for adding SKU from barcode scanner if camera is available.
         guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
@@ -306,20 +309,31 @@ private extension ProductInventorySettingsViewController {
     }
 
     func configureGlobalUniqueIdentifier(cell: TitleAndTextFieldTableViewCell) {
-        let cellViewModel = Product.createGlobalUniqueIdentifierViewModel() { _ in
+        var cellViewModel = Product.createGlobalUniqueIdentifierViewModel(globalUniqueID: viewModel.globalUniqueID) { [weak self] value in
+            self?.viewModel.handleGlobalUniqueIdentifierChange(value) { [weak self] isValid, shouldBringUpKeyboard in
+                self?.handleGlobalUniqueIdentifierValidation(isValid: isValid, shouldBringUpKeyboard: shouldBringUpKeyboard)
+            }
+        }
+
+        if viewModel.error == .invalidGlobalUniqueIdentifier {
+            cellViewModel = cellViewModel.stateUpdated(state: .error)
         }
 
         cell.configure(viewModel: cellViewModel)
 
         /// Global Unique Identifiers are usually long, let's make a bit more of room to display it at once without truncating it
         cell.setSpacingBetweenTitleAndTextField(20)
+        cell.setKeyboardType(keyboardType: .numbersAndPunctuation)
 
-        // Configures accessory view for adding SKU from barcode scanner if camera is available.
+        // Configures accessory view for adding value from barcode scanner if camera is available.
         guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
             return
         }
 
         let button = UIButton(type: .detailDisclosure)
+        button.addAction(UIAction(handler: { [weak self] _ in
+            self?.scanGlobalUniqueIdentifierButtonTapped()
+        }), for: .touchUpInside)
         button.applyIconButtonStyle(icon: .scanImage)
         button.accessibilityLabel = NSLocalizedString("Scan products", comment: "Scan Products")
         button.accessibilityHint = NSLocalizedString("productInventorySettings.GlobalUniqueIdentifier.ScanButton",
@@ -372,16 +386,33 @@ private extension ProductInventorySettingsViewController {
 //
 private extension ProductInventorySettingsViewController {
     func scanSKUButtonTapped() {
+        ServiceLocator.analytics.track(.productInventorySettingsSKUScannerButtonTapped)
+
+        startBarcodeScanning(onCompletion: { [weak self] barcode in
+            ServiceLocator.analytics.track(.productInventorySettingsSKUScanned)
+            self?.onSKUBarcodeScanned(barcode: barcode)
+        })
+    }
+
+    func scanGlobalUniqueIdentifierButtonTapped() {
+        ServiceLocator.analytics.track(.productInventorySettingsGlobalUniqueIDScannerButtonTapped)
+
+        startBarcodeScanning(onCompletion: { [weak self] barcode in
+            ServiceLocator.analytics.track(.productInventorySettingsGlobalUniqueIDScanned)
+            self?.viewModel.handleGlobalUniqueIdentifierFromBarcodeScanner("123as", onValidation: {[weak self] isValid, shouldBringUpKeyboard in
+                self?.handleGlobalUniqueIdentifierValidation(isValid: isValid, shouldBringUpKeyboard: shouldBringUpKeyboard)})
+        })
+    }
+
+    func startBarcodeScanning(onCompletion: @escaping (_ barcode: String) -> Void) {
         guard let navigationController = navigationController else {
             return
         }
 
-        ServiceLocator.analytics.track(.productInventorySettingsSKUScannerButtonTapped)
-
-        let coordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController) { [weak self] barcode in
-            ServiceLocator.analytics.track(.productInventorySettingsSKUScanned)
-            self?.onSKUBarcodeScanned(barcode: barcode.payloadStringValue)
+        let coordinator = ProducBarcodeScannerCoordinator(sourceNavigationController: navigationController) { barcode in
+            onCompletion(barcode.payloadStringValue)
         }
+
         view.endEditing(true)
         skuBarcodeScannerCoordinator = coordinator
         coordinator.start()
@@ -398,8 +429,16 @@ private extension ProductInventorySettingsViewController {
     func handleSKUValidation(isValid: Bool, shouldBringUpKeyboard: Bool) {
         enableDoneButton(isValid)
         if shouldBringUpKeyboard {
-            getSkuCell()?.textFieldBecomeFirstResponder()
+            getTitleAndTextFieldCell(from: .sku)?.textFieldBecomeFirstResponder()
         }
+    }
+
+    func handleGlobalUniqueIdentifierValidation(isValid: Bool, shouldBringUpKeyboard: Bool) {
+        enableDoneButton(isValid)
+        if shouldBringUpKeyboard {
+            getTitleAndTextFieldCell(from: .globalUniqueIdentifier)?.textFieldBecomeFirstResponder()
+        }
+
     }
 }
 
@@ -411,11 +450,12 @@ private extension ProductInventorySettingsViewController {
         return sections[indexPath.section].rows[indexPath.row]
     }
 
-    func getSkuCell() -> TitleAndTextFieldTableViewCell? {
-        guard let indexPath = sections.indexPathForRow(.sku) else {
+    func getTitleAndTextFieldCell(from row: Row) -> TitleAndTextFieldTableViewCell? {
+        guard let indexPath = sections.indexPathForRow(row) else {
             return nil
         }
         return tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell
+
     }
 }
 

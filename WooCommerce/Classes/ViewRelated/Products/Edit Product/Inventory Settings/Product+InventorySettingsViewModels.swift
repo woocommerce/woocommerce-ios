@@ -12,7 +12,8 @@ extension Product {
                                                         onTextChange: onTextChange)
     }
 
-    static func createGlobalUniqueIdentifierViewModel(onTextChange: @escaping (_ text: String?) -> Void) -> TitleAndTextFieldTableViewCell.ViewModel {
+	static func createGlobalUniqueIdentifierViewModel(globalUniqueID: String?,
+                                                      onTextChange: @escaping (_ text: String?) -> Void) -> TitleAndTextFieldTableViewCell.ViewModel {
         let title = NSLocalizedString("productInventorySettings.globalUniqueIdentifier.title",
                                       value: "GTIN, UPC, EAN, ISBN",
                                       comment: "Title of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN")
@@ -20,7 +21,7 @@ extension Product {
                                             value: "Optional",
                                             comment: "Placeholder of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN")
         return TitleAndTextFieldTableViewCell.ViewModel(title: title,
-                                                        text: "",
+                                                        text: globalUniqueID,
                                                         placeholder: placeholder,
                                                         textFieldAlignment: .leading,
                                                         onTextChange: onTextChange)

@@ -24,6 +24,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     public let fullDescription: String?
     public let shortDescription: String?
     public let sku: String?
+    public let globalUniqueID: String?
 
     public let price: String
     public let regularPrice: String?
@@ -205,6 +206,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 fullDescription: String?,
                 shortDescription: String?,
                 sku: String?,
+                globalUniqueID: String?,
                 price: String,
                 regularPrice: String?,
                 salePrice: String?,
@@ -282,6 +284,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.fullDescription = fullDescription
         self.shortDescription = shortDescription
         self.sku = sku
+        self.globalUniqueID = globalUniqueID
         self.price = price
         self.regularPrice = regularPrice
         self.salePrice = salePrice
@@ -388,6 +391,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let sku = container.failsafeDecodeIfPresent(targetType: String.self,
                                                     forKey: .sku,
                                                     alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
+
+        let globalUniqueID = try container.decodeIfPresent(String.self, forKey: .globalUniqueID)
 
         // Even though a plain install of WooCommerce Core provides string values,
         // some plugins alter the field value from String to Int or Decimal.
@@ -581,6 +586,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   fullDescription: fullDescription,
                   shortDescription: shortDescription,
                   sku: sku,
+                  globalUniqueID: globalUniqueID,
                   price: price,
                   regularPrice: regularPrice,
                   salePrice: salePrice,
@@ -685,6 +691,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         // Inventory Settings.
         try container.encode(sku, forKey: .sku)
+        try container.encode(globalUniqueID, forKey: .globalUniqueID)
         try container.encode(manageStock, forKey: .manageStock)
         try container.encode(soldIndividually, forKey: .soldIndividually)
 
@@ -815,6 +822,7 @@ private extension Product {
         case shortDescription       = "short_description"
 
         case sku            = "sku"
+        case globalUniqueID = "global_unique_id"
         case price          = "price"
         case regularPrice   = "regular_price"
         case salePrice      = "sale_price"

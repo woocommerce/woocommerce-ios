@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 118 (Release 21.0.0.0)
+- @cvargascasaseca 2024-10-25
+    - Added `globalUniqueID` attribute to `Product` and `ProductVariation` entities.
+    
 ## Model 117 (Release 20.3.0.0)
 - @pmusolino 2024-09-04
     - Added `customFields` to-many relationship from `Product` to `MetaData`.

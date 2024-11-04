@@ -143,6 +143,19 @@ final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSet
     var didUpdate: (() -> Void)? = nil
 }
 
+extension CardPresentPaymentsOnboardingViewModel: Equatable {
+    static func == (lhs: CardPresentPaymentsOnboardingViewModel, rhs: CardPresentPaymentsOnboardingViewModel) -> Bool {
+        lhs.state == rhs.state &&
+        lhs.userIsAdministrator == rhs.userIsAdministrator &&
+        lhs.learnMoreURL == rhs.learnMoreURL &&
+        lhs.shouldShow == rhs.shouldShow &&
+        (lhs.showSupport != nil) == (rhs.showSupport != nil) &&
+        (lhs.showURL != nil) == (rhs.showURL != nil) &&
+        (lhs.didChangeShouldShow != nil) == (rhs.didChangeShouldShow != nil) &&
+        (lhs.didUpdate != nil) == (rhs.didUpdate != nil)
+    }
+}
+
 private extension CardPresentPaymentsOnboardingViewModel {
     var countryCode: CountryCode {
         CardPresentConfigurationLoader().configuration.countryCode

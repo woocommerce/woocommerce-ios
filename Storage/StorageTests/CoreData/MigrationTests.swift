@@ -3090,6 +3090,62 @@ final class MigrationTests: XCTestCase {
         // The MetaData.product inverse relationship should be updated.
         XCTAssertEqual(customField.value(forKey: "product") as? NSManagedObject, migratedProduct)
     }
+
+    func test_migrating_from_117_to_118_adds_new_globalUniqueID_attribute_in_product() throws {
+		// Given
+		let sourceContainer = try startPersistentContainer("Model 117")
+		let sourceContext = sourceContainer.viewContext
+
+		let product = insertProduct(to: sourceContext, forModel: 117)
+		try sourceContext.save()
+
+		XCTAssertNil(product.entity.attributesByName["globalUniqueID"], "Precondition. Property does not exist.")
+
+		// When
+		let targetContainer = try migrate(sourceContainer, to: "Model 118")
+
+		// Then
+		let targetContext = targetContainer.viewContext
+		let migratedProduct = try XCTUnwrap(targetContext.first(entityName: "Product"))
+
+		// `globalUniqueID` should be present in `migratedProduct`
+		XCTAssertNotNil(migratedProduct.entity.attributesByName["globalUniqueID"])
+
+		let globalUniqueID = "1223"
+		migratedProduct.setValue(globalUniqueID, forKey: "globalUniqueID")
+		try targetContext.save()
+
+		let savedGlobalUniqueID = try XCTUnwrap(migratedProduct.value(forKey: "globalUniqueID") as? String)
+		XCTAssertEqual(savedGlobalUniqueID, globalUniqueID)
+	}
+
+	func test_migrating_from_117_to_118_adds_new_globalUniqueID_attribute_in_product_variation() throws {
+		// Given
+		let sourceContainer = try startPersistentContainer("Model 117")
+		let sourceContext = sourceContainer.viewContext
+
+		let product = insertProductVariation(to: sourceContext)
+		try sourceContext.save()
+
+		XCTAssertNil(product.entity.attributesByName["globalUniqueID"], "Precondition. Property does not exist.")
+
+		// When
+		let targetContainer = try migrate(sourceContainer, to: "Model 118")
+
+		// Then
+		let targetContext = targetContainer.viewContext
+		let migratedProductVariation = try XCTUnwrap(targetContext.first(entityName: "ProductVariation"))
+
+		// `globalUniqueID` should be present in `migratedProductVariation`
+		XCTAssertNotNil(migratedProductVariation.entity.attributesByName["globalUniqueID"])
+
+		let globalUniqueID = "1223"
+		migratedProductVariation.setValue(globalUniqueID, forKey: "globalUniqueID")
+		try targetContext.save()
+
+		let savedGlobalUniqueID = try XCTUnwrap(migratedProductVariation.value(forKey: "globalUniqueID") as? String)
+		XCTAssertEqual(savedGlobalUniqueID, globalUniqueID)
+	}
 }
 
 // MARK: - Persistent Store Setup and Migrations

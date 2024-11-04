@@ -5,6 +5,8 @@ struct EmptyState: View {
     @State var title: String
     @State var description: String?
     @State var image: UIImage?
+    @State var buttonTitle: String?
+    @State var buttonAction: (() -> Void)?
 
     var body: some View {
         VStack(spacing: Constants.verticalSpacing) {
@@ -24,6 +26,15 @@ struct EmptyState: View {
                     .bodyStyle()
                     .fixedSize(horizontal: false, vertical: true)
             }
+
+            if let buttonTitle {
+                Button(buttonTitle) {
+                    buttonAction?()
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.top, Constants.verticalSpacing)
+                .frame(maxWidth: Constants.buttonWidth)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .center)
         .padding(.horizontal, Constants.horizontalSpacing)
@@ -35,6 +46,7 @@ private extension EmptyState {
         static let verticalSpacing: CGFloat = 16
         static let horizontalSpacing: CGFloat = 24
         static let width: CGFloat = 168
+        static let buttonWidth: CGFloat = 228
     }
 }
 

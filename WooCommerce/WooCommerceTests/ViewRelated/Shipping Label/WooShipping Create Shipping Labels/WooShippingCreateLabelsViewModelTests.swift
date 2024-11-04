@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
 @testable import Networking
+import WooFoundation
 
 final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     func test_inits_with_expected_values() {
@@ -12,6 +13,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.markOrderComplete)
+        XCTAssertFalse(viewModel.canPurchaseLabel)
+        XCTAssertNil(viewModel.totalCost)
     }
 
     func test_site_address_converted_to_formatted_originAddress() {
@@ -84,6 +87,78 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(markOrderComplete)
+    }
+
+    func test_canPurchaseLabel_true_after_shipping_rate_is_selected() throws {
+        // Given
+        let order = Order.fake()
+        let viewModel = WooShippingCreateLabelsViewModel(order: order)
+        XCTAssertFalse(viewModel.canPurchaseLabel)
+
+        // When
+        let card = try XCTUnwrap(viewModel.shippingService.serviceTabs.first?.cards.first)
+        card.selectRate()
+
+        // Then
+        XCTAssertTrue(viewModel.canPurchaseLabel)
+    }
+
+    func test_selecting_shipping_rate_sets_totalCost() throws {
+        // Given
+        let order = Order.fake()
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, currencySettings: CurrencySettings())
+
+        // When
+        let card = try XCTUnwrap(viewModel.shippingService.serviceTabs.first?.cards.first)
+        card.selectRate()
+
+        // Then
+        XCTAssertEqual(viewModel.totalCost, "$7.53")
+    }
+
+    func test_formatAmount_for_standard_shipping_rate_returns_formatted_rate() throws {
+        // Given
+        let order = Order.fake()
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, currencySettings: CurrencySettings())
+        let card = try XCTUnwrap(viewModel.shippingService.serviceTabs.first?.cards[1])
+        card.selectRate()
+
+        // When
+        let selectedRate = try XCTUnwrap(viewModel.shippingService.selectedRate)
+        let formattedAmount = viewModel.formatAmount(for: selectedRate.rate)
+
+        // Then
+        XCTAssertEqual(formattedAmount, "$40.06")
+    }
+
+    func test_formatAmount_for_signature_shipping_rate_returns_formatted_difference_from_base_rate() throws {
+        // Given
+        let order = Order.fake()
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, currencySettings: CurrencySettings())
+        let card = try XCTUnwrap(viewModel.shippingService.serviceTabs.first?.cards[1])
+        card.signatureRequirement = .signatureRequired
+        card.selectRate()
+
+        // When
+        let signatureRate = try XCTUnwrap(viewModel.shippingService.selectedRate?.signatureRate)
+        let formattedAmount = viewModel.formatAmount(for: signatureRate)
+
+        // Then
+        XCTAssertEqual(formattedAmount, "$2.70")
+    }
+
+    func test_canViewLabel_true_when_shipping_label_exists() {
+        // Given
+        let order = Order.fake()
+        let label = ShippingLabel.fake()
+
+        // When
+        let newLabelViewModel = WooShippingCreateLabelsViewModel(order: order)
+        let existingLabelViewModel = WooShippingCreateLabelsViewModel(order: order, shippingLabel: label)
+
+        // Then
+        XCTAssertFalse(newLabelViewModel.canViewLabel)
+        XCTAssertTrue(existingLabelViewModel.canViewLabel)
     }
 }
 

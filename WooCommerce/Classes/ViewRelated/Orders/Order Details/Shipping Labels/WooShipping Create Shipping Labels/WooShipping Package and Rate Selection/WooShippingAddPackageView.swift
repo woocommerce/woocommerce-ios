@@ -111,24 +111,14 @@ struct WooShippingAddPackageView: View {
     @ViewBuilder
     private var savedPackageView: some View {
         // TODO: dummy data for UI creation
-        let packages: [WooSavedPackageData] = [
+        let customPackages: [WooSavedPackageData] = [
             WooSavedPackageData(name: "Small Flat Rate Box",
                                 type: "Custom package",
                                 packageType: "box",
                                 dimensions: "21.92 × 13.67 × 4.14 cm",
                                 weight: "5 kg"),
             WooSavedPackageData(name: "Small Flat Rate Box",
-                                type: "DHL Express",
-                                packageType: "box",
-                                dimensions: "21.92 × 13.67 × 4.14 cm",
-                                weight: "5 kg"),
-            WooSavedPackageData(name: "Small Flat Rate Box",
                                 type: "Custom package",
-                                packageType: "box",
-                                dimensions: "21.92 × 13.67 × 4.14 cm",
-                                weight: "5 kg"),
-            WooSavedPackageData(name: "Small Flat Rate Box",
-                                type: "USPS Priority Mail Flat Rate Boxes",
                                 packageType: "box",
                                 dimensions: "21.92 × 13.67 × 4.14 cm",
                                 weight: "5 kg"),
@@ -138,7 +128,20 @@ struct WooShippingAddPackageView: View {
                                 dimensions: "21.92 × 13.67 × 4.14 cm",
                                 weight: "5 kg"),
         ]
-        WooSavedPackagesSelectionView(viewModel: WooSavedPackagesSelectionViewModel(packages: packages)) { packageData in
+        let predefinedPackages: [WooSavedPackageData] = [
+            WooSavedPackageData(name: "Small Flat Rate Box",
+                                type: "DHL Express",
+                                packageType: "box",
+                                dimensions: "21.92 × 13.67 × 4.14 cm",
+                                weight: "5 kg"),
+            WooSavedPackageData(name: "Small Flat Rate Box",
+                                type: "USPS Priority Mail Flat Rate Boxes",
+                                packageType: "box",
+                                dimensions: "21.92 × 13.67 × 4.14 cm",
+                                weight: "5 kg"),
+        ]
+        WooSavedPackagesSelectionView(viewModel: WooSavedPackagesSelectionViewModel(customPackages: customPackages,
+                                                                                    predefinedPackages: predefinedPackages)) { packageData in
             addPackageAction(packageData)
         }
     }

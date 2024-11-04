@@ -5,22 +5,24 @@ import Yosemite
 final class WooSavedPackagesSelectionViewModelTests: XCTestCase {
     func test_it_inits_packages() {
         // Given/When
-        let packages: [WooSavedPackageData] = testingPackages()
-        let viewModel = WooSavedPackagesSelectionViewModel(packages: packages)
+        let viewModel = WooSavedPackagesSelectionViewModel(customPackages: testingCustomPackages(),
+                                                           predefinedPackages: testingPredefinedPackages())
 
         // Then
-        XCTAssertEqual(viewModel.packages.count, 2)
+        XCTAssertEqual(viewModel.customPackages.count, 2)
+        XCTAssertEqual(viewModel.predefinedPackages.count, 1)
         XCTAssertNil(viewModel.selectedPackageId)
         XCTAssertNil(viewModel.selectedPackage)
     }
 
     func test_it_selects_package() {
         // Given
-        let packages: [WooSavedPackageData] = testingPackages()
-        let viewModel = WooSavedPackagesSelectionViewModel(packages: packages)
+        let customPackages = testingCustomPackages()
+        let viewModel = WooSavedPackagesSelectionViewModel(customPackages: customPackages,
+                                                           predefinedPackages: testingPredefinedPackages())
 
         // When
-        viewModel.selectedPackageId = packages.first?.id
+        viewModel.selectedPackageId = customPackages.first?.id
 
         // Then
         XCTAssertNotNil(viewModel.selectedPackageId)
@@ -29,13 +31,22 @@ final class WooSavedPackagesSelectionViewModelTests: XCTestCase {
 }
 
 extension WooSavedPackagesSelectionViewModelTests {
-    func testingPackages() -> [WooSavedPackageData] {
+    func testingCustomPackages() -> [WooSavedPackageData] {
         return [
             WooSavedPackageData(name: "Small Flat Rate Box",
                                 type: "Custom package",
                                 packageType: "box",
                                 dimensions: "21.92 × 13.67 × 4.14 cm",
                                 weight: "5 kg"),
+            WooSavedPackageData(name: "Small Flat Rate Box",
+                                type: "Custom package",
+                                packageType: "box",
+                                dimensions: "21.92 × 13.67 × 4.14 cm",
+                                weight: "5 kg")
+        ]
+    }
+    func testingPredefinedPackages() -> [WooSavedPackageData] {
+        return [
             WooSavedPackageData(name: "Small Flat Rate Box",
                                 type: "DHL Express",
                                 packageType: "box",

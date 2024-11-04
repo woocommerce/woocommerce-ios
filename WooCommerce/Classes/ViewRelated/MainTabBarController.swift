@@ -250,7 +250,6 @@ final class MainTabBarController: UITabBarController {
     ///
     /// The solution is borrowed from https://github.com/Automattic/pocket-casts-ios/pull/2077
     private func fixTabBarTraitCollectionOnIpadForiOS18() {
-    #if compiler(>=6)
         if #available(iOS 18.0, *), UIDevice.current.userInterfaceIdiom == .pad {
             traitOverrides.horizontalSizeClass = .compact
             if let rootHorizontalSizeClass = view.window?.traitCollection.horizontalSizeClass {
@@ -262,7 +261,6 @@ final class MainTabBarController: UITabBarController {
                 }
             }
         }
-    #endif
     }
 }
 

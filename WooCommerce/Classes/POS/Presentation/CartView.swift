@@ -1,6 +1,9 @@
 import SwiftUI
 import protocol Yosemite.POSItem
 
+// Dummy change to trigger Dangermattic to test PR https://github.com/woocommerce/woocommerce-ios/pull/14295
+// Do not merge.
+
 struct CartView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var cartViewModel: CartViewModel

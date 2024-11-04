@@ -42,17 +42,20 @@ final class CustomFieldEditorViewModel: ObservableObject {
         initialKey == "" && initialValue == ""
     }
 
-    init(key: String,
-         value: String,
-         isJsonField: Bool = false,
+    init(customField: CustomFieldViewModel?,
          disallowedKeys: [String] = [],
          onSave: @escaping (String, String) -> Void,
          onDelete: (() -> Void)? = nil) {
-        self.key = key
-        self.value = isJsonField ? value.prettyPrint() : value
-        self.initialKey = key
-        self.initialValue = isJsonField ? value.prettyPrint() : value
-        self.isReadOnlyValue = isJsonField
+        self.key = customField?.key ?? ""
+        self.initialKey = customField?.key ?? ""
+        let value = if customField?.isJson == true, let value = customField?.value {
+            value.prettyPrint()
+        } else {
+            customField?.value ?? ""
+        }
+        self.value = value
+        self.initialValue = value
+        self.isReadOnlyValue = customField?.isJson ?? false
         self.disallowedKeys = disallowedKeys
         self.onSave = onSave
         self.onDelete = onDelete

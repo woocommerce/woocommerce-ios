@@ -28,6 +28,47 @@ final class WooSavedPackagesSelectionViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.selectedPackageId)
         XCTAssertNotNil(viewModel.selectedPackage)
     }
+
+    func test_it_removes_package() {
+        // Given
+        let customPackages = testingCustomPackages()
+        let customPackagesCount = customPackages.count
+        let viewModel = WooSavedPackagesSelectionViewModel(customPackages: customPackages,
+                                                           predefinedPackages: testingPredefinedPackages())
+
+        // When
+        if let package = customPackages.first {
+            viewModel.removePackage(package)
+        }
+
+        // Then
+        XCTAssertEqual(viewModel.customPackages.count, customPackagesCount - 1)
+    }
+
+    func test_it_removes_selected_package() {
+        // Given
+        let customPackages = testingCustomPackages()
+        let customPackagesCount = customPackages.count
+        let viewModel = WooSavedPackagesSelectionViewModel(customPackages: customPackages,
+                                                           predefinedPackages: testingPredefinedPackages())
+
+        // When
+        viewModel.selectedPackageId = customPackages.first?.id
+
+        // Then
+        XCTAssertNotNil(viewModel.selectedPackageId)
+        XCTAssertNotNil(viewModel.selectedPackage)
+
+        // When
+        if let package = customPackages.first {
+            viewModel.removePackage(package)
+        }
+
+        // Then
+        XCTAssertEqual(viewModel.customPackages.count, customPackagesCount - 1)
+        XCTAssertNil(viewModel.selectedPackageId)
+        XCTAssertNil(viewModel.selectedPackage)
+    }
 }
 
 extension WooSavedPackagesSelectionViewModelTests {

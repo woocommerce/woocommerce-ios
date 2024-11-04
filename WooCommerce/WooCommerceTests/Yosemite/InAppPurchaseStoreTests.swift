@@ -62,7 +62,6 @@ final class InAppPurchaseStoreTests: XCTestCase {
         XCTAssertTrue(result)
     }
 
-
     func test_iap_supported_in_canada() throws {
         try skipBecauseOfStoreFrontXcode16Issue()
 

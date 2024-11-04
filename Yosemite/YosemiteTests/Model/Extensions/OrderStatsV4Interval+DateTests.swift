@@ -13,7 +13,7 @@ final class OrderStatsV4Interval_DateTests: XCTestCase {
         // As long as the dates are parsed and formatted in the same time zone, they should be consistent.
         let timeZone = TimeZone(secondsFromGMT: 29302)!
         [interval.dateStart(timeZone: timeZone), interval.dateEnd(timeZone: timeZone)].forEach { date in
-            let dateComponents = Calendar.current.dateComponents(in: timeZone, from: date)
+            let dateComponents = Calendar(identifier: .iso8601).dateComponents(in: timeZone, from: date)
             XCTAssertEqual(dateComponents.year, 2019)
             XCTAssertEqual(dateComponents.month, 8)
             XCTAssertEqual(dateComponents.day, 8)

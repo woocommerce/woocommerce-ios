@@ -39,19 +39,25 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
 
     func test_formatDayCount_returns_correct_content() {
         // Given
-        let initialStartDate = Date(timeIntervalSinceNow: 0)
-        let viewModel = BlazeBudgetSettingViewModel(siteID: 123,
-                                                    dailyBudget: 11,
-                                                    isEvergreen: false,
-                                                    duration: 3,
-                                                    startDate: initialStartDate) { _, _, _, _ in }
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        // Use current timezone to match ViewModel's calendar behavior
+        dateFormatter.timeZone = .current
+
+        let startDate = dateFormatter.date(from: "2024-11-01")!
+        let viewModel = BlazeBudgetSettingViewModel(
+            siteID: 123,
+            dailyBudget: 11,
+            isEvergreen: false,
+            duration: 3,
+            startDate: startDate
+        ) { _, _, _, _ in }
 
         // When
         let content = viewModel.formatDayCount(3).string
 
         // Then
-        let endDate = initialStartDate.addingDays(3).toString(dateStyle: .medium, timeStyle: .none)
-        XCTAssertEqual(content, "3 days to \(endDate)")
+        XCTAssertEqual(content, "3 days to Nov 4, 2024")
     }
 
     func test_confirmSettings_triggers_onCompletion_with_updated_details() {

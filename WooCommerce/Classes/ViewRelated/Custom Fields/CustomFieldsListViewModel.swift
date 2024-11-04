@@ -6,14 +6,30 @@ import Yosemite
 final class CustomFieldsListViewModel: ObservableObject {
     private let stores: StoresManager
     @Published private var originalCustomFields: [CustomFieldViewModel]
-    private let customFieldsType: MetaDataType
+
+    var originalCustomFieldsCount: Int64 {
+        Int64(originalCustomFields.count)
+    }
+
+    var originalCustomFieldsSize: Int64 {
+        Int64(
+            // Total byte size of custom field values
+            originalCustomFields.map { $0.content.utf8.count }.reduce(0, +)
+        )
+    }
+
+    let customFieldsType: MetaDataType
     private let siteID: Int64
     private let parentItemID: Int64
     private let onChangesSaved: (([MetaData]) -> Void)?
+    @Published private var isTopBannerDismissed: Bool = false
 
     @Published var selectedCustomField: CustomFieldUI? = nil
     @Published var isAddingNewField: Bool = false
     @Published var isSavingChanges: Bool = false
+    var shouldShowTopBanner: Bool {
+        hasChanges && !isTopBannerDismissed
+    }
 
     @Published private(set) var combinedList: [CustomFieldUI] = []
     @Published var notice: Notice?
@@ -33,6 +49,14 @@ final class CustomFieldsListViewModel: ObservableObject {
     }
     @Published private(set) var hasChanges: Bool = false
 
+    /// Due to the API limitation, when creating a new field, the new key should not be the same as an existing custom fields's key.
+    /// We also don't want newly added fields to have duplicate key, because that way the API only accepts saving one of them.
+    /// Note that this rule only applies to new field creation, and duplicates are allowed when editing existing fields.
+    var disallowedKeysForCreation: [String] {
+        originalCustomFields.map { $0.title }
+        + addedFields.map { $0.key }
+    }
+
     init(customFields: [CustomFieldViewModel],
          siteID: Int64,
          parentItemID: Int64,
@@ -47,6 +71,7 @@ final class CustomFieldsListViewModel: ObservableObject {
         self.onChangesSaved = onChangesSaved
 
         observePendingChanges()
+        loadTopBannerDismissState()
     }
 }
 
@@ -105,6 +130,15 @@ extension CustomFieldsListViewModel {
         }
     }
 
+    func dismissTopBanner() {
+        stores.dispatch(AppSettingsAction.dismissCustomFieldsTopBanner { [weak self] result in
+            guard let self else { return }
+            if result.isSuccess {
+                isTopBannerDismissed = true
+            }
+        })
+    }
+
     /// Save changes to the server, uses async/await
     @MainActor
     func saveChanges() async {
@@ -118,11 +152,23 @@ extension CustomFieldsListViewModel {
             pendingChanges = PendingCustomFieldsChanges()
             notice = Notice(title: CustomFieldsListHostingController.Localization.saveSuccessTitle,
                             feedbackType: .success)
+
+            ServiceLocator.analytics.track(
+                event: WooAnalyticsEvent.CustomFields.customFieldsSavedSuccessfully()
+            )
+
             onChangesSaved?(result)
         } catch {
             notice = Notice(title: CustomFieldsListHostingController.Localization.saveErrorTitle,
                             message: CustomFieldsListHostingController.Localization.saveErrorMessage,
                             feedbackType: .error)
+
+            ServiceLocator.analytics.track(
+                event: WooAnalyticsEvent.CustomFields.customFieldsSavingFailed(
+                    errorContext: String(describing: error),
+                    errorDescription: error.localizedDescription
+                )
+            )
         }
 
         isSavingChanges = false
@@ -163,6 +209,13 @@ private extension CustomFieldsListViewModel {
         }
     }
 
+    func loadTopBannerDismissState() {
+        stores.dispatch(AppSettingsAction.loadCustomFieldsTopBannerDismissState { [weak self] result in
+            guard let self else { return }
+            isTopBannerDismissed = result
+        })
+    }
+
     func observePendingChanges() {
         $pendingChanges
             .combineLatest($originalCustomFields)
@@ -194,12 +247,44 @@ private extension CustomFieldsListViewModel {
     }
 }
 
+// MARK: - Analytics
+extension CustomFieldsListViewModel {
+    func trackCustomFieldTapped() {
+        ServiceLocator.analytics.track(
+            event: WooAnalyticsEvent.CustomFields.customFieldTapped(
+                isJson: selectedCustomField?.isJson ?? false,
+                hasHtml: selectedCustomField?.value.removedHTMLTags != selectedCustomField?.value
+            )
+        )
+    }
+
+    func trackAddCustomFieldTapped() {
+        ServiceLocator.analytics.track(
+            event: WooAnalyticsEvent.CustomFields.addCustomFieldTapped()
+        )
+    }
+
+    func trackSaveCustomFieldTapped() {
+        ServiceLocator.analytics.track(
+            event: WooAnalyticsEvent.CustomFields.saveCustomFieldTapped(
+                editedFieldsCount: editedFields.count,
+                addedFieldsCount: addedFields.count,
+                deletedFieldsCount: deletedFieldIds.count
+            )
+        )
+    }
+}
+
 extension CustomFieldsListViewModel {
     struct CustomFieldUI: Identifiable {
         let id = UUID()
         let key: String
         let value: String
         let fieldId: Int64?
+
+        var isJson: Bool {
+            (try? JSONSerialization.jsonObject(with: value.data(using: .utf8) ?? Data())) != nil
+        }
 
         init(key: String, value: String, fieldId: Int64? = nil) {
             self.key = key

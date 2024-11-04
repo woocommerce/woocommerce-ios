@@ -457,6 +457,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 eventLogger.logPriceSettingsTapped()
                 editPriceSettings()
             case .customFields:
+                ServiceLocator.analytics.track(.productDetailCustomFieldsTapped)
                 showCustomFields()
             case .reviews:
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
@@ -1619,6 +1620,7 @@ private extension ProductFormViewController {
             return
         }
         viewModel.updateInventorySettings(sku: data.sku,
+                                          globalUniqueIdentifier: data.globalUniqueIdentifier,
                                           manageStock: data.manageStock,
                                           soldIndividually: data.soldIndividually,
                                           stockQuantity: data.stockQuantity,

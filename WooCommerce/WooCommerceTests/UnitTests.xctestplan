@@ -31,8 +31,6 @@
     {
       "skippedTests" : [
         "CardReaderConnectionControllerTests",
-        "InAppPurchaseStoreTests\/test_iap_supported_in_canada()",
-        "InAppPurchaseStoreTests\/test_load_products_fails_if_iap_unsupported()",
         "InAppPurchaseStoreTests\/test_user_is_entitled_to_product_returns_false_when_not_entitled()",
         "InAppPurchaseStoreTests\/test_user_is_entitled_to_product_returns_true_when_entitled()",
         "StripeCardReaderIntegrationTests"

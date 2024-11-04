@@ -76,6 +76,15 @@ public final class PaymentsScreen: ScreenObject {
     }
 
     public func clickLearnMoreIPPLink() throws -> Self {
+        try XCTSkipIf(
+            UIDevice.current.userInterfaceIdiom == .pad,
+            """
+            Skipping on the iPhone.
+            Calling tap() on a link within attributed text no longer works in UI tests on Xcode 16.
+            Using click() instead, which is only supported on iPad.
+            """
+        )
+
         learnMoreButton.coordinate(withNormalizedOffset: CGVector(dx: 0.1, dy: 0.5)).click()
         return self
     }

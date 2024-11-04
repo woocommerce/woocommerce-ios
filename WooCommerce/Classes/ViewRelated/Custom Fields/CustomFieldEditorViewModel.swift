@@ -48,7 +48,7 @@ final class CustomFieldEditorViewModel: ObservableObject {
          onDelete: (() -> Void)? = nil) {
         self.key = customField?.key ?? ""
         self.initialKey = customField?.key ?? ""
-        let value = if customField?.isJson ?? false, let value = customField?.value {
+        let value = if customField?.isJson == true, let value = customField?.value {
             value.prettyPrint()
         } else {
             customField?.value ?? ""

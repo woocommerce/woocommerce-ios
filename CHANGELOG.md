@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 21.0
+Product and order management just got easier! You can now view and edit custom fields for products and orders right within the app. Also, we've smoothed out the payments onboarding process. It's now easier than ever to resolve errors setting up WooPayments or Stripe. Happy selling!
+
 ## 20.9
 We've tightened the nuts and bolts in our WooCommerce mobile app to serve you better. We've squashed a bug that could cause a crash when configuring the product scanner's camera swap button. The Tap to Pay feature has been enhanced for better performance and now requires minimum iOS 16.7. Also, we resolved an issue with the Google Ads dashboard card for smoother loading. Updating brings out the best in our app!
 

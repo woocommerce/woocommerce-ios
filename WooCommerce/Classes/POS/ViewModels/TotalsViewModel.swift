@@ -21,7 +21,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     }
 
     @Published var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
-    @Published var cardPresentPaymentOnboardingURL: URL?
     private var onOnboardingCancellation: (() -> Void)?
     @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
@@ -131,6 +130,7 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     }
 
     /// Called when the onboarding UI is dismissed.
+    /// It is set when receiving an onboarding view model to display, and necessary to reset the internal onboarding state on UI dismissal.
     func cancelOnboarding() {
         onOnboardingCancellation?()
     }

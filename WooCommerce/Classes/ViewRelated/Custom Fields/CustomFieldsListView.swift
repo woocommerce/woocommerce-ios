@@ -1,12 +1,15 @@
 import Combine
 import SwiftUI
+import protocol WooFoundation.Analytics
 
 final class CustomFieldsListHostingController: UIHostingController<CustomFieldsListView> {
     private let viewModel: CustomFieldsListViewModel
+    private let analytics: Analytics
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(isEditable: Bool, viewModel: CustomFieldsListViewModel) {
+    init(isEditable: Bool, viewModel: CustomFieldsListViewModel, analytics: Analytics = ServiceLocator.analytics) {
         self.viewModel = viewModel
+        self.analytics = analytics
         super.init(rootView: CustomFieldsListView(isEditable: isEditable,
                                                   viewModel: viewModel)
         )
@@ -14,6 +17,14 @@ final class CustomFieldsListHostingController: UIHostingController<CustomFieldsL
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        analytics.track(
+            event: .CustomFields.customFieldsListLoaded(
+                type: viewModel.customFieldsType.analyticsValue,
+                fieldsCount: viewModel.originalCustomFieldsCount,
+                fieldsSize: viewModel.originalCustomFieldsSize,
+                has_json_fields: viewModel.combinedList.contains(where: { $0.isJson }))
+        )
 
         configureNavigation()
         observeStateChange()
@@ -65,13 +76,17 @@ private extension CustomFieldsListHostingController {
     func configureNavigation() {
         title = Localization.title
         navigationItem.rightBarButtonItems = [saveCustomFieldButtonItem, addCustomFieldButtonItem]
+
+        rootView.emptyStateButtonAction = displayLearnMoreWebContent
     }
 
     @objc func openAddCustomFieldScreen() {
+        viewModel.trackAddCustomFieldTapped()
         viewModel.isAddingNewField = true
     }
 
     @objc func saveCustomField() {
+        viewModel.trackSaveCustomFieldTapped()
         Task {
             await viewModel.saveChanges()
         }
@@ -115,6 +130,15 @@ private extension CustomFieldsListHostingController {
             self?.navigationController?.popViewController(animated: true)
         })
     }
+
+    func displayLearnMoreWebContent() {
+        switch viewModel.customFieldsType {
+        case .order:
+            WebviewHelper.launch(WooConstants.URLs.customFieldsOrderLearnMore.asURL(), with: self)
+        case .product:
+            WebviewHelper.launch(WooConstants.URLs.customFieldsProductLearnMore.asURL(), with: self)
+        }
+    }
 }
 
 struct CustomFieldsListView: View {
@@ -122,6 +146,7 @@ struct CustomFieldsListView: View {
     @ObservedObject private var viewModel: CustomFieldsListViewModel
 
     let isEditable: Bool
+    var emptyStateButtonAction: (() -> Void)?
 
     init(isEditable: Bool,
          viewModel: CustomFieldsListViewModel) {
@@ -137,25 +162,37 @@ struct CustomFieldsListView: View {
                     .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
                     .renderedIf(viewModel.shouldShowTopBanner)
 
-                List(viewModel.combinedList) { customField in
-                    Button(action: { viewModel.selectedCustomField = customField }) {
-                        CustomFieldRow(isEditable: isEditable,
-                                    title: customField.key,
-                                    content: customField.value.removedHTMLTags,
-                                    contentURL: nil)
+                if viewModel.combinedList.isEmpty {
+                    EmptyState(title: CustomFieldsListHostingController.Localization.emptyStateTitle,
+                               description: CustomFieldsListHostingController.Localization.emptyStateDescription,
+                               image: .customerSearchImage,
+                               buttonTitle: CustomFieldsListHostingController.Localization.emptyStateButton,
+                               buttonAction: emptyStateButtonAction)
+                        .frame(maxHeight: .infinity)
+                } else {
+                    List(viewModel.combinedList) { customField in
+                        Button(action: {
+							viewModel.selectedCustomField = customField
+							viewModel.trackCustomFieldTapped()
+						}) {
+                            CustomFieldRow(isEditable: isEditable,
+                                           title: customField.key,
+                                           content: customField.value.removedHTMLTags,
+                                           contentURL: nil)
+                        }
                     }
+                    .listStyle(.plain)
                 }
-                .listStyle(.plain)
             }
             .sheet(item: $viewModel.selectedCustomField) { customField in
-	            /// When editing a newly added and unsaved custom field (identified by it having nil `fieldId`), provide disallowed keys.
-	            let disallowedKeys = customField.fieldId == nil ? viewModel.disallowedKeysForCreation : []
+                /// When editing a newly added and unsaved custom field (identified by it having nil `fieldId`), provide disallowed keys.
+                let disallowedKeys = customField.fieldId == nil ? viewModel.disallowedKeysForCreation : []
 
-	            buildCustomFieldEditorView(customField: customField,
-	                                       disallowedKeys: disallowedKeys)
+                buildCustomFieldEditorView(customField: customField,
+                                           disallowedKeys: disallowedKeys)
             }
             .sheet(isPresented: $viewModel.isAddingNewField) {
-	            buildCustomFieldEditorView(customField: nil, disallowedKeys: viewModel.disallowedKeysForCreation)
+                buildCustomFieldEditorView(customField: nil, disallowedKeys: viewModel.disallowedKeysForCreation)
             }
             .notice($viewModel.notice)
         }
@@ -234,6 +271,7 @@ private extension CustomFieldsListView {
             CustomFieldEditorView(viewModel: CustomFieldEditorViewModel(
                 key: customField?.key ?? "",
                 value: customField?.value ?? "",
+                isJsonField: customField?.isJson ?? false,
                 disallowedKeys: disallowedKeys,
                 onSave: { updatedKey, updatedValue in
                     viewModel.saveField(
@@ -308,6 +346,22 @@ extension CustomFieldsListHostingController {
             "customFieldsListHostingController.saveErrorMessage",
             value: "There was an error saving your changes. Please try again.",
             comment: "Message for the error message when saving changes"
+        )
+        static let emptyStateTitle = NSLocalizedString(
+            "customFieldsListHostingController.emptyStateTitle",
+            value: "No custom fields found",
+            comment: "Title for the message when the list is empty."
+        )
+        static let emptyStateDescription = NSLocalizedString(
+            "customFieldsListHostingController.emptyStateDescription",
+            value: "Custom fields are optional metadata to display extra information or customize "
+            + "your store's shopping experience",
+            comment: "Message when the list is empty."
+        )
+        static let emptyStateButton = NSLocalizedString(
+            "customFieldsListHostingController.emptyStateButton",
+            value: "Learn more",
+            comment: "Text for button that's shown when the list is empty."
         )
     }
 }

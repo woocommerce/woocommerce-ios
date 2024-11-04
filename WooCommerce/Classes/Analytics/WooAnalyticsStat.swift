@@ -1246,6 +1246,23 @@ enum WooAnalyticsStat: String {
 
     // MARK: Point of Sale events
     case pointOfSaleAddItemToCart = "pos_item_added_to_cart"
+
+    // MARK: Custom Fields events
+    case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"
+
+    // Custom Fields List
+    case customFieldsListLoaded = "custom_fields_list_loaded"
+    case customFieldTapped = "custom_field_tapped"
+    case addCustomFieldTapped = "add_custom_field_tapped"
+    case saveCustomFieldTapped = "save_custom_field_tapped"
+    case customFieldsSavedSuccessfully = "custom_fields_saved_successfully"
+    case customFieldsSavingFailed = "custom_fields_saving failed"
+
+    // Custom Field Editor
+    case customFieldEditorLoaded = "custom_field_editor_loaded"
+    case customFieldEditorPickerTapped = "custom_field_editor_picker_tapped"
+    case customFieldEditorDeleteTapped = "custom_field_editor_delete_tapped"
+    case customFieldEditorDoneTapped = "custom_field_editor_done_tapped"
 }
 
 extension WooAnalyticsStat {

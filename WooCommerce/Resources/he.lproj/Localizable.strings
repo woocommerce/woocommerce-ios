@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-10-23 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-10-29 12:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -1561,7 +1561,6 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the Coupon Creation Success screen
    Navigation bar action to close the gift card code scanner.
    Text for the close button in the Add Product screen
-   Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
    Title of the Close action on the Jetpack Install view */
 "Close" = "סגור";
@@ -1908,10 +1907,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the Origin Country row in Customs screen of Shipping Label flow */
 "Country where the product was manufactured or assembled" = "המדינה שבה המוצר נוצר או הורכב";
 
-/* Title for the coupon field on the Coupon Details screen during order creation
-   Title for the Coupon screen during order creation */
-"Coupon" = "קופון";
-
 /* The singular coupon summary. Reads like: Coupon (code1) */
 "Coupon (%1$@)" = "קופון (%1$@)";
 
@@ -1942,9 +1937,6 @@ which should be translated separately and considered part of this sentence. */
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
 "Coupons" = "קופונים";
-
-/* The plural coupon summary. Reads like: Coupon (code1, code2) */
-"Coupons (%1$@)" = "קופונים (%1$@)";
 
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "לאפשר קריסה מיידית";
@@ -2074,9 +2066,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title in custom range date picker */
 "Custom Date Range" = "טווח תאריכים מותאם אישית";
-
-/* Title for the order custom fields list */
-"Custom Fields" = "שדות מותאמים";
 
 /* Custom line index in Customs Form of Shipping Label flow */
 "Custom Line %1$d" = "שורה מותאמת אישית ⁦%1$d⁩";
@@ -2381,7 +2370,6 @@ which should be translated separately and considered part of this sentence. */
    Edit product downloadable files screen - button title to apply changes to downloadable files
    Navigation bar button on the domain settings screen to leave the flow.
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
-   Text for the done button in the Coupon Details screen
    Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
@@ -4870,6 +4858,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the the row showing the total cost of the order */
 "Order total" = "סה\"כ הזמנה";
 
+/* Title of the section that display coupons applied to an order, within the order creation screen. */
+"OrderCouponSectionView.header.coupons" = "קופונים";
+
 /* Retry Action inside notice */
 "OrderDetail.retry.notice.button" = "לנסות שוב";
 
@@ -5161,7 +5152,7 @@ which should be translated separately and considered part of this sentence. */
 "Please charge reader" = "יש להטעין את הקורא";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
-"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.4 or above. Contact support if this error shows on a supported device." = "עליך לוודא שהטלפון עומד בדרישות הבאות: מכשיר iPhone XS או מכשיר חדש יותר עם מערכת הפעלה של iOS 16.4 ומעלה. יש לפנות לתמיכה אם השגיאה הזאת מופיעה במכשיר נתמך.";
+"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.7 or above. Contact support if this error shows on a supported device." = "עליך לוודא שהטלפון עומד בדרישות הבאות: מכשיר iPhone XS או מכשיר חדש יותר עם מערכת הפעלה של iOS 16.7 ומעלה. יש לפנות לתמיכה אם השגיאה הזאת מופיעה במכשיר נתמך.";
 
 /* Order gift card error notice message when the gift card is invalid. */
 "Please check the remaining balance of the gift card." = "יש לבדוק את היתרה שנותרה בכרטיס.";
@@ -5842,9 +5833,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message from the in-person payment card reader prompting user to remove their card */
 "Remove Card" = "להסיר את הכרטיס";
-
-/* Text for the button to remove a Coupon from the order during order creation */
-"Remove Coupon from Order" = "להסיר את הקופון מההזמנה";
 
 /* Text for button to remove a discount in the discounts details screen
    Title for the Remove button in Details screen during order creation */
@@ -10122,6 +10110,12 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "לערוך תגובה";
 
+/* Label for the Cancel button to close the editor */
+"customFieldEditorView.cancel" = "ביטול";
+
+/* Button title for deleting a custom field */
+"customFieldEditorView.deleteButton" = "למחוק שדה מותאם אישית";
+
 /* Picker option for using Text Editor */
 "customFieldEditorView.editorPickerHTML" = "HTML";
 
@@ -10137,8 +10131,44 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the Key field */
 "customFieldEditorView.keyPlaceholder" = "להזין מפתח";
 
+/* Label for the Save button to save changes */
+"customFieldEditorView.save" = "לשמור";
+
 /* Label for the Value field */
 "customFieldEditorView.valueLabel" = "ערך";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to add custom field. */
+"customFieldsListHostingController.accessibilityHintAddCustomField" = "להוסיף שדה מותאם אישית חדש לרשימה";
+
+/* Accessibility label for the Add Custom Field button */
+"customFieldsListHostingController.accessibilityLabelAddCustomField" = "להוסיף שדה מיוחד";
+
+/* Title for the notice when a custom field is deleted */
+"customFieldsListHostingController.deleteNoticeTitle" = "השדה המותאם נמחק";
+
+/* Action to undo the deletion of a custom field */
+"customFieldsListHostingController.deleteNoticeUndo" = "לבטל פעולה אחרונה";
+
+/* Message for the in progress view shown when saving changes */
+"customFieldsListHostingController.inProgressMessage" = "רק רגע, אנחנו שומרים את השינויים שביצעת";
+
+/* Title for the in progress view shown when saving changes */
+"customFieldsListHostingController.inProgressTitle" = "שומר...";
+
+/* Button to save the changes on Custom Fields list */
+"customFieldsListHostingController.save" = "לשמור";
+
+/* Message for the error message when saving changes */
+"customFieldsListHostingController.saveErrorMessage" = "אירעה שגיאה בשמירת השינויים. יש לנסות שוב.";
+
+/* Title for the error message when saving changes */
+"customFieldsListHostingController.saveErrorTitle" = "שגיאה בשמירת השינויים";
+
+/* Title for the success message when saving changes */
+"customFieldsListHostingController.saveSuccessTitle" = "השינויים נשמרו";
+
+/* Title for the order custom fields list */
+"customFieldsListHostingController.title" = "שדות מותאמים";
 
 /* Accessibility title for the search button on the customer section. */
 "customer.search.button.accessibilityLabel" = "חיפוש לקוח";
@@ -11450,6 +11480,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "לא ניתן היה לטעון את הסכום הכולל";
 
+/* Button to dismiss the payments onboarding sheet from the POS dashboard. */
+"pointOfSaleDashboard.payments.onboarding.cancel" = "ביטול";
+
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.done" = "בוצע";
 
@@ -11776,6 +11809,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the suggested product on the Blaze dashboard view. */
 "productInfoView.suggestedProductLabel" = "מוצר מומלץ";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
+"productInventorySettings.GlobalUniqueIdentifier.ScanButton" = "הפעולה סורקת את הברקודים שמשויכים למזהה הגלובלי של המוצר לצורך ניהול המלאי.";
+
+/* Placeholder of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
+"productInventorySettings.globalUniqueIdentifier.placeholder" = "אופציונלי";
+
+/* Title of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
+"productInventorySettings.globalUniqueIdentifier.title" = "GTIN, ‏UPC, ‏EAN, ‏ISBN";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "תדירות החיוב";
@@ -12406,17 +12448,26 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for height input field */
 "wooShipping.createLabel.addPackage.height" = "גובה";
 
+/* The title for a button to dismiss the keyboard on the order creation/editing screen */
+"wooShipping.createLabel.addPackage.keyboard.toolbar.done.button.title" = "בוצע";
+
 /* Info label for length input field */
 "wooShipping.createLabel.addPackage.length" = "אורך";
 
 /* Info label for selecting package type */
 "wooShipping.createLabel.addPackage.packageType" = "סוג חבילה";
 
+/* Info label for weight input field */
+"wooShipping.createLabel.addPackage.packageWeight" = "משקל החבילה";
+
 /* Info label for saving package as a new template toggle */
 "wooShipping.createLabel.addPackage.saveNewPackageTemplate" = "יש לשמור את התבנית הזו כתבנית חבילה חדשה";
 
 /* Button for saving package as a new template */
 "wooShipping.createLabel.addPackage.savePackageTemplate" = "לשמור את תבנית החבילה";
+
+/* Placeholder text for package name field */
+"wooShipping.createLabel.addPackage.savePackageTemplatePlaceholder" = "יש להזין שם חבילה ייחודי";
 
 /* Info label for saved package option */
 "wooShipping.createLabel.addPackage.saved" = "נשמר";
@@ -12477,6 +12528,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "‎%1$@ x %2$@ x %3$@ %4$@";
+
+/* Heading for the shipping service section in the shipping label creation screen. */
+"wooShipping.createLabels.rates.shippingService" = "שירות משלוחים";
+
+/* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
+"wooShipping.createLabels.shippingService.adultSignatureRequired" = "נדרשת חתימה של אדם מבוגר (+%1$@)";
+
+/* Singular format of number of business days in Woo Shipping label creation flow. Reads like: '1 business day' */
+"wooShipping.createLabels.shippingService.deliveryDaySingular" = "יום עסקים ⁦%1$d⁩";
+
+/* Plural format of number of business days in Woo Shipping label creation flow. Reads like: '3 business days' */
+"wooShipping.createLabels.shippingService.deliveryDaysPlural" = "⁦%1$d⁩ ימי עסקים";
+
+/* Label when shipping rate includes free pickup in Woo Shipping label creation flow. */
+"wooShipping.createLabels.shippingService.freePickup" = "איסוף בחינם";
+
+/* Label when shipping rate includes tracking in Woo Shipping label creation flow. */
+"wooShipping.createLabels.shippingService.includesTracking" = "כולל מעקב";
+
+/* Label when shipping rate includes insurance in Woo Shipping label creation flow. Placeholder is an amount. Reads like: 'Insurance (up to $100)' */
+"wooShipping.createLabels.shippingService.insuranceAmount" = "ביטוח (עד %1$@)";
+
+/* Label when shipping rate includes insurance in Woo Shipping label creation flow. Placeholder is a literal. Reads like: 'Insurance (limited)' */
+"wooShipping.createLabels.shippingService.insuranceLiteral" = "ביטוח (%1$@)";
+
+/* Label when shipping rate has option to require a signature in Woo Shipping label creation flow. Reads like: 'Signature required (+$3.70)' */
+"wooShipping.createLabels.shippingService.signatureRequired" = "נדרשת חתימה (+%1$@)";
+
+/* Label when shipping rate includes tracking in Woo Shipping label creation flow. */
+"wooShipping.createLabels.shippingService.tracking" = "מעקב";
 
 /* Title for the screen to create a shipping label */
 "wooShipping.createLabels.title" = "ליצור תוויות משלוח";

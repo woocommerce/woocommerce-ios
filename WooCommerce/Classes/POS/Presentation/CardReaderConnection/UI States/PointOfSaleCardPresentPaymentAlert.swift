@@ -9,8 +9,7 @@ struct PointOfSaleCardPresentPaymentAlert: View {
 
     var body: some View {
         alertContent
-            .padding(PointOfSaleReaderConnectionModalLayout.contentPadding)
-            .frame(width: frameWidth, height: frameHeight)
+            .posModalSizing()
     }
 
     @ViewBuilder
@@ -53,58 +52,6 @@ struct PointOfSaleCardPresentPaymentAlert: View {
         case .connectionSuccess(let alertViewModel):
             PointOfSaleCardPresentPaymentConnectionSuccessAlertView(viewModel: alertViewModel, animation: animation)
         }
-    }
-
-    @Environment(\.sizeCategory) private var sizeCategory
-
-    private var frameWidth: CGFloat {
-        switch sizeCategory {
-        case .extraSmall, .small:
-            return 560
-        case .medium, .large, .extraLarge:
-            return 640
-        case .extraExtraLarge, .extraExtraExtraLarge:
-            return 720
-        case .accessibilityMedium,
-                .accessibilityLarge,
-                .accessibilityExtraLarge,
-                .accessibilityExtraExtraLarge,
-                .accessibilityExtraExtraExtraLarge:
-            return windowBounds.width
-        @unknown default:
-            return 640
-        }
-    }
-
-    private var frameHeight: CGFloat {
-        switch sizeCategory {
-        case .extraSmall, .small:
-            return 624
-        case .medium, .large, .extraLarge:
-            return 656
-        case .extraExtraLarge, .extraExtraExtraLarge:
-            return 688
-        case .accessibilityMedium,
-                .accessibilityLarge,
-                .accessibilityExtraLarge,
-                .accessibilityExtraExtraLarge,
-                .accessibilityExtraExtraExtraLarge:
-            return windowBounds.height
-        @unknown default:
-            return 656
-        }
-    }
-
-    private var windowBounds: CGRect {
-        window?.bounds ?? UIScreen.main.bounds
-    }
-
-    private var window: UIWindow? {
-        UIApplication
-            .shared
-            .connectedScenes
-            .compactMap { ($0 as? UIWindowScene)?.keyWindow }
-            .last
     }
 
     // MARK: - Animations

@@ -24,6 +24,10 @@ extension ProductUpdateError: LocalizedError {
         case .invalidSKU:
             return NSLocalizedString("This SKU is used on another product or is invalid.",
                                      comment: "The message of the alert when there is an error updating the product SKU")
+        case .invalidGlobalUniqueIdentifier:
+            return NSLocalizedString("productInventorySettings.invalidGlobalUniqueIdentifier.error",
+                                     value: "Please enter only numbers and hyphens (-).",
+                                     comment: "The message of the alert when there is an error updating the product global unique identifier")
         case .generic(let message):
             return message
         case .unknown:

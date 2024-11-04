@@ -77,7 +77,7 @@ public final class PaymentsScreen: ScreenObject {
 
     public func clickLearnMoreIPPLink() throws -> Self {
         try XCTSkipIf(
-            UIDevice.current.userInterfaceIdiom == .pad,
+            UIDevice.current.userInterfaceIdiom == .phone,
             """
             Skipping on the iPhone.
             Calling tap() on a link within attributed text no longer works in UI tests on Xcode 16.

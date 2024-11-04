@@ -272,9 +272,12 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
 //
 private extension ProductInventorySettingsViewModel {
     func reloadSections() {
-        let sections: [Section]
-        switch formType {
-        case .inventory:
+        var sections = [createSKUSection()]
+        if featureFlagService.isFeatureFlagEnabled(.productGlobalUniqueIdentifierSupport) {
+            sections.append(createGlobalUniqueIdentifierSection())
+        }
+
+        if formType == .inventory {
             let stockSection: Section
             if manageStockEnabled {
                 stockSection = Section(rows: [.manageStock, .stockQuantity, .backorders])
@@ -284,40 +287,32 @@ private extension ProductInventorySettingsViewModel {
                 stockSection = Section(rows: [.manageStock])
             }
 
-            switch productModel {
-            case is EditableProductModel:
-                sections = [
-                    createSKUSection(),
-                    stockSection,
-                    Section(rows: [.limitOnePerOrder])
-                ]
-            case is EditableProductVariationModel:
-                sections = [
-                    createSKUSection(),
-                    stockSection
-                ]
-            default:
-                fatalError("Unsupported product type: \(productModel)")
+            sections.append(stockSection)
+
+            if productModel is EditableProductModel {
+                sections.append(Section(rows: [.limitOnePerOrder]))
             }
-        case .sku:
-            sections = [
-                createSKUSection()
-            ]
         }
+
         sectionsSubject = sections
     }
 
     func createSKUSection() -> Section {
-        var rows: [ProductInventorySettingsViewController.Row] = [.sku]
-
-        if featureFlagService.isFeatureFlagEnabled(.productGlobalUniqueIdentifierSupport) {
-            rows.append(.globalUniqueIdentifier)
-        }
-
-        if let error = error {
-            return Section(errorTitle: error.errorDescription, rows: rows)
+        if let error = error,
+            error == .invalidSKU ||
+            error == .duplicatedSKU {
+            return Section(errorTitle: error.errorDescription, rows: [.sku])
         } else {
-            return Section(rows: rows)
+            return Section(rows: [.sku])
+        }
+    }
+
+    func createGlobalUniqueIdentifierSection() -> Section {
+        if let error = error,
+            error == .invalidGlobalUniqueIdentifier {
+            return Section(errorTitle: error.errorDescription, rows: [.globalUniqueIdentifier])
+        } else {
+            return Section(rows: [.globalUniqueIdentifier])
         }
     }
 }

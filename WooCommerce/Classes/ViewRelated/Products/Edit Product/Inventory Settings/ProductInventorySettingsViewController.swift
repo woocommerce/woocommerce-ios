@@ -226,7 +226,6 @@ extension ProductInventorySettingsViewController: UITableViewDelegate {
             fatalError()
         }
         headerView.configure(title: errorTitle)
-        headerView.addTopSpacing()
         UIAccessibility.post(notification: .layoutChanged, argument: headerView)
         return headerView
     }

@@ -4,6 +4,7 @@ import SwiftUI
 import Combine
 import Experiments
 import Yosemite
+import protocol WooFoundation.Analytics
 import struct Storage.GeneralAppSettingsStorage
 
 extension NSNotification.Name {
@@ -133,6 +134,7 @@ final class HubMenuViewModel: ObservableObject {
     }()
 
     private(set) var cardPresentPaymentService: CardPresentPaymentFacade?
+    private let analytics: Analytics
 
     init(siteID: Int64,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
@@ -141,7 +143,8 @@ final class HubMenuViewModel: ObservableObject {
          generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
-         googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker()) {
+         googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.credentials = stores.sessionManager.defaultCredentials
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
@@ -157,6 +160,7 @@ final class HubMenuViewModel: ObservableObject {
                                                            siteSettings: ServiceLocator.selectedSiteSettings,
                                                            currencySettings: ServiceLocator.currencySettings,
                                                            featureFlagService: featureFlagService)
+        self.analytics = analytics
         observeSiteForUIUpdates()
         observePlanName()
         observeGoogleAdsEntryPointAvailability()
@@ -219,6 +223,17 @@ final class HubMenuViewModel: ObservableObject {
     func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {
         updateTabBarVisibility(isPointOfSaleActive)
         updateInAppNotifications(isPointOfSaleActive)
+    }
+
+    func trackMenuItemTapEvent(menu: HubMenuItem) {
+        let eventProperties: [AnyHashable: Any] = {
+            var properties: [AnyHashable: Any] = [AnalyticsKeys.trackingOption: menu.trackingOption]
+            if menu.id == HubMenuViewModel.PointOfSaleEntryPoint.id {
+                properties[AnalyticsKeys.paymentsOnboardingState] = cardPresentPaymentsOnboarding.state.reasonForAnalytics
+            }
+            return properties
+        }()
+        analytics.track(.hubMenuOptionTapped, withProperties: eventProperties)
     }
 
     deinit {
@@ -780,6 +795,11 @@ extension HubMenuViewModel {
             "hubMenu.customersDescription",
             value: "Get customer insights",
             comment: "Description of one of the hub menu options")
+    }
+
+    enum AnalyticsKeys {
+        static let trackingOption = "option"
+        static let paymentsOnboardingState = "payments_onboarding_state"
     }
 }
 

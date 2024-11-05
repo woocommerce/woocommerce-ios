@@ -19,21 +19,26 @@ struct WooSavedPackageData: WooPackageDataRepresentable {
 }
 
 struct WooSavedPackagesSelectionView: View {
-    @State private var selectedPackageId: UUID? = nil  // Track the selected package index
-    let packages: [any WooPackageDataRepresentable]
+    @ObservedObject private var viewModel: WooSavedPackagesSelectionViewModel
+    let addPackageAction: (WooPackageDataRepresentable) -> Void
+
+    init(viewModel: WooSavedPackagesSelectionViewModel, addPackageAction: @escaping (WooPackageDataRepresentable) -> Void) {
+        self.viewModel = viewModel
+        self.addPackageAction = addPackageAction
+    }
 
     var body: some View {
         VStack(spacing: 0) {
             Divider()
             List {
-                ForEach(packages, id: \.id) { package in
+                ForEach(viewModel.packages, id: \.id) { package in
                     PackageOptionView(
-                        isSelected: selectedPackageId == package.id, // Check if this package is selected
+                        isSelected: viewModel.selectedPackageId == package.id, // Check if this package is selected
                         package: package,
                         showTopDivider: false,
                         showType: true,
                         tapAction: {
-                            selectedPackageId = selectedPackageId == package.id ? nil : package.id
+                            viewModel.selectedPackageId = viewModel.selectedPackageId == package.id ? nil : package.id
                         }
                     )
                     .alignmentGuide(.listRowSeparatorLeading) { _ in
@@ -53,11 +58,19 @@ struct WooSavedPackagesSelectionView: View {
             .listStyle(.plain)
             Divider()
             Button(WooShippingAddPackageView.Localization.addPackage) {
+                addPackageButtonTapped()
             }
-            .disabled(selectedPackageId == nil || packages.isEmpty)
+            .disabled(viewModel.selectedPackageId == nil || viewModel.packages.isEmpty)
             .buttonStyle(PrimaryButtonStyle())
             .padding()
         }
+    }
+
+    private func addPackageButtonTapped() {
+        // call addPackageAction with data from selected package
+        guard let selectedPackage = viewModel.selectedPackage else { return }
+
+        addPackageAction(selectedPackage)
     }
 }
 

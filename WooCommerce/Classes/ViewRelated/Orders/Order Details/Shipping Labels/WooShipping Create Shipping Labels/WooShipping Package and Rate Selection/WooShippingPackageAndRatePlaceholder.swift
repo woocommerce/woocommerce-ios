@@ -24,7 +24,10 @@ struct WooShippingPackageAndRatePlaceholder: View {
         .padding(Layout.padding)
         .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.border), lineWidth: Layout.borderLineWidth, dashed: true)
         .sheet(isPresented: $showAddPackage) {
-            WooShippingAddPackageView()
+            WooShippingAddPackageView { packageData in
+                // TODO: use packageData
+                showAddPackage = false
+            }
         }
     }
 }

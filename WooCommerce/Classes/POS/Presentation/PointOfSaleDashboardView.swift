@@ -132,12 +132,12 @@ private extension PointOfSaleDashboardView {
 
     func paymentsOnboardingView(from onboardingViewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
         onboardingViewModel.showSupport = {
-            totalsViewModel.cardPresentPaymentOnboardingViewModel = nil
+            totalsViewModel.cancelOnboarding()
             viewModel.showSupport = true
         }
         return PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(onboardingViewModel: onboardingViewModel,
                                                                             onDismissTap: {
-            totalsViewModel.cardPresentPaymentOnboardingViewModel = nil
+            totalsViewModel.cancelOnboarding()
         }))
         .onAppear {
             totalsViewModel.trackOnboardingShown()

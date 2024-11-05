@@ -134,11 +134,16 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     }
 
     /// Called when the onboarding UI is dismissed.
-    /// It is set when receiving an onboarding view model to display, and necessary to reset the internal onboarding state on UI dismissal.
+    /// For external dismissal (tapping CTA to dismiss), this method is called twice - the first time to dismiss the onboarding UI
+    /// by setting `cardPresentPaymentOnboardingViewModel` to nil, the second time triggered by internal dismissal.
+    /// For internal dismissal (tapping outside the modal), this method is called once.
+    /// This method is used to reset the internal state of the onboarding UI and track the dismissal event.
     func cancelOnboarding() {
-        if let onboardingViewModel = cardPresentPaymentOnboardingViewModel {
-            analytics.track(event: .PointOfSale.paymentsOnboardingDismissed(onboardingState: onboardingViewModel.state))
+        guard let onboardingViewModel = cardPresentPaymentOnboardingViewModel else {
+            return
         }
+        analytics.track(event: .PointOfSale.paymentsOnboardingDismissed(onboardingState: onboardingViewModel.state))
+        cardPresentPaymentOnboardingViewModel = nil
         onOnboardingCancellation?()
     }
 

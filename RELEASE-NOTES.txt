@@ -10,6 +10,7 @@
 - [***] Merchants can now view and edit custom fields of their products and orders from the app [https://github.com/woocommerce/woocommerce-ios/issues/13493]
 - [*] Payments onboarding: for two onboarding errors that show a wp-admin Payments setup URL in a webview ("Payments plugin not setup" and "Stripe overdue" errors that can occur to both WooPayments and Stripe Extension), the webview is now pre-authenticated for merchants with site credentials login [https://github.com/woocommerce/woocommerce-ios/pull/14252]
 
+
 20.9
 -----
 - [internal] Updated storage usage in ProductCategoryStore [https://github.com/woocommerce/woocommerce-ios/pull/14151]

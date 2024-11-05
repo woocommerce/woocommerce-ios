@@ -21,7 +21,7 @@ extension Storage.ProductImage: ReadOnlyConvertible {
     ///
     public func toReadOnly() -> Yosemite.ProductImage {
         return ProductImage(imageID: imageID,
-                            dateCreated: dateCreated,
+                            dateCreated: dateCreated ?? Date(),
                             dateModified: dateModified,
                             src: src,
                             name: name,

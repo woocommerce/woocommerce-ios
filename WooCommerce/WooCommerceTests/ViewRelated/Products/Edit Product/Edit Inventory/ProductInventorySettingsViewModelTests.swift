@@ -230,6 +230,10 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let product = Product.fake().copy(globalUniqueID: "321")
         let model = EditableProductModel(product: product)
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+        var sections: [Section] = []
+        cancellable = viewModel.sections.sink { sectionsValue in
+            sections = sectionsValue
+        }
 
         // Act
         var globalUniqueIdentifierIsValid: Bool?
@@ -238,6 +242,13 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         })
 
         // Assert
+        let expectedSections: [Section] = [
+            .init(rows: [.sku]),
+            .init(errorTitle: ProductUpdateError.invalidGlobalUniqueIdentifier.errorDescription, rows: [.globalUniqueIdentifier]),
+            .init(rows: [.manageStock, .stockStatus]),
+            .init(rows: [.limitOnePerOrder])
+        ]
+        XCTAssertEqual(sections, expectedSections)
         XCTAssertFalse(globalUniqueIdentifierIsValid ?? true)
     }
 

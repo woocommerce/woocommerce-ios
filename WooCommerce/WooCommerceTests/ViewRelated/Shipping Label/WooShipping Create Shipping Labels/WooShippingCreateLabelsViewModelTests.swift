@@ -78,7 +78,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         // When
         let markOrderComplete: Bool = try waitFor { promise in
-            let viewModel = WooShippingCreateLabelsViewModel(order: order, onLabelPurchase: { complete in
+            let viewModel = WooShippingCreateLabelsViewModel(order: order, shippingService: self.sampleShippingService(), onLabelPurchase: { complete in
                 promise(complete)
             })
             try viewModel.selectShippingRate()
@@ -96,7 +96,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         // When
         let markOrderComplete: Bool = try waitFor { promise in
-            let viewModel = WooShippingCreateLabelsViewModel(order: order, onLabelPurchase: { complete in
+            let viewModel = WooShippingCreateLabelsViewModel(order: order, shippingService: self.sampleShippingService(), onLabelPurchase: { complete in
                 promise(complete)
             })
             try viewModel.selectShippingRate()
@@ -111,7 +111,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     func test_canPurchaseLabel_true_after_shipping_rate_is_selected() throws {
         // Given
         let order = Order.fake()
-        let viewModel = WooShippingCreateLabelsViewModel(order: order)
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, shippingService: sampleShippingService())
         XCTAssertFalse(viewModel.canPurchaseLabel)
 
         // When
@@ -124,7 +124,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     func test_selecting_shipping_rate_sets_totalCost() throws {
         // Given
         let order = Order.fake()
-        let viewModel = WooShippingCreateLabelsViewModel(order: order, currencySettings: CurrencySettings())
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, currencySettings: CurrencySettings(), shippingService: sampleShippingService())
 
         // When
         try viewModel.selectShippingRate()
@@ -136,7 +136,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     func test_selecting_standard_shipping_rate_sets_expected_shippingRates() throws {
         // Given
         let order = Order.fake()
-        let viewModel = WooShippingCreateLabelsViewModel(order: order, currencySettings: CurrencySettings())
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, currencySettings: CurrencySettings(), shippingService: sampleShippingService())
 
         // When
         try viewModel.selectShippingRate()
@@ -150,7 +150,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     func test_selecting_signature_shipping_rate_sets_expected_shippingRates() throws {
         // Given
         let order = Order.fake()
-        let viewModel = WooShippingCreateLabelsViewModel(order: order, currencySettings: CurrencySettings())
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, currencySettings: CurrencySettings(), shippingService: sampleShippingService())
         let card = try XCTUnwrap(viewModel.shippingService.serviceTabs.first?.cards[1])
         card.signatureRequirement = .signatureRequired
 
@@ -168,7 +168,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     func test_selecting_adult_signature_shipping_rate_sets_expected_shippingRates() throws {
         // Given
         let order = Order.fake()
-        let viewModel = WooShippingCreateLabelsViewModel(order: order, currencySettings: CurrencySettings())
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, currencySettings: CurrencySettings(), shippingService: sampleShippingService())
         let card = try XCTUnwrap(viewModel.shippingService.serviceTabs.first?.cards[1])
         card.signatureRequirement = .adultSignatureRequired
 
@@ -199,6 +199,74 @@ private extension WooShippingCreateLabelsViewModelTests {
     ///
     func mapLoadGeneralSiteSettingsResponse() -> [SiteSetting] {
         return mapGeneralSettings(from: "settings-general")
+    }
+
+    func sampleShippingService() -> WooShippingServiceViewModel {
+        WooShippingServiceViewModel(standardRates: [ShippingLabelCarrierRate(title: "USPS - Media Mail",
+                                                                             insurance: "100",
+                                                                             retailRate: 8,
+                                                                             rate: 7.53,
+                                                                             rateID: "rate_a8a29d5f34984722942f466c30ea27ef",
+                                                                             serviceID: "",
+                                                                             carrierID: "usps",
+                                                                             shipmentID: "",
+                                                                             hasTracking: true,
+                                                                             isSelected: false,
+                                                                             isPickupFree: true,
+                                                                             deliveryDays: 7,
+                                                                             deliveryDateGuaranteed: false),
+                                                    ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
+                                                                             insurance: "100",
+                                                                             retailRate: 40.06,
+                                                                             rate: 40.06,
+                                                                             rateID: "rate_a8a29d5f34984722942f466c30ea27eh",
+                                                                             serviceID: "",
+                                                                             carrierID: "usps",
+                                                                             shipmentID: "",
+                                                                             hasTracking: true,
+                                                                             isSelected: false,
+                                                                             isPickupFree: true,
+                                                                             deliveryDays: 2,
+                                                                             deliveryDateGuaranteed: false),
+                                                    ShippingLabelCarrierRate(title: "DHL - Next Day",
+                                                                             insurance: "100",
+                                                                             retailRate: 15,
+                                                                             rate: 14.22,
+                                                                             rateID: "rate_a8a29d5f34984722942f466c30ea27eg",
+                                                                             serviceID: "",
+                                                                             carrierID: "dhlexpress",
+                                                                             shipmentID: "",
+                                                                             hasTracking: true,
+                                                                             isSelected: false,
+                                                                             isPickupFree: true,
+                                                                             deliveryDays: 1,
+                                                                             deliveryDateGuaranteed: false)],
+                                    signatureRates: [ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
+                                                                              insurance: "100",
+                                                                              retailRate: 42.76,
+                                                                              rate: 42.76,
+                                                                              rateID: "rate_a8a29d5f34984722942f466c30ea27ei",
+                                                                              serviceID: "",
+                                                                              carrierID: "usps",
+                                                                              shipmentID: "",
+                                                                              hasTracking: true,
+                                                                              isSelected: false,
+                                                                              isPickupFree: true,
+                                                                              deliveryDays: 2,
+                                                                              deliveryDateGuaranteed: false)],
+                                    adultSignatureRates: [ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
+                                                                                   insurance: "100",
+                                                                                   retailRate: 46.96,
+                                                                                   rate: 46.96,
+                                                                                   rateID: "rate_a8a29d5f34984722942f466c30ea27ej",
+                                                                                   serviceID: "",
+                                                                                   carrierID: "usps",
+                                                                                   shipmentID: "",
+                                                                                   hasTracking: true,
+                                                                                   isSelected: false,
+                                                                                   isPickupFree: true,
+                                                                                   deliveryDays: 2,
+                                                                                   deliveryDateGuaranteed: false)])
     }
 }
 

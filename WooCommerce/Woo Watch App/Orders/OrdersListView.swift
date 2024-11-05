@@ -116,7 +116,9 @@ struct OrdersListView: View {
     @ViewBuilder private func dataView(orders: [Order]) -> some View {
         List {
             ForEach(orders, id: \.number) { order in
-                NavigationLink(destination: OrderDetailView(order: order)) {
+                NavigationLink {
+                    OrderDetailView(order: order)
+                } label: {
                     OrderListCard(order: order)
                 }
             }

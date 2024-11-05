@@ -27,7 +27,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     let hasPackage: Bool = false
 
     /// View model for the label shipping service.
-    let shippingService = WooShippingServiceViewModel()
+    private(set) var shippingService: WooShippingServiceViewModel
 
     /// Selected shipping rate when creating a shipping label.
     private var selectedRate: WooShippingSelectedRate? {
@@ -85,6 +85,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          shippingLabel: ShippingLabel? = nil,
          siteAddress: SiteAddress = SiteAddress(),
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         shippingService: WooShippingServiceViewModel = WooShippingServiceViewModel(),
          onLabelPurchase: ((Bool) -> Void)? = nil) {
         self.shippingLabel = shippingLabel
         if let shippingLabel {
@@ -96,6 +97,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.originAddress = Self.formatOriginAddress(siteAddress: siteAddress)
         self.destinationAddressLines = (order.shippingAddress?.formattedPostalAddress ?? "").components(separatedBy: .newlines)
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0) })
+        self.shippingService = shippingService
     }
 
     /// Purchases a shipping label with the provided label details and settings.

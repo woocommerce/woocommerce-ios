@@ -279,12 +279,12 @@ private extension ProductInventorySettingsViewController {
                 self?.handleSKUValidation(isValid: isValid, shouldBringUpKeyboard: shouldBringUpKeyboard)
             }
         }
-        switch viewModel.error {
-        case .duplicatedSKU, .invalidSKU:
+
+        let thereIsAnSKUError = viewModel.errors.contains(.duplicatedSKU) || viewModel.errors.contains(.invalidSKU)
+        if thereIsAnSKUError {
             cellViewModel = cellViewModel.stateUpdated(state: .error)
-        default:
-            break
         }
+
         cell.configure(viewModel: cellViewModel)
         cell.setSpacingBetweenTitleAndTextField(30)
         cell.setKeyboardType(keyboardType: .default)
@@ -314,7 +314,7 @@ private extension ProductInventorySettingsViewController {
             }
         }
 
-        if viewModel.error == .invalidGlobalUniqueIdentifier {
+        if viewModel.errors.contains(.invalidGlobalUniqueIdentifier) {
             cellViewModel = cellViewModel.stateUpdated(state: .error)
         }
 
@@ -426,14 +426,14 @@ private extension ProductInventorySettingsViewController {
 
 private extension ProductInventorySettingsViewController {
     func handleSKUValidation(isValid: Bool, shouldBringUpKeyboard: Bool) {
-        enableDoneButton(isValid)
+        enableDoneButton(viewModel.errors.isEmpty)
         if shouldBringUpKeyboard {
             getTitleAndTextFieldCell(from: .sku)?.textFieldBecomeFirstResponder()
         }
     }
 
     func handleGlobalUniqueIdentifierValidation(isValid: Bool, shouldBringUpKeyboard: Bool) {
-        enableDoneButton(isValid)
+        enableDoneButton(viewModel.errors.isEmpty)
         if shouldBringUpKeyboard {
             getTitleAndTextFieldCell(from: .globalUniqueIdentifier)?.textFieldBecomeFirstResponder()
         }

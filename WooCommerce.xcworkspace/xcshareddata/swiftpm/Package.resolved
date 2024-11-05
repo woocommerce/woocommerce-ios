@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/envoy/Embassy",
         "state": {
           "branch": null,
-          "revision": "065b6ce52596bd06b867cfe17fea2c56dcb53b30",
-          "version": "4.1.3"
+          "revision": "8469f2c1b334a7c1c3566e2cb2f97826c7cca898",
+          "version": "4.1.6"
         }
       },
       {

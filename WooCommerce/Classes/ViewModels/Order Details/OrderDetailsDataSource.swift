@@ -376,7 +376,14 @@ extension OrderDetailsDataSource: UITableViewDataSource {
         guard indexPath.row >= 0 && indexPath.row < section.rows.count else {
             ServiceLocator.crashLogging.logMessage(
                 "Invalid row in cellForRowAtIndexPath in OrderDetailsDataSource",
-                properties: ["row": indexPath.section, "section": indexPath.section],
+                properties: [
+                    "row": indexPath.row,
+                    "section": indexPath.section,
+                    "actualRowCount": section.rows.count,
+                    "totalSections": sections.count,
+                    "sectionCategory": String(describing: section.category),
+                    "sectionTitle": section.title ?? "nil"
+                ],
                 level: .error
             )
             return UITableViewCell()

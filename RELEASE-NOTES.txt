@@ -5,7 +5,7 @@
 -----
 
 - [internal] Updated Xcode version to 16.1 [https://github.com/woocommerce/woocommerce-ios/pull/14225]
-- [**] Fixed: properly open and show order details in Watch app
+- [**] Fixed: properly open and show order details in Watch app [https://github.com/woocommerce/woocommerce-ios/pull/14306]
 
 21.0
 -----

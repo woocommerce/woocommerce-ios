@@ -2445,7 +2445,7 @@ extension EditableOrderViewModel {
     private func mapScannedBarcodetoBaseItem(barcode: ScannedBarcode, onCompletion: @escaping (Result<OrderBaseItem, Error>) -> Void) {
         Task {
             do {
-                let result = try await barcodeScannerItemFinder.searchBySKU(from: barcode, siteID: siteID, source: .orderCreation)
+                let result = try await barcodeScannerItemFinder.searchByIdentifier(from: barcode, siteID: siteID, source: .orderCreation)
                 onCompletion(.success(result))
             } catch {
                 onCompletion(.failure(error))

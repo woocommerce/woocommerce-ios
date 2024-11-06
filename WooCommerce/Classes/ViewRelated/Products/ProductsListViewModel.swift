@@ -184,7 +184,7 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
 
     func handleScannedBarcode(_ scannedBarcode: ScannedBarcode) async throws -> ItemIdentifierSearchResult {
         do {
-            return try await barcodeScannerItemFinder.searchBySKU(from: scannedBarcode,
+            return try await barcodeScannerItemFinder.searchByIdentifier(from: scannedBarcode,
                                                                      siteID: siteID,
                                                                      source: .scanToUpdateInventory)
         } catch {

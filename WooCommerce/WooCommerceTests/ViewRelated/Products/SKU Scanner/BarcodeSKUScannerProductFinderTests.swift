@@ -49,7 +49,7 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
         var retrievedError: Error?
 
         do {
-            _ = try await sut.searchBySKU(from: scannedBarcode, siteID: 1, source: source)
+            _ = try await sut.searchByIdentifier(from: scannedBarcode, siteID: 1, source: source)
         } catch {
             retrievedError = error
         }
@@ -76,7 +76,7 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
 
         // When
         let scannedBarcode = ScannedBarcode(payloadStringValue: "123456", symbology: .aztec)
-        let result = try? await sut.searchBySKU(from: scannedBarcode, siteID: 1, source: source)
+        let result = try? await sut.searchByIdentifier(from: scannedBarcode, siteID: 1, source: source)
 
         guard case let .product(retrievedProduct) = result else {
             return XCTFail("It didn't provide a product as expected")
@@ -116,7 +116,7 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
         })
 
         // When
-        let result = try? await sut.searchBySKU(from: scannedBarcode, siteID: 1, source: .orderCreation)
+        let result = try? await sut.searchByIdentifier(from: scannedBarcode, siteID: 1, source: .orderCreation)
 
         guard case let .product(retrievedProduct) = result else {
             return XCTFail("It didn't provide a product as expected")
@@ -147,7 +147,7 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
         })
 
         // When
-        let result = try? await sut.searchBySKU(from: scannedBarcode, siteID: 1, source: .orderCreation)
+        let result = try? await sut.searchByIdentifier(from: scannedBarcode, siteID: 1, source: .orderCreation)
 
         guard case let .product(retrievedProduct) = result else {
             return XCTFail("It didn't provide a product as expected")

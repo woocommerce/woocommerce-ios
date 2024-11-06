@@ -14,7 +14,8 @@ struct BarcodeScannerItemFinder {
         self.analytics = analytics
     }
 
-    func searchBySKU(from barcode: ScannedBarcode, siteID: Int64, source: WooAnalyticsEvent.BarcodeScanning.Source) async throws -> ItemIdentifierSearchResult {
+    func searchByIdentifier(from barcode: ScannedBarcode,
+                            siteID: Int64, source: WooAnalyticsEvent.BarcodeScanning.Source) async throws -> ItemIdentifierSearchResult {
         do {
             let result = try await search(by: barcode.payloadStringValue, siteID: siteID)
             analytics.track(event: WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUSuccess(from: source.rawValue))
@@ -25,16 +26,16 @@ struct BarcodeScannerItemFinder {
                                                                                             symbology: barcode.symbology,
                                                                                             reason: trackingReason(for: error)))
 
-            // If we couldn't find the product, let's keep trying by refining the SKU search
+            // If we couldn't find the product, let's keep trying by refining the search
             guard (error as? ProductLoadError) == .notFound else {
                 throw error
             }
 
             // Re-start the search in case we can remove the country code (Apple adds it by default for UPC-A, but merchants might not have it)
             if let refinedBarcode = barcode.removeCountryCodeIfPossible() {
-                return try await searchBySKU(from: refinedBarcode, siteID: siteID, source: source)
+                return try await searchByIdentifier(from: refinedBarcode, siteID: siteID, source: source)
             } else if let refinedBarcode = barcode.removeCheckDigitIfPossible() {
-                // Try one more time if we can remove the barcode check digit, as some merchants might have added the SKU without it
+                // Try one more time if we can remove the barcode check digit, as some merchants might have added the Identifier without it
                 return try await search(by: refinedBarcode.payloadStringValue, siteID: siteID)
             } else {
                 throw error
@@ -42,10 +43,10 @@ struct BarcodeScannerItemFinder {
         }
     }
 
-    private func search(by sku: String, siteID: Int64) async throws -> ItemIdentifierSearchResult {
+    private func search(by identifier: String, siteID: Int64) async throws -> ItemIdentifierSearchResult {
         try await withCheckedThrowingContinuation { continuation in
             let action = ProductAction.retrieveFirstPurchasableItemMatchFromIdentifier(siteID: siteID,
-                                                                        identifier: sku) { result in
+                                                                        identifier: identifier) { result in
                 switch result {
                 case let .success(matchedProduct):
                     continuation.resume(returning: matchedProduct)

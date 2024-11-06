@@ -12,5 +12,5 @@ struct MockCardReaderCapableRemote: CardReaderCapableRemote {
     func loadDefaultReaderLocation(for siteID: Int64, onCompletion: @escaping (Result<RemoteReaderLocation, any Error>) -> Void) {
         onCompletion(resultForDefaultReaderLocation)
     }
-    
+
 }

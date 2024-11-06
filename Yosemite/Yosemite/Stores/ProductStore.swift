@@ -419,14 +419,12 @@ private extension ProductStore {
             return onCompletion(.failure(ProductLoadError.emptySKU))
         }
 
-        remote.searchProductsBySKU(for: siteID,
+        searchProductsByIdentifier(siteID: siteID,
                                    keyword: sku,
-                                   pageNumber: Remote.Default.firstPageNumber,
-                                   pageSize: ProductsRemote.Default.pageSize,
                                    completion: { result in
             switch result {
             case let .success(products):
-                let skuProducts = products.filter { $0.sku == sku }
+                let skuProducts = products.filter { $0.sku == sku || $0.globalUniqueID == sku }
 
                 guard !skuProducts.isEmpty else {
                     return onCompletion(.failure(ProductLoadError.notFound))
@@ -1277,6 +1275,35 @@ private extension ProductStore {
     }
 }
 
+private extension ProductStore {
+    func searchProductsByIdentifier(siteID: Int64, keyword: String, completion: @escaping (Result<[Product], Error>) -> Void) {
+        remote.searchProductsBySKU(for: siteID,
+                                   keyword: keyword,
+                                   pageNumber: Remote.Default.firstPageNumber,
+                                   pageSize: ProductsRemote.Default.pageSize,
+                                   completion: { [weak self] result in
+            var returningResults: [Product] = []
+            switch result {
+            case let .success(products):
+                returningResults = products
+            case .failure(_):
+                break
+            }
+
+            if returningResults.isEmpty {
+                self?.remote.searchProductsByGlobalUniqueIdentifier(for: siteID,
+                                                              keyword: keyword,
+                                                              pageNumber: Remote.Default.firstPageNumber,
+                                                              pageSize: ProductsRemote.Default.pageSize,
+                                                              completion: { result in
+                    completion(result)
+                })
+            } else {
+                completion(.success(returningResults))
+            }
+        })
+    }
+}
 
 // MARK: - Unit Testing Helpers
 //

@@ -37,6 +37,11 @@ public protocol ProductsRemoteProtocol {
                              pageNumber: Int,
                              pageSize: Int,
                              completion: @escaping (Result<[Product], Error>) -> Void)
+    func searchProductsByGlobalUniqueIdentifier(for siteID: Int64,
+                             keyword: String,
+                             pageNumber: Int,
+                             pageSize: Int,
+                             completion: @escaping (Result<[Product], Error>) -> Void)
     func searchSku(for siteID: Int64,
                    sku: String,
                    completion: @escaping (Result<String, Error>) -> Void)
@@ -331,6 +336,24 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let parameters = [
             ParameterKey.sku: keyword,
             ParameterKey.partialSKUSearch: keyword,
+            ParameterKey.globalUniqueID: keyword,
+            ParameterKey.page: String(pageNumber),
+            ParameterKey.perPage: String(pageSize),
+            ParameterKey.contextKey: Default.context
+        ]
+        let path = Path.products
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
+        let mapper = ProductListMapper(siteID: siteID)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    public func searchProductsByGlobalUniqueIdentifier(for siteID: Int64,
+                             keyword: String,
+                             pageNumber: Int,
+                             pageSize: Int,
+                             completion: @escaping (Result<[Product], Error>) -> Void) {
+        let parameters = [
+            ParameterKey.globalUniqueID: keyword,
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.contextKey: Default.context
@@ -586,6 +609,7 @@ public extension ProductsRemote {
         static let order: String      = "order"
         static let sku: String        = "sku"
         static let partialSKUSearch: String = "search_sku"
+        static let globalUniqueID: String = "global_unique_id"
         static let productStatus: String = "status"
         static let productType: String = "type"
         static let stockStatus: String = "stock_status"

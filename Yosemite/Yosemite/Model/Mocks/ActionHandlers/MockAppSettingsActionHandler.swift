@@ -41,11 +41,12 @@ struct MockAppSettingsActionHandler: MockActionHandler {
             onCompletion([])
         case .loadCardReader(let onCompletion):
             onCompletion(.success(nil))
+        case .loadDashboardCards(let siteId, let onCompletion):
+            loadDashboardCards(siteId: siteId, onCompletion: onCompletion)
         case .resetEligibilityErrorInfo,
                 .setTelemetryAvailability,
                 .loadOrdersSettings,
-                .upsertProductsSettings,
-                .loadDashboardCards:
+                .upsertProductsSettings:
             break
         default: unimplementedAction(action: action)
         }
@@ -68,5 +69,13 @@ struct MockAppSettingsActionHandler: MockActionHandler {
                                                          productCategoryFilter: nil,
                                                          favoriteProduct: false)
         onCompletion(.success(emptySetting))
+    }
+
+    func loadDashboardCards(siteId: Int64, onCompletion: ([DashboardCard]?) -> Void) {
+        var cards = [DashboardCard]()
+        // Some cards intentionally not shown here as they require further action mocking.
+        cards.append(DashboardCard(type: .reviews, availability: .show, enabled: true))
+        cards.append(DashboardCard(type: .lastOrders, availability: .show, enabled: true))
+        onCompletion(cards)
     }
 }

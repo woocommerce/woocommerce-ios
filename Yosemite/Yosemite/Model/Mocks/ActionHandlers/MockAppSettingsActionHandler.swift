@@ -27,13 +27,14 @@ struct MockAppSettingsActionHandler: MockActionHandler {
             onCompletion(false)
         case .loadSiteHasAtLeastOneIPPTransactionFinished(_, let onCompletion):
             onCompletion(false)
-        case .loadLastSelectedPerformanceTimeRange(let siteId, let onCompletion):
+        case .loadLastSelectedPerformanceTimeRange(_, let onCompletion):
+            onCompletion(StatsTimeRangeV4.thisMonth)
+        case .loadLastSelectedTopPerformersTimeRange(_, let onCompletion):
             onCompletion(StatsTimeRangeV4.thisMonth)
         case .resetEligibilityErrorInfo,
                 .setTelemetryAvailability,
                 .loadOrdersSettings,
                 .upsertProductsSettings,
-                .loadLastSelectedTopPerformersTimeRange,
                 .loadLastSelectedMostActiveCouponsTimeRange,
                 .loadLastSelectedStockType,
                 .loadLastSelectedOrderStatus,

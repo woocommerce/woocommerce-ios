@@ -25,11 +25,12 @@ struct MockAppSettingsActionHandler: MockActionHandler {
             onCompletion(.success(false))
         case .getSkippedCashOnDeliveryOnboardingStep(_, let onCompletion):
             onCompletion(false)
+        case .loadSiteHasAtLeastOneIPPTransactionFinished(_, let onCompletion):
+            onCompletion(false)
         case .resetEligibilityErrorInfo,
                 .setTelemetryAvailability,
                 .loadOrdersSettings,
                 .upsertProductsSettings,
-                .loadSiteHasAtLeastOneIPPTransactionFinished,
                 .loadLastSelectedPerformanceTimeRange,
                 .loadLastSelectedTopPerformersTimeRange,
                 .loadLastSelectedMostActiveCouponsTimeRange,

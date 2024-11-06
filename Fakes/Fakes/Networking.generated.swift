@@ -1747,6 +1747,23 @@ extension Networking.Refund {
         )
     }
 }
+extension Networking.RemoteReaderLocation {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.RemoteReaderLocation {
+        .init(
+            locationID: .fake(),
+            city: .fake(),
+            country: .fake(),
+            addressLine1: .fake(),
+            addressLine2: .fake(),
+            postalCode: .fake(),
+            stateProvinceRegion: .fake(),
+            displayName: .fake(),
+            liveMode: .fake()
+        )
+    }
+}
 extension Networking.ShipmentTracking {
     /// Returns a "ready to use" type filled with fake values.
     ///

@@ -6726,7 +6726,7 @@
 			path = Containers;
 			sourceTree = "<group>";
 		};
-		025C00572550DDDD00FAC222 /* SKU Scanner */ = {
+		025C00572550DDDD00FAC222 /* Scanner */ = {
 			isa = PBXGroup;
 			children = (
 				025C00672550DE4700FAC222 /* CodeScannerViewController.swift */,
@@ -6740,7 +6740,7 @@
 				02667A192ABDD44200C77B56 /* GiftCardCodeScannerViewController.swift */,
 				B9CCE5FB2C8753A000905A91 /* SKUCodeScannerProvider.swift */,
 			);
-			path = "SKU Scanner";
+			path = Scanner;
 			sourceTree = "<group>";
 		};
 		025FDD3023717D1A00824006 /* Editor */ = {
@@ -9625,7 +9625,7 @@
 				021627232379637E000208D2 /* Edit Product */,
 				020DD48B2322A5F9005822B1 /* View Models */,
 				7447F9D8226A701B0031E10B /* Cells */,
-				025C00572550DDDD00FAC222 /* SKU Scanner */,
+				025C00572550DDDD00FAC222 /* Scanner */,
 				02A65300246AA63600755A01 /* ProductDetailsFactory.swift */,
 				B92FF9AF27FC7821005C34E3 /* ProductsViewController.xib */,
 				0260F40023224E8100EDA10A /* ProductsViewController.swift */,

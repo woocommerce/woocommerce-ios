@@ -31,11 +31,12 @@ struct MockAppSettingsActionHandler: MockActionHandler {
             onCompletion(StatsTimeRangeV4.thisMonth)
         case .loadLastSelectedTopPerformersTimeRange(_, let onCompletion):
             onCompletion(StatsTimeRangeV4.thisMonth)
+        case .loadLastSelectedMostActiveCouponsTimeRange(_, let onCompletion):
+            onCompletion(StatsTimeRangeV4.thisMonth)
         case .resetEligibilityErrorInfo,
                 .setTelemetryAvailability,
                 .loadOrdersSettings,
                 .upsertProductsSettings,
-                .loadLastSelectedMostActiveCouponsTimeRange,
                 .loadLastSelectedStockType,
                 .loadLastSelectedOrderStatus,
                 .loadFavoriteProductIDs,

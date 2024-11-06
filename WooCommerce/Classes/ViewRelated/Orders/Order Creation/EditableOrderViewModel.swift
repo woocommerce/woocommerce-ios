@@ -2475,7 +2475,7 @@ extension EditableOrderViewModel {
         static func createProductNotFoundAfterSKUScanningErrorNotice(for error: Error,
                                                                      code: ScannedBarcode,
                                                                      withRetryAction action: @escaping () -> Void) -> Notice {
-            BarcodeSKUScannerErrorNoticeFactory.notice(for: error, code: code, actionHandler: action)
+            BarcodeScannerErrorNoticeFactory.notice(for: error, code: code, actionHandler: action)
         }
 
         /// Returns an order sync error notice.

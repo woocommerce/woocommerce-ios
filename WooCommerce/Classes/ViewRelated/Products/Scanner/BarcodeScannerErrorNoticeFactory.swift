@@ -3,7 +3,7 @@ import Yosemite
 
 /// Provides the relevant notice given an error after the SKU scanned fails to provide an order item
 ///
-struct BarcodeSKUScannerErrorNoticeFactory {
+struct BarcodeScannerErrorNoticeFactory {
     static func notice(for error: Error, code: ScannedBarcode, actionHandler: @escaping ((() -> Void))) -> Notice {
         Notice(title: Localization.defaultTitle,
                message: noticeMessage(for: error, code: code),
@@ -30,7 +30,7 @@ struct BarcodeSKUScannerErrorNoticeFactory {
     }
 }
 
-private extension BarcodeSKUScannerErrorNoticeFactory {
+private extension BarcodeScannerErrorNoticeFactory {
     enum Localization {
         static let defaultTitle = NSLocalizedString("Cannot add Product to Order.",
                                                     comment: "Generic error when a product can't be added to an order after being scanned.")

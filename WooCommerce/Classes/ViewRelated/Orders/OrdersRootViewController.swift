@@ -296,7 +296,7 @@ final class OrdersRootViewController: UIViewController {
     /// Presents an Error notice
     ///
     private func displayScannedProductErrorNotice(_ error: Error, code: ScannedBarcode) {
-        let notice = BarcodeSKUScannerErrorNoticeFactory.notice(for: error, code: code) { [weak self] in
+        let notice = BarcodeScannerErrorNoticeFactory.notice(for: error, code: code) { [weak self] in
             self?.presentOrderCreationFlowByProductScanning()
         }
 

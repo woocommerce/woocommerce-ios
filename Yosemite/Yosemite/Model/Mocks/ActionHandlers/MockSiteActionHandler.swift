@@ -10,9 +10,9 @@ struct MockSiteActionHandler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-        case .syncSite(let siteID, let completion):
-            // Assuming Site is a type that exists
-            completion(.failure(NSError(domain: "", code: -1)))
+        case .syncSite(_, let completion):
+            let site = objectGraph.defaultSite
+            completion(.success(site))
 
         default:
             unimplementedAction(action: action)

@@ -8,13 +8,13 @@ class CustomFieldViewModelTests: XCTestCase {
     func test_view_model_inits_with_expected_values() throws {
         // Given
         let url = URL(string: "https://woocommerce.com/")
-        let viewModel = CustomFieldViewModel(id: 1, title: "First Metadata", content: "First Content", contentURL: url)
+        let viewModel = CustomFieldViewModel(fieldID: 1, key: "First Metadata", value: "First Content", valueURL: url)
 
         // Then
-        XCTAssertEqual(viewModel.id, 1)
-        XCTAssertEqual(viewModel.title, "First Metadata")
-        XCTAssertEqual(viewModel.content, "First Content")
-        XCTAssertEqual(viewModel.contentURL, url)
+        XCTAssertEqual(viewModel.fieldID, 1)
+        XCTAssertEqual(viewModel.key, "First Metadata")
+        XCTAssertEqual(viewModel.value, "First Content")
+        XCTAssertEqual(viewModel.valueURL, url)
     }
 
     func test_init_with_MetaData_creates_contentURL_from_metadata_value() throws {
@@ -26,7 +26,14 @@ class CustomFieldViewModelTests: XCTestCase {
         let viewModel = CustomFieldViewModel(metadata: metadata)
 
         // Then
-        XCTAssertEqual(viewModel.contentURL, URL(string: urlString))
+        XCTAssertEqual(viewModel.valueURL, URL(string: urlString))
     }
 
+    func test_when_isJson_called_then_return_correct_value() {
+        let jsonField = CustomFieldViewModel(key: "key", value: "{\"key\":\"value\"}")
+        XCTAssertTrue(jsonField.isJson)
+
+        let nonJsonField = CustomFieldViewModel(key: "key", value: "value")
+        XCTAssertFalse(nonJsonField.isJson)
+    }
 }

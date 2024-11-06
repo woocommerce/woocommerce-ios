@@ -16,7 +16,6 @@ final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSet
     /// Initializes the view model for a specific site
     ///
     init(stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          useCase: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
          didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)? = nil) {
         self.stores = stores

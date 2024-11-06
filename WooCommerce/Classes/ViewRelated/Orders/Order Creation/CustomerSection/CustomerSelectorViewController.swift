@@ -178,6 +178,7 @@ private extension CustomerSelectorViewController {
                                                         viewModel: addressFormViewModel)
         let rootViewController = UIHostingController(rootView: editOrderAddressForm)
         let navigationController = WooNavigationController(rootViewController: rootViewController)
+        navigationController.modalPresentationStyle = .fullScreen
 
         present(navigationController, animated: true, completion: nil)
     }

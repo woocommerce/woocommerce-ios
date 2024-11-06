@@ -9,7 +9,7 @@ extension ProductImage {
     }
 
     @NSManaged public var imageID: Int64
-    @NSManaged public var dateCreated: Date
+    @NSManaged public var dateCreated: Date?
     @NSManaged public var dateModified: Date?
     @NSManaged public var src: String
     @NSManaged public var name: String?

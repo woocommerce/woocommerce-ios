@@ -171,7 +171,7 @@ private extension BlazeBudgetSettingViewModel {
     }
 
     func calculateEndDate(from startDate: Date, dayCount: Double) -> Date {
-        Date(timeInterval: Constants.oneDayInSeconds * dayCount, since: startDate)
+        Calendar.current.date(byAdding: .day, value: Int(dayCount), to: startDate) ?? startDate
     }
 
     func calculateTotalBudget(dailyBudget: Double, dayCount: Double) -> Double {

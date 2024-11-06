@@ -19,6 +19,7 @@ struct WooShippingAddPackageView: View {
 
     // Holds type of selected package, it can be `custom`, `carrier` or `saved`
     @State var selectedPackageType = PackageProviderType.custom
+    @StateObject var packagesRepository = WooShippingPackagesRepository()
 
     let addPackageAction: (WooPackageDataRepresentable) -> Void
 
@@ -49,6 +50,9 @@ struct WooShippingAddPackageView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
         .navigationViewStyle(.stack)
+        .task {
+            packagesRepository.loadPackages()
+        }
     }
 
     // MARK: UI components
@@ -72,7 +76,7 @@ struct WooShippingAddPackageView: View {
         }
     }
 
-    private func carrierTabs() -> [WooShippingPackagesCarrierTab] {
+    private func carrierTabs() -> [WooShippingCarrierPackages] {
         // TODO: dummy data for UI creation
         let uspsPackageGroups: [WooPackageGroup] = [
             WooPackageGroup(name: "Flat Rate Boxes 1", packages: [
@@ -95,8 +99,8 @@ struct WooShippingAddPackageView: View {
                 WooCarrierPackageData(name: "Small Flat Rate Box", type: "DHL Express", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg")
             ])
         ]
-        let uspsCarrier: WooShippingPackagesCarrierTab = WooShippingPackagesCarrierTab(carrier: WooShippingCarrier.usps, packageGroups: uspsPackageGroups)
-        let dhlCarrier: WooShippingPackagesCarrierTab = WooShippingPackagesCarrierTab(carrier: WooShippingCarrier.dhlExpress, packageGroups: dhlPackageGroups)
+        let uspsCarrier: WooShippingCarrierPackages = WooShippingCarrierPackages(carrier: WooShippingCarrier.usps, packageGroups: uspsPackageGroups)
+        let dhlCarrier: WooShippingCarrierPackages = WooShippingCarrierPackages(carrier: WooShippingCarrier.dhlExpress, packageGroups: dhlPackageGroups)
 
         return [uspsCarrier, dhlCarrier]
     }
@@ -110,35 +114,7 @@ struct WooShippingAddPackageView: View {
 
     @ViewBuilder
     private var savedPackageView: some View {
-        // TODO: dummy data for UI creation
-        let packages: [WooSavedPackageData] = [
-            WooSavedPackageData(name: "Small Flat Rate Box",
-                                type: "Custom package",
-                                packageType: "box",
-                                dimensions: "21.92 × 13.67 × 4.14 cm",
-                                weight: "5 kg"),
-            WooSavedPackageData(name: "Small Flat Rate Box",
-                                type: "DHL Express",
-                                packageType: "box",
-                                dimensions: "21.92 × 13.67 × 4.14 cm",
-                                weight: "5 kg"),
-            WooSavedPackageData(name: "Small Flat Rate Box",
-                                type: "Custom package",
-                                packageType: "box",
-                                dimensions: "21.92 × 13.67 × 4.14 cm",
-                                weight: "5 kg"),
-            WooSavedPackageData(name: "Small Flat Rate Box",
-                                type: "USPS Priority Mail Flat Rate Boxes",
-                                packageType: "box",
-                                dimensions: "21.92 × 13.67 × 4.14 cm",
-                                weight: "5 kg"),
-            WooSavedPackageData(name: "Small Flat Rate Box",
-                                type: "Custom package",
-                                packageType: "box",
-                                dimensions: "21.92 × 13.67 × 4.14 cm",
-                                weight: "5 kg"),
-        ]
-        WooSavedPackagesSelectionView(viewModel: WooSavedPackagesSelectionViewModel(packages: packages)) { packageData in
+        WooSavedPackagesSelectionView(viewModel: WooSavedPackagesSelectionViewModel(packagesRepository: packagesRepository)) { packageData in
             addPackageAction(packageData)
         }
     }

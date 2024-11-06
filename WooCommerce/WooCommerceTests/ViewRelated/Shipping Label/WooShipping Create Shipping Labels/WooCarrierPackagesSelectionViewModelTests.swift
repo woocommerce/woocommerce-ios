@@ -57,7 +57,7 @@ final class WooCarrierPackagesSelectionViewModelTests: XCTestCase {
 }
 
 extension WooCarrierPackagesSelectionViewModelTests {
-    private func testingCarrierTabs() -> [WooShippingPackagesCarrierTab] {
+    private func testingCarrierTabs() -> [WooShippingCarrierPackages] {
         let uspsPackageGroups: [WooPackageGroup] = [
             WooPackageGroup(name: "Flat Rate Boxes 1", packages: [
                 WooCarrierPackageData(name: "Small Flat Rate Box", type: "usps", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg")
@@ -76,8 +76,8 @@ extension WooCarrierPackagesSelectionViewModelTests {
                 WooCarrierPackageData(name: "Small Flat Rate Box", type: "DHL Express", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg")
             ])
         ]
-        let uspsCarrier: WooShippingPackagesCarrierTab = WooShippingPackagesCarrierTab(carrier: WooShippingCarrier.usps, packageGroups: uspsPackageGroups)
-        let dhlCarrier: WooShippingPackagesCarrierTab = WooShippingPackagesCarrierTab(carrier: WooShippingCarrier.dhlExpress, packageGroups: dhlPackageGroups)
+        let uspsCarrier: WooShippingCarrierPackages = WooShippingCarrierPackages(carrier: WooShippingCarrier.usps, packageGroups: uspsPackageGroups)
+        let dhlCarrier: WooShippingCarrierPackages = WooShippingCarrierPackages(carrier: WooShippingCarrier.dhlExpress, packageGroups: dhlPackageGroups)
 
         return [uspsCarrier, dhlCarrier]
     }

@@ -30,6 +30,12 @@ struct WooSavedPackagesSelectionView: View {
     var body: some View {
         VStack(spacing: 0) {
             Divider()
+            if viewModel.packagesRepository.loadingSavedPackages {
+                // TODO: think of a better progress/loading indicator
+                ProgressView()
+                    .progressViewStyle(.circular)
+                    .padding()
+            }
             List {
                 ForEach(viewModel.packages, id: \.id) { package in
                     PackageOptionView(
@@ -56,6 +62,9 @@ struct WooSavedPackagesSelectionView: View {
                 .listRowInsets(.zero)
             }
             .listStyle(.plain)
+            .refreshable {
+                viewModel.packagesRepository.loadSavedPackages()
+            }
             Divider()
             Button(WooShippingAddPackageView.Localization.addPackage) {
                 addPackageButtonTapped()

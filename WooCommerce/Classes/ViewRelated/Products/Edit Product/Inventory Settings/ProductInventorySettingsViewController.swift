@@ -398,7 +398,7 @@ private extension ProductInventorySettingsViewController {
 
         startBarcodeScanning(onCompletion: { [weak self] barcode in
             ServiceLocator.analytics.track(.productInventorySettingsGlobalUniqueIDScanned)
-            self?.viewModel.handleGlobalUniqueIdentifierFromBarcodeScanner("123as", onValidation: {[weak self] isValid, shouldBringUpKeyboard in
+            self?.viewModel.handleGlobalUniqueIdentifierFromBarcodeScanner(barcode, onValidation: {[weak self] isValid, shouldBringUpKeyboard in
                 self?.handleGlobalUniqueIdentifierValidation(isValid: isValid, shouldBringUpKeyboard: shouldBringUpKeyboard)})
         })
     }

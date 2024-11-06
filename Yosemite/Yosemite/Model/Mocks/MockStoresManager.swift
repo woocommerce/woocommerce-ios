@@ -36,6 +36,11 @@ public class MockStoresManager: StoresManager {
     private let orderCardPresentPaymentEligibilityActionHandler: MockOrderCardPresentPaymentEligibilityActionHandler
     private let systemStatusActionHandler: MockSystemStatusActionHandler
     private let cardPresentPaymentActionHandler: MockCardPresentPaymentActionHandler
+    private let paymentActionHandler: MockPaymentActionHandler
+    private let siteActionHandler: MockSiteActionHandler
+    private let googleAdsActionHandler: MockGoogleAdsActionHandler
+    private let justInTimeMessageActionHandler: MockJustInTimeMessageActionHandler
+
 
 
     init(objectGraph: MockObjectGraph, storageManager: StorageManagerType) {
@@ -65,6 +70,14 @@ public class MockStoresManager: StoresManager {
         )
         systemStatusActionHandler = MockSystemStatusActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         cardPresentPaymentActionHandler = MockCardPresentPaymentActionHandler(objectGraph: objectGraph, storageManager: storageManager)
+
+        paymentActionHandler = MockPaymentActionHandler(objectGraph: objectGraph, storageManager: storageManager)
+
+        siteActionHandler = MockSiteActionHandler(objectGraph: objectGraph, storageManager: storageManager)
+
+        googleAdsActionHandler = MockGoogleAdsActionHandler(objectGraph: objectGraph, storageManager: storageManager)
+
+        justInTimeMessageActionHandler = MockJustInTimeMessageActionHandler(objectGraph: objectGraph, storageManager: storageManager)
     }
 
     /// Accessor for whether the user is logged in (spoiler: they always will be when mocking)
@@ -137,7 +150,16 @@ public class MockStoresManager: StoresManager {
             systemStatusActionHandler.handle(action: action)
         case let action as CardPresentPaymentAction:
             cardPresentPaymentActionHandler.handle(action: action)
+        case let action as PaymentAction:
+            paymentActionHandler.handle(action: action)
+        case let action as SiteAction:
+            siteActionHandler.handle(action: action)
+        case let action as GoogleAdsAction:
+            googleAdsActionHandler.handle(action: action)
+        case let action as JustInTimeMessageAction:
+            justInTimeMessageActionHandler.handle(action: action)
         default:
+            //break
             fatalError("Unable to handle action: \(action.identifier) \(String(describing: action))")
         }
     }

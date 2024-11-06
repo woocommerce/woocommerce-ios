@@ -26,7 +26,18 @@ struct MockAppSettingsActionHandler: MockActionHandler {
         case .resetEligibilityErrorInfo,
                 .setTelemetryAvailability,
                 .loadOrdersSettings,
-                .upsertProductsSettings:
+                .upsertProductsSettings,
+                .loadSiteHasAtLeastOneIPPTransactionFinished,
+                .loadLastSelectedPerformanceTimeRange,
+                .loadLastSelectedTopPerformersTimeRange,
+                .loadLastSelectedMostActiveCouponsTimeRange,
+                .loadLastSelectedStockType,
+                .loadLastSelectedOrderStatus,
+                .loadFavoriteProductIDs,
+                .loadCardReader,
+                .loadDashboardCards,
+                .getSkippedCashOnDeliveryOnboardingStep
+            :
             break
         default: unimplementedAction(action: action)
         }

@@ -16,7 +16,9 @@ struct MockOrderActionHandler: MockActionHandler {
                                           onCompletion: onCompletion)
             case .retrieveOrder(let siteID, let orderID, let onCompletion):
                 onCompletion(objectGraph.order(forSiteId: siteID, orderId: orderID), nil)
-            default: unimplementedAction(action: action)
+        case .checkIfStoreHasOrders:
+            break
+        default: unimplementedAction(action: action)
         }
     }
 

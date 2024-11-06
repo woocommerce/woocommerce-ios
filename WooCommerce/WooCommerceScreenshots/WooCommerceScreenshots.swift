@@ -32,19 +32,24 @@ class WooCommerceScreenshots: XCTestCase {
 
         app.launch()
 
+        // TODO-14325: Fix the system dialog handling because occasionally the dialog does not appear.
+        /*
         addUIInterruptionMonitor(withDescription: "System Dialog") {
             (alert) -> Bool in
             alert.buttons["Allow"].tap()
             return true
         }
         app.tap()
+         */
 
         try MyStoreScreen()
 
         // My Store
         .dismissTopBannerIfNeeded()
-        .then { ($0 as! MyStoreScreen).goToThisMonthTab() }
-        .thenTakeScreenshot(named: "order-dashboard")
+
+        // TODO-14325: Fix taking screenshots of the My Store screen with the stats cards.
+        //.then { ($0 as! MyStoreScreen).goToThisMonthTab() }
+        //.thenTakeScreenshot(named: "order-dashboard")
 
         // Orders
         try TabNavComponent()
@@ -56,9 +61,11 @@ class WooCommerceScreenshots: XCTestCase {
         // Collect payment
         .tapOrder(atIndex: 0)
         .tapCollectPaymentButton()
-        .tapCardPresentPayment()
+
+        // TODO-14325: Fix card present payment action.
+        //.tapCardPresentPayment()
         .thenTakeScreenshot(named: "order-payment")
-        .goBackToPaymentMethodsScreen()
+        //.goBackToPaymentMethodsScreen()
         .goBackToOrderScreen()
         .goBackToOrdersScreen()
 

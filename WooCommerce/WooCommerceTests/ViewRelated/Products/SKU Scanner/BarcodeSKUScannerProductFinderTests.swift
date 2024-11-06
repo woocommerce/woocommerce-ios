@@ -38,7 +38,7 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
         let symbology = BarcodeSymbology.aztec
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
-            case .retrieveFirstPurchasableItemMatchFromSKU(_, _, let onCompletion):
+            case .retrieveFirstPurchasableItemMatchFromIdentifier(_, _, let onCompletion):
                 onCompletion(.failure(productNotFoundError))
             default:
                 XCTFail("Expected failure, got success")
@@ -67,7 +67,7 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
         let returningProduct = Product.fake()
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
-            case .retrieveFirstPurchasableItemMatchFromSKU(_, _, let onCompletion):
+            case .retrieveFirstPurchasableItemMatchFromIdentifier(_, _, let onCompletion):
                 onCompletion(.success(.product(returningProduct)))
             default:
                 break
@@ -104,7 +104,7 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
-            case let .retrieveFirstPurchasableItemMatchFromSKU(_, givenSKU, onCompletion):
+            case let .retrieveFirstPurchasableItemMatchFromIdentifier(_, givenSKU, onCompletion):
                 if givenSKU == productSKU {
                     onCompletion(.success(.product(returningProduct)))
                 } else {
@@ -135,7 +135,7 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
-            case let .retrieveFirstPurchasableItemMatchFromSKU(_, givenSKU, onCompletion):
+            case let .retrieveFirstPurchasableItemMatchFromIdentifier(_, givenSKU, onCompletion):
                 if givenSKU == productSKU {
                     onCompletion(.success(.product(returningProduct)))
                 } else {

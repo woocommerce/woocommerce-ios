@@ -51,8 +51,8 @@ public class ProductStore: Store {
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
             retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .retrieveFirstPurchasableItemMatchFromSKU(siteID: let siteID, sku: let sku, onCompletion: let onCompletion):
-            retrieveFirstPurchasableItemMatchFromSKU(siteID: siteID, sku: sku, onCompletion: onCompletion)
+        case .retrieveFirstPurchasableItemMatchFromIdentifier(siteID: let siteID, identifier: let identifier, onCompletion: let onCompletion):
+            retrieveFirstPurchasableItemMatchFromIdentifier(siteID: siteID, identifier: identifier, onCompletion: onCompletion)
         case let.searchProductsInCache(siteID, keyword, pageSize, onCompletion):
             searchInCache(siteID: siteID, keyword: keyword, pageSize: pageSize, onCompletion: onCompletion)
         case let .searchProducts(siteID,
@@ -411,26 +411,26 @@ private extension ProductStore {
         }
     }
 
-    /// Retrieves the first product associated with a given siteID and exact-matching SKU (if any)
+    /// Retrieves the first product associated with a given siteID and exact-matching SKU or global unique identifier (if any)
     ///
-    func retrieveFirstPurchasableItemMatchFromSKU(siteID: Int64, sku: String, onCompletion: @escaping (Result<SKUSearchResult, Error>) -> Void) {
+    func retrieveFirstPurchasableItemMatchFromIdentifier(siteID: Int64, identifier: String, onCompletion: @escaping (Result<SKUSearchResult, Error>) -> Void) {
 
-        guard !sku.isEmpty else {
+        guard !identifier.isEmpty else {
             return onCompletion(.failure(ProductLoadError.emptySKU))
         }
 
         searchProductsByIdentifier(siteID: siteID,
-                                   keyword: sku,
+                                   keyword: identifier,
                                    completion: { result in
             switch result {
             case let .success(products):
-                let skuProducts = products.filter { $0.sku == sku || $0.globalUniqueID == sku }
+                let matchedProducts = products.filter { $0.sku == identifier || $0.globalUniqueID == identifier }
 
-                guard !skuProducts.isEmpty else {
+                guard !matchedProducts.isEmpty else {
                     return onCompletion(.failure(ProductLoadError.notFound))
                 }
 
-                guard let product = skuProducts.first(where: { $0.purchasable }) else {
+                guard let product = matchedProducts.first(where: { $0.purchasable }) else {
                     return onCompletion(.failure(ProductLoadError.notPurchasable))
                 }
 

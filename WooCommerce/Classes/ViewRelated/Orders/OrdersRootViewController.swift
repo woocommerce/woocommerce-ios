@@ -32,7 +32,7 @@ final class OrdersRootViewController: UIViewController {
     ///
     private var subscriptions = Set<AnyCancellable>()
 
-    private let barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder
+    private let barcodeScannerItemFinder: BarcodeScannerItemFinder
 
     /// The top bar for apply filters, that will be embedded inside the stackview, on top of everything.
     ///
@@ -78,13 +78,13 @@ final class OrdersRootViewController: UIViewController {
     init(siteID: Int64,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
-         barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder(),
+         barcodeScannerItemFinder: BarcodeScannerItemFinder = BarcodeScannerItemFinder(),
          switchDetailsHandler: @escaping OrderListViewController.SelectOrderDetails) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.featureFlagService = ServiceLocator.featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
-        self.barcodeSKUScannerItemFinder = barcodeSKUScannerItemFinder
+        self.barcodeScannerItemFinder = barcodeScannerItemFinder
         self.switchDetailsHandler = switchDetailsHandler
         super.init(nibName: Self.nibName, bundle: nil)
 
@@ -285,7 +285,7 @@ final class OrdersRootViewController: UIViewController {
     private func handleScannedBarcode(_ scannedBarcode: ScannedBarcode, onCompletion: @escaping ((Result<ItemIdentifierSearchResult, Error>) -> Void)) {
         Task {
             do {
-                let result = try await barcodeSKUScannerItemFinder.searchBySKU(from: scannedBarcode, siteID: siteID, source: .orderList)
+                let result = try await barcodeScannerItemFinder.searchBySKU(from: scannedBarcode, siteID: siteID, source: .orderList)
                 onCompletion(.success(result))
             } catch {
                 onCompletion(.failure(error))

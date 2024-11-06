@@ -461,7 +461,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
-    private let barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder
+    private let barcodeScannerItemFinder: BarcodeScannerItemFinder
 
     private let quantityDebounceDuration: Double
 
@@ -489,7 +489,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.permissionChecker = permissionChecker
         self.initialItem = initialItem
         self.initialCustomer = initialCustomer
-        self.barcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder(stores: stores)
+        self.barcodeScannerItemFinder = BarcodeScannerItemFinder(stores: stores)
         self.quantityDebounceDuration = quantityDebounceDuration
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
@@ -2445,7 +2445,7 @@ extension EditableOrderViewModel {
     private func mapScannedBarcodetoBaseItem(barcode: ScannedBarcode, onCompletion: @escaping (Result<OrderBaseItem, Error>) -> Void) {
         Task {
             do {
-                let result = try await barcodeSKUScannerItemFinder.searchBySKU(from: barcode, siteID: siteID, source: .orderCreation)
+                let result = try await barcodeScannerItemFinder.searchBySKU(from: barcode, siteID: siteID, source: .orderCreation)
                 onCompletion(.success(result))
             } catch {
                 onCompletion(.failure(error))

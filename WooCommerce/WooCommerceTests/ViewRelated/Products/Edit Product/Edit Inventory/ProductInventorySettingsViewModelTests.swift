@@ -229,7 +229,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         // Arrange
         let product = Product.fake().copy(globalUniqueID: "321")
         let model = EditableProductModel(product: product)
-        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+        let featureFlagService = MockFeatureFlagService(isProductGlobalUniqueIdentifierSupported: true)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, featureFlagService: featureFlagService)
         var sections: [Section] = []
         cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue

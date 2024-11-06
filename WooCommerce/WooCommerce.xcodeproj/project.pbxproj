@@ -522,6 +522,7 @@
 		02CEBB8024C9869E002EDF35 /* ProductFormActionsFactoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CEBB7F24C9869E002EDF35 /* ProductFormActionsFactoryProtocol.swift */; };
 		02CEBB8224C98861002EDF35 /* ProductFormDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CEBB8124C98861002EDF35 /* ProductFormDataModel.swift */; };
 		02CEBB8424C99A10002EDF35 /* Product+ShippingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CEBB8324C99A10002EDF35 /* Product+ShippingTests.swift */; };
+		02D1D2DA2CD3CDA40069A93F /* WooAnalyticsEvent+PointOfSale.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D1D2D92CD3CD8D0069A93F /* WooAnalyticsEvent+PointOfSale.swift */; };
 		02D29A8E29F7C26000473D6D /* InputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D29A8D29F7C26000473D6D /* InputAccessoryView.swift */; };
 		02D29A9029F7C2DA00473D6D /* AztecAIViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D29A8F29F7C2DA00473D6D /* AztecAIViewFactory.swift */; };
 		02D29A9229F7C39200473D6D /* UIImage+Text.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D29A9129F7C39200473D6D /* UIImage+Text.swift */; };
@@ -3625,6 +3626,7 @@
 		02CEBB7F24C9869E002EDF35 /* ProductFormActionsFactoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormActionsFactoryProtocol.swift; sourceTree = "<group>"; };
 		02CEBB8124C98861002EDF35 /* ProductFormDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormDataModel.swift; sourceTree = "<group>"; };
 		02CEBB8324C99A10002EDF35 /* Product+ShippingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+ShippingTests.swift"; sourceTree = "<group>"; };
+		02D1D2D92CD3CD8D0069A93F /* WooAnalyticsEvent+PointOfSale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+PointOfSale.swift"; sourceTree = "<group>"; };
 		02D29A8D29F7C26000473D6D /* InputAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessoryView.swift; sourceTree = "<group>"; };
 		02D29A8F29F7C2DA00473D6D /* AztecAIViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecAIViewFactory.swift; sourceTree = "<group>"; };
 		02D29A9129F7C39200473D6D /* UIImage+Text.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Text.swift"; sourceTree = "<group>"; };
@@ -7130,6 +7132,7 @@
 		029327662BF59D2D00D703E7 /* POS */ = {
 			isa = PBXGroup;
 			children = (
+				02D1D2D82CD3CD710069A93F /* Analytics */,
 				2004E2C02C076CCA00D62521 /* Card Present Payments */,
 				68F151DF2C0DA7800082AEC8 /* Models */,
 				026826912BF59D7A0036F959 /* ViewModels */,
@@ -7354,6 +7357,14 @@
 				B9CB14DF2A42E246005912C2 /* BarcodeSKUScannerErrorNoticeFactoryTests.swift */,
 			);
 			path = "SKU Scanner";
+			sourceTree = "<group>";
+		};
+		02D1D2D82CD3CD710069A93F /* Analytics */ = {
+			isa = PBXGroup;
+			children = (
+				02D1D2D92CD3CD8D0069A93F /* WooAnalyticsEvent+PointOfSale.swift */,
+			);
+			path = Analytics;
 			sourceTree = "<group>";
 		};
 		02D4564A231D059E008CF0A9 /* Beta features */ = {
@@ -15647,6 +15658,7 @@
 				02820F3422C257B700DE0D37 /* UITableView+HeaderFooterHelpers.swift in Sources */,
 				EEC259422B43EF33004D703C /* BlazeEditAdView.swift in Sources */,
 				03E471C0293A158D001A58AD /* CardReaderConnectionAlertsProviding.swift in Sources */,
+				02D1D2DA2CD3CDA40069A93F /* WooAnalyticsEvent+PointOfSale.swift in Sources */,
 				D8C2A291231BD0FD00F503E9 /* ReviewsDataSource.swift in Sources */,
 				CE855366209BA6A700938BDC /* CustomerInfoTableViewCell.swift in Sources */,
 				205E79442C204368001BA266 /* PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel.swift in Sources */,

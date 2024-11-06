@@ -7,7 +7,7 @@ import enum Networking.DotcomError
 
 /// Encapsulates the item type an order can have, products or variations
 ///
-typealias OrderBaseItem = SKUSearchResult
+typealias OrderBaseItem = ItemIdentifierSearchResult
 
 /// View model used in Order Creation and Editing flows.
 ///

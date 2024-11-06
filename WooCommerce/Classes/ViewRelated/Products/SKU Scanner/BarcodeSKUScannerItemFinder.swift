@@ -14,7 +14,7 @@ struct BarcodeSKUScannerItemFinder {
         self.analytics = analytics
     }
 
-    func searchBySKU(from barcode: ScannedBarcode, siteID: Int64, source: WooAnalyticsEvent.BarcodeScanning.Source) async throws -> SKUSearchResult {
+    func searchBySKU(from barcode: ScannedBarcode, siteID: Int64, source: WooAnalyticsEvent.BarcodeScanning.Source) async throws -> ItemIdentifierSearchResult {
         do {
             let result = try await search(by: barcode.payloadStringValue, siteID: siteID)
             analytics.track(event: WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUSuccess(from: source.rawValue))
@@ -42,7 +42,7 @@ struct BarcodeSKUScannerItemFinder {
         }
     }
 
-    private func search(by sku: String, siteID: Int64) async throws -> SKUSearchResult {
+    private func search(by sku: String, siteID: Int64) async throws -> ItemIdentifierSearchResult {
         try await withCheckedThrowingContinuation { continuation in
             let action = ProductAction.retrieveFirstPurchasableItemMatchFromIdentifier(siteID: siteID,
                                                                         identifier: sku) { result in

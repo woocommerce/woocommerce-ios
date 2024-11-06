@@ -187,7 +187,7 @@ final class OrdersRootViewController: UIViewController {
 
     /// Presents the Order Creation flow with a scanned Product
     ///
-    private func presentOrderCreationFlowWithScannedProduct(_ result: SKUSearchResult) {
+    private func presentOrderCreationFlowWithScannedProduct(_ result: ItemIdentifierSearchResult) {
         let viewModel = EditableOrderViewModel(siteID: siteID, initialItem: result)
         setupNavigation(viewModel: viewModel)
     }
@@ -282,7 +282,7 @@ final class OrdersRootViewController: UIViewController {
     /// - Parameters:
     ///   - scannedBarcode: The scanned barcode
     ///   - onCompletion: The closure to be trigged when the scanning completes. Succeeds with a Product, or fails with an Error.
-    private func handleScannedBarcode(_ scannedBarcode: ScannedBarcode, onCompletion: @escaping ((Result<SKUSearchResult, Error>) -> Void)) {
+    private func handleScannedBarcode(_ scannedBarcode: ScannedBarcode, onCompletion: @escaping ((Result<ItemIdentifierSearchResult, Error>) -> Void)) {
         Task {
             do {
                 let result = try await barcodeSKUScannerItemFinder.searchBySKU(from: scannedBarcode, siteID: siteID, source: .orderList)

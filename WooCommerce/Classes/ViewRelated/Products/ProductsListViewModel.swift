@@ -182,7 +182,7 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
         wooSubscriptionProductsEligibilityChecker.isSiteEligible()
     }
 
-    func handleScannedBarcode(_ scannedBarcode: ScannedBarcode) async throws -> SKUSearchResult {
+    func handleScannedBarcode(_ scannedBarcode: ScannedBarcode) async throws -> ItemIdentifierSearchResult {
         do {
             return try await barcodeSKUScannerItemFinder.searchBySKU(from: scannedBarcode,
                                                                      siteID: siteID,

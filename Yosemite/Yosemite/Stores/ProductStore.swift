@@ -413,7 +413,7 @@ private extension ProductStore {
 
     /// Retrieves the first product associated with a given siteID and exact-matching SKU or global unique identifier (if any)
     ///
-    func retrieveFirstPurchasableItemMatchFromIdentifier(siteID: Int64, identifier: String, onCompletion: @escaping (Result<SKUSearchResult, Error>) -> Void) {
+    func retrieveFirstPurchasableItemMatchFromIdentifier(siteID: Int64, identifier: String, onCompletion: @escaping (Result<ItemIdentifierSearchResult, Error>) -> Void) {
 
         guard !identifier.isEmpty else {
             return onCompletion(.failure(ProductLoadError.emptySKU))

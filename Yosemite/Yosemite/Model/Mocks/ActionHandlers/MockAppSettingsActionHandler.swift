@@ -39,11 +39,12 @@ struct MockAppSettingsActionHandler: MockActionHandler {
             onCompletion(nil)
         case .loadFavoriteProductIDs(_, let onCompletion):
             onCompletion([])
+        case .loadCardReader(let onCompletion):
+            onCompletion(.success(nil))
         case .resetEligibilityErrorInfo,
                 .setTelemetryAvailability,
                 .loadOrdersSettings,
                 .upsertProductsSettings,
-                .loadCardReader,
                 .loadDashboardCards:
             break
         default: unimplementedAction(action: action)

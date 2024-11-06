@@ -37,12 +37,12 @@ struct MockAppSettingsActionHandler: MockActionHandler {
             onCompletion(nil)
         case .loadLastSelectedOrderStatus(_, let onCompletion):
             onCompletion(nil)
-
+        case .loadFavoriteProductIDs(_, let onCompletion):
+            onCompletion([])
         case .resetEligibilityErrorInfo,
                 .setTelemetryAvailability,
                 .loadOrdersSettings,
                 .upsertProductsSettings,
-                .loadFavoriteProductIDs,
                 .loadCardReader,
                 .loadDashboardCards:
             break

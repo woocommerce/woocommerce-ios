@@ -23,6 +23,8 @@ struct MockAppSettingsActionHandler: MockActionHandler {
             onCompletion(false)
         case .getFeatureAnnouncementVisibility(_, let onCompletion):
             onCompletion(.success(false))
+        case .getSkippedCashOnDeliveryOnboardingStep(_, let onCompletion):
+            onCompletion(false)
         case .resetEligibilityErrorInfo,
                 .setTelemetryAvailability,
                 .loadOrdersSettings,
@@ -35,9 +37,7 @@ struct MockAppSettingsActionHandler: MockActionHandler {
                 .loadLastSelectedOrderStatus,
                 .loadFavoriteProductIDs,
                 .loadCardReader,
-                .loadDashboardCards,
-                .getSkippedCashOnDeliveryOnboardingStep
-            :
+                .loadDashboardCards:
             break
         default: unimplementedAction(action: action)
         }

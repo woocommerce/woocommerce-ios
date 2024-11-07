@@ -847,7 +847,7 @@ extension Networking.GoogleAdsCampaign {
         rawStatus: CopiableProp<String> = .copy,
         rawType: CopiableProp<String> = .copy,
         amount: CopiableProp<Double> = .copy,
-        country: CopiableProp<String> = .copy,
+        country: NullableCopiableProp<String> = .copy,
         targetedLocations: CopiableProp<[String]> = .copy
     ) -> Networking.GoogleAdsCampaign {
         let id = id ?? self.id
@@ -2849,6 +2849,42 @@ extension Networking.Refund {
             createAutomated: createAutomated,
             items: items,
             shippingLines: shippingLines
+        )
+    }
+}
+
+extension Networking.RemoteReaderLocation {
+    public func copy(
+        locationID: CopiableProp<String> = .copy,
+        city: NullableCopiableProp<String> = .copy,
+        country: CopiableProp<String> = .copy,
+        addressLine1: CopiableProp<String> = .copy,
+        addressLine2: NullableCopiableProp<String> = .copy,
+        postalCode: NullableCopiableProp<String> = .copy,
+        stateProvinceRegion: NullableCopiableProp<String> = .copy,
+        displayName: CopiableProp<String> = .copy,
+        liveMode: CopiableProp<Bool> = .copy
+    ) -> Networking.RemoteReaderLocation {
+        let locationID = locationID ?? self.locationID
+        let city = city ?? self.city
+        let country = country ?? self.country
+        let addressLine1 = addressLine1 ?? self.addressLine1
+        let addressLine2 = addressLine2 ?? self.addressLine2
+        let postalCode = postalCode ?? self.postalCode
+        let stateProvinceRegion = stateProvinceRegion ?? self.stateProvinceRegion
+        let displayName = displayName ?? self.displayName
+        let liveMode = liveMode ?? self.liveMode
+
+        return Networking.RemoteReaderLocation(
+            locationID: locationID,
+            city: city,
+            country: country,
+            addressLine1: addressLine1,
+            addressLine2: addressLine2,
+            postalCode: postalCode,
+            stateProvinceRegion: stateProvinceRegion,
+            displayName: displayName,
+            liveMode: liveMode
         )
     }
 }

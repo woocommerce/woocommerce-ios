@@ -477,7 +477,7 @@ extension StripeCardReaderService: CardReaderService {
                         return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                     }
                 case .failure(let error):
-                    let underlyingError = UnderlyingError(with: error)
+                    let underlyingError = Self.logAndDecodeError(error)
                     return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                 }
             }
@@ -509,7 +509,7 @@ extension StripeCardReaderService: CardReaderService {
                         return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                     }
                 case .failure(let error):
-                    let underlyingError = UnderlyingError(with: error)
+                    let underlyingError = Self.logAndDecodeError(error)
                     return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                 }
             }
@@ -778,7 +778,7 @@ extension StripeCardReaderService {
                         self.refundCancellable = nil
                         if let error = processError {
                             promise(.failure(CardReaderServiceError.refundPayment(
-                                underlyingError: UnderlyingError(with: error),
+                                underlyingError: Self.logAndDecodeError(error),
                                 shouldRetry: self.shouldRetryRefund(after: error)
                             )))
                         } else if let refund = processedRefund {

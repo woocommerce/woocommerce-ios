@@ -21,7 +21,7 @@ public protocol CardReaderConfigProvider: ReaderLocationProvider, ReaderTokenPro
 ///     May include URL for wp-admin page to update address.
 /// - invalidPostalCode: The location could not be created because the Store postal code configured for the site failed validation.
 ///
-public enum CardReaderConfigError: Error, LocalizedError {
+public enum CardReaderConfigError: Error, LocalizedError, Equatable {
     case incompleteStoreAddress(adminUrl: URL?)
     case invalidPostalCode
 }

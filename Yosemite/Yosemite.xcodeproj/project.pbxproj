@@ -147,6 +147,8 @@
 		209AD3CE2AC1A9C200825D76 /* WooPaymentsDepositsOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3CD2AC1A9C200825D76 /* WooPaymentsDepositsOverview.swift */; };
 		20BCF6F22B0E554500954840 /* SystemStatusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BCF6F12B0E554500954840 /* SystemStatusService.swift */; };
 		20BCF6F52B0E57AB00954840 /* MockSystemStatusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BCF6F42B0E57AB00954840 /* MockSystemStatusService.swift */; };
+		20D035002CDBBD6400C0F901 /* CommonReaderConfigProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D034FF2CDBBD6400C0F901 /* CommonReaderConfigProviderTests.swift */; };
+		20D035022CDBBE2A00C0F901 /* MockCardReaderCapableRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D035012CDBBE2A00C0F901 /* MockCardReaderCapableRemote.swift */; };
 		20D210C12B177EEF0099E517 /* WooPaymentsDepositServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D210C02B177EEF0099E517 /* WooPaymentsDepositServiceTests.swift */; };
 		24163B9E257F41A600F94EC3 /* StoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24163B9D257F41A600F94EC3 /* StoresManager.swift */; };
 		24163BA8257F41C500F94EC3 /* SessionManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24163BA7257F41C500F94EC3 /* SessionManagerProtocol.swift */; };
@@ -655,6 +657,8 @@
 		209AD3CD2AC1A9C200825D76 /* WooPaymentsDepositsOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsOverview.swift; sourceTree = "<group>"; };
 		20BCF6F12B0E554500954840 /* SystemStatusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusService.swift; sourceTree = "<group>"; };
 		20BCF6F42B0E57AB00954840 /* MockSystemStatusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MockSystemStatusService.swift; path = ../../../WooCommerce/WooCommerceTests/Mocks/MockSystemStatusService.swift; sourceTree = "<group>"; };
+		20D034FF2CDBBD6400C0F901 /* CommonReaderConfigProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonReaderConfigProviderTests.swift; sourceTree = "<group>"; };
+		20D035012CDBBE2A00C0F901 /* MockCardReaderCapableRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCardReaderCapableRemote.swift; sourceTree = "<group>"; };
 		20D210C02B177EEF0099E517 /* WooPaymentsDepositServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositServiceTests.swift; sourceTree = "<group>"; };
 		24163B9D257F41A600F94EC3 /* StoresManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoresManager.swift; sourceTree = "<group>"; };
 		24163BA7257F41C500F94EC3 /* SessionManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManagerProtocol.swift; sourceTree = "<group>"; };
@@ -1889,6 +1893,7 @@
 				022F9318257F24730011CD94 /* MockShippingLabel.swift */,
 				022F931C257F27B40011CD94 /* MockShippingLabelAddress.swift */,
 				20BCF6F42B0E57AB00954840 /* MockSystemStatusService.swift */,
+				20D035012CDBBE2A00C0F901 /* MockCardReaderCapableRemote.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -1966,6 +1971,7 @@
 				B54EAF2021188C470029C35E /* EntityListenerTests.swift */,
 				B5F2AE9420EBAD6000FEDC59 /* ResultsControllerTests.swift */,
 				031FD89F26FC970300B315C7 /* RosettaTestingHelper.swift */,
+				20D034FF2CDBBD6400C0F901 /* CommonReaderConfigProviderTests.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -2557,6 +2563,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4552073D25811B4E001CF873 /* ProductAttributeStoreTests.swift in Sources */,
+				20D035022CDBBE2A00C0F901 /* MockCardReaderCapableRemote.swift in Sources */,
 				458C6DE825ACC554009B300D /* AppSettingsStoreTests+ProductsSettings.swift in Sources */,
 				D88303F025E45E6F00C877F9 /* MockCardReaderService.swift in Sources */,
 				022F00C524728B0C008CD97F /* SiteNotificationCountFileContentsTests.swift in Sources */,
@@ -2603,6 +2610,7 @@
 				45ED4F16239E939A004F1BE3 /* TaxStoreTests.swift in Sources */,
 				57264572250BE2E7005BBD7C /* OrdersUpsertUseCaseTests.swift in Sources */,
 				0286A1BE2A0CC4810099EF94 /* MockFeatureFlagRemote.swift in Sources */,
+				20D035002CDBBD6400C0F901 /* CommonReaderConfigProviderTests.swift in Sources */,
 				0225512522FC312400D98613 /* OrderStatsV4Interval+DateTests.swift in Sources */,
 				D8652E4826307A5000350F37 /* MockReceiptPrinterService.swift in Sources */,
 				020B2F9623BDE4DD00BD79AD /* ProductStoreTests+Validation.swift in Sources */,

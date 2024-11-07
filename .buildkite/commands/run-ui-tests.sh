@@ -23,6 +23,9 @@ install_gems
 echo "--- :swift: Setting up Swift Packages"
 install_swiftpm_dependencies
 
+echo "--- :keyboard: Connecting Hardware Keyboard"
+defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool true
+
 echo "--- 🧪 Testing"
 xcrun simctl list >> /dev/null
 rake mocks &

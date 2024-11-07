@@ -21,8 +21,10 @@ struct MockCardPresentPaymentActionHandler: MockActionHandler {
             onCompletion(true)
         case .observeConnectedReaders(let onCompletion):
             observeConnectedReaders(onCompletion: onCompletion)
-        case .collectPayment(_, _, _, _, let onProcessingCompletion, let onCompletion):
-            break
+        case .collectPayment(_, _, _, let onCardReaderMessage, _, _):
+            // This immediately brings up the `CardPresentModalTapCard` screen, which is used by
+            // `WooCommerceScreenshots` to display it for screenshotting purpose.
+            onCardReaderMessage(.waitingForInput(.tap))
         default:
             break
         }

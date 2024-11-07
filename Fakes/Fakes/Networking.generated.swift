@@ -2747,6 +2747,7 @@ extension Networking.WooShippingCustomPackage {
     ///
     public static func fake() -> Networking.WooShippingCustomPackage {
         .init(
+            id: .fake(),
             name: .fake(),
             type: .fake(),
             dimensions: .fake(),

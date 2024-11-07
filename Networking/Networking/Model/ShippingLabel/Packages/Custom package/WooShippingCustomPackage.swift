@@ -6,7 +6,10 @@ import WooFoundation
 ///
 public struct WooShippingCustomPackage: Equatable, GeneratedFakeable {
 
-    /// The name of the custom package, like `Krabica`. This is also the unique ID of a custom package.
+    /// The ID of the custom package.
+    public let id: String
+
+    /// The name of the custom package, like `Krabica`. This is a unique value.
     public let name: String
 
     /// Raw value of the package type (box or envelope).
@@ -28,7 +31,8 @@ public struct WooShippingCustomPackage: Equatable, GeneratedFakeable {
         PackageType(rawValue: rawType) ?? .box
     }
 
-    public init(name: String, type: String, dimensions: String, boxWeight: Double) {
+    public init(id: String, name: String, type: String, dimensions: String, boxWeight: Double) {
+        self.id = id
         self.name = name
         self.rawType = type
         self.dimensions = dimensions
@@ -56,12 +60,13 @@ extension WooShippingCustomPackage: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
+        let id = try container.decode(String.self, forKey: .id)
         let name = try container.decode(String.self, forKey: .name)
         let type = try container.decode(String.self, forKey: .type)
         let dimensions = try container.decode(String.self, forKey: .dimensions)
         let boxWeight = try container.decode(Double.self, forKey: .boxWeight)
 
-        self.init(name: name, type: type, dimensions: dimensions, boxWeight: boxWeight)
+        self.init(id: id, name: name, type: type, dimensions: dimensions, boxWeight: boxWeight)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -74,6 +79,7 @@ extension WooShippingCustomPackage: Codable {
     }
 
     private enum CodingKeys: String, CodingKey {
+        case id
         case name
         case type
         case dimensions

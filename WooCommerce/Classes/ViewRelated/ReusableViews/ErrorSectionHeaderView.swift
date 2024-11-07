@@ -3,8 +3,6 @@ import UIKit
 /// Displays error for the table view section.
 ///
 final class ErrorSectionHeaderView: UITableViewHeaderFooterView {
-
-    @IBOutlet weak var titleLabelTopSpacing: NSLayoutConstraint!
     @IBOutlet private weak var titleLabel: UILabel!
 
     // MARK: - Overridden Methods
@@ -18,10 +16,6 @@ final class ErrorSectionHeaderView: UITableViewHeaderFooterView {
 
     func configure(title: String?) {
         titleLabel.text = title
-    }
-
-    func addTopSpacing() {
-        titleLabelTopSpacing.constant = 22
     }
 }
 

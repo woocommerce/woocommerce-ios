@@ -11,7 +11,7 @@ protocol ProductInventorySettingsViewModelOutput {
     var sections: AnyPublisher<[Section], Never> { get }
 
     /// Potential error from input changes.
-    var error: ProductUpdateError? { get }
+    var errors: [ProductUpdateError] { get }
 
     /// The type of inventory form.
     var formType: ProductInventorySettingsViewController.FormType { get }
@@ -92,7 +92,7 @@ final class ProductInventorySettingsViewModel: ProductInventorySettingsViewModel
     }
     @Published private var sectionsSubject: [Section] = []
 
-    private(set) var error: ProductUpdateError?
+    private(set) var errors: [ProductUpdateError] = []
 
     // Sku validation
     private var skuIsValid: Bool = true
@@ -134,7 +134,7 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
         // If the sku is identical to the old one, is always valid
         guard sku != productModel.sku else {
             skuIsValid = true
-            hideError()
+            hideError(error: .duplicatedSKU)
             throttler.cancel()
             onValidation(true, true)
             return
@@ -155,7 +155,7 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
                         onValidation(false, true)
                         return
                     }
-                    self.hideError()
+                    self.hideError(error: .duplicatedSKU)
                     onValidation(true, false)
                 }
 
@@ -172,7 +172,7 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
 
             var shouldBringUpKeyboard = false
             // If the error was already shown there's no need to show it again
-            if error != .invalidGlobalUniqueIdentifier {
+            if !errors.contains(.invalidGlobalUniqueIdentifier) {
                 displayError(error: .invalidGlobalUniqueIdentifier)
                 // After reloading the sections the keyboard was dismissed, let's bring it back again
                 shouldBringUpKeyboard = true
@@ -185,8 +185,8 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
         }
 
         // Bring keyboard up if the error was shown, so they user can keep typing when the sections are reloaded to remove the error message
-        let shouldBringUpKeyboard = error == .invalidGlobalUniqueIdentifier
-        hideError()
+        let shouldBringUpKeyboard = errors.contains(.invalidGlobalUniqueIdentifier)
+        hideError(error: .invalidGlobalUniqueIdentifier)
         globalUniqueIdIsValid = true
         onValidation(true, shouldBringUpKeyboard)
     }
@@ -272,9 +272,12 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
 //
 private extension ProductInventorySettingsViewModel {
     func reloadSections() {
-        let sections: [Section]
-        switch formType {
-        case .inventory:
+        var sections = [createSKUSection()]
+        if featureFlagService.isFeatureFlagEnabled(.productGlobalUniqueIdentifierSupport) {
+            sections.append(createGlobalUniqueIdentifierSection())
+        }
+
+        if formType == .inventory {
             let stockSection: Section
             if manageStockEnabled {
                 stockSection = Section(rows: [.manageStock, .stockQuantity, .backorders])
@@ -284,40 +287,31 @@ private extension ProductInventorySettingsViewModel {
                 stockSection = Section(rows: [.manageStock])
             }
 
-            switch productModel {
-            case is EditableProductModel:
-                sections = [
-                    createSKUSection(),
-                    stockSection,
-                    Section(rows: [.limitOnePerOrder])
-                ]
-            case is EditableProductVariationModel:
-                sections = [
-                    createSKUSection(),
-                    stockSection
-                ]
-            default:
-                fatalError("Unsupported product type: \(productModel)")
+            sections.append(stockSection)
+
+            if productModel is EditableProductModel {
+                sections.append(Section(rows: [.limitOnePerOrder]))
             }
-        case .sku:
-            sections = [
-                createSKUSection()
-            ]
         }
+
         sectionsSubject = sections
     }
 
     func createSKUSection() -> Section {
-        var rows: [ProductInventorySettingsViewController.Row] = [.sku]
+        let skuError = errors.first { $0 == .invalidSKU || $0 == .duplicatedSKU }
 
-        if featureFlagService.isFeatureFlagEnabled(.productGlobalUniqueIdentifierSupport) {
-            rows.append(.globalUniqueIdentifier)
-        }
-
-        if let error = error {
-            return Section(errorTitle: error.errorDescription, rows: rows)
+        if let skuError = skuError {
+            return Section(errorTitle: skuError.errorDescription, rows: [.sku])
         } else {
-            return Section(rows: rows)
+            return Section(rows: [.sku])
+        }
+    }
+
+    func createGlobalUniqueIdentifierSection() -> Section {
+        if errors.contains(.invalidGlobalUniqueIdentifier) {
+            return Section(errorTitle: ProductUpdateError.invalidGlobalUniqueIdentifier.errorDescription, rows: [.globalUniqueIdentifier])
+        } else {
+            return Section(rows: [.globalUniqueIdentifier])
         }
     }
 }
@@ -326,14 +320,14 @@ private extension ProductInventorySettingsViewModel {
 //
 private extension ProductInventorySettingsViewModel {
     func displayError(error: ProductUpdateError) {
-        self.error = error
+        errors.append(error)
         reloadSections()
     }
 
-    func hideError() {
+    func hideError(error: ProductUpdateError) {
         // This check is useful so we don't reload while typing each letter in the sections
-        if error != nil {
-            error = nil
+        if errors.contains(error) {
+            errors.removeAll { $0 == error }
             reloadSections()
         }
     }

@@ -60,14 +60,12 @@ class WooCommerceScreenshots: XCTestCase {
         .tapOrder(atIndex: 0)
         .tapCollectPaymentButton()
 
-        // TODO-14325: Fix card present payment action.
-        // It needs to display the "Reader is Ready" modal before taking the screenshot.
         .tapCardPresentPayment()
         .thenTakeScreenshot(named: "order-payment")
 
-        //.goBackToPaymentMethodsScreen()
-        //.goBackToOrderScreen()
-        //.goBackToOrdersScreen()
+        .goBackToPaymentMethodsScreen()
+        .goBackToOrderScreen()
+        .goBackToOrdersScreen()
 
         // Products
         try TabNavComponent()
@@ -75,7 +73,7 @@ class WooCommerceScreenshots: XCTestCase {
         .tapAddProduct()
         .thenTakeScreenshot(named: "product-add")
 
-        // Push notification
+        // TODO-14325: Fix the notification display (currently only showing black screen)
         .lockScreen()
         .thenTakeScreenshot(named: "order-notification")
     }

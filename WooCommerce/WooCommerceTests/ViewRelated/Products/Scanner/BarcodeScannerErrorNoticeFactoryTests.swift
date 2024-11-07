@@ -18,14 +18,14 @@ final class BarcodeScannerErrorNoticeFactoryTests: XCTestCase {
         let result = BarcodeScannerErrorNoticeFactory.notice(for: ProductLoadError.notFound, code: barcode, actionHandler: {})
 
         XCTAssertEqual(result.title, noticeTitle)
-        XCTAssertEqual(result.message, NSLocalizedString("Product with SKU \"\(barcode.payloadStringValue)\" not found.", comment: ""))
+        XCTAssertEqual(result.message, NSLocalizedString("Product with Identifier \"\(barcode.payloadStringValue)\" not found.", comment: ""))
     }
 
     func test_notice_when_a_product_not_purchasable_error_is_passed_then_returns_right_notice() {
         let result = BarcodeScannerErrorNoticeFactory.notice(for: ProductLoadError.notPurchasable, code: barcode, actionHandler: {})
 
         XCTAssertEqual(result.title, noticeTitle)
-        XCTAssertEqual(result.message, NSLocalizedString("Product with SKU \"\(barcode.payloadStringValue)\" is not purchasable.", comment: ""))
+        XCTAssertEqual(result.message, NSLocalizedString("Product with Identifier \"\(barcode.payloadStringValue)\" is not purchasable.", comment: ""))
     }
 
     func test_notice_passes_right_action_handler() {

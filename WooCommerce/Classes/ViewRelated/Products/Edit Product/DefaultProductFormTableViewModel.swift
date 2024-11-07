@@ -293,6 +293,11 @@ private extension DefaultProductFormTableViewModel {
             inventoryDetails.append(String.localizedStringWithFormat(Localization.skuFormat, sku))
         }
 
+        if featureFlagService.isFeatureFlagEnabled(.productGlobalUniqueIdentifierSupport),
+            let globalUniqueID = product.globalUniqueID, !globalUniqueID.isEmpty {
+            inventoryDetails.append(String.localizedStringWithFormat(Localization.globalUniqueIDFormat, globalUniqueID))
+        }
+
         if let stockQuantity = product.stockQuantity, product.manageStock {
             let localizedStockQuantity = NumberFormatter.localizedString(from: stockQuantity as NSDecimalNumber, number: .decimal)
             inventoryDetails.append(String.localizedStringWithFormat(Localization.stockQuantityFormat, localizedStockQuantity))
@@ -813,6 +818,8 @@ private extension DefaultProductFormTableViewModel.Localization {
         // Inventory
         static let skuFormat = NSLocalizedString("SKU: %@",
                                                  comment: "Format of the SKU on the Inventory Settings row")
+        static let globalUniqueIDFormat = NSLocalizedString("GTIN, UPC, EAN, ISBN: %@",
+                                             comment: "Format of the Global Unique Identifier on the Inventory Settings row")
         static let stockQuantityFormat = NSLocalizedString("Quantity: %@",
                                                            comment: "Format of the stock quantity on the Inventory Settings row")
 

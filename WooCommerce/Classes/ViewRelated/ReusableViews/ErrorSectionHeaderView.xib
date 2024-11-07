@@ -31,7 +31,6 @@
             </constraints>
             <connections>
                 <outlet property="titleLabel" destination="1wy-6U-sOR" id="JWJ-K9-bMr"/>
-                <outlet property="titleLabelTopSpacing" destination="kIo-sI-dZ4" id="Att-hf-G4G"/>
             </connections>
             <point key="canvasLocation" x="139" y="98"/>
         </view>

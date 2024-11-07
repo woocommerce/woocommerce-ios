@@ -19,7 +19,10 @@ struct MockCardPresentPaymentActionHandler: MockActionHandler {
             onCompletion(objectGraph.paymentGatewayAccounts.first)
         case .checkDeviceSupport(_, _, _, _, let onCompletion):
             onCompletion(true)
-
+        case .observeConnectedReaders(let onCompletion):
+            observeConnectedReaders(onCompletion: onCompletion)
+        case .collectPayment(_, _, _, _, let onProcessingCompletion, let onCompletion):
+            break
         default:
             break
         }
@@ -40,5 +43,10 @@ struct MockCardPresentPaymentActionHandler: MockActionHandler {
     private func publishCardReaderConnections(onCompletion: @escaping (AnyPublisher<[CardReader], Never>) -> Void) {
         let cardReaders = objectGraph.cardReaders
         onCompletion(Just(cardReaders).eraseToAnyPublisher())
+    }
+
+    private func observeConnectedReaders(onCompletion: @escaping ([CardReader]) -> Void) {
+        let cardReaders = objectGraph.cardReaders
+        onCompletion(cardReaders)
     }
 }

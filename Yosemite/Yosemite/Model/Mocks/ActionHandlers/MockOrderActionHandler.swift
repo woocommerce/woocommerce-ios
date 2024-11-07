@@ -19,6 +19,13 @@ struct MockOrderActionHandler: MockActionHandler {
             onCompletion(objectGraph.order(forSiteId: siteID, orderId: orderID), nil)
         case .checkIfStoreHasOrders(_, let onCompletion):
             onCompletion(.success(true))
+        case .retrieveOrderRemotely(let siteId, let orderId, let onCompletion):
+            if let order = objectGraph.order(forSiteId: siteId, orderId: orderId) {
+                onCompletion(.success(order))
+            } else {
+                onCompletion(.failure(NSError(domain: "", code: 0)))
+            }
+
         default: unimplementedAction(action: action)
         }
     }

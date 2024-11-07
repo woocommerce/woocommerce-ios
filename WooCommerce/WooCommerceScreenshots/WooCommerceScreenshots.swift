@@ -72,7 +72,9 @@ class WooCommerceScreenshots: XCTestCase {
         .tapAddProduct()
         .thenTakeScreenshot(named: "product-add")
 
-        // TODO-14325: Fix the notification display (currently only showing black screen)
+        // As per iOS 18.0 this now has to be done twice. First lock only shows black screen, and the second one shows
+        // the lock screen with notification.
+        .lockScreen()
         .lockScreen()
         .thenTakeScreenshot(named: "order-notification")
     }

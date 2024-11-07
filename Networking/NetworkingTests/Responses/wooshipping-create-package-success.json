@@ -1,39 +1,56 @@
 {
     "data": {
-        "predefined": [],
+        "predefined": {
+            "usps": [
+                "small_flat_box",
+                "flat_envelope"
+            ]
+        },
         "custom": [
             {
-                "name": "Custom Package 2",
-                "length": 10,
-                "width": 5,
-                "height": 5,
-                "weight": 2,
-                "id": "59096883f6dba8b25257246069e9ba9a"
+                "id": "69d7052f934a7c218329de9c1abe3858",
+                "name": "WCS&T Box",
+                "dimensions": "15 x 15 x 15",
+                "boxWeight": 0.25,
+                "maxWeight": 0,
+                "type": "box",
+                "is_user_defined": true
             },
             {
-                "name": "Custom Package 1",
-                "length": 0,
-                "width": 0,
-                "height": 5,
-                "weight": 0,
-                "id": "5b19fc63d3dc43ad25cfcb771130a0cb"
+                "id": "517116d2f2d929115f6e081ba780b84e",
+                "name": "WCS&T Envelope",
+                "dimensions": "30 x 10 x 1",
+                "boxWeight": 0.1,
+                "maxWeight": 0,
+                "type": "envelope",
+                "is_user_defined": true
             },
             {
-                "name": "custom",
-                "is_letter": false,
-                "inner_dimensions": "25.0 x 25.0 x 25.0",
-                "box_weight": 0.2,
-                "is_user_defined": true,
-                "max_weight": 0,
-                "id": "8b9035807842a4e4dbe009f3f1478127"
+                "id": "a344e7fa99e8bb88b15feb13141bf62c",
+                "name": "WCShip Envelope",
+                "dimensions": "100 x 10 x 1",
+                "boxWeight": 0.25,
+                "maxWeight": 0,
+                "type": "envelope",
+                "is_user_defined": true
             },
             {
-                "name": "Test Package E",
-                "length": 10,
-                "width": 5,
-                "height": 5,
-                "weight": 2,
-                "id": "dd018572c0a4e0b128c8f429911b12d0"
+                "id": "22025742fbfaf4d7e73da11caaff9a2a",
+                "name": "WCShip Box",
+                "dimensions": "10 x 10 x 10",
+                "boxWeight": 1,
+                "maxWeight": 0,
+                "type": "box",
+                "is_user_defined": true
+            },
+            {
+                "id": "dd58dcd5dc044b6c56540c557c231c4f",
+                "name": "WCShip Envelope 2",
+                "dimensions": "10 x 10 x 1",
+                "boxWeight": 1,
+                "maxWeight": 0,
+                "type": "envelope",
+                "is_user_defined": true
             }
         ]
     }

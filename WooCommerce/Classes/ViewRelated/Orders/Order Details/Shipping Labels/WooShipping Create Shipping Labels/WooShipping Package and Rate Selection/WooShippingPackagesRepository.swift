@@ -70,5 +70,16 @@ final class WooShippingPackagesRepository: ObservableObject {
         // do we need a special logic for custom packages and carrier packages?
 
         // call onCompletion with error if some error happens
+        onCompletion(nil)
+    }
+
+    func addCustomPackage(_ packageToAdd: WooPackageDataRepresentable, onCompletion: @escaping (Error?) -> Void) {
+        customSavedPackages.append(packageToAdd)
+        onCompletion(nil)
+    }
+
+    func addPredefinedPackage(_ packageToAdd: WooPackageDataRepresentable, onCompletion: @escaping (Error?) -> Void) {
+        predefinedSavedPackages.append(packageToAdd)
+        onCompletion(nil)
     }
 }

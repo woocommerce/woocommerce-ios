@@ -10,7 +10,7 @@ public final class WooShippingRemote: Remote {
     ///   - completion: Closure to be executed upon completion.
     public func createPackage(siteID: Int64,
                               customPackage: WooShippingCustomPackage?,
-                              predefinedOption: ShippingLabelPredefinedOption?,
+                              predefinedOption: WooShippingPredefinedOption?,
                               completion: @escaping (Result<Bool, Error>) -> Void) {
         do {
             var customPackageList: [[String: Any]] = []
@@ -20,8 +20,7 @@ public final class WooShippingRemote: Remote {
                 let customPackageDictionary = try customPackage.toDictionary()
                 customPackageList = [customPackageDictionary]
             } else if let predefinedOption {
-                let packageIDs = predefinedOption.predefinedPackages.map({ $0.id })
-                predefinedOptionDictionary = [predefinedOption.providerID: packageIDs]
+                predefinedOptionDictionary = [predefinedOption.id: predefinedOption.predefinedPackageIDs]
             } else {
                 throw ShippingError.missingPackage
             }

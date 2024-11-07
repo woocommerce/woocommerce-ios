@@ -259,6 +259,10 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         )
     }
 
+    var thisMonthSiteSummaryStats: SiteSummaryStats {
+        Self.createSiteSummaryStats(siteId: 1, period: .month, visitors: 500, views: 13337)
+    }
+
     private let date: Date
 
     init(date: Date = .init()) {

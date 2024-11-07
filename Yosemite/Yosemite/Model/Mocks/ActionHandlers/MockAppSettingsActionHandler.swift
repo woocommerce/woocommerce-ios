@@ -74,6 +74,7 @@ struct MockAppSettingsActionHandler: MockActionHandler {
     func loadDashboardCards(siteId: Int64, onCompletion: ([DashboardCard]?) -> Void) {
         var cards = [DashboardCard]()
         // Some cards intentionally not shown here as they require further action mocking.
+        cards.append(DashboardCard(type: .performance, availability: .show, enabled: true))
         cards.append(DashboardCard(type: .reviews, availability: .show, enabled: true))
         cards.append(DashboardCard(type: .lastOrders, availability: .show, enabled: true))
         onCompletion(cards)

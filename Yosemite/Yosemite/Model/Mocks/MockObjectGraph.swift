@@ -20,6 +20,7 @@ public protocol MockObjectGraph {
     var thisMonthOrderStats: OrderStatsV4 { get }
     var thisMonthVisitStats: SiteVisitStats { get }
     var thisMonthTopProducts: TopEarnerStats { get }
+    var thisMonthSiteSummaryStats: SiteSummaryStats { get }
 
     func accountWithId(id: Int64) -> Account
     func accountSettingsWithUserId(userId: Int64) -> AccountSettings
@@ -497,6 +498,16 @@ extension MockObjectGraph {
             total: Double(quantity) * averagePrice,
             currency: "USD",
             imageUrl: product.images.first?.src
+        )
+    }
+
+    static func createSiteSummaryStats(siteId: Int64, period: StatGranularity, visitors: Int, views: Int) -> SiteSummaryStats {
+        SiteSummaryStats(
+            siteID: siteId,
+            date: Date().asOrderStatsString,
+            period: period,
+            visitors: visitors,
+            views: views
         )
     }
 }

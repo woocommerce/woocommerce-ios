@@ -10,14 +10,23 @@ struct MockStatsActionV4Handler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-            case .retrieveStats(let siteID, let timeRange, _, _, _, _, _, let onCompletion):
-                retrieveStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
-            case .retrieveSiteVisitStats(let siteID, _, let timeRange, _, let onCompletion):
-                retrieveSiteVisitStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
-            case .retrieveTopEarnerStats(let siteID, let timeRange, _, _, _, _, _, _, let onCompletion):
-                retrieveTopEarnerStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
-            default: unimplementedAction(action: action)
+        case .retrieveStats(let siteID, let timeRange, _, _, _, _, _, let onCompletion):
+            retrieveStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
+        case .retrieveSiteVisitStats(let siteID, _, let timeRange, _, let onCompletion):
+            retrieveSiteVisitStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
+        case .retrieveTopEarnerStats(let siteID, let timeRange, _, _, _, _, _, _, let onCompletion):
+            retrieveTopEarnerStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
+        case .retrieveSiteSummaryStats(let siteID, _, let period, _, _, _, let onCompletion):
+            retrieveSiteSummaryStats(siteID: siteID, period: period, onCompletion: onCompletion)
+        default: unimplementedAction(action: action)
         }
+    }
+
+    func retrieveSiteSummaryStats(siteID: Int64, period: StatGranularity, onCompletion: @escaping (Result<SiteSummaryStats, Error>) -> ()) {
+        let store = StatsStoreV4(dispatcher: Dispatcher(), storageManager: storageManager, network: NullNetwork())
+        store.upsertStoredSiteSummaryStats(readOnlyStats: objectGraph.thisMonthSiteSummaryStats)
+
+        onCompletion(.success(objectGraph.thisMonthSiteSummaryStats))
     }
 
     func retrieveStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping (Result<Void, Error>) -> ()) {

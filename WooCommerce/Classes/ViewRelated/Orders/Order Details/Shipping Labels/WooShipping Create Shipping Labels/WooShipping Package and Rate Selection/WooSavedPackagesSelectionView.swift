@@ -37,29 +37,8 @@ struct WooSavedPackagesSelectionView: View {
                     .padding()
             }
             List {
-                ForEach(viewModel.packages, id: \.id) { package in
-                    PackageOptionView(
-                        isSelected: viewModel.selectedPackageId == package.id, // Check if this package is selected
-                        package: package,
-                        showTopDivider: false,
-                        showType: true,
-                        tapAction: {
-                            viewModel.selectedPackageId = viewModel.selectedPackageId == package.id ? nil : package.id
-                        }
-                    )
-                    .alignmentGuide(.listRowSeparatorLeading) { _ in
-                        return 16
-                    }
-                    .swipeActions {
-                        Button {
-                            // remove package
-                        } label: {
-                            Image(systemName: "trash")
-                        }
-                        .tint(Color.withColorStudio(name: .red, shade: .shade50))
-                    }
-                }
-                .listRowInsets(.zero)
+                packagesSection(for: viewModel.customPackages)
+                packagesSection(for: viewModel.predefinedPackages)
             }
             .listStyle(.plain)
             .refreshable {
@@ -69,10 +48,51 @@ struct WooSavedPackagesSelectionView: View {
             Button(WooShippingAddPackageView.Localization.addPackage) {
                 addPackageButtonTapped()
             }
-            .disabled(viewModel.selectedPackageId == nil || viewModel.packages.isEmpty)
+            .disabled(viewModel.selectedPackageId == nil || !viewModel.hasPackages)
             .buttonStyle(PrimaryButtonStyle())
             .padding()
         }
+    }
+
+    @ViewBuilder
+    private func packagesSection(for packages: [any WooPackageDataRepresentable]) -> some View {
+        if packages.isEmpty {
+            EmptyView()
+        }
+        else {
+            Section {
+                packagesRows(for: packages)
+            }
+            .listRowInsets(.zero)
+        }
+    }
+
+    private func packagesRows(for packages: [any WooPackageDataRepresentable]) -> some View {
+        ForEach(packages, id: \.id) { package in
+            PackageOptionView(
+                isSelected: viewModel.selectedPackageId == package.id,
+                package: package,
+                showTopDivider: false,
+                showType: true,
+                tapAction: {
+                    viewModel.selectedPackageId = viewModel.selectedPackageId == package.id ? nil : package.id
+                }
+            )
+            .alignmentGuide(.listRowSeparatorLeading) { _ in
+                return 16
+            }
+            .swipeActions {
+                Button {
+                    withAnimation {
+                        viewModel.removePackage(package)
+                    }
+                } label: {
+                    Image(systemName: "trash")
+                }
+                .tint(Color.withColorStudio(name: .red, shade: .shade50))
+            }
+        }
+        .listRowInsets(.zero)
     }
 
     private func addPackageButtonTapped() {

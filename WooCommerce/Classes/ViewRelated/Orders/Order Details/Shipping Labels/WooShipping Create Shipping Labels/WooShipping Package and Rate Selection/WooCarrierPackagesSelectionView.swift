@@ -36,7 +36,7 @@ struct WooCarrierPackagesView: View {
                 Section {
                     ForEach(packageGroup.packages, id: \.id) { package in
                         PackageOptionView(
-                            isSelected: selectedPackageId == package.id, // Check if this package is selected
+                            isSelected: selectedPackageId == package.id,
                             package: package,
                             showTopDivider: false,
                             showType: false,

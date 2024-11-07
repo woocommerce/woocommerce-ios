@@ -64,53 +64,55 @@ struct SetUpTapToPayPaymentPromptView: View {
     }
 
     var body: some View {
-        ScrollableVStack(padding: 0) {
-            Image(systemName: "wave.3.right.circle.fill")
-                .symbolRenderingMode(.hierarchical)
-                .foregroundStyle(Color(.wooCommercePurple(.shade50)))
-                .scaledToFit()
-                .frame(maxHeight: imageMaxHeight)
-                .font(.system(size: imageFontSize))
-                .padding()
+        NavigationStack {
+            ScrollableVStack(padding: 0) {
+                Image(systemName: "wave.3.right.circle.fill")
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(Color(.wooCommercePurple(.shade50)))
+                    .scaledToFit()
+                    .frame(maxHeight: imageMaxHeight)
+                    .font(.system(size: imageFontSize))
+                    .padding()
 
-            Text(Localization.setUpTryPaymentPromptTitle)
-                .font(.title2.weight(.semibold))
-                .multilineTextAlignment(.center)
-                .padding()
-                .fixedSize(horizontal: false, vertical: true)
+                Text(Localization.setUpTryPaymentPromptTitle)
+                    .font(.title2.weight(.semibold))
+                    .multilineTextAlignment(.center)
+                    .padding()
+                    .fixedSize(horizontal: false, vertical: true)
 
-            Text(String(format: Localization.setUpTryPaymentPromptDescription, viewModel.formattedPaymentAmount))
-                .font(.body)
-                .multilineTextAlignment(.center)
-                .padding()
-                .fixedSize(horizontal: false, vertical: true)
+                Text(String(format: Localization.setUpTryPaymentPromptDescription, viewModel.formattedPaymentAmount))
+                    .font(.body)
+                    .multilineTextAlignment(.center)
+                    .padding()
+                    .fixedSize(horizontal: false, vertical: true)
 
-            Spacer()
+                Spacer()
 
-            Button(Localization.tryAPaymentButton, action: {
-                viewModel.tryAPaymentTapped()
-            })
-            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.loading))
+                Button(Localization.tryAPaymentButton, action: {
+                    viewModel.tryAPaymentTapped()
+                })
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.loading))
 
-            Button(Localization.skipButton, action: {
-                viewModel.skipTapped()
-            })
-            .buttonStyle(SecondaryButtonStyle())
-        }
-        .navigationDestination(isPresented: $viewModel.summaryActive) {
-            if let summaryViewModel = viewModel.summaryViewModel {
-                paymentFlow(summaryViewModel: summaryViewModel)
+                Button(Localization.skipButton, action: {
+                    viewModel.skipTapped()
+                })
+                .buttonStyle(SecondaryButtonStyle())
             }
-        }
-        .navigationDestination(isPresented: $viewModel.refundInProgress) {
-            ProgressView()
-        }
-        .navigationDestination(isPresented: $viewModel.shouldShowTrialOrderDetails) {
-            if let summaryViewModel = viewModel.summaryViewModel {
-                completedOrder(summaryViewModel: summaryViewModel)
+            .navigationDestination(isPresented: $viewModel.summaryActive) {
+                if let summaryViewModel = viewModel.summaryViewModel {
+                    paymentFlow(summaryViewModel: summaryViewModel)
+                }
             }
+            .navigationDestination(isPresented: $viewModel.refundInProgress) {
+                ProgressView()
+            }
+            .navigationDestination(isPresented: $viewModel.shouldShowTrialOrderDetails) {
+                if let summaryViewModel = viewModel.summaryViewModel {
+                    completedOrder(summaryViewModel: summaryViewModel)
+                }
+            }
+            .padding()
         }
-        .padding()
     }
 
     /// Returns a `SimplePaymentsSummary` instance when the view model is available.

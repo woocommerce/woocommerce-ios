@@ -9,17 +9,17 @@ public final class WooShippingRemote: Remote {
     ///   - predefinedOption: The predefined option (shipping provider and service packages) to activate.
     ///   - completion: Closure to be executed upon completion.
     public func createPackage(siteID: Int64,
-                              customPackage: ShippingLabelCustomPackage?,
+                              customPackage: WooShippingCustomPackage?,
                               predefinedOption: ShippingLabelPredefinedOption?,
                               completion: @escaping (Result<Bool, Error>) -> Void) {
         do {
             var customPackageList: [[String: Any]] = []
             var predefinedOptionDictionary: [String: [String]] = [:]
 
-            if let customPackage = customPackage {
+            if let customPackage {
                 let customPackageDictionary = try customPackage.toDictionary()
                 customPackageList = [customPackageDictionary]
-            } else if let predefinedOption = predefinedOption {
+            } else if let predefinedOption {
                 let packageIDs = predefinedOption.predefinedPackages.map({ $0.id })
                 predefinedOptionDictionary = [predefinedOption.providerID: packageIDs]
             } else {

@@ -1,0 +1,82 @@
+import Foundation
+import Codegen
+import WooFoundation
+
+/// Represents a custom package in Shipping Labels for the WooCommerce Shipping extension.
+///
+public struct WooShippingCustomPackage: Equatable, GeneratedFakeable {
+
+    /// The name of the custom package, like `Krabica`. This is also the unique ID of a custom package.
+    public let name: String
+
+    /// Raw value of the package type (box or envelope).
+    public let rawType: String
+
+    /// Will be a string formatted like this: `2 x 3 x 4`
+    public let dimensions: String
+
+    /// Weight of the empty package.
+    public let boxWeight: Double
+
+    public enum PackageType: String {
+        case box
+        case envelope
+    }
+
+    /// Decoded value of the package type (box or envelope).
+    public var type: PackageType {
+        PackageType(rawValue: rawType) ?? .box
+    }
+
+    public init(name: String, type: String, dimensions: String, boxWeight: Double) {
+        self.name = name
+        self.rawType = type
+        self.dimensions = dimensions
+        self.boxWeight = boxWeight
+    }
+
+    public func getLength() -> Double {
+        let firstComponent = dimensions.components(separatedBy: " x ").first ?? ""
+        return Double(firstComponent) ?? 0
+    }
+
+    public func getWidth() -> Double {
+        let secondComponent = dimensions.components(separatedBy: " x ")[safe: 1] ?? ""
+        return Double(secondComponent) ?? 0
+    }
+
+    public func getHeight() -> Double {
+        let lastComponent = dimensions.components(separatedBy: " x ").last ?? ""
+        return Double(lastComponent) ?? 0
+    }
+}
+
+// MARK: Codable
+extension WooShippingCustomPackage: Codable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        let name = try container.decode(String.self, forKey: .name)
+        let type = try container.decode(String.self, forKey: .type)
+        let dimensions = try container.decode(String.self, forKey: .dimensions)
+        let boxWeight = try container.decode(Double.self, forKey: .boxWeight)
+
+        self.init(name: name, type: type, dimensions: dimensions, boxWeight: boxWeight)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(name, forKey: .name)
+        try container.encode(type.rawValue, forKey: .type)
+        try container.encode(dimensions, forKey: .dimensions)
+        try container.encode(boxWeight, forKey: .boxWeight)
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case name
+        case type
+        case dimensions
+        case boxWeight
+    }
+}

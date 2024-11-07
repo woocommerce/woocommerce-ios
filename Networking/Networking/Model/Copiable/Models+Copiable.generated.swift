@@ -847,7 +847,7 @@ extension Networking.GoogleAdsCampaign {
         rawStatus: CopiableProp<String> = .copy,
         rawType: CopiableProp<String> = .copy,
         amount: CopiableProp<Double> = .copy,
-        country: CopiableProp<String> = .copy,
+        country: NullableCopiableProp<String> = .copy,
         targetedLocations: CopiableProp<[String]> = .copy
     ) -> Networking.GoogleAdsCampaign {
         let id = id ?? self.id

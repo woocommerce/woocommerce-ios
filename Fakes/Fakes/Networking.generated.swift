@@ -2732,6 +2732,18 @@ extension Networking.WooPaymentsManualDeposit {
         )
     }
 }
+extension Networking.WooShippingCustomPackage {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingCustomPackage {
+        .init(
+            name: .fake(),
+            type: .fake(),
+            dimensions: .fake(),
+            boxWeight: .fake()
+        )
+    }
+}
 extension Networking.WordPressMedia {
     /// Returns a "ready to use" type filled with fake values.
     ///

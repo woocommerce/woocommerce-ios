@@ -7,6 +7,15 @@ struct MockStatsActionV4Handler: MockActionHandler {
 
     let objectGraph: MockObjectGraph
     let storageManager: StorageManagerType
+    let store: StatsStoreV4
+
+    init(objectGraph: MockObjectGraph, storageManager: StorageManagerType) {
+        self.objectGraph = objectGraph
+        self.storageManager = storageManager
+        self.store = StatsStoreV4(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: NullNetwork())
+    }
 
     func handle(action: ActionType) {
         switch action {
@@ -23,14 +32,12 @@ struct MockStatsActionV4Handler: MockActionHandler {
     }
 
     func retrieveSiteSummaryStats(siteID: Int64, period: StatGranularity, onCompletion: @escaping (Result<SiteSummaryStats, Error>) -> ()) {
-        let store = StatsStoreV4(dispatcher: Dispatcher(), storageManager: storageManager, network: NullNetwork())
         store.upsertStoredSiteSummaryStats(readOnlyStats: objectGraph.thisMonthSiteSummaryStats)
 
         onCompletion(.success(objectGraph.thisMonthSiteSummaryStats))
     }
 
     func retrieveStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping (Result<Void, Error>) -> ()) {
-        let store = StatsStoreV4(dispatcher: Dispatcher(), storageManager: storageManager, network: NullNetwork())
 
         switch timeRange {
             case .today:
@@ -49,7 +56,6 @@ struct MockStatsActionV4Handler: MockActionHandler {
     }
 
     func retrieveSiteVisitStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping (Result<Void, Error>) -> ()) {
-        let store = StatsStoreV4(dispatcher: Dispatcher(), storageManager: storageManager, network: NullNetwork())
 
         switch timeRange {
             case .today:
@@ -68,7 +74,6 @@ struct MockStatsActionV4Handler: MockActionHandler {
     }
 
     func retrieveTopEarnerStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping (Result<TopEarnerStats, Error>) -> ()) {
-        let store = StatsStoreV4(dispatcher: Dispatcher(), storageManager: storageManager, network: NullNetwork())
 
         switch timeRange {
         case .today:

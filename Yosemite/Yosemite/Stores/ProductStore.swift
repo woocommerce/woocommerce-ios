@@ -413,10 +413,12 @@ private extension ProductStore {
 
     /// Retrieves the first product associated with a given siteID and exact-matching SKU or global unique identifier (if any)
     ///
-    func retrieveFirstPurchasableItemMatchFromIdentifier(siteID: Int64, identifier: String, onCompletion: @escaping (Result<ItemIdentifierSearchResult, Error>) -> Void) {
+    func retrieveFirstPurchasableItemMatchFromIdentifier(siteID: Int64,
+                                                         identifier: String,
+                                                         onCompletion: @escaping (Result<ItemIdentifierSearchResult, Error>) -> Void) {
 
         guard !identifier.isEmpty else {
-            return onCompletion(.failure(ProductLoadError.emptySKU))
+            return onCompletion(.failure(ProductLoadError.emptyIdentifier))
         }
 
         searchProductsByIdentifier(siteID: siteID,
@@ -1286,7 +1288,7 @@ private extension ProductStore {
             switch result {
             case let .success(products):
                 returningResults = products
-            case .failure(_):
+            case .failure:
                 break
             }
 
@@ -1378,7 +1380,7 @@ public enum ProductLoadError: Error, Equatable {
     case notFound
     case notFoundInStorage
     case notPurchasable
-    case emptySKU
+    case emptyIdentifier
     case unknown(error: AnyError)
 
     init(underlyingError error: Error) {

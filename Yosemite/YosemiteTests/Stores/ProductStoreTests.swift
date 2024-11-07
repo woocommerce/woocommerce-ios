@@ -2429,7 +2429,7 @@ final class ProductStoreTests: XCTestCase {
         // Then
         let error = try XCTUnwrap(result.failure as? ProductLoadError)
         XCTAssertEqual(result.isFailure, true)
-        XCTAssertEqual(error, ProductLoadError.emptySKU)
+        XCTAssertEqual(error, ProductLoadError.emptyIdentifier)
     }
 
     func test_retrieveFirstPurchasableItemMatchFromIdentifier_when_unsuccessful_SKU_match_then_does_not_upsert_product_to_storage() throws {

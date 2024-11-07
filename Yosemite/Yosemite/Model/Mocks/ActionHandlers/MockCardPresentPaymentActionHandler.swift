@@ -17,6 +17,9 @@ struct MockCardPresentPaymentActionHandler: MockActionHandler {
             publishCardReaderConnections(onCompletion: onCompletion)
         case .selectedPaymentGatewayAccount(let onCompletion):
             onCompletion(objectGraph.paymentGatewayAccounts.first)
+        case .checkDeviceSupport(_, _, _, _, let onCompletion):
+            onCompletion(true)
+
         default:
             break
         }

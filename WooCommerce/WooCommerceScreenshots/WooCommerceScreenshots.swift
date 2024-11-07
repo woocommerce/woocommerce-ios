@@ -60,11 +60,14 @@ class WooCommerceScreenshots: XCTestCase {
         .tapCollectPaymentButton()
 
         // TODO-14325: Fix card present payment action.
-        //.tapCardPresentPayment()
+        .tapCardPresentPayment()
         .thenTakeScreenshot(named: "order-payment")
+
+        // TODO-14325: Add handling to dismiss "Do you want to add Pay In Person to your web checkout" modal
+
         //.goBackToPaymentMethodsScreen()
-        .goBackToOrderScreen()
-        .goBackToOrdersScreen()
+        //.goBackToOrderScreen()
+        //.goBackToOrdersScreen()
 
         // Products
         try TabNavComponent()

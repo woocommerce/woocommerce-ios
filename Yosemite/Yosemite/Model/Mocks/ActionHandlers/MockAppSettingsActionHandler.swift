@@ -46,7 +46,9 @@ struct MockAppSettingsActionHandler: MockActionHandler {
         case .resetEligibilityErrorInfo,
                 .setTelemetryAvailability,
                 .loadOrdersSettings,
-                .upsertProductsSettings:
+                .upsertProductsSettings,
+                .loadFirstInPersonPaymentsTransactionDate
+            :
             break
         default: unimplementedAction(action: action)
         }

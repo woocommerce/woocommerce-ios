@@ -7,6 +7,8 @@ final class WooShippingPackagesRepository: ObservableObject {
     @Published var loadingCarrierPackages: Bool = false
     @Published var carrierPackages: [WooShippingCarrierPackages] = []
 
+    static let shared = WooShippingPackagesRepository()
+
     // MARK: - Packages loading
 
     func loadPackages() {
@@ -18,36 +20,39 @@ final class WooShippingPackagesRepository: ObservableObject {
         loadingSavedPackages = true
 
         // TODO: add networking request to load live data
-
-        customSavedPackages = [
-            WooSavedPackageData(name: "Small Flat Rate Box",
-                                type: "Custom package",
-                                packageType: "box",
-                                dimensions: "21.92 × 13.67 × 4.14 cm",
-                                weight: "5 kg"),
-            WooSavedPackageData(name: "Small Flat Rate Box",
-                                type: "Custom package",
-                                packageType: "box",
-                                dimensions: "21.92 × 13.67 × 4.14 cm",
-                                weight: "5 kg"),
-            WooSavedPackageData(name: "Small Flat Rate Box",
-                                type: "Custom package",
-                                packageType: "box",
-                                dimensions: "21.92 × 13.67 × 4.14 cm",
-                                weight: "5 kg"),
-        ]
-        predefinedSavedPackages = [
-            WooSavedPackageData(name: "Small Flat Rate Box",
-                                type: "DHL Express",
-                                packageType: "box",
-                                dimensions: "21.92 × 13.67 × 4.14 cm",
-                                weight: "5 kg"),
-            WooSavedPackageData(name: "Small Flat Rate Box",
-                                type: "USPS Priority Mail Flat Rate Boxes",
-                                packageType: "box",
-                                dimensions: "21.92 × 13.67 × 4.14 cm",
-                                weight: "5 kg"),
-        ]
+        if customSavedPackages.isEmpty {
+            customSavedPackages = [
+                WooSavedPackageData(name: "Small Flat Rate Box",
+                                    type: "Custom package",
+                                    packageType: "box",
+                                    dimensions: "21.92 × 13.67 × 4.14 cm",
+                                    weight: "5 kg"),
+                WooSavedPackageData(name: "Small Flat Rate Box",
+                                    type: "Custom package",
+                                    packageType: "box",
+                                    dimensions: "21.92 × 13.67 × 4.14 cm",
+                                    weight: "5 kg"),
+                WooSavedPackageData(name: "Small Flat Rate Box",
+                                    type: "Custom package",
+                                    packageType: "box",
+                                    dimensions: "21.92 × 13.67 × 4.14 cm",
+                                    weight: "5 kg"),
+            ]
+        }
+        if predefinedSavedPackages.isEmpty {
+            predefinedSavedPackages = [
+                WooSavedPackageData(name: "Small Flat Rate Box",
+                                    type: "DHL Express",
+                                    packageType: "box",
+                                    dimensions: "21.92 × 13.67 × 4.14 cm",
+                                    weight: "5 kg"),
+                WooSavedPackageData(name: "Small Flat Rate Box",
+                                    type: "USPS Priority Mail Flat Rate Boxes",
+                                    packageType: "box",
+                                    dimensions: "21.92 × 13.67 × 4.14 cm",
+                                    weight: "5 kg"),
+            ]
+        }
 
         loadingSavedPackages = false
     }

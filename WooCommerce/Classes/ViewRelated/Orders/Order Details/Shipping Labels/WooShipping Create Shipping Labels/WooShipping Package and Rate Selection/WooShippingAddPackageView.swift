@@ -19,7 +19,7 @@ struct WooShippingAddPackageView: View {
 
     // Holds type of selected package, it can be `custom`, `carrier` or `saved`
     @State var selectedPackageType = PackageProviderType.custom
-    @StateObject var packagesRepository = WooShippingPackagesRepository()
+    @StateObject var packagesRepository = WooShippingPackagesRepository.shared
 
     let addPackageAction: (WooPackageDataRepresentable) -> Void
 

@@ -875,7 +875,9 @@
 		CEC4BF93234E7EE0008D9195 /* refunds-all.json in Resources */ = {isa = PBXBuildFile; fileRef = CEC4BF92234E7EE0008D9195 /* refunds-all.json */; };
 		CEC4BF95234E7F34008D9195 /* RefundListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC4BF94234E7F34008D9195 /* RefundListMapperTests.swift */; };
 		CEC7D58D2CDCEEF900111B79 /* WooShippingCustomPackage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC7D58C2CDCEEF900111B79 /* WooShippingCustomPackage.swift */; };
+		CEC7D5912CDD0C1C00111B79 /* WooShippingCreatePackageResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC7D5902CDD0C1C00111B79 /* WooShippingCreatePackageResponse.swift */; };
 		CEC7D5932CDD0D9900111B79 /* WooShippingPredefinedOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC7D5922CDD0D9900111B79 /* WooShippingPredefinedOption.swift */; };
+		CEC7D5952CDD164D00111B79 /* WooShippingCreatePackageMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC7D5942CDD164D00111B79 /* WooShippingCreatePackageMapper.swift */; };
 		CECC759E23D6231A00486676 /* order-560-all-refunds.json in Resources */ = {isa = PBXBuildFile; fileRef = CECC759D23D6231900486676 /* order-560-all-refunds.json */; };
 		CEDA78622B30A4460076AA09 /* payment-gateway-cod-malformed.json in Resources */ = {isa = PBXBuildFile; fileRef = CEDA78612B30A4460076AA09 /* payment-gateway-cod-malformed.json */; };
 		CEE02EE92B34579E00162F63 /* DecodingError+CodingPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE02EE82B34579E00162F63 /* DecodingError+CodingPath.swift */; };
@@ -2039,7 +2041,9 @@
 		CEC4BF92234E7EE0008D9195 /* refunds-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "refunds-all.json"; sourceTree = "<group>"; };
 		CEC4BF94234E7F34008D9195 /* RefundListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundListMapperTests.swift; sourceTree = "<group>"; };
 		CEC7D58C2CDCEEF900111B79 /* WooShippingCustomPackage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingCustomPackage.swift; sourceTree = "<group>"; };
+		CEC7D5902CDD0C1C00111B79 /* WooShippingCreatePackageResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingCreatePackageResponse.swift; sourceTree = "<group>"; };
 		CEC7D5922CDD0D9900111B79 /* WooShippingPredefinedOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingPredefinedOption.swift; sourceTree = "<group>"; };
+		CEC7D5942CDD164D00111B79 /* WooShippingCreatePackageMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingCreatePackageMapper.swift; sourceTree = "<group>"; };
 		CECC759D23D6231900486676 /* order-560-all-refunds.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-560-all-refunds.json"; sourceTree = "<group>"; };
 		CEDA78612B30A4460076AA09 /* payment-gateway-cod-malformed.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "payment-gateway-cod-malformed.json"; sourceTree = "<group>"; };
 		CEE02EE82B34579E00162F63 /* DecodingError+CodingPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DecodingError+CodingPath.swift"; sourceTree = "<group>"; };
@@ -2524,6 +2528,7 @@
 		451A97C72609FDE50059D135 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
+				CEC7D5902CDD0C1C00111B79 /* WooShippingCreatePackageResponse.swift */,
 				451A97C82609FF050059D135 /* ShippingLabelPackagesResponse.swift */,
 				451A97CC260A01A40059D135 /* ShippingLabelStoreOptions.swift */,
 				CCAAD10E2683974000909664 /* ShippingLabelPackagePurchase.swift */,
@@ -3587,6 +3592,7 @@
 				CC9A24F32642CF37005DE56E /* ShippingLabelCreationEligibilityMapper.swift */,
 				CC0786602677B2DA00BA9AC1 /* ShippingLabelPurchaseMapper.swift */,
 				CC0786C4267BAF0F00BA9AC1 /* ShippingLabelStatusMapper.swift */,
+				CEC7D5942CDD164D00111B79 /* WooShippingCreatePackageMapper.swift */,
 				CE606D8E2BE39426001CB424 /* ShippingMethodMapper.swift */,
 				FE28F6E326842848004465C7 /* UserMapper.swift */,
 				077F39D326A58DE700ABEADC /* SystemStatusMapper.swift */,
@@ -5055,6 +5061,7 @@
 				4568E2242459D3230007E478 /* Post.swift in Sources */,
 				DEEF8E6829C858AD00D47411 /* OneTimeApplicationPasswordUseCase.swift in Sources */,
 				CE606D8F2BE39426001CB424 /* ShippingMethodMapper.swift in Sources */,
+				CEC7D5912CDD0C1C00111B79 /* WooShippingCreatePackageResponse.swift in Sources */,
 				4513382427A951B300AE5E78 /* InboxNoteMapper.swift in Sources */,
 				B9CFF6522AB2118900C2F616 /* TaxRateMapper.swift in Sources */,
 				DE2095BF279583A100171F1C /* CouponReportListMapper.swift in Sources */,
@@ -5202,6 +5209,7 @@
 				261C466B2A6738EE00734070 /* AppicationPasswordEncoder.swift in Sources */,
 				CE606D8D2BE3927A001CB424 /* ShippingMethod.swift in Sources */,
 				DEDA8DA12B182E850076BF0F /* WordPressTheme.swift in Sources */,
+				CEC7D5952CDD164D00111B79 /* WooShippingCreatePackageMapper.swift in Sources */,
 				2665032A261F41510079A159 /* ProductAddOn.swift in Sources */,
 				020D07BE23D8570800FD9580 /* MediaListMapper.swift in Sources */,
 				DE4C081B2C75DEC7008BC773 /* BlazeCampaignObjective.swift in Sources */,

@@ -11,7 +11,7 @@ public final class WooShippingRemote: Remote {
     public func createPackage(siteID: Int64,
                               customPackage: WooShippingCustomPackage?,
                               predefinedOption: WooShippingPredefinedOption?,
-                              completion: @escaping (Result<Bool, Error>) -> Void) {
+                              completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void) {
         do {
             var customPackageList: [[String: Any]] = []
             var predefinedOptionDictionary: [String: [String]] = [:]
@@ -37,16 +37,9 @@ public final class WooShippingRemote: Remote {
                                          parameters: parameters,
                                          availableAsRESTRequest: true)
 
-            // Temporary mapper while we decide what data type to use here.
-            let mapper = IgnoringResponseMapper()
+            let mapper = WooShippingCreatePackageMapper()
 
-            enqueue(request, mapper: mapper) { _, error in
-                if let error {
-                    completion(.failure(error))
-                } else {
-                    completion(.success(true))
-                }
-            }
+            enqueue(request, mapper: mapper, completion: completion)
         } catch {
             completion(.failure(error))
         }

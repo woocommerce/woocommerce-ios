@@ -25,17 +25,17 @@ final class WooShippingRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "packages", filename: "wooshipping-create-package-success")
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<WooShippingCreatePackageResponse, Error> = waitFor { promise in
             remote.createPackage(siteID: self.sampleSiteID,
-                                 customPackage: ShippingLabelCustomPackage.fake(),
-                                 predefinedOption: ShippingLabelPredefinedOption.fake()) { result in
+                                 customPackage: WooShippingCustomPackage.fake(),
+                                 predefinedOption: WooShippingPredefinedOption.fake()) { result in
                 promise(result)
             }
         }
 
         // Then
-        let successResponse = try XCTUnwrap(result.get())
-        XCTAssertTrue(successResponse)
+        let packagesResponse = try XCTUnwrap(result.get())
+        XCTAssertNotNil(packagesResponse)
     }
 
     func test_createPackage_returns_error_on_failure() throws {
@@ -44,10 +44,10 @@ final class WooShippingRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "packages", filename: "wooshipping-create-package-error")
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<WooShippingCreatePackageResponse, Error> = waitFor { promise in
             remote.createPackage(siteID: self.sampleSiteID,
-                                 customPackage: ShippingLabelCustomPackage.fake(),
-                                 predefinedOption: ShippingLabelPredefinedOption.fake()) { result in
+                                 customPackage: WooShippingCustomPackage.fake(),
+                                 predefinedOption: WooShippingPredefinedOption.fake()) { result in
                 promise(result)
             }
         }
@@ -64,7 +64,7 @@ final class WooShippingRemoteTests: XCTestCase {
         let remote = WooShippingRemote(network: network)
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<WooShippingCreatePackageResponse, Error> = waitFor { promise in
             remote.createPackage(siteID: self.sampleSiteID,
                                  customPackage: nil,
                                  predefinedOption: nil) { result in

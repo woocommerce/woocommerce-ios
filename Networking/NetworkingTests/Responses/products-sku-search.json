@@ -16,6 +16,7 @@
             "description": "<p>Tasty!!</p>\n",
             "short_description": "",
             "sku": "chocobars",
+            "global_unique_id": "12345",
             "price": "22",
             "regular_price": "999",
             "sale_price": "22",

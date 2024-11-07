@@ -1,24 +1,29 @@
 import Foundation
 
 final class WooSavedPackagesSelectionViewModel: ObservableObject {
-    @Published var customPackages: [any WooPackageDataRepresentable]
-    @Published var predefinedPackages: [any WooPackageDataRepresentable]
+    @Published var packagesRepository: WooShippingPackagesRepository
     @Published var selectedPackageId: UUID? = nil  // Track the selected package index
 
-    init(customPackages: [any WooPackageDataRepresentable],
-         predefinedPackages: [any WooPackageDataRepresentable]) {
-        self.customPackages = customPackages
-        self.predefinedPackages = predefinedPackages
+    var customSavedPackages: [any WooPackageDataRepresentable] {
+        return packagesRepository.customSavedPackages
+    }
+
+    var predefinedSavedPackages: [any WooPackageDataRepresentable] {
+        return packagesRepository.predefinedSavedPackages
+    }
+
+    init(packagesRepository: WooShippingPackagesRepository) {
+        self.packagesRepository = packagesRepository
     }
 
     var hasPackages: Bool {
-        return customPackages.isNotEmpty || predefinedPackages.isNotEmpty
+        return customSavedPackages.isNotEmpty || predefinedSavedPackages.isNotEmpty
     }
 
     var selectedPackage: WooPackageDataRepresentable? {
         guard let selectedPackageId else { return nil }
 
-        let packages = customPackages + predefinedPackages
+        let packages = customSavedPackages + predefinedSavedPackages
 
         for packageItem in packages {
             if selectedPackageId == packageItem.id {
@@ -29,12 +34,14 @@ final class WooSavedPackagesSelectionViewModel: ObservableObject {
         return nil
     }
 
-    func removePackage(_ packageToRemove: WooPackageDataRepresentable) {
-        customPackages.removeAll { package in package.id == packageToRemove.id }
-        predefinedPackages.removeAll { package in package.id == packageToRemove.id }
-
-        if selectedPackageId == packageToRemove.id {
-            selectedPackageId = nil
+    func removePackage(_ packageToRemove: WooPackageDataRepresentable, onCompletion: @escaping (Error?) -> Void) {
+        packagesRepository.deleteSavedPackage(packageToRemove) { error in
+            if error == nil {
+                if self.selectedPackageId == packageToRemove.id {
+                    self.selectedPackageId = nil
+                }
+            }
+            onCompletion(error)
         }
     }
 }

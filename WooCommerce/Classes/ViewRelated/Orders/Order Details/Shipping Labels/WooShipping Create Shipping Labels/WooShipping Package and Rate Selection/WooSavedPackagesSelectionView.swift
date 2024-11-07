@@ -37,8 +37,8 @@ struct WooSavedPackagesSelectionView: View {
                     .padding()
             }
             List {
-                packagesSection(for: viewModel.customPackages)
-                packagesSection(for: viewModel.predefinedPackages)
+                packagesSection(for: viewModel.customSavedPackages)
+                packagesSection(for: viewModel.predefinedSavedPackages)
             }
             .listStyle(.plain)
             .refreshable {
@@ -84,7 +84,9 @@ struct WooSavedPackagesSelectionView: View {
             .swipeActions {
                 Button {
                     withAnimation {
-                        viewModel.removePackage(package)
+                        viewModel.removePackage(package) { error in
+                            // TODO: handle error
+                        }
                     }
                 } label: {
                     Image(systemName: "trash")

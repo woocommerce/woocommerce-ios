@@ -46,10 +46,7 @@ class WooCommerceScreenshots: XCTestCase {
 
         // My Store
         .dismissTopBannerIfNeeded()
-
-        // TODO-14325: Fix taking screenshots of the My Store screen with the stats cards.
-        //.then { ($0 as! MyStoreScreen).goToThisMonthTab() }
-        //.thenTakeScreenshot(named: "order-dashboard")
+        .thenTakeScreenshot(named: "order-dashboard")
 
         // Orders
         try TabNavComponent()

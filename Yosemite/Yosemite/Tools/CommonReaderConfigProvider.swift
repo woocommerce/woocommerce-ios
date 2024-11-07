@@ -65,18 +65,39 @@ final public class CommonReaderConfigProvider: CommonReaderConfigProviding {
 
 private extension CardReaderConfigError {
     init?(error: Error) {
-        guard let dotcomError = error as? DotcomError else {
-            return nil
-        }
-        switch dotcomError {
-        case .unknown("store_address_is_incomplete", let message):
+        switch error {
+        case DotcomError.unknown(code: "store_address_is_incomplete", let message):
             self = .incompleteStoreAddress(adminUrl: URL(string: message ?? ""))
-            return
-        case .unknown("postal_code_invalid", _):
+        case DotcomError.unknown(code: "postal_code_invalid", _):
             self = .invalidPostalCode
-            return
+        case NetworkError.unacceptableStatusCode(_, let responseData):
+            guard let responseData,
+                  let details = try? JSONDecoder().decode(CardReaderConfigNetworkErrorDetails.self, from: responseData) else {
+                return nil
+            }
+            switch details.code {
+            case .storeAddressIncomplete:
+                self = .incompleteStoreAddress(adminUrl: URL(string: details.message ?? ""))
+            case .postalCodeInvalid:
+                self = .invalidPostalCode
+            }
         default:
             return nil
         }
+    }
+}
+
+private struct CardReaderConfigNetworkErrorDetails: Decodable {
+    let code: ErrorCode
+    let message: String?
+
+    enum CodingKeys: CodingKey {
+        case code
+        case message
+    }
+
+    enum ErrorCode: String, Decodable {
+        case storeAddressIncomplete = "store_address_is_incomplete"
+        case postalCodeInvalid = "postal_code_invalid"
     }
 }

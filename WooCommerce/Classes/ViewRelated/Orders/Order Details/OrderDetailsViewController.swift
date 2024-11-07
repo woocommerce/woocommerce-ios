@@ -159,9 +159,9 @@ private extension OrderDetailsViewController {
         let editButton = UIBarButtonItem(title: Localization.NavBar.editOrder,
                                          style: .plain,
                                          target: self,
-                                         action: #selector(editOrder))
+                                         action: #selector(editButtonTapped))
         editButton.accessibilityIdentifier = "order-details-edit-button"
-        editButton.isEnabled = viewModel.editButtonIsEnabled
+        editButton.isEnabled = viewModel.editButtonBehaviour != .disabledForSyncing
         navigationItem.rightBarButtonItems = [editButton] + orderNavigationRightBarButtonItems()
 
         navigationItem.largeTitleDisplayMode = .never
@@ -388,9 +388,21 @@ private extension OrderDetailsViewController {
         }
     }
 
+    @objc private func editButtonTapped() {
+        switch viewModel.editButtonBehaviour {
+        case .enabled:
+            editOrder()
+        case .showNoticeForCurrencyConflict:
+            viewModel.showNoticeForEditingWithCurrencyConflict(in: self)
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderEditButtonTappedWhileDisabledForCurrencyConflict())
+        case .disabledForSyncing:
+            return
+        }
+    }
+
     /// Presents the order edit form
     ///
-    @objc private func editOrder() {
+    private func editOrder() {
         let viewModel = EditableOrderViewModel(siteID: viewModel.order.siteID, flow: .editing(initialOrder: viewModel.order))
         let viewController = OrderFormHostingController(viewModel: viewModel)
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {

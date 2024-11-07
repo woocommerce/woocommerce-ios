@@ -6,6 +6,8 @@ final class WooShippingPackagesRepository: ObservableObject {
     @Published var loadingCarrierPackages: Bool = false
     @Published var carrierPackages: [WooShippingCarrierPackages] = []
 
+    // MARK: - Packages loading
+
     func loadPackages() {
         loadSavedPackages()
         loadCarrierPackages()
@@ -53,5 +55,15 @@ final class WooShippingPackagesRepository: ObservableObject {
         // TODO: add networking request to load live data
 
         loadingCarrierPackages = false
+    }
+
+    // MARK: - Packages updates
+
+    func deleteSavedPackage(_ package: WooPackageDataRepresentable, onCompletion: @escaping (Error?) -> Void) {
+        // delete the package locally and on backend
+
+        // do we need a special logic for custom packages and carrier packages?
+
+        // call onCompletion with error if some error happens
     }
 }

@@ -75,6 +75,7 @@ public final class SingleOrderScreen: ScreenObject {
         return try PaymentMethodsScreen()
     }
 
+    @discardableResult
     public func goBackToOrdersScreen() throws -> OrdersScreen {
         let orderDetailTableView = app.tables["order-details-table-view"]
         guard orderDetailTableView.horizontalSizeClass == .compact else {

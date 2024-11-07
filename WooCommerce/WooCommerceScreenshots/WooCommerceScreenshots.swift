@@ -28,6 +28,7 @@ class WooCommerceScreenshots: XCTestCase {
         app.launchArguments.append("disable-animations")
         app.launchArguments.append("-mocks-port")
         app.launchArguments.append("-mocks-push-notification")
+        app.launchArguments.append("-skip-cash-on-delivery-setup")
         app.launchArguments.append("\(server.listenAddress.port)")
 
         app.launch()
@@ -60,10 +61,9 @@ class WooCommerceScreenshots: XCTestCase {
         .tapCollectPaymentButton()
 
         // TODO-14325: Fix card present payment action.
+        // It needs to display the "Reader is Ready" modal before taking the screenshot.
         .tapCardPresentPayment()
         .thenTakeScreenshot(named: "order-payment")
-
-        // TODO-14325: Add handling to dismiss "Do you want to add Pay In Person to your web checkout" modal
 
         //.goBackToPaymentMethodsScreen()
         //.goBackToOrderScreen()

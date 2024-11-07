@@ -513,7 +513,12 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     var shouldShowCashOnDeliveryStep: Bool {
+    #if DEBUG
+    // We don't want to show if this argument exists.
+        !ProcessInfo.processInfo.arguments.contains("-skip-cash-on-delivery-setup")
+    #else
         !isCashOnDeliverySetUp() && !wasCashOnDeliveryStepSkipped
+    #endif
     }
 
     func checkIfCashOnDeliveryStepSkipped() {

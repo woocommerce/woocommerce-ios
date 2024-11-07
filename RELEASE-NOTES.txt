@@ -6,6 +6,7 @@
 
 - [internal] Updated Xcode version to 16.1 [https://github.com/woocommerce/woocommerce-ios/pull/14225]
 - [**] Fixed: properly open and show order details in Watch app [https://github.com/woocommerce/woocommerce-ios/pull/14306]
+- [*] Order editing: disable editing orders in other currencies, due to risk of showing incorrect information [https://github.com/woocommerce/woocommerce-ios/pull/14345]
 
 21.0
 -----

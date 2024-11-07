@@ -336,7 +336,6 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let parameters = [
             ParameterKey.sku: keyword,
             ParameterKey.partialSKUSearch: keyword,
-            ParameterKey.globalUniqueID: keyword,
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.contextKey: Default.context

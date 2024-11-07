@@ -35,7 +35,8 @@ final class WooShippingRemoteTests: XCTestCase {
 
         // Then
         let packagesResponse = try XCTUnwrap(result.get())
-        XCTAssertNotNil(packagesResponse)
+        XCTAssertEqual(packagesResponse.customPackages.count, 5)
+        XCTAssertEqual(packagesResponse.predefinedOptions.count, 1)
     }
 
     func test_createPackage_returns_error_on_failure() throws {

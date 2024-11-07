@@ -1,11 +1,28 @@
 import Foundation
 
-final class WooShippingPackagesRepository: ObservableObject {
-    @Published var loadingSavedPackages: Bool = false
-    @Published var customSavedPackages: [any WooPackageDataRepresentable] = []
-    @Published var predefinedSavedPackages: [any WooPackageDataRepresentable] = []
-    @Published var loadingCarrierPackages: Bool = false
-    @Published var carrierPackages: [WooShippingCarrierPackages] = []
+protocol WooShippingPackagesRepositoryProtocol {
+    var loadingSavedPackages: Bool { get }
+    var customSavedPackages: [any WooPackageDataRepresentable] { get }
+    var predefinedSavedPackages: [any WooPackageDataRepresentable] { get }
+
+    var loadingCarrierPackages: Bool { get }
+    var carrierPackages: [WooShippingCarrierPackages] { get }
+
+    func loadPackages()
+    func loadSavedPackages()
+    func loadCarrierPackages()
+
+    func deleteSavedPackage(_ packageToRemove: WooPackageDataRepresentable) async -> Error?
+    func addCustomPackage(_ packageToAdd: WooPackageDataRepresentable) async -> Error?
+    func addPredefinedPackage(_ packageToAdd: WooPackageDataRepresentable) async -> Error?
+}
+
+final class WooShippingPackagesRepository: ObservableObject, WooShippingPackagesRepositoryProtocol {
+    @Published private(set) var loadingSavedPackages: Bool = false
+    @Published private(set) var customSavedPackages: [any WooPackageDataRepresentable] = []
+    @Published private(set) var predefinedSavedPackages: [any WooPackageDataRepresentable] = []
+    @Published private(set) var loadingCarrierPackages: Bool = false
+    @Published private(set) var carrierPackages: [WooShippingCarrierPackages] = []
 
     static let shared = WooShippingPackagesRepository()
 
@@ -17,6 +34,10 @@ final class WooShippingPackagesRepository: ObservableObject {
     }
 
     func loadSavedPackages() {
+        guard !loadingSavedPackages else {
+            return
+        }
+
         loadingSavedPackages = true
 
         // TODO: add networking request to load live data
@@ -58,6 +79,10 @@ final class WooShippingPackagesRepository: ObservableObject {
     }
 
     func loadCarrierPackages() {
+        guard !loadingCarrierPackages else {
+            return
+        }
+
         loadingCarrierPackages = true
 
         // TODO: add networking request to load live data
@@ -67,24 +92,26 @@ final class WooShippingPackagesRepository: ObservableObject {
 
     // MARK: - Packages updates
 
-    func deleteSavedPackage(_ packageToRemove: WooPackageDataRepresentable, onCompletion: @escaping (Error?) -> Void) {
+    func deleteSavedPackage(_ packageToRemove: WooPackageDataRepresentable) async -> Error? {
         // delete the package locally and on backend
         customSavedPackages.removeAll { package in package.id == packageToRemove.id }
         predefinedSavedPackages.removeAll { package in package.id == packageToRemove.id }
 
         // do we need a special logic for custom packages and carrier packages?
 
-        // call onCompletion with error if some error happens
-        onCompletion(nil)
+        // return error if some error happens
+        return nil
     }
 
-    func addCustomPackage(_ packageToAdd: WooPackageDataRepresentable, onCompletion: @escaping (Error?) -> Void) {
+    func addCustomPackage(_ packageToAdd: WooPackageDataRepresentable) async -> Error? {
         customSavedPackages.append(packageToAdd)
-        onCompletion(nil)
+
+        return nil
     }
 
-    func addPredefinedPackage(_ packageToAdd: WooPackageDataRepresentable, onCompletion: @escaping (Error?) -> Void) {
+    func addPredefinedPackage(_ packageToAdd: WooPackageDataRepresentable) async -> Error? {
         predefinedSavedPackages.append(packageToAdd)
-        onCompletion(nil)
+
+        return nil
     }
 }

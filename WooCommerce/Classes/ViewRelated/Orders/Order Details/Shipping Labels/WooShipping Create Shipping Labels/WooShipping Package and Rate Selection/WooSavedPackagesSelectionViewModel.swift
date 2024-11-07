@@ -1,8 +1,8 @@
 import Foundation
 
 final class WooSavedPackagesSelectionViewModel: ObservableObject {
-    @Published var packagesRepository: WooShippingPackagesRepository
-    @Published var selectedPackageId: UUID? = nil  // Track the selected package index
+    @Published var packagesRepository: WooShippingPackagesRepositoryProtocol
+    @Published var selectedPackageId: UUID?  // Track the selected package index
 
     var customSavedPackages: [any WooPackageDataRepresentable] {
         return packagesRepository.customSavedPackages
@@ -12,8 +12,9 @@ final class WooSavedPackagesSelectionViewModel: ObservableObject {
         return packagesRepository.predefinedSavedPackages
     }
 
-    init(packagesRepository: WooShippingPackagesRepository) {
+    init(packagesRepository: WooShippingPackagesRepositoryProtocol, selectedPackageId: UUID? = nil) {
         self.packagesRepository = packagesRepository
+        self.selectedPackageId = selectedPackageId
     }
 
     var hasPackages: Bool {
@@ -34,14 +35,13 @@ final class WooSavedPackagesSelectionViewModel: ObservableObject {
         return nil
     }
 
-    func removePackage(_ packageToRemove: WooPackageDataRepresentable, onCompletion: @escaping (Error?) -> Void) {
-        packagesRepository.deleteSavedPackage(packageToRemove) { error in
-            if error == nil {
-                if self.selectedPackageId == packageToRemove.id {
-                    self.selectedPackageId = nil
-                }
-            }
-            onCompletion(error)
+    func removePackage(_ packageToRemove: WooPackageDataRepresentable) async -> Error? {
+        if let error = await packagesRepository.deleteSavedPackage(packageToRemove) {
+            return error
         }
+        if self.selectedPackageId == packageToRemove.id {
+            self.selectedPackageId = nil
+        }
+        return nil
     }
 }

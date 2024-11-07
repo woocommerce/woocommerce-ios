@@ -89,9 +89,10 @@ struct WooSavedPackagesSelectionView: View {
             .swipeActions {
                 Button {
                     withAnimation {
-                        viewModel.removePackage(package) { error in
-                            // TODO: handle error
+                        _ = Task {
+                            return await viewModel.removePackage(package)
                         }
+                        // TODO: handle error
                     }
                 } label: {
                     Image(systemName: "trash")

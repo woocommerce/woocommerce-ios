@@ -6,7 +6,9 @@ import SwiftUI
 final class WooCarrierPackagesSelectionViewModelTests: XCTestCase {
     func test_it_inits_tabs() {
         // Given/When
-        let carrierTabs = testingCarrierTabs()
+        let packagesRepository = MockWooShippingPackagesRepository()
+        packagesRepository.loadPackages()
+        let carrierTabs = packagesRepository.carrierPackages
         let tabs = carrierTabs.map { carrierTab in
             return TopTabItem(name: carrierTab.carrier.name, icon: carrierTab.carrier.logo, content: {
                 EmptyView()
@@ -38,7 +40,9 @@ final class WooCarrierPackagesSelectionViewModelTests: XCTestCase {
 
     func test_it_changes_selected_tab() {
         // Given/When
-        let carrierTabs = testingCarrierTabs()
+        let packagesRepository = MockWooShippingPackagesRepository()
+        packagesRepository.loadPackages()
+        let carrierTabs = packagesRepository.carrierPackages
         let tabs = carrierTabs.map { carrierTab in
             return TopTabItem(name: carrierTab.carrier.name, icon: carrierTab.carrier.logo, content: {
                 EmptyView()
@@ -53,32 +57,5 @@ final class WooCarrierPackagesSelectionViewModelTests: XCTestCase {
         viewModel.selectedTabIndex = 1
         XCTAssertNotNil(viewModel.selectedCarrierTab)
         XCTAssertEqual(viewModel.selectedCarrierTab?.carrier.name, carrierTabs.last?.carrier.name)
-    }
-}
-
-extension WooCarrierPackagesSelectionViewModelTests {
-    private func testingCarrierTabs() -> [WooShippingCarrierPackages] {
-        let uspsPackageGroups: [WooPackageGroup] = [
-            WooPackageGroup(name: "Flat Rate Boxes 1", packages: [
-                WooCarrierPackageData(name: "Small Flat Rate Box", type: "usps", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg")
-            ]),
-            WooPackageGroup(name: "Flat Rate Boxes 2", packages: [
-                WooCarrierPackageData(name: "Small Flat Rate Box", type: "usps", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
-                WooCarrierPackageData(name: "Small Flat Rate Box", type: "usps", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg")
-            ])
-        ]
-        let dhlPackageGroups: [WooPackageGroup] = [
-            WooPackageGroup(name: "Flat Rate Boxes 1", packages: [
-                WooCarrierPackageData(name: "Small Flat Rate Box", type: "DHL Express", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
-                WooCarrierPackageData(name: "Small Flat Rate Box", type: "DHL Express", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
-            ]),
-            WooPackageGroup(name: "Flat Rate Boxes 2", packages: [
-                WooCarrierPackageData(name: "Small Flat Rate Box", type: "DHL Express", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg")
-            ])
-        ]
-        let uspsCarrier: WooShippingCarrierPackages = WooShippingCarrierPackages(carrier: WooShippingCarrier.usps, packageGroups: uspsPackageGroups)
-        let dhlCarrier: WooShippingCarrierPackages = WooShippingCarrierPackages(carrier: WooShippingCarrier.dhlExpress, packageGroups: dhlPackageGroups)
-
-        return [uspsCarrier, dhlCarrier]
     }
 }

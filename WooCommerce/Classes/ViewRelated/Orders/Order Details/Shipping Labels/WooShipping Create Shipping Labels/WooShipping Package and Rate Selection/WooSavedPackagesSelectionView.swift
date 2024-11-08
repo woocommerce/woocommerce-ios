@@ -1,6 +1,6 @@
 import SwiftUI
 
-enum WooPackageSource {
+enum WooShippingPackageSource {
     case custom
     case predefined(String)
 
@@ -14,7 +14,7 @@ enum WooPackageSource {
     }
 }
 
-protocol WooPackageDataRepresentable {
+protocol WooShippingPackageDataRepresentable {
     // backend
     var id: String { get }
     var name: String { get }
@@ -25,11 +25,11 @@ protocol WooPackageDataRepresentable {
     // local
     var weightDescription: String { get }
     var dimensionsDescription: String { get }
-    var source: WooPackageSource { get } // custom, predefined
+    var source: WooShippingPackageSource { get } // custom, predefined
     var packageType: String { get } // box, envelope
 }
 
-struct WooSavedPackageData: WooPackageDataRepresentable {
+struct WooShippingPackageData: WooShippingPackageDataRepresentable {
     // backend
     let id: String
     let name: String
@@ -40,7 +40,7 @@ struct WooSavedPackageData: WooPackageDataRepresentable {
     // local
     let weightDescription: String
     let dimensionsDescription: String
-    let source: WooPackageSource
+    let source: WooShippingPackageSource
     let packageType: String
 
     init(id: String,
@@ -51,7 +51,7 @@ struct WooSavedPackageData: WooPackageDataRepresentable {
          dimensionsUnit: String,
          weight: String,
          weightUnit: String,
-         source: WooPackageSource,
+         source: WooShippingPackageSource,
          packageType: String) {
         self.id = id
         self.name = name
@@ -63,12 +63,24 @@ struct WooSavedPackageData: WooPackageDataRepresentable {
         self.source = source
         self.packageType = packageType
 
-        self.dimensionsDescription = WooSavedPackageData.createDimensionsDesccription(length: length, width: width, height: height, unit: weightUnit)
-        self.weightDescription = WooSavedPackageData.createWeightsDesccription(weight: weight, unit: weightUnit)
+        self.dimensionsDescription = WooShippingPackageData.createDimensionsDesccription(length: length, width: width, height: height, unit: weightUnit)
+        self.weightDescription = WooShippingPackageData.createWeightsDesccription(weight: weight, unit: weightUnit)
+    }
+
+    init(name: String,
+         length: String,
+         width: String,
+         height: String,
+         dimensionsUnit: String,
+         weight: String,
+         weightUnit: String,
+         source: WooShippingPackageSource,
+         packageType: String) {
+        self.init(id: name, name: name, length: length, width: width, height: height, dimensionsUnit: dimensionsUnit, weight: weight, weightUnit: weightUnit, source: source, packageType: packageType)
     }
 }
 
-extension WooPackageDataRepresentable {
+extension WooShippingPackageDataRepresentable {
     static func createDimensionsDesccription(length: String, width: String, height: String, unit: String) -> String {
         return "\(length) x \(width) x \(height) \( unit)"
     }
@@ -80,9 +92,9 @@ extension WooPackageDataRepresentable {
 
 struct WooSavedPackagesSelectionView: View {
     @ObservedObject private var viewModel: WooSavedPackagesSelectionViewModel
-    let addPackageAction: (WooPackageDataRepresentable) -> Void
+    let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
-    init(viewModel: WooSavedPackagesSelectionViewModel, addPackageAction: @escaping (WooPackageDataRepresentable) -> Void) {
+    init(viewModel: WooSavedPackagesSelectionViewModel, addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
         self.viewModel = viewModel
         self.addPackageAction = addPackageAction
     }
@@ -120,7 +132,7 @@ struct WooSavedPackagesSelectionView: View {
     }
 
     @ViewBuilder
-    private func packagesSection(for packages: [any WooPackageDataRepresentable]) -> some View {
+    private func packagesSection(for packages: [any WooShippingPackageDataRepresentable]) -> some View {
         if packages.isEmpty {
             EmptyView()
         }
@@ -132,7 +144,7 @@ struct WooSavedPackagesSelectionView: View {
         }
     }
 
-    private func packagesRows(for packages: [any WooPackageDataRepresentable]) -> some View {
+    private func packagesRows(for packages: [any WooShippingPackageDataRepresentable]) -> some View {
         ForEach(packages, id: \.id) { package in
             PackageOptionView(
                 isSelected: viewModel.selectedPackageId == package.id,
@@ -179,7 +191,7 @@ struct PackageOptionView: View {
     }
 
     var isSelected: Bool
-    var package: WooPackageDataRepresentable
+    var package: WooShippingPackageDataRepresentable
     var showTopDivider: Bool
     var showSource: Bool
     var tapAction: () -> Void

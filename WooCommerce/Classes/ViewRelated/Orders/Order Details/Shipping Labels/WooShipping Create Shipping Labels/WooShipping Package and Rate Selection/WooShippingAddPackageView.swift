@@ -21,7 +21,7 @@ struct WooShippingAddPackageView: View {
     @State var selectedPackageType = PackageProviderType.custom
     @StateObject var packagesRepository = WooShippingPackagesRepository.shared
 
-    let addPackageAction: (WooPackageDataRepresentable) -> Void
+    let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
     // MARK: - UI
 
@@ -80,7 +80,7 @@ struct WooShippingAddPackageView: View {
         // TODO: dummy data for UI creation
         let uspsPackageGroups: [WooPackageGroup] = [
             WooPackageGroup(name: "Flat Rate Boxes 1", packages: [
-                WooCarrierPackageData(name: "Small Flat Rate Box 1",
+                WooShippingPackageData(name: "Small Flat Rate Box 1",
                                       length: "21.92",
                                       width: "13.67",
                                       height: "4.14",
@@ -91,7 +91,7 @@ struct WooShippingAddPackageView: View {
                                       packageType: "box")
             ]),
             WooPackageGroup(name: "Flat Rate Boxes 2", packages: [
-                WooCarrierPackageData(name: "Small Flat Rate Box 2",
+                WooShippingPackageData(name: "Small Flat Rate Box 2",
                                       length: "21.92",
                                       width: "13.67",
                                       height: "4.14",
@@ -100,7 +100,7 @@ struct WooShippingAddPackageView: View {
                                       weightUnit: "kg",
                                       source: .predefined("USPS Priority Mail Flat Rate Boxes"),
                                       packageType: "box"),
-                WooCarrierPackageData(name: "Small Flat Rate Box 21",
+                WooShippingPackageData(name: "Small Flat Rate Box 21",
                                       length: "21.92",
                                       width: "13.67",
                                       height: "4.14",
@@ -109,7 +109,7 @@ struct WooShippingAddPackageView: View {
                                       weightUnit: "kg",
                                       source: .predefined("USPS Priority Mail Flat Rate Boxes"),
                                       packageType: "box"),
-                WooCarrierPackageData(name: "Small Flat Rate Box 22",
+                WooShippingPackageData(name: "Small Flat Rate Box 22",
                                       length: "21.92",
                                       width: "13.67",
                                       height: "4.14",
@@ -122,7 +122,7 @@ struct WooShippingAddPackageView: View {
         ]
         let dhlPackageGroups: [WooPackageGroup] = [
             WooPackageGroup(name: "Flat Rate Boxes 3", packages: [
-                WooCarrierPackageData(name: "Small Flat Rate Box 3",
+                WooShippingPackageData(name: "Small Flat Rate Box 3",
                                       length: "21.92",
                                       width: "13.67",
                                       height: "4.14",
@@ -133,7 +133,7 @@ struct WooShippingAddPackageView: View {
                                       packageType: "box"),
             ]),
             WooPackageGroup(name: "Flat Rate Boxes 4", packages: [
-                WooCarrierPackageData(name: "Small Flat Rate Box 4",
+                WooShippingPackageData(name: "Small Flat Rate Box 4",
                                       length: "21.92",
                                       width: "13.67",
                                       height: "4.14",

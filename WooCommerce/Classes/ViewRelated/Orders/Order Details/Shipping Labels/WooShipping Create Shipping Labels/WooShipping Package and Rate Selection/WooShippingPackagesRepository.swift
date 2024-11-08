@@ -2,8 +2,8 @@ import Foundation
 
 protocol WooShippingPackagesRepositoryProtocol {
     var loadingSavedPackages: Bool { get }
-    var customSavedPackages: [any WooPackageDataRepresentable] { get }
-    var predefinedSavedPackages: [any WooPackageDataRepresentable] { get }
+    var customSavedPackages: [any WooShippingPackageDataRepresentable] { get }
+    var predefinedSavedPackages: [any WooShippingPackageDataRepresentable] { get }
 
     var loadingCarrierPackages: Bool { get }
     var carrierPackages: [WooShippingCarrierPackages] { get }
@@ -12,15 +12,15 @@ protocol WooShippingPackagesRepositoryProtocol {
     func loadSavedPackages()
     func loadCarrierPackages()
 
-    func deleteSavedPackage(_ packageToRemove: WooPackageDataRepresentable) async -> Error?
-    func addCustomPackage(_ packageToAdd: WooPackageDataRepresentable) async -> Error?
-    func addPredefinedPackage(_ packageToAdd: WooPackageDataRepresentable) async -> Error?
+    func deleteSavedPackage(_ packageToRemove: WooShippingPackageDataRepresentable) async -> Error?
+    func addCustomPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error?
+    func addPredefinedPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error?
 }
 
 final class WooShippingPackagesRepository: ObservableObject, WooShippingPackagesRepositoryProtocol {
     @Published private(set) var loadingSavedPackages: Bool = false
-    @Published private(set) var customSavedPackages: [any WooPackageDataRepresentable] = []
-    @Published private(set) var predefinedSavedPackages: [any WooPackageDataRepresentable] = []
+    @Published private(set) var customSavedPackages: [any WooShippingPackageDataRepresentable] = []
+    @Published private(set) var predefinedSavedPackages: [any WooShippingPackageDataRepresentable] = []
     @Published private(set) var loadingCarrierPackages: Bool = false
     @Published private(set) var carrierPackages: [WooShippingCarrierPackages] = []
 
@@ -43,7 +43,7 @@ final class WooShippingPackagesRepository: ObservableObject, WooShippingPackages
         // TODO: add networking request to load live data
         if customSavedPackages.isEmpty {
             customSavedPackages = [
-                WooSavedPackageData(id: UUID().uuidString,
+                WooShippingPackageData(id: UUID().uuidString,
                                     name: "Small Flat Rate Box",
                                     length: "21.92",
                                     width: "13.67",
@@ -53,7 +53,7 @@ final class WooShippingPackagesRepository: ObservableObject, WooShippingPackages
                                     weightUnit: "kg",
                                     source: .custom,
                                     packageType: "box"),
-                WooSavedPackageData(id: UUID().uuidString,
+                WooShippingPackageData(id: UUID().uuidString,
                                     name: "Small Flat Rate Box",
                                     length: "21.92",
                                     width: "13.67",
@@ -63,7 +63,7 @@ final class WooShippingPackagesRepository: ObservableObject, WooShippingPackages
                                     weightUnit: "kg",
                                     source: .custom,
                                     packageType: "box"),
-                WooSavedPackageData(id: UUID().uuidString,
+                WooShippingPackageData(id: UUID().uuidString,
                                     name: "Small Flat Rate Box",
                                     length: "21.92",
                                     width: "13.67",
@@ -77,7 +77,7 @@ final class WooShippingPackagesRepository: ObservableObject, WooShippingPackages
         }
         if predefinedSavedPackages.isEmpty {
             predefinedSavedPackages = [
-                WooCarrierPackageData(name: "Small Flat Rate Box 3",
+                WooShippingPackageData(name: "Small Flat Rate Box 3",
                                       length: "21.92",
                                       width: "13.67",
                                       height: "4.14",
@@ -86,7 +86,7 @@ final class WooShippingPackagesRepository: ObservableObject, WooShippingPackages
                                       weightUnit: "kg",
                                       source: .predefined("DHL Express"),
                                       packageType: "box"),
-                WooCarrierPackageData(name: "Small Flat Rate Box 22",
+                WooShippingPackageData(name: "Small Flat Rate Box 22",
                                       length: "21.92",
                                       width: "13.67",
                                       height: "4.14",
@@ -115,7 +115,7 @@ final class WooShippingPackagesRepository: ObservableObject, WooShippingPackages
 
     // MARK: - Packages updates
 
-    func deleteSavedPackage(_ packageToRemove: WooPackageDataRepresentable) async -> Error? {
+    func deleteSavedPackage(_ packageToRemove: WooShippingPackageDataRepresentable) async -> Error? {
         // delete the package locally and on backend
         customSavedPackages.removeAll { package in package.id == packageToRemove.id }
         predefinedSavedPackages.removeAll { package in package.id == packageToRemove.id }
@@ -126,13 +126,13 @@ final class WooShippingPackagesRepository: ObservableObject, WooShippingPackages
         return nil
     }
 
-    func addCustomPackage(_ packageToAdd: WooPackageDataRepresentable) async -> Error? {
+    func addCustomPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error? {
         customSavedPackages.append(packageToAdd)
 
         return nil
     }
 
-    func addPredefinedPackage(_ packageToAdd: WooPackageDataRepresentable) async -> Error? {
+    func addPredefinedPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error? {
         predefinedSavedPackages.append(packageToAdd)
 
         return nil

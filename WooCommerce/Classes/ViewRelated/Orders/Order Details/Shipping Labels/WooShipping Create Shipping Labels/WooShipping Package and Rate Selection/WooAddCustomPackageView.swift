@@ -12,7 +12,7 @@ struct WooAddCustomPackageView: View {
     @FocusState var packageTemplateNameFieldFocused: Bool
     @FocusState var focusedField: WooShippingPackageUnitType?
 
-    let addPackageAction: (WooPackageDataRepresentable) -> Void
+    let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
     private var packageTypeSelectionView: some View {
         Menu {

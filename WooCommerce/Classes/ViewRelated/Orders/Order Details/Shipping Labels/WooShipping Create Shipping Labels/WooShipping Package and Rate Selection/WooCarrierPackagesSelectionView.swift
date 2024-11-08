@@ -13,45 +13,7 @@ struct WooShippingCarrierPackages: Identifiable {
 struct WooPackageGroup {
     let id: UUID = UUID()
     let name: String
-    let packages: [any WooPackageDataRepresentable]
-}
-
-struct WooCarrierPackageData: WooPackageDataRepresentable {
-    // backend
-    var id: String { return name }
-    let name: String
-    let length: String
-    let width: String
-    let height: String
-    let weight: String
-    // local
-    let weightDescription: String
-    let dimensionsDescription: String
-    let source: WooPackageSource
-    let packageType: String
-
-    init(name: String,
-         length: String,
-         width: String,
-         height: String,
-         dimensionsUnit:
-         String,
-         weight: String,
-         weightUnit: String,
-         source: WooPackageSource,
-         packageType: String) {
-        self.name = name
-        self.length = length
-        self.width = width
-        self.height = height
-        self.weight = weight
-
-        self.source = source
-        self.packageType = packageType
-
-        self.dimensionsDescription = WooCarrierPackageData.createDimensionsDesccription(length: length, width: width, height: height, unit: weightUnit)
-        self.weightDescription = WooCarrierPackageData.createWeightsDesccription(weight: weight, unit: weightUnit)
-    }
+    let packages: [any WooShippingPackageDataRepresentable]
 }
 
 struct WooCarrierPackagesView: View {
@@ -114,10 +76,10 @@ struct WooCarrierPackagesSelectionView: View {
     }
 
     @ObservedObject private var viewModel: WooCarrierPackagesSelectionViewModel
-    let addPackageAction: (WooPackageDataRepresentable) -> Void
+    let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
     init(carrierTabs: [WooShippingCarrierPackages],
-         addPackageAction: @escaping (WooPackageDataRepresentable) -> Void) {
+         addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
         let tabs = carrierTabs.map { carrierTab in
             return TopTabItem(name: carrierTab.carrier.name, icon: carrierTab.carrier.logo, content: {
                 EmptyView()

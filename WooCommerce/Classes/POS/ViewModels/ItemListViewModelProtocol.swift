@@ -3,6 +3,7 @@ import Foundation
 import protocol Yosemite.POSItem
 
 protocol ItemListViewModelProtocol: ObservableObject {
+    @available(*, deprecated, message: "`items` is due for removal, use `state` instead.")
     var items: [POSItem] { get }
     var state: ItemListState { get }
     var isHeaderBannerDismissed: Bool { get }

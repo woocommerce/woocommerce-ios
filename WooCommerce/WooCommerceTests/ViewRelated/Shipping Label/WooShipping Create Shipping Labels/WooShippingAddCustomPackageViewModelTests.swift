@@ -185,7 +185,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.validateCustomPackageInputFields(), false)
         XCTAssertNotNil(packageData)
         XCTAssertEqual(packageData?.dimensionsDescription, expectedDimensions)
-        XCTAssertEqual(packageData?.weight, expectedWeight)
+        XCTAssertEqual(packageData?.weightDescription, expectedWeight)
         XCTAssertNil(viewModel.addPackageAction())
     }
 

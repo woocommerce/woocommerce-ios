@@ -317,7 +317,7 @@ extension ProductVariationFormViewModel {
         // no-op
     }
 
-    func updateSKU(_ sku: String?) {
+    func updateIdentifiers(sku: String?, globalUniqueID: String?) {
         // no-op
     }
 

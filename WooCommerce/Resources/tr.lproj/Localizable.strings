@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-10-30 11:54:04+0000 */
+/* Translation-Revision-Date: 2024-11-07 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -338,6 +338,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "Bir doğrulama kodu yalnızca sayı içerecektir.";
+
+/* Title of a4 paper size option for printing a shipping label */
+"A4" = "A4";
 
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "SEÇENEK EKLE";
@@ -5565,6 +5568,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
 "Product with SKU \"%@\" not found." = "\"%@\" SKU kodlu ürün bulunamadı.";
 
+/* The instruction text below the scan area in the barcode scanner for product barcode. */
+"ProductBarcodeInputScanner.instructionText" = "Ürün barkodunu veya QR kodunu tarayın";
+
+/* Navigation bar title for scanning a barcode or QR Code to use as a product's barcode. */
+"ProductBarcodeInputScanner.titleView" = "Barkodu veya QR kodunu tarayın";
+
 /* Description of the subscription price for a product, with price and billing frequency. Reads as: '$60.00 / 2 months'. */
 "ProductRowViewModel.formattedProductSubscriptionBilling" = "%1$@\/%2$@ %3$@";
 
@@ -9938,6 +9947,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "Değişken abonelik";
 
+/* Button to refresh the state of the in-person payments setup */
+"card.present.payment.setup.webview.title" = "Ödeme Ayarları";
+
 /* Default accessibility label for a custom indeterminate progress view, used for card payments. */
 "card.waves.progressView.accessibilityLabel" = "Devam ediyor";
 
@@ -10104,11 +10116,23 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Tutarı düzenleyin";
 
+/* Title for the action sheet with additional options */
+"customFieldEditorView.actionSheetTitle" = "Daha Fazla Seçenek";
+
 /* Label for the Cancel button to close the editor */
 "customFieldEditorView.cancel" = "İptal Et";
 
+/* Button title for copying the custom field key */
+"customFieldEditorView.copyKeyButton" = "Anahtarı Kopyala";
+
+/* Button title for copying the custom field value */
+"customFieldEditorView.copyValueButton" = "Değeri Kopyala";
+
 /* Button title for deleting a custom field */
 "customFieldEditorView.deleteButton" = "Özel alanı sil";
+
+/* Label for the Done button to save changes */
+"customFieldEditorView.done" = "Tamam";
 
 /* Picker option for using Text Editor */
 "customFieldEditorView.editorPickerHTML" = "HTML";
@@ -10119,11 +10143,23 @@ which should be translated separately and considered part of this sentence. */
 /* Picker option for using Text Editor */
 "customFieldEditorView.editorPickerText" = "Metin";
 
+/* Notice shown when the key has been copied to clipboard */
+"customFieldEditorView.keyCopiedNotice" = "Anahtar panoya kopyalandı";
+
+/* Error message shown when the entered key is identical to an existing key. */
+"customFieldEditorView.keyErrorDisallowedKey" = "Geçersiz anahtar: Bu anahtar zaten başka bir özel alan için kullanılıyor. \nUygulama şu anda yinelenen anahtar oluşturmayı desteklemiyor. Lütfen gerekirse bir anahtarı yinelemek için wp yöneticisini kullanın.";
+
+/* Error message shown when key starts with underscore */
+"customFieldEditorView.keyErrorPrefix" = "Geçersiz anahtar: Lütfen en baştaki \"_\" karakterini kaldırın.";
+
 /* Label for the Key field */
 "customFieldEditorView.keyLabel" = "Anahtar";
 
 /* Placeholder for the Key field */
 "customFieldEditorView.keyPlaceholder" = "Anahtar girin";
+
+/* Notice shown when the value has been copied to clipboard */
+"customFieldEditorView.valueCopiedNotice" = "Değer panoya kopyalandı";
 
 /* Label for the Value field */
 "customFieldEditorView.valueLabel" = "Değer";
@@ -10139,6 +10175,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action to undo the deletion of a custom field */
 "customFieldsListHostingController.deleteNoticeUndo" = "Geri Al";
+
+/* Text for button that's shown when the list is empty. */
+"customFieldsListHostingController.emptyStateButton" = "Daha fazla bilgi edinin";
+
+/* Message when the list is empty. */
+"customFieldsListHostingController.emptyStateDescription" = "Özel alanlar, ek bilgileri görüntülemek veya mağazanızın alışveriş deneyimini özelleştirmek için isteğe bağlı meta verilerdir";
+
+/* Title for the message when the list is empty. */
+"customFieldsListHostingController.emptyStateTitle" = "Özel alan bulunamadı";
 
 /* Message for the in progress view shown when saving changes */
 "customFieldsListHostingController.inProgressMessage" = "Değişiklikleriniz kaydedilirken lütfen bekleyin";
@@ -10160,6 +10205,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the order custom fields list */
 "customFieldsListHostingController.title" = "Özel Alanlar";
+
+/* Content of the banner when there are unsaved custom fields */
+"customFieldsListTopBanner.description" = "Özel alanlardaki değişiklikler kaydedilirken bunlar hemen etkili olur.";
+
+/* Dismiss button title */
+"customFieldsListTopBanner.dismiss" = "Kapat";
+
+/* Title of the banner when there are unsaved custom fields */
+"customFieldsListTopBanner.title" = "Özel alanları görüntüleyin ve düzenleyin";
 
 /* Accessibility title for the search button on the customer section. */
 "customer.search.button.accessibilityLabel" = "Müşterileri ara";
@@ -11005,6 +11059,9 @@ which should be translated separately and considered part of this sentence. */
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderDetailsDataSource.attributionInfo.unknown" = "Bilinmiyor";
 
+/* Button on bottom of shipping label card to view the shipping label */
+"orderDetailsDataSource.shippingLabels.viewLabel" = "Satın alınan gönderim etiketini görüntüle";
+
 /* Title of Shipping Section in Order Details screen */
 "orderDetailsDataSource.shippingLines.title" = "Gönderim";
 
@@ -11810,6 +11867,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
 "productInventorySettings.globalUniqueIdentifier.title" = "GTIN, UPC, EAN, ISBN";
 
+/* The message of the alert when there is an error updating the product global unique identifier */
+"productInventorySettings.invalidGlobalUniqueIdentifier.error" = "Lütfen yalnızca sayı ve boşluklar (-) girin.";
+
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "Faturalama aralığı";
 
@@ -12472,6 +12532,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button to dismiss the shipping label creation screen */
 "wooShipping.createLabel.cancelButton" = "İptal Et";
 
+/* Title of the button to dismiss the shipping label screen */
+"wooShipping.createLabel.closeButton" = "Kapat";
+
 /* Label for section in shipping label creation to declare when a package contains hazardous materials. */
 "wooShipping.createLabel.hazmatLabel" = "Zararlı ürünler veya tehlikeli materyaller mi gönderiyorsunuz?";
 
@@ -12480,6 +12543,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Call to action in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderTitle" = "Gönderim ücretleri almak için bir paket seçin";
+
+/* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "Yetişkin İmzası Gerekli";
+
+/* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
+"wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (temel ücret)";
 
 /* Label for the toggle to mark the order as complete on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.markComplete" = "Bu siparişi tamamlandı olarak işaretleyin ve müşteriyi bilgilendirin";
@@ -12493,6 +12562,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button to purchase the shipping label on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.purchase" = "Satın Alma Etiketi";
 
+/* Label for button to purchase the shipping label on the shipping label creation screen, including the label price. Reads like: 'Purchase Label · $7.63' */
+"wooShipping.createLabels.bottomSheet.purchaseFormat" = "Satın Alma Etiketi · %1$@";
+
 /* Label for address where the shipment is shipped from on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.shipFrom" = "Gönderen";
 
@@ -12501,6 +12573,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header for shipment costs section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.shipmentCosts" = "Gönderim maliyetleri";
+
+/* Label for row showing the additional cost to require a signature on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.signatureRequired" = "İmza Gerekli";
 
 /* Label for row showing the subtotal for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.subtotal" = "Ara toplam";
@@ -12520,8 +12595,44 @@ which should be translated separately and considered part of this sentence. */
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
 
+/* Link for more information about how to print a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.info" = "Mobil cihazınızdan nasıl yazdıracağınız hakkında bilgi edinin";
+
+/* Navigation bar title of shipping label printing instructions screen */
+"wooShipping.createLabels.postPurchase.infoTitle" = "Mobil cihazınızdan yazdırın";
+
+/* Note about reusing a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.note" = "Not: Yazdırılmış bir etiketi yeniden kullanmak hizmet koşullarımızın ihlalidir ve cezai suçlamalarla sonuçlanabilir.";
+
+/* Title for button to print a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.printButton" = "Gönderi Etiketini Yazdır";
+
+/* Message displayed on the shipping label screen when a purchased shipping label can be printed */
+"wooShipping.createLabels.postPurchase.printMessage" = "Buradan gönderim etiketini yeniden yazdırabilir veya etiketin kağıt boyutunu değiştirebilirsiniz.";
+
+/* Heading displayed on the shipping label screen when a purchased shipping label can be printed */
+"wooShipping.createLabels.postPurchase.readyToPrint" = "Gönderim etiketiniz yazdırmaya hazır";
+
+/* Link to request a refund for a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.requestRefund" = "İade talep et";
+
+/* Link to schedule a pickup for a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.schedulePickup" = "Alma tarihi zamanla";
+
+/* Link to track a shipment for a purchase shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.trackShipment" = "Gönderimi takip et";
+
 /* Heading for the shipping service section in the shipping label creation screen. */
 "wooShipping.createLabels.rates.shippingService" = "Gönderim hizmeti";
+
+/* Label for the menu to select a sort order for shipping rates in the shipping label creation screen. */
+"wooShipping.createLabels.rates.sortBy" = "Şuna göre sırala";
+
+/* Option to sort shipping rates by delivery time in the shipping label creation screen. */
+"wooShipping.createLabels.rates.sortBy.deliveryTime" = "En hızlı";
+
+/* Option to sort shipping rates by price in the shipping label creation screen. */
+"wooShipping.createLabels.rates.sortBy.price" = "En ucuz";
 
 /* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
 "wooShipping.createLabels.shippingService.adultSignatureRequired" = "Yetişkin İmzası Gerekli (+%1$@)";
@@ -12552,6 +12663,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to create a shipping label */
 "wooShipping.createLabels.title" = "Gönderim Etiketleri Oluşturun";
+
+/* Title for the screen to view a shipping label */
+"wooShipping.createLabels.viewLabelTitle" = "Gönderim Etiketini Görüntüleyin";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, mağazam, bugün, bu hafta, bu ay, bu yıl, siparişler, ziyaretçiler, dönüşüm, en çok dönüşüm, satılan ürünler";

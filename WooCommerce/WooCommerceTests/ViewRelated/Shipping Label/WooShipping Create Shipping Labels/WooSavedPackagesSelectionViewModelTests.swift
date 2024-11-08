@@ -82,7 +82,8 @@ final class MockWooShippingPackagesRepository: WooShippingPackagesRepositoryProt
     private(set) var customSavedPackages: [any WooShippingPackageDataRepresentable] = []
     private(set) var predefinedSavedPackages: [any WooShippingPackageDataRepresentable] = []
     private(set) var loadingCarrierPackages: Bool = false
-    private(set) var carrierPackages: [WooShippingCarrierPackages] = []
+    @Published private(set) var carrierPackages: [WooShippingCarrierPackages] = []
+    var carrierPackagesPublisher: Published<[WooShippingCarrierPackages]>.Publisher { $carrierPackages }
 
     func loadPackages() {
         loadSavedPackages()

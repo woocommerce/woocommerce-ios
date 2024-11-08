@@ -1,14 +1,41 @@
 import Foundation
 import SwiftUI
+import Combine
 
 final class WooCarrierPackagesSelectionViewModel: ObservableObject {
-    let carrierTabs: [WooShippingCarrierPackages]
-    let tabs: [TopTabItem<EmptyView>]
+    @Published var packagesRepository: WooShippingPackagesRepositoryProtocol
+    private var cancellables = Set<AnyCancellable>()
 
-    init(carrierTabs: [WooShippingCarrierPackages], tabs: [TopTabItem<EmptyView>]) {
-        self.carrierTabs = carrierTabs
-        self.tabs = tabs
+    deinit {
+        cancellables.forEach {
+            $0.cancel()
+        }
+    }
+
+    var tabs: [TopTabItem<EmptyView>] {
+        return carrierTabs.map { carrierTab in
+            return TopTabItem(name: carrierTab.carrier.name, icon: carrierTab.carrier.logo, content: {
+                EmptyView()
+            })
+        }
+    }
+
+    var carrierTabs: [WooShippingCarrierPackages] {
+        return packagesRepository.carrierPackages
+    }
+
+    init(packagesRepository: WooShippingPackagesRepositoryProtocol) {
+        self.packagesRepository = packagesRepository
         self.selectedTabIndex = carrierTabs.isEmpty ? nil : 0
+        packagesRepository.carrierPackagesPublisher.sink { [weak self] _ in
+            self?.carrierPackagesUpdated()
+        }.store(in: &cancellables)
+    }
+
+    private func carrierPackagesUpdated() {
+        if selectedTabIndex == nil {
+            self.selectedTabIndex = carrierTabs.isEmpty ? nil : 0
+        }
     }
 
     @Published var selectedTabIndex: Int? = nil

@@ -78,20 +78,15 @@ struct WooCarrierPackagesSelectionView: View {
     @ObservedObject private var viewModel: WooCarrierPackagesSelectionViewModel
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
-    init(carrierTabs: [WooShippingCarrierPackages],
+    init(viewModel: WooCarrierPackagesSelectionViewModel,
          addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
-        let tabs = carrierTabs.map { carrierTab in
-            return TopTabItem(name: carrierTab.carrier.name, icon: carrierTab.carrier.logo, content: {
-                EmptyView()
-            })
-        }
-        viewModel = WooCarrierPackagesSelectionViewModel(carrierTabs: carrierTabs, tabs: tabs)
+        self.viewModel = viewModel
         self.addPackageAction = addPackageAction
     }
 
     var body: some View {
-        if viewModel.selectedTabIndex != nil, viewModel.tabs.isNotEmpty {
-            VStack(spacing: 0) {
+        VStack(spacing: 0) {
+            if viewModel.selectedTabIndex != nil, viewModel.tabs.isNotEmpty {
                 TopTabView(tabs: viewModel.tabs,
                            showContent: .constant(false),
                            selectedTabIndex: $viewModel.selectedTabIndex,
@@ -103,23 +98,19 @@ struct WooCarrierPackagesSelectionView: View {
                            tabsNameFont: Font.subheadline.bold(),
                            tabItemContentHorizontalPadding: Constants.tabItemContentHorizontalPadding,
                            tabItemContentVerticalPadding: Constants.tabItemContentVerticalPadding)
-                if let selectedCarrierTab = viewModel.selectedCarrierTab {
-                    WooCarrierPackagesView(carrierTab: selectedCarrierTab,
-                                           selectedPackageId: $viewModel.selectedPackageId)
-                }
-                Spacer()
-                Divider()
-                Button(WooShippingAddPackageView.Localization.addPackage) {
-                    addPackageButtonTapped()
-                }
-                .disabled(viewModel.selectedPackageId == nil)
-                .buttonStyle(PrimaryButtonStyle())
-                .padding()
             }
-        }
-        else {
-            // TODO: add some kind of empty state view
-            EmptyView()
+            if let selectedCarrierTab = viewModel.selectedCarrierTab {
+                WooCarrierPackagesView(carrierTab: selectedCarrierTab,
+                                       selectedPackageId: $viewModel.selectedPackageId)
+            }
+            Spacer()
+            Divider()
+            Button(WooShippingAddPackageView.Localization.addPackage) {
+                addPackageButtonTapped()
+            }
+            .disabled(viewModel.selectedPackageId == nil)
+            .buttonStyle(PrimaryButtonStyle())
+            .padding()
         }
     }
 

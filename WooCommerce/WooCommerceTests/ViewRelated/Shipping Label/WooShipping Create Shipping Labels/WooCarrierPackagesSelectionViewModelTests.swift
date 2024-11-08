@@ -8,13 +8,7 @@ final class WooCarrierPackagesSelectionViewModelTests: XCTestCase {
         // Given/When
         let packagesRepository = MockWooShippingPackagesRepository()
         packagesRepository.loadPackages()
-        let carrierTabs = packagesRepository.carrierPackages
-        let tabs = carrierTabs.map { carrierTab in
-            return TopTabItem(name: carrierTab.carrier.name, icon: carrierTab.carrier.logo, content: {
-                EmptyView()
-            })
-        }
-        let viewModel = WooCarrierPackagesSelectionViewModel(carrierTabs: carrierTabs, tabs: tabs)
+        let viewModel = WooCarrierPackagesSelectionViewModel(packagesRepository: packagesRepository)
 
         // Then
         XCTAssertEqual(viewModel.carrierTabs.count, 2)
@@ -27,7 +21,8 @@ final class WooCarrierPackagesSelectionViewModelTests: XCTestCase {
 
     func test_it_inits_with_zero_tabs() {
         // Given/When
-        let viewModel = WooCarrierPackagesSelectionViewModel(carrierTabs: [], tabs: [])
+        let packagesRepository = MockWooShippingPackagesRepository()
+        let viewModel = WooCarrierPackagesSelectionViewModel(packagesRepository: packagesRepository)
 
         // Then
         XCTAssertEqual(viewModel.carrierTabs.count, 0)
@@ -43,12 +38,7 @@ final class WooCarrierPackagesSelectionViewModelTests: XCTestCase {
         let packagesRepository = MockWooShippingPackagesRepository()
         packagesRepository.loadPackages()
         let carrierTabs = packagesRepository.carrierPackages
-        let tabs = carrierTabs.map { carrierTab in
-            return TopTabItem(name: carrierTab.carrier.name, icon: carrierTab.carrier.logo, content: {
-                EmptyView()
-            })
-        }
-        let viewModel = WooCarrierPackagesSelectionViewModel(carrierTabs: carrierTabs, tabs: tabs)
+        let viewModel = WooCarrierPackagesSelectionViewModel(packagesRepository: packagesRepository)
 
         // Then
         XCTAssertNotNil(viewModel.selectedCarrierTab)

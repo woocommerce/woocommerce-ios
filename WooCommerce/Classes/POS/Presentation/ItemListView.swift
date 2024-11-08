@@ -14,12 +14,12 @@ struct ItemListView: View {
         VStack {
             headerView
             switch viewModel.state {
-            case .empty, .error:
+            case .initialLoading, .empty, .error:
                 // These cases are handled directly in the dashboard, we do not render
                 // a specific view within the ItemListView to handle them
                 EmptyView()
-            case .initialLoading, .loading, .loaded:
-                listView(viewModel.items)
+            case .loading(let items), .loaded(let items):
+                listView(items)
             }
         }
         .refreshable {

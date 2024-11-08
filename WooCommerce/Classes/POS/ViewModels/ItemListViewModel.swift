@@ -25,7 +25,6 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     let selectedItemPublisher: AnyPublisher<POSItem, Never>
 
-    var itemsPublisher: Published<[POSItem]>.Publisher { $items }
     var statePublisher: Published<ItemListState>.Publisher { $state }
 
     init(itemProvider: POSItemProvider) {
@@ -85,7 +84,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     @MainActor
     func reload() async {
         items.removeAll()
-        await loadInitialItems()
+        await fetchPage(pageNumber: Constants.initialPage)
     }
 
     func dismissBanner() {

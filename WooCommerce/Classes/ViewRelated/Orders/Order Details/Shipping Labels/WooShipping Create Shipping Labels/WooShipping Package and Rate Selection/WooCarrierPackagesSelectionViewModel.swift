@@ -2,10 +2,10 @@ import Foundation
 import SwiftUI
 
 final class WooCarrierPackagesSelectionViewModel: ObservableObject {
-    let carrierTabs: [WooShippingPackagesCarrierTab]
+    let carrierTabs: [WooShippingCarrierPackages]
     let tabs: [TopTabItem<EmptyView>]
 
-    init(carrierTabs: [WooShippingPackagesCarrierTab], tabs: [TopTabItem<EmptyView>]) {
+    init(carrierTabs: [WooShippingCarrierPackages], tabs: [TopTabItem<EmptyView>]) {
         self.carrierTabs = carrierTabs
         self.tabs = tabs
         self.selectedTabIndex = carrierTabs.isEmpty ? nil : 0
@@ -30,7 +30,7 @@ final class WooCarrierPackagesSelectionViewModel: ObservableObject {
         return nil
     }
 
-    var selectedCarrierTab: WooShippingPackagesCarrierTab? {
+    var selectedCarrierTab: WooShippingCarrierPackages? {
         guard let selectedTabIndex else { return nil }
 
         return carrierTabs[selectedTabIndex]

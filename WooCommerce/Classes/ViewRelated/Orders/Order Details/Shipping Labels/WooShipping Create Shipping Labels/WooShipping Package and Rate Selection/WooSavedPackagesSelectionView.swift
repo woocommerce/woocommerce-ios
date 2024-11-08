@@ -30,11 +30,25 @@ struct WooSavedPackagesSelectionView: View {
     var body: some View {
         VStack(spacing: 0) {
             Divider()
+            if viewModel.packagesRepository.loadingSavedPackages {
+                // TODO: think of a better progress/loading indicator
+                ProgressView()
+                    .progressViewStyle(.circular)
+                    .padding()
+            }
             List {
-                packagesSection(for: viewModel.customPackages)
-                packagesSection(for: viewModel.predefinedPackages)
+                if viewModel.hasPackages {
+                    packagesSection(for: viewModel.customSavedPackages)
+                    packagesSection(for: viewModel.predefinedSavedPackages)
+                }
+                else {
+                    Text("Save custom package template or carrier predefined package to use it later.")
+                }
             }
             .listStyle(.plain)
+            .refreshable {
+                viewModel.packagesRepository.loadSavedPackages()
+            }
             Divider()
             Button(WooShippingAddPackageView.Localization.addPackage) {
                 addPackageButtonTapped()
@@ -75,7 +89,10 @@ struct WooSavedPackagesSelectionView: View {
             .swipeActions {
                 Button {
                     withAnimation {
-                        viewModel.removePackage(package)
+                        _ = Task {
+                            return await viewModel.removePackage(package)
+                        }
+                        // TODO: handle error
                     }
                 } label: {
                     Image(systemName: "trash")

@@ -1,24 +1,30 @@
 import Foundation
 
 final class WooSavedPackagesSelectionViewModel: ObservableObject {
-    @Published var customPackages: [any WooPackageDataRepresentable]
-    @Published var predefinedPackages: [any WooPackageDataRepresentable]
-    @Published var selectedPackageId: UUID? = nil  // Track the selected package index
+    @Published var packagesRepository: WooShippingPackagesRepositoryProtocol
+    @Published var selectedPackageId: UUID?  // Track the selected package index
 
-    init(customPackages: [any WooPackageDataRepresentable],
-         predefinedPackages: [any WooPackageDataRepresentable]) {
-        self.customPackages = customPackages
-        self.predefinedPackages = predefinedPackages
+    var customSavedPackages: [any WooPackageDataRepresentable] {
+        return packagesRepository.customSavedPackages
+    }
+
+    var predefinedSavedPackages: [any WooPackageDataRepresentable] {
+        return packagesRepository.predefinedSavedPackages
+    }
+
+    init(packagesRepository: WooShippingPackagesRepositoryProtocol, selectedPackageId: UUID? = nil) {
+        self.packagesRepository = packagesRepository
+        self.selectedPackageId = selectedPackageId
     }
 
     var hasPackages: Bool {
-        return customPackages.isNotEmpty || predefinedPackages.isNotEmpty
+        return customSavedPackages.isNotEmpty || predefinedSavedPackages.isNotEmpty
     }
 
     var selectedPackage: WooPackageDataRepresentable? {
         guard let selectedPackageId else { return nil }
 
-        let packages = customPackages + predefinedPackages
+        let packages = customSavedPackages + predefinedSavedPackages
 
         for packageItem in packages {
             if selectedPackageId == packageItem.id {
@@ -29,12 +35,13 @@ final class WooSavedPackagesSelectionViewModel: ObservableObject {
         return nil
     }
 
-    func removePackage(_ packageToRemove: WooPackageDataRepresentable) {
-        customPackages.removeAll { package in package.id == packageToRemove.id }
-        predefinedPackages.removeAll { package in package.id == packageToRemove.id }
-
-        if selectedPackageId == packageToRemove.id {
-            selectedPackageId = nil
+    func removePackage(_ packageToRemove: WooPackageDataRepresentable) async -> Error? {
+        if let error = await packagesRepository.deleteSavedPackage(packageToRemove) {
+            return error
         }
+        if self.selectedPackageId == packageToRemove.id {
+            self.selectedPackageId = nil
+        }
+        return nil
     }
 }

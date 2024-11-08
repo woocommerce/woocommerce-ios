@@ -1,7 +1,7 @@
 import SwiftUI
 
 // Holds the data needed to display a tab in list of Carrier packages.
-struct WooShippingPackagesCarrierTab: Identifiable {
+struct WooShippingCarrierPackages: Identifiable {
     let carrier: WooShippingCarrier
     let packageGroups: [WooPackageGroup]
 
@@ -26,7 +26,7 @@ struct WooCarrierPackageData: WooPackageDataRepresentable {
 }
 
 struct WooCarrierPackagesView: View {
-    let carrierTab: WooShippingPackagesCarrierTab
+    let carrierTab: WooShippingCarrierPackages
     @Binding var selectedPackageId: UUID?  // Track the selected package index
     @State private var starredPackages: Set<UUID> = []
 
@@ -87,7 +87,7 @@ struct WooCarrierPackagesSelectionView: View {
     @ObservedObject private var viewModel: WooCarrierPackagesSelectionViewModel
     let addPackageAction: (WooPackageDataRepresentable) -> Void
 
-    init(carrierTabs: [WooShippingPackagesCarrierTab],
+    init(carrierTabs: [WooShippingCarrierPackages],
          addPackageAction: @escaping (WooPackageDataRepresentable) -> Void) {
         let tabs = carrierTabs.map { carrierTab in
             return TopTabItem(name: carrierTab.carrier.name, icon: carrierTab.carrier.logo, content: {

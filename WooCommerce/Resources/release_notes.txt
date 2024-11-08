@@ -1,5 +1,1 @@
-
-- [internal] Updated Xcode version to 16.1 [https://github.com/woocommerce/woocommerce-ios/pull/14225]
-- [**] Fixed: properly open and show order details in Watch app [https://github.com/woocommerce/woocommerce-ios/pull/14306]
-- [*] Payments: Improved error messages for reader connections when using site credentials for login [https://github.com/woocommerce/woocommerce-ios/pull/14336]
-
+Dive into a smoother WooCommerce experience! We’ve fine-tuned the Watch app to showcase your order details flawlessly. Plus, we've added clearer error messages for payment reader connections. Update for an even better business pulse on your wrist and in your pocket.

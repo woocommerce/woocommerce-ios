@@ -1,0 +1,1 @@
+Produkt- och beställningshanteringen blev just enklare. Du kan nu visa och redigera anpassade fält för produkter och beställningar direkt i appen. Vi har dessutom gjort onboardingprocessen för betalningar smidigare. Det är nu enklare än någonsin att lösa fel som uppstår vid konfiguration av WooPayments eller Stripe. Lycka till med försäljningen.

@@ -7,7 +7,7 @@ enum WooShippingPackageSource {
     var userFriendlyDescription: String {
         switch self {
         case .custom:
-            return "Custom package"
+            return NSLocalizedString("Custom Package", comment: "Label used to mark a custom package in list of saved packages")
         case .predefined(let source):
             return source
         }

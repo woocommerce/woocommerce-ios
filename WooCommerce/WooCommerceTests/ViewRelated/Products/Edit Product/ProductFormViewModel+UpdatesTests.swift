@@ -289,7 +289,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
 
         // Action
         let sku = "woooo"
-        viewModel.updateSKU(sku)
+        viewModel.updateIdentifiers(sku: sku, globalUniqueID: nil)
 
         // Assert
         XCTAssertEqual(viewModel.productModel.sku, sku)

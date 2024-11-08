@@ -462,7 +462,7 @@ private extension ProductFormActionsFactory {
             // The external URL action is always visible in the settings section for an affiliate product.
             return true
         case .simplifiedInventory:
-            return product.sku?.isNotEmpty == true
+            return product.sku?.isNotEmpty == true || product.globalUniqueID?.isNotEmpty == true
         // Grouped products only.
         case .groupedProducts:
             // The grouped products action is always visible in the settings section for a grouped product.

@@ -76,7 +76,17 @@ struct WooShippingPackageData: WooShippingPackageDataRepresentable {
          weightUnit: String,
          source: WooShippingPackageSource,
          packageType: String) {
-        self.init(id: name, name: name, length: length, width: width, height: height, dimensionsUnit: dimensionsUnit, weight: weight, weightUnit: weightUnit, source: source, packageType: packageType)
+        self.init(id: name,
+                  name: name,
+                  length: length,
+                  width: width,
+                  height: height,
+                  dimensionsUnit:
+                    dimensionsUnit,
+                  weight: weight,
+                  weightUnit: weightUnit,
+                  source: source,
+                  spackageType: packageType)
     }
 }
 

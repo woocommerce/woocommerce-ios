@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 21.1
+Dive into a smoother WooCommerce experience! We’ve fine-tuned the Watch app to showcase your order details flawlessly. Plus, we've added clearer error messages for payment reader connections. Update for an even better business pulse on your wrist and in your pocket.
+
 ## 21.0
 Product and order management just got easier! You can now view and edit custom fields for products and orders right within the app. Also, we've smoothed out the payments onboarding process. It's now easier than ever to resolve errors setting up WooPayments or Stripe. Happy selling!
 

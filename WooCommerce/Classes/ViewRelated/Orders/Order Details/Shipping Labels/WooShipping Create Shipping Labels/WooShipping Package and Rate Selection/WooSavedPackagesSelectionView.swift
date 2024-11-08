@@ -81,12 +81,11 @@ struct WooShippingPackageData: WooShippingPackageDataRepresentable {
                   length: length,
                   width: width,
                   height: height,
-                  dimensionsUnit:
-                    dimensionsUnit,
+                  dimensionsUnit: dimensionsUnit,
                   weight: weight,
                   weightUnit: weightUnit,
                   source: source,
-                  spackageType: packageType)
+                  packageType: packageType)
     }
 }
 

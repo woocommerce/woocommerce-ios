@@ -152,7 +152,7 @@ final class ItemListViewModelTests: XCTestCase {
         let itemProvider = MockPOSItemProvider()
         let initialItems = Self.makeInitialItems()
         itemProvider.items = initialItems
-        itemProvider.shouldSimulateFetchNextPage = true
+        itemProvider.shouldSimulateTwoPages = true
 
         let sut = ItemListViewModel(itemProvider: itemProvider)
 
@@ -478,7 +478,7 @@ private extension ItemListViewModelTests {
         var items: [POSItem] = []
         var shouldThrowError = false
         var shouldReturnZeroItems = false
-        var shouldSimulateFetchNextPage = false
+        var shouldSimulateTwoPages = false
 
         func providePointOfSaleItems(pageNumber: Int) async throws -> [Yosemite.POSItem] {
             if shouldThrowError {
@@ -487,7 +487,8 @@ private extension ItemListViewModelTests {
             if shouldReturnZeroItems {
                 return []
             }
-            if shouldSimulateFetchNextPage {
+            if shouldSimulateTwoPages,
+                pageNumber > 1 {
                 simulateFetchNextPage()
                 return items
             }
@@ -495,28 +496,8 @@ private extension ItemListViewModelTests {
         }
 
         func simulateFetchNextPage() {
-            let fakeUUID1 = UUID(uuidString: "DC55E3B9-9D83-4C07-82A7-4C300A50E86D") ?? UUID()
-            let fakeUUID2 = UUID(uuidString: "DC55E3B8-9D82-4C06-82A5-4C300A50E86F") ?? UUID()
-
-            let product1 = POSProduct(itemID: fakeUUID1,
-                                      productID: 0,
-                                      name: "Strawberry",
-                                      price: "2",
-                                      formattedPrice: "$2.00",
-                                      itemCategories: [],
-                                      productImageSource: nil,
-                                      productType: .simple)
-            items.append(product1)
-
-            let product2 = POSProduct(itemID: fakeUUID2,
-                                      productID: 1,
-                                      name: "Pistachio",
-                                      price: "3",
-                                      formattedPrice: "$3.00",
-                                      itemCategories: [],
-                                      productImageSource: nil,
-                                      productType: .simple)
-            items.append(product2)
+            items.append(contentsOf: makeSecondPageItems())
+            return
         }
     }
 
@@ -542,5 +523,29 @@ private extension ItemListViewModelTests {
                                   productImageSource: nil,
                                   productType: .simple)
         return [product1, product2]
+    }
+
+    static func makeSecondPageItems() -> [POSItem] {
+        let fakeUUID3 = UUID(uuidString: "DC55E3B9-9D83-4C07-82A7-4C300A50E86D") ?? UUID()
+        let fakeUUID4 = UUID(uuidString: "DC55E3B8-9D82-4C06-82A5-4C300A50E86F") ?? UUID()
+
+        let product3 = POSProduct(itemID: fakeUUID3,
+                                  productID: 2,
+                                  name: "Strawberry",
+                                  price: "2",
+                                  formattedPrice: "$2.00",
+                                  itemCategories: [],
+                                  productImageSource: nil,
+                                  productType: .simple)
+
+        let product4 = POSProduct(itemID: fakeUUID4,
+                                  productID: 4,
+                                  name: "Pistachio",
+                                  price: "3",
+                                  formattedPrice: "$3.00",
+                                  itemCategories: [],
+                                  productImageSource: nil,
+                                  productType: .simple)
+        return [product3, product4]
     }
 }

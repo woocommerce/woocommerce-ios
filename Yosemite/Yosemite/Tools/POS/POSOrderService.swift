@@ -1,6 +1,7 @@
 import Foundation
 import Networking
 import class WooFoundation.CurrencyFormatter
+import enum WooFoundation.CurrencyCode
 
 /// POSCartItem is different from the CartItem in the POS app layer.
 /// - The POS cart UI might show the cart items differently from how they appear in an order in wp-admin.
@@ -84,7 +85,7 @@ public protocol POSOrderServiceProtocol {
     ///   - cart: Cart with optional items (product & quantity).
     ///   - order: Optional latest remotely synced order. Nil when syncing order for the first time.
     /// - Returns: Order from the remote sync.
-    func syncOrder(cart: [POSCartItem], order: Order?) async throws -> Order
+    func syncOrder(cart: [POSCartItem], order: Order?, currency: CurrencyCode) async throws -> Order
     func updatePOSOrder(order: Order, recipientEmail: String) async throws
 }
 
@@ -110,8 +111,12 @@ public final class POSOrderService: POSOrderServiceProtocol {
 
     // MARK: - Protocol conformance
 
-    public func syncOrder(cart: [POSCartItem], order posOrder: Order?) async throws -> Order {
-        let initialOrder: Order = posOrder ?? OrderFactory.emptyNewOrder.copy(siteID: siteID, status: .autoDraft)
+    public func syncOrder(cart: [POSCartItem],
+                          order posOrder: Order?,
+                          currency: CurrencyCode) async throws -> Order {
+        let initialOrder: Order = posOrder ?? OrderFactory.newOrder(currency: currency)
+            .copy(siteID: siteID,
+                  status: .autoDraft)
         let order = updateOrder(initialOrder, cart: cart).sanitizingLocalItems()
         let syncedOrder: Order
         if posOrder != nil {

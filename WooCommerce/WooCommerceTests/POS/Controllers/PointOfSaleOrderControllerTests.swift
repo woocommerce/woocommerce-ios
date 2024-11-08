@@ -5,6 +5,7 @@ import Foundation
 @testable import WooCommerce
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
+import class WooFoundation.CurrencySettings
 
 struct PointOfSaleOrderControllerTests {
     let sut: PointOfSaleOrderController
@@ -61,12 +62,20 @@ struct PointOfSaleOrderControllerTests {
 
     @Test func syncOrder_with_no_previous_order_calls_orderService() async throws {
         // Given
+        let currencySettings = CurrencySettings(currencyCode: .AUD,
+                                                currencyPosition: .left,
+                                                thousandSeparator: "",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 2)
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptService: mockReceiptService,
+                                             currencySettings: currencySettings)
 
         // When
         await sut.syncOrder(for: [makeItem()], retryHandler: {})
 
         // Then
-        #expect(mockOrderService.syncOrderWasCalled)
+        #expect(mockOrderService.spySyncOrderCurrency == .AUD)
     }
 
     @Test func syncOrder_with_changes_from_previous_order_calls_orderService() async throws {

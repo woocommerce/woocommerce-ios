@@ -18,23 +18,47 @@ struct POSOrderServiceTests {
         // Given
 
         // When
-        _ = try await sut.syncOrder(cart: [], order: nil)
+        _ = try await sut.syncOrder(cart: [], order: nil, currency: .USD)
 
         // Then
         #expect(mockOrdersRemote.createPOSOrderCalled == true)
     }
 
     @Test
-    func syncOrder_with_an_existing_order_updates_it() async throws {
+    func syncOrder_without_passing_an_order_creates_a_new_order_using_passed_currency() async throws {
         // Given
-        let order = Order.fake().copy(siteID: 123, orderID: 456)
 
         // When
-        _ = try await sut.syncOrder(cart: [], order: order)
+        _ = try await sut.syncOrder(cart: [], order: nil, currency: .EUR)
+
+        // Then
+        #expect(mockOrdersRemote.spyCreatePOSOrder?.currency.uppercased() == "EUR")
+    }
+
+    @Test
+    func syncOrder_with_an_existing_order_updates_it() async throws {
+        // Given
+        let order = Order.fake().copy(siteID: 123, orderID: 456, currency: "JPY")
+
+        // When
+        _ = try await sut.syncOrder(cart: [], order: order, currency: .JPY)
 
         // Then
         #expect(mockOrdersRemote.updatePOSOrderCalled == true)
         #expect(mockOrdersRemote.spyUpdatePOSOrder == order)
+    }
+
+    @Test
+    func syncOrder_with_an_existing_order_does_not_change_the_currency() async throws {
+        // Given
+        let order = Order.fake().copy(siteID: 123, orderID: 456, currency: "USD")
+
+        // When
+        _ = try await sut.syncOrder(cart: [], order: order, currency: .JPY)
+
+        // Then
+        #expect(mockOrdersRemote.updatePOSOrderCalled == true)
+        #expect(mockOrdersRemote.spyUpdatePOSOrder?.currency.uppercased() == "USD")
     }
 
     @Test func syncOrder_updates_by_deleting_existing_items_and_adding_everything_from_the_cart() async throws {
@@ -49,7 +73,7 @@ struct POSOrderServiceTests {
             makePOSCartItem(productID: 100, quantity: 2),
             makePOSCartItem(productID: 102, quantity: 1)
         ]
-        _ = try await sut.syncOrder(cart: cart, order: order)
+        _ = try await sut.syncOrder(cart: cart, order: order, currency: .USD)
 
         // Then
         let updatedOrderItems = try #require(mockOrdersRemote.spyUpdatePOSOrder?.items)
@@ -70,7 +94,7 @@ struct POSOrderServiceTests {
         let cart: [POSCartItem] = [
             makePOSCartItem(productID: 102, quantity: 1)
         ]
-        _ = try await sut.syncOrder(cart: cart, order: order)
+        _ = try await sut.syncOrder(cart: cart, order: order, currency: .USD)
 
         // Then
         let updatedOrderItems = try #require(mockOrdersRemote.spyUpdatePOSOrder?.items)
@@ -100,7 +124,7 @@ struct POSOrderServiceTests {
             makePOSCartItem(productID: 100, quantity: 1),
             makePOSCartItem(productID: 102, quantity: 5)
         ]
-        _ = try await sut.syncOrder(cart: cart, order: order)
+        _ = try await sut.syncOrder(cart: cart, order: order, currency: .USD)
 
         // Then
         let updatedOrderItems = try #require(mockOrdersRemote.spyUpdatePOSOrder?.items)

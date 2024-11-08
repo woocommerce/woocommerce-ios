@@ -9,7 +9,7 @@ class PointOfSalePreviewOrderController: PointOfSaleOrderControllerProtocol {
             .init(cartTotal: "$10.50",
                   orderTotal: "$12.00",
                   taxTotal: "$1.50"),
-            OrderFactory.emptyNewOrder
+            OrderFactory.newOrder(currency: .USD)
         )
     ).eraseToAnyPublisher()
 

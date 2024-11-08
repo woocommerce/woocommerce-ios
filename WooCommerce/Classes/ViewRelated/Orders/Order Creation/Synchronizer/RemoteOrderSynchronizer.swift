@@ -15,7 +15,7 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
         $state
     }
 
-    @Published private(set) var order: Order = OrderFactory.emptyNewOrder
+    @Published private(set) var order: Order
 
     var orderPublisher: Published<Order>.Publisher {
         $order
@@ -99,6 +99,8 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
          debounceDuration: TimeInterval = 1.0) {
         self.siteID = siteID
         self.stores = stores
+        let storeCurrency = currencySettings.currencyCode
+        self.order = OrderFactory.newOrder(currency: storeCurrency)
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.blockingBehavior = .majorUpdates
         self.debounceDuration = debounceDuration

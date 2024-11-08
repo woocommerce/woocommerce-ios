@@ -364,7 +364,8 @@ private extension OrderStore {
                                                        .feeLines,
                                                        .couponLines,
                                                        .customerNote,
-                                                       .customerID]
+                                                       .customerID,
+                                                       .currency]
         remote.createOrder(siteID: siteID,
                            order: order,
                            giftCard: giftCard,

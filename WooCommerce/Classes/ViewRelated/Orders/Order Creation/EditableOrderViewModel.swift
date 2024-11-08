@@ -65,7 +65,7 @@ final class EditableOrderViewModel: ObservableObject {
     var hasChanges: Bool {
         switch flow {
         case .creation:
-            return orderSynchronizer.order != OrderFactory.emptyNewOrder
+            return orderSynchronizer.order != OrderFactory.newOrder(currency: ServiceLocator.currencySettings.currencyCode)
         case .editing(let initialOrder):
             return orderSynchronizer.order != initialOrder
         }

@@ -12,10 +12,12 @@ final class MockPOSOrdersRemote: POSOrdersRemoteProtocol {
     }
 
     var createPOSOrderCalled: Bool = false
+    var spyCreatePOSOrder: Order?
     func createPOSOrder(siteID: Int64,
                         order: Networking.Order,
                         fields: [OrdersRemote.CreateOrderField]) async throws -> Order {
         createPOSOrderCalled = true
+        spyCreatePOSOrder = order
         return Order.fake()
     }
 }

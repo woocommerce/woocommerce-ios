@@ -9,6 +9,8 @@ import struct Yosemite.POSCartItem
 import enum Yosemite.OrderAction
 import enum Yosemite.OrderUpdateField
 import class WooFoundation.CurrencyFormatter
+import class WooFoundation.CurrencySettings
+import enum WooFoundation.CurrencyCode
 
 protocol PointOfSaleOrderControllerProtocol {
     var orderStatePublisher: AnyPublisher<PointOfSaleInternalOrderState, Never> { get }
@@ -26,11 +28,12 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     init(orderService: POSOrderServiceProtocol,
          receiptService: POSReceiptServiceProtocol,
          stores: StoresManager = ServiceLocator.stores,
-         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.orderService = orderService
         self.receiptService = receiptService
         self.stores = stores
-        self.currencyFormatter = currencyFormatter
+        self.storeCurrency = currencySettings.currencyCode
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
     }
 
     var orderStatePublisher: AnyPublisher<PointOfSaleInternalOrderState, Never> {
@@ -41,6 +44,7 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     private let receiptService: POSReceiptServiceProtocol
 
     private let currencyFormatter: CurrencyFormatter
+    private let storeCurrency: CurrencyCode
     private let stores: StoresManager
 
     @Published private var orderState: PointOfSaleInternalOrderState = .idle
@@ -61,7 +65,9 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         orderState = .syncing
 
         do {
-            let syncedOrder = try await orderService.syncOrder(cart: posCartItems, order: order)
+            let syncedOrder = try await orderService.syncOrder(cart: posCartItems,
+                                                               order: order,
+                                                               currency: storeCurrency)
             self.order = syncedOrder
             orderState = .loaded(totals(for: syncedOrder), syncedOrder)
             DDLogInfo("🟢 [POS] Synced order: \(syncedOrder)")

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-01 20:00:36+0000 */
+/* Translation-Revision-Date: 2024-11-07 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -10146,6 +10146,12 @@ which should be translated separately and considered part of this sentence. */
 /* Notice shown when the key has been copied to clipboard */
 "customFieldEditorView.keyCopiedNotice" = "Nyckel kopierad till urklipp";
 
+/* Error message shown when the entered key is identical to an existing key. */
+"customFieldEditorView.keyErrorDisallowedKey" = "Ogiltig nyckel: Nyckeln används redan för ett annat anpassat fält. \nAppen har för närvarande inte stöd för att skapa dubbletter av nycklar. Använd WP-admin för att duplicera en nyckel om det behövs.";
+
+/* Error message shown when key starts with underscore */
+"customFieldEditorView.keyErrorPrefix" = "Ogiltig nyckel: ta bort tecknet \"_\" från början.";
+
 /* Label for the Key field */
 "customFieldEditorView.keyLabel" = "Nyckel";
 
@@ -10173,6 +10179,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text for button that's shown when the list is empty. */
 "customFieldsListHostingController.emptyStateButton" = "Lär dig mer";
 
+/* Message when the list is empty. */
+"customFieldsListHostingController.emptyStateDescription" = "Anpassade fält är valfria metadata för att visa extra information eller anpassa din butiks shoppingupplevelse.";
+
 /* Title for the message when the list is empty. */
 "customFieldsListHostingController.emptyStateTitle" = "Inga anpassade fält hittades";
 
@@ -10196,6 +10205,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the order custom fields list */
 "customFieldsListHostingController.title" = "Anpassade fält";
+
+/* Content of the banner when there are unsaved custom fields */
+"customFieldsListTopBanner.description" = "När ändringar av anpassade fält sparas träder de i kraft omedelbart.";
 
 /* Dismiss button title */
 "customFieldsListTopBanner.dismiss" = "Avfärda";
@@ -11047,6 +11059,9 @@ which should be translated separately and considered part of this sentence. */
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderDetailsDataSource.attributionInfo.unknown" = "Okänd";
 
+/* Button on bottom of shipping label card to view the shipping label */
+"orderDetailsDataSource.shippingLabels.viewLabel" = "Visa köpt fraktetikett";
+
 /* Title of Shipping Section in Order Details screen */
 "orderDetailsDataSource.shippingLines.title" = "Frakt";
 
@@ -11852,6 +11867,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
 "productInventorySettings.globalUniqueIdentifier.title" = "GTIN, UPC, EAN, ISBN";
 
+/* The message of the alert when there is an error updating the product global unique identifier */
+"productInventorySettings.invalidGlobalUniqueIdentifier.error" = "Ange endast siffror och bindestreck (-).";
+
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "Faktureringsintervall";
 
@@ -12526,6 +12544,9 @@ which should be translated separately and considered part of this sentence. */
 /* Call to action in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderTitle" = "Välj ett paket för att få fraktavgifter";
 
+/* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "Måste signeras av en vuxen";
+
 /* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
 "wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (grundavgift)";
 
@@ -12541,6 +12562,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button to purchase the shipping label on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.purchase" = "Köp etikett";
 
+/* Label for button to purchase the shipping label on the shipping label creation screen, including the label price. Reads like: 'Purchase Label · $7.63' */
+"wooShipping.createLabels.bottomSheet.purchaseFormat" = "Köp etikett · %1$@";
+
 /* Label for address where the shipment is shipped from on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.shipFrom" = "Avsändare";
 
@@ -12549,6 +12573,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header for shipment costs section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.shipmentCosts" = "Fraktkostnader";
+
+/* Label for row showing the additional cost to require a signature on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.signatureRequired" = "Signatur obligatoriskt";
 
 /* Label for row showing the subtotal for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.subtotal" = "Delsumma";
@@ -12574,11 +12601,26 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title of shipping label printing instructions screen */
 "wooShipping.createLabels.postPurchase.infoTitle" = "Skriv ut från din mobila enhet";
 
+/* Note about reusing a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.note" = "Obs: Återanvändning av en utskriven fraktetikett är ett brott mot våra användarvillkor och kan leda till åtal.";
+
+/* Title for button to print a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.printButton" = "Skriv ut fraktetikett";
+
+/* Message displayed on the shipping label screen when a purchased shipping label can be printed */
+"wooShipping.createLabels.postPurchase.printMessage" = "Härifrån kan du skriva ut fraktetiketten igen eller ändra storlek på fraktetiketten.";
+
+/* Heading displayed on the shipping label screen when a purchased shipping label can be printed */
+"wooShipping.createLabels.postPurchase.readyToPrint" = "Din fraktetikett är klar att skrivas ut.";
+
 /* Link to request a refund for a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.requestRefund" = "Begär återbetalning";
 
 /* Link to schedule a pickup for a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.schedulePickup" = "Schemalägg upphämtning";
+
+/* Link to track a shipment for a purchase shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.trackShipment" = "Spåra försändelse";
 
 /* Heading for the shipping service section in the shipping label creation screen. */
 "wooShipping.createLabels.rates.shippingService" = "Frakttjänst";
@@ -12621,6 +12663,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to create a shipping label */
 "wooShipping.createLabels.title" = "Skapa fraktetiketter";
+
+/* Title for the screen to view a shipping label */
+"wooShipping.createLabels.viewLabelTitle" = "Visa köpt fraktsedel";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommece, min butik, idag, den här veckan, den här månaden, det här året, beställningar, besökare, konvertering, toppkonvertering, artiklar sålda";

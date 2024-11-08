@@ -98,7 +98,8 @@ class AuthenticatedState: StoresManagerState {
             WordPressSiteStore(network: network, dispatcher: dispatcher),
             StoreOnboardingTasksStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             GoogleAdsStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            MetaDataStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+            MetaDataStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
 
 

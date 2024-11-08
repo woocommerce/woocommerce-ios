@@ -1,0 +1,1 @@
+Gerenciar produtos e pedidos ficou mais fácil! Agora é possível visualizar e editar campos personalizados de produtos e pedidos diretamente no aplicativo. Além disso, simplificamos o processo de integração de pagamentos. Agora ficou mais fácil do que nunca corrigir erros ao configurar o WooPayments ou a Stripe. Boas vendas!

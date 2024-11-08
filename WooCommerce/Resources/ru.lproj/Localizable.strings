@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-05 15:54:04+0000 */
+/* Translation-Revision-Date: 2024-11-06 17:54:03+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -10207,7 +10207,7 @@ which should be translated separately and considered part of this sentence. */
 "customFieldsListHostingController.title" = "Произвольные поля";
 
 /* Content of the banner when there are unsaved custom fields */
-"customFieldsListTopBanner.description" = "Изменения в произвольных полях вступают в действие сразу же после сохранения.";
+"customFieldsListTopBanner.description" = "Изменения в произвольных полях вступают в действие сразу после сохранения.";
 
 /* Dismiss button title */
 "customFieldsListTopBanner.dismiss" = "Закрыть";
@@ -12602,7 +12602,7 @@ which should be translated separately and considered part of this sentence. */
 "wooShipping.createLabels.postPurchase.infoTitle" = "Распечатать с вашего мобильного устройства";
 
 /* Note about reusing a purchased shipping label on the shipping label screen */
-"wooShipping.createLabels.postPurchase.note" = "Примечание: повторное использование напечатанной этикетки запрещено по условиям предоставления услуг и может повлечь уголовное преследование.";
+"wooShipping.createLabels.postPurchase.note" = "Примечание. Повторное использование напечатанной этикетки запрещается условиями предоставления услуг и может повлечь уголовное преследование.";
 
 /* Title for button to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.printButton" = "Напечатать транспортную этикетку";
@@ -12632,7 +12632,7 @@ which should be translated separately and considered part of this sentence. */
 "wooShipping.createLabels.rates.sortBy.deliveryTime" = "По скорости";
 
 /* Option to sort shipping rates by price in the shipping label creation screen. */
-"wooShipping.createLabels.rates.sortBy.price" = "По цене";
+"wooShipping.createLabels.rates.sortBy.price" = "По стоимости";
 
 /* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
 "wooShipping.createLabels.shippingService.adultSignatureRequired" = "Требуется подпись совершеннолетнего лица (+%1$@)";

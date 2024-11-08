@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-05 15:54:04+0000 */
+/* Translation-Revision-Date: 2024-11-07 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -5569,7 +5569,7 @@ which should be translated separately and considered part of this sentence. */
 "ProductBarcodeInputScanner.instructionText" = "Streepjescode of QR-code van product scannen";
 
 /* Navigation bar title for scanning a barcode or QR Code to use as a product's barcode. */
-"ProductBarcodeInputScanner.titleView" = "Streepjescode of QR-code van product scannen";
+"ProductBarcodeInputScanner.titleView" = "Streepjescode of QR-code scannen";
 
 /* Description of the subscription price for a product, with price and billing frequency. Reads as: '$60.00 / 2 months'. */
 "ProductRowViewModel.formattedProductSubscriptionBilling" = "%1$@ \/ %2$@ %3$@";
@@ -10141,10 +10141,10 @@ which should be translated separately and considered part of this sentence. */
 "customFieldEditorView.editorPickerText" = "Tekst";
 
 /* Notice shown when the key has been copied to clipboard */
-"customFieldEditorView.keyCopiedNotice" = "Gekopieerd naar klembord";
+"customFieldEditorView.keyCopiedNotice" = "Sleutel gekopieerd naar klembord";
 
 /* Error message shown when the entered key is identical to an existing key. */
-"customFieldEditorView.keyErrorDisallowedKey" = "Deze sleutel wordt al gebruikt voor een ander aangepast veld. \nDe app ondersteunt momenteel niet het aanmaken van meerdere identieke sleutels. Gebruik wp-admin om een sleutel te kopiëren als dit nodig is.";
+"customFieldEditorView.keyErrorDisallowedKey" = "Ongeldige sleutel: deze sleutel wordt al gebruikt voor een ander aangepast veld. \nDe app ondersteunt momenteel niet het aanmaken van meerdere identieke sleutels. Gebruik wp-admin om een sleutel te kopiëren als dit nodig is.";
 
 /* Error message shown when key starts with underscore */
 "customFieldEditorView.keyErrorPrefix" = "Ongeldige sleutel: verwijder het teken '_' van het begin.";
@@ -10156,7 +10156,7 @@ which should be translated separately and considered part of this sentence. */
 "customFieldEditorView.keyPlaceholder" = "Enter-toets";
 
 /* Notice shown when the value has been copied to clipboard */
-"customFieldEditorView.valueCopiedNotice" = "Gekopieerd naar klembord";
+"customFieldEditorView.valueCopiedNotice" = "Waarde gekopieerd naar klembord";
 
 /* Label for the Value field */
 "customFieldEditorView.valueLabel" = "Waarde";
@@ -10177,7 +10177,7 @@ which should be translated separately and considered part of this sentence. */
 "customFieldsListHostingController.emptyStateButton" = "Meer informatie";
 
 /* Message when the list is empty. */
-"customFieldsListHostingController.emptyStateDescription" = "Aangepaste velden zijn optionele metadata om extra informatie weer te geven of de winkelervaring voor je winkel aan te passen.";
+"customFieldsListHostingController.emptyStateDescription" = "Aangepaste velden zijn optionele metadata om extra informatie weer te geven of de winkelervaring voor je winkel aan te passen";
 
 /* Title for the message when the list is empty. */
 "customFieldsListHostingController.emptyStateTitle" = "Geen aangepaste velden gevonden";
@@ -11865,7 +11865,7 @@ which should be translated separately and considered part of this sentence. */
 "productInventorySettings.globalUniqueIdentifier.title" = "GTIN, UPC, EAN, ISBN";
 
 /* The message of the alert when there is an error updating the product global unique identifier */
-"productInventorySettings.invalidGlobalUniqueIdentifier.error" = "Please enter only numbers and hyphens (-).";
+"productInventorySettings.invalidGlobalUniqueIdentifier.error" = "Voer alleen getallen en streepjes (-) in.";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "Factuurinterval";
@@ -12544,6 +12544,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "Handtekening volwassene vereist";
 
+/* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
+"wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (basistarief)";
+
 /* Label for the toggle to mark the order as complete on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.markComplete" = "Markeer deze bestelling als voltooid en informeer de klant";
 
@@ -12555,6 +12558,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button to purchase the shipping label on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.purchase" = "Label aanschaffen";
+
+/* Label for button to purchase the shipping label on the shipping label creation screen, including the label price. Reads like: 'Purchase Label · $7.63' */
+"wooShipping.createLabels.bottomSheet.purchaseFormat" = "Label aanschaffen · %1$@";
 
 /* Label for address where the shipment is shipped from on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.shipFrom" = "Verzenden van";
@@ -12587,13 +12593,13 @@ which should be translated separately and considered part of this sentence. */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
 
 /* Link for more information about how to print a purchased shipping label on the shipping label screen */
-"wooShipping.createLabels.postPurchase.info" = "Printen vanaf uw mobiele apparaat";
+"wooShipping.createLabels.postPurchase.info" = "Leer hoe je print vanaf je mobiele apparaat";
 
 /* Navigation bar title of shipping label printing instructions screen */
-"wooShipping.createLabels.postPurchase.infoTitle" = "Printen vanaf uw mobiele apparaat";
+"wooShipping.createLabels.postPurchase.infoTitle" = "Printen vanaf je mobiele apparaat";
 
 /* Note about reusing a purchased shipping label on the shipping label screen */
-"wooShipping.createLabels.postPurchase.note" = "OPMERKING: een afgedrukt label hergebruiken is een overtreding van onze servicevoorwaarden en kan leiden tot strafrechtelijke vervolging.";
+"wooShipping.createLabels.postPurchase.note" = "Let op: een afgedrukt label hergebruiken is een overtreding van onze servicevoorwaarden en kan leiden tot strafrechtelijke vervolging.";
 
 /* Title for button to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.printButton" = "Verzendlabel afdrukken";
@@ -12656,7 +12662,7 @@ which should be translated separately and considered part of this sentence. */
 "wooShipping.createLabels.title" = "Verzendlabels aanmaken";
 
 /* Title for the screen to view a shipping label */
-"wooShipping.createLabels.viewLabelTitle" = "Aangeschaft verzendlabel weergeven";
+"wooShipping.createLabels.viewLabelTitle" = "Verzendlabel weergeven";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, mijn winkel, vandaag, deze week, deze maand, dit jaar, bestellingen, bezoekers, conversie, topconversie, verkochte artikelen";

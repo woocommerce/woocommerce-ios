@@ -133,6 +133,7 @@ private extension ItemListView {
                 GhostItemCardView()
                     .renderedIf(viewModel.state.isLoadingNextPage)
             }
+            .frame(maxWidth: .infinity)
             .padding(.bottom, floatingControlAreaSize.height)
             .padding(.horizontal, Constants.itemListPadding)
             .background(GeometryReader { proxy in

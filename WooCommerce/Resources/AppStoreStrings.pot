@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v21.0-whats-new"
+msgctxt "v21.1-whats-new"
 msgid ""
-"Product and order management just got easier! You can now view and edit custom fields for products and orders right within the app. Also, we've smoothed out the payments onboarding process. It's now easier than ever to resolve errors setting up WooPayments or Stripe. Happy selling!\n"
+"Dive into a smoother WooCommerce experience! We’ve fine-tuned the Watch app to showcase your order details flawlessly. Plus, we've added clearer error messages for payment reader connections. Update for an even better business pulse on your wrist and in your pocket.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

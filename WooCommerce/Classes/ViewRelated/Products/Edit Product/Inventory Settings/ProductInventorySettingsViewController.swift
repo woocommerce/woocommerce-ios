@@ -8,8 +8,8 @@ final class ProductInventorySettingsViewController: UIViewController {
     enum FormType {
         /// Allows editing all inventory settings.
         case inventory
-        /// Only SKU is editable.
-        case sku
+        /// Only SKU and Global Unique Identifier are editable.
+        case onlyIdentifiers
     }
 
     private let viewModel: ProductInventorySettingsViewModelOutput & ProductInventorySettingsActionHandler
@@ -55,7 +55,7 @@ final class ProductInventorySettingsViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        if viewModel.formType == .sku {
+        if viewModel.formType == .onlyIdentifiers {
             configureSKUFormTextFieldAsFirstResponder()
         }
     }
@@ -82,13 +82,7 @@ private extension ProductInventorySettingsViewController {
 private extension ProductInventorySettingsViewController {
 
     func configureNavigationBar() {
-        switch viewModel.formType {
-        case .inventory:
-            title = NSLocalizedString("Inventory", comment: "Product Inventory Settings navigation title")
-        case .sku:
-            title = NSLocalizedString("SKU", comment: "Edit Product SKU navigation title")
-        }
-
+        title = NSLocalizedString("Inventory", comment: "Product Inventory Settings navigation title")
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(completeUpdating))
     }
 

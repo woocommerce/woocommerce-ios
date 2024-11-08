@@ -183,9 +183,9 @@ final class ItemListViewModelTests: XCTestCase {
         let itemProvider = MockPOSItemProvider()
         itemProvider.shouldThrowError = true
         let sut = ItemListViewModel(itemProvider: itemProvider)
-        let expectedError = ItemListViewModel.ErrorModel(title: "Error loading products",
-                                                         subtitle: "Give it another go?",
-                                                         buttonText: "Retry")
+        let expectedError = ItemListErrorModel(title: "Error loading products",
+                                               subtitle: "Give it another go?",
+                                               buttonText: "Retry")
 
         XCTAssertEqual(sut.state, .initialLoading)
 
@@ -201,9 +201,9 @@ final class ItemListViewModelTests: XCTestCase {
         let itemProvider = MockPOSItemProvider()
         itemProvider.shouldThrowError = true
         let sut = ItemListViewModel(itemProvider: itemProvider)
-        let expectedError = ItemListViewModel.ErrorModel(title: "Error loading products",
-                                                         subtitle: "Give it another go?",
-                                                         buttonText: "Retry")
+        let expectedError = ItemListErrorModel(title: "Error loading products",
+                                               subtitle: "Give it another go?",
+                                               buttonText: "Retry")
 
         XCTAssertEqual(sut.state, .initialLoading)
 
@@ -231,9 +231,9 @@ final class ItemListViewModelTests: XCTestCase {
         let itemProvider = MockPOSItemProvider()
         itemProvider.shouldThrowError = true
         let sut = ItemListViewModel(itemProvider: itemProvider)
-        let expectedError = ItemListViewModel.ErrorModel(title: "Error loading products",
-                                                         subtitle: "Give it another go?",
-                                                         buttonText: "Retry")
+        let expectedError = ItemListErrorModel(title: "Error loading products",
+                                               subtitle: "Give it another go?",
+                                               buttonText: "Retry")
 
         XCTAssertEqual(sut.state, .initialLoading)
 
@@ -286,9 +286,9 @@ final class ItemListViewModelTests: XCTestCase {
         let itemProvider = MockPOSItemProvider()
         itemProvider.shouldThrowError = true
         let sut = ItemListViewModel(itemProvider: itemProvider)
-        let expectedError = ItemListViewModel.ErrorModel(title: "Error loading products",
-                                                         subtitle: "Give it another go?",
-                                                         buttonText: "Retry")
+        let expectedError = ItemListErrorModel(title: "Error loading products",
+                                               subtitle: "Give it another go?",
+                                               buttonText: "Retry")
 
         // When
         await sut.loadInitialItems()
@@ -372,7 +372,7 @@ final class ItemListViewModelTests: XCTestCase {
         let sut = ItemListViewModel(itemProvider: itemProvider)
         let expectation = XCTestExpectation(description: "Publisher should emit state changes")
 
-        var receivedStates: [ItemListViewModel.ItemListState] = []
+        var receivedStates: [ItemListState] = []
         sut.statePublisher
             .removeDuplicates()
             .sink { state in
@@ -394,7 +394,7 @@ final class ItemListViewModelTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Publisher should emit state changes")
         let items = Self.makeInitialItems()
 
-        var receivedStates: [ItemListViewModel.ItemListState] = []
+        var receivedStates: [ItemListState] = []
         sut.statePublisher
             .removeDuplicates()
             .sink { state in
@@ -415,8 +415,8 @@ final class ItemListViewModelTests: XCTestCase {
         itemProvider.shouldReturnZeroItems = true
         let sut = ItemListViewModel(itemProvider: itemProvider)
 
-        var receivedStates: [ItemListViewModel.ItemListState] = []
-        let expectedStates: [ItemListViewModel.ItemListState] = [
+        var receivedStates: [ItemListState] = []
+        let expectedStates: [ItemListState] = [
             .initialLoading,
             .empty,
             .loading,
@@ -441,8 +441,8 @@ final class ItemListViewModelTests: XCTestCase {
     func test_sut_when_there_are_items_then_statePublisher_emits_expected_state() async {
         let items = Self.makeInitialItems()
 
-        var receivedStates: [ItemListViewModel.ItemListState] = []
-        let expectedStates: [ItemListViewModel.ItemListState] = [
+        var receivedStates: [ItemListState] = []
+        let expectedStates: [ItemListState] = [
             .initialLoading,
             .loaded(items),
             .loading,

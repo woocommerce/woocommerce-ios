@@ -26,7 +26,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     let selectedItemPublisher: AnyPublisher<POSItem, Never>
 
     var itemsPublisher: Published<[POSItem]>.Publisher { $items }
-    var statePublisher: Published<ItemListViewModel.ItemListState>.Publisher { $state }
+    var statePublisher: Published<ItemListState>.Publisher { $state }
 
     init(itemProvider: POSItemProvider) {
         self.itemProvider = itemProvider
@@ -49,7 +49,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
                 state = .loaded(items)
             }
         } catch {
-            state = .error(ErrorModel.errorOnLoadingProducts())
+            state = .error(ItemListErrorModel.errorOnLoadingProducts())
         }
     }
 
@@ -78,7 +78,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
                 currentPage = pageNumber
             }
         } catch {
-            state = .error(ErrorModel.errorOnLoadingProducts())
+            state = .error(ItemListErrorModel.errorOnLoadingProducts())
         }
     }
 
@@ -98,80 +98,19 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     }
 }
 
-extension ItemListViewModel {
-    enum ItemListState: Equatable {
-        case empty
-        case initialLoading
-        case loading
-        case loaded([POSItem])
-        case error(ErrorModel)
+struct ItemListErrorModel: Equatable {
+    let title: String
+    let subtitle: String
+    let buttonText: String
 
-        var isLoaded: Bool {
-            switch self {
-            case .loaded:
-                return true
-            default:
-                return false
-            }
-        }
-
-        var isLoading: Bool {
-            switch self {
-            case .initialLoading, .loading:
-                return true
-            default:
-                return false
-            }
-        }
-
-        var hasError: ErrorModel {
-            switch self {
-            case .error(let errorModel):
-                return errorModel
-            default:
-                return ItemListViewModel.ErrorModel(title: "Unknown error",
-                                                    subtitle: "Unknown error",
-                                                    buttonText: "Retry")
-            }
-        }
-
-        // Equatable conformance for testing:
-        static func == (lhs: ItemListViewModel.ItemListState, rhs: ItemListViewModel.ItemListState) -> Bool {
-            switch (lhs, rhs) {
-            case (.empty, .empty):
-                return true
-            case (.initialLoading, .initialLoading):
-                return true
-            case (.loading, .loading):
-                return true
-            case (.loaded(let lhsItems), .loaded(let rhsItems)):
-                return lhsItems.map { $0.itemID } == rhsItems.map { $0.itemID }
-            case (.error(let lhsError), .error(let rhsError)):
-                return lhsError == rhsError
-            default:
-                return false
-            }
-        }
-    }
-
-    struct ErrorModel: Equatable {
-        let title: String
-        let subtitle: String
-        let buttonText: String
-
-        static func errorOnLoadingProducts() -> Self {
-            ErrorModel(title: Constants.failedToLoadTitle,
-                       subtitle: Constants.failedToLoadSubtitle,
-                       buttonText: Constants.failedToLoadButtonTitle)
-        }
-    }
-
-    struct BannerState {
-        static let isSimpleProductsOnlyBannerDismissedKey = "isSimpleProductsOnlyBannerDismissed"
+    static func errorOnLoadingProducts() -> Self {
+        ItemListErrorModel(title: Constants.failedToLoadTitle,
+                           subtitle: Constants.failedToLoadSubtitle,
+                           buttonText: Constants.failedToLoadButtonTitle)
     }
 }
 
-private extension ItemListViewModel {
+private extension ItemListErrorModel {
     enum Constants {
         static let failedToLoadTitle = NSLocalizedString(
             "pos.itemList.failedToLoadTitle",
@@ -188,6 +127,17 @@ private extension ItemListViewModel {
             value: "Retry",
             comment: "Text for the button appearing on the item list screen when there's an error loading products."
         )
+    }
+}
+
+extension ItemListViewModel {
+    struct BannerState {
+        static let isSimpleProductsOnlyBannerDismissedKey = "isSimpleProductsOnlyBannerDismissed"
+    }
+}
+
+private extension ItemListViewModel {
+    enum Constants {
         static let initialPage: Int = 1
     }
 }

@@ -46,11 +46,11 @@ struct WooCarrierPackageData: WooPackageDataRepresentable {
         self.height = height
         self.weight = weight
 
-        self.dimensionsDescription = "\(length) x \(width) x \(height) \(dimensionsUnit)"
-        self.weightDescription = "\(weight) \(weightUnit)"
-
         self.source = source
         self.packageType = packageType
+
+        self.dimensionsDescription = WooCarrierPackageData.createDimensionsDesccription(length: length, width: width, height: height, unit: weightUnit)
+        self.weightDescription = WooCarrierPackageData.createWeightsDesccription(weight: weight, unit: weightUnit)
     }
 }
 

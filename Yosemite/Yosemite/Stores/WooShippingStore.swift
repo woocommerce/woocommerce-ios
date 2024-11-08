@@ -5,14 +5,14 @@ import Storage
 /// Implements `WooShippingAction` actions
 ///
 public final class WooShippingStore: Store {
-    private let remote: WooShippingRemote
+    private let remote: WooShippingRemoteProtocol
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = WooShippingRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
-    init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: WooShippingRemote) {
+    init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: WooShippingRemoteProtocol) {
         self.remote = remote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }

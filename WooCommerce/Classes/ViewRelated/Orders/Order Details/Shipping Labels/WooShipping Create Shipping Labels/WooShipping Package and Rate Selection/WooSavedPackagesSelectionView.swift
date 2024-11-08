@@ -63,7 +63,7 @@ struct WooShippingPackageData: WooShippingPackageDataRepresentable {
         self.source = source
         self.packageType = packageType
 
-        self.dimensionsDescription = WooShippingPackageData.createDimensionsDesccription(length: length, width: width, height: height, unit: weightUnit)
+        self.dimensionsDescription = WooShippingPackageData.createDimensionsDesccription(length: length, width: width, height: height, unit: dimensionsUnit)
         self.weightDescription = WooShippingPackageData.createWeightsDesccription(weight: weight, unit: weightUnit)
     }
 

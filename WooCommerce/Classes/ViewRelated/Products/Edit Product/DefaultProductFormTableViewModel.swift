@@ -122,8 +122,8 @@ private extension DefaultProductFormTableViewModel {
                 return .shortDescription(viewModel: shortDescriptionRow(product: product.product, isEditable: editable), isEditable: editable)
             case .externalURL(let editable):
                 return .externalURL(viewModel: externalURLRow(product: product.product, isEditable: editable), isEditable: editable)
-            case .sku(let editable):
-                return .sku(viewModel: skuRow(product: product.product, isEditable: editable), isEditable: editable)
+            case .simplifiedInventory(let editable):
+                return .simplifiedInventory(viewModel: simplifiedInventoryRow(product: product.product, isEditable: editable), isEditable: editable)
             case .groupedProducts(let editable):
                 return .groupedProducts(viewModel: groupedProductsRow(product: product.product, isEditable: editable), isEditable: editable)
             case .variations(let hideSeparator):
@@ -444,15 +444,24 @@ private extension DefaultProductFormTableViewModel {
                                                         isActionable: isEditable)
     }
 
-    func skuRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
+    func simplifiedInventoryRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.inventoryImage
-        let title = Localization.skuTitle
-        let details = product.sku
+        let title = Localization.inventorySettingsTitle
+        var inventoryDetails = [String]()
 
+        if let sku = product.sku, !sku.isEmpty {
+            inventoryDetails.append(String.localizedStringWithFormat(Localization.skuFormat, sku))
+        }
+
+        if featureFlagService.isFeatureFlagEnabled(.productGlobalUniqueIdentifierSupport),
+            let globalUniqueID = product.globalUniqueID, !globalUniqueID.isEmpty {
+            inventoryDetails.append(String.localizedStringWithFormat(Localization.globalUniqueIDFormat, globalUniqueID))
+        }
+
+        let details = inventoryDetails.isEmpty ? nil: inventoryDetails.joined(separator: "\n")
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
                                                         details: details,
-                                                        numberOfLinesForDetails: 1,
                                                         isActionable: isEditable)
     }
 
@@ -757,8 +766,6 @@ private extension DefaultProductFormTableViewModel.Localization {
                                                  comment: "Title of the Tags row on Product main screen")
         static let shortDescriptionTitle = NSLocalizedString("Short description",
                                                              comment: "Title of the Short Description row on Product main screen")
-        static let skuTitle = NSLocalizedString("SKU",
-                                                comment: "Title of the SKU row on Product main screen")
         static let addExternalURLTitle =
             NSLocalizedString("Add product link",
                               comment: "Title for adding an external URL row on Product main screen for an external/affiliate product")

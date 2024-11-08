@@ -115,7 +115,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Act
         let featureFlagService = MockFeatureFlagService(isProductGlobalUniqueIdentifierSupported: true)
-        let viewModel = ProductInventorySettingsViewModel(formType: .sku, productModel: model, featureFlagService: featureFlagService)
+        let viewModel = ProductInventorySettingsViewModel(formType: .onlyIdentifiers, productModel: model, featureFlagService: featureFlagService)
         var sections: [Section] = []
         cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue

@@ -435,23 +435,7 @@ post_install do |installer|
   end
   # rubocop:enable Style/CombinableLoops
 
-  # TODO: Remove this once we've updated to a more recent version of Zendesk framework that fixes the Bitcode issue
-  apply_bitcode_stripping_workaround!
-
   yellow_marker = "\033[33m"
   reset_marker = "\033[0m"
   puts "#{yellow_marker}The abstract target warning below is expected. Feel free to ignore it.#{reset_marker}"
-end
-
-# TODO: Remove this once we've updated to a more recent version of Zendesk framework that fixes the Bitcode issue
-def apply_bitcode_stripping_workaround!
-  zendesk_frameworks_to_strip = %w[
-    SDKConfigurations
-    MessagingAPI
-  ]
-  zendesk_frameworks_to_strip.each do |fmk|
-    path = "Pods/Zendesk#{fmk}SDK/#{fmk}.xcframework/ios-arm64/#{fmk}.framework/#{fmk}"
-    puts "Stripping bitcode from #{fmk}.framework..."
-    system('xcrun', 'bitcode_strip', path, '-r', '-o', path)
-  end
 end

@@ -131,14 +131,14 @@ private extension ItemListView {
                     })
                 }
                 GhostItemCardView()
-                    .renderedIf(viewModel.state.isLoadingSubsequentPage)
+                    .renderedIf(viewModel.state.isLoadingNextPage)
             }
             .padding(.bottom, floatingControlAreaSize.height)
             .padding(.horizontal, Constants.itemListPadding)
             .background(GeometryReader { proxy in
                 Color.clear
                     .onChange(of: proxy.frame(in: .global).maxY) { maxY in
-                        if viewModel.state.isLoadingSubsequentPage {
+                        if viewModel.state.isLoadingNextPage {
                             return
                         }
                         let viewHeight = UIScreen.main.bounds.height

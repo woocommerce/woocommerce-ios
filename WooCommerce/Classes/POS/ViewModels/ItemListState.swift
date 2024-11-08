@@ -25,7 +25,7 @@ enum ItemListState: Equatable {
         }
     }
 
-    var isLoadingSubsequentPage: Bool {
+    var isLoadingNextPage: Bool {
         switch self {
         case .loading(let currentItems):
             return currentItems.isNotEmpty

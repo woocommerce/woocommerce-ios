@@ -276,7 +276,30 @@ final class ItemListViewModelTests: XCTestCase {
         XCTAssertEqual(sut.shouldShowHeaderBanner, false)
     }
 
-    func test_shouldShowHeaderBanner_when_itemListViewModel_is_initialLoading_has_items_then_returns_true() async {
+    func test_shouldShowHeaderBanner_when_itemListViewModel_is_loadingNextPage_then_returns_true() async {
+        // Given the list is already populated with items
+        await sut.loadInitialItems()
+        guard case .loaded(let items) = sut.state else {
+            return XCTFail("Expected loaded ItemList state, but got \(sut.state)")
+        }
+        XCTAssert(items.isNotEmpty)
+
+        // When we refresh the list again
+        let expectation = XCTestExpectation(description: "Expected banner to be shown when loading next item list page")
+        sut.statePublisher.sink { [unowned self] _ in
+            if case .loading = self.sut.state {
+                XCTAssertTrue(sut.shouldShowHeaderBanner)
+                expectation.fulfill()
+            }
+        }
+        .store(in: &cancellables)
+        await sut.loadNextItems()
+
+        // Then banner shoud be shown
+        await fulfillment(of: [expectation], timeout: 1)
+    }
+
+    func test_shouldShowHeaderBanner_when_itemListViewModel_is_reloading_then_returns_true() async {
         // Given the list is already populated with items
         await sut.loadInitialItems()
         guard case .loaded(let items) = sut.state else {
@@ -287,13 +310,13 @@ final class ItemListViewModelTests: XCTestCase {
         // When we refresh the list again
         let expectation = XCTestExpectation(description: "Expected banner to be shown when reloading item list")
         sut.statePublisher.sink { [unowned self] _ in
-            if self.sut.state == .initialLoading {
+            if case .loading = self.sut.state {
                 XCTAssertTrue(sut.shouldShowHeaderBanner)
                 expectation.fulfill()
             }
         }
         .store(in: &cancellables)
-        await sut.loadInitialItems()
+        await sut.reload()
 
         // Then banner shoud be shown
         await fulfillment(of: [expectation], timeout: 1)
@@ -314,27 +337,6 @@ final class ItemListViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(sut.state, .error(expectedError))
         XCTAssertEqual(sut.shouldShowHeaderBanner, false)
-    }
-
-    func test_state_when_itemListViewModel_loaded_normally_then_returns_isLoaded_true() async {
-        // Given/When
-        await sut.loadInitialItems()
-
-        // Then
-        XCTAssertEqual(sut.state.isLoaded, true)
-    }
-
-    func test_state_when_itemListViewModel_throws_error_then_returns_isLoaded_false() async {
-        // Given
-        let itemProvider = MockPOSItemProvider()
-        itemProvider.shouldThrowError = true
-        let sut = ItemListViewModel(itemProvider: itemProvider)
-
-        // When
-        await sut.loadInitialItems()
-
-        // Then
-        XCTAssertEqual(sut.state.isLoaded, false)
     }
 
     func test_loadInitialItems_when_no_items_are_loaded_then_statePublisher_emits_expected_empty_state() async throws {

@@ -7,24 +7,6 @@ enum ItemListState: Equatable {
     case loaded(_ items: [POSItem])
     case error(ItemListErrorModel)
 
-    var isLoaded: Bool {
-        switch self {
-        case .loaded:
-            return true
-        default:
-            return false
-        }
-    }
-
-    var isLoading: Bool {
-        switch self {
-        case .initialLoading, .loading:
-            return true
-        default:
-            return false
-        }
-    }
-
     var isLoadingNextPage: Bool {
         switch self {
         case .loading(let currentItems):

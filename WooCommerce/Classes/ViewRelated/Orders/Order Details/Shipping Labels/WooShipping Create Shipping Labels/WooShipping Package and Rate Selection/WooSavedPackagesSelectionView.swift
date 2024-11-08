@@ -118,13 +118,8 @@ struct WooSavedPackagesSelectionView: View {
                     .padding()
             }
             List {
-                if viewModel.hasPackages {
-                    packagesSection(for: viewModel.customSavedPackages)
-                    packagesSection(for: viewModel.predefinedSavedPackages)
-                }
-                else {
-                    Text("Save custom package template or carrier predefined package to use it later.")
-                }
+                packagesSection(for: viewModel.customSavedPackages)
+                packagesSection(for: viewModel.predefinedSavedPackages)
             }
             .listStyle(.plain)
             .refreshable {

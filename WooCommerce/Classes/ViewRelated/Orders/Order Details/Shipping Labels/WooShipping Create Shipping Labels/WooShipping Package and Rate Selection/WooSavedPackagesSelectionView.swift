@@ -1,21 +1,81 @@
 import SwiftUI
 
+enum WooPackageSource {
+    case custom
+    case predefined(String)
+
+    var userFriendlyDescription: String {
+        switch self {
+        case .custom:
+            return "Custom package"
+        case .predefined(let source):
+            return source
+        }
+    }
+}
+
 protocol WooPackageDataRepresentable {
-    var id: UUID { get }
+    // backend
+    var id: String { get }
     var name: String { get }
-    var dimensions: String { get }
+    var length: String { get }
+    var width: String { get }
+    var height: String { get }
     var weight: String { get }
-    var type: String { get }
-    var packageType: String { get }
+    // local
+    var weightDescription: String { get }
+    var dimensionsDescription: String { get }
+    var source: WooPackageSource { get } // custom, predefined
+    var packageType: String { get } // box, envelope
 }
 
 struct WooSavedPackageData: WooPackageDataRepresentable {
-    let id: UUID = UUID()
+    // backend
+    let id: String
     let name: String
-    let type: String
-    let packageType: String
-    let dimensions: String
+    let length: String
+    let width: String
+    let height: String
     let weight: String
+    // local
+    let weightDescription: String
+    let dimensionsDescription: String
+    let source: WooPackageSource
+    let packageType: String
+
+    init(id: String,
+         name: String,
+         length: String,
+         width: String,
+         height: String,
+         dimensionsUnit: String,
+         weight: String,
+         weightUnit: String,
+         source: WooPackageSource,
+         packageType: String) {
+        self.id = id
+        self.name = name
+        self.length = length
+        self.width = width
+        self.height = height
+        self.weight = weight
+
+        self.source = source
+        self.packageType = packageType
+
+        self.dimensionsDescription = WooSavedPackageData.createDimensionsDesccription(length: length, width: width, height: height, unit: weightUnit)
+        self.weightDescription = WooSavedPackageData.createWeightsDesccription(weight: weight, unit: weightUnit)
+    }
+}
+
+extension WooPackageDataRepresentable {
+    static func createDimensionsDesccription(length: String, width: String, height: String, unit: String) -> String {
+        return "\(length) x \(width) x \(height) \( unit)"
+    }
+
+    static func createWeightsDesccription(weight: String, unit: String) -> String {
+        return "\(weight) \(unit)"
+    }
 }
 
 struct WooSavedPackagesSelectionView: View {
@@ -78,7 +138,7 @@ struct WooSavedPackagesSelectionView: View {
                 isSelected: viewModel.selectedPackageId == package.id,
                 package: package,
                 showTopDivider: false,
-                showType: true,
+                showSource: true,
                 tapAction: {
                     viewModel.selectedPackageId = viewModel.selectedPackageId == package.id ? nil : package.id
                 }
@@ -121,7 +181,7 @@ struct PackageOptionView: View {
     var isSelected: Bool
     var package: WooPackageDataRepresentable
     var showTopDivider: Bool
-    var showType: Bool
+    var showSource: Bool
     var tapAction: () -> Void
     var starAction: (() -> Void)?
     var starred: Bool?
@@ -133,16 +193,16 @@ struct PackageOptionView: View {
                     .foregroundColor(isSelected ? Color(.withColorStudio(.wooCommercePurple, shade: .shade60)) : .gray)
                     .font(.title)
                 VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                    if showType, package.type.isNotEmpty {
-                        Text(package.type)
+                    if showSource {
+                        Text(package.source.userFriendlyDescription)
                             .captionStyle()
                     }
                     Text(package.name)
                         .bodyStyle()
                     HStack {
-                        Text(package.dimensions)
+                        Text(package.dimensionsDescription)
                         Text("•")
-                        Text(package.weight)
+                        Text(package.weightDescription)
                     }
                     .subheadlineStyle()
                 }

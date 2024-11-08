@@ -12,7 +12,7 @@ final class WooCarrierPackagesSelectionViewModel: ObservableObject {
     }
 
     @Published var selectedTabIndex: Int? = nil
-    @Published var selectedPackageId: UUID? = nil
+    @Published var selectedPackageId: String? = nil
 
     var selectedPackage: WooPackageDataRepresentable? {
         guard let selectedPackageId else { return nil }

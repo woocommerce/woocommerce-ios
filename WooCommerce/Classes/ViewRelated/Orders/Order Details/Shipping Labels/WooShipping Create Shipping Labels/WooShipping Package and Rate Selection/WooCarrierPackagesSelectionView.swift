@@ -17,18 +17,47 @@ struct WooPackageGroup {
 }
 
 struct WooCarrierPackageData: WooPackageDataRepresentable {
-    let id: UUID = UUID()
+    // backend
+    var id: String { return name }
     let name: String
-    let type: String
-    let packageType: String
-    let dimensions: String
+    let length: String
+    let width: String
+    let height: String
     let weight: String
+    // local
+    let weightDescription: String
+    let dimensionsDescription: String
+    let source: WooPackageSource
+    let packageType: String
+
+    init(name: String,
+         length: String,
+         width: String,
+         height: String,
+         dimensionsUnit:
+         String,
+         weight: String,
+         weightUnit: String,
+         source: WooPackageSource,
+         packageType: String) {
+        self.name = name
+        self.length = length
+        self.width = width
+        self.height = height
+        self.weight = weight
+
+        self.dimensionsDescription = "\(length) x \(width) x \(height) \(dimensionsUnit)"
+        self.weightDescription = "\(weight) \(weightUnit)"
+
+        self.source = source
+        self.packageType = packageType
+    }
 }
 
 struct WooCarrierPackagesView: View {
     let carrierTab: WooShippingCarrierPackages
-    @Binding var selectedPackageId: UUID?  // Track the selected package index
-    @State private var starredPackages: Set<UUID> = []
+    @Binding var selectedPackageId: String?  // Track the selected package index
+    @State private var starredPackages: Set<String> = []
 
     var body: some View {
         List {
@@ -39,7 +68,7 @@ struct WooCarrierPackagesView: View {
                             isSelected: selectedPackageId == package.id,
                             package: package,
                             showTopDivider: false,
-                            showType: false,
+                            showSource: false,
                             tapAction: {
                                 selectedPackageId = selectedPackageId == package.id ? nil : package.id
                             },

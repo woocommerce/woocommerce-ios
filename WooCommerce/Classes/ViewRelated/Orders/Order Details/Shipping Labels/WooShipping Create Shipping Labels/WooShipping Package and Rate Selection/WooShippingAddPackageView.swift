@@ -80,23 +80,68 @@ struct WooShippingAddPackageView: View {
         // TODO: dummy data for UI creation
         let uspsPackageGroups: [WooPackageGroup] = [
             WooPackageGroup(name: "Flat Rate Boxes 1", packages: [
-                WooCarrierPackageData(name: "Small Flat Rate Box", type: "usps", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg")
+                WooCarrierPackageData(name: "Small Flat Rate Box 1",
+                                      length: "21.92",
+                                      width: "13.67",
+                                      height: "4.14",
+                                      dimensionsUnit: "cm",
+                                      weight: "5",
+                                      weightUnit: "kg",
+                                      source: .predefined("USPS Priority Mail Flat Rate Boxes"),
+                                      packageType: "box")
             ]),
             WooPackageGroup(name: "Flat Rate Boxes 2", packages: [
-                WooCarrierPackageData(name: "Small Flat Rate Box", type: "usps", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
-                WooCarrierPackageData(name: "Small Flat Rate Box", type: "usps", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
-                WooCarrierPackageData(name: "Small Flat Rate Box", type: "usps", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg")
+                WooCarrierPackageData(name: "Small Flat Rate Box 2",
+                                      length: "21.92",
+                                      width: "13.67",
+                                      height: "4.14",
+                                      dimensionsUnit: "cm",
+                                      weight: "5",
+                                      weightUnit: "kg",
+                                      source: .predefined("USPS Priority Mail Flat Rate Boxes"),
+                                      packageType: "box"),
+                WooCarrierPackageData(name: "Small Flat Rate Box 21",
+                                      length: "21.92",
+                                      width: "13.67",
+                                      height: "4.14",
+                                      dimensionsUnit: "cm",
+                                      weight: "5",
+                                      weightUnit: "kg",
+                                      source: .predefined("USPS Priority Mail Flat Rate Boxes"),
+                                      packageType: "box"),
+                WooCarrierPackageData(name: "Small Flat Rate Box 22",
+                                      length: "21.92",
+                                      width: "13.67",
+                                      height: "4.14",
+                                      dimensionsUnit: "cm",
+                                      weight: "5",
+                                      weightUnit: "kg",
+                                      source: .predefined("USPS Priority Mail Flat Rate Boxes"),
+                                      packageType: "box"),
             ])
         ]
         let dhlPackageGroups: [WooPackageGroup] = [
-            WooPackageGroup(name: "Flat Rate Boxes 1", packages: [
-                WooCarrierPackageData(name: "Small Flat Rate Box", type: "DHL Express", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
-                WooCarrierPackageData(name: "Small Flat Rate Box", type: "DHL Express", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
-                WooCarrierPackageData(name: "Small Flat Rate Box", type: "DHL Express", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
-                WooCarrierPackageData(name: "Small Flat Rate Box", type: "DHL Express", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
+            WooPackageGroup(name: "Flat Rate Boxes 3", packages: [
+                WooCarrierPackageData(name: "Small Flat Rate Box 3",
+                                      length: "21.92",
+                                      width: "13.67",
+                                      height: "4.14",
+                                      dimensionsUnit: "cm",
+                                      weight: "5",
+                                      weightUnit: "kg",
+                                      source: .predefined("DHL Express"),
+                                      packageType: "box"),
             ]),
-            WooPackageGroup(name: "Flat Rate Boxes 2", packages: [
-                WooCarrierPackageData(name: "Small Flat Rate Box", type: "DHL Express", packageType: "box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg")
+            WooPackageGroup(name: "Flat Rate Boxes 4", packages: [
+                WooCarrierPackageData(name: "Small Flat Rate Box 4",
+                                      length: "21.92",
+                                      width: "13.67",
+                                      height: "4.14",
+                                      dimensionsUnit: "cm",
+                                      weight: "5",
+                                      weightUnit: "kg",
+                                      source: .predefined("DHL Express"),
+                                      packageType: "box"),
             ])
         ]
         let uspsCarrier: WooShippingCarrierPackages = WooShippingCarrierPackages(carrier: WooShippingCarrier.usps, packageGroups: uspsPackageGroups)

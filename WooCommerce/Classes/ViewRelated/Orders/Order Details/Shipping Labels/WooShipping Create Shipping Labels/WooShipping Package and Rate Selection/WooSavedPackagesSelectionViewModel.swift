@@ -2,7 +2,7 @@ import Foundation
 
 final class WooSavedPackagesSelectionViewModel: ObservableObject {
     @Published var packagesRepository: WooShippingPackagesRepositoryProtocol
-    @Published var selectedPackageId: UUID?  // Track the selected package index
+    @Published var selectedPackageId: String?  // Track the selected package index
 
     var customSavedPackages: [any WooPackageDataRepresentable] {
         return packagesRepository.customSavedPackages
@@ -12,7 +12,7 @@ final class WooSavedPackagesSelectionViewModel: ObservableObject {
         return packagesRepository.predefinedSavedPackages
     }
 
-    init(packagesRepository: WooShippingPackagesRepositoryProtocol, selectedPackageId: UUID? = nil) {
+    init(packagesRepository: WooShippingPackagesRepositoryProtocol, selectedPackageId: String? = nil) {
         self.packagesRepository = packagesRepository
         self.selectedPackageId = selectedPackageId
     }

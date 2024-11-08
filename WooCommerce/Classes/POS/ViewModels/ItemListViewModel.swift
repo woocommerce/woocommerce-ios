@@ -64,7 +64,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     @MainActor
     private func fetchPage(pageNumber: Int) async {
         do {
-            state = .loading
+            state = .loading(items)
             let newItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
             let uniqueNewItems = newItems.filter { newItem in
                 !items.contains(where: { $0.productID == newItem.productID })

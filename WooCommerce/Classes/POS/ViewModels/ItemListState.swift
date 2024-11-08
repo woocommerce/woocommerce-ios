@@ -3,8 +3,8 @@ import protocol Yosemite.POSItem
 enum ItemListState: Equatable {
     case empty
     case initialLoading
-    case loading
-    case loaded([POSItem])
+    case loading(_ currentItems: [POSItem])
+    case loaded(_ items: [POSItem])
     case error(ItemListErrorModel)
 
     var isLoaded: Bool {
@@ -20,6 +20,15 @@ enum ItemListState: Equatable {
         switch self {
         case .initialLoading, .loading:
             return true
+        default:
+            return false
+        }
+    }
+
+    var isLoadingSubsequentPage: Bool {
+        switch self {
+        case .loading(let currentItems):
+            return currentItems.isNotEmpty
         default:
             return false
         }
@@ -43,9 +52,8 @@ enum ItemListState: Equatable {
             return true
         case (.initialLoading, .initialLoading):
             return true
-        case (.loading, .loading):
-            return true
-        case (.loaded(let lhsItems), .loaded(let rhsItems)):
+        case (.loading(let lhsItems), .loading(let rhsItems)),
+            (.loaded(let lhsItems), .loaded(let rhsItems)):
             return lhsItems.map { $0.itemID } == rhsItems.map { $0.itemID }
         case (.error(let lhsError), .error(let rhsError)):
             return lhsError == rhsError

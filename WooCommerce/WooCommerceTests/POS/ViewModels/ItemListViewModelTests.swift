@@ -6,7 +6,7 @@ import Combine
 @testable import struct Yosemite.POSProduct
 
 final class ItemListViewModelTests: XCTestCase {
-    private var itemProvider: POSItemProvider!
+    private var itemProvider: MockPOSItemProvider!
     private var sut: ItemListViewModel!
 
     private var cancellables: Set<AnyCancellable> = []
@@ -419,7 +419,7 @@ final class ItemListViewModelTests: XCTestCase {
         let expectedStates: [ItemListState] = [
             .initialLoading,
             .empty,
-            .loading,
+            .loading([]),
             .loaded([])
         ]
 
@@ -445,8 +445,36 @@ final class ItemListViewModelTests: XCTestCase {
         let expectedStates: [ItemListState] = [
             .initialLoading,
             .loaded(items),
-            .loading,
+            .loading(items),
             .loaded(items)
+        ]
+
+        sut.statePublisher
+            .removeDuplicates()
+            .sink { state in
+                receivedStates.append(state)
+            }
+            .store(in: &cancellables)
+
+        // When
+        await sut.loadInitialItems()
+        await sut.loadNextItems()
+
+        // Then
+        XCTAssertEqual(receivedStates, expectedStates)
+    }
+
+    func test_sut_when_there_are_two_pages_of_items_then_statePublisher_emits_expected_state() async {
+        itemProvider.shouldSimulateTwoPages = true
+        let initialItems = Self.makeInitialItems()
+        let firstAndSecondPageItems = initialItems + Self.makeSecondPageItems()
+
+        var receivedStates: [ItemListState] = []
+        let expectedStates: [ItemListState] = [
+            .initialLoading,
+            .loaded(initialItems),
+            .loading(initialItems),
+            .loaded(firstAndSecondPageItems)
         ]
 
         sut.statePublisher

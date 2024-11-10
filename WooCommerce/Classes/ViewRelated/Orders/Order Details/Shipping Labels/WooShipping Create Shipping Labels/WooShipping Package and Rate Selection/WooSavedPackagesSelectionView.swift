@@ -1,28 +1,109 @@
 import SwiftUI
 
-protocol WooPackageDataRepresentable {
-    var id: UUID { get }
-    var name: String { get }
-    var dimensions: String { get }
-    var weight: String { get }
-    var type: String { get }
-    var packageType: String { get }
+enum WooShippingPackageSource {
+    case custom
+    case predefined(String)
+
+    var userFriendlyDescription: String {
+        switch self {
+        case .custom:
+            return NSLocalizedString("Custom Package", comment: "Label used to mark a custom package in list of saved packages")
+        case .predefined(let source):
+            return source
+        }
+    }
 }
 
-struct WooSavedPackageData: WooPackageDataRepresentable {
-    let id: UUID = UUID()
+protocol WooShippingPackageDataRepresentable {
+    // backend
+    var id: String { get }
+    var name: String { get }
+    var length: String { get }
+    var width: String { get }
+    var height: String { get }
+    var weight: String { get }
+    // local
+    var weightDescription: String { get }
+    var dimensionsDescription: String { get }
+    var source: WooShippingPackageSource { get } // custom, predefined
+    var packageType: String { get } // box, envelope
+}
+
+struct WooShippingPackageData: WooShippingPackageDataRepresentable {
+    // backend
+    let id: String
     let name: String
-    let type: String
-    let packageType: String
-    let dimensions: String
+    let length: String
+    let width: String
+    let height: String
     let weight: String
+    // local
+    let weightDescription: String
+    let dimensionsDescription: String
+    let source: WooShippingPackageSource
+    let packageType: String
+
+    init(id: String,
+         name: String,
+         length: String,
+         width: String,
+         height: String,
+         dimensionsUnit: String,
+         weight: String,
+         weightUnit: String,
+         source: WooShippingPackageSource,
+         packageType: String) {
+        self.id = id
+        self.name = name
+        self.length = length
+        self.width = width
+        self.height = height
+        self.weight = weight
+
+        self.source = source
+        self.packageType = packageType
+
+        self.dimensionsDescription = WooShippingPackageData.createDimensionsDesccription(length: length, width: width, height: height, unit: dimensionsUnit)
+        self.weightDescription = WooShippingPackageData.createWeightsDesccription(weight: weight, unit: weightUnit)
+    }
+
+    init(name: String,
+         length: String,
+         width: String,
+         height: String,
+         dimensionsUnit: String,
+         weight: String,
+         weightUnit: String,
+         source: WooShippingPackageSource,
+         packageType: String) {
+        self.init(id: name,
+                  name: name,
+                  length: length,
+                  width: width,
+                  height: height,
+                  dimensionsUnit: dimensionsUnit,
+                  weight: weight,
+                  weightUnit: weightUnit,
+                  source: source,
+                  packageType: packageType)
+    }
+}
+
+extension WooShippingPackageDataRepresentable {
+    static func createDimensionsDesccription(length: String, width: String, height: String, unit: String) -> String {
+        return "\(length) x \(width) x \(height) \( unit)"
+    }
+
+    static func createWeightsDesccription(weight: String, unit: String) -> String {
+        return "\(weight) \(unit)"
+    }
 }
 
 struct WooSavedPackagesSelectionView: View {
     @ObservedObject private var viewModel: WooSavedPackagesSelectionViewModel
-    let addPackageAction: (WooPackageDataRepresentable) -> Void
+    let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
-    init(viewModel: WooSavedPackagesSelectionViewModel, addPackageAction: @escaping (WooPackageDataRepresentable) -> Void) {
+    init(viewModel: WooSavedPackagesSelectionViewModel, addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
         self.viewModel = viewModel
         self.addPackageAction = addPackageAction
     }
@@ -37,13 +118,8 @@ struct WooSavedPackagesSelectionView: View {
                     .padding()
             }
             List {
-                if viewModel.hasPackages {
-                    packagesSection(for: viewModel.customSavedPackages)
-                    packagesSection(for: viewModel.predefinedSavedPackages)
-                }
-                else {
-                    Text("Save custom package template or carrier predefined package to use it later.")
-                }
+                packagesSection(for: viewModel.customSavedPackages)
+                packagesSection(for: viewModel.predefinedSavedPackages)
             }
             .listStyle(.plain)
             .refreshable {
@@ -60,7 +136,7 @@ struct WooSavedPackagesSelectionView: View {
     }
 
     @ViewBuilder
-    private func packagesSection(for packages: [any WooPackageDataRepresentable]) -> some View {
+    private func packagesSection(for packages: [any WooShippingPackageDataRepresentable]) -> some View {
         if packages.isEmpty {
             EmptyView()
         }
@@ -72,13 +148,13 @@ struct WooSavedPackagesSelectionView: View {
         }
     }
 
-    private func packagesRows(for packages: [any WooPackageDataRepresentable]) -> some View {
+    private func packagesRows(for packages: [any WooShippingPackageDataRepresentable]) -> some View {
         ForEach(packages, id: \.id) { package in
             PackageOptionView(
                 isSelected: viewModel.selectedPackageId == package.id,
                 package: package,
                 showTopDivider: false,
-                showType: true,
+                showSource: true,
                 tapAction: {
                     viewModel.selectedPackageId = viewModel.selectedPackageId == package.id ? nil : package.id
                 }
@@ -119,9 +195,9 @@ struct PackageOptionView: View {
     }
 
     var isSelected: Bool
-    var package: WooPackageDataRepresentable
+    var package: WooShippingPackageDataRepresentable
     var showTopDivider: Bool
-    var showType: Bool
+    var showSource: Bool
     var tapAction: () -> Void
     var starAction: (() -> Void)?
     var starred: Bool?
@@ -133,16 +209,16 @@ struct PackageOptionView: View {
                     .foregroundColor(isSelected ? Color(.withColorStudio(.wooCommercePurple, shade: .shade60)) : .gray)
                     .font(.title)
                 VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                    if showType, package.type.isNotEmpty {
-                        Text(package.type)
+                    if showSource {
+                        Text(package.source.userFriendlyDescription)
                             .captionStyle()
                     }
                     Text(package.name)
                         .bodyStyle()
                     HStack {
-                        Text(package.dimensions)
+                        Text(package.dimensionsDescription)
                         Text("•")
-                        Text(package.weight)
+                        Text(package.weightDescription)
                     }
                     .subheadlineStyle()
                 }

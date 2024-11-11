@@ -26,38 +26,6 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.weightUnit, expectedWeightUnit)
     }
 
-    func test_clear_field_values() {
-        // Given
-        let viewModel = WooShippingAddCustomPackageViewModel()
-
-        // When
-        viewModel.fillWithDummyFieldValues()
-        viewModel.clearFieldValues()
-
-        // Then
-        XCTAssertNotNil(viewModel)
-        XCTAssertEqual(viewModel.fieldValues.isEmpty, true)
-        XCTAssertEqual(viewModel.areFieldValuesInvalid, true)
-    }
-
-    func test_reset_values() {
-        // Given
-        let viewModel = WooShippingAddCustomPackageViewModel()
-
-        // When
-        viewModel.fillWithDummyFieldValues()
-        viewModel.showSaveTemplate = true
-        viewModel.packageTemplateName = "a"
-        viewModel.resetValues()
-
-        // Then
-        XCTAssertNotNil(viewModel)
-        XCTAssertEqual(viewModel.fieldValues.isEmpty, true)
-        XCTAssertEqual(viewModel.areFieldValuesInvalid, true)
-        XCTAssertEqual(viewModel.showSaveTemplate, false)
-        XCTAssertEqual(viewModel.packageTemplateName, "")
-    }
-
     func test_it_with_not_all_field_values_set() {
         // Given
         let viewModel = WooShippingAddCustomPackageViewModel()
@@ -134,7 +102,6 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         let viewModel = WooShippingAddCustomPackageViewModel()
 
         // When
-        viewModel.clearFieldValues()
         viewModel.fillWithDummyFieldValues()
 
         // Then
@@ -146,7 +113,6 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         let viewModel = WooShippingAddCustomPackageViewModel()
 
         // When
-        viewModel.clearFieldValues()
         viewModel.fillWithDummyFieldValues()
         viewModel.showSaveTemplate = true
 
@@ -160,7 +126,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.validateCustomPackageInputFields(), true)
     }
 
-    func test_add_package_action() {
+    func test_add_package_action() async {
         // Given
         let dimensionUnit = "cm"
         let weightUnit = "kg"
@@ -178,18 +144,20 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         viewModel.fieldValues[.width] = width
         viewModel.fieldValues[.height] = height
         viewModel.fieldValues[.weight] = weight
-        let packageData = viewModel.addPackageAction()
+        let packageDataResult = await viewModel.addPackageAction()
 
         // Then
-        viewModel.checkDefaultInitProperties()
-        XCTAssertEqual(viewModel.validateCustomPackageInputFields(), false)
-        XCTAssertNotNil(packageData)
-        XCTAssertEqual(packageData?.dimensionsDescription, expectedDimensions)
-        XCTAssertEqual(packageData?.weightDescription, expectedWeight)
-        XCTAssertNil(viewModel.addPackageAction())
+        switch packageDataResult {
+        case .success(let packageData):
+            XCTAssertNotNil(packageData)
+            XCTAssertEqual(packageData.dimensionsDescription, expectedDimensions)
+            XCTAssertEqual(packageData.weightDescription, expectedWeight)
+        case .failure(let failure):
+            XCTFail(failure.localizedDescription)
+        }
     }
 
-    func test_save_package_as_template_action() {
+    func test_save_package_as_template_action() async {
         // Given
         let viewModel = WooShippingAddCustomPackageViewModel()
 
@@ -197,14 +165,16 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         viewModel.fillWithDummyFieldValues()
         viewModel.showSaveTemplate = true
         viewModel.packageTemplateName = "a"
-        let packageData = viewModel.savePackageAsTemplateAction()
+        let packageDataResult = await viewModel.savePackageAsTemplateAction()
 
         // Then
-        viewModel.checkDefaultInitProperties()
-        XCTAssertEqual(viewModel.validateCustomPackageInputFields(), false)
-        XCTAssertNotNil(packageData)
-        XCTAssertEqual(packageData?.name, "a")
-        XCTAssertNil(viewModel.savePackageAsTemplateAction())
+        switch packageDataResult {
+        case .success(let packageData):
+            XCTAssertNotNil(packageData)
+            XCTAssertEqual(packageData.name, "a")
+        case .failure(let failure):
+            XCTFail(failure.localizedDescription)
+        }
     }
 }
 

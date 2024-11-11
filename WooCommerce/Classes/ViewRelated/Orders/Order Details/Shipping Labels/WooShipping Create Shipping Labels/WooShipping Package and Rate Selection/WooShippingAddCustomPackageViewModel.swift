@@ -14,13 +14,16 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     let dimensionsUnit: String
     // The weight unit used in the store (e.g. "kg")
     let weightUnit: String
+    @Published var packagesRepository: WooShippingPackagesRepositoryProtocol
 
     // MARK: Initialization
 
     init(dimensionsUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
-         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
+         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
+         packagesRepository: WooShippingPackagesRepositoryProtocol) {
         self.dimensionsUnit = dimensionsUnit ?? ""
         self.weightUnit = weightUnit ?? ""
+        self.packagesRepository = packagesRepository
     }
 
     // Field values are invalid if one of them is empty
@@ -41,17 +44,6 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
         return validFieldsCount != keysToCheck.count
     }
 
-    func clearFieldValues() {
-        fieldValues.removeAll()
-    }
-
-    func resetValues() {
-        clearFieldValues()
-        packageType = .box
-        showSaveTemplate = false
-        packageTemplateName = ""
-    }
-
     private var packageDataFromCurrentData: WooShippingPackageDataRepresentable {
         return WooShippingPackageData(id: UUID().uuidString,
                                    name: packageTemplateName,
@@ -70,22 +62,40 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
 
         let packageData = packageDataFromCurrentData
 
-        // Cleanup after adding package
-        resetValues()
-
         return packageData
     }
 
-    func addPackageAction() -> WooShippingPackageDataRepresentable? {
-        let packageData = preparePackageData()
-        // TODO: implement adding a package with the package data
-        return packageData
+    enum Error: Swift.Error {
+        case packageDataNotValid
+        case failedSavingTemplate(Swift.Error)
     }
 
-    func savePackageAsTemplateAction() -> WooShippingPackageDataRepresentable? {
-        let packageData = preparePackageData()
-        // TODO: implement saving package as a template with the package data
-        return packageData
+    func addPackageAction() async ->  Result<WooShippingPackageDataRepresentable, Error> {
+        guard let packageData = preparePackageData() else {
+            return .failure(WooShippingAddCustomPackageViewModel.Error.packageDataNotValid)
+        }
+
+        // TODO: use WooShippingAction to POST the package to backend
+        // - if successful, return the package data
+        // - if not, return error
+
+        return .success(packageData)
+    }
+
+    func savePackageAsTemplateAction() async -> Result<WooShippingPackageDataRepresentable, Error> {
+        guard let packageData = preparePackageData() else {
+            return .failure(WooShippingAddCustomPackageViewModel.Error.packageDataNotValid)
+        }
+
+        // save package template
+        // - if successful, try adding package
+        // - if not, return error
+        if let error = await packagesRepository.saveCustomPackage(packageData) {
+            return .failure(WooShippingAddCustomPackageViewModel.Error.failedSavingTemplate(error))
+        }
+        else {
+            return await addPackageAction()
+        }
     }
 
     func validateCustomPackageInputFields() -> Bool {

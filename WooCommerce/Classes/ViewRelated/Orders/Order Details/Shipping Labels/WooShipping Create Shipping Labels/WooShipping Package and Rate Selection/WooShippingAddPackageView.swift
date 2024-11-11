@@ -71,7 +71,7 @@ struct WooShippingAddPackageView: View {
 
     @ViewBuilder
     private var customPackageView: some View {
-        WooAddCustomPackageView { packageData in
+        WooAddCustomPackageView(viewModel: WooShippingAddCustomPackageViewModel(packagesRepository: packagesRepository)) { packageData in
             addPackageAction(packageData)
         }
     }

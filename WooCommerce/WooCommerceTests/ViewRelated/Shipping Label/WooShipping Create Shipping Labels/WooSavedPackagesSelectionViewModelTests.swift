@@ -228,6 +228,7 @@ final class MockWooShippingPackagesRepository: WooShippingPackagesRepositoryProt
 
     // MARK: - Packages updates
 
+    @MainActor
     func deleteSavedPackage(_ packageToRemove: WooShippingPackageDataRepresentable) async -> Error? {
         customSavedPackages.removeAll { package in package.id == packageToRemove.id }
         predefinedSavedPackages.removeAll { package in package.id == packageToRemove.id }
@@ -235,12 +236,20 @@ final class MockWooShippingPackagesRepository: WooShippingPackagesRepositoryProt
         return nil
     }
 
-    func addCustomPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error? {
+    @MainActor
+    func saveCustomPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error? {
+        guard !customSavedPackages.contains(where: $0.id == packageToAdd.id) else {
+            return WooShippingPackagesRepositoryError.customPackageWithSameIdAlreadyExists
+        }
         customSavedPackages.append(packageToAdd)
         return nil
     }
 
-    func addPredefinedPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error? {
+    @MainActor
+    func savePredefinedPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error? {
+        guard !predefinedSavedPackages.contains(where: $0.id == packageToAdd.id) else {
+            return WooShippingPackagesRepositoryError.predefinedPackageWithSameIdAlreadyExists
+        }
         predefinedSavedPackages.append(packageToAdd)
         return nil
     }

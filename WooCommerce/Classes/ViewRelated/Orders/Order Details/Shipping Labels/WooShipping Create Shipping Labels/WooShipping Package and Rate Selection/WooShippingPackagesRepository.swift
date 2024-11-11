@@ -14,8 +14,13 @@ protocol WooShippingPackagesRepositoryProtocol {
     func loadCarrierPackages()
 
     func deleteSavedPackage(_ packageToRemove: WooShippingPackageDataRepresentable) async -> Error?
-    func addCustomPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error?
-    func addPredefinedPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error?
+    func saveCustomPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error?
+    func savePredefinedPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error?
+}
+
+enum WooShippingPackagesRepositoryError: Swift.Error {
+    case customPackageWithSameIdAlreadyExists
+    case predefinedPackageWithSameIdAlreadyExists
 }
 
 final class WooShippingPackagesRepository: ObservableObject, WooShippingPackagesRepositoryProtocol {
@@ -187,7 +192,8 @@ final class WooShippingPackagesRepository: ObservableObject, WooShippingPackages
 
     // MARK: - Packages updates
 
-    func deleteSavedPackage(_ packageToRemove: WooShippingPackageDataRepresentable) async -> Error? {
+    @MainActor
+    func deleteSavedPackage(_ packageToRemove: any WooShippingPackageDataRepresentable) async -> Error? {
         // delete the package locally and on backend
         customSavedPackages.removeAll { package in package.id == packageToRemove.id }
         predefinedSavedPackages.removeAll { package in package.id == packageToRemove.id }
@@ -198,15 +204,25 @@ final class WooShippingPackagesRepository: ObservableObject, WooShippingPackages
         return nil
     }
 
-    func addCustomPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error? {
+    @MainActor
+    func saveCustomPackage(_ packageToAdd: any WooShippingPackageDataRepresentable) async -> Error? {
+        guard !customSavedPackages.contains(where: { package in
+            return package.id == packageToAdd.id
+        })  else {
+            return WooShippingPackagesRepositoryError.customPackageWithSameIdAlreadyExists
+        }
         customSavedPackages.append(packageToAdd)
-
         return nil
     }
 
-    func addPredefinedPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error? {
+    @MainActor
+    func savePredefinedPackage(_ packageToAdd: any WooShippingPackageDataRepresentable) async -> Error? {
+        guard !predefinedSavedPackages.contains(where: { package in
+            return package.id == packageToAdd.id
+        })  else {
+            return WooShippingPackagesRepositoryError.predefinedPackageWithSameIdAlreadyExists
+        }
         predefinedSavedPackages.append(packageToAdd)
-
         return nil
     }
 }

@@ -14,12 +14,12 @@ struct ItemListView: View {
         VStack {
             headerView
             switch viewModel.state {
-            case .empty, .error:
+            case .initialLoading, .empty, .error:
                 // These cases are handled directly in the dashboard, we do not render
                 // a specific view within the ItemListView to handle them
                 EmptyView()
-            case .initialLoading, .loading, .loaded:
-                listView(viewModel.items)
+            case .loading(let items), .loaded(let items):
+                listView(items)
             }
         }
         .refreshable {
@@ -131,14 +131,15 @@ private extension ItemListView {
                     })
                 }
                 GhostItemCardView()
-                    .renderedIf(viewModel.state == .loading)
+                    .renderedIf(viewModel.state.isLoadingAfterInitialLoad)
             }
+            .frame(maxWidth: .infinity)
             .padding(.bottom, floatingControlAreaSize.height)
             .padding(.horizontal, Constants.itemListPadding)
             .background(GeometryReader { proxy in
                 Color.clear
                     .onChange(of: proxy.frame(in: .global).maxY) { maxY in
-                        if viewModel.state == .loading {
+                        if viewModel.state.isLoadingAfterInitialLoad {
                             return
                         }
                         let viewHeight = UIScreen.main.bounds.height

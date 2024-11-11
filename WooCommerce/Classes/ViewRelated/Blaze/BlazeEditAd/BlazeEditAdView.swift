@@ -345,7 +345,8 @@ struct BlazeEditAdView_Previews: PreviewProvider {
                                          productID: 34,
                                          adData: .init(image: .init(image: .init(), source: .asset(asset: .init())),
                                                        tagline: "Tagline",
-                                                       description: "Description"),
+                                                       description: "Description",
+                                                       ctaText: "Shop now"),
                                          suggestions: [],
                                          onSave: { _ in })
         )

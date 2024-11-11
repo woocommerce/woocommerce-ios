@@ -33,7 +33,7 @@ struct PointOfSaleDashboardView: View {
             case .error(let errorContents):
                 PointOfSaleItemListErrorView(error: errorContents, onRetry: {
                     Task {
-                        await posModel.loadInitialItems()
+                        try? await posModel.loadInitialItems()
                     }
                 })
             case .loading, .loaded:

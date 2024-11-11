@@ -41,20 +41,25 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     @MainActor
     func loadInitialItems() async {
-        await posModel.loadInitialItems()
+        try? await posModel.loadInitialItems()
     }
 
     @MainActor
     func loadNextItems() async {
-        // TODO: Optimize API calls. gh-14186
-        // If there are no more pages to fetch, we can avoid the next call.
-        let nextPage = currentPage + 1
-        await posModel.loadItems(pageNumber: nextPage)
+        do {
+            // TODO: Optimize API calls. gh-14186
+            // If there are no more pages to fetch, we can avoid the next call.
+            let nextPage = currentPage + 1
+            try await posModel.loadItems(pageNumber: nextPage)
+            currentPage = nextPage
+        } catch {
+            // No need to do anything; this avoids us incorrectly incrementing currentPage.
+        }
     }
 
     @MainActor
     func reload() async {
-        await posModel.reload()
+        try? await posModel.reload()
     }
 
     func dismissBanner() {

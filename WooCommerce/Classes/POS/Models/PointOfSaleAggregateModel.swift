@@ -8,9 +8,9 @@ protocol PointOfSaleAggregateModelProtocol {
     var allItems: [POSItem] { get }
     var itemListState: ItemListState { get }
 
-    func loadInitialItems() async
-    func loadItems(pageNumber: Int) async
-    func reload() async
+    func loadInitialItems() async throws
+    func loadItems(pageNumber: Int) async throws
+    func reload() async throws
 }
 
 class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProtocol {
@@ -27,29 +27,30 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 // MARK: - ItemList
 extension PointOfSaleAggregateModel {
     @MainActor
-    func loadInitialItems() async {
+    func loadInitialItems() async throws {
         itemListState = .initialLoading
-        await load(pageNumber: Constants.initialPage)
+        try await load(pageNumber: Constants.initialPage)
     }
 
     @MainActor
-    func loadItems(pageNumber: Int) async {
+    func loadItems(pageNumber: Int) async throws {
         itemListState = .loading(allItems)
-        await load(pageNumber: pageNumber)
+        try await load(pageNumber: pageNumber)
     }
 
     @MainActor
-    func reload() async {
+    func reload() async throws {
         allItems.removeAll()
-        await loadItems(pageNumber: Constants.initialPage)
+        try await loadItems(pageNumber: Constants.initialPage)
     }
 
     @MainActor
-    private func load(pageNumber: Int) async {
+    private func load(pageNumber: Int) async throws {
         do {
             try await fetchItems(pageNumber: pageNumber)
         } catch {
             itemListState = .error(PointOfSaleErrorState.errorOnLoadingProducts())
+            throw error
         }
     }
 

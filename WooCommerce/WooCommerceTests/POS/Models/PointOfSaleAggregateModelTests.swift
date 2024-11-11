@@ -17,7 +17,7 @@ struct PointOfSaleAggregateModelTests {
         let expectedItems = MockPOSItemProvider.makeInitialItems()
 
         // When
-        await sut.loadInitialItems()
+        try? await sut.loadInitialItems()
 
         // Then
         guard case .loaded(let items) = sut.itemListState else {
@@ -33,9 +33,9 @@ struct PointOfSaleAggregateModelTests {
         let expectedItems = MockPOSItemProvider.makeInitialItems()
 
         // When
-        await sut.loadInitialItems()
-        await sut.loadInitialItems()
-        await sut.loadInitialItems()
+        try? await sut.loadInitialItems()
+        try? await sut.loadInitialItems()
+        try? await sut.loadInitialItems()
 
         // Then
         guard case .loaded(let items) = sut.itemListState else {
@@ -51,7 +51,7 @@ struct PointOfSaleAggregateModelTests {
         let expectedItems = MockPOSItemProvider.makeInitialItems()
 
         // When
-        await sut.reload()
+        try? await sut.reload()
 
         // Then
         guard case .loaded(let items) = sut.itemListState else {
@@ -67,9 +67,9 @@ struct PointOfSaleAggregateModelTests {
         let expectedItems = MockPOSItemProvider.makeInitialItems()
 
         // When
-        await sut.reload()
-        await sut.reload()
-        await sut.reload()
+        try? await sut.reload()
+        try? await sut.reload()
+        try? await sut.reload()
 
         // Then
         guard case .loaded(let items) = sut.itemListState else {
@@ -90,7 +90,7 @@ struct PointOfSaleAggregateModelTests {
         try #require(sut.itemListState == .initialLoading)
 
         // When
-        await sut.loadInitialItems()
+        try? await sut.loadInitialItems()
 
         // Then
         #expect(sut.itemListState == .loaded(expectedItems))
@@ -105,7 +105,7 @@ struct PointOfSaleAggregateModelTests {
         try #require(sut.itemListState == .initialLoading)
 
         // When
-        await sut.loadItems(pageNumber: 2)
+        try? await sut.loadItems(pageNumber: 2)
 
         // Then
         #expect(sut.itemListState == .empty)
@@ -119,7 +119,7 @@ struct PointOfSaleAggregateModelTests {
         try #require(sut.itemListState == .initialLoading)
 
         // When
-        await sut.loadItems(pageNumber: 2)
+        try? await sut.loadItems(pageNumber: 2)
 
         // Then
         #expect(sut.itemListState == .loaded(initialItems))
@@ -132,7 +132,7 @@ struct PointOfSaleAggregateModelTests {
         itemProvider.shouldSimulateTwoPages = true
 
         // When
-        await sut.loadItems(pageNumber: 2)
+        try? await sut.loadItems(pageNumber: 2)
 
         // Then
         guard case .loaded(let items) = sut.itemListState else {
@@ -151,7 +151,7 @@ struct PointOfSaleAggregateModelTests {
         try #require(sut.itemListState == .initialLoading)
 
         // When
-        await sut.loadInitialItems()
+        try? await sut.loadInitialItems()
 
         // Then
         #expect(sut.itemListState == .empty)
@@ -166,13 +166,13 @@ struct PointOfSaleAggregateModelTests {
         try #require(sut.itemListState == .initialLoading)
 
         // When
-        await sut.loadInitialItems()
+        try? await sut.loadInitialItems()
 
         // Then
         #expect(sut.itemListState == .error(expectedError))
     }
 
-    @Test func itemListViewModel_when_loadNextItems_throws_error_then_state_is_error() async throws {
+    @Test func itemListViewModel_when_itemProvider_throws_error_then_state_is_error() async throws {
         // Given
         itemProvider.shouldThrowError = true
         let expectedError = PointOfSaleErrorState(title: "Error loading products",
@@ -181,11 +181,23 @@ struct PointOfSaleAggregateModelTests {
         try #require(sut.itemListState == .initialLoading)
 
         // When
-        await sut.loadItems(pageNumber: 2)
+        try? await sut.loadItems(pageNumber: 2)
 
         // Then
         #expect(sut.itemListState == .error(expectedError))
     }
+
+    @Test func itemListViewModel_when_itemProvider_throws_error_then_it_is_thrown() async throws {
+        // Given
+        itemProvider.shouldThrowError = true
+
+        // Then
+        await #expect(throws: MockPOSItemProvider.MockError.requestFailed) {
+            // When
+            try await sut.loadItems(pageNumber: 2)
+        }
+    }
+
 
     @Test func itemListViewModel_when_reload_then_state_is_loaded_with_expected_items() async throws {
         // Given
@@ -193,7 +205,7 @@ struct PointOfSaleAggregateModelTests {
         let expectedItems = MockPOSItemProvider.makeInitialItems()
 
         // When
-        await sut.reload()
+        try? await sut.reload()
 
         // Then
         #expect(sut.itemListState == .loaded(expectedItems))
@@ -209,7 +221,7 @@ struct PointOfSaleAggregateModelTests {
         try #require(sut.itemListState == .initialLoading)
 
         // When
-        await sut.reload()
+        try? await sut.reload()
 
         // Then
         #expect(sut.itemListState == .error(expectedError))

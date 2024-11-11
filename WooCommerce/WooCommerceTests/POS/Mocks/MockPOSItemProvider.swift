@@ -11,7 +11,7 @@ final class MockPOSItemProvider: POSItemProvider {
 
     func providePointOfSaleItems(pageNumber: Int) async throws -> [Yosemite.POSItem] {
         if shouldThrowError {
-            throw NSError(domain: "Some error", code: 0)
+            throw MockError.requestFailed
         }
         if shouldReturnZeroItems {
             return []
@@ -76,5 +76,9 @@ extension MockPOSItemProvider {
                                   productImageSource: nil,
                                   productType: .simple)
         return [product3, product4]
+    }
+
+    enum MockError: Error {
+        case requestFailed
     }
 }

@@ -415,7 +415,7 @@ private extension ProductStore {
     ///
     func retrieveFirstPurchasableItemMatchFromIdentifier(siteID: Int64,
                                                          identifier: String,
-                                                         onCompletion: @escaping (Result<ItemIdentifierSearchResult, Error>) -> Void) {
+                                                         onCompletion: @escaping (Result<(ItemIdentifierSearchResult, ItemIdentifierSearchResultSource), Error>) -> Void) {
 
         guard !identifier.isEmpty else {
             return onCompletion(.failure(ProductLoadError.emptyIdentifier))
@@ -425,7 +425,7 @@ private extension ProductStore {
                                    keyword: identifier,
                                    completion: { result in
             switch result {
-            case let .success(products):
+            case let .success((products, source)):
                 let matchedProducts = products.filter { $0.sku == identifier || $0.globalUniqueID == identifier }
 
                 guard !matchedProducts.isEmpty else {
@@ -441,11 +441,11 @@ private extension ProductStore {
                                                                                                   siteID: siteID,
                                                                                                   productID: productVariation.productID,
                                                                                                   onCompletion: {
-                        onCompletion(.success(.variation(productVariation)))
+                        onCompletion(.success((.variation(productVariation), source)))
                     })
                 } else {
                     self.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: siteID, onCompletion: {
-                        onCompletion(.success(.product(product)))
+                        onCompletion(.success((.product(product), source)))
                     })
                 }
             case let .failure(error):
@@ -1278,7 +1278,7 @@ private extension ProductStore {
 }
 
 private extension ProductStore {
-    func searchProductsByIdentifier(siteID: Int64, keyword: String, completion: @escaping (Result<[Product], Error>) -> Void) {
+    func searchProductsByIdentifier(siteID: Int64, keyword: String, completion: @escaping (Result<([Product], ItemIdentifierSearchResultSource), Error>) -> Void) {
         remote.searchProductsBySKU(for: siteID,
                                    keyword: keyword,
                                    pageNumber: Remote.Default.firstPageNumber,
@@ -1298,10 +1298,15 @@ private extension ProductStore {
                                                               pageNumber: Remote.Default.firstPageNumber,
                                                               pageSize: ProductsRemote.Default.pageSize,
                                                               completion: { result in
-                    completion(result)
+                    switch result {
+                    case let .success(products):
+                        completion(.success((products, .globalUniqueIdentifier)))
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
                 })
             } else {
-                completion(.success(returningResults))
+                completion(.success((returningResults, .SKU)))
             }
         })
     }

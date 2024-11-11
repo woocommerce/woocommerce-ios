@@ -3051,6 +3051,15 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .orderProductSearchViaSKUSuccess, properties: properties)
         }
 
+        static func productSearchViaGlobalUniqueIDSuccess(from source: String, stockManaged: Bool? = nil) -> WooAnalyticsEvent {
+            var properties = [Keys.source: source]
+
+            if let stockManaged = stockManaged {
+                properties["stock_managed"] = "\(stockManaged)"
+            }
+            return WooAnalyticsEvent(statName: .orderProductSearchViaGlobalUniqueIdentifierSuccess, properties: properties)
+        }
+
         static func productSearchViaSKUFailure(from source: String,
                                                     symbology: BarcodeSymbology? = nil,
                                                     reason: String) -> WooAnalyticsEvent {

@@ -546,6 +546,7 @@ enum WooAnalyticsStat: String {
     case barcodeScanningSuccess = "barcode_scanning_success"
     case barcodeScanningFailure = "barcode_scanning_failure"
     case orderProductSearchViaSKUSuccess = "product_search_via_sku_success"
+    case orderProductSearchViaGlobalUniqueIdentifierSuccess = "product_search_via_global_unique_identifier_success"
     case orderProductSearchViaSKUFailure = "product_search_via_sku_failure"
 
     // MARK: Tax Rate selector

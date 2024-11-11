@@ -26,7 +26,9 @@ struct PointOfSaleEntryPointView: View {
                                               currencyFormatter: currencyFormatter,
                                               paymentState: .acceptingCard)
         let cartViewModel = CartViewModel(analytics: analytics)
-        let itemListViewModel = ItemListViewModel(itemProvider: itemProvider)
+
+        let shouldShowGhostableItemCard = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.displayInfiniteScrollingUIDetailsInPointOfSale)
+        let itemListViewModel = ItemListViewModel(itemProvider: itemProvider, shouldShowGhostableItemCard: shouldShowGhostableItemCard)
 
         self._viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
             cardPresentPaymentService: cardPresentPaymentService,

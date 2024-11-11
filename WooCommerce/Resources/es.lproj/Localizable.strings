@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-05 15:54:04+0000 */
+/* Translation-Revision-Date: 2024-11-06 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -10144,10 +10144,10 @@ which should be translated separately and considered part of this sentence. */
 "customFieldEditorView.editorPickerText" = "Texto";
 
 /* Notice shown when the key has been copied to clipboard */
-"customFieldEditorView.keyCopiedNotice" = "Copiado al portapapeles.";
+"customFieldEditorView.keyCopiedNotice" = "Clave copiada al portapapeles";
 
 /* Error message shown when the entered key is identical to an existing key. */
-"customFieldEditorView.keyErrorDisallowedKey" = "Esta clave ya se utiliza para otro campo personalizado. \nActualmente, la aplicación no permite crear claves duplicadas. Utiliza wp-admin para duplicar una clave si es necesario.";
+"customFieldEditorView.keyErrorDisallowedKey" = "Clave no válida: esta clave ya se utiliza para otro campo personalizado. \nActualmente, la aplicación no permite crear claves duplicadas. Utiliza wp-admin para duplicar una clave si es necesario.";
 
 /* Error message shown when key starts with underscore */
 "customFieldEditorView.keyErrorPrefix" = "Clave no válida: elimina el carácter «_» del principio.";
@@ -10159,7 +10159,7 @@ which should be translated separately and considered part of this sentence. */
 "customFieldEditorView.keyPlaceholder" = "Tecla Intro";
 
 /* Notice shown when the value has been copied to clipboard */
-"customFieldEditorView.valueCopiedNotice" = "El código se ha copiado en el portapapeles";
+"customFieldEditorView.valueCopiedNotice" = "El valor se ha copiado en el portapapeles";
 
 /* Label for the Value field */
 "customFieldEditorView.valueLabel" = "Valor";

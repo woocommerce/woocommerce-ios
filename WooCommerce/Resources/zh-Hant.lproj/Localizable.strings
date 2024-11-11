@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-05 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-11-06 11:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -11868,7 +11868,7 @@ which should be translated separately and considered part of this sentence. */
 "productInventorySettings.globalUniqueIdentifier.title" = "GTIN、UPC、EAN、ISBN";
 
 /* The message of the alert when there is an error updating the product global unique identifier */
-"productInventorySettings.invalidGlobalUniqueIdentifier.error" = "請只輸入數字與連字號 (-)。";
+"productInventorySettings.invalidGlobalUniqueIdentifier.error" = "只能輸入數字與連字號 (-)。";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "帳單間隔";
@@ -12545,7 +12545,7 @@ which should be translated separately and considered part of this sentence. */
 "wooShipping.createLabel.shippingRate.placeholderTitle" = "選取包裹以取得貨運費率";
 
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
-"wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "需成人簽名";
+"wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "需成年人簽名";
 
 /* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
 "wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (基本費用)";
@@ -12596,22 +12596,22 @@ which should be translated separately and considered part of this sentence. */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
 
 /* Link for more information about how to print a purchased shipping label on the shipping label screen */
-"wooShipping.createLabels.postPurchase.info" = "了解如何從行動裝置列印";
+"wooShipping.createLabels.postPurchase.info" = "了解如何從行動裝置印製";
 
 /* Navigation bar title of shipping label printing instructions screen */
-"wooShipping.createLabels.postPurchase.infoTitle" = "從行動裝置列印";
+"wooShipping.createLabels.postPurchase.infoTitle" = "從行動裝置印製";
 
 /* Note about reusing a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.note" = "請注意：若你重複使用已印製標籤，此行為將違反我們的服務條款，並可能會導致刑事責任。";
 
 /* Title for button to print a purchased shipping label on the shipping label screen */
-"wooShipping.createLabels.postPurchase.printButton" = "列印貨運標籤";
+"wooShipping.createLabels.postPurchase.printButton" = "印製貨運標籤";
 
 /* Message displayed on the shipping label screen when a purchased shipping label can be printed */
 "wooShipping.createLabels.postPurchase.printMessage" = "你可以在這裡再次印製貨運標籤，或變更標籤的紙張大小。";
 
 /* Heading displayed on the shipping label screen when a purchased shipping label can be printed */
-"wooShipping.createLabels.postPurchase.readyToPrint" = "貨運標籤已可供印製";
+"wooShipping.createLabels.postPurchase.readyToPrint" = "你的貨運標籤已可供印製";
 
 /* Link to request a refund for a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.requestRefund" = "要求退款";

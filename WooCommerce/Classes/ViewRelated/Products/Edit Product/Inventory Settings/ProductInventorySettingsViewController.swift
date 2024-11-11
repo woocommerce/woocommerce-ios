@@ -8,8 +8,8 @@ final class ProductInventorySettingsViewController: UIViewController {
     enum FormType {
         /// Allows editing all inventory settings.
         case inventory
-        /// Only SKU is editable.
-        case sku
+        /// Only SKU and Global Unique Identifier are editable.
+        case onlyIdentifiers
     }
 
     private let viewModel: ProductInventorySettingsViewModelOutput & ProductInventorySettingsActionHandler
@@ -55,7 +55,7 @@ final class ProductInventorySettingsViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        if viewModel.formType == .sku {
+        if viewModel.formType == .onlyIdentifiers {
             configureSKUFormTextFieldAsFirstResponder()
         }
     }
@@ -82,13 +82,7 @@ private extension ProductInventorySettingsViewController {
 private extension ProductInventorySettingsViewController {
 
     func configureNavigationBar() {
-        switch viewModel.formType {
-        case .inventory:
-            title = NSLocalizedString("Inventory", comment: "Product Inventory Settings navigation title")
-        case .sku:
-            title = NSLocalizedString("SKU", comment: "Edit Product SKU navigation title")
-        }
-
+        title = NSLocalizedString("Inventory", comment: "Product Inventory Settings navigation title")
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(completeUpdating))
     }
 
@@ -226,7 +220,6 @@ extension ProductInventorySettingsViewController: UITableViewDelegate {
             fatalError()
         }
         headerView.configure(title: errorTitle)
-        headerView.addTopSpacing()
         UIAccessibility.post(notification: .layoutChanged, argument: headerView)
         return headerView
     }
@@ -280,12 +273,12 @@ private extension ProductInventorySettingsViewController {
                 self?.handleSKUValidation(isValid: isValid, shouldBringUpKeyboard: shouldBringUpKeyboard)
             }
         }
-        switch viewModel.error {
-        case .duplicatedSKU, .invalidSKU:
+
+        let thereIsAnSKUError = viewModel.errors.contains(.duplicatedSKU) || viewModel.errors.contains(.invalidSKU)
+        if thereIsAnSKUError {
             cellViewModel = cellViewModel.stateUpdated(state: .error)
-        default:
-            break
         }
+
         cell.configure(viewModel: cellViewModel)
         cell.setSpacingBetweenTitleAndTextField(30)
         cell.setKeyboardType(keyboardType: .default)
@@ -315,7 +308,7 @@ private extension ProductInventorySettingsViewController {
             }
         }
 
-        if viewModel.error == .invalidGlobalUniqueIdentifier {
+        if viewModel.errors.contains(.invalidGlobalUniqueIdentifier) {
             cellViewModel = cellViewModel.stateUpdated(state: .error)
         }
 
@@ -399,7 +392,7 @@ private extension ProductInventorySettingsViewController {
 
         startBarcodeScanning(onCompletion: { [weak self] barcode in
             ServiceLocator.analytics.track(.productInventorySettingsGlobalUniqueIDScanned)
-            self?.viewModel.handleGlobalUniqueIdentifierFromBarcodeScanner("123as", onValidation: {[weak self] isValid, shouldBringUpKeyboard in
+            self?.viewModel.handleGlobalUniqueIdentifierFromBarcodeScanner(barcode, onValidation: {[weak self] isValid, shouldBringUpKeyboard in
                 self?.handleGlobalUniqueIdentifierValidation(isValid: isValid, shouldBringUpKeyboard: shouldBringUpKeyboard)})
         })
     }
@@ -427,14 +420,14 @@ private extension ProductInventorySettingsViewController {
 
 private extension ProductInventorySettingsViewController {
     func handleSKUValidation(isValid: Bool, shouldBringUpKeyboard: Bool) {
-        enableDoneButton(isValid)
+        enableDoneButton(viewModel.errors.isEmpty)
         if shouldBringUpKeyboard {
             getTitleAndTextFieldCell(from: .sku)?.textFieldBecomeFirstResponder()
         }
     }
 
     func handleGlobalUniqueIdentifierValidation(isValid: Bool, shouldBringUpKeyboard: Bool) {
-        enableDoneButton(isValid)
+        enableDoneButton(viewModel.errors.isEmpty)
         if shouldBringUpKeyboard {
             getTitleAndTextFieldCell(from: .globalUniqueIdentifier)?.textFieldBecomeFirstResponder()
         }

@@ -3,8 +3,8 @@ import XCTest
 import Yosemite
 @testable import WooCommerce
 
-final class BarcodeSKUScannerItemFinderTests: XCTestCase {
-    private var sut: BarcodeSKUScannerItemFinder!
+final class BarcodeScannerItemFinderTests: XCTestCase {
+    private var sut: BarcodeScannerItemFinder!
     private var stores: MockStoresManager!
     private var storageManager: MockStorageManager!
     private var analyticsProvider: MockAnalyticsProvider!
@@ -17,7 +17,7 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
 
-        sut = BarcodeSKUScannerItemFinder(stores: stores, analytics: analytics)
+        sut = BarcodeScannerItemFinder(stores: stores, analytics: analytics)
 
     }
 
@@ -38,7 +38,7 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
         let symbology = BarcodeSymbology.aztec
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
-            case .retrieveFirstPurchasableItemMatchFromSKU(_, _, let onCompletion):
+            case .retrieveFirstPurchasableItemMatchFromIdentifier(_, _, let onCompletion):
                 onCompletion(.failure(productNotFoundError))
             default:
                 XCTFail("Expected failure, got success")
@@ -49,7 +49,7 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
         var retrievedError: Error?
 
         do {
-            _ = try await sut.searchBySKU(from: scannedBarcode, siteID: 1, source: source)
+            _ = try await sut.searchByIdentifier(from: scannedBarcode, siteID: 1, source: source)
         } catch {
             retrievedError = error
         }
@@ -67,7 +67,7 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
         let returningProduct = Product.fake()
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
-            case .retrieveFirstPurchasableItemMatchFromSKU(_, _, let onCompletion):
+            case .retrieveFirstPurchasableItemMatchFromIdentifier(_, _, let onCompletion):
                 onCompletion(.success(.product(returningProduct)))
             default:
                 break
@@ -76,7 +76,7 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
 
         // When
         let scannedBarcode = ScannedBarcode(payloadStringValue: "123456", symbology: .aztec)
-        let result = try? await sut.searchBySKU(from: scannedBarcode, siteID: 1, source: source)
+        let result = try? await sut.searchByIdentifier(from: scannedBarcode, siteID: 1, source: source)
 
         guard case let .product(retrievedProduct) = result else {
             return XCTFail("It didn't provide a product as expected")
@@ -104,7 +104,7 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
-            case let .retrieveFirstPurchasableItemMatchFromSKU(_, givenSKU, onCompletion):
+            case let .retrieveFirstPurchasableItemMatchFromIdentifier(_, givenSKU, onCompletion):
                 if givenSKU == productSKU {
                     onCompletion(.success(.product(returningProduct)))
                 } else {
@@ -116,7 +116,7 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
         })
 
         // When
-        let result = try? await sut.searchBySKU(from: scannedBarcode, siteID: 1, source: .orderCreation)
+        let result = try? await sut.searchByIdentifier(from: scannedBarcode, siteID: 1, source: .orderCreation)
 
         guard case let .product(retrievedProduct) = result else {
             return XCTFail("It didn't provide a product as expected")
@@ -135,7 +135,7 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
-            case let .retrieveFirstPurchasableItemMatchFromSKU(_, givenSKU, onCompletion):
+            case let .retrieveFirstPurchasableItemMatchFromIdentifier(_, givenSKU, onCompletion):
                 if givenSKU == productSKU {
                     onCompletion(.success(.product(returningProduct)))
                 } else {
@@ -147,7 +147,7 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
         })
 
         // When
-        let result = try? await sut.searchBySKU(from: scannedBarcode, siteID: 1, source: .orderCreation)
+        let result = try? await sut.searchByIdentifier(from: scannedBarcode, siteID: 1, source: .orderCreation)
 
         guard case let .product(retrievedProduct) = result else {
             return XCTFail("It didn't provide a product as expected")

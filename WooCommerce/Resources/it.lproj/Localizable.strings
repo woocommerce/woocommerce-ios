@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-05 15:54:04+0000 */
+/* Translation-Revision-Date: 2024-11-06 17:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -10207,7 +10207,7 @@ which should be translated separately and considered part of this sentence. */
 "customFieldsListHostingController.title" = "Campi personalizzati";
 
 /* Content of the banner when there are unsaved custom fields */
-"customFieldsListTopBanner.description" = "Quando salvi le modifiche ai campi personalizzati, queste avranno effetto immediatamente.";
+"customFieldsListTopBanner.description" = "Quando salvi le modifiche ai campi personalizzati, queste avranno effetto immediato.";
 
 /* Dismiss button title */
 "customFieldsListTopBanner.dismiss" = "Ignora";

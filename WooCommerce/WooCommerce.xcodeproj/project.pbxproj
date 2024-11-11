@@ -6829,7 +6829,6 @@
 				026826922BF59D830036F959 /* PointOfSaleDashboardViewModel.swift */,
 				019C5EAF2C516F7B005B82D3 /* ItemListViewModelProtocol.swift */,
 				683763152C2E44B800AD51D0 /* ItemListViewModel.swift */,
-				20C6E7502CDE4AEA00CD124C /* ItemListState.swift */,
 				C7F746C82C4868670023ADD0 /* TotalsViewModelProtocol.swift */,
 				6885E2CB2C32B14B004C8D70 /* TotalsViewModel.swift */,
 				016BCAFE2C4F907F009D8367 /* CartViewModelProtocol.swift */,
@@ -9449,6 +9448,7 @@
 		68F151DF2C0DA7800082AEC8 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				20C6E7502CDE4AEA00CD124C /* ItemListState.swift */,
 				68F151E02C0DA7910082AEC8 /* CartItem.swift */,
 				DAD988C52C4A9CF9009DE9E3 /* CartItem+Order.swift */,
 			);

@@ -223,7 +223,6 @@ private extension ReceiptStore {
     /// Sends the receipt for the order to the provided email address.
     /// Updates the billing address of the order to the provided email address and triggers the sending of the receipt.
     /// - Parameters:
-    ///  - siteId: The site ID associated with the order.
     ///  - order: The order for which the receipt is being sent.
     ///  - email: The email address to which the receipt is being sent.
     ///  - onCompletion: The completion block to call when the operation is complete.

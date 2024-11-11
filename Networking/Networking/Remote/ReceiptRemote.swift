@@ -36,7 +36,7 @@ public final class ReceiptRemote: Remote {
     ///
     /// - Parameters:
     ///    - siteID: Site which hosts the Order.
-    ///    - order: Order to send the receipt for.
+    ///    - orderID: ID of the order that the receipt is associated to.
     ///
     public func sendReceipt(siteID: Int64, orderID: Int64) async throws {
         let path = "\(Constants.ordersPath)/\(orderID)/\(Constants.actionsPath)/send_order_details"

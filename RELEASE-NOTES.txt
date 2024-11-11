@@ -5,7 +5,7 @@
 -----
 - [*] Order editing: disable editing orders in other currencies, due to risk of showing incorrect information [https://github.com/woocommerce/woocommerce-ios/pull/14345]
 - [Internal] Update Zendesk SDK to 9.0.0 [https://github.com/woocommerce/woocommerce-ios/pull/14360]
- 
+- [*] Payments onboarding: for two onboarding errors that show a wp-admin Payments setup URL in a webview ("Payments plugin not setup" and "Stripe overdue" errors that can occur to both WooPayments and Stripe Extension), the webview is now set to Payments Connect instead of Payments Overview. [https://github.com/woocommerce/woocommerce-ios/pull/14297]
 
 21.1
 -----

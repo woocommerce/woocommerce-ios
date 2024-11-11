@@ -6,6 +6,7 @@ import Combine
 final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
     private var sut: PointOfSaleDashboardViewModel!
+    private var mockPOSModel: MockPointOfSaleAggregateModel!
     private var cardPresentPaymentService: MockCardPresentPaymentService!
     private var itemProvider: MockPOSItemProvider!
     private var mockCartViewModel: MockCartViewModel!
@@ -17,13 +18,15 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        mockPOSModel = MockPointOfSaleAggregateModel()
         cardPresentPaymentService = MockCardPresentPaymentService()
         itemProvider = MockPOSItemProvider()
         mockCartViewModel = MockCartViewModel()
         mockTotalsViewModel = MockTotalsViewModel()
         mockItemListViewModel = MockItemListViewModel()
         mockConnectivityObserver = MockConnectivityObserver()
-        sut = PointOfSaleDashboardViewModel(cardPresentPaymentService: cardPresentPaymentService,
+        sut = PointOfSaleDashboardViewModel(posModel: mockPOSModel,
+                                            cardPresentPaymentService: cardPresentPaymentService,
                                             totalsViewModel: mockTotalsViewModel,
                                             cartViewModel: mockCartViewModel,
                                             itemListViewModel: mockItemListViewModel,
@@ -295,34 +298,6 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         // Then
         wait(for: [expectation], timeout: 1.0)
         XCTAssertEqual(receivedOrderStage, .building)
-    }
-
-    func test_dashboard_when_item_list_loading_and_empty_then_isInitialLoading_is_false() {
-        // Given
-        mockItemListViewModel.items = []
-        mockItemListViewModel.state = .loading([])
-
-        // Then
-        XCTAssertFalse(sut.isInitialLoading)
-    }
-
-    func test_dashboard_when_item_list_empty_then_isInitialLoading_is_false() {
-        // Given
-        mockItemListViewModel.items = []
-        mockItemListViewModel.state = .empty
-
-        // Then
-        XCTAssertFalse(sut.isInitialLoading)
-    }
-
-    func test_dashboard_when_item_list_loaded_then_isInitialLoading_false() {
-        // Given
-        let items = [Self.makeItem()]
-        mockItemListViewModel.items = items
-        mockItemListViewModel.state = .loaded(items)
-
-        // Then
-        XCTAssertFalse(sut.isInitialLoading)
     }
 
     func test_cartSubmitted_sets_cartViewModel_canDeleteItems_false() {

@@ -5,7 +5,7 @@ enum ItemListState: Equatable {
     case initialLoading
     case loading(_ currentItems: [POSItem])
     case loaded(_ items: [POSItem])
-    case error(ItemListErrorModel)
+    case error(PointOfSaleErrorState)
 
     var isLoadingAfterInitialLoad: Bool {
         switch self {
@@ -13,17 +13,6 @@ enum ItemListState: Equatable {
             return true
         default:
             return false
-        }
-    }
-
-    var hasError: ItemListErrorModel {
-        switch self {
-        case .error(let errorModel):
-            return errorModel
-        default:
-            return ItemListErrorModel(title: "Unknown error",
-                                      subtitle: "Unknown error",
-                                      buttonText: "Retry")
         }
     }
 

@@ -12,7 +12,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     @Published private var currentPage: Int = Constants.initialPage
 
-    private(set) var shouldShowGhostableItemCard: Bool?
+    private(set) var shouldShowGhostableItemCard: Bool = false
 
     var shouldShowHeaderBanner: Bool {
         // The banner it's shown as long as it hasn't already been dismissed once:
@@ -30,7 +30,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     var itemsPublisher: Published<[POSItem]>.Publisher { $items }
     var statePublisher: Published<ItemListViewModel.ItemListState>.Publisher { $state }
 
-    init(itemProvider: POSItemProvider, shouldShowGhostableItemCard: Bool? = false) {
+    init(itemProvider: POSItemProvider, shouldShowGhostableItemCard: Bool = false) {
         self.itemProvider = itemProvider
         self.shouldShowGhostableItemCard = shouldShowGhostableItemCard
         selectedItemPublisher = selectedItemSubject.eraseToAnyPublisher()

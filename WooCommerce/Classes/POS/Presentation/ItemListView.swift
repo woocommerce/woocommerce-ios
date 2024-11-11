@@ -130,10 +130,8 @@ private extension ItemListView {
                         ItemCardView(item: item)
                     })
                 }
-                if let shouldShowGhostableItemCard = viewModel.shouldShowGhostableItemCard {
-                    GhostItemCardView()
-                        .renderedIf(shouldShowGhostableItemCard && viewModel.state == .loading)
-                }
+                GhostItemCardView()
+                    .renderedIf(viewModel.shouldShowGhostableItemCard && viewModel.state == .loading)
             }
             .padding(.bottom, floatingControlAreaSize.height)
             .padding(.horizontal, Constants.itemListPadding)

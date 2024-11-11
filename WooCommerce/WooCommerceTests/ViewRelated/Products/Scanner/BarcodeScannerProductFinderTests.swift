@@ -68,7 +68,7 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
             case .retrieveFirstPurchasableItemMatchFromIdentifier(_, _, let onCompletion):
-                onCompletion(.success(.product(returningProduct)))
+                onCompletion(.success((.product(returningProduct), .SKU)))
             default:
                 break
             }
@@ -106,7 +106,7 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
             switch action {
             case let .retrieveFirstPurchasableItemMatchFromIdentifier(_, givenSKU, onCompletion):
                 if givenSKU == productSKU {
-                    onCompletion(.success(.product(returningProduct)))
+                    onCompletion(.success((.product(returningProduct), .SKU)))
                 } else {
                     onCompletion(.failure(ProductLoadError.notFound))
                 }
@@ -137,7 +137,7 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
             switch action {
             case let .retrieveFirstPurchasableItemMatchFromIdentifier(_, givenSKU, onCompletion):
                 if givenSKU == productSKU {
-                    onCompletion(.success(.product(returningProduct)))
+                    onCompletion(.success((.product(returningProduct), .SKU)))
                 } else {
                     onCompletion(.failure(ProductLoadError.notFound))
                 }

@@ -14,7 +14,7 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
             return items
         }
     }
-    
+
     var itemListState: ItemListState
 
     init(itemListState: ItemListState = .initialLoading) {

@@ -51,6 +51,8 @@ public class ReceiptStore: Store {
             saveReceipt(order: order, parameters: info)
         case .retrieveReceipt(order: let order, onCompletion: let onCompletion):
             retrieveReceipt(order: order, onCompletion: onCompletion)
+        case let .sendReceipt(order, email, onCompletion):
+            sendReceipt(order: order, email: email, onCompletion: onCompletion)
         }
     }
 }
@@ -216,6 +218,48 @@ private extension ReceiptStore {
         } catch {
             DDLogError("⛔️ Unable to save receipt for order id: \(order.orderID)")
         }
+    }
+
+    /// Sends the receipt for the order to the provided email address.
+    /// Updates the billing address of the order to the provided email address and triggers the sending of the receipt.
+    /// - Parameters:
+    ///  - siteId: The site ID associated with the order.
+    ///  - order: The order for which the receipt is being sent.
+    ///  - email: The email address to which the receipt is being sent.
+    ///  - onCompletion: The completion block to call when the operation is complete.
+    ///
+    func sendReceipt(order: Order, email: String, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        let updatedBillingAddress = order.billingAddress?.copy(email: email) ?? Address(firstName: "",
+                                                                                        lastName: "",
+                                                                                        company: nil,
+                                                                                        address1: "",
+                                                                                        address2: nil,
+                                                                                        city: "",
+                                                                                        state: "",
+                                                                                        postcode: "",
+                                                                                        country: "",
+                                                                                        phone: nil,
+                                                                                        email: email)
+        let orderToUpdate = order.copy(billingAddress: updatedBillingAddress)
+
+        let action = OrderAction.updateOrder(siteID: order.siteID, order: orderToUpdate, giftCard: nil, fields: [.billingAddress]) { result in
+            switch result {
+            case let .success(updatedOrder):
+                Task { [weak self] in
+                    guard let self else { return }
+                      do {
+                          try await remote.sendReceipt(siteID: order.siteID, orderID: order.orderID)
+                          onCompletion(.success(updatedOrder))
+                      } catch {
+                          onCompletion(.failure(error))
+                      }
+                  }
+            case let .failure(error):
+                onCompletion(.failure(error))
+            }
+        }
+
+        dispatcher.dispatch(action)
     }
 }
 

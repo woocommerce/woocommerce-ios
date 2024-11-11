@@ -6,6 +6,7 @@ struct BlazeEditAdView: View {
     private enum Field: Hashable {
         case tagline
         case description
+        case ctaText
     }
 
     @Environment(\.dismiss) private var dismiss
@@ -36,6 +37,8 @@ struct BlazeEditAdView: View {
                         tagline
 
                         description
+
+                        ctaText
 
                         suggestedByAI
                     }
@@ -157,6 +160,40 @@ private extension BlazeEditAdView {
 
             Text(viewModel.descriptionFooterText)
                 .foregroundStyle(viewModel.isDescriptionValidated ? .secondary : Color(.error))
+                .footnoteStyle()
+        }
+    }
+
+    var ctaText: some View {
+        VStack(alignment: .leading, spacing: Layout.textBlockVerticalSpacing) {
+            Text(Localization.CTAText.title)
+                .foregroundColor(Color(.label))
+                .subheadlineStyle()
+
+            ZStack(alignment: .topLeading) {
+                TextEditor(text: $viewModel.ctaText)
+                    .bodyStyle()
+                    .foregroundColor(.secondary)
+                    .padding(insets: Layout.textFieldContentInsets)
+                    .frame(minHeight: Layout.CTAText.minimumEditorHeight * scale, maxHeight: .infinity)
+                    .focused($focusedField, equals: .ctaText)
+
+                // Placeholder text
+                Text(Localization.CTAText.placeholder)
+                    .foregroundColor(Color(.placeholderText))
+                    .bodyStyle()
+                    .padding(insets: Layout.placeholderInsets)
+                    // Allows gestures to pass through to the `TextEditor`.
+                    .allowsHitTesting(false)
+                    .renderedIf(viewModel.ctaText.isEmpty)
+            }
+            .overlay(
+                RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                    .stroke(focusedField == .ctaText ? Color(.brand) : Color(.separator), lineWidth: Layout.strokeWidth)
+            )
+
+            Text(viewModel.ctaTextFooterText)
+                .foregroundStyle(viewModel.isCtaTextValidated ? .secondary : Color(.error))
                 .footnoteStyle()
         }
     }
@@ -292,6 +329,19 @@ private extension BlazeEditAdView {
                 comment: "Placeholder for Description text field in the Blaze Edit Ad screen."
             )
         }
+        enum CTAText {
+            static let title = NSLocalizedString(
+                "blazeEditAdView.ctaText.title",
+                value: "Call to Action",
+                comment: "CTA Text title text in the Blaze Edit Ad screen."
+            )
+
+            static let placeholder = NSLocalizedString(
+                "blazeEditAdView.ctaText.placeholder",
+                value: "CTA text",
+                comment: "Placeholder for CTA Text field in the Blaze Edit Ad screen."
+            )
+        }
         static let suggestedByAI = NSLocalizedString(
             "blazeEditAdView.suggestedByAI",
             value: "Suggested by AI",
@@ -324,6 +374,10 @@ private enum Layout {
 
     enum Description {
         static let minimumEditorHeight: CGFloat = 140
+    }
+
+    enum CTAText {
+        static let minimumEditorHeight: CGFloat = 54
     }
 
     enum SuggestedByAI {

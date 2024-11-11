@@ -80,6 +80,10 @@ final class BlazeEditAdViewModel: ObservableObject {
         }
     }
 
+    var isCtaTextValidated: Bool {
+        ctaText.count <= Constants.ctaTextMaxLength
+    }
+
     @Published private var ctaTextRemainingLength: Int
     private var ctaTextLengthLimitLabel: String {
         let lengthText = String.pluralize(ctaTextRemainingLength,

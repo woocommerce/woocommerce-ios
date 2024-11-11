@@ -18,7 +18,7 @@ struct WooAddCustomPackageView: View {
         self.viewModel = viewModel
         self.addPackageAction = addPackageAction
     }
-    
+
     private var packageTypeSelectionView: some View {
         Menu {
             // show selection

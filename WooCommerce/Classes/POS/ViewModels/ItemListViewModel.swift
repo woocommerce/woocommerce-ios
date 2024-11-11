@@ -8,8 +8,6 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     @Published private(set) var isHeaderBannerDismissed: Bool = false
     @Published var showSimpleProductsModal: Bool = false
 
-    @Published private var currentPage: Int = Constants.initialPage
-
     var shouldShowHeaderBanner: Bool {
         // The banner it's shown as long as it hasn't already been dismissed once:
         if UserDefaults.standard.bool(forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey) == true {
@@ -41,25 +39,17 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     @MainActor
     func loadInitialItems() async {
-        try? await posModel.loadInitialItems()
+        await posModel.loadInitialItems()
     }
 
     @MainActor
     func loadNextItems() async {
-        do {
-            // TODO: Optimize API calls. gh-14186
-            // If there are no more pages to fetch, we can avoid the next call.
-            let nextPage = currentPage + 1
-            try await posModel.loadItems(pageNumber: nextPage)
-            currentPage = nextPage
-        } catch {
-            // No need to do anything; this avoids us incorrectly incrementing currentPage.
-        }
+        await posModel.loadNextItems()
     }
 
     @MainActor
     func reload() async {
-        try? await posModel.reload()
+        await posModel.reload()
     }
 
     func dismissBanner() {
@@ -75,11 +65,5 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 extension ItemListViewModel {
     struct BannerState {
         static let isSimpleProductsOnlyBannerDismissedKey = "isSimpleProductsOnlyBannerDismissed"
-    }
-}
-
-private extension ItemListViewModel {
-    enum Constants {
-        static let initialPage: Int = 1
     }
 }

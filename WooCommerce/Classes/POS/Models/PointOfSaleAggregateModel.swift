@@ -8,9 +8,9 @@ protocol PointOfSaleAggregateModelProtocol {
     var allItems: [POSItem] { get }
     var itemListState: ItemListState { get }
 
-    func loadInitialItems() async throws
-    func loadItems(pageNumber: Int) async throws
-    func reload() async throws
+    func loadInitialItems() async
+    func loadNextItems() async
+    func reload() async
 }
 
 class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProtocol {
@@ -18,6 +18,8 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     @Published private(set) var itemListState: ItemListState = .initialLoading
 
     private let itemProvider: POSItemProvider
+
+    private var currentPage: Int = Constants.initialPage
 
     init(itemProvider: POSItemProvider) {
         self.itemProvider = itemProvider
@@ -27,21 +29,31 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 // MARK: - ItemList
 extension PointOfSaleAggregateModel {
     @MainActor
-    func loadInitialItems() async throws {
+    func loadInitialItems() async {
         itemListState = .initialLoading
-        try await load(pageNumber: Constants.initialPage)
+        try? await load(pageNumber: Constants.initialPage)
     }
 
     @MainActor
-    func loadItems(pageNumber: Int) async throws {
-        itemListState = .loading(allItems)
-        try await load(pageNumber: pageNumber)
+    func loadNextItems() async {
+        do {
+            itemListState = .loading(allItems)
+            // TODO: Optimize API calls. gh-14186
+            // If there are no more pages to fetch, we can avoid the next call.
+            let nextPage = currentPage + 1
+            try await load(pageNumber: nextPage)
+            currentPage = nextPage
+        } catch {
+            // No need to do anything; this avoids us incorrectly incrementing currentPage.
+        }
     }
 
     @MainActor
-    func reload() async throws {
+    func reload() async {
         allItems.removeAll()
-        try await loadItems(pageNumber: Constants.initialPage)
+        currentPage = Constants.initialPage
+        itemListState = .loading(allItems)
+        try? await load(pageNumber: currentPage)
     }
 
     @MainActor

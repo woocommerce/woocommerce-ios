@@ -9,7 +9,9 @@ final class MockPOSItemProvider: POSItemProvider {
     var shouldReturnZeroItems = false
     var shouldSimulateTwoPages = false
 
+    var spyLastRequestedPageNumber: Int?
     func providePointOfSaleItems(pageNumber: Int) async throws -> [Yosemite.POSItem] {
+        spyLastRequestedPageNumber = pageNumber
         if shouldThrowError {
             throw MockError.requestFailed
         }

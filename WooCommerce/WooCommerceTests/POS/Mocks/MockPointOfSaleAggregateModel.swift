@@ -23,7 +23,7 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     func loadInitialItems() async { }
 
-    func loadItems(pageNumber: Int) async { }
+    func loadNextItems() async { }
 
     func reload() async { }
 }

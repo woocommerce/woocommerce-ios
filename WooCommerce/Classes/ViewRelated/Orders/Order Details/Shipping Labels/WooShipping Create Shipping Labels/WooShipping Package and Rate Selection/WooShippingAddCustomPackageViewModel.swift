@@ -11,15 +11,15 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     @Published var showSaveTemplate: Bool = false
     @Published var packageTemplateName: String = ""
     // The dimension unit used in the store (e.g. "in")
-    let dimensionUnit: String
+    let dimensionsUnit: String
     // The weight unit used in the store (e.g. "kg")
     let weightUnit: String
 
     // MARK: Initialization
 
-    init(dimensionUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
+    init(dimensionsUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
-        self.dimensionUnit = dimensionUnit ?? ""
+        self.dimensionsUnit = dimensionsUnit ?? ""
         self.weightUnit = weightUnit ?? ""
     }
 
@@ -52,20 +52,40 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
         packageTemplateName = ""
     }
 
-    func addPackageAction() {
-        // TODO: implement adding a package
-        guard validateCustomPackageInputFields() else { return }
+    private var packageDataFromCurrentData: WooShippingPackageDataRepresentable {
+        return WooShippingPackageData(id: UUID().uuidString,
+                                   name: packageTemplateName,
+                                   length: fieldValues[.length] ?? "",
+                                   width: fieldValues[.width] ?? "",
+                                   height: fieldValues[.height] ?? "",
+                                   dimensionsUnit: dimensionsUnit,
+                                   weight: fieldValues[.weight] ?? "",
+                                   weightUnit: weightUnit,
+                                   source: .custom,
+                                   packageType: packageType.name)
+    }
+
+    private func preparePackageData() -> WooShippingPackageDataRepresentable? {
+        guard validateCustomPackageInputFields() else { return nil }
+
+        let packageData = packageDataFromCurrentData
 
         // Cleanup after adding package
         resetValues()
+
+        return packageData
     }
 
-    func savePackageAsTemplateAction() {
-        // TODO: implement saving package as a template
-        guard validateCustomPackageInputFields() else { return }
+    func addPackageAction() -> WooShippingPackageDataRepresentable? {
+        let packageData = preparePackageData()
+        // TODO: implement adding a package with the package data
+        return packageData
+    }
 
-        // Cleanup after saving package template
-        resetValues()
+    func savePackageAsTemplateAction() -> WooShippingPackageDataRepresentable? {
+        let packageData = preparePackageData()
+        // TODO: implement saving package as a template with the package data
+        return packageData
     }
 
     func validateCustomPackageInputFields() -> Bool {

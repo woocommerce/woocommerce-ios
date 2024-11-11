@@ -1,5 +1,6 @@
 import SwiftUI
 import Combine
+import protocol WooFoundation.Analytics
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSItem
 import struct Yosemite.Order
@@ -68,15 +69,18 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     private let orderService: POSOrderServiceProtocol
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let currencyFormatter: CurrencyFormatter
+    private let analytics: Analytics
 
     init(orderService: POSOrderServiceProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          currencyFormatter: CurrencyFormatter,
-         paymentState: PaymentState) {
+         paymentState: PaymentState,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.orderService = orderService
         self.cardPresentPaymentService = cardPresentPaymentService
         self.currencyFormatter = currencyFormatter
         self.paymentState = paymentState
+        self.analytics = analytics
         self.formattedCartTotalPrice = nil
         self.formattedOrderTotalPrice = nil
         self.formattedOrderTotalTaxPrice = nil
@@ -130,9 +134,22 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     }
 
     /// Called when the onboarding UI is dismissed.
-    /// It is set when receiving an onboarding view model to display, and necessary to reset the internal onboarding state on UI dismissal.
+    /// For external dismissal (tapping CTA to dismiss), this method is called twice - the first time to dismiss the onboarding UI
+    /// by setting `cardPresentPaymentOnboardingViewModel` to nil, the second time triggered by internal dismissal.
+    /// For internal dismissal (tapping outside the modal), this method is called once.
+    /// This method is used to reset the internal state of the onboarding UI and track the dismissal event.
     func cancelOnboarding() {
+        guard let onboardingViewModel = cardPresentPaymentOnboardingViewModel else {
+            return
+        }
+        analytics.track(event: .PointOfSale.paymentsOnboardingDismissed(onboardingState: onboardingViewModel.state))
+        cardPresentPaymentOnboardingViewModel = nil
         onOnboardingCancellation?()
+    }
+
+    /// Tracks when the onboarding UI is shown.
+    func trackOnboardingShown() {
+        analytics.track(event: .PointOfSale.paymentsOnboardingShown())
     }
 
     private func editOrder() {

@@ -1,5 +1,6 @@
 import XCTest
 @testable import WooCommerce
+import Yosemite
 
 final class WooShippingServiceViewModelTests: XCTestCase {
 
@@ -13,7 +14,9 @@ final class WooShippingServiceViewModelTests: XCTestCase {
 
     func test_generateServiceTabs_returns_expected_data() throws {
         // Given
-        let viewModel = WooShippingServiceViewModel()
+        let viewModel = WooShippingServiceViewModel(standardRates: sampleStandardRates(),
+                                                    signatureRates: sampleSignatureRates(),
+                                                    adultSignatureRates: sampleAdultSignatureRates())
 
         // Then
         XCTAssertEqual(viewModel.serviceTabs.count, 2)
@@ -65,7 +68,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
 
     func test_selecting_service_card_standard_rate_updates_expected_values() {
         // Given
-        let viewModel = WooShippingServiceViewModel()
+        let viewModel = WooShippingServiceViewModel(standardRates: sampleStandardRates())
         let card = viewModel.serviceTabs[0].cards[1]
         XCTAssertNil(viewModel.selectedRate)
         XCTAssertFalse(card.selected)
@@ -83,7 +86,8 @@ final class WooShippingServiceViewModelTests: XCTestCase {
 
     func test_selecting_service_card_signature_rate_updates_expected_values() {
         // Given
-        let viewModel = WooShippingServiceViewModel()
+        let viewModel = WooShippingServiceViewModel(standardRates: sampleStandardRates(),
+                                                    signatureRates: sampleSignatureRates())
         let card = viewModel.serviceTabs[0].cards[1]
         XCTAssertNil(viewModel.selectedRate)
         XCTAssertFalse(card.selected)
@@ -101,7 +105,8 @@ final class WooShippingServiceViewModelTests: XCTestCase {
 
     func test_selecting_service_card_adult_signature_rate_updates_expected_values() {
         // Given
-        let viewModel = WooShippingServiceViewModel()
+        let viewModel = WooShippingServiceViewModel(standardRates: sampleStandardRates(),
+                                                    adultSignatureRates: sampleAdultSignatureRates())
         let card = viewModel.serviceTabs[0].cards[1]
         XCTAssertNil(viewModel.selectedRate)
         XCTAssertFalse(card.selected)
@@ -119,7 +124,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
 
     func test_sortShipping_by_price_returns_sorted_list() {
         // Given
-        let viewModel = WooShippingServiceViewModel()
+        let viewModel = WooShippingServiceViewModel(standardRates: sampleStandardRates())
 
         // When
         viewModel.sortShipping(by: .price)
@@ -132,7 +137,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
 
     func test_shortShipping_by_deliveryDays_returns_sorted_list() {
         // Given
-        let viewModel = WooShippingServiceViewModel()
+        let viewModel = WooShippingServiceViewModel(standardRates: sampleStandardRates())
 
         // When
         viewModel.sortShipping(by: .deliveryTime)
@@ -143,4 +148,80 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertEqual(uspsCards?.first?.title, "USPS - Parcel Select Mail")
     }
 
+}
+
+private extension WooShippingServiceViewModelTests {
+    func sampleStandardRates() -> [ShippingLabelCarrierRate] {
+        [ShippingLabelCarrierRate(title: "USPS - Media Mail",
+                                  insurance: "100",
+                                  retailRate: 8,
+                                  rate: 7.53,
+                                  rateID: "rate_a8a29d5f34984722942f466c30ea27ef",
+                                  serviceID: "",
+                                  carrierID: "usps",
+                                  shipmentID: "",
+                                  hasTracking: true,
+                                  isSelected: false,
+                                  isPickupFree: true,
+                                  deliveryDays: 7,
+                                  deliveryDateGuaranteed: false),
+         ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
+                                  insurance: "100",
+                                  retailRate: 40.06,
+                                  rate: 40.06,
+                                  rateID: "rate_a8a29d5f34984722942f466c30ea27eh",
+                                  serviceID: "",
+                                  carrierID: "usps",
+                                  shipmentID: "",
+                                  hasTracking: true,
+                                  isSelected: false,
+                                  isPickupFree: true,
+                                  deliveryDays: 2,
+                                  deliveryDateGuaranteed: false),
+         ShippingLabelCarrierRate(title: "DHL - Next Day",
+                                  insurance: "100",
+                                  retailRate: 15,
+                                  rate: 14.22,
+                                  rateID: "rate_a8a29d5f34984722942f466c30ea27eg",
+                                  serviceID: "",
+                                  carrierID: "dhlexpress",
+                                  shipmentID: "",
+                                  hasTracking: true,
+                                  isSelected: false,
+                                  isPickupFree: true,
+                                  deliveryDays: 1,
+                                  deliveryDateGuaranteed: false)]
+    }
+
+    func sampleSignatureRates() -> [ShippingLabelCarrierRate] {
+        [ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
+                                  insurance: "100",
+                                  retailRate: 42.76,
+                                  rate: 42.76,
+                                  rateID: "rate_a8a29d5f34984722942f466c30ea27ei",
+                                  serviceID: "",
+                                  carrierID: "usps",
+                                  shipmentID: "",
+                                  hasTracking: true,
+                                  isSelected: false,
+                                  isPickupFree: true,
+                                  deliveryDays: 2,
+                                  deliveryDateGuaranteed: false)]
+    }
+
+    func sampleAdultSignatureRates() -> [ShippingLabelCarrierRate] {
+        [ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
+                                  insurance: "100",
+                                  retailRate: 46.96,
+                                  rate: 46.96,
+                                  rateID: "rate_a8a29d5f34984722942f466c30ea27ej",
+                                  serviceID: "",
+                                  carrierID: "usps",
+                                  shipmentID: "",
+                                  hasTracking: true,
+                                  isSelected: false,
+                                  isPickupFree: true,
+                                  deliveryDays: 2,
+                                  deliveryDateGuaranteed: false)]
+    }
 }

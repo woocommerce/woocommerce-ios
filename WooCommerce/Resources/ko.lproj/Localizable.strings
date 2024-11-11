@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-10-29 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-11-06 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -338,6 +338,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "확인 코드에는 숫자만 사용할 수 있습니다.";
+
+/* Title of a4 paper size option for printing a shipping label */
+"A4" = "A4";
 
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "옵션 추가";
@@ -5565,6 +5568,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
 "Product with SKU \"%@\" not found." = "SKU가 \"%@\"인 상품을 찾을 수 없습니다.";
 
+/* The instruction text below the scan area in the barcode scanner for product barcode. */
+"ProductBarcodeInputScanner.instructionText" = "상품 바코드 또는 QR 코드 스캔";
+
+/* Navigation bar title for scanning a barcode or QR Code to use as a product's barcode. */
+"ProductBarcodeInputScanner.titleView" = "바코드 또는 QR 코드 스캔";
+
 /* Description of the subscription price for a product, with price and billing frequency. Reads as: '$60.00 / 2 months'. */
 "ProductRowViewModel.formattedProductSubscriptionBilling" = "%1$@\/%2$@ %3$@";
 
@@ -5576,12 +5585,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the subscription conditions for a subscription product, with signup fees but no trial.Reads as: '$25.00 signup'. */
 "ProductRowViewModel.formattedProductSubscriptionConditionsWithoutTrial" = "가입 %1$@";
-
-/* The instruction text below the scan area in the barcode scanner for product SKU. */
-"ProductSKUInputScanner.instructionText" = "상품 바코드 또는 QR 코드 스캔";
-
-/* Navigation bar title for scanning a barcode or QR Code to use as a product's SKU. */
-"ProductSKUInputScanner.titleView" = "SKU를 업데이트할 바코드 또는 QR 코드 스캔";
 
 /* Display label for the composite product's component option type
    Product section title if there is more than one product.
@@ -9944,6 +9947,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "가변 구독";
 
+/* Button to refresh the state of the in-person payments setup */
+"card.present.payment.setup.webview.title" = "결제 설정";
+
 /* Default accessibility label for a custom indeterminate progress view, used for card payments. */
 "card.waves.progressView.accessibilityLabel" = "진행 중";
 
@@ -10110,11 +10116,23 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "금액 편집";
 
+/* Title for the action sheet with additional options */
+"customFieldEditorView.actionSheetTitle" = "추가 옵션";
+
 /* Label for the Cancel button to close the editor */
 "customFieldEditorView.cancel" = "취소";
 
+/* Button title for copying the custom field key */
+"customFieldEditorView.copyKeyButton" = "키 복사";
+
+/* Button title for copying the custom field value */
+"customFieldEditorView.copyValueButton" = "값 복사";
+
 /* Button title for deleting a custom field */
 "customFieldEditorView.deleteButton" = "사용자 정의 필드 삭제";
+
+/* Label for the Done button to save changes */
+"customFieldEditorView.done" = "완료";
 
 /* Picker option for using Text Editor */
 "customFieldEditorView.editorPickerHTML" = "HTML";
@@ -10125,14 +10143,23 @@ which should be translated separately and considered part of this sentence. */
 /* Picker option for using Text Editor */
 "customFieldEditorView.editorPickerText" = "텍스트";
 
+/* Notice shown when the key has been copied to clipboard */
+"customFieldEditorView.keyCopiedNotice" = "키가 클립보드에 복사됨";
+
+/* Error message shown when the entered key is identical to an existing key. */
+"customFieldEditorView.keyErrorDisallowedKey" = "유효하지 않은 키: 이 키는 이미 다른 사용자 정의 필드에 사용되었습니다. \n이 앱은 현재 중복 키 생성을 지원하지 않습니다. 필요한 경우 wp-admin을 사용하여 키를 복제하세요.";
+
+/* Error message shown when key starts with underscore */
+"customFieldEditorView.keyErrorPrefix" = "유효하지 않은 키: 처음의 '_' 문자를 제거하세요.";
+
 /* Label for the Key field */
 "customFieldEditorView.keyLabel" = "키";
 
 /* Placeholder for the Key field */
 "customFieldEditorView.keyPlaceholder" = "Enter 키";
 
-/* Label for the Save button to save changes */
-"customFieldEditorView.save" = "저장";
+/* Notice shown when the value has been copied to clipboard */
+"customFieldEditorView.valueCopiedNotice" = "값이 클립보드에 복사됨";
 
 /* Label for the Value field */
 "customFieldEditorView.valueLabel" = "값";
@@ -10148,6 +10175,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action to undo the deletion of a custom field */
 "customFieldsListHostingController.deleteNoticeUndo" = "실행 취소";
+
+/* Text for button that's shown when the list is empty. */
+"customFieldsListHostingController.emptyStateButton" = "더 알아보기";
+
+/* Message when the list is empty. */
+"customFieldsListHostingController.emptyStateDescription" = "사용자 정의 필드는 추가 정보를 표시하고 매장의 쇼핑 환경을 사용자 정의할 수 있는 선택 사항 메타데이터입니다.";
+
+/* Title for the message when the list is empty. */
+"customFieldsListHostingController.emptyStateTitle" = "고객 필드를 찾을 수 없음";
 
 /* Message for the in progress view shown when saving changes */
 "customFieldsListHostingController.inProgressMessage" = "변경 사항을 저장하는 동안 기다려 주세요.";
@@ -10169,6 +10205,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the order custom fields list */
 "customFieldsListHostingController.title" = "사용자 정의 필드";
+
+/* Content of the banner when there are unsaved custom fields */
+"customFieldsListTopBanner.description" = "변경 사항을 사용자 정의 필드에 저장하면 즉시 적용됩니다.";
+
+/* Dismiss button title */
+"customFieldsListTopBanner.dismiss" = "해제";
+
+/* Title of the banner when there are unsaved custom fields */
+"customFieldsListTopBanner.title" = "사용자 정의 필드를 보며 편집";
 
 /* Accessibility title for the search button on the customer section. */
 "customer.search.button.accessibilityLabel" = "고객 검색";
@@ -11014,6 +11059,9 @@ which should be translated separately and considered part of this sentence. */
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderDetailsDataSource.attributionInfo.unknown" = "알 수 없음";
 
+/* Button on bottom of shipping label card to view the shipping label */
+"orderDetailsDataSource.shippingLabels.viewLabel" = "구매한 배송 레이블 보기";
+
 /* Title of Shipping Section in Order Details screen */
 "orderDetailsDataSource.shippingLines.title" = "배송";
 
@@ -11819,6 +11867,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
 "productInventorySettings.globalUniqueIdentifier.title" = "GTIN, UPC, EAN, ISBN";
 
+/* The message of the alert when there is an error updating the product global unique identifier */
+"productInventorySettings.invalidGlobalUniqueIdentifier.error" = "숫자와 하이픈(-)만 입력하세요.";
+
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "청구 주기";
 
@@ -12481,6 +12532,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button to dismiss the shipping label creation screen */
 "wooShipping.createLabel.cancelButton" = "취소";
 
+/* Title of the button to dismiss the shipping label screen */
+"wooShipping.createLabel.closeButton" = "닫기";
+
 /* Label for section in shipping label creation to declare when a package contains hazardous materials. */
 "wooShipping.createLabel.hazmatLabel" = "위험물 또는 유해물질을 배송하시나요?";
 
@@ -12489,6 +12543,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Call to action in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderTitle" = "배송비를 가져올 패키지 선택";
+
+/* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "성인 서명 필수";
+
+/* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
+"wooShipping.createLabels.bottomSheet.baseFee" = "%1$@(기본 수수료)";
 
 /* Label for the toggle to mark the order as complete on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.markComplete" = "이 주문을 완료로 표시하고 고객에게 알림";
@@ -12502,6 +12562,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button to purchase the shipping label on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.purchase" = "레이블 구매";
 
+/* Label for button to purchase the shipping label on the shipping label creation screen, including the label price. Reads like: 'Purchase Label · $7.63' */
+"wooShipping.createLabels.bottomSheet.purchaseFormat" = "레이블 구매 · %1$@";
+
 /* Label for address where the shipment is shipped from on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.shipFrom" = "출발지";
 
@@ -12510,6 +12573,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header for shipment costs section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.shipmentCosts" = "배송비";
+
+/* Label for row showing the additional cost to require a signature on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.signatureRequired" = "서명 필수";
 
 /* Label for row showing the subtotal for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.subtotal" = "소계";
@@ -12529,8 +12595,44 @@ which should be translated separately and considered part of this sentence. */
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
 
+/* Link for more information about how to print a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.info" = "모바일 장치에서 인쇄하는 방법 알아보기";
+
+/* Navigation bar title of shipping label printing instructions screen */
+"wooShipping.createLabels.postPurchase.infoTitle" = "모바일 장치에서 인쇄";
+
+/* Note about reusing a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.note" = "참고: 인쇄된 레이블을 재사용하는 행위는 서비스 약관 위반이며 형사 고발될 수 있습니다.";
+
+/* Title for button to print a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.printButton" = "배송 레이블 인쇄";
+
+/* Message displayed on the shipping label screen when a purchased shipping label can be printed */
+"wooShipping.createLabels.postPurchase.printMessage" = "여기에서 배송 레이블을 다시 인쇄하거나 레이블의 용지 크기를 변경할 수 있습니다.";
+
+/* Heading displayed on the shipping label screen when a purchased shipping label can be printed */
+"wooShipping.createLabels.postPurchase.readyToPrint" = "배송 레이블을 인쇄할 준비가 되었습니다.";
+
+/* Link to request a refund for a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.requestRefund" = "환불 요청";
+
+/* Link to schedule a pickup for a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.schedulePickup" = "픽업 예약";
+
+/* Link to track a shipment for a purchase shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.trackShipment" = "배송 추적";
+
 /* Heading for the shipping service section in the shipping label creation screen. */
 "wooShipping.createLabels.rates.shippingService" = "배송 서비스";
+
+/* Label for the menu to select a sort order for shipping rates in the shipping label creation screen. */
+"wooShipping.createLabels.rates.sortBy" = "정렬 기준";
+
+/* Option to sort shipping rates by delivery time in the shipping label creation screen. */
+"wooShipping.createLabels.rates.sortBy.deliveryTime" = "가장 빠름";
+
+/* Option to sort shipping rates by price in the shipping label creation screen. */
+"wooShipping.createLabels.rates.sortBy.price" = "가장 저렴";
 
 /* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
 "wooShipping.createLabels.shippingService.adultSignatureRequired" = "성인 서명 필수(+%1$@)";
@@ -12561,6 +12663,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to create a shipping label */
 "wooShipping.createLabels.title" = "배송 레이블 만들기";
+
+/* Title for the screen to view a shipping label */
+"wooShipping.createLabels.viewLabelTitle" = "배송 레이블 보기";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "우커머스, 내 스토어, 오늘, 이번 주, 이번 달, 이번 해, 주문수, 방문자, 전환, 상위 전환, 판매된 제품";

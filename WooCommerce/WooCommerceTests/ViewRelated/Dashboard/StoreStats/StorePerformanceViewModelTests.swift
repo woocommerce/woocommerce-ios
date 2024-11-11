@@ -11,7 +11,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
     @MainActor
     func test_dates_for_custom_range_are_correct_for_non_custom_time_range() throws {
         // Given
-        let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init())
+        let viewModel = StorePerformanceViewModel(siteID: 123, siteTimezone: .current, usageTracksEventEmitter: .init())
 
         // When
         viewModel.didSelectTimeRange(.thisWeek)

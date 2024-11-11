@@ -1,30 +1,25 @@
 import SwiftUI
 
 // Holds the data needed to display a tab in list of Carrier packages.
-struct WooShippingPackagesCarrierTab: Identifiable {
-    let id: WooShippingCarrier
+struct WooShippingCarrierPackages: Identifiable {
+    let carrier: WooShippingCarrier
     let packageGroups: [WooPackageGroup]
+
+    var id: String {
+        return carrier.name
+    }
 }
 
 struct WooPackageGroup {
     let id: UUID = UUID()
     let name: String
-    let packages: [any WooPackageDataRepresentable]
+    let packages: [any WooShippingPackageDataRepresentable]
 }
 
-struct WooCarrierPackageData: WooPackageDataRepresentable {
-    let id: UUID = UUID()
-    let name: String
-    let type: String
-    let packageType: String
-    let dimensions: String
-    let weight: String
-}
-
-struct WooCarrierPackagesTabView: View {
-    let carrierTab: WooShippingPackagesCarrierTab
-    @Binding var selectedPackageId: UUID?  // Track the selected package index
-    @State private var starredPackages: Set<UUID> = []
+struct WooCarrierPackagesView: View {
+    let carrierTab: WooShippingCarrierPackages
+    @Binding var selectedPackageId: String?  // Track the selected package index
+    @State private var starredPackages: Set<String> = []
 
     var body: some View {
         List {
@@ -32,10 +27,10 @@ struct WooCarrierPackagesTabView: View {
                 Section {
                     ForEach(packageGroup.packages, id: \.id) { package in
                         PackageOptionView(
-                            isSelected: selectedPackageId == package.id, // Check if this package is selected
+                            isSelected: selectedPackageId == package.id,
                             package: package,
                             showTopDivider: false,
-                            showType: false,
+                            showSource: false,
                             tapAction: {
                                 selectedPackageId = selectedPackageId == package.id ? nil : package.id
                             },
@@ -80,28 +75,21 @@ struct WooCarrierPackagesSelectionView: View {
         static let tabPadding: CGFloat = 9.0
     }
 
-    let carriersPackages: [WooShippingPackagesCarrierTab]
-    let tabs: [TopTabItem<EmptyView>]
+    @ObservedObject private var viewModel: WooCarrierPackagesSelectionViewModel
+    let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
-    @State private var selectedTabIndex: Int?
-    @State private var selectedPackageId: UUID? = nil
-
-    init(carriersPackages: [WooShippingPackagesCarrierTab]) {
-        self.carriersPackages = carriersPackages
-        self.tabs = carriersPackages.map { carrierTab in
-            return TopTabItem(name: carrierTab.id.name, icon: carrierTab.id.logo, content: {
-                EmptyView()
-            })
-        }
-        _selectedTabIndex = State(initialValue: carriersPackages.isEmpty ? nil : 0)
+    init(viewModel: WooCarrierPackagesSelectionViewModel,
+         addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
+        self.viewModel = viewModel
+        self.addPackageAction = addPackageAction
     }
 
     var body: some View {
-        if let selectedTabIndex, tabs.isNotEmpty {
-            VStack(spacing: 0) {
-                TopTabView(tabs: tabs,
+        VStack(spacing: 0) {
+            if viewModel.selectedTabIndex != nil, viewModel.tabs.isNotEmpty {
+                TopTabView(tabs: viewModel.tabs,
                            showContent: .constant(false),
-                           selectedTabIndex: $selectedTabIndex,
+                           selectedTabIndex: $viewModel.selectedTabIndex,
                            tabsContainerHorizontalPadding: nil,
                            selectedStateColor: Color.accentColor,
                            unselectedStateColor: .secondary,
@@ -110,20 +98,26 @@ struct WooCarrierPackagesSelectionView: View {
                            tabsNameFont: Font.subheadline.bold(),
                            tabItemContentHorizontalPadding: Constants.tabItemContentHorizontalPadding,
                            tabItemContentVerticalPadding: Constants.tabItemContentVerticalPadding)
-                WooCarrierPackagesTabView(carrierTab: carriersPackages[selectedTabIndex],
-                                          selectedPackageId: $selectedPackageId)
-                Spacer()
-                Divider()
-                Button(WooShippingAddPackageView.Localization.addPackage) {
-                }
-                .disabled(selectedPackageId == nil)
-                .buttonStyle(PrimaryButtonStyle())
-                .padding()
             }
+            if let selectedCarrierTab = viewModel.selectedCarrierTab {
+                WooCarrierPackagesView(carrierTab: selectedCarrierTab,
+                                       selectedPackageId: $viewModel.selectedPackageId)
+            }
+            Spacer()
+            Divider()
+            Button(WooShippingAddPackageView.Localization.addPackage) {
+                addPackageButtonTapped()
+            }
+            .disabled(viewModel.selectedPackageId == nil)
+            .buttonStyle(PrimaryButtonStyle())
+            .padding()
         }
-        else {
-            // TODO: add some kind of empty state view
-            EmptyView()
-        }
+    }
+
+    private func addPackageButtonTapped() {
+        // call addPackageAction with data from selected package
+        guard let selectedPackage = viewModel.selectedPackage else { return }
+
+        addPackageAction(selectedPackage)
     }
 }

@@ -1,5 +1,7 @@
 #!/bin/bash -eu
 
+echo "--- :git: Checkout Release Branch"
+
 # Note: `BUILDKITE_RELEASE_VERSION` is the legacy environment variable passed to Buildkite by ReleaseV2.
 # It used the `BUILDKITE_` prefix so it was not filtered out when passed to the MacOS VMs, due to how `hostmgr` works.
 # This is considered legacy: we should eventually remove all use of custom `BUILDKITE_` variables, and instead

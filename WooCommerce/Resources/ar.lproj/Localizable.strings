@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-10-29 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-11-05 18:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -338,6 +338,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "سيحتوي رمز التحقق على أرقام فقط.";
+
+/* Title of a4 paper size option for printing a shipping label */
+"A4" = "A4";
 
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "إضافة خيارات";
@@ -5565,6 +5568,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
 "Product with SKU \"%@\" not found." = "لم يتم العثور على منتج يحمل وحدة SKU \"%@\".";
 
+/* The instruction text below the scan area in the barcode scanner for product barcode. */
+"ProductBarcodeInputScanner.instructionText" = "مسح رمز المرور للمنتج أو رمز الاستجابة السريعة ضوئيًا";
+
+/* Navigation bar title for scanning a barcode or QR Code to use as a product's barcode. */
+"ProductBarcodeInputScanner.titleView" = "مسح رمز المرور أو رمز الاستجابة السريعة ضوئيًا";
+
 /* Description of the subscription price for a product, with price and billing frequency. Reads as: '$60.00 / 2 months'. */
 "ProductRowViewModel.formattedProductSubscriptionBilling" = "%1$@ \/ %2$@ %3$@";
 
@@ -5576,12 +5585,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the subscription conditions for a subscription product, with signup fees but no trial.Reads as: '$25.00 signup'. */
 "ProductRowViewModel.formattedProductSubscriptionConditionsWithoutTrial" = "التسجيل في %1$@";
-
-/* The instruction text below the scan area in the barcode scanner for product SKU. */
-"ProductSKUInputScanner.instructionText" = "مسح رمز المرور للمنتج أو رمز الاستجابة السريعة ضوئيًا";
-
-/* Navigation bar title for scanning a barcode or QR Code to use as a product's SKU. */
-"ProductSKUInputScanner.titleView" = "مسح رمز المرور أو رمز الاستجابة السريعة ضوئيًا لتحديث وحدة SKU";
 
 /* Display label for the composite product's component option type
    Product section title if there is more than one product.
@@ -9944,6 +9947,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "اشتراك متغير";
 
+/* Button to refresh the state of the in-person payments setup */
+"card.present.payment.setup.webview.title" = "إعداد المدفوعات";
+
 /* Default accessibility label for a custom indeterminate progress view, used for card payments. */
 "card.waves.progressView.accessibilityLabel" = "قيد التقدم";
 
@@ -10110,11 +10116,23 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "تحرير مبلغ";
 
+/* Title for the action sheet with additional options */
+"customFieldEditorView.actionSheetTitle" = "مزيد من الخيارات";
+
 /* Label for the Cancel button to close the editor */
 "customFieldEditorView.cancel" = "إلغاء";
 
+/* Button title for copying the custom field key */
+"customFieldEditorView.copyKeyButton" = "نسخ المفتاح";
+
+/* Button title for copying the custom field value */
+"customFieldEditorView.copyValueButton" = "نسخ القيمة";
+
 /* Button title for deleting a custom field */
 "customFieldEditorView.deleteButton" = "حذف الحقل المخصص";
+
+/* Label for the Done button to save changes */
+"customFieldEditorView.done" = "تم";
 
 /* Picker option for using Text Editor */
 "customFieldEditorView.editorPickerHTML" = "HTML";
@@ -10125,14 +10143,23 @@ which should be translated separately and considered part of this sentence. */
 /* Picker option for using Text Editor */
 "customFieldEditorView.editorPickerText" = "النص";
 
+/* Notice shown when the key has been copied to clipboard */
+"customFieldEditorView.keyCopiedNotice" = "تم نسخ المفتاح إلى الحافظة";
+
+/* Error message shown when the entered key is identical to an existing key. */
+"customFieldEditorView.keyErrorDisallowedKey" = "مفتاح غير صالح: هذا المفتاح مستخدم بالفعل لحقل مخصص آخر. \nلا يدعم التطبيق حاليًا إنشاء مفاتيح مكررة. يرجى استخدام مسؤول ووردبريس لتكرار مفتاح إذا لزم الأمر.";
+
+/* Error message shown when key starts with underscore */
+"customFieldEditorView.keyErrorPrefix" = "مفتاح غير صالح: يرجى إزالة رمز \"_\" من البداية.";
+
 /* Label for the Key field */
 "customFieldEditorView.keyLabel" = "المفتاح";
 
 /* Placeholder for the Key field */
 "customFieldEditorView.keyPlaceholder" = "مفتاح Enter";
 
-/* Label for the Save button to save changes */
-"customFieldEditorView.save" = "حفظ";
+/* Notice shown when the value has been copied to clipboard */
+"customFieldEditorView.valueCopiedNotice" = "تم نسخ القيمة إلى الحافظة";
 
 /* Label for the Value field */
 "customFieldEditorView.valueLabel" = "القيمة";
@@ -10148,6 +10175,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action to undo the deletion of a custom field */
 "customFieldsListHostingController.deleteNoticeUndo" = "تراجع";
+
+/* Text for button that's shown when the list is empty. */
+"customFieldsListHostingController.emptyStateButton" = "معرفة المزيد";
+
+/* Message when the list is empty. */
+"customFieldsListHostingController.emptyStateDescription" = "الحقول المخصصة هي بيانات وصفية اختيارية لعرض معلومات إضافية أو تخصيص تجربة تسوق خاصة بمتجرك";
+
+/* Title for the message when the list is empty. */
+"customFieldsListHostingController.emptyStateTitle" = "لم يتم العثور على حقول مخصصة";
 
 /* Message for the in progress view shown when saving changes */
 "customFieldsListHostingController.inProgressMessage" = "يرجى الانتظار بينما نحفظ أحدث تغييراتك";
@@ -10169,6 +10205,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the order custom fields list */
 "customFieldsListHostingController.title" = "حقول مخصصة";
+
+/* Content of the banner when there are unsaved custom fields */
+"customFieldsListTopBanner.description" = "عند حفظ التغييرات إلى حقول مخصصة، سيتم تطبيقها على الفور.";
+
+/* Dismiss button title */
+"customFieldsListTopBanner.dismiss" = "تجاهل";
+
+/* Title of the banner when there are unsaved custom fields */
+"customFieldsListTopBanner.title" = "عرض حقول مخصصة وتحريرها";
 
 /* Accessibility title for the search button on the customer section. */
 "customer.search.button.accessibilityLabel" = "البحث عن عميل";
@@ -11014,6 +11059,9 @@ which should be translated separately and considered part of this sentence. */
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderDetailsDataSource.attributionInfo.unknown" = "غير معروف";
 
+/* Button on bottom of shipping label card to view the shipping label */
+"orderDetailsDataSource.shippingLabels.viewLabel" = "عرض ملصق الشحن الذي تم شراؤه";
+
 /* Title of Shipping Section in Order Details screen */
 "orderDetailsDataSource.shippingLines.title" = "الشحن";
 
@@ -11819,6 +11867,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
 "productInventorySettings.globalUniqueIdentifier.title" = "GTIN، وUPC، وEAN، وISBN";
 
+/* The message of the alert when there is an error updating the product global unique identifier */
+"productInventorySettings.invalidGlobalUniqueIdentifier.error" = "يرجى إدخال أرقام وشرطات (-) فقط.";
+
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "الفاصل الزمني للفوترة";
 
@@ -12481,6 +12532,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button to dismiss the shipping label creation screen */
 "wooShipping.createLabel.cancelButton" = "إلغاء";
 
+/* Title of the button to dismiss the shipping label screen */
+"wooShipping.createLabel.closeButton" = "إغلاق";
+
 /* Label for section in shipping label creation to declare when a package contains hazardous materials. */
 "wooShipping.createLabel.hazmatLabel" = "هل تشحن بضائع خطيرة أو مواد خطرة؟";
 
@@ -12489,6 +12543,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Call to action in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderTitle" = "تحديد طرد للحصول على أسعار الشحن";
+
+/* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "يلزم توقيع شخص بالغ";
+
+/* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
+"wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (الرسوم الأساسية)";
 
 /* Label for the toggle to mark the order as complete on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.markComplete" = "وضع علامة على هذا الطلب بأنه مكتمل وتنبيه العميل";
@@ -12502,6 +12562,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button to purchase the shipping label on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.purchase" = "ملصق الشراء";
 
+/* Label for button to purchase the shipping label on the shipping label creation screen, including the label price. Reads like: 'Purchase Label · $7.63' */
+"wooShipping.createLabels.bottomSheet.purchaseFormat" = "ملصق الشراء · %1$@";
+
 /* Label for address where the shipment is shipped from on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.shipFrom" = "الشحن من";
 
@@ -12510,6 +12573,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header for shipment costs section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.shipmentCosts" = "تكاليف الشحنات";
+
+/* Label for row showing the additional cost to require a signature on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.signatureRequired" = "يلزم التوقيع";
 
 /* Label for row showing the subtotal for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.subtotal" = "الإجمالي الفرعي";
@@ -12529,8 +12595,44 @@ which should be translated separately and considered part of this sentence. */
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ × %2$@ × %3$@ %4$@";
 
+/* Link for more information about how to print a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.info" = "التعرف على كيفية الطباعة من جهازك المحمول";
+
+/* Navigation bar title of shipping label printing instructions screen */
+"wooShipping.createLabels.postPurchase.infoTitle" = "طباعة من جهازك المحمول";
+
+/* Note about reusing a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.note" = "ملاحظة: يُعد إعادة استخدام ملصق طباعة انتهاكًا لشروط الخدمة وقد يؤدي إلى توجيه اتهامات جنائية.";
+
+/* Title for button to print a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.printButton" = "طباعة ملصق الشحن";
+
+/* Message displayed on the shipping label screen when a purchased shipping label can be printed */
+"wooShipping.createLabels.postPurchase.printMessage" = "من هنا، يمكنك طباعة ملصق الشحن مجددًا أو تغيير حجم ورق الملصق.";
+
+/* Heading displayed on the shipping label screen when a purchased shipping label can be printed */
+"wooShipping.createLabels.postPurchase.readyToPrint" = "ملصق الشحن لديك جاهز للطباعة";
+
+/* Link to request a refund for a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.requestRefund" = "طلب استرداد الأموال";
+
+/* Link to schedule a pickup for a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.schedulePickup" = "جدولة الاستلام";
+
+/* Link to track a shipment for a purchase shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.trackShipment" = "تعقب الشحنة";
+
 /* Heading for the shipping service section in the shipping label creation screen. */
 "wooShipping.createLabels.rates.shippingService" = "خدمة الشحن";
+
+/* Label for the menu to select a sort order for shipping rates in the shipping label creation screen. */
+"wooShipping.createLabels.rates.sortBy" = "فرز حسب";
+
+/* Option to sort shipping rates by delivery time in the shipping label creation screen. */
+"wooShipping.createLabels.rates.sortBy.deliveryTime" = "الأسرع";
+
+/* Option to sort shipping rates by price in the shipping label creation screen. */
+"wooShipping.createLabels.rates.sortBy.price" = "الأرخص";
 
 /* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
 "wooShipping.createLabels.shippingService.adultSignatureRequired" = "يلزم توقيع شخص بالغ (+%1$@)";
@@ -12561,6 +12663,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to create a shipping label */
 "wooShipping.createLabels.title" = "إنشاء ملصقات الشحن";
+
+/* Title for the screen to view a shipping label */
+"wooShipping.createLabels.viewLabelTitle" = "عرض ملصق الشحن";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce، متجري، اليوم، هذا الأسبوع، هذا الشهر، هذا العام، الطلبات، الزائرون، التحويل، أهم تحويل، العناصر المبيعة";

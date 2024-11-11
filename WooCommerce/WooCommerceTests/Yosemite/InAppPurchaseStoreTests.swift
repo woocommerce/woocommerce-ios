@@ -63,6 +63,8 @@ final class InAppPurchaseStoreTests: XCTestCase {
     }
 
     func test_iap_supported_in_canada() throws {
+        try skipBecauseOfStoreFrontXcode16Issue()
+
         // Given
         storeKitSession.storefront = "CAN"
 
@@ -97,6 +99,8 @@ final class InAppPurchaseStoreTests: XCTestCase {
     }
 
     func test_load_products_fails_if_iap_unsupported() throws {
+        try skipBecauseOfStoreFrontXcode16Issue()
+
         // Given
         storeKitSession.storefront = "CAN"
         network.simulateResponse(requestUrlSuffix: "iap/products", filename: "iap-products")
@@ -210,5 +214,14 @@ final class InAppPurchaseStoreTests: XCTestCase {
         // Then
         let isEntitled = try XCTUnwrap(result.get())
         XCTAssertTrue(isEntitled)
+    }
+}
+
+private extension InAppPurchaseStoreTests {
+    /// Setting storefront value in Xcode 16 in one test no longer resets in other tests, even when resetToDefaultState is called
+    /// Reason unknown
+    /// https://forums.developer.apple.com/forums/thread/764937
+    func skipBecauseOfStoreFrontXcode16Issue() throws {
+        try XCTSkipIf(true, "Setting storefront value in Xcode 16 in one test no longer resets in other tests, even when resetToDefaultState is called")
     }
 }

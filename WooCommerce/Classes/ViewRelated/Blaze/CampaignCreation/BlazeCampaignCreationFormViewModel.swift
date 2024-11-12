@@ -95,6 +95,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             self.image = adData.image
             self.tagline = adData.tagline
             self.description = adData.description
+            self.ctaText = adData.ctaText
         })
     }
 

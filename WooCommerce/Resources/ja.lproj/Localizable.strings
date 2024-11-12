@@ -3663,9 +3663,6 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is an error updating the product SKU */
 "Invalid Product SKU" = "無効な商品 SKU";
 
-/* Error when an empty SKU is returned from the barcode scanner */
-"Invalid SKU" = "間違った SKU です";
-
 /* No comment provided by engineer. */
 "Invalid Site Address" = "無効なサイトアドレスです";
 
@@ -5561,12 +5558,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Product Type row on Product main screen */
 "Product type" = "商品タイプ";
-
-/* Error message when the scanner found a product but isn't purchasable.%@ is the SKU code. */
-"Product with SKU \"%@\" is not purchasable." = "SKU「%@」 の商品は購入できません。";
-
-/* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
-"Product with SKU \"%@\" not found." = "SKU「%@」 の商品が見つかりません。";
 
 /* The instruction text below the scan area in the barcode scanner for product barcode. */
 "ProductBarcodeInputScanner.instructionText" = "商品のバーコードまたは QR コードをスキャン";
@@ -9946,9 +9937,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "バリエーションのある定期購入";
-
-/* Button to refresh the state of the in-person payments setup */
-"card.present.payment.setup.webview.title" = "決済設定";
 
 /* Default accessibility label for a custom indeterminate progress view, used for card payments. */
 "card.waves.progressView.accessibilityLabel" = "進行中";

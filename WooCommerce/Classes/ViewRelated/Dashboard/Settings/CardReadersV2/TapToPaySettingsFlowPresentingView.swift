@@ -11,12 +11,14 @@ struct TapToPaySettingsFlowPresentingView: View {
     let onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
 
     var body: some View {
-        PaymentSettingsFlowPresentingView(
-            viewModelsAndViews: SetUpTapToPayViewModelsOrderedList(
-                siteID: siteID,
-                configuration: configuration,
-                onboardingUseCase: onboardingUseCase)
+        NavigationStack {
+            PaymentSettingsFlowPresentingView(
+                viewModelsAndViews: SetUpTapToPayViewModelsOrderedList(
+                    siteID: siteID,
+                    configuration: configuration,
+                    onboardingUseCase: onboardingUseCase)
             )
+        }
     }
 }
 

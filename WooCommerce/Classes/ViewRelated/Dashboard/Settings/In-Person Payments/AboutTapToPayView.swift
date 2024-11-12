@@ -62,7 +62,7 @@ struct AboutTapToPayView: View {
         .sheet(isPresented: $showingSetUpFlow,
                onDismiss: viewModel.setUpFlowDismissed,
                content: {
-            NavigationView {
+            NavigationStack {
                 PaymentSettingsFlowPresentingView(
                     viewModelsAndViews: SetUpTapToPayViewModelsOrderedList(
                         siteID: viewModel.siteID,

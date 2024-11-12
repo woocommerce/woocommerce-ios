@@ -398,4 +398,20 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         // Assert
         XCTAssertFalse(viewModel.hasUnsavedChanges())
     }
+
+    func test_completeUpdating_when_globalUniqueID_changes_then_it_tracks_value() {
+        // Arrange
+        let product = Product.fake().copy(globalUniqueID: "321")
+        let model = EditableProductModel(product: product)
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, analytics: analytics)
+
+        // Act
+        viewModel.handleGlobalUniqueIdentifierChange("123", onValidation: { _, _ in })
+        viewModel.completeUpdating(onCompletion: { _ in })
+
+        // Assert
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.productInventorySettingsGlobalUniqueIDFieldEdited.rawValue)
+    }
 }

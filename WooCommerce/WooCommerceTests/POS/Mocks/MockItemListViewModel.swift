@@ -5,10 +5,9 @@ import protocol Yosemite.POSItem
 
 class MockItemListViewModel: ItemListViewModelProtocol {
     @Published var items: [any Yosemite.POSItem] = []
-    var itemsPublisher: Published<[any Yosemite.POSItem]>.Publisher { $items }
 
-    @Published var state: WooCommerce.ItemListViewModel.ItemListState = .loading
-    var statePublisher: Published<WooCommerce.ItemListViewModel.ItemListState>.Publisher { $state }
+    @Published var state: ItemListState = .initialLoading
+    var statePublisher: Published<ItemListState>.Publisher { $state }
 
     @Published var isHeaderBannerDismissed: Bool = false
 

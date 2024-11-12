@@ -162,14 +162,17 @@ extension Networking.Announcement {
 extension Networking.BlazeAISuggestion {
     public func copy(
         siteName: CopiableProp<String> = .copy,
-        textSnippet: CopiableProp<String> = .copy
+        textSnippet: CopiableProp<String> = .copy,
+        ctaText: CopiableProp<String> = .copy
     ) -> Networking.BlazeAISuggestion {
         let siteName = siteName ?? self.siteName
         let textSnippet = textSnippet ?? self.textSnippet
+        let ctaText = ctaText ?? self.ctaText
 
         return Networking.BlazeAISuggestion(
             siteName: siteName,
-            textSnippet: textSnippet
+            textSnippet: textSnippet,
+            ctaText: ctaText
         )
     }
 }

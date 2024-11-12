@@ -6,11 +6,10 @@ struct ItemListView: View {
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    @ObservedObject var posModel: PointOfSaleAggregateModel
+    @EnvironmentObject var posModel: PointOfSaleAggregateModel
 
-    init(viewModel: ItemListViewModel, posModel: PointOfSaleAggregateModel) {
+    init(viewModel: ItemListViewModel) {
         self.viewModel = viewModel
-        self.posModel = posModel
     }
 
     var body: some View {
@@ -249,7 +248,6 @@ private extension ItemListView {
 
 #if DEBUG
 #Preview {
-    ItemListView(viewModel: ItemListViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview())),
-                 posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview()))
+    ItemListView(viewModel: ItemListViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview())))
 }
 #endif

@@ -160,8 +160,9 @@ final class StorePerformanceViewModel: ObservableObject {
         // Preemptively show any cached content
         periodViewModel?.loadCachedContent()
 
-        // Stop if data is relatively new
-        if !forceRefresh && DashboardTimestampStore.isTimestampFresh(for: .performance, at: timeRange.timestampRange) {
+        // Stop if data is relatively new (unless forceRefresh or in screenshot mode)
+        if !forceRefresh && !ProcessConfiguration.shouldRespectScreenshotMode &&
+           DashboardTimestampStore.isTimestampFresh(for: .performance, at: timeRange.timestampRange) {
             return
         }
 

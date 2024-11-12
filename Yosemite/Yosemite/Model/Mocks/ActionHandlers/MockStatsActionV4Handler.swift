@@ -25,16 +25,24 @@ struct MockStatsActionV4Handler: MockActionHandler {
             retrieveSiteVisitStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
         case .retrieveTopEarnerStats(let siteID, let timeRange, _, _, _, _, _, _, let onCompletion):
             retrieveTopEarnerStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
-        case .retrieveSiteSummaryStats(let siteID, _, let period, _, _, _, let onCompletion):
-            retrieveSiteSummaryStats(siteID: siteID, period: period, onCompletion: onCompletion)
+        case .retrieveSiteSummaryStats(let siteID, _, let period, _, let latestDateToInclude, _, let onCompletion):
+            retrieveSiteSummaryStats(siteID: siteID, period: period, latestDateToInclude: latestDateToInclude, onCompletion: onCompletion)
         default: unimplementedAction(action: action)
         }
     }
 
-    func retrieveSiteSummaryStats(siteID: Int64, period: StatGranularity, onCompletion: @escaping (Result<SiteSummaryStats, Error>) -> ()) {
-        store.upsertStoredSiteSummaryStats(readOnlyStats: objectGraph.thisMonthSiteSummaryStats)
+    func retrieveSiteSummaryStats(siteID: Int64,
+                                  period: StatGranularity,
+                                  latestDateToInclude: Date,
+                                  onCompletion: @escaping (Result<SiteSummaryStats, Error>) -> ()) {
+        let mockStats = ScreenshotObjectGraph.createSiteSummaryStats(siteId: siteID,
+                                                                 period: period,
+                                                                 latestDateToInclude: latestDateToInclude,
+                                                                 visitors: 2734,
+                                                                 views: 5104)
+        store.upsertStoredSiteSummaryStats(readOnlyStats: mockStats)
 
-        onCompletion(.success(objectGraph.thisMonthSiteSummaryStats))
+        onCompletion(.success(mockStats))
     }
 
     func retrieveStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping (Result<Void, Error>) -> ()) {

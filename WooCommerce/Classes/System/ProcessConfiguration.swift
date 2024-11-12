@@ -21,4 +21,8 @@ struct ProcessConfiguration {
     static var shouldSimulatePushNotification: Bool {
         ProcessInfo.processInfo.arguments.contains("-mocks-push-notification")
     }
+
+    static var shouldRespectScreenshotMode: Bool {
+        ProcessInfo.processInfo.arguments.contains("-screenshot-mode")
+    }
 }

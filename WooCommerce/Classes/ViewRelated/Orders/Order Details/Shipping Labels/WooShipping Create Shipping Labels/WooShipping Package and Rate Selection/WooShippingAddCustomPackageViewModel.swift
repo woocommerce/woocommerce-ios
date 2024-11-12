@@ -73,10 +73,10 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
 
     enum Error: Swift.Error {
         case packageDataNotValid
-        case failedSavingTemplate(Swift.Error)
+        case failedSavingTemplate
     }
 
-    func addPackageAction() async ->  Result<WooShippingPackageDataRepresentable, Error> {
+    func addPackageAction() async -> Result<WooShippingPackageDataRepresentable, Error> {
         guard let packageData = preparePackageData() else {
             return .failure(WooShippingAddCustomPackageViewModel.Error.packageDataNotValid)
         }
@@ -93,21 +93,21 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     ///
     func savePackageAsTemplateAction() async -> Result<WooShippingPackageDataRepresentable, Error> {
         guard let packageData = preparePackageData() else {
-            return nil
+            return .failure(WooShippingAddCustomPackageViewModel.Error.packageDataNotValid)
         }
         let customPackage = WooShippingCustomPackage(id: "",
                                                      name: packageData.name,
                                                      rawType: packageData.packageType,
                                                      dimensions: "\(packageData.length) x \(packageData.width) x \(packageData.height)",
                                                      boxWeight: Double(packageData.weight) ?? 0)
-        if let package = await withCheckedContinuation { continuation in
+        let savingPackageTemplateResult: Result<WooShippingPackageDataRepresentable, Error> = await withCheckedContinuation { continuation in
             let action = WooShippingAction.createPackage(siteID: siteID,
                                                          customPackage: customPackage,
                                                          predefinedOption: nil) { [weak self] result in
                 switch result {
                 case let .success(packages):
                     guard let self, let savedPackage = packages.customPackages.first(where: { $0.name == customPackage.name }) else {
-                        return continuation.resume(returning: nil)
+                        return continuation.resume(returning: .failure(WooShippingAddCustomPackageViewModel.Error.failedSavingTemplate))
                     }
                     let packageData = WooShippingPackageData(id: savedPackage.id,
                                                              name: savedPackage.name,
@@ -120,19 +120,19 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
                                                              source: .custom,
                                                              packageType: savedPackage.rawType)
                     // Cleanup after package is successfully saved
-                    resetValues()
-                    continuation.resume(returning: packageData)
+                    continuation.resume(returning: .success(packageData))
                 case let .failure(error):
                     DDLogError("⛔️ Error saving custom package with WCShip: \(error)")
-                    continuation.resume(returning: nil)
+                    continuation.resume(returning: .failure(WooShippingAddCustomPackageViewModel.Error.failedSavingTemplate))
                 }
             }
             stores.dispatch(action)
-        } {
-            return await addPackageAction()
         }
-        else {
-            .failure(WooShippingAddCustomPackageViewModel.Error.failedSavingTemplate(error))
+        switch savingPackageTemplateResult {
+        case .success(let success):
+            return await addPackageAction()
+        case .failure(let error):
+            return .failure(error)
         }
     }
 

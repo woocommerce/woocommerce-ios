@@ -802,6 +802,7 @@
 		CE0A0F1F223998A10075ED8D /* products-load-all.json in Resources */ = {isa = PBXBuildFile; fileRef = CE0A0F1E223998A00075ED8D /* products-load-all.json */; };
 		CE0F4EC92CE37547006339BD /* wooshipping-get-label-rates-success.json in Resources */ = {isa = PBXBuildFile; fileRef = CE0F4EC82CE3753F006339BD /* wooshipping-get-label-rates-success.json */; };
 		CE0F4ECD2CE375E4006339BD /* wooshipping-get-label-rates-error.json in Resources */ = {isa = PBXBuildFile; fileRef = CE0F4ECC2CE375DD006339BD /* wooshipping-get-label-rates-error.json */; };
+		CE0F4ECF2CE37C4F006339BD /* WooShippingLabelRatesMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0F4ECE2CE37C4F006339BD /* WooShippingLabelRatesMapper.swift */; };
 		CE12AE9529F29F4F0056DD17 /* order-with-subscription-renewal.json in Resources */ = {isa = PBXBuildFile; fileRef = CE12AE9429F29F4F0056DD17 /* order-with-subscription-renewal.json */; };
 		CE12AE9729F2AB3F0056DD17 /* SubscriptionMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12AE9629F2AB3F0056DD17 /* SubscriptionMapper.swift */; };
 		CE12AE9929F2AC2F0056DD17 /* subscription.json in Resources */ = {isa = PBXBuildFile; fileRef = CE12AE9829F2AC2F0056DD17 /* subscription.json */; };
@@ -1970,6 +1971,7 @@
 		CE0A0F1E223998A00075ED8D /* products-load-all.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "products-load-all.json"; sourceTree = "<group>"; };
 		CE0F4EC82CE3753F006339BD /* wooshipping-get-label-rates-success.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wooshipping-get-label-rates-success.json"; sourceTree = "<group>"; };
 		CE0F4ECC2CE375DD006339BD /* wooshipping-get-label-rates-error.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wooshipping-get-label-rates-error.json"; sourceTree = "<group>"; };
+		CE0F4ECE2CE37C4F006339BD /* WooShippingLabelRatesMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingLabelRatesMapper.swift; sourceTree = "<group>"; };
 		CE12AE9429F29F4F0056DD17 /* order-with-subscription-renewal.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-with-subscription-renewal.json"; sourceTree = "<group>"; };
 		CE12AE9629F2AB3F0056DD17 /* SubscriptionMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionMapper.swift; sourceTree = "<group>"; };
 		CE12AE9829F2AC2F0056DD17 /* subscription.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = subscription.json; sourceTree = "<group>"; };
@@ -3599,6 +3601,7 @@
 				CC0786602677B2DA00BA9AC1 /* ShippingLabelPurchaseMapper.swift */,
 				CC0786C4267BAF0F00BA9AC1 /* ShippingLabelStatusMapper.swift */,
 				CEC7D5942CDD164D00111B79 /* WooShippingCreatePackageMapper.swift */,
+				CE0F4ECE2CE37C4F006339BD /* WooShippingLabelRatesMapper.swift */,
 				CE606D8E2BE39426001CB424 /* ShippingMethodMapper.swift */,
 				FE28F6E326842848004465C7 /* UserMapper.swift */,
 				077F39D326A58DE700ABEADC /* SystemStatusMapper.swift */,
@@ -5164,6 +5167,7 @@
 				D8FBFF0D22D3AF4A006E3336 /* StatsGranularityV4.swift in Sources */,
 				261870782540A252006522A1 /* ShippingLineTax.swift in Sources */,
 				DEB3878C2C2D70EF0025256E /* GoogleAdsCampaignListMapper.swift in Sources */,
+				CE0F4ECF2CE37C4F006339BD /* WooShippingLabelRatesMapper.swift in Sources */,
 				EE998150295AACE10074AE68 /* RequestConverter.swift in Sources */,
 				74046E1B217A684D007DD7BF /* SiteSettingsRemote.swift in Sources */,
 				0359EA1D27AADE000048DE2D /* WCPayChargeMapper.swift in Sources */,

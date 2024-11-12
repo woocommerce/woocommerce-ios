@@ -415,7 +415,8 @@ private extension ProductStore {
     ///
     func retrieveFirstPurchasableItemMatchFromIdentifier(siteID: Int64,
                                                          identifier: String,
-                                                         onCompletion: @escaping (Result<(ItemIdentifierSearchResult, ItemIdentifierSearchResultSource), Error>) -> Void) {
+                                                         onCompletion: @escaping (Result<(ItemIdentifierSearchResult,
+                                                                                          ItemIdentifierSearchResultSource), Error>) -> Void) {
 
         guard !identifier.isEmpty else {
             return onCompletion(.failure(ProductLoadError.emptyIdentifier))

@@ -7,7 +7,7 @@ public enum ItemIdentifierSearchResult {
 }
 
 /// Which property matched the looked identifier
-/// 
+///
 public enum ItemIdentifierSearchResultSource {
     case SKU
     case globalUniqueIdentifier

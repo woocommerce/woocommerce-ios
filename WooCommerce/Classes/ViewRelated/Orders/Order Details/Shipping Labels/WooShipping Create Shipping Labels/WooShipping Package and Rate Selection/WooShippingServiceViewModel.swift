@@ -8,6 +8,14 @@ final class WooShippingServiceViewModel: ObservableObject {
     /// Selected shipping service rate.
     @Published private(set) var selectedRate: WooShippingSelectedRate?
 
+    /// State of loading shipping rates.
+    private var loadingState: LabelRatesState = .loading
+
+    /// Whether the rates are being loaded from remote.
+    var isLoadingRates: Bool {
+        loadingState == .loading
+    }
+
     /// Available standard shipping rates.
     private var standardRates: [ShippingLabelCarrierRate] = []
     /// Available shipping rates with signature required.
@@ -18,7 +26,7 @@ final class WooShippingServiceViewModel: ObservableObject {
     /// Sort order for shipping services.
     @Published var sortOrder: SortOrder = .price
 
-    init(standardRates: [ShippingLabelCarrierRate] = [],
+    init(standardRates: [ShippingLabelCarrierRate] = placeholderRates,
          signatureRates: [ShippingLabelCarrierRate] = [],
          adultSignatureRates: [ShippingLabelCarrierRate] = []) {
         // TODO: Replace with real data from remote
@@ -99,6 +107,12 @@ extension WooShippingServiceViewModel {
             }
         }
     }
+
+    /// States for label rates.
+    enum LabelRatesState {
+        case loading
+        case loaded
+    }
 }
 
 private extension WooShippingServiceViewModel {
@@ -109,5 +123,38 @@ private extension WooShippingServiceViewModel {
         static let sortByDeliveryTime = NSLocalizedString("wooShipping.createLabels.rates.sortBy.deliveryTime",
                                                           value: "Fastest",
                                                           comment: "Option to sort shipping rates by delivery time in the shipping label creation screen.")
+    }
+}
+
+// MARK: Placeholder data
+private extension WooShippingServiceViewModel {
+    /// Placeholder data to use while loading rates from remote.
+    static var placeholderRates: [ShippingLabelCarrierRate] {
+        [ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
+                                 insurance: "100",
+                                 retailRate: 40.06,
+                                 rate: 40.06,
+                                 rateID: "rate_a8a29d5f34984722942f466c30ea27eh",
+                                 serviceID: "",
+                                 carrierID: "usps",
+                                 shipmentID: "",
+                                 hasTracking: true,
+                                 isSelected: false,
+                                 isPickupFree: true,
+                                 deliveryDays: 2,
+                                 deliveryDateGuaranteed: false),
+         ShippingLabelCarrierRate(title: "DHL - Next Day",
+                                  insurance: "100",
+                                  retailRate: 15,
+                                  rate: 14.22,
+                                  rateID: "rate_a8a29d5f34984722942f466c30ea27eg",
+                                  serviceID: "",
+                                  carrierID: "dhlexpress",
+                                  shipmentID: "",
+                                  hasTracking: true,
+                                  isSelected: false,
+                                  isPickupFree: true,
+                                  deliveryDays: 1,
+                                  deliveryDateGuaranteed: false)]
     }
 }

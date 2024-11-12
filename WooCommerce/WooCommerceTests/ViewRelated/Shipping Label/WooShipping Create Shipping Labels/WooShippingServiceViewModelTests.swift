@@ -10,6 +10,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNil(viewModel.selectedRate)
+        XCTAssertTrue(viewModel.isLoadingRates)
     }
 
     func test_generateServiceTabs_returns_expected_data() throws {

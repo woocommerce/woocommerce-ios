@@ -47,6 +47,8 @@ struct WooShippingServiceView: View {
                        tabsNameFont: .subheadline.bold(),
                        tabItemContentHorizontalPadding: 6,
                        tabItemContentVerticalPadding: 12)
+            .redacted(reason: viewModel.isLoadingRates ? .placeholder : [])
+            .shimmering(active: viewModel.isLoadingRates)
         }
     }
 }

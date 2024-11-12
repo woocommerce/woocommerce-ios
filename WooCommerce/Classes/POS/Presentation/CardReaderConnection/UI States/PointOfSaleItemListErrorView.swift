@@ -1,10 +1,10 @@
 import SwiftUI
 
 struct PointOfSaleItemListErrorView: View {
-    private var error: ItemListViewModel.ErrorModel
+    private var error: PointOfSaleErrorState
     private var onRetry: (() -> Void)? = nil
 
-    init(error: ItemListViewModel.ErrorModel, onRetry: (() -> Void)? = nil) {
+    init(error: PointOfSaleErrorState, onRetry: (() -> Void)? = nil) {
         self.error = error
         self.onRetry = onRetry
     }

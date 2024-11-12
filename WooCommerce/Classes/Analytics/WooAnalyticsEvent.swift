@@ -654,6 +654,10 @@ extension WooAnalyticsEvent {
             ])
         }
 
+        static func orderEditButtonTappedWhileDisabledForCurrencyConflict() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderEditButtonTappedWhileDisabledForCurrencyConflict, properties: [:])
+        }
+
         static func orderProductAdd(flow: Flow,
                                     source: BarcodeScanning.Source,
                                     addedVia: OrderProductAdditionVia,

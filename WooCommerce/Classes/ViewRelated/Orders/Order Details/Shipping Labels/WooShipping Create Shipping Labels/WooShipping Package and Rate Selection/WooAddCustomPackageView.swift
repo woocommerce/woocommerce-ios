@@ -12,7 +12,9 @@ struct WooAddCustomPackageView: View {
     @FocusState var packageTemplateNameFieldFocused: Bool
     @FocusState var focusedField: WooShippingPackageUnitType?
 
-    let addPackageAction: (WooPackageDataRepresentable) -> Void
+    @State private var isSavingPackage: Bool = false
+
+    let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
     private var packageTypeSelectionView: some View {
         Menu {
@@ -54,7 +56,7 @@ struct WooAddCustomPackageView: View {
                         VStack {
                             AdaptiveStack(spacing: 8) {
                                 ForEach(WooShippingPackageUnitType.dimensionUnits, id: \.self) { dimensionUnit in
-                                    unitInputView(for: dimensionUnit, unit: customPackageViewModel.dimensionUnit)
+                                    unitInputView(for: dimensionUnit, unit: customPackageViewModel.dimensionsUnit)
                                 }
                             }
                             // showing weight input only if we are saving the template
@@ -104,10 +106,14 @@ struct WooAddCustomPackageView: View {
                                                    lineWidth: packageTemplateNameFieldFocused ? 2 : 1)
                                 Spacer()
                                 Button(Localization.savePackageTemplate) {
-                                    savePackageAsTemplateButtonTapped()
+                                    Task { @MainActor in
+                                        isSavingPackage = true
+                                        await savePackageAsTemplateButtonTapped()
+                                        isSavingPackage = false
+                                    }
                                 }
                                 .disabled(!customPackageViewModel.validateCustomPackageInputFields())
-                                .buttonStyle(SecondaryButtonStyle())
+                                .buttonStyle(SecondaryLoadingButtonStyle(isLoading: isSavingPackage))
                                 .padding(.bottom)
                             }
                             .id(Constants.saveTemplateContentID) // Set the id for the button so we can scroll to it
@@ -141,6 +147,7 @@ struct WooAddCustomPackageView: View {
                     }
                 }
                 .scrollDismissesKeyboard(.interactively)
+                .disabled(isSavingPackage)
             }
         }
     }
@@ -164,8 +171,9 @@ struct WooAddCustomPackageView: View {
         }
     }
 
-    private func savePackageAsTemplateButtonTapped() {
-        if let packageData = customPackageViewModel.savePackageAsTemplateAction() {
+    @MainActor
+    private func savePackageAsTemplateButtonTapped() async {
+        if let packageData = await customPackageViewModel.savePackageAsTemplateAction() {
             // call addPackageAction with data
             addPackageAction(packageData)
         }

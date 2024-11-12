@@ -374,7 +374,7 @@ private extension ProductFormTableViewDataSource {
              .tags(let viewModel, _),
              .shortDescription(let viewModel, _),
              .externalURL(let viewModel, _),
-             .sku(let viewModel, _),
+             .simplifiedInventory(let viewModel, _),
              .groupedProducts(let viewModel, _),
              .downloadableFiles(let viewModel, _),
              .linkedProducts(let viewModel, _),

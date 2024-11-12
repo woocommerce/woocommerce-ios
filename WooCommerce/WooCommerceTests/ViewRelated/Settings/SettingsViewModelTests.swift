@@ -87,6 +87,24 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.installJetpack) })
     }
 
+    func test_sections_do_not_contain_install_jetpack_row_when_wpcomSiteSuspended_is_true() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        defaults[.wpcomSiteSuspended] = true
+        let site = Site.fake().copy(isJetpackThePluginInstalled: false, isJetpackConnected: false)
+        sessionManager.defaultSite = site
+        let viewModel = SettingsViewModel(stores: stores,
+                                          storageManager: storageManager,
+                                          defaults: defaults)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.installJetpack) })
+    }
+
     func test_refresh_view_content_method_is_invoked_after_view_did_load() {
         // Given
         let viewModel = SettingsViewModel(stores: stores, storageManager: storageManager)

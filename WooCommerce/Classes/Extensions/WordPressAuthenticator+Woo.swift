@@ -42,7 +42,7 @@ extension WordPressAuthenticator {
                                                                 useEnterEmailAddressAsStepValueForGetStartedVC: true,
                                                                 enableSiteAddressLoginOnlyInPrologue: true,
                                                                 enableSiteCreationGuide: true,
-                                                                enableSiteCredentialsLoginForWPCOMSuspendedSites: false)
+                                                                enableSiteCredentialsLoginForWPCOMSuspendedSites: true)
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)

@@ -185,11 +185,11 @@ private extension PointOfSaleDashboardViewModel {
     }
 
     func observeItemListState() {
-        Publishers.CombineLatest(itemListViewModel.statePublisher, itemListViewModel.itemsPublisher)
-            .sink { [weak self] state, items in
+        itemListViewModel.statePublisher
+            .sink { [weak self] state in
                 guard let self = self else { return }
 
-                self.isInitialLoading = (state == .initialLoading && items.isEmpty)
+                self.isInitialLoading = state == .initialLoading
 
                 switch state {
                 case .error:

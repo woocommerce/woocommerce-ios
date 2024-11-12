@@ -691,6 +691,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         // Inventory Settings.
         try container.encode(sku, forKey: .sku)
+        try container.encode(globalUniqueID, forKey: .globalUniqueID)
         try container.encode(manageStock, forKey: .manageStock)
         try container.encode(soldIndividually, forKey: .soldIndividually)
 

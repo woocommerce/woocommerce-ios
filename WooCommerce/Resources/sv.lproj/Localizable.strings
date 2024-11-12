@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-10-22 13:54:03+0000 */
+/* Translation-Revision-Date: 2024-11-07 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -338,6 +338,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "Verifieringskoden innehåller endast siffror.";
+
+/* Title of a4 paper size option for printing a shipping label */
+"A4" = "A4";
 
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "LÄGG TILL ALTERNATIV";
@@ -1561,7 +1564,6 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the Coupon Creation Success screen
    Navigation bar action to close the gift card code scanner.
    Text for the close button in the Add Product screen
-   Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
    Title of the Close action on the Jetpack Install view */
 "Close" = "Stäng";
@@ -1908,10 +1910,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the Origin Country row in Customs screen of Shipping Label flow */
 "Country where the product was manufactured or assembled" = "Land där produkten tillverkades eller monterades";
 
-/* Title for the coupon field on the Coupon Details screen during order creation
-   Title for the Coupon screen during order creation */
-"Coupon" = "Rabattkod";
-
 /* The singular coupon summary. Reads like: Coupon (code1) */
 "Coupon (%1$@)" = "Rabattkod (%1$@)";
 
@@ -1942,9 +1940,6 @@ which should be translated separately and considered part of this sentence. */
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
 "Coupons" = "Rabattkoder";
-
-/* The plural coupon summary. Reads like: Coupon (code1, code2) */
-"Coupons (%1$@)" = "Rabattkoder (%1$@)";
 
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "Krascha omedelbart";
@@ -2074,9 +2069,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title in custom range date picker */
 "Custom Date Range" = "Anpassat datumintervall";
-
-/* Title for the order custom fields list */
-"Custom Fields" = "Anpassade fält";
 
 /* Custom line index in Customs Form of Shipping Label flow */
 "Custom Line %1$d" = "Anpassad rad %1$d";
@@ -2381,7 +2373,6 @@ which should be translated separately and considered part of this sentence. */
    Edit product downloadable files screen - button title to apply changes to downloadable files
    Navigation bar button on the domain settings screen to leave the flow.
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
-   Text for the done button in the Coupon Details screen
    Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
@@ -4870,6 +4861,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the the row showing the total cost of the order */
 "Order total" = "Totalsumma";
 
+/* Title of the section that display coupons applied to an order, within the order creation screen. */
+"OrderCouponSectionView.header.coupons" = "Rabattkoder";
+
 /* Retry Action inside notice */
 "OrderDetail.retry.notice.button" = "Försök igen";
 
@@ -5161,7 +5155,7 @@ which should be translated separately and considered part of this sentence. */
 "Please charge reader" = "Ladda läsare";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
-"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.4 or above. Contact support if this error shows on a supported device." = "Kontrollera att din telefon uppfyller dessa krav: iPhone XS eller senare som kör iOS 16.4 eller senare. Kontakta supporten om det här felet visas på en enhet som stöds.";
+"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.7 or above. Contact support if this error shows on a supported device." = "Kontrollera att din telefon uppfyller dessa krav: iPhone XS eller senare som kör iOS 16.7 eller senare. Kontakta supporten om det här felet visas på en enhet som stöds.";
 
 /* Order gift card error notice message when the gift card is invalid. */
 "Please check the remaining balance of the gift card." = "Kontrollera den återstående balansen på presentkortet.";
@@ -5574,6 +5568,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
 "Product with SKU \"%@\" not found." = "Produkten med artikelnummer \"%@\" hittades inte.";
 
+/* The instruction text below the scan area in the barcode scanner for product barcode. */
+"ProductBarcodeInputScanner.instructionText" = "Skanna produktens streckkod eller QR-kod";
+
+/* Navigation bar title for scanning a barcode or QR Code to use as a product's barcode. */
+"ProductBarcodeInputScanner.titleView" = "Skanna streckkod eller QR-kod";
+
 /* Description of the subscription price for a product, with price and billing frequency. Reads as: '$60.00 / 2 months'. */
 "ProductRowViewModel.formattedProductSubscriptionBilling" = "%1$@ \/ %2$@ %3$@";
 
@@ -5585,12 +5585,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the subscription conditions for a subscription product, with signup fees but no trial.Reads as: '$25.00 signup'. */
 "ProductRowViewModel.formattedProductSubscriptionConditionsWithoutTrial" = "Registrering för %1$@";
-
-/* The instruction text below the scan area in the barcode scanner for product SKU. */
-"ProductSKUInputScanner.instructionText" = "Skanna produktens streckkod eller QR-kod";
-
-/* Navigation bar title for scanning a barcode or QR Code to use as a product's SKU. */
-"ProductSKUInputScanner.titleView" = "Skanna streckkoden eller QR-koden för att uppdatera SKU";
 
 /* Display label for the composite product's component option type
    Product section title if there is more than one product.
@@ -5842,9 +5836,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message from the in-person payment card reader prompting user to remove their card */
 "Remove Card" = "Ta bort kort";
-
-/* Text for the button to remove a Coupon from the order during order creation */
-"Remove Coupon from Order" = "Ta bort rabattkod från beställning";
 
 /* Text for button to remove a discount in the discounts details screen
    Title for the Remove button in Details screen during order creation */
@@ -9956,6 +9947,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "Variabel prenumeration";
 
+/* Button to refresh the state of the in-person payments setup */
+"card.present.payment.setup.webview.title" = "Betalningsinställning";
+
 /* Default accessibility label for a custom indeterminate progress view, used for card payments. */
 "card.waves.progressView.accessibilityLabel" = "Pågår";
 
@@ -10122,6 +10116,24 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Redigera belopp";
 
+/* Title for the action sheet with additional options */
+"customFieldEditorView.actionSheetTitle" = "Fler alternativ";
+
+/* Label for the Cancel button to close the editor */
+"customFieldEditorView.cancel" = "Avbryt";
+
+/* Button title for copying the custom field key */
+"customFieldEditorView.copyKeyButton" = "Kopiera nyckel";
+
+/* Button title for copying the custom field value */
+"customFieldEditorView.copyValueButton" = "Kopiera värde";
+
+/* Button title for deleting a custom field */
+"customFieldEditorView.deleteButton" = "Ta bort anpassat fält";
+
+/* Label for the Done button to save changes */
+"customFieldEditorView.done" = "Klar";
+
 /* Picker option for using Text Editor */
 "customFieldEditorView.editorPickerHTML" = "HTML";
 
@@ -10131,14 +10143,77 @@ which should be translated separately and considered part of this sentence. */
 /* Picker option for using Text Editor */
 "customFieldEditorView.editorPickerText" = "Text";
 
+/* Notice shown when the key has been copied to clipboard */
+"customFieldEditorView.keyCopiedNotice" = "Nyckel kopierad till urklipp";
+
+/* Error message shown when the entered key is identical to an existing key. */
+"customFieldEditorView.keyErrorDisallowedKey" = "Ogiltig nyckel: Nyckeln används redan för ett annat anpassat fält. \nAppen har för närvarande inte stöd för att skapa dubbletter av nycklar. Använd WP-admin för att duplicera en nyckel om det behövs.";
+
+/* Error message shown when key starts with underscore */
+"customFieldEditorView.keyErrorPrefix" = "Ogiltig nyckel: ta bort tecknet \"_\" från början.";
+
 /* Label for the Key field */
 "customFieldEditorView.keyLabel" = "Nyckel";
 
 /* Placeholder for the Key field */
 "customFieldEditorView.keyPlaceholder" = "Ange nyckel";
 
+/* Notice shown when the value has been copied to clipboard */
+"customFieldEditorView.valueCopiedNotice" = "Värde kopierat till urklipp";
+
 /* Label for the Value field */
 "customFieldEditorView.valueLabel" = "Värde";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to add custom field. */
+"customFieldsListHostingController.accessibilityHintAddCustomField" = "Lägg till ett nytt anpassat fält i listan";
+
+/* Accessibility label for the Add Custom Field button */
+"customFieldsListHostingController.accessibilityLabelAddCustomField" = "Lägg till anpassat fält";
+
+/* Title for the notice when a custom field is deleted */
+"customFieldsListHostingController.deleteNoticeTitle" = "Anpassat fält borttaget";
+
+/* Action to undo the deletion of a custom field */
+"customFieldsListHostingController.deleteNoticeUndo" = "Ångra";
+
+/* Text for button that's shown when the list is empty. */
+"customFieldsListHostingController.emptyStateButton" = "Lär dig mer";
+
+/* Message when the list is empty. */
+"customFieldsListHostingController.emptyStateDescription" = "Anpassade fält är valfria metadata för att visa extra information eller anpassa din butiks shoppingupplevelse.";
+
+/* Title for the message when the list is empty. */
+"customFieldsListHostingController.emptyStateTitle" = "Inga anpassade fält hittades";
+
+/* Message for the in progress view shown when saving changes */
+"customFieldsListHostingController.inProgressMessage" = "Vänta medan vi sparar dina ändringar";
+
+/* Title for the in progress view shown when saving changes */
+"customFieldsListHostingController.inProgressTitle" = "Sparar …";
+
+/* Button to save the changes on Custom Fields list */
+"customFieldsListHostingController.save" = "Spara";
+
+/* Message for the error message when saving changes */
+"customFieldsListHostingController.saveErrorMessage" = "Det uppstod ett fel när dina ändringar skulle sparas. Försök igen.";
+
+/* Title for the error message when saving changes */
+"customFieldsListHostingController.saveErrorTitle" = "Fel när ändringar sparades";
+
+/* Title for the success message when saving changes */
+"customFieldsListHostingController.saveSuccessTitle" = "Ändringar sparade";
+
+/* Title for the order custom fields list */
+"customFieldsListHostingController.title" = "Anpassade fält";
+
+/* Content of the banner when there are unsaved custom fields */
+"customFieldsListTopBanner.description" = "När ändringar av anpassade fält sparas träder de i kraft omedelbart.";
+
+/* Dismiss button title */
+"customFieldsListTopBanner.dismiss" = "Avfärda";
+
+/* Title of the banner when there are unsaved custom fields */
+"customFieldsListTopBanner.title" = "Visa och redigera anpassade fält";
 
 /* Accessibility title for the search button on the customer section. */
 "customer.search.button.accessibilityLabel" = "Sök kund";
@@ -10984,6 +11059,9 @@ which should be translated separately and considered part of this sentence. */
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderDetailsDataSource.attributionInfo.unknown" = "Okänd";
 
+/* Button on bottom of shipping label card to view the shipping label */
+"orderDetailsDataSource.shippingLabels.viewLabel" = "Visa köpt fraktetikett";
+
 /* Title of Shipping Section in Order Details screen */
 "orderDetailsDataSource.shippingLines.title" = "Frakt";
 
@@ -11450,6 +11528,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Det gick inte att hämta summor.";
 
+/* Button to dismiss the payments onboarding sheet from the POS dashboard. */
+"pointOfSaleDashboard.payments.onboarding.cancel" = "Avbryt";
+
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.done" = "Klar";
 
@@ -11776,6 +11857,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the suggested product on the Blaze dashboard view. */
 "productInfoView.suggestedProductLabel" = "Föreslagen produkt";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
+"productInventorySettings.GlobalUniqueIdentifier.ScanButton" = "Läser av streckkoder som är kopplade till en produkts unika globala identifierare för lagerhantering.";
+
+/* Placeholder of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
+"productInventorySettings.globalUniqueIdentifier.placeholder" = "Valfritt";
+
+/* Title of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
+"productInventorySettings.globalUniqueIdentifier.title" = "GTIN, UPC, EAN, ISBN";
+
+/* The message of the alert when there is an error updating the product global unique identifier */
+"productInventorySettings.invalidGlobalUniqueIdentifier.error" = "Ange endast siffror och bindestreck (-).";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "Faktureringsintervall";
@@ -12406,17 +12499,26 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for height input field */
 "wooShipping.createLabel.addPackage.height" = "Höjd";
 
+/* The title for a button to dismiss the keyboard on the order creation/editing screen */
+"wooShipping.createLabel.addPackage.keyboard.toolbar.done.button.title" = "Klar";
+
 /* Info label for length input field */
 "wooShipping.createLabel.addPackage.length" = "Längd";
 
 /* Info label for selecting package type */
 "wooShipping.createLabel.addPackage.packageType" = "Pakettyp";
 
+/* Info label for weight input field */
+"wooShipping.createLabel.addPackage.packageWeight" = "Paketvikt";
+
 /* Info label for saving package as a new template toggle */
 "wooShipping.createLabel.addPackage.saveNewPackageTemplate" = "Spara detta som en ny paketmall";
 
 /* Button for saving package as a new template */
 "wooShipping.createLabel.addPackage.savePackageTemplate" = "Spara paketmall";
+
+/* Placeholder text for package name field */
+"wooShipping.createLabel.addPackage.savePackageTemplatePlaceholder" = "Ange ett unikt paketnamn";
 
 /* Info label for saved package option */
 "wooShipping.createLabel.addPackage.saved" = "Sparad";
@@ -12430,6 +12532,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button to dismiss the shipping label creation screen */
 "wooShipping.createLabel.cancelButton" = "Avbryt";
 
+/* Title of the button to dismiss the shipping label screen */
+"wooShipping.createLabel.closeButton" = "Stäng";
+
 /* Label for section in shipping label creation to declare when a package contains hazardous materials. */
 "wooShipping.createLabel.hazmatLabel" = "Skickar du farliga artiklar eller farligt material?";
 
@@ -12438,6 +12543,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Call to action in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderTitle" = "Välj ett paket för att få fraktavgifter";
+
+/* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "Måste signeras av en vuxen";
+
+/* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
+"wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (grundavgift)";
 
 /* Label for the toggle to mark the order as complete on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.markComplete" = "Markera denna beställning som slutförd och avisera kunden";
@@ -12451,6 +12562,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button to purchase the shipping label on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.purchase" = "Köp etikett";
 
+/* Label for button to purchase the shipping label on the shipping label creation screen, including the label price. Reads like: 'Purchase Label · $7.63' */
+"wooShipping.createLabels.bottomSheet.purchaseFormat" = "Köp etikett · %1$@";
+
 /* Label for address where the shipment is shipped from on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.shipFrom" = "Avsändare";
 
@@ -12459,6 +12573,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header for shipment costs section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.shipmentCosts" = "Fraktkostnader";
+
+/* Label for row showing the additional cost to require a signature on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.signatureRequired" = "Signatur obligatoriskt";
 
 /* Label for row showing the subtotal for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.subtotal" = "Delsumma";
@@ -12478,8 +12595,77 @@ which should be translated separately and considered part of this sentence. */
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
 
+/* Link for more information about how to print a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.info" = "Lär dig hur man skriver ut från din mobila enhet";
+
+/* Navigation bar title of shipping label printing instructions screen */
+"wooShipping.createLabels.postPurchase.infoTitle" = "Skriv ut från din mobila enhet";
+
+/* Note about reusing a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.note" = "Obs: Återanvändning av en utskriven fraktetikett är ett brott mot våra användarvillkor och kan leda till åtal.";
+
+/* Title for button to print a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.printButton" = "Skriv ut fraktetikett";
+
+/* Message displayed on the shipping label screen when a purchased shipping label can be printed */
+"wooShipping.createLabels.postPurchase.printMessage" = "Härifrån kan du skriva ut fraktetiketten igen eller ändra storlek på fraktetiketten.";
+
+/* Heading displayed on the shipping label screen when a purchased shipping label can be printed */
+"wooShipping.createLabels.postPurchase.readyToPrint" = "Din fraktetikett är klar att skrivas ut.";
+
+/* Link to request a refund for a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.requestRefund" = "Begär återbetalning";
+
+/* Link to schedule a pickup for a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.schedulePickup" = "Schemalägg upphämtning";
+
+/* Link to track a shipment for a purchase shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.trackShipment" = "Spåra försändelse";
+
+/* Heading for the shipping service section in the shipping label creation screen. */
+"wooShipping.createLabels.rates.shippingService" = "Frakttjänst";
+
+/* Label for the menu to select a sort order for shipping rates in the shipping label creation screen. */
+"wooShipping.createLabels.rates.sortBy" = "Sortera efter";
+
+/* Option to sort shipping rates by delivery time in the shipping label creation screen. */
+"wooShipping.createLabels.rates.sortBy.deliveryTime" = "Snabbast";
+
+/* Option to sort shipping rates by price in the shipping label creation screen. */
+"wooShipping.createLabels.rates.sortBy.price" = "Billigast";
+
+/* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
+"wooShipping.createLabels.shippingService.adultSignatureRequired" = "Vuxen signatur krävs (+%1$@)";
+
+/* Singular format of number of business days in Woo Shipping label creation flow. Reads like: '1 business day' */
+"wooShipping.createLabels.shippingService.deliveryDaySingular" = "%1$d arbetsdag";
+
+/* Plural format of number of business days in Woo Shipping label creation flow. Reads like: '3 business days' */
+"wooShipping.createLabels.shippingService.deliveryDaysPlural" = "%1$d arbetsdagar";
+
+/* Label when shipping rate includes free pickup in Woo Shipping label creation flow. */
+"wooShipping.createLabels.shippingService.freePickup" = "Gratis upphämtning";
+
+/* Label when shipping rate includes tracking in Woo Shipping label creation flow. */
+"wooShipping.createLabels.shippingService.includesTracking" = "Inkluderar spårning";
+
+/* Label when shipping rate includes insurance in Woo Shipping label creation flow. Placeholder is an amount. Reads like: 'Insurance (up to $100)' */
+"wooShipping.createLabels.shippingService.insuranceAmount" = "Försäkring (upp till %1$@)";
+
+/* Label when shipping rate includes insurance in Woo Shipping label creation flow. Placeholder is a literal. Reads like: 'Insurance (limited)' */
+"wooShipping.createLabels.shippingService.insuranceLiteral" = "Försäkring (%1$@)";
+
+/* Label when shipping rate has option to require a signature in Woo Shipping label creation flow. Reads like: 'Signature required (+$3.70)' */
+"wooShipping.createLabels.shippingService.signatureRequired" = "Signatur krävs (+%1$@)";
+
+/* Label when shipping rate includes tracking in Woo Shipping label creation flow. */
+"wooShipping.createLabels.shippingService.tracking" = "Spårning";
+
 /* Title for the screen to create a shipping label */
 "wooShipping.createLabels.title" = "Skapa fraktetiketter";
+
+/* Title for the screen to view a shipping label */
+"wooShipping.createLabels.viewLabelTitle" = "Visa köpt fraktsedel";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommece, min butik, idag, den här veckan, den här månaden, det här året, beställningar, besökare, konvertering, toppkonvertering, artiklar sålda";

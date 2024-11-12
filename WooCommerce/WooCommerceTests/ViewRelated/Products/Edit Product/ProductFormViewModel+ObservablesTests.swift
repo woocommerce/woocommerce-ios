@@ -102,6 +102,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
                                       taxStatus: product.productTaxStatus,
                                       taxClass: taxClass)
         viewModel.updateInventorySettings(sku: product.sku,
+                                          globalUniqueIdentifier: product.globalUniqueID,
                                           manageStock: product.manageStock,
                                           soldIndividually: product.soldIndividually,
                                           stockQuantity: product.stockQuantity,

@@ -544,7 +544,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(customFieldSection)
     }
 
-    func test_custom_fields_button_is_hidden_when_order_contains_no_custom_fields_to_display() throws {
+    func test_custom_fields_button_is_visible_when_order_contains_no_custom_fields_to_display() throws {
         // Given
         let order = MockOrders().makeOrder(customFields: [])
         let dataSource = OrderDetailsDataSource(
@@ -557,7 +557,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let customFieldSection = section(withCategory: .customFields, from: dataSource)
-        XCTAssertNil(customFieldSection)
+        XCTAssertNotNil(customFieldSection)
     }
 
     func test_subscriptions_section_is_visible_when_order_has_associated_subscriptions() throws {

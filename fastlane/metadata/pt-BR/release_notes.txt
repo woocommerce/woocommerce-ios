@@ -1,1 +1,1 @@
-Esta versão inclui várias correções de bug e melhorias para tornar sua experiência mais agradável. Estamos empenhados em melhorar cada vez mais o aplicativo do WooCommerce e teremos algumas atualizações interessantes nas próximas semanas. Fique ligado!
+Gerenciar produtos e pedidos ficou mais fácil! Agora é possível visualizar e editar campos personalizados de produtos e pedidos diretamente no aplicativo. Além disso, simplificamos o processo de integração de pagamentos. Agora ficou mais fácil do que nunca corrigir erros ao configurar o WooPayments ou a Stripe. Boas vendas!

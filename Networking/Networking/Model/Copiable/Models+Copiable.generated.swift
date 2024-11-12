@@ -847,7 +847,7 @@ extension Networking.GoogleAdsCampaign {
         rawStatus: CopiableProp<String> = .copy,
         rawType: CopiableProp<String> = .copy,
         amount: CopiableProp<Double> = .copy,
-        country: CopiableProp<String> = .copy,
+        country: NullableCopiableProp<String> = .copy,
         targetedLocations: CopiableProp<[String]> = .copy
     ) -> Networking.GoogleAdsCampaign {
         let id = id ?? self.id
@@ -2658,6 +2658,7 @@ extension Networking.ProductVariation {
         status: CopiableProp<ProductStatus> = .copy,
         description: NullableCopiableProp<String> = .copy,
         sku: NullableCopiableProp<String> = .copy,
+        globalUniqueID: NullableCopiableProp<String> = .copy,
         price: CopiableProp<String> = .copy,
         regularPrice: NullableCopiableProp<String> = .copy,
         salePrice: NullableCopiableProp<String> = .copy,
@@ -2700,6 +2701,7 @@ extension Networking.ProductVariation {
         let status = status ?? self.status
         let description = description ?? self.description
         let sku = sku ?? self.sku
+        let globalUniqueID = globalUniqueID ?? self.globalUniqueID
         let price = price ?? self.price
         let regularPrice = regularPrice ?? self.regularPrice
         let salePrice = salePrice ?? self.salePrice
@@ -2847,6 +2849,42 @@ extension Networking.Refund {
             createAutomated: createAutomated,
             items: items,
             shippingLines: shippingLines
+        )
+    }
+}
+
+extension Networking.RemoteReaderLocation {
+    public func copy(
+        locationID: CopiableProp<String> = .copy,
+        city: NullableCopiableProp<String> = .copy,
+        country: CopiableProp<String> = .copy,
+        addressLine1: CopiableProp<String> = .copy,
+        addressLine2: NullableCopiableProp<String> = .copy,
+        postalCode: NullableCopiableProp<String> = .copy,
+        stateProvinceRegion: NullableCopiableProp<String> = .copy,
+        displayName: CopiableProp<String> = .copy,
+        liveMode: CopiableProp<Bool> = .copy
+    ) -> Networking.RemoteReaderLocation {
+        let locationID = locationID ?? self.locationID
+        let city = city ?? self.city
+        let country = country ?? self.country
+        let addressLine1 = addressLine1 ?? self.addressLine1
+        let addressLine2 = addressLine2 ?? self.addressLine2
+        let postalCode = postalCode ?? self.postalCode
+        let stateProvinceRegion = stateProvinceRegion ?? self.stateProvinceRegion
+        let displayName = displayName ?? self.displayName
+        let liveMode = liveMode ?? self.liveMode
+
+        return Networking.RemoteReaderLocation(
+            locationID: locationID,
+            city: city,
+            country: country,
+            addressLine1: addressLine1,
+            addressLine2: addressLine2,
+            postalCode: postalCode,
+            stateProvinceRegion: stateProvinceRegion,
+            displayName: displayName,
+            liveMode: liveMode
         )
     }
 }
@@ -3957,6 +3995,21 @@ extension Networking.WooPaymentsManualDeposit {
         return Networking.WooPaymentsManualDeposit(
             currency: currency,
             date: date
+        )
+    }
+}
+
+extension Networking.WooShippingCreatePackageResponse {
+    public func copy(
+        customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
+        predefinedOptions: CopiableProp<[WooShippingPredefinedOption]> = .copy
+    ) -> Networking.WooShippingCreatePackageResponse {
+        let customPackages = customPackages ?? self.customPackages
+        let predefinedOptions = predefinedOptions ?? self.predefinedOptions
+
+        return Networking.WooShippingCreatePackageResponse(
+            customPackages: customPackages,
+            predefinedOptions: predefinedOptions
         )
     }
 }

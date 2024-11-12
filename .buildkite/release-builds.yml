@@ -11,7 +11,10 @@ env:
 
 steps:
   - label: ":hammer_and_wrench: Release Build (App Store Connect)"
-    command: .buildkite/commands/release-build.sh ${BUILDKITE_BETA_RELEASE}
+    command: |
+      .buildkite/commands/checkout-release-branch.sh "$RELEASE_VERSION"
+
+      .buildkite/commands/release-build.sh ${IS_BETA_RELEASE}
     priority: 1
     plugins: [$CI_TOOLKIT]
     notify:

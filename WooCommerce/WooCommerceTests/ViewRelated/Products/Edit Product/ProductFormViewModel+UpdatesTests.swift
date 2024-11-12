@@ -130,12 +130,14 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
 
         // Action
         let newSKU = "94115"
+        let newGlobalUniqueID = "22341"
         let newManageStock = !product.manageStock
         let newSoldIndividually = !product.soldIndividually
         let newStockQuantity: Decimal = 17
         let newBackordersSetting = ProductBackordersSetting.allowedAndNotifyCustomer
         let newStockStatus = ProductStockStatus.onBackOrder
         viewModel.updateInventorySettings(sku: newSKU,
+                                          globalUniqueIdentifier: newGlobalUniqueID,
                                           manageStock: newManageStock,
                                           soldIndividually: newSoldIndividually,
                                           stockQuantity: newStockQuantity,
@@ -144,6 +146,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(viewModel.productModel.sku, newSKU)
+        XCTAssertEqual(viewModel.productModel.globalUniqueID, newGlobalUniqueID)
         XCTAssertEqual(viewModel.productModel.manageStock, newManageStock)
         XCTAssertEqual(viewModel.productModel.product.soldIndividually, newSoldIndividually)
         XCTAssertEqual(viewModel.productModel.stockQuantity, newStockQuantity)
@@ -275,7 +278,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         XCTAssertEqual(viewModel.productModel.product.menuOrder, menuOrder)
     }
 
-    func testUpdatingSKU() {
+    func testUpdatingIdentifiers() {
         // Arrange
         let product = Product.fake().copy(sku: "")
         let model = EditableProductModel(product: product)
@@ -286,10 +289,12 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
 
         // Action
         let sku = "woooo"
-        viewModel.updateSKU(sku)
+        let globalUniqueID = "12345"
+        viewModel.updateIdentifiers(sku: sku, globalUniqueID: globalUniqueID)
 
         // Assert
         XCTAssertEqual(viewModel.productModel.sku, sku)
+        XCTAssertEqual(viewModel.productModel.globalUniqueID, globalUniqueID)
     }
 
     func testUpdatingExternalLink() {

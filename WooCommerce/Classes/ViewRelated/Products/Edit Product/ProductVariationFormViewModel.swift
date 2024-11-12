@@ -266,12 +266,14 @@ extension ProductVariationFormViewModel {
     }
 
     func updateInventorySettings(sku: String?,
+                                 globalUniqueIdentifier: String?,
                                  manageStock: Bool,
                                  soldIndividually: Bool?,
                                  stockQuantity: Decimal?,
                                  backordersSetting: ProductBackordersSetting?,
                                  stockStatus: ProductStockStatus?) {
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(sku: sku,
+                                                                                                                  globalUniqueID: globalUniqueIdentifier,
                                                                                                                   manageStock: manageStock,
                                                                                                                   stockQuantity: stockQuantity,
                                                                                                                   stockStatus: stockStatus,
@@ -315,7 +317,7 @@ extension ProductVariationFormViewModel {
         // no-op
     }
 
-    func updateSKU(_ sku: String?) {
+    func updateIdentifiers(sku: String?, globalUniqueID: String?) {
         // no-op
     }
 

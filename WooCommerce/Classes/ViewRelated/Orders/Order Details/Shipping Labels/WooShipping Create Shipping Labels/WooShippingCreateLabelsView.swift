@@ -38,11 +38,17 @@ struct WooShippingCreateLabelsView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: Layout.verticalSpacing) {
+                    if viewModel.canViewLabel, let postPurchase = viewModel.postPurchase {
+                        WooShippingPostPurchaseView(viewModel: postPurchase)
+                    }
+
                     WooShippingItems(viewModel: viewModel.items)
 
-                    WooShippingHazmat()
+                    WooShippingHazmat(enabled: !viewModel.canViewLabel)
 
-                    if viewModel.hasPackage {
+                    if viewModel.canViewLabel {
+                        EmptyView()
+                    } else if viewModel.hasPackage {
                         // TODO: Display package section
                         // Package heading and edit button
                         // Selected package details
@@ -59,7 +65,7 @@ struct WooShippingCreateLabelsView: View {
                 ExpandableBottomSheet(onChangeOfExpansion: { isExpanded in
                     isShipmentDetailsExpanded = isExpanded
                 }) {
-                    if isShipmentDetailsExpanded {
+                    if isShipmentDetailsExpanded && !viewModel.canViewLabel {
                         CollapsibleHStack(spacing: Layout.bottomSheetSpacing) {
                             Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
                                 .font(.subheadline)
@@ -71,7 +77,7 @@ struct WooShippingCreateLabelsView: View {
                             Text(Localization.BottomSheet.shipmentDetails)
                                 .foregroundStyle(Color(.primary))
                                 .bold()
-                            if viewModel.hasPackage {
+                            if viewModel.hasPackage && !viewModel.canViewLabel {
                                 purchaseButton
                             }
                         }
@@ -134,11 +140,11 @@ struct WooShippingCreateLabelsView: View {
                 }
                 .ignoresSafeArea(edges: .horizontal)
             }
-            .navigationTitle(Localization.title)
+            .navigationTitle(viewModel.canViewLabel ? Localization.viewLabelTitle : Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(Localization.cancel) {
+                    Button(viewModel.canViewLabel ? Localization.close : Localization.cancel) {
                         dismiss()
                     }
                 }
@@ -185,45 +191,28 @@ private extension WooShippingCreateLabelsView {
             Text(Localization.BottomSheet.shipmentCosts)
                 .footnoteStyle()
             Group {
-                if let selectedRate = viewModel.shippingService.selectedRate {
-                    AdaptiveStack {
-                        Text(Localization.BottomSheet.rateLabel(for: selectedRate))
-                        Spacer()
-                        Text(viewModel.formatAmount(for: selectedRate.rate))
-                    }
-                    if let signature = selectedRate.signatureRate {
-                        AdaptiveStack {
-                            Text(Localization.BottomSheet.signatureRequired)
-                            Spacer()
-                            Text(viewModel.formatAmount(for: signature))
-                        }
-                    }
-                    if let adultSignature = selectedRate.adultSignatureRate {
-                        AdaptiveStack {
-                            Text(Localization.BottomSheet.adultSignatureRequired)
-                            Spacer()
-                            Text(viewModel.formatAmount(for: adultSignature))
-                        }
+                if viewModel.shippingRates.isNotEmpty {
+                    ForEach(viewModel.shippingRates, id: \.title) { rate in
+                        shippingRateRow(label: rate.title, amount: rate.amount)
                     }
                 } else {
-                    AdaptiveStack {
-                        Text(Localization.BottomSheet.subtotal)
-                        Spacer()
-                        Text("$0.00")
-                            .redacted(reason: .placeholder)
-                    }
+                    shippingRateRow(label: Localization.BottomSheet.subtotal, amount: nil)
                 }
-                AdaptiveStack {
-                    Text(Localization.BottomSheet.total)
-                        .bold()
-                    Spacer()
-                    Text(viewModel.totalCost ?? "$0.00")
-                        .if(viewModel.totalCost == nil) { total in
-                            total.redacted(reason: .placeholder)
-                        }
-                }
+                shippingRateRow(label: Localization.BottomSheet.total, amount: viewModel.totalCost)
+                    .bold()
             }
             .frame(idealHeight: Layout.rowHeight)
+        }
+    }
+
+    func shippingRateRow(label: String, amount: String?) -> some View {
+        AdaptiveStack {
+            Text(label)
+            Spacer()
+            Text(amount ?? "$0.00")
+                .if(amount == nil) { amount in
+                    amount.redacted(reason: .placeholder)
+                }
         }
     }
 
@@ -254,9 +243,15 @@ private extension WooShippingCreateLabelsView {
         static let title = NSLocalizedString("wooShipping.createLabels.title",
                                              value: "Create Shipping Labels",
                                              comment: "Title for the screen to create a shipping label")
+        static let viewLabelTitle = NSLocalizedString("wooShipping.createLabels.viewLabelTitle",
+                                                      value: "View Shipping Label",
+                                                      comment: "Title for the screen to view a shipping label")
         static let cancel = NSLocalizedString("wooShipping.createLabel.cancelButton",
                                               value: "Cancel",
                                               comment: "Title of the button to dismiss the shipping label creation screen")
+        static let close = NSLocalizedString("wooShipping.createLabel.closeButton",
+                                             value: "Close",
+                                             comment: "Title of the button to dismiss the shipping label screen")
 
         enum BottomSheet {
             static let shipmentDetails = NSLocalizedString("wooShipping.createLabels.bottomSheet.title",
@@ -280,25 +275,6 @@ private extension WooShippingCreateLabelsView {
             static let subtotal = NSLocalizedString("wooShipping.createLabels.bottomSheet.subtotal",
                                                         value: "Subtotal",
                                                         comment: "Label for row showing the subtotal for shipment costs on the shipping label creation screen")
-            static func rateLabel(for selectedRate: WooShippingSelectedRate) -> String {
-                if selectedRate.signatureRate == nil && selectedRate.adultSignatureRate == nil {
-                    return selectedRate.rate.title
-                } else {
-                    return String.localizedStringWithFormat(baseFeeFormat, selectedRate.rate.title)
-                }
-            }
-            private static let baseFeeFormat = NSLocalizedString("wooShipping.createLabels.bottomSheet.baseFee",
-                                                                 value: "%1$@ (base fee)",
-                                                                 comment: "Label for row showing the base fee for the selected shipping service " +
-                                                                 "on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)'")
-            static let signatureRequired = NSLocalizedString("wooShipping.createLabels.bottomSheet.signatureRequired",
-                                                             value: "Signature Required",
-                                                             comment: "Label for row showing the additional cost to require a signature " +
-                                                             "on the shipping label creation screen")
-            static let adultSignatureRequired = NSLocalizedString("wooShipping.createLabels.bottomSheet.adultSignatureRequired",
-                                                             value: "Adult Signature Required",
-                                                             comment: "Label for row showing the additional cost to require an adult signature " +
-                                                                  "on the shipping label creation screen")
             static let total = NSLocalizedString("wooShipping.createLabels.bottomSheet.total",
                                                         value: "Total",
                                                         comment: "Label for row showing the total for shipment costs on the shipping label creation screen")

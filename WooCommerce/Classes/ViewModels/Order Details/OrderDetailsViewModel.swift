@@ -21,7 +21,7 @@ final class OrderDetailsViewModel {
 
     /// Defines the current sync states of the view model data.
     ///
-    private var syncState: SyncState = .notSynced
+    private var syncStateController: OrderDetailsSyncStateControlling
 
     var orderStatus: OrderStatus? {
         return lookUpOrderStatus(for: order)
@@ -31,12 +31,14 @@ final class OrderDetailsViewModel {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         syncStateController: OrderDetailsSyncStateControlling = OrderDetailsSyncStateController(syncState: .notSynced)) {
         self.order = order
         self.stores = stores
         self.storageManager = storageManager
         self.currencyFormatter = currencyFormatter
         self.featureFlagService = featureFlagService
+        self.syncStateController = syncStateController
         self.configurationLoader = CardPresentConfigurationLoader(stores: stores)
         self.dataSource = OrderDetailsDataSource(order: order,
                                                  cardPresentPaymentsConfiguration: configurationLoader.configuration)
@@ -168,8 +170,23 @@ final class OrderDetailsViewModel {
 
     /// Returns edit action availability given the internal state.
     ///
-    var editButtonIsEnabled: Bool {
-        syncState == .synced
+    var editButtonBehaviour: EditButtonBehaviour {
+        guard syncStateController.syncState == .synced else {
+            return .disabledForSyncing
+        }
+
+        guard let orderCurrency = CurrencyCode(caseInsensitiveRawValue: order.currency),
+              orderCurrency == ServiceLocator.currencySettings.currencyCode else {
+            return .showNoticeForCurrencyConflict
+        }
+
+        return .enabled
+    }
+
+    enum EditButtonBehaviour {
+        case enabled
+        case disabledForSyncing
+        case showNoticeForCurrencyConflict
     }
 
     var paymentMethodsViewModel: PaymentMethodsViewModel {
@@ -297,7 +314,7 @@ extension OrderDetailsViewModel {
 
             /// Update state to synced
             ///
-            self?.syncState = .synced
+            self?.syncStateController.syncState = .synced
 
             onReloadSections?()
             onCompletion?()
@@ -466,8 +483,14 @@ extension OrderDetailsViewModel {
             guard let shippingLabel = dataSource.shippingLabel(at: indexPath) else {
                 return
             }
-            let shippingLabelDetailsViewController = ShippingLabelDetailsViewController(shippingLabel: shippingLabel)
-            viewController.show(shippingLabelDetailsViewController, sender: viewController)
+            if dataSource.isEligibleForWooShipping {
+                let viewModel = WooShippingCreateLabelsViewModel(order: order, shippingLabel: shippingLabel)
+                let shippingLabelDetailsViewController = WooShippingCreateLabelsViewHostingController(viewModel: viewModel)
+                viewController.present(shippingLabelDetailsViewController, animated: true)
+            } else {
+                let shippingLabelDetailsViewController = ShippingLabelDetailsViewController(shippingLabel: shippingLabel)
+                viewController.show(shippingLabelDetailsViewController, sender: viewController)
+            }
         case .shippingLabelPrintingInfo:
             let printingInstructionsViewController = ShippingLabelPrintingInstructionsViewController()
             let navigationController = WooNavigationController(rootViewController: printingInstructionsViewController)
@@ -902,21 +925,11 @@ private extension OrderDetailsViewModel {
     }
 }
 
-// MARK: Definitions
-private extension OrderDetailsViewModel {
-    /// Defines the possible sync states of the view model data.
-    ///
-    enum SyncState {
-        case notSynced
-        case synced
-    }
-}
-
 // MARK: - Notices
-private extension OrderDetailsViewModel {
-    func displayReceiptRetrievalErrorNotice(for order: Order,
-                                            with error: Error?,
-                                            in viewController: UIViewController) {
+extension OrderDetailsViewModel {
+    private func displayReceiptRetrievalErrorNotice(for order: Order,
+                                                    with error: Error?,
+                                                    in viewController: UIViewController) {
         let noticePresenter = DefaultNoticePresenter()
         let notice = Notice(title: Localization.failedReceiptRetrievalNoticeText,
                             feedbackType: .error)
@@ -926,11 +939,31 @@ private extension OrderDetailsViewModel {
         DDLogError("Failed to retrieve receipt for order: \(order.orderID). Site \(order.siteID). Error: \(String(describing: error))")
     }
 
+    func showNoticeForEditingWithCurrencyConflict(in viewController: UIViewController) {
+        let siteCurrency = ServiceLocator.currencySettings.currencyCode.rawValue
+        let noticePresenter = DefaultNoticePresenter()
+        let title = String(format: Localization.editingOrderWithCurrencyConflictNoticeTitle, order.currency, siteCurrency)
+        let notice = Notice(title: title,
+                            feedbackType: .error)
+        noticePresenter.presentingViewController = viewController
+        noticePresenter.enqueue(notice: notice)
+
+        DDLogError("Attempt to edit order \(order.orderID) with currency \(order.currency), but did not match site's currency \(siteCurrency).")
+    }
+
     enum Localization {
         static let failedReceiptRetrievalNoticeText = NSLocalizedString(
             "OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice",
             value: "Unable to retrieve receipt.",
             comment: "Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view.")
+
+        static let editingOrderWithCurrencyConflictNoticeTitle = NSLocalizedString(
+            "OrderDetailsViewModel.editingOrderWithCurrencyConflictNotice.title",
+            value: "Sorry, you can only edit this order on the web, as it uses %1$@, and your site's currency is %2$@.",
+            comment: "Title for notice that's shown when trying to edit an order that's in a different currency. " +
+            "This action isn't supported in the app. Placeholders: %1$@ is the order currency code (e.g. USD), " +
+            "%2$@ is the site currency code (e.g. GBP.)"
+        )
     }
 }
 

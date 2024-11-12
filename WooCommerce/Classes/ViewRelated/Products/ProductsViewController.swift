@@ -27,7 +27,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     ///
     @IBOutlet weak var tableView: UITableView!
 
-    private var barcodeScannerCoordinator: ProductSKUBarcodeScannerCoordinator?
+    private var barcodeScannerCoordinator: ProducBarcodeScannerCoordinator?
 
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(sectionHeaderVerticalSpace: .medium,
                                                                                                 cellClass: ProductsTabProductTableViewCell.self,
@@ -324,8 +324,8 @@ private extension ProductsViewController {
 
         self.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
 
-        let productSKUBarcodeScannerCoordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
-                                                                                      onSKUBarcodeScanned: { [weak self] scannedBarcode in
+        let productSKUBarcodeScannerCoordinator = ProducBarcodeScannerCoordinator(sourceNavigationController: navigationController,
+                                                                                  onBarcodeScanned: { [weak self] scannedBarcode in
             guard let self = self else { return }
             ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .productList))
 
@@ -342,7 +342,7 @@ private extension ProductsViewController {
                     })), animated: true)
                 } catch {
                     self.trackScannedItemSearchFailure(error)
-                    let errorNotice = BarcodeSKUScannerErrorNoticeFactory.notice(for: error,
+                    let errorNotice = BarcodeScannerErrorNoticeFactory.notice(for: error,
                                                                                  code: scannedBarcode,
                                                                                  actionHandler: {
                         self.scanProducts()

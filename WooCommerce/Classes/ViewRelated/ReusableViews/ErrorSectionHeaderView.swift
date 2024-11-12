@@ -3,7 +3,6 @@ import UIKit
 /// Displays error for the table view section.
 ///
 final class ErrorSectionHeaderView: UITableViewHeaderFooterView {
-
     @IBOutlet private weak var titleLabel: UILabel!
 
     // MARK: - Overridden Methods

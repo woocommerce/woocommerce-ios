@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct WooShippingPostPurchaseView: View {
-    @State private var viewModel = WooShippingPostPurchaseViewModel()
+    @ObservedObject private(set) var viewModel: WooShippingPostPurchaseViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -41,8 +41,9 @@ struct WooShippingPostPurchaseView: View {
                         .bold()
                 }
                 .buttonStyle(HighlightButtonStyle(background: Layout.panelHighlight, backgroundPressed: Layout.buttonPressed))
-                Button {
-                    // TODO: Open instructions for how to print
+                NavigationLink {
+                    ShippingLabelPrintingInstructionsView()
+                        .navigationTitle(Localization.infoTitle)
                 } label: {
                     HStack {
                         Image(systemName: "info.circle")
@@ -53,22 +54,28 @@ struct WooShippingPostPurchaseView: View {
                 }
                 Divider()
                 Group {
-                    Button {
-                        // TODO: Open link for shipment tracking
-                    } label: {
-                        HStack {
-                            Text(Localization.trackShipment)
-                                .multilineTextAlignment(.leading)
-                            Image(systemName: "arrow.up.right.square")
+                    if let trackingURL = viewModel.trackingURL {
+                        NavigationLink {
+                            WebView(isPresented: .constant(true), url: trackingURL)
+                                .navigationTitle(Localization.trackShipment)
+                        } label: {
+                            HStack {
+                                Text(Localization.trackShipment)
+                                    .multilineTextAlignment(.leading)
+                                Image(systemName: "arrow.up.right.square")
+                            }
                         }
                     }
-                    Button {
-                        // TODO: Open link to schedule pickup
-                    } label: {
-                        HStack {
-                            Text(Localization.schedulePickup)
-                                .multilineTextAlignment(.leading)
-                            Image(systemName: "arrow.up.right.square")
+                    if let pickupURL = viewModel.pickupURL {
+                        NavigationLink {
+                            WebView(isPresented: .constant(true), url: pickupURL)
+                                .navigationTitle(Localization.schedulePickup)
+                        } label: {
+                            HStack {
+                                Text(Localization.schedulePickup)
+                                    .multilineTextAlignment(.leading)
+                                Image(systemName: "arrow.up.right.square")
+                            }
                         }
                     }
                     Button {
@@ -117,6 +124,10 @@ private extension WooShippingPostPurchaseView {
         static let info = NSLocalizedString("wooShipping.createLabels.postPurchase.info",
                                             value: "Learn how to print from your mobile device",
                                             comment: "Link for more information about how to print a purchased shipping label on the shipping label screen")
+        static let infoTitle =
+            NSLocalizedString("wooShipping.createLabels.postPurchase.infoTitle",
+                              value: "Print from your mobile device",
+                              comment: "Navigation bar title of shipping label printing instructions screen")
         static let trackShipment = NSLocalizedString("wooShipping.createLabels.postPurchase.trackShipment",
                                                      value: "Track shipment",
                                                      comment: "Link to track a shipment for a purchase shipping label on the shipping label screen")
@@ -133,6 +144,13 @@ private extension WooShippingPostPurchaseView {
 }
 
 #Preview {
-    WooShippingPostPurchaseView()
+    WooShippingPostPurchaseView(viewModel: WooShippingPostPurchaseViewModel(labelSizes: [.label, .legal, .a4],
+                                                                            trackingURL: URL(string: "https://woocommerce.com"),
+                                                                            pickupURL: WooShippingCarrier.usps.pickupURL))
+        .padding()
+}
+
+#Preview("Label without links") {
+    WooShippingPostPurchaseView(viewModel: WooShippingPostPurchaseViewModel(labelSizes: [.label, .legal, .a4], trackingURL: nil, pickupURL: nil))
         .padding()
 }

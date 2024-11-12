@@ -474,6 +474,7 @@ enum WooAnalyticsStat: String {
     case orderContactAction = "order_contact_action"
     case orderCustomerAdd = "order_customer_add"
     case orderEditButtonTapped = "order_edit_button_tapped"
+    case orderEditButtonTappedWhileDisabledForCurrencyConflict = "order_edit_button_tapped_while_disabled_for_currency_conflict"
     case ordersListFilter = "orders_list_filter"
     case ordersListSearch = "orders_list_search"
     case ordersListLoaded = "orders_list_loaded"
@@ -751,6 +752,8 @@ enum WooAnalyticsStat: String {
     case productDetailViewProductAddOnsTapped = "product_detail_view_product_addons_tapped"
     case productInventorySettingsSKUScannerButtonTapped = "product_inventory_settings_sku_scanner_button_tapped"
     case productInventorySettingsSKUScanned = "product_inventory_settings_sku_scanned"
+    case productInventorySettingsGlobalUniqueIDScannerButtonTapped = "product_inventory_settings_global_unique_id_scanner_button_tapped"
+    case productInventorySettingsGlobalUniqueIDScanned = "product_inventory_settings_global_unique_id_scanned"
     case productDetailPreviewTapped = "product_detail_preview_tapped"
     case productDetailPreviewFailed = "product_detail_preview_failed"
     case productDetailViewBundledProductsTapped = "product_detail_view_bundled_products_tapped"
@@ -1244,6 +1247,25 @@ enum WooAnalyticsStat: String {
 
     // MARK: Point of Sale events
     case pointOfSaleAddItemToCart = "pos_item_added_to_cart"
+    case pointOfSalePaymentsOnboardingShown = "pos_payments_onboarding_shown"
+    case pointOfSalePaymentsOnboardingDismissed = "pos_payments_onboarding_dismissed"
+
+    // MARK: Custom Fields events
+    case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"
+
+    // Custom Fields List
+    case customFieldsListLoaded = "custom_fields_list_loaded"
+    case customFieldTapped = "custom_field_tapped"
+    case addCustomFieldTapped = "add_custom_field_tapped"
+    case saveCustomFieldTapped = "save_custom_field_tapped"
+    case customFieldsSavedSuccessfully = "custom_fields_saved_successfully"
+    case customFieldsSavingFailed = "custom_fields_saving failed"
+
+    // Custom Field Editor
+    case customFieldEditorLoaded = "custom_field_editor_loaded"
+    case customFieldEditorPickerTapped = "custom_field_editor_picker_tapped"
+    case customFieldEditorDeleteTapped = "custom_field_editor_delete_tapped"
+    case customFieldEditorDoneTapped = "custom_field_editor_done_tapped"
 }
 
 extension WooAnalyticsStat {

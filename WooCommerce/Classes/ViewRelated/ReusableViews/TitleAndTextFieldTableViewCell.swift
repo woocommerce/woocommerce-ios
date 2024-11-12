@@ -88,6 +88,10 @@ final class TitleAndTextFieldTableViewCell: UITableViewCell {
     func setSpacingBetweenTitleAndTextField(_ spacing: CGFloat) {
         contentStackView.spacing = spacing
     }
+
+    func setKeyboardType(keyboardType: UIKeyboardType) {
+        textField.keyboardType = keyboardType
+    }
 }
 
 private extension TitleAndTextFieldTableViewCell {

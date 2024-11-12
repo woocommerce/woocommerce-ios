@@ -2,43 +2,59 @@ import Foundation
 import Yosemite
 
 /// ViewModel for an individual custom field
-struct CustomFieldViewModel: Identifiable {
+struct CustomFieldViewModel: Identifiable, Equatable {
     /// Unique identifier, required by `SwiftUI`
     ///
-    let id: Int64
+    let id = UUID()
 
-    /// The title for the Custom Field mapped from the metadata key
+    let fieldID: Int64?
+
+    /// The key for the Custom Field
     ///
-    let title: String
+    let key: String
 
-    /// The content for the Custom Field mapped from the metadata value
+    /// The value for the Custom Field
     ///
-    let content: String
+    let value: String
 
-    /// Optional URL used for linking the Custom Field content
+    /// Optional URL used for linking the Custom Field value
     ///
-    let contentURL: URL?
+    let valueURL: URL?
 
-    init(id: Int64, title: String, content: String, contentURL: URL? = nil) {
-        self.id = id
-        self.title = title
-        self.content = content
-        self.contentURL = contentURL
+    var isJson: Bool {
+        (try? JSONSerialization.jsonObject(with: value.data(using: .utf8) ?? Data())) != nil
+    }
+
+    init(fieldID: Int64? = nil, key: String, value: String, valueURL: URL? = nil) {
+        self.fieldID = fieldID
+        self.key = key
+        self.value = value
+        self.valueURL = valueURL
 
     }
 
     init(metadata: MetaData) {
         // Create a URL out of the metadata value, if it is a valid URL that can be opened on device
-        var contentURL: URL?
+        var valueURL: URL?
         if metadata.value.isValidURL(), let url = URL(string: metadata.value), UIApplication.shared.canOpenURL(url) {
-            contentURL = url
+            valueURL = url
         }
 
         self.init(
-            id: metadata.metadataID,
-            title: metadata.key,
-            content: metadata.value,
-            contentURL: contentURL
+            fieldID: metadata.metadataID,
+            key: metadata.key,
+            value: metadata.value,
+            valueURL: valueURL
         )
+    }
+
+    func asDictionary() -> [String: Any] {
+        var json: [String: Any] = [:]
+            if let fieldID = fieldID {
+                json["id"] = fieldID
+            }
+            json["key"] = key
+            json["value"] = value
+        return json
     }
 }

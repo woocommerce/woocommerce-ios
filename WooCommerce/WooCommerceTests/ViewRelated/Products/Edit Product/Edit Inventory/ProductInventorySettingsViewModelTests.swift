@@ -38,7 +38,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Assert
         let expectedSections: [Section] = [
-            .init(rows: [.sku, .globalUniqueIdentifier]),
+            .init(rows: [.sku]),
+            .init(rows: [.globalUniqueIdentifier]),
             .init(rows: [.manageStock, .stockQuantity, .backorders]),
             .init(rows: [.limitOnePerOrder])
         ]
@@ -70,7 +71,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Assert
         let expectedSections: [Section] = [
-            .init(rows: [.sku, .globalUniqueIdentifier]),
+            .init(rows: [.sku]),
+            .init(rows: [.globalUniqueIdentifier]),
             .init(rows: [.manageStock, .stockStatus]),
             .init(rows: [.limitOnePerOrder])
         ]
@@ -98,7 +100,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Assert
         let expectedSections: [Section] = [
-            .init(rows: [.sku, .globalUniqueIdentifier]),
+            .init(rows: [.sku]),
+            .init(rows: [.globalUniqueIdentifier]),
             .init(rows: [.manageStock]),
             .init(rows: [.limitOnePerOrder])
         ]
@@ -112,7 +115,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Act
         let featureFlagService = MockFeatureFlagService(isProductGlobalUniqueIdentifierSupported: true)
-        let viewModel = ProductInventorySettingsViewModel(formType: .sku, productModel: model, featureFlagService: featureFlagService)
+        let viewModel = ProductInventorySettingsViewModel(formType: .onlyIdentifiers, productModel: model, featureFlagService: featureFlagService)
         var sections: [Section] = []
         cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
@@ -120,7 +123,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Assert
         let expectedSections: [Section] = [
-            .init(rows: [.sku, .globalUniqueIdentifier])
+            .init(rows: [.sku]),
+            .init(rows: [.globalUniqueIdentifier])
         ]
         XCTAssertEqual(sections, expectedSections)
         XCTAssertEqual(viewModel.sku, "134")
@@ -157,7 +161,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         XCTAssertEqual(isSKUValid, false)
         XCTAssertEqual(shouldBringUpKeyboard, true)
         let expectedSections: [Section] = [
-            .init(errorTitle: ProductUpdateError.duplicatedSKU.errorDescription, rows: [.sku, .globalUniqueIdentifier]),
+            .init(errorTitle: ProductUpdateError.duplicatedSKU.errorDescription, rows: [.sku]),
+            .init(rows: [.globalUniqueIdentifier]),
             .init(rows: [.manageStock, .stockStatus]),
             .init(rows: [.limitOnePerOrder])
         ]
@@ -193,12 +198,91 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         XCTAssertEqual(isSKUValid, true)
         XCTAssertEqual(shouldBringUpKeyboard, true)
         let expectedSections: [Section] = [
-            .init(rows: [.sku, .globalUniqueIdentifier]),
+            .init(rows: [.sku]),
+            .init(rows: [.globalUniqueIdentifier]),
             .init(rows: [.manageStock, .stockStatus]),
             .init(rows: [.limitOnePerOrder])
         ]
         XCTAssertEqual(sections, expectedSections)
         XCTAssertEqual(viewModel.sku, sku)
+    }
+
+    // MARK: - `handleGlobalUniqueIdentifierChange`
+
+    func testGlobalUniqueIdentifierWithLettersIsNotValid() {
+        // Arrange
+        let product = Product.fake().copy(globalUniqueID: "321")
+        let model = EditableProductModel(product: product)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+
+        // Act
+        var globalUniqueIdentifierIsValid: Bool?
+        viewModel.handleGlobalUniqueIdentifierChange("1234test", onValidation: { isValid, _ in
+            globalUniqueIdentifierIsValid = isValid
+        })
+
+        // Assert
+        XCTAssertFalse(globalUniqueIdentifierIsValid ?? true)
+    }
+
+    func testGlobalUniqueIdentifierWithCharactersOtherThanHyphensIsNotValid() {
+        // Arrange
+        let product = Product.fake().copy(globalUniqueID: "321")
+        let model = EditableProductModel(product: product)
+        let featureFlagService = MockFeatureFlagService(isProductGlobalUniqueIdentifierSupported: true)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, featureFlagService: featureFlagService)
+        var sections: [Section] = []
+        cancellable = viewModel.sections.sink { sectionsValue in
+            sections = sectionsValue
+        }
+
+        // Act
+        var globalUniqueIdentifierIsValid: Bool?
+        viewModel.handleGlobalUniqueIdentifierChange("1234,", onValidation: { isValid, _ in
+            globalUniqueIdentifierIsValid = isValid
+        })
+
+        // Assert
+        let expectedSections: [Section] = [
+            .init(rows: [.sku]),
+            .init(errorTitle: ProductUpdateError.invalidGlobalUniqueIdentifier.errorDescription, rows: [.globalUniqueIdentifier]),
+            .init(rows: [.manageStock, .stockStatus]),
+            .init(rows: [.limitOnePerOrder])
+        ]
+        XCTAssertEqual(sections, expectedSections)
+        XCTAssertFalse(globalUniqueIdentifierIsValid ?? true)
+    }
+
+    func testGlobalUniqueIdentifierWithNumbersAndHyphensIsValid() {
+        // Arrange
+        let product = Product.fake().copy(globalUniqueID: "321")
+        let model = EditableProductModel(product: product)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+
+        // Act
+        var globalUniqueIdentifierIsValid: Bool?
+        viewModel.handleGlobalUniqueIdentifierChange("123-456-789", onValidation: { isValid, _ in
+            globalUniqueIdentifierIsValid = isValid
+        })
+
+        // Assert
+        XCTAssertTrue(globalUniqueIdentifierIsValid ?? false)
+    }
+
+    func testEmptyGlobalUniqueIdentifierIsValid() {
+        // Arrange
+        let product = Product.fake().copy(globalUniqueID: "321")
+        let model = EditableProductModel(product: product)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+
+        // Act
+        var globalUniqueIdentifierIsValid: Bool?
+        viewModel.handleGlobalUniqueIdentifierChange("", onValidation: { isValid, _ in
+            globalUniqueIdentifierIsValid = isValid
+        })
+
+        // Assert
+        XCTAssertTrue(globalUniqueIdentifierIsValid ?? false)
     }
 
     // MARK: - `handleManageStockEnabledChange`
@@ -221,7 +305,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Assert
         let expectedSections: [Section] = [
-            .init(rows: [.sku, .globalUniqueIdentifier]),
+            .init(rows: [.sku]),
+            .init(rows: [.globalUniqueIdentifier]),
             .init(rows: [.manageStock, .stockStatus]),
             .init(rows: [.limitOnePerOrder])
         ]
@@ -246,7 +331,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Assert
         let expectedSections: [Section] = [
-            .init(rows: [.sku, .globalUniqueIdentifier]),
+            .init(rows: [.sku]),
+            .init(rows: [.globalUniqueIdentifier]),
             .init(rows: [.manageStock, .stockQuantity, .backorders]),
             .init(rows: [.limitOnePerOrder])
         ]
@@ -263,6 +349,32 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Act
         viewModel.handleSoldIndividuallyChange(false)
+
+        // Assert
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
+
+    func testViewModelHasUnsavedChangesAfterUpdatingGlobalUniqueId() {
+        // Arrange
+        let product = Product.fake().copy(globalUniqueID: "321")
+        let model = EditableProductModel(product: product)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+
+        // Act
+        viewModel.handleGlobalUniqueIdentifierChange("123", onValidation: { _, _ in })
+
+        // Assert
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
+
+    func testViewModelHasUnsavedChangesAfterScanningANewGlobalUniqueId() {
+        // Arrange
+        let product = Product.fake().copy(globalUniqueID: "321")
+        let model = EditableProductModel(product: product)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+
+        // Act
+        viewModel.handleGlobalUniqueIdentifierFromBarcodeScanner("123", onValidation: { _, _ in })
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())

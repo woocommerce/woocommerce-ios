@@ -113,6 +113,7 @@ protocol ProductFormViewModelProtocol {
                              taxClass: TaxClass?)
 
     func updateInventorySettings(sku: String?,
+                                 globalUniqueIdentifier: String?,
                                  manageStock: Bool,
                                  soldIndividually: Bool?,
                                  stockQuantity: Decimal?,
@@ -133,7 +134,7 @@ protocol ProductFormViewModelProtocol {
 
     func updateShortDescription(_ shortDescription: String)
 
-    func updateSKU(_ sku: String?)
+    func updateIdentifiers(sku: String?, globalUniqueID: String?)
 
     func updateGroupedProductIDs(_ groupedProductIDs: [Int64])
 

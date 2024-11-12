@@ -42,18 +42,18 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.combinedList.count, 2)
         XCTAssertEqual(viewModel.combinedList[0].key, "Key1")
         XCTAssertEqual(viewModel.combinedList[0].value, "Value1")
-        XCTAssertEqual(viewModel.combinedList[0].fieldId, 1)
+        XCTAssertEqual(viewModel.combinedList[0].fieldID, 1)
         XCTAssertEqual(viewModel.combinedList[1].key, "Key2")
         XCTAssertEqual(viewModel.combinedList[1].value, "Value2")
-        XCTAssertEqual(viewModel.combinedList[1].fieldId, 2)
+        XCTAssertEqual(viewModel.combinedList[1].fieldID, 2)
     }
 
     func test_given_existingField_when_editFieldCalled_then_displayedItemsAndPendingChangesAreUpdated() {
         // Given: A custom field UI to edit an existing field
-        let editedField = CustomFieldsListViewModel.CustomFieldUI(key: "EditedKey1", value: "EditedValue1", fieldId: 1)
+        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1", value: "EditedValue1"))
 
         // When: Editing the field
-        viewModel.editField(at: 0, newField: editedField)
+        viewModel.saveField(key: editedField.key, value: editedField.value, fieldID: editedField.fieldID)
 
         // Then: The number of displayed items remains the same as before and the value is edited correctly
         XCTAssertEqual(viewModel.combinedList.count, 2)
@@ -63,10 +63,10 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
     func test_given_newField_when_addFieldCalled_then_displayedItemsAndPendingChangesAreUpdated() {
         // Given: A new custom field UI to add
-        let newField = CustomFieldsListViewModel.CustomFieldUI(key: "NewKey", value: "NewValue")
+        let newField = CustomFieldViewModel(key: "NewKey", value: "NewValue")
 
         // When: Adding the new field
-        viewModel.addField(newField)
+        viewModel.saveField(key: newField.key, value: newField.value, fieldID: nil)
 
         // Then: The pending changes and displayed items should be updated
         XCTAssertEqual(viewModel.combinedList.count, 3)
@@ -76,12 +76,12 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
     func test_given_editedAndNewFields_when_updatingDisplayedItems_then_changesAreReflected() {
         // Given: An edited field and a new field
-        let editedField = CustomFieldsListViewModel.CustomFieldUI(key: "EditedKey1", value: "EditedValue1", fieldId: 1)
-        let newField = CustomFieldsListViewModel.CustomFieldUI(key: "NewKey", value: "NewValue")
+        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1", value: "EditedValue1"))
+        let newField = CustomFieldViewModel(key: "NewKey", value: "NewValue")
 
         // When: Editing and adding fields
-        viewModel.editField(at: 0, newField: editedField)
-        viewModel.addField(newField)
+        viewModel.saveField(key: editedField.key, value: editedField.value, fieldID: editedField.fieldID)
+        viewModel.saveField(key: newField.key, value: newField.value, fieldID: nil)
 
         // Then: The displayed items should reflect both the edited and added fields
         XCTAssertEqual(viewModel.combinedList.count, 3)
@@ -93,26 +93,25 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
     func test_given_existingField_when_deleteFieldCalled_then_displayedItemsAndPendingChangesAreUpdated() {
         // Given: the field to delete
-        let fieldToDelete = CustomFieldsListViewModel.CustomFieldUI(key: originalFields[0].title,
-                                                                    value: originalFields[0].content,
-                                                                    fieldId: originalFields[0].id)
+        let fieldToDelete = CustomFieldViewModel(metadata: originalMetadata[0])
 
         // When: Deleting the field
         viewModel.deleteField(fieldToDelete)
 
         // Then: The number of displayed items remains the same as before and the value is edited correctly
         XCTAssertEqual(viewModel.combinedList.count, 1)
-        XCTAssertEqual(viewModel.combinedList[0].fieldId, originalFields[1].id)
+        XCTAssertEqual(viewModel.combinedList[0].fieldID, originalFields[1].fieldID)
         XCTAssertTrue(viewModel.hasChanges)
     }
 
     func test_given_newField_when_deleteFieldCalled_then_displayedItemsAndPendingChangesAreUpdated() {
         // Given: A new field to delete
-        let newField = CustomFieldsListViewModel.CustomFieldUI(key: "NewKey", value: "NewValue")
+        let newField = CustomFieldViewModel(key: "NewKey", value: "NewValue")
 
         // When: Deleting the new field
-        viewModel.addField(newField)
-        viewModel.deleteField(newField)
+        viewModel.saveField(key: newField.key, value: newField.value, fieldID: nil)
+        let fieldToDelete = viewModel.combinedList.last!
+        viewModel.deleteField(fieldToDelete)
 
         // Then: The displayed items should be updated
         XCTAssertEqual(viewModel.combinedList.count, 2)
@@ -124,41 +123,26 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.hasChanges)
 
         // When: Editing a field
-        let editedField = CustomFieldsListViewModel.CustomFieldUI(key: "EditedKey1", value: "EditedValue1", fieldId: 1)
-        viewModel.editField(at: 0, newField: editedField)
+        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1", value: "EditedValue1"))
+        viewModel.saveField(key: editedField.key, value: editedField.value, fieldID: editedField.fieldID)
 
         // Then: hasChanges should be true
         XCTAssertTrue(viewModel.hasChanges)
 
         // When: Adding a new field
-        let newField = CustomFieldsListViewModel.CustomFieldUI(key: "NewKey", value: "NewValue")
-        viewModel.addField(newField)
+        let newField = CustomFieldViewModel(key: "NewKey", value: "NewValue")
+        viewModel.saveField(key: newField.key, value: newField.value, fieldID: nil)
 
         // Then: hasChanges should be true
         XCTAssertTrue(viewModel.hasChanges)
     }
 
-    func test_given_invalidIndex_when_editFieldCalled_then_noChangesAreMade() {
-        // Given: An invalid index and a custom field UI
-        let editedField = CustomFieldsListViewModel.CustomFieldUI(key: "EditedKey1", value: "EditedValue1", fieldId: 1)
-
-        // When: Trying to edit a field at an invalid index
-        viewModel.editField(at: -1, newField: editedField)
-
-        // Then: No changes should be made
-        XCTAssertEqual(viewModel.combinedList.count, 2)
-        XCTAssertEqual(viewModel.combinedList[0].key, "Key1")
-        XCTAssertEqual(viewModel.combinedList[0].value, "Value1")
-        XCTAssertEqual(viewModel.combinedList[1].key, "Key2")
-        XCTAssertEqual(viewModel.combinedList[1].value, "Value2")
-    }
-
     func test_given_duplicateKey_when_addFieldCalled_then_fieldIsAdded() {
         // Given: A new custom field UI with a duplicate key
-        let newField = CustomFieldsListViewModel.CustomFieldUI(key: "Key1", value: "NewValue")
+        let newField = CustomFieldViewModel(key: "Key1", value: "NewValue")
 
         // When: Adding the new field
-        viewModel.addField(newField)
+        viewModel.saveField(key: newField.key, value: newField.value, fieldID: nil)
 
         // Then: The field should be added to the list
         XCTAssertEqual(viewModel.combinedList.count, 3)
@@ -170,32 +154,32 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         // Given: An existing field to be updated
         let key = "UpdatedKey1"
         let value = "UpdatedValue1"
-        let fieldId: Int64 = 1
+        let fieldID: Int64 = 1
 
         // When: Saving the field
-        viewModel.saveField(key: key, value: value, fieldId: fieldId)
+        viewModel.saveField(key: key, value: value, fieldID: fieldID)
 
         // Then: The field should be updated in the list
         XCTAssertEqual(viewModel.combinedList.count, 2)
         XCTAssertEqual(viewModel.combinedList[0].key, "UpdatedKey1")
         XCTAssertEqual(viewModel.combinedList[0].value, "UpdatedValue1")
-        XCTAssertEqual(viewModel.combinedList[0].fieldId, 1)
+        XCTAssertEqual(viewModel.combinedList[0].fieldID, 1)
     }
 
     func test_given_saveFieldCalled_when_fieldDoesNotExist_then_fieldIsAdded() {
         // Given: A new field to be added
         let key = "NewKey"
         let value = "NewValue"
-        let fieldId: Int64? = nil
+        let fieldID: Int64? = nil
 
         // When: Saving the field
-        viewModel.saveField(key: key, value: value, fieldId: fieldId)
+        viewModel.saveField(key: key, value: value, fieldID: fieldID)
 
         // Then: The field should be added to the list
         XCTAssertEqual(viewModel.combinedList.count, 3)
         XCTAssertEqual(viewModel.combinedList.last?.key, "NewKey")
         XCTAssertEqual(viewModel.combinedList.last?.value, "NewValue")
-        XCTAssertNil(viewModel.combinedList.last?.fieldId)
+        XCTAssertNil(viewModel.combinedList.last?.fieldID)
     }
 
     func test_given_savingSucceeds_when_saveChangesCalled_then_changesAreSaved() async {
@@ -209,14 +193,14 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         }
 
         // When: Saving the changes
-        viewModel.saveField(key: newField.key, value: newField.value, fieldId: nil)
+        viewModel.saveField(key: newField.key, value: newField.value, fieldID: nil)
         await viewModel.saveChanges()
 
         // Then: The changes should be saved
         XCTAssertEqual(viewModel.combinedList.count, originalFields.count + 1)
         XCTAssertEqual(viewModel.combinedList.last?.key, newField.key)
         XCTAssertEqual(viewModel.combinedList.last?.value, newField.value)
-        XCTAssertEqual(viewModel.combinedList.last?.fieldId, newField.metadataID)
+        XCTAssertEqual(viewModel.combinedList.last?.fieldID, newField.metadataID)
         XCTAssertFalse(viewModel.hasChanges)
     }
 
@@ -230,7 +214,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         }
 
         // When: Saving the changes
-        viewModel.saveField(key: "NewKey", value: "NewValue", fieldId: nil)
+        viewModel.saveField(key: "NewKey", value: "NewValue", fieldID: nil)
         await viewModel.saveChanges()
 
         // Then: The changes should not be saved
@@ -248,7 +232,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         }
 
         // When: Saving the changes
-        viewModel.saveField(key: "NewKey", value: "NewValue", fieldId: nil)
+        viewModel.saveField(key: "NewKey", value: "NewValue", fieldID: nil)
         await viewModel.saveChanges()
 
         // Then: An error should be thrown
@@ -280,10 +264,10 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
     func test_given_originalAndAddedFields_then_disallowedKeysForCreationContainsAllKeys() {
         // Given: Original fields from setup and a new field
-        let newField = CustomFieldsListViewModel.CustomFieldUI(key: "NewKey", value: "NewValue")
+        let newField = CustomFieldViewModel(key: "NewKey", value: "NewValue")
 
         // When: Adding the new field
-        viewModel.addField(newField)
+        viewModel.saveField(key: newField.key, value: newField.value, fieldID: nil)
 
         // Then: disallowedKeysForCreation should contain both original and new keys
         XCTAssertEqual(viewModel.disallowedKeysForCreation.count, 3)
@@ -294,10 +278,10 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
     func test_given_editedFields_then_disallowedKeysForCreationStillContainsOriginalKeys() {
         // Given: Original fields and an edited field
-        let editedField = CustomFieldsListViewModel.CustomFieldUI(key: "EditedKey1", value: "EditedValue1", fieldId: 1)
+        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1", value: "EditedValue1"))
 
         // When: Editing a field (not yet saved remotely)
-        viewModel.editField(at: 0, newField: editedField)
+        viewModel.saveField(key: editedField.key, value: editedField.value, fieldID: editedField.fieldID)
 
         // Then: disallowedKeysForCreation should contain original keys since changes aren't saved
         XCTAssertEqual(viewModel.disallowedKeysForCreation.count, 2)
@@ -307,9 +291,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
     func test_given_deletedField_then_disallowedKeysForCreationStillContainsOriginalKey() {
         // Given: A field to delete
-        let fieldToDelete = CustomFieldsListViewModel.CustomFieldUI(key: originalFields[0].title,
-                                                                  value: originalFields[0].content,
-                                                                  fieldId: originalFields[0].id)
+        let fieldToDelete = originalFields[0]
 
         // When: Deleting the field (not yet saved remotely)
         viewModel.deleteField(fieldToDelete)
@@ -322,15 +304,13 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
     func test_given_multipleChanges_then_disallowedKeysForCreationReflectsOriginalAndAddedKeys() {
         // Given: Original fields
-        let editedField = CustomFieldsListViewModel.CustomFieldUI(key: "EditedKey1", value: "EditedValue1", fieldId: 1)
-        let newField = CustomFieldsListViewModel.CustomFieldUI(key: "NewKey", value: "NewValue")
-        let fieldToDelete = CustomFieldsListViewModel.CustomFieldUI(key: originalFields[1].title,
-                                                                  value: originalFields[1].content,
-                                                                  fieldId: originalFields[1].id)
+        let editedField = CustomFieldViewModel(metadata: originalMetadata[0].copy(key: "EditedKey1", value: "EditedValue1"))
+        let newField = CustomFieldViewModel(key: "NewKey", value: "NewValue")
+        let fieldToDelete = originalFields[1]
 
         // When: Making multiple changes (not yet saved remotely)
-        viewModel.editField(at: 0, newField: editedField)
-        viewModel.addField(newField)
+        viewModel.saveField(key: editedField.key, value: editedField.value, fieldID: editedField.fieldID)
+        viewModel.saveField(key: newField.key, value: newField.value, fieldID: nil)
         viewModel.deleteField(fieldToDelete)
 
         // Then: disallowedKeysForCreation should contain all original keys plus new keys
@@ -346,8 +326,8 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         // Given: Initial state with two fields ("Key1", "Key2")
 
         let newMetadata = MetaData(metadataID: 3, key: "NewKey", value: "NewValue")
-        let newField = CustomFieldsListViewModel.CustomFieldUI(key: newMetadata.key, value: newMetadata.value)
-        viewModel.addField(newField)
+        let newField = CustomFieldViewModel(metadata: newMetadata)
+        viewModel.saveField(key: newField.key, value: newField.value, fieldID: newField.fieldID)
 
         stores.whenReceivingAction(ofType: MetaDataAction.self) { [originalMetadata] action in
             switch action {
@@ -370,7 +350,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         // Given: Initial state with two fields ("Key1", "Key2")
 
         let editedMetadata = MetaData(metadataID: 1, key: "EditedKey1", value: "EditedValue1")
-        viewModel.saveField(key: editedMetadata.key, value: editedMetadata.value, fieldId: editedMetadata.metadataID)
+        viewModel.saveField(key: editedMetadata.key, value: editedMetadata.value, fieldID: editedMetadata.metadataID)
 
         stores.whenReceivingAction(ofType: MetaDataAction.self) { [originalMetadata] action in
             switch action {
@@ -391,15 +371,14 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
     func test_given_deleteField_then_saveChanges_then_disallowedKeysUpdates() async {
         // Given: Initial state with two fields ("Key1", "Key2")
-        let fieldToDelete = CustomFieldsListViewModel.CustomFieldUI(key: originalFields[0].title,
-                                                                  value: originalFields[0].content,
-                                                                  fieldId: originalFields[0].id)
+        let fieldToDelete = originalFields[0]
+
         viewModel.deleteField(fieldToDelete)
 
         stores.whenReceivingAction(ofType: MetaDataAction.self) { [originalMetadata] action in
             switch action {
                 case let .updateMetaData(_, _, _, _, onCompletion):
-                    let updatedMetadata = originalMetadata.filter { $0.metadataID != fieldToDelete.fieldId }
+                    let updatedMetadata = originalMetadata.filter { $0.metadataID != fieldToDelete.fieldID }
                     onCompletion(.success(updatedMetadata))
             }
         }
@@ -412,4 +391,73 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.disallowedKeysForCreation.contains("Key1"))
         XCTAssertTrue(viewModel.disallowedKeysForCreation.contains("Key2"))
     }
+
+    // MARK: - Top Banner
+    func test_given_bannerNotDismissed_when_hasChanges_then_showBanner() async {
+        // Given: The banner is not dismissed
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+                case let .loadCustomFieldsTopBannerDismissState(onCompletion):
+                    onCompletion(false)
+                default:
+                    break
+            }
+        }
+        viewModel = CustomFieldsListViewModel(customFields: originalFields,
+                                              siteID: sampleSiteID,
+                                              parentItemID: sampleParentItemID,
+                                              customFieldType: sampleCustomFieldType,
+                                              stores: stores)
+
+        // When: Making changes
+        viewModel.saveField(key: "NewKey", value: "NewValue", fieldID: nil)
+
+        // Then: The banner should be shown
+        XCTAssertTrue(viewModel.shouldShowTopBanner)
+    }
+
+    func test_given_bannerDismissed_when_hasChanges_then_hideBanner() async {
+        // Given: The banner is dismissed
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+                case let .loadCustomFieldsTopBannerDismissState(onCompletion):
+                    onCompletion(true)
+                default:
+                    break
+            }
+        }
+        viewModel = CustomFieldsListViewModel(customFields: originalFields,
+                                              siteID: sampleSiteID,
+                                              parentItemID: sampleParentItemID,
+                                              customFieldType: sampleCustomFieldType,
+                                              stores: stores)
+
+        // When: Making changes
+        viewModel.saveField(key: "NewKey", value: "NewValue", fieldID: nil)
+
+        // Then: The banner should not be shown
+        XCTAssertFalse(viewModel.shouldShowTopBanner)
+    }
+
+    func test_given_bannerShown_when_dismissBannerCalled_then_bannerIsDismissed() async {
+        // Given: The banner is shown
+        var wasDismissed = false
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+                case let .loadCustomFieldsTopBannerDismissState(onCompletion):
+                    onCompletion(false)
+                case let .dismissCustomFieldsTopBanner(onCompletion):
+                    wasDismissed = true
+                    onCompletion(.success(()))
+                default:
+                    break
+            }
+        }
+
+        // When: Dismissing the banner
+        viewModel.dismissTopBanner()
+
+        // Then: The banner should be dismissed
+        XCTAssertTrue(wasDismissed)
+	}
 }

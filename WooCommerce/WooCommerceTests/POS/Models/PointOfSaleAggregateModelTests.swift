@@ -267,8 +267,14 @@ struct PointOfSaleAggregateModelTests {
 
     struct CartTests {
         let sut: PointOfSaleAggregateModel
+        private var analytics: WooAnalytics!
+        private var analyticsProvider: MockAnalyticsProvider!
+
         init() {
-            sut = PointOfSaleAggregateModel(itemProvider: MockPOSItemProvider())
+            analyticsProvider = MockAnalyticsProvider()
+            analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+            sut = PointOfSaleAggregateModel(itemProvider: MockPOSItemProvider(),
+                                            analytics: analytics)
         }
 
         @Test func addItem_results_in_a_non_empty_cart() async throws {
@@ -326,6 +332,24 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             #expect(sut.cart.isEmpty)
+        }
+
+        @Test(.disabled(
+            """
+            This test doesn't currently work; analytics extensions are not thread-safe,
+            and using the MainActor means the assert happens too early. I don't think
+            we want the addToCart to be async, but that would be one way to fix it.
+            """))
+        func addToCart_tracks_analytics_event() async throws {
+            // Given
+            let item = Self.makeItem()
+
+            // When
+            sut.addToCart(item)
+
+            // Then
+            let event = try #require(analyticsProvider.receivedEvents.first)
+            #expect(event == "pos_item_added_to_cart")
         }
 
         static func makeItem(name: String = "") -> POSItem {

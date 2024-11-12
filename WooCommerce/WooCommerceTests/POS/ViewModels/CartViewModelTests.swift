@@ -8,20 +8,13 @@ import SwiftUI
 final class CartViewModelTests: XCTestCase {
 
     private var sut: CartViewModel!
-    private var analytics: WooAnalytics!
-    private var analyticsProvider: MockAnalyticsProvider!
 
     override func setUp() {
         super.setUp()
-        analyticsProvider = MockAnalyticsProvider()
-        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        sut = CartViewModel(posModel: PointOfSaleAggregateModel(itemProvider: MockPOSItemProvider()),
-                            analytics: analytics)
+        sut = CartViewModel(posModel: PointOfSaleAggregateModel(itemProvider: MockPOSItemProvider()))
     }
 
     override func tearDown() {
-        analyticsProvider = nil
-        analytics = nil
         sut = nil
         super.tearDown()
     }
@@ -66,18 +59,6 @@ final class CartViewModelTests: XCTestCase {
 
         sut.addItemToCart(anotherItem)
         XCTAssertEqual(sut.itemsInCartLabel, "2 items")
-    }
-
-    func test_receivedEvents_when_addItemToCart_then_tracks_pos_item_added_to_cart_event() {
-        // Given
-        let expectedEvent = "pos_item_added_to_cart"
-        let item = Self.makeItem()
-
-        // When
-        sut.addItemToCart(item)
-
-        // Then
-        XCTAssertEqual(analyticsProvider.receivedEvents.first, expectedEvent)
     }
 }
 

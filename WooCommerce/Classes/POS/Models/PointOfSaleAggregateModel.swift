@@ -2,6 +2,7 @@ import Foundation
 
 import protocol Yosemite.POSItem
 import protocol Yosemite.POSItemProvider
+import protocol WooFoundation.Analytics
 
 protocol PointOfSaleAggregateModelProtocol {
     @available(*, deprecated, message: "`allItems` is due for removal, use `itemListState` instead.")
@@ -25,11 +26,14 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     @Published private(set) var cart: [CartItem] = []
 
     private let itemProvider: POSItemProvider
+    private let analytics: Analytics
 
     private var currentPage: Int = Constants.initialPage
 
-    init(itemProvider: POSItemProvider) {
+    init(itemProvider: POSItemProvider,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.itemProvider = itemProvider
+        self.analytics = analytics
     }
 }
 
@@ -95,6 +99,9 @@ extension PointOfSaleAggregateModel {
 extension PointOfSaleAggregateModel {
     func addToCart(_ item: POSItem) {
         cart.insert(CartItem(id: UUID(), item: item, quantity: 1), at: 0)
+        Task { @MainActor in
+            analytics.track(.pointOfSaleAddItemToCart)
+        }
     }
 
     func remove(cartItem: CartItem) {

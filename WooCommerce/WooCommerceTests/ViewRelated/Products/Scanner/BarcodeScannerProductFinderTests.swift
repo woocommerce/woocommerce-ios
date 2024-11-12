@@ -88,6 +88,33 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["source"] as? String, source.rawValue)
     }
 
+    func test_findProduct_when_global_unique_id_matches_barcode_then_returns_product() async {
+        // Given
+        let source = WooAnalyticsEvent.BarcodeScanning.Source.orderList
+        let returningProduct = Product.fake()
+        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
+            switch action {
+            case .retrieveFirstPurchasableItemMatchFromIdentifier(_, _, let onCompletion):
+                onCompletion(.success((.product(returningProduct), .globalUniqueIdentifier)))
+            default:
+                break
+            }
+        })
+
+        // When
+        let scannedBarcode = ScannedBarcode(payloadStringValue: "123456", symbology: .aztec)
+        let result = try? await sut.searchByIdentifier(from: scannedBarcode, siteID: 1, source: source)
+
+        guard case let .product(retrievedProduct) = result else {
+            return XCTFail("It didn't provide a product as expected")
+        }
+
+        // Then
+        XCTAssertEqual(retrievedProduct, returningProduct)
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.orderProductSearchViaGlobalUniqueIdentifierSuccess.rawValue)
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["source"] as? String, source.rawValue)
+    }
+
     func test_findProduct_when_barcode_has_check_digit_and_right_symbology_then_it_tries_without_it_and_returns_product() async {
 
         for symbology in [BarcodeSymbology.ean13, BarcodeSymbology.upce] {

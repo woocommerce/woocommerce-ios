@@ -62,14 +62,10 @@ struct AboutTapToPayView: View {
         .sheet(isPresented: $showingSetUpFlow,
                onDismiss: viewModel.setUpFlowDismissed,
                content: {
-            NavigationStack {
-                PaymentSettingsFlowPresentingView(
-                    viewModelsAndViews: SetUpTapToPayViewModelsOrderedList(
-                        siteID: viewModel.siteID,
-                        configuration: viewModel.configuration,
-                        onboardingUseCase: viewModel.cardPresentPaymentsOnboardingUseCase))
-                .navigationBarHidden(true)
-            }
+            TapToPaySettingsFlowPresentingView(
+                configuration: viewModel.configuration,
+                siteID: viewModel.siteID,
+                onboardingUseCase: viewModel.cardPresentPaymentsOnboardingUseCase)
         })
         .sheet(isPresented: $showingWebView) {
             WebViewSheet(viewModel: viewModel.webViewModel) {

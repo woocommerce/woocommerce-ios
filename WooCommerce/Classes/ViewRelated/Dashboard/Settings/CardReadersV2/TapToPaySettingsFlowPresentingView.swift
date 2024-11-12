@@ -18,6 +18,7 @@ struct TapToPaySettingsFlowPresentingView: View {
                     configuration: configuration,
                     onboardingUseCase: onboardingUseCase)
             )
+            .toolbar(.hidden)
         }
     }
 }

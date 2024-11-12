@@ -134,7 +134,7 @@ private extension ItemListView {
                     })
                 }
                 GhostItemCardView()
-                    .renderedIf(posModel.itemListState.isLoadingAfterInitialLoad)
+                    .renderedIf(posModel.itemListState.isLoadingAfterInitialLoad && !posModel.isLastPage)
             }
             .frame(maxWidth: .infinity)
             .padding(.bottom, floatingControlAreaSize.height)
@@ -142,7 +142,7 @@ private extension ItemListView {
             .background(GeometryReader { proxy in
                 Color.clear
                     .onChange(of: proxy.frame(in: .global).maxY) { maxY in
-                        if posModel.itemListState.isLoadingAfterInitialLoad {
+                        if posModel.itemListState.isLoadingAfterInitialLoad, posModel.isLastPage {
                             return
                         }
                         let viewHeight = UIScreen.main.bounds.height

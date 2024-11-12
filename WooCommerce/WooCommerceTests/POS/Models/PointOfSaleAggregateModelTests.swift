@@ -262,4 +262,51 @@ struct PointOfSaleAggregateModelTests {
         // Then
         #expect(sut.itemListState == .error(expectedError))
     }
+
+    @Test func itemListViewModel_when_initialized_then_isLastPage_is_false() async throws {
+        // Given/then
+        try #require(sut.isLastPage == false)
+    }
+
+    @Test func itemListViewModel_when_there_are_no_items_then_isLastPage_is_true_() async throws {
+        // Given
+        let itemProvider = MockPOSItemProvider()
+        itemProvider.shouldReturnZeroItems = true
+        let sut = PointOfSaleAggregateModel(itemProvider: itemProvider)
+
+        try #require(sut.isLastPage == false)
+
+        // When
+        await sut.loadInitialItems()
+
+        // Then
+        try #require(sut.isLastPage == true)
+
+    }
+
+    @Test func itemListViewModel_when_reload_is_invoked_resets_isLastPage_to_false() async throws {
+        // Given
+        try #require(sut.isLastPage == false)
+
+        // When
+        await sut.reload()
+
+        // Then
+        try #require(sut.isLastPage == false)
+    }
+
+    @Test func itemListViewModel_when_loadNextItems_is_invoked_then_isLastPage_is_true() async throws {
+        // Given
+        let initialItems = MockPOSItemProvider.makeInitialItems()
+        itemProvider.items = initialItems
+        itemProvider.shouldSimulateTwoPages = true
+
+        try #require(sut.isLastPage == false)
+
+        // When
+        await sut.loadNextItems()
+
+        // Then
+        try #require(sut.isLastPage == false)
+    }
 }

@@ -20,6 +20,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     private let itemProvider: POSItemProvider
 
     private var currentPage: Int = Constants.initialPage
+    @Published private(set) var isLastPage: Bool = false
 
     init(itemProvider: POSItemProvider) {
         self.itemProvider = itemProvider
@@ -52,6 +53,7 @@ extension PointOfSaleAggregateModel {
     func reload() async {
         allItems.removeAll()
         currentPage = Constants.initialPage
+        isLastPage = false
         itemListState = .loading(allItems)
         try? await load(pageNumber: currentPage)
     }
@@ -71,6 +73,12 @@ extension PointOfSaleAggregateModel {
         let newItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
         let uniqueNewItems = newItems.filter { newItem in
             !allItems.contains(where: { $0.productID == newItem.productID })
+        }
+
+        if uniqueNewItems.count == 0 {
+            isLastPage = true
+        } else {
+            isLastPage = false
         }
 
         allItems.append(contentsOf: uniqueNewItems)

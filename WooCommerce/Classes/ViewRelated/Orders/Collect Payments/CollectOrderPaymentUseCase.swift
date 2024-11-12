@@ -612,7 +612,7 @@ private extension CollectOrderPaymentUseCase {
         }, noReceiptAction: {
             // Inform about flow completion.
             onCompleted()
-        }, email: order.billingAddress?.email))
+        }, email: nil))
     }
 
     /// Presents the native email client with the provided content.

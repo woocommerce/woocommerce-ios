@@ -254,8 +254,9 @@ import class WooFoundation.MockAnalyticsProviderPreview
                                           currencyFormatter: .init(currencySettings: .init()),
                                           paymentState: .acceptingCard)
     let cartViewModel = CartViewModel(analytics: MockAnalyticsPreview())
-    let itemsListViewModel = ItemListViewModel(itemProvider: POSItemProviderPreview())
-    let dashboardViewModel = PointOfSaleDashboardViewModel(cardPresentPaymentService: CardPresentPaymentPreviewService(),
+    let itemsListViewModel = ItemListViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview()))
+    let dashboardViewModel = PointOfSaleDashboardViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview()),
+                                                           cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                                            totalsViewModel: totalsViewModel,
                                                            cartViewModel: cartViewModel,
                                                            itemListViewModel: itemsListViewModel,

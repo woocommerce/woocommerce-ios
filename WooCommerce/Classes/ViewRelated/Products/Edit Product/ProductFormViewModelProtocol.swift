@@ -134,7 +134,7 @@ protocol ProductFormViewModelProtocol {
 
     func updateShortDescription(_ shortDescription: String)
 
-    func updateSKU(_ sku: String?)
+    func updateIdentifiers(sku: String?, globalUniqueID: String?)
 
     func updateGroupedProductIDs(_ groupedProductIDs: [Int64])
 

@@ -342,7 +342,7 @@ private extension ProductsViewController {
                     })), animated: true)
                 } catch {
                     self.trackScannedItemSearchFailure(error)
-                    let errorNotice = BarcodeSKUScannerErrorNoticeFactory.notice(for: error,
+                    let errorNotice = BarcodeScannerErrorNoticeFactory.notice(for: error,
                                                                                  code: scannedBarcode,
                                                                                  actionHandler: {
                         self.scanProducts()

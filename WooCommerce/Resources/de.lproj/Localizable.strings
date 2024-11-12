@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-05 09:54:21+0000 */
+/* Translation-Revision-Date: 2024-11-06 09:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -10147,7 +10147,7 @@ which should be translated separately and considered part of this sentence. */
 "customFieldEditorView.keyCopiedNotice" = "Schlüssel in Zwischenablage kopiert";
 
 /* Error message shown when the entered key is identical to an existing key. */
-"customFieldEditorView.keyErrorDisallowedKey" = "Ungültiger Schlüssel: Dieser Schlüssel wird bereits für ein anderes individuelles Feld verwendet. \nDie App unterstützt derzeit nicht das Erstellen von doppelten Schlüsseln. Bitte verwende wp-admin, um einen Schlüssel zu duplizieren, falls dies erforderlich ist.";
+"customFieldEditorView.keyErrorDisallowedKey" = "Ungültiger Schlüssel: Dieser Schlüssel wird bereits für ein anderes individuelles Feld verwendet. \nDie App unterstützt derzeit nicht das Erstellen von doppelten Schlüsseln. Bitte verwende „wp-admin“, um einen Schlüssel zu duplizieren, falls dies erforderlich ist.";
 
 /* Error message shown when key starts with underscore */
 "customFieldEditorView.keyErrorPrefix" = "Ungültiger Schlüssel: Bitte entferne „_“ vom Anfang des Schlüssels.";
@@ -10180,7 +10180,7 @@ which should be translated separately and considered part of this sentence. */
 "customFieldsListHostingController.emptyStateButton" = "Weitere Informationen";
 
 /* Message when the list is empty. */
-"customFieldsListHostingController.emptyStateDescription" = "Individuelle Felder sind optionale Metadaten, die zusätzliche Informationen beinhalten oder das individuelle Einkaufserlebnis in deinem Shop optimieren können.";
+"customFieldsListHostingController.emptyStateDescription" = "Individuelle Felder sind optionale Metadaten, die zusätzliche Informationen beinhalten oder das individuelle Einkaufserlebnis in deinem Shop optimieren können";
 
 /* Title for the message when the list is empty. */
 "customFieldsListHostingController.emptyStateTitle" = "Keine individuellen Felder gefunden";
@@ -12629,10 +12629,10 @@ which should be translated separately and considered part of this sentence. */
 "wooShipping.createLabels.rates.sortBy" = "Sortieren nach";
 
 /* Option to sort shipping rates by delivery time in the shipping label creation screen. */
-"wooShipping.createLabels.rates.sortBy.deliveryTime" = "Schnellster Versand";
+"wooShipping.createLabels.rates.sortBy.deliveryTime" = "Schnellste";
 
 /* Option to sort shipping rates by price in the shipping label creation screen. */
-"wooShipping.createLabels.rates.sortBy.price" = "Günstigster Versand";
+"wooShipping.createLabels.rates.sortBy.price" = "Günstigste";
 
 /* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
 "wooShipping.createLabels.shippingService.adultSignatureRequired" = "Unterschrift eines Erwachsenen erforderlich (+%1$@)";

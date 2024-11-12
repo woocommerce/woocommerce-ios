@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-10-28 20:54:04+0000 */
+/* Translation-Revision-Date: 2024-11-05 20:54:06+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -338,6 +338,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "Um código de verificação só contém números.";
+
+/* Title of a4 paper size option for printing a shipping label */
+"A4" = "A4";
 
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "ADICIONAR OPÇÕES";
@@ -5565,6 +5568,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
 "Product with SKU \"%@\" not found." = "Produto com SKU \"%@\" não encontrado.";
 
+/* The instruction text below the scan area in the barcode scanner for product barcode. */
+"ProductBarcodeInputScanner.instructionText" = "Ler código de barras ou código QR do produto";
+
+/* Navigation bar title for scanning a barcode or QR Code to use as a product's barcode. */
+"ProductBarcodeInputScanner.titleView" = "Ler código de barras ou código QR";
+
 /* Description of the subscription price for a product, with price and billing frequency. Reads as: '$60.00 / 2 months'. */
 "ProductRowViewModel.formattedProductSubscriptionBilling" = "%1$@\/%2$@ %3$@";
 
@@ -9938,6 +9947,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "Assinatura variável";
 
+/* Button to refresh the state of the in-person payments setup */
+"card.present.payment.setup.webview.title" = "Configuração de pagamentos";
+
 /* Default accessibility label for a custom indeterminate progress view, used for card payments. */
 "card.waves.progressView.accessibilityLabel" = "Em andamento";
 
@@ -10104,11 +10116,23 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Editar valor";
 
+/* Title for the action sheet with additional options */
+"customFieldEditorView.actionSheetTitle" = "Mais opções";
+
 /* Label for the Cancel button to close the editor */
 "customFieldEditorView.cancel" = "Cancelar";
 
+/* Button title for copying the custom field key */
+"customFieldEditorView.copyKeyButton" = "Copiar chave";
+
+/* Button title for copying the custom field value */
+"customFieldEditorView.copyValueButton" = "Copiar valor";
+
 /* Button title for deleting a custom field */
 "customFieldEditorView.deleteButton" = "Excluir campo personalizado";
+
+/* Label for the Done button to save changes */
+"customFieldEditorView.done" = "Concluído";
 
 /* Picker option for using Text Editor */
 "customFieldEditorView.editorPickerHTML" = "HTML";
@@ -10119,11 +10143,23 @@ which should be translated separately and considered part of this sentence. */
 /* Picker option for using Text Editor */
 "customFieldEditorView.editorPickerText" = "Texto";
 
+/* Notice shown when the key has been copied to clipboard */
+"customFieldEditorView.keyCopiedNotice" = "Chave copiada para a área de transferência";
+
+/* Error message shown when the entered key is identical to an existing key. */
+"customFieldEditorView.keyErrorDisallowedKey" = "Chave inválida: esta chave já está sendo usada por outro campo personalizado. \nO aplicativo atual não aceita criação de chaves duplicadas. Se necessário, use o Painel WP Admin para duplicar uma chave.";
+
+/* Error message shown when key starts with underscore */
+"customFieldEditorView.keyErrorPrefix" = "Chave inválida: remova o caractere _ do início.";
+
 /* Label for the Key field */
 "customFieldEditorView.keyLabel" = "Chave";
 
 /* Placeholder for the Key field */
 "customFieldEditorView.keyPlaceholder" = "Insira a chave";
+
+/* Notice shown when the value has been copied to clipboard */
+"customFieldEditorView.valueCopiedNotice" = "Valor copiado para a área de transferência";
 
 /* Label for the Value field */
 "customFieldEditorView.valueLabel" = "Valor";
@@ -10139,6 +10175,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action to undo the deletion of a custom field */
 "customFieldsListHostingController.deleteNoticeUndo" = "Desfazer";
+
+/* Text for button that's shown when the list is empty. */
+"customFieldsListHostingController.emptyStateButton" = "Saiba mais";
+
+/* Message when the list is empty. */
+"customFieldsListHostingController.emptyStateDescription" = "Campos personalizados são metadados opcionais para exibir mais informações ou personalizar a experiência de compra na sua loja";
+
+/* Title for the message when the list is empty. */
+"customFieldsListHostingController.emptyStateTitle" = "Nenhum campo personalizado encontrado";
 
 /* Message for the in progress view shown when saving changes */
 "customFieldsListHostingController.inProgressMessage" = "Aguarde enquanto salvamos suas alterações";
@@ -10160,6 +10205,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the order custom fields list */
 "customFieldsListHostingController.title" = "Campos personalizados";
+
+/* Content of the banner when there are unsaved custom fields */
+"customFieldsListTopBanner.description" = "Ao salvar mudanças em campos personalizados, elas entram em vigor de imediato.";
+
+/* Dismiss button title */
+"customFieldsListTopBanner.dismiss" = "Ignorar";
+
+/* Title of the banner when there are unsaved custom fields */
+"customFieldsListTopBanner.title" = "Visualizar e editar campos personalizados";
 
 /* Accessibility title for the search button on the customer section. */
 "customer.search.button.accessibilityLabel" = "Pesquisar cliente";
@@ -11005,6 +11059,9 @@ which should be translated separately and considered part of this sentence. */
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderDetailsDataSource.attributionInfo.unknown" = "Desconhecido";
 
+/* Button on bottom of shipping label card to view the shipping label */
+"orderDetailsDataSource.shippingLabels.viewLabel" = "Visualizar etiqueta de envio comprada";
+
 /* Title of Shipping Section in Order Details screen */
 "orderDetailsDataSource.shippingLines.title" = "Envio";
 
@@ -11810,6 +11867,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
 "productInventorySettings.globalUniqueIdentifier.title" = "GTIN, UPC, EAN, ISBN";
 
+/* The message of the alert when there is an error updating the product global unique identifier */
+"productInventorySettings.invalidGlobalUniqueIdentifier.error" = "Insira somente números e hifens (-).";
+
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "Intervalo de cobrança";
 
@@ -12472,6 +12532,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button to dismiss the shipping label creation screen */
 "wooShipping.createLabel.cancelButton" = "Cancelar";
 
+/* Title of the button to dismiss the shipping label screen */
+"wooShipping.createLabel.closeButton" = "Fechar";
+
 /* Label for section in shipping label creation to declare when a package contains hazardous materials. */
 "wooShipping.createLabel.hazmatLabel" = "Você está enviando mercadorias ou materiais perigosos?";
 
@@ -12480,6 +12543,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Call to action in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderTitle" = "Selecione um pacote para ver as taxas de envio";
+
+/* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "Assinatura de um adulto obrigatória";
+
+/* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
+"wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (taxa básica)";
 
 /* Label for the toggle to mark the order as complete on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.markComplete" = "Marcar este pedido como concluído e notificar o cliente";
@@ -12493,6 +12562,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button to purchase the shipping label on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.purchase" = "Comprar etiqueta";
 
+/* Label for button to purchase the shipping label on the shipping label creation screen, including the label price. Reads like: 'Purchase Label · $7.63' */
+"wooShipping.createLabels.bottomSheet.purchaseFormat" = "Comprar etiqueta · US%1$@";
+
 /* Label for address where the shipment is shipped from on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.shipFrom" = "Remetente";
 
@@ -12501,6 +12573,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header for shipment costs section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.shipmentCosts" = "Frete";
+
+/* Label for row showing the additional cost to require a signature on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.signatureRequired" = "Assinatura obrigatória";
 
 /* Label for row showing the subtotal for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.subtotal" = "Subtotal";
@@ -12520,8 +12595,44 @@ which should be translated separately and considered part of this sentence. */
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
 
+/* Link for more information about how to print a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.info" = "Saiba como imprimir do seu dispositivo móvel";
+
+/* Navigation bar title of shipping label printing instructions screen */
+"wooShipping.createLabels.postPurchase.infoTitle" = "Imprimir do seu dispositivo móvel";
+
+/* Note about reusing a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.note" = "Observação: reutilizar uma etiqueta impressa é uma violação dos nossos termos de serviço e pode resultar em acusações criminais.";
+
+/* Title for button to print a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.printButton" = "Imprimir etiqueta de envio";
+
+/* Message displayed on the shipping label screen when a purchased shipping label can be printed */
+"wooShipping.createLabels.postPurchase.printMessage" = "Aqui você pode imprimir a etiqueta de envio novamente ou alterar o tamanho do papel da etiqueta.";
+
+/* Heading displayed on the shipping label screen when a purchased shipping label can be printed */
+"wooShipping.createLabels.postPurchase.readyToPrint" = "Sua etiqueta de envio está pronta para impressão";
+
+/* Link to request a refund for a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.requestRefund" = "Solicitar reembolso";
+
+/* Link to schedule a pickup for a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.schedulePickup" = "Agendar coleta";
+
+/* Link to track a shipment for a purchase shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.trackShipment" = "Rastrear envio";
+
 /* Heading for the shipping service section in the shipping label creation screen. */
 "wooShipping.createLabels.rates.shippingService" = "Serviço de envio";
+
+/* Label for the menu to select a sort order for shipping rates in the shipping label creation screen. */
+"wooShipping.createLabels.rates.sortBy" = "Ordenar por";
+
+/* Option to sort shipping rates by delivery time in the shipping label creation screen. */
+"wooShipping.createLabels.rates.sortBy.deliveryTime" = "Mais rápida";
+
+/* Option to sort shipping rates by price in the shipping label creation screen. */
+"wooShipping.createLabels.rates.sortBy.price" = "Mais barata";
 
 /* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
 "wooShipping.createLabels.shippingService.adultSignatureRequired" = "Assinatura de um adulto obrigatória (+%1$@)";
@@ -12552,6 +12663,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to create a shipping label */
 "wooShipping.createLabels.title" = "Criar etiquetas de envio";
+
+/* Title for the screen to view a shipping label */
+"wooShipping.createLabels.viewLabelTitle" = "Visualizar etiqueta de envio";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, minha loja, hoje, essa semana, esse mês, esse ano, pedidos, visitantes, conversão, principais caminhos de conversão, itens vendidos";

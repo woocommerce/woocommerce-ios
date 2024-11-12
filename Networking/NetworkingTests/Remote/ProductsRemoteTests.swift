@@ -518,6 +518,47 @@ final class ProductsRemoteTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
+    // MARK: - Search Products by Global Unique Identifier
+
+    func test_searchProductsByGlobalUniqueIdentifier_properly_returns_parsed_products() throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-sku-search")
+
+        // When
+        let result: Result<[Product], Error> = waitFor { promise in
+            remote.searchProductsByGlobalUniqueIdentifier(for: self.sampleSiteID,
+                                       keyword: "12345",
+                                       pageNumber: 0,
+                                       pageSize: 100) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let products = try result.get()
+        XCTAssertEqual(products.count, 1)
+    }
+
+    func test_searchProductsByGlobalUniqueIdentifier_properly_relays_networking_errors() {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        let result: Result<[Product], Error> = waitFor { promise in
+            remote.searchProductsByGlobalUniqueIdentifier(for: self.sampleSiteID,
+                                       keyword: String(),
+                                       pageNumber: 0,
+                                       pageSize: 100) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
 
     // MARK: - Search Product SKU tests
 

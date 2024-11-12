@@ -12,7 +12,7 @@ struct WooAddCustomPackageView: View {
     @FocusState var packageTemplateNameFieldFocused: Bool
     @FocusState var focusedField: WooShippingPackageUnitType?
 
-    let addPackageAction: (WooPackageDataRepresentable) -> Void
+    let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
     private var packageTypeSelectionView: some View {
         Menu {
@@ -54,7 +54,7 @@ struct WooAddCustomPackageView: View {
                         VStack {
                             AdaptiveStack(spacing: 8) {
                                 ForEach(WooShippingPackageUnitType.dimensionUnits, id: \.self) { dimensionUnit in
-                                    unitInputView(for: dimensionUnit, unit: customPackageViewModel.dimensionUnit)
+                                    unitInputView(for: dimensionUnit, unit: customPackageViewModel.dimensionsUnit)
                                 }
                             }
                             // showing weight input only if we are saving the template

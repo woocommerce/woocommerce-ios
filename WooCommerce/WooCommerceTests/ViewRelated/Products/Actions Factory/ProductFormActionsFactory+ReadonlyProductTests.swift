@@ -77,7 +77,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: false, hideSeparator: false),
                                                                        .reviews,
                                                                        .externalURL(editable: false),
-                                                                       .sku(editable: false),
+                                                                       .simplifiedInventory(editable: false),
                                                                        .categories(editable: false),
                                                                        .tags(editable: false),
                                                                        .shortDescription(editable: false),
@@ -134,7 +134,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.groupedProducts(editable: false),
                                                                        .reviews,
-                                                                       .sku(editable: false),
+                                                                       .simplifiedInventory(editable: false),
                                                                        .categories(editable: false),
                                                                        .tags(editable: false),
                                                                        .shortDescription(editable: false),

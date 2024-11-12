@@ -28,7 +28,7 @@ struct PointOfSaleDashboardView: View {
                 let errorContents = viewModel.itemListViewModel.state.hasError
                 PointOfSaleItemListErrorView(error: errorContents, onRetry: {
                     Task {
-                        await viewModel.itemListViewModel.reload()
+                        await viewModel.itemListViewModel.loadInitialItems()
                     }
                 })
             } else if viewModel.isEmpty {

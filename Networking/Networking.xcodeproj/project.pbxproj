@@ -800,6 +800,8 @@
 		CE0A0F1B223989670075ED8D /* ProductsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F1A223989670075ED8D /* ProductsRemote.swift */; };
 		CE0A0F1D22398D520075ED8D /* ProductListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F1C22398D520075ED8D /* ProductListMapperTests.swift */; };
 		CE0A0F1F223998A10075ED8D /* products-load-all.json in Resources */ = {isa = PBXBuildFile; fileRef = CE0A0F1E223998A00075ED8D /* products-load-all.json */; };
+		CE0F4EC92CE37547006339BD /* wooshipping-get-label-rates-success.json in Resources */ = {isa = PBXBuildFile; fileRef = CE0F4EC82CE3753F006339BD /* wooshipping-get-label-rates-success.json */; };
+		CE0F4ECD2CE375E4006339BD /* wooshipping-get-label-rates-error.json in Resources */ = {isa = PBXBuildFile; fileRef = CE0F4ECC2CE375DD006339BD /* wooshipping-get-label-rates-error.json */; };
 		CE12AE9529F29F4F0056DD17 /* order-with-subscription-renewal.json in Resources */ = {isa = PBXBuildFile; fileRef = CE12AE9429F29F4F0056DD17 /* order-with-subscription-renewal.json */; };
 		CE12AE9729F2AB3F0056DD17 /* SubscriptionMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12AE9629F2AB3F0056DD17 /* SubscriptionMapper.swift */; };
 		CE12AE9929F2AC2F0056DD17 /* subscription.json in Resources */ = {isa = PBXBuildFile; fileRef = CE12AE9829F2AC2F0056DD17 /* subscription.json */; };
@@ -1966,6 +1968,8 @@
 		CE0A0F1A223989670075ED8D /* ProductsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsRemote.swift; sourceTree = "<group>"; };
 		CE0A0F1C22398D520075ED8D /* ProductListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListMapperTests.swift; sourceTree = "<group>"; };
 		CE0A0F1E223998A00075ED8D /* products-load-all.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "products-load-all.json"; sourceTree = "<group>"; };
+		CE0F4EC82CE3753F006339BD /* wooshipping-get-label-rates-success.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wooshipping-get-label-rates-success.json"; sourceTree = "<group>"; };
+		CE0F4ECC2CE375DD006339BD /* wooshipping-get-label-rates-error.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wooshipping-get-label-rates-error.json"; sourceTree = "<group>"; };
 		CE12AE9429F29F4F0056DD17 /* order-with-subscription-renewal.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-with-subscription-renewal.json"; sourceTree = "<group>"; };
 		CE12AE9629F2AB3F0056DD17 /* SubscriptionMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionMapper.swift; sourceTree = "<group>"; };
 		CE12AE9829F2AC2F0056DD17 /* subscription.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = subscription.json; sourceTree = "<group>"; };
@@ -3486,6 +3490,8 @@
 				453954D12C90D84200A3E64A /* meta-data-products-and-orders.json */,
 				453954D52C9193BC00A3E64A /* meta-data-products-orders-update.json */,
 				95122E3D2CB82C0A0079FF0A /* generate-product-success-wrapped.json */,
+				CE0F4EC82CE3753F006339BD /* wooshipping-get-label-rates-success.json */,
+				CE0F4ECC2CE375DD006339BD /* wooshipping-get-label-rates-error.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -4237,6 +4243,7 @@
 				3158FE7C26129E2100E566B9 /* wcpay-account-restricted-pending.json in Resources */,
 				DE34051B28BDF12C00CF0D97 /* jetpack-connection-url.json in Resources */,
 				D823D91422377EE600C90817 /* shipment_tracking_providers.json in Resources */,
+				CE0F4ECD2CE375E4006339BD /* wooshipping-get-label-rates-error.json in Resources */,
 				CC01CE5829B0EBED004FF537 /* product-bundle.json in Resources */,
 				4599FC5C24A6276F0056157A /* product-tags-all.json in Resources */,
 				DEA493742B3997ED00EED015 /* blaze-target-devices.json in Resources */,
@@ -4394,6 +4401,7 @@
 				0313651B28AE60E000EEE571 /* payment-gateway-cod.json in Resources */,
 				B5C6FCD620A3768900A4F8E4 /* order.json in Resources */,
 				3158FE7426129D9F00E566B9 /* wcpay-account-rejected-other.json in Resources */,
+				CE0F4EC92CE37547006339BD /* wooshipping-get-label-rates-success.json in Resources */,
 				CC0786C7267BB10700BA9AC1 /* shipping-label-status-success.json in Resources */,
 				EE57C144297FCCA700BC31E7 /* product-shipping-classes-load-one-without-data.json in Resources */,
 				028CB71B290224D700331C09 /* create-account-error-username.json in Resources */,

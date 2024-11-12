@@ -1,1 +1,0 @@
-Product- en orderbeheer is voortaan makkelijker! Je kan nu aangepaste velden voor producten en bestellingen gewoon in de app bekijken en wijzigen. We hebben ook het onboarding-proces voor betalingen verbeterd. Het is nog nooit zo makkelijk geweest om fouten op te lossen bij het instellen van WooPayments of Stripe. Veel verkoopplezier!

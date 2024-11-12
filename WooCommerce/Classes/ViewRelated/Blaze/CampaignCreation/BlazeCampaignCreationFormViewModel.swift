@@ -36,7 +36,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             updateIsUsingAISuggestions()
         }
     }
-    @Published private(set) var ctaText: String? = nil
+    @Published private(set) var ctaText: String = ""
 
     // Whether the campaign should have no end date
     private var isEvergreen: Bool

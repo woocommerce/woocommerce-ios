@@ -7,7 +7,7 @@ struct BlazeEditAdData: Equatable {
     let image: MediaPickerImage?
     let tagline: String
     let description: String
-    let ctaText: String?
+    let ctaText: String
 }
 
 /// Hosting controller for `BlazeEditAdView`.

@@ -111,7 +111,7 @@ final class BlazeEditAdViewModel: ObservableObject {
         return BlazeEditAdData(image: image,
                                tagline: tagline,
                                description: description,
-                               ctaText: ctaText.isEmpty ? nil : ctaText)
+                               ctaText: ctaText)
     }
 
     @Published private var selectedSuggestionIndex: Int?
@@ -152,7 +152,7 @@ final class BlazeEditAdViewModel: ObservableObject {
         }
         self.tagline = adData.tagline
         self.description = adData.description
-        self.ctaText = adData.ctaText ?? ""
+        self.ctaText = adData.ctaText
 
         self.onSave = onSave
         self.analytics = analytics

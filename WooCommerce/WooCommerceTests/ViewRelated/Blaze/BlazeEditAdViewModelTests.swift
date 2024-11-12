@@ -332,7 +332,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        adData: BlazeEditAdData(image: nil,
                                                                tagline: "Sample Tagline",
                                                                description: "Sample description",
-                                                               ctaText: nil),
+                                                               ctaText: "Sample CTA"),
                                        suggestions: [.fake()],
                                        onSave: { _ in })
 
@@ -425,7 +425,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        adData: BlazeEditAdData(image: nil,
                                                                tagline: "Sample Tagline",
                                                                description: "Sample description",
-                                                               ctaText: nil),
+                                                               ctaText: "Sample CTA"),
                                        suggestions: [.fake()],
                                        onSave: { _ in })
 

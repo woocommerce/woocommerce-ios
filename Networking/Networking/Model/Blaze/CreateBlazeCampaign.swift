@@ -97,7 +97,7 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
 
     /// Selected CTA text
     ///
-    public let ctaText: String?
+    public let ctaText: String
 
     public init(origin: String,
                 originVersion: String,
@@ -116,7 +116,7 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
                 targetUrn: String,
                 type: String,
                 objective: String?,
-                ctaText: String?) {
+                ctaText: String) {
         self.origin = origin
         self.originVersion = originVersion
         self.paymentMethodID = paymentMethodID

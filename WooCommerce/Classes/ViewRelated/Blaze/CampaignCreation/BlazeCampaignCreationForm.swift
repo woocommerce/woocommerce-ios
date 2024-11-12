@@ -294,7 +294,7 @@ private extension BlazeCampaignCreationForm {
                     Spacer()
 
                     if !viewModel.isLoadingAISuggestions,
-                       viewModel.ctaText.isNilOrEmpty {
+                       viewModel.ctaText.isEmpty {
                         // Show a blue circle with an arrow if CTA is empty
                         Image(systemName: "chevron.right.circle.fill")
                             .resizable()
@@ -305,8 +305,8 @@ private extension BlazeCampaignCreationForm {
                 }
 
                 if !viewModel.isLoadingAISuggestions,
-                   viewModel.ctaText?.isNotEmpty == true {
-                    Text(viewModel.ctaText ?? "")
+                   viewModel.ctaText.isNotEmpty {
+                    Text(viewModel.ctaText)
                         .font(.system(size: Constants.ctaButtonFontSize))
                         .foregroundColor(Constants.backgroundViewColor)
                         .padding(Layout.ctaButtonPadding)

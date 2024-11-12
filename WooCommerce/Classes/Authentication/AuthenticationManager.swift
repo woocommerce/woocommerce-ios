@@ -889,6 +889,7 @@ private extension AuthenticationManager {
     func updateUserDefaultsIfSuspendedSiteError(_ error: Error) {
         if let serviceError = error as? WordPressComBlogServiceError,
            serviceError == .wpcomSiteSuspended {
+            analytics.track(event: .WPCOMSiteSuspended.siteSuspended(event: .login))
             userDefaults.setWPCOMSiteSuspended(true)
         }
     }

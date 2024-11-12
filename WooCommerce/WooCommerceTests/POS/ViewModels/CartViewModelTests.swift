@@ -8,10 +8,12 @@ import SwiftUI
 final class CartViewModelTests: XCTestCase {
 
     private var sut: CartViewModel!
+    private var posModel: PointOfSaleAggregateModel!
 
     override func setUp() {
         super.setUp()
-        sut = CartViewModel(posModel: PointOfSaleAggregateModel(itemProvider: MockPOSItemProvider()))
+        posModel = PointOfSaleAggregateModel(itemProvider: MockPOSItemProvider())
+        sut = CartViewModel(posModel: posModel)
     }
 
     override func tearDown() {
@@ -26,8 +28,8 @@ final class CartViewModelTests: XCTestCase {
         let anotherItem = Self.makeItem()
 
         // When
-        sut.addItemToCart(item)
-        sut.addItemToCart(anotherItem)
+        posModel.addToCart(item)
+        posModel.addToCart(anotherItem)
         sut.cartSubmissionPublisher.sink(receiveValue: { cartItems in
             // Then
             XCTAssertEqual(cartItems.count, 2)
@@ -54,10 +56,10 @@ final class CartViewModelTests: XCTestCase {
         let anotherItem = Self.makeItem()
 
         // When/Then
-        sut.addItemToCart(anItem)
+        posModel.addToCart(anItem)
         XCTAssertEqual(sut.itemsInCartLabel, "1 item")
 
-        sut.addItemToCart(anotherItem)
+        posModel.addToCart(anotherItem)
         XCTAssertEqual(sut.itemsInCartLabel, "2 items")
     }
 }

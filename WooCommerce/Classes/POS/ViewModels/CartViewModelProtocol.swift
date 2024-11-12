@@ -11,7 +11,6 @@ protocol CartViewModelProtocol: ObservableObject {
     var itemsInCartLabel: String? { get }
     var itemsInCartPublisher: AnyPublisher<[CartItem], Never> { get }
 
-    func addItemToCart(_ item: POSItem)
     func submitCart()
     func addMoreToCart()
 }

@@ -16,10 +16,6 @@ class MockCartViewModel: CartViewModelProtocol {
     var canDeleteItemsFromCart: Bool = false
     var itemsInCartLabel: String? = nil
 
-    func addItemToCart(_ item: any Yosemite.POSItem) {
-        addItemToCartCalled = true
-    }
-
     func submitCart() {
         submitCartCalled = true
     }
@@ -30,7 +26,6 @@ class MockCartViewModel: CartViewModelProtocol {
     }
 
     // Mock variables
-    var addItemToCartCalled = false
     var submitCartCalled = false
     var addMoreToCartCalled = false
 }

@@ -24,10 +24,6 @@ final class CartViewModel: CartViewModelProtocol {
         addMoreToCartActionPublisher = addMoreToCartActionSubject.eraseToAnyPublisher()
     }
 
-    func addItemToCart(_ item: POSItem) {
-        posModel.addToCart(item)
-    }
-
     var itemToScrollToWhenCartUpdated: CartItem?
 
     var itemsInCartLabel: String? {

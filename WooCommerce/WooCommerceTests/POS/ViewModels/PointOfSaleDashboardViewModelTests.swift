@@ -72,14 +72,14 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
     func test_items_added_to_cart() {
         // Given
         let item = Self.makeItem()
+        let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
         let itemsAdded = true
         let expectedOrderStage = PointOfSaleDashboardViewModel.OrderStage.building
 
         // When
-        mockCartViewModel.addItemToCart(item)
+        mockCartViewModel.itemsInCartSubject.send([cartItem])
 
         // Then
-        XCTAssertEqual(mockCartViewModel.addItemToCartCalled, itemsAdded)
         XCTAssertEqual(sut.orderStage, expectedOrderStage)
     }
 

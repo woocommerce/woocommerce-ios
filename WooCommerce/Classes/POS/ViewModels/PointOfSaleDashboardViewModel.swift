@@ -76,7 +76,7 @@ private extension PointOfSaleDashboardViewModel {
     func observeSelectedItemToAddToCart() {
         itemListViewModel.selectedItemPublisher
             .sink { [weak self] selectedItem in
-                self?.cartViewModel.addItemToCart(selectedItem)
+                self?.posModel.addToCart(selectedItem)
             }
             .store(in: &cancellables)
     }

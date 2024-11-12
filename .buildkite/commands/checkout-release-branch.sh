@@ -1,5 +1,7 @@
 #!/bin/bash -eu
 
+RELEASE_VERSION="${1:?RELEASE_VERSION parameter missing}"
+
 echo "--- :git: Checkout Release Branch"
 
 if [[ -z "${RELEASE_VERSION}" ]]; then

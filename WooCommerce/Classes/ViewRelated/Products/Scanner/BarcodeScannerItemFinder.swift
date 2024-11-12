@@ -17,10 +17,10 @@ struct BarcodeScannerItemFinder {
     func searchByIdentifier(from barcode: ScannedBarcode,
                             siteID: Int64, source: WooAnalyticsEvent.BarcodeScanning.Source) async throws -> ItemIdentifierSearchResult {
         do {
-            let result = try await search(by: barcode.payloadStringValue, siteID: siteID)
-            analytics.track(event: WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUSuccess(from: source.rawValue))
+            let (foundItem, searchSource) = try await search(by: barcode.payloadStringValue, siteID: siteID)
+            trackScanSuccess(from: searchSource, screenSource: source)
 
-            return result
+            return foundItem
         } catch {
             analytics.track(event: WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUFailure(from: source.rawValue,
                                                                                             symbology: barcode.symbology,
@@ -36,20 +36,23 @@ struct BarcodeScannerItemFinder {
                 return try await searchByIdentifier(from: refinedBarcode, siteID: siteID, source: source)
             } else if let refinedBarcode = barcode.removeCheckDigitIfPossible() {
                 // Try one more time if we can remove the barcode check digit, as some merchants might have added the Identifier without it
-                return try await search(by: refinedBarcode.payloadStringValue, siteID: siteID)
+                let (foundItem, searchSource) = try await search(by: refinedBarcode.payloadStringValue, siteID: siteID)
+                trackScanSuccess(from: searchSource, screenSource: source)
+
+                return foundItem
             } else {
                 throw error
             }
         }
     }
 
-    private func search(by identifier: String, siteID: Int64) async throws -> ItemIdentifierSearchResult {
+    private func search(by identifier: String, siteID: Int64) async throws -> (ItemIdentifierSearchResult, ItemIdentifierSearchResultSource) {
         try await withCheckedThrowingContinuation { continuation in
             let action = ProductAction.retrieveFirstPurchasableItemMatchFromIdentifier(siteID: siteID,
                                                                         identifier: identifier) { result in
                 switch result {
-                case let .success(matchedProduct):
-                    continuation.resume(returning: matchedProduct)
+                case let .success(itemSourceTuple):
+                    continuation.resume(returning: itemSourceTuple)
                 case let .failure(error):
                     continuation.resume(throwing: error)
                 }
@@ -66,6 +69,15 @@ struct BarcodeScannerItemFinder {
         }
 
         return productLoadError.trackingReason
+    }
+
+    func trackScanSuccess(from searchSource: ItemIdentifierSearchResultSource, screenSource: WooAnalyticsEvent.BarcodeScanning.Source) {
+        switch searchSource {
+        case .SKU:
+            analytics.track(event: WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUSuccess(from: screenSource.rawValue))
+        case .globalUniqueIdentifier:
+            analytics.track(event: WooAnalyticsEvent.BarcodeScanning.productSearchViaGlobalUniqueIDSuccess(from: screenSource.rawValue))
+        }
     }
 }
 

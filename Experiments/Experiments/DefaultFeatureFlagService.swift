@@ -69,7 +69,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .subscriptionsInOrderCreationUI:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .subscriptionsInOrderCreationCustomers:
-            return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
+            // Feature paused pfoUAQ-zw-p2#comment-510.
+            return false
         case .pointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .googleAdsCampaignCreationOnWebView:
@@ -90,6 +91,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .paymentsOnboardingInPointOfSale:
             return buildConfig == .localDeveloper
+        case .displayInfiniteScrollingUIDetailsInPointOfSale:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

@@ -857,6 +857,10 @@
 		20DA6DDB2B681175002AA0FB /* AdaptiveModalContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DA6DDA2B681175002AA0FB /* AdaptiveModalContainer.swift */; };
 		20E188842AD059A50053E945 /* AboutTapToPayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20E188832AD059A50053E945 /* AboutTapToPayView.swift */; };
 		20FA73882CDCC3A900554BE3 /* OrderDetailsSyncStateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FA73872CDCC3A900554BE3 /* OrderDetailsSyncStateController.swift */; };
+		20FCBCDD2CE223340082DCA3 /* PointOfSaleAggregateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FCBCDC2CE223340082DCA3 /* PointOfSaleAggregateModel.swift */; };
+		20FCBCDF2CE241810082DCA3 /* PointOfSaleAggregateModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FCBCDE2CE241810082DCA3 /* PointOfSaleAggregateModelTests.swift */; };
+		20FCBCE12CE24CE70082DCA3 /* MockPOSItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FCBCE02CE24CE70082DCA3 /* MockPOSItemProvider.swift */; };
+		20FCBCE32CE24F5D0082DCA3 /* MockPointOfSaleAggregateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FCBCE22CE24F5D0082DCA3 /* MockPointOfSaleAggregateModel.swift */; };
 		247CE89C2583402A00F9D9D1 /* Embassy in Frameworks */ = {isa = PBXBuildFile; productRef = 247CE89B2583402A00F9D9D1 /* Embassy */; };
 		247CE8A6258340E600F9D9D1 /* ScreenshotImages.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 247CE8A5258340E600F9D9D1 /* ScreenshotImages.xcassets */; };
 		24C5AC7625A53021008FD769 /* Embassy in Frameworks */ = {isa = PBXBuildFile; productRef = 247CE89B2583402A00F9D9D1 /* Embassy */; };
@@ -3970,6 +3974,10 @@
 		20DA6DDA2B681175002AA0FB /* AdaptiveModalContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveModalContainer.swift; sourceTree = "<group>"; };
 		20E188832AD059A50053E945 /* AboutTapToPayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutTapToPayView.swift; sourceTree = "<group>"; };
 		20FA73872CDCC3A900554BE3 /* OrderDetailsSyncStateController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsSyncStateController.swift; sourceTree = "<group>"; };
+		20FCBCDC2CE223340082DCA3 /* PointOfSaleAggregateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleAggregateModel.swift; sourceTree = "<group>"; };
+		20FCBCDE2CE241810082DCA3 /* PointOfSaleAggregateModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleAggregateModelTests.swift; sourceTree = "<group>"; };
+		20FCBCE02CE24CE70082DCA3 /* MockPOSItemProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPOSItemProvider.swift; sourceTree = "<group>"; };
+		20FCBCE22CE24F5D0082DCA3 /* MockPointOfSaleAggregateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPointOfSaleAggregateModel.swift; sourceTree = "<group>"; };
 		247CE8A5258340E600F9D9D1 /* ScreenshotImages.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ScreenshotImages.xcassets; sourceTree = "<group>"; };
 		24C579D124F476300076E1B4 /* Woo-Alpha.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Woo-Alpha.entitlements"; sourceTree = "<group>"; };
 		24F98C4F2502AEE200F49B68 /* EventLogging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventLogging.swift; sourceTree = "<group>"; };
@@ -6833,7 +6841,6 @@
 				026826922BF59D830036F959 /* PointOfSaleDashboardViewModel.swift */,
 				019C5EAF2C516F7B005B82D3 /* ItemListViewModelProtocol.swift */,
 				683763152C2E44B800AD51D0 /* ItemListViewModel.swift */,
-				20C6E7502CDE4AEA00CD124C /* ItemListState.swift */,
 				C7F746C82C4868670023ADD0 /* TotalsViewModelProtocol.swift */,
 				6885E2CB2C32B14B004C8D70 /* TotalsViewModel.swift */,
 				016BCAFE2C4F907F009D8367 /* CartViewModelProtocol.swift */,
@@ -7356,6 +7363,8 @@
 				C7F746C22C485B3B0023ADD0 /* MockCartViewModel.swift */,
 				C7F746C62C4866810023ADD0 /* MockTotalsViewModel.swift */,
 				019C5EB12C5171E6005B82D3 /* MockItemListViewModel.swift */,
+				20FCBCE02CE24CE70082DCA3 /* MockPOSItemProvider.swift */,
+				20FCBCE22CE24F5D0082DCA3 /* MockPointOfSaleAggregateModel.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -9453,8 +9462,10 @@
 		68F151DF2C0DA7800082AEC8 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				20C6E7502CDE4AEA00CD124C /* ItemListState.swift */,
 				68F151E02C0DA7910082AEC8 /* CartItem.swift */,
 				DAD988C52C4A9CF9009DE9E3 /* CartItem+Order.swift */,
+				20FCBCDC2CE223340082DCA3 /* PointOfSaleAggregateModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -12533,6 +12544,7 @@
 			isa = PBXGroup;
 			children = (
 				DAD988C82C4A9D6C009DE9E3 /* CartItemTests.swift */,
+				20FCBCDE2CE241810082DCA3 /* PointOfSaleAggregateModelTests.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -16367,6 +16379,7 @@
 				269098B827D68CCD001FEB07 /* FeesInputTransformer.swift in Sources */,
 				B6C78B8C293BADAA008934A1 /* AnalyticsHubLastWeekRangeData.swift in Sources */,
 				748AD087219F481B00023535 /* UIView+Animation.swift in Sources */,
+				20FCBCDD2CE223340082DCA3 /* PointOfSaleAggregateModel.swift in Sources */,
 				CE4AFE462CD135B20013C52B /* WooShippingPostPurchaseViewModel.swift in Sources */,
 				02564A8A246CDF6100D6DB2A /* ProductsTopBannerFactory.swift in Sources */,
 				D89C004725B467C7000E4683 /* ULAccountMismatchViewModel.swift in Sources */,
@@ -16633,6 +16646,7 @@
 				03D7985E2A950A7B00809B0E /* MockCardPresentPaymentAlertsPresenter.swift in Sources */,
 				02BA23C022EE9DAF009539E7 /* AsyncDictionaryTests.swift in Sources */,
 				B555531121B57E6F00449E71 /* MockApplicationAdapter.swift in Sources */,
+				20FCBCDF2CE241810082DCA3 /* PointOfSaleAggregateModelTests.swift in Sources */,
 				03D7985C2A94EC7700809B0E /* MockCollectOrderPaymentAnalyticsTracker.swift in Sources */,
 				021E2A2023AA274700B1DE07 /* ProductBackordersSettingListSelectorCommandTests.swift in Sources */,
 				0235BFDB246E99A700778909 /* ProductFormActionsFactory+NonEmptyBottomSheetActionsTests.swift in Sources */,
@@ -17029,6 +17043,7 @@
 				748C7784211E2D8400814F2C /* DoubleWooTests.swift in Sources */,
 				03F8D87D2A7A76DE00DD6D2F /* MockCardPresentPaymentPreflightController.swift in Sources */,
 				6837631A2C2E6F5900AD51D0 /* CartViewModelTests.swift in Sources */,
+				20FCBCE12CE24CE70082DCA3 /* MockPOSItemProvider.swift in Sources */,
 				02524A5D252ED5C60033E7BD /* ProductVariationLoadUseCaseTests.swift in Sources */,
 				028AFFB62484EDA000693C09 /* Dictionary+LoggingTests.swift in Sources */,
 				0247F50E286E6CCD009C177E /* MockProductImageActionHandler.swift in Sources */,
@@ -17095,6 +17110,7 @@
 				EE66BB122B29D65400518DAF /* MockThemeInstaller.swift in Sources */,
 				45AF9DA5265CEA89001EB794 /* ShippingLabelCarriersViewModelTests.swift in Sources */,
 				DEF8CF0D29A76F7E00800A60 /* JetpackSetupCoordinatorTests.swift in Sources */,
+				20FCBCE32CE24F5D0082DCA3 /* MockPointOfSaleAggregateModel.swift in Sources */,
 				EE289AFC2C9D9CF0004AB1A6 /* AIToneVoiceViewModelTests.swift in Sources */,
 				DEA90D3B2C915DB50021ABC3 /* BlazeCampaignDetailWebViewModelTests.swift in Sources */,
 				0248042D2887C92A00991319 /* MockLoggedOutAppSettings.swift in Sources */,

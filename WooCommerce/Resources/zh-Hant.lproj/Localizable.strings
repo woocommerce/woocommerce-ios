@@ -3663,9 +3663,6 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is an error updating the product SKU */
 "Invalid Product SKU" = "無效的商品貨號";
 
-/* Error when an empty SKU is returned from the barcode scanner */
-"Invalid SKU" = "無效的貨號";
-
 /* No comment provided by engineer. */
 "Invalid Site Address" = "無效的網站位址";
 
@@ -5561,12 +5558,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Product Type row on Product main screen */
 "Product type" = "產品類型";
-
-/* Error message when the scanner found a product but isn't purchasable.%@ is the SKU code. */
-"Product with SKU \"%@\" is not purchasable." = "貨號為「%@」的產品未開放購買。";
-
-/* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
-"Product with SKU \"%@\" not found." = "找不到貨號為「%@」的產品。";
 
 /* The instruction text below the scan area in the barcode scanner for product barcode. */
 "ProductBarcodeInputScanner.instructionText" = "掃描商品條碼或 QR 碼";
@@ -9946,9 +9937,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "多款式訂閱";
-
-/* Button to refresh the state of the in-person payments setup */
-"card.present.payment.setup.webview.title" = "付款設定";
 
 /* Default accessibility label for a custom indeterminate progress view, used for card payments. */
 "card.waves.progressView.accessibilityLabel" = "進行中";

@@ -82,6 +82,7 @@ enum WooAnalyticsStat: String {
     case loginInvalidEmailScreenViewed = "login_invalid_email_screen_viewed"
     case whatIsWPComOnInvalidEmailScreenTapped = "what_is_wordpress_com_on_invalid_email_screen"
     case loginInsufficientRole = "login_insufficient_role"
+    case blackFlaggedWebsiteDetected = "black_flagged_website_detected"
 
     // MARK: REST API login
     //

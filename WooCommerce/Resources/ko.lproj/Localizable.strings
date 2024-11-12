@@ -3663,9 +3663,6 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is an error updating the product SKU */
 "Invalid Product SKU" = "유효하지 않은 제품 SKU";
 
-/* Error when an empty SKU is returned from the barcode scanner */
-"Invalid SKU" = "유효하지 않은 SKU";
-
 /* No comment provided by engineer. */
 "Invalid Site Address" = "유효하지 않은 사이트 주소";
 
@@ -5561,12 +5558,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Product Type row on Product main screen */
 "Product type" = "제품 유형";
-
-/* Error message when the scanner found a product but isn't purchasable.%@ is the SKU code. */
-"Product with SKU \"%@\" is not purchasable." = "SKU가 \"%@\"인 상품을 구매할 수 없습니다.";
-
-/* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
-"Product with SKU \"%@\" not found." = "SKU가 \"%@\"인 상품을 찾을 수 없습니다.";
 
 /* The instruction text below the scan area in the barcode scanner for product barcode. */
 "ProductBarcodeInputScanner.instructionText" = "상품 바코드 또는 QR 코드 스캔";
@@ -9946,9 +9937,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "가변 구독";
-
-/* Button to refresh the state of the in-person payments setup */
-"card.present.payment.setup.webview.title" = "결제 설정";
 
 /* Default accessibility label for a custom indeterminate progress view, used for card payments. */
 "card.waves.progressView.accessibilityLabel" = "진행 중";

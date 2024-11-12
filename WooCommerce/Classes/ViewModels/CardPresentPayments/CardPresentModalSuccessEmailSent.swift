@@ -25,7 +25,9 @@ final class CardPresentModalSuccessEmailSent: CardPresentPaymentsModalViewModel 
 
     let auxiliaryButtonTitle: String? = nil
 
-    let bottomTitle: String?
+    let bottomTitle: String? = nil
+
+    let bottomAttributedTitle: NSAttributedString?
 
     let bottomSubtitle: String? = nil
 
@@ -38,7 +40,14 @@ final class CardPresentModalSuccessEmailSent: CardPresentPaymentsModalViewModel 
          email: String) {
         self.printReceiptAction = printReceipt
         self.noReceiptAction = noReceiptAction
-        self.bottomTitle = String(format: CardPresentModalSuccess.Localization.receiptMessage, email)
+
+        let formattedMessage = String(format: CardPresentModalSuccess.Localization.receiptMessage, email)
+        let attributedString = NSMutableAttributedString(string: formattedMessage)
+        if let emailRange = formattedMessage.range(of: email) {
+            let nsRange = NSRange(emailRange, in: formattedMessage)
+            attributedString.addAttributes([.font: UIFont.boldSystemFont(ofSize: UIFont.systemFontSize)], range: nsRange)
+        }
+        self.bottomAttributedTitle = attributedString
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {

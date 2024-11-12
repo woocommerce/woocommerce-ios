@@ -208,6 +208,7 @@ private extension CardPresentPaymentsModalViewController {
         topTitleLabel.text = ""
         topSubtitleLabel.text = ""
         bottomTitleLabel.text = ""
+        bottomTitleLabel.attributedText = nil
         bottomSubtitleLabel.text = ""
     }
 
@@ -252,7 +253,11 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func configureBottomTitle() {
-        bottomTitleLabel.text = viewModel.bottomTitle
+        if let bottomAttributedTitle = viewModel.bottomAttributedTitle {
+            bottomTitleLabel.attributedText = bottomAttributedTitle
+        } else {
+            bottomTitleLabel.text = viewModel.bottomTitle
+        }
     }
 
     func configureBottomSubtitle() {

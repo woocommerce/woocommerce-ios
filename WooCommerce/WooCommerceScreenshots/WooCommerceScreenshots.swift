@@ -28,7 +28,6 @@ class WooCommerceScreenshots: XCTestCase {
         app.launchArguments.append("disable-animations")
         app.launchArguments.append("-mocks-port")
         app.launchArguments.append("-mocks-push-notification")
-        app.launchArguments.append("-disable-product-creation-ai")
         app.launchArguments.append("-screenshot-mode")
         app.launchArguments.append("\(server.listenAddress.port)")
 

@@ -20,15 +20,12 @@ final class ProductCreationAIEligibilityChecker: ProductCreationAIEligibilityChe
             return false
         }
 
-        #if DEBUG
-        if ProcessInfo.processInfo.arguments.contains("-disable-product-creation-ai") {
+        if ProcessConfiguration.shouldRespectScreenshotMode {
+            // Do not show AI product creation option in Screenshot Mode.
             return false
         }
         else {
             return site.isWordPressComStore || site.isAIAssistantFeatureActive
         }
-        #else
-        return site.isWordPressComStore || site.isAIAssistantFeatureActive
-        #endif
     }
 }

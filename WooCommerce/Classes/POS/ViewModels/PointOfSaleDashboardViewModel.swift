@@ -59,7 +59,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     private func startNewOrder() {
         // clear cart
-        cartViewModel.removeAllItemsFromCart()
+        posModel.removeAllItemsFromCart()
         orderStage = .building
     }
 

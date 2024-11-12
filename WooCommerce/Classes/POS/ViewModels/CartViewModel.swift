@@ -12,19 +12,18 @@ final class CartViewModel: CartViewModelProtocol {
     let addMoreToCartActionPublisher: AnyPublisher<Void, Never>
     private let addMoreToCartActionSubject: PassthroughSubject<Void, Never> = .init()
 
-    @Published private(set) var itemsInCart: [CartItem] = []
-    var itemsInCartPublisher: Published<[CartItem]>.Publisher { $itemsInCart }
+    var itemsInCartPublisher: AnyPublisher<[CartItem], Never> { posModel.$cart.eraseToAnyPublisher() }
 
     @Published var canDeleteItemsFromCart: Bool = true
     @Published private(set) var shouldShowClearCartButton: Bool = false
 
-    var isCartEmpty: Bool {
-        return itemsInCart.isEmpty
-    }
-
     private var analytics: Analytics
 
-    init(analytics: Analytics) {
+    let posModel: PointOfSaleAggregateModel
+
+    init(posModel: PointOfSaleAggregateModel,
+         analytics: Analytics) {
+        self.posModel = posModel
         self.analytics = analytics
 
         cartSubmissionPublisher = cartSubmissionSubject.eraseToAnyPublisher()
@@ -34,7 +33,7 @@ final class CartViewModel: CartViewModelProtocol {
 
     private func assignClearCartButtonVisibility() {
         $canDeleteItemsFromCart
-            .combineLatest($itemsInCart)
+            .combineLatest(posModel.$cart)
             .map { canDelete, itemsInCart in
                 return canDelete && itemsInCart.isNotEmpty
             }
@@ -42,36 +41,24 @@ final class CartViewModel: CartViewModelProtocol {
     }
 
     func addItemToCart(_ item: POSItem) {
-        let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
-        itemsInCart.insert(cartItem, at: 0)
-        itemToScrollToWhenCartUpdated = cartItem
-
+        posModel.addToCart(item)
         analytics.track(.pointOfSaleAddItemToCart)
-    }
-
-    func removeItemFromCart(_ cartItem: CartItem) {
-        itemsInCart.removeAll(where: { $0.id == cartItem.id })
-    }
-
-    func removeAllItemsFromCart() {
-        itemsInCart.removeAll()
     }
 
     var itemToScrollToWhenCartUpdated: CartItem?
 
     var itemsInCartLabel: String? {
-        switch itemsInCart.count {
-        case 0:
+        let itemsCount = posModel.cart.count
+        guard itemsCount > 0 else {
             return nil
-        default:
-            return String.pluralize(itemsInCart.count,
-                                    singular: "%1$d item",
-                                    plural: "%1$d items")
         }
+        return String.pluralize(itemsCount,
+                                singular: "%1$d item",
+                                plural: "%1$d items")
     }
 
     func submitCart() {
-        cartSubmissionSubject.send(itemsInCart)
+        cartSubmissionSubject.send(posModel.cart)
     }
 
     func addMoreToCart() {

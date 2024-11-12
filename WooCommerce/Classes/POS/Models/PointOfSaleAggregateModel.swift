@@ -11,11 +11,18 @@ protocol PointOfSaleAggregateModelProtocol {
     func loadInitialItems() async
     func loadNextItems() async
     func reload() async
+
+    var cart: [CartItem] { get }
+    func addToCart(_ item: POSItem)
+    func remove(cartItem: CartItem)
+    func removeAllItemsFromCart()
 }
 
 class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProtocol {
     @Published private(set) var allItems: [POSItem] = []
     @Published private(set) var itemListState: ItemListState = .initialLoading
+
+    @Published private(set) var cart: [CartItem] = []
 
     private let itemProvider: POSItemProvider
 
@@ -80,6 +87,22 @@ extension PointOfSaleAggregateModel {
         } else {
             itemListState = .loaded(allItems)
         }
+    }
+}
+
+// MARK: - Cart
+
+extension PointOfSaleAggregateModel {
+    func addToCart(_ item: POSItem) {
+        cart.insert(CartItem(id: UUID(), item: item, quantity: 1), at: 0)
+    }
+
+    func remove(cartItem: CartItem) {
+        cart.removeAll(where: { $0.id == cartItem.id } )
+    }
+
+    func removeAllItemsFromCart() {
+        cart.removeAll()
     }
 }
 

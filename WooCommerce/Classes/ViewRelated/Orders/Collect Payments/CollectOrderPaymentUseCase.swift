@@ -88,6 +88,8 @@ where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
 
     private let preflightController: CardPresentPaymentPreflightControllerProtocol
 
+    private let receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol
+
     private var cancellables: Set<AnyCancellable> = []
 
     init(siteID: Int64,
@@ -102,7 +104,8 @@ where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
          tapToPayAlertsProvider: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
          bluetoothAlertsProvider: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
          preflightController: CardPresentPaymentPreflightControllerProtocol,
-         analyticsTracker: CollectOrderPaymentAnalyticsTracking? = nil) {
+         analyticsTracker: CollectOrderPaymentAnalyticsTracking? = nil,
+         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase()) {
         self.siteID = siteID
         self.order = order
         self.formattedAmount = formattedAmount
@@ -118,6 +121,7 @@ where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                                                                                  analytics: ServiceLocator.analytics,
                                                                                  configuration: configuration,
                                                                                  orderDurationRecorder: orderDurationRecorder)
+        self.receiptEligibilityUseCase = receiptEligibilityUseCase
     }
 
     /// Starts the collect payment flow.
@@ -160,7 +164,7 @@ where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                         // Handle payment receipt
                         self.storeInPersonPaymentsTransactionDateIfFirst(using: reader.readerType)
 
-                        ReceiptEligibilityUseCase().isEligibleForBackendReceipts { [weak self] isEligible in
+                        self.receiptEligibilityUseCase.isEligibleForBackendReceipts { [weak self] isEligible in
                             guard let self = self else { return }
                             switch isEligible {
                             case true:

@@ -18,6 +18,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     private var useCase: CollectOrderPaymentUseCase<BuiltInCardReaderPaymentAlertsProvider,
                                                         BluetoothCardReaderPaymentAlertsProvider,
                                                         MockCardPresentPaymentAlertsPresenter>!
+    private var receiptEligibilityUseCase: MockReceiptEligibilityUseCase!
 
     override func setUp() {
         super.setUp()
@@ -27,6 +28,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         mockPaymentOrchestrator = MockPaymentCaptureOrchestrator()
         alertsPresenter = MockCardPresentPaymentAlertsPresenter()
         mockPreflightController = MockCardPresentPaymentPreflightController()
+        receiptEligibilityUseCase = MockReceiptEligibilityUseCase()
 
         let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5")
         setUpUseCase(order: order)
@@ -53,7 +55,8 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                              tapToPayAlertsProvider: BuiltInCardReaderPaymentAlertsProvider(),
                                              bluetoothAlertsProvider: BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
                                              preflightController: mockPreflightController,
-                                             analyticsTracker: mockAnalyticsTracker)
+                                             analyticsTracker: mockAnalyticsTracker,
+                                             receiptEligibilityUseCase: receiptEligibilityUseCase)
     }
 
     func test_cancelling_reader_connection_triggers_onCancel_and_tracks_collectPaymentCanceled_event() throws {
@@ -99,6 +102,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5", billingAddress: Address.fake().copy(email: email))
 
         setUpUseCase(order: order)
+        receiptEligibilityUseCase.isEligibleForBackendReceipts = true
         let interacPaymentMethod = PaymentMethod.interacPresent(details: .fake())
         let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: interacPaymentMethod)])
         mockSuccessfulCardPresentPaymentActions(intent: intent,

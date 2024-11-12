@@ -1,0 +1,9 @@
+@testable import WooCommerce
+
+final class MockReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
+    var isEligibleForBackendReceipts: Bool = false
+
+    func isEligibleForBackendReceipts(onCompletion: @escaping (Bool) -> Void) {
+        onCompletion(isEligibleForBackendReceipts)
+    }
+}

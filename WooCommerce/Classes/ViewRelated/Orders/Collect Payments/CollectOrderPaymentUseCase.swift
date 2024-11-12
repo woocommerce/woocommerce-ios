@@ -564,7 +564,8 @@ private extension CollectOrderPaymentUseCase {
         // Presents receipt alert
         alertsPresenter.present(viewModel: paymentAlerts.success(printReceipt: receiptPresentationCompletionAction,
                                                                  emailReceipt: receiptPresentationCompletionAction,
-                                                                 noReceiptAction: { onCompleted() }))
+                                                                 noReceiptAction: { onCompleted() },
+                                                                 email: order.billingAddress?.email))
     }
 
     /// Allow merchants to print or email locally-generated receipts.
@@ -611,7 +612,7 @@ private extension CollectOrderPaymentUseCase {
         }, noReceiptAction: {
             // Inform about flow completion.
             onCompleted()
-        }))
+        }, email: order.billingAddress?.email))
     }
 
     /// Presents the native email client with the provided content.

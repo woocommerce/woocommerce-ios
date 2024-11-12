@@ -26,13 +26,13 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
          dimensionsUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
          stores: StoresManager = ServiceLocator.stores,
-        packagesRepository: WooShippingPackagesRepositoryProtocol) {
+         packagesRepository: WooShippingPackagesRepositoryProtocol) {
         self.dimensionsUnit = dimensionsUnit ?? ""
         self.weightUnit = weightUnit ?? ""
         self.stores = stores
         self.siteID = siteID
-      self.packagesRepository = packagesRepository
-     }
+        self.packagesRepository = packagesRepository
+    }
 
     // Field values are invalid if one of them is empty
     // - if we are saving template we check all field values
@@ -54,15 +54,15 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
 
     private var packageDataFromCurrentData: WooShippingPackageDataRepresentable {
         return WooShippingPackageData(id: UUID().uuidString,
-                                   name: packageTemplateName,
-                                   length: fieldValues[.length] ?? "",
-                                   width: fieldValues[.width] ?? "",
-                                   height: fieldValues[.height] ?? "",
-                                   dimensionsUnit: dimensionsUnit,
-                                   weight: fieldValues[.weight] ?? "",
-                                   weightUnit: weightUnit,
-                                   source: .custom,
-                                   packageType: packageType.name)
+                                      name: packageTemplateName,
+                                      length: fieldValues[.length] ?? "",
+                                      width: fieldValues[.width] ?? "",
+                                      height: fieldValues[.height] ?? "",
+                                      dimensionsUnit: dimensionsUnit,
+                                      weight: fieldValues[.weight] ?? "",
+                                      weightUnit: weightUnit,
+                                      source: .custom,
+                                      packageType: packageType.name)
     }
 
     private func preparePackageData() -> WooShippingPackageDataRepresentable? {
@@ -89,8 +89,8 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     }
 
     @MainActor
-       /// Saves custom package as template remotely.
-       ///
+    /// Saves custom package as template remotely.
+    ///
     func savePackageAsTemplateAction() async -> Result<WooShippingPackageDataRepresentable, Error> {
         guard let packageData = preparePackageData() else {
             return nil
@@ -180,8 +180,8 @@ extension WooShippingPackageUnitType {
                                               value: "Height",
                                               comment: "Info label for height input field")
         static let packageWeight = NSLocalizedString("wooShipping.createLabel.addPackage.packageWeight",
-                                              value: "Package weight",
-                                              comment: "Info label for weight input field")
+                                                     value: "Package weight",
+                                                     comment: "Info label for weight input field")
     }
 }
 

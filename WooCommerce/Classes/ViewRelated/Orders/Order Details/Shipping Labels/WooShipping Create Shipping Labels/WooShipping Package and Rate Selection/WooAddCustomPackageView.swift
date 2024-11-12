@@ -12,6 +12,8 @@ struct WooAddCustomPackageView: View {
     @FocusState var packageTemplateNameFieldFocused: Bool
     @FocusState var focusedField: WooShippingPackageUnitType?
 
+    @State private var isSavingPackage: Bool = false
+
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
     private var packageTypeSelectionView: some View {
@@ -104,10 +106,14 @@ struct WooAddCustomPackageView: View {
                                                    lineWidth: packageTemplateNameFieldFocused ? 2 : 1)
                                 Spacer()
                                 Button(Localization.savePackageTemplate) {
-                                    savePackageAsTemplateButtonTapped()
+                                    Task { @MainActor in
+                                        isSavingPackage = true
+                                        await savePackageAsTemplateButtonTapped()
+                                        isSavingPackage = false
+                                    }
                                 }
                                 .disabled(!customPackageViewModel.validateCustomPackageInputFields())
-                                .buttonStyle(SecondaryButtonStyle())
+                                .buttonStyle(SecondaryLoadingButtonStyle(isLoading: isSavingPackage))
                                 .padding(.bottom)
                             }
                             .id(Constants.saveTemplateContentID) // Set the id for the button so we can scroll to it
@@ -141,6 +147,7 @@ struct WooAddCustomPackageView: View {
                     }
                 }
                 .scrollDismissesKeyboard(.interactively)
+                .disabled(isSavingPackage)
             }
         }
     }
@@ -164,8 +171,9 @@ struct WooAddCustomPackageView: View {
         }
     }
 
-    private func savePackageAsTemplateButtonTapped() {
-        if let packageData = customPackageViewModel.savePackageAsTemplateAction() {
+    @MainActor
+    private func savePackageAsTemplateButtonTapped() async {
+        if let packageData = await customPackageViewModel.savePackageAsTemplateAction() {
             // call addPackageAction with data
             addPackageAction(packageData)
         }

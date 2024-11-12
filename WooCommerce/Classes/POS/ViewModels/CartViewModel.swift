@@ -15,7 +15,6 @@ final class CartViewModel: CartViewModelProtocol {
     var itemsInCartPublisher: AnyPublisher<[CartItem], Never> { posModel.$cart.eraseToAnyPublisher() }
 
     @Published var canDeleteItemsFromCart: Bool = true
-    @Published private(set) var shouldShowClearCartButton: Bool = false
 
     private var analytics: Analytics
 
@@ -28,16 +27,6 @@ final class CartViewModel: CartViewModelProtocol {
 
         cartSubmissionPublisher = cartSubmissionSubject.eraseToAnyPublisher()
         addMoreToCartActionPublisher = addMoreToCartActionSubject.eraseToAnyPublisher()
-        assignClearCartButtonVisibility()
-    }
-
-    private func assignClearCartButtonVisibility() {
-        $canDeleteItemsFromCart
-            .combineLatest(posModel.$cart)
-            .map { canDelete, itemsInCart in
-                return canDelete && itemsInCart.isNotEmpty
-            }
-            .assign(to: &$shouldShowClearCartButton)
     }
 
     func addItemToCart(_ item: POSItem) {

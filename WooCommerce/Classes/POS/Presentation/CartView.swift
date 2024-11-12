@@ -63,7 +63,7 @@ struct CartView: View {
                             )
                     }
                     .padding(.leading, Constants.itemHorizontalPadding)
-                    .renderedIf(cartViewModel.shouldShowClearCartButton)
+                    .renderedIf(posModel.cart.isNotEmpty && cartViewModel.canDeleteItemsFromCart)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)

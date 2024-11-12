@@ -4,7 +4,7 @@ import WooFoundation
 
 /// Represents a custom package in Shipping Labels for the WooCommerce Shipping extension.
 ///
-public struct WooShippingCustomPackage: Equatable, GeneratedFakeable {
+public struct WooShippingCustomPackage: Equatable, GeneratedFakeable, GeneratedCopiable {
 
     /// The ID of the custom package.
     public let id: String
@@ -31,10 +31,10 @@ public struct WooShippingCustomPackage: Equatable, GeneratedFakeable {
         PackageType(rawValue: rawType) ?? .box
     }
 
-    public init(id: String, name: String, type: String, dimensions: String, boxWeight: Double) {
+    public init(id: String, name: String, rawType: String, dimensions: String, boxWeight: Double) {
         self.id = id
         self.name = name
-        self.rawType = type
+        self.rawType = rawType
         self.dimensions = dimensions
         self.boxWeight = boxWeight
     }
@@ -66,7 +66,7 @@ extension WooShippingCustomPackage: Codable {
         let dimensions = try container.decode(String.self, forKey: .dimensions)
         let boxWeight = try container.decode(Double.self, forKey: .boxWeight)
 
-        self.init(id: id, name: name, type: type, dimensions: dimensions, boxWeight: boxWeight)
+        self.init(id: id, name: name, rawType: type, dimensions: dimensions, boxWeight: boxWeight)
     }
 
     public func encode(to encoder: Encoder) throws {

@@ -5,6 +5,7 @@ import protocol Yosemite.POSOrderServiceProtocol
 import protocol WooFoundation.Analytics
 
 struct PointOfSaleEntryPointView: View {
+    @StateObject private var posModel: PointOfSaleAggregateModel
     @StateObject private var viewModel: PointOfSaleDashboardViewModel
     @StateObject private var totalsViewModel: TotalsViewModel
     @StateObject private var cartViewModel: CartViewModel
@@ -21,14 +22,18 @@ struct PointOfSaleEntryPointView: View {
          analytics: Analytics) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
+        let posModel = PointOfSaleAggregateModel(itemProvider: itemProvider)
         let totalsViewModel = TotalsViewModel(orderService: orderService,
                                               cardPresentPaymentService: cardPresentPaymentService,
                                               currencyFormatter: currencyFormatter,
                                               paymentState: .acceptingCard)
         let cartViewModel = CartViewModel(analytics: analytics)
-        let itemListViewModel = ItemListViewModel(itemProvider: itemProvider)
+        let shouldShowGhostableItemCard = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.displayInfiniteScrollingUIDetailsInPointOfSale)
+        let itemListViewModel = ItemListViewModel(posModel: posModel, shouldShowGhostableItemCard: shouldShowGhostableItemCard)
 
+        self._posModel = StateObject(wrappedValue: posModel)
         self._viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
+            posModel: posModel,
             cardPresentPaymentService: cardPresentPaymentService,
             totalsViewModel: totalsViewModel,
             cartViewModel: cartViewModel,
@@ -41,7 +46,8 @@ struct PointOfSaleEntryPointView: View {
     }
 
     var body: some View {
-        PointOfSaleDashboardView(viewModel: viewModel,
+        PointOfSaleDashboardView(posModel: posModel,
+                                 viewModel: viewModel,
                                  totalsViewModel: totalsViewModel,
                                  cartViewModel: cartViewModel,
                                  itemListViewModel: itemListViewModel)

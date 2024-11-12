@@ -6,6 +6,13 @@ public enum ItemIdentifierSearchResult {
     case variation(ProductVariation)
 }
 
+/// Which property matched the looked identifier
+///
+public enum ItemIdentifierSearchResultSource {
+    case SKU
+    case globalUniqueIdentifier
+}
+
 /// ProductAction: Defines all of the Actions supported by the ProductStore.
 ///
 public enum ProductAction: Action {
@@ -72,7 +79,9 @@ public enum ProductAction: Action {
 
     /// Retrieves the first Product or Variation with exact-match SKU or, if that search is empty, global unique identifier
     ///
-    case retrieveFirstPurchasableItemMatchFromIdentifier(siteID: Int64, identifier: String, onCompletion: (Result<ItemIdentifierSearchResult, Error>) -> Void)
+    case retrieveFirstPurchasableItemMatchFromIdentifier(siteID: Int64,
+                                                         identifier: String,
+                                                         onCompletion: (Result<(ItemIdentifierSearchResult, ItemIdentifierSearchResultSource), Error>) -> Void)
 
     /// Deletes all of the cached products.
     ///

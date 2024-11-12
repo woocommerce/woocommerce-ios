@@ -18,7 +18,7 @@ final class EditOrderFormTests: XCTestCase {
         // Then
         XCTAssertNotNil(try? sut.find(button: "Add Products"))
         XCTAssertNotNil(try? sut.find(button: "Add Custom Amount"))
-        XCTAssertNotNil(try? sut.find(button: "Add Customer"))
+        XCTAssertNotNil(try? sut.find(button: "Add Customer Details"))
         XCTAssertNotNil(try? sut.find(button: "Add Note"))
         XCTAssertNotNil(try? sut.find(button: "Done"))
     }
@@ -38,7 +38,7 @@ final class EditOrderFormTests: XCTestCase {
         XCTAssertNotNil(try? sut.find(button: "Add Custom Amount"))
         XCTAssertNotNil(try? sut.find(button: "Add Shipping"))
         XCTAssertNotNil(try? sut.find(button: "Add Coupon"))
-        XCTAssertNotNil(try? sut.find(button: "Add Customer"))
+        XCTAssertNotNil(try? sut.find(button: "Add Customer Details"))
         XCTAssertNotNil(try? sut.find(button: "Add Note"))
         XCTAssertNotNil(try? sut.find(button: "Done"))
     }
@@ -56,7 +56,7 @@ final class EditOrderFormTests: XCTestCase {
 
         XCTAssertNotNil(try? sut.find(viewWithAccessibilityLabel: "Edit amount"))
         XCTAssertNotNil(try? sut.find(button: "Add Shipping"))
-        XCTAssertNotNil(try? sut.find(button: "Add Customer"))
+        XCTAssertNotNil(try? sut.find(button: "Add Customer Details"))
         XCTAssertNotNil(try? sut.find(button: "Add Note"))
         XCTAssertNotNil(try? sut.find(button: "Done"))
     }
@@ -74,7 +74,7 @@ final class EditOrderFormTests: XCTestCase {
         XCTAssertNotNil(try? sut.find(text: "Order total"))
 
         XCTAssertNotNil(try? sut.find(viewWithAccessibilityLabel: "Edit shipping"))
-        XCTAssertNotNil(try? sut.find(viewWithAccessibilityLabel: "Search customer"))
+        XCTAssertNotNil(try? sut.find(viewWithAccessibilityLabel: "Edit Customer Details"))
 
         XCTAssertNotNil(try? sut.find(button: "Add Products"))
         XCTAssertNotNil(try? sut.find(button: "Add Custom Amount"))
@@ -97,7 +97,7 @@ final class EditOrderFormTests: XCTestCase {
 
         XCTAssertNotNil(try? sut.find(button: "Add Products"))
         XCTAssertNotNil(try? sut.find(button: "Add Custom Amount"))
-        XCTAssertNotNil(try? sut.find(button: "Add Customer"))
+        XCTAssertNotNil(try? sut.find(button: "Add Customer Details"))
         XCTAssertNotNil(try? sut.find(button: "Done"))
     }
 }
@@ -107,6 +107,7 @@ private extension EditOrderFormTests {
     static func createEditView(with order: Order) -> OrderForm {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let storage = MockStorageManager()
+        let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: false)
 
         // Insert products that relates to items into the storage.
         // This is needed by EditableOrderViewModel to properly compute its variables
@@ -118,7 +119,8 @@ private extension EditOrderFormTests {
         let viewModel = EditableOrderViewModel(siteID: order.siteID,
                                                flow: .editing(initialOrder: order),
                                                stores: stores,
-                                               storageManager: storage)
+                                               storageManager: storage,
+                                               featureFlagService: featureFlagService)
         return OrderForm(flow: .editing, viewModel: viewModel, presentProductSelector: {})
     }
 

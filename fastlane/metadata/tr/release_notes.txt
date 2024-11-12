@@ -1,1 +1,0 @@
-Ürün ve sipariş yönetimi artık daha kolay! Artık ürünler ve siparişler için özel alanları uygulamada görüntüleyebilir ve düzenleyebilirsiniz. Ayrıca, ödemelerin hazırlık sürecini de kolaylaştırdık. WooPayments veya Stripe'ı kurarken oluşan hataları çözmek artık her zamankinden daha kolay. İyi satışlar!

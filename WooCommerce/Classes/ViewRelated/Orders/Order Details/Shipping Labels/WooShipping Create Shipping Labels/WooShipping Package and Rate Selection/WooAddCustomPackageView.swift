@@ -12,6 +12,8 @@ struct WooAddCustomPackageView: View {
     @FocusState var packageTemplateNameFieldFocused: Bool
     @FocusState var focusedField: WooShippingPackageUnitType?
 
+    @State private var isSavingPackage: Bool = false
+
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
     init(viewModel: WooShippingAddCustomPackageViewModel, addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
@@ -109,10 +111,14 @@ struct WooAddCustomPackageView: View {
                                                    lineWidth: packageTemplateNameFieldFocused ? 2 : 1)
                                 Spacer()
                                 Button(Localization.savePackageTemplate) {
-                                    savePackageAsTemplateButtonTapped()
+                                    Task { @MainActor in
+                                        isSavingPackage = true
+                                        await savePackageAsTemplateButtonTapped()
+                                        isSavingPackage = false
+                                    }
                                 }
                                 .disabled(!viewModel.validateCustomPackageInputFields())
-                                .buttonStyle(SecondaryButtonStyle())
+                                .buttonStyle(SecondaryLoadingButtonStyle(isLoading: isSavingPackage))
                                 .padding(.bottom)
                             }
                             .id(Constants.saveTemplateContentID) // Set the id for the button so we can scroll to it
@@ -146,6 +152,7 @@ struct WooAddCustomPackageView: View {
                     }
                 }
                 .scrollDismissesKeyboard(.interactively)
+                .disabled(isSavingPackage)
             }
         }
     }
@@ -176,18 +183,17 @@ struct WooAddCustomPackageView: View {
         }
     }
 
-    private func savePackageAsTemplateButtonTapped() {
-        Task {
-            let packageDataResult = await viewModel.savePackageAsTemplateAction()
-            // call addPackageAction with data
-            switch packageDataResult {
-            case .success(let data):
-                addPackageAction(data)
-            case .failure(let failure):
-                // show failure
-                print(failure)
-            }
-        }
+    @MainActor
+    private func savePackageAsTemplateButtonTapped() async {
+      let packageDataResult = await viewModel.savePackageAsTemplateAction()
+      // call addPackageAction with data
+      switch packageDataResult {
+      case .success(let data):
+        addPackageAction(data)
+      case .failure(let failure):
+        // show failure
+        print(failure)
+      }
     }
 
     private func onBackwardButtonTapped() {

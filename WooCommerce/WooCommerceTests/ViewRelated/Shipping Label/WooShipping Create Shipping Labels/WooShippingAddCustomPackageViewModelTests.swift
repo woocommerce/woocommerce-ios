@@ -157,21 +157,32 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_save_package_as_template_action() async {
         // Given
-        let viewModel = WooShippingAddCustomPackageViewModel()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingAddCustomPackageViewModel(stores: stores)
+        let packageName = "a"
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .createPackage(_, _, _, completion):
+                completion(.success(WooShippingCreatePackageResponse(customPackages: [WooShippingCustomPackage.fake().copy(id: "1", name: packageName)],
+                                                                     predefinedOptions: [])))
+            }
+        }
 
         // When
         viewModel.fillWithDummyFieldValues()
         viewModel.showSaveTemplate = true
-        viewModel.packageTemplateName = "a"
+        viewModel.packageTemplateName = packageName
         let packageDataResult = await viewModel.savePackageAsTemplateAction()
 
         // Then
         switch packageDataResult {
         case .success(let packageData):
             XCTAssertNotNil(packageData)
-            XCTAssertEqual(packageData.name, "a")
+            XCTAssertEqual(packageData.name, packageName)
+            XCTAssertEqual(packageData.id, "1")
         case .failure(let failure):
             XCTFail(failure.localizedDescription)
         }

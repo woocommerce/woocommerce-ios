@@ -24,8 +24,6 @@ final class CartViewModel: CartViewModelProtocol {
         addMoreToCartActionPublisher = addMoreToCartActionSubject.eraseToAnyPublisher()
     }
 
-    var itemToScrollToWhenCartUpdated: CartItem?
-
     var itemsInCartLabel: String? {
         let itemsCount = posModel.cart.count
         guard itemsCount > 0 else {

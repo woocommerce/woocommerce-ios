@@ -460,7 +460,7 @@ final class SessionManagerTests: XCTestCase {
         defaults[.wpcomSiteSuspended] = true
 
         // Then
-        XCTAssertTrue(try XCTUnwrap(defaults.wpcomSiteSuspended()))
+        XCTAssertTrue(try XCTUnwrap(defaults.wpcomSiteSuspended))
 
         // When
         sut.reset()

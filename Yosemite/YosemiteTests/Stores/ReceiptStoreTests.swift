@@ -517,6 +517,7 @@ final class ReceiptStoreTests: XCTestCase {
     }
 
     func test_sendReceipt_when_order_updates_and_action_succeeds() throws {
+        // Given order update and send_order_details actions succeed
         let email = "test@test.com"
         let orderID: Int64 = 56
         let siteID: Int64 = 123
@@ -530,6 +531,7 @@ final class ReceiptStoreTests: XCTestCase {
         let mockProcessor = MockActionsProcessor()
         dispatcher.register(processor: mockProcessor, for: OrderAction.self)
 
+        // When we send receipt to the given email
         let expectedResult: Result<Yosemite.Order, Error> = waitFor { promise in
             let action = ReceiptAction.sendReceipt(order: mockOrder, email: email) { result in
                 promise(result)
@@ -540,11 +542,13 @@ final class ReceiptStoreTests: XCTestCase {
             }
         }
 
+        // Then we expect a success result with the expected email set on the order
         let result = try expectedResult.get()
         XCTAssert(result.billingAddress?.email == email)
     }
 
-    func test_sendReceipt_when_order_update_fails_then_send_receipt_fails() throws {
+    func test_sendReceipt_when_order_update_fails_then_send_receipt_fails() {
+        // Given order update fails
         let email = "test@test.com"
         let orderID: Int64 = 56
         let siteID: Int64 = 123
@@ -557,6 +561,7 @@ final class ReceiptStoreTests: XCTestCase {
         let mockProcessor = MockActionsProcessor()
         dispatcher.register(processor: mockProcessor, for: OrderAction.self)
 
+        // When we send receipt to the given email
         let expectedResult: Result<Yosemite.Order, Error> = waitFor { promise in
             let action = ReceiptAction.sendReceipt(order: mockOrder, email: email) { result in
                 promise(result)
@@ -568,6 +573,7 @@ final class ReceiptStoreTests: XCTestCase {
             }
         }
 
+        // Then we expect sendReceipt to fail
         XCTAssert(expectedResult.isFailure)
         XCTAssert(network.requestsForResponseData.isEmpty)
     }

@@ -77,4 +77,62 @@ final class WooShippingRemoteTests: XCTestCase {
         let expectedError = WooShippingRemote.ShippingError.missingPackage
         XCTAssertEqual(result.failure as? WooShippingRemote.ShippingError, expectedError)
     }
+
+    func test_loadLabelRates_parses_success_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/rate", filename: "wooshipping-get-label-rates-success")
+        let expectedDefaultRate = sampleLabelRate()
+
+        // When
+        let result: Result<[ShippingLabelCarriersAndRates], Error> = waitFor { promise in
+            remote.loadLabelRates(siteID: self.sampleSiteID,
+                                  orderID: self.sampleOrderID,
+                                  originAddress: ShippingLabelAddress.fake(), destinationAddress: ShippingLabelAddress.fake(),
+                                  packages: [ShippingLabelPackageSelected.fake()]) { (result) in
+                promise(result)
+            }
+        }
+
+        // Then
+        let successResponse = try XCTUnwrap(result.get())
+        XCTAssertEqual(successResponse.first?.defaultRates.first, expectedDefaultRate)
+    }
+
+    func test_loadLabelRates_returns_error_on_failure() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/rate", filename: "generic_error")
+
+        // When
+        let result: Result<[ShippingLabelCarriersAndRates], Error> = waitFor { promise in
+            remote.loadLabelRates(siteID: self.sampleSiteID,
+                                  orderID: self.sampleOrderID,
+                                  originAddress: ShippingLabelAddress.fake(), destinationAddress: ShippingLabelAddress.fake(),
+                                  packages: [ShippingLabelPackageSelected.fake()]) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+}
+
+private extension WooShippingRemoteTests {
+    func sampleLabelRate() -> ShippingLabelCarrierRate {
+        ShippingLabelCarrierRate(title: "USPS - Media Mail",
+                                 insurance: "0.0",
+                                 retailRate: 6.13,
+                                 rate: 6.13,
+                                 rateID: "rate_fd16937cc3a14cb9b28e160a06cf3e34",
+                                 serviceID: "MediaMail",
+                                 carrierID: "usps",
+                                 shipmentID: "shp_abc123",
+                                 hasTracking: true,
+                                 isSelected: false,
+                                 isPickupFree: false,
+                                 deliveryDays: 7,
+                                 deliveryDateGuaranteed: false)
+    }
 }

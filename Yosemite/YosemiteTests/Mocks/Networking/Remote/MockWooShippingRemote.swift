@@ -37,4 +37,13 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
             }
         }
     }
+
+    func loadLabelRates(siteID: Int64,
+                        orderID: Int64,
+                        originAddress: ShippingLabelAddress,
+                        destinationAddress: ShippingLabelAddress,
+                        packages: [ShippingLabelPackageSelected],
+                        completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
+        // no-op
+    }
 }

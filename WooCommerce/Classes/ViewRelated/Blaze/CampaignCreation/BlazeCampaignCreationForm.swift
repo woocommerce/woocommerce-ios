@@ -293,13 +293,27 @@ private extension BlazeCampaignCreationForm {
 
                     Spacer()
 
-                    // Simulate shop button
-                    Text(Localization.shopNow)
-                        .fontWeight(.semibold)
-                        .captionStyle()
-                        .padding(Layout.contentMargin)
-                        .background(Color(uiColor: .systemGray6))
+                    if !viewModel.isLoadingAISuggestions,
+                       viewModel.ctaText.isNilOrEmpty {
+                        // Show a blue circle with an arrow if CTA is empty
+                        Image(systemName: "chevron.right.circle.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: Layout.ctaDefaultButtonSize, height: Layout.ctaDefaultButtonSize)
+                            .foregroundColor(Constants.ctaButtonColor)
+                    }
+                }
+
+                if !viewModel.isLoadingAISuggestions,
+                   viewModel.ctaText?.isNotEmpty == true {
+                    Text(viewModel.ctaText ?? "")
+                        .font(.system(size: Constants.ctaButtonFontSize))
+                        .foregroundColor(Constants.backgroundViewColor)
+                        .padding(Layout.ctaButtonPadding)
+                        .background(Constants.ctaButtonColor)
                         .cornerRadius(Layout.adButtonCornerRadius)
+                        .padding(.top, Layout.ctaButtonTopMargin)
+
                 }
             }
             .padding(Layout.contentPadding)
@@ -415,6 +429,9 @@ private extension BlazeCampaignCreationForm {
         static let shadowYOffset: CGFloat = 2
         static let maxWidth: CGFloat = 525
         static let sparkleIconSize: CGFloat = 24
+        static let ctaDefaultButtonSize: CGFloat = 40
+        static let ctaButtonPadding = EdgeInsets(top: 10, leading: 16, bottom: 10, trailing: 16)
+        static let ctaButtonTopMargin: CGFloat = 4
     }
 
     enum Constants {
@@ -422,6 +439,11 @@ private extension BlazeCampaignCreationForm {
                                                dark: .init(uiColor: .secondarySystemBackground))
         static let cellColor = Color(light: .init(uiColor: .systemBackground),
                                      dark: .init(uiColor: .tertiarySystemBackground))
+        static let ctaButtonColor = Color(red: 0, green: 0.219, blue: 1)
+
+        static let ctaButtonTextColor = Color.white
+
+        static let ctaButtonFontSize: CGFloat = 13
 
         static let supportTag = "origin:blaze-native-campaign-creation"
     }

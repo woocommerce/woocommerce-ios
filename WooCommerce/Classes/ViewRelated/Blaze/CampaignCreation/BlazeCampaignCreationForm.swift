@@ -304,16 +304,17 @@ private extension BlazeCampaignCreationForm {
                     }
                 }
 
-                if !viewModel.isLoadingAISuggestions,
+                if viewModel.isLoadingAISuggestions ||
                    viewModel.ctaText.isNotEmpty {
-                    Text(viewModel.ctaText)
+                    Text(viewModel.isLoadingAISuggestions ? "CTA placeholder" : viewModel.ctaText)
                         .font(.system(size: Constants.ctaButtonFontSize))
                         .foregroundColor(Constants.backgroundViewColor)
                         .padding(Layout.ctaButtonPadding)
                         .background(Constants.ctaButtonColor)
                         .cornerRadius(Layout.adButtonCornerRadius)
                         .padding(.top, Layout.ctaButtonTopMargin)
-
+                        .redacted(reason: viewModel.isLoadingAISuggestions ? .placeholder : [])
+                        .shimmering(active: viewModel.isLoadingAISuggestions)
                 }
             }
             .padding(Layout.contentPadding)

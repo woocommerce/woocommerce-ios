@@ -63,6 +63,7 @@ public final class ProductsScreen: ScreenObject {
         }
 
         productAddButton.tap()
+        app.swipeUp() // Make bottom sheet show more product creation options.
         return self
     }
 

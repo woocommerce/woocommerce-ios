@@ -20,6 +20,11 @@ final class ProductCreationAIEligibilityChecker: ProductCreationAIEligibilityChe
             return false
         }
 
+#if DEBUG
+        // We don't want to show if this argument exists.
+        return !ProcessInfo.processInfo.arguments.contains("-disable-product-creation-ai")
+#else
         return site.isWordPressComStore || site.isAIAssistantFeatureActive
+#endif
     }
 }

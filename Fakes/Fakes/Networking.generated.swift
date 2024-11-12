@@ -2749,6 +2749,39 @@ extension Networking.WooPaymentsManualDeposit {
         )
     }
 }
+extension Networking.WooShippingCreatePackageResponse {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingCreatePackageResponse {
+        .init(
+            customPackages: .fake(),
+            predefinedOptions: .fake()
+        )
+    }
+}
+extension Networking.WooShippingCustomPackage {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingCustomPackage {
+        .init(
+            id: .fake(),
+            name: .fake(),
+            type: .fake(),
+            dimensions: .fake(),
+            boxWeight: .fake()
+        )
+    }
+}
+extension Networking.WooShippingPredefinedOption {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingPredefinedOption {
+        .init(
+            id: .fake(),
+            predefinedPackageIDs: .fake()
+        )
+    }
+}
 extension Networking.WordPressMedia {
     /// Returns a "ready to use" type filled with fake values.
     ///

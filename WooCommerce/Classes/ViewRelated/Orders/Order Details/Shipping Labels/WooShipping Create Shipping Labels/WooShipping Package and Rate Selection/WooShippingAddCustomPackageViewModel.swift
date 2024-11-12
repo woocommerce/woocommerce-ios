@@ -11,15 +11,15 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     @Published var showSaveTemplate: Bool = false
     @Published var packageTemplateName: String = ""
     // The dimension unit used in the store (e.g. "in")
-    let dimensionUnit: String
+    let dimensionsUnit: String
     // The weight unit used in the store (e.g. "kg")
     let weightUnit: String
 
     // MARK: Initialization
 
-    init(dimensionUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
+    init(dimensionsUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
-        self.dimensionUnit = dimensionUnit ?? ""
+        self.dimensionsUnit = dimensionsUnit ?? ""
         self.weightUnit = weightUnit ?? ""
     }
 
@@ -52,23 +52,20 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
         packageTemplateName = ""
     }
 
-    private var dimensionsDescription: String {
-        return "\(fieldValues[.length] ?? "") x \(fieldValues[.width] ?? "") x \(fieldValues[.height] ?? "") \(dimensionUnit)"
+    private var packageDataFromCurrentData: WooShippingPackageDataRepresentable {
+        return WooShippingPackageData(id: UUID().uuidString,
+                                   name: packageTemplateName,
+                                   length: fieldValues[.length] ?? "",
+                                   width: fieldValues[.width] ?? "",
+                                   height: fieldValues[.height] ?? "",
+                                   dimensionsUnit: dimensionsUnit,
+                                   weight: fieldValues[.weight] ?? "",
+                                   weightUnit: weightUnit,
+                                   source: .custom,
+                                   packageType: packageType.name)
     }
 
-    private var weightDescription: String {
-        return "\(fieldValues[.weight] ?? "") \(weightUnit)"
-    }
-
-    private var packageDataFromCurrentData: WooPackageDataRepresentable {
-        return WooSavedPackageData(name: packageTemplateName,
-                                   type: "custom",
-                                   packageType: packageType.name,
-                                   dimensions: dimensionsDescription,
-                                   weight: weightDescription)
-    }
-
-    private func preparePackageData() -> WooPackageDataRepresentable? {
+    private func preparePackageData() -> WooShippingPackageDataRepresentable? {
         guard validateCustomPackageInputFields() else { return nil }
 
         let packageData = packageDataFromCurrentData
@@ -79,13 +76,13 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
         return packageData
     }
 
-    func addPackageAction() -> WooPackageDataRepresentable? {
+    func addPackageAction() -> WooShippingPackageDataRepresentable? {
         let packageData = preparePackageData()
         // TODO: implement adding a package with the package data
         return packageData
     }
 
-    func savePackageAsTemplateAction() -> WooPackageDataRepresentable? {
+    func savePackageAsTemplateAction() -> WooShippingPackageDataRepresentable? {
         let packageData = preparePackageData()
         // TODO: implement saving package as a template with the package data
         return packageData

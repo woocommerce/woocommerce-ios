@@ -3999,6 +3999,21 @@ extension Networking.WooPaymentsManualDeposit {
     }
 }
 
+extension Networking.WooShippingCreatePackageResponse {
+    public func copy(
+        customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
+        predefinedOptions: CopiableProp<[WooShippingPredefinedOption]> = .copy
+    ) -> Networking.WooShippingCreatePackageResponse {
+        let customPackages = customPackages ?? self.customPackages
+        let predefinedOptions = predefinedOptions ?? self.predefinedOptions
+
+        return Networking.WooShippingCreatePackageResponse(
+            customPackages: customPackages,
+            predefinedOptions: predefinedOptions
+        )
+    }
+}
+
 extension Networking.WordPressMedia {
     public func copy(
         mediaID: CopiableProp<Int64> = .copy,

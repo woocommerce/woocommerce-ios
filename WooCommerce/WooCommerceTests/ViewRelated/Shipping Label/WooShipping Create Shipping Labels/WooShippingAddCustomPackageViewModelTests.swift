@@ -16,13 +16,13 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         // Given/When
         let expectedDimensionUnit = "in"
         let expectedWeightUnit = "in"
-        let viewModel = WooShippingAddCustomPackageViewModel(dimensionUnit: expectedDimensionUnit,
+        let viewModel = WooShippingAddCustomPackageViewModel(dimensionsUnit: expectedDimensionUnit,
                                                              weightUnit: expectedWeightUnit)
 
         // Then
         XCTAssertNotNil(viewModel)
         viewModel.checkDefaultInitProperties()
-        XCTAssertEqual(viewModel.dimensionUnit, expectedDimensionUnit)
+        XCTAssertEqual(viewModel.dimensionsUnit, expectedDimensionUnit)
         XCTAssertEqual(viewModel.weightUnit, expectedWeightUnit)
     }
 
@@ -164,7 +164,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         // Given
         let dimensionUnit = "cm"
         let weightUnit = "kg"
-        let viewModel = WooShippingAddCustomPackageViewModel(dimensionUnit: dimensionUnit, weightUnit: weightUnit)
+        let viewModel = WooShippingAddCustomPackageViewModel(dimensionsUnit: dimensionUnit, weightUnit: weightUnit)
         let length = "1"
         let width = "2"
         let height = "3"
@@ -184,8 +184,8 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         viewModel.checkDefaultInitProperties()
         XCTAssertEqual(viewModel.validateCustomPackageInputFields(), false)
         XCTAssertNotNil(packageData)
-        XCTAssertEqual(packageData?.dimensions, expectedDimensions)
-        XCTAssertEqual(packageData?.weight, expectedWeight)
+        XCTAssertEqual(packageData?.dimensionsDescription, expectedDimensions)
+        XCTAssertEqual(packageData?.weightDescription, expectedWeight)
         XCTAssertNil(viewModel.addPackageAction())
     }
 

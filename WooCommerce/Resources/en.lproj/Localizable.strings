@@ -2325,9 +2325,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the card is removed from the reader prematurely. */
 "Card was removed too soon - please try transaction again." = "Card was removed too soon - please try transaction again.";
 
-/* Button to refresh the state of the in-person payments setup */
-"card.present.payment.setup.webview.title" = "Payments Setup";
-
 /* Default accessibility label for a custom indeterminate progress view, used for card payments. */
 "card.waves.progressView.accessibilityLabel" = "In progress";
 
@@ -4946,6 +4943,9 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title for editing linked products for a grouped product */
 "Grouped Products" = "Grouped Products";
 
+/* Format of the Global Unique Identifier on the Inventory Settings row */
+"GTIN, UPC, EAN, ISBN: %@" = "GTIN, UPC, EAN, ISBN: %@";
+
 /* Country option for a site address. */
 "Guadeloupe" = "Guadeloupe";
 
@@ -5344,6 +5344,9 @@ which should be translated separately and considered part of this sentence. */
 /* Order gift card error thrown when the gift card is invalid. %1$@ is the detailed reason. */
 "Invalid gift card error: %1$@" = "Invalid gift card error: %1$@";
 
+/* Error when an empty Identifier is returned from the barcode scanner */
+"Invalid Identifier" = "Invalid Identifier";
+
 /* Error message for invalid format of ITN in Customs screen of Shipping Label flow */
 "Invalid ITN format" = "Invalid ITN format";
 
@@ -5358,9 +5361,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "Invalid Site Title" = "Invalid Site Title";
-
-/* Error when an empty SKU is returned from the barcode scanner */
-"Invalid SKU" = "Invalid SKU";
 
 /* Message to show to user when he tries to add a self-hosted site that isn't HTTP or HTTPS. */
 "Invalid URL scheme inserted, only HTTP and HTTPS are supported." = "Invalid URL scheme inserted, only HTTP and HTTPS are supported.";
@@ -8171,11 +8171,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the text field for editing the external URL for an external/affiliate product */
 "Product URL" = "Product URL";
 
-/* Error message when the scanner found a product but isn't purchasable.%@ is the SKU code. */
-"Product with SKU \"%@\" is not purchasable." = "Product with SKU \"%@\" is not purchasable.";
+/* Error message when the scanner found a product but isn't purchasable.%@ is the Identifier code. */
+"Product with Identifier \"%@\" is not purchasable." = "Product with Identifier \"%@\" is not purchasable.";
 
-/* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
-"Product with SKU \"%@\" not found." = "Product with SKU \"%@\" not found.";
+/* Error message when the scanner cannot find a matching product.%@ is the Identifier barcode. */
+"Product with Identifier \"%@\" not found." = "Product with Identifier \"%@\" not found.";
 
 /* The instruction text below the scan area in the barcode scanner for product barcode. */
 "ProductBarcodeInputScanner.instructionText" = "Scan product barcode or QR Code";

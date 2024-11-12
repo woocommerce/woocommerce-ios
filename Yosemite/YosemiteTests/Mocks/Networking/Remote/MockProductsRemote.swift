@@ -260,6 +260,14 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
+    func searchProductsByGlobalUniqueIdentifier(for siteID: Int64,
+                             keyword: String,
+                             pageNumber: Int,
+                             pageSize: Int,
+                             completion: @escaping (Result<[Product], Error>) -> Void) {
+        // no-op
+    }
+
     func searchSku(for siteID: Int64, sku: String, completion: @escaping (Result<String, Error>) -> Void) {
         // no-op
     }

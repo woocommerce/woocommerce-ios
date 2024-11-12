@@ -1,6 +1,15 @@
+/// Protocol for `WooShippingRemote` mainly used for mocking.
+///
+public protocol WooShippingRemoteProtocol {
+    func createPackage(siteID: Int64,
+                       customPackage: WooShippingCustomPackage?,
+                       predefinedOption: WooShippingPredefinedOption?,
+                       completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void)
+}
+
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
 ///
-public final class WooShippingRemote: Remote {
+public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
 
     /// Creates a new custom package.
     /// - Parameters:

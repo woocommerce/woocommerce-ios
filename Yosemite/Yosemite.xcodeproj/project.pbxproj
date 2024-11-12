@@ -392,6 +392,10 @@
 		CE606D9E2BE3BE1B001CB424 /* ShippingMethodStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE606D9D2BE3BE1B001CB424 /* ShippingMethodStore.swift */; };
 		CE606DA02BE3BE75001CB424 /* ShippingMethodAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE606D9F2BE3BE75001CB424 /* ShippingMethodAction.swift */; };
 		CE606DA22BE3C331001CB424 /* ShippingMethodStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE606DA12BE3C331001CB424 /* ShippingMethodStoreTests.swift */; };
+		CEC7D5972CDE35AD00111B79 /* WooShippingAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC7D5962CDE35A700111B79 /* WooShippingAction.swift */; };
+		CEC7D5992CDE360E00111B79 /* WooShippingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC7D5982CDE360B00111B79 /* WooShippingStore.swift */; };
+		CEC7D59D2CDE3D9D00111B79 /* WooShippingStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC7D59C2CDE3D9D00111B79 /* WooShippingStoreTests.swift */; };
+		CEC7D59F2CDE692900111B79 /* MockWooShippingRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC7D59E2CDE692400111B79 /* MockWooShippingRemote.swift */; };
 		CECC504023675DF4004540EA /* RefundStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC503F23675DF4004540EA /* RefundStoreTests.swift */; };
 		CECE6BBE2BA9DE3200A57C1F /* WCAnalyticsCustomer+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECE6BBD2BA9DE3200A57C1F /* WCAnalyticsCustomer+ReadOnlyConvertible.swift */; };
 		CEE9188C29F7F68C004B23FF /* OrderGiftCard+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE9188B29F7F68C004B23FF /* OrderGiftCard+ReadOnlyConvertible.swift */; };
@@ -908,6 +912,10 @@
 		CE606D9D2BE3BE1B001CB424 /* ShippingMethodStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingMethodStore.swift; sourceTree = "<group>"; };
 		CE606D9F2BE3BE75001CB424 /* ShippingMethodAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingMethodAction.swift; sourceTree = "<group>"; };
 		CE606DA12BE3C331001CB424 /* ShippingMethodStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingMethodStoreTests.swift; sourceTree = "<group>"; };
+		CEC7D5962CDE35A700111B79 /* WooShippingAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingAction.swift; sourceTree = "<group>"; };
+		CEC7D5982CDE360B00111B79 /* WooShippingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingStore.swift; sourceTree = "<group>"; };
+		CEC7D59C2CDE3D9D00111B79 /* WooShippingStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingStoreTests.swift; sourceTree = "<group>"; };
+		CEC7D59E2CDE692400111B79 /* MockWooShippingRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWooShippingRemote.swift; sourceTree = "<group>"; };
 		CECC503F23675DF4004540EA /* RefundStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundStoreTests.swift; sourceTree = "<group>"; };
 		CECE6BBD2BA9DE3200A57C1F /* WCAnalyticsCustomer+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCAnalyticsCustomer+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		CEE9188B29F7F68C004B23FF /* OrderGiftCard+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderGiftCard+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
@@ -1401,6 +1409,7 @@
 				578CE7912475EC9200492EBF /* MockProductsRemote.swift */,
 				020C908024C7D71D001E2BEB /* MockProductVariationsRemote.swift */,
 				02E7FFD82562234F00C53030 /* MockShippingLabelRemote.swift */,
+				CEC7D59E2CDE692400111B79 /* MockWooShippingRemote.swift */,
 				03FBDA2D2632A9B400ACE257 /* MockCouponsRemote.swift */,
 				D4CBAE5F26D440FA00BBE6D1 /* MockAnnouncementsRemote.swift */,
 				02A26F1D2744FE97008E4EDB /* MockAccountRemote.swift */,
@@ -1666,6 +1675,7 @@
 				AEF945882729766D001DCCFB /* TelemetryStore.swift */,
 				02FF056423DE9C8B0058E6E7 /* MediaStore.swift */,
 				029BA556255E0CD4006171FD /* ShippingLabelStore.swift */,
+				CEC7D5982CDE360B00111B79 /* WooShippingStore.swift */,
 				DEFD6D9426443CA100E51E0D /* SitePluginStore.swift */,
 				077F39DF26A5A6F500ABEADC /* SystemStatusStore.swift */,
 				FE28F6EF26844231004465C7 /* UserStore.swift */,
@@ -1754,6 +1764,7 @@
 				DEDA8DB22B184B950076BF0F /* WordPressThemeStoreTests.swift */,
 				DEB387852C2C09A70025256E /* GoogleAdsStoreTests.swift */,
 				453954DB2C91F79B00A3E64A /* MetaDataStoreTests.swift */,
+				CEC7D59C2CDE3D9D00111B79 /* WooShippingStoreTests.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -1939,6 +1950,7 @@
 				026CF627237D8F30009563D4 /* ProductVariationAction.swift */,
 				025CA2CB238F518600B05C81 /* ProductShippingClassAction.swift */,
 				029BA55A255E0D39006171FD /* ShippingLabelAction.swift */,
+				CEC7D5962CDE35A700111B79 /* WooShippingAction.swift */,
 				45010694239A6CDE00E24722 /* TaxAction.swift */,
 				AEF945862729760F001DCCFB /* TelemetryAction.swift */,
 				022F00BF24725BC6008CD97F /* NotificationCountAction.swift */,
@@ -2451,6 +2463,7 @@
 				D4CBAE6426D4464500BBE6D1 /* AnnouncementsAction.swift in Sources */,
 				EEB4E2C929B0489800371C3C /* StoreOnboardingTasksStore.swift in Sources */,
 				CE43A90222A072D800A4FF29 /* ProductDownload+ReadOnlyConvertible.swift in Sources */,
+				CEC7D5972CDE35AD00111B79 /* WooShippingAction.swift in Sources */,
 				B5C9DE182087FF0E006B910A /* Assert.swift in Sources */,
 				CE606DA02BE3BE75001CB424 /* ShippingMethodAction.swift in Sources */,
 				DE3C5B1D286AEDA10049E6AA /* MockOrderCardPresentPaymentEligibilityActionHandler.swift in Sources */,
@@ -2501,6 +2514,7 @@
 				247CE86825832BEE00F9D9D1 /* MockShippingLabelActionHandler.swift in Sources */,
 				0232372922F7DA6E00715FAB /* StatsTimeRangeV4.swift in Sources */,
 				247CE85C25832A5000F9D9D1 /* MockProductVariationActionHandler.swift in Sources */,
+				CEC7D5992CDE360E00111B79 /* WooShippingStore.swift in Sources */,
 				B5F2AE9720EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift in Sources */,
 				247CE7C02582DC7200F9D9D1 /* ProductImage+Mocks.swift in Sources */,
 				7492FADF217FB11D00ED2C69 /* SettingAction.swift in Sources */,
@@ -2631,6 +2645,7 @@
 				B53A56A0211245E0000776C9 /* MockStorageManager+Sample.swift in Sources */,
 				453305FB245AEDCB00264E50 /* SitePostStoreTests.swift in Sources */,
 				744914F7224AD2AF00546DE4 /* ProductStoreTests.swift in Sources */,
+				CEC7D59F2CDE692900111B79 /* MockWooShippingRemote.swift in Sources */,
 				0218B4F2242E09E80083A847 /* MediaTypeTests.swift in Sources */,
 				578CE78C2475E7A500492EBF /* MockNotificationsRemote.swift in Sources */,
 				B5A01CA120D19C4700E3207E /* MockStorageManager.swift in Sources */,
@@ -2650,6 +2665,7 @@
 				D8C11A5A22DFC21600D4A88D /* StatsStoreV4Tests.swift in Sources */,
 				261CF2C7255C445A0090D8D3 /* PaymentGatewayStoreTests.swift in Sources */,
 				DE2E8EAF29541C32002E4B14 /* WordPressSiteStoreTests.swift in Sources */,
+				CEC7D59D2CDE3D9D00111B79 /* WooShippingStoreTests.swift in Sources */,
 				0286A1BC2A0CC4120099EF94 /* FeatureFlagStoreTests.swift in Sources */,
 				2685C121263E064200D9EE97 /* AddOnGroupStoreTests.swift in Sources */,
 				B9AECD482851F28E00E78584 /* Order+CardPresentPaymentTests.swift in Sources */,

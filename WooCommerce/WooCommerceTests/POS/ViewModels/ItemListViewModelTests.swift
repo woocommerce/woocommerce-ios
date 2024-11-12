@@ -6,7 +6,7 @@ import Combine
 @testable import struct Yosemite.POSProduct
 
 final class ItemListViewModelTests: XCTestCase {
-    private var itemProvider: POSItemProvider!
+    private var itemProvider: MockPOSItemProvider!
     private var sut: ItemListViewModel!
 
     private var cancellables: Set<AnyCancellable> = []
@@ -26,19 +26,22 @@ final class ItemListViewModelTests: XCTestCase {
 
     func test_itemListViewModel_when_loadInitialItems_then_items_are_populated() async {
         // Given
-        XCTAssertEqual(sut.items.count, 0)
+        XCTAssertEqual(sut.state, .initialLoading)
         let expectedItems = Self.makeInitialItems()
 
         // When
         await sut.loadInitialItems()
 
         // Then
-        XCTAssertEqual(sut.items.count, expectedItems.count)
+        guard case .loaded(let items) = sut.state else {
+            return XCTFail("Expected loaded ItemList state, but got \(sut.state)")
+        }
+        XCTAssertEqual(items.count, expectedItems.count)
     }
 
     func test_itemListViewModel_when_loadInitialItems_is_called_multiple_times_then_items_are_not_aggregated() async {
         // Given
-        XCTAssertEqual(sut.items.count, 0)
+        XCTAssertEqual(sut.state, .initialLoading)
         let expectedItems = Self.makeInitialItems()
 
         // When
@@ -47,24 +50,30 @@ final class ItemListViewModelTests: XCTestCase {
         await sut.loadInitialItems()
 
         // Then
-        XCTAssertEqual(sut.items.count, expectedItems.count)
+        guard case .loaded(let items) = sut.state else {
+            return XCTFail("Expected loaded ItemList state, but got \(sut.state)")
+        }
+        XCTAssertEqual(items.count, expectedItems.count)
     }
 
     func test_itemListViewModel_when_reload_is_called_then_items_are_populated() async {
         // Given
-        XCTAssertEqual(sut.items.count, 0)
+        XCTAssertEqual(sut.state, .initialLoading)
         let expectedItems = Self.makeInitialItems()
 
         // When
         await sut.reload()
 
         // Then
-        XCTAssertEqual(sut.items.count, expectedItems.count)
+        guard case .loaded(let items) = sut.state else {
+            return XCTFail("Expected loaded ItemList state, but got \(sut.state)")
+        }
+        XCTAssertEqual(items.count, expectedItems.count)
     }
 
     func test_itemListViewModel_when_reload_is_called_multiple_times_then_items_are_not_aggregated() async {
         // Given
-        XCTAssertEqual(sut.items.count, 0)
+        XCTAssertEqual(sut.state, .initialLoading)
         let expectedItems = Self.makeInitialItems()
 
         // When
@@ -73,7 +82,10 @@ final class ItemListViewModelTests: XCTestCase {
         await sut.reload()
 
         // Then
-        XCTAssertEqual(sut.items.count, expectedItems.count)
+        guard case .loaded(let items) = sut.state else {
+            return XCTFail("Expected loaded ItemList state, but got \(sut.state)")
+        }
+        XCTAssertEqual(items.count, expectedItems.count)
     }
 
     func test_itemListViewModel_when_select_item_then_sends_item_to_publisher() {
@@ -152,7 +164,7 @@ final class ItemListViewModelTests: XCTestCase {
         let itemProvider = MockPOSItemProvider()
         let initialItems = Self.makeInitialItems()
         itemProvider.items = initialItems
-        itemProvider.shouldSimulateFetchNextPage = true
+        itemProvider.shouldSimulateTwoPages = true
 
         let sut = ItemListViewModel(itemProvider: itemProvider)
 
@@ -160,7 +172,10 @@ final class ItemListViewModelTests: XCTestCase {
         await sut.loadNextItems()
 
         // Then
-        XCTAssertEqual(sut.items.count, 4)
+        guard case .loaded(let items) = sut.state else {
+            return XCTFail("Expected loaded ItemList state, but got \(sut.state)")
+        }
+        XCTAssertEqual(items.count, 4)
     }
 
     func test_itemListViewModel_when_loadInitialItems_has_no_items_then_state_is_loaded_empty() async {
@@ -183,9 +198,9 @@ final class ItemListViewModelTests: XCTestCase {
         let itemProvider = MockPOSItemProvider()
         itemProvider.shouldThrowError = true
         let sut = ItemListViewModel(itemProvider: itemProvider)
-        let expectedError = ItemListViewModel.ErrorModel(title: "Error loading products",
-                                                         subtitle: "Give it another go?",
-                                                         buttonText: "Retry")
+        let expectedError = ItemListErrorModel(title: "Error loading products",
+                                               subtitle: "Give it another go?",
+                                               buttonText: "Retry")
 
         XCTAssertEqual(sut.state, .initialLoading)
 
@@ -201,9 +216,9 @@ final class ItemListViewModelTests: XCTestCase {
         let itemProvider = MockPOSItemProvider()
         itemProvider.shouldThrowError = true
         let sut = ItemListViewModel(itemProvider: itemProvider)
-        let expectedError = ItemListViewModel.ErrorModel(title: "Error loading products",
-                                                         subtitle: "Give it another go?",
-                                                         buttonText: "Retry")
+        let expectedError = ItemListErrorModel(title: "Error loading products",
+                                               subtitle: "Give it another go?",
+                                               buttonText: "Retry")
 
         XCTAssertEqual(sut.state, .initialLoading)
 
@@ -231,9 +246,9 @@ final class ItemListViewModelTests: XCTestCase {
         let itemProvider = MockPOSItemProvider()
         itemProvider.shouldThrowError = true
         let sut = ItemListViewModel(itemProvider: itemProvider)
-        let expectedError = ItemListViewModel.ErrorModel(title: "Error loading products",
-                                                         subtitle: "Give it another go?",
-                                                         buttonText: "Retry")
+        let expectedError = ItemListErrorModel(title: "Error loading products",
+                                               subtitle: "Give it another go?",
+                                               buttonText: "Retry")
 
         XCTAssertEqual(sut.state, .initialLoading)
 
@@ -261,21 +276,47 @@ final class ItemListViewModelTests: XCTestCase {
         XCTAssertEqual(sut.shouldShowHeaderBanner, false)
     }
 
-    func test_shouldShowHeaderBanner_when_itemListViewModel_is_initialLoading_has_items_then_returns_true() async {
+    func test_shouldShowHeaderBanner_when_itemListViewModel_is_loadingNextPage_then_returns_true() async {
         // Given the list is already populated with items
         await sut.loadInitialItems()
-        XCTAssertTrue(sut.items.isNotEmpty)
+        guard case .loaded(let items) = sut.state else {
+            return XCTFail("Expected loaded ItemList state, but got \(sut.state)")
+        }
+        XCTAssert(items.isNotEmpty)
 
         // When we refresh the list again
-        let expectation = XCTestExpectation(description: "Expected banner to be shown when reloading item list")
+        let expectation = XCTestExpectation(description: "Expected banner to be shown when loading next item list page")
         sut.statePublisher.sink { [unowned self] _ in
-            if self.sut.state == .initialLoading {
+            if case .loading = self.sut.state {
                 XCTAssertTrue(sut.shouldShowHeaderBanner)
                 expectation.fulfill()
             }
         }
         .store(in: &cancellables)
+        await sut.loadNextItems()
+
+        // Then banner shoud be shown
+        await fulfillment(of: [expectation], timeout: 1)
+    }
+
+    func test_shouldShowHeaderBanner_when_itemListViewModel_is_reloading_then_returns_true() async {
+        // Given the list is already populated with items
         await sut.loadInitialItems()
+        guard case .loaded(let items) = sut.state else {
+            return XCTFail("Expected loaded ItemList state, but got \(sut.state)")
+        }
+        XCTAssert(items.isNotEmpty)
+
+        // When we refresh the list again
+        let expectation = XCTestExpectation(description: "Expected banner to be shown when reloading item list")
+        sut.statePublisher.sink { [unowned self] _ in
+            if case .loading = self.sut.state {
+                XCTAssertTrue(sut.shouldShowHeaderBanner)
+                expectation.fulfill()
+            }
+        }
+        .store(in: &cancellables)
+        await sut.reload()
 
         // Then banner shoud be shown
         await fulfillment(of: [expectation], timeout: 1)
@@ -286,9 +327,9 @@ final class ItemListViewModelTests: XCTestCase {
         let itemProvider = MockPOSItemProvider()
         itemProvider.shouldThrowError = true
         let sut = ItemListViewModel(itemProvider: itemProvider)
-        let expectedError = ItemListViewModel.ErrorModel(title: "Error loading products",
-                                                         subtitle: "Give it another go?",
-                                                         buttonText: "Retry")
+        let expectedError = ItemListErrorModel(title: "Error loading products",
+                                               subtitle: "Give it another go?",
+                                               buttonText: "Retry")
 
         // When
         await sut.loadInitialItems()
@@ -296,71 +337,6 @@ final class ItemListViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(sut.state, .error(expectedError))
         XCTAssertEqual(sut.shouldShowHeaderBanner, false)
-    }
-
-    func test_state_when_itemListViewModel_loaded_normally_then_returns_isLoaded_true() async {
-        // Given/When
-        await sut.loadInitialItems()
-
-        // Then
-        XCTAssertEqual(sut.state.isLoaded, true)
-    }
-
-    func test_state_when_itemListViewModel_throws_error_then_returns_isLoaded_false() async {
-        // Given
-        let itemProvider = MockPOSItemProvider()
-        itemProvider.shouldThrowError = true
-        let sut = ItemListViewModel(itemProvider: itemProvider)
-
-        // When
-        await sut.loadInitialItems()
-
-        // Then
-        XCTAssertEqual(sut.state.isLoaded, false)
-    }
-
-    func test_loadInitialItems_when_no_items_are_loaded_then_itemsPublisher_emits_no_items() async throws {
-        let itemProvider = MockPOSItemProvider()
-        itemProvider.shouldReturnZeroItems = true
-        let sut = ItemListViewModel(itemProvider: itemProvider)
-
-        let expectation = XCTestExpectation(description: "Publisher should emit nothing")
-        var receivedItems: [POSItem] = []
-        sut.itemsPublisher.sink { items in
-            receivedItems = items
-            expectation.fulfill()
-        }
-        .store(in: &cancellables)
-
-        // When
-        await sut.loadInitialItems()
-
-        // Then
-        XCTAssertTrue(sut.state == .empty)
-        XCTAssertTrue(receivedItems.isEmpty)
-    }
-
-    func test_loadInitialItems_when_items_are_loaded_then_itemsPublisher_emits_items() async throws {
-        // Given
-        let items = Self.makeInitialItems()
-        let expectation = XCTestExpectation(description: "Publisher should emit populated items")
-        var receivedItems: [POSItem] = []
-        sut.itemsPublisher.sink { items in
-            receivedItems = items
-            expectation.fulfill()
-        }
-        .store(in: &cancellables)
-
-        // When
-        await sut.loadInitialItems()
-        guard let firstItem = items.first, let lastItem = items.last else {
-            return XCTFail("Expected two items, got \(receivedItems).")
-        }
-
-        // Then
-        XCTAssertTrue(sut.state == .loaded(receivedItems))
-        XCTAssertEqual(receivedItems.first?.productID, firstItem.productID)
-        XCTAssertEqual(receivedItems.last?.productID, lastItem.productID)
     }
 
     func test_loadInitialItems_when_no_items_are_loaded_then_statePublisher_emits_expected_empty_state() async throws {
@@ -372,7 +348,7 @@ final class ItemListViewModelTests: XCTestCase {
         let sut = ItemListViewModel(itemProvider: itemProvider)
         let expectation = XCTestExpectation(description: "Publisher should emit state changes")
 
-        var receivedStates: [ItemListViewModel.ItemListState] = []
+        var receivedStates: [ItemListState] = []
         sut.statePublisher
             .removeDuplicates()
             .sink { state in
@@ -394,7 +370,7 @@ final class ItemListViewModelTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Publisher should emit state changes")
         let items = Self.makeInitialItems()
 
-        var receivedStates: [ItemListViewModel.ItemListState] = []
+        var receivedStates: [ItemListState] = []
         sut.statePublisher
             .removeDuplicates()
             .sink { state in
@@ -415,11 +391,11 @@ final class ItemListViewModelTests: XCTestCase {
         itemProvider.shouldReturnZeroItems = true
         let sut = ItemListViewModel(itemProvider: itemProvider)
 
-        var receivedStates: [ItemListViewModel.ItemListState] = []
-        let expectedStates: [ItemListViewModel.ItemListState] = [
+        var receivedStates: [ItemListState] = []
+        let expectedStates: [ItemListState] = [
             .initialLoading,
             .empty,
-            .loading,
+            .loading([]),
             .loaded([])
         ]
 
@@ -441,12 +417,40 @@ final class ItemListViewModelTests: XCTestCase {
     func test_sut_when_there_are_items_then_statePublisher_emits_expected_state() async {
         let items = Self.makeInitialItems()
 
-        var receivedStates: [ItemListViewModel.ItemListState] = []
-        let expectedStates: [ItemListViewModel.ItemListState] = [
+        var receivedStates: [ItemListState] = []
+        let expectedStates: [ItemListState] = [
             .initialLoading,
             .loaded(items),
-            .loading,
+            .loading(items),
             .loaded(items)
+        ]
+
+        sut.statePublisher
+            .removeDuplicates()
+            .sink { state in
+                receivedStates.append(state)
+            }
+            .store(in: &cancellables)
+
+        // When
+        await sut.loadInitialItems()
+        await sut.loadNextItems()
+
+        // Then
+        XCTAssertEqual(receivedStates, expectedStates)
+    }
+
+    func test_sut_when_there_are_two_pages_of_items_then_statePublisher_emits_expected_state() async {
+        itemProvider.shouldSimulateTwoPages = true
+        let initialItems = Self.makeInitialItems()
+        let firstAndSecondPageItems = initialItems + Self.makeSecondPageItems()
+
+        var receivedStates: [ItemListState] = []
+        let expectedStates: [ItemListState] = [
+            .initialLoading,
+            .loaded(initialItems),
+            .loading(initialItems),
+            .loaded(firstAndSecondPageItems)
         ]
 
         sut.statePublisher
@@ -478,7 +482,7 @@ private extension ItemListViewModelTests {
         var items: [POSItem] = []
         var shouldThrowError = false
         var shouldReturnZeroItems = false
-        var shouldSimulateFetchNextPage = false
+        var shouldSimulateTwoPages = false
 
         func providePointOfSaleItems(pageNumber: Int) async throws -> [Yosemite.POSItem] {
             if shouldThrowError {
@@ -487,7 +491,8 @@ private extension ItemListViewModelTests {
             if shouldReturnZeroItems {
                 return []
             }
-            if shouldSimulateFetchNextPage {
+            if shouldSimulateTwoPages,
+                pageNumber > 1 {
                 simulateFetchNextPage()
                 return items
             }
@@ -495,28 +500,8 @@ private extension ItemListViewModelTests {
         }
 
         func simulateFetchNextPage() {
-            let fakeUUID1 = UUID(uuidString: "DC55E3B9-9D83-4C07-82A7-4C300A50E86D") ?? UUID()
-            let fakeUUID2 = UUID(uuidString: "DC55E3B8-9D82-4C06-82A5-4C300A50E86F") ?? UUID()
-
-            let product1 = POSProduct(itemID: fakeUUID1,
-                                      productID: 0,
-                                      name: "Strawberry",
-                                      price: "2",
-                                      formattedPrice: "$2.00",
-                                      itemCategories: [],
-                                      productImageSource: nil,
-                                      productType: .simple)
-            items.append(product1)
-
-            let product2 = POSProduct(itemID: fakeUUID2,
-                                      productID: 1,
-                                      name: "Pistachio",
-                                      price: "3",
-                                      formattedPrice: "$3.00",
-                                      itemCategories: [],
-                                      productImageSource: nil,
-                                      productType: .simple)
-            items.append(product2)
+            items.append(contentsOf: makeSecondPageItems())
+            return
         }
     }
 
@@ -542,5 +527,29 @@ private extension ItemListViewModelTests {
                                   productImageSource: nil,
                                   productType: .simple)
         return [product1, product2]
+    }
+
+    static func makeSecondPageItems() -> [POSItem] {
+        let fakeUUID3 = UUID(uuidString: "DC55E3B9-9D83-4C07-82A7-4C300A50E86D") ?? UUID()
+        let fakeUUID4 = UUID(uuidString: "DC55E3B8-9D82-4C06-82A5-4C300A50E86F") ?? UUID()
+
+        let product3 = POSProduct(itemID: fakeUUID3,
+                                  productID: 2,
+                                  name: "Strawberry",
+                                  price: "2",
+                                  formattedPrice: "$2.00",
+                                  itemCategories: [],
+                                  productImageSource: nil,
+                                  productType: .simple)
+
+        let product4 = POSProduct(itemID: fakeUUID4,
+                                  productID: 4,
+                                  name: "Pistachio",
+                                  price: "3",
+                                  formattedPrice: "$3.00",
+                                  itemCategories: [],
+                                  productImageSource: nil,
+                                  productType: .simple)
+        return [product3, product4]
     }
 }

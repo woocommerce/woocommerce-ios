@@ -3,7 +3,7 @@ import SwiftUI
 import protocol Yosemite.POSItem
 
 final class ItemListViewModel: ItemListViewModelProtocol {
-    let posModel: PointOfSaleAggregateModelProtocol
+    private let posModel: PointOfSaleAggregateModelProtocol
 
     @Published private(set) var isHeaderBannerDismissed: Bool = false
     @Published var showSimpleProductsModal: Bool = false

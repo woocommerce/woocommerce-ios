@@ -73,10 +73,7 @@ class WooCommerceScreenshots: XCTestCase {
         .tapAddProduct()
         .thenTakeScreenshot(named: "product-add")
 
-        // As per iOS 18.0 this now has to be done twice. First lock only shows black screen, and the second one shows
-        // the lock screen with notification.
-        .lockScreen()
-        .lockScreen()
+        .lockScreenForNotificationScreenshot()
         .thenTakeScreenshot(named: "order-notification")
     }
 
@@ -171,6 +168,17 @@ extension ScreenObject {
         XCUIDevice.shared.perform(NSSelectorFromString("pressLockButton"))
         sleep(5)
         return self
+    }
+
+
+    @discardableResult
+    func lockScreenForNotificationScreenshot() -> Self {
+        if #available(iOS 18.0, *) {
+            // iOS 18 and above needs double lock
+            return self.lockScreen().lockScreen()
+        } else {
+            return self.lockScreen()
+        }
     }
 
     @discardableResult

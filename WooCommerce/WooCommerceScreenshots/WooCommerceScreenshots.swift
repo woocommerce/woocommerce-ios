@@ -33,10 +33,15 @@ class WooCommerceScreenshots: XCTestCase {
 
         app.launch()
 
-        addUIInterruptionMonitor(withDescription: "System Dialog") {
-            (alert) -> Bool in
-            alert.buttons["Allow"].tap()
-            return true
+        addUIInterruptionMonitor(withDescription: "System Dialog") { alert in
+            let buttons = alert.buttons.allElementsBoundByIndex
+            // Try to tap the "Allow" button, but make it work in any language.
+            if buttons.count >= 2 {
+                buttons[1].tap()
+                return true
+            }
+
+            return false
         }
         app.tap()
 

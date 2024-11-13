@@ -48,12 +48,12 @@ struct WooShippingCreateLabelsView: View {
 
                     if viewModel.canViewLabel {
                         EmptyView()
-                    } else if viewModel.hasPackage {
+                    } else if viewModel.hasPackage, let shippingService = viewModel.shippingService {
                         // TODO: Display package section
                         // Package heading and edit button
                         // Selected package details
                         // Total shipment weight field
-                        WooShippingServiceView(viewModel: viewModel.shippingService)
+                        WooShippingServiceView(viewModel: shippingService)
                             .padding(.horizontal, -16)
                     } else {
                         WooShippingPackageAndRatePlaceholder()

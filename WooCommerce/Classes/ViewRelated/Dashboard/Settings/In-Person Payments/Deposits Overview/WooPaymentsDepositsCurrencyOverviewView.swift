@@ -150,12 +150,12 @@ private extension WooPaymentsDepositsCurrencyOverviewView {
 private extension WooPaymentsDepositsCurrencyOverviewView {
     enum Localization {
         static let availableFunds = NSLocalizedString(
-            "deposits.currency.overview.availableFunds",
+            "payouts.currency.overview.availableFunds",
             value: "Available funds",
             comment: "Title for available funds overview in WooPayments Deposits view. " +
             "This shows the balance which can be paid out.")
         static let pendingFunds = NSLocalizedString(
-            "deposits.currency.overview.pendingFunds",
+            "payouts.currency.overview.pendingFunds",
             value: "Pending funds",
             comment: "Title for pending funds overview in WooPayments Deposits view. " +
             "This shows the balance which will be made available for pay out later.")
@@ -164,7 +164,7 @@ private extension WooPaymentsDepositsCurrencyOverviewView {
             value: "Last Payout",
             comment: "Section header for the last payout in the WooPayments Payout overview")
         static let learnMoreButtonText = NSLocalizedString(
-            "deposits.currency.overview.learnMore",
+            "payouts.currency.overview.learnMore",
             value: "Learn more about when you'll receive your funds",
             comment: "Button text to view more about payment schedules on the WooPayments Deposits View.")
         static let showDepositDetailAccessibilityLabel = NSLocalizedString(

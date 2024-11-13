@@ -76,8 +76,8 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
         case failedSavingTemplate
     }
 
-    func addPackageAction() async -> Result<WooShippingPackageDataRepresentable, Error> {
-        guard let packageData = preparePackageData() else {
+    func addPackageAction(package: WooShippingPackageDataRepresentable? = nil) async -> Result<WooShippingPackageDataRepresentable, Error> {
+        guard let packageData = package ?? preparePackageData() else {
             return .failure(WooShippingAddCustomPackageViewModel.Error.packageDataNotValid)
         }
 
@@ -129,8 +129,8 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
             stores.dispatch(action)
         }
         switch savingPackageTemplateResult {
-        case .success(let success):
-            return await addPackageAction()
+        case .success(let savedPackage):
+            return await addPackageAction(package: savedPackage)
         case .failure(let error):
             return .failure(error)
         }

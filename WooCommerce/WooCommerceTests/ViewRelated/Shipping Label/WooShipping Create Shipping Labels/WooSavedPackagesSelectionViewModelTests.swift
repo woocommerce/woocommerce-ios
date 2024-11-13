@@ -238,7 +238,9 @@ final class MockWooShippingPackagesRepository: WooShippingPackagesRepositoryProt
 
     @MainActor
     func saveCustomPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error? {
-        guard !customSavedPackages.contains(where: $0.id == packageToAdd.id) else {
+        guard !customSavedPackages.contains(where: { package in
+            return package.id == packageToAdd.id
+        })  else {
             return WooShippingPackagesRepositoryError.customPackageWithSameIdAlreadyExists
         }
         customSavedPackages.append(packageToAdd)
@@ -247,7 +249,9 @@ final class MockWooShippingPackagesRepository: WooShippingPackagesRepositoryProt
 
     @MainActor
     func savePredefinedPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error? {
-        guard !predefinedSavedPackages.contains(where: $0.id == packageToAdd.id) else {
+        guard !predefinedSavedPackages.contains(where: { package in
+            return package.id == packageToAdd.id
+        })  else {
             return WooShippingPackagesRepositoryError.predefinedPackageWithSameIdAlreadyExists
         }
         predefinedSavedPackages.append(packageToAdd)

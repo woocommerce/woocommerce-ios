@@ -68,7 +68,7 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
             case .retrieveFirstPurchasableItemMatchFromIdentifier(_, _, let onCompletion):
-                onCompletion(.success(.product(returningProduct)))
+                onCompletion(.success((.product(returningProduct), .SKU)))
             default:
                 break
             }
@@ -85,6 +85,33 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
         // Then
         XCTAssertEqual(retrievedProduct, returningProduct)
         XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.orderProductSearchViaSKUSuccess.rawValue)
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["source"] as? String, source.rawValue)
+    }
+
+    func test_findProduct_when_global_unique_id_matches_barcode_then_returns_product() async {
+        // Given
+        let source = WooAnalyticsEvent.BarcodeScanning.Source.orderList
+        let returningProduct = Product.fake()
+        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
+            switch action {
+            case .retrieveFirstPurchasableItemMatchFromIdentifier(_, _, let onCompletion):
+                onCompletion(.success((.product(returningProduct), .globalUniqueIdentifier)))
+            default:
+                break
+            }
+        })
+
+        // When
+        let scannedBarcode = ScannedBarcode(payloadStringValue: "123456", symbology: .aztec)
+        let result = try? await sut.searchByIdentifier(from: scannedBarcode, siteID: 1, source: source)
+
+        guard case let .product(retrievedProduct) = result else {
+            return XCTFail("It didn't provide a product as expected")
+        }
+
+        // Then
+        XCTAssertEqual(retrievedProduct, returningProduct)
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.orderProductSearchViaGlobalUniqueIdentifierSuccess.rawValue)
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["source"] as? String, source.rawValue)
     }
 
@@ -106,7 +133,7 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
             switch action {
             case let .retrieveFirstPurchasableItemMatchFromIdentifier(_, givenSKU, onCompletion):
                 if givenSKU == productSKU {
-                    onCompletion(.success(.product(returningProduct)))
+                    onCompletion(.success((.product(returningProduct), .SKU)))
                 } else {
                     onCompletion(.failure(ProductLoadError.notFound))
                 }
@@ -137,7 +164,7 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
             switch action {
             case let .retrieveFirstPurchasableItemMatchFromIdentifier(_, givenSKU, onCompletion):
                 if givenSKU == productSKU {
-                    onCompletion(.success(.product(returningProduct)))
+                    onCompletion(.success((.product(returningProduct), .SKU)))
                 } else {
                     onCompletion(.failure(ProductLoadError.notFound))
                 }

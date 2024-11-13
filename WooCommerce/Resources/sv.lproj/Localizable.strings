@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-07 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-11-08 22:11:33+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -3113,6 +3113,9 @@ which should be translated separately and considered part of this sentence. */
 /* Hint regarding available/pending balances shown in the WooPayments Deposits View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
 "Funds become available after pending for %1$d days." = "Medlen blir tillgängliga efter att ha inväntat granskning i %1$d dagar.";
 
+/* Format of the Global Unique Identifier on the Inventory Settings row */
+"GTIN, UPC, EAN, ISBN: %@" = "GTIN, UPC, EAN, ISBN: %@";
+
 /* Country option for a site address. */
 "Gabon" = "Gabon";
 
@@ -3657,14 +3660,14 @@ which should be translated separately and considered part of this sentence. */
 /* Error message for invalid format of ITN in Customs screen of Shipping Label flow */
 "Invalid ITN format" = "Ogiltigt ITN-format";
 
+/* Error when an empty Identifier is returned from the barcode scanner */
+"Invalid Identifier" = "Ogiltig identifierare";
+
 /* The title of the alert when there is an error with the package name */
 "Invalid Package Name" = "Ogiltigt paketnamn";
 
 /* The title of the alert when there is an error updating the product SKU */
 "Invalid Product SKU" = "Ogiltigt artikelnummer";
-
-/* Error when an empty SKU is returned from the barcode scanner */
-"Invalid SKU" = "Ogiltigt artikelnummer";
 
 /* No comment provided by engineer. */
 "Invalid Site Address" = "Ogiltig adress till webbplatsen";
@@ -5562,11 +5565,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Product Type row on Product main screen */
 "Product type" = "Produkttyp";
 
-/* Error message when the scanner found a product but isn't purchasable.%@ is the SKU code. */
-"Product with SKU \"%@\" is not purchasable." = "Produkten med artikelnummer \"%@\" går inte att köpa.";
+/* Error message when the scanner found a product but isn't purchasable.%@ is the Identifier code. */
+"Product with Identifier \"%@\" is not purchasable." = "Produkt med Identifierare ”%@” är inte köpbar.";
 
-/* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
-"Product with SKU \"%@\" not found." = "Produkten med artikelnummer \"%@\" hittades inte.";
+/* Error message when the scanner cannot find a matching product.%@ is the Identifier barcode. */
+"Product with Identifier \"%@\" not found." = "Produkt med identifierare ”%@” hittades inte.";
 
 /* The instruction text below the scan area in the barcode scanner for product barcode. */
 "ProductBarcodeInputScanner.instructionText" = "Skanna produktens streckkod eller QR-kod";
@@ -9946,9 +9949,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "Variabel prenumeration";
-
-/* Button to refresh the state of the in-person payments setup */
-"card.present.payment.setup.webview.title" = "Betalningsinställning";
 
 /* Default accessibility label for a custom indeterminate progress view, used for card payments. */
 "card.waves.progressView.accessibilityLabel" = "Pågår";

@@ -2171,7 +2171,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             switch action {
             case .retrieveFirstPurchasableItemMatchFromIdentifier(_, _, let onCompletion):
                 let product = Product.fake().copy(productID: self.sampleSiteID, purchasable: true)
-                onCompletion(.success(.product(product)))
+                onCompletion(.success((.product(product), .SKU)))
             default:
                 break
             }
@@ -2216,7 +2216,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             switch action {
             case .retrieveFirstPurchasableItemMatchFromIdentifier(_, _, let onCompletion):
                 self?.storageManager.insertSampleProduct(readOnlyProduct: product)
-                onCompletion(.success(.product(product)))
+                onCompletion(.success((.product(product), .SKU)))
             default:
                 break
             }

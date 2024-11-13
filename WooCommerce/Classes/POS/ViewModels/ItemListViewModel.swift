@@ -3,10 +3,12 @@ import SwiftUI
 import protocol Yosemite.POSItem
 
 final class ItemListViewModel: ItemListViewModelProtocol {
-    let posModel: PointOfSaleAggregateModelProtocol
+    private let posModel: PointOfSaleAggregateModelProtocol
 
     @Published private(set) var isHeaderBannerDismissed: Bool = false
     @Published var showSimpleProductsModal: Bool = false
+
+    private(set) var shouldShowGhostableItemCard: Bool = false
 
     var shouldShowHeaderBanner: Bool {
         // The banner it's shown as long as it hasn't already been dismissed once:
@@ -28,8 +30,9 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     let selectedItemPublisher: AnyPublisher<POSItem, Never>
 
-    init(posModel: PointOfSaleAggregateModelProtocol) {
+    init(posModel: PointOfSaleAggregateModelProtocol, shouldShowGhostableItemCard: Bool = false) {
         self.posModel = posModel
+        self.shouldShowGhostableItemCard = shouldShowGhostableItemCard
         selectedItemPublisher = selectedItemSubject.eraseToAnyPublisher()
     }
 

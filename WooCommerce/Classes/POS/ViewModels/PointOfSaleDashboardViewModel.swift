@@ -13,7 +13,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     let posModel: PointOfSaleAggregateModelProtocol
 
-    let cardReaderConnectionViewModel: CardReaderConnectionViewModel
     private let connectivityObserver: ConnectivityObserver
 
     @Published private(set) var isAddMoreDisabled: Bool = false
@@ -28,13 +27,11 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
 
     init(posModel: PointOfSaleAggregateModelProtocol,
-         cardPresentPaymentService: CardPresentPaymentFacade,
          totalsViewModel: any TotalsViewModelProtocol,
          cartViewModel: any CartViewModelProtocol,
          itemListViewModel: any ItemListViewModelProtocol,
          connectivityObserver: ConnectivityObserver) {
         self.posModel = posModel
-        self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
         self.itemListViewModel = itemListViewModel
         self.totalsViewModel = totalsViewModel
         self.cartViewModel = cartViewModel

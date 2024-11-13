@@ -2,13 +2,9 @@ import SwiftUI
 
 struct CardReaderConnectionStatusView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
-    @ObservedObject private var connectionViewModel: CardReaderConnectionViewModel
+    @EnvironmentObject var posModel: PointOfSaleAggregateModel
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.isEnabled) var isEnabled
-
-    init(connectionViewModel: CardReaderConnectionViewModel) {
-        self.connectionViewModel = connectionViewModel
-    }
 
     @ViewBuilder
     private func circleIcon(with color: Color) -> some View {
@@ -21,11 +17,11 @@ struct CardReaderConnectionStatusView: View {
 
     var body: some View {
         Group {
-            switch connectionViewModel.connectionStatus {
+            switch posModel.cardReaderConnectionStatus {
             case .connected:
                 Menu {
                     Button {
-                        connectionViewModel.disconnectReader()
+                        posModel.disconnectCardReader()
                     } label: {
                         Text(Localization.disconnectCardReader)
                     }
@@ -44,7 +40,7 @@ struct CardReaderConnectionStatusView: View {
                 progressIndicatingCardReaderStatus(title: Localization.pleaseWait)
             case .disconnected:
                 Button {
-                    connectionViewModel.connectReader()
+                    posModel.connectCardReader()
                 } label: {
                     HStack(spacing: Constants.buttonImageAndTextSpacing) {
                         circleIcon(with: Color(.wooCommerceAmber(.shade60)))
@@ -162,7 +158,7 @@ private extension CardReaderConnectionStatusView {
 
 #Preview {
     VStack {
-        CardReaderConnectionStatusView(connectionViewModel: .init(cardPresentPayment: CardPresentPaymentPreviewService()))
+        CardReaderConnectionStatusView()
     }
 }
 

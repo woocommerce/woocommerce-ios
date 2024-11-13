@@ -5,6 +5,58 @@ import protocol Yosemite.POSItem
 @testable import struct Yosemite.POSProduct
 
 struct PointOfSaleAggregateModelTests {
+    struct OrderStageTests {
+        private let sut: PointOfSaleAggregateModel
+
+        init() {
+            self.sut = PointOfSaleAggregateModel(itemProvider: MockPOSItemProvider())
+        }
+
+        @Test func inits_with_building_order_stage() async throws {
+            #expect(sut.orderStage == .building)
+        }
+
+        @Test func startNewCart_removes_all_items_from_cart_and_moves_back_to_building() async throws {
+            // Given
+            sut.addToCart(makeItem())
+            sut.submitCart()
+            try #require(sut.orderStage == .finalizing)
+            try #require(sut.cart.isNotEmpty)
+
+            // When
+            sut.startNewCart()
+
+            // Then
+            #expect(sut.orderStage == .building)
+            #expect(sut.cart.isEmpty)
+        }
+
+        @Test func submitCart_moves_to_finalizing_order_stage() async throws {
+            // Given
+            sut.addToCart(makeItem())
+
+            // When
+            sut.submitCart()
+
+            // Then
+            #expect(sut.orderStage == .finalizing)
+        }
+
+        @Test func addMoreToCart_moves_to_building_order_stage() async throws {
+            // Given
+            sut.addToCart(makeItem())
+            sut.submitCart()
+            try #require(sut.orderStage == .finalizing)
+
+            // When
+            sut.addMoreToCart()
+
+            // Then
+            #expect(sut.orderStage == .building)
+        }
+
+    }
+
     struct ItemListTests {
         private var itemProvider: MockPOSItemProvider
         private let sut: PointOfSaleAggregateModel
@@ -266,7 +318,7 @@ struct PointOfSaleAggregateModelTests {
         @Test func addItem_results_in_a_non_empty_cart() async throws {
             // Given
             try #require(sut.cart.isEmpty)
-            let item = Self.makeItem()
+            let item = makeItem()
 
             // When
             sut.addToCart(item)
@@ -277,7 +329,7 @@ struct PointOfSaleAggregateModelTests {
 
         @Test func addItem_puts_new_items_first_in_the_cart() async throws {
             // Given
-            let items = [Self.makeItem(), Self.makeItem(), Self.makeItem()]
+            let items = [makeItem(), makeItem(), makeItem()]
 
             // When
             items.forEach(sut.addToCart(_:))
@@ -288,8 +340,8 @@ struct PointOfSaleAggregateModelTests {
 
         @Test func removeItem_after_adding_two_items_removes_item_correctly() async throws {
             // Given
-            let item = Self.makeItem(name: "Item 1")
-            let anotherItem = Self.makeItem(name: "Item 2")
+            let item = makeItem(name: "Item 1")
+            let anotherItem = makeItem(name: "Item 2")
 
             sut.addToCart(item)
             sut.addToCart(anotherItem)
@@ -306,8 +358,8 @@ struct PointOfSaleAggregateModelTests {
 
         @Test func removeAllItemsFromCart_removes_everything() async throws {
             // Given
-            let item = Self.makeItem(name: "Item 1")
-            let anotherItem = Self.makeItem(name: "Item 2")
+            let item = makeItem(name: "Item 1")
+            let anotherItem = makeItem(name: "Item 2")
 
             sut.addToCart(item)
             sut.addToCart(anotherItem)
@@ -328,7 +380,7 @@ struct PointOfSaleAggregateModelTests {
             """))
         func addToCart_tracks_analytics_event() async throws {
             // Given
-            let item = Self.makeItem()
+            let item = makeItem()
 
             // When
             sut.addToCart(item)
@@ -337,16 +389,16 @@ struct PointOfSaleAggregateModelTests {
             let event = try #require(analyticsProvider.receivedEvents.first)
             #expect(event == "pos_item_added_to_cart")
         }
-
-        static func makeItem(name: String = "") -> POSItem {
-            return POSProduct(itemID: UUID(),
-                              productID: 0,
-                              name: name,
-                              price: "",
-                              formattedPrice: "",
-                              itemCategories: [],
-                              productImageSource: nil,
-                              productType: .simple)
-        }
     }
+}
+
+private func makeItem(name: String = "") -> POSItem {
+    return POSProduct(itemID: UUID(),
+                      productID: 0,
+                      name: name,
+                      price: "",
+                      formattedPrice: "",
+                      itemCategories: [],
+                      productImageSource: nil,
+                      productType: .simple)
 }

@@ -5,6 +5,8 @@ import protocol Yosemite.POSItemProvider
 import protocol WooFoundation.Analytics
 
 protocol PointOfSaleAggregateModelProtocol {
+    var orderStage: PointOfSaleOrderStage { get }
+
     @available(*, deprecated, message: "`allItems` is due for removal, use `itemListState` instead.")
     var allItems: [POSItem] { get }
     var itemListState: ItemListState { get }
@@ -17,9 +19,14 @@ protocol PointOfSaleAggregateModelProtocol {
     func addToCart(_ item: POSItem)
     func remove(cartItem: CartItem)
     func removeAllItemsFromCart()
+    func submitCart()
+    func addMoreToCart()
+    func startNewCart()
 }
 
 class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProtocol {
+    @Published private(set) var orderStage: PointOfSaleOrderStage = .building
+
     @Published private(set) var allItems: [POSItem] = []
     @Published private(set) var itemListState: ItemListState = .initialLoading
 
@@ -110,6 +117,19 @@ extension PointOfSaleAggregateModel {
 
     func removeAllItemsFromCart() {
         cart.removeAll()
+    }
+
+    func submitCart() {
+        orderStage = .finalizing
+    }
+
+    func addMoreToCart() {
+        orderStage = .building
+    }
+
+    func startNewCart() {
+        removeAllItemsFromCart()
+        orderStage = .building
     }
 }
 

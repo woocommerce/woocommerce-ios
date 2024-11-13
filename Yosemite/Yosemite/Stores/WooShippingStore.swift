@@ -39,6 +39,8 @@ public final class WooShippingStore: Store {
                            destinationAddress: destinationAddress,
                            packages: packages,
                            completion: completion)
+        case .loadPackages(let siteID, completion: let completion):
+            loadPackages(siteID: siteID, completion: completion)
         }
     }
 }
@@ -70,5 +72,17 @@ private extension WooShippingStore {
                               destinationAddress: destinationAddress,
                               packages: packages,
                               completion: completion)
+    }
+
+    func loadPackages(siteID: Int64,
+                      completion: @escaping (Result<WooShippingPackagesResponse, PackageCreationError>) -> Void) {
+        remote.loadPackages(siteID: siteID) { result in
+            switch result {
+            case .success(let packages):
+                completion(.success(packages))
+            case .failure(let error):
+                completion(.failure(PackageCreationError(error: error)))
+            }
+        }
     }
 }

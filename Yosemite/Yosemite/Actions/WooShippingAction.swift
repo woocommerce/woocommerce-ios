@@ -1,6 +1,6 @@
 import Networking
 
-public enum WooShippingAction: Action {
+public enum WooShippingAction: Action {//
     /// Creates a custom package or activated a carrier package with provided package details.
     ///
     case createPackage(siteID: Int64,
@@ -16,4 +16,9 @@ public enum WooShippingAction: Action {
                         destinationAddress: ShippingLabelAddress,
                         packages: [ShippingLabelPackageSelected],
                         completion: (Result<[ShippingLabelCarriersAndRates], Error>) -> Void)
+
+    /// Fetch list of packages.
+    ///
+    case loadPackages(siteID: Int64,
+                      completion: (Result<WooShippingPackagesResponse, PackageCreationError>) -> Void)
 }

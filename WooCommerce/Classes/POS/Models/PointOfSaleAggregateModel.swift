@@ -2,6 +2,7 @@ import Foundation
 
 import protocol Yosemite.POSItem
 import protocol Yosemite.POSItemProvider
+import enum Yosemite.POSProductProviderError
 
 protocol PointOfSaleAggregateModelProtocol {
     @available(*, deprecated, message: "`allItems` is due for removal, use `itemListState` instead.")
@@ -20,7 +21,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     private let itemProvider: POSItemProvider
 
     private var currentPage: Int = Constants.initialPage
-    @Published private(set) var isLastPage: Bool = false
+    private var pageIsOutOfRange: Bool = false
 
     init(itemProvider: POSItemProvider) {
         self.itemProvider = itemProvider
@@ -31,6 +32,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 extension PointOfSaleAggregateModel {
     @MainActor
     func loadInitialItems() async {
+        pageIsOutOfRange = false
         itemListState = .initialLoading
         try? await load(pageNumber: Constants.initialPage)
     }
@@ -38,12 +40,22 @@ extension PointOfSaleAggregateModel {
     @MainActor
     func loadNextItems() async {
         do {
+            guard !pageIsOutOfRange else {
+                return
+            }
             itemListState = .loading(allItems)
-            // TODO: Optimize API calls. gh-14186
-            // If there are no more pages to fetch, we can avoid the next call.
+
             let nextPage = currentPage + 1
             try await load(pageNumber: nextPage)
+            pageIsOutOfRange = false
             currentPage = nextPage
+        } catch POSProductProviderError.pageOutOfRange {
+            if allItems.count == 0 {
+                itemListState = .empty
+            } else {
+                itemListState = .loaded(allItems)
+            }
+            pageIsOutOfRange = true
         } catch {
             // No need to do anything; this avoids us incorrectly incrementing currentPage.
         }
@@ -53,7 +65,7 @@ extension PointOfSaleAggregateModel {
     func reload() async {
         allItems.removeAll()
         currentPage = Constants.initialPage
-        isLastPage = false
+        pageIsOutOfRange = false
         itemListState = .loading(allItems)
         try? await load(pageNumber: currentPage)
     }
@@ -74,13 +86,6 @@ extension PointOfSaleAggregateModel {
         let uniqueNewItems = newItems.filter { newItem in
             !allItems.contains(where: { $0.productID == newItem.productID })
         }
-
-        if uniqueNewItems.count == 0 {
-            isLastPage = true
-        } else {
-            isLastPage = false
-        }
-
         allItems.append(contentsOf: uniqueNewItems)
 
         if allItems.count == 0 {

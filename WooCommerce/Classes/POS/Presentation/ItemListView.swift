@@ -8,6 +8,8 @@ struct ItemListView: View {
 
     @EnvironmentObject var posModel: PointOfSaleAggregateModel
 
+    @State private var lastScrollPosition: CGFloat = 0
+
     init(viewModel: ItemListViewModel) {
         self.viewModel = viewModel
     }
@@ -133,9 +135,7 @@ private extension ItemListView {
                     })
                 }
                 GhostItemCardView()
-                    .renderedIf(posModel.itemListState.isLoadingAfterInitialLoad &&
-                                !posModel.isLastPage &&
-                                viewModel.shouldShowGhostableItemCard)
+                    .renderedIf(posModel.itemListState.isLoadingAfterInitialLoad)
             }
             .frame(maxWidth: .infinity)
             .padding(.bottom, floatingControlAreaSize.height)
@@ -143,15 +143,16 @@ private extension ItemListView {
             .background(GeometryReader { proxy in
                 Color.clear
                     .onChange(of: proxy.frame(in: .global).maxY) { maxY in
-                        if posModel.itemListState.isLoadingAfterInitialLoad, posModel.isLastPage {
+                        if posModel.itemListState.isLoadingAfterInitialLoad {
                             return
                         }
-                        let viewHeight = UIScreen.main.bounds.height
-                        if maxY < viewHeight {
+                        let threshold = Constants.viewHeight * Constants.scrollThresholdMultiplier
+                        if maxY < threshold && maxY < lastScrollPosition {
                             Task {
                                 await viewModel.loadNextItems()
                             }
                         }
+                        lastScrollPosition = maxY
                     }
             })
         }
@@ -212,6 +213,8 @@ private extension ItemListView {
         static let iconPadding: CGFloat = 26
         static let itemListPadding: CGFloat = 16
         static let bannerCardPadding: CGFloat = 16
+        static let viewHeight: CGFloat = UIScreen.main.bounds.height
+        static let scrollThresholdMultiplier: CGFloat = 1.7
     }
 
     enum Localization {

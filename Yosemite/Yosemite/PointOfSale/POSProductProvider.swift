@@ -5,6 +5,12 @@ import class Networking.AlamofireNetwork
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
+public enum POSProductProviderError: Error {
+    case requestFailed
+    case pageOutOfRange
+    case unknown
+}
+
 /// Product provider for the Point of Sale feature
 ///
 public final class POSProductProvider: POSItemProvider {
@@ -32,25 +38,20 @@ public final class POSProductProvider: POSItemProvider {
     /// - pageNumber: Number of the page that should be retrieved. If none given, defaults to 1
     ///
     public func providePointOfSaleItems(pageNumber: Int = 1) async throws -> [POSItem] {
-        do {
-            let products = try await productsRemote.loadSimpleProductsForPointOfSale(for: siteID, pageNumber: pageNumber)
+        let products = try await productsRemote.loadSimpleProductsForPointOfSale(for: siteID, pageNumber: pageNumber)
 
-            let eligibilityCriteria: [(Product) -> Bool] = [
-                isNotVirtual,
-                isNotDownloadable,
-                hasPrice
-            ]
-            let filteredProducts = filterProducts(products: products, using: eligibilityCriteria)
-
-            return mapProductsToPOSItems(products: filteredProducts)
-        } catch {
-            DDLogError("Failed to retrieve products. Error: \(error)")
-            throw POSProductProviderError.requestFailed
+        if products.count == 0 {
+            throw POSProductProviderError.pageOutOfRange
         }
-    }
 
-    enum POSProductProviderError: Error {
-        case requestFailed
+        let eligibilityCriteria: [(Product) -> Bool] = [
+            isNotVirtual,
+            isNotDownloadable,
+            hasPrice
+        ]
+        let filteredProducts = filterProducts(products: products, using: eligibilityCriteria)
+        
+        return mapProductsToPOSItems(products: filteredProducts)
     }
 
     // Maps result to POSProduct, and populate the output with:

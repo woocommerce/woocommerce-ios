@@ -160,21 +160,21 @@ private extension WooPaymentsDepositsCurrencyOverviewView {
             comment: "Title for pending funds overview in WooPayments Deposits view. " +
             "This shows the balance which will be made available for pay out later.")
         static let lastDepositHeader = NSLocalizedString(
-            "deposits.currency.overview.lastDeposit",
-            value: "Last Deposit",
-            comment: "Section header for the last deposit in the WooPayments Deposits overview")
+            "payouts.currency.overview.lastPayout",
+            value: "Last Payout",
+            comment: "Section header for the last payout in the WooPayments Payout overview")
         static let learnMoreButtonText = NSLocalizedString(
             "deposits.currency.overview.learnMore",
             value: "Learn more about when you'll receive your funds",
             comment: "Button text to view more about payment schedules on the WooPayments Deposits View.")
         static let showDepositDetailAccessibilityLabel = NSLocalizedString(
-            "deposits.currency.overview.accessibility.show",
-            value: "Show deposit details",
-            comment: "Accessibility label for the expand chevron on the Deposit summary")
+            "payouts.currency.overview.accessibility.show",
+            value: "Show payout details",
+            comment: "Accessibility label for the expand chevron on the Payout summary")
         static let hideDepositDetailAccessibilityLabel = NSLocalizedString(
-            "deposits.currency.overview.accessibility.hide",
-            value: "Hide deposit details",
-            comment: "Accessibility label for the collapse chevron on the Deposit summary")
+            "payouts.currency.overview.accessibility.hide",
+            value: "Hide payout details",
+            comment: "Accessibility label for the collapse chevron on the Payout summary")
     }
 }
 

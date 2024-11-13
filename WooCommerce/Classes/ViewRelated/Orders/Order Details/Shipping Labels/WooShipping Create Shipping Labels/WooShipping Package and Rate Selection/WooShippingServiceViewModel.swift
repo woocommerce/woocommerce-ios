@@ -1,6 +1,12 @@
 import Yosemite
 
 final class WooShippingServiceViewModel: ObservableObject {
+    private let siteID: Int64
+    private let orderID: Int64
+    private let originAddress: ShippingLabelAddress?
+    private let destinationAddress: ShippingLabelAddress?
+    private let stores: StoresManager
+
     /// List of tabs to display for the shipping services.
     /// Contains the data about available shipping rates, grouped by carrier.
     @Published private(set) var serviceTabs: [WooShippingServiceTab] = []
@@ -9,12 +15,7 @@ final class WooShippingServiceViewModel: ObservableObject {
     @Published private(set) var selectedRate: WooShippingSelectedRate?
 
     /// State of loading shipping rates.
-    private var loadingState: LabelRatesState = .loading
-
-    /// Whether the rates are being loaded from remote.
-    var isLoadingRates: Bool {
-        loadingState == .loading
-    }
+    private(set) var loadingState: LabelRatesState = .loading
 
     /// Available standard shipping rates.
     private var standardRates: [ShippingLabelCarrierRate] = []
@@ -26,14 +27,22 @@ final class WooShippingServiceViewModel: ObservableObject {
     /// Sort order for shipping services.
     @Published var sortOrder: SortOrder = .price
 
-    init(standardRates: [ShippingLabelCarrierRate] = placeholderRates,
-         signatureRates: [ShippingLabelCarrierRate] = [],
-         adultSignatureRates: [ShippingLabelCarrierRate] = []) {
-        // TODO: Replace with real data from remote
-        self.standardRates = standardRates
-        self.signatureRates = signatureRates
-        self.adultSignatureRates = adultSignatureRates
-        generateServiceTabs()
+    /// Closure to execute after a rate is selected.
+    let onSelectRate: ((_ selectedRate: WooShippingSelectedRate) -> Void)?
+
+    init(order: Order,
+         originAddress: ShippingLabelAddress?,
+         destinationAddress: ShippingLabelAddress?,
+         selectedPackage: ShippingLabelPackageSelected,
+         stores: StoresManager = ServiceLocator.stores,
+         onSelectRate: ((_ selectedRate: WooShippingSelectedRate) -> Void)? = nil) {
+        self.siteID = order.siteID
+        self.orderID = order.orderID
+        self.originAddress = originAddress
+        self.destinationAddress = destinationAddress
+        self.stores = stores
+        self.onSelectRate = onSelectRate
+        loadLabelRates(for: selectedPackage)
     }
 
     /// Sorts the shipping services by the provided sort order.
@@ -42,8 +51,80 @@ final class WooShippingServiceViewModel: ObservableObject {
         generateServiceTabs()
     }
 
+    /// Selects the rate with the given title and signature requirement.
+    func selectRate(_ rate: ShippingLabelCarrierRate, signatureRate: ShippingLabelCarrierRate?, adultSignatureRate: ShippingLabelCarrierRate?) {
+        let selectedRate = WooShippingSelectedRate(rate: rate, signatureRate: signatureRate, adultSignatureRate: adultSignatureRate)
+        self.selectedRate = selectedRate
+        generateServiceTabs()
+        onSelectRate?(selectedRate)
+    }
+
+    /// Retrieves shipping label rates for this shipment from remote.
+    func loadLabelRates(for selectedPackage: ShippingLabelPackageSelected) {
+        guard let originAddress, let destinationAddress else {
+            return updateLoadingState(to: .error)
+        }
+        updateLoadingState(to: .loading)
+        let action = WooShippingAction.loadLabelRates(siteID: siteID,
+                                                      orderID: orderID,
+                                                      originAddress: originAddress,
+                                                      destinationAddress: destinationAddress,
+                                                      packages: [selectedPackage]) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case let .success(rates):
+                guard let rates = rates.first(where: { $0.packageID == selectedPackage.id }) else {
+                    DDLogError("⛔️ Fetched shipping label rates for Woo Shipping do not include rates for selected package: \(selectedPackage)")
+                    updateLoadingState(to: .error)
+                    return
+                }
+                standardRates = rates.defaultRates
+                signatureRates = rates.signatureRequired
+                adultSignatureRates = rates.adultSignatureRequired
+                updateLoadingState(to: .loaded)
+            case let .failure(error):
+                DDLogError("⛔️ Error loading shipping label rates for Woo Shipping: \(error)")
+                updateLoadingState(to: .error)
+            }
+        }
+        stores.dispatch(action)
+    }
+}
+
+extension WooShippingServiceViewModel {
+    /// Holds the data needed to display a tab in `WooShippingServiceViewModel`.
+    struct WooShippingServiceTab: Identifiable {
+        let id: WooShippingCarrier
+        let cards: [WooShippingServiceCardViewModel]
+    }
+
+    /// Options for sorting available shipping services.
+    enum SortOrder: CaseIterable {
+        case price
+        case deliveryTime
+
+        var displayName: String {
+            switch self {
+            case .price:
+                Localization.sortByPrice
+            case .deliveryTime:
+                Localization.sortByDeliveryTime
+            }
+        }
+    }
+
+    /// States for label rates.
+    enum LabelRatesState {
+        case loading
+        case loaded
+        case error
+    }
+}
+
+// MARK: Utils
+private extension WooShippingServiceViewModel {
     /// Generates the data to display available shipping rates, grouped by carrier ID.
-    private func generateServiceTabs() {
+    func generateServiceTabs() {
         serviceTabs = standardRates.grouped(by: { $0.carrierID })
             .compactMap { (carrierID, rates) -> WooShippingServiceTab? in
                 guard let carrier = WooShippingCarrier(rawValue: carrierID) else {
@@ -74,47 +155,30 @@ final class WooShippingServiceViewModel: ObservableObject {
                             let signatureRate = signatureRequirement == .signatureRequired ? signatureRates.first(where: { $0.title == rateTitle }) : nil
                             let adultSignatureRate = signatureRequirement == .adultSignatureRequired ?
                                 adultSignatureRates.first(where: { $0.title == rateTitle }) : nil
-                            selectedRate = WooShippingSelectedRate(rate: rate,
-                                                                   signatureRate: signatureRate,
-                                                                   adultSignatureRate: adultSignatureRate)
-                            self.generateServiceTabs()
+                            selectRate(rate, signatureRate: signatureRate, adultSignatureRate: adultSignatureRate)
                         }
                     }
                 return WooShippingServiceTab(id: carrier, cards: cards)
             }
             .sorted(by: { $0.id < $1.id })
     }
-}
 
-extension WooShippingServiceViewModel {
-    /// Holds the data needed to display a tab in `WooShippingServiceViewModel`.
-    struct WooShippingServiceTab: Identifiable {
-        let id: WooShippingCarrier
-        let cards: [WooShippingServiceCardViewModel]
-    }
-
-    /// Options for sorting available shipping services.
-    enum SortOrder: CaseIterable {
-        case price
-        case deliveryTime
-
-        var displayName: String {
-            switch self {
-            case .price:
-                Localization.sortByPrice
-            case .deliveryTime:
-                Localization.sortByDeliveryTime
-            }
+    /// Updates view model for provided loading state.
+    func updateLoadingState(to state: LabelRatesState) {
+        switch state {
+        case .loading:
+            standardRates = Self.placeholderRates
+            generateServiceTabs()
+        case .loaded:
+            generateServiceTabs()
+        case .error:
+            serviceTabs = []
         }
-    }
-
-    /// States for label rates.
-    enum LabelRatesState {
-        case loading
-        case loaded
+        loadingState = state
     }
 }
 
+// MARK: Constants
 private extension WooShippingServiceViewModel {
     enum Localization {
         static let sortByPrice = NSLocalizedString("wooShipping.createLabels.rates.sortBy.price",

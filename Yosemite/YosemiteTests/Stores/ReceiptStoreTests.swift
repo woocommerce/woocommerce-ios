@@ -515,6 +515,68 @@ final class ReceiptStoreTests: XCTestCase {
         let expectedError = expectedResult.failure
         XCTAssertNotNil(expectedError)
     }
+
+    func test_sendReceipt_when_order_updates_and_action_succeeds() throws {
+        // Given order update and send_order_details actions succeed
+        let email = "test@test.com"
+        let orderID: Int64 = 56
+        let siteID: Int64 = 123
+        let mockOrder = Order.fake().copy(siteID: siteID, orderID: orderID)
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+        network.simulateResponse(requestUrlSuffix: "orders/\(orderID)/actions/send_order_details", filename: "orders-actions-send-order-details")
+        let mockProcessor = MockActionsProcessor()
+        dispatcher.register(processor: mockProcessor, for: OrderAction.self)
+
+        // When we send receipt to the given email
+        let expectedResult: Result<Yosemite.Order, Error> = waitFor { promise in
+            let action = ReceiptAction.sendReceipt(order: mockOrder, email: email) { result in
+                promise(result)
+            }
+            receiptStore.onAction(action)
+            if case let .updateOrder(_, order, _, _, onCompletion) = mockProcessor.receivedActions.first as? OrderAction {
+                onCompletion(.success(order))
+            }
+        }
+
+        // Then we expect a success result with the expected email set on the order
+        let result = try expectedResult.get()
+        XCTAssert(result.billingAddress?.email == email)
+    }
+
+    func test_sendReceipt_when_order_update_fails_then_send_receipt_fails() {
+        // Given order update fails
+        let email = "test@test.com"
+        let orderID: Int64 = 56
+        let siteID: Int64 = 123
+        let mockOrder = Order.fake().copy(siteID: siteID, orderID: orderID)
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+        let mockProcessor = MockActionsProcessor()
+        dispatcher.register(processor: mockProcessor, for: OrderAction.self)
+
+        // When we send receipt to the given email
+        let expectedResult: Result<Yosemite.Order, Error> = waitFor { promise in
+            let action = ReceiptAction.sendReceipt(order: mockOrder, email: email) { result in
+                promise(result)
+            }
+            receiptStore.onAction(action)
+
+            if case let .updateOrder(_, _, _, _, onCompletion) = mockProcessor.receivedActions.first as? OrderAction {
+                onCompletion(.failure(OrderStatusError.missingSiteID))
+            }
+        }
+
+        // Then we expect sendReceipt to fail
+        XCTAssert(expectedResult.isFailure)
+        XCTAssert(network.requestsForResponseData.isEmpty)
+    }
 }
 
 

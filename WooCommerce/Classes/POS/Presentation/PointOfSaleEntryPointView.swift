@@ -27,7 +27,7 @@ struct PointOfSaleEntryPointView: View {
                                               cardPresentPaymentService: cardPresentPaymentService,
                                               currencyFormatter: currencyFormatter,
                                               paymentState: .acceptingCard)
-        let cartViewModel = CartViewModel(analytics: analytics)
+        let cartViewModel = CartViewModel(posModel: posModel)
         let shouldShowGhostableItemCard = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.displayInfiniteScrollingUIDetailsInPointOfSale)
         let itemListViewModel = ItemListViewModel(posModel: posModel, shouldShowGhostableItemCard: shouldShowGhostableItemCard)
 
@@ -46,12 +46,12 @@ struct PointOfSaleEntryPointView: View {
     }
 
     var body: some View {
-        PointOfSaleDashboardView(posModel: posModel,
-                                 viewModel: viewModel,
+        PointOfSaleDashboardView(viewModel: viewModel,
                                  totalsViewModel: totalsViewModel,
                                  cartViewModel: cartViewModel,
                                  itemListViewModel: itemListViewModel)
         .environmentObject(posModalManager)
+        .environmentObject(posModel)
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)
         }

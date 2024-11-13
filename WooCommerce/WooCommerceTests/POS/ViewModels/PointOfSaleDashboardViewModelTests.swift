@@ -60,28 +60,26 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
     func test_start_new_order() {
         // Given
         let expectedOrderStage = PointOfSaleDashboardViewModel.OrderStage.building
-        let itemsAdded = false
 
         // When
         mockTotalsViewModel.startNewOrderAction = ()
 
         // Then
         XCTAssertEqual(sut.orderStage, expectedOrderStage)
-        XCTAssertEqual(mockCartViewModel.addItemToCartCalled, itemsAdded)
-        XCTAssertTrue(mockCartViewModel.removeAllItemsFromCartCalled)
+        XCTAssertTrue(mockPOSModel.removeAllItemsFromCartCalled)
     }
 
     func test_items_added_to_cart() {
         // Given
         let item = Self.makeItem()
+        let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
         let itemsAdded = true
         let expectedOrderStage = PointOfSaleDashboardViewModel.OrderStage.building
 
         // When
-        mockCartViewModel.addItemToCart(item)
+        mockCartViewModel.itemsInCartSubject.send([cartItem])
 
         // Then
-        XCTAssertEqual(mockCartViewModel.addItemToCartCalled, itemsAdded)
         XCTAssertEqual(sut.orderStage, expectedOrderStage)
     }
 
@@ -293,7 +291,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
             .store(in: &cancellables)
 
         // When
-        mockCartViewModel.itemsInCart = [] // Trigger the empty cart condition
+        mockCartViewModel.itemsInCartSubject.send([]) // Trigger the empty cart condition
 
         // Then
         wait(for: [expectation], timeout: 1.0)

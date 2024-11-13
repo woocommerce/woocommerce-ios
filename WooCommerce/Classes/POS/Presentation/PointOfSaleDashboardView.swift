@@ -1,18 +1,16 @@
 import SwiftUI
 
 struct PointOfSaleDashboardView: View {
-    @ObservedObject private var posModel: PointOfSaleAggregateModel
+    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var totalsViewModel: TotalsViewModel
     @ObservedObject private var cartViewModel: CartViewModel
     @ObservedObject private var itemListViewModel: ItemListViewModel
 
-    init(posModel: PointOfSaleAggregateModel,
-         viewModel: PointOfSaleDashboardViewModel,
+    init(viewModel: PointOfSaleDashboardViewModel,
          totalsViewModel: TotalsViewModel,
          cartViewModel: CartViewModel,
          itemListViewModel: ItemListViewModel) {
-        self.posModel = posModel
         self.viewModel = viewModel
         self.totalsViewModel = totalsViewModel
         self.cartViewModel = cartViewModel
@@ -192,8 +190,7 @@ private extension PointOfSaleDashboardView {
     }
 
     var productListView: some View {
-        ItemListView(viewModel: itemListViewModel,
-                     posModel: posModel)
+        ItemListView(viewModel: itemListViewModel)
     }
 }
 
@@ -206,7 +203,7 @@ import class WooFoundation.MockAnalyticsProviderPreview
                                    cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                    currencyFormatter: .init(currencySettings: .init()),
                                    paymentState: .acceptingCard)
-    let cartVM = CartViewModel(analytics: MockAnalyticsPreview())
+    let cartVM = CartViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview()))
     let itemsListVM = ItemListViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview()))
     let posVM = PointOfSaleDashboardViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview()),
                                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
@@ -216,8 +213,7 @@ import class WooFoundation.MockAnalyticsProviderPreview
                                               connectivityObserver: POSConnectivityObserverPreview())
 
     return NavigationStack {
-        PointOfSaleDashboardView(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview()),
-                                 viewModel: posVM,
+        PointOfSaleDashboardView(viewModel: posVM,
                                  totalsViewModel: totalsVM,
                                  cartViewModel: cartVM,
                                  itemListViewModel: itemsListVM)

@@ -18,6 +18,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     private var useCase: CollectOrderPaymentUseCase<BuiltInCardReaderPaymentAlertsProvider,
                                                         BluetoothCardReaderPaymentAlertsProvider,
                                                         MockCardPresentPaymentAlertsPresenter>!
+    private var receiptEligibilityUseCase: MockReceiptEligibilityUseCase!
 
     override func setUp() {
         super.setUp()
@@ -27,8 +28,13 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         mockPaymentOrchestrator = MockPaymentCaptureOrchestrator()
         alertsPresenter = MockCardPresentPaymentAlertsPresenter()
         mockPreflightController = MockCardPresentPaymentPreflightController()
+        receiptEligibilityUseCase = MockReceiptEligibilityUseCase()
 
         let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5")
+        setUpUseCase(order: order)
+    }
+
+    private func setUpUseCase(order: Order) {
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case .retrieveOrderRemotely(_, _, let completion):
@@ -49,7 +55,8 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                              tapToPayAlertsProvider: BuiltInCardReaderPaymentAlertsProvider(),
                                              bluetoothAlertsProvider: BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
                                              preflightController: mockPreflightController,
-                                             analyticsTracker: mockAnalyticsTracker)
+                                             analyticsTracker: mockAnalyticsTracker,
+                                             receiptEligibilityUseCase: receiptEligibilityUseCase)
     }
 
     func test_cancelling_reader_connection_triggers_onCancel_and_tracks_collectPaymentCanceled_event() throws {
@@ -87,6 +94,31 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         // Then
         XCTAssert(mockAnalyticsTracker.didCallTrackSuccessfulPayment)
         assertEqual(interacPaymentMethod, mockAnalyticsTracker.spyTrackSuccessfulPaymentCapturedPaymentData?.paymentMethod)
+    }
+
+    func test_collectPayment_success_with_customer_then_modal_presented_with_email() async throws {
+        // Given we have an order with a customer
+        let email = "test@test.com"
+        let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5", billingAddress: Address.fake().copy(email: email))
+
+        setUpUseCase(order: order)
+        let interacPaymentMethod = PaymentMethod.interacPresent(details: .fake())
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: interacPaymentMethod)])
+        mockSuccessfulCardPresentPaymentActions(intent: intent,
+                                                capturedPaymentData: CardPresentCapturedPaymentData(paymentMethod: interacPaymentMethod,
+                                                                                                    receiptParameters: .fake()))
+
+        // When we make a successful payment
+        waitFor { promise in
+            self.useCase.collectPayment(using: .bluetoothScan, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+                promise(())
+            }, onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then we should present a modal with the email
+        let lastAlert = alertsPresenter.spyPresentedAlertViewModels.last as? CardPresentModalSuccessEmailSent
+        XCTAssert(lastAlert?.bottomAttributedTitle?.string.contains(email) == true)
     }
 
     // MARK: - Failure cases

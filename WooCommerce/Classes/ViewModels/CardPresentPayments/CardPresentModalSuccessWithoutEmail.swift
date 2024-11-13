@@ -1,6 +1,8 @@
 import UIKit
 
 /// Modal presented when the payment has been collected successfully
+/// No customer attached to order therefore an email receipt is not sent automatically
+/// Email receipt cannot be sent after the payment due to missing email client and too low WooCommerce API version
 final class CardPresentModalSuccessWithoutEmail: CardPresentPaymentsModalViewModel {
 
     /// Closure to execute when primary button is tapped

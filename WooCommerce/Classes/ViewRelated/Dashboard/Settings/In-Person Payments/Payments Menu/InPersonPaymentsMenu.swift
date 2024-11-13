@@ -56,13 +56,10 @@ struct InPersonPaymentsMenu: View {
                                 await viewModel.onAppear()
                             }
                         }) {
-                            NavigationStack {
-                                TapToPaySettingsFlowPresentingView(
-                                    configuration: viewModel.cardPresentPaymentsConfiguration,
-                                    siteID: viewModel.siteID,
-                                    onboardingUseCase: viewModel.onboardingUseCase)
-                                .navigationBarHidden(true)
-                            }
+                            TapToPaySettingsFlowPresentingView(
+                                configuration: viewModel.cardPresentPaymentsConfiguration,
+                                siteID: viewModel.siteID,
+                                onboardingUseCase: viewModel.onboardingUseCase)
                         }
 
                         Button {

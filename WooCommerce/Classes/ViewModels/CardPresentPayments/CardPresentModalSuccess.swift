@@ -68,7 +68,7 @@ final class CardPresentModalSuccess: CardPresentPaymentsModalViewModel {
 extension CardPresentModalSuccess {
     enum Localization {
         static let paymentSuccessful = NSLocalizedString(
-            "cardPresentPaymentsModal.successpaymentSuccessful",
+            "cardPresentPaymentsModal.success.paymentSuccessful",
             value: "Payment successful",
             comment: "Label informing users that the payment succeeded. Presented to users when a payment is collected"
         )

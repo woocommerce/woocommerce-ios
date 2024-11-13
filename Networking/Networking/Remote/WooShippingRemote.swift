@@ -5,6 +5,12 @@ public protocol WooShippingRemoteProtocol {
                        customPackage: WooShippingCustomPackage?,
                        predefinedOption: WooShippingPredefinedOption?,
                        completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void)
+    func loadLabelRates(siteID: Int64,
+                        orderID: Int64,
+                        originAddress: ShippingLabelAddress,
+                        destinationAddress: ShippingLabelAddress,
+                        packages: [ShippingLabelPackageSelected],
+                        completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
@@ -53,17 +59,59 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
             completion(.failure(error))
         }
     }
+
+    /// Loads shipping rates for a given order.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site.
+    ///   - orderID: ID of the order.
+    ///   - originAddress: the origin address entity.
+    ///   - destinationAddress: the destination address entity.
+    ///   - packages: The package previously selected with all their data.
+    ///   - completion: Closure to be executed upon completion.
+    public func loadLabelRates(siteID: Int64,
+                               orderID: Int64,
+                               originAddress: ShippingLabelAddress,
+                               destinationAddress: ShippingLabelAddress,
+                               packages: [ShippingLabelPackageSelected],
+                               completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
+        do {
+            let parameters: [String: Any] = [
+                ParameterKey.orderID: orderID,
+                ParameterKey.originAddress: try originAddress.toDictionary(),
+                ParameterKey.destinationAddress: try destinationAddress.toDictionary(),
+                ParameterKey.packages: try packages.map { try $0.toDictionary() }
+            ]
+            let path = Path.rates
+            let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                         method: .post,
+                                         siteID: siteID,
+                                         path: path,
+                                         parameters: parameters,
+                                         availableAsRESTRequest: true)
+            let mapper = WooShippingLabelRatesMapper()
+
+            enqueue(request, mapper: mapper, completion: completion)
+        }
+        catch {
+            completion(.failure(error))
+        }
+    }
 }
 
 // MARK: Constants
 private extension WooShippingRemote {
     enum Path {
         static let packages = "packages"
+        static let rates = "label/rate"
     }
 
     enum ParameterKey {
         static let custom = "custom"
         static let predefined = "predefined"
+        static let orderID = "order_id"
+        static let originAddress = "origin"
+        static let destinationAddress = "destination"
+        static let packages = "packages"
     }
 }
 

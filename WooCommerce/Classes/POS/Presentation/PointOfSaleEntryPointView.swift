@@ -46,12 +46,12 @@ struct PointOfSaleEntryPointView: View {
     }
 
     var body: some View {
-        PointOfSaleDashboardView(posModel: posModel,
-                                 viewModel: viewModel,
+        PointOfSaleDashboardView(viewModel: viewModel,
                                  totalsViewModel: totalsViewModel,
                                  cartViewModel: cartViewModel,
                                  itemListViewModel: itemListViewModel)
         .environmentObject(posModalManager)
+        .environmentObject(posModel)
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)
         }

@@ -32,6 +32,13 @@ public final class WooShippingStore: Store {
         switch action {
         case .createPackage(let siteID, let customPackage, let predefinedOption, let completion):
             createPackage(siteID: siteID, customPackage: customPackage, predefinedOption: predefinedOption, completion: completion)
+        case .loadLabelRates(let siteID, let orderID, let originAddress, let destinationAddress, let packages, let completion):
+            loadLabelRates(siteID: siteID,
+                           orderID: orderID,
+                           originAddress: originAddress,
+                           destinationAddress: destinationAddress,
+                           packages: packages,
+                           completion: completion)
         }
     }
 }
@@ -49,5 +56,19 @@ private extension WooShippingStore {
                 completion(.failure(PackageCreationError(error: error)))
             }
         }
+    }
+
+    func loadLabelRates(siteID: Int64,
+                        orderID: Int64,
+                        originAddress: ShippingLabelAddress,
+                        destinationAddress: ShippingLabelAddress,
+                        packages: [ShippingLabelPackageSelected],
+                        completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
+        remote.loadLabelRates(siteID: siteID,
+                              orderID: orderID,
+                              originAddress: originAddress,
+                              destinationAddress: destinationAddress,
+                              packages: packages,
+                              completion: completion)
     }
 }

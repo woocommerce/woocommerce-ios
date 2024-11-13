@@ -223,6 +223,8 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
             case let .createPackage(_, _, _, completion):
                 completion(.success(WooShippingCreatePackageResponse(customPackages: [WooShippingCustomPackage.fake().copy(id: "1", name: packageName)],
                                                                      predefinedOptions: [])))
+            default:
+                XCTFail("Received unexpected action: \(action)")
             }
         }
 

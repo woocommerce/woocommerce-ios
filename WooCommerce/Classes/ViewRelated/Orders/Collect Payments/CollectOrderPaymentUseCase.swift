@@ -565,12 +565,28 @@ private extension CollectOrderPaymentUseCase {
                 }
             })
         }
-        // Presents receipt alert
+            // Sends receipt via API
+            let addCustomerEmailAndSendReceiptCompletionAction: () -> Void = {
+                // TODO
+            }
 
-        alertsPresenter.present(viewModel: paymentAlerts.success(printReceipt: receiptPresentationCompletionAction,
-                                                                 emailReceipt: .init(email: order.billingAddress?.email,
-                                                                                     callback: receiptPresentationCompletionAction),
-                                                                 noReceiptAction: { onCompleted() }))
+            // Presents receipt alert
+            receiptEligibilityUseCase.isEligibleSendingReceiptAfterPayment { isEligibleSendingReceiptAfterPayment in
+                let emailReceiptAction: CardReaderTransactionAlertEmailReceiptAction
+
+                if let email = self.order.billingAddress?.email, email.isNotEmpty {
+                    emailReceiptAction = .emailSent(email)
+                } else if isEligibleSendingReceiptAfterPayment {
+                    emailReceiptAction = .sendEmail(addCustomerEmailAndSendReceiptCompletionAction)
+                } else if MFMailComposeViewController.canSendMail() {
+                    emailReceiptAction = .sendEmail(receiptPresentationCompletionAction)
+                } else {
+                    emailReceiptAction = .noEmail
+                }
+                self.alertsPresenter.present(viewModel: paymentAlerts.success(printReceipt: receiptPresentationCompletionAction,
+                                                                              emailReceipt: emailReceiptAction,
+                                                                              noReceiptAction: { onCompleted() }))
+            }
     }
 
     /// Allow merchants to print or email locally-generated receipts.

@@ -33,9 +33,8 @@ protocol CardReaderTransactionAlertsProviding<AlertDetails> {
     /// An alert to display successful transaction and provide options related to receipts
     ///
     func success(printReceipt: @escaping () -> Void,
-                 emailReceipt: @escaping () -> Void,
-                 noReceiptAction: @escaping () -> Void,
-                 email: String?) -> AlertDetails
+                 emailReceipt: CardReaderTransactionAlertEmailReceiptAction,
+                 noReceiptAction: @escaping () -> Void) -> AlertDetails
 
     /// An alert to display a retriable and cancellable error
     ///

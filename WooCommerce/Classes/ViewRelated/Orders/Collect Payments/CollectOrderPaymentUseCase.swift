@@ -566,10 +566,11 @@ private extension CollectOrderPaymentUseCase {
             })
         }
         // Presents receipt alert
+
         alertsPresenter.present(viewModel: paymentAlerts.success(printReceipt: receiptPresentationCompletionAction,
-                                                                 emailReceipt: receiptPresentationCompletionAction,
-                                                                 noReceiptAction: { onCompleted() },
-                                                                 email: order.billingAddress?.email))
+                                                                 emailReceipt: .init(email: order.billingAddress?.email,
+                                                                                     callback: receiptPresentationCompletionAction),
+                                                                 noReceiptAction: { onCompleted() }))
     }
 
     /// Allow merchants to print or email locally-generated receipts.
@@ -598,7 +599,7 @@ private extension CollectOrderPaymentUseCase {
                 // Inform about flow completion.
                 onCompleted()
             }
-        }, emailReceipt: { [order, analyticsTracker, paymentOrchestrator, weak self] in
+        }, emailReceipt: .init { [order, analyticsTracker, paymentOrchestrator, weak self] in
             guard let self = self else { return }
 
             analyticsTracker.trackEmailTapped()
@@ -616,7 +617,7 @@ private extension CollectOrderPaymentUseCase {
         }, noReceiptAction: {
             // Inform about flow completion.
             onCompleted()
-        }, email: nil))
+        }))
     }
 
     /// Presents the native email client with the provided content.

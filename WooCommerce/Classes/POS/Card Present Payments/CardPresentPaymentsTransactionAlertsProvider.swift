@@ -29,9 +29,8 @@ struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlerts
     }
 
     func success(printReceipt: @escaping () -> Void,
-                 emailReceipt: @escaping () -> Void,
-                 noReceiptAction: @escaping () -> Void,
-                 email: String?) -> CardPresentPaymentEventDetails {
+                 emailReceipt: CardReaderTransactionAlertEmailReceiptAction,
+                 noReceiptAction: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .paymentSuccess(done: noReceiptAction)
     }
 

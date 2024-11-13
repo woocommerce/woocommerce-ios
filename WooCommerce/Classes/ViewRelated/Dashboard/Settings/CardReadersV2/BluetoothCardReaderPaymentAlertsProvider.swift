@@ -47,18 +47,18 @@ final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlert
     }
 
     func success(printReceipt: @escaping () -> Void,
-                 emailReceipt: @escaping () -> Void,
-                 noReceiptAction: @escaping () -> Void,
-                 email: String?) -> CardPresentPaymentsModalViewModel {
-        if let email = email, email.isNotEmpty {
+                 emailReceipt: CardReaderTransactionAlertEmailReceiptAction,
+                 noReceiptAction: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        switch emailReceipt {
+        case let .emailSent(email):
             return CardPresentModalSuccessEmailSent(printReceipt: printReceipt,
                                                     noReceiptAction: noReceiptAction,
                                                     email: email)
-        } else if MFMailComposeViewController.canSendMail() {
+        case let .sendEmail(emailReceipt):
             return CardPresentModalSuccess(printReceipt: printReceipt,
                                            emailReceipt: emailReceipt,
                                            noReceiptAction: noReceiptAction)
-        } else {
+        case .noEmail:
             return CardPresentModalSuccessWithoutEmail(printReceipt: printReceipt, noReceiptAction: noReceiptAction)
         }
     }

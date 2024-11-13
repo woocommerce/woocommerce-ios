@@ -51,6 +51,8 @@ public class ReceiptStore: Store {
             saveReceipt(order: order, parameters: info)
         case .retrieveReceipt(order: let order, onCompletion: let onCompletion):
             retrieveReceipt(order: order, onCompletion: onCompletion)
+        case let .sendReceipt(order, email, onCompletion):
+            sendReceipt(order: order, email: email, onCompletion: onCompletion)
         }
     }
 }
@@ -217,6 +219,56 @@ private extension ReceiptStore {
             DDLogError("⛔️ Unable to save receipt for order id: \(order.orderID)")
         }
     }
+
+    /// Sends the receipt for the order to the provided email address if customer email hasn't been set yet.
+    /// Updates the billing address of the order to the provided email address and triggers the sending of the receipt.
+    /// - Parameters:
+    ///  - order: The order for which the receipt is being sent.
+    ///  - email: The email address to which the receipt is being sent.
+    ///  - onCompletion: The completion block to call when the operation is complete.
+    ///
+    func sendReceipt(order: Order, email: String, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        guard order.billingAddress?.email == nil || order.billingAddress?.email == "" else {
+            onCompletion(.failure(ReceiptStoreError.customerEmailAlreadySet))
+            return
+        }
+
+        let updatedBillingAddress = order.billingAddress?.copy(email: email) ?? Address(firstName: "",
+                                                                                        lastName: "",
+                                                                                        company: nil,
+                                                                                        address1: "",
+                                                                                        address2: nil,
+                                                                                        city: "",
+                                                                                        state: "",
+                                                                                        postcode: "",
+                                                                                        country: "",
+                                                                                        phone: nil,
+                                                                                        email: email)
+        let orderToUpdate = order.copy(billingAddress: updatedBillingAddress)
+
+        let action = OrderAction.updateOrder(siteID: order.siteID, order: orderToUpdate, giftCard: nil, fields: [.billingAddress]) { result in
+            switch result {
+            case let .success(updatedOrder):
+                Task { [weak self] in
+                    guard let self else {
+                        onCompletion(.failure(ReceiptStoreError.storeDeallocated))
+                        return
+                    }
+
+                    do {
+                        try await remote.sendReceipt(siteID: order.siteID, orderID: order.orderID)
+                        onCompletion(.success(updatedOrder))
+                    } catch {
+                        onCompletion(.failure(error))
+                    }
+                }
+            case let .failure(error):
+                onCompletion(.failure(error))
+            }
+        }
+
+        dispatcher.dispatch(action)
+    }
 }
 
 private extension ReceiptStore {
@@ -240,6 +292,12 @@ public enum ReceiptStoreError: Error {
     /// There was an error reading the content of the file containing the
     /// receipt metadata
     case fileError
+
+    /// Store has been unexpectedly deallocated
+    case storeDeallocated
+
+    /// Customer email has already been set and receipt cannot be sent
+    case customerEmailAlreadySet
 }
 
 private extension NSDecimalNumber {

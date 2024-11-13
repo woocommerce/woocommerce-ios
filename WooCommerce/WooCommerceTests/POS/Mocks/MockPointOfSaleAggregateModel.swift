@@ -26,4 +26,15 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     func loadNextItems() async { }
 
     func reload() async { }
+
+    var cart: [CartItem] = []
+
+    func addToCart(_ item: any Yosemite.POSItem) { }
+
+    func remove(cartItem: WooCommerce.CartItem) { }
+
+    var removeAllItemsFromCartCalled = false
+    func removeAllItemsFromCart() {
+        removeAllItemsFromCartCalled = true
+    }
 }

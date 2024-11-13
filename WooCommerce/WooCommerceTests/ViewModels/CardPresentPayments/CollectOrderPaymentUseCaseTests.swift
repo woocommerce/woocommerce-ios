@@ -102,7 +102,6 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5", billingAddress: Address.fake().copy(email: email))
 
         setUpUseCase(order: order)
-        receiptEligibilityUseCase.isEligibleForBackendReceipts = true
         let interacPaymentMethod = PaymentMethod.interacPresent(details: .fake())
         let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: interacPaymentMethod)])
         mockSuccessfulCardPresentPaymentActions(intent: intent,

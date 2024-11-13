@@ -33,15 +33,12 @@ class WooCommerceScreenshots: XCTestCase {
 
         app.launch()
 
-        // TODO-14325: Fix the system dialog handling because occasionally the dialog does not appear.
-        /*
         addUIInterruptionMonitor(withDescription: "System Dialog") {
             (alert) -> Bool in
             alert.buttons["Allow"].tap()
             return true
         }
         app.tap()
-         */
 
         try MyStoreScreen()
 

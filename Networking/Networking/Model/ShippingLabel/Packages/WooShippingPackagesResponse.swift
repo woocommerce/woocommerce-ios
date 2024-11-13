@@ -6,7 +6,7 @@ import Codegen
 public struct WooShippingPackagesResponse: Equatable, GeneratedFakeable, GeneratedCopiable {
 
     /// Store options
-    public let storeOptions: ShippingLabelStoreOptions?
+    public let storeOptions: ShippingLabelStoreOptions
 
     /// Saved custom packages
     public let customPackages: [WooShippingCustomPackage]
@@ -14,7 +14,7 @@ public struct WooShippingPackagesResponse: Equatable, GeneratedFakeable, Generat
     /// Saved (activated) predefined options
     public let predefinedOptions: [WooShippingPredefinedOption]
 
-    public init(storeOptions: ShippingLabelStoreOptions?,
+    public init(storeOptions: ShippingLabelStoreOptions,
                 customPackages: [WooShippingCustomPackage],
                 predefinedOptions: [WooShippingPredefinedOption]) {
         self.storeOptions = storeOptions
@@ -28,7 +28,9 @@ extension WooShippingPackagesResponse: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let storeOptions = try container.decodeIfPresent(ShippingLabelStoreOptions.self, forKey: .storeOptions)
+        guard let storeOptions = try container.decodeIfPresent(ShippingLabelStoreOptions.self, forKey: .storeOptions) else {
+            throw WooShippingPackagesResponseDecodingError.missingStoreOptions
+        }
 
         let customPackages = try container.decodeIfPresent([WooShippingCustomPackage].self, forKey: .custom) ?? []
 
@@ -50,4 +52,10 @@ extension WooShippingPackagesResponse: Decodable {
         case predefined
         case storeOptions
     }
+}
+
+// MARK: - Decoding Errors
+//
+enum WooShippingPackagesResponseDecodingError: Error {
+    case missingStoreOptions
 }

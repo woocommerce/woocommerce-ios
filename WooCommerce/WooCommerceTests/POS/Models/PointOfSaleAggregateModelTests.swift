@@ -1,6 +1,8 @@
 import Testing
 import Foundation
 @testable import WooCommerce
+import protocol Yosemite.POSItem
+@testable import struct Yosemite.POSProduct
 
 struct PointOfSaleAggregateModelTests {
     private var itemProvider: MockPOSItemProvider
@@ -261,5 +263,104 @@ struct PointOfSaleAggregateModelTests {
 
         // Then
         #expect(sut.itemListState == .error(expectedError))
+    }
+
+    struct CartTests {
+        let sut: PointOfSaleAggregateModel
+        private var analytics: WooAnalytics!
+        private var analyticsProvider: MockAnalyticsProvider!
+
+        init() {
+            analyticsProvider = MockAnalyticsProvider()
+            analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+            sut = PointOfSaleAggregateModel(itemProvider: MockPOSItemProvider(),
+                                            analytics: analytics)
+        }
+
+        @Test func addItem_results_in_a_non_empty_cart() async throws {
+            // Given
+            try #require(sut.cart.isEmpty)
+            let item = Self.makeItem()
+
+            // When
+            sut.addToCart(item)
+
+            // Then
+            #expect(sut.cart.isNotEmpty)
+        }
+
+        @Test func addItem_puts_new_items_first_in_the_cart() async throws {
+            // Given
+            let items = [Self.makeItem(), Self.makeItem(), Self.makeItem()]
+
+            // When
+            items.forEach(sut.addToCart(_:))
+
+            // Then
+            #expect(sut.cart.map(\.item.itemID) == items.reversed().map(\.itemID))
+        }
+
+        @Test func removeItem_after_adding_two_items_removes_item_correctly() async throws {
+            // Given
+            let item = Self.makeItem(name: "Item 1")
+            let anotherItem = Self.makeItem(name: "Item 2")
+
+            sut.addToCart(item)
+            sut.addToCart(anotherItem)
+            try #require(sut.cart.count == 2)
+
+            // When
+            let firstItem = try #require(sut.cart.first)
+            sut.remove(cartItem: firstItem)
+
+            // Then
+            #expect(sut.cart.count == 1)
+            #expect(sut.cart.first?.item.name == item.name)
+        }
+
+        @Test func removeAllItemsFromCart_removes_everything() async throws {
+            // Given
+            let item = Self.makeItem(name: "Item 1")
+            let anotherItem = Self.makeItem(name: "Item 2")
+
+            sut.addToCart(item)
+            sut.addToCart(anotherItem)
+            try #require(sut.cart.count == 2)
+
+            // When
+            sut.removeAllItemsFromCart()
+
+            // Then
+            #expect(sut.cart.isEmpty)
+        }
+
+        @Test(.disabled(
+            """
+            This test doesn't currently work; analytics extensions are not thread-safe,
+            and using the MainActor means the assert happens too early. I don't think
+            we want the addToCart to be async, but that would be one way to fix it.
+            """))
+        func addToCart_tracks_analytics_event() async throws {
+            // Given
+            let item = Self.makeItem()
+
+            // When
+            sut.addToCart(item)
+
+            // Then
+            let event = try #require(analyticsProvider.receivedEvents.first)
+            #expect(event == "pos_item_added_to_cart")
+        }
+
+        static func makeItem(name: String = "") -> POSItem {
+            return POSProduct(itemID: UUID(),
+                              productID: 0,
+                              name: name,
+                              price: "",
+                              formattedPrice: "",
+                              itemCategories: [],
+                              productImageSource: nil,
+                              productType: .simple)
+        }
     }
 }

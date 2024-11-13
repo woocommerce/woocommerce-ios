@@ -19,7 +19,7 @@ class WooCommerceScreenshots: XCTestCase {
         stopWebServer()
     }
 
-    func testScreenshots() throws {
+    @MainActor func testScreenshots() throws {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
         setupSnapshot(app)
@@ -143,7 +143,7 @@ fileprivate var screenshotCount = 0
 
 extension BaseScreen {
 
-    @discardableResult
+    @MainActor @discardableResult
     func thenTakeScreenshot(named title: String) -> Self {
         screenshotCount += 1
 
@@ -178,7 +178,7 @@ extension ScreenObject {
         }
     }
 
-    @discardableResult
+    @MainActor @discardableResult
     func thenTakeScreenshot(named title: String) -> Self {
         screenshotCount += 1
 

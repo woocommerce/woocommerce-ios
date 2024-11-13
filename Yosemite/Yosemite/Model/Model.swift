@@ -180,6 +180,7 @@ public typealias User = Networking.User
 public typealias WooAPIVersion = Networking.WooAPIVersion
 public typealias WooShippingCustomPackage = Networking.WooShippingCustomPackage
 public typealias WooShippingCreatePackageResponse = Networking.WooShippingCreatePackageResponse
+public typealias WooShippingPackagesResponse = Networking.WooShippingPackagesResponse
 public typealias WPComPlan = Networking.WPComPlan
 public typealias WPComSitePlan = Networking.WPComSitePlan
 public typealias LoadSiteCurrentPlanError = Networking.LoadSiteCurrentPlanError

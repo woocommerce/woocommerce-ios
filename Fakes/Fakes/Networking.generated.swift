@@ -2759,6 +2759,17 @@ extension Networking.WooShippingCreatePackageResponse {
         )
     }
 }
+extension Networking.WooShippingPackagesResponse {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingPackagesResponse {
+        .init(
+            storeOptions: .fake(),
+            customPackages: .fake(),
+            predefinedOptions: .fake()
+        )
+    }
+}
 extension Networking.WooShippingCustomPackage {
     /// Returns a "ready to use" type filled with fake values.
     ///

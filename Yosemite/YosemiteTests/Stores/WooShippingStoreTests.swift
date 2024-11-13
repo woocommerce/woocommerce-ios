@@ -130,6 +130,50 @@ final class WooShippingStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
+
+    // MARK: `loadPackages`
+
+    func test_loadPackages_returns_success_response_with_rates() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let response = WooShippingPackagesResponse.fake().copy(customPackages: [WooShippingCustomPackage.fake()])
+        remote.whenLoadPackages(siteID: sampleSiteID, thenReturn: .success(response))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<WooShippingPackagesResponse, Error> = waitFor { promise in
+            let action = WooShippingAction.loadPackages(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let actualResponse = try result.get()
+        XCTAssertEqual(actualResponse, response)
+    }
+
+    func test_loadPackages_returns_error_on_failure() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedError = NetworkError.notFound()
+        remote.whenLoadPackages(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<WooShippingPackagesResponse, Error> = waitFor { promise in
+            let action = WooShippingAction.loadPackages(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
 }
 
 private extension WooShippingStoreTests {

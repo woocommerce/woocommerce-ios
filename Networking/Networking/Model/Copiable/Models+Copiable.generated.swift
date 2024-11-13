@@ -4015,6 +4015,24 @@ extension Networking.WooShippingCreatePackageResponse {
     }
 }
 
+extension Networking.WooShippingPackagesResponse {
+    public func copy(
+        storeOptions: CopiableProp<ShippingLabelStoreOptions> = .copy,
+        customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
+        predefinedOptions: CopiableProp<[WooShippingPredefinedOption]> = .copy
+    ) -> Networking.WooShippingPackagesResponse {
+        let storeOptions = storeOptions ?? self.storeOptions
+        let customPackages = customPackages ?? self.customPackages
+        let predefinedOptions = predefinedOptions ?? self.predefinedOptions
+
+        return Networking.WooShippingPackagesResponse(
+            storeOptions: storeOptions,
+            customPackages: customPackages,
+            predefinedOptions: predefinedOptions
+        )
+    }
+}
+
 extension Networking.WooShippingCustomPackage {
     public func copy(
         id: CopiableProp<String> = .copy,

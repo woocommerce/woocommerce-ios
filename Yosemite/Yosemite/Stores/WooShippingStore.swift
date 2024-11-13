@@ -75,14 +75,7 @@ private extension WooShippingStore {
     }
 
     func loadPackages(siteID: Int64,
-                      completion: @escaping (Result<WooShippingPackagesResponse, PackageCreationError>) -> Void) {
-        remote.loadPackages(siteID: siteID) { result in
-            switch result {
-            case .success(let packages):
-                completion(.success(packages))
-            case .failure(let error):
-                completion(.failure(PackageCreationError(error: error)))
-            }
-        }
+                      completion: @escaping (Result<WooShippingPackagesResponse, Error>) -> Void) {
+        remote.loadPackages(siteID: siteID, completion: completion)
     }
 }

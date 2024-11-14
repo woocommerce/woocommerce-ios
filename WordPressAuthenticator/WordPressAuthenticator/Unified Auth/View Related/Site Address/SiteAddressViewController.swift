@@ -552,6 +552,23 @@ private extension SiteAddressViewController {
                     self?.navigationController?.pushViewController(customUI, animated: true)
                 }
             } else {
+                // Don't display error and allow login for suspended sites
+                //
+                if configuration.enableSiteCredentialsLoginForWPCOMSuspendedSites,
+                   let serviceError = error as? WordPressComBlogServiceError,
+                   serviceError == .wpcomSiteSuspended {
+                    successBlock(WordPressComSiteInfo(name: "",
+                                                      tagline: "",
+                                                      url: baseSiteUrl,
+                                                      hasJetpack: false,
+                                                      isJetpackActive: false,
+                                                      isJetpackConnected: false,
+                                                      icon: "",
+                                                      isWPCom: false,
+                                                      isWP: true,
+                                                      exists: true))
+                    return
+                }
                 self.displayError(message: Localization.invalidURL)
             }
         })

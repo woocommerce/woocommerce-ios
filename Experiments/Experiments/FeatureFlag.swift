@@ -200,4 +200,8 @@ public enum FeatureFlag: Int {
     /// Enables UI-related aspects of infinite scrolling in POS. It does not affect the actual infinite scrolling behaviour.
     ///
     case displayInfiniteScrollingUIDetailsInPointOfSale
+
+    /// Enables WPCom account creation during Jetpack setup
+    ///
+    case jetpackSetupWPComAccountCreation
 }

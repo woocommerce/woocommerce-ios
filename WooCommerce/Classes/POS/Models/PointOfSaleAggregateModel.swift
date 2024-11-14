@@ -50,22 +50,25 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     func loadNextItems() async {
-        guard !pageIsOutOfRange else {
-            return
-        }
-        itemListState = .loading(allItems)
-        let nextPage = currentPage + 1
-
         do {
+            guard !pageIsOutOfRange else {
+                return
+            }
+            itemListState = .loading(allItems)
+
+            let nextPage = currentPage + 1
             try await load(pageNumber: nextPage)
             pageIsOutOfRange = false
             currentPage = nextPage
-            itemListState = .loaded(allItems)
         } catch POSProductProviderError.pageOutOfRange {
+            if allItems.count == 0 {
+                itemListState = .empty
+            } else {
+                itemListState = .loaded(allItems)
+            }
             pageIsOutOfRange = true
-            itemListState = allItems.isEmpty ? .empty : .loaded(allItems)
         } catch {
-            itemListState = .loaded(allItems)
+            // No need to do anything; this avoids us incorrectly incrementing currentPage.
         }
     }
 

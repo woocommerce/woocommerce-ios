@@ -42,10 +42,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         observeTotalsOrderActions()
         observeConnectivity()
     }
-
-    private func startNewOrder() {
-        posModel.startNewCart()
-    }
 }
 
 private extension PointOfSaleDashboardViewModel {
@@ -116,13 +112,6 @@ private extension PointOfSaleDashboardViewModel {
     }
 
     func observeTotalsOrderActions() {
-        totalsViewModel.startNewOrderActionPublisher
-            .sink { [weak self] in
-                guard let self else { return }
-                self.startNewOrder()
-            }
-            .store(in: &cancellables)
-
         totalsViewModel.editOrderActionPublisher
             .sink { [weak self] in
                 guard let self else { return }

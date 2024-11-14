@@ -28,11 +28,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
 
     @ObservedObject var posModel: PointOfSaleAggregateModel
 
-    private let startNewOrderActionSubject = PassthroughSubject<Void, Never>()
-    var startNewOrderActionPublisher: AnyPublisher<Void, Never> {
-        startNewOrderActionSubject.eraseToAnyPublisher()
-    }
-
     private let editOrderActionSubject = PassthroughSubject<Void, Never>()
     var editOrderActionPublisher: AnyPublisher<Void, Never> {
         editOrderActionSubject.eraseToAnyPublisher()
@@ -76,7 +71,7 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     func startNewOrder() {
         paymentState = .acceptingCard
         cardPresentPaymentInlineMessage = nil
-        startNewOrderActionSubject.send(())
+        posModel.startNewCart()
     }
 
     /// Called when the onboarding UI is dismissed.

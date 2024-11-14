@@ -2,6 +2,8 @@ import Combine
 import UIKit
 import WordPressAuthenticator
 import protocol WooFoundation.Analytics
+import enum WordPressKit.WordPressAPIError
+import struct WordPressKit.WordPressComRestApiEndpointError
 
 /// A protocol used to mock `WordPressComAccountService` for unit tests.
 protocol WordPressComAccountServiceProtocol {
@@ -21,6 +23,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
 
     let termsAttributedString: NSAttributedString
 
+    private let allowAccountCreation: Bool
     private let accountService: WordPressComAccountServiceProtocol
     private let analytics: Analytics
     private let onPasswordUIRequest: (String) -> Void
@@ -31,12 +34,14 @@ final class WPComEmailLoginViewModel: ObservableObject {
 
     init(siteURL: String,
          requiresConnectionOnly: Bool,
+         allowAccountCreation: Bool,
          debounceDuration: Double = Constants.fieldDebounceDuration,
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          analytics: Analytics = ServiceLocator.analytics,
          onPasswordUIRequest: @escaping (String) -> Void,
          onMagicLinkUIRequest: @escaping (String) -> Void,
          onError: @escaping (String) -> Void) {
+        self.allowAccountCreation = allowAccountCreation
         self.analytics = analytics
         self.accountService = accountService
         self.onPasswordUIRequest = onPasswordUIRequest
@@ -78,8 +83,16 @@ final class WPComEmailLoginViewModel: ObservableObject {
             }
             await startAuthentication(email: email, isPasswordlessAccount: passwordless)
         } catch {
-            analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))
-            onError(error.localizedDescription)
+            if allowAccountCreation,
+               let apiError = error as? WordPressAPIError<WordPressComRestApiEndpointError>,
+               case let .endpointError(endpointError) = apiError,
+               endpointError.apiErrorCode == Constants.unknownUserErrorCode {
+                // The user does not exist yet, trigger magic link flow for account creation
+                await requestAuthenticationLink(email: email, forAccountCreation: true)
+            } else {
+                analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))
+                onError(error.localizedDescription)
+            }
         }
     }
 
@@ -93,12 +106,12 @@ final class WPComEmailLoginViewModel: ObservableObject {
     }
 
     @MainActor
-    func requestAuthenticationLink(email: String) async {
+    func requestAuthenticationLink(email: String, forAccountCreation: Bool = false) async {
         do {
             try await withCheckedThrowingContinuation { continuation in
                 accountService.requestAuthenticationLink(for: email,
                                                          jetpackLogin: false,
-                                                         createAccountIfNotFound: false,
+                                                         createAccountIfNotFound: forAccountCreation,
                                                          success: {
                     continuation.resume()
                 }, failure: { error in
@@ -119,6 +132,7 @@ extension WPComEmailLoginViewModel {
         static let jetpackTermsURL = "https://jetpack.com/redirect/?source=wpcom-tos&site="
         static let jetpackShareDetailsURL = "https://jetpack.com/redirect/?source=jetpack-support-what-data-does-jetpack-sync&site="
         static let wpcomErrorCodeKey = "WordPressComRestApiErrorCodeKey"
+        static let unknownUserErrorCode = "unknown_user"
     }
 
     enum Localization {

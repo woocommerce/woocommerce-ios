@@ -47,7 +47,10 @@ public class WordPressComAccountService {
 
     /// Requests a WordPress.com Authentication Link to be sent to the specified email address.
     ///
-    public func requestAuthenticationLink(for email: String, jetpackLogin: Bool, success: @escaping () -> Void, failure: @escaping (Error) -> Void) {
+    public func requestAuthenticationLink(for email: String,
+                                          jetpackLogin: Bool,
+                                          createAccountIfNotFound: Bool = false,
+                                          success: @escaping () -> Void, failure: @escaping (Error) -> Void) {
         let remote = AccountServiceRemoteREST(wordPressComRestApi: anonymousAPI)
 
         remote.requestWPComAuthLink(forEmail: email,
@@ -55,6 +58,7 @@ public class WordPressComAccountService {
                                     clientSecret: configuration.wpcomSecret,
                                     source: jetpackLogin ? .jetpackConnect : .default,
                                     wpcomScheme: configuration.wpcomScheme,
+                                    createAccountIfNotFound: createAccountIfNotFound,
                                     success: success,
                                     failure: { error in
             let result = error ?? ServiceError.unknown

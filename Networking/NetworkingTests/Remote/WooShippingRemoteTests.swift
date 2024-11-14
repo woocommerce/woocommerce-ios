@@ -122,6 +122,7 @@ final class WooShippingRemoteTests: XCTestCase {
         // Given
         let remote = WooShippingRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "packages", filename: "wooshipping-get-packages-success")
+        let expectedCustomPackage = sampleCustomPackage()
 
         // When
         let result: Result<WooShippingPackagesResponse, Error> = waitFor { promise in
@@ -135,6 +136,11 @@ final class WooShippingRemoteTests: XCTestCase {
         XCTAssertEqual(successResponse.savedPredefinedOptions.count, 1)
         XCTAssertEqual(successResponse.savedPredefinedOptions.first?.id, "usps")
         XCTAssertEqual(successResponse.savedPredefinedOptions.first?.predefinedPackageIDs.count, 2)
+
+        XCTAssertEqual(successResponse.customPackages.count, 1)
+        XCTAssertEqual(successResponse.customPackages.first, expectedCustomPackage)
+
+        XCTAssertEqual(successResponse.allPredefinedOptions.count, 2)
     }
 
     func test_loadPackages_returns_error_on_failure() throws {
@@ -169,5 +175,13 @@ private extension WooShippingRemoteTests {
                                  isPickupFree: false,
                                  deliveryDays: 7,
                                  deliveryDateGuaranteed: false)
+    }
+
+    func sampleCustomPackage() -> WooShippingCustomPackage {
+        WooShippingCustomPackage(id: "849225dc153",
+                                 name: "Custom name",
+                                 rawType: "box",
+                                 dimensions: "12 x 12 x 12",
+                                 boxWeight: 0.01)
     }
 }

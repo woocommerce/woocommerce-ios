@@ -40,7 +40,7 @@ public final class POSProductProvider: POSItemProvider {
     public func providePointOfSaleItems(pageNumber: Int = 1) async throws -> [POSItem] {
         let products = try await productsRemote.loadSimpleProductsForPointOfSale(for: siteID, pageNumber: pageNumber)
 
-        if products.count == 0 {
+        if pageNumber != 1 && products.count == 0 {
             throw POSProductProviderError.pageOutOfRange
         }
 

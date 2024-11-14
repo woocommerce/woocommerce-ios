@@ -50,7 +50,7 @@ public final class POSProductProvider: POSItemProvider {
             hasPrice
         ]
         let filteredProducts = filterProducts(products: products, using: eligibilityCriteria)
-        
+
         return mapProductsToPOSItems(products: filteredProducts)
     }
 

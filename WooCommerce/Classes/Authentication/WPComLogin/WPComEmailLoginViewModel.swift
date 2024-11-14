@@ -6,7 +6,7 @@ import protocol WooFoundation.Analytics
 /// A protocol used to mock `WordPressComAccountService` for unit tests.
 protocol WordPressComAccountServiceProtocol {
     func isPasswordlessAccount(username: String, success: @escaping (Bool) -> Void, failure: @escaping (Error) -> Void)
-    func requestAuthenticationLink(for email: String, jetpackLogin: Bool, success: @escaping () -> Void, failure: @escaping (Error) -> Void)
+    func requestAuthenticationLink(for email: String, jetpackLogin: Bool, createAccountIfNotFound: Bool, success: @escaping () -> Void, failure: @escaping (Error) -> Void)
 }
 
 /// Conformance
@@ -96,7 +96,10 @@ final class WPComEmailLoginViewModel: ObservableObject {
     func requestAuthenticationLink(email: String) async {
         do {
             try await withCheckedThrowingContinuation { continuation in
-                accountService.requestAuthenticationLink(for: email, jetpackLogin: false, success: {
+                accountService.requestAuthenticationLink(for: email,
+                                                         jetpackLogin: false,
+                                                         createAccountIfNotFound: false,
+                                                         success: {
                     continuation.resume()
                 }, failure: { error in
                     continuation.resume(throwing: error)

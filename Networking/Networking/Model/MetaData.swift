@@ -68,8 +68,9 @@ public struct MetaDataValue: Codable, Equatable, Sendable {
 
     public init(rawValue: String) {
         let data = Data(rawValue.utf8)
-        if let jsonObject = try? JSONDecoder().decode(AnyCodable.self, from: data) {
-            valueHolder = try! ValueHolder(from: jsonObject.value)
+        if let jsonObject = try? JSONDecoder().decode(AnyCodable.self, from: data),
+           let value = try? ValueHolder(from: jsonObject.value) {
+            valueHolder = value
         } else {
             valueHolder = .string(rawValue.removingPrefix("\"").removingSuffix("\""))
         }

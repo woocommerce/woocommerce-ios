@@ -4,11 +4,6 @@ RELEASE_VERSION="${1:?RELEASE_VERSION parameter missing}"
 
 echo "--- :git: Checkout Release Branch"
 
-if [[ -z "${RELEASE_VERSION}" ]]; then
-    echo "RELEASE_VERSION is not set."
-    exit 1
-fi
-
 # Buildkite, by default, checks out a specific commit. For many release actions, we need to be
 # on a release branch instead.
 BRANCH_NAME="release/${RELEASE_VERSION}"

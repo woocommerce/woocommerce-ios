@@ -9,7 +9,8 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     private let sampleAdData = BlazeEditAdData(image: MediaPickerImage(image: UIImage.emailImage,
                                                                        source: .media(media: .fake())),
                                                tagline: "Sample Tagline",
-                                               description: "Sample description")
+                                               description: "Sample description",
+                                               ctaText: "Sample CTA")
 
     private let sampleAISuggestions = [BlazeAISuggestion(siteName: "First suggested tagline", textSnippet: "First suggested description"),
                                        BlazeAISuggestion(siteName: "Second suggested tagline", textSnippet: "Second suggested description"),
@@ -212,6 +213,84 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         XCTAssertEqual(sut.descriptionFooterText, expectedMessage)
     }
 
+    // MARK: CTA
+    func test_ctaText_footer_text_is_plural_when_multiple_characters_remaining() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
+                                       adData: sampleAdData,
+                                       suggestions: [.fake()],
+                                       onSave: { _ in })
+        // When
+        sut.ctaText = sampleString(length: 1)
+
+        // Then
+        let expectedString = String(format: BlazeEditAdViewModel.Localization.LengthLimit.plural, 25)
+        XCTAssertEqual(sut.ctaTextFooterText, expectedString)
+    }
+
+    func test_ctaText_footer_text_is_singular_when_one_character_remaining() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
+                                       adData: sampleAdData,
+                                       suggestions: [.fake()],
+                                       onSave: { _ in })
+        // When
+        sut.ctaText = sampleString(length: 25)
+
+        // Then
+        let expectedString = String(format: BlazeEditAdViewModel.Localization.LengthLimit.singular, 1)
+        XCTAssertEqual(sut.ctaTextFooterText, expectedString)
+    }
+
+    func test_ctaText_footer_text_is_plural_when_zero_characters_remaining() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
+                                       adData: sampleAdData,
+                                       suggestions: [.fake()],
+                                       onSave: { _ in })
+        // When
+        sut.ctaText = sampleString(length: 26)
+
+        // Then
+        let expectedString = String(format: BlazeEditAdViewModel.Localization.LengthLimit.plural, 0)
+        XCTAssertEqual(sut.ctaTextFooterText, expectedString)
+    }
+
+    func test_ctaText_footer_text_is_plural_when_empty() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
+                                       adData: sampleAdData,
+                                       suggestions: [.fake()],
+                                       onSave: { _ in })
+
+        // When
+        sut.ctaText = ""
+
+        // Then
+        let expectedString = String(format: BlazeEditAdViewModel.Localization.LengthLimit.plural, 26)
+        XCTAssertEqual(sut.ctaTextFooterText, expectedString)
+    }
+
+    func test_ctaText_footer_text_shows_error_when_tagline_exceeds_limit() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
+                                       adData: sampleAdData,
+                                       suggestions: [.fake()],
+                                       onSave: { _ in })
+
+        // When
+        sut.ctaText = String(repeating: "a", count: BlazeEditAdViewModel.Constants.ctaTextMaxLength + 1)
+
+        // Then
+        let expectedMessage = String(format: BlazeEditAdViewModel.Localization.ctaTextLengthExceedsLimit, BlazeEditAdViewModel.Constants.ctaTextMaxLength)
+        XCTAssertEqual(sut.ctaTextFooterText, expectedMessage)
+    }
+
     // MARK: Save button
     func test_save_button_is_disabled_when_no_change_made_to_ad_data() {
         // Given
@@ -252,7 +331,8 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: BlazeEditAdData(image: nil,
                                                                tagline: "Sample Tagline",
-                                                               description: "Sample description"),
+                                                               description: "Sample description",
+                                                               ctaText: "Sample CTA"),
                                        suggestions: [.fake()],
                                        onSave: { _ in })
 
@@ -308,6 +388,21 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         XCTAssertFalse(sut.isSaveButtonEnabled)
     }
 
+    func test_save_button_is_disabled_when_cta_exceeds_character_limit() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
+                                       adData: sampleAdData,
+                                       suggestions: [.fake()],
+                                       onSave: { _ in })
+
+        // When
+        sut.ctaText = String(repeating: "a", count: BlazeEditAdViewModel.Constants.ctaTextMaxLength + 1)
+
+        // Then
+        XCTAssertFalse(sut.isSaveButtonEnabled)
+    }
+
     func test_save_button_is_disabled_when_description_exceeds_character_limit() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
@@ -329,7 +424,8 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: BlazeEditAdData(image: nil,
                                                                tagline: "Sample Tagline",
-                                                               description: "Sample description"),
+                                                               description: "Sample description",
+                                                               ctaText: "Sample CTA"),
                                        suggestions: [.fake()],
                                        onSave: { _ in })
 
@@ -520,7 +616,8 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        adData: BlazeEditAdData(image: MediaPickerImage(image: UIImage.emailImage,
                                                                                        source: .media(media: .fake())),
                                                                tagline: sampleAISuggestions[1].siteName,
-                                                               description: sampleAISuggestions[1].textSnippet),
+                                                               description: sampleAISuggestions[1].textSnippet,
+                                                               ctaText: sampleAdData.ctaText),
                                        suggestions: sampleAISuggestions,
                                        onSave: { _ in })
 
@@ -594,7 +691,8 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        adData: BlazeEditAdData(image: MediaPickerImage(image: UIImage.emailImage,
                                                                                        source: .media(media: .fake())),
                                                                tagline: sampleAISuggestions[1].siteName,
-                                                               description: sampleAISuggestions[1].textSnippet),
+                                                               description: sampleAISuggestions[1].textSnippet,
+                                                               ctaText: sampleAdData.ctaText),
                                        suggestions: sampleAISuggestions,
                                        analytics: analytics,
                                        onSave: { _ in })
@@ -619,7 +717,8 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        adData: BlazeEditAdData(image: MediaPickerImage(image: UIImage.emailImage,
                                                                                        source: .media(media: .fake())),
                                                                tagline: sampleAISuggestions[1].siteName,
-                                                               description: sampleAISuggestions[1].textSnippet),
+                                                               description: sampleAISuggestions[1].textSnippet,
+                                                               ctaText: sampleAdData.ctaText),
                                        suggestions: sampleAISuggestions,
                                        analytics: analytics,
                                        onSave: { _ in })

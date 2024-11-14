@@ -30,6 +30,9 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
                 .eraseToAnyPublisher()
         }
         return Publishers.CombineLatest(isWooCommerceVersionSupported, isPointOfSaleFeatureFlagEnabled)
+            .filter { [weak self] _ in
+                self?.isEligibleFromSiteChecks ?? false
+            }
             .map { $0 && $1 }
             .eraseToAnyPublisher()
     }

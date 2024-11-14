@@ -305,7 +305,7 @@ private extension BlazeCampaignCreationForm {
                 }
 
                 if viewModel.isLoadingAISuggestions ||
-                   viewModel.ctaText.isNotEmpty {
+                    viewModel.ctaText.isNotEmpty {
                     Text(viewModel.isLoadingAISuggestions ? "CTA placeholder" : viewModel.ctaText)
                         .font(.system(size: Constants.ctaButtonFontSize))
                         .foregroundColor(Constants.backgroundViewColor)

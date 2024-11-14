@@ -953,6 +953,7 @@
 		DAF367982CE4AA0400D1B327 /* WooShippingPackagesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAF367972CE4A9FC00D1B327 /* WooShippingPackagesResponse.swift */; };
 		DAF3679A2CE6480600D1B327 /* WooShippingPredefinedPackage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAF367992CE647FA00D1B327 /* WooShippingPredefinedPackage.swift */; };
 		DAF3679C2CE6557E00D1B327 /* WooShippingPredefinedSavedOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAF3679B2CE6557C00D1B327 /* WooShippingPredefinedSavedOption.swift */; };
+		DAF367A02CE65A8B00D1B327 /* wooshipping-get-packages-success.json in Resources */ = {isa = PBXBuildFile; fileRef = DAF3679E2CE65A8B00D1B327 /* wooshipping-get-packages-success.json */; };
 		DE02ABB12B5636FC008E0AC4 /* BlazePaymentInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE02ABB02B5636FC008E0AC4 /* BlazePaymentInfo.swift */; };
 		DE02ABB32B563E61008E0AC4 /* blaze-payment-info.json in Resources */ = {isa = PBXBuildFile; fileRef = DE02ABB22B563E61008E0AC4 /* blaze-payment-info.json */; };
 		DE02ABB52B563E96008E0AC4 /* BlazePaymentInfoMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE02ABB42B563E96008E0AC4 /* BlazePaymentInfoMapper.swift */; };
@@ -2127,6 +2128,7 @@
 		DAF367972CE4A9FC00D1B327 /* WooShippingPackagesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingPackagesResponse.swift; sourceTree = "<group>"; };
 		DAF367992CE647FA00D1B327 /* WooShippingPredefinedPackage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingPredefinedPackage.swift; sourceTree = "<group>"; };
 		DAF3679B2CE6557C00D1B327 /* WooShippingPredefinedSavedOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingPredefinedSavedOption.swift; sourceTree = "<group>"; };
+		DAF3679E2CE65A8B00D1B327 /* wooshipping-get-packages-success.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wooshipping-get-packages-success.json"; sourceTree = "<group>"; };
 		DE02ABB02B5636FC008E0AC4 /* BlazePaymentInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazePaymentInfo.swift; sourceTree = "<group>"; };
 		DE02ABB22B563E61008E0AC4 /* blaze-payment-info.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "blaze-payment-info.json"; sourceTree = "<group>"; };
 		DE02ABB42B563E96008E0AC4 /* BlazePaymentInfoMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazePaymentInfoMapper.swift; sourceTree = "<group>"; };
@@ -3507,6 +3509,7 @@
 				453954D52C9193BC00A3E64A /* meta-data-products-orders-update.json */,
 				95122E3D2CB82C0A0079FF0A /* generate-product-success-wrapped.json */,
 				CE0F4EC82CE3753F006339BD /* wooshipping-get-label-rates-success.json */,
+				DAF3679E2CE65A8B00D1B327 /* wooshipping-get-packages-success.json */,
 				CE0F4ECC2CE375DD006339BD /* wooshipping-get-label-rates-error.json */,
 			);
 			path = Responses;
@@ -4482,6 +4485,7 @@
 				EE9826902B17189B00A3F57E /* product-subscription-sync-renewals-day-month-format.json in Resources */,
 				DEB387902C2D71A10025256E /* gla-campaign-list-with-data-envelope.json in Resources */,
 				7492FAE3217FBDBC00ED2C69 /* settings-general-alt.json in Resources */,
+				DAF367A02CE65A8B00D1B327 /* wooshipping-get-packages-success.json in Resources */,
 				93D8BBFF226BC1DA00AD2EB3 /* me-settings.json in Resources */,
 				74C947842193A6C70024CB60 /* comment-moderate-approved.json in Resources */,
 				DEC51AED2768A0AD009F3DF4 /* systemStatusWithPluginsOnly.json in Resources */,

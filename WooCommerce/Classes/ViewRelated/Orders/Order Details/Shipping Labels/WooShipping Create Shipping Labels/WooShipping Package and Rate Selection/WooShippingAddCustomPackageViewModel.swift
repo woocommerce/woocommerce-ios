@@ -62,15 +62,15 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
 
     private var packageDataFromCurrentData: WooShippingPackageDataRepresentable {
         return WooShippingPackageData(id: UUID().uuidString,
-                                   name: packageTemplateName,
-                                   length: fieldValues[.length] ?? "",
-                                   width: fieldValues[.width] ?? "",
-                                   height: fieldValues[.height] ?? "",
-                                   dimensionsUnit: dimensionsUnit,
-                                   weight: fieldValues[.weight] ?? "",
-                                   weightUnit: weightUnit,
-                                   source: .custom,
-                                   packageType: packageType.name)
+                                      name: packageTemplateName,
+                                      length: fieldValues[.length] ?? "",
+                                      width: fieldValues[.width] ?? "",
+                                      height: fieldValues[.height] ?? "",
+                                      dimensionsUnit: dimensionsUnit,
+                                      weight: fieldValues[.weight] ?? "",
+                                      weightUnit: weightUnit,
+                                      source: .custom,
+                                      packageType: packageType.rawValue)
     }
 
     private func preparePackageData() -> WooShippingPackageDataRepresentable? {
@@ -181,7 +181,7 @@ extension WooShippingPackageUnitType {
     }
 }
 
-enum WooShippingPackageType: CaseIterable {
+enum WooShippingPackageType: String, CaseIterable {
     case box, envelope
     var name: String {
         switch self {

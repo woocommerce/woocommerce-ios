@@ -63,7 +63,7 @@ struct CartView: View {
                             )
                     }
                     .padding(.leading, Constants.itemHorizontalPadding)
-                    .renderedIf(posModel.cart.isNotEmpty && cartViewModel.canDeleteItemsFromCart)
+                    .renderedIf(posModel.cart.isNotEmpty && posModel.orderStage == .building)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -77,7 +77,7 @@ struct CartView: View {
                         VStack(spacing: 0) {
                             ForEach(posModel.cart, id: \.id) { cartItem in
                                 ItemRowView(cartItem: cartItem,
-                                            onItemRemoveTapped: cartViewModel.canDeleteItemsFromCart ? {
+                                            onItemRemoveTapped: posModel.orderStage == .building ? {
                                     posModel.remove(cartItem: cartItem)
                                 } : nil)
                                 .id(cartItem.id)
@@ -96,7 +96,7 @@ struct CartView: View {
                     }
                     .coordinateSpace(name: Constants.scrollViewCoordinateSpaceIdentifier)
                     .onChange(of: posModel.cart.first?.id) { itemToScrollTo in
-                        if viewModel.orderStage == .building {
+                        if posModel.orderStage == .building {
                             withAnimation {
                                 proxy.scrollTo(itemToScrollTo)
                             }
@@ -105,7 +105,7 @@ struct CartView: View {
                 }
             }
             Spacer()
-            switch viewModel.orderStage {
+            switch posModel.orderStage {
             case .building:
                 if posModel.cart.isEmpty {
                     EmptyView()
@@ -195,6 +195,8 @@ private extension CartView {
 private extension CartView {
     var checkoutButton: some View {
         Button {
+            posModel.submitCart()
+            // Remove when totalsViewModel doesn't do the submission any more
             cartViewModel.submitCart()
         } label: {
             Text(Localization.checkoutButtonTitle)
@@ -204,12 +206,12 @@ private extension CartView {
 
     @ViewBuilder
     var backAddMoreButton: some View {
-        switch viewModel.orderStage {
+        switch posModel.orderStage {
         case .building:
             EmptyView()
         case .finalizing:
             Button {
-                cartViewModel.addMoreToCart()
+                posModel.addMoreToCart()
             } label: {
                 Image(systemName: Constants.backButtonSymbol)
                     .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)

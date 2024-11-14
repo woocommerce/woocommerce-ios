@@ -16,13 +16,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     let cardReaderConnectionViewModel: CardReaderConnectionViewModel
     private let connectivityObserver: ConnectivityObserver
 
-    enum OrderStage {
-        case building
-        case finalizing
-    }
-
-    @Published private(set) var orderStage: OrderStage = .building
-
     @Published private(set) var isAddMoreDisabled: Bool = false
     @Published var isExitPOSDisabled: Bool = false
     @Published var isReaderDisconnectionDisabled: Bool = false
@@ -47,24 +40,15 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         self.cartViewModel = cartViewModel
         self.connectivityObserver = connectivityObserver
 
-        observeOrderStage()
         observeSelectedItemToAddToCart()
         observeCartSubmission()
-        observeCartAddMoreAction()
-        observeCartItemsToCheckIfCartIsEmpty()
         observePaymentStateForButtonDisabledProperties()
         observeTotalsOrderActions()
         observeConnectivity()
     }
 
     private func startNewOrder() {
-        // clear cart
-        posModel.removeAllItemsFromCart()
-        orderStage = .building
-    }
-
-    private func editOrder() {
-        orderStage = .building
+        posModel.startNewCart()
     }
 
     private func cartSubmitted(cartItems: [CartItem]) {
@@ -85,26 +69,7 @@ private extension PointOfSaleDashboardViewModel {
         cartViewModel.cartSubmissionPublisher
             .sink { [weak self] cartItems in
                 guard let self else { return }
-                self.orderStage = .finalizing
                 self.cartSubmitted(cartItems: cartItems)
-            }
-            .store(in: &cancellables)
-    }
-
-    func observeCartAddMoreAction() {
-        cartViewModel.addMoreToCartActionPublisher
-            .sink { [weak self] in
-                guard let self else { return }
-                self.orderStage = .building
-            }
-            .store(in: &cancellables)
-    }
-
-    func observeCartItemsToCheckIfCartIsEmpty() {
-        cartViewModel.itemsInCartPublisher
-            .filter { $0.isEmpty }
-            .sink { [weak self] _ in
-                self?.orderStage = .building
             }
             .store(in: &cancellables)
     }
@@ -167,23 +132,6 @@ private extension PointOfSaleDashboardViewModel {
 
     }
 
-    private func observeOrderStage() {
-        $orderStage
-            .removeDuplicates()
-            .sink { [weak self] stage in
-            guard let self else { return }
-            cartViewModel.canDeleteItemsFromCart = stage == .building
-
-            switch stage {
-            case .building:
-                totalsViewModel.stopShowingTotalsView()
-            case .finalizing:
-                totalsViewModel.startShowingTotalsView()
-            }
-        }
-        .store(in: &cancellables)
-    }
-
     func observeTotalsOrderActions() {
         totalsViewModel.startNewOrderActionPublisher
             .sink { [weak self] in
@@ -195,7 +143,7 @@ private extension PointOfSaleDashboardViewModel {
         totalsViewModel.editOrderActionPublisher
             .sink { [weak self] in
                 guard let self else { return }
-                self.editOrder()
+                posModel.addMoreToCart()
             }
             .store(in: &cancellables)
     }

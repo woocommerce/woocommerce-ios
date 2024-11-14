@@ -86,12 +86,20 @@ struct PointOfSaleDashboardView: View {
         .task {
             await viewModel.itemListViewModel.loadInitialItems()
         }
+        .onChange(of: posModel.orderStage) { newValue in
+            switch newValue {
+            case .building:
+                totalsViewModel.stopShowingTotalsView()
+            case .finalizing:
+                totalsViewModel.startShowingTotalsView()
+            }
+        }
     }
 
     private var contentView: some View {
         GeometryReader { geometry in
             HStack {
-                if viewModel.orderStage == .building {
+                if posModel.orderStage == .building {
                     productListView
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .leading))
@@ -104,13 +112,13 @@ struct PointOfSaleDashboardView: View {
                         .ignoresSafeArea(edges: .bottom)
                 }
 
-                if viewModel.orderStage == .finalizing {
+                if posModel.orderStage == .finalizing {
                     totalsView
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .trailing))
                 }
             }
-            .animation(.default, value: viewModel.orderStage)
+            .animation(.default, value: posModel.orderStage)
             .animation(.default, value: viewModel.isTotalsViewFullScreen)
         }
     }

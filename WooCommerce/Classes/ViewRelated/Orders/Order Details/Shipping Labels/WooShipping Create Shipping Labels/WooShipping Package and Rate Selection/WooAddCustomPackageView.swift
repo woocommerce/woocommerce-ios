@@ -13,6 +13,7 @@ struct WooAddCustomPackageView: View {
     @FocusState var focusedField: WooShippingPackageUnitType?
 
     @State private var isSavingPackage: Bool = false
+    @State private var isAddingPackage: Bool = false
 
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
@@ -126,10 +127,14 @@ struct WooAddCustomPackageView: View {
                         else {
                             Spacer()
                             Button(WooShippingAddPackageView.Localization.addPackage) {
-                                addPackageButtonTapped()
+                                Task { @MainActor in
+                                    isAddingPackage = true
+                                    await addPackageButtonTapped()
+                                    isAddingPackage = false
+                                }
                             }
                             .disabled(!viewModel.validateCustomPackageInputFields())
-                            .buttonStyle(PrimaryButtonStyle())
+                            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isAddingPackage))
                             .padding(.bottom)
                         }
                     }
@@ -169,31 +174,30 @@ struct WooAddCustomPackageView: View {
 
     // MARK: - actions
 
-    private func addPackageButtonTapped() {
-        Task {
-            let packageDataResult = await viewModel.addPackageAction()
-            // call addPackageAction with data
-            switch packageDataResult {
-            case .success(let data):
-                addPackageAction(data)
-            case .failure(let failure):
-                // show failure
-                print(failure)
-            }
+    @MainActor
+    private func addPackageButtonTapped() async {
+        let packageDataResult = await viewModel.addPackageAction()
+        // call addPackageAction with data
+        switch packageDataResult {
+        case .success(let data):
+            addPackageAction(data)
+        case .failure(let failure):
+            // show failure
+            print(failure)
         }
     }
 
     @MainActor
     private func savePackageAsTemplateButtonTapped() async {
-      let packageDataResult = await viewModel.savePackageAsTemplateAction()
-      // call addPackageAction with data
-      switch packageDataResult {
-      case .success(let data):
-        addPackageAction(data)
-      case .failure(let failure):
-        // show failure
-        print(failure)
-      }
+        let packageDataResult = await viewModel.savePackageAsTemplateAction()
+        // call addPackageAction with data
+        switch packageDataResult {
+        case .success(let data):
+            addPackageAction(data)
+        case .failure(let failure):
+            // show failure
+            print(failure)
+        }
     }
 
     private func onBackwardButtonTapped() {

@@ -52,7 +52,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .giftCardInOrderForm:
             return true
-        case .wooPaymentsDepositsOverviewInPaymentsMenu:
+        case .wooPaymentsPayoutsOverviewInPaymentsMenu:
             return true
         case .tapToPayOnIPhoneInUK:
             return true

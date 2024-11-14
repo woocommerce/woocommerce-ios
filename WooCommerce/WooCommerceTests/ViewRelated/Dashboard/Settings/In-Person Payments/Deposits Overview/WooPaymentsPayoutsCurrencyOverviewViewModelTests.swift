@@ -3,15 +3,15 @@ import XCTest
 import WooFoundation
 import Yosemite
 
-final class WooPaymentsDepositsCurrencyOverviewViewModelTests: XCTestCase {
+final class WooPaymentsPayoutsCurrencyOverviewViewModelTests: XCTestCase {
 
-    var sut: WooPaymentsDepositsCurrencyOverviewViewModel!
+    var sut: WooPaymentsPayoutsCurrencyOverviewViewModel!
     var analyticsProvider: MockAnalyticsProvider!
 
     override func setUp() {
         analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        sut = WooPaymentsDepositsCurrencyOverviewViewModel(overview: .fake(), analytics: analytics)
+        sut = WooPaymentsPayoutsCurrencyOverviewViewModel(overview: .fake(), analytics: analytics)
     }
 
     func test_when_expand_is_tapped_analytic_event_is_tracked() {
@@ -22,7 +22,7 @@ final class WooPaymentsDepositsCurrencyOverviewViewModelTests: XCTestCase {
         sut.expandTapped(expanded: expanded)
 
         // Then
-        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuDepositSummaryExpanded.rawValue))
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuPayoutSummaryExpanded.rawValue))
     }
 
     func test_when_collapse_is_tapped_analytic_event_is_not_tracked() {
@@ -33,7 +33,7 @@ final class WooPaymentsDepositsCurrencyOverviewViewModelTests: XCTestCase {
         sut.expandTapped(expanded: collapse)
 
         // Then
-        XCTAssertFalse(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuDepositSummaryExpanded.rawValue))
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuPayoutSummaryExpanded.rawValue))
     }
 
     func test_when_learn_more_is_tapped_analytic_event_is_tracked() {
@@ -43,17 +43,17 @@ final class WooPaymentsDepositsCurrencyOverviewViewModelTests: XCTestCase {
         sut.learnMoreTapped()
 
         // Then
-        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuDepositSummaryLearnMoreTapped.rawValue))
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuPayoutSummaryLearnMoreTapped.rawValue))
     }
 
-    func test_when_learn_more_is_tapped_deposit_schedule_info_webview_is_shown() {
+    func test_when_learn_more_is_tapped_payout_schedule_info_webview_is_shown() {
         // Given
 
         // When
         sut.learnMoreTapped()
 
         // Then
-        assertEqual(WooConstants.URLs.wooPaymentsDepositSchedule.asURL(), sut.showWebviewURL)
+        assertEqual(WooConstants.URLs.wooPaymentsPayoutSchedule.asURL(), sut.showWebviewURL)
     }
 
     func test_when_currency_matches_site_settings_amounts_formatted_using_woo_currency_formatter() {
@@ -63,10 +63,10 @@ final class WooPaymentsDepositsCurrencyOverviewViewModelTests: XCTestCase {
                                                 thousandSeparator: ",",
                                                 decimalSeparator: ".",
                                                 numberOfDecimals: 2)
-        let overview = WooPaymentsDepositsOverviewByCurrency.fake().copy(currency: .USD, availableBalance: .init(string: "12.35"))
+        let overview = WooPaymentsPayoutsOverviewByCurrency.fake().copy(currency: .USD, availableBalance: .init(string: "12.35"))
 
         // When
-        sut = WooPaymentsDepositsCurrencyOverviewViewModel(overview: overview, locale: Locale(identifier: "en-ca"))
+        sut = WooPaymentsPayoutsCurrencyOverviewViewModel(overview: overview, locale: Locale(identifier: "en-ca"))
 
         // Then
         assertEqual(sut.availableBalance, "$12.35")
@@ -79,10 +79,10 @@ final class WooPaymentsDepositsCurrencyOverviewViewModelTests: XCTestCase {
                                                 thousandSeparator: ",",
                                                 decimalSeparator: ".",
                                                 numberOfDecimals: 2)
-        let overview = WooPaymentsDepositsOverviewByCurrency.fake().copy(currency: .CAD, availableBalance: .init(string: "12.35"))
+        let overview = WooPaymentsPayoutsOverviewByCurrency.fake().copy(currency: .CAD, availableBalance: .init(string: "12.35"))
 
         // When
-        sut = WooPaymentsDepositsCurrencyOverviewViewModel(overview: overview, locale: Locale(identifier: "en-us"))
+        sut = WooPaymentsPayoutsCurrencyOverviewViewModel(overview: overview, locale: Locale(identifier: "en-us"))
 
         // Then
         assertEqual(sut.availableBalance, "CA$12.35")

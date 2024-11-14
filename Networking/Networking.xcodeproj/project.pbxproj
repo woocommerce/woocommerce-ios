@@ -181,7 +181,7 @@
 		077F39E626A5D15800ABEADC /* SystemPluginMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39DB26A58F4800ABEADC /* SystemPluginMapperTests.swift */; };
 		09885C8027C3FFD200910A62 /* product-variations-bulk-update.json in Resources */ = {isa = PBXBuildFile; fileRef = 09885C7F27C3FFD200910A62 /* product-variations-bulk-update.json */; };
 		09EA564B27C75FCE00407D40 /* ProductVariationsBulkUpdateMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09EA564A27C75FCE00407D40 /* ProductVariationsBulkUpdateMapper.swift */; };
-		209AD3C32AC196E300825D76 /* WooPaymentsDepositsOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3C22AC196E300825D76 /* WooPaymentsDepositsOverview.swift */; };
+		209AD3C32AC196E300825D76 /* WooPaymentsPayoutsOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3C22AC196E300825D76 /* WooPaymentsPayoutsOverview.swift */; };
 		209AD3C52AC19E7500825D76 /* WooPaymentsDepositsOverviewMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3C42AC19E7500825D76 /* WooPaymentsDepositsOverviewMapper.swift */; };
 		20D210C32B1780CE0099E517 /* deposits-overview-all.json in Resources */ = {isa = PBXBuildFile; fileRef = 20D210C22B1780CE0099E517 /* deposits-overview-all.json */; };
 		20D210C52B1788E60099E517 /* deposits-overview-all-no-default-currency.json in Resources */ = {isa = PBXBuildFile; fileRef = 20D210C42B1788E60099E517 /* deposits-overview-all-no-default-currency.json */; };
@@ -1452,7 +1452,7 @@
 		09885C7F27C3FFD200910A62 /* product-variations-bulk-update.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variations-bulk-update.json"; sourceTree = "<group>"; };
 		09EA564A27C75FCE00407D40 /* ProductVariationsBulkUpdateMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationsBulkUpdateMapper.swift; sourceTree = "<group>"; };
 		14CE248C7246705417A41DE1 /* Pods-NetworkingWatchOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingWatchOS.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingWatchOS/Pods-NetworkingWatchOS.release.xcconfig"; sourceTree = "<group>"; };
-		209AD3C22AC196E300825D76 /* WooPaymentsDepositsOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsOverview.swift; sourceTree = "<group>"; };
+		209AD3C22AC196E300825D76 /* WooPaymentsPayoutsOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsOverview.swift; sourceTree = "<group>"; };
 		209AD3C42AC19E7500825D76 /* WooPaymentsDepositsOverviewMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsOverviewMapper.swift; sourceTree = "<group>"; };
 		20D210C22B1780CE0099E517 /* deposits-overview-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "deposits-overview-all.json"; sourceTree = "<group>"; };
 		20D210C42B1788E60099E517 /* deposits-overview-all-no-default-currency.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "deposits-overview-all-no-default-currency.json"; sourceTree = "<group>"; };
@@ -3029,7 +3029,7 @@
 				0359EA0C27AAC5F80048DE2D /* WCPayChargeStatus.swift */,
 				3105470B262E27F000C5C02B /* WCPayPaymentIntentStatusEnum.swift */,
 				0359EA0E27AAC6410048DE2D /* WCPayPaymentMethodDetails.swift */,
-				209AD3C22AC196E300825D76 /* WooPaymentsDepositsOverview.swift */,
+				209AD3C22AC196E300825D76 /* WooPaymentsPayoutsOverview.swift */,
 				E1BAB2C62913FB5800C3982B /* WordPressApiError.swift */,
 				DE2E8E9C29530EEF002E4B14 /* WordPressSite.swift */,
 				EE2C09C729AF6357009396F9 /* StoreOnboardingTask.swift */,
@@ -4975,7 +4975,7 @@
 				74ABA1CD213F1B6B00FFAD30 /* TopEarnerStats.swift in Sources */,
 				CCAAD10F2683974000909664 /* ShippingLabelPackagePurchase.swift in Sources */,
 				265EFBDC285257950033BD33 /* Order+Fallbacks.swift in Sources */,
-				209AD3C32AC196E300825D76 /* WooPaymentsDepositsOverview.swift in Sources */,
+				209AD3C32AC196E300825D76 /* WooPaymentsPayoutsOverview.swift in Sources */,
 				CEC7D5932CDD0D9900111B79 /* WooShippingPredefinedOption.swift in Sources */,
 				021940E2291E3CFD0090354E /* SiteRemote.swift in Sources */,
 				B557DA0220975500005962F4 /* JetpackRequest.swift in Sources */,

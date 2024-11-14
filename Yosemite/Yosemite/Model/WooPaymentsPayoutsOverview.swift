@@ -1,19 +1,18 @@
 import Foundation
 import WooFoundation
 import Networking
+import Codegen
 
-public struct WooPaymentsPayoutsOverviewByCurrency {
+public struct WooPaymentsPayoutsOverviewByCurrency: GeneratedCopiable, GeneratedFakeable {
     public let currency: CurrencyCode
     public let automaticPayouts: Bool
     public let payoutInterval: WooPaymentsPayoutInterval
     public let pendingBalanceAmount: NSDecimalNumber
-    public let pendingPayoutsCount: Int
     public let pendingPayoutDays: Int
-    public let nextPayout: NextPayout?
     public let lastPayout: LastPayout?
     public let availableBalance: NSDecimalNumber
 
-    public struct NextPayout {
+    public struct LastPayout {
         public let amount: NSDecimalNumber
         public let date: Date
         public let status: WooPaymentsPayoutStatus
@@ -25,32 +24,18 @@ public struct WooPaymentsPayoutsOverviewByCurrency {
         }
     }
 
-    public struct LastPayout {
-        public let amount: NSDecimalNumber
-        public let date: Date
-
-        public init(amount: NSDecimalNumber, date: Date) {
-            self.amount = amount
-            self.date = date
-        }
-    }
-
     public init(currency: CurrencyCode,
                 automaticPayouts: Bool,
                 payoutInterval: WooPaymentsPayoutInterval,
                 pendingBalanceAmount: NSDecimalNumber,
-                pendingPayoutsCount: Int,
                 pendingPayoutDays: Int,
-                nextPayout: NextPayout?,
                 lastPayout: LastPayout?,
                 availableBalance: NSDecimalNumber) {
         self.currency = currency
-        self.automaticPayouts = automaticPayouts
+        self.automaticPayouts = false
         self.payoutInterval = payoutInterval
         self.pendingBalanceAmount = pendingBalanceAmount
-        self.pendingPayoutsCount = pendingPayoutsCount
         self.pendingPayoutDays = pendingPayoutDays
-        self.nextPayout = nextPayout
         self.lastPayout = lastPayout
         self.availableBalance = availableBalance
     }

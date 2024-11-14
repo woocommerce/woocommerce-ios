@@ -13,7 +13,7 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published private(set) var shouldShowTapToPaySection: Bool = true
     @Published private(set) var shouldShowCardReaderSection: Bool = true
     @Published private(set) var shouldShowPaymentOptionsSection: Bool = false
-    @Published private(set) var shouldShowDepositSummary: Bool = false
+    @Published private(set) var shouldShowPayoutSummary: Bool = false
     @Published private(set) var setUpTryOutTapToPayRowTitle: String = Localization.setUpTapToPayOnIPhoneRowTitle
     @Published private(set) var shouldShowTapToPayFeedbackRow: Bool = true
     @Published private(set) var shouldBadgeTapToPayOnIPhone: Bool = false
@@ -39,8 +39,8 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var presentCardReaderManuals: Bool = false
     @Published var safariSheetURL: URL? = nil
     @Published var presentSupport: Bool = false
-    @Published var depositViewModel: WooPaymentsDepositsOverviewViewModel? = nil
-    @Published var isLoadingDepositSummary: Bool = false
+    @Published var payoutViewModel: WooPaymentsPayoutsOverviewViewModel? = nil
+    @Published var isLoadingPayoutSummary: Bool = false
 
     var shouldAlwaysHideSetUpButtonOnAboutTapToPay: Bool = false
 
@@ -59,7 +59,7 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
         let onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
         let cardReaderSupportDeterminer: CardReaderSupportDetermining
         let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
-        let wooPaymentsDepositService: WooPaymentsDepositServiceProtocol?
+        let wooPaymentsPayoutService: WooPaymentsPayoutServiceProtocol?
         let analytics: Analytics
         let systemStatusService: SystemStatusServiceProtocol
         let noticePresenter: NoticePresenter
@@ -69,7 +69,7 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
              onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol,
              cardReaderSupportDeterminer: CardReaderSupportDetermining,
              tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker = TapToPayBadgePromotionChecker(),
-             wooPaymentsDepositService: WooPaymentsDepositServiceProtocol?,
+             wooPaymentsPayoutService: WooPaymentsPayoutServiceProtocol?,
              systemStatusService: SystemStatusServiceProtocol = SystemStatusService(stores: ServiceLocator.stores),
              analytics: Analytics = ServiceLocator.analytics,
              noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
@@ -78,7 +78,7 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
             self.onboardingUseCase = onboardingUseCase
             self.cardReaderSupportDeterminer = cardReaderSupportDeterminer
             self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
-            self.wooPaymentsDepositService = wooPaymentsDepositService
+            self.wooPaymentsPayoutService = wooPaymentsPayoutService
             self.systemStatusService = systemStatusService
             self.analytics = analytics
             self.noticePresenter = noticePresenter
@@ -135,33 +135,33 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
         payInPersonToggleViewModel.refreshState()
         updateCardReadersSection()
         await updateTapToPaySection()
-        await refreshDepositSummary()
+        await refreshPayoutSummary()
     }
 
-    private func refreshDepositSummary() async {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.wooPaymentsDepositsOverviewInPaymentsMenu),
-              let depositService = dependencies.wooPaymentsDepositService,
+    private func refreshPayoutSummary() async {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.wooPaymentsPayoutsOverviewInPaymentsMenu),
+              let payoutService = dependencies.wooPaymentsPayoutService,
               await dependencies.systemStatusService.fetchSystemPluginWithPath(siteID: siteID,
                                                                                pluginPath: WooConstants.wooPaymentsPluginPath) != nil else {
-            shouldShowDepositSummary = false
+            shouldShowPayoutSummary = false
             return
         }
 
-        shouldShowDepositSummary = true
+        shouldShowPayoutSummary = true
 
         do {
-            if depositViewModel == nil {
-                isLoadingDepositSummary = true
+            if payoutViewModel == nil {
+                isLoadingPayoutSummary = true
             }
-            let depositCurrencyViewModels = try await depositService.fetchDepositsOverview().map({
-                WooPaymentsDepositsCurrencyOverviewViewModel(overview: $0)
+            let payoutCurrencyViewModels = try await payoutService.fetchPayoutsOverview().map({
+                WooPaymentsPayoutsCurrencyOverviewViewModel(overview: $0)
             })
-            isLoadingDepositSummary = false
-            depositViewModel = WooPaymentsDepositsOverviewViewModel(currencyViewModels: depositCurrencyViewModels)
+            isLoadingPayoutSummary = false
+            payoutViewModel = WooPaymentsPayoutsOverviewViewModel(currencyViewModels: payoutCurrencyViewModels)
         } catch {
-            shouldShowDepositSummary = false
-            isLoadingDepositSummary = false
-            analytics.track(event: .DepositSummary.depositSummaryError(error: error))
+            shouldShowPayoutSummary = false
+            isLoadingPayoutSummary = false
+            analytics.track(event: .PayoutSummary.payoutSummaryError(error: error))
         }
     }
 

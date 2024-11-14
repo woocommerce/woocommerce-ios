@@ -24,18 +24,25 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// View model for the items to ship.
     @Published private(set) var items: WooShippingItemsViewModel
 
-    // TODO: Update this to a property that refers to the package, when selected
-    /// Whether there is a package selected for the shipping label.
-    /// Temporary property that can be set to `true` to enable features that require a selected package, until package feature is complete.
-    let hasPackage: Bool = false
+    /// Selected package for the shipping label.
+    @Published private(set) var selectedPackage: ShippingLabelPackageSelected? {
+        didSet {
+            if let selectedPackage {
+                shippingService = WooShippingServiceViewModel(order: order,
+                                                              originAddress: originSiteAddress,
+                                                              destinationAddress: destinationAddress,
+                                                              selectedPackage: selectedPackage) { [weak self] selectedRate in
+                    self?.selectedRate = selectedRate
+                }
+            }
+        }
+    }
 
     /// View model for the label shipping service.
     private(set) var shippingService: WooShippingServiceViewModel?
 
     /// Selected shipping rate when creating a shipping label.
-    private var selectedRate: WooShippingSelectedRate? {
-        shippingService?.selectedRate
-    }
+    private var selectedRate: WooShippingSelectedRate?
 
     /// Address to ship from (store address), formatted for display.
     private(set) lazy var originAddress: String = {
@@ -91,8 +98,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Initialize the view model without an existing shipping label.
     init(order: Order,
          originAddress: SiteAddress? = nil,
+         selectedRate: WooShippingSelectedRate? = nil,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         shippingService: WooShippingServiceViewModel = WooShippingServiceViewModel(),
          onLabelPurchase: ((Bool) -> Void)? = nil,
          userDefaults: UserDefaults = .standard) {
         self.order = order
@@ -109,7 +116,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                                                               userDefaults: userDefaults)
         self.destinationAddress = Self.getDestinationAddress(order: order, address: order.shippingAddress)
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0) })
-        self.shippingService = shippingService
+        self.selectedRate = selectedRate
     }
 
     /// Initialize the view model from an existing shipping label.

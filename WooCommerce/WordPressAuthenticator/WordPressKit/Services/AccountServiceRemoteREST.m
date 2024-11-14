@@ -245,17 +245,19 @@ MagicLinkFlow const MagicLinkFlowSignup = @"signup";
                         clientSecret:(NSString *)clientSecret
                               source:(MagicLinkSource)source
                          wpcomScheme:(NSString *)scheme
+             createAccountIfNotFound:(BOOL)createAccountIfNotFound
                              success:(void (^)(void))success
                              failure:(void (^)(NSError *error))failure
 {
     NSString *path = [self pathForEndpoint:@"auth/send-login-email"
                                withVersion:WordPressComRESTAPIVersion_1_3];
-    
+
     NSDictionary *extraParams = @{
         MagicLinkParameterFlow: MagicLinkFlowLogin,
-        MagicLinkParameterSource: source
+        MagicLinkParameterSource: source,
+        @"create_account": createAccountIfNotFound ? @"true" : @"false"
     };
-    
+
     [self requestWPComMagicLinkForEmail:email
                                    path:path
                                clientID:clientID
@@ -264,6 +266,24 @@ MagicLinkFlow const MagicLinkFlowSignup = @"signup";
                             wpcomScheme:scheme
                                 success:success
                                 failure:failure];
+}
+
+- (void)requestWPComAuthLinkForEmail:(NSString *)email
+                            clientID:(NSString *)clientID
+                        clientSecret:(NSString *)clientSecret
+                              source:(MagicLinkSource)source
+                         wpcomScheme:(NSString *)scheme
+                             success:(void (^)(void))success
+                             failure:(void (^)(NSError *error))failure
+{
+    [self requestWPComAuthLinkForEmail:email
+                              clientID:clientID
+                          clientSecret:clientSecret
+                                source:source
+                           wpcomScheme:scheme
+               createAccountIfNotFound:NO
+                               success:success
+                               failure:failure];
 }
 
 - (void)requestWPComSignupLinkForEmail:(NSString *)email

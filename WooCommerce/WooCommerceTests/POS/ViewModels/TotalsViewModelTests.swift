@@ -19,9 +19,7 @@ final class TotalsViewModelTests: XCTestCase {
         super.setUp()
         cardPresentPaymentService = MockCardPresentPaymentService()
         orderService = MockPOSOrderService()
-        sut = TotalsViewModel(orderService: orderService,
-                              cardPresentPaymentService: cardPresentPaymentService,
-                              currencyFormatter: .init(currencySettings: .init()),
+        sut = TotalsViewModel(cardPresentPaymentService: cardPresentPaymentService,
                               paymentState: .acceptingCard)
         cancellables = Set()
     }

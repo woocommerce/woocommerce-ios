@@ -776,6 +776,8 @@
 		203163BD2C1C9602001C96DA /* PointOfSaleCardPresentPaymentAlertType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203163BC2C1C9602001C96DA /* PointOfSaleCardPresentPaymentAlertType.swift */; };
 		203A5C312AC5ADD700BF29A1 /* WooPaymentsDepositsOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203A5C302AC5ADD700BF29A1 /* WooPaymentsDepositsOverviewView.swift */; };
 		2044158D2CE4DB480070BF54 /* PointOfSaleOrderStage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2044158C2CE4DB480070BF54 /* PointOfSaleOrderStage.swift */; };
+		2044158F2CE6181E0070BF54 /* PointOfSaleOrderState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2044158E2CE6181E0070BF54 /* PointOfSaleOrderState.swift */; };
+		204415912CE622BA0070BF54 /* PointOfSaleOrderTotals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204415902CE622BA0070BF54 /* PointOfSaleOrderTotals.swift */; };
 		204C9C742B6BDFFB007A94E0 /* UIUserInterfaceSizeClass+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204C9C732B6BDFFB007A94E0 /* UIUserInterfaceSizeClass+Helpers.swift */; };
 		204CB80E2C0F8A5E000C9773 /* MockViewControllerPresenting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204CB80D2C0F8A5E000C9773 /* MockViewControllerPresenting.swift */; };
 		204CB8102C10BB88000C9773 /* CardPresentPaymentPreviewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204CB80F2C10BB88000C9773 /* CardPresentPaymentPreviewService.swift */; };
@@ -3890,6 +3892,8 @@
 		203163BC2C1C9602001C96DA /* PointOfSaleCardPresentPaymentAlertType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentAlertType.swift; sourceTree = "<group>"; };
 		203A5C302AC5ADD700BF29A1 /* WooPaymentsDepositsOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsOverviewView.swift; sourceTree = "<group>"; };
 		2044158C2CE4DB480070BF54 /* PointOfSaleOrderStage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleOrderStage.swift; sourceTree = "<group>"; };
+		2044158E2CE6181E0070BF54 /* PointOfSaleOrderState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleOrderState.swift; sourceTree = "<group>"; };
+		204415902CE622BA0070BF54 /* PointOfSaleOrderTotals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleOrderTotals.swift; sourceTree = "<group>"; };
 		204C9C732B6BDFFB007A94E0 /* UIUserInterfaceSizeClass+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIUserInterfaceSizeClass+Helpers.swift"; sourceTree = "<group>"; };
 		204CB80D2C0F8A5E000C9773 /* MockViewControllerPresenting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockViewControllerPresenting.swift; sourceTree = "<group>"; };
 		204CB80F2C10BB88000C9773 /* CardPresentPaymentPreviewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentPreviewService.swift; sourceTree = "<group>"; };
@@ -9462,6 +9466,8 @@
 				DAD988C52C4A9CF9009DE9E3 /* CartItem+Order.swift */,
 				20FCBCDC2CE223340082DCA3 /* PointOfSaleAggregateModel.swift */,
 				2044158C2CE4DB480070BF54 /* PointOfSaleOrderStage.swift */,
+				2044158E2CE6181E0070BF54 /* PointOfSaleOrderState.swift */,
+				204415902CE622BA0070BF54 /* PointOfSaleOrderTotals.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -15459,6 +15465,7 @@
 				7E7C5F792719A8F900315B61 /* EditProductCategoryListViewModel.swift in Sources */,
 				DE69C55527C5E317000BB888 /* ShippingLabelSampleData.swift in Sources */,
 				DE525499268C8B32007A5829 /* UIRefreshControl+Woo.swift in Sources */,
+				204415912CE622BA0070BF54 /* PointOfSaleOrderTotals.swift in Sources */,
 				EEC259442B43EF3B004D703C /* BlazeEditAdViewModel.swift in Sources */,
 				B541B2172189EED4008FE7C1 /* NSMutableAttributedString+Helpers.swift in Sources */,
 				26F94E2E267A96A000DB6CCF /* ProductAddOnViewModel.swift in Sources */,
@@ -16200,6 +16207,7 @@
 				202C6C562C7F667700413107 /* POSTextButtonStyle.swift in Sources */,
 				EE289AE92C9D7CEF004AB1A6 /* ImageTextScanner.swift in Sources */,
 				027EB56C29C05F4B003CE551 /* StoreOnboardingLaunchStoreView.swift in Sources */,
+				2044158F2CE6181E0070BF54 /* PointOfSaleOrderState.swift in Sources */,
 				DEC75CC62BC4ED2100763801 /* DashboardCard+UI.swift in Sources */,
 				09EA565527C8ACEE00407D40 /* BulkUpdateViewController.swift in Sources */,
 				02BBD6E929A3024400243BE2 /* StoreOnboardingTaskView.swift in Sources */,

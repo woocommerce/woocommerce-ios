@@ -207,16 +207,16 @@ import class WooFoundation.MockAnalyticsPreview
 import class WooFoundation.MockAnalyticsProviderPreview
 
 #Preview {
-    let totalsVM = TotalsViewModel(orderService: POSOrderPreviewService(),
+    let posModel = PointOfSaleAggregateModel(
+        itemProvider: POSItemProviderPreview(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderService: POSOrderPreviewService())
+    let totalsVM = TotalsViewModel(posModel: posModel,
                                    cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                   currencyFormatter: .init(currencySettings: .init()),
                                    paymentState: .acceptingCard)
-    let cartVM = CartViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview(),
-                                                                   cardPresentPaymentService: CardPresentPaymentPreviewService()))
-    let itemsListVM = ItemListViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview(),
-                                                                            cardPresentPaymentService: CardPresentPaymentPreviewService()))
-    let posVM = PointOfSaleDashboardViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview(),
-                                                                                  cardPresentPaymentService: CardPresentPaymentPreviewService()),
+    let cartVM = CartViewModel(posModel: posModel)
+    let itemsListVM = ItemListViewModel(posModel: posModel)
+    let posVM = PointOfSaleDashboardViewModel(posModel: posModel,
                                               totalsViewModel: totalsVM,
                                               cartViewModel: cartVM,
                                               itemListViewModel: itemsListVM,

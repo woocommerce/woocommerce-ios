@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-10-22 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-11-05 09:54:19+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -338,6 +338,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "验证码将仅包含数字。";
+
+/* Title of a4 paper size option for printing a shipping label */
+"A4" = "A4";
 
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "添加选项";
@@ -1561,7 +1564,6 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the Coupon Creation Success screen
    Navigation bar action to close the gift card code scanner.
    Text for the close button in the Add Product screen
-   Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
    Title of the Close action on the Jetpack Install view */
 "Close" = "关闭";
@@ -1908,10 +1910,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the Origin Country row in Customs screen of Shipping Label flow */
 "Country where the product was manufactured or assembled" = "产品制造或组装国家\/地区";
 
-/* Title for the coupon field on the Coupon Details screen during order creation
-   Title for the Coupon screen during order creation */
-"Coupon" = "优惠券";
-
 /* The singular coupon summary. Reads like: Coupon (code1) */
 "Coupon (%1$@)" = "优惠券 (%1$@)";
 
@@ -1942,9 +1940,6 @@ which should be translated separately and considered part of this sentence. */
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
 "Coupons" = "优惠券";
-
-/* The plural coupon summary. Reads like: Coupon (code1, code2) */
-"Coupons (%1$@)" = "优惠券 (%1$@)";
 
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "立即崩溃";
@@ -2074,9 +2069,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title in custom range date picker */
 "Custom Date Range" = "自定义日期范围";
-
-/* Title for the order custom fields list */
-"Custom Fields" = "自定义字段";
 
 /* Custom line index in Customs Form of Shipping Label flow */
 "Custom Line %1$d" = "自定义行 %1$d";
@@ -2381,7 +2373,6 @@ which should be translated separately and considered part of this sentence. */
    Edit product downloadable files screen - button title to apply changes to downloadable files
    Navigation bar button on the domain settings screen to leave the flow.
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
-   Text for the done button in the Coupon Details screen
    Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
@@ -3672,9 +3663,6 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is an error updating the product SKU */
 "Invalid Product SKU" = "无效的产品 SKU";
 
-/* Error when an empty SKU is returned from the barcode scanner */
-"Invalid SKU" = "无效的 SKU";
-
 /* No comment provided by engineer. */
 "Invalid Site Address" = "无效站点地址";
 
@@ -4870,6 +4858,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the the row showing the total cost of the order */
 "Order total" = "订单总计";
 
+/* Title of the section that display coupons applied to an order, within the order creation screen. */
+"OrderCouponSectionView.header.coupons" = "优惠券";
+
 /* Retry Action inside notice */
 "OrderDetail.retry.notice.button" = "重试";
 
@@ -5161,7 +5152,7 @@ which should be translated separately and considered part of this sentence. */
 "Please charge reader" = "请为读卡器充电";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
-"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.4 or above. Contact support if this error shows on a supported device." = "请检查您的手机是否符合以下要求：运行 iOS 16.4 或以上版本的 iPhone XS 或更新机型。 如果支持的设备上出现此错误，请联系支持团队。";
+"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.7 or above. Contact support if this error shows on a supported device." = "请检查您的手机是否符合以下要求：运行 iOS 16.7 或以上版本的 iPhone XS 或更新机型。 如果支持的设备上出现此错误，请联系支持人员。";
 
 /* Order gift card error notice message when the gift card is invalid. */
 "Please check the remaining balance of the gift card." = "请检查礼品卡的余额。";
@@ -5568,11 +5559,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Product Type row on Product main screen */
 "Product type" = "产品类型";
 
-/* Error message when the scanner found a product but isn't purchasable.%@ is the SKU code. */
-"Product with SKU \"%@\" is not purchasable." = "无法购买 SKU 为“%@”的产品。";
+/* The instruction text below the scan area in the barcode scanner for product barcode. */
+"ProductBarcodeInputScanner.instructionText" = "扫描产品条形码或二维码";
 
-/* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
-"Product with SKU \"%@\" not found." = "未找到 SKU 为“%@”的产品。";
+/* Navigation bar title for scanning a barcode or QR Code to use as a product's barcode. */
+"ProductBarcodeInputScanner.titleView" = "扫描条形码或二维码";
 
 /* Description of the subscription price for a product, with price and billing frequency. Reads as: '$60.00 / 2 months'. */
 "ProductRowViewModel.formattedProductSubscriptionBilling" = "%1$@ \/ %2$@ %3$@";
@@ -5585,12 +5576,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the subscription conditions for a subscription product, with signup fees but no trial.Reads as: '$25.00 signup'. */
 "ProductRowViewModel.formattedProductSubscriptionConditionsWithoutTrial" = "%1$@ 注册费";
-
-/* The instruction text below the scan area in the barcode scanner for product SKU. */
-"ProductSKUInputScanner.instructionText" = "扫描产品条形码或二维码";
-
-/* Navigation bar title for scanning a barcode or QR Code to use as a product's SKU. */
-"ProductSKUInputScanner.titleView" = "扫描条形码或二维码以更新 SKU";
 
 /* Display label for the composite product's component option type
    Product section title if there is more than one product.
@@ -5842,9 +5827,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message from the in-person payment card reader prompting user to remove their card */
 "Remove Card" = "移除银行卡";
-
-/* Text for the button to remove a Coupon from the order during order creation */
-"Remove Coupon from Order" = "从订单中删除优惠券";
 
 /* Text for button to remove a discount in the discounts details screen
    Title for the Remove button in Details screen during order creation */
@@ -10122,6 +10104,24 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "编辑金额";
 
+/* Title for the action sheet with additional options */
+"customFieldEditorView.actionSheetTitle" = "更多选项";
+
+/* Label for the Cancel button to close the editor */
+"customFieldEditorView.cancel" = "取消";
+
+/* Button title for copying the custom field key */
+"customFieldEditorView.copyKeyButton" = "复制密钥";
+
+/* Button title for copying the custom field value */
+"customFieldEditorView.copyValueButton" = "复制值";
+
+/* Button title for deleting a custom field */
+"customFieldEditorView.deleteButton" = "删除自定义字段";
+
+/* Label for the Done button to save changes */
+"customFieldEditorView.done" = "完成";
+
 /* Picker option for using Text Editor */
 "customFieldEditorView.editorPickerHTML" = "HTML";
 
@@ -10131,14 +10131,77 @@ which should be translated separately and considered part of this sentence. */
 /* Picker option for using Text Editor */
 "customFieldEditorView.editorPickerText" = "文本";
 
+/* Notice shown when the key has been copied to clipboard */
+"customFieldEditorView.keyCopiedNotice" = "密钥已复制到剪贴板";
+
+/* Error message shown when the entered key is identical to an existing key. */
+"customFieldEditorView.keyErrorDisallowedKey" = "密钥无效：此密钥已被用于另一个自定义字段。 \n该应用程序暂不支持创建重复密钥。 如果需要，请使用 wp-admin 复制密钥。";
+
+/* Error message shown when key starts with underscore */
+"customFieldEditorView.keyErrorPrefix" = "密钥无效：请删除开头的“_”字符。";
+
 /* Label for the Key field */
 "customFieldEditorView.keyLabel" = "密钥";
 
 /* Placeholder for the Key field */
 "customFieldEditorView.keyPlaceholder" = "输入密钥";
 
+/* Notice shown when the value has been copied to clipboard */
+"customFieldEditorView.valueCopiedNotice" = "值已复制到剪贴板";
+
 /* Label for the Value field */
 "customFieldEditorView.valueLabel" = "值";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to add custom field. */
+"customFieldsListHostingController.accessibilityHintAddCustomField" = "在列表中添加新的自定义字段";
+
+/* Accessibility label for the Add Custom Field button */
+"customFieldsListHostingController.accessibilityLabelAddCustomField" = "添加自定义字段";
+
+/* Title for the notice when a custom field is deleted */
+"customFieldsListHostingController.deleteNoticeTitle" = "自定义字段已删除";
+
+/* Action to undo the deletion of a custom field */
+"customFieldsListHostingController.deleteNoticeUndo" = "撤消";
+
+/* Text for button that's shown when the list is empty. */
+"customFieldsListHostingController.emptyStateButton" = "了解更多";
+
+/* Message when the list is empty. */
+"customFieldsListHostingController.emptyStateDescription" = "自定义字段是可选的元数据，用于显示额外信息或自定义您商店的购物体验";
+
+/* Title for the message when the list is empty. */
+"customFieldsListHostingController.emptyStateTitle" = "未找到自定义字段";
+
+/* Message for the in progress view shown when saving changes */
+"customFieldsListHostingController.inProgressMessage" = "正在保存您的更改，请稍候";
+
+/* Title for the in progress view shown when saving changes */
+"customFieldsListHostingController.inProgressTitle" = "正在保存…";
+
+/* Button to save the changes on Custom Fields list */
+"customFieldsListHostingController.save" = "保存";
+
+/* Message for the error message when saving changes */
+"customFieldsListHostingController.saveErrorMessage" = "保存您的更改时出现错误。 请重试。";
+
+/* Title for the error message when saving changes */
+"customFieldsListHostingController.saveErrorTitle" = "保存更改时出错";
+
+/* Title for the success message when saving changes */
+"customFieldsListHostingController.saveSuccessTitle" = "更改已保存";
+
+/* Title for the order custom fields list */
+"customFieldsListHostingController.title" = "自定义字段";
+
+/* Content of the banner when there are unsaved custom fields */
+"customFieldsListTopBanner.description" = "对自定义字段的更改一经保存将立即生效。";
+
+/* Dismiss button title */
+"customFieldsListTopBanner.dismiss" = "忽略";
+
+/* Title of the banner when there are unsaved custom fields */
+"customFieldsListTopBanner.title" = "查看并编辑自定义字段";
 
 /* Accessibility title for the search button on the customer section. */
 "customer.search.button.accessibilityLabel" = "搜索客户";
@@ -10984,6 +11047,9 @@ which should be translated separately and considered part of this sentence. */
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderDetailsDataSource.attributionInfo.unknown" = "未知";
 
+/* Button on bottom of shipping label card to view the shipping label */
+"orderDetailsDataSource.shippingLabels.viewLabel" = "查看已购买的运输标签";
+
 /* Title of Shipping Section in Order Details screen */
 "orderDetailsDataSource.shippingLines.title" = "配送";
 
@@ -11450,6 +11516,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "无法加载总计";
 
+/* Button to dismiss the payments onboarding sheet from the POS dashboard. */
+"pointOfSaleDashboard.payments.onboarding.cancel" = "取消";
+
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.done" = "完成";
 
@@ -11776,6 +11845,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the suggested product on the Blaze dashboard view. */
 "productInfoView.suggestedProductLabel" = "建议产品";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
+"productInventorySettings.GlobalUniqueIdentifier.ScanButton" = "扫描与产品全局唯一标识符关联的条形码，进行库存管理。";
+
+/* Placeholder of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
+"productInventorySettings.globalUniqueIdentifier.placeholder" = "可选";
+
+/* Title of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
+"productInventorySettings.globalUniqueIdentifier.title" = "GTIN、UPC、EAN、ISBN";
+
+/* The message of the alert when there is an error updating the product global unique identifier */
+"productInventorySettings.invalidGlobalUniqueIdentifier.error" = "请仅输入数字和连字符 (-)。";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "计费间隔";
@@ -12406,17 +12487,26 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for height input field */
 "wooShipping.createLabel.addPackage.height" = "高度";
 
+/* The title for a button to dismiss the keyboard on the order creation/editing screen */
+"wooShipping.createLabel.addPackage.keyboard.toolbar.done.button.title" = "完成";
+
 /* Info label for length input field */
 "wooShipping.createLabel.addPackage.length" = "长度";
 
 /* Info label for selecting package type */
 "wooShipping.createLabel.addPackage.packageType" = "包裹类型";
 
+/* Info label for weight input field */
+"wooShipping.createLabel.addPackage.packageWeight" = "包裹重量";
+
 /* Info label for saving package as a new template toggle */
 "wooShipping.createLabel.addPackage.saveNewPackageTemplate" = "将其保存为新的包裹模板";
 
 /* Button for saving package as a new template */
 "wooShipping.createLabel.addPackage.savePackageTemplate" = "保存包裹模板";
+
+/* Placeholder text for package name field */
+"wooShipping.createLabel.addPackage.savePackageTemplatePlaceholder" = "输入唯一的包裹名称";
 
 /* Info label for saved package option */
 "wooShipping.createLabel.addPackage.saved" = "已保存";
@@ -12430,6 +12520,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button to dismiss the shipping label creation screen */
 "wooShipping.createLabel.cancelButton" = "取消";
 
+/* Title of the button to dismiss the shipping label screen */
+"wooShipping.createLabel.closeButton" = "关闭";
+
 /* Label for section in shipping label creation to declare when a package contains hazardous materials. */
 "wooShipping.createLabel.hazmatLabel" = "您是否要运输危险品或危险物质？";
 
@@ -12438,6 +12531,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Call to action in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderTitle" = "选择一个包裹以获取运费";
+
+/* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "必须由成年人签收";
+
+/* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
+"wooShipping.createLabels.bottomSheet.baseFee" = "%1$@（基本费用）";
 
 /* Label for the toggle to mark the order as complete on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.markComplete" = "将订单标注为已完成并通知客户";
@@ -12451,6 +12550,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button to purchase the shipping label on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.purchase" = "购买标签";
 
+/* Label for button to purchase the shipping label on the shipping label creation screen, including the label price. Reads like: 'Purchase Label · $7.63' */
+"wooShipping.createLabels.bottomSheet.purchaseFormat" = "购买标签 · %1$@";
+
 /* Label for address where the shipment is shipped from on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.shipFrom" = "发货地";
 
@@ -12459,6 +12561,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header for shipment costs section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.shipmentCosts" = "运输费用";
+
+/* Label for row showing the additional cost to require a signature on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.signatureRequired" = "必须签收";
 
 /* Label for row showing the subtotal for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.subtotal" = "小计";
@@ -12478,8 +12583,77 @@ which should be translated separately and considered part of this sentence. */
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
 
+/* Link for more information about how to print a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.info" = "了解如何从您的移动设备打印";
+
+/* Navigation bar title of shipping label printing instructions screen */
+"wooShipping.createLabels.postPurchase.infoTitle" = "从您的移动设备打印";
+
+/* Note about reusing a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.note" = "注意：重复使用打印的标签违反了我们的服务条款，并可能导致刑事指控。";
+
+/* Title for button to print a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.printButton" = "打印运输标签";
+
+/* Message displayed on the shipping label screen when a purchased shipping label can be printed */
+"wooShipping.createLabels.postPurchase.printMessage" = "在此处，您可以再次打印运输标签或更改标签的纸张尺寸。";
+
+/* Heading displayed on the shipping label screen when a purchased shipping label can be printed */
+"wooShipping.createLabels.postPurchase.readyToPrint" = "您的运输标签已可供打印";
+
+/* Link to request a refund for a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.requestRefund" = "请求退款";
+
+/* Link to schedule a pickup for a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.schedulePickup" = "预约取件";
+
+/* Link to track a shipment for a purchase shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.trackShipment" = "跟踪货物";
+
+/* Heading for the shipping service section in the shipping label creation screen. */
+"wooShipping.createLabels.rates.shippingService" = "运输服务";
+
+/* Label for the menu to select a sort order for shipping rates in the shipping label creation screen. */
+"wooShipping.createLabels.rates.sortBy" = "排序方式";
+
+/* Option to sort shipping rates by delivery time in the shipping label creation screen. */
+"wooShipping.createLabels.rates.sortBy.deliveryTime" = "速度最快";
+
+/* Option to sort shipping rates by price in the shipping label creation screen. */
+"wooShipping.createLabels.rates.sortBy.price" = "费用最低";
+
+/* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
+"wooShipping.createLabels.shippingService.adultSignatureRequired" = "必须由成年人签收 (+%1$@)";
+
+/* Singular format of number of business days in Woo Shipping label creation flow. Reads like: '1 business day' */
+"wooShipping.createLabels.shippingService.deliveryDaySingular" = "%1$d 个工作日";
+
+/* Plural format of number of business days in Woo Shipping label creation flow. Reads like: '3 business days' */
+"wooShipping.createLabels.shippingService.deliveryDaysPlural" = "%1$d 个工作日";
+
+/* Label when shipping rate includes free pickup in Woo Shipping label creation flow. */
+"wooShipping.createLabels.shippingService.freePickup" = "免费自提";
+
+/* Label when shipping rate includes tracking in Woo Shipping label creation flow. */
+"wooShipping.createLabels.shippingService.includesTracking" = "包括跟踪";
+
+/* Label when shipping rate includes insurance in Woo Shipping label creation flow. Placeholder is an amount. Reads like: 'Insurance (up to $100)' */
+"wooShipping.createLabels.shippingService.insuranceAmount" = "保险（最多 %1$@）";
+
+/* Label when shipping rate includes insurance in Woo Shipping label creation flow. Placeholder is a literal. Reads like: 'Insurance (limited)' */
+"wooShipping.createLabels.shippingService.insuranceLiteral" = "保险 (%1$@)";
+
+/* Label when shipping rate has option to require a signature in Woo Shipping label creation flow. Reads like: 'Signature required (+$3.70)' */
+"wooShipping.createLabels.shippingService.signatureRequired" = "必须签收 (+%1$@)";
+
+/* Label when shipping rate includes tracking in Woo Shipping label creation flow. */
+"wooShipping.createLabels.shippingService.tracking" = "跟踪";
+
 /* Title for the screen to create a shipping label */
 "wooShipping.createLabels.title" = "创建配送标签";
+
+/* Title for the screen to view a shipping label */
+"wooShipping.createLabels.viewLabelTitle" = "查看运输标签";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, 我的商店, 今天, 本周, 本月, 本年, 订单, 访问者, 转化率, 最高转化率, 已销售项目";

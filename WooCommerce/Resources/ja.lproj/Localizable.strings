@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-10-22 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-11-05 09:54:19+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -338,6 +338,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "認証コードは数字だけで構成されます。";
+
+/* Title of a4 paper size option for printing a shipping label */
+"A4" = "A4";
 
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "オプションを追加";
@@ -1561,7 +1564,6 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the Coupon Creation Success screen
    Navigation bar action to close the gift card code scanner.
    Text for the close button in the Add Product screen
-   Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
    Title of the Close action on the Jetpack Install view */
 "Close" = "閉じる";
@@ -1908,10 +1910,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the Origin Country row in Customs screen of Shipping Label flow */
 "Country where the product was manufactured or assembled" = "商品製造国または商品の組み立てが行われた国";
 
-/* Title for the coupon field on the Coupon Details screen during order creation
-   Title for the Coupon screen during order creation */
-"Coupon" = "クーポン";
-
 /* The singular coupon summary. Reads like: Coupon (code1) */
 "Coupon (%1$@)" = "クーポン (%1$@)";
 
@@ -1942,9 +1940,6 @@ which should be translated separately and considered part of this sentence. */
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
 "Coupons" = "クーポン";
-
-/* The plural coupon summary. Reads like: Coupon (code1, code2) */
-"Coupons (%1$@)" = "クーポン (%1$@)";
 
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "今すぐクラッシュさせる";
@@ -2074,9 +2069,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title in custom range date picker */
 "Custom Date Range" = "カスタムの日付の範囲";
-
-/* Title for the order custom fields list */
-"Custom Fields" = "カスタムフィールド";
 
 /* Custom line index in Customs Form of Shipping Label flow */
 "Custom Line %1$d" = "カスタムライン%1$d";
@@ -2381,7 +2373,6 @@ which should be translated separately and considered part of this sentence. */
    Edit product downloadable files screen - button title to apply changes to downloadable files
    Navigation bar button on the domain settings screen to leave the flow.
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
-   Text for the done button in the Coupon Details screen
    Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
@@ -3672,9 +3663,6 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is an error updating the product SKU */
 "Invalid Product SKU" = "無効な商品 SKU";
 
-/* Error when an empty SKU is returned from the barcode scanner */
-"Invalid SKU" = "間違った SKU です";
-
 /* No comment provided by engineer. */
 "Invalid Site Address" = "無効なサイトアドレスです";
 
@@ -4870,6 +4858,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the the row showing the total cost of the order */
 "Order total" = "注文合計";
 
+/* Title of the section that display coupons applied to an order, within the order creation screen. */
+"OrderCouponSectionView.header.coupons" = "クーポン";
+
 /* Retry Action inside notice */
 "OrderDetail.retry.notice.button" = "再試行";
 
@@ -5161,7 +5152,7 @@ which should be translated separately and considered part of this sentence. */
 "Please charge reader" = "リーダーを充電してください";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
-"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.4 or above. Contact support if this error shows on a supported device." = "お使いのスマートフォンが次の要件を満たしていることを確認してください: iOS 16.4以降対応の iPhone XS 以降。 対応の端末でこのエラーが表示される場合は、サポートにお問い合わせください。";
+"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.7 or above. Contact support if this error shows on a supported device." = "お使いのスマートフォンが次の要件を満たしていることを確認してください: iOS 16.7以降対応の iPhone XS 以降。 対応の端末でこのエラーが表示される場合は、サポートにお問い合わせください。";
 
 /* Order gift card error notice message when the gift card is invalid. */
 "Please check the remaining balance of the gift card." = "ギフトカードの残高を確認してください。";
@@ -5568,11 +5559,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Product Type row on Product main screen */
 "Product type" = "商品タイプ";
 
-/* Error message when the scanner found a product but isn't purchasable.%@ is the SKU code. */
-"Product with SKU \"%@\" is not purchasable." = "SKU「%@」 の商品は購入できません。";
+/* The instruction text below the scan area in the barcode scanner for product barcode. */
+"ProductBarcodeInputScanner.instructionText" = "商品のバーコードまたは QR コードをスキャン";
 
-/* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
-"Product with SKU \"%@\" not found." = "SKU「%@」 の商品が見つかりません。";
+/* Navigation bar title for scanning a barcode or QR Code to use as a product's barcode. */
+"ProductBarcodeInputScanner.titleView" = "バーコードまたは QR コードをスキャン";
 
 /* Description of the subscription price for a product, with price and billing frequency. Reads as: '$60.00 / 2 months'. */
 "ProductRowViewModel.formattedProductSubscriptionBilling" = "%1$@ \/ %2$@ %3$@";
@@ -5585,12 +5576,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the subscription conditions for a subscription product, with signup fees but no trial.Reads as: '$25.00 signup'. */
 "ProductRowViewModel.formattedProductSubscriptionConditionsWithoutTrial" = "%1$@ でサインアップ";
-
-/* The instruction text below the scan area in the barcode scanner for product SKU. */
-"ProductSKUInputScanner.instructionText" = "商品のバーコードまたは QR コードをスキャン";
-
-/* Navigation bar title for scanning a barcode or QR Code to use as a product's SKU. */
-"ProductSKUInputScanner.titleView" = "バーコードまたは QR コードをスキャンして SKU を更新";
 
 /* Display label for the composite product's component option type
    Product section title if there is more than one product.
@@ -5842,9 +5827,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message from the in-person payment card reader prompting user to remove their card */
 "Remove Card" = "カードを取り外してください";
-
-/* Text for the button to remove a Coupon from the order during order creation */
-"Remove Coupon from Order" = "注文からクーポンを削除";
 
 /* Text for button to remove a discount in the discounts details screen
    Title for the Remove button in Details screen during order creation */
@@ -10122,6 +10104,24 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "金額を編集する";
 
+/* Title for the action sheet with additional options */
+"customFieldEditorView.actionSheetTitle" = "追加オプション";
+
+/* Label for the Cancel button to close the editor */
+"customFieldEditorView.cancel" = "キャンセル";
+
+/* Button title for copying the custom field key */
+"customFieldEditorView.copyKeyButton" = "キーをコピー";
+
+/* Button title for copying the custom field value */
+"customFieldEditorView.copyValueButton" = "値をコピー";
+
+/* Button title for deleting a custom field */
+"customFieldEditorView.deleteButton" = "カスタムフィールドを削除";
+
+/* Label for the Done button to save changes */
+"customFieldEditorView.done" = "完了";
+
 /* Picker option for using Text Editor */
 "customFieldEditorView.editorPickerHTML" = "HTML";
 
@@ -10131,14 +10131,77 @@ which should be translated separately and considered part of this sentence. */
 /* Picker option for using Text Editor */
 "customFieldEditorView.editorPickerText" = "テキスト";
 
+/* Notice shown when the key has been copied to clipboard */
+"customFieldEditorView.keyCopiedNotice" = "キーをクリップボードにコピーしました";
+
+/* Error message shown when the entered key is identical to an existing key. */
+"customFieldEditorView.keyErrorDisallowedKey" = "間違ったキー: このキーはすでに別のカスタムフィールドで使用されています。 \n現在、アプリは複製キーの作成をサポートしていません。 必要に応じて、wp-admin を使用してキーを複製してください。";
+
+/* Error message shown when key starts with underscore */
+"customFieldEditorView.keyErrorPrefix" = "間違ったキー: 先頭の「_」文字を削除してください。";
+
 /* Label for the Key field */
 "customFieldEditorView.keyLabel" = "キー";
 
 /* Placeholder for the Key field */
 "customFieldEditorView.keyPlaceholder" = "キーを入力";
 
+/* Notice shown when the value has been copied to clipboard */
+"customFieldEditorView.valueCopiedNotice" = "値をクリップボードにコピーしました";
+
 /* Label for the Value field */
 "customFieldEditorView.valueLabel" = "値";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to add custom field. */
+"customFieldsListHostingController.accessibilityHintAddCustomField" = "リストに新しいカスタムフィールドを追加";
+
+/* Accessibility label for the Add Custom Field button */
+"customFieldsListHostingController.accessibilityLabelAddCustomField" = "カスタムフィールドを追加";
+
+/* Title for the notice when a custom field is deleted */
+"customFieldsListHostingController.deleteNoticeTitle" = "カスタムフィールドを削除しました";
+
+/* Action to undo the deletion of a custom field */
+"customFieldsListHostingController.deleteNoticeUndo" = "取り消す";
+
+/* Text for button that's shown when the list is empty. */
+"customFieldsListHostingController.emptyStateButton" = "さらに詳しく";
+
+/* Message when the list is empty. */
+"customFieldsListHostingController.emptyStateDescription" = "カスタムフィールドはオプションのメタデータで、追加情報を表示したりストアのショッピング体験をカスタマイズしたりできます";
+
+/* Title for the message when the list is empty. */
+"customFieldsListHostingController.emptyStateTitle" = "カスタムフィールドが見つかりません";
+
+/* Message for the in progress view shown when saving changes */
+"customFieldsListHostingController.inProgressMessage" = "変更を保存する間、しばらくお待ちください";
+
+/* Title for the in progress view shown when saving changes */
+"customFieldsListHostingController.inProgressTitle" = "保存中...";
+
+/* Button to save the changes on Custom Fields list */
+"customFieldsListHostingController.save" = "保存";
+
+/* Message for the error message when saving changes */
+"customFieldsListHostingController.saveErrorMessage" = "変更を保存しているときにエラーが発生しました。 もう一度お試しください。";
+
+/* Title for the error message when saving changes */
+"customFieldsListHostingController.saveErrorTitle" = "変更の保存中にエラーが発生しました";
+
+/* Title for the success message when saving changes */
+"customFieldsListHostingController.saveSuccessTitle" = "変更を保存しました";
+
+/* Title for the order custom fields list */
+"customFieldsListHostingController.title" = "カスタムフィールド";
+
+/* Content of the banner when there are unsaved custom fields */
+"customFieldsListTopBanner.description" = "カスタムフィールドへの変更を保存すると、変更はすぐに有効になります。";
+
+/* Dismiss button title */
+"customFieldsListTopBanner.dismiss" = "閉じる";
+
+/* Title of the banner when there are unsaved custom fields */
+"customFieldsListTopBanner.title" = "カスタムフィールドを表示および編集";
 
 /* Accessibility title for the search button on the customer section. */
 "customer.search.button.accessibilityLabel" = "お客様を検索";
@@ -10984,6 +11047,9 @@ which should be translated separately and considered part of this sentence. */
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderDetailsDataSource.attributionInfo.unknown" = "不明";
 
+/* Button on bottom of shipping label card to view the shipping label */
+"orderDetailsDataSource.shippingLabels.viewLabel" = "購入した配送ラベルを表示";
+
 /* Title of Shipping Section in Order Details screen */
 "orderDetailsDataSource.shippingLines.title" = "配送";
 
@@ -11450,6 +11516,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "合計を読み込めませんでした";
 
+/* Button to dismiss the payments onboarding sheet from the POS dashboard. */
+"pointOfSaleDashboard.payments.onboarding.cancel" = "キャンセル";
+
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.done" = "完了";
 
@@ -11776,6 +11845,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the suggested product on the Blaze dashboard view. */
 "productInfoView.suggestedProductLabel" = "おすすめの商品";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
+"productInventorySettings.GlobalUniqueIdentifier.ScanButton" = "在庫管理用に商品のグローバル一意識別子と関連付けられたバーコードをスキャンします。";
+
+/* Placeholder of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
+"productInventorySettings.globalUniqueIdentifier.placeholder" = "オプション";
+
+/* Title of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
+"productInventorySettings.globalUniqueIdentifier.title" = "GTIN、UPC、EAN、ISBN";
+
+/* The message of the alert when there is an error updating the product global unique identifier */
+"productInventorySettings.invalidGlobalUniqueIdentifier.error" = "数字とハイフン (-) のみ入力してください";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "請求の間隔";
@@ -12406,17 +12487,26 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for height input field */
 "wooShipping.createLabel.addPackage.height" = "高さ";
 
+/* The title for a button to dismiss the keyboard on the order creation/editing screen */
+"wooShipping.createLabel.addPackage.keyboard.toolbar.done.button.title" = "完了";
+
 /* Info label for length input field */
 "wooShipping.createLabel.addPackage.length" = "長さ";
 
 /* Info label for selecting package type */
 "wooShipping.createLabel.addPackage.packageType" = "パッケージの種類";
 
+/* Info label for weight input field */
+"wooShipping.createLabel.addPackage.packageWeight" = "荷物の重量";
+
 /* Info label for saving package as a new template toggle */
 "wooShipping.createLabel.addPackage.saveNewPackageTemplate" = "これを新しいパッケージテンプレートとして保存";
 
 /* Button for saving package as a new template */
 "wooShipping.createLabel.addPackage.savePackageTemplate" = "パッケージのテンプレートを保存";
+
+/* Placeholder text for package name field */
+"wooShipping.createLabel.addPackage.savePackageTemplatePlaceholder" = "固有のパッケージ名を入力";
 
 /* Info label for saved package option */
 "wooShipping.createLabel.addPackage.saved" = "保存済み";
@@ -12430,6 +12520,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button to dismiss the shipping label creation screen */
 "wooShipping.createLabel.cancelButton" = "キャンセル";
 
+/* Title of the button to dismiss the shipping label screen */
+"wooShipping.createLabel.closeButton" = "閉じる";
+
 /* Label for section in shipping label creation to declare when a package contains hazardous materials. */
 "wooShipping.createLabel.hazmatLabel" = "危険物または有害物質を発送しようとしていますか ?";
 
@@ -12438,6 +12531,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Call to action in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderTitle" = "荷物を選択して配送料を取得";
+
+/* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "成年の署名が必要";
+
+/* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
+"wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (基本料金)";
 
 /* Label for the toggle to mark the order as complete on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.markComplete" = "この注文に完了のマークを付けてお客様に通知";
@@ -12451,6 +12550,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button to purchase the shipping label on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.purchase" = "ラベルを購入";
 
+/* Label for button to purchase the shipping label on the shipping label creation screen, including the label price. Reads like: 'Purchase Label · $7.63' */
+"wooShipping.createLabels.bottomSheet.purchaseFormat" = "ラベルを購入 · %1$@";
+
 /* Label for address where the shipment is shipped from on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.shipFrom" = "出荷元";
 
@@ -12459,6 +12561,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header for shipment costs section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.shipmentCosts" = "配送料";
+
+/* Label for row showing the additional cost to require a signature on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.signatureRequired" = "署名が必要";
 
 /* Label for row showing the subtotal for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.subtotal" = "小計";
@@ -12478,8 +12583,77 @@ which should be translated separately and considered part of this sentence. */
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
 
+/* Link for more information about how to print a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.info" = "モバイルデバイスを使って印刷する方法を確認";
+
+/* Navigation bar title of shipping label printing instructions screen */
+"wooShipping.createLabels.postPurchase.infoTitle" = "モバイルデバイスを使って印刷する";
+
+/* Note about reusing a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.note" = "注意: 印刷されたラベルを再利用すると、弊社の利用規約違反となり、刑事責任を問われる可能性があります。";
+
+/* Title for button to print a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.printButton" = "配送ラベルを印刷";
+
+/* Message displayed on the shipping label screen when a purchased shipping label can be printed */
+"wooShipping.createLabels.postPurchase.printMessage" = "こちらから再度配送ラベルを印刷するか、ラベルの用紙サイズを変更することができます。";
+
+/* Heading displayed on the shipping label screen when a purchased shipping label can be printed */
+"wooShipping.createLabels.postPurchase.readyToPrint" = "配送ラベルを印刷する準備ができました";
+
+/* Link to request a refund for a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.requestRefund" = "返金をリクエスト";
+
+/* Link to schedule a pickup for a purchased shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.schedulePickup" = "集荷日を設定";
+
+/* Link to track a shipment for a purchase shipping label on the shipping label screen */
+"wooShipping.createLabels.postPurchase.trackShipment" = "配送状況を追跡";
+
+/* Heading for the shipping service section in the shipping label creation screen. */
+"wooShipping.createLabels.rates.shippingService" = "配送サービス";
+
+/* Label for the menu to select a sort order for shipping rates in the shipping label creation screen. */
+"wooShipping.createLabels.rates.sortBy" = "並べ替え";
+
+/* Option to sort shipping rates by delivery time in the shipping label creation screen. */
+"wooShipping.createLabels.rates.sortBy.deliveryTime" = "最速";
+
+/* Option to sort shipping rates by price in the shipping label creation screen. */
+"wooShipping.createLabels.rates.sortBy.price" = "最安値";
+
+/* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
+"wooShipping.createLabels.shippingService.adultSignatureRequired" = "成人の方の署名が必要 (+%1$@)";
+
+/* Singular format of number of business days in Woo Shipping label creation flow. Reads like: '1 business day' */
+"wooShipping.createLabels.shippingService.deliveryDaySingular" = "%1$d営業日";
+
+/* Plural format of number of business days in Woo Shipping label creation flow. Reads like: '3 business days' */
+"wooShipping.createLabels.shippingService.deliveryDaysPlural" = "%1$d営業日";
+
+/* Label when shipping rate includes free pickup in Woo Shipping label creation flow. */
+"wooShipping.createLabels.shippingService.freePickup" = "無料集荷";
+
+/* Label when shipping rate includes tracking in Woo Shipping label creation flow. */
+"wooShipping.createLabels.shippingService.includesTracking" = "追跡を含む";
+
+/* Label when shipping rate includes insurance in Woo Shipping label creation flow. Placeholder is an amount. Reads like: 'Insurance (up to $100)' */
+"wooShipping.createLabels.shippingService.insuranceAmount" = "保険 (最大%1$@)";
+
+/* Label when shipping rate includes insurance in Woo Shipping label creation flow. Placeholder is a literal. Reads like: 'Insurance (limited)' */
+"wooShipping.createLabels.shippingService.insuranceLiteral" = "保険 (%1$@)";
+
+/* Label when shipping rate has option to require a signature in Woo Shipping label creation flow. Reads like: 'Signature required (+$3.70)' */
+"wooShipping.createLabels.shippingService.signatureRequired" = "署名が必要 (+%1$@)";
+
+/* Label when shipping rate includes tracking in Woo Shipping label creation flow. */
+"wooShipping.createLabels.shippingService.tracking" = "追跡";
+
 /* Title for the screen to create a shipping label */
 "wooShipping.createLabels.title" = "配送ラベルを作成";
+
+/* Title for the screen to view a shipping label */
+"wooShipping.createLabels.viewLabelTitle" = "配送ラベルを表示";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, 自分のストア, 今日, 今週, 今月, 今年, 注文, 訪問者, コンバージョン, 上位コンバージョン, 販売済み商品";

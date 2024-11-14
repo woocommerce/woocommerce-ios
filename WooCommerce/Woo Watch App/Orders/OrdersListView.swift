@@ -114,16 +114,15 @@ struct OrdersListView: View {
     /// Data: List with live order content.
     ///
     @ViewBuilder private func dataView(orders: [Order]) -> some View {
-        List() {
+        List {
             ForEach(orders, id: \.number) { order in
-                NavigationLink(value: order) {
+                NavigationLink {
+                    OrderDetailView(order: order)
+                } label: {
                     OrderListCard(order: order)
                 }
             }
             .listRowBackground(OrderListCard.background)
-        }
-        .navigationDestination(for: Order.self) { order in
-            OrderDetailView(order: order)
         }
     }
 }

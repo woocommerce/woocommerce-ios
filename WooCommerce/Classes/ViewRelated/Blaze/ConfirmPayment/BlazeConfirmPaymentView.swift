@@ -365,7 +365,8 @@ private extension BlazeConfirmPaymentView {
                             targeting: nil,
                             targetUrn: "",
                             type: "product",
-                            objective: "sales"),
+                            objective: "sales",
+                            ctaText: "Shop now"),
         image: .init(image: .iconBolt, source: .asset(asset: PHAsset())),
         onCompletion: {}))
 }

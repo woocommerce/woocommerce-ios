@@ -46,6 +46,10 @@ public enum WooAPIVersion: String {
     ///
     case wcAdmin = "wc-admin"
 
+    /// Woo Shipping Plugin V1.
+    ///
+    case wooShipping = "wcshipping/v1"
+
     /// Returns the path for the current API Version
     ///
     var path: String {

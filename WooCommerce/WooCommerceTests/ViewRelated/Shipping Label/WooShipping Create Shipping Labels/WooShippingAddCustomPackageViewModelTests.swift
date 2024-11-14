@@ -16,13 +16,13 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         // Given/When
         let expectedDimensionUnit = "in"
         let expectedWeightUnit = "in"
-        let viewModel = WooShippingAddCustomPackageViewModel(dimensionUnit: expectedDimensionUnit,
+        let viewModel = WooShippingAddCustomPackageViewModel(dimensionsUnit: expectedDimensionUnit,
                                                              weightUnit: expectedWeightUnit)
 
         // Then
         XCTAssertNotNil(viewModel)
         viewModel.checkDefaultInitProperties()
-        XCTAssertEqual(viewModel.dimensionUnit, expectedDimensionUnit)
+        XCTAssertEqual(viewModel.dimensionsUnit, expectedDimensionUnit)
         XCTAssertEqual(viewModel.weightUnit, expectedWeightUnit)
     }
 
@@ -162,30 +162,63 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
 
     func test_add_package_action() {
         // Given
-        let viewModel = WooShippingAddCustomPackageViewModel()
+        let dimensionUnit = "cm"
+        let weightUnit = "kg"
+        let viewModel = WooShippingAddCustomPackageViewModel(dimensionsUnit: dimensionUnit, weightUnit: weightUnit)
+        let length = "1"
+        let width = "2"
+        let height = "3"
+        let weight = "4"
+
+        let expectedDimensions = "\(length) x \(width) x \(height) \(dimensionUnit)"
+        let expectedWeight = "\(weight) \(weightUnit)"
 
         // When
-        viewModel.fillWithDummyFieldValues()
-        viewModel.addPackageAction()
+        viewModel.fieldValues[.length] = length
+        viewModel.fieldValues[.width] = width
+        viewModel.fieldValues[.height] = height
+        viewModel.fieldValues[.weight] = weight
+        let packageData = viewModel.addPackageAction()
 
         // Then
         viewModel.checkDefaultInitProperties()
         XCTAssertEqual(viewModel.validateCustomPackageInputFields(), false)
+        XCTAssertNotNil(packageData)
+        XCTAssertEqual(packageData?.dimensionsDescription, expectedDimensions)
+        XCTAssertEqual(packageData?.weightDescription, expectedWeight)
+        XCTAssertNil(viewModel.addPackageAction())
     }
 
-    func test_save_package_as_template_action() {
+    @MainActor
+    func test_save_package_as_template_action() async {
         // Given
-        let viewModel = WooShippingAddCustomPackageViewModel()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingAddCustomPackageViewModel(stores: stores)
+        let packageName = "a"
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .createPackage(_, _, _, completion):
+                completion(.success(WooShippingCreatePackageResponse(customPackages: [WooShippingCustomPackage.fake().copy(id: "1", name: packageName)],
+                                                                     predefinedOptions: [])))
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
 
         // When
         viewModel.fillWithDummyFieldValues()
         viewModel.showSaveTemplate = true
-        viewModel.packageTemplateName = "a"
-        viewModel.savePackageAsTemplateAction()
+        viewModel.packageTemplateName = packageName
+        let packageData = await viewModel.savePackageAsTemplateAction()
 
         // Then
         viewModel.checkDefaultInitProperties()
         XCTAssertEqual(viewModel.validateCustomPackageInputFields(), false)
+        XCTAssertNotNil(packageData)
+        XCTAssertEqual(packageData?.name, packageName)
+        XCTAssertEqual(packageData?.id, "1")
+        let updatedPackageData = await viewModel.savePackageAsTemplateAction()
+        XCTAssertNil(updatedPackageData)
     }
 }
 

@@ -82,6 +82,7 @@ enum WooAnalyticsStat: String {
     case loginInvalidEmailScreenViewed = "login_invalid_email_screen_viewed"
     case whatIsWPComOnInvalidEmailScreenTapped = "what_is_wordpress_com_on_invalid_email_screen"
     case loginInsufficientRole = "login_insufficient_role"
+    case blackFlaggedWebsiteDetected = "black_flagged_website_detected"
 
     // MARK: REST API login
     //
@@ -474,6 +475,7 @@ enum WooAnalyticsStat: String {
     case orderContactAction = "order_contact_action"
     case orderCustomerAdd = "order_customer_add"
     case orderEditButtonTapped = "order_edit_button_tapped"
+    case orderEditButtonTappedWhileDisabledForCurrencyConflict = "order_edit_button_tapped_while_disabled_for_currency_conflict"
     case ordersListFilter = "orders_list_filter"
     case ordersListSearch = "orders_list_search"
     case ordersListLoaded = "orders_list_loaded"
@@ -545,6 +547,7 @@ enum WooAnalyticsStat: String {
     case barcodeScanningSuccess = "barcode_scanning_success"
     case barcodeScanningFailure = "barcode_scanning_failure"
     case orderProductSearchViaSKUSuccess = "product_search_via_sku_success"
+    case orderProductSearchViaGlobalUniqueIdentifierSuccess = "product_search_via_global_unique_identifier_success"
     case orderProductSearchViaSKUFailure = "product_search_via_sku_failure"
 
     // MARK: Tax Rate selector
@@ -753,6 +756,7 @@ enum WooAnalyticsStat: String {
     case productInventorySettingsSKUScanned = "product_inventory_settings_sku_scanned"
     case productInventorySettingsGlobalUniqueIDScannerButtonTapped = "product_inventory_settings_global_unique_id_scanner_button_tapped"
     case productInventorySettingsGlobalUniqueIDScanned = "product_inventory_settings_global_unique_id_scanned"
+    case productInventorySettingsGlobalUniqueIDFieldEdited = "product_inventory_settings_global_unique_identifier_field_edited"
     case productDetailPreviewTapped = "product_detail_preview_tapped"
     case productDetailPreviewFailed = "product_detail_preview_failed"
     case productDetailViewBundledProductsTapped = "product_detail_view_bundled_products_tapped"
@@ -1246,6 +1250,8 @@ enum WooAnalyticsStat: String {
 
     // MARK: Point of Sale events
     case pointOfSaleAddItemToCart = "pos_item_added_to_cart"
+    case pointOfSalePaymentsOnboardingShown = "pos_payments_onboarding_shown"
+    case pointOfSalePaymentsOnboardingDismissed = "pos_payments_onboarding_dismissed"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"

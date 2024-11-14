@@ -1,1 +1,1 @@
-Esta versão inclui várias correções de bug e melhorias para tornar sua experiência mais agradável. Estamos empenhados em melhorar cada vez mais o aplicativo do WooCommerce e teremos algumas atualizações interessantes nas próximas semanas. Fique ligado!
+Vá mais a fundo em uma experiência eficiente no WooCommerce! Ajustamos o app para Apple Watch para mostrar os detalhes do pedido perfeitamente. E mais, adicionamos mensagens de erro mais claras para conexões do leitor de pagamento. Atualize para acompanhar os negócios diretamente do seu pulso e no seu bolso.

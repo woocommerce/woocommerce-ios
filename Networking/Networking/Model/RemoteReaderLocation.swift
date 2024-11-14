@@ -1,6 +1,8 @@
 /// Represent a Remote Reader Location Entity.
 ///
-public struct RemoteReaderLocation: Decodable {
+
+import Codegen
+public struct RemoteReaderLocation: Decodable, GeneratedFakeable, GeneratedCopiable {
     public let locationID: String
     public let city: String?
     public let country: String

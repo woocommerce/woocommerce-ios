@@ -6,6 +6,7 @@ import Combine
 final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
     private var sut: PointOfSaleDashboardViewModel!
+    private var mockPOSModel: MockPointOfSaleAggregateModel!
     private var cardPresentPaymentService: MockCardPresentPaymentService!
     private var itemProvider: MockPOSItemProvider!
     private var mockCartViewModel: MockCartViewModel!
@@ -17,13 +18,15 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        mockPOSModel = MockPointOfSaleAggregateModel()
         cardPresentPaymentService = MockCardPresentPaymentService()
         itemProvider = MockPOSItemProvider()
         mockCartViewModel = MockCartViewModel()
         mockTotalsViewModel = MockTotalsViewModel()
         mockItemListViewModel = MockItemListViewModel()
         mockConnectivityObserver = MockConnectivityObserver()
-        sut = PointOfSaleDashboardViewModel(cardPresentPaymentService: cardPresentPaymentService,
+        sut = PointOfSaleDashboardViewModel(posModel: mockPOSModel,
+                                            cardPresentPaymentService: cardPresentPaymentService,
                                             totalsViewModel: mockTotalsViewModel,
                                             cartViewModel: mockCartViewModel,
                                             itemListViewModel: mockItemListViewModel,
@@ -57,28 +60,26 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
     func test_start_new_order() {
         // Given
         let expectedOrderStage = PointOfSaleDashboardViewModel.OrderStage.building
-        let itemsAdded = false
 
         // When
         mockTotalsViewModel.startNewOrderAction = ()
 
         // Then
         XCTAssertEqual(sut.orderStage, expectedOrderStage)
-        XCTAssertEqual(mockCartViewModel.addItemToCartCalled, itemsAdded)
-        XCTAssertTrue(mockCartViewModel.removeAllItemsFromCartCalled)
+        XCTAssertTrue(mockPOSModel.removeAllItemsFromCartCalled)
     }
 
     func test_items_added_to_cart() {
         // Given
         let item = Self.makeItem()
+        let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
         let itemsAdded = true
         let expectedOrderStage = PointOfSaleDashboardViewModel.OrderStage.building
 
         // When
-        mockCartViewModel.addItemToCart(item)
+        mockCartViewModel.itemsInCartSubject.send([cartItem])
 
         // Then
-        XCTAssertEqual(mockCartViewModel.addItemToCartCalled, itemsAdded)
         XCTAssertEqual(sut.orderStage, expectedOrderStage)
     }
 
@@ -290,39 +291,11 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
             .store(in: &cancellables)
 
         // When
-        mockCartViewModel.itemsInCart = [] // Trigger the empty cart condition
+        mockCartViewModel.itemsInCartSubject.send([]) // Trigger the empty cart condition
 
         // Then
         wait(for: [expectation], timeout: 1.0)
         XCTAssertEqual(receivedOrderStage, .building)
-    }
-
-    func test_dashboard_when_item_list_loading_and_empty_then_isInitialLoading_is_false() {
-        // Given
-        mockItemListViewModel.items = []
-        mockItemListViewModel.state = .loading
-
-        // Then
-        XCTAssertFalse(sut.isInitialLoading)
-    }
-
-    func test_dashboard_when_item_list_empty_then_isInitialLoading_is_false() {
-        // Given
-        mockItemListViewModel.items = []
-        mockItemListViewModel.state = .empty
-
-        // Then
-        XCTAssertFalse(sut.isInitialLoading)
-    }
-
-    func test_dashboard_when_item_list_loaded_then_isInitialLoading_false() {
-        // Given
-        let items = [Self.makeItem()]
-        mockItemListViewModel.items = items
-        mockItemListViewModel.state = .loaded(items)
-
-        // Then
-        XCTAssertFalse(sut.isInitialLoading)
     }
 
     func test_cartSubmitted_sets_cartViewModel_canDeleteItems_false() {

@@ -112,4 +112,14 @@ final class ReceiptRemoteTests: XCTestCase {
         let received = try XCTUnwrap(request.parameters["expiration_days"] as? String)
         assertEqual("365", received)
     }
+
+    func test_sendReceipt() async throws {
+        // Given
+        let orderID: Int64 = 123
+        let remote = ReceiptRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/\(orderID)/actions/send_order_details", filename: "orders-actions-send-order-details")
+
+        // When & Then
+        try await remote.sendReceipt(siteID: 123, orderID: orderID)
+    }
 }

@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleDashboardView: View {
+    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var totalsViewModel: TotalsViewModel
     @ObservedObject private var cartViewModel: CartViewModel
@@ -20,29 +21,30 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            if viewModel.isInitialLoading {
+            switch posModel.itemListState {
+            case .initialLoading:
                 PointOfSaleLoadingView()
                     .transition(.opacity)
                     .ignoresSafeArea()
-            } else if viewModel.isError {
-                let errorContents = viewModel.itemListViewModel.state.hasError
+            case .empty:
+                PointOfSaleItemListEmptyView()
+            case .error(let errorContents):
                 PointOfSaleItemListErrorView(error: errorContents, onRetry: {
                     Task {
-                        await viewModel.itemListViewModel.reload()
+                        await posModel.loadInitialItems()
                     }
                 })
-            } else if viewModel.isEmpty {
-                PointOfSaleItemListEmptyView()
-            } else {
+            case .loading, .loaded:
                 contentView
                     .accessibilitySortPriority(2)
             }
+
             POSFloatingControlView(viewModel: viewModel)
                 .shadow(color: Color.black.opacity(0.12), radius: 4, y: 2)
                 .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
                 .trackSize(size: $floatingSize)
                 .accessibilitySortPriority(1)
-                .renderedIf(!viewModel.isInitialLoading)
+                .renderedIf(posModel.itemListState != .initialLoading)
 
             POSConnectivityView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -54,11 +56,13 @@ struct PointOfSaleDashboardView: View {
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .environment(\.posBackgroundAppearance, totalsViewModel.paymentState != .processingPayment ? .primary : .secondary)
-        .animation(.easeInOut, value: viewModel.isInitialLoading)
+        .animation(.easeInOut, value: posModel.itemListState == .initialLoading)
         .animation(.easeInOut(duration: Constants.connectivityAnimationDuration), value: viewModel.showsConnectivityError)
         .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
-        .sheet(item: $totalsViewModel.cardPresentPaymentOnboardingViewModel) { viewModel in
+        .posModal(item: $totalsViewModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
+            totalsViewModel.cancelOnboarding()
+        }) { viewModel in
             paymentsOnboardingView(from: viewModel)
         }
         .posModal(item: $totalsViewModel.cardPresentPaymentAlertViewModel,
@@ -130,27 +134,15 @@ private extension PointOfSaleDashboardView {
 
     func paymentsOnboardingView(from onboardingViewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
         onboardingViewModel.showSupport = {
-            totalsViewModel.cardPresentPaymentOnboardingViewModel = nil
+            totalsViewModel.cancelOnboarding()
             viewModel.showSupport = true
         }
-        onboardingViewModel.showURL = { url in
-            totalsViewModel.cardPresentPaymentOnboardingURL = url
-        }
-        return NavigationStack {
-            CardPresentPaymentsOnboardingView(viewModel: onboardingViewModel)
-                .navigationBarTitleDisplayMode(.inline)
-                .interactiveDismissDisabled()
-                .toolbar {
-                    Button(action: {
-                        totalsViewModel.cardPresentPaymentOnboardingViewModel = nil
-                    }) {
-                        Text(Localization.cancelOnboarding)
-                    }
-                }
-                .safariSheet(url: $totalsViewModel.cardPresentPaymentOnboardingURL)
-                .onDisappear {
-                    totalsViewModel.cancelOnboarding()
-                }
+        return PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(onboardingViewModel: onboardingViewModel,
+                                                                            onDismissTap: {
+            totalsViewModel.cancelOnboarding()
+        }))
+        .onAppear {
+            totalsViewModel.trackOnboardingShown()
         }
     }
 }
@@ -184,11 +176,6 @@ private extension PointOfSaleDashboardView {
             value: "Done",
             comment: "Button to dismiss the support form from the POS dashboard."
         )
-        static let cancelOnboarding = NSLocalizedString(
-            "pointOfSaleDashboard.payments.onboarding.cancel",
-            value: "Cancel",
-            comment: "Button to dismiss the payments onboarding sheet from the POS dashboard."
-        )
     }
 }
 
@@ -216,9 +203,10 @@ import class WooFoundation.MockAnalyticsProviderPreview
                                    cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                    currencyFormatter: .init(currencySettings: .init()),
                                    paymentState: .acceptingCard)
-    let cartVM = CartViewModel(analytics: MockAnalyticsPreview())
-    let itemsListVM = ItemListViewModel(itemProvider: POSItemProviderPreview())
-    let posVM = PointOfSaleDashboardViewModel(cardPresentPaymentService: CardPresentPaymentPreviewService(),
+    let cartVM = CartViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview()))
+    let itemsListVM = ItemListViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview()))
+    let posVM = PointOfSaleDashboardViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview()),
+                                              cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                               totalsViewModel: totalsVM,
                                               cartViewModel: cartVM,
                                               itemListViewModel: itemsListVM,

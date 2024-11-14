@@ -2112,7 +2112,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             switch action {
             case .synchronizeProducts:
                 return
-            case .retrieveFirstPurchasableItemMatchFromSKU(_, _, let onCompletion):
+            case .retrieveFirstPurchasableItemMatchFromIdentifier(_, _, let onCompletion):
                 onCompletion(.failure(actionError))
             default:
                 XCTFail("Unexpected ProductAction received")
@@ -2169,9 +2169,9 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
-            case .retrieveFirstPurchasableItemMatchFromSKU(_, _, let onCompletion):
+            case .retrieveFirstPurchasableItemMatchFromIdentifier(_, _, let onCompletion):
                 let product = Product.fake().copy(productID: self.sampleSiteID, purchasable: true)
-                onCompletion(.success(.product(product)))
+                onCompletion(.success((.product(product), .SKU)))
             default:
                 break
             }
@@ -2214,9 +2214,9 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { [weak self] action in
             switch action {
-            case .retrieveFirstPurchasableItemMatchFromSKU(_, _, let onCompletion):
+            case .retrieveFirstPurchasableItemMatchFromIdentifier(_, _, let onCompletion):
                 self?.storageManager.insertSampleProduct(readOnlyProduct: product)
-                onCompletion(.success(.product(product)))
+                onCompletion(.success((.product(product), .SKU)))
             default:
                 break
             }

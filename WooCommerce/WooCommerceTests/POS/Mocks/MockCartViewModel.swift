@@ -10,24 +10,11 @@ class MockCartViewModel: CartViewModelProtocol {
     lazy var addMoreToCartActionPublisher = addMoreToCartActionSubject.eraseToAnyPublisher()
     let addMoreToCartActionSubject: PassthroughSubject<Void, Never> = .init()
 
-    @Published var itemsInCart: [WooCommerce.CartItem] = []
-    var itemsInCartPublisher: Published<[CartItem]>.Publisher { $itemsInCart }
+    lazy var itemsInCartPublisher: AnyPublisher<[CartItem], Never> = itemsInCartSubject.eraseToAnyPublisher()
+    let itemsInCartSubject: PassthroughSubject<[CartItem], Never> = .init()
 
     var canDeleteItemsFromCart: Bool = false
-    var itemToScrollToWhenCartUpdated: WooCommerce.CartItem? = nil
     var itemsInCartLabel: String? = nil
-
-    func addItemToCart(_ item: any Yosemite.POSItem) {
-        addItemToCartCalled = true
-    }
-
-    func removeItemFromCart(_ cartItem: WooCommerce.CartItem) {
-        removeItemFromCartCalled = true
-    }
-
-    func removeAllItemsFromCart() {
-        removeAllItemsFromCartCalled = true
-    }
 
     func submitCart() {
         submitCartCalled = true
@@ -39,9 +26,6 @@ class MockCartViewModel: CartViewModelProtocol {
     }
 
     // Mock variables
-    var addItemToCartCalled = false
-    var removeItemFromCartCalled = false
-    var removeAllItemsFromCartCalled = false
     var submitCartCalled = false
     var addMoreToCartCalled = false
 }

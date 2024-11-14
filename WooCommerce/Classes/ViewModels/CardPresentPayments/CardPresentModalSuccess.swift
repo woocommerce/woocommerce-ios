@@ -1,6 +1,8 @@
 import UIKit
 
 /// Modal presented when the payment has been collected successfully
+/// No customer attached to order therefore an email receipt is not sent automatically
+/// Email receipt can be sent after payment
 final class CardPresentModalSuccess: CardPresentPaymentsModalViewModel {
 
     /// Closure to execute when primary button is tapped
@@ -63,26 +65,36 @@ final class CardPresentModalSuccess: CardPresentPaymentsModalViewModel {
     }
 }
 
-private extension CardPresentModalSuccess {
+extension CardPresentModalSuccess {
     enum Localization {
         static let paymentSuccessful = NSLocalizedString(
-            "Payment successful",
+            "cardPresentPaymentsModal.success.paymentSuccessful",
+            value: "Payment successful",
             comment: "Label informing users that the payment succeeded. Presented to users when a payment is collected"
         )
 
         static let printReceipt = NSLocalizedString(
-            "Print receipt",
+            "cardPresentPaymentsModal.success.printReceipt",
+            value: "Print receipt",
             comment: "Button to print receipts. Presented to users after a payment has been successfully collected"
         )
 
         static let emailReceipt = NSLocalizedString(
-            "Email receipt",
+            "cardPresentPaymentsModal.success.emailReceipt",
+            value: "Email receipt",
             comment: "Button to email receipts. Presented to users after a payment has been successfully collected"
         )
 
         static let saveReceiptAndContinue = NSLocalizedString(
-            "Save receipt and continue",
+            "cardPresentPaymentsModal.success.saveReceiptAndContinue",
+            value: "Save receipt and continue",
             comment: "Button when the user does not want to print or email receipt. Presented to users after a payment has been successfully collected"
+        )
+
+        static let receiptMessage = NSLocalizedString(
+            "cardPresentPaymentsModal.success.receiptMessage",
+            value: "A receipt has been sent to %1$@",
+            comment: "Message informing the user that a receipt has been sent to their email address. %1$@ is the email address"
         )
     }
 }

@@ -51,8 +51,8 @@ public class ProductStore: Store {
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
             retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .retrieveFirstPurchasableItemMatchFromSKU(siteID: let siteID, sku: let sku, onCompletion: let onCompletion):
-            retrieveFirstPurchasableItemMatchFromSKU(siteID: siteID, sku: sku, onCompletion: onCompletion)
+        case .retrieveFirstPurchasableItemMatchFromIdentifier(siteID: let siteID, identifier: let identifier, onCompletion: let onCompletion):
+            retrieveFirstPurchasableItemMatchFromIdentifier(siteID: siteID, identifier: identifier, onCompletion: onCompletion)
         case let.searchProductsInCache(siteID, keyword, pageSize, onCompletion):
             searchInCache(siteID: siteID, keyword: keyword, pageSize: pageSize, onCompletion: onCompletion)
         case let .searchProducts(siteID,
@@ -411,28 +411,29 @@ private extension ProductStore {
         }
     }
 
-    /// Retrieves the first product associated with a given siteID and exact-matching SKU (if any)
+    /// Retrieves the first product associated with a given siteID and exact-matching SKU or global unique identifier (if any)
     ///
-    func retrieveFirstPurchasableItemMatchFromSKU(siteID: Int64, sku: String, onCompletion: @escaping (Result<SKUSearchResult, Error>) -> Void) {
+    func retrieveFirstPurchasableItemMatchFromIdentifier(siteID: Int64,
+                                                         identifier: String,
+                                                         onCompletion: @escaping (Result<(ItemIdentifierSearchResult,
+                                                                                          ItemIdentifierSearchResultSource), Error>) -> Void) {
 
-        guard !sku.isEmpty else {
-            return onCompletion(.failure(ProductLoadError.emptySKU))
+        guard !identifier.isEmpty else {
+            return onCompletion(.failure(ProductLoadError.emptyIdentifier))
         }
 
-        remote.searchProductsBySKU(for: siteID,
-                                   keyword: sku,
-                                   pageNumber: Remote.Default.firstPageNumber,
-                                   pageSize: ProductsRemote.Default.pageSize,
+        searchProductsByIdentifier(siteID: siteID,
+                                   keyword: identifier,
                                    completion: { result in
             switch result {
-            case let .success(products):
-                let skuProducts = products.filter { $0.sku == sku }
+            case let .success((products, source)):
+                let matchedProducts = products.filter { $0.sku == identifier || $0.globalUniqueID == identifier }
 
-                guard !skuProducts.isEmpty else {
+                guard !matchedProducts.isEmpty else {
                     return onCompletion(.failure(ProductLoadError.notFound))
                 }
 
-                guard let product = skuProducts.first(where: { $0.purchasable }) else {
+                guard let product = matchedProducts.first(where: { $0.purchasable }) else {
                     return onCompletion(.failure(ProductLoadError.notPurchasable))
                 }
 
@@ -441,11 +442,11 @@ private extension ProductStore {
                                                                                                   siteID: siteID,
                                                                                                   productID: productVariation.productID,
                                                                                                   onCompletion: {
-                        onCompletion(.success(.variation(productVariation)))
+                        onCompletion(.success((.variation(productVariation), source)))
                     })
                 } else {
                     self.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: siteID, onCompletion: {
-                        onCompletion(.success(.product(product)))
+                        onCompletion(.success((.product(product), source)))
                     })
                 }
             case let .failure(error):
@@ -1277,6 +1278,40 @@ private extension ProductStore {
     }
 }
 
+private extension ProductStore {
+    func searchProductsByIdentifier(siteID: Int64, keyword: String, completion: @escaping (Result<([Product], ItemIdentifierSearchResultSource), Error>) -> Void) {
+        remote.searchProductsBySKU(for: siteID,
+                                   keyword: keyword,
+                                   pageNumber: Remote.Default.firstPageNumber,
+                                   pageSize: ProductsRemote.Default.pageSize,
+                                   completion: { [weak self] result in
+            var returningResults: [Product] = []
+            switch result {
+            case let .success(products):
+                returningResults = products
+            case .failure:
+                break
+            }
+
+            if returningResults.isEmpty {
+                self?.remote.searchProductsByGlobalUniqueIdentifier(for: siteID,
+                                                              keyword: keyword,
+                                                              pageNumber: Remote.Default.firstPageNumber,
+                                                              pageSize: ProductsRemote.Default.pageSize,
+                                                              completion: { result in
+                    switch result {
+                    case let .success(products):
+                        completion(.success((products, .globalUniqueIdentifier)))
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                })
+            } else {
+                completion(.success((returningResults, .SKU)))
+            }
+        })
+    }
+}
 
 // MARK: - Unit Testing Helpers
 //
@@ -1351,7 +1386,7 @@ public enum ProductLoadError: Error, Equatable {
     case notFound
     case notFoundInStorage
     case notPurchasable
-    case emptySKU
+    case emptyIdentifier
     case unknown(error: AnyError)
 
     init(underlyingError error: Error) {

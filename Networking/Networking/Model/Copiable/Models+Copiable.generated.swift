@@ -2,6 +2,7 @@
 // DO NOT EDIT
 import Codegen
 import Foundation
+import WooFoundation
 
 extension Networking.AIProduct {
     public func copy(
@@ -579,7 +580,8 @@ extension Networking.CreateBlazeCampaign {
         targeting: NullableCopiableProp<BlazeTargetOptions> = .copy,
         targetUrn: CopiableProp<String> = .copy,
         type: CopiableProp<String> = .copy,
-        objective: NullableCopiableProp<String> = .copy
+        objective: NullableCopiableProp<String> = .copy,
+        ctaText: CopiableProp<String> = .copy
     ) -> Networking.CreateBlazeCampaign {
         let origin = origin ?? self.origin
         let originVersion = originVersion ?? self.originVersion
@@ -598,6 +600,7 @@ extension Networking.CreateBlazeCampaign {
         let targetUrn = targetUrn ?? self.targetUrn
         let type = type ?? self.type
         let objective = objective ?? self.objective
+        let ctaText = ctaText ?? self.ctaText
 
         return Networking.CreateBlazeCampaign(
             origin: origin,
@@ -616,7 +619,8 @@ extension Networking.CreateBlazeCampaign {
             targeting: targeting,
             targetUrn: targetUrn,
             type: type,
-            objective: objective
+            objective: objective,
+            ctaText: ctaText
         )
     }
 }
@@ -2853,6 +2857,42 @@ extension Networking.Refund {
     }
 }
 
+extension Networking.RemoteReaderLocation {
+    public func copy(
+        locationID: CopiableProp<String> = .copy,
+        city: NullableCopiableProp<String> = .copy,
+        country: CopiableProp<String> = .copy,
+        addressLine1: CopiableProp<String> = .copy,
+        addressLine2: NullableCopiableProp<String> = .copy,
+        postalCode: NullableCopiableProp<String> = .copy,
+        stateProvinceRegion: NullableCopiableProp<String> = .copy,
+        displayName: CopiableProp<String> = .copy,
+        liveMode: CopiableProp<Bool> = .copy
+    ) -> Networking.RemoteReaderLocation {
+        let locationID = locationID ?? self.locationID
+        let city = city ?? self.city
+        let country = country ?? self.country
+        let addressLine1 = addressLine1 ?? self.addressLine1
+        let addressLine2 = addressLine2 ?? self.addressLine2
+        let postalCode = postalCode ?? self.postalCode
+        let stateProvinceRegion = stateProvinceRegion ?? self.stateProvinceRegion
+        let displayName = displayName ?? self.displayName
+        let liveMode = liveMode ?? self.liveMode
+
+        return Networking.RemoteReaderLocation(
+            locationID: locationID,
+            city: city,
+            country: country,
+            addressLine1: addressLine1,
+            addressLine2: addressLine2,
+            postalCode: postalCode,
+            stateProvinceRegion: stateProvinceRegion,
+            displayName: displayName,
+            liveMode: liveMode
+        )
+    }
+}
+
 extension Networking.ShipmentTracking {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -3959,6 +3999,45 @@ extension Networking.WooPaymentsManualDeposit {
         return Networking.WooPaymentsManualDeposit(
             currency: currency,
             date: date
+        )
+    }
+}
+
+extension Networking.WooShippingCreatePackageResponse {
+    public func copy(
+        customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
+        predefinedOptions: CopiableProp<[WooShippingPredefinedOption]> = .copy
+    ) -> Networking.WooShippingCreatePackageResponse {
+        let customPackages = customPackages ?? self.customPackages
+        let predefinedOptions = predefinedOptions ?? self.predefinedOptions
+
+        return Networking.WooShippingCreatePackageResponse(
+            customPackages: customPackages,
+            predefinedOptions: predefinedOptions
+        )
+    }
+}
+
+extension Networking.WooShippingCustomPackage {
+    public func copy(
+        id: CopiableProp<String> = .copy,
+        name: CopiableProp<String> = .copy,
+        rawType: CopiableProp<String> = .copy,
+        dimensions: CopiableProp<String> = .copy,
+        boxWeight: CopiableProp<Double> = .copy
+    ) -> Networking.WooShippingCustomPackage {
+        let id = id ?? self.id
+        let name = name ?? self.name
+        let rawType = rawType ?? self.rawType
+        let dimensions = dimensions ?? self.dimensions
+        let boxWeight = boxWeight ?? self.boxWeight
+
+        return Networking.WooShippingCustomPackage(
+            id: id,
+            name: name,
+            rawType: rawType,
+            dimensions: dimensions,
+            boxWeight: boxWeight
         )
     }
 }

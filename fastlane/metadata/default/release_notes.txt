@@ -1,1 +1,1 @@
-This release includes several bug fixes and improvements to make your experience smoother. We're committed to continuously improving the WooCommerce app, and we have some exciting updates coming in the next few weeks. Stay tuned!
+Dive into a smoother WooCommerce experience! We’ve fine-tuned the Watch app to showcase your order details flawlessly. Plus, we've added clearer error messages for payment reader connections. Update for an even better business pulse on your wrist and in your pocket.

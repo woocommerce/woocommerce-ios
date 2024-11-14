@@ -10,7 +10,8 @@ struct PointOfSaleAggregateModelTests {
 
         init() {
             self.sut = PointOfSaleAggregateModel(itemProvider: MockPOSItemProvider(),
-                                                 cardPresentPaymentService: MockCardPresentPaymentService())
+                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
+                                                 orderService: MockPOSOrderService())
         }
 
         @Test func inits_with_building_order_stage() async throws {
@@ -20,7 +21,7 @@ struct PointOfSaleAggregateModelTests {
         @Test func startNewCart_removes_all_items_from_cart_and_moves_back_to_building() async throws {
             // Given
             sut.addToCart(makeItem())
-            sut.submitCart()
+            await sut.submitCart()
             try #require(sut.orderStage == .finalizing)
             try #require(sut.cart.isNotEmpty)
 
@@ -37,7 +38,7 @@ struct PointOfSaleAggregateModelTests {
             sut.addToCart(makeItem())
 
             // When
-            sut.submitCart()
+            await sut.submitCart()
 
             // Then
             #expect(sut.orderStage == .finalizing)
@@ -46,7 +47,7 @@ struct PointOfSaleAggregateModelTests {
         @Test func addMoreToCart_moves_to_building_order_stage() async throws {
             // Given
             sut.addToCart(makeItem())
-            sut.submitCart()
+            await sut.submitCart()
             try #require(sut.orderStage == .finalizing)
 
             // When
@@ -59,13 +60,14 @@ struct PointOfSaleAggregateModelTests {
     }
 
     struct ItemListTests {
-        private var itemProvider: MockPOSItemProvider
+        private let itemProvider: MockPOSItemProvider
         private let sut: PointOfSaleAggregateModel
 
         init() {
             itemProvider = MockPOSItemProvider()
             sut = PointOfSaleAggregateModel(itemProvider: itemProvider,
-                                            cardPresentPaymentService: MockCardPresentPaymentService())
+                                            cardPresentPaymentService: MockCardPresentPaymentService(),
+                                            orderService: MockPOSOrderService())
         }
 
         @Test func loadInitialItems_requests_first_page() async throws {
@@ -153,7 +155,8 @@ struct PointOfSaleAggregateModelTests {
             let itemProvider = MockPOSItemProvider()
             itemProvider.shouldReturnZeroItems = true
             let sut = PointOfSaleAggregateModel(itemProvider: itemProvider,
-                                                cardPresentPaymentService: MockCardPresentPaymentService())
+                                                cardPresentPaymentService: MockCardPresentPaymentService(),
+                                                orderService: MockPOSOrderService())
 
             try #require(sut.itemListState == .initialLoading)
 
@@ -211,7 +214,8 @@ struct PointOfSaleAggregateModelTests {
             let itemProvider = MockPOSItemProvider()
             itemProvider.shouldReturnZeroItems = true
             let sut = PointOfSaleAggregateModel(itemProvider: itemProvider,
-                                                cardPresentPaymentService: MockCardPresentPaymentService())
+                                                cardPresentPaymentService: MockCardPresentPaymentService(),
+                                                orderService: MockPOSOrderService())
 
             try #require(sut.itemListState == .initialLoading)
 
@@ -309,14 +313,15 @@ struct PointOfSaleAggregateModelTests {
 
     struct CartTests {
         let sut: PointOfSaleAggregateModel
-        private var analytics: WooAnalytics!
-        private var analyticsProvider: MockAnalyticsProvider!
+        private let analytics: WooAnalytics!
+        private let analyticsProvider: MockAnalyticsProvider!
 
         init() {
             analyticsProvider = MockAnalyticsProvider()
             analytics = WooAnalytics(analyticsProvider: analyticsProvider)
             sut = PointOfSaleAggregateModel(itemProvider: MockPOSItemProvider(),
                                             cardPresentPaymentService: MockCardPresentPaymentService(),
+                                            orderService: MockPOSOrderService(),
                                             analytics: analytics)
         }
 
@@ -393,6 +398,34 @@ struct PointOfSaleAggregateModelTests {
             // Then
             let event = try #require(analyticsProvider.receivedEvents.first)
             #expect(event == "pos_item_added_to_cart")
+        }
+    }
+
+    struct OrderTests {
+        private let itemProvider: MockPOSItemProvider
+        private let orderService: MockPOSOrderService
+        private let sut: PointOfSaleAggregateModel
+
+        init() {
+            itemProvider = MockPOSItemProvider()
+            orderService = MockPOSOrderService()
+            sut = PointOfSaleAggregateModel(itemProvider: itemProvider,
+                                            cardPresentPaymentService: MockCardPresentPaymentService(),
+                                            orderService: orderService)
+        }
+
+        @Test func startNewCart_sets_orderState_to_idle() async throws {
+            // Given
+            try #require(sut.orderState == .loaded(.init(
+                cartTotal: "",
+                orderTotal: "",
+                taxTotal: "")))
+
+            // When
+            sut.startNewCart()
+
+            // Then
+            #expect(sut.orderState == .idle)
         }
     }
 }

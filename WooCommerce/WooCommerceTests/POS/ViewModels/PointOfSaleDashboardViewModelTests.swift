@@ -49,40 +49,10 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         // Given
         let expectedAddMoreButtonDisabledState = false
         let expectedExitPOSButtonDisabledState = false
-        let expectedOrderStage = PointOfSaleDashboardViewModel.OrderStage.building
 
         // When/Then
-        XCTAssertEqual(sut.orderStage, expectedOrderStage)
         XCTAssertEqual(sut.isAddMoreDisabled, expectedAddMoreButtonDisabledState)
         XCTAssertEqual(sut.isExitPOSDisabled, expectedExitPOSButtonDisabledState)
-    }
-
-    func test_start_new_order() {
-        // Given
-        let expectedOrderStage = PointOfSaleDashboardViewModel.OrderStage.building
-        let itemsAdded = false
-
-        // When
-        mockTotalsViewModel.startNewOrderAction = ()
-
-        // Then
-        XCTAssertEqual(sut.orderStage, expectedOrderStage)
-        XCTAssertEqual(mockCartViewModel.addItemToCartCalled, itemsAdded)
-        XCTAssertTrue(mockCartViewModel.removeAllItemsFromCartCalled)
-    }
-
-    func test_items_added_to_cart() {
-        // Given
-        let item = Self.makeItem()
-        let itemsAdded = true
-        let expectedOrderStage = PointOfSaleDashboardViewModel.OrderStage.building
-
-        // When
-        mockCartViewModel.addItemToCart(item)
-
-        // Then
-        XCTAssertEqual(mockCartViewModel.addItemToCartCalled, itemsAdded)
-        XCTAssertEqual(sut.orderStage, expectedOrderStage)
     }
 
     func test_isAddMoreDisabled_is_true_when_order_is_syncing_and_paymentState_is_idle() {
@@ -210,28 +180,6 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
     }
 
-    func test_observeCartSubmission_updates_orderStage() {
-        // Given
-        let expectation = XCTestExpectation(description: "Expect orderStage to be .finalizing and isSyncingOrder to be true")
-        let customCartItems = [CartItem(id: UUID(), item: Self.makeItem(), quantity: 1)]
-
-        // Attach sink to observe changes to orderStage
-        var orderStageValue: PointOfSaleDashboardViewModel.OrderStage?
-        sut.$orderStage
-            .sink { orderStage in
-                orderStageValue = orderStage
-                expectation.fulfill()
-            }
-            .store(in: &cancellables)
-
-        // When
-        mockCartViewModel.submitCart(with: customCartItems)
-
-        // Then
-        wait(for: [expectation], timeout: 1.0)
-        XCTAssertEqual(orderStageValue, .finalizing)
-    }
-
     func test_observeCartSubmission_starts_syncing_order() {
         // Given
         let expectation = XCTestExpectation(description: "Expect orderStage to be .finalizing and isSyncingOrder to be true")
@@ -252,98 +200,6 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         // Then
         wait(for: [expectation], timeout: 1.0)
         XCTAssertTrue(receivedIsSyncingOrder)
-    }
-
-    func test_observeCartAddMoreAction_updates_orderStage_to_building() {
-        // Given
-        let expectation = XCTestExpectation(description: "Expect orderStage to be .building when adding more to the cart")
-
-        var receivedOrderStage: PointOfSaleDashboardViewModel.OrderStage?
-        // Attach sink to observe changes to orderStage
-        sut.$orderStage
-            // Ignore the initial value of orderStage to ensure that the test only reacts to changes in the orderStage after the subscription has started.
-            .dropFirst()
-            .sink { orderStage in
-                receivedOrderStage = orderStage
-                XCTAssertEqual(receivedOrderStage, .building)
-                expectation.fulfill()
-            }
-            .store(in: &cancellables)
-
-        // When
-        mockCartViewModel.addMoreToCart()
-
-        wait(for: [expectation], timeout: 1.0)
-    }
-
-    func test_observeCartItemsToCheckIfCartIsEmpty_updates_orderStage_to_building() {
-        // Given
-        let expectation = XCTestExpectation(description: "Expect orderStage to be .building when cart becomes empty")
-        var receivedOrderStage: PointOfSaleDashboardViewModel.OrderStage?
-
-        // Attach sink to observe changes to orderStage
-        sut.$orderStage
-            .dropFirst() // Ignore the initial value. Avoids immediately fulfilling the expectation upon subscribing.
-            .sink { orderStage in
-                receivedOrderStage = orderStage
-                if orderStage == .building {
-                    expectation.fulfill()
-                }
-            }
-            .store(in: &cancellables)
-
-        // When
-        mockCartViewModel.itemsInCart = [] // Trigger the empty cart condition
-
-        // Then
-        wait(for: [expectation], timeout: 1.0)
-        XCTAssertEqual(receivedOrderStage, .building)
-    }
-
-    func test_cartSubmitted_sets_cartViewModel_canDeleteItems_false() {
-        // Given
-        XCTAssertTrue(mockCartViewModel.canDeleteItemsFromCart)
-
-        // When
-        mockCartViewModel.cartSubmissionSubject.send([CartItem(id: UUID(), item: Self.makeItem(), quantity: 1)])
-
-        // Then
-        XCTAssertFalse(mockCartViewModel.canDeleteItemsFromCart)
-    }
-
-    func test_cartSubmitted_calls_totalsViewModel_startShowingTotalsView() {
-        // Given
-        mockTotalsViewModel.spyStartShowingTotalsViewCalled = false
-
-        // When
-        mockCartViewModel.cartSubmissionSubject.send([CartItem(id: UUID(), item: Self.makeItem(), quantity: 1)])
-
-        // Then
-        XCTAssertTrue(mockTotalsViewModel.spyStartShowingTotalsViewCalled)
-    }
-
-    func test_addMoreTapped_sets_cartViewModel_canDeleteItems_true() {
-        // Given
-        mockCartViewModel.cartSubmissionSubject.send([CartItem(id: UUID(), item: Self.makeItem(), quantity: 1)])
-        XCTAssertFalse(mockCartViewModel.canDeleteItemsFromCart)
-
-        // When
-        mockCartViewModel.addMoreToCartActionSubject.send(())
-
-        // Then
-        XCTAssertTrue(mockCartViewModel.canDeleteItemsFromCart)
-    }
-
-    func test_addMoreTapped_calls_totalsViewModel_stopShowingTotalsView() {
-        // Given the TotalsView is showing
-        mockCartViewModel.cartSubmissionSubject.send([])
-        mockTotalsViewModel.spyStopShowingTotalsViewCalled = false
-
-        // When
-        mockCartViewModel.addMoreToCartActionSubject.send(())
-
-        // Then
-        XCTAssertTrue(mockTotalsViewModel.spyStopShowingTotalsViewCalled)
     }
 
     func test_showsConnectivityError_when_nonReachable_then_shows_error() {

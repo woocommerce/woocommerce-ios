@@ -36,6 +36,11 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             updateIsUsingAISuggestions()
         }
     }
+    @Published private(set) var ctaText: String = "" {
+        didSet {
+            updateIsUsingAISuggestions()
+        }
+    }
 
     // Whether the campaign should have no end date
     private var isEvergreen: Bool
@@ -83,7 +88,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     var editAdViewModel: BlazeEditAdViewModel {
         let adData = BlazeEditAdData(image: image,
                                      tagline: tagline,
-                                     description: description)
+                                     description: description,
+                                     ctaText: ctaText)
         return BlazeEditAdViewModel(siteID: siteID,
                                     productID: productID,
                                     adData: adData,
@@ -93,6 +99,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             self.image = adData.image
             self.tagline = adData.tagline
             self.description = adData.description
+            self.ctaText = adData.ctaText
         })
     }
 
@@ -260,7 +267,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                             targeting: targetOptions,
                             targetUrn: targetUrn,
                             type: Constants.campaignType,
-                            objective: campaignObjective?.id)
+                            objective: campaignObjective?.id,
+                            ctaText: ctaText)
     }
 
     private let locale: Locale
@@ -344,6 +352,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             if let firstSuggestion = suggestions.first {
                 tagline = firstSuggestion.siteName
                 description = firstSuggestion.textSnippet
+                ctaText = firstSuggestion.ctaText
             }
         } catch {
             DDLogError("⛔️ Error fetching Blaze AI suggestions: \(error)")
@@ -429,10 +438,10 @@ private extension BlazeCampaignCreationFormViewModel {
     // Updates the `isUsingAISuggestions` property based on whether the current
     // `tagline` and `description` match any of the provided AI suggestions.
     // The property will be set to `true` if there is at least one suggestion
-    // that matches both the `tagline` and `description`, and the suggestions list is not empty.
+    // that matches both the `tagline` and `description`.
     func updateIsUsingAISuggestions() {
         isUsingAISuggestions = suggestions.contains { element in
-            element.siteName == tagline && element.textSnippet == description && !suggestions.isEmpty
+            element.siteName == tagline && element.textSnippet == description && element.ctaText == ctaText
         }
     }
 

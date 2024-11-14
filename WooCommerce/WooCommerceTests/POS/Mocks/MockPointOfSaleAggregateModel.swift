@@ -3,6 +3,8 @@ import Foundation
 import protocol Yosemite.POSItem
 
 final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
+    var orderStage: PointOfSaleOrderStage
+
     var allItems: [POSItem] {
         switch itemListState {
         case .empty,
@@ -17,8 +19,10 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     var itemListState: ItemListState
 
-    init(itemListState: ItemListState = .initialLoading) {
+    init(itemListState: ItemListState = .initialLoading,
+         orderStage: PointOfSaleOrderStage = .building) {
         self.itemListState = itemListState
+        self.orderStage = orderStage
     }
 
     func loadInitialItems() async { }
@@ -26,4 +30,21 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     func loadNextItems() async { }
 
     func reload() async { }
+
+    var cart: [CartItem] = []
+
+    func addToCart(_ item: any Yosemite.POSItem) { }
+
+    func remove(cartItem: WooCommerce.CartItem) { }
+
+    var removeAllItemsFromCartCalled = false
+    func removeAllItemsFromCart() {
+        removeAllItemsFromCartCalled = true
+    }
+
+    func submitCart() { }
+
+    func addMoreToCart() { }
+
+    func startNewCart() { }
 }

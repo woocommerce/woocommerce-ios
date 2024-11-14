@@ -150,31 +150,31 @@ private extension WooPaymentsDepositsCurrencyOverviewView {
 private extension WooPaymentsDepositsCurrencyOverviewView {
     enum Localization {
         static let availableFunds = NSLocalizedString(
-            "deposits.currency.overview.availableFunds",
+            "payouts.currency.overview.availableFunds",
             value: "Available funds",
-            comment: "Title for available funds overview in WooPayments Deposits view. " +
+            comment: "Title for available funds overview in WooPayments Payouts view. " +
             "This shows the balance which can be paid out.")
         static let pendingFunds = NSLocalizedString(
-            "deposits.currency.overview.pendingFunds",
+            "payouts.currency.overview.pendingFunds",
             value: "Pending funds",
-            comment: "Title for pending funds overview in WooPayments Deposits view. " +
+            comment: "Title for pending funds overview in WooPayments Payouts view. " +
             "This shows the balance which will be made available for pay out later.")
         static let lastDepositHeader = NSLocalizedString(
-            "deposits.currency.overview.lastDeposit",
-            value: "Last Deposit",
-            comment: "Section header for the last deposit in the WooPayments Deposits overview")
+            "payouts.currency.overview.lastPayout",
+            value: "Last Payout",
+            comment: "Section header for the last payout in the WooPayments Payouts overview")
         static let learnMoreButtonText = NSLocalizedString(
-            "deposits.currency.overview.learnMore",
+            "payouts.currency.overview.learnMore",
             value: "Learn more about when you'll receive your funds",
-            comment: "Button text to view more about payment schedules on the WooPayments Deposits View.")
+            comment: "Button text to view more about payment schedules on the WooPayments Payouts View.")
         static let showDepositDetailAccessibilityLabel = NSLocalizedString(
-            "deposits.currency.overview.accessibility.show",
-            value: "Show deposit details",
-            comment: "Accessibility label for the expand chevron on the Deposit summary")
+            "payouts.currency.overview.accessibility.show",
+            value: "Show payout details",
+            comment: "Accessibility label for the expand chevron on the Payout summary")
         static let hideDepositDetailAccessibilityLabel = NSLocalizedString(
-            "deposits.currency.overview.accessibility.hide",
-            value: "Hide deposit details",
-            comment: "Accessibility label for the collapse chevron on the Deposit summary")
+            "payouts.currency.overview.accessibility.hide",
+            value: "Hide payout details",
+            comment: "Accessibility label for the collapse chevron on the Payout summary")
     }
 }
 

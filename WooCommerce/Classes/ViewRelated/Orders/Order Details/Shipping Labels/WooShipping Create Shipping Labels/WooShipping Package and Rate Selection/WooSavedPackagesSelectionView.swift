@@ -63,8 +63,8 @@ struct WooShippingPackageData: WooShippingPackageDataRepresentable {
         self.source = source
         self.packageType = packageType
 
-        self.dimensionsDescription = WooShippingPackageData.createDimensionsDesccription(length: length, width: width, height: height, unit: dimensionsUnit)
-        self.weightDescription = WooShippingPackageData.createWeightsDesccription(weight: weight, unit: weightUnit)
+        self.dimensionsDescription = WooShippingPackageData.createDimensionsDescription(length: length, width: width, height: height, unit: dimensionsUnit)
+        self.weightDescription = WooShippingPackageData.createWeightsDescription(weight: weight, unit: weightUnit)
     }
 
     init(name: String,
@@ -90,11 +90,11 @@ struct WooShippingPackageData: WooShippingPackageDataRepresentable {
 }
 
 extension WooShippingPackageDataRepresentable {
-    static func createDimensionsDesccription(length: String, width: String, height: String, unit: String) -> String {
+    static func createDimensionsDescription(length: String, width: String, height: String, unit: String) -> String {
         return "\(length) x \(width) x \(height) \( unit)"
     }
 
-    static func createWeightsDesccription(weight: String, unit: String) -> String {
+    static func createWeightsDescription(weight: String, unit: String) -> String {
         return "\(weight) \(unit)"
     }
 }

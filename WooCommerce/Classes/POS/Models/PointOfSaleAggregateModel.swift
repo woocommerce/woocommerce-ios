@@ -2,8 +2,11 @@ import Foundation
 
 import protocol Yosemite.POSItem
 import protocol Yosemite.POSItemProvider
+import protocol WooFoundation.Analytics
 
 protocol PointOfSaleAggregateModelProtocol {
+    var orderStage: PointOfSaleOrderStage { get }
+
     @available(*, deprecated, message: "`allItems` is due for removal, use `itemListState` instead.")
     var allItems: [POSItem] { get }
     var itemListState: ItemListState { get }
@@ -11,18 +14,33 @@ protocol PointOfSaleAggregateModelProtocol {
     func loadInitialItems() async
     func loadNextItems() async
     func reload() async
+
+    var cart: [CartItem] { get }
+    func addToCart(_ item: POSItem)
+    func remove(cartItem: CartItem)
+    func removeAllItemsFromCart()
+    func submitCart()
+    func addMoreToCart()
+    func startNewCart()
 }
 
 class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProtocol {
+    @Published private(set) var orderStage: PointOfSaleOrderStage = .building
+
     @Published private(set) var allItems: [POSItem] = []
     @Published private(set) var itemListState: ItemListState = .initialLoading
 
+    @Published private(set) var cart: [CartItem] = []
+
     private let itemProvider: POSItemProvider
+    private let analytics: Analytics
 
     private var currentPage: Int = Constants.initialPage
 
-    init(itemProvider: POSItemProvider) {
+    init(itemProvider: POSItemProvider,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.itemProvider = itemProvider
+        self.analytics = analytics
     }
 }
 
@@ -80,6 +98,38 @@ extension PointOfSaleAggregateModel {
         } else {
             itemListState = .loaded(allItems)
         }
+    }
+}
+
+// MARK: - Cart
+
+extension PointOfSaleAggregateModel {
+    func addToCart(_ item: POSItem) {
+        cart.insert(CartItem(id: UUID(), item: item, quantity: 1), at: 0)
+        Task { @MainActor in
+            analytics.track(.pointOfSaleAddItemToCart)
+        }
+    }
+
+    func remove(cartItem: CartItem) {
+        cart.removeAll(where: { $0.id == cartItem.id } )
+    }
+
+    func removeAllItemsFromCart() {
+        cart.removeAll()
+    }
+
+    func submitCart() {
+        orderStage = .finalizing
+    }
+
+    func addMoreToCart() {
+        orderStage = .building
+    }
+
+    func startNewCart() {
+        removeAllItemsFromCart()
+        orderStage = .building
     }
 }
 

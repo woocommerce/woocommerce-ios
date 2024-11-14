@@ -162,7 +162,8 @@ extension Networking.BlazeAISuggestion {
     public static func fake() -> Networking.BlazeAISuggestion {
         .init(
             siteName: .fake(),
-            textSnippet: .fake()
+            textSnippet: .fake(),
+            ctaText: .fake()
         )
     }
 }
@@ -437,7 +438,8 @@ extension Networking.CreateBlazeCampaign {
             targeting: .fake(),
             targetUrn: .fake(),
             type: .fake(),
-            objective: .fake()
+            objective: .fake(),
+            ctaText: .fake()
         )
     }
 }

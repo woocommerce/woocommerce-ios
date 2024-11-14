@@ -566,8 +566,8 @@ private extension CollectOrderPaymentUseCase {
             })
         }
             // Sends receipt via API
-            let addCustomerEmailAndSendReceiptCompletionAction: () -> Void = {
-                // TODO
+            let addCustomerEmailAndSendReceiptCompletionAction: () -> Void = { [weak self] in
+                self?.presentSendReceiptAfterPayment(onCompleted: onCompleted)
             }
 
             // Presents receipt alert
@@ -685,6 +685,16 @@ private extension CollectOrderPaymentUseCase {
         noticePresenter.enqueue(notice: notice)
 
         onCompleted()
+    }
+}
+
+// MARK: - Collect customer email and send receipt after payment presentation
+private extension CollectOrderPaymentUseCase {
+    func presentSendReceiptAfterPayment(onCompleted: @escaping (() -> Void)) {
+        let receiptEmailViewController = ReceiptEmailViewHostingController(order: order) { _ in
+            onCompleted()
+        }
+        rootViewController.present(receiptEmailViewController, animated: true)
     }
 }
 

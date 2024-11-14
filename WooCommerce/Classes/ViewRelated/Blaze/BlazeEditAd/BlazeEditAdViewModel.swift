@@ -276,6 +276,7 @@ private extension BlazeEditAdViewModel {
         }
         tagline = suggestion.siteName
         description = suggestion.textSnippet
+        ctaText = suggestion.ctaText
     }
 }
 

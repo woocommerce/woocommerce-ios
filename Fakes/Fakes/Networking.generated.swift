@@ -162,7 +162,8 @@ extension Networking.BlazeAISuggestion {
     public static func fake() -> Networking.BlazeAISuggestion {
         .init(
             siteName: .fake(),
-            textSnippet: .fake()
+            textSnippet: .fake(),
+            ctaText: .fake()
         )
     }
 }

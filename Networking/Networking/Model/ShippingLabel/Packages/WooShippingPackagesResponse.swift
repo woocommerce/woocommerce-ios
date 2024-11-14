@@ -12,14 +12,19 @@ public struct WooShippingPackagesResponse: Equatable, GeneratedFakeable, Generat
     public let customPackages: [WooShippingCustomPackage]
 
     /// Saved (activated) predefined options
-    public let predefinedOptions: [WooShippingPredefinedOption]
+    public let savedPredefinedOptions: [WooShippingPredefinedSavedOption]
+
+    /// All predefined options
+    public let allPredefinedOptions: [WooShippingPredefinedOption]
 
     public init(storeOptions: ShippingLabelStoreOptions,
                 customPackages: [WooShippingCustomPackage],
-                predefinedOptions: [WooShippingPredefinedOption]) {
+                savedPredefinedOptions: [WooShippingPredefinedSavedOption],
+                allPredefinedOptions: [WooShippingPredefinedOption]) {
         self.storeOptions = storeOptions
         self.customPackages = customPackages
-        self.predefinedOptions = predefinedOptions
+        self.savedPredefinedOptions = savedPredefinedOptions
+        self.allPredefinedOptions = allPredefinedOptions
     }
 }
 
@@ -28,34 +33,58 @@ extension WooShippingPackagesResponse: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        guard let storeOptions = try container.decodeIfPresent(ShippingLabelStoreOptions.self, forKey: .storeOptions) else {
-            throw WooShippingPackagesResponseDecodingError.missingStoreOptions
+        let storeOptions = try container.decode(ShippingLabelStoreOptions.self, forKey: .storeOptions)
+        let packagesData = try container.nestedContainer(keyedBy: PackagesKeys.self, forKey: .packages)
+
+        let savedPackagesData = try packagesData.nestedContainer(keyedBy: SavedPackagesKeys.self, forKey: .saved)
+        let customPackages = try savedPackagesData.decodeIfPresent([WooShippingCustomPackage].self, forKey: .custom) ?? []
+        let rawSavedPredefinedOptions: [String: [String]] = savedPackagesData.failsafeDecodeIfPresent([String: [String]].self, forKey: .predefined) ?? [:]
+        let savedPredefinedOptions = rawSavedPredefinedOptions.map { (carrier, packageIDs) in
+            WooShippingPredefinedSavedOption(id: carrier, predefinedPackageIDs: packageIDs)
         }
 
-        let customPackages = try container.decodeIfPresent([WooShippingCustomPackage].self, forKey: .custom) ?? []
-
-        // We assume that rows will always be of type `Dictionary<String:<Array<String>>>`
-        //
-        let rawPredefinedOptions: [String: [String]] = container.failsafeDecodeIfPresent([String: [String]].self, forKey: .predefined) ?? [:]
-
-        let predefinedOptions = rawPredefinedOptions.map { (carrier, packageIDs) in
-            WooShippingPredefinedOption(id: carrier, predefinedPackageIDs: packageIDs)
+        let allPredefinedPackagesData: [String: AnyCodable] = try packagesData.decode([String: AnyCodable].self, forKey: .predefined)
+        var allPredefinedOptions: [WooShippingPredefinedOption] = []
+        allPredefinedPackagesData.forEach { (key, value) in
+            // key is a carrier id, for example "usps"
+            if let provider: [String: Any]? = try? value.toDictionary() {
+                provider?.forEach({ (providerKey, providerValue) in
+                    // providerKey is package group id, for example "pri_flat_boxes"
+                    let providerValueDict = providerValue as? [String: Any]
+                    let title: String = providerValueDict?["title"] as? String ?? ""
+                    let packages = WooShippingPackagesResponse.getAllPredefinedPackages(packageDefinitions: providerValueDict)
+                    let option = WooShippingPredefinedOption(title: title, providerID: key, predefinedPackages: packages)
+                    allPredefinedOptions.append(option)
+                })
+            }
         }
 
         self.init(storeOptions: storeOptions,
                   customPackages: customPackages,
-                  predefinedOptions: predefinedOptions)
+                  savedPredefinedOptions: savedPredefinedOptions,
+                  allPredefinedOptions: allPredefinedOptions)
+    }
+
+    static func getAllPredefinedPackages(packageDefinitions: [String: Any]?) -> [WooShippingPredefinedPackage] {
+        guard let definitions = packageDefinitions?["definitions"], let jsonData = try? JSONSerialization.data(withJSONObject: definitions, options: []) else {
+            return []
+        }
+        return (try? JSONDecoder().decode([WooShippingPredefinedPackage].self, from: jsonData)) ?? []
     }
 
     private enum CodingKeys: String, CodingKey {
-        case custom
+        case packages
         case predefined
         case storeOptions
     }
-}
 
-// MARK: - Decoding Errors
-//
-enum WooShippingPackagesResponseDecodingError: Error {
-    case missingStoreOptions
+    private enum SavedPackagesKeys: String, CodingKey {
+        case custom
+        case predefined
+    }
+
+    private enum PackagesKeys: String, CodingKey {
+        case predefined
+        case saved
+    }
 }

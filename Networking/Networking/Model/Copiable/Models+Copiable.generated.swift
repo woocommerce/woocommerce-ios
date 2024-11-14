@@ -4003,7 +4003,7 @@ extension Networking.WooPaymentsManualDeposit {
 extension Networking.WooShippingCreatePackageResponse {
     public func copy(
         customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
-        predefinedOptions: CopiableProp<[WooShippingPredefinedOption]> = .copy
+        predefinedOptions: CopiableProp<[WooShippingPredefinedSavedOption]> = .copy
     ) -> Networking.WooShippingCreatePackageResponse {
         let customPackages = customPackages ?? self.customPackages
         let predefinedOptions = predefinedOptions ?? self.predefinedOptions
@@ -4019,16 +4019,19 @@ extension Networking.WooShippingPackagesResponse {
     public func copy(
         storeOptions: CopiableProp<ShippingLabelStoreOptions> = .copy,
         customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
-        predefinedOptions: CopiableProp<[WooShippingPredefinedOption]> = .copy
+        savedPredefinedOptions: CopiableProp<[WooShippingPredefinedSavedOption]> = .copy,
+        allPredefinedOptions: CopiableProp<[WooShippingPredefinedOption]> = .copy
     ) -> Networking.WooShippingPackagesResponse {
         let storeOptions = storeOptions ?? self.storeOptions
         let customPackages = customPackages ?? self.customPackages
-        let predefinedOptions = predefinedOptions ?? self.predefinedOptions
+        let savedPredefinedOptions = savedPredefinedOptions ?? self.savedPredefinedOptions
+        let allPredefinedOptions = allPredefinedOptions ?? self.allPredefinedOptions
 
         return Networking.WooShippingPackagesResponse(
             storeOptions: storeOptions,
             customPackages: customPackages,
-            predefinedOptions: predefinedOptions
+            savedPredefinedOptions: savedPredefinedOptions,
+            allPredefinedOptions: allPredefinedOptions
         )
     }
 }

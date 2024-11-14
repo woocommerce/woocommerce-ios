@@ -2783,14 +2783,31 @@ extension Networking.WooShippingCustomPackage {
         )
     }
 }
-extension Networking.WooShippingPredefinedOption {
+extension Networking.WooShippingPredefinedSavedOption {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooShippingPredefinedOption {
+    public static func fake() -> Networking.WooShippingPredefinedSavedOption {
         .init(
             id: .fake(),
             predefinedPackageIDs: .fake()
         )
+    }
+}
+extension Networking.WooShippingPredefinedPackage {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingPredefinedPackage {
+        .init(id: .fake(),
+              name: .fake(),
+              isLetter: .fake(),
+              dimensions: .fake(),
+              outerDimensions: .fake(),
+              innerDimensions: .fake(),
+              boxWeight: .fake(),
+              maxWeight: .fake(),
+              groupId: .fake(),
+              isFlatRate: .fake(),
+              canShipInternational: .fake())
     }
 }
 extension Networking.WordPressMedia {

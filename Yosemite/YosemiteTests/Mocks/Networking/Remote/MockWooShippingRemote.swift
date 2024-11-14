@@ -44,7 +44,7 @@ final class MockWooShippingRemote {
 extension MockWooShippingRemote: WooShippingRemoteProtocol {
     func createPackage(siteID: Int64,
                        customPackage: Networking.WooShippingCustomPackage?,
-                       predefinedOption: Networking.WooShippingPredefinedOption?,
+                       predefinedOption: Networking.WooShippingPredefinedSavedOption?,
                        completion: @escaping (Result<Networking.WooShippingCreatePackageResponse, any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }

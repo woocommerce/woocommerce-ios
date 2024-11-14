@@ -179,6 +179,7 @@ public typealias TopEarnerStatsItem = Networking.TopEarnerStatsItem
 public typealias User = Networking.User
 public typealias WooAPIVersion = Networking.WooAPIVersion
 public typealias WooShippingCustomPackage = Networking.WooShippingCustomPackage
+public typealias WooShippingPredefinedPackage = Networking.WooShippingPredefinedPackage
 public typealias WooShippingCreatePackageResponse = Networking.WooShippingCreatePackageResponse
 public typealias WooShippingPackagesResponse = Networking.WooShippingPackagesResponse
 public typealias WPComPlan = Networking.WPComPlan

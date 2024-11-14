@@ -28,7 +28,7 @@ final class WooShippingRemoteTests: XCTestCase {
         let result: Result<WooShippingCreatePackageResponse, Error> = waitFor { promise in
             remote.createPackage(siteID: self.sampleSiteID,
                                  customPackage: WooShippingCustomPackage.fake(),
-                                 predefinedOption: WooShippingPredefinedOption.fake()) { result in
+                                 predefinedOption: WooShippingPredefinedSavedOption.fake()) { result in
                 promise(result)
             }
         }
@@ -48,7 +48,7 @@ final class WooShippingRemoteTests: XCTestCase {
         let result: Result<WooShippingCreatePackageResponse, Error> = waitFor { promise in
             remote.createPackage(siteID: self.sampleSiteID,
                                  customPackage: WooShippingCustomPackage.fake(),
-                                 predefinedOption: WooShippingPredefinedOption.fake()) { result in
+                                 predefinedOption: WooShippingPredefinedSavedOption.fake()) { result in
                 promise(result)
             }
         }

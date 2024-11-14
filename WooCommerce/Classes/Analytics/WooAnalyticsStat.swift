@@ -547,6 +547,7 @@ enum WooAnalyticsStat: String {
     case barcodeScanningSuccess = "barcode_scanning_success"
     case barcodeScanningFailure = "barcode_scanning_failure"
     case orderProductSearchViaSKUSuccess = "product_search_via_sku_success"
+    case orderProductSearchViaGlobalUniqueIdentifierSuccess = "product_search_via_global_unique_identifier_success"
     case orderProductSearchViaSKUFailure = "product_search_via_sku_failure"
 
     // MARK: Tax Rate selector
@@ -755,6 +756,7 @@ enum WooAnalyticsStat: String {
     case productInventorySettingsSKUScanned = "product_inventory_settings_sku_scanned"
     case productInventorySettingsGlobalUniqueIDScannerButtonTapped = "product_inventory_settings_global_unique_id_scanner_button_tapped"
     case productInventorySettingsGlobalUniqueIDScanned = "product_inventory_settings_global_unique_id_scanned"
+    case productInventorySettingsGlobalUniqueIDFieldEdited = "product_inventory_settings_global_unique_identifier_field_edited"
     case productDetailPreviewTapped = "product_detail_preview_tapped"
     case productDetailPreviewFailed = "product_detail_preview_failed"
     case productDetailViewBundledProductsTapped = "product_detail_view_bundled_products_tapped"

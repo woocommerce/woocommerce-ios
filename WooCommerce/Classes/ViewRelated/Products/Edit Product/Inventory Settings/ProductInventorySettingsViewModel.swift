@@ -1,6 +1,7 @@
 import Combine
 import Yosemite
 import Experiments
+import WooFoundation
 
 /// Provides data needed for inventory settings.
 ///
@@ -94,6 +95,8 @@ final class ProductInventorySettingsViewModel: ProductInventorySettingsViewModel
 
     private(set) var errors: [ProductUpdateError] = []
 
+    private let analytics: Analytics
+
     // Sku validation
     private var skuIsValid: Bool = true
     private var globalUniqueIdIsValid: Bool = true
@@ -105,7 +108,8 @@ final class ProductInventorySettingsViewModel: ProductInventorySettingsViewModel
     init(formType: FormType,
          productModel: ProductFormDataModel,
          stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.formType = formType
         self.productModel = productModel
         self.stores = stores
@@ -122,6 +126,7 @@ final class ProductInventorySettingsViewModel: ProductInventorySettingsViewModel
 
         self.isStockStatusEnabled = productModel.isStockStatusEnabled()
         self.featureFlagService = featureFlagService
+        self.analytics = analytics
 
         reloadSections()
     }
@@ -232,6 +237,10 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
 
     func completeUpdating(onCompletion: (ProductInventoryEditableData) -> Void) {
         if skuIsValid && globalUniqueIdIsValid {
+            if globalUniqueID != productModel.globalUniqueID {
+                analytics.track(.productInventorySettingsGlobalUniqueIDFieldEdited)
+            }
+
             let data = ProductInventoryEditableData(sku: sku,
                                                     globalUniqueIdentifier: globalUniqueID,
                                                     manageStock: manageStockEnabled,

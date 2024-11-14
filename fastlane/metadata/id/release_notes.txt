@@ -1,1 +1,0 @@
-Manajemen produk dan pesanan kini makin mudah! Kini, Anda dapat melihat dan mengedit kolom khusus untuk produk dan pesanan dari dalam aplikasi. Kami juga telah menyempurnakan proses penyiapan pembayaran. Kini, makin mudah memperbaiki error pengaturan WooPayments atau Stripe. Selamat berjualan!

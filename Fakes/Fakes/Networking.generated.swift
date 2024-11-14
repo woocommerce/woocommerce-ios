@@ -2766,7 +2766,7 @@ extension Networking.WooShippingCustomPackage {
         .init(
             id: .fake(),
             name: .fake(),
-            type: .fake(),
+            rawType: .fake(),
             dimensions: .fake(),
             boxWeight: .fake()
         )

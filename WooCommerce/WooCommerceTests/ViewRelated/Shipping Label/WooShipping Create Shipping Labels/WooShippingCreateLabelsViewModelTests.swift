@@ -40,7 +40,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         let siteAddress = SiteAddress(siteSettings: siteSettings)
 
         // When
-        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(), siteAddress: siteAddress)
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(), originAddress: siteAddress)
 
         // Then
         XCTAssertEqual("60 29th Street #343, Auburn NY 13021, US", viewModel.originAddress)
@@ -151,7 +151,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // Given
         let order = Order.fake()
         let viewModel = WooShippingCreateLabelsViewModel(order: order, currencySettings: CurrencySettings(), shippingService: sampleShippingService())
-        let card = try XCTUnwrap(viewModel.shippingService.serviceTabs.first?.cards[1])
+        let card = try XCTUnwrap(viewModel.shippingService?.serviceTabs.first?.cards[1])
         card.signatureRequirement = .signatureRequired
 
         // When
@@ -169,7 +169,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // Given
         let order = Order.fake()
         let viewModel = WooShippingCreateLabelsViewModel(order: order, currencySettings: CurrencySettings(), shippingService: sampleShippingService())
-        let card = try XCTUnwrap(viewModel.shippingService.serviceTabs.first?.cards[1])
+        let card = try XCTUnwrap(viewModel.shippingService?.serviceTabs.first?.cards[1])
         card.signatureRequirement = .adultSignatureRequired
 
         // When
@@ -273,7 +273,7 @@ private extension WooShippingCreateLabelsViewModelTests {
 private extension WooShippingCreateLabelsViewModel {
     /// Selects the first available shipping rate.
     func selectShippingRate() throws {
-        let card = try XCTUnwrap(self.shippingService.serviceTabs.first?.cards.first)
+        let card = try XCTUnwrap(self.shippingService?.serviceTabs.first?.cards.first)
         card.selectRate()
     }
 }

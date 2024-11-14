@@ -36,6 +36,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             updateIsUsingAISuggestions()
         }
     }
+    @Published private(set) var ctaText: String = ""
 
     // Whether the campaign should have no end date
     private var isEvergreen: Bool
@@ -83,7 +84,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     var editAdViewModel: BlazeEditAdViewModel {
         let adData = BlazeEditAdData(image: image,
                                      tagline: tagline,
-                                     description: description)
+                                     description: description,
+                                     ctaText: ctaText)
         return BlazeEditAdViewModel(siteID: siteID,
                                     productID: productID,
                                     adData: adData,
@@ -93,6 +95,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             self.image = adData.image
             self.tagline = adData.tagline
             self.description = adData.description
+            self.ctaText = adData.ctaText
         })
     }
 
@@ -260,7 +263,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                             targeting: targetOptions,
                             targetUrn: targetUrn,
                             type: Constants.campaignType,
-                            objective: campaignObjective?.id)
+                            objective: campaignObjective?.id,
+                            ctaText: ctaText)
     }
 
     private let locale: Locale

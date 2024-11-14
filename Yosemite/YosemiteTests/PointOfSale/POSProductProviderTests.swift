@@ -24,9 +24,23 @@ final class POSProductProviderTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_POSItemProvider_when_fails_request_then_throws_error() async throws {
+    func test_POSItemProvider_when_fails_request_with_requestFailed_then_throws_error() async throws {
         // Given
         let expectedError = POSProductProviderError.requestFailed
+        network.simulateError(requestUrlSuffix: "products", error: expectedError)
+
+        // When
+        do {
+            _ = try await itemProvider.providePointOfSaleItems()
+            XCTFail("Expected an error, but got success.")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? POSProductProviderError, expectedError)
+        }
+    }
+
+    func test_POSItemProvider_when_fails_request_with_pageOutOfRange_then_throws_error() async throws {
+        let expectedError = POSProductProviderError.pageOutOfRange
         network.simulateError(requestUrlSuffix: "products", error: expectedError)
 
         // When

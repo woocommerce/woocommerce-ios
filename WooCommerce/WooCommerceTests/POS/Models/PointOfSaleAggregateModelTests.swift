@@ -223,6 +223,35 @@ struct PointOfSaleAggregateModelTests {
         #expect(itemProvider.spyLastRequestedPageNumber == 2)
     }
 
+    @Test func itemListViewModel_when_next_page_is_out_of_range_then_receives_error() async throws {
+        // Given
+        await sut.loadInitialItems()
+        try #require(itemProvider.spyLastRequestedPageNumber == 1)
+
+        // When
+        itemProvider.simulateNextPageIsOutOfRange()
+        await sut.loadNextItems()
+
+        // Then
+        guard case .error = sut.itemListState else {
+            Issue.record("Expected error state, but got \(sut.itemListState)")
+            return
+        }
+    }
+
+    @Test func itemListViewModel_when_next_page_is_out_of_range_then_the_same_page_is_requested_next() async throws {
+        // Given
+        await sut.loadInitialItems()
+        try #require(itemProvider.spyLastRequestedPageNumber == 1)
+
+        // When
+        itemProvider.simulateNextPageIsOutOfRange()
+        await sut.loadNextItems()
+
+        // Then
+        try #require(itemProvider.spyLastRequestedPageNumber == 1)
+    }
+
     @Test func itemListViewModel_when_reload_then_state_is_loaded_with_expected_items() async throws {
         // Given
         try #require(sut.itemListState == .initialLoading)

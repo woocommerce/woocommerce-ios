@@ -2,6 +2,7 @@
 // DO NOT EDIT
 import Codegen
 import Foundation
+import WooFoundation
 
 extension Networking.AIProduct {
     public func copy(
@@ -4016,6 +4017,30 @@ extension Networking.WooShippingCreatePackageResponse {
         return Networking.WooShippingCreatePackageResponse(
             customPackages: customPackages,
             predefinedOptions: predefinedOptions
+        )
+    }
+}
+
+extension Networking.WooShippingCustomPackage {
+    public func copy(
+        id: CopiableProp<String> = .copy,
+        name: CopiableProp<String> = .copy,
+        rawType: CopiableProp<String> = .copy,
+        dimensions: CopiableProp<String> = .copy,
+        boxWeight: CopiableProp<Double> = .copy
+    ) -> Networking.WooShippingCustomPackage {
+        let id = id ?? self.id
+        let name = name ?? self.name
+        let rawType = rawType ?? self.rawType
+        let dimensions = dimensions ?? self.dimensions
+        let boxWeight = boxWeight ?? self.boxWeight
+
+        return Networking.WooShippingCustomPackage(
+            id: id,
+            name: name,
+            rawType: rawType,
+            dimensions: dimensions,
+            boxWeight: boxWeight
         )
     }
 }

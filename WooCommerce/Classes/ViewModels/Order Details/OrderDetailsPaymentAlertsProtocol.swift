@@ -13,8 +13,6 @@ protocol OrderDetailsPaymentAlertsProtocol {
 
     func processingPayment(title: String)
 
-    func success(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void, noReceiptAction: @escaping () -> Void)
-
     func error(error: Error, tryAgain: @escaping () -> Void, dismissCompletion: @escaping () -> Void)
 
     func nonRetryableError(from: UIViewController?, error: Error, dismissCompletion: @escaping () -> Void)

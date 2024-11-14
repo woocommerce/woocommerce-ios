@@ -6,6 +6,8 @@ struct ItemListView: View {
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
+    @EnvironmentObject var posModel: PointOfSaleAggregateModel
+
     init(viewModel: ItemListViewModel) {
         self.viewModel = viewModel
     }
@@ -13,7 +15,7 @@ struct ItemListView: View {
     var body: some View {
         VStack {
             headerView
-            switch viewModel.state {
+            switch posModel.itemListState {
             case .initialLoading, .empty, .error:
                 // These cases are handled directly in the dashboard, we do not render
                 // a specific view within the ItemListView to handle them
@@ -131,7 +133,7 @@ private extension ItemListView {
                     })
                 }
                 GhostItemCardView()
-                    .renderedIf(viewModel.state.isLoadingAfterInitialLoad)
+                    .renderedIf(posModel.itemListState.isLoadingAfterInitialLoad && viewModel.shouldShowGhostableItemCard)
             }
             .frame(maxWidth: .infinity)
             .padding(.bottom, floatingControlAreaSize.height)
@@ -139,7 +141,7 @@ private extension ItemListView {
             .background(GeometryReader { proxy in
                 Color.clear
                     .onChange(of: proxy.frame(in: .global).maxY) { maxY in
-                        if viewModel.state.isLoadingAfterInitialLoad {
+                        if posModel.itemListState.isLoadingAfterInitialLoad {
                             return
                         }
                         let viewHeight = UIScreen.main.bounds.height
@@ -246,6 +248,6 @@ private extension ItemListView {
 
 #if DEBUG
 #Preview {
-    ItemListView(viewModel: ItemListViewModel(itemProvider: POSItemProviderPreview()))
+    ItemListView(viewModel: ItemListViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview())))
 }
 #endif

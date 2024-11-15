@@ -211,10 +211,12 @@ import class WooFoundation.MockAnalyticsProviderPreview
                                    cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                    currencyFormatter: .init(currencySettings: .init()),
                                    paymentState: .acceptingCard)
-    let cartVM = CartViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview()))
-    let itemsListVM = ItemListViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview()))
-    let posVM = PointOfSaleDashboardViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview()),
-                                              cardPresentPaymentService: CardPresentPaymentPreviewService(),
+    let cartVM = CartViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview(),
+                                                                   cardPresentPaymentService: CardPresentPaymentPreviewService()))
+    let itemsListVM = ItemListViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview(),
+                                                                            cardPresentPaymentService: CardPresentPaymentPreviewService()))
+    let posVM = PointOfSaleDashboardViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview(),
+                                                                                  cardPresentPaymentService: CardPresentPaymentPreviewService()),
                                               totalsViewModel: totalsVM,
                                               cartViewModel: cartVM,
                                               itemListViewModel: itemsListVM,

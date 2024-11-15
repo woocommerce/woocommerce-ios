@@ -12,7 +12,8 @@ final class CartViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        posModel = PointOfSaleAggregateModel(itemProvider: MockPOSItemProvider())
+        posModel = PointOfSaleAggregateModel(itemProvider: MockPOSItemProvider(),
+                                             cardPresentPaymentService: MockCardPresentPaymentService())
         sut = CartViewModel(posModel: posModel)
     }
 

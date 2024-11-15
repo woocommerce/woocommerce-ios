@@ -439,14 +439,19 @@ struct PointOfSaleAggregateModelTests {
             // Given
             cardPresentPaymentService.connectedReader = nil
             await sut.checkOut()
+            cardPresentPaymentService.collectPaymentWasCalled = false
+
+            // When
+            // `await confirmation` callback only waits until this completes, not until some timeout.
+            // Since this is synchonous but triggers async combine behaviour, we can't use that approach.
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
 
             // Then
-            await confirmation() { confirmation in
-                cardPresentPaymentService.onCollectPaymentCalled = {
-                    confirmation()
-                }
-                // When
-                cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+            let timeout = ContinuousClock.now + .seconds(1)
+
+            while cardPresentPaymentService.collectPaymentWasCalled != true {
+                try! await Task.sleep(for: .milliseconds(1))
+                try #require(.now < timeout)
             }
         }
 
@@ -466,15 +471,21 @@ struct PointOfSaleAggregateModelTests {
             // Given
             cardPresentPaymentService.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
             sut.observeReaderReconnection()
+            await sut.checkOut()
             await cardPresentPaymentService.disconnectReader()
+            cardPresentPaymentService.collectPaymentWasCalled = false
+
+            // When
+            // `await confirmation` callback only waits until this completes, not until some timeout.
+            // Since this is synchonous but triggers async combine behaviour, we can't use that approach.
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
 
             // Then
-            await confirmation() { confirmation in
-                cardPresentPaymentService.onCollectPaymentCalled = {
-                    confirmation()
-                }
-                // When
-                cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+            let timeout = ContinuousClock.now + .seconds(1)
+
+            while cardPresentPaymentService.collectPaymentWasCalled != true {
+                try! await Task.sleep(for: .milliseconds(1))
+                try #require(.now < timeout)
             }
         }
 

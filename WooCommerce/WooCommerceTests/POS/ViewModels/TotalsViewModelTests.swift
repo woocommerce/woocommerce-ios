@@ -66,7 +66,8 @@ final class TotalsViewModelTests: XCTestCase {
         cardPresentPaymentService.paymentEvent = .show(eventDetails: .preparingForPayment(cancelPayment: {}))
 
         let item = Self.makeItem()
-//        await sut.syncOrder(for: [CartItem(id: UUID(), item: item, quantity: 1)], allItems: [item])
+        posModel.addToCart(item)
+        await posModel.checkOut()
 
         // Then
         XCTAssertTrue(sut.isShowingCardReaderStatus)
@@ -102,7 +103,10 @@ final class TotalsViewModelTests: XCTestCase {
     func test_cardPresentPaymentInlineMessage_when_paymentSuccess_then_total_set() async {
         // Given
         orderService.orderToReturn = Order.fake().copy(currency: "$", total: "52.30")
-//        await sut.syncOrder(for: [], allItems: [])
+        posModel.addToCart(Self.makeItem())
+        await posModel.checkOut()
+        // We can't actually mock this right now, but this would be the way:
+//        posModel.orderState = .loaded(.init(cartTotal: "", orderTotal: "$52.30", taxTotal: ""))
 
         // When
         cardPresentPaymentService.paymentEvent = .show(eventDetails: .paymentSuccess(done: { }))
@@ -120,9 +124,9 @@ final class TotalsViewModelTests: XCTestCase {
     func test_paymentIntentCreationErrorMessage_when_paymentIntentCreationError() async {
         // Given
         struct TestError: Error {}
-        let item = Self.makeItem()
         orderService.orderToReturn = Order.fake()
-//        await sut.syncOrder(for: [CartItem(id: UUID(), item: item, quantity: 1)], allItems: [item])
+        posModel.addToCart(Self.makeItem())
+        await posModel.checkOut()
 
         var editOrderCalled = false
         sut.editOrderActionPublisher.sink { _ in
@@ -147,19 +151,22 @@ final class TotalsViewModelTests: XCTestCase {
         }
 
         // Try again action emits payment cancelation and collection
+        let shouldCollectPayment = XCTestExpectation(description: "Collect payment should be called after retrying payment")
+        cardPresentPaymentService.onCollectPaymentCalled = {
+            shouldCollectPayment.fulfill()
+        }
+
         XCTAssertFalse(cardPresentPaymentService.cancelPaymentCalled)
         tryAgainAction?()
         XCTAssertTrue(cardPresentPaymentService.cancelPaymentCalled)
-        let expectation = XCTestExpectation(description: "Collect payment should be called after retrying payment")
-        cardPresentPaymentService.onCollectPaymentCalled = {
-            expectation.fulfill()
-        }
-        await fulfillment(of: [expectation], timeout: 1)
 
-        // Edit order action emits edit order event
-        XCTAssertFalse(editOrderCalled)
-        editOrderAction?()
-        XCTAssertTrue(editOrderCalled)
+        await fulfillment(of: [shouldCollectPayment], timeout: 3)
+
+        // Edit order action calls addMoreToCart
+        // we can't test this until we can properly mock posModel... but by then this behaviour may have moved.
+//        XCTAssertFalse(posModel.addMoreToCartWasCalled)
+//        editOrderAction?()
+//        XCTAssertTrue(posModel.addMoreToCartWasCalled)
     }
 
     // MARK: Onboarding

@@ -24,10 +24,12 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         mockTotalsViewModel = MockTotalsViewModel()
         mockItemListViewModel = MockItemListViewModel()
         mockConnectivityObserver = MockConnectivityObserver()
+        let mockOrderService = MockPOSOrderService()
+        mockOrderService.orderToReturn = Order.fake()
         mockPOSModel = PointOfSaleAggregateModel(
             itemProvider: itemProvider,
             cardPresentPaymentService: cardPresentPaymentService,
-            orderService: MockPOSOrderService())
+            orderService: mockOrderService)
         sut = PointOfSaleDashboardViewModel(posModel: mockPOSModel,
                                             totalsViewModel: mockTotalsViewModel,
                                             cartViewModel: mockCartViewModel,

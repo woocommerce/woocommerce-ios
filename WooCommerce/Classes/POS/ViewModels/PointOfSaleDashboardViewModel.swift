@@ -39,7 +39,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
         observeSelectedItemToAddToCart()
         observePaymentStateForButtonDisabledProperties()
-        observeTotalsOrderActions()
         observeConnectivity()
     }
 }
@@ -109,15 +108,6 @@ private extension PointOfSaleDashboardViewModel {
         afterCardTapPaymentStates
             .assign(to: &$isReaderDisconnectionDisabled)
 
-    }
-
-    func observeTotalsOrderActions() {
-        totalsViewModel.editOrderActionPublisher
-            .sink { [weak self] in
-                guard let self else { return }
-                posModel.addMoreToCart()
-            }
-            .store(in: &cancellables)
     }
 }
 

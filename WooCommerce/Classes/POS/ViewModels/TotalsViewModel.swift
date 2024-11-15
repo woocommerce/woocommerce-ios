@@ -28,11 +28,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
 
     @ObservedObject var posModel: PointOfSaleAggregateModel
 
-    private let editOrderActionSubject = PassthroughSubject<Void, Never>()
-    var editOrderActionPublisher: AnyPublisher<Void, Never> {
-        editOrderActionSubject.eraseToAnyPublisher()
-    }
-
     var isShimmering: Bool {
         posModel.orderState.isSyncing
     }
@@ -96,7 +91,7 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     private func editOrder() {
         paymentState = .idle
         cardPresentPaymentInlineMessage = nil
-        editOrderActionSubject.send(())
+        posModel.addMoreToCart()
     }
 
     // These three functions could potentially move to posModel and be based on orderStage.
@@ -238,7 +233,7 @@ private extension TotalsViewModel {
                 self?.posModel.startNewCart()
             },
             paymentIntentCreationErrorEditOrderAction: { [weak self] in
-                self?.posModel.addMoreToCart()
+                self?.editOrder()
             },
             dismissReaderConnectionModal: { [weak self] in
                 self?.cardPresentPaymentAlertViewModel = nil

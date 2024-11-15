@@ -7,7 +7,6 @@ protocol TotalsViewModelProtocol {
     var connectionStatus: CardPresentPaymentReaderConnectionStatus { get }
 
     var paymentStatePublisher: Published<TotalsViewModel.PaymentState>.Publisher { get }
-    var editOrderActionPublisher: AnyPublisher<Void, Never> { get }
 
     var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType? { get }
 

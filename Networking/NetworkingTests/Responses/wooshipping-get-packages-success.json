@@ -11,7 +11,7 @@
             "custom": [
               {
                 "name": "Custom name",
-                "boxWeight": 0.01,
+                "boxWeight": "0.01",
                 "id": "849225dc153",
                 "type": "box",
                 "isLetter": false,

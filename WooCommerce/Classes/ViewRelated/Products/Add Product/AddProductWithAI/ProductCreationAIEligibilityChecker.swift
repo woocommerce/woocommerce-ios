@@ -20,12 +20,6 @@ final class ProductCreationAIEligibilityChecker: ProductCreationAIEligibilityChe
             return false
         }
 
-        if ProcessConfiguration.shouldRespectScreenshotMode {
-            // Do not show AI product creation option in Screenshot Mode.
-            return false
-        }
-        else {
-            return site.isWordPressComStore || site.isAIAssistantFeatureActive
-        }
+        return site.isWordPressComStore || site.isAIAssistantFeatureActive
     }
 }

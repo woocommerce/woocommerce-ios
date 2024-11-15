@@ -128,12 +128,6 @@ final class TotalsViewModelTests: XCTestCase {
         posModel.addToCart(Self.makeItem())
         await posModel.checkOut()
 
-        var editOrderCalled = false
-        sut.editOrderActionPublisher.sink { _ in
-            editOrderCalled = true
-        }
-        .store(in: &cancellables)
-
         // When paymentIntentCreationError event is received
         cardPresentPaymentService.paymentEvent = .show(
             eventDetails: .paymentIntentCreationError(error: TestError(), cancelPayment: {})

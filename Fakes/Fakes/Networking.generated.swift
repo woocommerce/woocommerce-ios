@@ -2815,13 +2815,8 @@ extension Networking.WooShippingPredefinedPackage {
               name: .fake(),
               isLetter: .fake(),
               dimensions: .fake(),
-              outerDimensions: .fake(),
-              innerDimensions: .fake(),
               boxWeight: .fake(),
-              maxWeight: .fake(),
-              groupId: .fake(),
-              isFlatRate: .fake(),
-              canShipInternational: .fake())
+              groupId: .fake())
     }
 }
 extension Networking.WordPressMedia {

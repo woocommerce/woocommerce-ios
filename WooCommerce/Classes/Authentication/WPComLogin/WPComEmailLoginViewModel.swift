@@ -8,7 +8,11 @@ import struct WordPressKit.WordPressComRestApiEndpointError
 /// A protocol used to mock `WordPressComAccountService` for unit tests.
 protocol WordPressComAccountServiceProtocol {
     func isPasswordlessAccount(username: String, success: @escaping (Bool) -> Void, failure: @escaping (Error) -> Void)
-    func requestAuthenticationLink(for email: String, jetpackLogin: Bool, createAccountIfNotFound: Bool, success: @escaping () -> Void, failure: @escaping (Error) -> Void)
+    func requestAuthenticationLink(for email: String,
+                                   jetpackLogin: Bool,
+                                   createAccountIfNotFound: Bool,
+                                   success: @escaping () -> Void,
+                                   failure: @escaping (Error) -> Void)
 }
 
 /// Conformance

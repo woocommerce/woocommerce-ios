@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents the package selected that will be sent in Shipping Labels Carriers and Rates endpoint.
 ///
-public struct ShippingLabelPackageSelected: Equatable, GeneratedFakeable {
+public struct ShippingLabelPackageSelected: Equatable, GeneratedFakeable, GeneratedCopiable {
 
     public let id: String
     public let boxID: String

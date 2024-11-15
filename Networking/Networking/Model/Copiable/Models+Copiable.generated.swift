@@ -163,14 +163,17 @@ extension Networking.Announcement {
 extension Networking.BlazeAISuggestion {
     public func copy(
         siteName: CopiableProp<String> = .copy,
-        textSnippet: CopiableProp<String> = .copy
+        textSnippet: CopiableProp<String> = .copy,
+        ctaText: CopiableProp<String> = .copy
     ) -> Networking.BlazeAISuggestion {
         let siteName = siteName ?? self.siteName
         let textSnippet = textSnippet ?? self.textSnippet
+        let ctaText = ctaText ?? self.ctaText
 
         return Networking.BlazeAISuggestion(
             siteName: siteName,
-            textSnippet: textSnippet
+            textSnippet: textSnippet,
+            ctaText: ctaText
         )
     }
 }
@@ -3129,6 +3132,42 @@ extension Networking.ShippingLabelCustomsForm.Item {
             hsTariffNumber: hsTariffNumber,
             originCountry: originCountry,
             productID: productID
+        )
+    }
+}
+
+extension Networking.ShippingLabelPackageSelected {
+    public func copy(
+        id: CopiableProp<String> = .copy,
+        boxID: CopiableProp<String> = .copy,
+        length: CopiableProp<Double> = .copy,
+        width: CopiableProp<Double> = .copy,
+        height: CopiableProp<Double> = .copy,
+        weight: CopiableProp<Double> = .copy,
+        isLetter: CopiableProp<Bool> = .copy,
+        hazmatCategory: NullableCopiableProp<String> = .copy,
+        customsForm: NullableCopiableProp<ShippingLabelCustomsForm> = .copy
+    ) -> Networking.ShippingLabelPackageSelected {
+        let id = id ?? self.id
+        let boxID = boxID ?? self.boxID
+        let length = length ?? self.length
+        let width = width ?? self.width
+        let height = height ?? self.height
+        let weight = weight ?? self.weight
+        let isLetter = isLetter ?? self.isLetter
+        let hazmatCategory = hazmatCategory ?? self.hazmatCategory
+        let customsForm = customsForm ?? self.customsForm
+
+        return Networking.ShippingLabelPackageSelected(
+            id: id,
+            boxID: boxID,
+            length: length,
+            width: width,
+            height: height,
+            weight: weight,
+            isLetter: isLetter,
+            hazmatCategory: hazmatCategory,
+            customsForm: customsForm
         )
     }
 }

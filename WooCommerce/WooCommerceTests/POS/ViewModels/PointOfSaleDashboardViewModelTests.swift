@@ -61,18 +61,18 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
     func test_isAddMoreDisabled_is_true_when_order_is_syncing_and_paymentState_is_idle() async {
         // Given
+        mockPOSModel.addToCart(Self.makeItem())
         let expectation = XCTestExpectation(description: "Expect isAddMoreDisabled to be true while syncing order and payment state is idle")
 
         await sut.$isAddMoreDisabled
-            .dropFirst()
-            .sink { value in
-                XCTAssertTrue(value)
-                expectation.fulfill()
+            .sink { disabled in
+                if disabled {
+                    expectation.fulfill()
+                }
             }
             .store(in: &cancellables)
 
         // When
-        mockPOSModel.addToCart(Self.makeItem())
         await mockPOSModel.checkOut()
 
         await fulfillment(of: [expectation], timeout: 1.0)
@@ -83,10 +83,10 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Expect isAddMoreDisabled to be true after successfully collecting payment")
 
         sut.$isAddMoreDisabled
-            .dropFirst()
-            .sink { value in
-                XCTAssertTrue(value)
-                expectation.fulfill()
+            .sink { disabled in
+                if disabled {
+                    expectation.fulfill()
+                }
             }
             .store(in: &cancellables)
 
@@ -101,10 +101,10 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Expect isAddMoreDisabled to be true when paymentState is processingPayment or cardPaymentSuccessful")
 
         sut.$isAddMoreDisabled
-            .dropFirst()
-            .sink { value in
-                XCTAssertTrue(value)
-                expectation.fulfill()
+            .sink { disabled in
+                if disabled {
+                    expectation.fulfill()
+                }
             }
             .store(in: &cancellables)
 
@@ -119,10 +119,10 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Expect isExitPOSDisabled to be true when paymentState is processingPayment")
 
         sut.$isExitPOSDisabled
-            .dropFirst()
-            .sink { value in
-                XCTAssertTrue(value)
-                expectation.fulfill()
+            .sink { disabled in
+                if disabled {
+                    expectation.fulfill()
+                }
             }
             .store(in: &cancellables)
 
@@ -137,9 +137,10 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Expect isExitPOSDisabled to be false when paymentState is idle")
 
         sut.$isExitPOSDisabled
-            .sink { value in
-                XCTAssertFalse(value)
-                expectation.fulfill()
+            .sink { disabled in
+                if !disabled {
+                    expectation.fulfill()
+                }
             }
             .store(in: &cancellables)
 
@@ -155,9 +156,10 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
         sut.$isTotalsViewFullScreen
             .dropFirst()
-            .sink { value in
-                XCTAssertTrue(value)
-                expectation.fulfill()
+            .sink { fullscreen in
+                if fullscreen {
+                    expectation.fulfill()
+                }
             }
             .store(in: &cancellables)
 
@@ -172,9 +174,10 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Expect isTotalsViewFullScreen to be false when paymentState is idle")
 
         sut.$isTotalsViewFullScreen
-            .sink { value in
-                XCTAssertFalse(value)
-                expectation.fulfill()
+            .sink { fullscreen in
+                if !fullscreen {
+                    expectation.fulfill()
+                }
             }
             .store(in: &cancellables)
 

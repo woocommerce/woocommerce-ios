@@ -46,7 +46,7 @@ public final class WooShippingStore: Store {
 private extension WooShippingStore {
     func createPackage(siteID: Int64,
                        customPackage: WooShippingCustomPackage? = nil,
-                       predefinedOption: WooShippingPredefinedOption? = nil,
+                       predefinedOption: WooShippingPredefinedSavedOption? = nil,
                        completion: @escaping (Result<WooShippingCreatePackageResponse, PackageCreationError>) -> Void) {
         remote.createPackage(siteID: siteID, customPackage: customPackage, predefinedOption: predefinedOption) { result in
             switch result {

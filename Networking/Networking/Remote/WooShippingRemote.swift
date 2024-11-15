@@ -3,7 +3,7 @@
 public protocol WooShippingRemoteProtocol {
     func createPackage(siteID: Int64,
                        customPackage: WooShippingCustomPackage?,
-                       predefinedOption: WooShippingPredefinedOption?,
+                       predefinedOption: WooShippingPredefinedSavedOption?,
                        completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void)
     func loadLabelRates(siteID: Int64,
                         orderID: Int64,
@@ -25,7 +25,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     ///   - completion: Closure to be executed upon completion.
     public func createPackage(siteID: Int64,
                               customPackage: WooShippingCustomPackage?,
-                              predefinedOption: WooShippingPredefinedOption?,
+                              predefinedOption: WooShippingPredefinedSavedOption?,
                               completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void) {
         do {
             var customPackageList: [[String: Any]] = []

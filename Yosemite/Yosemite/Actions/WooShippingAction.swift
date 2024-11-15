@@ -5,7 +5,7 @@ public enum WooShippingAction: Action {
     ///
     case createPackage(siteID: Int64,
                        customPackage: WooShippingCustomPackage? = nil,
-                       predefinedOption: WooShippingPredefinedOption? = nil,
+                       predefinedOption: WooShippingPredefinedSavedOption? = nil,
                        completion: (Result<WooShippingCreatePackageResponse, PackageCreationError>) -> Void)
 
     /// Fetch list of shipping label rates for the order.

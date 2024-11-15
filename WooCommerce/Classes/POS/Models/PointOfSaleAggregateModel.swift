@@ -30,7 +30,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     private let analytics: Analytics
 
     private var currentPage: Int = Constants.initialPage
-    private var pageIsOutOfRange: Bool = false
+    private var mightHaveMorePages: Bool = true
 
     init(itemProvider: POSItemProvider,
          analytics: Analytics = ServiceLocator.analytics) {
@@ -43,7 +43,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 extension PointOfSaleAggregateModel {
     @MainActor
     func loadInitialItems() async {
-        pageIsOutOfRange = false
+        mightHaveMorePages = true
         itemListState = .initialLoading
         try? await load(pageNumber: Constants.initialPage)
     }
@@ -51,22 +51,14 @@ extension PointOfSaleAggregateModel {
     @MainActor
     func loadNextItems() async {
         do {
-            guard !pageIsOutOfRange else {
+            guard mightHaveMorePages else {
                 return
             }
             itemListState = .loading(allItems)
 
             let nextPage = currentPage + 1
             try await load(pageNumber: nextPage)
-            pageIsOutOfRange = false
             currentPage = nextPage
-        } catch POSProductProviderError.pageOutOfRange {
-            if allItems.count == 0 {
-                itemListState = .empty
-            } else {
-                itemListState = .loaded(allItems)
-            }
-            pageIsOutOfRange = true
         } catch {
             // No need to do anything; this avoids us incorrectly incrementing currentPage.
         }
@@ -76,7 +68,7 @@ extension PointOfSaleAggregateModel {
     func reload() async {
         allItems.removeAll()
         currentPage = Constants.initialPage
-        pageIsOutOfRange = false
+        mightHaveMorePages = true
         itemListState = .loading(allItems)
         try? await load(pageNumber: currentPage)
     }
@@ -85,6 +77,13 @@ extension PointOfSaleAggregateModel {
     private func load(pageNumber: Int) async throws {
         do {
             try await fetchItems(pageNumber: pageNumber)
+
+            mightHaveMorePages = true
+            updateItemListStateAfterLoadAttempt()
+        } catch POSProductProviderError.pageOutOfRange {
+            mightHaveMorePages = false
+            updateItemListStateAfterLoadAttempt()
+            throw POSProductProviderError.pageOutOfRange
         } catch {
             itemListState = .error(PointOfSaleErrorState.errorOnLoadingProducts())
             throw error
@@ -98,7 +97,9 @@ extension PointOfSaleAggregateModel {
             !allItems.contains(where: { $0.productID == newItem.productID })
         }
         allItems.append(contentsOf: uniqueNewItems)
+    }
 
+    private func updateItemListStateAfterLoadAttempt() {
         if allItems.count == 0 {
             itemListState = .empty
         } else {

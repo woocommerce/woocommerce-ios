@@ -6,6 +6,9 @@ import WooFoundation
 ///
 final class WooShippingCreateLabelsViewModel: ObservableObject {
     private let currencyFormatter: CurrencyFormatter
+    private let order: Order
+    private let originSiteAddress: ShippingLabelAddress?
+    private let destinationAddress: ShippingLabelAddress?
 
     /// The purchased shipping label.
     @Published private var shippingLabel: ShippingLabel?
@@ -21,24 +24,35 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// View model for the items to ship.
     @Published private(set) var items: WooShippingItemsViewModel
 
-    // TODO: Update this to a property that refers to the package, when selected
-    /// Whether there is a package selected for the shipping label.
-    /// Temporary property that can be set to `true` to enable features that require a selected package, until package feature is complete.
-    let hasPackage: Bool = false
-
-    /// View model for the label shipping service.
-    private(set) var shippingService: WooShippingServiceViewModel
-
-    /// Selected shipping rate when creating a shipping label.
-    private var selectedRate: WooShippingSelectedRate? {
-        shippingService.selectedRate
+    /// Selected package for the shipping label.
+    @Published private(set) var selectedPackage: ShippingLabelPackageSelected? {
+        didSet {
+            if let selectedPackage {
+                shippingService = WooShippingServiceViewModel(order: order,
+                                                              originAddress: originSiteAddress,
+                                                              destinationAddress: destinationAddress,
+                                                              selectedPackage: selectedPackage) { [weak self] selectedRate in
+                    self?.selectedRate = selectedRate
+                }
+            }
+        }
     }
 
+    /// View model for the label shipping service.
+    private(set) var shippingService: WooShippingServiceViewModel?
+
+    /// Selected shipping rate when creating a shipping label.
+    private var selectedRate: WooShippingSelectedRate?
+
     /// Address to ship from (store address), formatted for display.
-    let originAddress: String
+    private(set) lazy var originAddress: String = {
+        originSiteAddress?.formattedPostalAddress?.replacingOccurrences(of: "\n", with: ", ") ?? ""
+    }()
 
     /// Address to ship to (customer address), formatted for display and split into separate lines to allow additional formatting.
-    let destinationAddressLines: [String]
+    private(set) lazy var destinationAddressLines: [String] = {
+        (destinationAddress?.formattedPostalAddress ?? "").components(separatedBy: .newlines)
+    }()
 
     /// Shipping lines for the order, with formatted amount.
     let shippingLines: [WooShipping_ShippingLineViewModel]
@@ -81,23 +95,43 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Closure to execute after the label is successfully purchased.
     let onLabelPurchase: ((_ markOrderComplete: Bool) -> Void)?
 
+    /// Initialize the view model without an existing shipping label.
     init(order: Order,
-         shippingLabel: ShippingLabel? = nil,
-         siteAddress: SiteAddress = SiteAddress(),
+         originAddress: SiteAddress? = nil,
+         selectedRate: WooShippingSelectedRate? = nil,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         shippingService: WooShippingServiceViewModel = WooShippingServiceViewModel(),
-         onLabelPurchase: ((Bool) -> Void)? = nil) {
-        self.shippingLabel = shippingLabel
-        if let shippingLabel {
-            self.postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
-        }
+         onLabelPurchase: ((Bool) -> Void)? = nil,
+         userDefaults: UserDefaults = .standard) {
+        self.order = order
         self.items = WooShippingItemsViewModel(dataSource: DefaultWooShippingItemsDataSource(order: order))
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.onLabelPurchase = onLabelPurchase
-        self.originAddress = Self.formatOriginAddress(siteAddress: siteAddress)
-        self.destinationAddressLines = (order.shippingAddress?.formattedPostalAddress ?? "").components(separatedBy: .newlines)
+        let accountSettings = Self.getStoredAccountSettings()
+        let company = ServiceLocator.stores.sessionManager.defaultSite?.name
+        let defaultAccount = ServiceLocator.stores.sessionManager.defaultAccount
+        self.originSiteAddress = Self.getDefaultOriginAddress(accountSettings: accountSettings,
+                                                              company: company,
+                                                              siteAddress: originAddress ?? SiteAddress(),
+                                                              account: defaultAccount,
+                                                              userDefaults: userDefaults)
+        self.destinationAddress = Self.getDestinationAddress(order: order, address: order.shippingAddress)
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0) })
-        self.shippingService = shippingService
+        self.selectedRate = selectedRate
+    }
+
+    /// Initialize the view model from an existing shipping label.
+    init(order: Order,
+         shippingLabel: ShippingLabel,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+        self.order = order
+        self.shippingLabel = shippingLabel
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
+        self.items = WooShippingItemsViewModel(dataSource: DefaultWooShippingItemsDataSource(order: order))
+        self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0) })
+        self.originSiteAddress = shippingLabel.originAddress
+        self.destinationAddress = shippingLabel.destinationAddress
+        self.onLabelPurchase = nil
     }
 
     /// Purchases a shipping label with the provided label details and settings.
@@ -114,6 +148,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     }
 }
 
+// MARK: Utils
 private extension WooShippingCreateLabelsViewModel {
     /// Provides the formatted label and amount for a shipping rate, based on the provided base rate.
     func formatShippingRate(name: String, rate: Double, basedOn baseRate: Double? = nil) -> (title: String, amount: String) {
@@ -126,21 +161,65 @@ private extension WooShippingCreateLabelsViewModel {
         return (name, currencyFormatter.formatAmount(Decimal(amount)) ?? amount.description)
     }
 
-    /// Formats the origin address from the provided `SiteAddress`.
-    static func formatOriginAddress(siteAddress: SiteAddress) -> String {
-        let address = Address(firstName: "",
-                              lastName: "",
-                              company: nil,
+    // We generate the default origin address using the information
+    // of the logged Account and of the website.
+    static func getDefaultOriginAddress(accountSettings: AccountSettings?,
+                                        company: String?,
+                                        siteAddress: SiteAddress,
+                                        account: Account?,
+                                        userDefaults: UserDefaults) -> ShippingLabelAddress? {
+        let address = Address(firstName: accountSettings?.firstName ?? "",
+                              lastName: accountSettings?.lastName ?? "",
+                              company: company ?? "",
                               address1: siteAddress.address,
                               address2: siteAddress.address2,
                               city: siteAddress.city,
                               state: siteAddress.state,
                               postcode: siteAddress.postalCode,
                               country: siteAddress.countryCode.rawValue,
-                              phone: nil,
-                              email: nil)
-        let formattedPostalAddress = address.formattedPostalAddress?.replacingOccurrences(of: "\n", with: ", ")
-        return formattedPostalAddress ?? ""
+                              phone: userDefaults[.storePhoneNumber] ?? "",
+                              email: account?.email)
+        return fromAddressToShippingLabelAddress(address: address)
+    }
+
+    /// Gets the destination address as a `ShippingLabelAddress`.
+    /// The order's billing phone is used as a fallback if there is no shipping phone.
+    ///
+    static func getDestinationAddress(order: Order, address: Address?) -> ShippingLabelAddress? {
+        guard let phone = address?.phone, phone.isNotEmpty else {
+            let destinationAddress = address?.copy(phone: order.billingAddress?.phone)
+            return fromAddressToShippingLabelAddress(address: destinationAddress)
+        }
+        return fromAddressToShippingLabelAddress(address: address)
+    }
+
+    static func fromAddressToShippingLabelAddress(address: Address?) -> ShippingLabelAddress? {
+        guard let address = address else { return nil }
+
+        // In this way we support localized name correctly,
+        // because the order is often reversed in a few Asian languages.
+        var components = PersonNameComponents()
+        components.givenName = address.firstName
+        components.familyName = address.lastName
+
+        let shippingLabelAddress = ShippingLabelAddress(company: address.company ?? "",
+                                                        name: PersonNameComponentsFormatter.localizedString(from: components, style: .medium, options: []),
+                                                        phone: address.phone ?? "",
+                                                        country: address.country,
+                                                        state: address.state,
+                                                        address1: address.address1,
+                                                        address2: address.address2 ?? "",
+                                                        city: address.city,
+                                                        postcode: address.postcode)
+        return shippingLabelAddress
+    }
+
+    static func getStoredAccountSettings() -> AccountSettings? {
+        let storageManager = ServiceLocator.storageManager
+
+        let resultsController = ResultsController<StorageAccountSettings>(storageManager: storageManager, sortedBy: [])
+        try? resultsController.performFetch()
+        return resultsController.fetchedObjects.first
     }
 }
 

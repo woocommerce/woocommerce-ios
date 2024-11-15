@@ -152,13 +152,13 @@ private extension WooPaymentsDepositsCurrencyOverviewViewModel {
             comment: "Hint regarding available/pending balances shown in the WooPayments Deposits View" +
             "%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7.")
         static let depositScheduleHintAutomatic = NSLocalizedString(
-            "Available funds are deposited automatically, %1$@.",
-            comment: "Hint showing the deposit schedule for a merchant's WooPayments account. " +
-            "e.g. Available funds are deposited automatically, every Wednesday. " +
+            "Available funds are paid out automatically, %1$@.",
+            comment: "Hint showing the payout schedule for a merchant's WooPayments account. " +
+            "e.g. Available funds are paid out automatically, every Wednesday. " +
             "%1$@ will be replaced with a translated frequency description, e.g. 'every day' or 'monthly on the 28th'")
         static let depositScheduleHintManual = NSLocalizedString(
-            "Available funds are deposited manually, on request.",
-            comment: "Hint showing the deposit schedule for a merchant's WooPayments account with a manual schedule.")
+            "Available funds are paid out manually, on request.",
+            comment: "Hint showing the payout schedule for a merchant's WooPayments account with a manual schedule.")
         static let noDateString = NSLocalizedString(
             "N/A",
             comment: "String used when there's no date available for a deposit type on the WooPayments Deposits View.")

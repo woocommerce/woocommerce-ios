@@ -1,7 +1,11 @@
 import Yosemite
 import Experiments
 
-final class ReceiptEligibilityUseCase {
+protocol ReceiptEligibilityUseCaseProtocol {
+    func isEligibleForBackendReceipts(onCompletion: @escaping (Bool) -> Void)
+}
+
+final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
 

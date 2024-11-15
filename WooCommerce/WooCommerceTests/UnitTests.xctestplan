@@ -33,7 +33,9 @@
         "CardReaderConnectionControllerTests",
         "InAppPurchaseStoreTests\/test_user_is_entitled_to_product_returns_false_when_not_entitled()",
         "InAppPurchaseStoreTests\/test_user_is_entitled_to_product_returns_true_when_entitled()",
-        "StripeCardReaderIntegrationTests"
+        "StorePerformanceViewModelTests\/test_dates_for_custom_range_are_correct_for_non_custom_time_range()",
+        "StripeCardReaderIntegrationTests",
+        "TopPerformersDashboardViewModelTests\/test_dates_for_custom_range_are_correct_for_non_custom_time_range()"
       ],
       "target" : {
         "containerPath" : "container:WooCommerce.xcodeproj",

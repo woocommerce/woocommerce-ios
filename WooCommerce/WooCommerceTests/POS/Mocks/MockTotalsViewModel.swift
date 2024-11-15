@@ -6,24 +6,14 @@ import struct Yosemite.Order
 
 final class MockTotalsViewModel: TotalsViewModelProtocol {
 
-    var order: Yosemite.Order?
-
-    @Published var orderState: TotalsViewModel.OrderState = .loaded
     @Published var paymentState: TotalsViewModel.PaymentState = .idle
 
     @Published var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
     @Published var connectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
-    @Published var startNewOrderAction: Void = ()
     @Published var editOrderAction: Void = ()
 
-    var orderStatePublisher: Published<TotalsViewModel.OrderState>.Publisher { $orderState }
     var paymentStatePublisher: Published<TotalsViewModel.PaymentState>.Publisher { $paymentState }
-    var startNewOrderActionPublisher: AnyPublisher<Void, Never> { $startNewOrderAction.eraseToAnyPublisher() }
     var editOrderActionPublisher: AnyPublisher<Void, Never> { $editOrderAction.eraseToAnyPublisher() }
-
-    var isSyncingOrder: Bool {
-        return orderState.isSyncing
-    }
 
     var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType? {
         // Provide a mock implementation if needed
@@ -32,10 +22,6 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
 
     func startNewOrder() {
         paymentState = .acceptingCard
-    }
-
-    func checkOutTapped(with cartItems: [CartItem], allItems: [POSItem]) {
-        orderState = .syncing
     }
 
     var spyStopShowingTotalsViewCalled = false

@@ -295,6 +295,7 @@ extension PointOfSaleAggregateModel {
 
     private func clearOrder() {
         order = nil
+        orderState = .idle
     }
 }
 

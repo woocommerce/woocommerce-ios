@@ -248,6 +248,7 @@ private extension ItemListView {
 
 #if DEBUG
 #Preview {
-    ItemListView(viewModel: ItemListViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview())))
+    ItemListView(viewModel: ItemListViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview(),
+                                                                                  cardPresentPaymentService: CardPresentPaymentPreviewService())))
 }
 #endif

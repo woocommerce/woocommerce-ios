@@ -9,7 +9,8 @@ struct PointOfSaleAggregateModelTests {
         private let sut: PointOfSaleAggregateModel
 
         init() {
-            self.sut = PointOfSaleAggregateModel(itemProvider: MockPOSItemProvider())
+            self.sut = PointOfSaleAggregateModel(itemProvider: MockPOSItemProvider(),
+                                                 cardPresentPaymentService: MockCardPresentPaymentService())
         }
 
         @Test func inits_with_building_order_stage() async throws {
@@ -63,7 +64,8 @@ struct PointOfSaleAggregateModelTests {
 
         init() {
             itemProvider = MockPOSItemProvider()
-            sut = PointOfSaleAggregateModel(itemProvider: itemProvider)
+            sut = PointOfSaleAggregateModel(itemProvider: itemProvider,
+                                            cardPresentPaymentService: MockCardPresentPaymentService())
         }
 
         @Test func loadInitialItems_requests_first_page() async throws {
@@ -150,7 +152,8 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemProvider = MockPOSItemProvider()
             itemProvider.shouldReturnZeroItems = true
-            let sut = PointOfSaleAggregateModel(itemProvider: itemProvider)
+            let sut = PointOfSaleAggregateModel(itemProvider: itemProvider,
+                                                cardPresentPaymentService: MockCardPresentPaymentService())
 
             try #require(sut.itemListState == .initialLoading)
 
@@ -207,7 +210,8 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemProvider = MockPOSItemProvider()
             itemProvider.shouldReturnZeroItems = true
-            let sut = PointOfSaleAggregateModel(itemProvider: itemProvider)
+            let sut = PointOfSaleAggregateModel(itemProvider: itemProvider,
+                                                cardPresentPaymentService: MockCardPresentPaymentService())
 
             try #require(sut.itemListState == .initialLoading)
 
@@ -312,6 +316,7 @@ struct PointOfSaleAggregateModelTests {
             analyticsProvider = MockAnalyticsProvider()
             analytics = WooAnalytics(analyticsProvider: analyticsProvider)
             sut = PointOfSaleAggregateModel(itemProvider: MockPOSItemProvider(),
+                                            cardPresentPaymentService: MockCardPresentPaymentService(),
                                             analytics: analytics)
         }
 

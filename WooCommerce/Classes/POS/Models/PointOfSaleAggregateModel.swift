@@ -7,10 +7,13 @@ import protocol WooFoundation.Analytics
 protocol PointOfSaleAggregateModelProtocol {
     var orderStage: PointOfSaleOrderStage { get }
 
+    var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus { get }
+    func connectCardReader()
+    func disconnectCardReader()
+
     @available(*, deprecated, message: "`allItems` is due for removal, use `itemListState` instead.")
     var allItems: [POSItem] { get }
     var itemListState: ItemListState { get }
-
     func loadInitialItems() async
     func loadNextItems() async
     func reload() async
@@ -27,20 +30,26 @@ protocol PointOfSaleAggregateModelProtocol {
 class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProtocol {
     @Published private(set) var orderStage: PointOfSaleOrderStage = .building
 
+    @Published private(set) var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
+
     @Published private(set) var allItems: [POSItem] = []
     @Published private(set) var itemListState: ItemListState = .initialLoading
 
     @Published private(set) var cart: [CartItem] = []
 
     private let itemProvider: POSItemProvider
+    private let cardPresentPaymentService: CardPresentPaymentFacade
     private let analytics: Analytics
 
     private var currentPage: Int = Constants.initialPage
 
     init(itemProvider: POSItemProvider,
+         cardPresentPaymentService: CardPresentPaymentFacade,
          analytics: Analytics = ServiceLocator.analytics) {
         self.itemProvider = itemProvider
+        self.cardPresentPaymentService = cardPresentPaymentService
         self.analytics = analytics
+        publishCardReaderConnectionStatus()
     }
 }
 
@@ -130,6 +139,27 @@ extension PointOfSaleAggregateModel {
     func startNewCart() {
         removeAllItemsFromCart()
         orderStage = .building
+    }
+}
+
+// MARK: - Card payments
+
+extension PointOfSaleAggregateModel {
+    private func publishCardReaderConnectionStatus() {
+        // When adopting Observable, we can use `assign(to: on:)` here instead
+        cardPresentPaymentService.readerConnectionStatusPublisher.assign(to: &$cardReaderConnectionStatus)
+    }
+
+    func connectCardReader() {
+        Task { @MainActor in
+            _ = try await cardPresentPaymentService.connectReader(using: .bluetooth)
+        }
+    }
+
+    func disconnectCardReader() {
+        Task { @MainActor in
+            await cardPresentPaymentService.disconnectReader()
+        }
     }
 }
 

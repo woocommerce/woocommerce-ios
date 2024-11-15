@@ -26,7 +26,6 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         mockItemListViewModel = MockItemListViewModel()
         mockConnectivityObserver = MockConnectivityObserver()
         sut = PointOfSaleDashboardViewModel(posModel: mockPOSModel,
-                                            cardPresentPaymentService: cardPresentPaymentService,
                                             totalsViewModel: mockTotalsViewModel,
                                             cartViewModel: mockCartViewModel,
                                             itemListViewModel: mockItemListViewModel,

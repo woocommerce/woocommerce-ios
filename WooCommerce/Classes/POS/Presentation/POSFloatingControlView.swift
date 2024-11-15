@@ -42,7 +42,7 @@ struct POSFloatingControlView: View {
             .cornerRadius(Constants.cornerRadius)
             .disabled(viewModel.isExitPOSDisabled)
 
-            CardReaderConnectionStatusView(connectionViewModel: viewModel.cardReaderConnectionViewModel)
+            CardReaderConnectionStatusView()
                 .foregroundStyle(fontColor)
                 .background(backgroundColor)
                 .cornerRadius(Constants.cornerRadius)

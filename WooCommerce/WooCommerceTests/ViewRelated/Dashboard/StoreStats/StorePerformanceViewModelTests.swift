@@ -346,6 +346,87 @@ final class StorePerformanceViewModelTests: XCTestCase {
         let properties = analyticsProvider.receivedProperties[index] as? [String: AnyHashable]
         XCTAssertEqual(properties?["type"], "performance")
     }
+
+    @MainActor
+    func test_given_existing_cached_data_when_timestamp_is_fresh_then_cached_data_is_shown() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let siteID: Int64 = 123
+        let currentDate = Date()
+        let dateFormatter = DateFormatter.Stats.statsDayFormatter
+
+        // Set up timestamp for .today time range since viewModel defaults to .today
+        DashboardTimestampStore.saveTimestamp(currentDate,
+                                            for: .performance,
+                                            at: .today)
+
+        let mockStorageManager = MockStorageManager()
+        let siteVisitStats = SiteVisitStats.fake().copy(
+            siteID: siteID,
+            date: dateFormatter.string(from: currentDate),
+            granularity: .day,
+            items: [ .fake().copy(
+                period: dateFormatter.string(from: currentDate),
+                visitors: 17,
+                views: 25
+            )]
+        )
+        let orderStats = OrderStatsV4.fake().copy(
+            siteID: 123,
+            granularity: .daily,
+            totals: .fake().copy(
+                totalOrders: 3,
+                totalItemsSold: 5,
+                grossRevenue: 800,
+                netRevenue: 800,
+                averageOrderValue: 266
+            ),
+            intervals: [
+                OrderStatsV4Interval(
+                    interval: dateFormatter.string(from: currentDate),
+                    dateStart: dateFormatter.string(from: currentDate) + " 00:00:00",
+                    dateEnd: dateFormatter.string(from: currentDate) + "23:59:59",
+                    subtotals: OrderStatsV4Totals(
+                        totalOrders: 3,
+                        totalItemsSold: 5,
+                        grossRevenue: 800,
+                        netRevenue: 800,
+                        averageOrderValue: 266
+                    )
+                )
+            ]
+        )
+
+        let summaryStats = SiteSummaryStats.fake().copy(
+            siteID: siteID,
+            date: dateFormatter.string(from: currentDate),
+            period: .day,
+            visitors: 10,
+            views: 60
+        )
+
+        mockStorageManager.insertSampleSiteVisitStats(siteVisitStats)
+        mockStorageManager.insertSampleOrderStats(orderStats)
+        mockStorageManager.insertSampleSiteSummaryStats(summaryStats)
+
+        let viewModel = StorePerformanceViewModel(
+            siteID: siteID,
+            stores: stores,
+            storageManager: mockStorageManager,
+            usageTracksEventEmitter: .init()
+        )
+
+
+        // When
+        XCTAssertEqual(viewModel.siteVisitStatMode, .hidden)
+        await viewModel.reloadDataIfNeeded(forceRefresh: false)
+
+        // Then
+        XCTAssertEqual(viewModel.siteVisitStatMode, .default) // Should be changed from `.hidden`
+
+        // Cleanup
+        DashboardTimestampStore.removeTimestamp(for: .performance, at: .today)
+    }
 }
 
 // MARK: - Private helpers

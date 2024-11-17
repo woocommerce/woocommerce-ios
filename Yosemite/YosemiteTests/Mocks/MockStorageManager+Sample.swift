@@ -248,4 +248,48 @@ extension MockStorageManager {
 
         return newNote
     }
+
+    /// Inserts site visit stats into the specified context.
+    ///
+    @discardableResult
+    func insertSampleSiteVisitStats(_ readOnlyStats: SiteVisitStats) -> StorageSiteVisitStats {
+        let stats = viewStorage.insertNewObject(ofType: StorageSiteVisitStats.self)
+        stats.update(with: readOnlyStats)
+
+        readOnlyStats.items?.forEach { readOnlyItem in
+            let newStorageItem = viewStorage.insertNewObject(ofType: StorageSiteVisitStatsItem.self)
+            newStorageItem.update(with: readOnlyItem)
+            stats.addToItems(newStorageItem)
+        }
+
+        return stats
+    }
+
+    /// Inserts order stats into the specified context.
+    ///
+    @discardableResult
+    func insertSampleOrderStats(_ readOnlyStats: OrderStatsV4) -> StorageOrderStatsV4 {
+        let stats = viewStorage.insertNewObject(ofType: StorageOrderStatsV4.self)
+        stats.totals = viewStorage.insertNewObject(ofType: StorageOrderStatsV4Totals.self)
+        stats.update(with: readOnlyStats)
+
+        // Create new intervals
+        for readOnlyInterval in readOnlyStats.intervals {
+            let newInterval = viewStorage.insertNewObject(ofType: StorageOrderStatsV4Interval.self)
+            newInterval.subtotals = viewStorage.insertNewObject(ofType: StorageOrderStatsV4Totals.self)
+            newInterval.update(with: readOnlyInterval)
+            stats.addToIntervals(newInterval)
+        }
+
+        return stats
+    }
+
+    /// Inserts site summary stats into the specified context.
+    ///
+    @discardableResult
+    func insertSampleSiteSummaryStats(_ readOnlyStats: SiteSummaryStats) -> StorageSiteSummaryStats {
+        let stats = viewStorage.insertNewObject(ofType: StorageSiteSummaryStats.self)
+        stats.update(with: readOnlyStats)
+        return stats
+    }
 }

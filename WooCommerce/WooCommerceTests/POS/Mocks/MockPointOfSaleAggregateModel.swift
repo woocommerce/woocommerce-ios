@@ -3,6 +3,14 @@ import Foundation
 import protocol Yosemite.POSItem
 
 final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
+    var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus
+
+    func connectCardReader() { }
+
+    func disconnectCardReader() { }
+
+    var orderStage: PointOfSaleOrderStage
+
     var allItems: [POSItem] {
         switch itemListState {
         case .empty,
@@ -17,8 +25,12 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     var itemListState: ItemListState
 
-    init(itemListState: ItemListState = .initialLoading) {
+    init(cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected,
+         itemListState: ItemListState = .initialLoading,
+         orderStage: PointOfSaleOrderStage = .building) {
+        self.cardReaderConnectionStatus = cardReaderConnectionStatus
         self.itemListState = itemListState
+        self.orderStage = orderStage
     }
 
     func loadInitialItems() async { }
@@ -37,4 +49,10 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     func removeAllItemsFromCart() {
         removeAllItemsFromCartCalled = true
     }
+
+    func submitCart() { }
+
+    func addMoreToCart() { }
+
+    func startNewCart() { }
 }

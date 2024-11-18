@@ -3,12 +3,18 @@ import Foundation
 import protocol Yosemite.POSItem
 import protocol Yosemite.POSItemProvider
 import protocol WooFoundation.Analytics
+import enum Yosemite.POSProductProviderError
 
 protocol PointOfSaleAggregateModelProtocol {
+    var orderStage: PointOfSaleOrderStage { get }
+
+    var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus { get }
+    func connectCardReader()
+    func disconnectCardReader()
+
     @available(*, deprecated, message: "`allItems` is due for removal, use `itemListState` instead.")
     var allItems: [POSItem] { get }
     var itemListState: ItemListState { get }
-
     func loadInitialItems() async
     func loadNextItems() async
     func reload() async
@@ -17,23 +23,35 @@ protocol PointOfSaleAggregateModelProtocol {
     func addToCart(_ item: POSItem)
     func remove(cartItem: CartItem)
     func removeAllItemsFromCart()
+    func submitCart()
+    func addMoreToCart()
+    func startNewCart()
 }
 
 class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProtocol {
+    @Published private(set) var orderStage: PointOfSaleOrderStage = .building
+
+    @Published private(set) var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
+
     @Published private(set) var allItems: [POSItem] = []
     @Published private(set) var itemListState: ItemListState = .initialLoading
 
     @Published private(set) var cart: [CartItem] = []
 
     private let itemProvider: POSItemProvider
+    private let cardPresentPaymentService: CardPresentPaymentFacade
     private let analytics: Analytics
 
     private var currentPage: Int = Constants.initialPage
+    private var mightHaveMorePages: Bool = true
 
     init(itemProvider: POSItemProvider,
+         cardPresentPaymentService: CardPresentPaymentFacade,
          analytics: Analytics = ServiceLocator.analytics) {
         self.itemProvider = itemProvider
+        self.cardPresentPaymentService = cardPresentPaymentService
         self.analytics = analytics
+        publishCardReaderConnectionStatus()
     }
 }
 
@@ -41,6 +59,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 extension PointOfSaleAggregateModel {
     @MainActor
     func loadInitialItems() async {
+        mightHaveMorePages = true
         itemListState = .initialLoading
         try? await load(pageNumber: Constants.initialPage)
     }
@@ -48,9 +67,11 @@ extension PointOfSaleAggregateModel {
     @MainActor
     func loadNextItems() async {
         do {
+            guard mightHaveMorePages else {
+                return
+            }
             itemListState = .loading(allItems)
-            // TODO: Optimize API calls. gh-14186
-            // If there are no more pages to fetch, we can avoid the next call.
+
             let nextPage = currentPage + 1
             try await load(pageNumber: nextPage)
             currentPage = nextPage
@@ -63,6 +84,7 @@ extension PointOfSaleAggregateModel {
     func reload() async {
         allItems.removeAll()
         currentPage = Constants.initialPage
+        mightHaveMorePages = true
         itemListState = .loading(allItems)
         try? await load(pageNumber: currentPage)
     }
@@ -71,6 +93,13 @@ extension PointOfSaleAggregateModel {
     private func load(pageNumber: Int) async throws {
         do {
             try await fetchItems(pageNumber: pageNumber)
+
+            mightHaveMorePages = true
+            updateItemListStateAfterLoadAttempt()
+        } catch POSProductProviderError.pageOutOfRange {
+            mightHaveMorePages = false
+            updateItemListStateAfterLoadAttempt()
+            throw POSProductProviderError.pageOutOfRange
         } catch {
             itemListState = .error(PointOfSaleErrorState.errorOnLoadingProducts())
             throw error
@@ -83,9 +112,10 @@ extension PointOfSaleAggregateModel {
         let uniqueNewItems = newItems.filter { newItem in
             !allItems.contains(where: { $0.productID == newItem.productID })
         }
-
         allItems.append(contentsOf: uniqueNewItems)
+    }
 
+    private func updateItemListStateAfterLoadAttempt() {
         if allItems.count == 0 {
             itemListState = .empty
         } else {
@@ -110,6 +140,40 @@ extension PointOfSaleAggregateModel {
 
     func removeAllItemsFromCart() {
         cart.removeAll()
+    }
+
+    func submitCart() {
+        orderStage = .finalizing
+    }
+
+    func addMoreToCart() {
+        orderStage = .building
+    }
+
+    func startNewCart() {
+        removeAllItemsFromCart()
+        orderStage = .building
+    }
+}
+
+// MARK: - Card payments
+
+extension PointOfSaleAggregateModel {
+    private func publishCardReaderConnectionStatus() {
+        // When adopting Observable, we can use `assign(to: on:)` here instead
+        cardPresentPaymentService.readerConnectionStatusPublisher.assign(to: &$cardReaderConnectionStatus)
+    }
+
+    func connectCardReader() {
+        Task { @MainActor in
+            _ = try await cardPresentPaymentService.connectReader(using: .bluetooth)
+        }
+    }
+
+    func disconnectCardReader() {
+        Task { @MainActor in
+            await cardPresentPaymentService.disconnectReader()
+        }
     }
 }
 

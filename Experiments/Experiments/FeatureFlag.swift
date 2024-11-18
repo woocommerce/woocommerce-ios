@@ -196,8 +196,4 @@ public enum FeatureFlag: Int {
     /// Supports Woo Payments onboarding in POS so that merchants who have not completed onboarding can access POS.
     ///
     case paymentsOnboardingInPointOfSale
-
-    /// Enables UI-related aspects of infinite scrolling in POS. It does not affect the actual infinite scrolling behaviour.
-    ///
-    case displayInfiniteScrollingUIDetailsInPointOfSale
 }

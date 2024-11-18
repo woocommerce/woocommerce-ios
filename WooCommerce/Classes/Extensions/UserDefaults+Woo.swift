@@ -65,6 +65,10 @@ extension UserDefaults {
 
         // Selected campaign objective saved for future campaigns
         case blazeSelectedCampaignObjective
+
+        // Whether the site is suspended on WordPress.com and can't be connected using Jetpack
+        //
+        case wpcomSiteSuspended
     }
 }
 

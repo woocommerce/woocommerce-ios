@@ -1,0 +1,1 @@
+Daha kolay bir WooCommerce deneyimine dalın! Sipariş ayrıntılarınızı kusursuz bir şekilde görüntüleyebilmeniz için Watch uygulamasında ince ayar yaptık. Ayrıca ödeme okuyucu bağlantıları için daha net hata mesajları ekledik. İşlerin nabzınızı bileğinizde ve cebinizde daha iyi şekilde hissetmek için güncelleyin.

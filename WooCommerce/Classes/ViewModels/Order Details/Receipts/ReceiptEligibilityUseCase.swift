@@ -46,7 +46,7 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
 
     func isEligibleSendingReceiptAfterPayment(onCompletion: @escaping (Bool) -> Void) {
         // TODO: WooCommerce 9.5.0
-        onCompletion(false)
+        onCompletion(featureFlagService.isFeatureFlagEnabled(.sendReceiptAfterPayment))
     }
 }
 

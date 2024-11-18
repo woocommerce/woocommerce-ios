@@ -196,4 +196,7 @@ public enum FeatureFlag: Int {
     /// Supports Woo Payments onboarding in POS so that merchants who have not completed onboarding can access POS.
     ///
     case paymentsOnboardingInPointOfSale
+
+    /// Enables the new Blaze campaign creation flow
+    case sendReceiptAfterPayment
 }

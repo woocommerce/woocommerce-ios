@@ -135,7 +135,7 @@ private extension ItemListView {
                     })
                 }
                 GhostItemCardView()
-                    .renderedIf(posModel.itemListState.isLoadingAfterInitialLoad && viewModel.shouldShowGhostableItemCard)
+                    .renderedIf(posModel.itemListState.isLoadingAfterInitialLoad)
             }
             .frame(maxWidth: .infinity)
             .padding(.bottom, floatingControlAreaSize.height)

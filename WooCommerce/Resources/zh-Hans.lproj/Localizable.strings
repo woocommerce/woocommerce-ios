@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-05 09:54:19+0000 */
+/* Translation-Revision-Date: 2024-11-12 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -3113,6 +3113,9 @@ which should be translated separately and considered part of this sentence. */
 /* Hint regarding available/pending balances shown in the WooPayments Deposits View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
 "Funds become available after pending for %1$d days." = "资金将在等待 %1$d 天后到账。";
 
+/* Format of the Global Unique Identifier on the Inventory Settings row */
+"GTIN, UPC, EAN, ISBN: %@" = "GTIN、UPC、EAN、ISBN：%@";
+
 /* Country option for a site address. */
 "Gabon" = "加蓬";
 
@@ -3656,6 +3659,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message for invalid format of ITN in Customs screen of Shipping Label flow */
 "Invalid ITN format" = "ITN 格式无效";
+
+/* Error when an empty Identifier is returned from the barcode scanner */
+"Invalid Identifier" = "无效标识符";
 
 /* The title of the alert when there is an error with the package name */
 "Invalid Package Name" = "包裹名称无效";
@@ -5558,6 +5564,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Product Type row on Product main screen */
 "Product type" = "产品类型";
+
+/* Error message when the scanner found a product but isn't purchasable.%@ is the Identifier code. */
+"Product with Identifier \"%@\" is not purchasable." = "无法购买标识符为“%@”的产品。";
+
+/* Error message when the scanner cannot find a matching product.%@ is the Identifier barcode. */
+"Product with Identifier \"%@\" not found." = "未找到标识符为“%@”的产品。";
 
 /* The instruction text below the scan area in the barcode scanner for product barcode. */
 "ProductBarcodeInputScanner.instructionText" = "扫描产品条形码或二维码";

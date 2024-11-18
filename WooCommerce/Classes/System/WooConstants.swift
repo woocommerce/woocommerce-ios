@@ -350,7 +350,7 @@ extension WooConstants {
 
         case wooCorePaymentOptions = "https://woocommerce.com/documentation/woocommerce/getting-started/sell-products/core-payment-options"
 
-        case wooPaymentsDepositSchedule = "https://woocommerce.com/document/woopayments/deposits/deposit-schedule/"
+        case wooPaymentsPayoutSchedule = "https://woocommerce.com/document/woopayments/payouts/payout-schedule/"
 
         /// URL to learn more about Jetpack Stats
         ///

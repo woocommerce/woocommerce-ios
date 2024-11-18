@@ -23,9 +23,15 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     private let sampleImage = UIImage.gridicon(.calendar, size: .init(width: 600, height: 600))
 
-    private let sampleAISuggestions = [BlazeAISuggestion(siteName: "First suggested tagline", textSnippet: "First suggested description"),
-                                       BlazeAISuggestion(siteName: "Second suggested tagline", textSnippet: "Second suggested description"),
-                                       BlazeAISuggestion(siteName: "Third suggested tagline", textSnippet: "Third suggested description")]
+    private let sampleAISuggestions = [BlazeAISuggestion(siteName: "First suggested tagline",
+                                                         textSnippet: "First suggested description",
+                                                         ctaText: "Shop Now"),
+                                       BlazeAISuggestion(siteName: "Second suggested tagline",
+                                                         textSnippet: "Second suggested description",
+                                                         ctaText: "Buy Now"),
+                                       BlazeAISuggestion(siteName: "Third suggested tagline",
+                                                         textSnippet: "Third suggested description",
+                                                         ctaText: "Order Now")]
 
     /// Mock Storage: InMemory
     private var storageManager: StorageManagerType!
@@ -326,7 +332,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(expectedProductID, sampleProductID)
     }
     @MainActor
-    func test_loadAISuggestions_sets_tagline_and_description_upon_success() async throws {
+    func test_loadAISuggestions_sets_tagline_description_and_ctaText_upon_success() async throws {
         // Given
         insertProduct(sampleProduct)
 
@@ -345,6 +351,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         let firstSuggestion = try XCTUnwrap(sampleAISuggestions.first)
         XCTAssertEqual(viewModel.tagline, firstSuggestion.siteName)
         XCTAssertEqual(viewModel.description, firstSuggestion.textSnippet)
+        XCTAssertEqual(viewModel.ctaText, firstSuggestion.ctaText)
     }
 
     @MainActor
@@ -445,7 +452,8 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Given
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess([BlazeAISuggestion(siteName: "", // Empty tagline
-                                                    textSnippet: "Description")])
+                                                    textSnippet: "Description",
+                                                    ctaText: "")])
         mockDownloadImage(sampleImage)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
@@ -470,7 +478,8 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Given
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess([BlazeAISuggestion(siteName: "Tagline",
-                                                   textSnippet: "")])  // Empty description
+                                                   textSnippet: "", // Empty description
+                                                    ctaText: "")])
         mockDownloadImage(sampleImage)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,

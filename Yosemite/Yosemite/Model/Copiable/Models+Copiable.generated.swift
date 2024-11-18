@@ -84,31 +84,31 @@ extension Yosemite.SystemInformation {
     }
 }
 
-extension Yosemite.WooPaymentsDepositsOverviewByCurrency {
+extension Yosemite.WooPaymentsPayoutsOverviewByCurrency {
     public func copy(
         currency: CopiableProp<CurrencyCode> = .copy,
-        automaticDeposits: CopiableProp<Bool> = .copy,
-        depositInterval: CopiableProp<WooPaymentsDepositInterval> = .copy,
+        automaticPayouts: CopiableProp<Bool> = .copy,
+        payoutInterval: CopiableProp<WooPaymentsPayoutInterval> = .copy,
         pendingBalanceAmount: CopiableProp<NSDecimalNumber> = .copy,
-        pendingDepositDays: CopiableProp<Int> = .copy,
-        lastDeposit: NullableCopiableProp<WooPaymentsDepositsOverviewByCurrency.LastDeposit> = .copy,
+        pendingPayoutDays: CopiableProp<Int> = .copy,
+        lastPayout: NullableCopiableProp<WooPaymentsPayoutsOverviewByCurrency.LastPayout> = .copy,
         availableBalance: CopiableProp<NSDecimalNumber> = .copy
-    ) -> Yosemite.WooPaymentsDepositsOverviewByCurrency {
+    ) -> Yosemite.WooPaymentsPayoutsOverviewByCurrency {
         let currency = currency ?? self.currency
-        let automaticDeposits = automaticDeposits ?? self.automaticDeposits
-        let depositInterval = depositInterval ?? self.depositInterval
+        let automaticPayouts = automaticPayouts ?? self.automaticPayouts
+        let payoutInterval = payoutInterval ?? self.payoutInterval
         let pendingBalanceAmount = pendingBalanceAmount ?? self.pendingBalanceAmount
-        let pendingDepositDays = pendingDepositDays ?? self.pendingDepositDays
-        let lastDeposit = lastDeposit ?? self.lastDeposit
+        let pendingPayoutDays = pendingPayoutDays ?? self.pendingPayoutDays
+        let lastPayout = lastPayout ?? self.lastPayout
         let availableBalance = availableBalance ?? self.availableBalance
 
-        return Yosemite.WooPaymentsDepositsOverviewByCurrency(
+        return Yosemite.WooPaymentsPayoutsOverviewByCurrency(
             currency: currency,
-            automaticDeposits: automaticDeposits,
-            depositInterval: depositInterval,
+            automaticPayouts: automaticPayouts,
+            payoutInterval: payoutInterval,
             pendingBalanceAmount: pendingBalanceAmount,
-            pendingDepositDays: pendingDepositDays,
-            lastDeposit: lastDeposit,
+            pendingPayoutDays: pendingPayoutDays,
+            lastPayout: lastPayout,
             availableBalance: availableBalance
         )
     }

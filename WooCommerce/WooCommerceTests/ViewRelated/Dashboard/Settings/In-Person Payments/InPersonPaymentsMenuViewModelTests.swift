@@ -14,7 +14,7 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: Analytics!
 
-    private var mockDepositService: MockWooPaymentsDepositService!
+    private var mockPayoutService: MockWooPaymentsPayoutService!
     private var mockOnboardingUseCase: MockCardPresentPaymentsOnboardingUseCase!
     private var mockPayInPersonToggleViewModel: MockInPersonPaymentsCashOnDeliveryToggleRowViewModel!
 
@@ -25,7 +25,7 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
     override func setUp() {
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        mockDepositService = MockWooPaymentsDepositService()
+        mockPayoutService = MockWooPaymentsPayoutService()
         mockOnboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed(plugin: .wcPayOnly))
         mockPayInPersonToggleViewModel = MockInPersonPaymentsCashOnDeliveryToggleRowViewModel()
         systemStatusService = MockSystemStatusService()
@@ -41,14 +41,14 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
                                         cardPresentPaymentsConfiguration: .init(country: .US),
                                         onboardingUseCase: mockOnboardingUseCase,
                                         cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                        wooPaymentsDepositService: mockDepositService,
+                                        wooPaymentsPayoutService: mockPayoutService,
                                         systemStatusService: systemStatusService,
                                         analytics: analytics),
                                       navigationPath: .constant(.init()),
                                       payInPersonToggleViewModel: mockPayInPersonToggleViewModel)
     }
 
-    func test_fetchDepositsOverview_is_not_called_for_stores_which_do_not_support_the_route() async {
+    func test_fetchPayoutsOverview_is_not_called_for_stores_which_do_not_support_the_route() async {
         // Currently, assume this is only WooPayments stores, but it would be better to check the /wc/v3 base endpoint.
         // Given
         systemStatusService.onFetchSystemPluginWithPath = { _ in
@@ -59,10 +59,10 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         await sut.onAppear()
 
         // Then
-        XCTAssertFalse(mockDepositService.spyDidCallFetchDepositsOverview)
+        XCTAssertFalse(mockPayoutService.spyDidCallFetchPayoutsOverview)
     }
 
-    func test_fetchDepositsOverview_is_called_for_stores_which_support_the_route() async {
+    func test_fetchPayoutsOverview_is_called_for_stores_which_support_the_route() async {
         // Currently, assume this is only WooPayments stores, but it would be better to check the /wc/v3 base endpoint.
         // Given
         systemStatusService.onFetchSystemPluginWithPath = { path in
@@ -76,7 +76,7 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         await sut.onAppear()
 
         // Then
-        XCTAssert(mockDepositService.spyDidCallFetchDepositsOverview)
+        XCTAssert(mockPayoutService.spyDidCallFetchPayoutsOverview)
     }
 
      func test_onAppear_refreshesPayInPersonToggle() async {
@@ -91,15 +91,15 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
     }
 
     // MARK: - Analytics tests
-    func test_onAppear_when_deposit_service_gets_an_error_depositSummaryError_is_tracked() async {
+    func test_onAppear_when_payout_service_gets_an_error_payoutSummaryError_is_tracked() async {
         // Given
-        mockDepositService.onFetchDepositsOverviewShouldThrow = DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "description"))
+        mockPayoutService.onFetchPayoutsOverviewShouldThrow = DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "description"))
 
         // When
         await sut.onAppear()
 
         // Then
-        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuDepositSummaryError.rawValue))
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuPayoutSummaryError.rawValue))
     }
 
     func test_collectPaymentTapped_tracks_paymentsMenuCollectPaymentTapped() {
@@ -209,7 +209,7 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
          let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: configuration,
                                                                        onboardingUseCase: mockOnboardingUseCase,
                                                                        cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                       wooPaymentsDepositService: mockDepositService)
+                                                                       wooPaymentsPayoutService: mockPayoutService)
          sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
                                              dependencies: dependencies,
                                              navigationPath: .constant(.init()))
@@ -238,7 +238,7 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: configuration,
                                                                       onboardingUseCase: mockOnboardingUseCase,
                                                                       cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsDepositService: mockDepositService)
+                                                                      wooPaymentsPayoutService: mockPayoutService)
         sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
                                             dependencies: dependencies,
                                             navigationPath: .constant(.init()))
@@ -257,7 +257,7 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
                                                                       onboardingUseCase: mockOnboardingUseCase,
                                                                       cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsDepositService: mockDepositService)
+                                                                      wooPaymentsPayoutService: mockPayoutService)
         var navigationPath = NavigationPath()
         let navigationPathBinding = Binding<NavigationPath>(
             get: { navigationPath },
@@ -280,7 +280,7 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
                                                                       onboardingUseCase: mockOnboardingUseCase,
                                                                       cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsDepositService: mockDepositService)
+                                                                      wooPaymentsPayoutService: mockPayoutService)
         var navigationPath = NavigationPath()
         let navigationPathBinding = Binding<NavigationPath>(
             get: { navigationPath },
@@ -303,7 +303,7 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
                                                                       onboardingUseCase: mockOnboardingUseCase,
                                                                       cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsDepositService: mockDepositService)
+                                                                      wooPaymentsPayoutService: mockPayoutService)
         var navigationPath = NavigationPath(["testPath"])
         let navigationPathBinding = Binding<NavigationPath>(
             get: { navigationPath },
@@ -332,7 +332,7 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
                                                                       onboardingUseCase: mockOnboardingUseCase,
                                                                       cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsDepositService: mockDepositService)
+                                                                      wooPaymentsPayoutService: mockPayoutService)
         var navigationPath = NavigationPath(["testPath"])
         let navigationPathBinding = Binding<NavigationPath>(
             get: { navigationPath },
@@ -360,7 +360,7 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
                                                                       onboardingUseCase: mockOnboardingUseCase,
                                                                       cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsDepositService: mockDepositService)
+                                                                      wooPaymentsPayoutService: mockPayoutService)
         sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
                                             dependencies: dependencies,
                                             navigationPath: .constant(.init()))

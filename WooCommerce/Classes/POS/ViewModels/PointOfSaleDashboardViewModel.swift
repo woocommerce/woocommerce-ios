@@ -53,7 +53,7 @@ private extension PointOfSaleDashboardViewModel {
     }
 
     func observePaymentStateForButtonDisabledProperties() {
-        Publishers.CombineLatest(totalsViewModel.paymentStatePublisher, posModel.$orderState)
+        Publishers.CombineLatest(posModel.$paymentState, posModel.$orderState)
             .map { paymentState, orderState in
                 switch paymentState {
                 case .processingPayment,
@@ -68,7 +68,7 @@ private extension PointOfSaleDashboardViewModel {
             }
             .assign(to: &$isAddMoreDisabled)
 
-        totalsViewModel.paymentStatePublisher
+        posModel.$paymentState
             .map { paymentState in
                 switch paymentState {
                 case .processingPayment:
@@ -85,7 +85,7 @@ private extension PointOfSaleDashboardViewModel {
             }
             .assign(to: &$isExitPOSDisabled)
 
-        let afterCardTapPaymentStates = totalsViewModel.paymentStatePublisher
+        let afterCardTapPaymentStates = posModel.$paymentState
             .map { paymentState in
                 switch paymentState {
                 case .processingPayment,

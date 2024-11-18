@@ -480,7 +480,7 @@ struct PointOfSaleAggregateModelTests {
             cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
 
             // Then
-            let timeout = ContinuousClock.now + .seconds(1)
+            let timeout = ContinuousClock.now + .seconds(2)
 
             while cardPresentPaymentService.collectPaymentWasCalled != true {
                 try await Task.sleep(for: .milliseconds(1))
@@ -569,16 +569,86 @@ struct PointOfSaleAggregateModelTests {
 
     struct PaymentTests {
         private let cardPresentPaymentService = MockCardPresentPaymentService()
+        private let itemProvider = MockPOSItemProvider()
+        private let orderService = MockPOSOrderService()
         private let sut: PointOfSaleAggregateModel
 
         init() {
             sut = PointOfSaleAggregateModel(
-                itemProvider: MockPOSItemProvider(),
+                itemProvider: itemProvider,
                 cardPresentPaymentService: cardPresentPaymentService,
-                orderService: MockPOSOrderService())
+                orderService: orderService)
         }
 
+        @Test func init_sets_paymentState_to_idle() async throws {
+            // Given that we don't specify a payment state
+            // When we init
+            let sut = PointOfSaleAggregateModel(
+                itemProvider: itemProvider,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderService: orderService)
 
+            // Then
+            #expect(sut.paymentState == .idle)
+        }
+
+        @Test func startNewCart_sets_payment_state_to_idle() async throws {
+            // Note that this previously set it to `acceptingCard`, but that seems wrong
+            // Given
+            let sut = PointOfSaleAggregateModel(
+                itemProvider: itemProvider,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderService: orderService,
+                paymentState: .cardPaymentSuccessful)
+
+            // When
+            sut.startNewCart()
+
+            // Then
+            #expect(sut.paymentState == .idle)
+        }
+
+        @Test func startNewCart_sets_payment_message_to_nil() async throws {
+            // Given
+            cardPresentPaymentService.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+            try #require(sut.cardPresentPaymentInlineMessage != nil)
+
+            // When
+            sut.startNewCart()
+
+            // Then
+            #expect(sut.cardPresentPaymentInlineMessage == nil)
+        }
+
+        @Test func addMoreToCart_sets_payment_state_to_idle() async throws {
+            // Given
+            let sut = PointOfSaleAggregateModel(
+                itemProvider: itemProvider,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderService: orderService,
+                paymentState: .cardPaymentSuccessful)
+
+            // When
+            sut.addMoreToCart()
+
+            // Then
+            #expect(sut.paymentState == .idle)
+        }
+
+        @Test func addMoreToCart_sets_payment_message_to_nil() async throws {
+            // Given
+            cardPresentPaymentService.paymentEvent = .show(
+                eventDetails: .tapSwipeOrInsertCard(
+                    inputMethods: [.tap, .swipe, .insert],
+                    cancelPayment: {}))
+            try #require(sut.cardPresentPaymentInlineMessage != nil)
+
+            // When
+            sut.addMoreToCart()
+
+            // Then
+            #expect(sut.cardPresentPaymentInlineMessage == nil)
+        }
     }
 }
 

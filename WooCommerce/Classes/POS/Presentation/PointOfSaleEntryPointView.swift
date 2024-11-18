@@ -26,8 +26,7 @@ struct PointOfSaleEntryPointView: View {
                                                  cardPresentPaymentService: cardPresentPaymentService,
                                                  orderService: orderService)
         let totalsViewModel = TotalsViewModel(posModel: posModel,
-                                              cardPresentPaymentService: cardPresentPaymentService,
-                                              paymentState: .acceptingCard)
+                                              cardPresentPaymentService: cardPresentPaymentService)
         let cartViewModel = CartViewModel(posModel: posModel)
         let shouldShowGhostableItemCard = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.displayInfiniteScrollingUIDetailsInPointOfSale)
         let itemListViewModel = ItemListViewModel(posModel: posModel, shouldShowGhostableItemCard: shouldShowGhostableItemCard)

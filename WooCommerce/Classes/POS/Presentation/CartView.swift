@@ -257,8 +257,7 @@ import class WooFoundation.MockAnalyticsProviderPreview
     // TODO:
     // Simplify this by mocking `CartViewModel`
     let totalsViewModel = TotalsViewModel(posModel: posModel,
-                                          cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                          paymentState: .acceptingCard)
+                                          cardPresentPaymentService: CardPresentPaymentPreviewService())
     let cartViewModel = CartViewModel(posModel: posModel)
     let itemsListViewModel = ItemListViewModel(posModel: posModel)
     let dashboardViewModel = PointOfSaleDashboardViewModel(posModel: posModel,

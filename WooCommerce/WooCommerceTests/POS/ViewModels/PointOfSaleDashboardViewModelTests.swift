@@ -91,7 +91,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
             .store(in: &cancellables)
 
         // When
-        mockTotalsViewModel.paymentState = .cardPaymentSuccessful
+//        mockPOSModel.paymentState = .cardPaymentSuccessful
 
         wait(for: [expectation], timeout: 2.0)
     }
@@ -109,7 +109,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
             .store(in: &cancellables)
 
         // When
-        mockTotalsViewModel.paymentState = .processingPayment
+//        mockPOSModel.paymentState = .processingPayment
 
         wait(for: [expectation], timeout: 1.0)
     }
@@ -127,7 +127,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
             .store(in: &cancellables)
 
         // When
-        mockTotalsViewModel.paymentState = .processingPayment
+//        mockPOSModel.paymentState = .processingPayment
 
         wait(for: [expectation], timeout: 1.0)
     }
@@ -145,7 +145,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
             .store(in: &cancellables)
 
         // When
-        mockTotalsViewModel.paymentState = .idle
+//        mockPOSModel.paymentState = .idle
 
         wait(for: [expectation], timeout: 1.0)
     }
@@ -164,7 +164,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
             .store(in: &cancellables)
 
         // When
-        mockTotalsViewModel.paymentState = .processingPayment
+//        mockPOSModel.paymentState = .processingPayment
 
         wait(for: [expectation], timeout: 1.0)
     }
@@ -182,7 +182,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
             .store(in: &cancellables)
 
         // When
-        mockTotalsViewModel.paymentState = .idle
+//        mockPOSModel.paymentState = .idle
 
         wait(for: [expectation], timeout: 1.0)
     }

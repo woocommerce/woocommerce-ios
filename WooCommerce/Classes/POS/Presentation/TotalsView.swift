@@ -9,7 +9,13 @@ struct TotalsView: View {
     /// It allows for a simultaneous transition from the shimmering effect to the text fields,
     /// and movement from the center of the VStack to their respective positions.
     @Namespace private var totalsFieldAnimation
-    @State private var isShowingTotalsFields: Bool
+
+    // The source of truth for whether totals _are_ showing; separate from whether they
+    // _should be_ showing, so that we can animate the change.
+    @State private var isShowingTotalsFields: Bool = false
+    private var shouldShowTotalsFields: Bool {
+        viewModel.shouldShowTotalsFields(for: posModel.paymentState)
+    }
     @State private var isShowingPaymentsButtonSpacing: Bool = false
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
@@ -17,7 +23,6 @@ struct TotalsView: View {
 
     init(viewModel: TotalsViewModel) {
         self.viewModel = viewModel
-        self.isShowingTotalsFields = viewModel.isShowingTotalsFields
     }
 
     var body: some View {
@@ -50,11 +55,11 @@ struct TotalsView: View {
                             totalsFieldsView
                                 .transition(.opacity)
                                 .animation(.default, value: viewModel.isShimmering)
-                                .opacity(viewModel.isShowingTotalsFields ? 1 : 0)
+                                .opacity(viewModel.shouldShowTotalsFields(for: posModel.paymentState) ? 1 : 0)
                                 .layoutPriority(2)
                         }
                     }
-                    .animation(.default, value: viewModel.cardPresentPaymentInlineMessage)
+                    .animation(.default, value: posModel.cardPresentPaymentInlineMessage)
                     paymentsActionButtons
                     Spacer()
                 }
@@ -65,17 +70,20 @@ struct TotalsView: View {
             }
         }
         .background(backgroundColor)
-        .animation(.default, value: viewModel.paymentState)
+        .animation(.default, value: posModel.paymentState)
         .animation(.default, value: posModel.orderState.isError)
         .onDisappear {
             viewModel.onTotalsViewDisappearance()
         }
-        .onChange(of: viewModel.isShowingTotalsFields, perform: hideTotalsFieldsWithDelay)
+        .onAppear {
+            isShowingTotalsFields = shouldShowTotalsFields
+        }
+        .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
         .geometryGroupIfSupported()
     }
 
     private var backgroundColor: Color {
-        switch viewModel.paymentState {
+        switch posModel.paymentState {
         case .cardPaymentSuccessful:
             .posSecondaryBackground
         case .processingPayment:
@@ -186,7 +194,7 @@ private extension TotalsView {
     /// Hide totals fields with animation after a delay when starting to processing a payment
     /// - Parameter isShowing
     private func hideTotalsFieldsWithDelay(_ isShowing: Bool) {
-        guard !isShowing && viewModel.paymentState == .processingPayment else {
+        guard !isShowing && posModel.paymentState == .processingPayment else {
             self.isShowingTotalsFields = isShowing
             return
         }
@@ -216,7 +224,7 @@ private extension TotalsView {
 
     @ViewBuilder
     private var paymentsActionButtons: some View {
-        if viewModel.paymentState == .cardPaymentSuccessful {
+        if posModel.paymentState == .cardPaymentSuccessful {
             if isShowingPaymentsButtonSpacing {
                 Spacer().frame(height: Constants.paymentsButtonSpacing)
             }
@@ -237,7 +245,7 @@ private extension TotalsView {
     @ViewBuilder private var cardReaderView: some View {
         switch viewModel.connectionStatus {
         case .connected, .disconnecting, .cancellingConnection:
-            if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
+            if let inlinePaymentMessage = posModel.cardPresentPaymentInlineMessage {
                 HStack(alignment: .center) {
                     Spacer()
                     PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
@@ -283,7 +291,7 @@ private extension TotalsView {
             return .primary
         }
 
-        switch viewModel.paymentState {
+        switch posModel.paymentState {
         case .validatingOrderError:
             return .outlined
         case .paymentError:
@@ -401,8 +409,7 @@ private extension View {
         orderService: POSOrderPreviewService())
     let totalsVM = TotalsViewModel(
         posModel: posModel,
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        paymentState: .acceptingCard)
+        cardPresentPaymentService: CardPresentPaymentPreviewService())
     TotalsView(viewModel: totalsVM)
 }
 #endif

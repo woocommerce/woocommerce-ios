@@ -22,7 +22,7 @@ struct ReceiptEmailViewModelTests {
     }
 
     @Test func sendReceipt_when_action_succeeds() async {
-        // Given send receipt action suceeds
+        // Given send receipt action succeeds
         sut.email = "test@test.com"
         stores.whenReceivingAction(ofType: ReceiptAction.self) { action in
             switch action {

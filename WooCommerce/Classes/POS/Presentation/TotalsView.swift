@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 struct TotalsView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
@@ -11,6 +12,7 @@ struct TotalsView: View {
     @Namespace private var totalsFieldAnimation
     @State private var isShowingTotalsFields: Bool
     @State private var isShowingPaymentsButtonSpacing: Bool = false
+    @State private var shouldShowCashPaymentStep: Bool = false
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
@@ -29,7 +31,10 @@ struct TotalsView: View {
                         .renderedIf(cardReaderViewLayout.topPadding == nil)
 
                     VStack(alignment: .center, spacing: Constants.verticalSpacing) {
-                        if viewModel.isShowingCardReaderStatus {
+                        // TODO:
+                        // Shouldn't show the card reader status full-screen if the
+                        // merchant has selected that they'll be paying with cash
+                        if viewModel.isShowingCardReaderStatus && shouldShowCashPaymentStep == false {
                             cardReaderView
                                 .font(.title)
                                 .padding([.leading, .trailing],
@@ -46,12 +51,23 @@ struct TotalsView: View {
                                 .layoutPriority(1)
                         }
 
-                        if isShowingTotalsFields {
+                        if isShowingTotalsFields && shouldShowCashPaymentStep == false {
                             totalsFieldsView
                                 .transition(.opacity)
                                 .animation(.default, value: viewModel.isShimmering)
                                 .opacity(viewModel.isShowingTotalsFields ? 1 : 0)
                                 .layoutPriority(2)
+                                .border(.red, width: 2)
+                        }
+                        // TODO:
+                        // Better logic to handle both views appropiately
+                        if isShowingTotalsFields && shouldShowCashPaymentStep == true {
+                            totalsFieldsWithCashView
+                                .transition(.opacity)
+                                .animation(.default, value: viewModel.isShimmering)
+                                .opacity(viewModel.isShowingTotalsFields ? 1 : 0)
+                                .layoutPriority(2)
+                                .border(.red, width: 2)
                         }
                     }
                     .animation(.default, value: viewModel.cardPresentPaymentInlineMessage)
@@ -87,6 +103,64 @@ struct TotalsView: View {
 }
 
 private extension TotalsView {
+    var totalsFieldsWithCashView: some View {
+        HStack(alignment: .center) {
+            Spacer()
+            switch posModel.orderState {
+            default:
+                let foo = PointOfSaleOrderTotals(cartTotal: "10.00", orderTotal: "10.00", taxTotal: "2.00")
+                VStack {
+                    Text("Cash Payment")
+                        .font(.title)
+                    Text("Cash received")
+                        .font(.body)
+                    TextField("", text: .constant("10.00"))
+                        .keyboardType(.decimalPad)
+                        .border(.red, width: 2)
+                }
+                VStack {
+                    totalsFields(orderTotals: foo)
+                    Button(action: {
+                        // This changes from the proposed mocks, as we want to send receipt once the payment is completed
+                        // tapping here should make the order paid which brings us to the payment successful screen
+                        // and with this the ability to send receipt.
+                        // Q: Order is optional here. Do we have the order at this point? Otherwise it cannot be completed.
+                        let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0
+                        let orderID = posModel.order?.orderID ?? 0
+                        let action = OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: .completed, onCompletion: { error in
+                            debugPrint("🚀. Has error? \(String(describing: error))")
+                            // On completion, if no error then we prompt the "Payment Success" view, for this we
+                            // need to make TotalsViewModel.PaymentState = .cardPaymentSuccessful but with a new case for cash.
+                            viewModel.fakePaymentSuccess()
+                            
+                        })
+                        ServiceLocator.stores.dispatch(action)
+                    }, label: {
+                        Text("Mark completed")
+                    })
+                    .buttonStyle(PrimaryButtonStyle())
+                    .border(.red, width: 2.0)
+                    // We also need a way to cancel the cash payment without exiting the order
+                    Button(action: {
+                        shouldShowCashPaymentStep = false
+                    }, label: {
+                        Text("Cancel")
+                    })
+                    .buttonStyle(SecondaryButtonStyle())
+                    .border(.red, width: 2.0)
+                }
+// TODO:
+// Needs to handle the rest of cases
+//            case .idle,
+//                    .syncing,
+//                    .error:
+//                totalsFields(orderTotals: nil)
+//            case .loaded(let orderTotals):
+//                totalsFields(orderTotals: orderTotals)
+            }
+            Spacer()
+        }
+    }
     var totalsFieldsView: some View {
         HStack(alignment: .center) {
             Spacer()
@@ -109,11 +183,13 @@ private extension TotalsView {
                               formattedPrice: orderTotals?.cartTotal,
                               shimmeringActive: totalsLoading,
                               matchedGeometryId: Constants.matchedGeometrySubtotalId)
+            .border(.blue, width: 2.0)
             Spacer().frame(height: Constants.subtotalsVerticalSpacing)
             subtotalFieldView(title: Localization.taxes,
                               formattedPrice: orderTotals?.taxTotal,
                               shimmeringActive: totalsLoading,
                               matchedGeometryId: Constants.matchedGeometryTaxId)
+            .border(.red, width: 2.0)
             Spacer().frame(height: Constants.totalVerticalSpacing)
             Divider()
                 .overlay(Constants.separatorColor)
@@ -121,6 +197,16 @@ private extension TotalsView {
             totalFieldView(formattedPrice: orderTotals?.orderTotal,
                            shimmeringActive: totalsLoading,
                            matchedGeometryId: Constants.matchedGeometryTotalId)
+            .border(.brown, width: 2.0)
+            Button(action: {
+                shouldShowCashPaymentStep = true
+            }, label: {
+                Text("Take cash payment")
+            })
+            .buttonStyle(PrimaryButtonStyle())
+            .border(.red, width: 2)
+            // Don't render it anymore once already has been tapped:
+            .renderedIf(!shouldShowCashPaymentStep)
         }
         .padding(Constants.totalsLineViewPadding)
         .frame(minWidth: Constants.pricesIdealWidth)
@@ -404,5 +490,6 @@ private extension View {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         paymentState: .acceptingCard)
     TotalsView(viewModel: totalsVM)
+        .environmentObject(posModel)
 }
 #endif

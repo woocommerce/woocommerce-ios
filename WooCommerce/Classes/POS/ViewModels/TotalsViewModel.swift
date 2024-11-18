@@ -24,6 +24,10 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
 
     @Published private(set) var paymentState: PaymentState
 
+    func fakePaymentSuccess() {
+        paymentState = .cardPaymentSuccessful
+    }
+
     @Published private(set) var connectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
 
     @ObservedObject var posModel: PointOfSaleAggregateModel
@@ -176,6 +180,7 @@ private extension TotalsViewModel {
                                     using: presentationStyleDeterminerDependencies) }
             .assign(to: &$paymentState)
 
+        // This publisher currently triggers showing the totals fields views, should also handle the case for cash payments
         paymentStatePublisher
             .map { paymentState in
                 switch paymentState {
@@ -269,6 +274,8 @@ private extension TotalsViewModel.PaymentState {
             }
         case .show(.paymentCaptureError):
             self = .paymentError
+            // TODO:
+            // We need to add a new case where the payment is successful, but unrelated to card payment.
         case .show(.paymentSuccess):
             self = .cardPaymentSuccessful
         default:

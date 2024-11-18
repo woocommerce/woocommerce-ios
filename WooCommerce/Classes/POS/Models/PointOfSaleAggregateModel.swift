@@ -49,7 +49,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
     @Published private(set) var orderState: PointOfSaleOrderState = .idle
 
-    private var order: Order? = nil
+    private(set) var order: Order? = nil
 
     private let itemProvider: POSItemProvider
     private let cardPresentPaymentService: CardPresentPaymentFacade

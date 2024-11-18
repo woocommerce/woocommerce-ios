@@ -28,7 +28,7 @@ struct ReceiptEmailView: View {
                     viewModel.sendReceipt()
                 }
                 .disabled(!viewModel.isEmailValid)
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
+                .buttonStyle(PrimaryLoadingButtonStyle(state: viewModel.state))
                 .padding()
             }
             .padding(.top)

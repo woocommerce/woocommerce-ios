@@ -4,7 +4,7 @@ import Yosemite
 
 final class ReceiptEmailViewModel: ObservableObject {
     @Published var email: String = ""
-    @Published var isLoading: Bool = false
+    @Published var state: PrimaryLoadingButtonStyle.State = .idle
 
     private let order: Order
     private let stores: StoresManager
@@ -31,10 +31,13 @@ final class ReceiptEmailViewModel: ObservableObject {
         let action = ReceiptAction.sendReceipt(order: order, email: email) { [weak self] result in
             DispatchQueue.main.async {
                 guard let self else { return }
-                self.isLoading = false
+                self.state = .idle
                 switch result {
                 case .success:
-                    self.onDismiss(true)
+                    self.state = .success
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                        self.onDismiss(true)
+                    }
                 case let .failure(error):
                     DDLogError("Sending email receipt failed: \(error.localizedDescription)")
                     self.noticePresenter.enqueue(notice: Notice(title: Localization.errorNotice, feedbackType: .error))
@@ -42,7 +45,7 @@ final class ReceiptEmailViewModel: ObservableObject {
             }
         }
 
-        self.isLoading = true
+        self.state = .loading
         stores.dispatch(action)
     }
 }

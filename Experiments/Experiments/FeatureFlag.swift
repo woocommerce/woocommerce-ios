@@ -197,6 +197,6 @@ public enum FeatureFlag: Int {
     ///
     case paymentsOnboardingInPointOfSale
 
-    /// Enables the new Blaze campaign creation flow
+    /// Enables sending receipt after the payment via the API
     case sendReceiptAfterPayment
 }

@@ -51,6 +51,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
     @Published private(set) var allItems: [POSItem] = []
     @Published private(set) var itemListState: ItemListState = .initialLoading
+
     var blockReturnToItemSelection: Bool {
         switch paymentState {
         case .processingPayment,

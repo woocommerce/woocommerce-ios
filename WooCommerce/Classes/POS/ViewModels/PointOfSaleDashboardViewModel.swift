@@ -15,7 +15,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     private let connectivityObserver: ConnectivityObserver
 
-    @Published var isExitPOSDisabled: Bool = false
     @Published var isReaderDisconnectionDisabled: Bool = false
     /// This boolean is used to determine if the whole totals/payments view is occupying the full screen (cart is not showed)
     @Published var isTotalsViewFullScreen: Bool = false
@@ -52,24 +51,6 @@ private extension PointOfSaleDashboardViewModel {
     }
 
     func observePaymentStateForButtonDisabledProperties() {
-
-        posModel.$paymentState
-            .map { paymentState in
-                switch paymentState {
-                case .processingPayment:
-                    return true
-                case .idle,
-                        .acceptingCard,
-                        .validatingOrder,
-                        .validatingOrderError,
-                        .preparingReader,
-                        .paymentError,
-                        .cardPaymentSuccessful:
-                    return false
-                }
-            }
-            .assign(to: &$isExitPOSDisabled)
-
         let afterCardTapPaymentStates = posModel.$paymentState
             .map { paymentState in
                 switch paymentState {

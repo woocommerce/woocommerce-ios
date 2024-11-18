@@ -294,7 +294,7 @@ public extension MediaRemote {
 
     private enum ParameterKey {
         static let pageNumber: String = "page"
-        static let pageSize: String   = "number"
+        static let pageSize: String   = "per_page"
         static let wordPressMediaPostID: String = "post"
         static let altText: String = "alt"
         static let wordPressAltText: String = "alt_text"

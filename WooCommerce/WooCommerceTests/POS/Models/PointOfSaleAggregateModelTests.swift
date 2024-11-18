@@ -683,6 +683,32 @@ struct PointOfSaleAggregateModelTests {
             // When, Then
             #expect(sut.blockReturnToItemSelection == true)
         }
+
+        @Test func blockReturnToItemSelection_false_when_paymentState_acceptingCard() async throws {
+            // Given
+            cardPresentPaymentService.paymentEvent = .show(
+                eventDetails: .preparingForPayment(cancelPayment: {}))
+            try #require(sut.blockReturnToItemSelection == true)
+
+            // When
+            cardPresentPaymentService.paymentEvent = .show(
+                eventDetails: .tapSwipeOrInsertCard(inputMethods: [.tap], cancelPayment: {}))
+
+            // Then
+            #expect(sut.blockReturnToItemSelection == false)
+        }
+
+        @Test func blockReturnToItemSelection_false_when_paymentState_validatingOrderError() async throws {
+            // Given
+            cardPresentPaymentService.paymentEvent = .show(
+                eventDetails: .paymentError(
+                    error: CollectOrderPaymentUseCaseError.orderTotalChanged,
+                    retryApproach: .dontRetry,
+                    cancelPayment: {}))
+
+            // When, Then
+            #expect(sut.blockReturnToItemSelection == false)
+        }
     }
 }
 

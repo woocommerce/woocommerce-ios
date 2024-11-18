@@ -3,6 +3,7 @@ import Experiments
 
 protocol ReceiptEligibilityUseCaseProtocol {
     func isEligibleForBackendReceipts(onCompletion: @escaping (Bool) -> Void)
+    func isEligibleSendingReceiptAfterPayment(onCompletion: @escaping (Bool) -> Void)
 }
 
 final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
@@ -41,6 +42,11 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
             }
         }
         stores.dispatch(action)
+    }
+
+    func isEligibleSendingReceiptAfterPayment(onCompletion: @escaping (Bool) -> Void) {
+        // TODO: WooCommerce 9.5.0
+        onCompletion(featureFlagService.isFeatureFlagEnabled(.sendReceiptAfterPayment))
     }
 }
 

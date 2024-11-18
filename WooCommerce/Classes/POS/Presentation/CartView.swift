@@ -26,8 +26,8 @@ struct CartView: View {
             DynamicHStack(spacing: Constants.cartHeaderSpacing) {
                 HStack(spacing: Constants.cartHeaderElementSpacing) {
                     backAddMoreButton
-                        .disabled(viewModel.isAddMoreDisabled)
-                        .shimmering(active: viewModel.isAddMoreDisabled)
+                        .disabled(posModel.blockReturnToItemSelection)
+                        .shimmering(active: posModel.blockReturnToItemSelection)
 
                     HStack {
                         Text(Localization.cartTitle)

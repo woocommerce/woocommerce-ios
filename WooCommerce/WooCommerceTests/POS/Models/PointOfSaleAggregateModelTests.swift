@@ -649,6 +649,40 @@ struct PointOfSaleAggregateModelTests {
             // Then
             #expect(sut.cardPresentPaymentInlineMessage == nil)
         }
+
+        @Test func blockReturnToItemSelection_when_paymentState_idle_and_order_is_syncing() async throws {
+            try #require(sut.blockReturnToItemSelection == false)
+            // Given syncing will happen for 1 second on checkOut
+            orderService.simulateSyncing = true
+            sut.addToCart(makeItem())
+
+            // When syncing is ongoing on another thread
+            Task {
+                await sut.checkOut()
+            }
+            try await Task.sleep(nanoseconds: UInt64(100 * Double(NSEC_PER_MSEC)))
+
+            // Then
+            #expect(sut.blockReturnToItemSelection == true)
+        }
+
+        @Test func blockReturnToItemSelection_when_paymentState_cardPaymentSuccessful() async throws {
+            try #require(sut.blockReturnToItemSelection == false)
+            // Given
+            cardPresentPaymentService.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+
+            // When, Then
+            #expect(sut.blockReturnToItemSelection == true)
+        }
+
+        @Test func blockReturnToItemSelection_when_paymentState_processingPayment() async throws {
+            try #require(sut.blockReturnToItemSelection == false)
+            // Given
+            cardPresentPaymentService.paymentEvent = .show(eventDetails: .processing)
+
+            // When, Then
+            #expect(sut.blockReturnToItemSelection == true)
+        }
     }
 }
 

@@ -51,67 +51,10 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
     func test_viewmodel_when_loaded_then_has_expected_initial_setup() {
         // Given
-        let expectedAddMoreButtonDisabledState = false
         let expectedExitPOSButtonDisabledState = false
 
         // When/Then
-        XCTAssertEqual(sut.isAddMoreDisabled, expectedAddMoreButtonDisabledState)
         XCTAssertEqual(sut.isExitPOSDisabled, expectedExitPOSButtonDisabledState)
-    }
-
-    func test_isAddMoreDisabled_is_true_when_order_is_syncing_and_paymentState_is_idle() async {
-        // Given
-        mockPOSModel.addToCart(Self.makeItem())
-        let expectation = XCTestExpectation(description: "Expect isAddMoreDisabled to be true while syncing order and payment state is idle")
-
-        await sut.$isAddMoreDisabled
-            .sink { disabled in
-                if disabled {
-                    expectation.fulfill()
-                }
-            }
-            .store(in: &cancellables)
-
-        // When
-        await mockPOSModel.checkOut()
-
-        await fulfillment(of: [expectation], timeout: 1.0)
-    }
-
-    func test_isAddMoreDisabled_is_true_for_collectPayment_success() {
-        // Given
-        let expectation = XCTestExpectation(description: "Expect isAddMoreDisabled to be true after successfully collecting payment")
-
-        sut.$isAddMoreDisabled
-            .sink { disabled in
-                if disabled {
-                    expectation.fulfill()
-                }
-            }
-            .store(in: &cancellables)
-
-        // When
-//        mockPOSModel.paymentState = .cardPaymentSuccessful
-
-        wait(for: [expectation], timeout: 2.0)
-    }
-
-    func test_isAddMoreDisabled_is_true_for_paymentState_processingPayment() {
-        // Given
-        let expectation = XCTestExpectation(description: "Expect isAddMoreDisabled to be true when paymentState is processingPayment or cardPaymentSuccessful")
-
-        sut.$isAddMoreDisabled
-            .sink { disabled in
-                if disabled {
-                    expectation.fulfill()
-                }
-            }
-            .store(in: &cancellables)
-
-        // When
-//        mockPOSModel.paymentState = .processingPayment
-
-        wait(for: [expectation], timeout: 1.0)
     }
 
     func test_isExitPOSDisabled_is_true_for_paymentState_processingPayment() {

@@ -32,6 +32,7 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     }
 
     var itemListState: ItemListState
+    var blockReturnToItemSelection: Bool = false
 
     init(cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected,
          itemListState: ItemListState = .initialLoading,

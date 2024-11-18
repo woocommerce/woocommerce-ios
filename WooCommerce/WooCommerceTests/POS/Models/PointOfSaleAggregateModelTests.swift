@@ -483,7 +483,7 @@ struct PointOfSaleAggregateModelTests {
             let timeout = ContinuousClock.now + .seconds(1)
 
             while cardPresentPaymentService.collectPaymentWasCalled != true {
-                try! await Task.sleep(for: .milliseconds(1))
+                try await Task.sleep(for: .milliseconds(1))
                 try #require(.now < timeout)
             }
         }
@@ -517,7 +517,7 @@ struct PointOfSaleAggregateModelTests {
             let timeout = ContinuousClock.now + .seconds(1)
 
             while cardPresentPaymentService.collectPaymentWasCalled != true {
-                try! await Task.sleep(for: .milliseconds(1))
+                try await Task.sleep(for: .milliseconds(1))
                 try #require(.now < timeout)
             }
         }

@@ -177,7 +177,6 @@ struct PrimaryLoadingButtonStyle: PrimitiveButtonStyle {
             .disabled(state != .idle)
             .overlay(progressViewOverlay)
             .overlay(checkmark)
-            .animation(.default, value: state)
     }
 
     /// Only dispatch events while the view is not loading.

@@ -552,42 +552,49 @@ private extension CollectOrderPaymentUseCase {
     func presentBackendReceiptAlert(
         alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
         onCompleted: @escaping () -> ()) {
-        // Handles receipt presentation for both print and email actions
-        let receiptPresentationCompletionAction: () -> Void = { [weak self] in
-            guard let self else { return }
-            self.paymentOrchestrator.presentBackendReceipt(for: self.order, onCompletion: { [weak self] result in
+            // Handles receipt presentation for both print and email actions
+            let receiptPresentationCompletionAction: () -> Void = { [weak self] in
                 guard let self else { return }
-                switch result {
-                case let .success(receipt):
-                    self.presentBackendReceiptModally(receipt: receipt, onCompleted: onCompleted)
-                case let .failure(error):
-                    self.presentReceiptFailedNotice(with: error, onCompleted: onCompleted)
-                }
-            })
-        }
+                self.paymentOrchestrator.presentBackendReceipt(for: self.order, onCompletion: { [weak self] result in
+                    guard let self else { return }
+                    switch result {
+                    case let .success(receipt):
+                        self.presentBackendReceiptModally(receipt: receipt, onCompleted: onCompleted)
+                    case let .failure(error):
+                        self.presentReceiptFailedNotice(with: error, onCompleted: onCompleted)
+                    }
+                })
+            }
             // Sends receipt via API
             let addCustomerEmailAndSendReceiptCompletionAction: () -> Void = { [weak self] in
                 self?.presentSendReceiptAfterPayment(onCompleted: onCompleted)
             }
 
+            let noReceiptAction: () -> Void = { onCompleted() }
+
             // Presents receipt alert
             receiptEligibilityUseCase.isEligibleSendingReceiptAfterPayment { isEligibleSendingReceiptAfterPayment in
-                let emailReceiptAction: CardReaderTransactionAlertEmailReceiptAction
+                let receiptState: CardReaderTransactionAlertReceiptState
 
                 if let email = self.order.billingAddress?.email, email.isNotEmpty {
-                    emailReceiptAction = .emailSent(email)
+                    receiptState = .paymentSuccessEmailSent(email: email,
+                                                            printReceiptAction: receiptPresentationCompletionAction,
+                                                            noReceiptAction: noReceiptAction)
                 } else if isEligibleSendingReceiptAfterPayment {
-                    emailReceiptAction = .sendEmail(addCustomerEmailAndSendReceiptCompletionAction)
+                    receiptState = .promptToSendEmailReceipt(printReceiptAction: receiptPresentationCompletionAction,
+                                                             emailReceiptAction: addCustomerEmailAndSendReceiptCompletionAction,
+                                                             noReceiptAction: noReceiptAction)
                 } else if MFMailComposeViewController.canSendMail() {
-                    emailReceiptAction = .sendEmail(receiptPresentationCompletionAction)
+                    receiptState = .promptToSendEmailReceipt(printReceiptAction: receiptPresentationCompletionAction,
+                                                             emailReceiptAction: receiptPresentationCompletionAction,
+                                                             noReceiptAction: noReceiptAction)
                 } else {
-                    emailReceiptAction = .noEmail
+                    receiptState = .emailSendingNotSupported(printReceiptAction: receiptPresentationCompletionAction,
+                                                             noReceiptAction: noReceiptAction)
                 }
-                self.alertsPresenter.present(viewModel: paymentAlerts.success(printReceipt: receiptPresentationCompletionAction,
-                                                                              emailReceipt: emailReceiptAction,
-                                                                              noReceiptAction: { onCompleted() }))
+                self.alertsPresenter.present(viewModel: paymentAlerts.success(receiptState: receiptState))
             }
-    }
+        }
 
     /// Allow merchants to print or email locally-generated receipts.
     ///
@@ -595,7 +602,7 @@ private extension CollectOrderPaymentUseCase {
                              alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                              onCompleted: @escaping () -> ()) {
         // Present receipt alert
-        alertsPresenter.present(viewModel: paymentAlerts.success(printReceipt: { [order, configuration, weak self] in
+        alertsPresenter.present(viewModel: paymentAlerts.success(receiptState: .init(printReceipt: { [order, configuration, weak self] in
             guard let self = self else { return }
 
             guard let receiptParameters else {
@@ -615,7 +622,7 @@ private extension CollectOrderPaymentUseCase {
                 // Inform about flow completion.
                 onCompleted()
             }
-        }, emailReceipt: .init { [order, analyticsTracker, paymentOrchestrator, weak self] in
+        }, emailReceipt: { [order, analyticsTracker, paymentOrchestrator, weak self] in
             guard let self = self else { return }
 
             analyticsTracker.trackEmailTapped()
@@ -633,7 +640,7 @@ private extension CollectOrderPaymentUseCase {
         }, noReceiptAction: {
             // Inform about flow completion.
             onCompleted()
-        }))
+        })))
     }
 
     /// Presents the native email client with the provided content.

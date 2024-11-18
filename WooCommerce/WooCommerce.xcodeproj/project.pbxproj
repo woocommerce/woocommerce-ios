@@ -35,7 +35,7 @@
 		0174DDBB2CE5FD60005D20CA /* ReceiptEmailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0174DDBA2CE5FD5D005D20CA /* ReceiptEmailViewModel.swift */; };
 		0174DDBF2CE600C5005D20CA /* ReceiptEmailViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0174DDBE2CE600C0005D20CA /* ReceiptEmailViewModelTests.swift */; };
 		0182C8BE2CE3B11300474355 /* MockReceiptEligibilityUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0182C8BD2CE3B10E00474355 /* MockReceiptEligibilityUseCase.swift */; };
-		0182C8C02CE4DDC700474355 /* CardReaderTransactionAlertEmailReceiptAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0182C8BF2CE4DDC100474355 /* CardReaderTransactionAlertEmailReceiptAction.swift */; };
+		0182C8C02CE4DDC700474355 /* CardReaderTransactionAlertReceiptState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0182C8BF2CE4DDC100474355 /* CardReaderTransactionAlertReceiptState.swift */; };
 		0182C8C22CE4F0DB00474355 /* ReceiptEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0182C8C12CE4F0DB00474355 /* ReceiptEmailView.swift */; };
 		0188CA0F2C65622A0051BF1C /* PointOfSaleCardPresentPaymentValidatingOrderErrorMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0188CA0E2C65622A0051BF1C /* PointOfSaleCardPresentPaymentValidatingOrderErrorMessageViewModel.swift */; };
 		0188CA112C6565320051BF1C /* PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0188CA102C6565320051BF1C /* PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView.swift */; };
@@ -3153,7 +3153,7 @@
 		0174DDBA2CE5FD5D005D20CA /* ReceiptEmailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptEmailViewModel.swift; sourceTree = "<group>"; };
 		0174DDBE2CE600C0005D20CA /* ReceiptEmailViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptEmailViewModelTests.swift; sourceTree = "<group>"; };
 		0182C8BD2CE3B10E00474355 /* MockReceiptEligibilityUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockReceiptEligibilityUseCase.swift; sourceTree = "<group>"; };
-		0182C8BF2CE4DDC100474355 /* CardReaderTransactionAlertEmailReceiptAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderTransactionAlertEmailReceiptAction.swift; sourceTree = "<group>"; };
+		0182C8BF2CE4DDC100474355 /* CardReaderTransactionAlertReceiptState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderTransactionAlertReceiptState.swift; sourceTree = "<group>"; };
 		0182C8C12CE4F0DB00474355 /* ReceiptEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptEmailView.swift; sourceTree = "<group>"; };
 		0188CA0E2C65622A0051BF1C /* PointOfSaleCardPresentPaymentValidatingOrderErrorMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentValidatingOrderErrorMessageViewModel.swift; sourceTree = "<group>"; };
 		0188CA102C6565320051BF1C /* PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView.swift; sourceTree = "<group>"; };
@@ -8544,7 +8544,7 @@
 				311D21EC264AF0E700102316 /* CardReaderSettingsAlerts.swift */,
 				03E471BF293A158C001A58AD /* CardReaderConnectionAlertsProviding.swift */,
 				03E471CF293FA62B001A58AD /* CardReaderTransactionAlertsProviding.swift */,
-				0182C8BF2CE4DDC100474355 /* CardReaderTransactionAlertEmailReceiptAction.swift */,
+				0182C8BF2CE4DDC100474355 /* CardReaderTransactionAlertReceiptState.swift */,
 				03E471D1293FA8B2001A58AD /* BluetoothCardReaderPaymentAlertsProvider.swift */,
 				03E471C1293A1F6B001A58AD /* BluetoothReaderConnectionAlertsProvider.swift */,
 				03E471C3293A1F8D001A58AD /* BuiltInReaderConnectionAlertsProvider.swift */,
@@ -16282,7 +16282,7 @@
 				DE19BB1A26C3B5DC00AB70D9 /* ShippingLabelCustomsFormItemDetailsViewModel.swift in Sources */,
 				2023E2AE2C21D8EA00FC365A /* PointOfSaleCardPresentPaymentInLineMessage.swift in Sources */,
 				B6F3796C293794A000718561 /* AnalyticsHubYearToDateRangeData.swift in Sources */,
-				0182C8C02CE4DDC700474355 /* CardReaderTransactionAlertEmailReceiptAction.swift in Sources */,
+				0182C8C02CE4DDC700474355 /* CardReaderTransactionAlertReceiptState.swift in Sources */,
 				2667BFE52530DCF4008099D4 /* RefundItemsValuesCalculationUseCase.swift in Sources */,
 				203163BB2C1C5F72001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeView.swift in Sources */,
 				CEC3CC6B2C92FDB700B93FBE /* WooShippingItemRowViewModel.swift in Sources */,

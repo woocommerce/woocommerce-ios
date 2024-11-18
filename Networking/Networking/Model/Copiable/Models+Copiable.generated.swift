@@ -4102,6 +4102,24 @@ extension Networking.WooShippingCustomPackage {
     }
 }
 
+extension Networking.WooShippingPackagePurchase {
+    public func copy(
+        package: CopiableProp<ShippingLabelPackageSelected> = .copy,
+        rate: CopiableProp<ShippingLabelCarrierRate> = .copy,
+        productIDs: CopiableProp<[Int64]> = .copy
+    ) -> Networking.WooShippingPackagePurchase {
+        let package = package ?? self.package
+        let rate = rate ?? self.rate
+        let productIDs = productIDs ?? self.productIDs
+
+        return Networking.WooShippingPackagePurchase(
+            package: package,
+            rate: rate,
+            productIDs: productIDs
+        )
+    }
+}
+
 extension Networking.WordPressMedia {
     public func copy(
         mediaID: CopiableProp<Int64> = .copy,

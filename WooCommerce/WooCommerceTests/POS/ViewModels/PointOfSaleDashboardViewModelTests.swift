@@ -49,43 +49,6 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_isTotalsViewFullScreen_is_true_for_paymentState_processingPayment() {
-        // Given
-        let expectation = XCTestExpectation(description: "Expect isTotalsViewFullScreen to be true when paymentState is processingPayment")
-
-        sut.$isTotalsViewFullScreen
-            .dropFirst()
-            .sink { fullscreen in
-                if fullscreen {
-                    expectation.fulfill()
-                }
-            }
-            .store(in: &cancellables)
-
-        // When
-//        mockPOSModel.paymentState = .processingPayment
-
-        wait(for: [expectation], timeout: 1.0)
-    }
-
-    func test_isTotalsViewFullScreen_is_false_for_paymentState_idle() {
-        // Given
-        let expectation = XCTestExpectation(description: "Expect isTotalsViewFullScreen to be false when paymentState is idle")
-
-        sut.$isTotalsViewFullScreen
-            .sink { fullscreen in
-                if !fullscreen {
-                    expectation.fulfill()
-                }
-            }
-            .store(in: &cancellables)
-
-        // When
-//        mockPOSModel.paymentState = .idle
-
-        wait(for: [expectation], timeout: 1.0)
-    }
-
     func test_showsConnectivityError_when_nonReachable_then_shows_error() {
         // Given
         mockConnectivityObserver.setStatus(.notReachable)

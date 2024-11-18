@@ -105,7 +105,7 @@ struct PointOfSaleDashboardView: View {
                         .transition(.move(edge: .leading))
                 }
 
-                if !viewModel.isTotalsViewFullScreen {
+                if !posModel.paymentState.shownFullScreen {
                     cartView
                         .accessibilitySortPriority(1)
                         .frame(width: geometry.size.width * Constants.cartWidth)
@@ -119,7 +119,7 @@ struct PointOfSaleDashboardView: View {
                 }
             }
             .animation(.default, value: posModel.orderStage)
-            .animation(.default, value: viewModel.isTotalsViewFullScreen)
+            .animation(.default, value: posModel.paymentState.shownFullScreen)
         }
     }
 }

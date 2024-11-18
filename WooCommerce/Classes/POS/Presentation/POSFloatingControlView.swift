@@ -47,7 +47,7 @@ struct POSFloatingControlView: View {
                 .foregroundStyle(fontColor)
                 .background(backgroundColor)
                 .cornerRadius(Constants.cornerRadius)
-                .disabled(viewModel.isReaderDisconnectionDisabled)
+                .disabled(posModel.paymentState.shownFullScreen)
         }
         .frame(height: Constants.size)
         .background(Color.clear)

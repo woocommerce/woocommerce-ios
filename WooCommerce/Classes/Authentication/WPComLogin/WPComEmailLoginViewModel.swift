@@ -27,7 +27,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
 
     let termsAttributedString: NSAttributedString
 
-    private let allowAccountCreation: Bool
+    let allowAccountCreation: Bool
     private let accountService: WordPressComAccountServiceProtocol
     private let analytics: Analytics
     private let onPasswordUIRequest: (String) -> Void

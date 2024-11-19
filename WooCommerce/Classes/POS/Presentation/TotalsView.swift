@@ -34,7 +34,7 @@ struct TotalsView: View {
                         .renderedIf(cardReaderViewLayout.topPadding == nil)
 
                     VStack(alignment: .center, spacing: Constants.verticalSpacing) {
-                        if viewModel.isShowingCardReaderStatus {
+                        if isShowingCardReaderStatus {
                             cardReaderView
                                 .font(.title)
                                 .padding([.leading, .trailing],
@@ -63,7 +63,7 @@ struct TotalsView: View {
                     paymentsActionButtons
                     Spacer()
                 }
-                .animation(.default, value: viewModel.isShowingCardReaderStatus)
+                .animation(.default, value: isShowingCardReaderStatus)
             case .error(let viewModel):
                 PointOfSaleOrderSyncErrorMessageView(viewModel: viewModel)
                     .transition(.opacity)
@@ -243,7 +243,7 @@ private extension TotalsView {
     }
 
     @ViewBuilder private var cardReaderView: some View {
-        switch viewModel.connectionStatus {
+        switch posModel.cardReaderConnectionStatus {
         case .connected, .disconnecting, .cancellingConnection:
             if let inlinePaymentMessage = posModel.cardPresentPaymentInlineMessage {
                 HStack(alignment: .center) {
@@ -286,8 +286,25 @@ private extension TotalsView {
         )
     }
 
+    private var isShowingCardReaderStatus: Bool {
+        guard posModel.orderState.isLoaded else {
+            // When the order's being created or synced, we only show the shimmering totals.
+            // Before the order exists, we don’t want to show the card payment status, as it will
+            // show for a second initially, then disappear the moment we start syncing the order.
+            return false
+        }
+
+        switch posModel.cardReaderConnectionStatus {
+        case .connected, .disconnecting, .cancellingConnection:
+            return posModel.cardPresentPaymentInlineMessage != nil
+        case .disconnected:
+            // Since the reader is disconnected, this will show the "Connect your reader" CTA button view.
+            return true
+        }
+    }
+
     private var cardReaderViewLayout: CardReaderViewLayout {
-        guard viewModel.isShowingCardReaderStatus else {
+        guard isShowingCardReaderStatus else {
             return .primary
         }
 
@@ -305,7 +322,7 @@ private extension TotalsView {
             break
         }
 
-        if viewModel.connectionStatus == .disconnected {
+        if posModel.cardReaderConnectionStatus == .disconnected {
             return .outlined
         }
 

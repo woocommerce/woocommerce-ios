@@ -6,7 +6,6 @@ import protocol Yosemite.POSItem
 final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     @Published var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
     private var onOnboardingCancellation: (() -> Void)?
-    @Published private(set) var isShowingCardReaderStatus: Bool = false
 
     @Published private(set) var connectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
 
@@ -27,7 +26,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         self.analytics = analytics
 
         // Initialize all properties before calling methods
-        self.observeConnectedReaderForStatus()
         self.observeCardPresentPaymentEvents()
     }
 
@@ -105,31 +103,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
 // MARK: - Payment collection
 
 private extension TotalsViewModel {
-    func observeConnectedReaderForStatus() {
-        cardPresentPaymentService.readerConnectionStatusPublisher
-            .assign(to: &$connectionStatus)
-
-        Publishers.CombineLatest3(posModel.$cardReaderConnectionStatus, posModel.$orderState, posModel.$cardPresentPaymentInlineMessage)
-            .map { connectionStatus, orderState, message in
-                guard orderState.isLoaded
-                        else {
-                    // When the order's being created or synced, we only show the shimmering totals.
-                    // Before the order exists, we don’t want to show the card payment status, as it will
-                    // show for a second initially, then disappear the moment we start syncing the order.
-                    return false
-                }
-
-                switch connectionStatus {
-                case .connected, .disconnecting, .cancellingConnection:
-                    return message != nil
-                case .disconnected:
-                    // Since the reader is disconnected, this will show the "Connect your reader" CTA button view.
-                    return true
-                }
-            }
-            .assign(to: &$isShowingCardReaderStatus)
-    }
-
     func observeCardPresentPaymentEvents() {
         cardPresentPaymentService.paymentEventPublisher
             .map { [weak self] event -> CardPresentPaymentsOnboardingViewModel? in

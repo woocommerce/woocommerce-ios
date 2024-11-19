@@ -29,42 +29,6 @@ final class TotalsViewModelTests: XCTestCase {
         cancellables = Set()
     }
 
-    func test_isShowingCardReaderStatus_when_order_not_loaded_then_false() async {
-        // Given
-//        orderService.orderToReturn = nil
-
-        // When
-//        await sut.syncOrder(for: [], allItems: [])
-        // If this needs testing, it should rely on posModel.orderState now
-        // we can't mock posModel properties until paymentState is moved, because we currently need the published properties in TotalsViewModel
-
-        // Then
-        XCTAssertFalse(sut.isShowingCardReaderStatus)
-    }
-
-    func test_isShowingCardReaderStatus_when_connected_and_payment_message_exists_then_true() async throws {
-        // Given
-        orderService.orderToReturn = Order.fake()
-        cardPresentPaymentService.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
-        cardPresentPaymentService.paymentEvent = .show(eventDetails: .preparingForPayment(cancelPayment: {}))
-
-        let item = Self.makeItem()
-        posModel.addToCart(item)
-        await posModel.checkOut()
-
-        // Then
-        XCTAssertTrue(sut.isShowingCardReaderStatus)
-    }
-
-    func test_isShowingCardReaderStatus_when_connected_and_no_payment_message_then_false() {
-        // Given
-        cardPresentPaymentService.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
-        cardPresentPaymentService.paymentEvent = .idle
-
-        // Then
-        XCTAssertFalse(sut.isShowingCardReaderStatus)
-    }
-
     // MARK: Onboarding
 
     func test_cardPresentPaymentOnboardingViewModel_is_non_nil_when_onboarding_is_required() {

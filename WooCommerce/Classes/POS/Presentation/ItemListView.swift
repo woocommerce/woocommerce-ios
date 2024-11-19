@@ -2,7 +2,10 @@ import SwiftUI
 import protocol Yosemite.POSItem
 
 struct ItemListView: View {
-    @ObservedObject var viewModel: ItemListViewModel
+    private var shouldShowGhostableItemCard: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(
+        .displayInfiniteScrollingUIDetailsInPointOfSale
+    )
+
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -11,9 +14,8 @@ struct ItemListView: View {
     @State private var lastScrollPosition: CGFloat = 0
     @State private var showSimpleProductsModal: Bool = false
 
-    init(viewModel: ItemListViewModel) {
-        self.viewModel = viewModel
-    }
+    @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
+    private var isHeaderBannerDismissed: Bool = false
 
     var body: some View {
         VStack {
@@ -46,7 +48,7 @@ private extension ItemListView {
         VStack {
             HStack {
                 POSHeaderTitleView()
-                if !viewModel.shouldShowHeaderBanner {
+                if !shouldShowHeaderBanner {
                     Spacer()
                     Button(action: {
                         showSimpleProductsModal = true
@@ -58,7 +60,7 @@ private extension ItemListView {
                     .padding(.trailing, Constants.infoIconPadding)
                 }
             }
-            if !dynamicTypeSize.isAccessibilitySize, viewModel.shouldShowHeaderBanner {
+            if !dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
                     .padding(.horizontal, Constants.bannerCardPadding)
             }
@@ -94,7 +96,7 @@ private extension ItemListView {
             .padding(.vertical, Constants.bannerVerticalPadding)
             VStack {
                 Button(action: {
-                    viewModel.dismissBanner()
+                    isHeaderBannerDismissed = true
                 }, label: {
                     Image(systemName: "xmark")
                         .font(.posBodyRegular)
@@ -128,7 +130,7 @@ private extension ItemListView {
     func listView(_ items: [POSItem]) -> some View {
         ScrollView {
             VStack {
-                if dynamicTypeSize.isAccessibilitySize, viewModel.shouldShowHeaderBanner {
+                if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                     bannerCardView
                 }
                 ForEach(items, id: \.productID) { item in
@@ -139,7 +141,7 @@ private extension ItemListView {
                     })
                 }
                 GhostItemCardView()
-                    .renderedIf(posModel.itemListState.isLoadingAfterInitialLoad && viewModel.shouldShowGhostableItemCard)
+                    .renderedIf(posModel.itemListState.isLoadingAfterInitialLoad && shouldShowGhostableItemCard)
             }
             .frame(maxWidth: .infinity)
             .padding(.bottom, floatingControlAreaSize.height)
@@ -159,6 +161,26 @@ private extension ItemListView {
                         lastScrollPosition = maxY
                     }
             })
+        }
+    }
+}
+
+private extension ItemListView {
+    var shouldShowHeaderBanner: Bool {
+        posModel.itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
+    }
+}
+
+private extension ItemListState {
+    var eligibleToShowSimpleProductsBanner: Bool {
+        switch self {
+        case .loading,
+                .loaded:
+            return true
+        case .empty,
+            .initialLoading,
+            .error:
+            return false
         }
     }
 }
@@ -221,6 +243,10 @@ private extension ItemListView {
         static let scrollThresholdMultiplier: CGFloat = 1.7
     }
 
+    enum BannerState {
+        static let isSimpleProductsOnlyBannerDismissedKey = "isSimpleProductsOnlyBannerDismissed"
+    }
+
     enum Localization {
         static let headerBannerTitle = NSLocalizedString(
             "pos.itemlistview.headerBanner.title",
@@ -257,11 +283,6 @@ private extension ItemListView {
 
 #if DEBUG
 #Preview {
-    ItemListView(
-        viewModel: ItemListViewModel(
-            posModel: PointOfSaleAggregateModel(
-                itemProvider: POSItemProviderPreview(),
-                cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                orderService: POSOrderPreviewService())))
+    ItemListView()
 }
 #endif

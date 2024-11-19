@@ -5,16 +5,13 @@ struct PointOfSaleDashboardView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var totalsViewModel: TotalsViewModel
     @ObservedObject private var cartViewModel: CartViewModel
-    @ObservedObject private var itemListViewModel: ItemListViewModel
 
     init(viewModel: PointOfSaleDashboardViewModel,
          totalsViewModel: TotalsViewModel,
-         cartViewModel: CartViewModel,
-         itemListViewModel: ItemListViewModel) {
+         cartViewModel: CartViewModel) {
         self.viewModel = viewModel
         self.totalsViewModel = totalsViewModel
         self.cartViewModel = cartViewModel
-        self.itemListViewModel = itemListViewModel
     }
 
     @State private var floatingSize: CGSize = .zero
@@ -195,7 +192,7 @@ private extension PointOfSaleDashboardView {
     }
 
     var productListView: some View {
-        ItemListView(viewModel: itemListViewModel)
+        ItemListView()
     }
 }
 
@@ -211,18 +208,15 @@ import class WooFoundation.MockAnalyticsProviderPreview
     let totalsVM = TotalsViewModel(posModel: posModel,
                                    cardPresentPaymentService: CardPresentPaymentPreviewService())
     let cartVM = CartViewModel(posModel: posModel)
-    let itemsListVM = ItemListViewModel(posModel: posModel)
     let posVM = PointOfSaleDashboardViewModel(posModel: posModel,
                                               totalsViewModel: totalsVM,
                                               cartViewModel: cartVM,
-                                              itemListViewModel: itemsListVM,
                                               connectivityObserver: POSConnectivityObserverPreview())
 
     return NavigationStack {
         PointOfSaleDashboardView(viewModel: posVM,
                                  totalsViewModel: totalsVM,
-                                 cartViewModel: cartVM,
-                                 itemListViewModel: itemsListVM)
+                                 cartViewModel: cartVM)
     }
 }
 #endif

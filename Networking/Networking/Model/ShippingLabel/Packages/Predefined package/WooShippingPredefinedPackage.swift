@@ -64,7 +64,14 @@ extension WooShippingPredefinedPackage: Decodable {
         let isLetter = try container.decodeIfPresent(Bool.self, forKey: .isLetter) ?? false
         let dimensions = try container.decode(String.self, forKey: .dimensions)
         let groupId = try container.decode(String.self, forKey: .groupId)
-        let boxWeight = try container.decode(String.self, forKey: .boxWeight)
+        var boxWeight: String = ""
+        // Looks like some endpoints have boxWeight as String and some as Double
+        if let boxWeightDouble = try? container.decodeIfPresent(Double.self, forKey: .boxWeight) {
+            boxWeight = String(boxWeightDouble)
+        }
+        else if let boxWeightString = try? container.decodeIfPresent(String.self, forKey: .boxWeight) {
+            boxWeight = boxWeightString
+        }
 
         self.init(id: id,
                   name: name,

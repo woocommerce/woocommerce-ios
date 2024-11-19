@@ -133,9 +133,10 @@ final class WooShippingRemoteTests: XCTestCase {
 
         // Then
         let successResponse = try XCTUnwrap(result.get())
-        XCTAssertEqual(successResponse.savedPredefinedOptions.count, 1)
-        XCTAssertEqual(successResponse.savedPredefinedOptions.first?.id, "usps")
-        XCTAssertEqual(successResponse.savedPredefinedOptions.first?.predefinedPackageIDs.count, 2)
+        XCTAssertEqual(successResponse.savedPredefinedPackages.count, 2)
+        XCTAssertEqual(successResponse.savedPredefinedPackages.first?.package.groupId, "pri_flat_boxes")
+        XCTAssertEqual(successResponse.savedPredefinedPackages.first?.groupTitle, "USPS Priority Mail Flat Rate Boxes")
+        XCTAssertEqual(successResponse.savedPredefinedPackages.first?.providerID, "usps")
 
         XCTAssertEqual(successResponse.customPackages.count, 1)
         XCTAssertEqual(successResponse.customPackages.first, expectedCustomPackage)

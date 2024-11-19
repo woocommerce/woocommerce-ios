@@ -51,7 +51,6 @@
                     "is_flat_rate": true,
                     "id": "medium_flat_box_top",
                     "name": "Medium Flat Rate Box 1, Top Loading",
-                    "dimensions": "11.25 x 8.75 x 6",
                     "max_weight": 70,
                     "is_letter": false,
                     "group_id": "pri_flat_boxes",

@@ -27,7 +27,7 @@ struct ItemListView: View {
             }
         }
         .refreshable {
-            await viewModel.reload()
+            await posModel.reload()
         }
         .background(Color.posPrimaryBackground)
         .accessibilityElement(children: .contain)
@@ -149,7 +149,7 @@ private extension ItemListView {
                         let threshold = Constants.viewHeight * Constants.scrollThresholdMultiplier
                         if maxY < threshold && maxY < lastScrollPosition {
                             Task {
-                                await viewModel.loadNextItems()
+                                await posModel.loadNextItems()
                             }
                         }
                         lastScrollPosition = maxY

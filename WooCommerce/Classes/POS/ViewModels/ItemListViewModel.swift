@@ -40,21 +40,6 @@ final class ItemListViewModel: ItemListViewModelProtocol {
         selectedItemSubject.send(item)
     }
 
-    @MainActor
-    func loadInitialItems() async {
-        await posModel.loadInitialItems()
-    }
-
-    @MainActor
-    func loadNextItems() async {
-        await posModel.loadNextItems()
-    }
-
-    @MainActor
-    func reload() async {
-        await posModel.reload()
-    }
-
     func dismissBanner() {
         isHeaderBannerDismissed = true
         UserDefaults.standard.set(isHeaderBannerDismissed, forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey)

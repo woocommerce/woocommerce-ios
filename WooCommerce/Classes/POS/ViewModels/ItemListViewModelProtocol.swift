@@ -9,8 +9,5 @@ protocol ItemListViewModelProtocol: ObservableObject {
     var selectedItemPublisher: AnyPublisher<POSItem, Never> { get }
 
     func select(_ item: POSItem)
-    func loadInitialItems() async
-    func loadNextItems() async
-    func reload() async
     func dismissBanner()
 }

@@ -84,7 +84,7 @@ struct PointOfSaleDashboardView: View {
             supportForm
         }
         .task {
-            await viewModel.itemListViewModel.loadInitialItems()
+            await posModel.loadInitialItems()
         }
         .onChange(of: posModel.orderStage) { newValue in
             switch newValue {

@@ -19,15 +19,6 @@ class MockItemListViewModel: ItemListViewModelProtocol {
     func select(_ item: any Yosemite.POSItem) {
     }
 
-    func loadInitialItems() async {
-    }
-
-    func loadNextItems() async {
-    }
-
-    func reload() async {
-    }
-
     func dismissBanner() {
     }
 }

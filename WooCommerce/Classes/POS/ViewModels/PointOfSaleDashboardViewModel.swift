@@ -92,14 +92,15 @@ private extension PointOfSaleDashboardViewModel {
                 switch paymentState {
                 case .processingPayment,
                         .paymentError,
-                        .cardPaymentSuccessful:
+                        .cardPaymentSuccessful,
+                        // Receipt full-screen
+                        .creatingReceipt:
                     return true
                 case .idle,
                         .validatingOrder,
                         .validatingOrderError,
                         .preparingReader,
-                        .acceptingCard,
-                        .creatingReceipt:
+                        .acceptingCard:
                     return false
                 }
             }

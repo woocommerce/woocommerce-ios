@@ -2637,14 +2637,14 @@ extension Networking.WCPayPaymentMethodType {
         .card
     }
 }
-extension Networking.WooPaymentsAccountDepositSummary {
+extension Networking.WooPaymentsAccountPayoutSummary {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooPaymentsAccountDepositSummary {
+    public static func fake() -> Networking.WooPaymentsAccountPayoutSummary {
         .init(
-            depositsEnabled: .fake(),
-            depositsBlocked: .fake(),
-            depositsSchedule: .fake(),
+            payoutsEnabled: .fake(),
+            payoutsBlocked: .fake(),
+            payoutsSchedule: .fake(),
             defaultCurrency: .fake()
         )
     }
@@ -2670,20 +2670,30 @@ extension Networking.WooPaymentsCurrencyBalances {
         )
     }
 }
-extension Networking.WooPaymentsCurrencyDeposits {
+extension Networking.WooPaymentsCurrencyPayouts {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooPaymentsCurrencyDeposits {
+    public static func fake() -> Networking.WooPaymentsCurrencyPayouts {
         .init(
             lastPaid: .fake(),
-            lastManualDeposits: .fake()
+            lastManualPayouts: .fake()
         )
     }
 }
-extension Networking.WooPaymentsDeposit {
+extension Networking.WooPaymentsManualPayout {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooPaymentsDeposit {
+    public static func fake() -> Networking.WooPaymentsManualPayout {
+        .init(
+            currency: .fake(),
+            date: .fake()
+        )
+    }
+}
+extension Networking.WooPaymentsPayout {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooPaymentsPayout {
         .init(
             id: .fake(),
             date: .fake(),
@@ -2699,31 +2709,31 @@ extension Networking.WooPaymentsDeposit {
         )
     }
 }
-extension Networking.WooPaymentsDepositInterval {
+extension Networking.WooPaymentsPayoutInterval {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooPaymentsDepositInterval {
+    public static func fake() -> Networking.WooPaymentsPayoutInterval {
         .daily
     }
 }
-extension Networking.WooPaymentsDepositStatus {
+extension Networking.WooPaymentsPayoutStatus {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooPaymentsDepositStatus {
+    public static func fake() -> Networking.WooPaymentsPayoutStatus {
         .estimated
     }
 }
-extension Networking.WooPaymentsDepositType {
+extension Networking.WooPaymentsPayoutType {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooPaymentsDepositType {
+    public static func fake() -> Networking.WooPaymentsPayoutType {
         .withdrawal
     }
 }
-extension Networking.WooPaymentsDepositsOverview {
+extension Networking.WooPaymentsPayoutsOverview {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooPaymentsDepositsOverview {
+    public static func fake() -> Networking.WooPaymentsPayoutsOverview {
         .init(
             deposit: .fake(),
             balance: .fake(),
@@ -2731,23 +2741,13 @@ extension Networking.WooPaymentsDepositsOverview {
         )
     }
 }
-extension Networking.WooPaymentsDepositsSchedule {
+extension Networking.WooPaymentsPayoutsSchedule {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooPaymentsDepositsSchedule {
+    public static func fake() -> Networking.WooPaymentsPayoutsSchedule {
         .init(
             delayDays: .fake(),
             interval: .fake()
-        )
-    }
-}
-extension Networking.WooPaymentsManualDeposit {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.WooPaymentsManualDeposit {
-        .init(
-            currency: .fake(),
-            date: .fake()
         )
     }
 }

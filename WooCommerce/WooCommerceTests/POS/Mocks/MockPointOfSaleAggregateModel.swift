@@ -11,6 +11,8 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     var orderStage: PointOfSaleOrderStage
 
+    var orderState: WooCommerce.PointOfSaleOrderState
+
     var allItems: [POSItem] {
         switch itemListState {
         case .empty,
@@ -27,10 +29,12 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     init(cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected,
          itemListState: ItemListState = .initialLoading,
-         orderStage: PointOfSaleOrderStage = .building) {
+         orderStage: PointOfSaleOrderStage = .building,
+         orderState: PointOfSaleOrderState = .idle) {
         self.cardReaderConnectionStatus = cardReaderConnectionStatus
         self.itemListState = itemListState
         self.orderStage = orderStage
+        self.orderState = orderState
     }
 
     func loadInitialItems() async { }
@@ -51,6 +55,8 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     }
 
     func submitCart() { }
+
+    func checkOut() async { }
 
     func addMoreToCart() { }
 

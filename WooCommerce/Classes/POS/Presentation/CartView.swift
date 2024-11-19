@@ -195,9 +195,9 @@ private extension CartView {
 private extension CartView {
     var checkoutButton: some View {
         Button {
-            posModel.submitCart()
-            // Remove when totalsViewModel doesn't do the submission any more
-            cartViewModel.submitCart()
+            Task { @MainActor in
+                await posModel.submitCart()
+            }
         } label: {
             Text(Localization.checkoutButtonTitle)
         }
@@ -250,18 +250,18 @@ import class WooFoundation.MockAnalyticsPreview
 import class WooFoundation.MockAnalyticsProviderPreview
 
 #Preview {
+    let posModel = PointOfSaleAggregateModel(
+        itemProvider: POSItemProviderPreview(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderService: POSOrderPreviewService())
     // TODO:
     // Simplify this by mocking `CartViewModel`
-    let totalsViewModel = TotalsViewModel(orderService: POSOrderPreviewService(),
+    let totalsViewModel = TotalsViewModel(posModel: posModel,
                                           cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                          currencyFormatter: .init(currencySettings: .init()),
                                           paymentState: .acceptingCard)
-    let cartViewModel = CartViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview(),
-                                                                          cardPresentPaymentService: CardPresentPaymentPreviewService()))
-    let itemsListViewModel = ItemListViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview(),
-                                                                                   cardPresentPaymentService: CardPresentPaymentPreviewService()))
-    let dashboardViewModel = PointOfSaleDashboardViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview(),
-                                                                                               cardPresentPaymentService: CardPresentPaymentPreviewService()),
+    let cartViewModel = CartViewModel(posModel: posModel)
+    let itemsListViewModel = ItemListViewModel(posModel: posModel)
+    let dashboardViewModel = PointOfSaleDashboardViewModel(posModel: posModel,
                                                            totalsViewModel: totalsViewModel,
                                                            cartViewModel: cartViewModel,
                                                            itemListViewModel: itemsListViewModel,

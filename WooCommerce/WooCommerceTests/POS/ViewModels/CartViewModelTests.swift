@@ -13,31 +13,14 @@ final class CartViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         posModel = PointOfSaleAggregateModel(itemProvider: MockPOSItemProvider(),
-                                             cardPresentPaymentService: MockCardPresentPaymentService())
+                                             cardPresentPaymentService: MockCardPresentPaymentService(),
+                                             orderService: MockPOSOrderService())
         sut = CartViewModel(posModel: posModel)
     }
 
     override func tearDown() {
         sut = nil
         super.tearDown()
-    }
-
-    func test_cart_when_submitCart_is_invoked_then_cartSubmissionPublisher_emits_cart_items() {
-        // Given
-        var cancellables: Set<AnyCancellable> = []
-        let item = Self.makeItem()
-        let anotherItem = Self.makeItem()
-
-        // When
-        posModel.addToCart(item)
-        posModel.addToCart(anotherItem)
-        sut.cartSubmissionPublisher.sink(receiveValue: { cartItems in
-            // Then
-            XCTAssertEqual(cartItems.count, 2)
-        })
-        .store(in: &cancellables)
-
-        sut.submitCart()
     }
 
     func test_removeItemFromCart() {

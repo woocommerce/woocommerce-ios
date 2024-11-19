@@ -2,14 +2,14 @@ import XCTest
 @testable import Yosemite
 @testable import Networking
 
-final class WooPaymentsDepositServiceTests: XCTestCase {
-    var service: WooPaymentsDepositService!
+final class WooPaymentsPayoutServiceTests: XCTestCase {
+    var service: WooPaymentsPayoutService!
     var mockNetwork: MockNetwork!
 
     override func setUp() {
         super.setUp()
         mockNetwork = MockNetwork()
-        service = WooPaymentsDepositService(siteID: 12345, network: mockNetwork)
+        service = WooPaymentsPayoutService(siteID: 12345, network: mockNetwork)
     }
 
     override func tearDown() {
@@ -18,93 +18,93 @@ final class WooPaymentsDepositServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_fetchDepositsOverview_returns_one_model_per_response_element() async {
+    func test_fetchPayoutsOverview_returns_one_model_per_response_element() async {
         // Given
         mockNetwork.simulateResponse(requestUrlSuffix: "payments/deposits/overview-all", filename: "deposits-overview-all")
 
         do {
             // When
-            let depositsOverviews = try await service.fetchDepositsOverview()
+            let payoutsOverviews = try await service.fetchPayoutsOverview()
 
             // Then
-            assertEqual(2, depositsOverviews.count)
+            assertEqual(2, payoutsOverviews.count)
         } catch {
             XCTFail("Unexpected error: \(error)")
         }
     }
 
-    func test_fetchDepositsOverview_returns_the_default_currency_first() async {
+    func test_fetchPayoutsOverview_returns_the_default_currency_first() async {
         // Given
         mockNetwork.simulateResponse(requestUrlSuffix: "payments/deposits/overview-all", filename: "deposits-overview-all")
 
         do {
             // When
-            let depositsOverviews = try await service.fetchDepositsOverview()
+            let payoutsOverviews = try await service.fetchPayoutsOverview()
 
             // Then
-            assertEqual(.GBP, depositsOverviews.first?.currency)
+            assertEqual(.GBP, payoutsOverviews.first?.currency)
         } catch {
             XCTFail("Unexpected error: \(error)")
         }
     }
 
-    func test_fetchDepositsOverview_returns_empty_array_if_default_currency_lost() async {
+    func test_fetchPayoutsOverview_returns_empty_array_if_default_currency_lost() async {
         // Given
         mockNetwork.simulateResponse(requestUrlSuffix: "payments/deposits/overview-all", filename: "deposits-overview-all-no-default-currency")
 
         do {
             // When
-            let depositsOverviews = try await service.fetchDepositsOverview()
+            let payoutsOverviews = try await service.fetchPayoutsOverview()
 
             // Then
-            XCTAssert(depositsOverviews.isEmpty)
+            XCTAssert(payoutsOverviews.isEmpty)
         } catch {
             XCTFail("Unexpected error: \(error)")
         }
     }
 
-    func test_fetchDepositsOverview_returns_valid_data_for_lowercase_currency() async {
+    func test_fetchPayoutsOverview_returns_valid_data_for_lowercase_currency() async {
         // Given
         // (the overview JSON specifies currency as "eur")
         mockNetwork.simulateResponse(requestUrlSuffix: "payments/deposits/overview-all", filename: "deposits-overview-all")
 
         do {
             // When
-            let depositsOverviews = try await service.fetchDepositsOverview()
+            let payoutsOverviews = try await service.fetchPayoutsOverview()
 
             // Then
-            let euroDepositOverview = try XCTUnwrap(depositsOverviews.first(where: { $0.currency == .EUR } ))
-            assertEqual(NSDecimalNumber(string: "20.18"), euroDepositOverview.pendingBalanceAmount)
+            let euroPayoutOverview = try XCTUnwrap(payoutsOverviews.first(where: { $0.currency == .EUR } ))
+            assertEqual(NSDecimalNumber(string: "20.18"), euroPayoutOverview.pendingBalanceAmount)
         } catch {
             XCTFail("Unexpected error: \(error)")
         }
     }
 
-    func test_fetchDepositsOverview_returns_valid_data_for_uppercase_currency() async {
+    func test_fetchPayoutsOverview_returns_valid_data_for_uppercase_currency() async {
         // Given
         // (this overview JSON specifies currency as "GBP")
         mockNetwork.simulateResponse(requestUrlSuffix: "payments/deposits/overview-all", filename: "deposits-overview-all")
 
         do {
             // When
-            let depositsOverviews = try await service.fetchDepositsOverview()
+            let payoutsOverviews = try await service.fetchPayoutsOverview()
 
             // Then
-            let euroDepositOverview = try XCTUnwrap(depositsOverviews.first(where: { $0.currency == .GBP } ))
-            assertEqual(NSDecimalNumber(string: "34.54"), euroDepositOverview.pendingBalanceAmount)
+            let euroPayoutOverview = try XCTUnwrap(payoutsOverviews.first(where: { $0.currency == .GBP } ))
+            assertEqual(NSDecimalNumber(string: "34.54"), euroPayoutOverview.pendingBalanceAmount)
         } catch {
             XCTFail("Unexpected error: \(error)")
         }
     }
 
-    func testFetchDepositsOverviewError() async {
+    func testFetchPayoutsOverviewError() async {
         // Given
         let mockError = DotcomError.noRestRoute
         mockNetwork.simulateError(requestUrlSuffix: "payments/deposits/overview-all", error: mockError)
 
         do {
             // When
-            _ = try await service.fetchDepositsOverview()
+            _ = try await service.fetchPayoutsOverview()
             XCTFail("Expected an error, but the call succeeded.")
         } catch {
             // Then

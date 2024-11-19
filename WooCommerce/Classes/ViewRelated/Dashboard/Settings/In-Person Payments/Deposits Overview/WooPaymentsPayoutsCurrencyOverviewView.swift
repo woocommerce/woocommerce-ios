@@ -2,14 +2,14 @@ import SwiftUI
 import Yosemite
 
 @available(iOS 16.0, *)
-struct WooPaymentsDepositsCurrencyOverviewView: View {
-    @ObservedObject var viewModel: WooPaymentsDepositsCurrencyOverviewViewModel
+struct WooPaymentsPayoutsCurrencyOverviewView: View {
+    @ObservedObject var viewModel: WooPaymentsPayoutsCurrencyOverviewViewModel
 
     @Binding var isExpanded: Bool
 
-    @State private var showDepositSummaryInfo: Bool = false
+    @State private var showPayoutSummaryInfo: Bool = false
 
-    init(viewModel: WooPaymentsDepositsCurrencyOverviewViewModel,
+    init(viewModel: WooPaymentsPayoutsCurrencyOverviewViewModel,
          isExpanded: Binding<Bool>) {
         self.viewModel = viewModel
         self._isExpanded = isExpanded
@@ -23,10 +23,10 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                     AccountSummaryItem(title: Localization.pendingFunds, amount: viewModel.pendingBalance)
                     isExpanded ? Image(systemName: "chevron.up")
                         .accessibilityAddTraits(.isButton)
-                        .accessibilityLabel(Text(Localization.hideDepositDetailAccessibilityLabel)) :
+                        .accessibilityLabel(Text(Localization.hidePayoutDetailAccessibilityLabel)) :
                     Image(systemName: "chevron.down")
                         .accessibilityAddTraits(.isButton)
-                        .accessibilityLabel(Text(Localization.showDepositDetailAccessibilityLabel))
+                        .accessibilityLabel(Text(Localization.showPayoutDetailAccessibilityLabel))
 
                 }
                 .contentShape(Rectangle())
@@ -47,7 +47,7 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
             }
 
             if isExpanded {
-                Text(Localization.lastDepositHeader.localizedUppercase)
+                Text(Localization.lastPayoutHeader.localizedUppercase)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -57,17 +57,17 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                     HStack {
                         Image(systemName: "calendar")
                             .accessibilityHidden(true)
-                        Text(viewModel.lastDepositDate)
+                        Text(viewModel.lastPayoutDate)
                             .foregroundColor(.primary)
                     }
-                    WooPaymentsDepositsBadge(status: viewModel.lastDepositStatus)
+                    WooPaymentsPayoutsBadge(status: viewModel.lastPayoutStatus)
                     Spacer()
-                    Text(viewModel.lastDepositAmount)
+                    Text(viewModel.lastPayoutAmount)
                         .foregroundColor(.primary)
                 }
 
                 HStack(alignment: .top) {
-                    Text(viewModel.depositScheduleHint)
+                    Text(viewModel.payoutScheduleHint)
                         .font(.footnote)
                 }
                 .foregroundColor(.secondary)
@@ -119,8 +119,8 @@ struct AccountSummaryItem: View {
     }
 }
 
-struct WooPaymentsDepositsBadge: View {
-    let status: WooPaymentsDepositStatus
+struct WooPaymentsPayoutsBadge: View {
+    let status: WooPaymentsPayoutStatus
 
     var body: some View {
         Text(status.localizedName)
@@ -131,7 +131,7 @@ struct WooPaymentsDepositsBadge: View {
     }
 }
 
-private extension WooPaymentsDepositsBadge {
+private extension WooPaymentsPayoutsBadge {
     enum Layout {
         static let padding: CGFloat = 8.0
         static let cornerRadius: CGFloat = 8.0
@@ -139,7 +139,7 @@ private extension WooPaymentsDepositsBadge {
 }
 
 @available(iOS 16.0, *)
-private extension WooPaymentsDepositsCurrencyOverviewView {
+private extension WooPaymentsPayoutsCurrencyOverviewView {
     enum Layout {
         static let padding: CGFloat = 8.0
         static let elementSpacing: CGFloat = 16.0
@@ -147,7 +147,7 @@ private extension WooPaymentsDepositsCurrencyOverviewView {
 }
 
 @available(iOS 16.0, *)
-private extension WooPaymentsDepositsCurrencyOverviewView {
+private extension WooPaymentsPayoutsCurrencyOverviewView {
     enum Localization {
         static let availableFunds = NSLocalizedString(
             "payouts.currency.overview.availableFunds",
@@ -159,7 +159,7 @@ private extension WooPaymentsDepositsCurrencyOverviewView {
             value: "Pending funds",
             comment: "Title for pending funds overview in WooPayments Payouts view. " +
             "This shows the balance which will be made available for pay out later.")
-        static let lastDepositHeader = NSLocalizedString(
+        static let lastPayoutHeader = NSLocalizedString(
             "payouts.currency.overview.lastPayout",
             value: "Last Payout",
             comment: "Section header for the last payout in the WooPayments Payouts overview")
@@ -167,11 +167,11 @@ private extension WooPaymentsDepositsCurrencyOverviewView {
             "payouts.currency.overview.learnMore",
             value: "Learn more about when you'll receive your funds",
             comment: "Button text to view more about payment schedules on the WooPayments Payouts View.")
-        static let showDepositDetailAccessibilityLabel = NSLocalizedString(
+        static let showPayoutDetailAccessibilityLabel = NSLocalizedString(
             "payouts.currency.overview.accessibility.show",
             value: "Show payout details",
             comment: "Accessibility label for the expand chevron on the Payout summary")
-        static let hideDepositDetailAccessibilityLabel = NSLocalizedString(
+        static let hidePayoutDetailAccessibilityLabel = NSLocalizedString(
             "payouts.currency.overview.accessibility.hide",
             value: "Hide payout details",
             comment: "Accessibility label for the collapse chevron on the Payout summary")
@@ -179,15 +179,15 @@ private extension WooPaymentsDepositsCurrencyOverviewView {
 }
 
 @available(iOS 16.0, *)
-struct WooPaymentsDepositsCurrencyOverviewView_Previews: PreviewProvider {
+struct WooPaymentsPayoutsCurrencyOverviewView_Previews: PreviewProvider {
     static var previews: some View {
-        let overviewData = WooPaymentsDepositsOverviewByCurrency(
+        let overviewData = WooPaymentsPayoutsOverviewByCurrency(
             currency: .GBP,
-            automaticDeposits: true,
-            depositInterval: .daily,
+            automaticPayouts: true,
+            payoutInterval: .daily,
             pendingBalanceAmount: 1000.0,
-            pendingDepositDays: 2,
-            lastDeposit: WooPaymentsDepositsOverviewByCurrency.LastDeposit(
+            pendingPayoutDays: 2,
+            lastPayout: WooPaymentsPayoutsOverviewByCurrency.LastPayout(
                 amount: 500.0,
                 date: Date(),
                 status: .inTransit
@@ -195,9 +195,9 @@ struct WooPaymentsDepositsCurrencyOverviewView_Previews: PreviewProvider {
             availableBalance: 1500.0
         )
 
-        let viewModel = WooPaymentsDepositsCurrencyOverviewViewModel(overview: overviewData)
+        let viewModel = WooPaymentsPayoutsCurrencyOverviewViewModel(overview: overviewData)
 
-        return WooPaymentsDepositsCurrencyOverviewView(viewModel: viewModel,
+        return WooPaymentsPayoutsCurrencyOverviewView(viewModel: viewModel,
                                                        isExpanded: .constant(true))
         .previewLayout(.sizeThatFits)
     }

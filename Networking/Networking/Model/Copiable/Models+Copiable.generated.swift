@@ -4061,18 +4061,18 @@ extension Networking.WooShippingPackagesResponse {
     public func copy(
         storeOptions: CopiableProp<ShippingLabelStoreOptions> = .copy,
         customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
-        savedPredefinedOptions: CopiableProp<[WooShippingPredefinedSavedOption]> = .copy,
+        savedPredefinedPackages: CopiableProp<[WooShippingSavedPredefinedPackage]> = .copy,
         allPredefinedOptions: CopiableProp<[WooShippingPredefinedOption]> = .copy
     ) -> Networking.WooShippingPackagesResponse {
         let storeOptions = storeOptions ?? self.storeOptions
         let customPackages = customPackages ?? self.customPackages
-        let savedPredefinedOptions = savedPredefinedOptions ?? self.savedPredefinedOptions
+        let savedPredefinedPackages = savedPredefinedPackages ?? self.savedPredefinedPackages
         let allPredefinedOptions = allPredefinedOptions ?? self.allPredefinedOptions
 
         return Networking.WooShippingPackagesResponse(
             storeOptions: storeOptions,
             customPackages: customPackages,
-            savedPredefinedOptions: savedPredefinedOptions,
+            savedPredefinedPackages: savedPredefinedPackages,
             allPredefinedOptions: allPredefinedOptions
         )
     }

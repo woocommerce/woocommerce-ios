@@ -2768,7 +2768,7 @@ extension Networking.WooShippingPackagesResponse {
         .init(
             storeOptions: .fake(),
             customPackages: .fake(),
-            savedPredefinedOptions: .fake(),
+            savedPredefinedPackages: .fake(),
             allPredefinedOptions: .fake()
         )
     }

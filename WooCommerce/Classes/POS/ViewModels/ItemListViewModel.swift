@@ -25,18 +25,9 @@ final class ItemListViewModel: ItemListViewModelProtocol {
         }
     }
 
-    private let selectedItemSubject: PassthroughSubject<POSItem, Never> = .init()
-
-    let selectedItemPublisher: AnyPublisher<POSItem, Never>
-
     init(posModel: PointOfSaleAggregateModelProtocol, shouldShowGhostableItemCard: Bool = false) {
         self.posModel = posModel
         self.shouldShowGhostableItemCard = shouldShowGhostableItemCard
-        selectedItemPublisher = selectedItemSubject.eraseToAnyPublisher()
-    }
-
-    func select(_ item: POSItem) {
-        selectedItemSubject.send(item)
     }
 
     func dismissBanner() {

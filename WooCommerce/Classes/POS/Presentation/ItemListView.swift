@@ -133,7 +133,7 @@ private extension ItemListView {
                 }
                 ForEach(items, id: \.productID) { item in
                     Button(action: {
-                        viewModel.select(item)
+                        posModel.addToCart(item)
                     }, label: {
                         ItemCardView(item: item)
                     })

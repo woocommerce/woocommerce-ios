@@ -32,18 +32,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         self.cartViewModel = cartViewModel
         self.connectivityObserver = connectivityObserver
 
-        observeSelectedItemToAddToCart()
         observeConnectivity()
-    }
-}
-
-private extension PointOfSaleDashboardViewModel {
-    func observeSelectedItemToAddToCart() {
-        itemListViewModel.selectedItemPublisher
-            .sink { [weak self] selectedItem in
-                self?.posModel.addToCart(selectedItem)
-            }
-            .store(in: &cancellables)
     }
 }
 

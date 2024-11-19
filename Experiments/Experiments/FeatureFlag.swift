@@ -120,9 +120,9 @@ public enum FeatureFlag: Int {
     ///
     case giftCardInOrderForm
 
-    /// Enables the Woo Payments Deposits item in the Payments menu
+    /// Enables the Woo Payments Payouts item in the Payments menu
     ///
-    case wooPaymentsDepositsOverviewInPaymentsMenu
+    case wooPaymentsPayoutsOverviewInPaymentsMenu
 
     /// Enables Tap to Pay for UK Woo Payments stores
     ///
@@ -196,4 +196,7 @@ public enum FeatureFlag: Int {
     /// Supports Woo Payments onboarding in POS so that merchants who have not completed onboarding can access POS.
     ///
     case paymentsOnboardingInPointOfSale
+
+    /// Enables sending receipt after the payment via the API
+    case sendReceiptAfterPayment
 }

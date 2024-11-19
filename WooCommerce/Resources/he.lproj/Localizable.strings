@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-06 15:54:04+0000 */
+/* Translation-Revision-Date: 2024-11-14 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -3113,6 +3113,9 @@ which should be translated separately and considered part of this sentence. */
 /* Hint regarding available/pending balances shown in the WooPayments Deposits View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
 "Funds become available after pending for %1$d days." = "כספים נעשים זמינים לאחר תקופת המתנה בת ⁦%1$d⁩ ימים.";
 
+/* Format of the Global Unique Identifier on the Inventory Settings row */
+"GTIN, UPC, EAN, ISBN: %@" = "GTIN, ‏UPC, ‏EAN, ‏ISBN‏: %@";
+
 /* Country option for a site address. */
 "Gabon" = "גאבון";
 
@@ -3657,14 +3660,14 @@ which should be translated separately and considered part of this sentence. */
 /* Error message for invalid format of ITN in Customs screen of Shipping Label flow */
 "Invalid ITN format" = "פורמט לא חוקי ל-ITN";
 
+/* Error when an empty Identifier is returned from the barcode scanner */
+"Invalid Identifier" = "מזהה לא תקף";
+
 /* The title of the alert when there is an error with the package name */
 "Invalid Package Name" = "שם חבילה לא תקף";
 
 /* The title of the alert when there is an error updating the product SKU */
 "Invalid Product SKU" = "הקוד של SKU במוצר לא חוקי";
-
-/* Error when an empty SKU is returned from the barcode scanner */
-"Invalid SKU" = "SKU לא תקף";
 
 /* No comment provided by engineer. */
 "Invalid Site Address" = "כתובת אתר לא תקנית";
@@ -5562,11 +5565,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Product Type row on Product main screen */
 "Product type" = "סוג מוצר";
 
-/* Error message when the scanner found a product but isn't purchasable.%@ is the SKU code. */
-"Product with SKU \"%@\" is not purchasable." = "מוצר עם SKU \"%@\" אינו ניתן לרכישה.";
+/* Error message when the scanner found a product but isn't purchasable.%@ is the Identifier code. */
+"Product with Identifier \"%@\" is not purchasable." = "לא ניתן לרכוש מוצר עם המזהה \"%@\".";
 
-/* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
-"Product with SKU \"%@\" not found." = "לא ניתן למצוא מוצר עם SKU \"%@\".";
+/* Error message when the scanner cannot find a matching product.%@ is the Identifier barcode. */
+"Product with Identifier \"%@\" not found." = "לא ניתן למצוא מוצר עם המזהה \"%@\".";
 
 /* The instruction text below the scan area in the barcode scanner for product barcode. */
 "ProductBarcodeInputScanner.instructionText" = "יש לסרוק את הברקוד או קוד ה-QR של המוצר";
@@ -9946,9 +9949,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "מינוי משתנה";
-
-/* Button to refresh the state of the in-person payments setup */
-"card.present.payment.setup.webview.title" = "הגדרת תשלומים";
 
 /* Default accessibility label for a custom indeterminate progress view, used for card payments. */
 "card.waves.progressView.accessibilityLabel" = "בתהליך";

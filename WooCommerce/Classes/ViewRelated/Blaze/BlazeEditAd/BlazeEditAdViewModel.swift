@@ -71,10 +71,32 @@ final class BlazeEditAdViewModel: ObservableObject {
         return String(format: lengthText, descriptionRemainingLength)
     }
 
+    @Published var ctaText: String = ""
+    var ctaTextFooterText: String {
+        if ctaText.count > Constants.ctaTextMaxLength {
+            String.localizedStringWithFormat(Localization.ctaTextLengthExceedsLimit, Constants.ctaTextMaxLength)
+        } else {
+            ctaTextLengthLimitLabel
+        }
+    }
+
+    var isCtaTextValidated: Bool {
+        ctaText.count <= Constants.ctaTextMaxLength
+    }
+
+    @Published private var ctaTextRemainingLength: Int
+    private var ctaTextLengthLimitLabel: String {
+        let lengthText = String.pluralize(ctaTextRemainingLength,
+                                          singular: Localization.LengthLimit.singular,
+                                          plural: Localization.LengthLimit.plural)
+        return String(format: lengthText, ctaTextRemainingLength)
+    }
+
     var isSaveButtonEnabled: Bool {
         guard let editedAdData,
                 taglineRemainingLength >= 0,
-                descriptionRemainingLength >= 0 else {
+                descriptionRemainingLength >= 0,
+                ctaTextRemainingLength >= 0 else {
             return false
         }
 
@@ -88,7 +110,8 @@ final class BlazeEditAdViewModel: ObservableObject {
         }
         return BlazeEditAdData(image: image,
                                tagline: tagline,
-                               description: description)
+                               description: description,
+                               ctaText: ctaText)
     }
 
     @Published private var selectedSuggestionIndex: Int?
@@ -129,11 +152,13 @@ final class BlazeEditAdViewModel: ObservableObject {
         }
         self.tagline = adData.tagline
         self.description = adData.description
+        self.ctaText = adData.ctaText
 
         self.onSave = onSave
         self.analytics = analytics
         self.taglineRemainingLength = Constants.taglineMaxLength
         self.descriptionRemainingLength = Constants.descriptionMaxLength
+        self.ctaTextRemainingLength = Constants.ctaTextMaxLength
 
         watchCharacterLimit()
         setSelectedSuggestionIfApplicable()
@@ -230,6 +255,12 @@ extension BlazeEditAdViewModel {
                 Constants.descriptionMaxLength - text.count
             }
             .assign(to: &$descriptionRemainingLength)
+
+        $ctaText
+            .map { text -> Int in
+                Constants.ctaTextMaxLength - text.count
+            }
+            .assign(to: &$ctaTextRemainingLength)
     }
 }
 
@@ -245,6 +276,7 @@ private extension BlazeEditAdViewModel {
         }
         tagline = suggestion.siteName
         description = suggestion.textSnippet
+        ctaText = suggestion.ctaText
     }
 }
 
@@ -252,6 +284,7 @@ extension BlazeEditAdViewModel {
     enum Constants {
         static let taglineMaxLength = 32
         static let descriptionMaxLength = 140
+        static let ctaTextMaxLength = 26
     }
 
     enum Localization {
@@ -290,6 +323,11 @@ extension BlazeEditAdViewModel {
             "blazeEditAdViewModel.description.lengthExceedsLimit",
             value: "Description cannot exceed %1$d characters",
             comment: "Edit Blaze Ad screen: Error message if Description exceeds the character limit."
+        )
+        static let ctaTextLengthExceedsLimit = NSLocalizedString(
+            "blazeEditAdViewModel.ctaText.lengthExceedsLimit",
+            value: "CTA Text cannot exceed %1$d characters",
+            comment: "Edit Blaze Ad screen: Error message if CTA Text exceeds the character limit."
         )
     }
 }

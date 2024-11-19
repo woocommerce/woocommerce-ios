@@ -2321,26 +2321,26 @@ extension WooAnalyticsEvent {
     }
 }
 
-// MARK: - Deposit Summary
+// MARK: - Payout Summary
 //
 extension WooAnalyticsEvent {
-    enum DepositSummary {
+    enum PayoutSummary {
         enum Keys {
             static let numberOfCurrencies = "number_of_currencies"
             static let currency = "currency"
         }
 
-        static func depositSummaryShown(numberOfCurrencies: Int) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .paymentsMenuDepositSummaryShown,
+        static func payoutSummaryShown(numberOfCurrencies: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsMenuPayoutSummaryShown,
                               properties: [Keys.numberOfCurrencies: numberOfCurrencies])
         }
 
-        static func depositSummaryError(error: Error) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .paymentsMenuDepositSummaryError, properties: [:], error: error)
+        static func payoutSummaryError(error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsMenuPayoutSummaryError, properties: [:], error: error)
         }
 
-        static func depositSummaryCurrencySelected(currency: CurrencyCode) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .paymentsMenuDepositSummaryCurrencySelected,
+        static func payoutSummaryCurrencySelected(currency: CurrencyCode) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsMenuPayoutSummaryCurrencySelected,
                               properties: [Keys.currency: currency.rawValue])
         }
     }
@@ -3049,6 +3049,15 @@ extension WooAnalyticsEvent {
                 properties["stock_managed"] = "\(stockManaged)"
             }
             return WooAnalyticsEvent(statName: .orderProductSearchViaSKUSuccess, properties: properties)
+        }
+
+        static func productSearchViaGlobalUniqueIDSuccess(from source: String, stockManaged: Bool? = nil) -> WooAnalyticsEvent {
+            var properties = [Keys.source: source]
+
+            if let stockManaged = stockManaged {
+                properties["stock_managed"] = "\(stockManaged)"
+            }
+            return WooAnalyticsEvent(statName: .orderProductSearchViaGlobalUniqueIdentifierSuccess, properties: properties)
         }
 
         static func productSearchViaSKUFailure(from source: String,

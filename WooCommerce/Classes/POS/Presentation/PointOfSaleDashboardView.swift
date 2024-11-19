@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleDashboardView: View {
+    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var totalsViewModel: TotalsViewModel
     @ObservedObject private var cartViewModel: CartViewModel
@@ -20,29 +21,30 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            if viewModel.isInitialLoading {
+            switch posModel.itemListState {
+            case .initialLoading:
                 PointOfSaleLoadingView()
                     .transition(.opacity)
                     .ignoresSafeArea()
-            } else if viewModel.isError {
-                let errorContents = viewModel.itemListViewModel.state.hasError
+            case .empty:
+                PointOfSaleItemListEmptyView()
+            case .error(let errorContents):
                 PointOfSaleItemListErrorView(error: errorContents, onRetry: {
                     Task {
-                        await viewModel.itemListViewModel.loadInitialItems()
+                        await posModel.loadInitialItems()
                     }
                 })
-            } else if viewModel.isEmpty {
-                PointOfSaleItemListEmptyView()
-            } else {
+            case .loading, .loaded:
                 contentView
                     .accessibilitySortPriority(2)
             }
+
             POSFloatingControlView(viewModel: viewModel)
                 .shadow(color: Color.black.opacity(0.12), radius: 4, y: 2)
                 .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
                 .trackSize(size: $floatingSize)
                 .accessibilitySortPriority(1)
-                .renderedIf(!viewModel.isInitialLoading)
+                .renderedIf(posModel.itemListState != .initialLoading)
 
             POSConnectivityView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -54,7 +56,7 @@ struct PointOfSaleDashboardView: View {
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .environment(\.posBackgroundAppearance, totalsViewModel.paymentState != .processingPayment ? .primary : .secondary)
-        .animation(.easeInOut, value: viewModel.isInitialLoading)
+        .animation(.easeInOut, value: posModel.itemListState == .initialLoading)
         .animation(.easeInOut(duration: Constants.connectivityAnimationDuration), value: viewModel.showsConnectivityError)
         .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
@@ -84,12 +86,20 @@ struct PointOfSaleDashboardView: View {
         .task {
             await viewModel.itemListViewModel.loadInitialItems()
         }
+        .onChange(of: posModel.orderStage) { newValue in
+            switch newValue {
+            case .building:
+                totalsViewModel.stopShowingTotalsView()
+            case .finalizing:
+                totalsViewModel.startShowingTotalsView()
+            }
+        }
     }
 
     private var contentView: some View {
         GeometryReader { geometry in
             HStack {
-                if viewModel.orderStage == .building {
+                if posModel.orderStage == .building {
                     productListView
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .leading))
@@ -102,13 +112,13 @@ struct PointOfSaleDashboardView: View {
                         .ignoresSafeArea(edges: .bottom)
                 }
 
-                if viewModel.orderStage == .finalizing {
+                if posModel.orderStage == .finalizing {
                     totalsView
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .trailing))
                 }
             }
-            .animation(.default, value: viewModel.orderStage)
+            .animation(.default, value: posModel.orderStage)
             .animation(.default, value: viewModel.isTotalsViewFullScreen)
         }
     }
@@ -197,13 +207,16 @@ import class WooFoundation.MockAnalyticsPreview
 import class WooFoundation.MockAnalyticsProviderPreview
 
 #Preview {
-    let totalsVM = TotalsViewModel(orderService: POSOrderPreviewService(),
+    let posModel = PointOfSaleAggregateModel(
+        itemProvider: POSItemProviderPreview(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderService: POSOrderPreviewService())
+    let totalsVM = TotalsViewModel(posModel: posModel,
                                    cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                   currencyFormatter: .init(currencySettings: .init()),
                                    paymentState: .acceptingCard)
-    let cartVM = CartViewModel(analytics: MockAnalyticsPreview())
-    let itemsListVM = ItemListViewModel(itemProvider: POSItemProviderPreview())
-    let posVM = PointOfSaleDashboardViewModel(cardPresentPaymentService: CardPresentPaymentPreviewService(),
+    let cartVM = CartViewModel(posModel: posModel)
+    let itemsListVM = ItemListViewModel(posModel: posModel)
+    let posVM = PointOfSaleDashboardViewModel(posModel: posModel,
                                               totalsViewModel: totalsVM,
                                               cartViewModel: cartVM,
                                               itemListViewModel: itemsListVM,

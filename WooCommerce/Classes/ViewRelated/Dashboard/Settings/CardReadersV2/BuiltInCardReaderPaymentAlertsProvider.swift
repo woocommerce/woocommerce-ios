@@ -41,16 +41,18 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
         return CardPresentModalBuiltInReaderProcessing(name: name, amount: amount)
     }
 
-    func success(printReceipt: @escaping () -> Void,
-                 emailReceipt: @escaping () -> Void,
-                 noReceiptAction: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        if MFMailComposeViewController.canSendMail() {
-            return CardPresentModalBuiltInSuccess(printReceipt: printReceipt,
-                                                  emailReceipt: emailReceipt,
-                                                  noReceiptAction: noReceiptAction)
-        } else {
-            return CardPresentModalBuiltInSuccessWithoutEmail(printReceipt: printReceipt,
-                                                              noReceiptAction: noReceiptAction)
+    func success(receiptState: CardReaderTransactionAlertReceiptState) -> CardPresentPaymentsModalViewModel {
+        switch receiptState {
+        case let .paymentSuccessEmailSent(email, printReceiptAction, noReceiptAction):
+            return CardPresentModalSuccessEmailSent(printReceipt: printReceiptAction,
+                                                    noReceiptAction: noReceiptAction,
+                                                    email: email)
+        case let .promptToSendEmailReceipt(printReceiptAction, emailReceiptAction, noReceiptAction):
+            return CardPresentModalSuccess(printReceipt: printReceiptAction,
+                                           emailReceipt: emailReceiptAction,
+                                           noReceiptAction: noReceiptAction)
+        case let .emailSendingNotSupported(printReceiptAction, noReceiptAction):
+            return CardPresentModalSuccessWithoutEmail(printReceipt: printReceiptAction, noReceiptAction: noReceiptAction)
         }
     }
 

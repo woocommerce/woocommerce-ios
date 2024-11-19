@@ -74,13 +74,6 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         presentViewModel(viewModel: viewModel)
     }
 
-    func success(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void, noReceiptAction: @escaping () -> Void) {
-        let viewModel = alertsProvider.success(printReceipt: printReceipt,
-                                               emailReceipt: emailReceipt,
-                                               noReceiptAction: noReceiptAction)
-        presentViewModel(viewModel: viewModel)
-    }
-
     func error(error: Error, tryAgain: @escaping () -> Void, dismissCompletion: @escaping () -> Void) {
         let viewModel = alertsProvider.error(error: error,
                                              tryAgain: tryAgain,

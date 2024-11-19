@@ -82,6 +82,7 @@ enum WooAnalyticsStat: String {
     case loginInvalidEmailScreenViewed = "login_invalid_email_screen_viewed"
     case whatIsWPComOnInvalidEmailScreenTapped = "what_is_wordpress_com_on_invalid_email_screen"
     case loginInsufficientRole = "login_insufficient_role"
+    case blackFlaggedWebsiteDetected = "black_flagged_website_detected"
 
     // MARK: REST API login
     //
@@ -546,6 +547,7 @@ enum WooAnalyticsStat: String {
     case barcodeScanningSuccess = "barcode_scanning_success"
     case barcodeScanningFailure = "barcode_scanning_failure"
     case orderProductSearchViaSKUSuccess = "product_search_via_sku_success"
+    case orderProductSearchViaGlobalUniqueIdentifierSuccess = "product_search_via_global_unique_identifier_success"
     case orderProductSearchViaSKUFailure = "product_search_via_sku_failure"
 
     // MARK: Tax Rate selector
@@ -754,6 +756,7 @@ enum WooAnalyticsStat: String {
     case productInventorySettingsSKUScanned = "product_inventory_settings_sku_scanned"
     case productInventorySettingsGlobalUniqueIDScannerButtonTapped = "product_inventory_settings_global_unique_id_scanner_button_tapped"
     case productInventorySettingsGlobalUniqueIDScanned = "product_inventory_settings_global_unique_id_scanned"
+    case productInventorySettingsGlobalUniqueIDFieldEdited = "product_inventory_settings_global_unique_identifier_field_edited"
     case productDetailPreviewTapped = "product_detail_preview_tapped"
     case productDetailPreviewFailed = "product_detail_preview_failed"
     case productDetailViewBundledProductsTapped = "product_detail_view_bundled_products_tapped"
@@ -1129,11 +1132,11 @@ enum WooAnalyticsStat: String {
     case inPersonPaymentsLearnMoreTapped = "in_person_payments_learn_more_tapped"
     case setUpTryOutTapToPayOnIPhoneTapped = "payments_hub_tap_to_pay_tapped"
     case aboutTapToPayOnIPhoneTapped = "payments_hub_tap_to_pay_about_tapped"
-    case paymentsMenuDepositSummaryShown = "payments_hub_deposit_summary_shown"
-    case paymentsMenuDepositSummaryError = "payments_hub_deposit_summary_error"
-    case paymentsMenuDepositSummaryExpanded = "payments_hub_deposit_summary_expanded"
-    case paymentsMenuDepositSummaryLearnMoreTapped = "payments_hub_deposit_summary_learn_more_clicked"
-    case paymentsMenuDepositSummaryCurrencySelected = "payments_hub_deposit_summary_currency_selected"
+    case paymentsMenuPayoutSummaryShown = "payments_hub_deposit_summary_shown"
+    case paymentsMenuPayoutSummaryError = "payments_hub_deposit_summary_error"
+    case paymentsMenuPayoutSummaryExpanded = "payments_hub_deposit_summary_expanded"
+    case paymentsMenuPayoutSummaryLearnMoreTapped = "payments_hub_deposit_summary_learn_more_clicked"
+    case paymentsMenuPayoutSummaryCurrencySelected = "payments_hub_deposit_summary_currency_selected"
 
     // MARK: Payments Menu
     case pluginsNotSyncedYet = "plugins_not_synced_yet"

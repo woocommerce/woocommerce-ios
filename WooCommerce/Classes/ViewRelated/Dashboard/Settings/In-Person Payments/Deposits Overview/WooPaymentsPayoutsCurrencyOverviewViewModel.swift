@@ -2,13 +2,13 @@ import Foundation
 import Yosemite
 import WooFoundation
 
-final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
-    private let overview: WooPaymentsDepositsOverviewByCurrency
+final class WooPaymentsPayoutsCurrencyOverviewViewModel: ObservableObject {
+    private let overview: WooPaymentsPayoutsOverviewByCurrency
     private let analytics: Analytics
     private let currencySettings: CurrencySettings?
     private let locale: Locale
 
-    init(overview: WooPaymentsDepositsOverviewByCurrency,
+    init(overview: WooPaymentsPayoutsOverviewByCurrency,
          analytics: Analytics = ServiceLocator.analytics,
          siteCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          locale: Locale = Locale.current) {
@@ -29,20 +29,20 @@ final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
 
     private func setupProperties() {
         pendingBalance = formatAmount(overview.pendingBalanceAmount)
-        lastDepositAmount = formatAmount(overview.lastDeposit?.amount ?? NSDecimalNumber(value: 0))
-        lastDepositDate = formatDate(overview.lastDeposit?.date) ?? Localization.noDateString
-        lastDepositStatus = overview.lastDeposit?.status ?? .unknown
+        lastPayoutAmount = formatAmount(overview.lastPayout?.amount ?? NSDecimalNumber(value: 0))
+        lastPayoutDate = formatDate(overview.lastPayout?.date) ?? Localization.noDateString
+        lastPayoutStatus = overview.lastPayout?.status ?? .unknown
         availableBalance = formatAmount(overview.availableBalance)
-        depositScheduleHint = depositScheduleHintText()
+        payoutScheduleHint = payoutScheduleHintText()
         balanceTypeHint = balanceTypeHintText()
     }
 
     @Published var pendingBalance: String = ""
-    @Published var lastDepositAmount: String = ""
-    @Published var lastDepositDate: String = ""
-    @Published var lastDepositStatus: WooPaymentsDepositStatus = .unknown
+    @Published var lastPayoutAmount: String = ""
+    @Published var lastPayoutDate: String = ""
+    @Published var lastPayoutStatus: WooPaymentsPayoutStatus = .unknown
     @Published var availableBalance: String = ""
-    @Published var depositScheduleHint: String = ""
+    @Published var payoutScheduleHint: String = ""
     @Published var balanceTypeHint: String = ""
     @Published var showWebviewURL: URL? = nil
     @Published var currency: CurrencyCode
@@ -56,17 +56,17 @@ final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
         }
     }
 
-    private func depositScheduleHintText() -> String {
-        if overview.automaticDeposits {
-            return String(format: Localization.depositScheduleHintAutomatic,
-                          overview.depositInterval.frequencyDescriptionEvery)
+    private func payoutScheduleHintText() -> String {
+        if overview.automaticPayouts {
+            return String(format: Localization.payoutScheduleHintAutomatic,
+                          overview.payoutInterval.frequencyDescriptionEvery)
         } else {
-            return Localization.depositScheduleHintManual
+            return Localization.payoutScheduleHintManual
         }
     }
 
     private func balanceTypeHintText() -> String {
-        String(format: Localization.balanceTypeHint, overview.pendingDepositDays)
+        String(format: Localization.balanceTypeHint, overview.pendingPayoutDays)
     }
 
     private func formatDate(_ date: Date?) -> String? {
@@ -95,17 +95,17 @@ final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
 
     func expandTapped(expanded: Bool) {
         if expanded {
-            analytics.track(.paymentsMenuDepositSummaryExpanded)
+            analytics.track(.paymentsMenuPayoutSummaryExpanded)
         }
     }
 
     func learnMoreTapped() {
-        showWebviewURL = WooConstants.URLs.wooPaymentsDepositSchedule.asURL()
-        analytics.track(.paymentsMenuDepositSummaryLearnMoreTapped)
+        showWebviewURL = WooConstants.URLs.wooPaymentsPayoutSchedule.asURL()
+        analytics.track(.paymentsMenuPayoutSummaryLearnMoreTapped)
     }
 }
 
-private extension WooPaymentsDepositInterval {
+private extension WooPaymentsPayoutInterval {
     var frequencyDescriptionEvery: String {
         switch self {
         case .daily:
@@ -128,43 +128,43 @@ private extension WooPaymentsDepositInterval {
     enum Localization {
         static let dailyFrequency = NSLocalizedString(
             "every day",
-            comment: "Shown in a sentence like 'Available funds are deposited automatically, every day'")
+            comment: "Shown in a sentence like 'Available funds are paid out automatically, every day'")
         static let weeklyFrequency = NSLocalizedString(
             "every %1$@",
-            comment: "every {dayname}, shown in a sentence like 'Available funds are deposited automatically, every Wednesday' " +
+            comment: "every {dayname}, shown in a sentence like 'Available funds are paid out automatically, every Wednesday' " +
             "%1$@ will be replaced with the localized day name")
         static let monthlyFrequencyWithDate = NSLocalizedString(
             "every month on the %1$@",
-            comment: "Shown in a sentence like 'Available funds are deposited automatically, every month on the 15th'")
+            comment: "Shown in a sentence like 'Available funds are paid out automatically, every month on the 15th'")
         static let fallbackMonthlyFrequency = NSLocalizedString(
             "every month",
-            comment: "Shown in a sentence like 'Available funds are deposited automatically every month.")
+            comment: "Shown in a sentence like 'Available funds are paid out automatically every month.")
         static let manualFrequency = NSLocalizedString(
             "manually, on request",
-            comment: "on request (lower case), shown in a sentence like 'Deposit schedule: manual, on request'")
+            comment: "on request (lower case), shown in a sentence like 'Payout schedule: manual, on request'")
     }
 }
 
-private extension WooPaymentsDepositsCurrencyOverviewViewModel {
+private extension WooPaymentsPayoutsCurrencyOverviewViewModel {
     enum Localization {
         static let balanceTypeHint = NSLocalizedString(
             "Funds become available after pending for %1$d days.",
-            comment: "Hint regarding available/pending balances shown in the WooPayments Deposits View" +
+            comment: "Hint regarding available/pending balances shown in the WooPayments Payouts View" +
             "%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7.")
-        static let depositScheduleHintAutomatic = NSLocalizedString(
-            "Available funds are deposited automatically, %1$@.",
-            comment: "Hint showing the deposit schedule for a merchant's WooPayments account. " +
-            "e.g. Available funds are deposited automatically, every Wednesday. " +
+        static let payoutScheduleHintAutomatic = NSLocalizedString(
+            "Available funds are paid out automatically, %1$@.",
+            comment: "Hint showing the payout schedule for a merchant's WooPayments account. " +
+            "e.g. Available funds are paid out automatically, every Wednesday. " +
             "%1$@ will be replaced with a translated frequency description, e.g. 'every day' or 'monthly on the 28th'")
-        static let depositScheduleHintManual = NSLocalizedString(
-            "Available funds are deposited manually, on request.",
-            comment: "Hint showing the deposit schedule for a merchant's WooPayments account with a manual schedule.")
+        static let payoutScheduleHintManual = NSLocalizedString(
+            "Available funds are paid out manually, on request.",
+            comment: "Hint showing the payout schedule for a merchant's WooPayments account with a manual schedule.")
         static let noDateString = NSLocalizedString(
             "N/A",
-            comment: "String used when there's no date available for a deposit type on the WooPayments Deposits View.")
+            comment: "String used when there's no date available for a payout type on the WooPayments Payouts View.")
         static let estimatedDateString = NSLocalizedString(
             "Est. %1$@",
-            comment: "String indicating that a deposit date is an estimate. Shown on whe WooPayments Deposits View. " +
+            comment: "String indicating that a payout date is an estimate. Shown on whe WooPayments Payouts View. " +
             "%1$@ will be replaced with a locale-appropriate date string.")
     }
 }

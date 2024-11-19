@@ -6,6 +6,10 @@ struct ItemListView: View {
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
+    @EnvironmentObject var posModel: PointOfSaleAggregateModel
+
+    @State private var lastScrollPosition: CGFloat = 0
+
     init(viewModel: ItemListViewModel) {
         self.viewModel = viewModel
     }
@@ -13,7 +17,7 @@ struct ItemListView: View {
     var body: some View {
         VStack {
             headerView
-            switch viewModel.state {
+            switch posModel.itemListState {
             case .initialLoading, .empty, .error:
                 // These cases are handled directly in the dashboard, we do not render
                 // a specific view within the ItemListView to handle them
@@ -131,7 +135,7 @@ private extension ItemListView {
                     })
                 }
                 GhostItemCardView()
-                    .renderedIf(viewModel.state.isLoadingAfterInitialLoad)
+                    .renderedIf(posModel.itemListState.isLoadingAfterInitialLoad)
             }
             .frame(maxWidth: .infinity)
             .padding(.bottom, floatingControlAreaSize.height)
@@ -139,15 +143,16 @@ private extension ItemListView {
             .background(GeometryReader { proxy in
                 Color.clear
                     .onChange(of: proxy.frame(in: .global).maxY) { maxY in
-                        if viewModel.state.isLoadingAfterInitialLoad {
+                        if posModel.itemListState.isLoadingAfterInitialLoad {
                             return
                         }
-                        let viewHeight = UIScreen.main.bounds.height
-                        if maxY < viewHeight {
+                        let threshold = Constants.viewHeight * Constants.scrollThresholdMultiplier
+                        if maxY < threshold && maxY < lastScrollPosition {
                             Task {
                                 await viewModel.loadNextItems()
                             }
                         }
+                        lastScrollPosition = maxY
                     }
             })
         }
@@ -208,6 +213,8 @@ private extension ItemListView {
         static let iconPadding: CGFloat = 26
         static let itemListPadding: CGFloat = 16
         static let bannerCardPadding: CGFloat = 16
+        static let viewHeight: CGFloat = UIScreen.main.bounds.height
+        static let scrollThresholdMultiplier: CGFloat = 1.7
     }
 
     enum Localization {
@@ -246,6 +253,11 @@ private extension ItemListView {
 
 #if DEBUG
 #Preview {
-    ItemListView(viewModel: ItemListViewModel(itemProvider: POSItemProviderPreview()))
+    ItemListView(
+        viewModel: ItemListViewModel(
+            posModel: PointOfSaleAggregateModel(
+                itemProvider: POSItemProviderPreview(),
+                cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                orderService: POSOrderPreviewService())))
 }
 #endif

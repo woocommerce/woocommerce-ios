@@ -75,6 +75,7 @@ struct DashboardView: View {
         let isJetpackCPSite = currentSite?.isJetpackCPConnected == true
         let isNonJetpackSite = currentSite?.isNonJetpackSite == true
         return (isJetpackCPSite || isNonJetpackSite) &&
+            viewModel.isSiteEligibleToInstallJetpack &&
             viewModel.jetpackBannerVisibleFromAppSettings &&
             dismissedJetpackBenefitBanner == false
     }

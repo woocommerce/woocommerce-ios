@@ -46,15 +46,18 @@ final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlert
         return CardPresentModalProcessing(name: name, amount: amount, transactionType: transactionType)
     }
 
-    func success(printReceipt: @escaping () -> Void,
-                 emailReceipt: @escaping () -> Void,
-                 noReceiptAction: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        if MFMailComposeViewController.canSendMail() {
-            return CardPresentModalSuccess(printReceipt: printReceipt,
-                                           emailReceipt: emailReceipt,
+    func success(receiptState: CardReaderTransactionAlertReceiptState) -> CardPresentPaymentsModalViewModel {
+        switch receiptState {
+        case let .paymentSuccessEmailSent(email, printReceiptAction, noReceiptAction):
+            return CardPresentModalSuccessEmailSent(printReceipt: printReceiptAction,
+                                                    noReceiptAction: noReceiptAction,
+                                                    email: email)
+        case let .promptToSendEmailReceipt(printReceiptAction, emailReceiptAction, noReceiptAction):
+            return CardPresentModalSuccess(printReceipt: printReceiptAction,
+                                           emailReceipt: emailReceiptAction,
                                            noReceiptAction: noReceiptAction)
-        } else {
-            return CardPresentModalSuccessWithoutEmail(printReceipt: printReceipt, noReceiptAction: noReceiptAction)
+        case let .emailSendingNotSupported(printReceiptAction, noReceiptAction):
+            return CardPresentModalSuccessWithoutEmail(printReceipt: printReceiptAction, noReceiptAction: noReceiptAction)
         }
     }
 

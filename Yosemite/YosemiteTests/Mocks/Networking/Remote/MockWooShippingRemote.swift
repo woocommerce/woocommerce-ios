@@ -80,7 +80,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                       completion: @escaping (Result<Networking.WooShippingPackagesResponse, any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            
+
             let key = CreatePackageResultKey(siteID: siteID)
             if let result = self.loadPackagesResults[key] {
                 completion(result)

@@ -4,7 +4,6 @@ import protocol Yosemite.POSItem
 
 protocol ItemListViewModelProtocol: ObservableObject {
     var isHeaderBannerDismissed: Bool { get }
-    var shouldShowHeaderBanner: Bool { get }
 
     var selectedItemPublisher: AnyPublisher<POSItem, Never> { get }
 

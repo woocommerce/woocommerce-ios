@@ -6,7 +6,6 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     private let posModel: PointOfSaleAggregateModelProtocol
 
     @Published private(set) var isHeaderBannerDismissed: Bool = false
-    @Published var showSimpleProductsModal: Bool = false
 
     private(set) var shouldShowGhostableItemCard: Bool = false
 
@@ -43,10 +42,6 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     func dismissBanner() {
         isHeaderBannerDismissed = true
         UserDefaults.standard.set(isHeaderBannerDismissed, forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey)
-    }
-
-    func simpleProductsInfoButtonTapped() {
-        showSimpleProductsModal = true
     }
 }
 

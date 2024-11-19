@@ -72,9 +72,6 @@ struct PointOfSaleDashboardView: View {
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)
                 .posInteractiveDismissDisabled(alertType.isDismissDisabled)
         }
-        .posModal(isPresented: $itemListViewModel.showSimpleProductsModal) {
-            SimpleProductsOnlyInformation(isPresented: $itemListViewModel.showSimpleProductsModal)
-        }
         .posModal(isPresented: $viewModel.showExitPOSModal) {
             PointOfSaleExitPosAlertView(isPresented: $viewModel.showExitPOSModal)
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)

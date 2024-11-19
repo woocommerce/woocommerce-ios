@@ -9,6 +9,7 @@ struct ItemListView: View {
     @EnvironmentObject var posModel: PointOfSaleAggregateModel
 
     @State private var lastScrollPosition: CGFloat = 0
+    @State private var showSimpleProductsModal: Bool = false
 
     init(viewModel: ItemListViewModel) {
         self.viewModel = viewModel
@@ -31,6 +32,9 @@ struct ItemListView: View {
         }
         .background(Color.posPrimaryBackground)
         .accessibilityElement(children: .contain)
+        .posModal(isPresented: $showSimpleProductsModal) {
+            SimpleProductsOnlyInformation(isPresented: $showSimpleProductsModal)
+        }
     }
 }
 
@@ -45,7 +49,7 @@ private extension ItemListView {
                 if !viewModel.shouldShowHeaderBanner {
                     Spacer()
                     Button(action: {
-                        viewModel.simpleProductsInfoButtonTapped()
+                        showSimpleProductsModal = true
                     }, label: {
                         Image(systemName: "info.circle")
                             .font(.posTitleRegular)
@@ -108,7 +112,7 @@ private extension ItemListView {
         .shadow(color: Color.black.opacity(0.08), radius: 4, y: 2)
         .accessibilityAddTraits(.isButton)
         .onTapGesture {
-            viewModel.simpleProductsInfoButtonTapped()
+            showSimpleProductsModal = true
         }
         .padding(.bottom, Constants.bannerCardPadding)
     }

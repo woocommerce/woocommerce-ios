@@ -11,8 +11,6 @@ class MockItemListViewModel: ItemListViewModelProtocol {
 
     @Published var isHeaderBannerDismissed: Bool = false
 
-    var shouldShowHeaderBanner: Bool = false
-
     lazy var selectedItemPublisher: AnyPublisher<any Yosemite.POSItem, Never> = selectedItemSubject.eraseToAnyPublisher()
     let selectedItemSubject: PassthroughSubject<any Yosemite.POSItem, Never> = .init()
 

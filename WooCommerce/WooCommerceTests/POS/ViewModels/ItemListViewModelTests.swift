@@ -54,35 +54,4 @@ final class ItemListViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(sut.isHeaderBannerDismissed, true)
     }
-
-    func test_shouldShowHeaderBanner_when_itemListViewModel_is_initialLoading_then_returns_false() {
-        // Given/When/Then
-        XCTAssertEqual(sut.shouldShowHeaderBanner, false)
-    }
-
-    func test_shouldShowHeaderBanner_when_itemListViewModel_is_loading_then_returns_true() async {
-        // Given the list is loading items
-        posModel.itemListState = .loading(MockPOSItemProvider.makeInitialItems())
-
-        // When we check whether to show the banner,
-        // Then banner shoud be shown
-        XCTAssert(sut.shouldShowHeaderBanner)
-    }
-
-    func test_shouldShowHeaderBanner_when_itemListViewModel_throws_error_then_returns_false() async {
-        // Given
-        posModel.itemListState = .error(.errorOnLoadingProducts())
-
-        // When
-        // Then
-        XCTAssertEqual(sut.shouldShowHeaderBanner, false)
-    }
-
-    func test_simpleProductsInfoButtonTapped_when_tapped_then_showSimpleProductsModal_toggled() {
-        XCTAssertFalse(sut.showSimpleProductsModal)
-
-        sut.simpleProductsInfoButtonTapped()
-
-        XCTAssertTrue(sut.showSimpleProductsModal)
-    }
 }

@@ -135,7 +135,7 @@ private extension ItemListView {
                     })
                 }
                 GhostItemCardView()
-                    .renderedIf(posModel.itemListState.isLoadingAfterInitialLoad && viewModel.shouldShowGhostableItemCard)
+                    .renderedIf(posModel.itemListState.isLoadingAfterInitialLoad)
             }
             .frame(maxWidth: .infinity)
             .padding(.bottom, floatingControlAreaSize.height)
@@ -253,7 +253,11 @@ private extension ItemListView {
 
 #if DEBUG
 #Preview {
-    ItemListView(viewModel: ItemListViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview(),
-                                                                                  cardPresentPaymentService: CardPresentPaymentPreviewService())))
+    ItemListView(
+        viewModel: ItemListViewModel(
+            posModel: PointOfSaleAggregateModel(
+                itemProvider: POSItemProviderPreview(),
+                cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                orderService: POSOrderPreviewService())))
 }
 #endif

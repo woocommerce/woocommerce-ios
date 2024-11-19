@@ -133,34 +133,56 @@ struct RoundedBorderedStyle: ButtonStyle {
     }
 }
 
-/// Adds a primary button style while showing a progress view on top of the button when required.
+/// Adds a primary button style while showing a progress view or checkmark on top of the button when required.
 ///
 struct PrimaryLoadingButtonStyle: PrimitiveButtonStyle {
-
-    /// Set it to true to show a progress view within the button.
+    /// Set to show a progress view or checkmark within the button.
     ///
-    let isLoading: Bool
+    enum State {
+        case loading
+        case success
+        case idle
+    }
+
+    var state: State = .idle
+
+    init(isLoading: Bool) {
+        if isLoading {
+            state = .loading
+        } else {
+            state = .idle
+        }
+    }
+
+    init(state: State) {
+        self.state = state
+    }
 
     /// Returns a `ProgressView` if the view is loading. Return nil otherwise
     ///
     private var progressViewOverlay: ProgressView<EmptyView, EmptyView>? {
-        isLoading ? ProgressView() : nil
+        state == .loading ? ProgressView() : nil
+    }
+
+    private var checkmark: some View {
+        state == .success ? Image(systemName: "checkmark.circle").font(.title2).foregroundStyle(Color(.primaryButtonBackground)) : nil
     }
 
     func makeBody(configuration: Configuration) -> some View {
         /// Only send trigger if the view is not loading.
         ///
         return Button(configuration)
-            .buttonStyle(PrimaryButtonStyle(hideContent: isLoading))
+            .buttonStyle(PrimaryButtonStyle(hideContent: state != .idle))
             .onTapGesture { dispatchTrigger(configuration) }
-            .disabled(isLoading)
+            .disabled(state != .idle)
             .overlay(progressViewOverlay)
+            .overlay(checkmark)
     }
 
     /// Only dispatch events while the view is not loading.
     ///
     private func dispatchTrigger(_ configuration: Configuration) {
-        guard !isLoading else { return }
+        guard state == .idle else { return }
         configuration.trigger()
     }
 }

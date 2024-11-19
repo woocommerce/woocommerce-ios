@@ -52,7 +52,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .giftCardInOrderForm:
             return true
-        case .wooPaymentsDepositsOverviewInPaymentsMenu:
+        case .wooPaymentsPayoutsOverviewInPaymentsMenu:
             return true
         case .tapToPayOnIPhoneInUK:
             return true
@@ -91,8 +91,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .paymentsOnboardingInPointOfSale:
             return buildConfig == .localDeveloper
-        case .displayInfiniteScrollingUIDetailsInPointOfSale:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .sendReceiptAfterPayment:
+            return false
         default:
             return true
         }

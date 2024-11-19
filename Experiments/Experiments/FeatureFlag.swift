@@ -120,9 +120,9 @@ public enum FeatureFlag: Int {
     ///
     case giftCardInOrderForm
 
-    /// Enables the Woo Payments Deposits item in the Payments menu
+    /// Enables the Woo Payments Payouts item in the Payments menu
     ///
-    case wooPaymentsDepositsOverviewInPaymentsMenu
+    case wooPaymentsPayoutsOverviewInPaymentsMenu
 
     /// Enables Tap to Pay for UK Woo Payments stores
     ///
@@ -197,7 +197,6 @@ public enum FeatureFlag: Int {
     ///
     case paymentsOnboardingInPointOfSale
 
-    /// Enables UI-related aspects of infinite scrolling in POS. It does not affect the actual infinite scrolling behaviour.
-    ///
-    case displayInfiniteScrollingUIDetailsInPointOfSale
+    /// Enables sending receipt after the payment via the API
+    case sendReceiptAfterPayment
 }

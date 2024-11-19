@@ -36,7 +36,9 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     }
 
     var onCollectPaymentCalled: (() -> Void)?
+    var collectPaymentWasCalled = false
     func collectPayment(for order: Yosemite.Order, using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentResult {
+        collectPaymentWasCalled = true
         onCollectPaymentCalled?()
         paymentEvent = .show(eventDetails: CardPresentPaymentEventDetails.paymentSuccess(done: {}))
         return .success(CardPresentPaymentTransaction(receiptURL: URL(string: "https://example.net/receipts/123")!))

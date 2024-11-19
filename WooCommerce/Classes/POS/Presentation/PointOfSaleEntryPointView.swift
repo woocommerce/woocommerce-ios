@@ -23,14 +23,13 @@ struct PointOfSaleEntryPointView: View {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         let posModel = PointOfSaleAggregateModel(itemProvider: itemProvider,
-                                                 cardPresentPaymentService: cardPresentPaymentService)
-        let totalsViewModel = TotalsViewModel(orderService: orderService,
+                                                 cardPresentPaymentService: cardPresentPaymentService,
+                                                 orderService: orderService)
+        let totalsViewModel = TotalsViewModel(posModel: posModel,
                                               cardPresentPaymentService: cardPresentPaymentService,
-                                              currencyFormatter: currencyFormatter,
                                               paymentState: .acceptingCard)
         let cartViewModel = CartViewModel(posModel: posModel)
-        let shouldShowGhostableItemCard = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.displayInfiniteScrollingUIDetailsInPointOfSale)
-        let itemListViewModel = ItemListViewModel(posModel: posModel, shouldShowGhostableItemCard: shouldShowGhostableItemCard)
+        let itemListViewModel = ItemListViewModel(posModel: posModel)
 
         self._posModel = StateObject(wrappedValue: posModel)
         self._viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(

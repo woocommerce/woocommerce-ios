@@ -89,7 +89,7 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
                                  completion: @escaping (Result<[Media], Error>) -> Void) {
         let parameters: [String: Any] = [
             ParameterKey.contextKey: context ?? Default.context,
-            ParameterKey.pageSize: pageSize,
+            ParameterKey.dotComPageSize: pageSize,
             ParameterKey.pageNumber: pageNumber,
             ParameterKey.fields: "ID,date,URL,thumbnails,title,alt,extension,mime_type,file",
             ParameterKey.mimeType: imagesOnly ? "image" : nil,
@@ -123,7 +123,7 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
                                                   pageSize: Int = 25,
                                                   completion: @escaping (Result<[WordPressMedia], Error>) -> Void) {
         let parameters: [String: Any] = [
-            ParameterKey.pageSize: pageSize,
+            ParameterKey.dotOrgPageSize: pageSize,
             ParameterKey.pageNumber: pageNumber,
             ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
             ParameterKey.mimeType: imagesOnly ? "image" : nil,
@@ -294,7 +294,8 @@ public extension MediaRemote {
 
     private enum ParameterKey {
         static let pageNumber: String = "page"
-        static let pageSize: String   = "per_page"
+        static let dotComPageSize: String = "number" // https://developer.wordpress.com/docs/api/1.2/get/sites/%24site/media/
+        static let dotOrgPageSize: String = "per_page" // https://developer.wordpress.org/rest-api/reference/media/#arguments
         static let wordPressMediaPostID: String = "post"
         static let altText: String = "alt"
         static let wordPressAltText: String = "alt_text"

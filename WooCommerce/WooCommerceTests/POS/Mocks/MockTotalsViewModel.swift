@@ -5,8 +5,6 @@ import protocol Yosemite.POSItem
 import struct Yosemite.Order
 
 final class MockTotalsViewModel: TotalsViewModelProtocol {
-    @Published var connectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
-
     func startNewOrder() { }
 
     var spyStopShowingTotalsViewCalled = false

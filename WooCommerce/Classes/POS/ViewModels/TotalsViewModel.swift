@@ -7,8 +7,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     @Published var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
     private var onOnboardingCancellation: (() -> Void)?
 
-    @Published private(set) var connectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
-
     @ObservedObject var posModel: PointOfSaleAggregateModel
 
     var isShimmering: Bool {
@@ -28,8 +26,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         // Initialize all properties before calling methods
         self.observeCardPresentPaymentEvents()
     }
-
-    private var connectionStatusPublisher: Published<CardPresentPaymentReaderConnectionStatus>.Publisher { $connectionStatus }
 
     func connectReaderTapped() {
         Task { @MainActor in

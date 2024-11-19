@@ -709,6 +709,71 @@ struct PointOfSaleAggregateModelTests {
             // When, Then
             #expect(sut.blockReturnToItemSelection == false)
         }
+
+        @Test func cardPresentPaymentInlineMessage_when_paymentSuccess_then_total_set() async throws {
+            // Given
+            orderService.orderToReturn = Order.fake().copy(currency: "$", total: "52.30")
+            sut.addToCart(makeItem())
+            await sut.checkOut()
+
+            // When
+            cardPresentPaymentService.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+
+            // Then
+            guard case .paymentSuccess(let viewModel) = sut.cardPresentPaymentInlineMessage else {
+                Issue.record("Expected cardPresentPaymentInlineMessage to be paymentSuccess")
+                return
+            }
+            #expect(viewModel.message == "A payment of $52.30 was successfully made")
+        }
+
+        @Test func paymentIntentCreationErrorMessage_when_paymentIntentCreationError_tryAgain_cancels_payment() async throws {
+            // Given
+            struct TestError: Error {}
+            orderService.orderToReturn = Order.fake()
+            sut.addToCart(makeItem())
+            await sut.checkOut()
+
+            // When paymentIntentCreationError event is received
+            cardPresentPaymentService.paymentEvent = .show(
+                eventDetails: .paymentIntentCreationError(error: TestError(), cancelPayment: {})
+            )
+
+            // Then
+            guard case .paymentIntentCreationError(let viewModel) = sut.cardPresentPaymentInlineMessage else {
+                Issue.record("Expected cardPresentPaymentInlineMessage to be paymentIntentCreationError")
+                return
+            }
+            let tryAgainAction = viewModel.tryAgainButtonViewModel.actionHandler
+
+            tryAgainAction()
+            #expect(cardPresentPaymentService.cancelPaymentCalled == true)
+        }
+
+        @Test func paymentIntentCreationErrorMessage_when_paymentIntentCreationError_editOrder_moves_back_to_building() async throws {
+            // Given
+            struct TestError: Error {}
+            orderService.orderToReturn = Order.fake()
+            sut.addToCart(makeItem())
+            await sut.submitCart()
+
+            // When paymentIntentCreationError event is received
+            cardPresentPaymentService.paymentEvent = .show(
+                eventDetails: .paymentIntentCreationError(error: TestError(), cancelPayment: {})
+            )
+
+            // Then
+            guard case .paymentIntentCreationError(let viewModel) = sut.cardPresentPaymentInlineMessage,
+                  let editOrderAction = viewModel.editOrderButtonViewModel?.actionHandler
+            else {
+                Issue.record("Expected cardPresentPaymentInlineMessage to be paymentIntentCreationError")
+                return
+            }
+
+            try #require(sut.orderStage == .finalizing)
+            editOrderAction()
+            #expect(sut.orderStage == .building)
+        }
     }
 }
 

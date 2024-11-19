@@ -4,8 +4,6 @@ import protocol WooFoundation.Analytics
 import protocol Yosemite.POSItem
 
 final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
-    @Published var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
-    private var onOnboardingCancellation: (() -> Void)?
 
     @ObservedObject var posModel: PointOfSaleAggregateModel
 
@@ -22,9 +20,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         self.posModel = posModel
         self.cardPresentPaymentService = cardPresentPaymentService
         self.analytics = analytics
-
-        // Initialize all properties before calling methods
-        self.observeCardPresentPaymentEvents()
     }
 
     func connectReaderTapped() {
@@ -39,25 +34,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
 
     func startNewOrder() {
         posModel.startNewCart()
-    }
-
-    /// Called when the onboarding UI is dismissed.
-    /// For external dismissal (tapping CTA to dismiss), this method is called twice - the first time to dismiss the onboarding UI
-    /// by setting `cardPresentPaymentOnboardingViewModel` to nil, the second time triggered by internal dismissal.
-    /// For internal dismissal (tapping outside the modal), this method is called once.
-    /// This method is used to reset the internal state of the onboarding UI and track the dismissal event.
-    func cancelOnboarding() {
-        guard let onboardingViewModel = cardPresentPaymentOnboardingViewModel else {
-            return
-        }
-        analytics.track(event: .PointOfSale.paymentsOnboardingDismissed(onboardingState: onboardingViewModel.state))
-        cardPresentPaymentOnboardingViewModel = nil
-        onOnboardingCancellation?()
-    }
-
-    /// Tracks when the onboarding UI is shown.
-    func trackOnboardingShown() {
-        analytics.track(event: .PointOfSale.paymentsOnboardingShown())
     }
 
     private func editOrder() {
@@ -93,22 +69,5 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
                 .cardPaymentSuccessful:
             return false
         }
-    }
-}
-
-// MARK: - Payment collection
-
-private extension TotalsViewModel {
-    func observeCardPresentPaymentEvents() {
-        cardPresentPaymentService.paymentEventPublisher
-            .map { [weak self] event -> CardPresentPaymentsOnboardingViewModel? in
-                guard let self else { return nil }
-                guard case let .showOnboarding(viewModel, onCancel) = event else {
-                    return nil
-                }
-                onOnboardingCancellation = onCancel
-                return viewModel
-            }
-            .assign(to: &$cardPresentPaymentOnboardingViewModel)
     }
 }

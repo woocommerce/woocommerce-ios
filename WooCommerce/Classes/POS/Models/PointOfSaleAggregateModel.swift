@@ -20,6 +20,9 @@ protocol PointOfSaleAggregateModelProtocol {
     var paymentState: PointOfSalePaymentState { get }
     var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType? { get set }
     var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType? { get }
+    var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel? { get set }
+    func cancelCardPaymentsOnboarding()
+    func trackCardPaymentsOnboardingShown()
 
     @available(*, deprecated, message: "`allItems` is due for removal, use `itemListState` instead.")
     var allItems: [POSItem] { get }
@@ -48,6 +51,8 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     @Published private(set) var paymentState: PointOfSalePaymentState
     @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
+    @Published var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
+    private var onOnboardingCancellation: (() -> Void)?
 
     @Published private(set) var allItems: [POSItem] = []
     @Published private(set) var itemListState: ItemListState = .initialLoading
@@ -294,6 +299,25 @@ extension PointOfSaleAggregateModel {
                 }
             }
     }
+
+    /// Called when the onboarding UI is dismissed.
+    /// For external dismissal (tapping CTA to dismiss), this method is called twice - the first time to dismiss the onboarding UI
+    /// by setting `cardPresentPaymentOnboardingViewModel` to nil, the second time triggered by internal dismissal.
+    /// For internal dismissal (tapping outside the modal), this method is called once.
+    /// This method is used to reset the internal state of the onboarding UI and track the dismissal event.
+    func cancelCardPaymentsOnboarding() {
+        guard let onboardingViewModel = cardPresentPaymentOnboardingViewModel else {
+            return
+        }
+        analytics.track(event: .PointOfSale.paymentsOnboardingDismissed(onboardingState: onboardingViewModel.state))
+        cardPresentPaymentOnboardingViewModel = nil
+        onOnboardingCancellation?()
+    }
+
+    /// Tracks when the onboarding UI is shown.
+    func trackCardPaymentsOnboardingShown() {
+        analytics.track(event: .PointOfSale.paymentsOnboardingShown())
+    }
 }
 
 private extension PointOfSaleAggregateModel {
@@ -323,6 +347,17 @@ private extension PointOfSaleAggregateModel {
                                                using: presentationStyleDeterminerDependencies)
             }
             .assign(to: &$paymentState)
+
+        cardPresentPaymentService.paymentEventPublisher
+            .map { [weak self] event -> CardPresentPaymentsOnboardingViewModel? in
+                guard let self else { return nil }
+                guard case let .showOnboarding(viewModel, onCancel) = event else {
+                    return nil
+                }
+                onOnboardingCancellation = onCancel
+                return viewModel
+            }
+            .assign(to: &$cardPresentPaymentOnboardingViewModel)
     }
 
     /// Maps PaymentEvent to POSMessageType and annonates additional information if necessary

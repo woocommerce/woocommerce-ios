@@ -60,8 +60,8 @@ struct PointOfSaleDashboardView: View {
         .animation(.easeInOut(duration: Constants.connectivityAnimationDuration), value: viewModel.showsConnectivityError)
         .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
-        .posModal(item: $totalsViewModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
-            totalsViewModel.cancelOnboarding()
+        .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
+            posModel.cancelCardPaymentsOnboarding()
         }) { viewModel in
             paymentsOnboardingView(from: viewModel)
         }
@@ -142,15 +142,15 @@ private extension PointOfSaleDashboardView {
 
     func paymentsOnboardingView(from onboardingViewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
         onboardingViewModel.showSupport = {
-            totalsViewModel.cancelOnboarding()
+            posModel.cancelCardPaymentsOnboarding()
             viewModel.showSupport = true
         }
         return PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(onboardingViewModel: onboardingViewModel,
                                                                             onDismissTap: {
-            totalsViewModel.cancelOnboarding()
+            posModel.cancelCardPaymentsOnboarding()
         }))
         .onAppear {
-            totalsViewModel.trackOnboardingShown()
+            posModel.trackCardPaymentsOnboardingShown()
         }
     }
 }

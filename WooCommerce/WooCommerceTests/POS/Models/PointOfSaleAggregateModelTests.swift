@@ -774,6 +774,67 @@ struct PointOfSaleAggregateModelTests {
             editOrderAction()
             #expect(sut.orderStage == .building)
         }
+
+        // MARK: Onboarding
+        @Test func cardPresentPaymentOnboardingViewModel_is_non_nil_when_onboarding_is_required() async throws {
+            // Given
+            let onboardingViewModel = CardPresentPaymentsOnboardingViewModel(fixedState: .pluginNotActivated(plugin: .stripe))
+            cardPresentPaymentService.paymentEvent = .idle
+            try #require(sut.cardPresentPaymentOnboardingViewModel == nil)
+
+            // When
+            cardPresentPaymentService.paymentEvent = .showOnboarding(onboardingViewModel: onboardingViewModel, onCancel: {})
+
+            // Then
+            #expect(sut.cardPresentPaymentOnboardingViewModel?.state == .pluginNotActivated(plugin: .stripe))
+        }
+    }
+
+    struct AnalyticsTests {
+        private let analyticsProvider = MockAnalyticsProvider()
+        private let analytics: WooAnalytics
+        private let cardPresentPaymentService = MockCardPresentPaymentService()
+        private let itemProvider = MockPOSItemProvider()
+        private let orderService = MockPOSOrderService()
+        private let sut: PointOfSaleAggregateModel
+
+        init() {
+            analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+            orderService.orderToReturn = Order.fake()
+
+            sut = PointOfSaleAggregateModel(
+                itemProvider: itemProvider,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderService: orderService,
+                analytics: analytics)
+
+            sut.addToCart(makeItem())
+        }
+
+        @Test func paymentsOnboardingDismissed_event_is_tracked_with_state_when_cancelOnboarding_is_invoked() async throws {
+            // Given
+            let onboardingViewModel = CardPresentPaymentsOnboardingViewModel(fixedState: .noConnectionError)
+            cardPresentPaymentService.paymentEvent = .showOnboarding(onboardingViewModel: onboardingViewModel, onCancel: {})
+
+            // When
+            sut.cancelCardPaymentsOnboarding()
+
+            // Then
+            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "pos_payments_onboarding_dismissed" }) != nil)
+            let eventProperties = try #require(analyticsProvider.receivedProperties.first(where: { $0.keys.contains("onboarding_state")
+            }))
+            #expect(eventProperties["onboarding_state"] as? String == "no_connection_error")
+        }
+
+        @Test func pointOfSalePaymentsOnboardingShown_event_is_tracked_when_trackOnboardingShown_is_invoked() async throws {
+            // Given
+
+            // When
+            sut.trackCardPaymentsOnboardingShown()
+
+            // Then
+            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "pos_payments_onboarding_shown" }) != nil)
+        }
     }
 }
 

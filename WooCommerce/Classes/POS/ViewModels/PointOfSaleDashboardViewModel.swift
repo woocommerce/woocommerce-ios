@@ -60,7 +60,8 @@ private extension PointOfSaleDashboardViewModel {
                         .paymentError,
                         .cardPaymentSuccessful,
                         .validatingOrder,
-                        .preparingReader:
+                        .preparingReader,
+                        .creatingReceipt:
                     return true
                 case .idle, .validatingOrderError, .acceptingCard:
                     return orderState.isSyncing
@@ -79,7 +80,8 @@ private extension PointOfSaleDashboardViewModel {
                         .validatingOrderError,
                         .preparingReader,
                         .paymentError,
-                        .cardPaymentSuccessful:
+                        .cardPaymentSuccessful,
+                        .creatingReceipt:
                     return false
                 }
             }
@@ -96,7 +98,8 @@ private extension PointOfSaleDashboardViewModel {
                         .validatingOrder,
                         .validatingOrderError,
                         .preparingReader,
-                        .acceptingCard:
+                        .acceptingCard,
+                        .creatingReceipt:
                     return false
                 }
             }

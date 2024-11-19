@@ -2,6 +2,7 @@ import SwiftUI
 import Combine
 import protocol WooFoundation.Analytics
 import protocol Yosemite.POSItem
+import Yosemite
 
 final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     enum PaymentState {
@@ -13,6 +14,7 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         case processingPayment
         case paymentError
         case cardPaymentSuccessful
+        case creatingReceipt
     }
 
     @Published var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
@@ -71,6 +73,13 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         paymentState = .acceptingCard
         cardPresentPaymentInlineMessage = nil
         posModel.startNewCart()
+    }
+
+    func createReceipt(order: Yosemite.Order) {
+        paymentState = .creatingReceipt
+        // TODO: 
+        // This won't be full-screen quite yet, visibility needs to be handled in the TotalViews as well.
+        cardPresentPaymentInlineMessage = .creatingReceipt(viewModel: PointOfSaleCardPresentCreatingReceiptMessageViewModel(order: order))
     }
 
     /// Called when the onboarding UI is dismissed.
@@ -192,7 +201,8 @@ private extension TotalsViewModel {
                     return true
                 case .processingPayment,
                         .paymentError,
-                        .cardPaymentSuccessful:
+                        .cardPaymentSuccessful,
+                        .creatingReceipt:
                     return false
                 }
             }
@@ -278,6 +288,8 @@ private extension TotalsViewModel.PaymentState {
             // We need to add a new case where the payment is successful, but unrelated to card payment.
         case .show(.paymentSuccess):
             self = .cardPaymentSuccessful
+        case .show(.creatingReceipt):
+            self = .creatingReceipt
         default:
             return nil
         }

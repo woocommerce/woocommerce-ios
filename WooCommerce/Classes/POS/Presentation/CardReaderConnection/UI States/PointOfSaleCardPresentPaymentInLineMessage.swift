@@ -1,5 +1,34 @@
 import SwiftUI
 
+struct PointOfSaleCardPresentCreatingReceiptMessageView: View {
+    @Environment(\.dismiss) private var dismiss
+    let viewModel: PointOfSaleCardPresentCreatingReceiptMessageViewModel
+
+    @State private var input: String = ""
+
+    var body: some View {
+        VStack {
+            Text(viewModel.title)
+                .font(.title)
+            Text("Email:")
+            TextField(text: $input, label: { })
+                .keyboardType(.emailAddress)
+                .textInputAutocapitalization(.none)
+                .autocorrectionDisabled()
+                .border(.red, width: 2)
+            Text(viewModel.message)
+            Button(action: {
+                viewModel.send(toAddress: input) {
+                    dismiss()
+                }
+            }, label: {
+                Text(viewModel.buttonTitle)
+            })
+            .buttonStyle(SecondaryButtonStyle())
+        }
+    }
+}
+
 struct PointOfSaleCardPresentPaymentInLineMessage: View {
     private let messageType: PointOfSaleCardPresentPaymentMessageType
 
@@ -23,6 +52,10 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
             PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView(viewModel: viewModel, animation: animation)
         case .paymentSuccess(let viewModel):
             PointOfSaleCardPresentPaymentSuccessMessageView(viewModel: viewModel, animation: animation)
+            // Found the view:
+            // TODO: Pass it as associated value
+        case .creatingReceipt(let viewModel):
+            PointOfSaleCardPresentCreatingReceiptMessageView(viewModel: viewModel)
         case .paymentError(let viewModel):
             PointOfSaleCardPresentPaymentErrorMessageView(viewModel: viewModel, animation: animation)
         case .paymentErrorNonRetryable(let viewModel):

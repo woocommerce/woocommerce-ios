@@ -152,6 +152,9 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
             cancelPayment(paymentOrchestrator: paymentOrchestrator)
         case .paymentSuccess(done: let done):
             done()
+        case .creatingReceipt:
+            // Nothing to cancel a this point.
+            return
         }
     }
 }

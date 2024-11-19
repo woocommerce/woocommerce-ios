@@ -39,6 +39,8 @@ public final class ReceiptRemote: Remote {
     ///    - orderID: ID of the order that the receipt is associated to.
     ///
     public func sendReceipt(siteID: Int64, orderID: Int64) async throws {
+        // TODO:
+        // Confirm this works for non-JCP sites, as we get a siteID = -1 if are not authenticated via WPCOM
         let path = "\(Constants.ordersPath)/\(orderID)/\(Constants.actionsPath)/send_order_details"
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .post,

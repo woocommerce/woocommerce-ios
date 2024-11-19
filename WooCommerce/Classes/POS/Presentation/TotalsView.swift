@@ -72,6 +72,9 @@ struct TotalsView: View {
                     }
                     .animation(.default, value: viewModel.cardPresentPaymentInlineMessage)
                     paymentsActionButtons
+                        .onAppear {
+                            debugPrint("🍍 paymentsActionButtons appear")
+                        }
                     Spacer()
                 }
                 .animation(.default, value: viewModel.isShowingCardReaderStatus)
@@ -108,12 +111,17 @@ private extension TotalsView {
             Spacer()
             switch posModel.orderState {
             default:
+                // TODO:
+                // Pass values from current state
                 let foo = PointOfSaleOrderTotals(cartTotal: "10.00", orderTotal: "10.00", taxTotal: "2.00")
                 VStack {
                     Text("Cash Payment")
                         .font(.title)
                     Text("Cash received")
                         .font(.body)
+                    // TODO:
+                    // Read value from input state
+                    // Prompt I/O keyboard and test on real device
                     TextField("", text: .constant("10.00"))
                         .keyboardType(.decimalPad)
                         .border(.red, width: 2)
@@ -132,7 +140,6 @@ private extension TotalsView {
                             // On completion, if no error then we prompt the "Payment Success" view, for this we
                             // need to make TotalsViewModel.PaymentState = .cardPaymentSuccessful but with a new case for cash.
                             viewModel.fakePaymentSuccess()
-                            
                         })
                         ServiceLocator.stores.dispatch(action)
                     }, label: {
@@ -300,12 +307,32 @@ private extension TotalsView {
         .cornerRadius(Constants.newOrderButtonCornerRadius)
     }
 
+    private var receiptButton: some View {
+        Button(action: {
+            guard let order = posModel.order else {
+                fatalError()
+            }
+            viewModel.createReceipt(order: order)
+        }, label: {
+            HStack(spacing: Constants.newOrderButtonSpacing) {
+                Text("Receipt")
+                    .font(Constants.newOrderButtonFont)
+            }
+            .frame(minWidth: UIScreen.main.bounds.width / 2)
+        })
+        .padding(Constants.newOrderButtonPadding)
+        .foregroundColor(.black)
+        .background(.white)
+        .cornerRadius(Constants.newOrderButtonCornerRadius)
+    }
+
     @ViewBuilder
     private var paymentsActionButtons: some View {
         if viewModel.paymentState == .cardPaymentSuccessful {
             if isShowingPaymentsButtonSpacing {
                 Spacer().frame(height: Constants.paymentsButtonSpacing)
             }
+            receiptButton
             newOrderButton
                 .onAppear {
                     isShowingPaymentsButtonSpacing = false
@@ -379,7 +406,8 @@ private extension TotalsView {
                 .validatingOrder,
                 .preparingReader,
                 .processingPayment,
-                .cardPaymentSuccessful:
+                .cardPaymentSuccessful,
+                .creatingReceipt:
             break
         }
 

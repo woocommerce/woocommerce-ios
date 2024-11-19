@@ -53,4 +53,5 @@ enum CardPresentPaymentEventDetails {
     case displayReaderMessage(message: String)
     case cancelledOnReader
     case validatingOrder(cancelPayment: () -> Void)
+    case creatingReceipt(viewModel: PointOfSaleCardPresentCreatingReceiptMessageViewModel)
 }

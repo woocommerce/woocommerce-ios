@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct PointOfSaleCardPresentCreatingReceiptMessageView: View {
-    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+
     let viewModel: PointOfSaleCardPresentCreatingReceiptMessageViewModel
 
     @State private var input: String = ""
@@ -19,7 +20,10 @@ struct PointOfSaleCardPresentCreatingReceiptMessageView: View {
             Text(viewModel.message)
             Button(action: {
                 viewModel.send(toAddress: input) {
-                    dismiss()
+                    // TODO:
+                    // Resolve "reset" state. At the moment the cart does not appear in the dashboard when we start a new order.
+                    posModel.clearOrder()
+                    posModel.startNewCart()
                 }
             }, label: {
                 Text(viewModel.buttonTitle)

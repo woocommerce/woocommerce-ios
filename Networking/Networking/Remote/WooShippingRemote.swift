@@ -98,7 +98,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
             completion(.failure(error))
         }
     }
-    
+
     /// Loads packages.
     /// - Parameters:
     ///   - siteID: Remote ID of the site.

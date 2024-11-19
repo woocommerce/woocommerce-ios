@@ -16,4 +16,9 @@ public enum WooShippingAction: Action {
                         destinationAddress: ShippingLabelAddress,
                         packages: [ShippingLabelPackageSelected],
                         completion: (Result<[ShippingLabelCarriersAndRates], Error>) -> Void)
+
+    /// Fetch list of packages.
+    ///
+    case loadPackages(siteID: Int64,
+                      completion: (Result<WooShippingPackagesResponse, Error>) -> Void)
 }

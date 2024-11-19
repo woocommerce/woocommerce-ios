@@ -90,7 +90,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .productGlobalUniqueIdentifierSupport:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .paymentsOnboardingInPointOfSale:
-            return buildConfig == .localDeveloper
+            return true
         case .sendReceiptAfterPayment:
             return false
         default:

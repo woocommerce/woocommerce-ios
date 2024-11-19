@@ -87,16 +87,16 @@ final class WPComEmailLoginViewModel: ObservableObject {
             }
             await startAuthentication(email: email, isPasswordlessAccount: passwordless)
         } catch {
-            if allowAccountCreation,
-               let apiError = error as? WordPressAPIError<WordPressComRestApiEndpointError>,
-               case let .endpointError(endpointError) = apiError,
-               endpointError.apiErrorCode == Constants.unknownUserErrorCode {
-                // The user does not exist yet, trigger magic link flow for account creation
-                await requestAuthenticationLink(email: email, forAccountCreation: true)
-            } else {
+            guard allowAccountCreation,
+                  let apiError = error as? WordPressAPIError<WordPressComRestApiEndpointError>,
+                  case .endpointError(let endpointError) = apiError,
+                  endpointError.apiErrorCode == Constants.unknownUserErrorCode else {
                 analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))
                 onError(error.localizedDescription)
+                return
             }
+
+            await requestAuthenticationLink(email: email, forAccountCreation: true)
         }
     }
 

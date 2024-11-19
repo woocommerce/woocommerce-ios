@@ -96,6 +96,11 @@ final class WPComEmailLoginViewModel: ObservableObject {
                 return
             }
 
+            guard email.isValidEmail() else {
+                onError(Localization.unknownUsername)
+                return
+            }
+
             await requestAuthenticationLink(email: email, forAccountCreation: true)
         }
     }
@@ -167,6 +172,11 @@ extension WPComEmailLoginViewModel {
         static let shareDetails = NSLocalizedString(
             "share details",
             comment: "The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen."
+        )
+        static let unknownUsername = NSLocalizedString(
+            "wpComEmailLoginViewModel.unknownUsername",
+            value: "Hmm, we can\'t find a WordPress.com account connected to this username. You can enter an email to create a new account.",
+            comment: "Error message when the username is not found"
         )
     }
 }

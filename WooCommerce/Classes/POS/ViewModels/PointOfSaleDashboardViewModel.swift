@@ -11,9 +11,8 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     let totalsViewModel: any TotalsViewModelProtocol
     let itemListViewModel: any ItemListViewModelProtocol
 
-    let posModel: PointOfSaleAggregateModelProtocol
+    @ObservedObject var posModel: PointOfSaleAggregateModel
 
-    let cardReaderConnectionViewModel: CardReaderConnectionViewModel
     private let connectivityObserver: ConnectivityObserver
 
     @Published private(set) var isAddMoreDisabled: Bool = false
@@ -27,32 +26,20 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = []
 
-    init(posModel: PointOfSaleAggregateModelProtocol,
-         cardPresentPaymentService: CardPresentPaymentFacade,
+    init(posModel: PointOfSaleAggregateModel,
          totalsViewModel: any TotalsViewModelProtocol,
          cartViewModel: any CartViewModelProtocol,
          itemListViewModel: any ItemListViewModelProtocol,
          connectivityObserver: ConnectivityObserver) {
         self.posModel = posModel
-        self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
         self.itemListViewModel = itemListViewModel
         self.totalsViewModel = totalsViewModel
         self.cartViewModel = cartViewModel
         self.connectivityObserver = connectivityObserver
 
         observeSelectedItemToAddToCart()
-        observeCartSubmission()
         observePaymentStateForButtonDisabledProperties()
-        observeTotalsOrderActions()
         observeConnectivity()
-    }
-
-    private func startNewOrder() {
-        posModel.startNewCart()
-    }
-
-    private func cartSubmitted(cartItems: [CartItem]) {
-        totalsViewModel.checkOutTapped(with: cartItems, allItems: posModel.allItems)
     }
 }
 
@@ -65,17 +52,8 @@ private extension PointOfSaleDashboardViewModel {
             .store(in: &cancellables)
     }
 
-    func observeCartSubmission() {
-        cartViewModel.cartSubmissionPublisher
-            .sink { [weak self] cartItems in
-                guard let self else { return }
-                self.cartSubmitted(cartItems: cartItems)
-            }
-            .store(in: &cancellables)
-    }
-
     func observePaymentStateForButtonDisabledProperties() {
-        Publishers.CombineLatest(totalsViewModel.paymentStatePublisher, totalsViewModel.orderStatePublisher)
+        Publishers.CombineLatest(totalsViewModel.paymentStatePublisher, posModel.$orderState)
             .map { paymentState, orderState in
                 switch paymentState {
                 case .processingPayment,
@@ -130,22 +108,6 @@ private extension PointOfSaleDashboardViewModel {
         afterCardTapPaymentStates
             .assign(to: &$isReaderDisconnectionDisabled)
 
-    }
-
-    func observeTotalsOrderActions() {
-        totalsViewModel.startNewOrderActionPublisher
-            .sink { [weak self] in
-                guard let self else { return }
-                self.startNewOrder()
-            }
-            .store(in: &cancellables)
-
-        totalsViewModel.editOrderActionPublisher
-            .sink { [weak self] in
-                guard let self else { return }
-                posModel.addMoreToCart()
-            }
-            .store(in: &cancellables)
     }
 }
 

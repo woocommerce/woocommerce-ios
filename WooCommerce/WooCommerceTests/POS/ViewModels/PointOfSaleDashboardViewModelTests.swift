@@ -6,7 +6,7 @@ import Combine
 final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
     private var sut: PointOfSaleDashboardViewModel!
-    private var mockPOSModel: MockPointOfSaleAggregateModel!
+    private var mockPOSModel: PointOfSaleAggregateModel!
     private var cardPresentPaymentService: MockCardPresentPaymentService!
     private var itemProvider: MockPOSItemProvider!
     private var mockCartViewModel: MockCartViewModel!
@@ -18,15 +18,19 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        mockPOSModel = MockPointOfSaleAggregateModel()
         cardPresentPaymentService = MockCardPresentPaymentService()
         itemProvider = MockPOSItemProvider()
         mockCartViewModel = MockCartViewModel()
         mockTotalsViewModel = MockTotalsViewModel()
         mockItemListViewModel = MockItemListViewModel()
         mockConnectivityObserver = MockConnectivityObserver()
+        let mockOrderService = MockPOSOrderService()
+        mockOrderService.orderToReturn = Order.fake()
+        mockPOSModel = PointOfSaleAggregateModel(
+            itemProvider: itemProvider,
+            cardPresentPaymentService: cardPresentPaymentService,
+            orderService: mockOrderService)
         sut = PointOfSaleDashboardViewModel(posModel: mockPOSModel,
-                                            cardPresentPaymentService: cardPresentPaymentService,
                                             totalsViewModel: mockTotalsViewModel,
                                             cartViewModel: mockCartViewModel,
                                             itemListViewModel: mockItemListViewModel,
@@ -55,23 +59,23 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         XCTAssertEqual(sut.isExitPOSDisabled, expectedExitPOSButtonDisabledState)
     }
 
-    func test_isAddMoreDisabled_is_true_when_order_is_syncing_and_paymentState_is_idle() {
+    func test_isAddMoreDisabled_is_true_when_order_is_syncing_and_paymentState_is_idle() async {
         // Given
+        mockPOSModel.addToCart(Self.makeItem())
         let expectation = XCTestExpectation(description: "Expect isAddMoreDisabled to be true while syncing order and payment state is idle")
 
-        sut.$isAddMoreDisabled
-            .dropFirst()
-            .sink { value in
-                XCTAssertTrue(value)
-                expectation.fulfill()
+        await sut.$isAddMoreDisabled
+            .sink { disabled in
+                if disabled {
+                    expectation.fulfill()
+                }
             }
             .store(in: &cancellables)
 
         // When
-        let customCartItems = [CartItem(id: UUID(), item: Self.makeItem(), quantity: 1)]
-        sut.totalsViewModel.checkOutTapped(with: customCartItems, allItems: [])
+        await mockPOSModel.checkOut()
 
-        wait(for: [expectation], timeout: 1.0)
+        await fulfillment(of: [expectation], timeout: 1.0)
     }
 
     func test_isAddMoreDisabled_is_true_for_collectPayment_success() {
@@ -79,10 +83,10 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Expect isAddMoreDisabled to be true after successfully collecting payment")
 
         sut.$isAddMoreDisabled
-            .dropFirst()
-            .sink { value in
-                XCTAssertTrue(value)
-                expectation.fulfill()
+            .sink { disabled in
+                if disabled {
+                    expectation.fulfill()
+                }
             }
             .store(in: &cancellables)
 
@@ -97,10 +101,10 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Expect isAddMoreDisabled to be true when paymentState is processingPayment or cardPaymentSuccessful")
 
         sut.$isAddMoreDisabled
-            .dropFirst()
-            .sink { value in
-                XCTAssertTrue(value)
-                expectation.fulfill()
+            .sink { disabled in
+                if disabled {
+                    expectation.fulfill()
+                }
             }
             .store(in: &cancellables)
 
@@ -115,10 +119,10 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Expect isExitPOSDisabled to be true when paymentState is processingPayment")
 
         sut.$isExitPOSDisabled
-            .dropFirst()
-            .sink { value in
-                XCTAssertTrue(value)
-                expectation.fulfill()
+            .sink { disabled in
+                if disabled {
+                    expectation.fulfill()
+                }
             }
             .store(in: &cancellables)
 
@@ -133,9 +137,10 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Expect isExitPOSDisabled to be false when paymentState is idle")
 
         sut.$isExitPOSDisabled
-            .sink { value in
-                XCTAssertFalse(value)
-                expectation.fulfill()
+            .sink { disabled in
+                if !disabled {
+                    expectation.fulfill()
+                }
             }
             .store(in: &cancellables)
 
@@ -151,9 +156,10 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
         sut.$isTotalsViewFullScreen
             .dropFirst()
-            .sink { value in
-                XCTAssertTrue(value)
-                expectation.fulfill()
+            .sink { fullscreen in
+                if fullscreen {
+                    expectation.fulfill()
+                }
             }
             .store(in: &cancellables)
 
@@ -168,9 +174,10 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Expect isTotalsViewFullScreen to be false when paymentState is idle")
 
         sut.$isTotalsViewFullScreen
-            .sink { value in
-                XCTAssertFalse(value)
-                expectation.fulfill()
+            .sink { fullscreen in
+                if !fullscreen {
+                    expectation.fulfill()
+                }
             }
             .store(in: &cancellables)
 
@@ -178,28 +185,6 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         mockTotalsViewModel.paymentState = .idle
 
         wait(for: [expectation], timeout: 1.0)
-    }
-
-    func test_observeCartSubmission_starts_syncing_order() {
-        // Given
-        let expectation = XCTestExpectation(description: "Expect orderStage to be .finalizing and isSyncingOrder to be true")
-        let customCartItems = [CartItem(id: UUID(), item: Self.makeItem(), quantity: 1)]
-        var receivedIsSyncingOrder: Bool = false
-
-        // Attach sink to observe changes to isSyncingOrder
-        mockTotalsViewModel.orderStatePublisher
-            .sink { orderState in
-                receivedIsSyncingOrder = orderState.isSyncing
-                expectation.fulfill()
-            }
-            .store(in: &cancellables)
-
-        // When
-        mockCartViewModel.submitCart(with: customCartItems)
-
-        // Then
-        wait(for: [expectation], timeout: 1.0)
-        XCTAssertTrue(receivedIsSyncingOrder)
     }
 
     func test_showsConnectivityError_when_nonReachable_then_shows_error() {

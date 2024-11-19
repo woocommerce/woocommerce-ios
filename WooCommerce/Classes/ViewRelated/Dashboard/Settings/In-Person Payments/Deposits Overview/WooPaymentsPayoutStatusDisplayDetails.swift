@@ -2,7 +2,7 @@ import SwiftUI
 import Yosemite
 import WooFoundation
 
-extension WooPaymentsDepositStatus {
+extension WooPaymentsPayoutStatus {
     var backgroundColor: Color {
         switch self {
         case .estimated:
@@ -75,41 +75,41 @@ extension WooPaymentsDepositStatus {
     }
 }
 
-private extension WooPaymentsDepositStatus {
+private extension WooPaymentsPayoutStatus {
     enum Localization {
         static let estimated = NSLocalizedString(
-            "deposits.currency.overview.depositTable.status.estimated.title",
+            "payouts.currency.overview.payoutTable.status.estimated.title",
             value: "Estimated",
-            comment: "A status for a deposit, shown in a small badge view")
+            comment: "A status for a payout, shown in a small badge view")
 
         static let pending = NSLocalizedString(
-            "deposits.currency.overview.depositTable.status.pending.title",
+            "payouts.currency.overview.payoutTable.status.pending.title",
             value: "Pending",
-            comment: "A status for a deposit, shown in a small badge view")
+            comment: "A status for a payout, shown in a small badge view")
 
         static let inTransit = NSLocalizedString(
-            "deposits.currency.overview.depositTable.status.inTransit.title",
+            "payouts.currency.overview.payoutTable.status.inTransit.title",
             value: "In Transit",
-            comment: "A status for a deposit, shown in a small badge view")
+            comment: "A status for a payout, shown in a small badge view")
 
         static let paid = NSLocalizedString(
-            "deposits.currency.overview.depositTable.status.paid.title",
+            "payouts.currency.overview.payoutTable.status.paid.title",
             value: "Paid",
-            comment: "A status for a deposit, shown in a small badge view")
+            comment: "A status for a payout, shown in a small badge view")
 
         static let canceled = NSLocalizedString(
-            "deposits.currency.overview.depositTable.status.canceled.title",
+            "payouts.currency.overview.payoutTable.status.canceled.title",
             value: "Canceled",
-            comment: "A status for a deposit, shown in a small badge view")
+            comment: "A status for a payout, shown in a small badge view")
 
         static let failed = NSLocalizedString(
-            "deposits.currency.overview.depositTable.status.failed.title",
+            "payouts.currency.overview.payoutTable.status.failed.title",
             value: "Failed",
-            comment: "A status for a deposit, shown in a small badge view")
+            comment: "A status for a payout, shown in a small badge view")
 
         static let unknown = NSLocalizedString(
-            "deposits.currency.overview.depositTable.status.unknown.title",
+            "payouts.currency.overview.payoutTable.status.unknown.title",
             value: "Unknown",
-            comment: "A status for a deposit, shown in a small badge view")
+            comment: "A status for a payout, shown in a small badge view")
     }
 }

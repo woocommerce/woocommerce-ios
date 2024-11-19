@@ -3,13 +3,17 @@ import Foundation
 @testable import WooCommerce
 import protocol Yosemite.POSItem
 @testable import struct Yosemite.POSProduct
+import struct Yosemite.Order
+import Combine
 
 struct PointOfSaleAggregateModelTests {
     struct OrderStageTests {
         private let sut: PointOfSaleAggregateModel
 
         init() {
-            self.sut = PointOfSaleAggregateModel(itemProvider: MockPOSItemProvider())
+            self.sut = PointOfSaleAggregateModel(itemProvider: MockPOSItemProvider(),
+                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
+                                                 orderService: MockPOSOrderService())
         }
 
         @Test func inits_with_building_order_stage() async throws {
@@ -19,7 +23,7 @@ struct PointOfSaleAggregateModelTests {
         @Test func startNewCart_removes_all_items_from_cart_and_moves_back_to_building() async throws {
             // Given
             sut.addToCart(makeItem())
-            sut.submitCart()
+            await sut.submitCart()
             try #require(sut.orderStage == .finalizing)
             try #require(sut.cart.isNotEmpty)
 
@@ -36,7 +40,7 @@ struct PointOfSaleAggregateModelTests {
             sut.addToCart(makeItem())
 
             // When
-            sut.submitCart()
+            await sut.submitCart()
 
             // Then
             #expect(sut.orderStage == .finalizing)
@@ -45,7 +49,7 @@ struct PointOfSaleAggregateModelTests {
         @Test func addMoreToCart_moves_to_building_order_stage() async throws {
             // Given
             sut.addToCart(makeItem())
-            sut.submitCart()
+            await sut.submitCart()
             try #require(sut.orderStage == .finalizing)
 
             // When
@@ -58,12 +62,14 @@ struct PointOfSaleAggregateModelTests {
     }
 
     struct ItemListTests {
-        private var itemProvider: MockPOSItemProvider
+        private let itemProvider: MockPOSItemProvider
         private let sut: PointOfSaleAggregateModel
 
         init() {
             itemProvider = MockPOSItemProvider()
-            sut = PointOfSaleAggregateModel(itemProvider: itemProvider)
+            sut = PointOfSaleAggregateModel(itemProvider: itemProvider,
+                                            cardPresentPaymentService: MockCardPresentPaymentService(),
+                                            orderService: MockPOSOrderService())
         }
 
         @Test func loadInitialItems_requests_first_page() async throws {
@@ -150,7 +156,9 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemProvider = MockPOSItemProvider()
             itemProvider.shouldReturnZeroItems = true
-            let sut = PointOfSaleAggregateModel(itemProvider: itemProvider)
+            let sut = PointOfSaleAggregateModel(itemProvider: itemProvider,
+                                                cardPresentPaymentService: MockCardPresentPaymentService(),
+                                                orderService: MockPOSOrderService())
 
             try #require(sut.itemListState == .initialLoading)
 
@@ -207,7 +215,9 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemProvider = MockPOSItemProvider()
             itemProvider.shouldReturnZeroItems = true
-            let sut = PointOfSaleAggregateModel(itemProvider: itemProvider)
+            let sut = PointOfSaleAggregateModel(itemProvider: itemProvider,
+                                                cardPresentPaymentService: MockCardPresentPaymentService(),
+                                                orderService: MockPOSOrderService())
 
             try #require(sut.itemListState == .initialLoading)
 
@@ -286,6 +296,39 @@ struct PointOfSaleAggregateModelTests {
             #expect(itemProvider.spyLastRequestedPageNumber == 1)
         }
 
+        @Test func itemListViewModel_when_next_page_is_out_of_range_then_receives_error() async throws {
+            // Given
+            await sut.loadInitialItems()
+            try #require(itemProvider.spyLastRequestedPageNumber == 1)
+            let expectedError = PointOfSaleErrorState(title: "Error loading products",
+                                                      subtitle: "Give it another go?",
+                                                      buttonText: "Retry")
+
+            // When
+            itemProvider.simulateNextPageIsOutOfRange()
+            await sut.loadNextItems()
+
+            // Then
+            guard case .error = sut.itemListState else {
+                Issue.record("Expected error state, but got \(sut.itemListState)")
+                return
+            }
+            #expect(sut.itemListState == .error(expectedError))
+        }
+
+        @Test func itemListViewModel_when_next_page_is_out_of_range_then_the_same_page_is_requested_next() async throws {
+            // Given
+            await sut.loadInitialItems()
+            try #require(itemProvider.spyLastRequestedPageNumber == 1)
+
+            // When
+            itemProvider.simulateNextPageIsOutOfRange()
+            await sut.loadNextItems()
+
+            // Then
+            try #require(itemProvider.spyLastRequestedPageNumber == 1)
+        }
+
         @Test func reload_when_itemProvider_throws_error_then_state_is_error() async throws {
             // Given
             itemProvider.shouldThrowError = true
@@ -305,13 +348,15 @@ struct PointOfSaleAggregateModelTests {
 
     struct CartTests {
         let sut: PointOfSaleAggregateModel
-        private var analytics: WooAnalytics!
-        private var analyticsProvider: MockAnalyticsProvider!
+        private let analytics: WooAnalytics!
+        private let analyticsProvider: MockAnalyticsProvider!
 
         init() {
             analyticsProvider = MockAnalyticsProvider()
             analytics = WooAnalytics(analyticsProvider: analyticsProvider)
             sut = PointOfSaleAggregateModel(itemProvider: MockPOSItemProvider(),
+                                            cardPresentPaymentService: MockCardPresentPaymentService(),
+                                            orderService: MockPOSOrderService(),
                                             analytics: analytics)
         }
 
@@ -389,6 +434,151 @@ struct PointOfSaleAggregateModelTests {
             let event = try #require(analyticsProvider.receivedEvents.first)
             #expect(event == "pos_item_added_to_cart")
         }
+    }
+
+    struct OrderTests {
+        private let cardPresentPaymentService = MockCardPresentPaymentService()
+        private let itemProvider = MockPOSItemProvider()
+        private let orderService = MockPOSOrderService()
+        private let sut: PointOfSaleAggregateModel
+
+        init() {
+            orderService.orderToReturn = Order.fake()
+
+            sut = PointOfSaleAggregateModel(
+                itemProvider: itemProvider,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderService: orderService)
+
+            sut.addToCart(makeItem())
+        }
+
+        @Test func startNewCart_sets_orderState_to_idle() async throws {
+            // Given
+            await sut.checkOut()
+            try #require(sut.orderState == .loaded(.init(
+                cartTotal: "$0.00",
+                orderTotal: "",
+                taxTotal: "")))
+
+            // When
+            sut.startNewCart()
+
+            // Then
+            #expect(sut.orderState == .idle)
+        }
+
+        @Test func checkOut_when_reader_connects_collectPayment_called() async throws {
+            // Given
+            cardPresentPaymentService.connectedReader = nil
+            await sut.checkOut()
+            cardPresentPaymentService.collectPaymentWasCalled = false
+
+            // When
+            // `await confirmation` callback only waits until this completes, not until some timeout.
+            // Since this is synchonous but triggers async combine behaviour, we can't use that approach.
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+
+            // Then
+            let timeout = ContinuousClock.now + .seconds(1)
+
+            while cardPresentPaymentService.collectPaymentWasCalled != true {
+                try await Task.sleep(for: .milliseconds(1))
+                try #require(.now < timeout)
+            }
+        }
+
+        @Test func checkOut_when_reader_is_already_connected_collectPayment_called() async throws {
+            // Given
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+            orderService.orderToReturn = Order.fake().copy(items: [.fake()])
+
+            // When
+            await sut.checkOut()
+
+            // Then
+            #expect(cardPresentPaymentService.collectPaymentWasCalled)
+        }
+
+        @Test func after_disconnection_when_reader_reconnects_collectPayment_called() async throws {
+            // Given
+            cardPresentPaymentService.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+            sut.observeReaderReconnection()
+            await sut.checkOut()
+            await cardPresentPaymentService.disconnectReader()
+            cardPresentPaymentService.collectPaymentWasCalled = false
+
+            // When
+            // `await confirmation` callback only waits until this completes, not until some timeout.
+            // Since this is synchonous but triggers async combine behaviour, we can't use that approach.
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+
+            // Then
+            let timeout = ContinuousClock.now + .seconds(1)
+
+            while cardPresentPaymentService.collectPaymentWasCalled != true {
+                try await Task.sleep(for: .milliseconds(1))
+                try #require(.now < timeout)
+            }
+        }
+
+        @Test func checkOut_with_no_previous_order_sets_orderState_syncing_then_loaded() async throws {
+            // Given
+            var cancellables = Set<AnyCancellable>()
+            var orderStates: [PointOfSaleOrderState] = []
+            await confirmation() { confirmation in
+                // We can use `withObservationTracking` when we move to @Observable
+                sut.$orderState.collect(3)
+                    .sink { orderState in
+                        orderStates.append(contentsOf: orderState)
+                        confirmation()
+                    }
+                    .store(in: &cancellables)
+
+                // When
+                await sut.checkOut()
+            }
+
+            // Then
+            #expect(orderStates == [.idle, .syncing, .loaded(.init(cartTotal: "$0.00", orderTotal: "", taxTotal: ""))])
+        }
+
+        @Test func checkOut_with_order_sync_failure_sets_orderState_syncing_then_error() async throws {
+            // Given
+            orderService.orderToReturn = nil
+
+            var cancellables = Set<AnyCancellable>()
+            var orderStates: [PointOfSaleOrderState] = []
+            await confirmation() { confirmation in
+                // We can use `withObservationTracking` when we move to @Observable
+                sut.$orderState.collect(3)
+                    .sink { orderState in
+                        orderStates.append(contentsOf: orderState)
+                        confirmation()
+                    }
+                    .store(in: &cancellables)
+
+                // When
+                await sut.checkOut()
+            }
+
+            // Then
+            #expect(orderStates == [.idle, .syncing, .error(.init(message: "", handler: {}))])
+        }
+    }
+
+    struct PaymentTests {
+        private let cardPresentPaymentService = MockCardPresentPaymentService()
+        private let sut: PointOfSaleAggregateModel
+
+        init() {
+            sut = PointOfSaleAggregateModel(
+                itemProvider: MockPOSItemProvider(),
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderService: MockPOSOrderService())
+        }
+
+
     }
 }
 

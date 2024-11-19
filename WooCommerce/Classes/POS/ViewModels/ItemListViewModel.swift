@@ -8,8 +8,6 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     @Published private(set) var isHeaderBannerDismissed: Bool = false
     @Published var showSimpleProductsModal: Bool = false
 
-    private(set) var shouldShowGhostableItemCard: Bool = false
-
     var shouldShowHeaderBanner: Bool {
         // The banner it's shown as long as it hasn't already been dismissed once:
         if UserDefaults.standard.bool(forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey) == true {
@@ -30,9 +28,8 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     let selectedItemPublisher: AnyPublisher<POSItem, Never>
 
-    init(posModel: PointOfSaleAggregateModelProtocol, shouldShowGhostableItemCard: Bool = false) {
+    init(posModel: PointOfSaleAggregateModelProtocol) {
         self.posModel = posModel
-        self.shouldShowGhostableItemCard = shouldShowGhostableItemCard
         selectedItemPublisher = selectedItemSubject.eraseToAnyPublisher()
     }
 

@@ -3,7 +3,15 @@ import Foundation
 import protocol Yosemite.POSItem
 
 final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
+    var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus
+
+    func connectCardReader() { }
+
+    func disconnectCardReader() { }
+
     var orderStage: PointOfSaleOrderStage
+
+    var orderState: WooCommerce.PointOfSaleOrderState
 
     var allItems: [POSItem] {
         switch itemListState {
@@ -19,10 +27,14 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     var itemListState: ItemListState
 
-    init(itemListState: ItemListState = .initialLoading,
-         orderStage: PointOfSaleOrderStage = .building) {
+    init(cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected,
+         itemListState: ItemListState = .initialLoading,
+         orderStage: PointOfSaleOrderStage = .building,
+         orderState: PointOfSaleOrderState = .idle) {
+        self.cardReaderConnectionStatus = cardReaderConnectionStatus
         self.itemListState = itemListState
         self.orderStage = orderStage
+        self.orderState = orderState
     }
 
     func loadInitialItems() async { }
@@ -43,6 +55,8 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     }
 
     func submitCart() { }
+
+    func checkOut() async { }
 
     func addMoreToCart() { }
 

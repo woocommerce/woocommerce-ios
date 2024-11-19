@@ -1,0 +1,98 @@
+{
+    "data": {
+        "storeOptions": {
+          "currency_symbol": "$",
+          "dimension_unit": "cm",
+          "weight_unit": "kg",
+          "origin_country": "US"
+        },
+        "packages": {
+          "saved": {
+            "custom": [
+              {
+                "name": "Custom name",
+                "boxWeight": "0.01",
+                "id": "849225dc153",
+                "type": "box",
+                "isLetter": false,
+                "dimensions": "12 x 12 x 12",
+                "is_user_defined": true
+              }
+            ],
+            "predefined": {
+              "usps": [
+                "small_flat_box",
+                "medium_flat_box_top"
+              ]
+            }
+          },
+          "predefined": {
+            "usps": {
+              "pri_flat_boxes": {
+                "title": "USPS Priority Mail Flat Rate Boxes",
+                "definitions": [
+                  {
+                    "inner_dimensions": "8.63 x 5.38 x 1.63",
+                    "outer_dimensions": "8.63 x 5.38 x 1.63",
+                    "box_weight": 0,
+                    "is_flat_rate": true,
+                    "id": "small_flat_box",
+                    "name": "Small Flat Rate Box",
+                    "dimensions": "8.63 x 5.38 x 1.63",
+                    "max_weight": 70,
+                    "is_letter": false,
+                    "group_id": "pri_flat_boxes",
+                    "can_ship_international": true
+                  },
+                  {
+                    "inner_dimensions": "11 x 8.5 x 5.5",
+                    "outer_dimensions": "11.25 x 8.75 x 6",
+                    "box_weight": 0,
+                    "is_flat_rate": true,
+                    "id": "medium_flat_box_top",
+                    "name": "Medium Flat Rate Box 1, Top Loading",
+                    "dimensions": "11.25 x 8.75 x 6",
+                    "max_weight": 70,
+                    "is_letter": false,
+                    "group_id": "pri_flat_boxes",
+                    "can_ship_international": true
+                  },
+                ]
+              }
+            },
+            "fedex": {
+              "express": {
+                "title": "FedEx Express Packages",
+                "definitions": [
+                  {
+                    "inner_dimensions": "13.19 x 9.25 x 0.75",
+                    "outer_dimensions": "13.19 x 9.25 x 0.75",
+                    "box_weight": 0,
+                    "is_flat_rate": false,
+                    "id": "FedExEnvelope",
+                    "name": "Envelope",
+                    "dimensions": "13.19 x 9.25 x 0.75",
+                    "max_weight": 10,
+                    "is_letter": true,
+                    "group_id": "express"
+                  },
+                  {
+                    "inner_dimensions": "15.5 x 12 x 0.75",
+                    "outer_dimensions": "15.5 x 12 x 0.75",
+                    "box_weight": 0,
+                    "is_flat_rate": false,
+                    "id": "FedExPak",
+                    "name": "Large Pak",
+                    "dimensions": "15.5 x 12 x 0.75",
+                    "max_weight": 20,
+                    "is_letter": true,
+                    "group_id": "express"
+                  },
+                ]
+              }
+            }
+          }
+        },
+        "success": true
+      }
+}

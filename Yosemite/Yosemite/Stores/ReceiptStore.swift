@@ -228,6 +228,7 @@ private extension ReceiptStore {
     ///  - onCompletion: The completion block to call when the operation is complete.
     ///
     func sendReceipt(order: Order, email: String, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        // Updates the order with email details, then we POST the order with the request
         guard order.billingAddress?.email == nil || order.billingAddress?.email == "" else {
             onCompletion(.failure(ReceiptStoreError.customerEmailAlreadySet))
             return

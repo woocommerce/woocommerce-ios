@@ -17,6 +17,8 @@ protocol POSEligibilityCheckerProtocol {
 /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
 final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
     var isEligible: AnyPublisher<Bool, Never> {
+        // Bypass POS eligibility temporarily:
+        return Just(true).eraseToAnyPublisher()
         // Conditions that are fixed for its lifetime.
         let isTablet = userInterfaceIdiom == .pad
         guard isTablet else {

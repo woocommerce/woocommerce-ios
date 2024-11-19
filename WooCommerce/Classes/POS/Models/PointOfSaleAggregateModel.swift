@@ -49,6 +49,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
     @Published private(set) var orderState: PointOfSaleOrderState = .idle
 
+    // We need access to update the order with the customer email, also siteID is retrieved from order.siteID association
     private(set) var order: Order? = nil
 
     private let itemProvider: POSItemProvider

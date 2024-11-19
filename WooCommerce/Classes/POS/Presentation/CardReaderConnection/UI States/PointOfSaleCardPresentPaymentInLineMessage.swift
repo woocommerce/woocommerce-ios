@@ -52,8 +52,7 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
             PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView(viewModel: viewModel, animation: animation)
         case .paymentSuccess(let viewModel):
             PointOfSaleCardPresentPaymentSuccessMessageView(viewModel: viewModel, animation: animation)
-            // Found the view:
-            // TODO: Pass it as associated value
+            // Triggers the necessary view and data passed through the VM as associate value:
         case .creatingReceipt(let viewModel):
             PointOfSaleCardPresentCreatingReceiptMessageView(viewModel: viewModel)
         case .paymentError(let viewModel):

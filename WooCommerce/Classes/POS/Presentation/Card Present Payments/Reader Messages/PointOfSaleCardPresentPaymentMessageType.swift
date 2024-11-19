@@ -13,12 +13,14 @@ struct PointOfSaleCardPresentCreatingReceiptMessageViewModel: Equatable {
                 switch result {
                 case .success:
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        // TODO: Dismissal or completion
+                        // TODO:
+                        // Dismissal on completion, at the moment dismisses the whole POS view
                         onCompletion()
                     }
                 case let .failure(error):
                     DDLogError("Sending email receipt failed: \(error.localizedDescription)")
-                    // TODO: Handle error when sending email
+                    // TODO:
+                    // Handle error when sending email
                 }
             }
         })

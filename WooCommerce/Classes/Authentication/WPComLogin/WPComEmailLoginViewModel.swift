@@ -31,7 +31,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
     private let accountService: WordPressComAccountServiceProtocol
     private let analytics: Analytics
     private let onPasswordUIRequest: (String) -> Void
-    private let onMagicLinkUIRequest: (String) -> Void
+    private let onMagicLinkUIRequest: (_ email: String, _ isSignup: Bool) -> Void
     private let onError: (String) -> Void
 
     private var emailFieldSubscription: AnyCancellable?
@@ -43,7 +43,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          analytics: Analytics = ServiceLocator.analytics,
          onPasswordUIRequest: @escaping (String) -> Void,
-         onMagicLinkUIRequest: @escaping (String) -> Void,
+         onMagicLinkUIRequest: @escaping (String, Bool) -> Void,
          onError: @escaping (String) -> Void) {
         self.allowAccountCreation = allowAccountCreation
         self.analytics = analytics
@@ -127,10 +127,10 @@ final class WPComEmailLoginViewModel: ObservableObject {
                     continuation.resume(throwing: error)
                 })
             }
-            onMagicLinkUIRequest(email)
+            onMagicLinkUIRequest(email, forAccountCreation)
         } catch {
             onError(error.localizedDescription)
-            analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))
+            analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, isSignup: forAccountCreation, failure: error))
         }
     }
 }

@@ -9,10 +9,10 @@ public struct WooShippingCreatePackageResponse: Equatable, GeneratedFakeable, Ge
     public let customPackages: [WooShippingCustomPackage]
 
     /// Saved (activated) predefined options
-    public let predefinedOptions: [WooShippingPredefinedOption]
+    public let predefinedOptions: [WooShippingPredefinedSavedOption]
 
     public init(customPackages: [WooShippingCustomPackage],
-                predefinedOptions: [WooShippingPredefinedOption]) {
+                predefinedOptions: [WooShippingPredefinedSavedOption]) {
         self.customPackages = customPackages
         self.predefinedOptions = predefinedOptions
     }
@@ -30,7 +30,7 @@ extension WooShippingCreatePackageResponse: Decodable {
         let rawPredefinedOptions: [String: [String]] = container.failsafeDecodeIfPresent([String: [String]].self, forKey: .predefined) ?? [:]
 
         let predefinedOptions = rawPredefinedOptions.map { (carrier, packageIDs) in
-            WooShippingPredefinedOption(id: carrier, predefinedPackageIDs: packageIDs)
+            WooShippingPredefinedSavedOption(id: carrier, predefinedPackageIDs: packageIDs)
         }
 
         self.init(customPackages: customPackages,

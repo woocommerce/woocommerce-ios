@@ -28,6 +28,21 @@ extern MagicLinkFlow const MagicLinkFlowSignup;
                         clientSecret:(NSString *)clientSecret
                               source:(MagicLinkSource)source
                          wpcomScheme:(NSString *)scheme
+             createAccountIfNotFound:(BOOL)createAccountIfNotFound
+                             success:(void (^)(void))success
+                             failure:(void (^)(NSError *error))failure;
+
+/**
+*  @brief      Request an authentication link be sent to the email address provided.
+*
+ *  @param      success     The block that will be executed on success.  Can be nil.
+ *  @param      failure     The block that will be executed on failure.  Can be nil.
+ */
+- (void)requestWPComAuthLinkForEmail:(NSString *)email
+                            clientID:(NSString *)clientID
+                        clientSecret:(NSString *)clientSecret
+                              source:(MagicLinkSource)source
+                         wpcomScheme:(NSString *)scheme
                              success:(void (^)(void))success
                              failure:(void (^)(NSError *error))failure;
 

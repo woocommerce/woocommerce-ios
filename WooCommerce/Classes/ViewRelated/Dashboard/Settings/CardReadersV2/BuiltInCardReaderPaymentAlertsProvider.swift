@@ -56,19 +56,45 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
         }
     }
 
-    func error(error: Error, tryAgain: @escaping () -> Void, dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        return CardPresentModalError(errorDescription: builtInReaderDescription(for: error),
-                                     transactionType: .collectPayment,
-                                     image: .builtInReaderError,
-                                     primaryAction: tryAgain,
-                                     dismissCompletion: dismissCompletion)
+    func error(error: Error,
+               receiptState: CardReaderTransactionFailureAlertReceiptState,
+               tryAgain: @escaping () -> Void,
+               dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+
+
+        switch receiptState {
+        case let .paymentSuccessEmailSent(email):
+            return CardPresentModalErrorEmailSent(errorDescription: builtInReaderDescription(for: error),
+                                                  transactionType: .collectPayment,
+                                                  image: .builtInReaderError,
+                                                  email: email,
+                                                  primaryAction: tryAgain,
+                                                  dismissCompletion: dismissCompletion)
+        default:
+            return CardPresentModalError(errorDescription: builtInReaderDescription(for: error),
+                                         transactionType: .collectPayment,
+                                         image: .builtInReaderError,
+                                         primaryAction: tryAgain,
+                                         dismissCompletion: dismissCompletion)
+        }
     }
 
-    func nonRetryableError(error: Error, dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalNonRetryableError(amount: amount,
-                                          errorDescription: builtInReaderDescription(for: error),
-                                          image: .builtInReaderError,
-                                          onDismiss: dismissCompletion)
+    func nonRetryableError(error: Error,
+                           receiptState: CardReaderTransactionFailureAlertReceiptState,
+                           dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        switch receiptState {
+        case let .paymentSuccessEmailSent(email):
+            CardPresentModalNonRetryableErrorEmailSent(amount: amount,
+                                                       errorDescription: builtInReaderDescription(for: error),
+                                                       image: .builtInReaderError,
+                                                       email: email,
+                                                       onDismiss: dismissCompletion)
+        default:
+            CardPresentModalNonRetryableError(amount: amount,
+                                              errorDescription: builtInReaderDescription(for: error),
+                                              image: .builtInReaderError,
+                                              onDismiss: dismissCompletion)
+        }
     }
 
     func cancelledOnReader() -> CardPresentPaymentsModalViewModel? {

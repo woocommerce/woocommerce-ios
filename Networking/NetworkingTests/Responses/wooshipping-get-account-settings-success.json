@@ -1,0 +1,50 @@
+{
+   "data":{
+      "storeOptions":{
+         "currency_symbol":"$",
+         "dimension_unit":"cm",
+         "weight_unit":"kg",
+         "origin_country":"US"
+      },
+      "formData":{
+         "selected_payment_method_id":3190997,
+         "enabled":true,
+         "email_receipts":true,
+         "use_last_service":false,
+         "use_last_package":true,
+         "paper_size":"label",
+         "checkout_address_validation":false
+      },
+      "formMeta":{
+         "can_manage_payments":false,
+         "can_edit_settings":true,
+         "master_user_name":"Rachel",
+         "master_user_login":"rachelmcr",
+         "master_user_wpcom_login":"rachelmcr",
+         "master_user_email":"rachel@automattic.com",
+         "payment_methods":[
+            {
+               "payment_method_id":3190997,
+               "name":"Test User",
+               "card_type":"visa",
+               "card_digits":"4242",
+               "expiry":"2028-01-31"
+            }
+         ],
+         "add_payment_method_url":"https://wordpress.com/me/purchases/add-credit-card",
+         "warnings":{
+            "payment_methods":false
+         }
+      },
+      "userMeta":{
+         "last_box_id":"",
+         "last_service_id":"",
+         "last_carrier_id":"",
+         "last_order_completed":false
+      },
+      "enabledServices":[
+         
+      ],
+      "success":true
+   }
+}

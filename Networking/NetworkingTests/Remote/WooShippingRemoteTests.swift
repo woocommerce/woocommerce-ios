@@ -159,6 +159,42 @@ final class WooShippingRemoteTests: XCTestCase {
         // Then
         XCTAssertNotNil(result.failure)
     }
+
+    func test_loadAccountSettings_parses_success_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "account/settings", filename: "wooshipping-get-account-settings-success")
+
+        // When
+        let result: Result<WooShippingAccountSettingsResponse, Error> = waitFor { promise in
+            remote.loadAccountSettings(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let successResponse = try XCTUnwrap(result.get())
+        XCTAssertEqual(successResponse.storeOptions.currencySymbol, "$")
+        XCTAssertEqual(successResponse.storeOptions.dimensionUnit, "cm")
+        XCTAssertEqual(successResponse.storeOptions.weightUnit, "kg")
+        XCTAssertEqual(successResponse.storeOptions.originCountry, "US")
+    }
+
+    func test_loadAccountSettings_returns_error_on_failure() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "account/settings", filename: "generic_error")
+
+        // When
+        let result: Result<WooShippingAccountSettingsResponse, Error> = waitFor { promise in
+            remote.loadAccountSettings(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
 }
 
 private extension WooShippingRemoteTests {

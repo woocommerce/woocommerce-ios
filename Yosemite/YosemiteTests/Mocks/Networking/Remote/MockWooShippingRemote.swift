@@ -15,8 +15,11 @@ final class MockWooShippingRemote {
     /// The results to return based on the given arguments in `loadLabelRates`
     private var loadLabelRatesResults = [CreatePackageResultKey: Result<[ShippingLabelCarriersAndRates], Error>]()
 
-    /// The results to return based on the given arguments in `loadLabelRates`
+    /// The results to return based on the given arguments in `loadPackages`
     private var loadPackagesResults = [CreatePackageResultKey: Result<WooShippingPackagesResponse, Error>]()
+
+    /// The results to return based on the given arguments in `loadAccountSettings`
+    private var loadAccountSettingsResults = [CreatePackageResultKey: Result<WooShippingAccountSettingsResponse, Error>]()
 
     /// Set the value passed to the `completion` block if `createPackage` is called.
     func whenCreatePackage(siteID: Int64,
@@ -37,6 +40,13 @@ final class MockWooShippingRemote {
                           thenReturn result: Result<WooShippingPackagesResponse, Error>) {
         let key = CreatePackageResultKey(siteID: siteID)
         loadPackagesResults[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `loadAccountSettings` is called.
+    func whenLoadAccountSettings(siteID: Int64,
+                          thenReturn result: Result<WooShippingAccountSettingsResponse, Error>) {
+        let key = CreatePackageResultKey(siteID: siteID)
+        loadAccountSettingsResults[key] = result
     }
 }
 
@@ -83,6 +93,20 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
             let key = CreatePackageResultKey(siteID: siteID)
             if let result = self.loadPackagesResults[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func loadAccountSettings(siteID: Int64,
+                             completion: @escaping (Result<WooShippingAccountSettingsResponse, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = CreatePackageResultKey(siteID: siteID)
+            if let result = self.loadAccountSettingsResults[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

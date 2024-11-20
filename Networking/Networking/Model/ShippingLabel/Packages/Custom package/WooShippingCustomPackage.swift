@@ -64,7 +64,16 @@ extension WooShippingCustomPackage: Codable {
         let name = try container.decode(String.self, forKey: .name)
         let type = try container.decode(String.self, forKey: .type)
         let dimensions = try container.decode(String.self, forKey: .dimensions)
-        let boxWeight = try container.decode(Double.self, forKey: .boxWeight)
+
+        var boxWeight: Double = 0.0
+        // Looks like some endpoints have boxWeight as String and some as Double
+        if let boxWeightDouble = try? container.decodeIfPresent(Double.self, forKey: .boxWeight) {
+            boxWeight = boxWeightDouble
+        }
+        else if let boxWeightString = try? container.decodeIfPresent(String.self, forKey: .boxWeight),
+                let boxWeightDouble = Double(boxWeightString) {
+            boxWeight = boxWeightDouble
+        }
 
         self.init(id: id, name: name, rawType: type, dimensions: dimensions, boxWeight: boxWeight)
     }

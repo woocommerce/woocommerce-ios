@@ -27,7 +27,6 @@ protocol PointOfSaleAggregateModelProtocol {
     @available(*, deprecated, message: "`allItems` is due for removal, use `itemListState` instead.")
     var allItems: [POSItem] { get }
     var itemListState: ItemListState { get }
-    var blockReturnToItemSelection: Bool { get }
     func loadInitialItems() async
     func loadNextItems() async
     func reload() async
@@ -56,19 +55,6 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
     @Published private(set) var allItems: [POSItem] = []
     @Published private(set) var itemListState: ItemListState = .initialLoading
-
-    var blockReturnToItemSelection: Bool {
-        switch paymentState {
-        case .processingPayment,
-                .paymentError,
-                .cardPaymentSuccessful,
-                .validatingOrder,
-                .preparingReader:
-            return true
-        case .idle, .validatingOrderError, .acceptingCard:
-            return orderState.isSyncing
-        }
-    }
 
     @Published private(set) var cart: [CartItem] = []
 

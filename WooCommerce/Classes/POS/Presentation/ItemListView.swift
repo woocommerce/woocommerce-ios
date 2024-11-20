@@ -2,10 +2,6 @@ import SwiftUI
 import protocol Yosemite.POSItem
 
 struct ItemListView: View {
-    private var shouldShowGhostableItemCard: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(
-        .displayInfiniteScrollingUIDetailsInPointOfSale
-    )
-
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -141,7 +137,7 @@ private extension ItemListView {
                     })
                 }
                 GhostItemCardView()
-                    .renderedIf(posModel.itemListState.isLoadingAfterInitialLoad && shouldShowGhostableItemCard)
+                    .renderedIf(posModel.itemListState.isLoadingAfterInitialLoad)
             }
             .frame(maxWidth: .infinity)
             .padding(.bottom, floatingControlAreaSize.height)

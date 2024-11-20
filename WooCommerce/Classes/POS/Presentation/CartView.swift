@@ -26,8 +26,8 @@ struct CartView: View {
             DynamicHStack(spacing: Constants.cartHeaderSpacing) {
                 HStack(spacing: Constants.cartHeaderElementSpacing) {
                     backAddMoreButton
-                        .disabled(posModel.blockReturnToItemSelection)
-                        .shimmering(active: posModel.blockReturnToItemSelection)
+                        .disabled(shouldPreventCartEditing)
+                        .shimmering(active: shouldPreventCartEditing)
 
                     HStack {
                         Text(Localization.cartTitle)
@@ -147,6 +147,12 @@ private extension CartView {
         default:
             return posModel.cart.isEmpty ? Color.posTertiaryBackground : Color.posSecondaryBackground
         }
+    }
+
+    var shouldPreventCartEditing: Bool {
+        cartViewModel.shouldPreventCartEditing(
+            orderState: posModel.orderState,
+            paymentState: posModel.paymentState)
     }
 }
 

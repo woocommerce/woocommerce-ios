@@ -9,7 +9,7 @@ struct InPersonPaymentsMenu: View {
         VStack {
             ScrollView {
                 VStack(spacing: 0) {
-                    depositSummary
+                    payoutSummary
                         .background {
                             Color(UIColor.systemBackground)
                                 .ignoresSafeArea()
@@ -247,31 +247,31 @@ struct InPersonPaymentsMenu: View {
     }
 
     @ViewBuilder
-    var depositSummary: some View {
+    var payoutSummary: some View {
         if #available(iOS 16.0, *),
-           viewModel.shouldShowDepositSummary {
-            if viewModel.isLoadingDepositSummary {
-                WooPaymentsDepositsOverviewView(viewModel: depositSummaryLoadingViewModel)
+           viewModel.shouldShowPayoutSummary {
+            if viewModel.isLoadingPayoutSummary {
+                WooPaymentsPayoutsOverviewView(viewModel: payoutSummaryLoadingViewModel)
                     .redacted(reason: .placeholder)
                     .shimmering()
                     .accessibilityElement(children: .combine)
-                    .accessibilityLabel(Localization.loadingDepositSummaryAccessibilityLabel)
-            } else if let depositViewModel = viewModel.depositViewModel {
-                WooPaymentsDepositsOverviewView(viewModel: depositViewModel)
+                    .accessibilityLabel(Localization.loadingPayoutSummaryAccessibilityLabel)
+            } else if let payoutViewModel = viewModel.payoutViewModel {
+                WooPaymentsPayoutsOverviewView(viewModel: payoutViewModel)
             }
         } else {
             EmptyView()
         }
     }
 
-    private var depositSummaryLoadingViewModel: WooPaymentsDepositsOverviewViewModel {
+    private var payoutSummaryLoadingViewModel: WooPaymentsPayoutsOverviewViewModel {
         .init(currencyViewModels: [.init(overview: .init(
             currency: .AED,
-            automaticDeposits: false,
-            depositInterval: .daily,
+            automaticPayouts: false,
+            payoutInterval: .daily,
             pendingBalanceAmount: .zero,
-            pendingDepositDays: 0,
-            lastDeposit: nil,
+            pendingPayoutDays: 0,
+            lastPayout: nil,
             availableBalance: .zero))])
     }
 }
@@ -302,20 +302,20 @@ private extension InPersonPaymentsMenu {
             value: "Settings",
             comment: "Title for the section related to changing payment settings inside the In-Person Payments menu")
 
-        static let wooPaymentsDepositsSectionTitle = NSLocalizedString(
-            "menu.payments.wooPaymentsDeposits.section.title",
+        static let wooPaymentsPayoutsSectionTitle = NSLocalizedString(
+            "menu.payments.wooPaymentsPayouts.section.title",
             value: "Woo Payments Balance",
-            comment: "Title for the section related to Woo Payments Deposits/Balances.")
+            comment: "Title for the section related to Woo Payments Payouts/Balances.")
 
         static let tapToPaySectionTitle = NSLocalizedString(
             "menu.payments.tapToPay.section.title",
             value: "Tap to Pay",
             comment: "Title for the Tap to Pay section in the In-Person payments settings")
 
-        static let wooPaymentsDeposits = NSLocalizedString(
-            "menu.payments.wooPaymentsDeposits.row.title",
+        static let wooPaymentsPayouts = NSLocalizedString(
+            "menu.payments.wooPaymentsPayouts.row.title",
             value: "Woo Payments Balance",
-            comment: "Title for the row related to Woo Payments Deposits/Balances.")
+            comment: "Title for the row related to Woo Payments Payouts/Balances.")
 
         static let purchaseCardReader = NSLocalizedString(
             "menu.payments.cardReader.purchase.row.title",
@@ -367,7 +367,7 @@ private extension InPersonPaymentsMenu {
         ).localizedCapitalized
 
         static let done = NSLocalizedString(
-            "menu.payments.wooPaymentsDeposits.navigation.done.button.title",
+            "menu.payments.wooPaymentsPayouts.navigation.done.button.title",
             value: "Done",
             comment: "Title for a done button in the navigation bar")
 
@@ -392,8 +392,8 @@ private extension InPersonPaymentsMenu {
                      """
         )
 
-        static let loadingDepositSummaryAccessibilityLabel = NSLocalizedString(
-            "menu.payments.depositSummary.loading.accessibilityLabel",
+        static let loadingPayoutSummaryAccessibilityLabel = NSLocalizedString(
+            "menu.payments.payoutSummary.loading.accessibilityLabel",
             value: "Loading balances...",
             comment: "An accessibility label used when the balances are loading on the payments menu"
         )
@@ -412,7 +412,7 @@ struct InPersonPaymentsMenu_Previews: PreviewProvider {
             cardPresentPaymentsConfiguration: .init(country: .US),
             onboardingUseCase: CardPresentPaymentsOnboardingUseCase(),
             cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: 0),
-            wooPaymentsDepositService: WooPaymentsDepositService(siteID: 0, credentials: .init(authToken: ""))),
+            wooPaymentsPayoutService: WooPaymentsPayoutService(siteID: 0, credentials: .init(authToken: ""))),
         navigationPath: .constant(NavigationPath()))
     static var previews: some View {
         NavigationStack {

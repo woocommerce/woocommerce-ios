@@ -21,6 +21,10 @@ struct TotalsView: View {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
 
+    private var shouldShowSendReceiptButton: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sendReceiptsForPointOfSale)
+    }
+
     init(viewModel: TotalsViewModel) {
         self.viewModel = viewModel
     }
@@ -210,16 +214,36 @@ private extension TotalsView {
         Button(action: {
             viewModel.startNewOrder()
         }, label: {
-            HStack(spacing: Constants.newOrderButtonSpacing) {
+            HStack(spacing: Constants.buttonSpacing) {
                 Text(Localization.newOrder)
-                    .font(Constants.newOrderButtonFont)
+                    .font(Constants.buttonFont)
             }
             .frame(minWidth: UIScreen.main.bounds.width / 2)
         })
-        .padding(Constants.newOrderButtonPadding)
+        .padding(Constants.buttonPadding)
         .foregroundColor(Constants.posPrimaryTextInverted)
         .background(Constants.posOverlayFillInverted)
-        .cornerRadius(Constants.newOrderButtonCornerRadius)
+        .cornerRadius(Constants.buttonCornerRadius)
+    }
+
+    private var sendReceiptButton: some View {
+        Button(action: {
+            // no-op
+            // https://github.com/woocommerce/woocommerce-ios/issues/14461
+        }, label: {
+            HStack(spacing: Constants.buttonSpacing) {
+                Text(Localization.sendReceipt)
+                    .font(Constants.buttonFont)
+            }
+            .frame(minWidth: UIScreen.main.bounds.width / 2)
+        })
+        .padding(Constants.buttonPadding)
+        .foregroundColor(Color.posPrimaryText)
+        .background(Color.clear)
+        .overlay {
+            RoundedRectangle(cornerRadius: Constants.buttonCornerRadius)
+                        .stroke(Color.posPrimaryText, lineWidth: 1.0)
+        }
     }
 
     @ViewBuilder
@@ -228,6 +252,8 @@ private extension TotalsView {
             if isShowingPaymentsButtonSpacing {
                 Spacer().frame(height: Constants.paymentsButtonSpacing)
             }
+            sendReceiptButton
+                .renderedIf(shouldShowSendReceiptButton)
             newOrderButton
                 .onAppear {
                     isShowingPaymentsButtonSpacing = false
@@ -333,7 +359,7 @@ private extension TotalsView {
 private extension TotalsView {
     enum Constants {
         static let pricesIdealWidth: CGFloat = 382
-        static let newOrderButtonCornerRadius: CGFloat = 8
+        static let buttonCornerRadius: CGFloat = 8
 
         static let verticalSpacing: CGFloat = 56
 
@@ -354,9 +380,9 @@ private extension TotalsView {
 
         static let paymentsButtonSpacing: CGFloat = 80
         static let paymentsButtonButtonSpacingAnimationDelay: CGFloat = 0.3
-        static let newOrderButtonSpacing: CGFloat = 12
-        static let newOrderButtonPadding: CGFloat = 32
-        static let newOrderButtonFont: POSFontStyle = .posBodyEmphasized
+        static let buttonSpacing: CGFloat = 12
+        static let buttonPadding: CGFloat = 32
+        static let buttonFont: POSFontStyle = .posBodyEmphasized
 
         /// Used for synchronizing animations of shimmeringLine and textField
         static let matchedGeometrySubtotalId: String = "pos_totals_view_subtotal_matched_geometry_id"
@@ -401,6 +427,10 @@ private extension TotalsView {
             "pos.totalsView.newOrder",
             value: "New order",
             comment: "Button title for new order button")
+        static let sendReceipt = NSLocalizedString(
+            "pos.totalsView.sendReceipt",
+            value: "Receipt",
+            comment: "Button title for the receipt button")
     }
 }
 
@@ -428,5 +458,6 @@ private extension View {
         posModel: posModel,
         cardPresentPaymentService: CardPresentPaymentPreviewService())
     TotalsView(viewModel: totalsVM)
+        .environmentObject(posModel)
 }
 #endif

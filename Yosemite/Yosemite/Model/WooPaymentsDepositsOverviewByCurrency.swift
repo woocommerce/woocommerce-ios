@@ -2,30 +2,30 @@ import Foundation
 import WooFoundation
 import Networking
 
-public struct WooPaymentsDepositsOverviewByCurrency {
+public struct WooPaymentsPayoutsOverviewByCurrency {
     public let currency: CurrencyCode
-    public let automaticDeposits: Bool
-    public let depositInterval: WooPaymentsDepositInterval
+    public let automaticPayouts: Bool
+    public let payoutInterval: WooPaymentsPayoutInterval
     public let pendingBalanceAmount: NSDecimalNumber
-    public let pendingDepositsCount: Int
-    public let pendingDepositDays: Int
-    public let nextDeposit: NextDeposit?
-    public let lastDeposit: LastDeposit?
+    public let pendingPayoutsCount: Int
+    public let pendingPayoutDays: Int
+    public let nextPayout: NextPayout?
+    public let lastPayout: LastPayout?
     public let availableBalance: NSDecimalNumber
 
-    public struct NextDeposit {
+    public struct NextPayout {
         public let amount: NSDecimalNumber
         public let date: Date
-        public let status: WooPaymentsDepositStatus
+        public let status: WooPaymentsPayoutStatus
 
-        public init(amount: NSDecimalNumber, date: Date, status: WooPaymentsDepositStatus) {
+        public init(amount: NSDecimalNumber, date: Date, status: WooPaymentsPayoutStatus) {
             self.amount = amount
             self.date = date
             self.status = status
         }
     }
 
-    public struct LastDeposit {
+    public struct LastPayout {
         public let amount: NSDecimalNumber
         public let date: Date
 
@@ -36,22 +36,22 @@ public struct WooPaymentsDepositsOverviewByCurrency {
     }
 
     public init(currency: CurrencyCode,
-                automaticDeposits: Bool,
-                depositInterval: WooPaymentsDepositInterval,
+                automaticPayouts: Bool,
+                payoutInterval: WooPaymentsPayoutInterval,
                 pendingBalanceAmount: NSDecimalNumber,
-                pendingDepositsCount: Int,
-                pendingDepositDays: Int,
-                nextDeposit: NextDeposit?,
-                lastDeposit: LastDeposit?,
+                pendingPayoutsCount: Int,
+                pendingPayoutDays: Int,
+                nextPayout: NextPayout?,
+                lastPayout: LastPayout?,
                 availableBalance: NSDecimalNumber) {
         self.currency = currency
-        self.automaticDeposits = automaticDeposits
-        self.depositInterval = depositInterval
+        self.automaticPayouts = automaticPayouts
+        self.payoutInterval = payoutInterval
         self.pendingBalanceAmount = pendingBalanceAmount
-        self.pendingDepositsCount = pendingDepositsCount
-        self.pendingDepositDays = pendingDepositDays
-        self.nextDeposit = nextDeposit
-        self.lastDeposit = lastDeposit
+        self.pendingPayoutsCount = pendingPayoutsCount
+        self.pendingPayoutDays = pendingPayoutDays
+        self.nextPayout = nextPayout
+        self.lastPayout = lastPayout
         self.availableBalance = availableBalance
     }
 }

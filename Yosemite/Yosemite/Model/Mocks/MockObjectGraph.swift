@@ -17,6 +17,9 @@ public protocol MockObjectGraph {
     var products: [Product] { get }
     var reviews: [ProductReview] { get }
 
+    var taxBasedOnSetting: TaxBasedOnSetting { get }
+    var googleAdsConnection: GoogleAdsConnection { get }
+
     var thisMonthOrderStats: OrderStatsV4 { get }
     var thisMonthVisitStats: SiteVisitStats { get }
     var thisMonthTopProducts: TopEarnerStats { get }
@@ -497,6 +500,18 @@ extension MockObjectGraph {
             total: Double(quantity) * averagePrice,
             currency: "USD",
             imageUrl: product.images.first?.src
+        )
+    }
+
+    static func createSiteSummaryStats(siteId: Int64, period: StatGranularity, latestDateToInclude: Date, visitors: Int, views: Int) -> SiteSummaryStats {
+
+        let formattedDate = StatsStoreV4.buildDateString(from: latestDateToInclude, timeRange: .today)
+        return SiteSummaryStats(
+            siteID: siteId,
+            date: formattedDate,
+            period: period,
+            visitors: visitors,
+            views: views
         )
     }
 }

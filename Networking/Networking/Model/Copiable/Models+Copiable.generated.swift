@@ -1160,7 +1160,7 @@ extension Networking.MetaData {
     public func copy(
         metadataID: CopiableProp<Int64> = .copy,
         key: CopiableProp<String> = .copy,
-        value: CopiableProp<String> = .copy
+        value: CopiableProp<MetaDataValue> = .copy
     ) -> Networking.MetaData {
         let metadataID = metadataID ?? self.metadataID
         let key = key ?? self.key
@@ -3883,22 +3883,22 @@ extension Networking.WCPayCharge {
     }
 }
 
-extension Networking.WooPaymentsAccountDepositSummary {
+extension Networking.WooPaymentsAccountPayoutSummary {
     public func copy(
-        depositsEnabled: CopiableProp<Bool> = .copy,
-        depositsBlocked: CopiableProp<Bool> = .copy,
-        depositsSchedule: CopiableProp<WooPaymentsDepositsSchedule> = .copy,
+        payoutsEnabled: CopiableProp<Bool> = .copy,
+        payoutsBlocked: CopiableProp<Bool> = .copy,
+        payoutsSchedule: CopiableProp<WooPaymentsPayoutsSchedule> = .copy,
         defaultCurrency: CopiableProp<String> = .copy
-    ) -> Networking.WooPaymentsAccountDepositSummary {
-        let depositsEnabled = depositsEnabled ?? self.depositsEnabled
-        let depositsBlocked = depositsBlocked ?? self.depositsBlocked
-        let depositsSchedule = depositsSchedule ?? self.depositsSchedule
+    ) -> Networking.WooPaymentsAccountPayoutSummary {
+        let payoutsEnabled = payoutsEnabled ?? self.payoutsEnabled
+        let payoutsBlocked = payoutsBlocked ?? self.payoutsBlocked
+        let payoutsSchedule = payoutsSchedule ?? self.payoutsSchedule
         let defaultCurrency = defaultCurrency ?? self.defaultCurrency
 
-        return Networking.WooPaymentsAccountDepositSummary(
-            depositsEnabled: depositsEnabled,
-            depositsBlocked: depositsBlocked,
-            depositsSchedule: depositsSchedule,
+        return Networking.WooPaymentsAccountPayoutSummary(
+            payoutsEnabled: payoutsEnabled,
+            payoutsBlocked: payoutsBlocked,
+            payoutsSchedule: payoutsSchedule,
             defaultCurrency: defaultCurrency
         )
     }
@@ -3937,35 +3937,50 @@ extension Networking.WooPaymentsCurrencyBalances {
     }
 }
 
-extension Networking.WooPaymentsCurrencyDeposits {
+extension Networking.WooPaymentsCurrencyPayouts {
     public func copy(
-        lastPaid: CopiableProp<[WooPaymentsDeposit]> = .copy,
-        lastManualDeposits: CopiableProp<[WooPaymentsManualDeposit]> = .copy
-    ) -> Networking.WooPaymentsCurrencyDeposits {
+        lastPaid: CopiableProp<[WooPaymentsPayout]> = .copy,
+        lastManualPayouts: CopiableProp<[WooPaymentsManualPayout]> = .copy
+    ) -> Networking.WooPaymentsCurrencyPayouts {
         let lastPaid = lastPaid ?? self.lastPaid
-        let lastManualDeposits = lastManualDeposits ?? self.lastManualDeposits
+        let lastManualPayouts = lastManualPayouts ?? self.lastManualPayouts
 
-        return Networking.WooPaymentsCurrencyDeposits(
+        return Networking.WooPaymentsCurrencyPayouts(
             lastPaid: lastPaid,
-            lastManualDeposits: lastManualDeposits
+            lastManualPayouts: lastManualPayouts
         )
     }
 }
 
-extension Networking.WooPaymentsDeposit {
+extension Networking.WooPaymentsManualPayout {
+    public func copy(
+        currency: CopiableProp<String> = .copy,
+        date: CopiableProp<Date> = .copy
+    ) -> Networking.WooPaymentsManualPayout {
+        let currency = currency ?? self.currency
+        let date = date ?? self.date
+
+        return Networking.WooPaymentsManualPayout(
+            currency: currency,
+            date: date
+        )
+    }
+}
+
+extension Networking.WooPaymentsPayout {
     public func copy(
         id: CopiableProp<String> = .copy,
         date: CopiableProp<Date> = .copy,
-        type: CopiableProp<WooPaymentsDepositType> = .copy,
+        type: CopiableProp<WooPaymentsPayoutType> = .copy,
         amount: CopiableProp<Int> = .copy,
-        status: CopiableProp<WooPaymentsDepositStatus> = .copy,
+        status: CopiableProp<WooPaymentsPayoutStatus> = .copy,
         bankAccount: NullableCopiableProp<String> = .copy,
         currency: CopiableProp<String> = .copy,
         automatic: CopiableProp<Bool> = .copy,
         fee: CopiableProp<Int> = .copy,
         feePercentage: CopiableProp<Int> = .copy,
         created: CopiableProp<Int> = .copy
-    ) -> Networking.WooPaymentsDeposit {
+    ) -> Networking.WooPaymentsPayout {
         let id = id ?? self.id
         let date = date ?? self.date
         let type = type ?? self.type
@@ -3978,7 +3993,7 @@ extension Networking.WooPaymentsDeposit {
         let feePercentage = feePercentage ?? self.feePercentage
         let created = created ?? self.created
 
-        return Networking.WooPaymentsDeposit(
+        return Networking.WooPaymentsPayout(
             id: id,
             date: date,
             type: type,
@@ -3994,17 +4009,17 @@ extension Networking.WooPaymentsDeposit {
     }
 }
 
-extension Networking.WooPaymentsDepositsOverview {
+extension Networking.WooPaymentsPayoutsOverview {
     public func copy(
-        deposit: CopiableProp<WooPaymentsCurrencyDeposits> = .copy,
+        deposit: CopiableProp<WooPaymentsCurrencyPayouts> = .copy,
         balance: CopiableProp<WooPaymentsCurrencyBalances> = .copy,
-        account: CopiableProp<WooPaymentsAccountDepositSummary> = .copy
-    ) -> Networking.WooPaymentsDepositsOverview {
+        account: CopiableProp<WooPaymentsAccountPayoutSummary> = .copy
+    ) -> Networking.WooPaymentsPayoutsOverview {
         let deposit = deposit ?? self.deposit
         let balance = balance ?? self.balance
         let account = account ?? self.account
 
-        return Networking.WooPaymentsDepositsOverview(
+        return Networking.WooPaymentsPayoutsOverview(
             deposit: deposit,
             balance: balance,
             account: account
@@ -4012,32 +4027,17 @@ extension Networking.WooPaymentsDepositsOverview {
     }
 }
 
-extension Networking.WooPaymentsDepositsSchedule {
+extension Networking.WooPaymentsPayoutsSchedule {
     public func copy(
         delayDays: CopiableProp<Int> = .copy,
-        interval: CopiableProp<WooPaymentsDepositInterval> = .copy
-    ) -> Networking.WooPaymentsDepositsSchedule {
+        interval: CopiableProp<WooPaymentsPayoutInterval> = .copy
+    ) -> Networking.WooPaymentsPayoutsSchedule {
         let delayDays = delayDays ?? self.delayDays
         let interval = interval ?? self.interval
 
-        return Networking.WooPaymentsDepositsSchedule(
+        return Networking.WooPaymentsPayoutsSchedule(
             delayDays: delayDays,
             interval: interval
-        )
-    }
-}
-
-extension Networking.WooPaymentsManualDeposit {
-    public func copy(
-        currency: CopiableProp<String> = .copy,
-        date: CopiableProp<Date> = .copy
-    ) -> Networking.WooPaymentsManualDeposit {
-        let currency = currency ?? self.currency
-        let date = date ?? self.date
-
-        return Networking.WooPaymentsManualDeposit(
-            currency: currency,
-            date: date
         )
     }
 }
@@ -4045,7 +4045,7 @@ extension Networking.WooPaymentsManualDeposit {
 extension Networking.WooShippingCreatePackageResponse {
     public func copy(
         customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
-        predefinedOptions: CopiableProp<[WooShippingPredefinedOption]> = .copy
+        predefinedOptions: CopiableProp<[WooShippingPredefinedSavedOption]> = .copy
     ) -> Networking.WooShippingCreatePackageResponse {
         let customPackages = customPackages ?? self.customPackages
         let predefinedOptions = predefinedOptions ?? self.predefinedOptions
@@ -4053,6 +4053,27 @@ extension Networking.WooShippingCreatePackageResponse {
         return Networking.WooShippingCreatePackageResponse(
             customPackages: customPackages,
             predefinedOptions: predefinedOptions
+        )
+    }
+}
+
+extension Networking.WooShippingPackagesResponse {
+    public func copy(
+        storeOptions: CopiableProp<ShippingLabelStoreOptions> = .copy,
+        customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
+        savedPredefinedPackages: CopiableProp<[WooShippingSavedPredefinedPackage]> = .copy,
+        allPredefinedOptions: CopiableProp<[WooShippingPredefinedOption]> = .copy
+    ) -> Networking.WooShippingPackagesResponse {
+        let storeOptions = storeOptions ?? self.storeOptions
+        let customPackages = customPackages ?? self.customPackages
+        let savedPredefinedPackages = savedPredefinedPackages ?? self.savedPredefinedPackages
+        let allPredefinedOptions = allPredefinedOptions ?? self.allPredefinedOptions
+
+        return Networking.WooShippingPackagesResponse(
+            storeOptions: storeOptions,
+            customPackages: customPackages,
+            savedPredefinedPackages: savedPredefinedPackages,
+            allPredefinedOptions: allPredefinedOptions
         )
     }
 }

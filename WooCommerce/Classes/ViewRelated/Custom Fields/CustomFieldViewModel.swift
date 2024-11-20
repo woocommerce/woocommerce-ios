@@ -21,30 +21,29 @@ struct CustomFieldViewModel: Identifiable, Equatable {
     ///
     let valueURL: URL?
 
-    var isJson: Bool {
-        (try? JSONSerialization.jsonObject(with: value.data(using: .utf8) ?? Data())) != nil
-    }
+    let isJson: Bool
 
-    init(fieldID: Int64? = nil, key: String, value: String, valueURL: URL? = nil) {
+    init(fieldID: Int64? = nil, key: String, value: String, valueURL: URL? = nil, isJson: Bool = false) {
         self.fieldID = fieldID
         self.key = key
         self.value = value
         self.valueURL = valueURL
-
+        self.isJson = isJson
     }
 
     init(metadata: MetaData) {
         // Create a URL out of the metadata value, if it is a valid URL that can be opened on device
         var valueURL: URL?
-        if metadata.value.isValidURL(), let url = URL(string: metadata.value), UIApplication.shared.canOpenURL(url) {
+        if metadata.value.stringValue.isValidURL(), let url = URL(string: metadata.value.stringValue), UIApplication.shared.canOpenURL(url) {
             valueURL = url
         }
 
         self.init(
             fieldID: metadata.metadataID,
             key: metadata.key,
-            value: metadata.value,
-            valueURL: valueURL
+            value: metadata.value.stringValue,
+            valueURL: valueURL,
+            isJson: metadata.value.isJson
         )
     }
 

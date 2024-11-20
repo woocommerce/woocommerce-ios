@@ -294,14 +294,22 @@ public extension MediaRemote {
 
     private enum ParameterKey {
         static let pageNumber: String = "page"
-        static let dotComPageSize: String = "number" // https://developer.wordpress.com/docs/api/1.2/get/sites/%24site/media/
-        static let dotOrgPageSize: String = "per_page" // https://developer.wordpress.org/rest-api/reference/media/#arguments
+        // For dotcom API usage, we want to use "number"
+        // https://developer.wordpress.com/docs/api/1.2/get/sites/%24site/media/
+        static let dotComPageSize: String = "number"
+        // For dotorg API usage, we want to use "per_page"
+        // https://developer.wordpress.org/rest-api/reference/media/#arguments
+        static let dotOrgPageSize: String = "per_page"
         static let wordPressMediaPostID: String = "post"
         static let altText: String = "alt"
         static let wordPressAltText: String = "alt_text"
         static let fields: String     = "fields"
         static let fieldsWordPressSite: String = "_fields"
+        // For dotcom API usage, we want to use "mime_type"
+        // https://developer.wordpress.com/docs/api/1.2/get/sites/%24site/media/
         static let mimeType: String   = "mime_type"
+        // For dotorg API usage, we want to use "media_type"
+        // https://developer.wordpress.org/rest-api/reference/media/#list-media
         static let mediaType: String = "media_type"
         static let postID: String   = "post_ID"
         static let contextKey: String = "context"

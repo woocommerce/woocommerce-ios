@@ -14,6 +14,9 @@ final class WooShippingRemoteTests: XCTestCase {
     /// Dummy Order ID
     private let sampleOrderID: Int64 = 1234
 
+    /// Dummy Shipment ID
+    private let sampleShipmentID: String = "shipment_0"
+
     override func setUp() {
         super.setUp()
         network.removeAllSimulatedResponses()
@@ -206,6 +209,49 @@ final class WooShippingRemoteTests: XCTestCase {
         // When
         let result: Result<WooShippingAccountSettingsResponse, Error> = waitFor { promise in
             remote.loadAccountSettings(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+
+    func test_purchaseShippingLabel_parses_success_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/purchase/\(sampleOrderID)", filename: "wooshipping-purchase-success")
+
+        // When
+        let result: Result<[ShippingLabelPurchase], Error> = waitFor { promise in
+            remote.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                         orderID: self.sampleOrderID,
+                                         shipmentID: self.sampleShipmentID,
+                                         originAddress: ShippingLabelAddress.fake(),
+                                         destinationAddress: ShippingLabelAddress.fake(),
+                                         package: WooShippingPackagePurchase.fake()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let labels = try XCTUnwrap(result.get())
+        XCTAssertEqual(labels.count, 1)
+    }
+
+    func test_purchaseShippingLabel_returns_error_on_failure() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/purchase/\(sampleOrderID)", filename: "generic_error")
+
+        // When
+        let result: Result<[ShippingLabelPurchase], Error> = waitFor { promise in
+            remote.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                         orderID: self.sampleOrderID,
+                                         shipmentID: self.sampleShipmentID,
+                                         originAddress: ShippingLabelAddress.fake(),
+                                         destinationAddress: ShippingLabelAddress.fake(),
+                                         package: WooShippingPackagePurchase.fake()) { result in
                 promise(result)
             }
         }

@@ -5,5 +5,6 @@ import protocol Yosemite.POSItem
 protocol CartViewModelProtocol: ObservableObject {
     var itemsInCartLabel: String? { get }
 
-    func shouldPreventCartEditing(posModel: PointOfSaleAggregateModel) -> Bool
+    func shouldPreventCartEditing(orderState: PointOfSaleOrderState,
+                                  paymentState: PointOfSalePaymentState) -> Bool
 }

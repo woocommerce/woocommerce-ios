@@ -16,7 +16,8 @@ class MockCartViewModel: CartViewModelProtocol {
     // Mock variables
     var submitCartCalled = false
 
-    func shouldPreventCartEditing(posModel: PointOfSaleAggregateModel) -> Bool {
+    func shouldPreventCartEditing(orderState: PointOfSaleOrderState,
+                                  paymentState: PointOfSalePaymentState) -> Bool {
         return false
     }
 }

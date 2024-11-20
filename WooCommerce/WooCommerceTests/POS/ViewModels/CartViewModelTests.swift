@@ -78,63 +78,59 @@ struct CartViewModelTests {
     }
 
     @Test func shouldPreventCartEditing_when_paymentState_idle_and_order_is_syncing() async throws {
-        try #require(sut.shouldPreventCartEditing(posModel: posModel) == false)
-        // Given syncing will happen for 1 second on checkOut
-        orderService.simulateSyncing = true
-        posModel.addToCart(makeItem())
+        // Given
 
-        // When syncing is ongoing on another thread
-        Task {
-            await posModel.checkOut()
-        }
-        try await Task.sleep(nanoseconds: UInt64(100 * Double(NSEC_PER_MSEC)))
-
-        // Then
-        #expect(sut.shouldPreventCartEditing(posModel: posModel) == true)
+        // When, Then
+        #expect(sut.shouldPreventCartEditing(orderState: .syncing,
+                                             paymentState: .idle) == true)
     }
 
     @Test func shouldPreventCartEditing_when_paymentState_cardPaymentSuccessful() async throws {
-        try #require(sut.shouldPreventCartEditing(posModel: posModel) == false)
         // Given
-        cardPresentPaymentService.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+        let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
+            cartTotal: "$10.00",
+            orderTotal: "$12.00",
+            taxTotal: "$2.00"))
 
         // When, Then
-        #expect(sut.shouldPreventCartEditing(posModel: posModel) == true)
+        #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
+                                             paymentState: .cardPaymentSuccessful) == true)
     }
 
     @Test func shouldPreventCartEditing_when_paymentState_processingPayment() async throws {
-        try #require(sut.shouldPreventCartEditing(posModel: posModel) == false)
         // Given
-        cardPresentPaymentService.paymentEvent = .show(eventDetails: .processing)
+        let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
+            cartTotal: "$10.00",
+            orderTotal: "$12.00",
+            taxTotal: "$2.00"))
 
         // When, Then
-        #expect(sut.shouldPreventCartEditing(posModel: posModel) == true)
+        #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
+                                             paymentState: .processingPayment) == true)
     }
 
     @Test func shouldPreventCartEditing_false_when_paymentState_acceptingCard() async throws {
         // Given
-        cardPresentPaymentService.paymentEvent = .show(
-            eventDetails: .preparingForPayment(cancelPayment: {}))
-        try #require(sut.shouldPreventCartEditing(posModel: posModel) == true)
+        let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
+            cartTotal: "$10.00",
+            orderTotal: "$12.00",
+            taxTotal: "$2.00"))
 
-        // When
-        cardPresentPaymentService.paymentEvent = .show(
-            eventDetails: .tapSwipeOrInsertCard(inputMethods: [.tap], cancelPayment: {}))
-
-        // Then
-        #expect(sut.shouldPreventCartEditing(posModel: posModel) == false)
+        // When, Then
+        #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
+                                             paymentState: .acceptingCard) == false)
     }
 
     @Test func shouldPreventCartEditing_false_when_paymentState_validatingOrderError() async throws {
         // Given
-        cardPresentPaymentService.paymentEvent = .show(
-            eventDetails: .paymentError(
-                error: CollectOrderPaymentUseCaseError.orderTotalChanged,
-                retryApproach: .dontRetry,
-                cancelPayment: {}))
+        let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
+            cartTotal: "$10.00",
+            orderTotal: "$12.00",
+            taxTotal: "$2.00"))
 
         // When, Then
-        #expect(sut.shouldPreventCartEditing(posModel: posModel) == false)
+        #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
+                                             paymentState: .validatingOrderError) == false)
     }
 
 }

@@ -19,11 +19,12 @@ final class CartViewModel: CartViewModelProtocol {
                                 plural: "%1$d items")
     }
 
-    func shouldPreventCartEditing(posModel: PointOfSaleAggregateModel) -> Bool {
-        guard posModel.paymentState.allowsCartEditing else {
+    func shouldPreventCartEditing(orderState: PointOfSaleOrderState,
+                                  paymentState: PointOfSalePaymentState) -> Bool {
+        guard paymentState.allowsCartEditing else {
             return true
         }
-        return posModel.orderState.isSyncing
+        return orderState.isSyncing
     }
 }
 

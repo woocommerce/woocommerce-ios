@@ -9,13 +9,9 @@ struct MockPaymentActionHandler: MockActionHandler {
     let objectGraph: MockObjectGraph
     let storageManager: StorageManagerType
 
-    private let paymentStore: PaymentStore
-
     init(objectGraph: MockObjectGraph, storageManager: StorageManagerType) {
         self.objectGraph = objectGraph
         self.storageManager = storageManager
-
-        paymentStore = PaymentStore(dispatcher: Dispatcher(), storageManager: storageManager, network: NullNetwork())
     }
 
     func handle(action: PaymentAction) {

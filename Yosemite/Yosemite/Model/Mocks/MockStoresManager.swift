@@ -159,7 +159,6 @@ public class MockStoresManager: StoresManager {
         case let action as ShippingMethodAction:
             shippingMethodActionHandler.handle(action: action)
         default:
-            //break
             fatalError("Unable to handle action: \(action.identifier) \(String(describing: action))")
         }
     }

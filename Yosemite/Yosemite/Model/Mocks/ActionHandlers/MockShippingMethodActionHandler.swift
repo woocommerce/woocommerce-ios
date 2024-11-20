@@ -10,8 +10,8 @@ struct MockShippingMethodActionHandler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-        case .synchronizeShippingMethods:
-            break
+        case .synchronizeShippingMethods(_, let completion):
+            completion(.success(()))
         }
     }
 }

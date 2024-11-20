@@ -215,6 +215,10 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         )
     ]
 
+    var taxBasedOnSetting: TaxBasedOnSetting = .customerShippingAddress
+
+    var googleAdsConnection = GoogleAdsConnection(id: 1234, currency: "USD", symbol: "$", rawStatus: "connected")
+
     var thisMonthVisitStats: SiteVisitStats {
         Self.createVisitStats(
             siteID: 1,

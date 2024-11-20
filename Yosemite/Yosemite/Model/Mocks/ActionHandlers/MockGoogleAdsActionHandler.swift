@@ -10,8 +10,8 @@ struct MockGoogleAdsActionHandler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-        case .checkConnection:
-            break
+        case .checkConnection(_, let onCompletion):
+            onCompletion(.success(objectGraph.googleAdsConnection))
         default:
             unimplementedAction(action: action)
         }

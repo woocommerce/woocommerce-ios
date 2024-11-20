@@ -43,11 +43,20 @@ struct MockAppSettingsActionHandler: MockActionHandler {
             onCompletion(.success(nil))
         case .loadDashboardCards(let siteId, let onCompletion):
             loadDashboardCards(siteId: siteId, onCompletion: onCompletion)
+        case .loadFirstInPersonPaymentsTransactionDate(_, _, let onCompletion):
+            onCompletion(nil)
+        case .loadSelectedTaxRateID(_, let onCompletion):
+            onCompletion(nil)
+        case .loadOrdersSettings(let siteID, let onCompletion):
+            onCompletion(.success(.init(siteID: siteID,
+                                        orderStatusesFilter: nil,
+                                        dateRangeFilter: nil,
+                                        productFilter: nil,
+                                        customerFilter: nil)))
+        case .upsertProductsSettings(_, _, _, _, _, _, _, let onCompletion):
+            onCompletion(nil)
         case .resetEligibilityErrorInfo,
-                .setTelemetryAvailability,
-                .loadOrdersSettings,
-                .upsertProductsSettings,
-                .loadFirstInPersonPaymentsTransactionDate
+                .setTelemetryAvailability
             :
             break
         default: unimplementedAction(action: action)

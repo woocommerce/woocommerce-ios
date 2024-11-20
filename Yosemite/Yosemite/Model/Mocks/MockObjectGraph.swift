@@ -17,6 +17,9 @@ public protocol MockObjectGraph {
     var products: [Product] { get }
     var reviews: [ProductReview] { get }
 
+    var taxBasedOnSetting: TaxBasedOnSetting { get }
+    var googleAdsConnection: GoogleAdsConnection { get }
+
     var thisMonthOrderStats: OrderStatsV4 { get }
     var thisMonthVisitStats: SiteVisitStats { get }
     var thisMonthTopProducts: TopEarnerStats { get }

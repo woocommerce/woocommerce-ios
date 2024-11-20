@@ -10,8 +10,8 @@ struct MockJustInTimeMessageActionHandler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-        case .loadMessage:
-            break
+        case .loadMessage(_, _, _, let onCompletion):
+            onCompletion(.success([]))
         default:
             unimplementedAction(action: action)
         }

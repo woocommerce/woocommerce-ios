@@ -12,9 +12,16 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                                description: "Sample description",
                                                ctaText: "Sample CTA")
 
-    private let sampleAISuggestions = [BlazeAISuggestion(siteName: "First suggested tagline", textSnippet: "First suggested description"),
-                                       BlazeAISuggestion(siteName: "Second suggested tagline", textSnippet: "Second suggested description"),
-                                       BlazeAISuggestion(siteName: "Third suggested tagline", textSnippet: "Third suggested description")]
+    private let sampleAISuggestions = [BlazeAISuggestion(siteName: "First suggested tagline",
+                                                         textSnippet: "First suggested description",
+                                                         ctaText: "Shop Now"),
+                                       BlazeAISuggestion(siteName: "Second suggested tagline",
+                                                         textSnippet: "Second suggested description",
+                                                         ctaText: "Buy Now"),
+                                       BlazeAISuggestion(siteName: "Third suggested tagline",
+                                                         textSnippet: "Third suggested description",
+                                                         ctaText: "Order Now")]
+
 
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
@@ -617,7 +624,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                                                                        source: .media(media: .fake())),
                                                                tagline: sampleAISuggestions[1].siteName,
                                                                description: sampleAISuggestions[1].textSnippet,
-                                                               ctaText: sampleAdData.ctaText),
+                                                               ctaText: sampleAISuggestions[1].ctaText),
                                        suggestions: sampleAISuggestions,
                                        onSave: { _ in })
 
@@ -692,7 +699,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                                                                        source: .media(media: .fake())),
                                                                tagline: sampleAISuggestions[1].siteName,
                                                                description: sampleAISuggestions[1].textSnippet,
-                                                               ctaText: sampleAdData.ctaText),
+                                                               ctaText: sampleAISuggestions[1].ctaText),
                                        suggestions: sampleAISuggestions,
                                        analytics: analytics,
                                        onSave: { _ in })
@@ -718,7 +725,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                                                                        source: .media(media: .fake())),
                                                                tagline: sampleAISuggestions[1].siteName,
                                                                description: sampleAISuggestions[1].textSnippet,
-                                                               ctaText: sampleAdData.ctaText),
+                                                               ctaText: sampleAISuggestions[1].ctaText),
                                        suggestions: sampleAISuggestions,
                                        analytics: analytics,
                                        onSave: { _ in })

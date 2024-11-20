@@ -1,22 +1,22 @@
 import Foundation
 
-struct WooPaymentsDepositsOverviewMapper: Mapper {
-    func map(response: Data) throws -> WooPaymentsDepositsOverview {
+struct WooPaymentsPayoutsOverviewMapper: Mapper {
+    func map(response: Data) throws -> WooPaymentsPayoutsOverview {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .millisecondsSince1970
 
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(WooPaymentsDepositsOverviewEnvelope.self, from: response).depositsOverview
+            return try decoder.decode(WooPaymentsPayoutsOverviewEnvelope.self, from: response).payoutsOverview
         } else {
-            return try decoder.decode(WooPaymentsDepositsOverview.self, from: response)
+            return try decoder.decode(WooPaymentsPayoutsOverview.self, from: response)
         }
     }
 }
 
-private struct WooPaymentsDepositsOverviewEnvelope: Decodable {
-    let depositsOverview: WooPaymentsDepositsOverview
+private struct WooPaymentsPayoutsOverviewEnvelope: Decodable {
+    let payoutsOverview: WooPaymentsPayoutsOverview
 
     private enum CodingKeys: String, CodingKey {
-        case depositsOverview = "data"
+        case payoutsOverview = "data"
     }
 }

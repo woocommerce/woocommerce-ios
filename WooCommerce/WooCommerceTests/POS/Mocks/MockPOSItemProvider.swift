@@ -8,9 +8,13 @@ final class MockPOSItemProvider: POSItemProvider {
     var shouldThrowError = false
     var shouldReturnZeroItems = false
     var shouldSimulateTwoPages = false
+    private var isPageOutOfRange = false
 
     var spyLastRequestedPageNumber: Int?
     func providePointOfSaleItems(pageNumber: Int) async throws -> [Yosemite.POSItem] {
+        if isPageOutOfRange {
+            throw MockError.pageOutOfRange
+        }
         spyLastRequestedPageNumber = pageNumber
         if shouldThrowError {
             throw MockError.requestFailed
@@ -28,6 +32,10 @@ final class MockPOSItemProvider: POSItemProvider {
 
     func simulateFetchNextPage() {
         items.append(contentsOf: MockPOSItemProvider.makeSecondPageItems())
+    }
+
+    func simulateNextPageIsOutOfRange() {
+        isPageOutOfRange = true
     }
 }
 
@@ -82,5 +90,6 @@ extension MockPOSItemProvider {
 
     enum MockError: Error {
         case requestFailed
+        case pageOutOfRange
     }
 }

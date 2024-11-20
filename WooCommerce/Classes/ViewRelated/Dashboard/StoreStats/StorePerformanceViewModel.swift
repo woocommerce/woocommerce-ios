@@ -162,14 +162,13 @@ final class StorePerformanceViewModel: ObservableObject {
 
         // Stop if data is relatively new
         if !forceRefresh && DashboardTimestampStore.isTimestampFresh(for: .performance, at: timeRange.timestampRange) {
-            // If there is cached data, update `siteVisitStatMode` to the appropriate mode so that it is shown correctly.
-            if periodViewModel?.noDataFound == false {
-                switch timeRange {
-                case .custom:
-                    updateSiteVisitStatModeForCustomRange()
-                case .today, .thisWeek, .thisMonth, .thisYear:
-                    siteVisitStatMode = .default
-                }
+
+            // We can show the cached data since we know it's available from the timestamp.
+            switch timeRange {
+            case .custom:
+                updateSiteVisitStatModeForCustomRange()
+            case .today, .thisWeek, .thisMonth, .thisYear:
+                siteVisitStatMode = .default
             }
 
             return

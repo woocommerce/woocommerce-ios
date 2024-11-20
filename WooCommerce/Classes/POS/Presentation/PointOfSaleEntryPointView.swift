@@ -23,10 +23,10 @@ struct PointOfSaleEntryPointView: View {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         let posModel = PointOfSaleAggregateModel(itemProvider: itemProvider,
-                                                 cardPresentPaymentService: cardPresentPaymentService)
-        let totalsViewModel = TotalsViewModel(orderService: orderService,
+                                                 cardPresentPaymentService: cardPresentPaymentService,
+                                                 orderService: orderService)
+        let totalsViewModel = TotalsViewModel(posModel: posModel,
                                               cardPresentPaymentService: cardPresentPaymentService,
-                                              currencyFormatter: currencyFormatter,
                                               paymentState: .acceptingCard)
         let cartViewModel = CartViewModel(posModel: posModel)
         let itemListViewModel = ItemListViewModel(posModel: posModel)

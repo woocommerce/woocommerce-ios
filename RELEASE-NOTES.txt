@@ -14,6 +14,7 @@
 - [*] Receipts: Added message confirming receipt sent to customer after successful payment. [https://github.com/woocommerce/woocommerce-ios/pull/14390]
 - [internal] Simplifies App Icon by only using a single image for all supported platforms. [https://github.com/woocommerce/woocommerce-ios/pull/14429]
 - [**] Media Library: On sites logged in with application password, when picking image from WordPress Media Library, all images will now load correctly. [https://github.com/woocommerce/woocommerce-ios/pull/14444]
+- [*] Dashboard: Performance card now shows cached Visitors and Conversion data correctly. [https://github.com/woocommerce/woocommerce-ios/pull/14438]
 
 21.1
 -----

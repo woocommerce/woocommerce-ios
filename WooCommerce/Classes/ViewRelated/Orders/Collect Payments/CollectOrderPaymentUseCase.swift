@@ -455,7 +455,7 @@ private extension CollectOrderPaymentUseCase {
                                                paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                                paymentGatewayAccount: PaymentGatewayAccount,
                                                onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        receiptStateForFailedPayment(error: error, order: order) { [weak self] receiptState in
+        receiptStateForFailedPayment(error: error) { [weak self] receiptState in
             guard let self else { return }
             alertsPresenter.present(
                 viewModel: paymentAlerts.error(error: error,
@@ -491,7 +491,7 @@ private extension CollectOrderPaymentUseCase {
                                                     paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                                     paymentGatewayAccount: PaymentGatewayAccount,
                                                     onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        receiptStateForFailedPayment(error: error, order: order) { [weak self] receiptState in
+        receiptStateForFailedPayment(error: error) { [weak self] receiptState in
             guard let self else { return }
 
             alertsPresenter.present(
@@ -541,7 +541,7 @@ private extension CollectOrderPaymentUseCase {
     private func presentNonRetryableError(error: Error,
                                           paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                           onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        receiptStateForFailedPayment(error: error, order: order) { [weak self] receiptState in
+        receiptStateForFailedPayment(error: error) { [weak self] receiptState in
             guard let self else { return }
 
             alertsPresenter.present(
@@ -721,7 +721,6 @@ private extension CollectOrderPaymentUseCase {
     }
 
     private func receiptStateForFailedPayment(error: Error,
-                                              order: Order,
                                               _ completion: @escaping (CardReaderTransactionFailureAlertReceiptState) -> Void) {
 
         let isErrorEligibleForSendingFailureReceiptAfterPayment: Bool = {
@@ -741,10 +740,12 @@ private extension CollectOrderPaymentUseCase {
             return completion(.noEmailReceipt)
         }
 
-        receiptEligibilityUseCase.isEligibleSendingReceiptAfterPayment { isEligible in
+        receiptEligibilityUseCase.isEligibleSendingReceiptAfterPayment { [weak self] isEligible in
+            guard let self else { return }
+
             let receiptState: CardReaderTransactionFailureAlertReceiptState
             if isEligible {
-                if let email = self.order.billingAddress?.email, email.isNotEmpty {
+                if let email = order.billingAddress?.email, email.isNotEmpty {
                     receiptState = .paymentSuccessEmailSent(email: email)
                 } else {
                     receiptState = .promptToSendEmailReceipt(emailReceiptAction: {

@@ -1,6 +1,5 @@
 import SwiftUI
 import Combine
-import protocol WooFoundation.Analytics
 import protocol Yosemite.POSItem
 
 final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
@@ -12,14 +11,11 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     }
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
-    private let analytics: Analytics
 
     init(posModel: PointOfSaleAggregateModel,
-         cardPresentPaymentService: CardPresentPaymentFacade,
-         analytics: Analytics = ServiceLocator.analytics) {
+         cardPresentPaymentService: CardPresentPaymentFacade) {
         self.posModel = posModel
         self.cardPresentPaymentService = cardPresentPaymentService
-        self.analytics = analytics
     }
 
     func connectReaderTapped() {

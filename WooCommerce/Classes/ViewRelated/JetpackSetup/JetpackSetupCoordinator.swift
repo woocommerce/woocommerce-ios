@@ -356,7 +356,8 @@ private extension JetpackSetupCoordinator {
         analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, isSignup: isSignup))
         let viewController = WPComMagicLinkHostingController(email: email,
                                                              title: loginViewTitle,
-                                                             isJetpackSetup: true)
+                                                             isJetpackSetup: true,
+                                                             isSignup: isSignup)
         loginNavigationController?.pushViewController(viewController, animated: true)
     }
 

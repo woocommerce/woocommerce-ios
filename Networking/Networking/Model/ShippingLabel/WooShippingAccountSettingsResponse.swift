@@ -19,7 +19,7 @@ extension WooShippingAccountSettingsResponse: Decodable {
 
         let storeOptions = try container.decode(ShippingLabelStoreOptions.self, forKey: .storeOptions)
         let accountSettings = try ShippingLabelAccountSettings(from: decoder)
-        
+
         self.init(storeOptions: storeOptions, accountSettings: accountSettings)
     }
 

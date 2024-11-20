@@ -6,22 +6,8 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
 
     @ObservedObject var posModel: PointOfSaleAggregateModel
 
-    private let cardPresentPaymentService: CardPresentPaymentFacade
-
-    init(posModel: PointOfSaleAggregateModel,
-         cardPresentPaymentService: CardPresentPaymentFacade) {
+    init(posModel: PointOfSaleAggregateModel) {
         self.posModel = posModel
-        self.cardPresentPaymentService = cardPresentPaymentService
-    }
-
-    func connectReaderTapped() {
-        Task { @MainActor in
-            do {
-                let _ = try await cardPresentPaymentService.connectReader(using: .bluetooth)
-            } catch {
-                DDLogError("🔴 POS reader connection error: \(error)")
-            }
-        }
     }
 
     // These three functions could potentially move to posModel and be based on orderStage.

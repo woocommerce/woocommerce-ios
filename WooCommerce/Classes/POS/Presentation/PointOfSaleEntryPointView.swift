@@ -24,8 +24,7 @@ struct PointOfSaleEntryPointView: View {
         let posModel = PointOfSaleAggregateModel(itemProvider: itemProvider,
                                                  cardPresentPaymentService: cardPresentPaymentService,
                                                  orderService: orderService)
-        let totalsViewModel = TotalsViewModel(posModel: posModel,
-                                              cardPresentPaymentService: cardPresentPaymentService)
+        let totalsViewModel = TotalsViewModel(posModel: posModel)
         let cartViewModel = CartViewModel(posModel: posModel)
 
         self._posModel = StateObject(wrappedValue: posModel)

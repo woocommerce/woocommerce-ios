@@ -281,7 +281,7 @@ private extension TotalsView {
                 EmptyView()
             }
         case .disconnected:
-            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(viewModel: .init(connectReaderAction: viewModel.connectReaderTapped))
+            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView()
         }
     }
 }
@@ -454,9 +454,7 @@ private extension View {
         itemProvider: POSItemProviderPreview(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderService: POSOrderPreviewService())
-    let totalsVM = TotalsViewModel(
-        posModel: posModel,
-        cardPresentPaymentService: CardPresentPaymentPreviewService())
+    let totalsVM = TotalsViewModel(posModel: posModel)
     TotalsView(viewModel: totalsVM)
         .environmentObject(posModel)
 }

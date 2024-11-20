@@ -9,7 +9,6 @@ struct PointOfSaleEntryPointView: View {
     @StateObject private var viewModel: PointOfSaleDashboardViewModel
     @StateObject private var totalsViewModel: TotalsViewModel
     @StateObject private var cartViewModel: CartViewModel
-    @StateObject private var itemListViewModel: ItemListViewModel
     @StateObject private var posModalManager = POSModalManager()
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
@@ -28,26 +27,22 @@ struct PointOfSaleEntryPointView: View {
         let totalsViewModel = TotalsViewModel(posModel: posModel,
                                               cardPresentPaymentService: cardPresentPaymentService)
         let cartViewModel = CartViewModel(posModel: posModel)
-        let itemListViewModel = ItemListViewModel(posModel: posModel)
 
         self._posModel = StateObject(wrappedValue: posModel)
         self._viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
             posModel: posModel,
             totalsViewModel: totalsViewModel,
             cartViewModel: cartViewModel,
-            itemListViewModel: itemListViewModel,
             connectivityObserver: ServiceLocator.connectivityObserver)
         )
         self._cartViewModel = StateObject(wrappedValue: cartViewModel)
         self._totalsViewModel = StateObject(wrappedValue: totalsViewModel)
-        self._itemListViewModel = StateObject(wrappedValue: itemListViewModel)
     }
 
     var body: some View {
         PointOfSaleDashboardView(viewModel: viewModel,
                                  totalsViewModel: totalsViewModel,
-                                 cartViewModel: cartViewModel,
-                                 itemListViewModel: itemListViewModel)
+                                 cartViewModel: cartViewModel)
         .environmentObject(posModalManager)
         .environmentObject(posModel)
         .onAppear {

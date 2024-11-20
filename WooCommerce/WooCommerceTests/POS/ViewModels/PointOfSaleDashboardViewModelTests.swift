@@ -11,7 +11,6 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
     private var itemProvider: MockPOSItemProvider!
     private var mockCartViewModel: MockCartViewModel!
     private var mockTotalsViewModel: MockTotalsViewModel!
-    private var mockItemListViewModel: MockItemListViewModel!
     private var mockConnectivityObserver: MockConnectivityObserver!
 
     private var cancellables: Set<AnyCancellable>!
@@ -22,7 +21,6 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         itemProvider = MockPOSItemProvider()
         mockCartViewModel = MockCartViewModel()
         mockTotalsViewModel = MockTotalsViewModel()
-        mockItemListViewModel = MockItemListViewModel()
         mockConnectivityObserver = MockConnectivityObserver()
         let mockOrderService = MockPOSOrderService()
         mockOrderService.orderToReturn = Order.fake()
@@ -33,7 +31,6 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         sut = PointOfSaleDashboardViewModel(posModel: mockPOSModel,
                                             totalsViewModel: mockTotalsViewModel,
                                             cartViewModel: mockCartViewModel,
-                                            itemListViewModel: mockItemListViewModel,
                                             connectivityObserver: mockConnectivityObserver)
         cancellables = []
     }
@@ -42,7 +39,6 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         cardPresentPaymentService = nil
         mockCartViewModel = nil
         mockTotalsViewModel = nil
-        mockItemListViewModel = nil
         mockConnectivityObserver = nil
         sut = nil
         cancellables = []

@@ -9,7 +9,6 @@ import struct Yosemite.Order
 final class PointOfSaleDashboardViewModel: ObservableObject {
     let cartViewModel: any CartViewModelProtocol
     let totalsViewModel: any TotalsViewModelProtocol
-    let itemListViewModel: any ItemListViewModelProtocol
 
     @ObservedObject var posModel: PointOfSaleAggregateModel
 
@@ -24,26 +23,13 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     init(posModel: PointOfSaleAggregateModel,
          totalsViewModel: any TotalsViewModelProtocol,
          cartViewModel: any CartViewModelProtocol,
-         itemListViewModel: any ItemListViewModelProtocol,
          connectivityObserver: ConnectivityObserver) {
         self.posModel = posModel
-        self.itemListViewModel = itemListViewModel
         self.totalsViewModel = totalsViewModel
         self.cartViewModel = cartViewModel
         self.connectivityObserver = connectivityObserver
 
-        observeSelectedItemToAddToCart()
         observeConnectivity()
-    }
-}
-
-private extension PointOfSaleDashboardViewModel {
-    func observeSelectedItemToAddToCart() {
-        itemListViewModel.selectedItemPublisher
-            .sink { [weak self] selectedItem in
-                self?.posModel.addToCart(selectedItem)
-            }
-            .store(in: &cancellables)
     }
 }
 

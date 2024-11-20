@@ -296,7 +296,7 @@ struct PointOfSaleAggregateModelTests {
             #expect(itemProvider.spyLastRequestedPageNumber == 1)
         }
 
-        @Test func itemListViewModel_when_next_page_is_out_of_range_then_receives_error() async throws {
+        @Test func loadNextItems_when_next_page_is_out_of_range_then_receives_error() async throws {
             // Given
             await sut.loadInitialItems()
             try #require(itemProvider.spyLastRequestedPageNumber == 1)
@@ -316,7 +316,7 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.itemListState == .error(expectedError))
         }
 
-        @Test func itemListViewModel_when_next_page_is_out_of_range_then_the_same_page_is_requested_next() async throws {
+        @Test func loadNextItems_when_next_page_is_out_of_range_then_the_same_page_is_requested_next() async throws {
             // Given
             await sut.loadInitialItems()
             try #require(itemProvider.spyLastRequestedPageNumber == 1)

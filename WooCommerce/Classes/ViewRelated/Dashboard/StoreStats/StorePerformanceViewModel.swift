@@ -164,12 +164,7 @@ final class StorePerformanceViewModel: ObservableObject {
         if !forceRefresh && DashboardTimestampStore.isTimestampFresh(for: .performance, at: timeRange.timestampRange) {
 
             // We can show the cached data since we know it's available from the timestamp.
-            switch timeRange {
-            case .custom:
-                updateSiteVisitStatModeForCustomRange()
-            case .today, .thisWeek, .thisMonth, .thisYear:
-                siteVisitStatMode = .default
-            }
+            updateSiteVisitStatMode()
 
             return
         }
@@ -185,16 +180,13 @@ final class StorePerformanceViewModel: ObservableObject {
 
             trackDashboardStatsSyncComplete()
             analyticsEnabled = true
-            switch timeRange {
-            case .custom:
-                updateSiteVisitStatModeForCustomRange()
-            case .today:
-                // Reload the Store Info Widget after syncing the today's stats.
+            updateSiteVisitStatMode()
+
+            // Reload the Store Info Widget after syncing the today's stats.
+            if case .today = timeRange {
                 WidgetCenter.shared.reloadTimelines(ofKind: WooConstants.storeInfoWidgetKind)
-                fallthrough
-            case .thisWeek, .thisMonth, .thisYear:
-                siteVisitStatMode = .default
             }
+
             syncingDidFinishPublisher.send(nil)
         } catch {
             switch error {
@@ -447,6 +439,15 @@ private extension StorePerformanceViewModel {
             analytics.track(event: .DashboardCustomRange.interacted())
         }
         trackInteraction()
+    }
+
+    func updateSiteVisitStatMode() {
+        switch timeRange {
+        case .custom:
+            updateSiteVisitStatModeForCustomRange()
+        case .today, .thisWeek, .thisMonth, .thisYear:
+            siteVisitStatMode = .default
+        }
     }
 }
 

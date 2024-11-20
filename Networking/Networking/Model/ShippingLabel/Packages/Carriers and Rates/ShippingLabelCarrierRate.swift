@@ -49,7 +49,7 @@ public struct ShippingLabelCarrierRate: Equatable, GeneratedFakeable {
 }
 
 // MARK: Codable
-extension ShippingLabelCarrierRate: Codable {
+extension ShippingLabelCarrierRate: Decodable {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -65,13 +65,13 @@ extension ShippingLabelCarrierRate: Codable {
 
         let retailRate = try container.decode(Double.self, forKey: .retailRate)
         let rate = try container.decode(Double.self, forKey: .rate)
-        let rateID = try container.decode(String.self, forKey: .rateID)
-        let serviceID = try container.decode(String.self, forKey: .serviceID)
-        let carrierID = try container.decode(String.self, forKey: .carrierID)
-        let shipmentID = try container.decode(String.self, forKey: .shipmentID)
-        let hasTracking = try container.decode(Bool.self, forKey: .hasTracking)
+        let rateID = try container.decode(String.self, forKey: .rateId)
+        let serviceID = try container.decode(String.self, forKey: .serviceId)
+        let carrierID = try container.decode(String.self, forKey: .carrierId)
+        let shipmentID = try container.decode(String.self, forKey: .shipmentId)
+        let hasTracking = try container.decode(Bool.self, forKey: .tracking)
         let isSelected = try container.decode(Bool.self, forKey: .isSelected)
-        let isPickupFree = try container.decode(Bool.self, forKey: .isPickupFree)
+        let isPickupFree = try container.decode(Bool.self, forKey: .freePickup)
         let deliveryDays = try container.decodeIfPresent(Int64.self, forKey: .deliveryDays)
         let deliveryDateGuaranteed = try container.decode(Bool.self, forKey: .deliveryDateGuaranteed)
 
@@ -95,16 +95,16 @@ extension ShippingLabelCarrierRate: Codable {
     private enum CodingKeys: String, CodingKey {
         case title
         case insurance
-        case retailRate = "retail_rate"
+        case retailRate
         case rate
-        case rateID = "rate_id"
-        case serviceID = "service_id"
-        case carrierID = "carrier_id"
-        case shipmentID = "shipment_id"
-        case hasTracking = "tracking"
-        case isSelected = "is_selected"
-        case isPickupFree = "free_pickup"
-        case deliveryDays = "delivery_days"
-        case deliveryDateGuaranteed = "delivery_date_guaranteed"
+        case rateId
+        case serviceId
+        case carrierId
+        case shipmentId
+        case tracking
+        case isSelected
+        case freePickup
+        case deliveryDays
+        case deliveryDateGuaranteed
     }
 }

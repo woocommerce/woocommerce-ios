@@ -2,7 +2,7 @@ import SwiftUI
 
 struct TotalsView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
-    @ObservedObject private var viewModel: TotalsViewModel
+    private var viewModel = TotalsViewModel()
 
     /// Used together with .matchedGeometryEffect to synchronize the animations of shimmeringLineView and text fields.
     /// This makes SwiftUI treat these views as a single entity in the context of animation.
@@ -23,10 +23,6 @@ struct TotalsView: View {
 
     private var shouldShowSendReceiptButton: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sendReceiptsForPointOfSale)
-    }
-
-    init(viewModel: TotalsViewModel) {
-        self.viewModel = viewModel
     }
 
     var body: some View {
@@ -76,9 +72,6 @@ struct TotalsView: View {
         .background(backgroundColor)
         .animation(.default, value: posModel.paymentState)
         .animation(.default, value: posModel.orderState.isError)
-        .onDisappear {
-            viewModel.onTotalsViewDisappearance()
-        }
         .onAppear {
             isShowingTotalsFields = shouldShowTotalsFields
         }
@@ -454,8 +447,7 @@ private extension View {
         itemProvider: POSItemProviderPreview(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderService: POSOrderPreviewService())
-    let totalsVM = TotalsViewModel(posModel: posModel)
-    TotalsView(viewModel: totalsVM)
+    TotalsView()
         .environmentObject(posModel)
 }
 #endif

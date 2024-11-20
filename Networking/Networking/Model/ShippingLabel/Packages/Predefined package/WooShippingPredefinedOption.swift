@@ -5,14 +5,37 @@ import Codegen
 ///
 public struct WooShippingPredefinedOption: Equatable, GeneratedFakeable {
 
-    /// The ID of the shipping carrier for the predefined option, e.g. "usps".
-    public let id: String
+    /// The title of the predefined option. It works like an ID, and it is unique.
+    public let title: String
 
-    /// List of saved predefined package IDs.
-    public let predefinedPackageIDs: [String]
+    /// The ID of the predefined option (shipping provider), e.g. "usps". This is required for activating predefined packages remotely.
+    public let providerID: String
 
-    public init(id: String, predefinedPackageIDs: [String]) {
-        self.id = id
-        self.predefinedPackageIDs = predefinedPackageIDs
+    /// List of predefined packages
+    public let predefinedPackages: [WooShippingPredefinedPackage]
+
+    public init(title: String, providerID: String, predefinedPackages: [WooShippingPredefinedPackage]) {
+        self.title = title
+        self.providerID = providerID
+        self.predefinedPackages = predefinedPackages
+    }
+}
+
+// MARK: Decodable
+extension WooShippingPredefinedOption: Decodable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        let title = try container.decode(String.self, forKey: .title)
+        let predefinedPackages = try container.decodeIfPresent([WooShippingPredefinedPackage].self, forKey: .predefinedPackages) ?? []
+        let providerID = try container.decodeIfPresent(String.self, forKey: .providerID) ?? ""
+
+        self.init(title: title, providerID: providerID, predefinedPackages: predefinedPackages)
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case title
+        case predefinedPackages
+        case providerID
     }
 }

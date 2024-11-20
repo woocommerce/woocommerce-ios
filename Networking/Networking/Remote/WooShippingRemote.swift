@@ -3,7 +3,7 @@
 public protocol WooShippingRemoteProtocol {
     func createPackage(siteID: Int64,
                        customPackage: WooShippingCustomPackage?,
-                       predefinedOption: WooShippingPredefinedOption?,
+                       predefinedOption: WooShippingPredefinedSavedOption?,
                        completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void)
     func loadLabelRates(siteID: Int64,
                         orderID: Int64,
@@ -11,6 +11,8 @@ public protocol WooShippingRemoteProtocol {
                         destinationAddress: ShippingLabelAddress,
                         packages: [ShippingLabelPackageSelected],
                         completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void)
+    func loadPackages(siteID: Int64,
+                      completion: @escaping (Result<WooShippingPackagesResponse, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
@@ -25,7 +27,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     ///   - completion: Closure to be executed upon completion.
     public func createPackage(siteID: Int64,
                               customPackage: WooShippingCustomPackage?,
-                              predefinedOption: WooShippingPredefinedOption?,
+                              predefinedOption: WooShippingPredefinedSavedOption?,
                               completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void) {
         do {
             var customPackageList: [[String: Any]] = []
@@ -93,6 +95,28 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
             enqueue(request, mapper: mapper, completion: completion)
         }
         catch {
+            completion(.failure(error))
+        }
+    }
+
+    /// Loads packages.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site.
+    ///   - completion: Closure to be executed upon completion.
+    public func loadPackages(siteID: Int64,
+                      completion: @escaping (Result<WooShippingPackagesResponse, Error>) -> Void) {
+        do {
+            let path = Path.packages
+            let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                         method: .get,
+                                         siteID: siteID,
+                                         path: path,
+                                         availableAsRESTRequest: true)
+
+            let mapper = WooShippingPackagesMapper()
+
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
             completion(.failure(error))
         }
     }

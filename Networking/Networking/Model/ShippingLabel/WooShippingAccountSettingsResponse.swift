@@ -5,9 +5,11 @@ import Codegen
 ///
 public struct WooShippingAccountSettingsResponse: Equatable, GeneratedFakeable, GeneratedCopiable {
     public let storeOptions: ShippingLabelStoreOptions
+    public let accountSettings: ShippingLabelAccountSettings
 
-    public init(storeOptions: ShippingLabelStoreOptions) {
+    public init(storeOptions: ShippingLabelStoreOptions, accountSettings: ShippingLabelAccountSettings) {
         self.storeOptions = storeOptions
+        self.accountSettings = accountSettings
     }
 }
 
@@ -16,8 +18,9 @@ extension WooShippingAccountSettingsResponse: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let storeOptions = try container.decode(ShippingLabelStoreOptions.self, forKey: .storeOptions)
-
-        self.init(storeOptions: storeOptions)
+        let accountSettings = try ShippingLabelAccountSettings(from: decoder)
+        
+        self.init(storeOptions: storeOptions, accountSettings: accountSettings)
     }
 
     private enum CodingKeys: String, CodingKey {

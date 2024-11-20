@@ -137,7 +137,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                                          path: path,
                                          availableAsRESTRequest: true)
 
-            let mapper = WooShippingAccountSettingsMapper()
+            let mapper = WooShippingAccountSettingsMapper(siteID: siteID)
 
             enqueue(request, mapper: mapper, completion: completion)
         } catch {

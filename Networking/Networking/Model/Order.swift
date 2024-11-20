@@ -186,7 +186,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
 
         let allOrderMetaData = try? container.decode([MetaData].self, forKey: .metadata)
         var chargeID: String? = nil
-        chargeID = allOrderMetaData?.first(where: { $0.key == "_charge_id" })?.value
+        chargeID = allOrderMetaData?.first(where: { $0.key == "_charge_id" })?.value.stringValue
 
         let items = try container.decode([OrderItem].self, forKey: .items)
 
@@ -194,7 +194,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         // In WooCommerce <5.6.0, the shipping phone number can be stored in the order metadata
         if let address = shippingAddress, address.phone == nil {
             let allOrderMetaData = allOrderMetaData
-            let shippingPhone = allOrderMetaData?.first(where: { $0.key == "_shipping_phone" })?.value
+            let shippingPhone = allOrderMetaData?.first(where: { $0.key == "_shipping_phone" })?.value.stringValue
             shippingAddress = address.copy(phone: shippingPhone)
         }
 
@@ -225,7 +225,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         let customFields = allOrderMetaData?.filter({ !$0.key.hasPrefix("_") }) ?? []
 
         // Subscriptions extension
-        let renewalSubscriptionID = allOrderMetaData?.first(where: { $0.key == "_subscription_renewal" })?.value
+        let renewalSubscriptionID = allOrderMetaData?.first(where: { $0.key == "_subscription_renewal" })?.value.stringValue
 
         // Gift Cards extension
         let appliedGiftCards = try container.decodeIfPresent([OrderGiftCard].self, forKey: .giftCards) ?? []

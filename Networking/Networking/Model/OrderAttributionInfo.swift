@@ -35,17 +35,17 @@ public struct OrderAttributionInfo: Equatable, Sendable, GeneratedFakeable, Gene
         for item in metaData {
             switch item.key {
             case Keys.sourceType.rawValue:
-                sourceType = item.value
+                sourceType = item.value.stringValue
             case Keys.campaign.rawValue:
-                campaign = item.value
+                campaign = item.value.stringValue
             case Keys.source.rawValue:
-                source = item.value
+                source = item.value.stringValue
             case Keys.medium.rawValue:
-                medium = item.value
+                medium = item.value.stringValue
             case Keys.deviceType.rawValue:
-                deviceType = item.value
+                deviceType = item.value.stringValue
             case Keys.sessionPageViews.rawValue:
-                sessionPageViews = item.value
+                sessionPageViews = item.value.stringValue
             default:
                 continue
             }

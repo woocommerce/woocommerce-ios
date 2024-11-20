@@ -20,8 +20,7 @@ final class MetaDataMapperTests: XCTestCase {
         XCTAssertEqual(metadata[0], MetaData(metadataID: 1, key: "text_field", value: "Lorem ipsum"))
         XCTAssertEqual(metadata[1], MetaData(metadataID: 2, key: "json_field", value: "{\"key\":\"value\"}"))
         XCTAssertEqual(metadata[2], MetaData(metadataID: 3, key: "json_array_field", value: "[{\"key\":\"value\"}]"))
-        // For now, the iOS implementation doesn't differentiate between wrapped and unwrapped JSON.
-        XCTAssertEqual(metadata[3], MetaData(metadataID: 4, key: "json_field_wrapped", value: "{\"key\":\"value\"}"))
+        XCTAssertEqual(metadata[3], MetaData(metadataID: 4, key: "json_field_wrapped", value: "\"{\"key\":\"value\"}\""))
         XCTAssertEqual(metadata[4], MetaData(metadataID: 5, key: "boolean_field", value: "true"))
         XCTAssertEqual(metadata[5], MetaData(metadataID: 6, key: "number_field", value: "42"))
         XCTAssertEqual(metadata[6], MetaData(metadataID: 7, key: "empty_field", value: ""))
@@ -44,8 +43,7 @@ final class MetaDataMapperTests: XCTestCase {
         XCTAssertEqual(metadata[0], MetaData(metadataID: 1, key: "text_field", value: "Lorem ipsum"))
         XCTAssertEqual(metadata[1], MetaData(metadataID: 2, key: "json_field", value: "{\"key\":\"value\"}"))
         XCTAssertEqual(metadata[2], MetaData(metadataID: 3, key: "json_array_field", value: "[{\"key\":\"value\"}]"))
-        // For now, the iOS implementation doesn't differentiate between wrapped and unwrapped JSON.
-        XCTAssertEqual(metadata[3], MetaData(metadataID: 4, key: "json_field_wrapped", value: "{\"key\":\"value\"}"))
+        XCTAssertEqual(metadata[3], MetaData(metadataID: 4, key: "json_field_wrapped", value: "\"{\"key\":\"value\"}\""))
         XCTAssertEqual(metadata[4], MetaData(metadataID: 5, key: "boolean_field", value: "true"))
         XCTAssertEqual(metadata[5], MetaData(metadataID: 6, key: "number_field", value: "42"))
         XCTAssertEqual(metadata[6], MetaData(metadataID: 7, key: "empty_field", value: ""))

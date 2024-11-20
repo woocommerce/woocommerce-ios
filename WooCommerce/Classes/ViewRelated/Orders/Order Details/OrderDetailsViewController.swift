@@ -729,6 +729,8 @@ private extension OrderDetailsViewController {
     @objc private func collectPaymentTapped() {
         collectPayment()
 
+        viewModel.markOrderPaymentPending()
+
         // Track tapped event
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.collectPaymentTapped(flow: .orderDetails))
     }

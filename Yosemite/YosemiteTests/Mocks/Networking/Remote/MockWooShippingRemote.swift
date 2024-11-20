@@ -5,47 +5,47 @@ import XCTest
 ///
 final class MockWooShippingRemote {
 
-    private struct CreatePackageResultKey: Hashable {
+    private struct ResultKey: Hashable {
         let siteID: Int64
     }
 
     /// The results to return based on the given arguments in `createPackage`
-    private var createPackageResults = [CreatePackageResultKey: Result<WooShippingCreatePackageResponse, Error>]()
+    private var createPackageResults = [ResultKey: Result<WooShippingCreatePackageResponse, Error>]()
 
     /// The results to return based on the given arguments in `loadLabelRates`
-    private var loadLabelRatesResults = [CreatePackageResultKey: Result<[ShippingLabelCarriersAndRates], Error>]()
+    private var loadLabelRatesResults = [ResultKey: Result<[ShippingLabelCarriersAndRates], Error>]()
 
     /// The results to return based on the given arguments in `loadPackages`
-    private var loadPackagesResults = [CreatePackageResultKey: Result<WooShippingPackagesResponse, Error>]()
+    private var loadPackagesResults = [ResultKey: Result<WooShippingPackagesResponse, Error>]()
 
     /// The results to return based on the given arguments in `loadAccountSettings`
-    private var loadAccountSettingsResults = [CreatePackageResultKey: Result<WooShippingAccountSettingsResponse, Error>]()
+    private var loadAccountSettingsResults = [ResultKey: Result<WooShippingAccountSettingsResponse, Error>]()
 
     /// Set the value passed to the `completion` block if `createPackage` is called.
     func whenCreatePackage(siteID: Int64,
                            thenReturn result: Result<WooShippingCreatePackageResponse, Error>) {
-        let key = CreatePackageResultKey(siteID: siteID)
+        let key = ResultKey(siteID: siteID)
         createPackageResults[key] = result
     }
 
     /// Set the value passed to the `completion` block if `loadLabelRates` is called.
     func whenLoadLabelRates(siteID: Int64,
                             thenReturn result: Result<[ShippingLabelCarriersAndRates], Error>) {
-        let key = CreatePackageResultKey(siteID: siteID)
+        let key = ResultKey(siteID: siteID)
         loadLabelRatesResults[key] = result
     }
 
     /// Set the value passed to the `completion` block if `loadPackages` is called.
     func whenLoadPackages(siteID: Int64,
                           thenReturn result: Result<WooShippingPackagesResponse, Error>) {
-        let key = CreatePackageResultKey(siteID: siteID)
+        let key = ResultKey(siteID: siteID)
         loadPackagesResults[key] = result
     }
 
     /// Set the value passed to the `completion` block if `loadAccountSettings` is called.
     func whenLoadAccountSettings(siteID: Int64,
-                          thenReturn result: Result<WooShippingAccountSettingsResponse, Error>) {
-        let key = CreatePackageResultKey(siteID: siteID)
+                                 thenReturn result: Result<WooShippingAccountSettingsResponse, Error>) {
+        let key = ResultKey(siteID: siteID)
         loadAccountSettingsResults[key] = result
     }
 }
@@ -59,7 +59,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
 
-            let key = CreatePackageResultKey(siteID: siteID)
+            let key = ResultKey(siteID: siteID)
             if let result = self.createPackageResults[key] {
                 completion(result)
             } else {
@@ -77,7 +77,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
 
-            let key = CreatePackageResultKey(siteID: siteID)
+            let key = ResultKey(siteID: siteID)
             if let result = self.loadLabelRatesResults[key] {
                 completion(result)
             } else {
@@ -91,7 +91,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
 
-            let key = CreatePackageResultKey(siteID: siteID)
+            let key = ResultKey(siteID: siteID)
             if let result = self.loadPackagesResults[key] {
                 completion(result)
             } else {
@@ -105,7 +105,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
 
-            let key = CreatePackageResultKey(siteID: siteID)
+            let key = ResultKey(siteID: siteID)
             if let result = self.loadAccountSettingsResults[key] {
                 completion(result)
             } else {

@@ -199,4 +199,8 @@ public enum FeatureFlag: Int {
 
     /// Enables sending receipt after the payment via the API
     case sendReceiptAfterPayment
+
+    /// Adds support for  sending receipts after the payment for POS
+    ///
+    case sendReceiptsForPointOfSale
 }

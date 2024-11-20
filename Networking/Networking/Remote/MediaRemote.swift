@@ -126,7 +126,7 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
             ParameterKey.dotOrgPageSize: pageSize,
             ParameterKey.pageNumber: pageNumber,
             ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
-            ParameterKey.mimeType: imagesOnly ? "image" : nil,
+            ParameterKey.mediaType: imagesOnly ? "image" : nil,
             ParameterKey.wordPressMediaParent: productID
         ].compactMapValues { $0 }
 
@@ -302,6 +302,7 @@ public extension MediaRemote {
         static let fields: String     = "fields"
         static let fieldsWordPressSite: String = "_fields"
         static let mimeType: String   = "mime_type"
+        static let mediaType: String = "media_type"
         static let postID: String   = "post_ID"
         static let contextKey: String = "context"
         static let wordPressMediaParentID = "parent_id"

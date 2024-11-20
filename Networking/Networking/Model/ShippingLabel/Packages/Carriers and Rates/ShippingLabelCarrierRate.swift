@@ -49,7 +49,7 @@ public struct ShippingLabelCarrierRate: Equatable, GeneratedFakeable {
 }
 
 // MARK: Codable
-extension ShippingLabelCarrierRate: Decodable {
+extension ShippingLabelCarrierRate: Codable {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -91,6 +91,23 @@ extension ShippingLabelCarrierRate: Decodable {
                   deliveryDateGuaranteed: deliveryDateGuaranteed)
     }
 
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(title, forKey: .title)
+        try container.encode(insurance, forKey: .insurance)
+        try container.encode(retailRate, forKey: .retailRate)
+        try container.encode(rate, forKey: .rate)
+        try container.encode(rateID, forKey: .rateId)
+        try container.encode(serviceID, forKey: .serviceId)
+        try container.encode(carrierID, forKey: .carrierId)
+        try container.encode(shipmentID, forKey: .shipmentId)
+        try container.encode(hasTracking, forKey: .tracking)
+        try container.encode(isSelected, forKey: .isSelected)
+        try container.encode(isPickupFree, forKey: .freePickup)
+        try container.encode(deliveryDays, forKey: .deliveryDays)
+        try container.encode(deliveryDateGuaranteed, forKey: .deliveryDateGuaranteed)
+    }
 
     private enum CodingKeys: String, CodingKey {
         case title

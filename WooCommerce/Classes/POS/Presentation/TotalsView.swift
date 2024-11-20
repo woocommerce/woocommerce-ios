@@ -212,7 +212,7 @@ private extension TotalsView {
 private extension TotalsView {
     private var newOrderButton: some View {
         Button(action: {
-            viewModel.startNewOrder()
+            posModel.startNewCart()
         }, label: {
             HStack(spacing: Constants.buttonSpacing) {
                 Text(Localization.newOrder)

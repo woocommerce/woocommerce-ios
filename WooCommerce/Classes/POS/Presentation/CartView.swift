@@ -26,8 +26,8 @@ struct CartView: View {
             DynamicHStack(spacing: Constants.cartHeaderSpacing) {
                 HStack(spacing: Constants.cartHeaderElementSpacing) {
                     backAddMoreButton
-                        .disabled(posModel.blockReturnToItemSelection)
-                        .shimmering(active: posModel.blockReturnToItemSelection)
+                        .disabled(shouldPreventCartEditing)
+                        .shimmering(active: shouldPreventCartEditing)
 
                     HStack {
                         Text(Localization.cartTitle)
@@ -148,6 +148,13 @@ private extension CartView {
             return posModel.cart.isEmpty ? Color.posTertiaryBackground : Color.posSecondaryBackground
         }
     }
+
+    var shouldPreventCartEditing: Bool {
+        guard posModel.paymentState.allowsCartEditing else {
+            return true
+        }
+        return posModel.orderState.isSyncing
+    }
 }
 
 private extension CartView {
@@ -241,6 +248,21 @@ private extension CartView {
             Spacer()
         }
         .background(backgroundColor.ignoresSafeArea(.all))
+    }
+}
+
+private extension PointOfSalePaymentState {
+    var allowsCartEditing: Bool {
+        switch self {
+        case .processingPayment,
+                .paymentError,
+                .cardPaymentSuccessful,
+                .validatingOrder,
+                .preparingReader:
+            return false
+        case .idle, .validatingOrderError, .acceptingCard:
+            return true
+        }
     }
 }
 

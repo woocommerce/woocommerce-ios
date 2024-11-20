@@ -2,6 +2,7 @@ import SwiftUI
 
 struct POSFloatingControlView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
+    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @Environment(\.colorScheme) var colorScheme
 
@@ -40,13 +41,13 @@ struct POSFloatingControlView: View {
             }
             .background(backgroundColor)
             .cornerRadius(Constants.cornerRadius)
-            .disabled(viewModel.isExitPOSDisabled)
+            .disabled(posModel.paymentState == .processingPayment)
 
             CardReaderConnectionStatusView()
                 .foregroundStyle(fontColor)
                 .background(backgroundColor)
                 .cornerRadius(Constants.cornerRadius)
-                .disabled(viewModel.isReaderDisconnectionDisabled)
+                .disabled(posModel.paymentState.shownFullScreen)
         }
         .frame(height: Constants.size)
         .background(Color.clear)

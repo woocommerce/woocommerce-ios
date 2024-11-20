@@ -55,7 +55,7 @@ struct PointOfSaleDashboardView: View {
         .environment(\.floatingControlAreaSize,
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
-        .environment(\.posBackgroundAppearance, totalsViewModel.paymentState != .processingPayment ? .primary : .secondary)
+        .environment(\.posBackgroundAppearance, posModel.paymentState != .processingPayment ? .primary : .secondary)
         .animation(.easeInOut, value: posModel.itemListState == .initialLoading)
         .animation(.easeInOut(duration: Constants.connectivityAnimationDuration), value: viewModel.showsConnectivityError)
         .background(Color.posPrimaryBackground)
@@ -65,9 +65,9 @@ struct PointOfSaleDashboardView: View {
         }) { viewModel in
             paymentsOnboardingView(from: viewModel)
         }
-        .posModal(item: $totalsViewModel.cardPresentPaymentAlertViewModel,
+        .posModal(item: $posModel.cardPresentPaymentAlertViewModel,
                   onDismiss: {
-            totalsViewModel.cardPresentPaymentAlertViewModel?.onDismiss?()
+            posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
         }) { alertType in
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)
                 .posInteractiveDismissDisabled(alertType.isDismissDisabled)
@@ -105,7 +105,7 @@ struct PointOfSaleDashboardView: View {
                         .transition(.move(edge: .leading))
                 }
 
-                if !viewModel.isTotalsViewFullScreen {
+                if !posModel.paymentState.shownFullScreen {
                     cartView
                         .accessibilitySortPriority(1)
                         .frame(width: geometry.size.width * Constants.cartWidth)
@@ -119,7 +119,7 @@ struct PointOfSaleDashboardView: View {
                 }
             }
             .animation(.default, value: posModel.orderStage)
-            .animation(.default, value: viewModel.isTotalsViewFullScreen)
+            .animation(.default, value: posModel.paymentState.shownFullScreen)
         }
     }
 }
@@ -212,8 +212,7 @@ import class WooFoundation.MockAnalyticsProviderPreview
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderService: POSOrderPreviewService())
     let totalsVM = TotalsViewModel(posModel: posModel,
-                                   cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                   paymentState: .acceptingCard)
+                                   cardPresentPaymentService: CardPresentPaymentPreviewService())
     let cartVM = CartViewModel(posModel: posModel)
     let itemsListVM = ItemListViewModel(posModel: posModel)
     let posVM = PointOfSaleDashboardViewModel(posModel: posModel,

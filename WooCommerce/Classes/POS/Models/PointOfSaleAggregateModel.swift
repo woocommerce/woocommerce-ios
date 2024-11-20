@@ -17,6 +17,9 @@ protocol PointOfSaleAggregateModelProtocol {
     var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus { get }
     func connectCardReader()
     func disconnectCardReader()
+    var paymentState: PointOfSalePaymentState { get }
+    var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType? { get set }
+    var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType? { get }
 
     @available(*, deprecated, message: "`allItems` is due for removal, use `itemListState` instead.")
     var allItems: [POSItem] { get }
@@ -41,6 +44,9 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     @Published private(set) var orderStage: PointOfSaleOrderStage = .building
 
     @Published private(set) var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
+    @Published private(set) var paymentState: PointOfSalePaymentState
+    @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
+    @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
 
     @Published private(set) var allItems: [POSItem] = []
     @Published private(set) var itemListState: ItemListState = .initialLoading
@@ -66,13 +72,16 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderService: POSOrderServiceProtocol,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         paymentState: PointOfSalePaymentState = .idle) {
         self.itemProvider = itemProvider
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderService = orderService
         self.currencyFormatter = currencyFormatter
         self.analytics = analytics
+        self.paymentState = paymentState
         publishCardReaderConnectionStatus()
+        publishPaymentMessages()
     }
 }
 
@@ -170,13 +179,19 @@ extension PointOfSaleAggregateModel {
     }
 
     func addMoreToCart() {
-        orderStage = .building
+        setStateForEditing()
     }
 
     func startNewCart() {
         removeAllItemsFromCart()
         clearOrder()
+        setStateForEditing()
+    }
+
+    private func setStateForEditing() {
         orderStage = .building
+        paymentState = .idle
+        cardPresentPaymentInlineMessage = nil
     }
 }
 
@@ -264,6 +279,81 @@ extension PointOfSaleAggregateModel {
                     await self?.startPaymentWhenCardReaderConnected()
                 }
             }
+    }
+}
+
+private extension PointOfSaleAggregateModel {
+    func publishPaymentMessages() {
+        cardPresentPaymentService.paymentEventPublisher
+            .map { [weak self] event -> PointOfSaleCardPresentPaymentAlertType? in
+                guard let self else { return nil }
+                guard case let .show(eventDetails) = event,
+                      case let .alert(alertType) = presentationStyle(for: eventDetails)
+                else {
+                    return nil
+                }
+                return alertType
+            }
+            .assign(to: &$cardPresentPaymentAlertViewModel)
+
+        cardPresentPaymentService.paymentEventPublisher
+            .map { [weak self] event -> PointOfSaleCardPresentPaymentMessageType? in
+                self?.mapCardPresentPaymentEventToMessageType(event)
+            }
+            .assign(to: &$cardPresentPaymentInlineMessage)
+
+        cardPresentPaymentService.paymentEventPublisher
+            .compactMap { [weak self] paymentEvent in
+                guard let self else { return .none }
+                return PointOfSalePaymentState(from: paymentEvent,
+                                               using: presentationStyleDeterminerDependencies)
+            }
+            .assign(to: &$paymentState)
+    }
+
+    /// Maps PaymentEvent to POSMessageType and annonates additional information if necessary
+    /// - Parameter event: CardPresentPaymentEvent
+    /// - Returns: PointOfSaleCardPresentPaymentMessageType
+    func mapCardPresentPaymentEventToMessageType(_ event: CardPresentPaymentEvent) -> PointOfSaleCardPresentPaymentMessageType? {
+        guard case let .show(eventDetails) = event,
+              case let .message(messageType) = presentationStyle(for: eventDetails) else {
+            return nil
+        }
+
+        return messageType
+    }
+
+    func presentationStyle(for eventDetails: CardPresentPaymentEventDetails) -> PointOfSaleCardPresentPaymentEventPresentationStyle? {
+        PointOfSaleCardPresentPaymentEventPresentationStyle(
+            for: eventDetails,
+            dependencies: presentationStyleDeterminerDependencies)
+    }
+
+    var presentationStyleDeterminerDependencies: PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies {
+        let cancelThenCollectPaymentWithWeakSelf: () -> Void = { [weak self] in
+            self?.cancelThenCollectPayment()
+        }
+
+        var orderTotal: String?
+        if case .loaded(let totals) = orderState {
+            orderTotal = totals.orderTotal
+        }
+
+        return PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies(
+            tryPaymentAgainBackToCheckoutAction: cancelThenCollectPaymentWithWeakSelf,
+            nonRetryableErrorExitAction: cancelThenCollectPaymentWithWeakSelf,
+            formattedOrderTotalPrice: orderTotal,
+            paymentCaptureErrorTryAgainAction: cancelThenCollectPaymentWithWeakSelf,
+            paymentCaptureErrorNewOrderAction: { [weak self] in
+                self?.startNewCart()
+            },
+            paymentIntentCreationErrorEditOrderAction: { [weak self] in
+                self?.addMoreToCart()
+            },
+            dismissReaderConnectionModal: { [weak self] in
+                self?.cardPresentPaymentAlertViewModel = nil
+            }
+        )
     }
 }
 

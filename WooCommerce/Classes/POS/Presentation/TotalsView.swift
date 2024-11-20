@@ -9,7 +9,13 @@ struct TotalsView: View {
     /// It allows for a simultaneous transition from the shimmering effect to the text fields,
     /// and movement from the center of the VStack to their respective positions.
     @Namespace private var totalsFieldAnimation
-    @State private var isShowingTotalsFields: Bool
+
+    // The source of truth for whether totals _are_ showing; separate from whether they
+    // _should be_ showing, so that we can animate the change.
+    @State private var isShowingTotalsFields: Bool = false
+    private var shouldShowTotalsFields: Bool {
+        viewModel.shouldShowTotalsFields(for: posModel.paymentState)
+    }
     @State private var isShowingPaymentsButtonSpacing: Bool = false
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
@@ -21,7 +27,6 @@ struct TotalsView: View {
 
     init(viewModel: TotalsViewModel) {
         self.viewModel = viewModel
-        self.isShowingTotalsFields = viewModel.isShowingTotalsFields
     }
 
     var body: some View {
@@ -33,7 +38,7 @@ struct TotalsView: View {
                         .renderedIf(cardReaderViewLayout.topPadding == nil)
 
                     VStack(alignment: .center, spacing: Constants.verticalSpacing) {
-                        if viewModel.isShowingCardReaderStatus {
+                        if isShowingCardReaderStatus {
                             cardReaderView
                                 .font(.title)
                                 .padding([.leading, .trailing],
@@ -54,32 +59,35 @@ struct TotalsView: View {
                             totalsFieldsView
                                 .transition(.opacity)
                                 .animation(.default, value: viewModel.isShimmering)
-                                .opacity(viewModel.isShowingTotalsFields ? 1 : 0)
+                                .opacity(viewModel.shouldShowTotalsFields(for: posModel.paymentState) ? 1 : 0)
                                 .layoutPriority(2)
                         }
                     }
-                    .animation(.default, value: viewModel.cardPresentPaymentInlineMessage)
+                    .animation(.default, value: posModel.cardPresentPaymentInlineMessage)
                     paymentsActionButtons
                     Spacer()
                 }
-                .animation(.default, value: viewModel.isShowingCardReaderStatus)
+                .animation(.default, value: isShowingCardReaderStatus)
             case .error(let viewModel):
                 PointOfSaleOrderSyncErrorMessageView(viewModel: viewModel)
                     .transition(.opacity)
             }
         }
         .background(backgroundColor)
-        .animation(.default, value: viewModel.paymentState)
+        .animation(.default, value: posModel.paymentState)
         .animation(.default, value: posModel.orderState.isError)
         .onDisappear {
             viewModel.onTotalsViewDisappearance()
         }
-        .onChange(of: viewModel.isShowingTotalsFields, perform: hideTotalsFieldsWithDelay)
+        .onAppear {
+            isShowingTotalsFields = shouldShowTotalsFields
+        }
+        .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
         .geometryGroupIfSupported()
     }
 
     private var backgroundColor: Color {
-        switch viewModel.paymentState {
+        switch posModel.paymentState {
         case .cardPaymentSuccessful:
             .posSecondaryBackground
         case .processingPayment:
@@ -190,7 +198,7 @@ private extension TotalsView {
     /// Hide totals fields with animation after a delay when starting to processing a payment
     /// - Parameter isShowing
     private func hideTotalsFieldsWithDelay(_ isShowing: Bool) {
-        guard !isShowing && viewModel.paymentState == .processingPayment else {
+        guard !isShowing && posModel.paymentState == .processingPayment else {
             self.isShowingTotalsFields = isShowing
             return
         }
@@ -240,7 +248,7 @@ private extension TotalsView {
 
     @ViewBuilder
     private var paymentsActionButtons: some View {
-        if viewModel.paymentState == .cardPaymentSuccessful {
+        if posModel.paymentState == .cardPaymentSuccessful {
             if isShowingPaymentsButtonSpacing {
                 Spacer().frame(height: Constants.paymentsButtonSpacing)
             }
@@ -261,9 +269,9 @@ private extension TotalsView {
     }
 
     @ViewBuilder private var cardReaderView: some View {
-        switch viewModel.connectionStatus {
+        switch posModel.cardReaderConnectionStatus {
         case .connected, .disconnecting, .cancellingConnection:
-            if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
+            if let inlinePaymentMessage = posModel.cardPresentPaymentInlineMessage {
                 HStack(alignment: .center) {
                     Spacer()
                     PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
@@ -304,12 +312,29 @@ private extension TotalsView {
         )
     }
 
+    private var isShowingCardReaderStatus: Bool {
+        guard posModel.orderState.isLoaded else {
+            // When the order's being created or synced, we only show the shimmering totals.
+            // Before the order exists, we don’t want to show the card payment status, as it will
+            // show for a second initially, then disappear the moment we start syncing the order.
+            return false
+        }
+
+        switch posModel.cardReaderConnectionStatus {
+        case .connected, .disconnecting, .cancellingConnection:
+            return posModel.cardPresentPaymentInlineMessage != nil
+        case .disconnected:
+            // Since the reader is disconnected, this will show the "Connect your reader" CTA button view.
+            return true
+        }
+    }
+
     private var cardReaderViewLayout: CardReaderViewLayout {
-        guard viewModel.isShowingCardReaderStatus else {
+        guard isShowingCardReaderStatus else {
             return .primary
         }
 
-        switch viewModel.paymentState {
+        switch posModel.paymentState {
         case .validatingOrderError:
             return .outlined
         case .paymentError:
@@ -323,7 +348,7 @@ private extension TotalsView {
             break
         }
 
-        if viewModel.connectionStatus == .disconnected {
+        if posModel.cardReaderConnectionStatus == .disconnected {
             return .outlined
         }
 
@@ -431,8 +456,7 @@ private extension View {
         orderService: POSOrderPreviewService())
     let totalsVM = TotalsViewModel(
         posModel: posModel,
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        paymentState: .acceptingCard)
+        cardPresentPaymentService: CardPresentPaymentPreviewService())
     TotalsView(viewModel: totalsVM)
         .environmentObject(posModel)
 }

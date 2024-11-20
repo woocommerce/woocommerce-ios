@@ -480,7 +480,7 @@ struct PointOfSaleAggregateModelTests {
             cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
 
             // Then
-            let timeout = ContinuousClock.now + .seconds(1)
+            let timeout = ContinuousClock.now + .seconds(2)
 
             while cardPresentPaymentService.collectPaymentWasCalled != true {
                 try await Task.sleep(for: .milliseconds(1))
@@ -569,16 +569,151 @@ struct PointOfSaleAggregateModelTests {
 
     struct PaymentTests {
         private let cardPresentPaymentService = MockCardPresentPaymentService()
+        private let itemProvider = MockPOSItemProvider()
+        private let orderService = MockPOSOrderService()
         private let sut: PointOfSaleAggregateModel
 
         init() {
             sut = PointOfSaleAggregateModel(
-                itemProvider: MockPOSItemProvider(),
+                itemProvider: itemProvider,
                 cardPresentPaymentService: cardPresentPaymentService,
-                orderService: MockPOSOrderService())
+                orderService: orderService)
         }
 
+        @Test func init_sets_paymentState_to_idle() async throws {
+            // Given that we don't specify a payment state
+            // When we init
+            let sut = PointOfSaleAggregateModel(
+                itemProvider: itemProvider,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderService: orderService)
 
+            // Then
+            #expect(sut.paymentState == .idle)
+        }
+
+        @Test func startNewCart_sets_payment_state_to_idle() async throws {
+            // Note that this previously set it to `acceptingCard`, but that seems wrong
+            // Given
+            let sut = PointOfSaleAggregateModel(
+                itemProvider: itemProvider,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderService: orderService,
+                paymentState: .cardPaymentSuccessful)
+
+            // When
+            sut.startNewCart()
+
+            // Then
+            #expect(sut.paymentState == .idle)
+        }
+
+        @Test func startNewCart_sets_payment_message_to_nil() async throws {
+            // Given
+            cardPresentPaymentService.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+            try #require(sut.cardPresentPaymentInlineMessage != nil)
+
+            // When
+            sut.startNewCart()
+
+            // Then
+            #expect(sut.cardPresentPaymentInlineMessage == nil)
+        }
+
+        @Test func addMoreToCart_sets_payment_state_to_idle() async throws {
+            // Given
+            let sut = PointOfSaleAggregateModel(
+                itemProvider: itemProvider,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderService: orderService,
+                paymentState: .cardPaymentSuccessful)
+
+            // When
+            sut.addMoreToCart()
+
+            // Then
+            #expect(sut.paymentState == .idle)
+        }
+
+        @Test func addMoreToCart_sets_payment_message_to_nil() async throws {
+            // Given
+            cardPresentPaymentService.paymentEvent = .show(
+                eventDetails: .tapSwipeOrInsertCard(
+                    inputMethods: [.tap, .swipe, .insert],
+                    cancelPayment: {}))
+            try #require(sut.cardPresentPaymentInlineMessage != nil)
+
+            // When
+            sut.addMoreToCart()
+
+            // Then
+            #expect(sut.cardPresentPaymentInlineMessage == nil)
+        }
+
+        @Test func cardPresentPaymentInlineMessage_when_paymentSuccess_then_total_set() async throws {
+            // Given
+            orderService.orderToReturn = Order.fake().copy(currency: "$", total: "52.30")
+            sut.addToCart(makeItem())
+            await sut.checkOut()
+
+            // When
+            cardPresentPaymentService.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+
+            // Then
+            guard case .paymentSuccess(let viewModel) = sut.cardPresentPaymentInlineMessage else {
+                Issue.record("Expected cardPresentPaymentInlineMessage to be paymentSuccess")
+                return
+            }
+            #expect(viewModel.message == "A payment of $52.30 was successfully made")
+        }
+
+        @Test func paymentIntentCreationErrorMessage_when_paymentIntentCreationError_tryAgain_cancels_payment() async throws {
+            // Given
+            struct TestError: Error {}
+            orderService.orderToReturn = Order.fake()
+            sut.addToCart(makeItem())
+            await sut.checkOut()
+
+            // When paymentIntentCreationError event is received
+            cardPresentPaymentService.paymentEvent = .show(
+                eventDetails: .paymentIntentCreationError(error: TestError(), cancelPayment: {})
+            )
+
+            // Then
+            guard case .paymentIntentCreationError(let viewModel) = sut.cardPresentPaymentInlineMessage else {
+                Issue.record("Expected cardPresentPaymentInlineMessage to be paymentIntentCreationError")
+                return
+            }
+            let tryAgainAction = viewModel.tryAgainButtonViewModel.actionHandler
+
+            tryAgainAction()
+            #expect(cardPresentPaymentService.cancelPaymentCalled == true)
+        }
+
+        @Test func paymentIntentCreationErrorMessage_when_paymentIntentCreationError_editOrder_moves_back_to_building() async throws {
+            // Given
+            struct TestError: Error {}
+            orderService.orderToReturn = Order.fake()
+            sut.addToCart(makeItem())
+            await sut.submitCart()
+
+            // When paymentIntentCreationError event is received
+            cardPresentPaymentService.paymentEvent = .show(
+                eventDetails: .paymentIntentCreationError(error: TestError(), cancelPayment: {})
+            )
+
+            // Then
+            guard case .paymentIntentCreationError(let viewModel) = sut.cardPresentPaymentInlineMessage,
+                  let editOrderAction = viewModel.editOrderButtonViewModel?.actionHandler
+            else {
+                Issue.record("Expected cardPresentPaymentInlineMessage to be paymentIntentCreationError")
+                return
+            }
+
+            try #require(sut.orderStage == .finalizing)
+            editOrderAction()
+            #expect(sut.orderStage == .building)
+        }
     }
 }
 

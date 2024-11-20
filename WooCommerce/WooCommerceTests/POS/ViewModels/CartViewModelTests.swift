@@ -1,11 +1,9 @@
 import XCTest
-import Combine
-import SwiftUI
 @testable import WooCommerce
 @testable import protocol Yosemite.POSItem
 @testable import struct Yosemite.POSProduct
 
-final class CartViewModelTests: XCTestCase {
+final class LegacyCartViewModelTests: XCTestCase {
 
     private var sut: CartViewModel!
     private var posModel: PointOfSaleAggregateModel!
@@ -36,8 +34,8 @@ final class CartViewModelTests: XCTestCase {
         XCTAssertNil(sut.itemsInCartLabel, "Initial state")
 
         // Given
-        let anItem = Self.makeItem()
-        let anotherItem = Self.makeItem()
+        let anItem = makeItem()
+        let anotherItem = makeItem()
 
         // When/Then
         posModel.addToCart(anItem)
@@ -48,15 +46,91 @@ final class CartViewModelTests: XCTestCase {
     }
 }
 
-private extension CartViewModelTests {
-    static func makeItem(name: String = "") -> POSItem {
-        return POSProduct(itemID: UUID(),
-                          productID: 0,
-                          name: name,
-                          price: "",
-                          formattedPrice: "",
-                          itemCategories: [],
-                          productImageSource: nil,
-                          productType: .simple)
+private func makeItem(name: String = "") -> POSItem {
+    return POSProduct(itemID: UUID(),
+                      productID: 0,
+                      name: name,
+                      price: "",
+                      formattedPrice: "",
+                      itemCategories: [],
+                      productImageSource: nil,
+                      productType: .simple)
+}
+
+import Testing
+
+struct CartViewModelTests {
+    let orderService: MockPOSOrderService
+    let cardPresentPaymentService: MockCardPresentPaymentService
+    let posModel: PointOfSaleAggregateModel
+    let sut: CartViewModel
+
+    init () async throws {
+        let orderService = MockPOSOrderService()
+        self.orderService = orderService
+        let cardPresentPaymentService = MockCardPresentPaymentService()
+        self.cardPresentPaymentService = cardPresentPaymentService
+        let posModel = PointOfSaleAggregateModel(itemProvider: MockPOSItemProvider(),
+                                                 cardPresentPaymentService: cardPresentPaymentService,
+                                                 orderService: orderService)
+        self.posModel = posModel
+        sut = CartViewModel(posModel: posModel)
     }
+
+    @Test func shouldPreventCartEditing_when_paymentState_idle_and_order_is_syncing() async throws {
+        // Given
+
+        // When, Then
+        #expect(sut.shouldPreventCartEditing(orderState: .syncing,
+                                             paymentState: .idle) == true)
+    }
+
+    @Test func shouldPreventCartEditing_when_paymentState_cardPaymentSuccessful() async throws {
+        // Given
+        let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
+            cartTotal: "$10.00",
+            orderTotal: "$12.00",
+            taxTotal: "$2.00"))
+
+        // When, Then
+        #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
+                                             paymentState: .cardPaymentSuccessful) == true)
+    }
+
+    @Test func shouldPreventCartEditing_when_paymentState_processingPayment() async throws {
+        // Given
+        let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
+            cartTotal: "$10.00",
+            orderTotal: "$12.00",
+            taxTotal: "$2.00"))
+
+        // When, Then
+        #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
+                                             paymentState: .processingPayment) == true)
+    }
+
+    @Test func shouldPreventCartEditing_false_when_paymentState_acceptingCard() async throws {
+        // Given
+        let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
+            cartTotal: "$10.00",
+            orderTotal: "$12.00",
+            taxTotal: "$2.00"))
+
+        // When, Then
+        #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
+                                             paymentState: .acceptingCard) == false)
+    }
+
+    @Test func shouldPreventCartEditing_false_when_paymentState_validatingOrderError() async throws {
+        // Given
+        let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
+            cartTotal: "$10.00",
+            orderTotal: "$12.00",
+            taxTotal: "$2.00"))
+
+        // When, Then
+        #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
+                                             paymentState: .validatingOrderError) == false)
+    }
+
 }

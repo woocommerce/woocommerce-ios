@@ -31,6 +31,7 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     let posModel = PointOfSaleAggregateModel(
         itemProvider: POSItemProviderPreview(),
@@ -39,3 +40,4 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
     PointOfSaleCardPresentPaymentReaderDisconnectedMessageView()
         .environmentObject(posModel)
 }
+#endif

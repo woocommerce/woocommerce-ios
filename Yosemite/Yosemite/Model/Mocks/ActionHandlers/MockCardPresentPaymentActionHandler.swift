@@ -17,6 +17,14 @@ struct MockCardPresentPaymentActionHandler: MockActionHandler {
             publishCardReaderConnections(onCompletion: onCompletion)
         case .selectedPaymentGatewayAccount(let onCompletion):
             onCompletion(objectGraph.paymentGatewayAccounts.first)
+        case .checkDeviceSupport(_, _, _, _, let onCompletion):
+            onCompletion(true)
+        case .observeConnectedReaders(let onCompletion):
+            observeConnectedReaders(onCompletion: onCompletion)
+        case .collectPayment(_, _, _, let onCardReaderMessage, _, _):
+            // This immediately brings up the `CardPresentModalTapCard` screen, which is used by
+            // `WooCommerceScreenshots` to display it for screenshotting purpose.
+            onCardReaderMessage(.waitingForInput([.tap, .swipe, .insert]))
         default:
             break
         }
@@ -37,5 +45,10 @@ struct MockCardPresentPaymentActionHandler: MockActionHandler {
     private func publishCardReaderConnections(onCompletion: @escaping (AnyPublisher<[CardReader], Never>) -> Void) {
         let cardReaders = objectGraph.cardReaders
         onCompletion(Just(cardReaders).eraseToAnyPublisher())
+    }
+
+    private func observeConnectedReaders(onCompletion: @escaping ([CardReader]) -> Void) {
+        let cardReaders = objectGraph.cardReaders
+        onCompletion(cardReaders)
     }
 }

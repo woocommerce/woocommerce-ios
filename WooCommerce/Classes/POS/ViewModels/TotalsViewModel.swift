@@ -36,10 +36,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         posModel.startNewCart()
     }
 
-    private func editOrder() {
-        posModel.addMoreToCart()
-    }
-
     // These three functions could potentially move to posModel and be based on orderStage.
     func onTotalsViewDisappearance() {
         // This is a backup – it's not called until transitions are complete when using the back button.

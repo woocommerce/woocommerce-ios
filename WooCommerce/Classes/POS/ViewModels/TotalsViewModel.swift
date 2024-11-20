@@ -6,10 +6,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
 
     @ObservedObject var posModel: PointOfSaleAggregateModel
 
-    var isShimmering: Bool {
-        posModel.orderState.isSyncing
-    }
-
     private let cardPresentPaymentService: CardPresentPaymentFacade
 
     init(posModel: PointOfSaleAggregateModel,

@@ -58,7 +58,7 @@ struct TotalsView: View {
                         if isShowingTotalsFields {
                             totalsFieldsView
                                 .transition(.opacity)
-                                .animation(.default, value: viewModel.isShimmering)
+                                .animation(.default, value: posModel.orderState.isSyncing)
                                 .opacity(viewModel.shouldShowTotalsFields(for: posModel.paymentState) ? 1 : 0)
                                 .layoutPriority(2)
                         }

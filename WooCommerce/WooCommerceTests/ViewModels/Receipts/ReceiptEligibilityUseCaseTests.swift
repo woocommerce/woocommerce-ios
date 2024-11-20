@@ -136,4 +136,155 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         // Then
         XCTAssertTrue(isEligible)
     }
+
+    // MARK: - Send Receipt After Payment
+
+    func test_isEligibleSendingReceiptAfterPayment_when_feature_flag_is_disabled_then_returns_false() {
+        // Given
+        let featureFlag = MockFeatureFlagService(isSendReceiptAfterPaymentEnabled: false)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let sut = ReceiptEligibilityUseCase(stores: stores, featureFlagService: featureFlag)
+
+        // When
+        let isEligible: Bool = waitFor { promise in
+            sut.isEligibleSendingReceiptAfterPayment(onCompletion: { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
+    func test_isEligibleSendingReceiptAfterPayment_when_plugins_are_inactive_then_returns_false() {
+        // Given
+        let featureFlag = MockFeatureFlagService(isSendReceiptAfterPaymentEnabled: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let wooCommercePlugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.6.0", active: false)
+        let wooPaymentsPlugin = SystemPlugin.fake().copy(name: "WooPayments", version: "8.9.0", active: false)
+
+        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            switch action {
+            case let .fetchSystemPlugin(_, systemPluginName, onCompletion):
+                if systemPluginName == "WooCommerce" {
+                    onCompletion(wooCommercePlugin)
+                } else if systemPluginName == "WooPayments" {
+                    onCompletion(wooPaymentsPlugin)
+                }
+            default:
+                XCTFail("Unexpected action")
+            }
+        }
+
+        let sut = ReceiptEligibilityUseCase(stores: stores, featureFlagService: featureFlag)
+
+        // When
+        let isEligible: Bool = waitFor { promise in
+            sut.isEligibleSendingReceiptAfterPayment(onCompletion: { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
+    func test_isEligibleSendingReceiptAfterPayment_when_plugins_are_supported_then_returns_true() {
+        // Given
+        let featureFlag = MockFeatureFlagService(isSendReceiptAfterPaymentEnabled: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let wooCommercePlugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.5.0", active: true)
+        let wooPaymentsPlugin = SystemPlugin.fake().copy(name: "WooPayments", version: "8.6.0", active: true)
+
+        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            switch action {
+            case let .fetchSystemPlugin(_, systemPluginName, onCompletion):
+                if systemPluginName == "WooCommerce" {
+                    onCompletion(wooCommercePlugin)
+                } else if systemPluginName == "WooPayments" {
+                    onCompletion(wooPaymentsPlugin)
+                }
+            default:
+                XCTFail("Unexpected action")
+            }
+        }
+
+        let sut = ReceiptEligibilityUseCase(stores: stores, featureFlagService: featureFlag)
+
+        // When
+        let isEligible: Bool = waitFor { promise in
+            sut.isEligibleSendingReceiptAfterPayment(onCompletion: { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(isEligible)
+    }
+
+    func test_isEligibleSendingReceiptAfterPayment_when_plugins_are_supported_dev_then_returns_true() {
+        // Given
+        let featureFlag = MockFeatureFlagService(isSendReceiptAfterPaymentEnabled: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let wooCommercePlugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.6.0-dev-1181231238", active: true)
+        let wooPaymentsPlugin = SystemPlugin.fake().copy(name: "WooPayments", version: "8.6.0-test-1", active: true)
+
+        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            switch action {
+            case let .fetchSystemPlugin(_, systemPluginName, onCompletion):
+                if systemPluginName == "WooCommerce" {
+                    onCompletion(wooCommercePlugin)
+                } else if systemPluginName == "WooPayments" {
+                    onCompletion(wooPaymentsPlugin)
+                }
+            default:
+                XCTFail("Unexpected action")
+            }
+        }
+
+        let sut = ReceiptEligibilityUseCase(stores: stores, featureFlagService: featureFlag)
+
+        // When
+        let isEligible: Bool = waitFor { promise in
+            sut.isEligibleSendingReceiptAfterPayment(onCompletion: { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(isEligible)
+    }
+
+    func test_isEligibleSendingReceiptAfterPayment_when_woopayments_version_is_incorrect_then_returns_false() {
+        // Given
+        let featureFlag = MockFeatureFlagService(isSendReceiptAfterPaymentEnabled: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let wooCommercePlugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.5.0", active: true)
+        let wooPaymentsPlugin = SystemPlugin.fake().copy(name: "WooPayments", version: "5.0.0-dev", active: true)
+
+        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            switch action {
+            case let .fetchSystemPlugin(_, systemPluginName, onCompletion):
+                if systemPluginName == "WooCommerce" {
+                    onCompletion(wooCommercePlugin)
+                } else if systemPluginName == "WooPayments" {
+                    onCompletion(wooPaymentsPlugin)
+                }
+            default:
+                XCTFail("Unexpected action")
+            }
+        }
+
+        let sut = ReceiptEligibilityUseCase(stores: stores, featureFlagService: featureFlag)
+
+        // When
+        let isEligible: Bool = waitFor { promise in
+            sut.isEligibleSendingReceiptAfterPayment(onCompletion: { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
 }

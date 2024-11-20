@@ -196,4 +196,11 @@ public enum FeatureFlag: Int {
     /// Supports Woo Payments onboarding in POS so that merchants who have not completed onboarding can access POS.
     ///
     case paymentsOnboardingInPointOfSale
+
+    /// Enables sending receipt after the payment via the API
+    case sendReceiptAfterPayment
+
+    /// Adds support for  sending receipts after the payment for POS
+    ///
+    case sendReceiptsForPointOfSale
 }

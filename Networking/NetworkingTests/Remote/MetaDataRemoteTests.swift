@@ -38,10 +38,10 @@ final class MetaDataRemoteTests: XCTestCase {
         XCTAssertEqual(result.count, 2)
         XCTAssertEqual(result[0].metadataID, 1)
         XCTAssertEqual(result[0].key, "lorem_key_1")
-        XCTAssertEqual(result[0].value, "Lorem ipsum")
+        XCTAssertEqual(result[0].value.stringValue, "Lorem ipsum")
         XCTAssertEqual(result[1].metadataID, 2)
         XCTAssertEqual(result[1].key, "ipsum_key_2")
-        XCTAssertEqual(result[1].value, "dolor sit amet")
+        XCTAssertEqual(result[1].value.stringValue, "dolor sit amet")
     }
 
     func test_update_meta_data_for_order() async throws {
@@ -66,10 +66,10 @@ final class MetaDataRemoteTests: XCTestCase {
         XCTAssertEqual(result.count, 2)
         XCTAssertEqual(result[0].metadataID, 1)
         XCTAssertEqual(result[0].key, "lorem_key_1")
-        XCTAssertEqual(result[0].value, "Lorem ipsum")
+        XCTAssertEqual(result[0].value.stringValue, "Lorem ipsum")
         XCTAssertEqual(result[1].metadataID, 2)
         XCTAssertEqual(result[1].key, "ipsum_key_2")
-        XCTAssertEqual(result[1].value, "dolor sit amet")
+        XCTAssertEqual(result[1].value.stringValue, "dolor sit amet")
     }
 
     // Helper method to load JSON data from file

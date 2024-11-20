@@ -39,6 +39,8 @@ public final class WooShippingStore: Store {
                            destinationAddress: destinationAddress,
                            packages: packages,
                            completion: completion)
+        case .loadPackages(let siteID, completion: let completion):
+            loadPackages(siteID: siteID, completion: completion)
         }
     }
 }
@@ -46,7 +48,7 @@ public final class WooShippingStore: Store {
 private extension WooShippingStore {
     func createPackage(siteID: Int64,
                        customPackage: WooShippingCustomPackage? = nil,
-                       predefinedOption: WooShippingPredefinedOption? = nil,
+                       predefinedOption: WooShippingPredefinedSavedOption? = nil,
                        completion: @escaping (Result<WooShippingCreatePackageResponse, PackageCreationError>) -> Void) {
         remote.createPackage(siteID: siteID, customPackage: customPackage, predefinedOption: predefinedOption) { result in
             switch result {
@@ -70,5 +72,10 @@ private extension WooShippingStore {
                               destinationAddress: destinationAddress,
                               packages: packages,
                               completion: completion)
+    }
+
+    func loadPackages(siteID: Int64,
+                      completion: @escaping (Result<WooShippingPackagesResponse, Error>) -> Void) {
+        remote.loadPackages(siteID: siteID, completion: completion)
     }
 }

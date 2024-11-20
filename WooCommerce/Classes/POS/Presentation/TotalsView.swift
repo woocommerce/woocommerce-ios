@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct TotalsView: View {
+    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @ObservedObject private var viewModel: TotalsViewModel
 
     /// Used together with .matchedGeometryEffect to synchronize the animations of shimmeringLineView and text fields.
@@ -14,6 +15,10 @@ struct TotalsView: View {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
 
+    private var shouldShowSendReceiptButton: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sendReceiptsForPointOfSale)
+    }
+
     init(viewModel: TotalsViewModel) {
         self.viewModel = viewModel
         self.isShowingTotalsFields = viewModel.isShowingTotalsFields
@@ -21,7 +26,7 @@ struct TotalsView: View {
 
     var body: some View {
         HStack {
-            switch viewModel.orderState {
+            switch posModel.orderState {
             case .idle, .syncing, .loaded:
                 VStack(alignment: .center) {
                     Spacer()
@@ -65,7 +70,7 @@ struct TotalsView: View {
         }
         .background(backgroundColor)
         .animation(.default, value: viewModel.paymentState)
-        .animation(.default, value: viewModel.orderState.isError)
+        .animation(.default, value: posModel.orderState.isError)
         .onDisappear {
             viewModel.onTotalsViewDisappearance()
         }
@@ -89,39 +94,47 @@ private extension TotalsView {
     var totalsFieldsView: some View {
         HStack(alignment: .center) {
             Spacer()
-            VStack() {
-                subtotalFieldView(title: Localization.subtotal,
-                                  formattedPrice: viewModel.formattedCartTotalPrice,
-                                  shimmeringActive: viewModel.isShimmering,
-                                  redacted: viewModel.isSubtotalFieldRedacted,
-                                  matchedGeometryId: Constants.matchedGeometrySubtotalId)
-                Spacer().frame(height: Constants.subtotalsVerticalSpacing)
-                subtotalFieldView(title: Localization.taxes,
-                                  formattedPrice: viewModel.formattedOrderTotalTaxPrice,
-                                  shimmeringActive: viewModel.isShimmering,
-                                  redacted: viewModel.isTaxFieldRedacted,
-                                  matchedGeometryId: Constants.matchedGeometryTaxId)
-                Spacer().frame(height: Constants.totalVerticalSpacing)
-                Divider()
-                    .overlay(Constants.separatorColor)
-                Spacer().frame(height: Constants.totalVerticalSpacing)
-                totalFieldView(formattedPrice: viewModel.formattedOrderTotalPrice,
-                               shimmeringActive: viewModel.isShimmering,
-                               redacted: viewModel.isTotalPriceFieldRedacted,
-                               matchedGeometryId: Constants.matchedGeometryTotalId)
+            switch posModel.orderState {
+            case .idle,
+                    .syncing,
+                    .error:
+                totalsFields(orderTotals: nil)
+            case .loaded(let orderTotals):
+                totalsFields(orderTotals: orderTotals)
             }
-            .padding(Constants.totalsLineViewPadding)
-            .frame(minWidth: Constants.pricesIdealWidth)
-            .fixedSize(horizontal: true, vertical: false)
             Spacer()
         }
+    }
+
+    @ViewBuilder func totalsFields(orderTotals: PointOfSaleOrderTotals?) -> some View {
+        let totalsLoading = orderTotals == nil
+        VStack {
+            subtotalFieldView(title: Localization.subtotal,
+                              formattedPrice: orderTotals?.cartTotal,
+                              shimmeringActive: totalsLoading,
+                              matchedGeometryId: Constants.matchedGeometrySubtotalId)
+            Spacer().frame(height: Constants.subtotalsVerticalSpacing)
+            subtotalFieldView(title: Localization.taxes,
+                              formattedPrice: orderTotals?.taxTotal,
+                              shimmeringActive: totalsLoading,
+                              matchedGeometryId: Constants.matchedGeometryTaxId)
+            Spacer().frame(height: Constants.totalVerticalSpacing)
+            Divider()
+                .overlay(Constants.separatorColor)
+            Spacer().frame(height: Constants.totalVerticalSpacing)
+            totalFieldView(formattedPrice: orderTotals?.orderTotal,
+                           shimmeringActive: totalsLoading,
+                           matchedGeometryId: Constants.matchedGeometryTotalId)
+        }
+        .padding(Constants.totalsLineViewPadding)
+        .frame(minWidth: Constants.pricesIdealWidth)
+        .fixedSize(horizontal: true, vertical: false)
     }
 
     @ViewBuilder
     func subtotalFieldView(title: String,
                            formattedPrice: String?,
                            shimmeringActive: Bool,
-                           redacted: Bool,
                            matchedGeometryId: String) -> some View {
         if shimmeringActive {
             shimmeringLineView(width: Constants.shimmeringWidth, height: Constants.subtotalsShimmeringHeight)
@@ -133,7 +146,7 @@ private extension TotalsView {
                 Spacer()
                 Text(formattedPrice ?? "")
                     .font(Constants.subtotalAmountFont)
-                    .redacted(reason: redacted ? [.placeholder] : [])
+                    .redacted(reason: shimmeringActive ? [.placeholder] : [])
             }
             .accessibilityElement(children: .combine)
             .foregroundColor(Color.posPrimaryText)
@@ -144,7 +157,6 @@ private extension TotalsView {
     @ViewBuilder
     func totalFieldView(formattedPrice: String?,
                         shimmeringActive: Bool,
-                        redacted: Bool,
                         matchedGeometryId: String) -> some View {
         if shimmeringActive {
             shimmeringLineView(width: Constants.shimmeringWidth, height: Constants.totalShimmeringHeight)
@@ -157,7 +169,7 @@ private extension TotalsView {
                 Spacer(minLength: Constants.totalsHorizontalSpacing)
                 Text(formattedPrice ?? "")
                     .font(Constants.totalAmountFont)
-                    .redacted(reason: redacted ? [.placeholder] : [])
+                    .redacted(reason: shimmeringActive ? [.placeholder] : [])
             }
             .accessibilityElement(children: .combine)
             .accessibilityAddTraits(.isHeader)
@@ -194,16 +206,36 @@ private extension TotalsView {
         Button(action: {
             viewModel.startNewOrder()
         }, label: {
-            HStack(spacing: Constants.newOrderButtonSpacing) {
+            HStack(spacing: Constants.buttonSpacing) {
                 Text(Localization.newOrder)
-                    .font(Constants.newOrderButtonFont)
+                    .font(Constants.buttonFont)
             }
             .frame(minWidth: UIScreen.main.bounds.width / 2)
         })
-        .padding(Constants.newOrderButtonPadding)
+        .padding(Constants.buttonPadding)
         .foregroundColor(Constants.posPrimaryTextInverted)
         .background(Constants.posOverlayFillInverted)
-        .cornerRadius(Constants.newOrderButtonCornerRadius)
+        .cornerRadius(Constants.buttonCornerRadius)
+    }
+
+    private var sendReceiptButton: some View {
+        Button(action: {
+            // no-op
+            // https://github.com/woocommerce/woocommerce-ios/issues/14461
+        }, label: {
+            HStack(spacing: Constants.buttonSpacing) {
+                Text(Localization.sendReceipt)
+                    .font(Constants.buttonFont)
+            }
+            .frame(minWidth: UIScreen.main.bounds.width / 2)
+        })
+        .padding(Constants.buttonPadding)
+        .foregroundColor(Color.posPrimaryText)
+        .background(Color.clear)
+        .overlay {
+            RoundedRectangle(cornerRadius: Constants.buttonCornerRadius)
+                        .stroke(Color.posPrimaryText, lineWidth: 1.0)
+        }
     }
 
     @ViewBuilder
@@ -212,6 +244,8 @@ private extension TotalsView {
             if isShowingPaymentsButtonSpacing {
                 Spacer().frame(height: Constants.paymentsButtonSpacing)
             }
+            sendReceiptButton
+                .renderedIf(shouldShowSendReceiptButton)
             newOrderButton
                 .onAppear {
                     isShowingPaymentsButtonSpacing = false
@@ -300,7 +334,7 @@ private extension TotalsView {
 private extension TotalsView {
     enum Constants {
         static let pricesIdealWidth: CGFloat = 382
-        static let newOrderButtonCornerRadius: CGFloat = 8
+        static let buttonCornerRadius: CGFloat = 8
 
         static let verticalSpacing: CGFloat = 56
 
@@ -321,9 +355,9 @@ private extension TotalsView {
 
         static let paymentsButtonSpacing: CGFloat = 80
         static let paymentsButtonButtonSpacingAnimationDelay: CGFloat = 0.3
-        static let newOrderButtonSpacing: CGFloat = 12
-        static let newOrderButtonPadding: CGFloat = 32
-        static let newOrderButtonFont: POSFontStyle = .posBodyEmphasized
+        static let buttonSpacing: CGFloat = 12
+        static let buttonPadding: CGFloat = 32
+        static let buttonFont: POSFontStyle = .posBodyEmphasized
 
         /// Used for synchronizing animations of shimmeringLine and textField
         static let matchedGeometrySubtotalId: String = "pos_totals_view_subtotal_matched_geometry_id"
@@ -368,6 +402,10 @@ private extension TotalsView {
             "pos.totalsView.newOrder",
             value: "New order",
             comment: "Button title for new order button")
+        static let sendReceipt = NSLocalizedString(
+            "pos.totalsView.sendReceipt",
+            value: "Receipt",
+            comment: "Button title for the receipt button")
     }
 }
 
@@ -387,10 +425,15 @@ private extension View {
 
 #if DEBUG
 #Preview {
-    let totalsVM = TotalsViewModel(orderService: POSOrderPreviewService(),
-                                   cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                   currencyFormatter: .init(currencySettings: .init()),
-                                    paymentState: .acceptingCard)
-    return TotalsView(viewModel: totalsVM)
+    let posModel = PointOfSaleAggregateModel(
+        itemProvider: POSItemProviderPreview(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderService: POSOrderPreviewService())
+    let totalsVM = TotalsViewModel(
+        posModel: posModel,
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        paymentState: .acceptingCard)
+    TotalsView(viewModel: totalsVM)
+        .environmentObject(posModel)
 }
 #endif

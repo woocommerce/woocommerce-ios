@@ -1160,7 +1160,7 @@ extension Networking.MetaData {
     public func copy(
         metadataID: CopiableProp<Int64> = .copy,
         key: CopiableProp<String> = .copy,
-        value: CopiableProp<String> = .copy
+        value: CopiableProp<MetaDataValue> = .copy
     ) -> Networking.MetaData {
         let metadataID = metadataID ?? self.metadataID
         let key = key ?? self.key
@@ -4045,7 +4045,7 @@ extension Networking.WooPaymentsPayoutsSchedule {
 extension Networking.WooShippingCreatePackageResponse {
     public func copy(
         customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
-        predefinedOptions: CopiableProp<[WooShippingPredefinedOption]> = .copy
+        predefinedOptions: CopiableProp<[WooShippingPredefinedSavedOption]> = .copy
     ) -> Networking.WooShippingCreatePackageResponse {
         let customPackages = customPackages ?? self.customPackages
         let predefinedOptions = predefinedOptions ?? self.predefinedOptions
@@ -4053,6 +4053,27 @@ extension Networking.WooShippingCreatePackageResponse {
         return Networking.WooShippingCreatePackageResponse(
             customPackages: customPackages,
             predefinedOptions: predefinedOptions
+        )
+    }
+}
+
+extension Networking.WooShippingPackagesResponse {
+    public func copy(
+        storeOptions: CopiableProp<ShippingLabelStoreOptions> = .copy,
+        customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
+        savedPredefinedPackages: CopiableProp<[WooShippingSavedPredefinedPackage]> = .copy,
+        allPredefinedOptions: CopiableProp<[WooShippingPredefinedOption]> = .copy
+    ) -> Networking.WooShippingPackagesResponse {
+        let storeOptions = storeOptions ?? self.storeOptions
+        let customPackages = customPackages ?? self.customPackages
+        let savedPredefinedPackages = savedPredefinedPackages ?? self.savedPredefinedPackages
+        let allPredefinedOptions = allPredefinedOptions ?? self.allPredefinedOptions
+
+        return Networking.WooShippingPackagesResponse(
+            storeOptions: storeOptions,
+            customPackages: customPackages,
+            savedPredefinedPackages: savedPredefinedPackages,
+            allPredefinedOptions: allPredefinedOptions
         )
     }
 }

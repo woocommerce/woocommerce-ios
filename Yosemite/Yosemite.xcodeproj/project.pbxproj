@@ -312,7 +312,12 @@
 		74D42DBC221C983F00B4977D /* ShipmentTracking+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D42DBB221C983F00B4977D /* ShipmentTracking+ReadOnlyConvertible.swift */; };
 		74D7F29B20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D7F29A20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift */; };
 		74D7FFFA221F01E90008CC0E /* ShipmentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D7FFF9221F01E90008CC0E /* ShipmentStore.swift */; };
+		864177A82CDBC9A1001F9640 /* MockShippingMethodActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864177A72CDBC9A1001F9640 /* MockShippingMethodActionHandler.swift */; };
 		86BB4C962B89FCF30096E92D /* CustomerFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86BB4C952B89FCF30096E92D /* CustomerFilter.swift */; };
+		86DAA7982CD9E31E002AE55E /* MockPaymentActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DAA7972CD9E31E002AE55E /* MockPaymentActionHandler.swift */; };
+		86DAA79A2CD9E572002AE55E /* MockSiteActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DAA7992CD9E572002AE55E /* MockSiteActionHandler.swift */; };
+		86DAA79C2CD9E8C1002AE55E /* MockGoogleAdsActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DAA79B2CD9E8C1002AE55E /* MockGoogleAdsActionHandler.swift */; };
+		86DAA79E2CD9ED7B002AE55E /* MockJustInTimeMessageActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DAA79D2CD9ED7B002AE55E /* MockJustInTimeMessageActionHandler.swift */; };
 		933A27352222352500C2143A /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A27342222352500C2143A /* Logging.swift */; };
 		93E7507A226E2D6C00BAF88A /* AccountSettings+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E75079226E2D6C00BAF88A /* AccountSettings+ReadOnlyConvertible.swift */; };
 		AEF945872729760F001DCCFB /* TelemetryAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF945862729760F001DCCFB /* TelemetryAction.swift */; };
@@ -825,7 +830,12 @@
 		74D7FFF9221F01E90008CC0E /* ShipmentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipmentStore.swift; sourceTree = "<group>"; };
 		79402E7AD394EEB60C39A4B8 /* Pods-YosemiteTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7F47E19203B04CF6BB5EA659 /* Pods-Yosemite.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.debug.xcconfig"; sourceTree = "<group>"; };
+		864177A72CDBC9A1001F9640 /* MockShippingMethodActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShippingMethodActionHandler.swift; sourceTree = "<group>"; };
 		86BB4C952B89FCF30096E92D /* CustomerFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerFilter.swift; sourceTree = "<group>"; };
+		86DAA7972CD9E31E002AE55E /* MockPaymentActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPaymentActionHandler.swift; sourceTree = "<group>"; };
+		86DAA7992CD9E572002AE55E /* MockSiteActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSiteActionHandler.swift; sourceTree = "<group>"; };
+		86DAA79B2CD9E8C1002AE55E /* MockGoogleAdsActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockGoogleAdsActionHandler.swift; sourceTree = "<group>"; };
+		86DAA79D2CD9ED7B002AE55E /* MockJustInTimeMessageActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockJustInTimeMessageActionHandler.swift; sourceTree = "<group>"; };
 		933A27342222352500C2143A /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		93D120F57D5D14A10B3AFFFD /* Pods-Yosemite.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.release.xcconfig"; sourceTree = "<group>"; };
 		93E75079226E2D6C00BAF88A /* AccountSettings+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AccountSettings+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
@@ -1293,6 +1303,11 @@
 				DE3C5B1C286AEDA10049E6AA /* MockOrderCardPresentPaymentEligibilityActionHandler.swift */,
 				DE3C5B20286BF2270049E6AA /* MockSystemStatusActionHandler.swift */,
 				DE3C5B22286C03F80049E6AA /* MockCardPresentPaymentActionHandler.swift */,
+				86DAA7972CD9E31E002AE55E /* MockPaymentActionHandler.swift */,
+				86DAA7992CD9E572002AE55E /* MockSiteActionHandler.swift */,
+				86DAA79B2CD9E8C1002AE55E /* MockGoogleAdsActionHandler.swift */,
+				86DAA79D2CD9ED7B002AE55E /* MockJustInTimeMessageActionHandler.swift */,
+				864177A72CDBC9A1001F9640 /* MockShippingMethodActionHandler.swift */,
 			);
 			path = ActionHandlers;
 			sourceTree = "<group>";
@@ -2309,6 +2324,7 @@
 				B5631ECD2114DF8C008D3535 /* EntityListener.swift in Sources */,
 				D80F758A223F72AA002F4A3B /* ShipmentTrackingProviderGroup+ReadOnlyConvertible.swift in Sources */,
 				B9AECD442851D95600E78584 /* TotalRefundedCalculationUseCase.swift in Sources */,
+				86DAA7982CD9E31E002AE55E /* MockPaymentActionHandler.swift in Sources */,
 				031C1EAE27B1877000298699 /* WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift in Sources */,
 				CC379B1429C8B593009747B4 /* ProductCompositeComponent+ReadOnlyConvertible.swift in Sources */,
 				5758EB3024DC7791009ED8A6 /* InAppFeedbackCardVisibilityUseCase.swift in Sources */,
@@ -2328,6 +2344,8 @@
 				DE3C5B23286C03F90049E6AA /* MockCardPresentPaymentActionHandler.swift in Sources */,
 				2685C111263C97A800D9EE97 /* AddOnGroupAction.swift in Sources */,
 				247CE8382582F21700F9D9D1 /* MockNotificationCountActionHandler.swift in Sources */,
+				86DAA79A2CD9E572002AE55E /* MockSiteActionHandler.swift in Sources */,
+				86DAA79C2CD9E8C1002AE55E /* MockGoogleAdsActionHandler.swift in Sources */,
 				02E3B623290267D3007E0F13 /* AccountCreationStore.swift in Sources */,
 				02FF056523DE9C8B0058E6E7 /* MediaStore.swift in Sources */,
 				7493751022498AB1007D85D1 /* ProductDefaultAttribute+ReadOnlyConvertible.swift in Sources */,
@@ -2386,6 +2404,7 @@
 				031C1EAC27B1873200298699 /* WCPayCardPresentReceiptDetails+ReadOnlyConvertible.swift in Sources */,
 				B9AECD422851D6D100E78584 /* OrderPaymentMethod.swift in Sources */,
 				D80F758C223F74B6002F4A3B /* ShipmentTrackingProvider+ReadOnlyConvertible.swift in Sources */,
+				86DAA79E2CD9ED7B002AE55E /* MockJustInTimeMessageActionHandler.swift in Sources */,
 				45739F372437680F00480C95 /* ProductSettings.swift in Sources */,
 				247CE88725833F1200F9D9D1 /* MockObjectGraph.swift in Sources */,
 				741F34822195EA71005F5BD9 /* CommentStore.swift in Sources */,
@@ -2547,6 +2566,7 @@
 				CE5F9A7A22B2D455001755E8 /* Array+Helpers.swift in Sources */,
 				031C1EB027B1879C00298699 /* WCPayCardPaymentDetails+ReadOnlyConvertible.swift in Sources */,
 				D849A1452320E565006CB84F /* ProductReview+ReadOnlyType.swift in Sources */,
+				864177A82CDBC9A1001F9640 /* MockShippingMethodActionHandler.swift in Sources */,
 				743057B3218B69D100441A76 /* Queue.swift in Sources */,
 				02C254F62563B47C00A04423 /* ShippingLabelAddress+ReadonlyConvertible.swift in Sources */,
 				86BB4C962B89FCF30096E92D /* CustomerFilter.swift in Sources */,

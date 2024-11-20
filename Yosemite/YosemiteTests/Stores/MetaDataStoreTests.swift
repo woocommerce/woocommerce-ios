@@ -17,7 +17,7 @@ final class MetaDataStoreTests: XCTestCase {
     private let sampleOrderID: Int64 = 1
     private let sampleProductID: Int64 = 2
     private let newMetadataArray = [["id": 1234, "key": "newValue"]]
-    private let returnMetaDataArray = [MetaData.fake().copy(metadataID: 1234, key: "key", value: "newValue")]
+    private let returnMetaDataArray = [MetaData(metadataID: 1234, key: "key", value: "newValue")]
 
     override func setUp() {
         super.setUp()
@@ -58,7 +58,7 @@ final class MetaDataStoreTests: XCTestCase {
         let updatedMetaData = try result.get()
         XCTAssertEqual(updatedMetaData.count, 1)
         XCTAssertEqual(updatedMetaData.first?.key, "key")
-        XCTAssertEqual(updatedMetaData.first?.value, "newValue")
+        XCTAssertEqual(updatedMetaData.first?.value.stringValue, "newValue")
     }
 
     func test_updateOrderMetaData_returns_error_on_failure() throws {
@@ -88,8 +88,8 @@ final class MetaDataStoreTests: XCTestCase {
 
     func test_updateOrderMetaData_removes_deleted_items() {
         // Given
-        let metaData = [MetaData.fake().copy(metadataID: 1, key: "key", value: "value"),
-                        MetaData.fake().copy(metadataID: 2, key: "key", value: "value")]
+        let metaData = [MetaData(metadataID: 1, key: "key", value: "value"),
+                        MetaData(metadataID: 2, key: "key", value: "value")]
         let order = Yosemite.Order.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID, customFields: metaData)
         storageManager.insertSampleOrder(readOnlyOrder: order)
 
@@ -139,7 +139,7 @@ final class MetaDataStoreTests: XCTestCase {
         let updatedMetaData = try result.get()
         XCTAssertEqual(updatedMetaData.count, 1)
         XCTAssertEqual(updatedMetaData.first?.key, "key")
-        XCTAssertEqual(updatedMetaData.first?.value, "newValue")
+        XCTAssertEqual(updatedMetaData.first?.value.stringValue, "newValue")
     }
 
     func test_updateProductMetaData_returns_error_on_failure() throws {
@@ -170,8 +170,8 @@ final class MetaDataStoreTests: XCTestCase {
 
     func test_updateProductMetaData_removes_deleted_items() {
         // Given
-        let metaData = [MetaData.fake().copy(metadataID: 1, key: "key", value: "value"),
-                        MetaData.fake().copy(metadataID: 2, key: "key", value: "value")]
+        let metaData = [MetaData(metadataID: 1, key: "key", value: "value"),
+                        MetaData(metadataID: 2, key: "key", value: "value")]
         let product = Yosemite.Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, customFields: metaData)
         // Insert product with metadata
         storageManager.insertSampleProduct(readOnlyProduct: product)

@@ -196,7 +196,8 @@ final class OrderDetailsViewModel {
                                        paymentLink: order.paymentURL,
                                        total: order.total,
                                        formattedTotal: formattedTotal,
-                                       flow: .orderPayment)
+                                       flow: .orderPayment,
+                                       channel: .storeManagement)
     }
 
     /// Helpers

@@ -20,6 +20,7 @@ protocol CollectOrderPaymentProtocol {
     /// - Parameter onFailure: Closure invoked when there is an error in the flow
     /// - Parameter onPaymentCompletion: Closure invoked after any payment completes, but while the user can still continue with the flow in some way
     func collectPayment(using: CardReaderDiscoveryMethod,
+                        channel: PaymentChannel,
                         onFailure: @escaping (Error) -> Void,
                         onCancel: @escaping () -> Void,
                         onPaymentCompletion: @escaping () -> Void,
@@ -134,10 +135,12 @@ where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
     /// 7. Tracks payment analytics
     ///
     ///
+    /// - Parameter channel: The channel where the payment is being collected (e.g. POS, store management).
     /// - Parameter onFailure: Closure invoked after the payment process fails.
     /// - Parameter onCancel: Closure invoked after the flow is cancelled
     /// - Parameter onCompleted: Closure invoked after the flow has been totally completed, currently after merchant has handled the receipt.
     func collectPayment(using discoveryMethod: CardReaderDiscoveryMethod,
+                        channel: PaymentChannel,
                         onFailure: @escaping (Error) -> Void,
                         onCancel: @escaping () -> Void,
                         onPaymentCompletion: @escaping () -> Void,
@@ -150,6 +153,7 @@ where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                 let paymentAlertProvider = paymentAlertProvider(for: reader)
                 self.attemptPayment(alertProvider: paymentAlertProvider,
                                     paymentGatewayAccount: paymentGatewayAccount,
+                                    channel: channel,
                                     onCompletion: { [weak self] result in
                     guard let self = self else { return }
                     // Inform about the collect payment state
@@ -284,6 +288,7 @@ private extension CollectOrderPaymentUseCase {
     ///
     func attemptPayment(alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                         paymentGatewayAccount: PaymentGatewayAccount,
+                        channel: PaymentChannel,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         checkOrderIsStillEligibleForPayment(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { [weak self] result in
             guard let self = self else { return }
@@ -292,6 +297,7 @@ private extension CollectOrderPaymentUseCase {
                 return self.checkThenHandlePaymentFailureAndRetryPayment(error,
                                                                          alertProvider: paymentAlerts,
                                                                          paymentGatewayAccount: paymentGatewayAccount,
+                                                                         channel: channel,
                                                                          onCompletion: onCompletion)
             case .success:
                 guard let orderTotal = self.orderTotal else {
@@ -306,6 +312,7 @@ private extension CollectOrderPaymentUseCase {
                     paymentGatewayAccount: paymentGatewayAccount,
                     paymentMethodTypes: self.configuration.paymentMethods.map(\.rawValue),
                     stripeSmallestCurrencyUnitMultiplier: self.configuration.stripeSmallestCurrencyUnitMultiplier,
+                    channel: channel,
                     onPreparingReader: { [weak self] in
                         self?.alertsPresenter.present(viewModel: paymentAlerts.preparingReader(onCancel: {
                             self?.cancelPayment(from: .paymentPreparingReader) {
@@ -357,6 +364,7 @@ private extension CollectOrderPaymentUseCase {
                             self?.checkThenHandlePaymentFailureAndRetryPayment(error,
                                                                                alertProvider: paymentAlerts,
                                                                                paymentGatewayAccount: paymentGatewayAccount,
+                                                                               channel: channel,
                                                                                onCompletion: onCompletion)
                         }
                     })
@@ -389,11 +397,13 @@ private extension CollectOrderPaymentUseCase {
     func checkThenHandlePaymentFailureAndRetryPayment(_ error: Error,
                                                       alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                                       paymentGatewayAccount: PaymentGatewayAccount,
+                                                      channel: PaymentChannel,
                                                       onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         guard case ServerSidePaymentCaptureError.paymentGateway(.otherError) = error else {
             return handlePaymentFailureAndRetryPayment(error,
                                                        alertProvider: paymentAlerts,
                                                        paymentGatewayAccount: paymentGatewayAccount,
+                                                       channel: channel,
                                                        onCompletion: onCompletion)
         }
 
@@ -406,6 +416,7 @@ private extension CollectOrderPaymentUseCase {
                 return handlePaymentFailureAndRetryPayment(error,
                                                            alertProvider: paymentAlerts,
                                                            paymentGatewayAccount: paymentGatewayAccount,
+                                                           channel: channel,
                                                            onCompletion: onCompletion)
             }
 
@@ -422,6 +433,7 @@ private extension CollectOrderPaymentUseCase {
     func handlePaymentFailureAndRetryPayment(_ error: Error,
                                              alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                              paymentGatewayAccount: PaymentGatewayAccount,
+                                             channel: PaymentChannel,
                                              onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         DDLogError("Failed to collect payment: \(error.localizedDescription)")
 
@@ -437,11 +449,13 @@ private extension CollectOrderPaymentUseCase {
             presentRetryByRestartingError(error: error,
                                           paymentAlerts: paymentAlerts,
                                           paymentGatewayAccount: paymentGatewayAccount,
+                                          channel: channel,
                                           onCompletion: onCompletion)
         case .reuseIntent:
             presentRetryWithoutRestartingError(error: error,
                                                paymentAlerts: paymentAlerts,
                                                paymentGatewayAccount: paymentGatewayAccount,
+                                               channel: channel,
                                                onCompletion: onCompletion)
         case .dontRetry:
             presentNonRetryableError(error: error,
@@ -453,6 +467,7 @@ private extension CollectOrderPaymentUseCase {
     private func presentRetryByRestartingError(error: Error,
                                                paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                                paymentGatewayAccount: PaymentGatewayAccount,
+                                               channel: PaymentChannel,
                                                onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         alertsPresenter.present(
             viewModel: paymentAlerts.error(error: error,
@@ -466,6 +481,7 @@ private extension CollectOrderPaymentUseCase {
                                                        // Retry payment
                                                        self.attemptPayment(alertProvider: paymentAlerts,
                                                                            paymentGatewayAccount: paymentGatewayAccount,
+                                                                           channel: channel,
                                                                            onCompletion: onCompletion)
                                                    case .failure(let cancelError):
                                                        // Inform that payment can't be retried.
@@ -484,6 +500,7 @@ private extension CollectOrderPaymentUseCase {
     private func presentRetryWithoutRestartingError(error: Error,
                                                     paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                                     paymentGatewayAccount: PaymentGatewayAccount,
+                                                    channel: PaymentChannel,
                                                     onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         alertsPresenter.present(
             viewModel: paymentAlerts.error(
@@ -496,6 +513,7 @@ private extension CollectOrderPaymentUseCase {
                             return self.checkThenHandlePaymentFailureAndRetryPayment(error,
                                                                                      alertProvider: paymentAlerts,
                                                                                      paymentGatewayAccount: paymentGatewayAccount,
+                                                                                     channel: channel,
                                                                                      onCompletion: onCompletion)
                         case .success:
                             self.paymentOrchestrator.retryPayment(for: self.order) { [weak self] result in
@@ -516,6 +534,7 @@ private extension CollectOrderPaymentUseCase {
                                     self.checkThenHandlePaymentFailureAndRetryPayment(retryError,
                                                                                       alertProvider: paymentAlerts,
                                                                                       paymentGatewayAccount: paymentGatewayAccount,
+                                                                                      channel: channel,
                                                                                       onCompletion: onCompletion)
                                 }
                             }

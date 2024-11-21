@@ -1,4 +1,5 @@
 import Foundation
+import enum Yosemite.PaymentChannel
 import struct Yosemite.Order
 import Combine
 
@@ -31,11 +32,13 @@ protocol CardPresentPaymentFacade {
     /// - Parameters:
     ///   - order: The order to collect payment for
     ///   - connectionMethod: Allows specifying Tap to Pay or bluetooth reader.
+    ///   - channel: The channel where the payment is being collected.
     /// - Returns: `CardPresentPaymentResult` for a success, or cancellation.
     /// - Throws: `CardPresentPaymentError` for any failures.
     /// - Output: publishes intermediate events on the `paymentEventPublisher` as required.
     func collectPayment(for order: Order,
-                        using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentResult
+                        using connectionMethod: CardReaderConnectionMethod,
+                        channel: PaymentChannel) async throws -> CardPresentPaymentResult
 
     /// Cancels any in-progress payment.
     func cancelPayment()

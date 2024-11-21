@@ -80,6 +80,11 @@ public extension PaymentIntent {
         /// This key is also used by the plugin when it creates payment intents.
         ///
         public static let paymentType = "payment_type"
+
+        /// The in-person payment channel, either `mobile_store_management` or `mobile_pos`.
+        /// This key is used for identifying the channel for in-person payments in analytics.
+        ///
+        public static let channel = "ipp_channel"
     }
 }
 
@@ -106,7 +111,8 @@ public extension PaymentIntent {
                           siteURL: String? = nil,
                           orderID: Int64? = nil,
                           orderKey: String? = nil,
-                          paymentType: PaymentTypes? = nil
+                          paymentType: PaymentTypes? = nil,
+                             channel: PaymentChannel
     ) -> [String: String] {
         var metadata = [String: String]()
 
@@ -119,6 +125,7 @@ public extension PaymentIntent {
         }
         metadata[PaymentIntent.MetadataKeys.orderKey] = orderKey
         metadata[PaymentIntent.MetadataKeys.paymentType] = paymentType?.rawValue
+        metadata[PaymentIntent.MetadataKeys.channel] = channel.metadataValue
 
         return metadata
     }
@@ -130,5 +137,16 @@ public extension PaymentIntent {
     /// - Returns: an optional payment method that is set after the payment is processed.
     func paymentMethod() -> PaymentMethod? {
         charges.first?.paymentMethod
+    }
+}
+
+private extension PaymentChannel {
+    var metadataValue: String {
+        switch self {
+            case .storeManagement:
+                return "mobile_store_management"
+            case .pos:
+                return "mobile_pos"
+        }
     }
 }

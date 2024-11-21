@@ -26,4 +26,16 @@ public enum WooShippingAction: Action {
     ///
     case loadAccountSettings(siteID: Int64,
                              completion: (Result<WooShippingAccountSettingsResponse, Error>) -> Void)
+
+    /// Purchase a shipping label.
+    ///
+    case purchaseShippingLabel(siteID: Int64,
+                               orderID: Int64,
+                               originAddress: ShippingLabelAddress,
+                               destinationAddress: ShippingLabelAddress,
+                               package: WooShippingPackagePurchase,
+                               completion: (Result<ShippingLabel, Error>) -> Void,
+                               backendProcessingDelay: TimeInterval = 2.0,
+                               pollingDelay: TimeInterval = 1.0,
+                               pollingMaximumRetries: Int64 = 3)
 }

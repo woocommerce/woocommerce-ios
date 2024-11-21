@@ -43,6 +43,24 @@ public final class WooShippingStore: Store {
             loadPackages(siteID: siteID, completion: completion)
         case .loadAccountSettings(let siteID, completion: let completion):
             loadAccountSettings(siteID: siteID, completion: completion)
+        case let .purchaseShippingLabel(siteID,
+                                        orderID,
+                                        originAddress,
+                                        destinationAddress,
+                                        package,
+                                        completion,
+                                        backendProcessingDelay,
+                                        pollingDelay,
+                                        pollingMaximumRetries):
+            purchaseShippingLabel(siteID: siteID,
+                                  orderID: orderID,
+                                  originAddress: originAddress,
+                                  destinationAddress: destinationAddress,
+                                  package: package,
+                                  backendProcessingDelay: backendProcessingDelay,
+                                  pollingDelay: pollingDelay,
+                                  pollingMaximumRetries: pollingMaximumRetries,
+                                  completion: completion)
         }
     }
 }
@@ -84,6 +102,49 @@ private extension WooShippingStore {
     func loadAccountSettings(siteID: Int64,
                              completion: @escaping (Result<WooShippingAccountSettingsResponse, Error>) -> Void) {
         remote.loadAccountSettings(siteID: siteID, completion: completion)
+    }
+
+    func purchaseShippingLabel(siteID: Int64,
+                               orderID: Int64,
+                               originAddress: ShippingLabelAddress,
+                               destinationAddress: ShippingLabelAddress,
+                               package: WooShippingPackagePurchase,
+                               backendProcessingDelay: TimeInterval,
+                               pollingDelay: TimeInterval,
+                               pollingMaximumRetries: Int64,
+                               completion: @escaping (Result<ShippingLabel, Error>) -> Void) {
+        // Make the initial purchase request.
+        remote.purchaseShippingLabel(siteID: siteID,
+                                     orderID: orderID,
+                                     originAddress: originAddress,
+                                     destinationAddress: destinationAddress,
+                                     package: package) { result in
+            switch result {
+            case .success(let labelPurchases):
+                // Purchase endpoint returns an array of labels, but the polling endpoint only takes a single label at a time.
+                // Since we only expect to purchase one label at a time, we get the first label from the response.
+                guard let labelID = labelPurchases.first?.shippingLabelID else {
+                    DDLogError("⛔️ No labels in Woo Shipping label purchase response")
+                    return completion(.failure(WooShippingLabelPurchaseError.purchaseMissingLabels))
+                }
+
+                // Wait to give the backend time to process the purchase
+                DispatchQueue.main.asyncAfter(deadline: .now() + backendProcessingDelay) { [weak self] in
+                    guard let self else { return }
+
+                    // Poll the status of the label purchase from the response above
+                    pollLabelStatus(withDelayInSeconds: pollingDelay,
+                                    maxErrorRetries: pollingMaximumRetries,
+                                    siteID: siteID,
+                                    orderID: orderID,
+                                    labelID: labelID,
+                                    completion: completion)
+                }
+            case .failure(let error):
+                DDLogError("⛔️ Error purchasing shipping label for order \(orderID): \(error)")
+                completion(.failure(error))
+            }
+        }
     }
 }
 

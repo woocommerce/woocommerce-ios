@@ -175,7 +175,7 @@ extension WPComEmailLoginViewModel {
         )
         static let unknownUsername = NSLocalizedString(
             "wpComEmailLoginViewModel.unknownUsername",
-            value: "Hmm, we can\'t find a WordPress.com account connected to this username. You can enter an email to create a new account.",
+            value: "We can\'t find a WordPress.com account connected to this username. You can enter an email to create a new account.",
             comment: "Error message when the username is not found"
         )
     }

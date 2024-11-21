@@ -565,6 +565,19 @@ struct PointOfSaleAggregateModelTests {
             // Then
             #expect(orderStates == [.idle, .syncing, .error(.init(message: "", handler: {}))])
         }
+
+        @Test func when_collectPayment_is_called_channel_is_set_to_pos() async throws {
+            // Given
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+            orderService.orderToReturn = Order.fake().copy(items: [.fake()])
+
+            // When
+            await sut.checkOut()
+            #expect(cardPresentPaymentService.collectPaymentWasCalled)
+
+            // Then
+            #expect(cardPresentPaymentService.collectPaymentChannel == .pos)
+        }
     }
 
     struct PaymentTests {

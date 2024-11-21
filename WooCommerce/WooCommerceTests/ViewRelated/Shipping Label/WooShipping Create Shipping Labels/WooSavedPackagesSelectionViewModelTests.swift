@@ -237,7 +237,10 @@ final class MockWooShippingPackagesRepository: WooShippingPackagesRepositoryProt
     }
 
     @MainActor
-    func saveCustomPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error? {
+    func saveCustomPackage(_ packageToAdd: WooShippingPackageDataRepresentable,
+                           dimensionsUnit: String,
+                           weightUnit: String, siteID:
+                           Int64, stores: StoresManager) async -> Error? {
         guard !customSavedPackages.contains(where: { package in
             return package.id == packageToAdd.id
         })  else {

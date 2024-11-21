@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 
 protocol WooShippingPackagesRepositoryProtocol {
     var loadingSavedPackages: Bool { get }
@@ -14,13 +15,18 @@ protocol WooShippingPackagesRepositoryProtocol {
     func loadCarrierPackages()
 
     func deleteSavedPackage(_ packageToRemove: WooShippingPackageDataRepresentable) async -> Error?
-    func saveCustomPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error?
+    func saveCustomPackage(_ packageToAdd: WooShippingPackageDataRepresentable,
+                           dimensionsUnit: String,
+                           weightUnit: String,
+                           siteID: Int64,
+                           stores: StoresManager) async -> Error?
     func savePredefinedPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error?
 }
 
 enum WooShippingPackagesRepositoryError: Swift.Error {
     case customPackageWithSameIdAlreadyExists
     case predefinedPackageWithSameIdAlreadyExists
+    case failedSavingTemplate
 }
 
 final class WooShippingPackagesRepository: ObservableObject, WooShippingPackagesRepositoryProtocol {
@@ -205,14 +211,56 @@ final class WooShippingPackagesRepository: ObservableObject, WooShippingPackages
     }
 
     @MainActor
-    func saveCustomPackage(_ packageToAdd: any WooShippingPackageDataRepresentable) async -> Error? {
+    func saveCustomPackage(_ packageToAdd: WooShippingPackageDataRepresentable,
+                           dimensionsUnit: String,
+                           weightUnit: String, siteID:
+                           Int64, stores: StoresManager) async -> Error? {
         guard !customSavedPackages.contains(where: { package in
             return package.id == packageToAdd.id
         })  else {
             return WooShippingPackagesRepositoryError.customPackageWithSameIdAlreadyExists
         }
-        customSavedPackages.append(packageToAdd)
-        return nil
+
+        let customPackage = WooShippingCustomPackage(id: "",
+                                                     name: packageToAdd.name,
+                                                     rawType: packageToAdd.packageType,
+                                                     dimensions: "\(packageToAdd.length) x \(packageToAdd.width) x \(packageToAdd.height)",
+                                                     boxWeight: Double(packageToAdd.weight) ?? 0)
+        let savingPackageTemplateResult: Result<WooShippingPackageDataRepresentable, Error> = await withCheckedContinuation { continuation in
+            let action = WooShippingAction.createPackage(siteID: siteID,
+                                                         customPackage: customPackage,
+                                                         predefinedOption: nil) { [weak self] result in
+                switch result {
+                case let .success(packages):
+                    guard let self, let savedPackage = packages.customPackages.first(where: { $0.name == customPackage.name }) else {
+                        return continuation.resume(returning: .failure(WooShippingAddCustomPackageViewModel.Error.failedSavingTemplate))
+                    }
+                    let packageData = WooShippingPackageData(id: savedPackage.id,
+                                                             name: savedPackage.name,
+                                                             length: savedPackage.getLength().description,
+                                                             width: savedPackage.getWidth().description,
+                                                             height: savedPackage.getHeight().description,
+                                                             dimensionsUnit: dimensionsUnit,
+                                                             weight: savedPackage.boxWeight.description,
+                                                             weightUnit: weightUnit,
+                                                             source: .custom,
+                                                             packageType: savedPackage.rawType)
+                    continuation.resume(returning: .success(packageData))
+                case let .failure(error):
+                    DDLogError("⛔️ Error saving custom package with WCShip: \(error)")
+                    continuation.resume(returning: .failure(WooShippingPackagesRepositoryError.failedSavingTemplate))
+                }
+            }
+            stores.dispatch(action)
+        }
+        switch savingPackageTemplateResult {
+        case .success(let savedPackage):
+            // append saved package so it is immediately available in UI without extra backend calls
+            customSavedPackages.append(savedPackage)
+            return nil
+        case .failure(let error):
+            return error
+        }
     }
 
     @MainActor

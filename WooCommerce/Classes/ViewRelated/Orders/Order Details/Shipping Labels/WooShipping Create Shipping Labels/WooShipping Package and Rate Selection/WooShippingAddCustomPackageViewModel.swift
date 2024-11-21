@@ -74,6 +74,7 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     enum Error: Swift.Error {
         case packageDataNotValid
         case failedSavingTemplate
+        case failure(Swift.Error)
     }
 
     func addPackageAction(package: WooShippingPackageDataRepresentable? = nil) async -> Result<WooShippingPackageDataRepresentable, Error> {
@@ -95,44 +96,17 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
         guard let packageData = preparePackageData() else {
             return .failure(WooShippingAddCustomPackageViewModel.Error.packageDataNotValid)
         }
-        let customPackage = WooShippingCustomPackage(id: "",
-                                                     name: packageData.name,
-                                                     rawType: packageData.packageType,
-                                                     dimensions: "\(packageData.length) x \(packageData.width) x \(packageData.height)",
-                                                     boxWeight: Double(packageData.weight) ?? 0)
-        let savingPackageTemplateResult: Result<WooShippingPackageDataRepresentable, Error> = await withCheckedContinuation { continuation in
-            let action = WooShippingAction.createPackage(siteID: siteID,
-                                                         customPackage: customPackage,
-                                                         predefinedOption: nil) { [weak self] result in
-                switch result {
-                case let .success(packages):
-                    guard let self, let savedPackage = packages.customPackages.first(where: { $0.name == customPackage.name }) else {
-                        return continuation.resume(returning: .failure(WooShippingAddCustomPackageViewModel.Error.failedSavingTemplate))
-                    }
-                    let packageData = WooShippingPackageData(id: savedPackage.id,
-                                                             name: savedPackage.name,
-                                                             length: savedPackage.getLength().description,
-                                                             width: savedPackage.getWidth().description,
-                                                             height: savedPackage.getHeight().description,
-                                                             dimensionsUnit: dimensionsUnit,
-                                                             weight: savedPackage.boxWeight.description,
-                                                             weightUnit: weightUnit,
-                                                             source: .custom,
-                                                             packageType: savedPackage.rawType)
-                    // Cleanup after package is successfully saved
-                    continuation.resume(returning: .success(packageData))
-                case let .failure(error):
-                    DDLogError("⛔️ Error saving custom package with WCShip: \(error)")
-                    continuation.resume(returning: .failure(WooShippingAddCustomPackageViewModel.Error.failedSavingTemplate))
-                }
-            }
-            stores.dispatch(action)
+
+        let repositoryError = await packagesRepository.saveCustomPackage(packageData,
+                                                                         dimensionsUnit: dimensionsUnit,
+                                                                         weightUnit: weightUnit,
+                                                                         siteID: siteID,
+                                                                         stores: stores)
+        if let repositoryError {
+            return .failure(WooShippingAddCustomPackageViewModel.Error.failure(repositoryError))
         }
-        switch savingPackageTemplateResult {
-        case .success(let savedPackage):
-            return await addPackageAction(package: savedPackage)
-        case .failure(let error):
-            return .failure(error)
+        else {
+            return await addPackageAction(package: packageData)
         }
     }
 

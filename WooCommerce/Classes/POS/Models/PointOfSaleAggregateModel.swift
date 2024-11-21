@@ -73,6 +73,8 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
 
+    private var cancellables: Set<AnyCancellable> = []
+
     init(itemProvider: POSItemProvider,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderService: POSOrderServiceProtocol,
@@ -87,6 +89,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
         self.paymentState = paymentState
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
+        setupReaderReconnectionObservation()
     }
 }
 
@@ -270,13 +273,26 @@ extension PointOfSaleAggregateModel {
         }
     }
 
-    func cancelCardReaderPreparation() {
+    private func setupReaderReconnectionObservation() {
+        $orderStage.sink(receiveValue: { [weak self] stage in
+            guard let self else { return }
+            switch stage {
+            case .building:
+                cancelCardReaderPreparation()
+            case .finalizing:
+                observeReaderReconnection()
+            }
+        })
+        .store(in: &cancellables)
+    }
+
+    private func cancelCardReaderPreparation() {
         cardPresentPaymentService.cancelPayment()
         startPaymentOnCardReaderConnection?.cancel()
         cardReaderDisconnection?.cancel()
     }
 
-    func observeReaderReconnection() {
+    private func observeReaderReconnection() {
         cardReaderDisconnection = $cardReaderConnectionStatus
             .filter({ $0 == .disconnected })
             .sink { [weak self] _ in

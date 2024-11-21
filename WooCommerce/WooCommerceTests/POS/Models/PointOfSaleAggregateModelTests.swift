@@ -503,8 +503,7 @@ struct PointOfSaleAggregateModelTests {
         @Test func after_disconnection_when_reader_reconnects_collectPayment_called() async throws {
             // Given
             cardPresentPaymentService.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
-            sut.observeReaderReconnection()
-            await sut.checkOut()
+            await sut.submitCart()
             await cardPresentPaymentService.disconnectReader()
             cardPresentPaymentService.collectPaymentWasCalled = false
 

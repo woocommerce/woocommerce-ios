@@ -2,7 +2,7 @@ import SwiftUI
 
 struct TotalsView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
-    @ObservedObject private var viewModel: TotalsViewModel
+    private let viewModel = TotalsViewModel()
 
     /// Used together with .matchedGeometryEffect to synchronize the animations of shimmeringLineView and text fields.
     /// This makes SwiftUI treat these views as a single entity in the context of animation.
@@ -23,10 +23,6 @@ struct TotalsView: View {
 
     private var shouldShowSendReceiptButton: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sendReceiptsForPointOfSale)
-    }
-
-    init(viewModel: TotalsViewModel) {
-        self.viewModel = viewModel
     }
 
     var body: some View {
@@ -58,7 +54,7 @@ struct TotalsView: View {
                         if isShowingTotalsFields {
                             totalsFieldsView
                                 .transition(.opacity)
-                                .animation(.default, value: viewModel.isShimmering)
+                                .animation(.default, value: posModel.orderState.isSyncing)
                                 .opacity(viewModel.shouldShowTotalsFields(for: posModel.paymentState) ? 1 : 0)
                                 .layoutPriority(2)
                         }
@@ -76,9 +72,6 @@ struct TotalsView: View {
         .background(backgroundColor)
         .animation(.default, value: posModel.paymentState)
         .animation(.default, value: posModel.orderState.isError)
-        .onDisappear {
-            viewModel.onTotalsViewDisappearance()
-        }
         .onAppear {
             isShowingTotalsFields = shouldShowTotalsFields
         }
@@ -212,7 +205,7 @@ private extension TotalsView {
 private extension TotalsView {
     private var newOrderButton: some View {
         Button(action: {
-            viewModel.startNewOrder()
+            posModel.startNewCart()
         }, label: {
             HStack(spacing: Constants.buttonSpacing) {
                 Text(Localization.newOrder)
@@ -281,7 +274,9 @@ private extension TotalsView {
                 EmptyView()
             }
         case .disconnected:
-            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(viewModel: .init(connectReaderAction: viewModel.connectReaderTapped))
+            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView {
+                posModel.connectCardReader()
+            }
         }
     }
 }
@@ -454,10 +449,7 @@ private extension View {
         itemProvider: POSItemProviderPreview(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderService: POSOrderPreviewService())
-    let totalsVM = TotalsViewModel(
-        posModel: posModel,
-        cardPresentPaymentService: CardPresentPaymentPreviewService())
-    TotalsView(viewModel: totalsVM)
+    TotalsView()
         .environmentObject(posModel)
 }
 #endif

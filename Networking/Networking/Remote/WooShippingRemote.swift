@@ -174,7 +174,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                 ParameterKey.destinationAddress: try destinationAddress.toDictionary(),
                 ParameterKey.packages: [ try package.toDictionary() ],
                 ParameterKey.selectedRate: try package.encodedShipmentRate(),
-                ParameterKey.hazmat: {}, // Hazmat support TBD (Milestone 3)
+                ParameterKey.hazmat: package.encodedHazmat(),
                 ParameterKey.customs: {}, // Customs support TBD (Milestone 2)
             ]
             let path = "\(Path.purchase)/\(orderID)"

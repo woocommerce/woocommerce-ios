@@ -50,7 +50,16 @@ extension WooShippingPackagePurchase: Encodable {
     /// Includes the shipment ID with the encoded rate.
     ///
     public func encodedShipmentRate() throws -> [String: Any] {
-        [shipmentID: ["rate": try rate.toDictionary()]]
+        [shipmentID: [CodingKeys.rate: try rate.toDictionary()]]
+    }
+
+    /// Converts the hazmat settings to a dictionary as the API expects it.
+    /// Includes the shipment ID if there are hazmat settings to report.
+    public func encodedHazmat() -> [String: Any] {
+        [shipmentID: [
+            CodingKeys.isHazmat: package.hazmatCategory != nil,
+            CodingKeys.category: package.hazmatCategory ?? String()
+        ]]
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -67,5 +76,8 @@ extension WooShippingPackagePurchase: Encodable {
         case carrierID = "carrier_id"
         case serviceName = "service_name"
         case products
+        case rate
+        case isHazmat
+        case category
     }
 }

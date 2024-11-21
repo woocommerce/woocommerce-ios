@@ -80,6 +80,10 @@ struct WPComMagicLinkView: View {
                     Text(Localization.checkYourEmail)
                         .font(.title3.bold())
                     AttributedText(viewModel.instructionString)
+
+                    Text(Localization.emailConfirmationHint)
+                        .multilineTextAlignment(.center)
+                        .padding(.top)
                 }
 
                 Spacer()
@@ -118,6 +122,11 @@ private extension WPComMagicLinkView {
         static let checkYourEmail = NSLocalizedString(
             "Check your email on this device!",
             comment: "Message on the magic link screen of the WPCom login flow during Jetpack setup"
+        )
+        static let emailConfirmationHint = NSLocalizedString(
+            "wpComMagicLinkView.emailConfirmationHint",
+            value: "Ensure your email is correct and double check your spam folder.",
+            comment: "Text hinting the user to ensure their email is correct and check their spam folder"
         )
     }
 }

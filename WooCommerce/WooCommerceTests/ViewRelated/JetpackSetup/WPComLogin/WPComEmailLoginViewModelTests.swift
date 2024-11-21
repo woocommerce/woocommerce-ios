@@ -239,4 +239,29 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(triggeredOnError)
     }
+
+    func test_given_unknown_username_when_allowAccountCreation_true_then_trigger_onError() async {
+        // Given
+        let mockAccountService = MockWordPressComAccountService()
+        mockAccountService.passwordlessAccountCheckError = WordPressAPIError.endpointError(
+            WordPressComRestApiEndpointError(
+                code: WordPressComRestApiErrorCode.unknown,
+                apiErrorCode: "unknown_user"
+            )
+        )
+        var errorMessage: String? = nil
+        let viewModel = WPComEmailLoginViewModel(siteURL: "https://example.com",
+                                                 requiresConnectionOnly: true,
+                                                 allowAccountCreation: true,
+                                                 accountService: mockAccountService,
+                                                 onPasswordUIRequest: { _ in },
+                                                 onMagicLinkUIRequest: { _ in },
+                                                 onError: { errorMessage = $0 })
+
+        // When
+        await viewModel.checkWordPressComAccount(email: "unknown_username")
+
+        // Then
+        XCTAssertEqual(errorMessage, WPComEmailLoginViewModel.Localization.unknownUsername)
+    }
 }

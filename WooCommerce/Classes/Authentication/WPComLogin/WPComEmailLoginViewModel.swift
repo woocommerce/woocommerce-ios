@@ -27,7 +27,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
 
     let termsAttributedString: NSAttributedString
 
-    private let allowAccountCreation: Bool
+    let allowAccountCreation: Bool
     private let accountService: WordPressComAccountServiceProtocol
     private let analytics: Analytics
     private let onPasswordUIRequest: (String) -> Void
@@ -93,6 +93,11 @@ final class WPComEmailLoginViewModel: ObservableObject {
                   endpointError.apiErrorCode == Constants.unknownUserErrorCode else {
                 analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))
                 onError(error.localizedDescription)
+                return
+            }
+
+            guard email.isValidEmail() else {
+                onError(Localization.unknownUsername)
                 return
             }
 
@@ -167,6 +172,11 @@ extension WPComEmailLoginViewModel {
         static let shareDetails = NSLocalizedString(
             "share details",
             comment: "The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen."
+        )
+        static let unknownUsername = NSLocalizedString(
+            "wpComEmailLoginViewModel.unknownUsername",
+            value: "We can\'t find a WordPress.com account connected to this username. You can enter an email to create a new account.",
+            comment: "Error message when the username is not found"
         )
     }
 }

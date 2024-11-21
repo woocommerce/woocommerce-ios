@@ -19,7 +19,9 @@ struct CardPresentPaymentPreviewService: CardPresentPaymentFacade {
         // no-op
     }
 
-    func collectPayment(for order: Yosemite.Order, using connectionMethod: CardReaderConnectionMethod, channel: PaymentChannel) async throws -> CardPresentPaymentResult {
+    func collectPayment(for order: Yosemite.Order,
+                        using connectionMethod: CardReaderConnectionMethod,
+                        channel: PaymentChannel) async throws -> CardPresentPaymentResult {
         .success(CardPresentPaymentTransaction(receiptURL: URL(string: "https://example.net/receipts/123")!))
     }
 

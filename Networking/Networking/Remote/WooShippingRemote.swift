@@ -176,7 +176,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                 ParameterKey.customs: try package.encodedCustomsForm(),
             ]
             let path = "\(Path.purchase)/\(orderID)"
-            let request = JetpackRequest(wooApiVersion: .wcConnectV1,
+            let request = JetpackRequest(wooApiVersion: .wooShipping,
                                          method: .post,
                                          siteID: siteID,
                                          path: path,

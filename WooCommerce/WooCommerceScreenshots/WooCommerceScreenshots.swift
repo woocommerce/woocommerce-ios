@@ -19,7 +19,7 @@ class WooCommerceScreenshots: XCTestCase {
         stopWebServer()
     }
 
-    func testScreenshots() throws {
+    @MainActor func testScreenshots() throws {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
         setupSnapshot(app)
@@ -32,10 +32,15 @@ class WooCommerceScreenshots: XCTestCase {
 
         app.launch()
 
-        addUIInterruptionMonitor(withDescription: "System Dialog") {
-            (alert) -> Bool in
-            alert.buttons["Allow"].tap()
-            return true
+        addUIInterruptionMonitor(withDescription: "System Dialog") { alert in
+            let buttons = alert.buttons.allElementsBoundByIndex
+            // Try to tap the "Allow" button, but make it work in any language.
+            if buttons.count >= 2 {
+                buttons[1].tap()
+                return true
+            }
+
+            return false
         }
         app.tap()
 
@@ -43,7 +48,6 @@ class WooCommerceScreenshots: XCTestCase {
 
         // My Store
         .dismissTopBannerIfNeeded()
-        .then { ($0 as! MyStoreScreen).goToThisMonthTab() }
         .thenTakeScreenshot(named: "order-dashboard")
 
         // Orders
@@ -56,8 +60,10 @@ class WooCommerceScreenshots: XCTestCase {
         // Collect payment
         .tapOrder(atIndex: 0)
         .tapCollectPaymentButton()
+
         .tapCardPresentPayment()
         .thenTakeScreenshot(named: "order-payment")
+
         .goBackToPaymentMethodsScreen()
         .goBackToOrderScreen()
         .goBackToOrdersScreen()
@@ -68,8 +74,7 @@ class WooCommerceScreenshots: XCTestCase {
         .tapAddProduct()
         .thenTakeScreenshot(named: "product-add")
 
-        // Push notification
-        .lockScreen()
+        .lockScreenForNotificationScreenshot()
         .thenTakeScreenshot(named: "order-notification")
     }
 
@@ -142,7 +147,7 @@ fileprivate var screenshotCount = 0
 
 extension BaseScreen {
 
-    @discardableResult
+    @MainActor @discardableResult
     func thenTakeScreenshot(named title: String) -> Self {
         screenshotCount += 1
 
@@ -166,7 +171,18 @@ extension ScreenObject {
         return self
     }
 
+
     @discardableResult
+    func lockScreenForNotificationScreenshot() -> Self {
+        if #available(iOS 18.0, *) {
+            // iOS 18 and above needs double lock
+            return self.lockScreen().lockScreen()
+        } else {
+            return self.lockScreen()
+        }
+    }
+
+    @MainActor @discardableResult
     func thenTakeScreenshot(named title: String) -> Self {
         screenshotCount += 1
 

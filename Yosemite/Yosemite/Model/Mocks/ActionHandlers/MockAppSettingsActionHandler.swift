@@ -23,10 +23,41 @@ struct MockAppSettingsActionHandler: MockActionHandler {
             onCompletion(false)
         case .getFeatureAnnouncementVisibility(_, let onCompletion):
             onCompletion(.success(false))
+        case .getSkippedCashOnDeliveryOnboardingStep(_, let onCompletion):
+            onCompletion(false)
+        case .loadSiteHasAtLeastOneIPPTransactionFinished(_, let onCompletion):
+            onCompletion(false)
+        case .loadLastSelectedPerformanceTimeRange(_, let onCompletion):
+            onCompletion(StatsTimeRangeV4.thisMonth)
+        case .loadLastSelectedTopPerformersTimeRange(_, let onCompletion):
+            onCompletion(StatsTimeRangeV4.thisMonth)
+        case .loadLastSelectedMostActiveCouponsTimeRange(_, let onCompletion):
+            onCompletion(StatsTimeRangeV4.thisMonth)
+        case .loadLastSelectedStockType(_, let onCompletion):
+            onCompletion(nil)
+        case .loadLastSelectedOrderStatus(_, let onCompletion):
+            onCompletion(nil)
+        case .loadFavoriteProductIDs(_, let onCompletion):
+            onCompletion([])
+        case .loadCardReader(let onCompletion):
+            onCompletion(.success(nil))
+        case .loadDashboardCards(let siteId, let onCompletion):
+            loadDashboardCards(siteId: siteId, onCompletion: onCompletion)
+        case .loadFirstInPersonPaymentsTransactionDate(_, _, let onCompletion):
+            onCompletion(nil)
+        case .loadSelectedTaxRateID(_, let onCompletion):
+            onCompletion(nil)
+        case .loadOrdersSettings(let siteID, let onCompletion):
+            onCompletion(.success(.init(siteID: siteID,
+                                        orderStatusesFilter: nil,
+                                        dateRangeFilter: nil,
+                                        productFilter: nil,
+                                        customerFilter: nil)))
+        case .upsertProductsSettings(_, _, _, _, _, _, _, let onCompletion):
+            onCompletion(nil)
         case .resetEligibilityErrorInfo,
-                .setTelemetryAvailability,
-                .loadOrdersSettings,
-                .upsertProductsSettings:
+                .setTelemetryAvailability
+            :
             break
         default: unimplementedAction(action: action)
         }
@@ -49,5 +80,14 @@ struct MockAppSettingsActionHandler: MockActionHandler {
                                                          productCategoryFilter: nil,
                                                          favoriteProduct: false)
         onCompletion(.success(emptySetting))
+    }
+
+    func loadDashboardCards(siteId: Int64, onCompletion: ([DashboardCard]?) -> Void) {
+        var cards = [DashboardCard]()
+        // Some cards intentionally not shown here as they require further action mocking.
+        cards.append(DashboardCard(type: .performance, availability: .show, enabled: true))
+        cards.append(DashboardCard(type: .reviews, availability: .show, enabled: true))
+        cards.append(DashboardCard(type: .lastOrders, availability: .show, enabled: true))
+        onCompletion(cards)
     }
 }

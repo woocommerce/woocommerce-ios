@@ -9,15 +9,24 @@ struct TotalsView: View {
     /// It allows for a simultaneous transition from the shimmering effect to the text fields,
     /// and movement from the center of the VStack to their respective positions.
     @Namespace private var totalsFieldAnimation
-    @State private var isShowingTotalsFields: Bool
+
+    // The source of truth for whether totals _are_ showing; separate from whether they
+    // _should be_ showing, so that we can animate the change.
+    @State private var isShowingTotalsFields: Bool = false
+    private var shouldShowTotalsFields: Bool {
+        viewModel.shouldShowTotalsFields(for: posModel.paymentState)
+    }
     @State private var isShowingPaymentsButtonSpacing: Bool = false
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
 
+    private var shouldShowSendReceiptButton: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sendReceiptsForPointOfSale)
+    }
+
     init(viewModel: TotalsViewModel) {
         self.viewModel = viewModel
-        self.isShowingTotalsFields = viewModel.isShowingTotalsFields
     }
 
     var body: some View {
@@ -29,7 +38,7 @@ struct TotalsView: View {
                         .renderedIf(cardReaderViewLayout.topPadding == nil)
 
                     VStack(alignment: .center, spacing: Constants.verticalSpacing) {
-                        if viewModel.isShowingCardReaderStatus {
+                        if isShowingCardReaderStatus {
                             cardReaderView
                                 .font(.title)
                                 .padding([.leading, .trailing],
@@ -50,32 +59,35 @@ struct TotalsView: View {
                             totalsFieldsView
                                 .transition(.opacity)
                                 .animation(.default, value: viewModel.isShimmering)
-                                .opacity(viewModel.isShowingTotalsFields ? 1 : 0)
+                                .opacity(viewModel.shouldShowTotalsFields(for: posModel.paymentState) ? 1 : 0)
                                 .layoutPriority(2)
                         }
                     }
-                    .animation(.default, value: viewModel.cardPresentPaymentInlineMessage)
+                    .animation(.default, value: posModel.cardPresentPaymentInlineMessage)
                     paymentsActionButtons
                     Spacer()
                 }
-                .animation(.default, value: viewModel.isShowingCardReaderStatus)
+                .animation(.default, value: isShowingCardReaderStatus)
             case .error(let viewModel):
                 PointOfSaleOrderSyncErrorMessageView(viewModel: viewModel)
                     .transition(.opacity)
             }
         }
         .background(backgroundColor)
-        .animation(.default, value: viewModel.paymentState)
+        .animation(.default, value: posModel.paymentState)
         .animation(.default, value: posModel.orderState.isError)
         .onDisappear {
             viewModel.onTotalsViewDisappearance()
         }
-        .onChange(of: viewModel.isShowingTotalsFields, perform: hideTotalsFieldsWithDelay)
+        .onAppear {
+            isShowingTotalsFields = shouldShowTotalsFields
+        }
+        .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
         .geometryGroupIfSupported()
     }
 
     private var backgroundColor: Color {
-        switch viewModel.paymentState {
+        switch posModel.paymentState {
         case .cardPaymentSuccessful:
             .posSecondaryBackground
         case .processingPayment:
@@ -186,7 +198,7 @@ private extension TotalsView {
     /// Hide totals fields with animation after a delay when starting to processing a payment
     /// - Parameter isShowing
     private func hideTotalsFieldsWithDelay(_ isShowing: Bool) {
-        guard !isShowing && viewModel.paymentState == .processingPayment else {
+        guard !isShowing && posModel.paymentState == .processingPayment else {
             self.isShowingTotalsFields = isShowing
             return
         }
@@ -202,24 +214,46 @@ private extension TotalsView {
         Button(action: {
             viewModel.startNewOrder()
         }, label: {
-            HStack(spacing: Constants.newOrderButtonSpacing) {
+            HStack(spacing: Constants.buttonSpacing) {
                 Text(Localization.newOrder)
-                    .font(Constants.newOrderButtonFont)
+                    .font(Constants.buttonFont)
             }
             .frame(minWidth: UIScreen.main.bounds.width / 2)
         })
-        .padding(Constants.newOrderButtonPadding)
+        .padding(Constants.buttonPadding)
         .foregroundColor(Constants.posPrimaryTextInverted)
         .background(Constants.posOverlayFillInverted)
-        .cornerRadius(Constants.newOrderButtonCornerRadius)
+        .cornerRadius(Constants.buttonCornerRadius)
+    }
+
+    private var sendReceiptButton: some View {
+        Button(action: {
+            // no-op
+            // https://github.com/woocommerce/woocommerce-ios/issues/14461
+        }, label: {
+            HStack(spacing: Constants.buttonSpacing) {
+                Text(Localization.sendReceipt)
+                    .font(Constants.buttonFont)
+            }
+            .frame(minWidth: UIScreen.main.bounds.width / 2)
+        })
+        .padding(Constants.buttonPadding)
+        .foregroundColor(Color.posPrimaryText)
+        .background(Color.clear)
+        .overlay {
+            RoundedRectangle(cornerRadius: Constants.buttonCornerRadius)
+                        .stroke(Color.posPrimaryText, lineWidth: 1.0)
+        }
     }
 
     @ViewBuilder
     private var paymentsActionButtons: some View {
-        if viewModel.paymentState == .cardPaymentSuccessful {
+        if posModel.paymentState == .cardPaymentSuccessful {
             if isShowingPaymentsButtonSpacing {
                 Spacer().frame(height: Constants.paymentsButtonSpacing)
             }
+            sendReceiptButton
+                .renderedIf(shouldShowSendReceiptButton)
             newOrderButton
                 .onAppear {
                     isShowingPaymentsButtonSpacing = false
@@ -235,9 +269,9 @@ private extension TotalsView {
     }
 
     @ViewBuilder private var cardReaderView: some View {
-        switch viewModel.connectionStatus {
+        switch posModel.cardReaderConnectionStatus {
         case .connected, .disconnecting, .cancellingConnection:
-            if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
+            if let inlinePaymentMessage = posModel.cardPresentPaymentInlineMessage {
                 HStack(alignment: .center) {
                     Spacer()
                     PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
@@ -278,12 +312,29 @@ private extension TotalsView {
         )
     }
 
+    private var isShowingCardReaderStatus: Bool {
+        guard posModel.orderState.isLoaded else {
+            // When the order's being created or synced, we only show the shimmering totals.
+            // Before the order exists, we don’t want to show the card payment status, as it will
+            // show for a second initially, then disappear the moment we start syncing the order.
+            return false
+        }
+
+        switch posModel.cardReaderConnectionStatus {
+        case .connected, .disconnecting, .cancellingConnection:
+            return posModel.cardPresentPaymentInlineMessage != nil
+        case .disconnected:
+            // Since the reader is disconnected, this will show the "Connect your reader" CTA button view.
+            return true
+        }
+    }
+
     private var cardReaderViewLayout: CardReaderViewLayout {
-        guard viewModel.isShowingCardReaderStatus else {
+        guard isShowingCardReaderStatus else {
             return .primary
         }
 
-        switch viewModel.paymentState {
+        switch posModel.paymentState {
         case .validatingOrderError:
             return .outlined
         case .paymentError:
@@ -297,7 +348,7 @@ private extension TotalsView {
             break
         }
 
-        if viewModel.connectionStatus == .disconnected {
+        if posModel.cardReaderConnectionStatus == .disconnected {
             return .outlined
         }
 
@@ -308,7 +359,7 @@ private extension TotalsView {
 private extension TotalsView {
     enum Constants {
         static let pricesIdealWidth: CGFloat = 382
-        static let newOrderButtonCornerRadius: CGFloat = 8
+        static let buttonCornerRadius: CGFloat = 8
 
         static let verticalSpacing: CGFloat = 56
 
@@ -329,9 +380,9 @@ private extension TotalsView {
 
         static let paymentsButtonSpacing: CGFloat = 80
         static let paymentsButtonButtonSpacingAnimationDelay: CGFloat = 0.3
-        static let newOrderButtonSpacing: CGFloat = 12
-        static let newOrderButtonPadding: CGFloat = 32
-        static let newOrderButtonFont: POSFontStyle = .posBodyEmphasized
+        static let buttonSpacing: CGFloat = 12
+        static let buttonPadding: CGFloat = 32
+        static let buttonFont: POSFontStyle = .posBodyEmphasized
 
         /// Used for synchronizing animations of shimmeringLine and textField
         static let matchedGeometrySubtotalId: String = "pos_totals_view_subtotal_matched_geometry_id"
@@ -376,6 +427,10 @@ private extension TotalsView {
             "pos.totalsView.newOrder",
             value: "New order",
             comment: "Button title for new order button")
+        static let sendReceipt = NSLocalizedString(
+            "pos.totalsView.sendReceipt",
+            value: "Receipt",
+            comment: "Button title for the receipt button")
     }
 }
 
@@ -401,8 +456,8 @@ private extension View {
         orderService: POSOrderPreviewService())
     let totalsVM = TotalsViewModel(
         posModel: posModel,
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        paymentState: .acceptingCard)
+        cardPresentPaymentService: CardPresentPaymentPreviewService())
     TotalsView(viewModel: totalsVM)
+        .environmentObject(posModel)
 }
 #endif

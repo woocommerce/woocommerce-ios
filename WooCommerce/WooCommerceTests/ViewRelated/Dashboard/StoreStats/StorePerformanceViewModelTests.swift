@@ -1,12 +1,28 @@
 import XCTest
 import Yosemite
 import enum Storage.StatsVersion
+import protocol Storage.StorageManagerType
+import protocol Storage.StorageType
 import enum Networking.DotcomError
 import enum Networking.NetworkError
 @testable import WooCommerce
 
 
 final class StorePerformanceViewModelTests: XCTestCase {
+    private var storageManager: StorageManagerType!
+    private var storage: StorageType {
+        storageManager.viewStorage
+    }
+
+    override func setUp() {
+        super.setUp()
+        storageManager = MockStorageManager()
+    }
+
+    override func tearDown() {
+        storageManager = nil
+        super.tearDown()
+    }
 
     @MainActor
     func test_dates_for_custom_range_are_correct_for_non_custom_time_range() throws {
@@ -346,6 +362,66 @@ final class StorePerformanceViewModelTests: XCTestCase {
         let properties = analyticsProvider.receivedProperties[index] as? [String: AnyHashable]
         XCTAssertEqual(properties?["type"], "performance")
     }
+
+    @MainActor
+    func test_given_existing_cached_data_when_timestamp_is_fresh_then_cached_data_is_shown() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let siteID: Int64 = 123
+        let currentDate = Date()
+        let dateFormatter = DateFormatter.Stats.statsDayFormatter
+        let timeRange: StatsTimeRangeV4 = .today
+
+        // Set up timestamp for .today time range since viewModel defaults to .today
+        DashboardTimestampStore.saveTimestamp(currentDate,
+                                            for: .performance,
+                                            at: .today)
+
+        let viewModel = StorePerformanceViewModel(
+            siteID: siteID,
+            stores: stores,
+            storageManager: storageManager,
+            usageTracksEventEmitter: .init()
+        )
+
+        // Populate sample data
+        let siteVisitStats = Yosemite.SiteVisitStats.fake().copy(siteID: siteID, items: [ .fake().copy(visitors: 17) ])
+        insertSiteVisitStats(siteVisitStats, timeRange: timeRange)
+
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: .daily,
+                                      totals: .fake().copy(totalOrders: 3, grossRevenue: 6220.7),
+                                      intervals: [
+                                          OrderStatsV4Interval(
+                                              interval: dateFormatter.string(from: currentDate),
+                                              dateStart: dateFormatter.string(from: currentDate) + " 00:00:00",
+                                              dateEnd: dateFormatter.string(from: currentDate) + " 23:59:59",
+                                              subtotals: OrderStatsV4Totals(
+                                                  totalOrders: 3,
+                                                  totalItemsSold: 5,
+                                                  grossRevenue: 800,
+                                                  netRevenue: 800,
+                                                  averageOrderValue: 266
+                                              )
+                                          )
+                                      ])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+
+        let dateString = StatsStoreV4.buildDateString(from: Date(), timeRange: .today)
+        let siteSummaryStats = Yosemite.SiteSummaryStats.fake().copy(siteID: siteID, date: dateString, visitors: 22)
+        insertSiteSummaryStats(siteSummaryStats, timeRange: timeRange)
+
+        // When
+        XCTAssertEqual(viewModel.siteVisitStatMode, .hidden)
+        await viewModel.reloadDataIfNeeded(forceRefresh: false)
+
+        // Then
+        XCTAssertEqual(viewModel.siteVisitStatMode, .default) // Should be changed from `.hidden`
+
+        // Cleanup
+        DashboardTimestampStore.removeTimestamp(for: .performance, at: .today)
+    }
 }
 
 // MARK: - Private helpers
@@ -379,5 +455,38 @@ private extension StorePerformanceViewModelTests {
                 break
             }
         }
+    }
+
+    func insertOrderStats(_ readonlyOrderStats: Yosemite.OrderStatsV4, timeRange: StatsTimeRangeV4) {
+        let storageOrderStats = storage.insertNewObject(ofType: StorageOrderStatsV4.self)
+        storageOrderStats.timeRange = timeRange.rawValue
+        storageOrderStats.totals = storage.insertNewObject(ofType: StorageOrderStatsV4Totals.self)
+        storageOrderStats.update(with: readonlyOrderStats)
+        readonlyOrderStats.intervals.forEach { readOnlyInterval in
+            let newStorageInterval = storage.insertNewObject(ofType: StorageOrderStatsV4Interval.self)
+            newStorageInterval.subtotals = storage.insertNewObject(ofType: StorageOrderStatsV4Totals.self)
+            newStorageInterval.update(with: readOnlyInterval)
+            storageOrderStats.addToIntervals(newStorageInterval)
+        }
+        storage.saveIfNeeded()
+    }
+
+    func insertSiteVisitStats(_ readonlySiteVisitStats: Yosemite.SiteVisitStats, timeRange: StatsTimeRangeV4) {
+        let storageSiteVisitStats = storage.insertNewObject(ofType: StorageSiteVisitStats.self)
+        storageSiteVisitStats.timeRange = timeRange.rawValue
+        storageSiteVisitStats.update(with: readonlySiteVisitStats)
+        readonlySiteVisitStats.items?.forEach { readOnlyItem in
+            let newStorageItem = storage.insertNewObject(ofType: StorageSiteVisitStatsItem.self)
+            newStorageItem.update(with: readOnlyItem)
+            storageSiteVisitStats.addToItems(newStorageItem)
+        }
+        storage.saveIfNeeded()
+    }
+
+    func insertSiteSummaryStats(_ readOnlySiteSummaryStats: Yosemite.SiteSummaryStats, timeRange: StatsTimeRangeV4) {
+        let storageSiteSummaryStats = storage.insertNewObject(ofType: StorageSiteSummaryStats.self)
+        storageSiteSummaryStats.period = timeRange.summaryStatsGranularity.rawValue
+        storageSiteSummaryStats.update(with: readOnlySiteSummaryStats)
+        storage.saveIfNeeded()
     }
 }

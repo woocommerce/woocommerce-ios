@@ -78,20 +78,14 @@ final class WooSavedPackagesSelectionViewModelTests: XCTestCase {
 }
 
 final class MockWooShippingPackagesRepository: WooShippingPackagesRepositoryProtocol {
-    private(set) var loadingSavedPackages: Bool = false
     private(set) var customSavedPackages: [any WooShippingPackageDataRepresentable] = []
     private(set) var predefinedSavedPackages: [any WooShippingPackageDataRepresentable] = []
-    private(set) var loadingCarrierPackages: Bool = false
+    private(set) var loadingPackages: Bool = false
     @Published private(set) var carrierPackages: [WooShippingCarrierPackages] = []
     var carrierPackagesPublisher: Published<[WooShippingCarrierPackages]>.Publisher { $carrierPackages }
 
     func loadPackages() {
-        loadSavedPackages()
-        loadCarrierPackages()
-    }
-
-    func loadSavedPackages() {
-        loadingSavedPackages = true
+        loadingPackages = true
 
         customSavedPackages = [
             WooShippingPackageData(id: UUID().uuidString,
@@ -145,12 +139,6 @@ final class MockWooShippingPackagesRepository: WooShippingPackagesRepositoryProt
                                   source: .predefined("DHL Express"),
                                   packageType: "box"),
         ]
-
-        loadingSavedPackages = false
-    }
-
-    func loadCarrierPackages() {
-        loadingCarrierPackages = true
 
         let uspsPackageGroups: [WooPackageGroup] = [
             WooPackageGroup(name: "Flat Rate Boxes 1", packages: [
@@ -223,7 +211,7 @@ final class MockWooShippingPackagesRepository: WooShippingPackagesRepositoryProt
 
         carrierPackages = [uspsCarrier, dhlCarrier]
 
-        loadingCarrierPackages = false
+        loadingPackages = false
     }
 
     // MARK: - Packages updates

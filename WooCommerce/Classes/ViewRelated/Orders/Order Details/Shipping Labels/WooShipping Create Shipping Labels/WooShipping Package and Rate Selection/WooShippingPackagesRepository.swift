@@ -2,17 +2,15 @@ import Foundation
 import Yosemite
 
 protocol WooShippingPackagesRepositoryProtocol {
-    var loadingSavedPackages: Bool { get }
     var customSavedPackages: [any WooShippingPackageDataRepresentable] { get }
     var predefinedSavedPackages: [any WooShippingPackageDataRepresentable] { get }
 
-    var loadingCarrierPackages: Bool { get }
     var carrierPackages: [WooShippingCarrierPackages] { get }
     var carrierPackagesPublisher: Published<[WooShippingCarrierPackages]>.Publisher { get }
 
+    var loadingPackages: Bool { get }
+
     func loadPackages()
-    func loadSavedPackages()
-    func loadCarrierPackages()
 
     func deleteSavedPackage(_ packageToRemove: WooShippingPackageDataRepresentable) async -> Error?
     func saveCustomPackage(_ packageToAdd: WooShippingPackageDataRepresentable,
@@ -30,10 +28,9 @@ enum WooShippingPackagesRepositoryError: Swift.Error {
 }
 
 final class WooShippingPackagesRepository: ObservableObject, WooShippingPackagesRepositoryProtocol {
-    @Published private(set) var loadingSavedPackages: Bool = false
     @Published private(set) var customSavedPackages: [any WooShippingPackageDataRepresentable] = []
     @Published private(set) var predefinedSavedPackages: [any WooShippingPackageDataRepresentable] = []
-    @Published private(set) var loadingCarrierPackages: Bool = false
+    @Published private(set) var loadingPackages: Bool = false
     @Published private(set) var carrierPackages: [WooShippingCarrierPackages] = []
     var carrierPackagesPublisher: Published<[WooShippingCarrierPackages]>.Publisher { $carrierPackages }
 
@@ -42,16 +39,11 @@ final class WooShippingPackagesRepository: ObservableObject, WooShippingPackages
     // MARK: - Packages loading
 
     func loadPackages() {
-        loadSavedPackages()
-        loadCarrierPackages()
-    }
-
-    func loadSavedPackages() {
-        guard !loadingSavedPackages else {
+        guard !loadingPackages else {
             return
         }
 
-        loadingSavedPackages = true
+        loadingPackages = true
 
         // TODO: add networking request to load live data
         if customSavedPackages.isEmpty {
@@ -110,16 +102,6 @@ final class WooShippingPackagesRepository: ObservableObject, WooShippingPackages
                                       packageType: "box"),
             ]
         }
-
-        loadingSavedPackages = false
-    }
-
-    func loadCarrierPackages() {
-        guard !loadingCarrierPackages else {
-            return
-        }
-
-        loadingCarrierPackages = true
 
         // TODO: add networking request to load live data
         let uspsPackageGroups: [WooPackageGroup] = [
@@ -193,7 +175,7 @@ final class WooShippingPackagesRepository: ObservableObject, WooShippingPackages
 
         carrierPackages = [uspsCarrier, dhlCarrier]
 
-        loadingCarrierPackages = false
+        loadingPackages = false
     }
 
     // MARK: - Packages updates

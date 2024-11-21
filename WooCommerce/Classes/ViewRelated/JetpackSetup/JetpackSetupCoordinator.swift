@@ -26,7 +26,7 @@ final class JetpackSetupCoordinator {
     private lazy var emailLoginViewModel: WPComEmailLoginViewModel = {
         .init(siteURL: site.url,
               requiresConnectionOnly: requiresConnectionOnly,
-              allowAccountCreation: featureFlagService.isFeatureFlagEnabled(.jetpackSetupWPComAccountCreation),
+              allowAccountCreation: true,
               onPasswordUIRequest: showPasswordUI(email:),
               onMagicLinkUIRequest: showMagicLinkUI,
               onError: { [weak self] message in

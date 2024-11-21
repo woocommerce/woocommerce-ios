@@ -50,15 +50,15 @@ extension WooShippingPackagePurchase: Encodable {
     /// Includes the shipment ID with the encoded rate.
     ///
     public func encodedShipmentRate() throws -> [String: Any] {
-        [shipmentID: [CodingKeys.rate: try rate.toDictionary()]]
+        [shipmentID: [ParameterKeys.rate: try rate.toDictionary()]]
     }
 
     /// Converts the hazmat settings to a dictionary as the API expects it.
     /// Includes the shipment ID if there are hazmat settings to report.
     public func encodedHazmat() -> [String: Any] {
         [shipmentID: [
-            CodingKeys.isHazmat: package.hazmatCategory != nil,
-            CodingKeys.category: package.hazmatCategory ?? String()
+            ParameterKeys.isHazmat: package.hazmatCategory != nil,
+            ParameterKeys.category: package.hazmatCategory ?? String()
         ]]
     }
 
@@ -69,13 +69,13 @@ extension WooShippingPackagePurchase: Encodable {
             return [shipmentID: [:]]
         }
         return [shipmentID: [
-            CodingKeys.items: try form.items.toDictionary(),
-            CodingKeys.contentsType: form.contentsType.rawValue,
-            CodingKeys.contentsExplanation: form.contentExplanation,
-            CodingKeys.restrictionType: form.restrictionType.rawValue,
-            CodingKeys.restrictionComments: form.restrictionComments,
-            CodingKeys.isReturnToSender: form.nonDeliveryOption == .return,
-            CodingKeys.itn: form.itn
+            ParameterKeys.items: try form.items.map { try $0.toDictionary() },
+            ParameterKeys.contentsType: form.contentsType.rawValue,
+            ParameterKeys.contentsExplanation: form.contentExplanation,
+            ParameterKeys.restrictionType: form.restrictionType.rawValue,
+            ParameterKeys.restrictionComments: form.restrictionComments,
+            ParameterKeys.isReturnToSender: form.nonDeliveryOption == .return,
+            ParameterKeys.itn: form.itn
         ]]
     }
 
@@ -93,15 +93,18 @@ extension WooShippingPackagePurchase: Encodable {
         case carrierID = "carrier_id"
         case serviceName = "service_name"
         case products
-        case rate
-        case isHazmat
-        case category
-        case contentsType
-        case contentsExplanation
-        case restrictionType
-        case restrictionComments
-        case isReturnToSender
-        case itn
-        case items
+    }
+
+    private enum ParameterKeys {
+        static let rate = "rate"
+        static let isHazmat = "isHazmat"
+        static let category = "category"
+        static let contentsType = "contentsType"
+        static let contentsExplanation = "contentsExplanation"
+        static let restrictionType = "restrictionType"
+        static let restrictionComments = "restrictionComments"
+        static let isReturnToSender = "isReturnToSender"
+        static let itn = "itn"
+        static let items = "items"
     }
 }

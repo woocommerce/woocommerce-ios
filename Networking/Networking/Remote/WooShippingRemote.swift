@@ -176,7 +176,6 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                 ParameterKey.selectedRate: try package.encodedShipmentRate(),
                 ParameterKey.hazmat: {}, // Hazmat support TBD (Milestone 3)
                 ParameterKey.customs: {}, // Customs support TBD (Milestone 2)
-                ParameterKey.userMeta: {} // TODO: 13558 - Add user meta when we have account settings support
             ]
             let path = "\(Path.purchase)/\(orderID)"
             let request = JetpackRequest(wooApiVersion: .wcConnectV1,
@@ -213,7 +212,6 @@ private extension WooShippingRemote {
         static let selectedRate = "selected_rate"
         static let hazmat = "hazmat"
         static let customs = "customs"
-        static let userMeta = "user_meta"
     }
 }
 

@@ -5,7 +5,7 @@ struct CartView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
 
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
-    @ObservedObject private var cartViewModel: CartViewModel
+    private let cartViewModel = CartViewModel()
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
@@ -16,9 +16,8 @@ struct CartView: View {
         posModel.cart.isNotEmpty && offSetPosition < 0
     }
 
-    init(viewModel: PointOfSaleDashboardViewModel, cartViewModel: CartViewModel) {
+    init(viewModel: PointOfSaleDashboardViewModel) {
         self.viewModel = viewModel
-        self.cartViewModel = cartViewModel
     }
 
     var body: some View {
@@ -37,7 +36,7 @@ struct CartView: View {
 
                         Spacer()
 
-                        if let itemsInCartLabel = cartViewModel.itemsInCartLabel {
+                        if let itemsInCartLabel = cartViewModel.itemsInCartLabel(for: posModel.cart.count) {
                             Text(itemsInCartLabel)
                                 .font(Constants.itemsFont)
                                 .foregroundColor(Color.posSecondaryText)
@@ -260,12 +259,8 @@ import class WooFoundation.MockAnalyticsProviderPreview
         itemProvider: POSItemProviderPreview(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderService: POSOrderPreviewService())
-    // TODO:
-    // Simplify this by mocking `CartViewModel`
-    let cartViewModel = CartViewModel(posModel: posModel)
     let dashboardViewModel = PointOfSaleDashboardViewModel(posModel: posModel,
-                                                           cartViewModel: cartViewModel,
                                                            connectivityObserver: POSConnectivityObserverPreview())
-    CartView(viewModel: dashboardViewModel, cartViewModel: cartViewModel)
+    CartView(viewModel: dashboardViewModel)
 }
 #endif

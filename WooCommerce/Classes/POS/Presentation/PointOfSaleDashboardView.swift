@@ -3,12 +3,9 @@ import SwiftUI
 struct PointOfSaleDashboardView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
-    @ObservedObject private var cartViewModel: CartViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel,
-         cartViewModel: CartViewModel) {
+    init(viewModel: PointOfSaleDashboardViewModel) {
         self.viewModel = viewModel
-        self.cartViewModel = cartViewModel
     }
 
     @State private var floatingSize: CGSize = .zero
@@ -173,7 +170,7 @@ private extension PointOfSaleDashboardView {
 /// Helpers to generate all Dashboard subviews
 private extension PointOfSaleDashboardView {
     var cartView: some View {
-        CartView(viewModel: viewModel, cartViewModel: cartViewModel)
+        CartView(viewModel: viewModel)
     }
 
     var productListView: some View {
@@ -190,14 +187,11 @@ import class WooFoundation.MockAnalyticsProviderPreview
         itemProvider: POSItemProviderPreview(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderService: POSOrderPreviewService())
-    let cartVM = CartViewModel(posModel: posModel)
     let posVM = PointOfSaleDashboardViewModel(posModel: posModel,
-                                              cartViewModel: cartVM,
                                               connectivityObserver: POSConnectivityObserverPreview())
 
     return NavigationStack {
-        PointOfSaleDashboardView(viewModel: posVM,
-                                 cartViewModel: cartVM)
+        PointOfSaleDashboardView(viewModel: posVM)
     }
 }
 #endif

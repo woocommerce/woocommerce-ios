@@ -111,7 +111,7 @@ struct WooSavedPackagesSelectionView: View {
     var body: some View {
         VStack(spacing: 0) {
             Divider()
-            if viewModel.packagesRepository.loadingPackages {
+            if viewModel.loadingPackages {
                 // TODO: think of a better progress/loading indicator
                 ProgressView()
                     .progressViewStyle(.circular)
@@ -123,7 +123,7 @@ struct WooSavedPackagesSelectionView: View {
             }
             .listStyle(.plain)
             .refreshable {
-                viewModel.packagesRepository.loadPackages()
+                viewModel.loadPackages()
             }
             Divider()
             Button(WooShippingAddPackageView.Localization.addPackage) {

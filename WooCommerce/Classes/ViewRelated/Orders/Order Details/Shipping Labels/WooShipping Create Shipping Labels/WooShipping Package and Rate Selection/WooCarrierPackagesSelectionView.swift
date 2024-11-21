@@ -20,8 +20,6 @@ struct WooPackageGroup {
 struct WooCarrierPackagesView: View {
     @ObservedObject private var viewModel: WooCarrierPackagesSelectionViewModel
 
-    @State private var starredPackages: Set<String> = []
-
     init(viewModel: WooCarrierPackagesSelectionViewModel) {
         self.viewModel = viewModel
     }
@@ -42,24 +40,18 @@ struct WooCarrierPackagesView: View {
                                 },
                                 starAction: {
                                     // Just temporary, will be replaced with proper logic
-                                    if starredPackages.contains(package.id) {
+                                    if viewModel.isPackageStarred(package) {
                                         Task {
-                                            let error = await viewModel.packagesRepository.deleteSavedPackage(package)
-                                            if error == nil {
-                                                starredPackages.remove(package.id)
-                                            }
+                                            await viewModel.unstarPackage(package)
                                         }
                                     }
                                     else {
                                         Task {
-                                            let error = await viewModel.packagesRepository.savePredefinedPackage(package)
-                                            if error == nil {
-                                                starredPackages.insert(package.id)
-                                            }
+                                            await viewModel.starPackage(package)
                                         }
                                     }
                                 },
-                                starred: starredPackages.contains(package.id)
+                                starred: viewModel.isPackageStarred(package)
                             )
                             .alignmentGuide(.listRowSeparatorLeading) { _ in
                                 return 16
@@ -116,7 +108,7 @@ struct WooCarrierPackagesSelectionView: View {
                            tabItemContentHorizontalPadding: Constants.tabItemContentHorizontalPadding,
                            tabItemContentVerticalPadding: Constants.tabItemContentVerticalPadding)
             }
-            if let selectedCarrierTab = viewModel.selectedCarrierTab {
+            if viewModel.selectedCarrierTab != nil {
                 WooCarrierPackagesView(viewModel: viewModel)
             }
             Spacer()

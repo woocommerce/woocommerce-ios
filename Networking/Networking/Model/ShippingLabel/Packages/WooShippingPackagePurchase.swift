@@ -62,6 +62,23 @@ extension WooShippingPackagePurchase: Encodable {
         ]]
     }
 
+    /// Converts the customs form to a dictionary as the API expects it.
+    /// Includes the shipment ID with the encoded customs form.
+    public func encodedCustomsForm() throws -> [String: Any] {
+        guard let form = package.customsForm else {
+            return [shipmentID: [:]]
+        }
+        return [shipmentID: [
+            CodingKeys.items: try form.items.toDictionary(),
+            CodingKeys.contentsType: form.contentsType.rawValue,
+            CodingKeys.contentsExplanation: form.contentExplanation,
+            CodingKeys.restrictionType: form.restrictionType.rawValue,
+            CodingKeys.restrictionComments: form.restrictionComments,
+            CodingKeys.isReturnToSender: form.nonDeliveryOption == .return,
+            CodingKeys.itn: form.itn
+        ]]
+    }
+
     private enum CodingKeys: String, CodingKey {
         case id
         case boxID = "box_id"
@@ -79,5 +96,12 @@ extension WooShippingPackagePurchase: Encodable {
         case rate
         case isHazmat
         case category
+        case contentsType
+        case contentsExplanation
+        case restrictionType
+        case restrictionComments
+        case isReturnToSender
+        case itn
+        case items
     }
 }

@@ -175,7 +175,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                 ParameterKey.packages: [ try package.toDictionary() ],
                 ParameterKey.selectedRate: try package.encodedShipmentRate(),
                 ParameterKey.hazmat: package.encodedHazmat(),
-                ParameterKey.customs: {}, // Customs support TBD (Milestone 2)
+                ParameterKey.customs: try package.encodedCustomsForm(),
             ]
             let path = "\(Path.purchase)/\(orderID)"
             let request = JetpackRequest(wooApiVersion: .wcConnectV1,

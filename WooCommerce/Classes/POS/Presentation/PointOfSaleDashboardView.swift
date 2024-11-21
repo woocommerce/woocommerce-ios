@@ -2,14 +2,9 @@ import SwiftUI
 
 struct PointOfSaleDashboardView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
-    @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
-
-    init(viewModel: PointOfSaleDashboardViewModel) {
-        self.viewModel = viewModel
-    }
 
     @State private var floatingSize: CGSize = .zero
 
@@ -48,7 +43,6 @@ struct PointOfSaleDashboardView: View {
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .environment(\.posBackgroundAppearance, posModel.paymentState != .processingPayment ? .primary : .secondary)
         .animation(.easeInOut, value: posModel.itemListState == .initialLoading)
-        .animation(.easeInOut(duration: Constants.connectivityAnimationDuration), value: viewModel.showsConnectivityError)
         .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
         .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
@@ -168,10 +162,8 @@ private extension PointOfSaleDashboardView {
 
 #if DEBUG
 #Preview {
-    let posVM = PointOfSaleDashboardViewModel(connectivityObserver: POSConnectivityObserverPreview())
-
     return NavigationStack {
-        PointOfSaleDashboardView(viewModel: posVM)
+        PointOfSaleDashboardView()
     }
 }
 #endif

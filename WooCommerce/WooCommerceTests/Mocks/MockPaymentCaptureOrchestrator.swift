@@ -15,6 +15,7 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     var spyCollectPaymentGatewayAccount: PaymentGatewayAccount? = nil
     var spyCollectPaymentMethodTypes: [String]? = nil
     var spyCollectPaymentStripeSmallestCurrencyUnitMultiplier: Decimal? = nil
+    var spyChannel: PaymentChannel? = nil
     func collectPayment(for order: Order,
                         orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
@@ -32,6 +33,7 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
         spyCollectPaymentGatewayAccount = paymentGatewayAccount
         spyCollectPaymentMethodTypes = paymentMethodTypes
         spyCollectPaymentStripeSmallestCurrencyUnitMultiplier = stripeSmallestCurrencyUnitMultiplier
+        spyChannel = channel
 
         mockCollectPaymentHandler?(onPreparingReader,
                                    onWaitingForInput,

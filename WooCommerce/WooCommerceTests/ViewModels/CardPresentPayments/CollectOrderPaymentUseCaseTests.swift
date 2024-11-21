@@ -242,6 +242,20 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         // Then
         XCTAssertNil(markOrderAsPaidLocallyAction)
     }
+
+    func test_collectPayment_channel_is_passed_to_payment_capture_orchestrator() throws {
+        // When
+        useCase.collectPayment(using: .bluetoothScan,
+                               channel: .pos,
+                               onFailure: { _ in },
+                               onCancel: {},
+                               onPaymentCompletion: {},
+                               onCompleted: {})
+        mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+
+        // Then
+        XCTAssertEqual(mockPaymentOrchestrator.spyChannel, .pos)
+    }
 }
 
 private extension CollectOrderPaymentUseCaseTests {

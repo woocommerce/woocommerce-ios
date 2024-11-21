@@ -147,7 +147,7 @@ struct WPComEmailLoginView_Previews: PreviewProvider {
                                              requiresConnectionOnly: true,
                                              allowAccountCreation: false,
                                              onPasswordUIRequest: { _ in },
-                                             onMagicLinkUIRequest: { _ in },
+                                             onMagicLinkUIRequest: { _, _ in },
                                              onError: { _ in }))
     }
 }

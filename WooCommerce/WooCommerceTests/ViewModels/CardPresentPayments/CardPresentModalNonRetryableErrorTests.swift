@@ -6,7 +6,7 @@ final class CardPresentModalNonRetryableErrorTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        viewModel = CardPresentModalNonRetryableError(amount: Expectations.amount, error: Expectations.error, onDismiss: {})
+        viewModel = CardPresentModalNonRetryableError(amount: Expectations.amount, error: Expectations.error, onDismiss: {}, secondaryAction: {})
     }
 
     override func tearDown() {
@@ -31,7 +31,7 @@ final class CardPresentModalNonRetryableErrorTests: XCTestCase {
     }
 
     func test_secondary_button_title_is_nil() {
-        XCTAssertNil(viewModel.secondaryButtonTitle)
+        XCTAssertNotNil(viewModel.secondaryButtonTitle)
     }
 
     func test_auxiliary_button_title_is_nil() {

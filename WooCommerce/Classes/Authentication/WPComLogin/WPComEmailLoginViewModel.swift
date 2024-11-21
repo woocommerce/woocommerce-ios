@@ -2,11 +2,17 @@ import Combine
 import UIKit
 import WordPressAuthenticator
 import protocol WooFoundation.Analytics
+import enum WordPressKit.WordPressAPIError
+import struct WordPressKit.WordPressComRestApiEndpointError
 
 /// A protocol used to mock `WordPressComAccountService` for unit tests.
 protocol WordPressComAccountServiceProtocol {
     func isPasswordlessAccount(username: String, success: @escaping (Bool) -> Void, failure: @escaping (Error) -> Void)
-    func requestAuthenticationLink(for email: String, jetpackLogin: Bool, success: @escaping () -> Void, failure: @escaping (Error) -> Void)
+    func requestAuthenticationLink(for email: String,
+                                   jetpackLogin: Bool,
+                                   createAccountIfNotFound: Bool,
+                                   success: @escaping () -> Void,
+                                   failure: @escaping (Error) -> Void)
 }
 
 /// Conformance
@@ -21,6 +27,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
 
     let termsAttributedString: NSAttributedString
 
+    private let allowAccountCreation: Bool
     private let accountService: WordPressComAccountServiceProtocol
     private let analytics: Analytics
     private let onPasswordUIRequest: (String) -> Void
@@ -31,12 +38,14 @@ final class WPComEmailLoginViewModel: ObservableObject {
 
     init(siteURL: String,
          requiresConnectionOnly: Bool,
+         allowAccountCreation: Bool,
          debounceDuration: Double = Constants.fieldDebounceDuration,
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          analytics: Analytics = ServiceLocator.analytics,
          onPasswordUIRequest: @escaping (String) -> Void,
          onMagicLinkUIRequest: @escaping (String) -> Void,
          onError: @escaping (String) -> Void) {
+        self.allowAccountCreation = allowAccountCreation
         self.analytics = analytics
         self.accountService = accountService
         self.onPasswordUIRequest = onPasswordUIRequest
@@ -78,8 +87,16 @@ final class WPComEmailLoginViewModel: ObservableObject {
             }
             await startAuthentication(email: email, isPasswordlessAccount: passwordless)
         } catch {
-            analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))
-            onError(error.localizedDescription)
+            guard allowAccountCreation,
+                  let apiError = error as? WordPressAPIError<WordPressComRestApiEndpointError>,
+                  case .endpointError(let endpointError) = apiError,
+                  endpointError.apiErrorCode == Constants.unknownUserErrorCode else {
+                analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))
+                onError(error.localizedDescription)
+                return
+            }
+
+            await requestAuthenticationLink(email: email, forAccountCreation: true)
         }
     }
 
@@ -93,10 +110,13 @@ final class WPComEmailLoginViewModel: ObservableObject {
     }
 
     @MainActor
-    func requestAuthenticationLink(email: String) async {
+    func requestAuthenticationLink(email: String, forAccountCreation: Bool = false) async {
         do {
             try await withCheckedThrowingContinuation { continuation in
-                accountService.requestAuthenticationLink(for: email, jetpackLogin: false, success: {
+                accountService.requestAuthenticationLink(for: email,
+                                                         jetpackLogin: false,
+                                                         createAccountIfNotFound: forAccountCreation,
+                                                         success: {
                     continuation.resume()
                 }, failure: { error in
                     continuation.resume(throwing: error)
@@ -116,6 +136,7 @@ extension WPComEmailLoginViewModel {
         static let jetpackTermsURL = "https://jetpack.com/redirect/?source=wpcom-tos&site="
         static let jetpackShareDetailsURL = "https://jetpack.com/redirect/?source=jetpack-support-what-data-does-jetpack-sync&site="
         static let wpcomErrorCodeKey = "WordPressComRestApiErrorCodeKey"
+        static let unknownUserErrorCode = "unknown_user"
     }
 
     enum Localization {

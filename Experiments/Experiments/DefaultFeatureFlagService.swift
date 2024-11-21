@@ -95,6 +95,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .sendReceiptsForPointOfSale:
             return false
+        case .jetpackSetupWPComAccountCreation:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

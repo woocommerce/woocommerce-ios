@@ -1,4 +1,5 @@
 import UIKit
+import Experiments
 import Yosemite
 import enum Networking.NetworkError
 import class Networking.AlamofireNetwork
@@ -16,6 +17,7 @@ final class JetpackSetupCoordinator {
     private var jetpackConnectedEmail: String?
     private let stores: StoresManager
     private let analytics: Analytics
+    private let featureFlagService: FeatureFlagService
     private let dotcomAuthScheme: String
 
     private var loginNavigationController: LoginNavigationController?
@@ -24,6 +26,7 @@ final class JetpackSetupCoordinator {
     private lazy var emailLoginViewModel: WPComEmailLoginViewModel = {
         .init(siteURL: site.url,
               requiresConnectionOnly: requiresConnectionOnly,
+              allowAccountCreation: featureFlagService.isFeatureFlagEnabled(.jetpackSetupWPComAccountCreation),
               onPasswordUIRequest: showPasswordUI(email:),
               onMagicLinkUIRequest: showMagicLinkUI(email:),
               onError: { [weak self] message in
@@ -40,13 +43,15 @@ final class JetpackSetupCoordinator {
          dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme,
          rootViewController: UIViewController,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.site = site
         self.dotcomAuthScheme = dotcomAuthScheme
         self.requiresConnectionOnly = false // to be updated later after fetching Jetpack status
         self.rootViewController = rootViewController
         self.stores = stores
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
 
         /// the authenticator needs to be initialized with configs
         /// to be used for requesting authentication link and handle login later.

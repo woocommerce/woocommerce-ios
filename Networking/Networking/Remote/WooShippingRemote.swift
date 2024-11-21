@@ -21,6 +21,10 @@ public protocol WooShippingRemoteProtocol {
                                destinationAddress: ShippingLabelAddress,
                                package: WooShippingPackagePurchase,
                                completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void)
+    func checkLabelStatus(siteID: Int64,
+                          orderID: Int64,
+                          labelID: Int64,
+                          completion: @escaping (Result<ShippingLabelStatusPollingResponse, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
@@ -188,6 +192,29 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
             completion(.failure(error))
         }
     }
+
+    /// Checks the shipping label status
+    ///
+    /// Used after purchasing a shipping label, to check for errors or confirm a successful purchase.
+    /// This is used instead of loading all purchased labels for the order to ensure up-to-date (non-cached) results.
+    /// - Parameters:
+    ///     - siteID: Remote ID of the site.
+    ///     - orderID: Remote ID of the order that owns the shipping labels.
+    ///     - labelID: Remote ID of the label to check the status of.
+    ///     - completion: Closure to be executed upon completion.
+    public func checkLabelStatus(siteID: Int64,
+                                 orderID: Int64,
+                                 labelID: Int64,
+                                 completion: @escaping (Result<ShippingLabelStatusPollingResponse, Error>) -> Void) {
+        let path = "\(Path.status)/\(orderID)/\(labelID)"
+        let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     availableAsRESTRequest: true)
+        let mapper = WooShippingStatusMapper(siteID: siteID, orderID: orderID)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 // MARK: Constants
@@ -197,6 +224,7 @@ private extension WooShippingRemote {
         static let rates = "label/rate"
         static let accountSettings = "account/settings"
         static let purchase = "label/purchase"
+        static let status = "label/status"
     }
 
     enum ParameterKey {

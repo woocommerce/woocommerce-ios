@@ -42,10 +42,6 @@ struct PointOfSaleDashboardView: View {
                 .renderedIf(posModel.itemListState != .initialLoading)
 
             POSConnectivityView()
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                .transition(.asymmetric(insertion: .push(from: .top), removal: .move(edge: .top)))
-                .zIndex(1) /// Consistent animations not working without setting explicit zIndex
-                .renderedIf(viewModel.showsConnectivityError)
         }
         .environment(\.floatingControlAreaSize,
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
@@ -159,7 +155,6 @@ private extension PointOfSaleDashboardView {
         static let floatingControlVerticalOffset: CGFloat = 0
         static let exitPOSSheetMaxWidth: CGFloat = 900.0
         static let supportTag = "origin:point-of-sale"
-        static let connectivityAnimationDuration: CGFloat = 1.0
     }
 
     enum Localization {

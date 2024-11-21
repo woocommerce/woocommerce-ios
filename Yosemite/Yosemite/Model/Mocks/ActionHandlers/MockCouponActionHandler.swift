@@ -8,7 +8,6 @@ struct MockCouponActionHandler: MockActionHandler {
 
     let objectGraph: MockObjectGraph
     let storageManager: StorageManagerType
-    let store: CouponStore
 
     private var storage: StorageType! {
         storageManager.viewStorage
@@ -17,9 +16,6 @@ struct MockCouponActionHandler: MockActionHandler {
     init(objectGraph: MockObjectGraph, storageManager: StorageManagerType) {
         self.objectGraph = objectGraph
         self.storageManager = storageManager
-        self.store = CouponStore(dispatcher: Dispatcher(),
-                                 storageManager: storageManager,
-                                 network: NullNetwork())
     }
 
     func handle(action: ActionType) {

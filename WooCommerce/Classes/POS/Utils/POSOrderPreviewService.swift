@@ -10,5 +10,8 @@ class POSOrderPreviewService: POSOrderServiceProtocol {
     func syncOrder(cart: [POSCartItem], order: Order?, allProducts: [any POSItem]) async throws -> Order {
         OrderFactory.emptyNewOrder
     }
+    func sendOrderReceipt(order: Order, toEmailAddress: String) async throws {
+
+    }
 }
 #endif

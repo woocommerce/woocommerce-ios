@@ -25,6 +25,7 @@ public protocol POSOrderServiceProtocol {
     ///   - allProducts: Necessary for removing existing order items with products that have been removed from the cart.
     /// - Returns: Order from the remote sync.
     func syncOrder(cart: [POSCartItem], order: Order?, allProducts: [POSItem]) async throws -> Order
+    func sendOrderReceipt(order: Order, toEmailAddress: String) async throws
 }
 
 public final class POSOrderService: POSOrderServiceProtocol {
@@ -32,6 +33,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
 
     private let siteID: Int64
     private let ordersRemote: OrdersRemote
+    private let receiptsRemote: ReceiptRemote
 
     // MARK: - Initialization
 
@@ -46,6 +48,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
     public init(siteID: Int64, network: Network) {
         self.siteID = siteID
         self.ordersRemote = OrdersRemote(network: network)
+        self.receiptsRemote = ReceiptRemote(network: network)
     }
 
     // MARK: - Protocol conformance
@@ -60,6 +63,17 @@ public final class POSOrderService: POSOrderServiceProtocol {
             syncedOrder = try await ordersRemote.createPOSOrder(siteID: siteID, order: order, fields: [.items, .status])
         }
         return syncedOrder
+    }
+
+    public func sendOrderReceipt(order: Order, toEmailAddress: String) async throws {
+        guard order.billingAddress?.email == nil || order.billingAddress?.email == "" else {
+            throw NSError(domain: "Email already set", code: 0)
+        }
+        let updatedBillingAddress = order.billingAddress?.copy(email: toEmailAddress)
+        let updatedOrder = order.copy(billingAddress: updatedBillingAddress)
+
+        let _ = try await ordersRemote.updatePOSOrder(siteID: siteID, order: updatedOrder, fields: [.billingAddress])        
+        try await receiptsRemote.sendReceipt(siteID: siteID, orderID: order.orderID)
     }
 }
 

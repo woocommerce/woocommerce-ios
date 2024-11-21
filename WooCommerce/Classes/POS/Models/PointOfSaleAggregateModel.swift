@@ -263,7 +263,12 @@ extension PointOfSaleAggregateModel {
         guard let order else {
             return
         }
-        debugPrint("Not implemented. Receipt for Order: \(order) - Email: \(emailAddress)")
+        do {
+            // TODO: Add eligiblity for correct WC and WCPay versions
+            try await orderService.sendOrderReceipt(order: order, toEmailAddress: emailAddress)
+        } catch {
+            debugPrint(error)
+        }
     }
 
     @MainActor

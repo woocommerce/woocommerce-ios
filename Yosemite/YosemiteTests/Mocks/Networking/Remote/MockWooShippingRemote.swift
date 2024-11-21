@@ -15,6 +15,9 @@ final class MockWooShippingRemote {
     /// The results to return based on the given arguments in `loadLabelRates`
     private var loadLabelRatesResults = [ResultKey: Result<[ShippingLabelCarriersAndRates], Error>]()
 
+    /// The results to return based on the given arguments in `purchaseShippingLabel`
+    private var purchaseShippingLabelResults = [ResultKey: Result<[ShippingLabelPurchase], Error>]()
+
     /// The results to return based on the given arguments in `loadPackages`
     private var loadPackagesResults = [ResultKey: Result<WooShippingPackagesResponse, Error>]()
 
@@ -47,6 +50,13 @@ final class MockWooShippingRemote {
                                  thenReturn result: Result<WooShippingAccountSettingsResponse, Error>) {
         let key = ResultKey(siteID: siteID)
         loadAccountSettingsResults[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `purchaseShippingLabel` is called.
+    func whenPurchaseShippingLabel(siteID: Int64,
+                                   thenReturn result: Result<[ShippingLabelPurchase], Error>) {
+        let key = ResultKey(siteID: siteID)
+        purchaseShippingLabelResults[key] = result
     }
 }
 
@@ -107,6 +117,24 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
             let key = ResultKey(siteID: siteID)
             if let result = self.loadAccountSettingsResults[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func purchaseShippingLabel(siteID: Int64,
+                               orderID: Int64,
+                               originAddress: Networking.ShippingLabelAddress,
+                               destinationAddress: Networking.ShippingLabelAddress,
+                               package: Networking.WooShippingPackagePurchase,
+                               completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = ResultKey(siteID: siteID)
+            if let result = self.purchaseShippingLabelResults[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

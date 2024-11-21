@@ -17,6 +17,7 @@ struct TotalsView: View {
         viewModel.shouldShowTotalsFields(for: posModel.paymentState)
     }
     @State private var isShowingPaymentsButtonSpacing: Bool = false
+    @State private var isShowingSendReceiptModal: Bool = false
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
@@ -84,6 +85,9 @@ struct TotalsView: View {
         }
         .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
         .geometryGroupIfSupported()
+        .sheet(isPresented: $isShowingSendReceiptModal) {
+            POSSendReceiptModalView()
+        }
     }
 
     private var backgroundColor: Color {
@@ -228,8 +232,7 @@ private extension TotalsView {
 
     private var sendReceiptButton: some View {
         Button(action: {
-            // no-op
-            // https://github.com/woocommerce/woocommerce-ios/issues/14461
+            isShowingSendReceiptModal = true
         }, label: {
             HStack(spacing: Constants.buttonSpacing) {
                 Text(Localization.sendReceipt)

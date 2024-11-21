@@ -1,0 +1,103 @@
+import SwiftUI
+
+struct POSSendReceiptModalView: View {
+    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var textFieldInput: String = ""
+
+    var body: some View {
+        ZStack(alignment: .topTrailing) {
+            VStack(alignment: .leading, spacing: 20) {
+                Text(Localization.title)
+                    .font(.largeTitle)
+                    .bold()
+
+                Text(Localization.subtitle)
+                    .font(.headline)
+
+                TextField(Localization.textfieldPlaceholder, text: $textFieldInput)
+                    .keyboardType(.emailAddress)
+                    .textInputAutocapitalization(.none)
+                    .autocorrectionDisabled()
+                    .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
+                    .padding(.horizontal)
+
+                Button(action: {
+                    Task { @MainActor in
+                        await posModel.sendReceipt(to: textFieldInput)
+                    }
+                }, label: {
+                    HStack(spacing: Constants.buttonSpacing) {
+                        Text(Localization.buttonTitle)
+                            .font(Constants.buttonFont)
+                    }
+                    .frame(minWidth: UIScreen.main.bounds.width / 2)
+                })
+                .padding(Constants.buttonPadding)
+                .foregroundColor(Constants.posPrimaryTextInverted)
+                .background(Constants.posOverlayFillInverted)
+                .cornerRadius(Constants.buttonCornerRadius)
+
+                Spacer()
+            }
+            .padding(.top)
+            .padding()
+
+            Button(action: {
+                dismiss()
+            }) {
+                Image(systemName: "xmark")
+                    .foregroundColor(.gray)
+                    .font(.title2)
+                    .padding()
+            }
+        }
+    }
+}
+
+private extension POSSendReceiptModalView {
+    struct Localization {
+        static let title = NSLocalizedString(
+            "pointOfSale.sendreceipt.modal.title",
+            value: "Receipt",
+            comment: "")
+        static let subtitle = NSLocalizedString(
+            "pointOfSale.sendreceipt.modal.subtitle",
+            value: "Email",
+            comment: "")
+        static let buttonTitle = NSLocalizedString(
+            "pointOfSale.sendreceipt.modal.button.title",
+            value: "Send",
+            comment: "")
+        static let textfieldPlaceholder = NSLocalizedString(
+            "pointOfSale.sendreceipt.modal.textfield.placeholder",
+            value: "Enter an email",
+            comment: "")
+    }
+    struct Constants {
+        static let buttonSpacing: CGFloat = 12
+        static let buttonPadding: CGFloat = 32
+        static let buttonFont: POSFontStyle = .posBodyEmphasized
+        static let buttonCornerRadius: CGFloat = 8
+
+        // Extract
+        static var posOverlayFillInverted: Color {
+            Color(
+                UIColor(
+                    light: .black,
+                    dark: .white
+                )
+            )
+        }
+        // Extract
+        static var posPrimaryTextInverted: Color {
+            Color(
+                UIColor(
+                    light: UIColor(.white),
+                    dark: UIColor(.black)
+                )
+            )
+        }
+    }
+}

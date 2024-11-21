@@ -60,7 +60,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
     @Published private(set) var orderState: PointOfSaleOrderState = .idle
 
-    private var order: Order? = nil
+    private(set) var order: Order? = nil
 
     private let itemProvider: POSItemProvider
     private let cardPresentPaymentService: CardPresentPaymentFacade
@@ -256,6 +256,14 @@ extension PointOfSaleAggregateModel {
         } catch {
             DDLogError("Error taking payment: \(error)")
         }
+    }
+
+    @MainActor
+    func sendReceipt(to emailAddress: String) async {
+        guard let order else {
+            return
+        }
+        debugPrint("Not implemented. Receipt for Order: \(order) - Email: \(emailAddress)")
     }
 
     @MainActor

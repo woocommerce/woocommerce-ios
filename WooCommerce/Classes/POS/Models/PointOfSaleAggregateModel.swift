@@ -24,8 +24,6 @@ protocol PointOfSaleAggregateModelProtocol {
     func cancelCardPaymentsOnboarding()
     func trackCardPaymentsOnboardingShown()
 
-    @available(*, deprecated, message: "`allItems` is due for removal, use `itemListState` instead.")
-    var allItems: [POSItem] { get }
     var itemListState: ItemListState { get }
     func loadInitialItems() async
     func loadNextItems() async
@@ -53,7 +51,6 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     @Published var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
     private var onOnboardingCancellation: (() -> Void)?
 
-    @Published private(set) var allItems: [POSItem] = []
     @Published private(set) var itemListState: ItemListState = .initialLoading
 
     @Published private(set) var cart: [CartItem] = []
@@ -68,6 +65,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     private let currencyFormatter: CurrencyFormatter
     private let analytics: Analytics
 
+    private var allItems: [POSItem] = []
     private var currentPage: Int = Constants.initialPage
     private var mightHaveMorePages: Bool = true
     private var startPaymentOnCardReaderConnection: AnyCancellable?

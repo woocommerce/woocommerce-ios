@@ -274,7 +274,9 @@ private extension TotalsView {
                 EmptyView()
             }
         case .disconnected:
-            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView()
+            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView {
+                posModel.connectCardReader()
+            }
         }
     }
 }

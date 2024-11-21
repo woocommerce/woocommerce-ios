@@ -48,10 +48,10 @@ public final class WooShippingStore: Store {
                                         originAddress,
                                         destinationAddress,
                                         package,
-                                        completion,
                                         backendProcessingDelay,
                                         pollingDelay,
-                                        pollingMaximumRetries):
+                                        pollingMaximumRetries,
+                                        completion):
             purchaseShippingLabel(siteID: siteID,
                                   orderID: orderID,
                                   originAddress: originAddress,

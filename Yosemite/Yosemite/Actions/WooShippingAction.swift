@@ -34,8 +34,8 @@ public enum WooShippingAction: Action {
                                originAddress: ShippingLabelAddress,
                                destinationAddress: ShippingLabelAddress,
                                package: WooShippingPackagePurchase,
-                               completion: (Result<ShippingLabel, Error>) -> Void,
                                backendProcessingDelay: TimeInterval = 2.0,
                                pollingDelay: TimeInterval = 1.0,
-                               pollingMaximumRetries: Int64 = 3)
+                               pollingMaximumRetries: Int64 = 3,
+                               completion: (Result<ShippingLabel, Error>) -> Void)
 }

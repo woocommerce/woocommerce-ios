@@ -2,6 +2,8 @@ import SwiftUI
 import protocol Yosemite.POSItem
 
 struct CartView: View {
+    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var cartViewModel: CartViewModel
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
@@ -11,7 +13,7 @@ struct CartView: View {
     @State private var offSetPosition: CGFloat = 0.0
     private var coordinateSpace: CoordinateSpace = .named(Constants.scrollViewCoordinateSpaceIdentifier)
     private var shouldApplyHeaderBottomShadow: Bool {
-        !cartViewModel.isCartEmpty && offSetPosition < 0
+        posModel.cart.isNotEmpty && offSetPosition < 0
     }
 
     init(viewModel: PointOfSaleDashboardViewModel, cartViewModel: CartViewModel) {
@@ -24,13 +26,13 @@ struct CartView: View {
             DynamicHStack(spacing: Constants.cartHeaderSpacing) {
                 HStack(spacing: Constants.cartHeaderElementSpacing) {
                     backAddMoreButton
-                        .disabled(viewModel.isAddMoreDisabled)
-                        .shimmering(active: viewModel.isAddMoreDisabled)
+                        .disabled(shouldPreventCartEditing)
+                        .shimmering(active: shouldPreventCartEditing)
 
                     HStack {
                         Text(Localization.cartTitle)
                             .font(Constants.primaryFont)
-                            .foregroundColor(cartViewModel.itemsInCart.isEmpty ? .posSecondaryText : .posPrimaryText)
+                            .foregroundColor(posModel.cart.isEmpty ? .posSecondaryText : .posPrimaryText)
                             .accessibilityAddTraits(.isHeader)
 
                         Spacer()
@@ -49,7 +51,7 @@ struct CartView: View {
                         .renderedIf(dynamicTypeSize.isAccessibilitySize)
 
                     Button {
-                        cartViewModel.removeAllItemsFromCart()
+                        posModel.removeAllItemsFromCart()
                     } label: {
                         Text(Localization.clearButtonTitle)
                             .font(Constants.clearButtonFont)
@@ -61,7 +63,7 @@ struct CartView: View {
                             )
                     }
                     .padding(.leading, Constants.itemHorizontalPadding)
-                    .renderedIf(cartViewModel.shouldShowClearCartButton)
+                    .renderedIf(posModel.cart.isNotEmpty && posModel.orderStage == .building)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -69,20 +71,20 @@ struct CartView: View {
             .padding(.vertical, POSHeaderLayoutConstants.sectionVerticalPadding)
             .if(shouldApplyHeaderBottomShadow, transform: { $0.applyBottomShadow() })
 
-            if !cartViewModel.isCartEmpty {
+            if posModel.cart.isNotEmpty {
                 ScrollViewReader { proxy in
                     ScrollView {
                         VStack(spacing: 0) {
-                            ForEach(cartViewModel.itemsInCart, id: \.id) { cartItem in
+                            ForEach(posModel.cart, id: \.id) { cartItem in
                                 ItemRowView(cartItem: cartItem,
-                                            onItemRemoveTapped: cartViewModel.canDeleteItemsFromCart ? {
-                                    cartViewModel.removeItemFromCart(cartItem)
+                                            onItemRemoveTapped: posModel.orderStage == .building ? {
+                                    posModel.remove(cartItem: cartItem)
                                 } : nil)
                                 .id(cartItem.id)
                                 .transition(.opacity)
                             }
                         }
-                        .animation(Constants.cartAnimation, value: cartViewModel.itemsInCart.map(\.id))
+                        .animation(Constants.cartAnimation, value: posModel.cart.map(\.id))
                         .padding(.bottom, floatingControlAreaSize.height)
                         .background(GeometryReader { geometry in
                             Color.clear.preference(key: ScrollOffSetPreferenceKey.self,
@@ -93,9 +95,8 @@ struct CartView: View {
                         }
                     }
                     .coordinateSpace(name: Constants.scrollViewCoordinateSpaceIdentifier)
-                    .onChange(of: cartViewModel.itemToScrollToWhenCartUpdated?.id) { _ in
-                        if viewModel.orderStage == .building,
-                           let itemToScrollTo = cartViewModel.itemToScrollToWhenCartUpdated?.id {
+                    .onChange(of: posModel.cart.first?.id) { itemToScrollTo in
+                        if posModel.orderStage == .building {
                             withAnimation {
                                 proxy.scrollTo(itemToScrollTo)
                             }
@@ -104,9 +105,9 @@ struct CartView: View {
                 }
             }
             Spacer()
-            switch viewModel.orderStage {
+            switch posModel.orderStage {
             case .building:
-                if cartViewModel.isCartEmpty {
+                if posModel.cart.isEmpty {
                     EmptyView()
                 } else {
                     checkoutButton
@@ -118,10 +119,10 @@ struct CartView: View {
                 EmptyView()
             }
         }
-        .animation(Constants.cartAnimation, value: cartViewModel.isCartEmpty)
+        .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
         .frame(maxWidth: .infinity)
         .background(content: {
-            if cartViewModel.isCartEmpty {
+            if posModel.cart.isEmpty {
                 cartEmptyView
             }
         })
@@ -144,8 +145,14 @@ private extension CartView {
         case .dark:
             return Color.posSecondaryBackground
         default:
-            return cartViewModel.isCartEmpty ? Color.posTertiaryBackground : Color.posSecondaryBackground
+            return posModel.cart.isEmpty ? Color.posTertiaryBackground : Color.posSecondaryBackground
         }
+    }
+
+    var shouldPreventCartEditing: Bool {
+        cartViewModel.shouldPreventCartEditing(
+            orderState: posModel.orderState,
+            paymentState: posModel.paymentState)
     }
 }
 
@@ -194,7 +201,9 @@ private extension CartView {
 private extension CartView {
     var checkoutButton: some View {
         Button {
-            cartViewModel.submitCart()
+            Task { @MainActor in
+                await posModel.submitCart()
+            }
         } label: {
             Text(Localization.checkoutButtonTitle)
         }
@@ -203,12 +212,12 @@ private extension CartView {
 
     @ViewBuilder
     var backAddMoreButton: some View {
-        switch viewModel.orderStage {
+        switch posModel.orderStage {
         case .building:
             EmptyView()
         case .finalizing:
             Button {
-                cartViewModel.addMoreToCart()
+                posModel.addMoreToCart()
             } label: {
                 Image(systemName: Constants.backButtonSymbol)
                     .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
@@ -247,20 +256,19 @@ import class WooFoundation.MockAnalyticsPreview
 import class WooFoundation.MockAnalyticsProviderPreview
 
 #Preview {
+    let posModel = PointOfSaleAggregateModel(
+        itemProvider: POSItemProviderPreview(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderService: POSOrderPreviewService())
     // TODO:
     // Simplify this by mocking `CartViewModel`
-    let totalsViewModel = TotalsViewModel(orderService: POSOrderPreviewService(),
-                                          cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                          currencyFormatter: .init(currencySettings: .init()),
-                                          paymentState: .acceptingCard)
-    let cartViewModel = CartViewModel(analytics: MockAnalyticsPreview())
-    let itemsListViewModel = ItemListViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview()))
-    let dashboardViewModel = PointOfSaleDashboardViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview()),
-                                                           cardPresentPaymentService: CardPresentPaymentPreviewService(),
+    let totalsViewModel = TotalsViewModel(posModel: posModel,
+                                          cardPresentPaymentService: CardPresentPaymentPreviewService())
+    let cartViewModel = CartViewModel(posModel: posModel)
+    let dashboardViewModel = PointOfSaleDashboardViewModel(posModel: posModel,
                                                            totalsViewModel: totalsViewModel,
                                                            cartViewModel: cartViewModel,
-                                                           itemListViewModel: itemsListViewModel,
                                                            connectivityObserver: POSConnectivityObserverPreview())
-    return CartView(viewModel: dashboardViewModel, cartViewModel: cartViewModel)
+    CartView(viewModel: dashboardViewModel, cartViewModel: cartViewModel)
 }
 #endif

@@ -82,6 +82,7 @@ enum WooAnalyticsStat: String {
     case loginInvalidEmailScreenViewed = "login_invalid_email_screen_viewed"
     case whatIsWPComOnInvalidEmailScreenTapped = "what_is_wordpress_com_on_invalid_email_screen"
     case loginInsufficientRole = "login_insufficient_role"
+    case blackFlaggedWebsiteDetected = "black_flagged_website_detected"
 
     // MARK: REST API login
     //
@@ -1131,11 +1132,11 @@ enum WooAnalyticsStat: String {
     case inPersonPaymentsLearnMoreTapped = "in_person_payments_learn_more_tapped"
     case setUpTryOutTapToPayOnIPhoneTapped = "payments_hub_tap_to_pay_tapped"
     case aboutTapToPayOnIPhoneTapped = "payments_hub_tap_to_pay_about_tapped"
-    case paymentsMenuDepositSummaryShown = "payments_hub_deposit_summary_shown"
-    case paymentsMenuDepositSummaryError = "payments_hub_deposit_summary_error"
-    case paymentsMenuDepositSummaryExpanded = "payments_hub_deposit_summary_expanded"
-    case paymentsMenuDepositSummaryLearnMoreTapped = "payments_hub_deposit_summary_learn_more_clicked"
-    case paymentsMenuDepositSummaryCurrencySelected = "payments_hub_deposit_summary_currency_selected"
+    case paymentsMenuPayoutSummaryShown = "payments_hub_deposit_summary_shown"
+    case paymentsMenuPayoutSummaryError = "payments_hub_deposit_summary_error"
+    case paymentsMenuPayoutSummaryExpanded = "payments_hub_deposit_summary_expanded"
+    case paymentsMenuPayoutSummaryLearnMoreTapped = "payments_hub_deposit_summary_learn_more_clicked"
+    case paymentsMenuPayoutSummaryCurrencySelected = "payments_hub_deposit_summary_currency_selected"
 
     // MARK: Payments Menu
     case pluginsNotSyncedYet = "plugins_not_synced_yet"

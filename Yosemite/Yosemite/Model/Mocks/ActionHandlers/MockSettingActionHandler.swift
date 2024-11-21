@@ -23,7 +23,8 @@ struct MockSettingActionHandler: MockActionHandler {
             retrieveSiteAPI(siteId: siteID, onCompletion: onCompletion)
         case .synchronizeGeneralSiteSettings(let siteID, let onCompletion):
             synchronizeGeneralSiteSettings(siteID: siteID, onCompletion: onCompletion)
-
+        case .retrieveTaxBasedOnSetting(_, let onCompletion):
+            onCompletion(.success(objectGraph.taxBasedOnSetting))
         default: unimplementedAction(action: action)
         }
     }

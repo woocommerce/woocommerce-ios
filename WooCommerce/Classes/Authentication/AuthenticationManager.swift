@@ -62,18 +62,22 @@ class AuthenticationManager: Authentication {
     /// Injected for unit test purposes
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol?
 
+    private let userDefaults: UserDefaults
+
     init(stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          abTestVariationProvider: ABTestVariationProvider = CachedABTestVariationProvider(),
-         switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil) {
+         switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
+         userDefaults: UserDefaults = .standard) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.analytics = analytics
         self.abTestVariationProvider = abTestVariationProvider
         self.switchStoreUseCase = switchStoreUseCase
+        self.userDefaults = userDefaults
     }
 
     /// Initializes the WordPress Authenticator.
@@ -261,6 +265,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func createdWordPressComAccount(username: String, authToken: String) { }
 
     func shouldHandleError(_ error: Error) -> Bool {
+        updateUserDefaultsIfSuspendedSiteError(error)
         return isSupportedError(error)
     }
 
@@ -881,9 +886,30 @@ private extension AuthenticationManager {
         }
     }
 
+    func updateUserDefaultsIfSuspendedSiteError(_ error: Error) {
+        if let serviceError = error as? WordPressComBlogServiceError,
+           serviceError == .wpcomSiteSuspended {
+            analytics.track(event: .WPCOMSiteSuspended.siteSuspended(event: .login))
+            userDefaults.setWPCOMSiteSuspended(true)
+        }
+    }
+
     func isSupportedError(_ error: Error) -> Bool {
         let wooAuthError = AuthenticationError.make(with: error)
         return wooAuthError != .unknown
+    }
+}
+
+
+// MARK: - User defaults helpers
+//
+extension UserDefaults {
+    func setWPCOMSiteSuspended(_ suspended: Bool) {
+        self[.wpcomSiteSuspended] = suspended
+    }
+
+    @objc dynamic var wpcomSiteSuspended: Bool {
+        bool(forKey: Key.wpcomSiteSuspended.rawValue)
     }
 }
 

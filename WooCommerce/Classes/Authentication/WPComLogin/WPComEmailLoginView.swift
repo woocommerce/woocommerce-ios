@@ -134,6 +134,7 @@ struct WPComEmailLoginView_Previews: PreviewProvider {
     static var previews: some View {
         WPComEmailLoginView(viewModel: .init(siteURL: "https://example.com",
                                              requiresConnectionOnly: true,
+                                             allowAccountCreation: false,
                                              onPasswordUIRequest: { _ in },
                                              onMagicLinkUIRequest: { _ in },
                                              onError: { _ in }))

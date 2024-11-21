@@ -2,15 +2,16 @@ import SwiftUI
 import protocol Yosemite.POSItem
 
 struct ItemListView: View {
-    @ObservedObject var viewModel: ItemListViewModel
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     @EnvironmentObject var posModel: PointOfSaleAggregateModel
 
-    init(viewModel: ItemListViewModel) {
-        self.viewModel = viewModel
-    }
+    @State private var lastScrollPosition: CGFloat = 0
+    @State private var showSimpleProductsModal: Bool = false
+
+    @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
+    private var isHeaderBannerDismissed: Bool = false
 
     var body: some View {
         VStack {
@@ -25,10 +26,13 @@ struct ItemListView: View {
             }
         }
         .refreshable {
-            await viewModel.reload()
+            await posModel.reload()
         }
         .background(Color.posPrimaryBackground)
         .accessibilityElement(children: .contain)
+        .posModal(isPresented: $showSimpleProductsModal) {
+            SimpleProductsOnlyInformation(isPresented: $showSimpleProductsModal)
+        }
     }
 }
 
@@ -40,10 +44,10 @@ private extension ItemListView {
         VStack {
             HStack {
                 POSHeaderTitleView()
-                if !viewModel.shouldShowHeaderBanner {
+                if !shouldShowHeaderBanner {
                     Spacer()
                     Button(action: {
-                        viewModel.simpleProductsInfoButtonTapped()
+                        showSimpleProductsModal = true
                     }, label: {
                         Image(systemName: "info.circle")
                             .font(.posTitleRegular)
@@ -52,7 +56,7 @@ private extension ItemListView {
                     .padding(.trailing, Constants.infoIconPadding)
                 }
             }
-            if !dynamicTypeSize.isAccessibilitySize, viewModel.shouldShowHeaderBanner {
+            if !dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
                     .padding(.horizontal, Constants.bannerCardPadding)
             }
@@ -88,7 +92,7 @@ private extension ItemListView {
             .padding(.vertical, Constants.bannerVerticalPadding)
             VStack {
                 Button(action: {
-                    viewModel.dismissBanner()
+                    isHeaderBannerDismissed = true
                 }, label: {
                     Image(systemName: "xmark")
                         .font(.posBodyRegular)
@@ -106,7 +110,7 @@ private extension ItemListView {
         .shadow(color: Color.black.opacity(0.08), radius: 4, y: 2)
         .accessibilityAddTraits(.isButton)
         .onTapGesture {
-            viewModel.simpleProductsInfoButtonTapped()
+            showSimpleProductsModal = true
         }
         .padding(.bottom, Constants.bannerCardPadding)
     }
@@ -122,18 +126,18 @@ private extension ItemListView {
     func listView(_ items: [POSItem]) -> some View {
         ScrollView {
             VStack {
-                if dynamicTypeSize.isAccessibilitySize, viewModel.shouldShowHeaderBanner {
+                if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                     bannerCardView
                 }
                 ForEach(items, id: \.productID) { item in
                     Button(action: {
-                        viewModel.select(item)
+                        posModel.addToCart(item)
                     }, label: {
                         ItemCardView(item: item)
                     })
                 }
                 GhostItemCardView()
-                    .renderedIf(posModel.itemListState.isLoadingAfterInitialLoad && viewModel.shouldShowGhostableItemCard)
+                    .renderedIf(posModel.itemListState.isLoadingAfterInitialLoad)
             }
             .frame(maxWidth: .infinity)
             .padding(.bottom, floatingControlAreaSize.height)
@@ -144,14 +148,35 @@ private extension ItemListView {
                         if posModel.itemListState.isLoadingAfterInitialLoad {
                             return
                         }
-                        let viewHeight = UIScreen.main.bounds.height
-                        if maxY < viewHeight {
+                        let threshold = Constants.viewHeight * Constants.scrollThresholdMultiplier
+                        if maxY < threshold && maxY < lastScrollPosition {
                             Task {
-                                await viewModel.loadNextItems()
+                                await posModel.loadNextItems()
                             }
                         }
+                        lastScrollPosition = maxY
                     }
             })
+        }
+    }
+}
+
+private extension ItemListView {
+    var shouldShowHeaderBanner: Bool {
+        posModel.itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
+    }
+}
+
+private extension ItemListState {
+    var eligibleToShowSimpleProductsBanner: Bool {
+        switch self {
+        case .loading,
+                .loaded:
+            return true
+        case .empty,
+            .initialLoading,
+            .error:
+            return false
         }
     }
 }
@@ -210,6 +235,12 @@ private extension ItemListView {
         static let iconPadding: CGFloat = 26
         static let itemListPadding: CGFloat = 16
         static let bannerCardPadding: CGFloat = 16
+        static let viewHeight: CGFloat = UIScreen.main.bounds.height
+        static let scrollThresholdMultiplier: CGFloat = 1.7
+    }
+
+    enum BannerState {
+        static let isSimpleProductsOnlyBannerDismissedKey = "isSimpleProductsOnlyBannerDismissed"
     }
 
     enum Localization {
@@ -248,6 +279,6 @@ private extension ItemListView {
 
 #if DEBUG
 #Preview {
-    ItemListView(viewModel: ItemListViewModel(posModel: PointOfSaleAggregateModel(itemProvider: POSItemProviderPreview())))
+    ItemListView()
 }
 #endif

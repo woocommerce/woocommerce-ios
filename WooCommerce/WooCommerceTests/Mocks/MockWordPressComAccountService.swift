@@ -17,7 +17,11 @@ final class MockWordPressComAccountService: WordPressComAccountServiceProtocol {
         failure(passwordlessAccountCheckError)
     }
 
-    func requestAuthenticationLink(for email: String, jetpackLogin: Bool, success: @escaping () -> Void, failure: @escaping (Error) -> Void) {
+    func requestAuthenticationLink(for email: String,
+                                   jetpackLogin: Bool,
+                                   createAccountIfNotFound: Bool,
+                                   success: @escaping () -> Void,
+                                   failure: @escaping (Error) -> Void) {
         triggeredRequestAuthenticationLink = true
         guard let authenticationLinkRequestError else {
             return success()

@@ -2,6 +2,7 @@ import Foundation
 import Combine
 import Yosemite
 import MessageUI
+import WordPressUI
 import WooFoundation
 import protocol Storage.StorageManagerType
 //TODO: Move to alertprovider (and ideally, remove from this target or translate through Yosemite)
@@ -455,7 +456,8 @@ private extension CollectOrderPaymentUseCase {
                                                paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                                paymentGatewayAccount: PaymentGatewayAccount,
                                                onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        receiptStateForFailedPayment(error: error) { [weak self] receiptState in
+        receiptStateForFailedPayment(error: error,
+                                     receiptStateCompletion: { [weak self] receiptState in
             guard let self else { return }
             alertsPresenter.present(
                 viewModel: paymentAlerts.error(error: error,
@@ -484,14 +486,21 @@ private extension CollectOrderPaymentUseCase {
                                                    onCompletion(.failure(error))
                                                })
             )
-        }
+        },
+                                     emailPromptCompletion: { [weak self] in
+            self?.presentRetryByRestartingError(error: error,
+                                                paymentAlerts: paymentAlerts,
+                                                paymentGatewayAccount: paymentGatewayAccount,
+                                                onCompletion: onCompletion)
+        })
     }
 
     private func presentRetryWithoutRestartingError(error: Error,
                                                     paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                                     paymentGatewayAccount: PaymentGatewayAccount,
                                                     onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        receiptStateForFailedPayment(error: error) { [weak self] receiptState in
+        receiptStateForFailedPayment(error: error,
+                                     receiptStateCompletion: { [weak self] receiptState in
             guard let self else { return }
 
             alertsPresenter.present(
@@ -535,13 +544,20 @@ private extension CollectOrderPaymentUseCase {
                         onCompletion(.failure(error))
                     })
             )
-        }
+        },
+                                     emailPromptCompletion: { [weak self] in
+            self?.presentRetryWithoutRestartingError(error: error,
+                                                     paymentAlerts: paymentAlerts,
+                                                     paymentGatewayAccount: paymentGatewayAccount,
+                                                     onCompletion: onCompletion)
+        })
     }
 
     private func presentNonRetryableError(error: Error,
                                           paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                           onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        receiptStateForFailedPayment(error: error) { [weak self] receiptState in
+        receiptStateForFailedPayment(error: error,
+                                     receiptStateCompletion: { [weak self] receiptState in
             guard let self else { return }
 
             alertsPresenter.present(
@@ -550,7 +566,10 @@ private extension CollectOrderPaymentUseCase {
                                                            dismissCompletion: {
                                                                onCompletion(.failure(error))
                                                            }))
-        }
+        },
+                                     emailPromptCompletion: { [weak self] in
+            self?.presentNonRetryableError(error: error, paymentAlerts: paymentAlerts, onCompletion: onCompletion)
+        })
     }
 
     /// Cancels payment and record analytics.
@@ -583,7 +602,9 @@ private extension CollectOrderPaymentUseCase {
             }
             // Sends receipt via API
             let addCustomerEmailAndSendReceiptCompletionAction: () -> Void = { [weak self] in
-                self?.presentSendReceiptAfterPayment(onCompleted: onCompleted)
+                self?.presentSendReceiptAfterPayment { _ in
+                    onCompleted()
+                }
             }
 
             let noReceiptAction: () -> Void = { onCompleted() }
@@ -711,17 +732,23 @@ private extension CollectOrderPaymentUseCase {
     }
 }
 
+
 // MARK: - Collect customer email and send receipt after payment presentation
 private extension CollectOrderPaymentUseCase {
-    func presentSendReceiptAfterPayment(onCompleted: @escaping (() -> Void)) {
-        let receiptEmailViewController = ReceiptEmailViewHostingController(order: order) { _ in
-            onCompleted()
+    func presentSendReceiptAfterPayment(onCompleted: @escaping ((Order?) -> Void)) {
+        let receiptEmailViewController = ReceiptEmailViewHostingController(order: order) { order in
+            onCompleted(order)
         }
-        rootViewController.present(receiptEmailViewController, animated: true)
+
+        // Support opening receipt modal on top of a presented alert if needed
+        let viewController = rootViewController.presentedViewController ?? rootViewController
+        viewController.present(receiptEmailViewController, animated: true)
     }
 
+
     private func receiptStateForFailedPayment(error: Error,
-                                              _ completion: @escaping (CardReaderTransactionFailureAlertReceiptState) -> Void) {
+                                              receiptStateCompletion: @escaping (CardReaderTransactionFailureAlertReceiptState) -> Void,
+                                              emailPromptCompletion: @escaping () -> Void) {
 
         let isErrorEligibleForSendingFailureReceiptAfterPayment: Bool = {
             switch error {
@@ -737,7 +764,7 @@ private extension CollectOrderPaymentUseCase {
 
         // Order only fails when the payment is declined by the payment processor, other types of failure don't produce failure states and receipts.
         guard isErrorEligibleForSendingFailureReceiptAfterPayment else {
-            return completion(.noEmailReceipt)
+            return receiptStateCompletion(.noEmailReceipt)
         }
 
         receiptEligibilityUseCase.isEligibleSendingReceiptAfterPayment { [weak self] isEligible in
@@ -748,14 +775,20 @@ private extension CollectOrderPaymentUseCase {
                 if let email = order.billingAddress?.email, email.isNotEmpty {
                     receiptState = .paymentSuccessEmailSent(email: email)
                 } else {
-                    receiptState = .promptToSendEmailReceipt(emailReceiptAction: {
-                        // TODO
+                    receiptState = .promptToSendEmailReceipt(emailReceiptAction: { [weak self] in
+                        guard let self else { return }
+                        presentSendReceiptAfterPayment { order in
+                            if let order {
+                                self.order = order
+                            }
+                            emailPromptCompletion()
+                        }
                     })
                 }
             } else {
                 receiptState = .noEmailReceipt
             }
-            completion(receiptState)
+            receiptStateCompletion(receiptState)
         }
     }
 }

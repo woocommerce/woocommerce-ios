@@ -168,16 +168,8 @@ private extension PointOfSaleDashboardView {
 }
 
 #if DEBUG
-import class WooFoundation.MockAnalyticsPreview
-import class WooFoundation.MockAnalyticsProviderPreview
-
 #Preview {
-    let posModel = PointOfSaleAggregateModel(
-        itemProvider: POSItemProviderPreview(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderService: POSOrderPreviewService())
-    let posVM = PointOfSaleDashboardViewModel(posModel: posModel,
-                                              connectivityObserver: POSConnectivityObserverPreview())
+    let posVM = PointOfSaleDashboardViewModel(connectivityObserver: POSConnectivityObserverPreview())
 
     return NavigationStack {
         PointOfSaleDashboardView(viewModel: posVM)

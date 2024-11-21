@@ -1,14 +1,7 @@
 import SwiftUI
-import protocol Yosemite.POSItem
-import class WooFoundation.CurrencySettings
 import Combine
-import enum Yosemite.OrderStatusEnum
-import struct Yosemite.POSCartItem
-import struct Yosemite.Order
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
-    @ObservedObject var posModel: PointOfSaleAggregateModel
-
     private let connectivityObserver: ConnectivityObserver
 
     @Published var showExitPOSModal: Bool = false
@@ -17,9 +10,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = []
 
-    init(posModel: PointOfSaleAggregateModel,
-         connectivityObserver: ConnectivityObserver) {
-        self.posModel = posModel
+    init(connectivityObserver: ConnectivityObserver) {
         self.connectivityObserver = connectivityObserver
 
         observeConnectivity()

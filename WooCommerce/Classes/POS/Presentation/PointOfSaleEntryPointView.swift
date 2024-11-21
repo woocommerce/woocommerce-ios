@@ -25,7 +25,6 @@ struct PointOfSaleEntryPointView: View {
 
         self._posModel = StateObject(wrappedValue: posModel)
         self._viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
-            posModel: posModel,
             connectivityObserver: ServiceLocator.connectivityObserver)
         )
     }

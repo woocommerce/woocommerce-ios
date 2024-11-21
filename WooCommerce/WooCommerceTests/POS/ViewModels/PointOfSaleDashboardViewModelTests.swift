@@ -6,31 +6,18 @@ import Combine
 final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
     private var sut: PointOfSaleDashboardViewModel!
-    private var mockPOSModel: PointOfSaleAggregateModel!
-    private var cardPresentPaymentService: MockCardPresentPaymentService!
-    private var itemProvider: MockPOSItemProvider!
     private var mockConnectivityObserver: MockConnectivityObserver!
 
     private var cancellables: Set<AnyCancellable>!
 
     override func setUp() {
         super.setUp()
-        cardPresentPaymentService = MockCardPresentPaymentService()
-        itemProvider = MockPOSItemProvider()
         mockConnectivityObserver = MockConnectivityObserver()
-        let mockOrderService = MockPOSOrderService()
-        mockOrderService.orderToReturn = Order.fake()
-        mockPOSModel = PointOfSaleAggregateModel(
-            itemProvider: itemProvider,
-            cardPresentPaymentService: cardPresentPaymentService,
-            orderService: mockOrderService)
-        sut = PointOfSaleDashboardViewModel(posModel: mockPOSModel,
-                                            connectivityObserver: mockConnectivityObserver)
+        sut = PointOfSaleDashboardViewModel(connectivityObserver: mockConnectivityObserver)
         cancellables = []
     }
 
     override func tearDown() {
-        cardPresentPaymentService = nil
         mockConnectivityObserver = nil
         sut = nil
         cancellables = []
@@ -51,26 +38,5 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(sut.showsConnectivityError)
-    }
-}
-
-private extension PointOfSaleDashboardViewModelTests {
-    final class MockPOSItemProvider: POSItemProvider {
-        var items: [POSItem] = []
-
-        func providePointOfSaleItems() async throws -> [Yosemite.POSItem] {
-            []
-        }
-    }
-
-    static func makeItem() -> POSItem {
-        return POSProduct(itemID: UUID(),
-                          productID: 0,
-                          name: "",
-                          price: "",
-                          formattedPrice: "",
-                          itemCategories: [],
-                          productImageSource: nil,
-                          productType: .simple)
     }
 }

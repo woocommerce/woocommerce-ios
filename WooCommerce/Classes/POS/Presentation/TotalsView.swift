@@ -2,7 +2,7 @@ import SwiftUI
 
 struct TotalsView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
-    private var viewModel = TotalsViewModel()
+    private let viewModel = TotalsViewModel()
 
     /// Used together with .matchedGeometryEffect to synchronize the animations of shimmeringLineView and text fields.
     /// This makes SwiftUI treat these views as a single entity in the context of animation.

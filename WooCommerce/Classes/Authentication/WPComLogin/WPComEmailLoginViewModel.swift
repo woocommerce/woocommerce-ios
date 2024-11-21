@@ -97,6 +97,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
             }
 
             guard email.isValidEmail() else {
+                analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))
                 onError(Localization.unknownUsername)
                 return
             }

@@ -20,6 +20,7 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [String],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
+                        channel: PaymentChannel,
                         onPreparingReader: () -> Void,
                         onWaitingForInput: @escaping (CardReaderInput) -> Void,
                         onProcessingMessage: @escaping () -> Void,

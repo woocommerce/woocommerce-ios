@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import enum Yosemite.PaymentChannel
 import struct Yosemite.Order
 @testable import WooCommerce
 
@@ -37,7 +38,7 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
 
     var onCollectPaymentCalled: (() -> Void)?
     var collectPaymentWasCalled = false
-    func collectPayment(for order: Yosemite.Order, using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentResult {
+    func collectPayment(for order: Yosemite.Order, using connectionMethod: CardReaderConnectionMethod, channel: PaymentChannel) async throws -> CardPresentPaymentResult {
         collectPaymentWasCalled = true
         onCollectPaymentCalled?()
         paymentEvent = .show(eventDetails: CardPresentPaymentEventDetails.paymentSuccess(done: {}))

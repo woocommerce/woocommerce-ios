@@ -112,7 +112,7 @@ public extension PaymentIntent {
                           orderID: Int64? = nil,
                           orderKey: String? = nil,
                           paymentType: PaymentTypes? = nil,
-                             channel: PaymentChannel
+                             channel: PaymentChannel? = nil
     ) -> [String: String] {
         var metadata = [String: String]()
 
@@ -125,7 +125,7 @@ public extension PaymentIntent {
         }
         metadata[PaymentIntent.MetadataKeys.orderKey] = orderKey
         metadata[PaymentIntent.MetadataKeys.paymentType] = paymentType?.rawValue
-        metadata[PaymentIntent.MetadataKeys.channel] = channel.metadataValue
+        metadata[PaymentIntent.MetadataKeys.channel] = channel?.metadataValue
 
         return metadata
     }

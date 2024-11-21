@@ -8,7 +8,6 @@ import struct Yosemite.Order
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
     let cartViewModel: any CartViewModelProtocol
-    let totalsViewModel: any TotalsViewModelProtocol
 
     @ObservedObject var posModel: PointOfSaleAggregateModel
 
@@ -21,11 +20,9 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
 
     init(posModel: PointOfSaleAggregateModel,
-         totalsViewModel: any TotalsViewModelProtocol,
          cartViewModel: any CartViewModelProtocol,
          connectivityObserver: ConnectivityObserver) {
         self.posModel = posModel
-        self.totalsViewModel = totalsViewModel
         self.cartViewModel = cartViewModel
         self.connectivityObserver = connectivityObserver
 

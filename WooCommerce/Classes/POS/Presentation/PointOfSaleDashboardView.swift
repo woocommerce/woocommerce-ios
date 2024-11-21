@@ -3,14 +3,11 @@ import SwiftUI
 struct PointOfSaleDashboardView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
-    @ObservedObject private var totalsViewModel: TotalsViewModel
     @ObservedObject private var cartViewModel: CartViewModel
 
     init(viewModel: PointOfSaleDashboardViewModel,
-         totalsViewModel: TotalsViewModel,
          cartViewModel: CartViewModel) {
         self.viewModel = viewModel
-        self.totalsViewModel = totalsViewModel
         self.cartViewModel = cartViewModel
     }
 
@@ -80,14 +77,6 @@ struct PointOfSaleDashboardView: View {
         .task {
             await posModel.loadInitialItems()
         }
-        .onChange(of: posModel.orderStage) { newValue in
-            switch newValue {
-            case .building:
-                totalsViewModel.stopShowingTotalsView()
-            case .finalizing:
-                totalsViewModel.startShowingTotalsView()
-            }
-        }
     }
 
     private var contentView: some View {
@@ -107,7 +96,7 @@ struct PointOfSaleDashboardView: View {
                 }
 
                 if posModel.orderStage == .finalizing {
-                    totalsView
+                    TotalsView()
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .trailing))
                 }
@@ -187,10 +176,6 @@ private extension PointOfSaleDashboardView {
         CartView(viewModel: viewModel, cartViewModel: cartViewModel)
     }
 
-    var totalsView: some View {
-        TotalsView(viewModel: totalsViewModel)
-    }
-
     var productListView: some View {
         ItemListView()
     }
@@ -205,17 +190,13 @@ import class WooFoundation.MockAnalyticsProviderPreview
         itemProvider: POSItemProviderPreview(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderService: POSOrderPreviewService())
-    let totalsVM = TotalsViewModel(posModel: posModel,
-                                   cardPresentPaymentService: CardPresentPaymentPreviewService())
     let cartVM = CartViewModel(posModel: posModel)
     let posVM = PointOfSaleDashboardViewModel(posModel: posModel,
-                                              totalsViewModel: totalsVM,
                                               cartViewModel: cartVM,
                                               connectivityObserver: POSConnectivityObserverPreview())
 
     return NavigationStack {
         PointOfSaleDashboardView(viewModel: posVM,
-                                 totalsViewModel: totalsVM,
                                  cartViewModel: cartVM)
     }
 }

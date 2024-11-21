@@ -1,7 +1,7 @@
 import UIKit
 
-/// Modal presented on error. Does not provide a retry action.
-final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel {
+/// Modal presented on error. Does not provide a retry action. Shows email address which the receipt was sent to.
+final class CardPresentModalNonRetryableErrorEmailSent: CardPresentPaymentsModalViewModel {
 
     /// Amount charged
     private let amount: String
@@ -9,10 +9,10 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
     /// Called when the view is dismissed
     private let onDismiss: () -> Void
 
-    let textMode: PaymentsModalTextMode = .reducedBottomInfo
+    let textMode: PaymentsModalTextMode = .fullInfo
     let actionsMode: PaymentsModalActionsMode = .oneAction
 
-    let topTitle: String = Localization.paymentFailed
+    let topTitle: String = CardPresentModalNonRetryableError.Localization.paymentFailed
 
     var topSubtitle: String? {
         amount
@@ -20,7 +20,7 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
 
     let image: UIImage
 
-    let primaryButtonTitle: String? = Localization.dismiss
+    let primaryButtonTitle: String? = CardPresentModalNonRetryableError.Localization.dismiss
 
     let secondaryButtonTitle: String? = nil
 
@@ -29,6 +29,9 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
     let bottomTitle: String?
 
     let bottomSubtitle: String? = nil
+
+    let bottomAttributedSubtitle: NSAttributedString?
+
 
     var accessibilityLabel: String? {
         guard let bottomTitle = bottomTitle else {
@@ -41,15 +44,24 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
     init(amount: String,
          errorDescription: String?,
          image: UIImage = .paymentErrorImage,
+         email: String,
          onDismiss: @escaping () -> Void) {
         self.amount = amount
         self.bottomTitle = errorDescription
         self.image = image
         self.onDismiss = onDismiss
+
+        let formattedMessage = String(format: CardPresentModalError.Localization.receiptMessage, email)
+        let attributedString = NSMutableAttributedString(string: formattedMessage)
+        if let emailRange = formattedMessage.range(of: email) {
+            let nsRange = NSRange(emailRange, in: formattedMessage)
+            attributedString.addAttributes([.font: UIFont.footnote.bold], range: nsRange)
+        }
+        self.bottomAttributedSubtitle = attributedString
     }
 
-    convenience init(amount: String, error: Error, onDismiss: @escaping () -> Void) {
-        self.init(amount: amount, errorDescription: error.localizedDescription, onDismiss: onDismiss)
+    convenience init(amount: String, error: Error, email: String, onDismiss: @escaping () -> Void) {
+        self.init(amount: amount, errorDescription: error.localizedDescription, email: email, onDismiss: onDismiss)
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
@@ -64,18 +76,4 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
     func didTapSecondaryButton(in viewController: UIViewController?) { }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
-}
-
-extension CardPresentModalNonRetryableError {
-    enum Localization {
-        static let paymentFailed = NSLocalizedString(
-            "Payment failed",
-            comment: "Error message. Presented to users after collecting a payment fails"
-        )
-
-        static let dismiss = NSLocalizedString(
-            "Dismiss",
-            comment: "Button to dismiss. Presented to users after collecting a payment fails"
-        )
-    }
 }

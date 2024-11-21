@@ -1,61 +1,6 @@
-import SwiftUI
-import Combine
-import protocol WooFoundation.Analytics
-import protocol Yosemite.POSItem
+import Foundation
 
-final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
-
-    @ObservedObject var posModel: PointOfSaleAggregateModel
-
-    var isShimmering: Bool {
-        posModel.orderState.isSyncing
-    }
-
-    private let cardPresentPaymentService: CardPresentPaymentFacade
-    private let analytics: Analytics
-
-    init(posModel: PointOfSaleAggregateModel,
-         cardPresentPaymentService: CardPresentPaymentFacade,
-         analytics: Analytics = ServiceLocator.analytics) {
-        self.posModel = posModel
-        self.cardPresentPaymentService = cardPresentPaymentService
-        self.analytics = analytics
-    }
-
-    func connectReaderTapped() {
-        Task { @MainActor in
-            do {
-                let _ = try await cardPresentPaymentService.connectReader(using: .bluetooth)
-            } catch {
-                DDLogError("🔴 POS reader connection error: \(error)")
-            }
-        }
-    }
-
-    func startNewOrder() {
-        posModel.startNewCart()
-    }
-
-    private func editOrder() {
-        posModel.addMoreToCart()
-    }
-
-    // These three functions could potentially move to posModel and be based on orderStage.
-    func onTotalsViewDisappearance() {
-        // This is a backup – it's not called until transitions are complete when using the back button.
-        // The delay can lead to race conditions with tapping a card.
-        // It's likely that the payment will already have been cancelled due to the change of orderStage.
-        posModel.cancelCardReaderPreparation()
-    }
-
-    func startShowingTotalsView() {
-        posModel.observeReaderReconnection()
-    }
-
-    func stopShowingTotalsView() {
-        posModel.cancelCardReaderPreparation()
-    }
-
+final class TotalsViewModel {
     func shouldShowTotalsFields(for paymentState: PointOfSalePaymentState) -> Bool {
         switch paymentState {
         case .idle,

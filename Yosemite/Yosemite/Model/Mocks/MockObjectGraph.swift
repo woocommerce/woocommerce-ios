@@ -19,6 +19,8 @@ public protocol MockObjectGraph {
 
     var taxBasedOnSetting: TaxBasedOnSetting { get }
     var googleAdsConnection: GoogleAdsConnection { get }
+    var couponReports: [CouponReport] { get }
+    var coupons: [Coupon] { get }
 
     var thisMonthOrderStats: OrderStatsV4 { get }
     var thisMonthVisitStats: SiteVisitStats { get }

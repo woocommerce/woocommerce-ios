@@ -4,6 +4,9 @@ struct PointOfSaleDashboardView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
 
+    @State private var showExitPOSModal: Bool = false
+    @State private var showSupport: Bool = false
+
     init(viewModel: PointOfSaleDashboardViewModel) {
         self.viewModel = viewModel
     }
@@ -30,7 +33,8 @@ struct PointOfSaleDashboardView: View {
                     .accessibilitySortPriority(2)
             }
 
-            POSFloatingControlView(viewModel: viewModel)
+            POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
+                                   showSupport: $showSupport)
                 .shadow(color: Color.black.opacity(0.12), radius: 4, y: 2)
                 .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
                 .trackSize(size: $floatingSize)
@@ -63,12 +67,12 @@ struct PointOfSaleDashboardView: View {
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)
                 .posInteractiveDismissDisabled(alertType.isDismissDisabled)
         }
-        .posModal(isPresented: $viewModel.showExitPOSModal) {
-            PointOfSaleExitPosAlertView(isPresented: $viewModel.showExitPOSModal)
+        .posModal(isPresented: $showExitPOSModal) {
+            PointOfSaleExitPosAlertView(isPresented: $showExitPOSModal)
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         }
         .posRootModal()
-        .sheet(isPresented: $viewModel.showSupport) {
+        .sheet(isPresented: $showSupport) {
             supportForm
         }
         .task {
@@ -107,12 +111,12 @@ struct PointOfSaleDashboardView: View {
 private extension PointOfSaleDashboardView {
     var supportForm: some View {
         NavigationView {
-            SupportForm(isPresented: $viewModel.showSupport,
+            SupportForm(isPresented: $showSupport,
                         viewModel: SupportFormViewModel(sourceTag: Constants.supportTag))
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(Localization.supportDone) {
-                        viewModel.showSupport = false
+                        showSupport = false
                     }
                 }
             }
@@ -123,7 +127,7 @@ private extension PointOfSaleDashboardView {
     func paymentsOnboardingView(from onboardingViewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
         onboardingViewModel.showSupport = {
             posModel.cancelCardPaymentsOnboarding()
-            viewModel.showSupport = true
+            showSupport = true
         }
         return PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(onboardingViewModel: onboardingViewModel,
                                                                             onDismissTap: {

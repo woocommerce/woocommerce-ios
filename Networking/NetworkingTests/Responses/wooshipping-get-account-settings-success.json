@@ -18,10 +18,10 @@
       "formMeta":{
          "can_manage_payments":false,
          "can_edit_settings":true,
-         "master_user_name":"Rachel",
-         "master_user_login":"rachelmcr",
-         "master_user_wpcom_login":"rachelmcr",
-         "master_user_email":"rachel@automattic.com",
+         "master_user_name":"John Smith",
+         "master_user_login":"jsmith",
+         "master_user_wpcom_login":"jsmith",
+         "master_user_email":"jsmith@example.com",
          "payment_methods":[
             {
                "payment_method_id":3190997,

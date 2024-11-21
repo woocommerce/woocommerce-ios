@@ -181,10 +181,10 @@ final class WooShippingRemoteTests: XCTestCase {
 
         XCTAssertEqual(successResponse.accountSettings.canManagePayments, false)
         XCTAssertEqual(successResponse.accountSettings.canEditSettings, true)
-        XCTAssertEqual(successResponse.accountSettings.storeOwnerDisplayName, "Rachel")
-        XCTAssertEqual(successResponse.accountSettings.storeOwnerUsername, "rachelmcr")
-        XCTAssertEqual(successResponse.accountSettings.storeOwnerWpcomUsername, "rachelmcr")
-        XCTAssertEqual(successResponse.accountSettings.storeOwnerWpcomEmail, "rachel@automattic.com")
+        XCTAssertEqual(successResponse.accountSettings.storeOwnerDisplayName, "John Smith")
+        XCTAssertEqual(successResponse.accountSettings.storeOwnerUsername, "jsmith")
+        XCTAssertEqual(successResponse.accountSettings.storeOwnerWpcomUsername, "jsmith")
+        XCTAssertEqual(successResponse.accountSettings.storeOwnerWpcomEmail, "jsmith@example.com")
 
         XCTAssertEqual(successResponse.accountSettings.paymentMethods.count, 1)
         XCTAssertEqual(successResponse.accountSettings.paymentMethods.first?.paymentMethodID, 3190997)

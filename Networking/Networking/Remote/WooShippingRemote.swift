@@ -118,8 +118,6 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
             let mapper = WooShippingPackagesMapper()
 
             enqueue(request, mapper: mapper, completion: completion)
-        } catch {
-            completion(.failure(error))
         }
     }
 

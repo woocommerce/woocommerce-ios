@@ -33,7 +33,6 @@ protocol PointOfSaleAggregateModelProtocol {
     func addToCart(_ item: POSItem)
     func remove(cartItem: CartItem)
     func removeAllItemsFromCart()
-    func submitCart() async
     func addMoreToCart()
     func startNewCart()
 
@@ -176,12 +175,6 @@ extension PointOfSaleAggregateModel {
 
     func removeAllItemsFromCart() {
         cart.removeAll()
-    }
-
-    @MainActor
-    func submitCart() async {
-        orderStage = .finalizing
-        await checkOut()
     }
 
     func addMoreToCart() {
@@ -409,7 +402,10 @@ private extension PointOfSaleAggregateModel {
 // MARK: - Order syncing
 
 extension PointOfSaleAggregateModel {
+    @MainActor
     func checkOut() async {
+        orderStage = .finalizing
+
         guard CartItem.areOrderAndCartDifferent(order: order, cartItems: cart) else {
             await startPaymentWhenCardReaderConnected()
             return

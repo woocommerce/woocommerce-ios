@@ -7,21 +7,45 @@ struct MockStatsActionV4Handler: MockActionHandler {
 
     let objectGraph: MockObjectGraph
     let storageManager: StorageManagerType
+    let store: StatsStoreV4
+
+    init(objectGraph: MockObjectGraph, storageManager: StorageManagerType) {
+        self.objectGraph = objectGraph
+        self.storageManager = storageManager
+        self.store = StatsStoreV4(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: NullNetwork())
+    }
 
     func handle(action: ActionType) {
         switch action {
-            case .retrieveStats(let siteID, let timeRange, _, _, _, _, _, let onCompletion):
-                retrieveStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
-            case .retrieveSiteVisitStats(let siteID, _, let timeRange, _, let onCompletion):
-                retrieveSiteVisitStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
-            case .retrieveTopEarnerStats(let siteID, let timeRange, _, _, _, _, _, _, let onCompletion):
-                retrieveTopEarnerStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
-            default: unimplementedAction(action: action)
+        case .retrieveStats(let siteID, let timeRange, _, _, _, _, _, let onCompletion):
+            retrieveStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
+        case .retrieveSiteVisitStats(let siteID, _, let timeRange, _, let onCompletion):
+            retrieveSiteVisitStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
+        case .retrieveTopEarnerStats(let siteID, let timeRange, _, _, _, _, _, _, let onCompletion):
+            retrieveTopEarnerStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
+        case .retrieveSiteSummaryStats(let siteID, _, let period, _, let latestDateToInclude, _, let onCompletion):
+            retrieveSiteSummaryStats(siteID: siteID, period: period, latestDateToInclude: latestDateToInclude, onCompletion: onCompletion)
+        default: unimplementedAction(action: action)
         }
     }
 
+    func retrieveSiteSummaryStats(siteID: Int64,
+                                  period: StatGranularity,
+                                  latestDateToInclude: Date,
+                                  onCompletion: @escaping (Result<SiteSummaryStats, Error>) -> ()) {
+        let mockStats = ScreenshotObjectGraph.createSiteSummaryStats(siteId: siteID,
+                                                                 period: period,
+                                                                 latestDateToInclude: latestDateToInclude,
+                                                                 visitors: 2734,
+                                                                 views: 5104)
+        store.upsertStoredSiteSummaryStats(readOnlyStats: mockStats)
+
+        onCompletion(.success(mockStats))
+    }
+
     func retrieveStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping (Result<Void, Error>) -> ()) {
-        let store = StatsStoreV4(dispatcher: Dispatcher(), storageManager: storageManager, network: NullNetwork())
 
         switch timeRange {
             case .today:
@@ -40,7 +64,6 @@ struct MockStatsActionV4Handler: MockActionHandler {
     }
 
     func retrieveSiteVisitStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping (Result<Void, Error>) -> ()) {
-        let store = StatsStoreV4(dispatcher: Dispatcher(), storageManager: storageManager, network: NullNetwork())
 
         switch timeRange {
             case .today:
@@ -59,7 +82,6 @@ struct MockStatsActionV4Handler: MockActionHandler {
     }
 
     func retrieveTopEarnerStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping (Result<TopEarnerStats, Error>) -> ()) {
-        let store = StatsStoreV4(dispatcher: Dispatcher(), storageManager: storageManager, network: NullNetwork())
 
         switch timeRange {
         case .today:

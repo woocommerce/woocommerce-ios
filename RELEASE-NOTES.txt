@@ -9,10 +9,13 @@
 - [*] Payments onboarding: for two onboarding errors that show a wp-admin Payments setup URL in a webview ("Payments plugin not setup" and "Stripe overdue" errors that can occur to both WooPayments and Stripe Extension), the webview is now set to Payments Connect instead of Payments Overview. [https://github.com/woocommerce/woocommerce-ios/pull/14297]
 - [*] Blaze: merchants can now select the text for the CTA on their campaigns [https://github.com/woocommerce/woocommerce-ios/issues/14355]
 - [*] Fixed: crash for missing NSMicrophoneUsageDescription [https://github.com/woocommerce/woocommerce-ios/pull/14386]
+- [***] Implemented support for the new Global Unique Identifier (GTIN) for products [https://github.com/woocommerce/woocommerce-ios/pull/14396]
 - [internal] Allow login for WPCOM suspended sites [https://github.com/woocommerce/woocommerce-ios/pull/14257]
 - [*] Menu tab > Payments: in the "deposits" summary view at the top, all mentions of "deposits/deposit/deposited" have been renamed to "payouts/payout/paid out" respectively to match the renaming in web. [https://github.com/woocommerce/woocommerce-ios/pull/14402]
 - [*] Receipts: Added message confirming receipt sent to customer after successful payment. [https://github.com/woocommerce/woocommerce-ios/pull/14390]
 - [internal] Simplifies App Icon by only using a single image for all supported platforms. [https://github.com/woocommerce/woocommerce-ios/pull/14429]
+- [*] Dashboard: Performance card now shows cached Visitors and Conversion data correctly. [https://github.com/woocommerce/woocommerce-ios/pull/14438]
+- [internal] Updated WooCommerceScreenshot to make it work again for generating screenshots. [https://github.com/woocommerce/woocommerce-ios/pull/14335]
 
 21.1
 -----

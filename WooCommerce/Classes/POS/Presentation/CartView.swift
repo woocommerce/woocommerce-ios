@@ -26,8 +26,8 @@ struct CartView: View {
             DynamicHStack(spacing: Constants.cartHeaderSpacing) {
                 HStack(spacing: Constants.cartHeaderElementSpacing) {
                     backAddMoreButton
-                        .disabled(viewModel.isAddMoreDisabled)
-                        .shimmering(active: viewModel.isAddMoreDisabled)
+                        .disabled(shouldPreventCartEditing)
+                        .shimmering(active: shouldPreventCartEditing)
 
                     HStack {
                         Text(Localization.cartTitle)
@@ -148,6 +148,12 @@ private extension CartView {
             return posModel.cart.isEmpty ? Color.posTertiaryBackground : Color.posSecondaryBackground
         }
     }
+
+    var shouldPreventCartEditing: Bool {
+        cartViewModel.shouldPreventCartEditing(
+            orderState: posModel.orderState,
+            paymentState: posModel.paymentState)
+    }
 }
 
 private extension CartView {
@@ -256,15 +262,9 @@ import class WooFoundation.MockAnalyticsProviderPreview
         orderService: POSOrderPreviewService())
     // TODO:
     // Simplify this by mocking `CartViewModel`
-    let totalsViewModel = TotalsViewModel(posModel: posModel,
-                                          cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                          paymentState: .acceptingCard)
     let cartViewModel = CartViewModel(posModel: posModel)
-    let itemsListViewModel = ItemListViewModel(posModel: posModel)
     let dashboardViewModel = PointOfSaleDashboardViewModel(posModel: posModel,
-                                                           totalsViewModel: totalsViewModel,
                                                            cartViewModel: cartViewModel,
-                                                           itemListViewModel: itemsListViewModel,
                                                            connectivityObserver: POSConnectivityObserverPreview())
     CartView(viewModel: dashboardViewModel, cartViewModel: cartViewModel)
 }

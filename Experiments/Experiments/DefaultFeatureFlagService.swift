@@ -88,10 +88,12 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .favoriteProducts:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .productGlobalUniqueIdentifierSupport:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .paymentsOnboardingInPointOfSale:
-            return buildConfig == .localDeveloper
+            return true
         case .sendReceiptAfterPayment:
+            return false
+        case .sendReceiptsForPointOfSale:
             return false
         case .jetpackSetupWPComAccountCreation:
             return buildConfig == .localDeveloper || buildConfig == .alpha

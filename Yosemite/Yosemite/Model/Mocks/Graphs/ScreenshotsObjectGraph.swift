@@ -46,7 +46,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         isJetpackThePluginInstalled: true,
         isJetpackConnected: true,
         isWooCommerceActive: true,
-        isWordPressComStore: true,
+        isWordPressComStore: false,
         jetpackConnectionActivePlugins: [],
         timezone: "UTC",
         gmtOffset: 0,
@@ -215,6 +215,62 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         )
     ]
 
+    var taxBasedOnSetting: TaxBasedOnSetting = .customerShippingAddress
+
+    var googleAdsConnection = GoogleAdsConnection(id: 1234, currency: "USD", symbol: "$", rawStatus: "connected")
+
+    var couponReports = [CouponReport(couponID: 1, amount: 300, ordersCount: 32), CouponReport(couponID: 2, amount: 12, ordersCount: 21)]
+    var coupons = [
+        Coupon(couponID: 1,
+               code: "AGK32FD",
+               amount: "10.00",
+               dateCreated: Date(timeIntervalSinceNow: -1000),
+               dateModified: Date(timeIntervalSinceNow: -1000),
+               discountType: .fixedCart,
+               description: "Coupon description",
+               dateExpires: nil,
+               usageCount: 10,
+               individualUse: true,
+               productIds: [],
+               excludedProductIds: [],
+               usageLimit: 1200,
+               usageLimitPerUser: 3,
+               limitUsageToXItems: 10,
+               freeShipping: true,
+               productCategories: [],
+               excludedProductCategories: [],
+               excludeSaleItems: false,
+               minimumAmount: "5.00",
+               maximumAmount: "500.00",
+               emailRestrictions: [],
+               usedBy: []
+              ),
+        Coupon(couponID: 2,
+               code: "CRSDFE",
+               amount: "14.00",
+               dateCreated: Date(timeIntervalSinceNow: -1000),
+               dateModified: Date(timeIntervalSinceNow: -1000),
+               discountType: .fixedCart,
+               description: "Coupon description",
+               dateExpires: nil,
+               usageCount: 10,
+               individualUse: true,
+               productIds: [],
+               excludedProductIds: [],
+               usageLimit: 1200,
+               usageLimitPerUser: 3,
+               limitUsageToXItems: 10,
+               freeShipping: true,
+               productCategories: [],
+               excludedProductCategories: [],
+               excludeSaleItems: false,
+               minimumAmount: "5.00",
+               maximumAmount: "500.00",
+               emailRestrictions: [],
+               usedBy: []
+              ),
+    ]
+
     var thisMonthVisitStats: SiteVisitStats {
         Self.createVisitStats(
             siteID: 1,
@@ -258,6 +314,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
             }
         )
     }
+
 
     private let date: Date
 

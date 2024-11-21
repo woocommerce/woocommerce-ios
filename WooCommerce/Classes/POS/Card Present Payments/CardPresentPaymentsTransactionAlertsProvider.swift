@@ -33,6 +33,7 @@ struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlerts
     }
 
     func error(error: any Error,
+               receiptState: CardReaderTransactionFailureAlertReceiptState,
                tryAgain: @escaping () -> Void,
                dismissCompletion: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .paymentError(error: error,
@@ -41,6 +42,7 @@ struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlerts
     }
 
     func nonRetryableError(error: any Error,
+                           receiptState: CardReaderTransactionFailureAlertReceiptState,
                            dismissCompletion: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .paymentError(error: error,
                       retryApproach: .dontRetry,

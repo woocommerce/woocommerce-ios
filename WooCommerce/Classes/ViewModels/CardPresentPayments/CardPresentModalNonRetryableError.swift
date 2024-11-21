@@ -66,7 +66,7 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
 }
 
-private extension CardPresentModalNonRetryableError {
+extension CardPresentModalNonRetryableError {
     enum Localization {
         static let paymentFailed = NSLocalizedString(
             "Payment failed",

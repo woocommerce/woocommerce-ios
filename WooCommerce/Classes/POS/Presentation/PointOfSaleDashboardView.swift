@@ -3,18 +3,12 @@ import SwiftUI
 struct PointOfSaleDashboardView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
-    @ObservedObject private var totalsViewModel: TotalsViewModel
     @ObservedObject private var cartViewModel: CartViewModel
-    @ObservedObject private var itemListViewModel: ItemListViewModel
 
     init(viewModel: PointOfSaleDashboardViewModel,
-         totalsViewModel: TotalsViewModel,
-         cartViewModel: CartViewModel,
-         itemListViewModel: ItemListViewModel) {
+         cartViewModel: CartViewModel) {
         self.viewModel = viewModel
-        self.totalsViewModel = totalsViewModel
         self.cartViewModel = cartViewModel
-        self.itemListViewModel = itemListViewModel
     }
 
     @State private var floatingSize: CGSize = .zero
@@ -55,25 +49,22 @@ struct PointOfSaleDashboardView: View {
         .environment(\.floatingControlAreaSize,
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
-        .environment(\.posBackgroundAppearance, totalsViewModel.paymentState != .processingPayment ? .primary : .secondary)
+        .environment(\.posBackgroundAppearance, posModel.paymentState != .processingPayment ? .primary : .secondary)
         .animation(.easeInOut, value: posModel.itemListState == .initialLoading)
         .animation(.easeInOut(duration: Constants.connectivityAnimationDuration), value: viewModel.showsConnectivityError)
         .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
-        .posModal(item: $totalsViewModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
-            totalsViewModel.cancelOnboarding()
+        .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
+            posModel.cancelCardPaymentsOnboarding()
         }) { viewModel in
             paymentsOnboardingView(from: viewModel)
         }
-        .posModal(item: $totalsViewModel.cardPresentPaymentAlertViewModel,
+        .posModal(item: $posModel.cardPresentPaymentAlertViewModel,
                   onDismiss: {
-            totalsViewModel.cardPresentPaymentAlertViewModel?.onDismiss?()
+            posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
         }) { alertType in
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)
                 .posInteractiveDismissDisabled(alertType.isDismissDisabled)
-        }
-        .posModal(isPresented: $itemListViewModel.showSimpleProductsModal) {
-            SimpleProductsOnlyInformation(isPresented: $itemListViewModel.showSimpleProductsModal)
         }
         .posModal(isPresented: $viewModel.showExitPOSModal) {
             PointOfSaleExitPosAlertView(isPresented: $viewModel.showExitPOSModal)
@@ -84,15 +75,7 @@ struct PointOfSaleDashboardView: View {
             supportForm
         }
         .task {
-            await viewModel.itemListViewModel.loadInitialItems()
-        }
-        .onChange(of: posModel.orderStage) { newValue in
-            switch newValue {
-            case .building:
-                totalsViewModel.stopShowingTotalsView()
-            case .finalizing:
-                totalsViewModel.startShowingTotalsView()
-            }
+            await posModel.loadInitialItems()
         }
     }
 
@@ -105,7 +88,7 @@ struct PointOfSaleDashboardView: View {
                         .transition(.move(edge: .leading))
                 }
 
-                if !viewModel.isTotalsViewFullScreen {
+                if !posModel.paymentState.shownFullScreen {
                     cartView
                         .accessibilitySortPriority(1)
                         .frame(width: geometry.size.width * Constants.cartWidth)
@@ -113,13 +96,13 @@ struct PointOfSaleDashboardView: View {
                 }
 
                 if posModel.orderStage == .finalizing {
-                    totalsView
+                    TotalsView()
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .trailing))
                 }
             }
             .animation(.default, value: posModel.orderStage)
-            .animation(.default, value: viewModel.isTotalsViewFullScreen)
+            .animation(.default, value: posModel.paymentState.shownFullScreen)
         }
     }
 }
@@ -142,15 +125,15 @@ private extension PointOfSaleDashboardView {
 
     func paymentsOnboardingView(from onboardingViewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
         onboardingViewModel.showSupport = {
-            totalsViewModel.cancelOnboarding()
+            posModel.cancelCardPaymentsOnboarding()
             viewModel.showSupport = true
         }
         return PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(onboardingViewModel: onboardingViewModel,
                                                                             onDismissTap: {
-            totalsViewModel.cancelOnboarding()
+            posModel.cancelCardPaymentsOnboarding()
         }))
         .onAppear {
-            totalsViewModel.trackOnboardingShown()
+            posModel.trackCardPaymentsOnboardingShown()
         }
     }
 }
@@ -193,12 +176,8 @@ private extension PointOfSaleDashboardView {
         CartView(viewModel: viewModel, cartViewModel: cartViewModel)
     }
 
-    var totalsView: some View {
-        TotalsView(viewModel: totalsViewModel)
-    }
-
     var productListView: some View {
-        ItemListView(viewModel: itemListViewModel)
+        ItemListView()
     }
 }
 
@@ -211,22 +190,14 @@ import class WooFoundation.MockAnalyticsProviderPreview
         itemProvider: POSItemProviderPreview(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderService: POSOrderPreviewService())
-    let totalsVM = TotalsViewModel(posModel: posModel,
-                                   cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                   paymentState: .acceptingCard)
     let cartVM = CartViewModel(posModel: posModel)
-    let itemsListVM = ItemListViewModel(posModel: posModel)
     let posVM = PointOfSaleDashboardViewModel(posModel: posModel,
-                                              totalsViewModel: totalsVM,
                                               cartViewModel: cartVM,
-                                              itemListViewModel: itemsListVM,
                                               connectivityObserver: POSConnectivityObserverPreview())
 
     return NavigationStack {
         PointOfSaleDashboardView(viewModel: posVM,
-                                 totalsViewModel: totalsVM,
-                                 cartViewModel: cartVM,
-                                 itemListViewModel: itemsListVM)
+                                 cartViewModel: cartVM)
     }
 }
 #endif

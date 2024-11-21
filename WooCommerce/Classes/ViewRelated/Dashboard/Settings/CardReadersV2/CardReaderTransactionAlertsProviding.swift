@@ -37,12 +37,14 @@ protocol CardReaderTransactionAlertsProviding<AlertDetails> {
     /// An alert to display a retriable and cancellable error
     ///
     func error(error: Error,
+               receiptState: CardReaderTransactionFailureAlertReceiptState,
                tryAgain: @escaping () -> Void,
                dismissCompletion: @escaping () -> Void) -> AlertDetails
 
     /// An alert to display a non-retriable and cancellable error
     ///
     func nonRetryableError(error: Error,
+                           receiptState: CardReaderTransactionFailureAlertReceiptState,
                            dismissCompletion: @escaping () -> Void) -> AlertDetails
 
     /// An alert to notify the merchant that the transaction was cancelled using a button on the reader

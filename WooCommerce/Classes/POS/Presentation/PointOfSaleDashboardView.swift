@@ -80,13 +80,13 @@ struct PointOfSaleDashboardView: View {
         GeometryReader { geometry in
             HStack {
                 if posModel.orderStage == .building {
-                    productListView
+                    ItemListView()
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .leading))
                 }
 
                 if !posModel.paymentState.shownFullScreen {
-                    cartView
+                    CartView()
                         .accessibilitySortPriority(1)
                         .frame(width: geometry.size.width * Constants.cartWidth)
                         .ignoresSafeArea(edges: .bottom)
@@ -164,17 +164,6 @@ private extension PointOfSaleDashboardView {
             value: "Done",
             comment: "Button to dismiss the support form from the POS dashboard."
         )
-    }
-}
-
-/// Helpers to generate all Dashboard subviews
-private extension PointOfSaleDashboardView {
-    var cartView: some View {
-        CartView(viewModel: viewModel)
-    }
-
-    var productListView: some View {
-        ItemListView()
     }
 }
 

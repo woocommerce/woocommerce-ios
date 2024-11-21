@@ -3,9 +3,8 @@ import protocol Yosemite.POSItem
 
 struct CartView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    private let viewModel = CartViewModel()
 
-    @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
-    private let cartViewModel = CartViewModel()
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
@@ -14,10 +13,6 @@ struct CartView: View {
     private var coordinateSpace: CoordinateSpace = .named(Constants.scrollViewCoordinateSpaceIdentifier)
     private var shouldApplyHeaderBottomShadow: Bool {
         posModel.cart.isNotEmpty && offSetPosition < 0
-    }
-
-    init(viewModel: PointOfSaleDashboardViewModel) {
-        self.viewModel = viewModel
     }
 
     var body: some View {
@@ -36,7 +31,7 @@ struct CartView: View {
 
                         Spacer()
 
-                        if let itemsInCartLabel = cartViewModel.itemsInCartLabel(for: posModel.cart.count) {
+                        if let itemsInCartLabel = viewModel.itemsInCartLabel(for: posModel.cart.count) {
                             Text(itemsInCartLabel)
                                 .font(Constants.itemsFont)
                                 .foregroundColor(Color.posSecondaryText)
@@ -149,7 +144,7 @@ private extension CartView {
     }
 
     var shouldPreventCartEditing: Bool {
-        cartViewModel.shouldPreventCartEditing(
+        viewModel.shouldPreventCartEditing(
             orderState: posModel.orderState,
             paymentState: posModel.paymentState)
     }
@@ -250,17 +245,7 @@ private extension CartView {
 }
 
 #if DEBUG
-import Combine
-import class WooFoundation.MockAnalyticsPreview
-import class WooFoundation.MockAnalyticsProviderPreview
-
 #Preview {
-    let posModel = PointOfSaleAggregateModel(
-        itemProvider: POSItemProviderPreview(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderService: POSOrderPreviewService())
-    let dashboardViewModel = PointOfSaleDashboardViewModel(posModel: posModel,
-                                                           connectivityObserver: POSConnectivityObserverPreview())
-    CartView(viewModel: dashboardViewModel)
+    CartView()
 }
 #endif

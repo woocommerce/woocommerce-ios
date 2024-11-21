@@ -96,11 +96,17 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
                                                        image: .builtInReaderError,
                                                        email: email,
                                                        onDismiss: dismissCompletion)
-        default:
+        case let .promptToSendEmailReceipt(emailReceiptAction):
             CardPresentModalNonRetryableError(amount: amount,
                                               errorDescription: builtInReaderDescription(for: error),
                                               image: .builtInReaderError,
-                                              onDismiss: dismissCompletion)
+                                              onDismiss: dismissCompletion,
+                                              secondaryAction: emailReceiptAction)
+        case .noEmailReceipt:
+            CardPresentModalNonRetryableErrorWithoutEmail(amount: amount,
+                                                          errorDescription: builtInReaderDescription(for: error),
+                                                          image: .builtInReaderError,
+                                                          onDismiss: dismissCompletion)
         }
     }
 

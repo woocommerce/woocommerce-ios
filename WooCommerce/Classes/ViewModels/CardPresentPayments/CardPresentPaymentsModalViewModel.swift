@@ -30,6 +30,9 @@ protocol CardPresentPaymentsModalViewModelContent {
     /// The subtitle in the bottom section of the modal. Right below the image
     var bottomSubtitle: String? { get }
 
+    /// The attributed title in the bottom section of the modal. Prefered over bottomTitle if defined
+    var bottomAttributedSubtitle: NSAttributedString? { get }
+
     /// The accessibilityLabel to be provided to VoiceOver
     var accessibilityLabel: String? { get }
 }
@@ -118,6 +121,10 @@ extension CardPresentPaymentsModalViewModelUIKitActions {
 
 extension CardPresentPaymentsModalViewModelContent {
     var bottomAttributedTitle: NSAttributedString? {
+        get { return nil }
+    }
+
+    var bottomAttributedSubtitle: NSAttributedString? {
         get { return nil }
     }
 }

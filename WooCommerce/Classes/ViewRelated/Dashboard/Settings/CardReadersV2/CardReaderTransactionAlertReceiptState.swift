@@ -26,3 +26,12 @@ enum CardReaderTransactionAlertReceiptState {
         }
     }
 }
+
+/// Failure receipts are automatically sent from WooPayments 8.6 and WooCommerce 9.5 when payment fails and customer is attached
+/// Failure receipts can be sent manually from WooCommerce 9.5 via the API
+///
+enum CardReaderTransactionFailureAlertReceiptState {
+    case paymentSuccessEmailSent(email: String)
+    case promptToSendEmailReceipt(emailReceiptAction: () -> Void)
+    case noEmailReceipt
+}

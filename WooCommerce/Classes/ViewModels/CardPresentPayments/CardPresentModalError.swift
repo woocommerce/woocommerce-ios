@@ -61,7 +61,7 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
 }
 
-private extension CardPresentModalError {
+extension CardPresentModalError {
     enum Localization {
         static func paymentFailed(transactionType: CardPresentTransactionType) -> String {
             switch transactionType {
@@ -107,5 +107,11 @@ private extension CardPresentModalError {
                 )
             }
         }
+
+        static let receiptMessage = NSLocalizedString(
+            "cardPresentPaymentsModal.error.receiptMessage",
+            value: "A receipt has been sent to %1$@",
+            comment: "Message informing the user that a receipt has been sent to their email address. %1$@ is the email address"
+        )
     }
 }

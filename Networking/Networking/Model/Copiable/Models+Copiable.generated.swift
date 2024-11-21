@@ -4042,6 +4042,21 @@ extension Networking.WooPaymentsPayoutsSchedule {
     }
 }
 
+extension Networking.WooShippingAccountSettingsResponse {
+    public func copy(
+        storeOptions: CopiableProp<ShippingLabelStoreOptions> = .copy,
+        accountSettings: CopiableProp<ShippingLabelAccountSettings> = .copy
+    ) -> Networking.WooShippingAccountSettingsResponse {
+        let storeOptions = storeOptions ?? self.storeOptions
+        let accountSettings = accountSettings ?? self.accountSettings
+
+        return Networking.WooShippingAccountSettingsResponse(
+            storeOptions: storeOptions,
+            accountSettings: accountSettings
+        )
+    }
+}
+
 extension Networking.WooShippingCreatePackageResponse {
     public func copy(
         customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
@@ -4053,27 +4068,6 @@ extension Networking.WooShippingCreatePackageResponse {
         return Networking.WooShippingCreatePackageResponse(
             customPackages: customPackages,
             predefinedOptions: predefinedOptions
-        )
-    }
-}
-
-extension Networking.WooShippingPackagesResponse {
-    public func copy(
-        storeOptions: CopiableProp<ShippingLabelStoreOptions> = .copy,
-        customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
-        savedPredefinedPackages: CopiableProp<[WooShippingSavedPredefinedPackage]> = .copy,
-        allPredefinedOptions: CopiableProp<[WooShippingPredefinedOption]> = .copy
-    ) -> Networking.WooShippingPackagesResponse {
-        let storeOptions = storeOptions ?? self.storeOptions
-        let customPackages = customPackages ?? self.customPackages
-        let savedPredefinedPackages = savedPredefinedPackages ?? self.savedPredefinedPackages
-        let allPredefinedOptions = allPredefinedOptions ?? self.allPredefinedOptions
-
-        return Networking.WooShippingPackagesResponse(
-            storeOptions: storeOptions,
-            customPackages: customPackages,
-            savedPredefinedPackages: savedPredefinedPackages,
-            allPredefinedOptions: allPredefinedOptions
         )
     }
 }
@@ -4104,18 +4098,42 @@ extension Networking.WooShippingCustomPackage {
 
 extension Networking.WooShippingPackagePurchase {
     public func copy(
+        shipmentID: CopiableProp<String> = .copy,
         package: CopiableProp<ShippingLabelPackageSelected> = .copy,
         rate: CopiableProp<ShippingLabelCarrierRate> = .copy,
         productIDs: CopiableProp<[Int64]> = .copy
     ) -> Networking.WooShippingPackagePurchase {
+        let shipmentID = shipmentID ?? self.shipmentID
         let package = package ?? self.package
         let rate = rate ?? self.rate
         let productIDs = productIDs ?? self.productIDs
 
         return Networking.WooShippingPackagePurchase(
+            shipmentID: shipmentID,
             package: package,
             rate: rate,
             productIDs: productIDs
+        )
+    }
+}
+
+extension Networking.WooShippingPackagesResponse {
+    public func copy(
+        storeOptions: CopiableProp<ShippingLabelStoreOptions> = .copy,
+        customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
+        savedPredefinedPackages: CopiableProp<[WooShippingSavedPredefinedPackage]> = .copy,
+        allPredefinedOptions: CopiableProp<[WooShippingPredefinedOption]> = .copy
+    ) -> Networking.WooShippingPackagesResponse {
+        let storeOptions = storeOptions ?? self.storeOptions
+        let customPackages = customPackages ?? self.customPackages
+        let savedPredefinedPackages = savedPredefinedPackages ?? self.savedPredefinedPackages
+        let allPredefinedOptions = allPredefinedOptions ?? self.allPredefinedOptions
+
+        return Networking.WooShippingPackagesResponse(
+            storeOptions: storeOptions,
+            customPackages: customPackages,
+            savedPredefinedPackages: savedPredefinedPackages,
+            allPredefinedOptions: allPredefinedOptions
         )
     }
 }

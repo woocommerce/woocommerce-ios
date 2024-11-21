@@ -226,7 +226,6 @@ final class WooShippingRemoteTests: XCTestCase {
         let result: Result<[ShippingLabelPurchase], Error> = waitFor { promise in
             remote.purchaseShippingLabel(siteID: self.sampleSiteID,
                                          orderID: self.sampleOrderID,
-                                         shipmentID: self.sampleShipmentID,
                                          originAddress: ShippingLabelAddress.fake(),
                                          destinationAddress: ShippingLabelAddress.fake(),
                                          package: WooShippingPackagePurchase.fake()) { result in
@@ -248,7 +247,6 @@ final class WooShippingRemoteTests: XCTestCase {
         let result: Result<[ShippingLabelPurchase], Error> = waitFor { promise in
             remote.purchaseShippingLabel(siteID: self.sampleSiteID,
                                          orderID: self.sampleOrderID,
-                                         shipmentID: self.sampleShipmentID,
                                          originAddress: ShippingLabelAddress.fake(),
                                          destinationAddress: ShippingLabelAddress.fake(),
                                          package: WooShippingPackagePurchase.fake()) { result in

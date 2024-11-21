@@ -5,6 +5,9 @@ import Codegen
 ///
 public struct WooShippingPackagePurchase: Equatable, GeneratedFakeable, GeneratedCopiable {
 
+    /// ID for the shipment being sent in this package, e.g. `shipment_0`
+    public let shipmentID: String
+
     /// Selected package for the shipping label
     public let package: ShippingLabelPackageSelected
 
@@ -14,7 +17,8 @@ public struct WooShippingPackagePurchase: Equatable, GeneratedFakeable, Generate
     /// IDs for the products to be shipped
     public let productIDs: [Int64]
 
-    public init(package: ShippingLabelPackageSelected, rate: ShippingLabelCarrierRate, productIDs: [Int64]) {
+    public init(shipmentID: String, package: ShippingLabelPackageSelected, rate: ShippingLabelCarrierRate, productIDs: [Int64]) {
+        self.shipmentID = shipmentID
         self.package = package
         self.rate = rate
         self.productIDs = productIDs
@@ -40,6 +44,13 @@ extension WooShippingPackagePurchase: Encodable {
         try container.encode(rate.carrierID, forKey: .carrierID)
         try container.encode(rate.title, forKey: .serviceName)
         try container.encode(productIDs, forKey: .products)
+    }
+
+    /// Converts the shipment rate to a dictionary as the API expects it.
+    /// Includes the shipment ID with the encoded rate.
+    ///
+    public func encodedShipmentRate() throws -> [String: Any] {
+        [shipmentID: ["rate": try rate.toDictionary()]]
     }
 
     private enum CodingKeys: String, CodingKey {

@@ -126,7 +126,6 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
     func purchaseShippingLabel(siteID: Int64,
                                orderID: Int64,
-                               shipmentID: String,
                                originAddress: Networking.ShippingLabelAddress,
                                destinationAddress: Networking.ShippingLabelAddress,
                                package: Networking.WooShippingPackagePurchase,

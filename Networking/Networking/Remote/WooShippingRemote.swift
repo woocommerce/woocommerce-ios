@@ -17,7 +17,6 @@ public protocol WooShippingRemoteProtocol {
                              completion: @escaping (Result<WooShippingAccountSettingsResponse, Error>) -> Void)
     func purchaseShippingLabel(siteID: Int64,
                                orderID: Int64,
-                               shipmentID: String,
                                originAddress: ShippingLabelAddress,
                                destinationAddress: ShippingLabelAddress,
                                package: WooShippingPackagePurchase,
@@ -158,14 +157,12 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     /// - Parameters:
     ///   - siteID: Remote ID of the site.
     ///   - orderID: Remote ID of the order that owns the shipping labels.
-    ///   - shipmentID: Remote ID of the shipment getting a label.
     ///   - originAddress: The origin address entity.
     ///   - destinationAddress: The destination address entity.
     ///   - package: The package previously selected with all its data.
     ///   - completion: Closure to be executed upon completion.
     public func purchaseShippingLabel(siteID: Int64,
                                       orderID: Int64,
-                                      shipmentID: String,
                                       originAddress: ShippingLabelAddress,
                                       destinationAddress: ShippingLabelAddress,
                                       package: WooShippingPackagePurchase,
@@ -176,7 +173,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                 ParameterKey.originAddress: try originAddress.toDictionary(),
                 ParameterKey.destinationAddress: try destinationAddress.toDictionary(),
                 ParameterKey.packages: [ try package.toDictionary() ],
-                ParameterKey.selectedRate: [shipmentID: [ParameterKey.rate: try package.rate.toDictionary()]],
+                ParameterKey.selectedRate: try package.encodedShipmentRate(),
                 ParameterKey.hazmat: {}, // Hazmat support TBD (Milestone 3)
                 ParameterKey.customs: {}, // Customs support TBD (Milestone 2)
                 ParameterKey.userMeta: {} // TODO: 13558 - Add user meta when we have account settings support
@@ -214,7 +211,6 @@ private extension WooShippingRemote {
         static let packages = "packages"
         static let async = "async"
         static let selectedRate = "selected_rate"
-        static let rate = "rate"
         static let hazmat = "hazmat"
         static let customs = "customs"
         static let userMeta = "user_meta"

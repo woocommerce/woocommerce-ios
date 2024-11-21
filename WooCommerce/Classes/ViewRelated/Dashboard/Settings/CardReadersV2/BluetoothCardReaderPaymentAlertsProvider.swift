@@ -115,15 +115,22 @@ final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlert
         switch receiptState {
         case let .paymentSuccessEmailSent(email):
             CardPresentModalNonRetryableErrorEmailSent(amount: amount, error: error, email: email, onDismiss: dismissCompletion)
-        default:
-            CardPresentModalNonRetryableError(amount: amount, error: error, onDismiss: dismissCompletion)
+        case let .promptToSendEmailReceipt(emailReceiptAction):
+            CardPresentModalNonRetryableError(amount: amount,
+                                              error: error,
+                                              onDismiss: dismissCompletion,
+                                              secondaryAction: emailReceiptAction)
+        case .noEmailReceipt:
+            CardPresentModalNonRetryableErrorWithoutEmail(amount: amount,
+                                                          error: error,
+                                                          onDismiss: dismissCompletion)
         }
     }
 
     func cancelledOnReader() -> CardPresentPaymentsModalViewModel? {
-        CardPresentModalNonRetryableError(amount: amount,
-                                          error: CardReaderServiceError.paymentMethodCollection(underlyingError: .commandCancelled(from: .reader)),
-                                          onDismiss: { })
+        CardPresentModalNonRetryableErrorWithoutEmail(amount: amount,
+                                                      error: CardReaderServiceError.paymentMethodCollection(underlyingError: .commandCancelled(from: .reader)),
+                                                      onDismiss: { })
     }
 }
 

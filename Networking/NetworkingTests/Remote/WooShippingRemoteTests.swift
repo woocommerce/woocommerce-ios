@@ -159,6 +159,60 @@ final class WooShippingRemoteTests: XCTestCase {
         // Then
         XCTAssertNotNil(result.failure)
     }
+
+    func test_loadAccountSettings_parses_success_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "account/settings", filename: "wooshipping-get-account-settings-success")
+
+        // When
+        let result: Result<WooShippingAccountSettingsResponse, Error> = waitFor { promise in
+            remote.loadAccountSettings(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let successResponse = try XCTUnwrap(result.get())
+        XCTAssertEqual(successResponse.storeOptions.currencySymbol, "$")
+        XCTAssertEqual(successResponse.storeOptions.dimensionUnit, "cm")
+        XCTAssertEqual(successResponse.storeOptions.weightUnit, "kg")
+        XCTAssertEqual(successResponse.storeOptions.originCountry, "US")
+
+        XCTAssertEqual(successResponse.accountSettings.canManagePayments, false)
+        XCTAssertEqual(successResponse.accountSettings.canEditSettings, true)
+        XCTAssertEqual(successResponse.accountSettings.storeOwnerDisplayName, "John Smith")
+        XCTAssertEqual(successResponse.accountSettings.storeOwnerUsername, "jsmith")
+        XCTAssertEqual(successResponse.accountSettings.storeOwnerWpcomUsername, "jsmith")
+        XCTAssertEqual(successResponse.accountSettings.storeOwnerWpcomEmail, "jsmith@example.com")
+
+        XCTAssertEqual(successResponse.accountSettings.paymentMethods.count, 1)
+        XCTAssertEqual(successResponse.accountSettings.paymentMethods.first?.paymentMethodID, 3190997)
+        XCTAssertEqual(successResponse.accountSettings.paymentMethods.first?.name, "Test User")
+        XCTAssertEqual(successResponse.accountSettings.paymentMethods.first?.cardType, .visa)
+        XCTAssertEqual(successResponse.accountSettings.paymentMethods.first?.cardDigits, "4242")
+
+        XCTAssertEqual(successResponse.accountSettings.selectedPaymentMethodID, 3190997)
+        XCTAssertEqual(successResponse.accountSettings.isEmailReceiptsEnabled, true)
+        XCTAssertEqual(successResponse.accountSettings.paperSize, .label)
+        XCTAssertEqual(successResponse.accountSettings.lastSelectedPackageID, "")
+    }
+
+    func test_loadAccountSettings_returns_error_on_failure() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "account/settings", filename: "generic_error")
+
+        // When
+        let result: Result<WooShippingAccountSettingsResponse, Error> = waitFor { promise in
+            remote.loadAccountSettings(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
 }
 
 private extension WooShippingRemoteTests {

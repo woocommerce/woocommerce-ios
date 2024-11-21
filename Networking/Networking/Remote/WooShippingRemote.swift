@@ -13,6 +13,8 @@ public protocol WooShippingRemoteProtocol {
                         completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void)
     func loadPackages(siteID: Int64,
                       completion: @escaping (Result<WooShippingPackagesResponse, Error>) -> Void)
+    func loadAccountSettings(siteID: Int64,
+                             completion: @escaping (Result<WooShippingAccountSettingsResponse, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
@@ -116,6 +118,26 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
             let mapper = WooShippingPackagesMapper()
 
             enqueue(request, mapper: mapper, completion: completion)
+        }
+    }
+
+    /// Loads account settings.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site.
+    ///   - completion: Closure to be executed upon completion.
+    public func loadAccountSettings(siteID: Int64,
+                                    completion: @escaping (Result<WooShippingAccountSettingsResponse, Error>) -> Void) {
+        do {
+            let path = Path.accountSettings
+            let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                         method: .get,
+                                         siteID: siteID,
+                                         path: path,
+                                         availableAsRESTRequest: true)
+
+            let mapper = WooShippingAccountSettingsMapper(siteID: siteID)
+
+            enqueue(request, mapper: mapper, completion: completion)
         } catch {
             completion(.failure(error))
         }
@@ -127,6 +149,7 @@ private extension WooShippingRemote {
     enum Path {
         static let packages = "packages"
         static let rates = "label/rate"
+        static let accountSettings = "account/settings"
     }
 
     enum ParameterKey {

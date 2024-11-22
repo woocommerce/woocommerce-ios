@@ -3146,6 +3146,38 @@ final class MigrationTests: XCTestCase {
 		let savedGlobalUniqueID = try XCTUnwrap(migratedProductVariation.value(forKey: "globalUniqueID") as? String)
 		XCTAssertEqual(savedGlobalUniqueID, globalUniqueID)
 	}
+
+    func test_migrating_from_118_to_119_adds_ShippingLabelStoreOptions_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 118")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. These entities should not exist in Model 118
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "ShippingLabelStoreOptions", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 119")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // These entities should exist in Model 119
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "ShippingLabelStoreOptions", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelStoreOptions"), 0)
+
+        // Insert a new ShippingLabelStoreOptions
+        let objective = insertShippingLabelStoreOptions(to: targetContext)
+        XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelStoreOptions"), 1)
+
+        // Check all attributes
+        XCTAssertNotNil(objective.entity.attributesByName["siteID"])
+        XCTAssertNotNil(objective.entity.attributesByName["currencySymbol"])
+        XCTAssertNotNil(objective.entity.attributesByName["dimensionUnit"])
+        XCTAssertNotNil(objective.entity.attributesByName["weightUnit"])
+        XCTAssertNotNil(objective.entity.attributesByName["originCountry"])
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -3991,5 +4023,17 @@ private extension MigrationTests {
             "key": "New Metadata Key",
             "value": "New Metadata Value"
         ])
+    }
+
+    @discardableResult
+    func insertShippingLabelStoreOptions(to context: NSManagedObjectContext) -> NSManagedObject {
+        let method = context.insert(entityName: "ShippingLabelStoreOptions", properties: [
+            "siteID": 1,
+            "currencySymbol": "$",
+            "dimensionUnit": "in",
+            "weightUnit": "oz",
+            "originCountry": "US",
+        ])
+        return method
     }
 }

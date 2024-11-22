@@ -942,7 +942,7 @@ private extension ShippingLabelStoreTests {
 
     }
 
-    func sampleShippingLabelStoreOptions() -> ShippingLabelStoreOptions {
+    func sampleShippingLabelStoreOptions() -> Yosemite.ShippingLabelStoreOptions {
         return ShippingLabelStoreOptions(currencySymbol: "$", dimensionUnit: "cm", weightUnit: "kg", originCountry: "US")
     }
 

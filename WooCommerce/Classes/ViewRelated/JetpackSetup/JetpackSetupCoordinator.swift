@@ -345,11 +345,7 @@ private extension JetpackSetupCoordinator {
     func showWPComEmailLogin() {
         analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress))
         let emailLoginController = WPComEmailLoginHostingController(viewModel: emailLoginViewModel)
-        let loginNavigationController = LoginNavigationController(rootViewController: emailLoginController)
-        rootViewController.dismiss(animated: true) {
-            self.rootViewController.present(loginNavigationController, animated: true)
-        }
-        self.loginNavigationController = loginNavigationController
+        pushOrInitLoginViewController(emailLoginController)
     }
 
     func showMagicLinkUI(email: String, isSignup: Bool) {
@@ -358,7 +354,7 @@ private extension JetpackSetupCoordinator {
                                                              title: loginViewTitle,
                                                              isJetpackSetup: true,
                                                              isSignup: isSignup)
-        loginNavigationController?.pushViewController(viewController, animated: true)
+        pushOrInitLoginViewController(viewController)
     }
 
     func showPasswordUI(email: String) {
@@ -388,17 +384,7 @@ private extension JetpackSetupCoordinator {
             isJetpackSetup: true,
             viewModel: viewModel)
 
-        if let loginNavigationController {
-            loginNavigationController.pushViewController(viewController, animated: true)
-        } else {
-            /// If the user already is connected, the email screen is skipped.
-            /// The login flow starts here, so create the navigation controller if needed.
-            let loginNavigationController = LoginNavigationController(rootViewController: viewController)
-            rootViewController.dismiss(animated: true) {
-                self.rootViewController.present(loginNavigationController, animated: true)
-            }
-            self.loginNavigationController = loginNavigationController
-        }
+        pushOrInitLoginViewController(viewController)
     }
 
     func show2FALoginUI(with loginFields: LoginFields) {
@@ -406,6 +392,7 @@ private extension JetpackSetupCoordinator {
         guard let window = rootViewController.view.window else {
             logErrorAndExit("⛔️ Error finding window for security key login")
         }
+
         let viewModel = WPCom2FALoginViewModel(
             loginFields: loginFields,
             onAuthWindowRequest: { window },
@@ -421,6 +408,18 @@ private extension JetpackSetupCoordinator {
                                                             isJetpackSetup: true,
                                                             viewModel: viewModel)
         loginNavigationController?.pushViewController(viewController, animated: true)
+    }
+
+    func pushOrInitLoginViewController(_ viewController: UIViewController) {
+        if let loginNavigationController {
+            loginNavigationController.pushViewController(viewController, animated: true)
+        } else {
+            let loginNavigationController = LoginNavigationController(rootViewController: viewController)
+            rootViewController.dismiss(animated: true) {
+                self.rootViewController.present(loginNavigationController, animated: true)
+            }
+            self.loginNavigationController = loginNavigationController
+        }
     }
 }
 
@@ -491,3 +490,4 @@ private extension JetpackSetupCoordinator {
         )
     }
 }
+

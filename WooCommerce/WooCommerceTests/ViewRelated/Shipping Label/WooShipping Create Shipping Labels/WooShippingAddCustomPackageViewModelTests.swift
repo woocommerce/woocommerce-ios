@@ -198,7 +198,11 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
     func test_save_package_as_template_action() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = WooShippingAddCustomPackageViewModel(stores: stores)
+        let viewModel = WooShippingAddCustomPackageViewModel(storeOptions: ShippingLabelStoreOptions(currencySymbol: "$",
+                                                                                                     dimensionUnit: "in",
+                                                                                                     weightUnit: "lb",
+                                                                                                     originCountry: "US"),
+                                                             stores: stores)
         let packageName = "a"
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {

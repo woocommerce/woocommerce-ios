@@ -1,10 +1,12 @@
 import UIKit
+import Combine
 import Storage
 import class Networking.UserAgent
 import Experiments
 import class WidgetKit.WidgetCenter
 import protocol WooFoundation.Analytics
 import protocol Yosemite.StoresManager
+import struct Yosemite.Site
 
 import CocoaLumberjack
 import KeychainAccess
@@ -60,6 +62,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     /// Handles events to background refresh the app.
     ///
     private let appRefreshHandler = BackgroundTaskRefreshDispatcher()
+
+    private var subscriptions: Set<AnyCancellable> = []
 
     // MARK: - AppDelegate Methods
 
@@ -135,17 +139,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             fatalError()
         }
 
-        if ServiceLocator.stores.isAuthenticatedWithoutWPCom,
-           let site = ServiceLocator.stores.sessionManager.defaultSite {
-            let coordinator = JetpackSetupCoordinator(site: site, rootViewController: rootViewController)
-            jetpackSetupCoordinator = coordinator
-            return coordinator.handleAuthenticationUrl(url)
-        }
         if let universalLinkRouter, universalLinkRouter.canHandle(url: url) {
             universalLinkRouter.handle(url: url)
             return true
         }
-        return ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
+
+        return handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
     }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
@@ -575,6 +574,44 @@ private extension AppDelegate {
         }
 
         universalLinkRouter?.handle(url: linkURL)
+    }
+}
+
+// MARK: - Magic link
+private extension AppDelegate {
+    func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool {
+        return if ServiceLocator.stores.isAuthenticatedWithoutWPCom {
+            handleAuthenticationUrlForJetpackSetup(url, rootViewController: rootViewController)
+        } else {
+            ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
+        }
+    }
+
+    func handleAuthenticationUrlForJetpackSetup(_ url: URL, rootViewController: UIViewController) -> Bool {
+        if let site = ServiceLocator.stores.sessionManager.defaultSite {
+            return handleAuthenticationUrlForJetpackSetup(with: site, url: url, rootViewController: rootViewController)
+        } else {
+            // Wait for the site to be available before handling the magic link
+            ServiceLocator.stores.sessionManager.defaultSitePublisher
+                .timeout(.seconds(30), scheduler: DispatchQueue.main)
+                .first(where: { $0 != nil })
+                .sink { site in
+                    guard let site = site else {
+                        return
+                    }
+                    _ = self.handleAuthenticationUrlForJetpackSetup(with: site, url: url, rootViewController: rootViewController)
+                }
+                .store(in: &subscriptions)
+
+            // Assume that we will handle the URL
+            return true
+        }
+    }
+
+    func handleAuthenticationUrlForJetpackSetup(with site: Site, url: URL, rootViewController: UIViewController) -> Bool {
+        let coordinator = JetpackSetupCoordinator(site: site, rootViewController: rootViewController)
+        jetpackSetupCoordinator = coordinator
+        return coordinator.handleAuthenticationUrl(url)
     }
 }
 

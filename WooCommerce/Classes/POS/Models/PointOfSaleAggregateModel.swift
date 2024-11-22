@@ -24,8 +24,6 @@ protocol PointOfSaleAggregateModelProtocol {
     func cancelCardPaymentsOnboarding()
     func trackCardPaymentsOnboardingShown()
 
-    @available(*, deprecated, message: "`allItems` is due for removal, use `itemListState` instead.")
-    var allItems: [POSItem] { get }
     var itemListState: ItemListState { get }
     func loadInitialItems() async
     func loadNextItems() async
@@ -35,7 +33,6 @@ protocol PointOfSaleAggregateModelProtocol {
     func addToCart(_ item: POSItem)
     func remove(cartItem: CartItem)
     func removeAllItemsFromCart()
-    func submitCart() async
     func addMoreToCart()
     func startNewCart()
 
@@ -53,7 +50,6 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     @Published var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
     private var onOnboardingCancellation: (() -> Void)?
 
-    @Published private(set) var allItems: [POSItem] = []
     @Published private(set) var itemListState: ItemListState = .initialLoading
 
     @Published private(set) var cart: [CartItem] = []
@@ -68,6 +64,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     private let currencyFormatter: CurrencyFormatter
     private let analytics: Analytics
 
+    private var allItems: [POSItem] = []
     private var currentPage: Int = Constants.initialPage
     private var mightHaveMorePages: Bool = true
     private var startPaymentOnCardReaderConnection: AnyCancellable?
@@ -178,12 +175,6 @@ extension PointOfSaleAggregateModel {
 
     func removeAllItemsFromCart() {
         cart.removeAll()
-    }
-
-    @MainActor
-    func submitCart() async {
-        orderStage = .finalizing
-        await checkOut()
     }
 
     func addMoreToCart() {
@@ -411,7 +402,10 @@ private extension PointOfSaleAggregateModel {
 // MARK: - Order syncing
 
 extension PointOfSaleAggregateModel {
+    @MainActor
     func checkOut() async {
+        orderStage = .finalizing
+
         guard CartItem.areOrderAndCartDifferent(order: order, cartItems: cart) else {
             await startPaymentWhenCardReaderConnected()
             return
@@ -478,35 +472,5 @@ private extension PointOfSaleAggregateModel {
 private extension PointOfSaleAggregateModel {
     enum Constants {
         static let initialPage: Int = 1
-    }
-}
-
-struct PointOfSaleErrorState: Equatable {
-    let title: String
-    let subtitle: String
-    let buttonText: String
-
-    static func errorOnLoadingProducts() -> Self {
-        PointOfSaleErrorState(title: Constants.failedToLoadTitle,
-                              subtitle: Constants.failedToLoadSubtitle,
-                              buttonText: Constants.failedToLoadButtonTitle)
-    }
-
-    enum Constants {
-        static let failedToLoadTitle = NSLocalizedString(
-            "pos.itemList.failedToLoadTitle",
-            value: "Error loading products",
-            comment: "Text appearing on the item list screen when there's an error loading products."
-        )
-        static let failedToLoadSubtitle = NSLocalizedString(
-            "pos.itemList.failedToLoadSubtitle",
-            value: "Give it another go?",
-            comment: "Text appearing on the item list screen as subtitle when there's an error loading products."
-        )
-        static let failedToLoadButtonTitle = NSLocalizedString(
-            "pos.itemList.failedToLoadButtonTitle",
-            value: "Retry",
-            comment: "Text for the button appearing on the item list screen when there's an error loading products."
-        )
     }
 }

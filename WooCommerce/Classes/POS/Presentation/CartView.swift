@@ -196,7 +196,7 @@ private extension CartView {
     var checkoutButton: some View {
         Button {
             Task { @MainActor in
-                await posModel.submitCart()
+                await posModel.checkOut()
             }
         } label: {
             Text(Localization.checkoutButtonTitle)

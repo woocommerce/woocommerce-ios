@@ -69,8 +69,6 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
         removeAllItemsFromCartCalled = true
     }
 
-    func submitCart() { }
-
     func checkOut() async { }
 
     func addMoreToCart() { }

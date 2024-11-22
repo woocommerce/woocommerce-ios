@@ -1,8 +1,6 @@
 import SwiftUI
-import class WooFoundation.CurrencyFormatter
 import protocol Yosemite.POSItemProvider
 import protocol Yosemite.POSOrderServiceProtocol
-import protocol WooFoundation.Analytics
 
 struct PointOfSaleEntryPointView: View {
     @StateObject private var posModel: PointOfSaleAggregateModel
@@ -13,9 +11,7 @@ struct PointOfSaleEntryPointView: View {
     init(itemProvider: POSItemProvider,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
-         orderService: POSOrderServiceProtocol,
-         currencyFormatter: CurrencyFormatter,
-         analytics: Analytics) {
+         orderService: POSOrderServiceProtocol) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         let posModel = PointOfSaleAggregateModel(itemProvider: itemProvider,
@@ -39,16 +35,10 @@ struct PointOfSaleEntryPointView: View {
 }
 
 #if DEBUG
-import class WooFoundation.MockAnalyticsPreview
-import class WooFoundation.MockAnalyticsProviderPreview
-
 #Preview {
     PointOfSaleEntryPointView(itemProvider: POSItemProviderPreview(),
                               onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                              orderService: POSOrderPreviewService(),
-                              currencyFormatter: .init(currencySettings: .init()),
-                              analytics: MockAnalyticsPreview(userHasOptedIn: true,
-                                                              analyticsProvider: MockAnalyticsProviderPreview()))
+                              orderService: POSOrderPreviewService())
 }
 #endif

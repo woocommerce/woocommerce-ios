@@ -1,1 +1,3 @@
-Enhance your WooCommerce experience with this release! Enjoy GTIN support for products, improved Tap To Pay testing, and refined order editing. Merchants now have control over campaign call-to-action text in Blaze. Plus, improved receipt communication, a refined dashboard view, and WordPress.com account setup in Jetpack.
+In just two weeks, we've jam-packed this release. There's GTIN global product identifier support, and you can edit the call-to-action in Blaze campaigns.
+
+Store setup for in-person payments is faster, receipt sent confirmations clearer, and testing Tap to Pay on iPhone is smoother. Plus, we've improved dashboard statistics and squashed some bugs.

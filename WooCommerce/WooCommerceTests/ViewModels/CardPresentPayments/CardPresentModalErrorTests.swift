@@ -10,8 +10,8 @@ final class CardPresentModalErrorTests: XCTestCase {
         closures = Closures()
         viewModel = CardPresentModalError(errorDescription: Expectations.error.localizedDescription,
                                           transactionType: .collectPayment,
-                                          primaryAction: closures.primaryAction(),
-                                          secondaryAction: closures.secondaryAction(),
+                                          tryAgainAction: closures.primaryAction(),
+                                          emailReceiptAction: closures.secondaryAction(),
                                           dismissCompletion: closures.dismissCompletion())
     }
 

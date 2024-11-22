@@ -119,7 +119,7 @@ final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlert
             CardPresentModalNonRetryableError(amount: amount,
                                               error: error,
                                               onDismiss: dismissCompletion,
-                                              secondaryAction: emailReceiptAction)
+                                              emailReceiptAction: emailReceiptAction)
         case .noEmailReceipt:
             CardPresentModalNonRetryableErrorWithoutEmail(amount: amount,
                                                           error: error,

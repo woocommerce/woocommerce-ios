@@ -101,7 +101,7 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
                                               errorDescription: builtInReaderDescription(for: error),
                                               image: .builtInReaderError,
                                               onDismiss: dismissCompletion,
-                                              secondaryAction: emailReceiptAction)
+                                              emailReceiptAction: emailReceiptAction)
         case .noEmailReceipt:
             CardPresentModalNonRetryableErrorWithoutEmail(amount: amount,
                                                           errorDescription: builtInReaderDescription(for: error),

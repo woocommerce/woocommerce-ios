@@ -10,7 +10,7 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
     private let onDismiss: () -> Void
 
     /// A closure to execute when the secondary button is tapped
-    private let secondaryAction: () -> Void
+    private let emailReceiptAction: () -> Void
 
     let textMode: PaymentsModalTextMode = .reducedBottomInfo
     let actionsMode: PaymentsModalActionsMode = .twoAction
@@ -45,22 +45,22 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
          errorDescription: String?,
          image: UIImage = .paymentErrorImage,
          onDismiss: @escaping () -> Void,
-         secondaryAction: @escaping () -> Void) {
+         emailReceiptAction: @escaping () -> Void) {
         self.amount = amount
         self.bottomTitle = errorDescription
         self.image = image
         self.onDismiss = onDismiss
-        self.secondaryAction = secondaryAction
+        self.emailReceiptAction = emailReceiptAction
     }
 
     convenience init(amount: String,
                      error: Error,
                      onDismiss: @escaping () -> Void,
-                     secondaryAction: @escaping () -> Void) {
+                     emailReceiptAction: @escaping () -> Void) {
         self.init(amount: amount,
                   errorDescription: error.localizedDescription,
                   onDismiss: onDismiss,
-                  secondaryAction: secondaryAction)
+                  emailReceiptAction: emailReceiptAction)
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
@@ -73,7 +73,7 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
-        secondaryAction()
+        emailReceiptAction()
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }

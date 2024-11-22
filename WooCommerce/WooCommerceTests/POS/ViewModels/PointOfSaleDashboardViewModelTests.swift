@@ -9,7 +9,6 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
     private var mockPOSModel: PointOfSaleAggregateModel!
     private var cardPresentPaymentService: MockCardPresentPaymentService!
     private var itemProvider: MockPOSItemProvider!
-    private var mockCartViewModel: MockCartViewModel!
     private var mockConnectivityObserver: MockConnectivityObserver!
 
     private var cancellables: Set<AnyCancellable>!
@@ -18,7 +17,6 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         super.setUp()
         cardPresentPaymentService = MockCardPresentPaymentService()
         itemProvider = MockPOSItemProvider()
-        mockCartViewModel = MockCartViewModel()
         mockConnectivityObserver = MockConnectivityObserver()
         let mockOrderService = MockPOSOrderService()
         mockOrderService.orderToReturn = Order.fake()
@@ -27,14 +25,12 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
             cardPresentPaymentService: cardPresentPaymentService,
             orderService: mockOrderService)
         sut = PointOfSaleDashboardViewModel(posModel: mockPOSModel,
-                                            cartViewModel: mockCartViewModel,
                                             connectivityObserver: mockConnectivityObserver)
         cancellables = []
     }
 
     override func tearDown() {
         cardPresentPaymentService = nil
-        mockCartViewModel = nil
         mockConnectivityObserver = nil
         sut = nil
         cancellables = []

@@ -3,12 +3,9 @@ import SwiftUI
 struct PointOfSaleDashboardView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
-    @ObservedObject private var cartViewModel: CartViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel,
-         cartViewModel: CartViewModel) {
+    init(viewModel: PointOfSaleDashboardViewModel) {
         self.viewModel = viewModel
-        self.cartViewModel = cartViewModel
     }
 
     @State private var floatingSize: CGSize = .zero
@@ -83,13 +80,13 @@ struct PointOfSaleDashboardView: View {
         GeometryReader { geometry in
             HStack {
                 if posModel.orderStage == .building {
-                    productListView
+                    ItemListView()
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .leading))
                 }
 
                 if !posModel.paymentState.shownFullScreen {
-                    cartView
+                    CartView()
                         .accessibilitySortPriority(1)
                         .frame(width: geometry.size.width * Constants.cartWidth)
                         .ignoresSafeArea(edges: .bottom)
@@ -170,17 +167,6 @@ private extension PointOfSaleDashboardView {
     }
 }
 
-/// Helpers to generate all Dashboard subviews
-private extension PointOfSaleDashboardView {
-    var cartView: some View {
-        CartView(viewModel: viewModel, cartViewModel: cartViewModel)
-    }
-
-    var productListView: some View {
-        ItemListView()
-    }
-}
-
 #if DEBUG
 import class WooFoundation.MockAnalyticsPreview
 import class WooFoundation.MockAnalyticsProviderPreview
@@ -190,14 +176,11 @@ import class WooFoundation.MockAnalyticsProviderPreview
         itemProvider: POSItemProviderPreview(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderService: POSOrderPreviewService())
-    let cartVM = CartViewModel(posModel: posModel)
     let posVM = PointOfSaleDashboardViewModel(posModel: posModel,
-                                              cartViewModel: cartVM,
                                               connectivityObserver: POSConnectivityObserverPreview())
 
     return NavigationStack {
-        PointOfSaleDashboardView(viewModel: posVM,
-                                 cartViewModel: cartVM)
+        PointOfSaleDashboardView(viewModel: posVM)
     }
 }
 #endif

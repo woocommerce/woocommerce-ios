@@ -429,147 +429,130 @@ private extension CollectOrderPaymentUseCase {
 
         analyticsTracker.trackPaymentFailure(with: error)
 
-        guard let retryableError = error as? CardPaymentErrorProtocol else {
-            return presentNonRetryableError(error: error,
-                                            paymentAlerts: paymentAlerts,
-                                            onCompletion: onCompletion)
+        let presentErrorAlert: (CardReaderTransactionFailureAlertReceiptState) -> Void = { [weak self] receiptState in
+            guard let self else { return }
+            guard let retryableError = error as? CardPaymentErrorProtocol else {
+                return presentNonRetryableError(error: error,
+                                                paymentAlerts: paymentAlerts,
+                                                receiptState: receiptState,
+                                                onCompletion: onCompletion)
+            }
+
+            switch retryableError.retryApproach {
+            case .restart:
+                presentRetryByRestartingError(error: error,
+                                              paymentAlerts: paymentAlerts,
+                                              paymentGatewayAccount: paymentGatewayAccount,
+                                              receiptState: receiptState,
+                                              onCompletion: onCompletion)
+            case .reuseIntent:
+                presentRetryWithoutRestartingError(error: error,
+                                                   paymentAlerts: paymentAlerts,
+                                                   paymentGatewayAccount: paymentGatewayAccount,
+                                                   receiptState: receiptState,
+                                                   onCompletion: onCompletion)
+            case .dontRetry:
+                presentNonRetryableError(error: error,
+                                         paymentAlerts: paymentAlerts,
+                                         receiptState: receiptState,
+                                         onCompletion: onCompletion)
+            }
         }
-        switch retryableError.retryApproach {
-        case .restart:
-            presentRetryByRestartingError(error: error,
-                                          paymentAlerts: paymentAlerts,
-                                          paymentGatewayAccount: paymentGatewayAccount,
-                                          onCompletion: onCompletion)
-        case .reuseIntent:
-            presentRetryWithoutRestartingError(error: error,
-                                               paymentAlerts: paymentAlerts,
-                                               paymentGatewayAccount: paymentGatewayAccount,
-                                               onCompletion: onCompletion)
-        case .dontRetry:
-            presentNonRetryableError(error: error,
-                                     paymentAlerts: paymentAlerts,
-                                     onCompletion: onCompletion)
-        }
+
+        getReceiptStateForFailedPayment(error: error, completion: presentErrorAlert)
     }
 
     private func presentRetryByRestartingError(error: Error,
                                                paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                                paymentGatewayAccount: PaymentGatewayAccount,
+                                               receiptState: CardReaderTransactionFailureAlertReceiptState,
                                                onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        receiptStateForFailedPayment(error: error,
-                                     receiptStateCompletion: { [weak self] receiptState in
-            guard let self else { return }
-            alertsPresenter.present(
-                viewModel: paymentAlerts.error(error: error,
-                                               receiptState: receiptState,
-                                               tryAgain: { [weak self] in
-                                                   // Cancel current payment
-                                                   self?.paymentOrchestrator.cancelPayment() { [weak self] result in
-                                                       guard let self = self else { return }
+        alertsPresenter.present(
+            viewModel: paymentAlerts.error(error: error,
+                                           receiptState: receiptState,
+                                           tryAgain: { [weak self] in
+                                               // Cancel current payment
+                                               self?.paymentOrchestrator.cancelPayment() { [weak self] result in
+                                                   guard let self = self else { return }
 
-                                                       switch result {
-                                                       case .success, .failure(CardReaderServiceError.paymentCancellation(.noActivePaymentIntent)):
-                                                           // Retry payment
-                                                           self.attemptPayment(alertProvider: paymentAlerts,
-                                                                               paymentGatewayAccount: paymentGatewayAccount,
-                                                                               onCompletion: onCompletion)
-                                                       case .failure(let cancelError):
-                                                           // Inform that payment can't be retried.
-                                                           self.alertsPresenter.present(
-                                                            viewModel: paymentAlerts.nonRetryableError(error: cancelError,
-                                                                                                       receiptState: receiptState) {
-                                                                                                           onCompletion(.failure(error))
-                                                                                                       })
-                                                       }
+                                                   switch result {
+                                                   case .success, .failure(CardReaderServiceError.paymentCancellation(.noActivePaymentIntent)):
+                                                       // Retry payment
+                                                       self.attemptPayment(alertProvider: paymentAlerts,
+                                                                           paymentGatewayAccount: paymentGatewayAccount,
+                                                                           onCompletion: onCompletion)
+                                                   case .failure(let cancelError):
+                                                       // Inform that payment can't be retried.
+                                                       self.alertsPresenter.present(
+                                                        viewModel: paymentAlerts.nonRetryableError(error: cancelError,
+                                                                                                   receiptState: receiptState) {
+                                                                                                       onCompletion(.failure(error))
+                                                                                                   })
                                                    }
-                                               }, dismissCompletion: {
-                                                   onCompletion(.failure(error))
-                                               })
-            )
-        },
-                                     emailPromptCompletion: { [weak self] in
-            self?.presentRetryByRestartingError(error: error,
-                                                paymentAlerts: paymentAlerts,
-                                                paymentGatewayAccount: paymentGatewayAccount,
-                                                onCompletion: onCompletion)
-        })
+                                               }
+                                           }, dismissCompletion: {
+                                               onCompletion(.failure(error))
+                                           })
+        )
     }
 
     private func presentRetryWithoutRestartingError(error: Error,
                                                     paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                                     paymentGatewayAccount: PaymentGatewayAccount,
+                                                    receiptState: CardReaderTransactionFailureAlertReceiptState,
                                                     onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        receiptStateForFailedPayment(error: error,
-                                     receiptStateCompletion: { [weak self] receiptState in
-            guard let self else { return }
-
-            alertsPresenter.present(
-                viewModel: paymentAlerts.error(
-                    error: error,
-                    receiptState: receiptState,
-                    tryAgain: { [weak self] in
-                        guard let self = self else { return }
-                        self.checkOrderIsStillEligibleForPayment(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { result in
-                            switch result {
-                            case .failure(let error):
-                                return self.checkThenHandlePaymentFailureAndRetryPayment(error,
-                                                                                         alertProvider: paymentAlerts,
-                                                                                         paymentGatewayAccount: paymentGatewayAccount,
-                                                                                         onCompletion: onCompletion)
-                            case .success:
-                                self.paymentOrchestrator.retryPayment(for: self.order) { [weak self] result in
-                                    guard let self = self else { return }
-                                    switch result {
-                                    case .success(let capturedPaymentData):
-                                        self.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData)
-                                        onCompletion(.success(capturedPaymentData))
-                                    case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelled(let cancellationSource))):
-                                        switch cancellationSource {
-                                        case .reader:
-                                            self.handlePaymentCancellationFromReader(alertProvider: paymentAlerts)
-                                        default:
-                                            self.handlePaymentCancellation(from: .other)
-                                        }
-                                    case .failure(let error):
-                                        let retryError = CollectOrderPaymentUseCaseError.alreadyRetried(error)
-                                        self.checkThenHandlePaymentFailureAndRetryPayment(retryError,
-                                                                                          alertProvider: paymentAlerts,
-                                                                                          paymentGatewayAccount: paymentGatewayAccount,
-                                                                                          onCompletion: onCompletion)
+        alertsPresenter.present(
+            viewModel: paymentAlerts.error(
+                error: error,
+                receiptState: receiptState,
+                tryAgain: { [weak self] in
+                    guard let self = self else { return }
+                    self.checkOrderIsStillEligibleForPayment(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { result in
+                        switch result {
+                        case .failure(let error):
+                            return self.checkThenHandlePaymentFailureAndRetryPayment(error,
+                                                                                     alertProvider: paymentAlerts,
+                                                                                     paymentGatewayAccount: paymentGatewayAccount,
+                                                                                     onCompletion: onCompletion)
+                        case .success:
+                            self.paymentOrchestrator.retryPayment(for: self.order) { [weak self] result in
+                                guard let self = self else { return }
+                                switch result {
+                                case .success(let capturedPaymentData):
+                                    self.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData)
+                                    onCompletion(.success(capturedPaymentData))
+                                case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelled(let cancellationSource))):
+                                    switch cancellationSource {
+                                    case .reader:
+                                        self.handlePaymentCancellationFromReader(alertProvider: paymentAlerts)
+                                    default:
+                                        self.handlePaymentCancellation(from: .other)
                                     }
+                                case .failure(let error):
+                                    let retryError = CollectOrderPaymentUseCaseError.alreadyRetried(error)
+                                    self.checkThenHandlePaymentFailureAndRetryPayment(retryError,
+                                                                                      alertProvider: paymentAlerts,
+                                                                                      paymentGatewayAccount: paymentGatewayAccount,
+                                                                                      onCompletion: onCompletion)
                                 }
                             }
                         }
-                    }, dismissCompletion: {
-                        onCompletion(.failure(error))
-                    })
-            )
-        },
-                                     emailPromptCompletion: { [weak self] in
-            self?.presentRetryWithoutRestartingError(error: error,
-                                                     paymentAlerts: paymentAlerts,
-                                                     paymentGatewayAccount: paymentGatewayAccount,
-                                                     onCompletion: onCompletion)
-        })
+                    }
+                }, dismissCompletion: {
+                    onCompletion(.failure(error))
+                })
+        )
     }
 
     private func presentNonRetryableError(error: Error,
                                           paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
+                                          receiptState: CardReaderTransactionFailureAlertReceiptState,
                                           onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        receiptStateForFailedPayment(error: error,
-                                     receiptStateCompletion: { [weak self] receiptState in
-            guard let self else { return }
-
-            alertsPresenter.present(
-                viewModel: paymentAlerts.nonRetryableError(error: error,
-                                                           receiptState: receiptState,
-                                                           dismissCompletion: {
-                                                               onCompletion(.failure(error))
-                                                           }))
-        },
-                                     emailPromptCompletion: { [weak self] in
-            self?.presentNonRetryableError(error: error, paymentAlerts: paymentAlerts, onCompletion: onCompletion)
-        })
+        alertsPresenter.present(viewModel: paymentAlerts.nonRetryableError(error: error,
+                                                                           receiptState: receiptState,
+                                                                           dismissCompletion: {
+            onCompletion(.failure(error))
+        }))
     }
 
     /// Cancels payment and record analytics.
@@ -746,10 +729,8 @@ private extension CollectOrderPaymentUseCase {
     }
 
 
-    private func receiptStateForFailedPayment(error: Error,
-                                              receiptStateCompletion: @escaping (CardReaderTransactionFailureAlertReceiptState) -> Void,
-                                              emailPromptCompletion: @escaping () -> Void) {
-
+    private func getReceiptStateForFailedPayment(error: Error,
+                                                 completion: @escaping (CardReaderTransactionFailureAlertReceiptState) -> Void) {
         let isErrorEligibleForSendingFailureReceiptAfterPayment: Bool = {
             switch error {
             case CardReaderServiceError.paymentCaptureWithPaymentMethod(.paymentDeclinedByPaymentProcessorAPI, _),
@@ -764,7 +745,7 @@ private extension CollectOrderPaymentUseCase {
 
         // Order only fails when the payment is declined by the payment processor, other types of failure don't produce failure states and receipts.
         guard isErrorEligibleForSendingFailureReceiptAfterPayment else {
-            return receiptStateCompletion(.noEmailReceipt)
+            return completion(.noEmailReceipt)
         }
 
         receiptEligibilityUseCase.isEligibleSendingReceiptAfterPayment { [weak self] isEligible in
@@ -779,17 +760,17 @@ private extension CollectOrderPaymentUseCase {
                         guard let self else { return }
                         presentSendReceiptAfterPayment { [weak self] order in
                             guard let self else { return }
-                            if let order {
+                            if let order, let email = order.billingAddress?.email, email.isNotEmpty {
                                 self.order = order
+                                completion(.paymentSuccessEmailSent(email: email))
                             }
-                            emailPromptCompletion()
                         }
                     })
                 }
             } else {
                 receiptState = .noEmailReceipt
             }
-            receiptStateCompletion(receiptState)
+            completion(receiptState)
         }
     }
 }

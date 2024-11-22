@@ -400,16 +400,6 @@ private extension ShippingLabelStore {
         }
     }
 
-    /// Updates/inserts the specified readonly ShippingLabelAccountSettings entity in the current thread.
-    ///
-    func upsertShippingLabelAccountSettings(siteID: Int64, accountSettings: ShippingLabelAccountSettings) {
-        let derivedStorage = sharedDerivedStorage
-        let storageAccountSettings = derivedStorage.loadShippingLabelAccountSettings(siteID: siteID) ??
-            derivedStorage.insertNewObject(ofType: Storage.ShippingLabelAccountSettings.self)
-        storageAccountSettings.update(with: accountSettings)
-        handleShippingLabelPaymentMethods(accountSettings, storageAccountSettings, derivedStorage)
-    }
-
     /// Updates/inserts the ShippingLabelPaymentMethod items from the provided account settings.
     ///
     func handleShippingLabelPaymentMethods(_ readOnlyAccountSettings: Networking.ShippingLabelAccountSettings,
@@ -481,6 +471,18 @@ private extension ShippingLabelStore {
                 }
             }
         }
+    }
+}
+
+public extension ShippingLabelStore {
+    /// Updates/inserts the specified readonly ShippingLabelAccountSettings entity in the current thread.
+    ///
+    func upsertShippingLabelAccountSettings(siteID: Int64, accountSettings: ShippingLabelAccountSettings) {
+        let derivedStorage = sharedDerivedStorage
+        let storageAccountSettings = derivedStorage.loadShippingLabelAccountSettings(siteID: siteID) ??
+            derivedStorage.insertNewObject(ofType: Storage.ShippingLabelAccountSettings.self)
+        storageAccountSettings.update(with: accountSettings)
+        handleShippingLabelPaymentMethods(accountSettings, storageAccountSettings, derivedStorage)
     }
 }
 

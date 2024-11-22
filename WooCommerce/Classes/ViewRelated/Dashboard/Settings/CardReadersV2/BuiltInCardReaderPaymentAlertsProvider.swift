@@ -44,15 +44,15 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
     func success(receiptState: CardReaderTransactionAlertReceiptState) -> CardPresentPaymentsModalViewModel {
         switch receiptState {
         case let .paymentSuccessEmailSent(email, printReceiptAction, noReceiptAction):
-            return CardPresentModalSuccessEmailSent(printReceipt: printReceiptAction,
-                                                    noReceiptAction: noReceiptAction,
-                                                    email: email)
+            return CardPresentModalBuiltInSuccessEmailSent(printReceipt: printReceiptAction,
+                                                           noReceiptAction: noReceiptAction,
+                                                           email: email)
         case let .promptToSendEmailReceipt(printReceiptAction, emailReceiptAction, noReceiptAction):
-            return CardPresentModalSuccess(printReceipt: printReceiptAction,
-                                           emailReceipt: emailReceiptAction,
-                                           noReceiptAction: noReceiptAction)
+            return CardPresentModalBuiltInSuccess(printReceipt: printReceiptAction,
+                                                  emailReceipt: emailReceiptAction,
+                                                  noReceiptAction: noReceiptAction)
         case let .emailSendingNotSupported(printReceiptAction, noReceiptAction):
-            return CardPresentModalSuccessWithoutEmail(printReceipt: printReceiptAction, noReceiptAction: noReceiptAction)
+            return CardPresentModalBuiltInSuccessWithoutEmail(printReceipt: printReceiptAction, noReceiptAction: noReceiptAction)
         }
     }
 

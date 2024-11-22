@@ -904,7 +904,19 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureCustomAmount(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
-        let customAmount = customAmounts[indexPath.row]
+        guard let customAmount = customAmounts[safe: indexPath.row] else {
+            ServiceLocator.crashLogging.logMessage(
+                "Invalid custom amount index in OrderDetailsDataSource",
+                properties: [
+                    "row": indexPath.row,
+                    "section": indexPath.section,
+                    "availableCustomAmountsCount": customAmounts.count
+                ],
+                level: .error
+            )
+            return
+        }
+
         cell.configure(customAmountViewModel: .init(customAmount: customAmount, currency: order.currency, currencyFormatter: currencyFormatter))
         cell.accessibilityIdentifier = "custom-amount-cell"
     }

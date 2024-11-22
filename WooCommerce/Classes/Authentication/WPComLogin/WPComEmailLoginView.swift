@@ -83,6 +83,12 @@ struct WPComEmailLoginView: View {
                 ))
                 .focused($isEmailFieldFocused)
 
+                if viewModel.allowAccountCreation {
+                    // Account creation hint
+                    Text(Localization.accountCreationHint)
+                        .footnoteStyle()
+                }
+
                 Spacer()
             }
             .padding(Constants.contentPadding)
@@ -126,6 +132,11 @@ private extension WPComEmailLoginView {
             "Enter email or username",
             comment: "Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow."
         )
+        static let accountCreationHint = NSLocalizedString(
+            "wpComEmailLoginView.accountCreationHint",
+            value: "If you don't have an account, we'll use this email to create one.",
+            comment: "Text hinting that an account will be created if the email is not associated with an existing account."
+        )
     }
 }
 
@@ -136,7 +147,7 @@ struct WPComEmailLoginView_Previews: PreviewProvider {
                                              requiresConnectionOnly: true,
                                              allowAccountCreation: false,
                                              onPasswordUIRequest: { _ in },
-                                             onMagicLinkUIRequest: { _ in },
+                                             onMagicLinkUIRequest: { _, _ in },
                                              onError: { _ in }))
     }
 }

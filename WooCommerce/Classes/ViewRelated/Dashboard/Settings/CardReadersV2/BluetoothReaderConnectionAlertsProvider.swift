@@ -23,7 +23,7 @@ struct BluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlerts
     }
 
     func connectingFailedNonRetryable(error: Error, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalNonRetryableError(amount: "", error: error, onDismiss: close)
+        CardPresentModalNonRetryableErrorWithoutEmail(amount: "", error: error, onDismiss: close)
     }
 
     func connectingFailedIncompleteAddress(wcSettingsAdminURL: URL?,

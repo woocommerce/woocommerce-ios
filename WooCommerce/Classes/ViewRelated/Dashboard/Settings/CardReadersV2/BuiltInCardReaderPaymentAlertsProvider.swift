@@ -74,8 +74,8 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
             return CardPresentModalError(errorDescription: builtInReaderDescription(for: error),
                                          transactionType: .collectPayment,
                                          image: .builtInReaderError,
-                                         primaryAction: tryAgain,
-                                         secondaryAction: emailReceiptAction,
+                                         tryAgainAction: tryAgain,
+                                         emailReceiptAction: emailReceiptAction,
                                          dismissCompletion: dismissCompletion)
         case .noEmailReceipt:
             return CardPresentModalErrorWithoutEmail(errorDescription: builtInReaderDescription(for: error),

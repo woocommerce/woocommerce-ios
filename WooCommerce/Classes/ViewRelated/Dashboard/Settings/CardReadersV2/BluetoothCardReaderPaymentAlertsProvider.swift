@@ -97,8 +97,8 @@ final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlert
         case let .promptToSendEmailReceipt(emailReceiptAction):
             return CardPresentModalError(errorDescription: errorDescription,
                                          transactionType: transactionType,
-                                         primaryAction: tryAgain,
-                                         secondaryAction: emailReceiptAction,
+                                         tryAgainAction: tryAgain,
+                                         emailReceiptAction: emailReceiptAction,
                                          dismissCompletion: dismissCompletion)
         case .noEmailReceipt:
             return CardPresentModalErrorWithoutEmail(errorDescription: errorDescription,

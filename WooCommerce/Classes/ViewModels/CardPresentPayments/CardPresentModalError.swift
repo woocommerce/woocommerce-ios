@@ -3,10 +3,10 @@ import UIKit
 /// Modal presented on error
 final class CardPresentModalError: CardPresentPaymentsModalViewModel {
     /// A closure to execute when the primary button is tapped
-    private let primaryAction: () -> Void
+    private let tryAgainAction: () -> Void
 
     /// A closure to execute when the secondary button is tapped
-    private let secondaryAction: () -> Void
+    private let emailReceiptAction: () -> Void
 
     /// A closure to execute after the auxilary button is tapped to dismiss the modal
     private let dismissCompletion: () -> Void
@@ -40,25 +40,25 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
     init(errorDescription: String?,
          transactionType: CardPresentTransactionType,
          image: UIImage = .paymentErrorImage,
-         primaryAction: @escaping () -> Void,
-         secondaryAction: @escaping () -> Void,
+         tryAgainAction: @escaping () -> Void,
+         emailReceiptAction: @escaping () -> Void,
          dismissCompletion: @escaping () -> Void) {
         self.topTitle = Localization.paymentFailed(transactionType: transactionType)
         self.bottomTitle = errorDescription
         self.image = image
         self.primaryButtonTitle = Localization.tryAgain(transactionType: transactionType)
         self.auxiliaryButtonTitle = Localization.noThanks(transactionType: transactionType)
-        self.primaryAction = primaryAction
-        self.secondaryAction = secondaryAction
+        self.tryAgainAction = tryAgainAction
+        self.emailReceiptAction = emailReceiptAction
         self.dismissCompletion = dismissCompletion
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        primaryAction()
+        tryAgainAction()
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
-        secondaryAction()
+        emailReceiptAction()
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {

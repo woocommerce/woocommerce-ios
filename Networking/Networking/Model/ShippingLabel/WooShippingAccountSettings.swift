@@ -6,7 +6,7 @@ import Codegen
 public struct WooShippingAccountSettings: Equatable, GeneratedFakeable, GeneratedCopiable {
     public let storeOptions: ShippingLabelStoreOptions
     public let accountSettings: ShippingLabelAccountSettings
-//
+
     public init(storeOptions: ShippingLabelStoreOptions, accountSettings: ShippingLabelAccountSettings) {
         self.storeOptions = storeOptions
         self.accountSettings = accountSettings

@@ -124,7 +124,7 @@ extension CardPresentModalError {
         static let emailReceipt = NSLocalizedString(
             "cardPresentPaymentsModal.error.emailReceipt",
             value: "Email receipt",
-            comment: "Button to email receipts. Presented to users after a payment has been successfully collected"
+            comment: "Button to email receipts. Presented to users after a payment processing has failed"
         )
     }
 }

@@ -777,7 +777,8 @@ private extension CollectOrderPaymentUseCase {
                 } else {
                     receiptState = .promptToSendEmailReceipt(emailReceiptAction: { [weak self] in
                         guard let self else { return }
-                        presentSendReceiptAfterPayment { order in
+                        presentSendReceiptAfterPayment { [weak self] order in
+                            guard let self else { return }
                             if let order {
                                 self.order = order
                             }

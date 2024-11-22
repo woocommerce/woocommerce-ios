@@ -92,13 +92,19 @@ final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlert
             return CardPresentModalErrorEmailSent(errorDescription: errorDescription,
                                                   transactionType: transactionType,
                                                   email: email,
-                                                  primaryAction: tryAgain,
+                                                  tryAgainAction: tryAgain,
                                                   dismissCompletion: dismissCompletion)
-        default:
+        case let .promptToSendEmailReceipt(emailReceiptAction):
             return CardPresentModalError(errorDescription: errorDescription,
                                          transactionType: transactionType,
-                                         primaryAction: tryAgain,
+                                         tryAgainAction: tryAgain,
+                                         emailReceiptAction: emailReceiptAction,
                                          dismissCompletion: dismissCompletion)
+        case .noEmailReceipt:
+            return CardPresentModalErrorWithoutEmail(errorDescription: errorDescription,
+                                                     transactionType: transactionType,
+                                                     tryAgainAction: tryAgain,
+                                                     dismissCompletion: dismissCompletion)
 
         }
     }
@@ -109,15 +115,22 @@ final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlert
         switch receiptState {
         case let .paymentSuccessEmailSent(email):
             CardPresentModalNonRetryableErrorEmailSent(amount: amount, error: error, email: email, onDismiss: dismissCompletion)
-        default:
-            CardPresentModalNonRetryableError(amount: amount, error: error, onDismiss: dismissCompletion)
+        case let .promptToSendEmailReceipt(emailReceiptAction):
+            CardPresentModalNonRetryableError(amount: amount,
+                                              error: error,
+                                              onDismiss: dismissCompletion,
+                                              emailReceiptAction: emailReceiptAction)
+        case .noEmailReceipt:
+            CardPresentModalNonRetryableErrorWithoutEmail(amount: amount,
+                                                          error: error,
+                                                          onDismiss: dismissCompletion)
         }
     }
 
     func cancelledOnReader() -> CardPresentPaymentsModalViewModel? {
-        CardPresentModalNonRetryableError(amount: amount,
-                                          error: CardReaderServiceError.paymentMethodCollection(underlyingError: .commandCancelled(from: .reader)),
-                                          onDismiss: { })
+        CardPresentModalNonRetryableErrorWithoutEmail(amount: amount,
+                                                      error: CardReaderServiceError.paymentMethodCollection(underlyingError: .commandCancelled(from: .reader)),
+                                                      onDismiss: { })
     }
 }
 

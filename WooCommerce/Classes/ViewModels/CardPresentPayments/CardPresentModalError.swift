@@ -3,13 +3,16 @@ import UIKit
 /// Modal presented on error
 final class CardPresentModalError: CardPresentPaymentsModalViewModel {
     /// A closure to execute when the primary button is tapped
-    private let primaryAction: () -> Void
+    private let tryAgainAction: () -> Void
 
-    /// A closure to execute after the secondary button is tapped to dismiss the modal
+    /// A closure to execute when the secondary button is tapped
+    private let emailReceiptAction: () -> Void
+
+    /// A closure to execute after the auxilary button is tapped to dismiss the modal
     private let dismissCompletion: () -> Void
 
     let textMode: PaymentsModalTextMode = .reducedBottomInfo
-    let actionsMode: PaymentsModalActionsMode = .twoAction
+    let actionsMode: PaymentsModalActionsMode = .twoActionAndAuxiliary
 
     let topTitle: String
 
@@ -19,9 +22,9 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
 
     let primaryButtonTitle: String?
 
-    let secondaryButtonTitle: String?
+    let secondaryButtonTitle: String? = Localization.emailReceipt
 
-    let auxiliaryButtonTitle: String? = nil
+    let auxiliaryButtonTitle: String?
 
     let bottomTitle: String?
 
@@ -37,28 +40,32 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
     init(errorDescription: String?,
          transactionType: CardPresentTransactionType,
          image: UIImage = .paymentErrorImage,
-         primaryAction: @escaping () -> Void,
+         tryAgainAction: @escaping () -> Void,
+         emailReceiptAction: @escaping () -> Void,
          dismissCompletion: @escaping () -> Void) {
         self.topTitle = Localization.paymentFailed(transactionType: transactionType)
         self.bottomTitle = errorDescription
         self.image = image
         self.primaryButtonTitle = Localization.tryAgain(transactionType: transactionType)
-        self.secondaryButtonTitle = Localization.noThanks(transactionType: transactionType)
-        self.primaryAction = primaryAction
+        self.auxiliaryButtonTitle = Localization.noThanks(transactionType: transactionType)
+        self.tryAgainAction = tryAgainAction
+        self.emailReceiptAction = emailReceiptAction
         self.dismissCompletion = dismissCompletion
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        primaryAction()
+        tryAgainAction()
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
+        emailReceiptAction()
+    }
+
+    func didTapAuxiliaryButton(in viewController: UIViewController?) {
         viewController?.dismiss(animated: true) { [weak self] in
             self?.dismissCompletion()
         }
     }
-
-    func didTapAuxiliaryButton(in viewController: UIViewController?) { }
 }
 
 extension CardPresentModalError {
@@ -112,6 +119,12 @@ extension CardPresentModalError {
             "cardPresentPaymentsModal.error.receiptMessage",
             value: "A receipt has been sent to %1$@",
             comment: "Message informing the user that a receipt has been sent to their email address. %1$@ is the email address"
+        )
+
+        static let emailReceipt = NSLocalizedString(
+            "cardPresentPaymentsModal.error.emailReceipt",
+            value: "Email receipt",
+            comment: "Button to email receipts. Presented to users after a payment processing has failed"
         )
     }
 }

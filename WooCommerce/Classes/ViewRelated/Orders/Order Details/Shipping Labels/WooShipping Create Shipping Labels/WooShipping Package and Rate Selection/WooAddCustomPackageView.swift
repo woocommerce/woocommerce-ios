@@ -57,7 +57,6 @@ struct WooAddCustomPackageView: View {
                     } label: {
                         Image(systemName: "arrow.trianglehead.counterclockwise")
                     }
-
                 }
                 Spacer()
             }

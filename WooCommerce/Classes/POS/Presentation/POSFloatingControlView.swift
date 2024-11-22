@@ -4,8 +4,8 @@ struct POSFloatingControlView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @Environment(\.colorScheme) var colorScheme
-    @Binding var showExitPOSModal: Bool
-    @Binding var showSupport: Bool
+    @Binding private var showExitPOSModal: Bool
+    @Binding private var showSupport: Bool
 
     init(showExitPOSModal: Binding<Bool>, showSupport: Binding<Bool>) {
         self._showExitPOSModal = showExitPOSModal

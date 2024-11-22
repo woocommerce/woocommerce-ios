@@ -392,7 +392,7 @@ private extension ShippingLabelStore {
                                                         onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
-            self.upsertShippingLabelAccountSettings(siteID: siteID, accountSettings: accountSettings)
+            ShippingLabelStore.upsertShippingLabelAccountSettings(derivedStorage: derivedStorage, siteID: siteID, accountSettings: accountSettings)
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
@@ -402,7 +402,7 @@ private extension ShippingLabelStore {
 
     /// Updates/inserts the ShippingLabelPaymentMethod items from the provided account settings.
     ///
-    func handleShippingLabelPaymentMethods(_ readOnlyAccountSettings: Networking.ShippingLabelAccountSettings,
+    static func handleShippingLabelPaymentMethods(_ readOnlyAccountSettings: Networking.ShippingLabelAccountSettings,
                                            _ storageAccountSettings: Storage.ShippingLabelAccountSettings,
                                            _ storage: StorageType) {
         // Remove all previous payment methods
@@ -477,12 +477,11 @@ private extension ShippingLabelStore {
 public extension ShippingLabelStore {
     /// Updates/inserts the specified readonly ShippingLabelAccountSettings entity in the current thread.
     ///
-    func upsertShippingLabelAccountSettings(siteID: Int64, accountSettings: ShippingLabelAccountSettings) {
-        let derivedStorage = sharedDerivedStorage
+    static func upsertShippingLabelAccountSettings(derivedStorage: StorageType, siteID: Int64, accountSettings: ShippingLabelAccountSettings) {
         let storageAccountSettings = derivedStorage.loadShippingLabelAccountSettings(siteID: siteID) ??
             derivedStorage.insertNewObject(ofType: Storage.ShippingLabelAccountSettings.self)
         storageAccountSettings.update(with: accountSettings)
-        handleShippingLabelPaymentMethods(accountSettings, storageAccountSettings, derivedStorage)
+        ShippingLabelStore.handleShippingLabelPaymentMethods(accountSettings, storageAccountSettings, derivedStorage)
     }
 }
 

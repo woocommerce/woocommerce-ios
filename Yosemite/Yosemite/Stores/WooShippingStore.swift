@@ -7,6 +7,10 @@ import Storage
 public final class WooShippingStore: Store {
     private let remote: WooShippingRemoteProtocol
 
+    private lazy var sharedDerivedStorage: StorageType = {
+        storageManager.writerDerivedStorage
+    }()
+
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = WooShippingRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -78,11 +82,76 @@ private extension WooShippingStore {
 
     func loadPackages(siteID: Int64,
                       completion: @escaping (Result<WooShippingPackagesResponse, Error>) -> Void) {
-        remote.loadPackages(siteID: siteID, completion: completion)
+        remote.loadPackages(siteID: siteID) { [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let packagesResponse):
+                self.upsertShippingStoreOptionsInBackground(siteID: siteID, storeOptions: packagesResponse.storeOptions) {
+                    completion(.success(packagesResponse))
+                }
+            }
+        }
     }
 
     func loadAccountSettings(siteID: Int64,
                              completion: @escaping (Result<WooShippingAccountSettings, Error>) -> Void) {
-        remote.loadAccountSettings(siteID: siteID, completion: completion)
+        remote.loadAccountSettings(siteID: siteID) { [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let settings):
+                self.upsertShippingAccountSettingsInBackground(siteID: siteID, settings: settings) {
+                    completion(.success(settings))
+                }
+            }
+        }
+    }
+
+    /// Updates/inserts the specified readonly shipping account settings entity *in a background thread*.
+    /// `onCompletion` will be called on the main thread!
+    ///
+    func upsertShippingAccountSettingsInBackground(siteID: Int64,
+                                                   settings: WooShippingAccountSettings,
+                                                   onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            ShippingLabelStore.upsertShippingLabelAccountSettings(derivedStorage: derivedStorage, siteID: siteID, accountSettings: settings.accountSettings)
+            self.upsertShippingStoreOptions(siteID: siteID, storeOptions: settings.storeOptions)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Updates/inserts the specified readonly ShippingLabelStoreOptions entity *in a background thread*.
+    /// `onCompletion` will be called on the main thread!
+    ///
+    func upsertShippingStoreOptionsInBackground(siteID: Int64,
+                                                storeOptions: ShippingLabelStoreOptions,
+                                                onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            self.upsertShippingStoreOptions(siteID: siteID, storeOptions: storeOptions)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Updates/inserts the specified readonly ShippingLabelStoreOptions entity in the current thread.
+    ///
+    func upsertShippingStoreOptions(siteID: Int64, storeOptions: ShippingLabelStoreOptions) {
+        let derivedStorage = sharedDerivedStorage
+        // load store options and account setting separately
+        let storageAccountSettings = derivedStorage.loadShippingLabelStoreOptions(siteID: siteID) ??
+            derivedStorage.insertNewObject(ofType: Storage.ShippingLabelStoreOptions.self)
+        storageAccountSettings.update(with: storeOptions, siteID: siteID)
     }
 }

@@ -630,6 +630,13 @@ public extension StorageType {
         return firstObject(ofType: ShippingLabelAccountSettings.self, matching: predicate)
     }
 
+    /// Returns stored shipping label store options for a site.
+    ///
+    func loadShippingLabelStoreOptions(siteID: Int64) -> ShippingLabelStoreOptions? {
+        let predicate = \ShippingLabelStoreOptions.siteID == siteID
+        return firstObject(ofType: ShippingLabelStoreOptions.self, matching: predicate)
+    }
+
     /// Returns all stored add-on groups for a provided `siteID`.
     ///
     func loadAddOnGroups(siteID: Int64) -> [AddOnGroup] {

@@ -68,7 +68,7 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
                                                   transactionType: .collectPayment,
                                                   image: .builtInReaderError,
                                                   email: email,
-                                                  primaryAction: tryAgain,
+                                                  tryAgainAction: tryAgain,
                                                   dismissCompletion: dismissCompletion)
         case let .promptToSendEmailReceipt(emailReceiptAction):
             return CardPresentModalError(errorDescription: builtInReaderDescription(for: error),
@@ -81,7 +81,7 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
             return CardPresentModalErrorWithoutEmail(errorDescription: builtInReaderDescription(for: error),
                                                      transactionType: .collectPayment,
                                                      image: .builtInReaderError,
-                                                     primaryAction: tryAgain,
+                                                     tryAgainAction: tryAgain,
                                                      dismissCompletion: dismissCompletion)
         }
     }

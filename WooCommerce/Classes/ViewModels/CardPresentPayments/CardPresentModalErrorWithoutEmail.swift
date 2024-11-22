@@ -3,7 +3,7 @@ import UIKit
 /// Modal presented on error
 final class CardPresentModalErrorWithoutEmail: CardPresentPaymentsModalViewModel {
     /// A closure to execute when the primary button is tapped
-    private let primaryAction: () -> Void
+    private let tryAgainAction: () -> Void
 
     /// A closure to execute after the secondary button is tapped to dismiss the modal
     private let dismissCompletion: () -> Void
@@ -37,19 +37,19 @@ final class CardPresentModalErrorWithoutEmail: CardPresentPaymentsModalViewModel
     init(errorDescription: String?,
          transactionType: CardPresentTransactionType,
          image: UIImage = .paymentErrorImage,
-         primaryAction: @escaping () -> Void,
+         tryAgainAction: @escaping () -> Void,
          dismissCompletion: @escaping () -> Void) {
         self.topTitle = CardPresentModalError.Localization.paymentFailed(transactionType: transactionType)
         self.bottomTitle = errorDescription
         self.image = image
         self.primaryButtonTitle = CardPresentModalError.Localization.tryAgain(transactionType: transactionType)
         self.secondaryButtonTitle = CardPresentModalError.Localization.noThanks(transactionType: transactionType)
-        self.primaryAction = primaryAction
+        self.tryAgainAction = tryAgainAction
         self.dismissCompletion = dismissCompletion
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        primaryAction()
+        tryAgainAction()
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {

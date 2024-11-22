@@ -392,6 +392,9 @@ private extension JetpackSetupCoordinator {
         guard let window = rootViewController.view.window else {
             logErrorAndExit("⛔️ Error finding window for security key login")
         }
+        guard let loginNavigationController else {
+            logErrorAndExit("⛔️ Error finding loginNavigationController for security key login")
+        }
 
         let viewModel = WPCom2FALoginViewModel(
             loginFields: loginFields,
@@ -407,7 +410,7 @@ private extension JetpackSetupCoordinator {
         let viewController = WPCom2FALoginHostingController(title: loginViewTitle,
                                                             isJetpackSetup: true,
                                                             viewModel: viewModel)
-        loginNavigationController?.pushViewController(viewController, animated: true)
+        loginNavigationController.pushViewController(viewController, animated: true)
     }
 
     func pushOrInitLoginViewController(_ viewController: UIViewController) {
@@ -490,4 +493,3 @@ private extension JetpackSetupCoordinator {
         )
     }
 }
-

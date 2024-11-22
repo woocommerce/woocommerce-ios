@@ -92,7 +92,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .paymentsOnboardingInPointOfSale:
             return true
         case .sendReceiptAfterPayment:
-            return false
+            return true
         case .sendReceiptsForPointOfSale:
             return false
         default:

@@ -116,7 +116,8 @@ private extension WPComLoginCoordinator {
     func showMagicLinkForLogin(email: String) {
         let viewController = WPComMagicLinkHostingController(email: email,
                                                              title: title,
-                                                             isJetpackSetup: isJetpackSetup)
+                                                             isJetpackSetup: isJetpackSetup,
+                                                             isSignup: false)
         navigationController.show(viewController, sender: self)
     }
 

@@ -8,11 +8,15 @@ final class WPComMagicLinkHostingController: UIHostingController<WPComMagicLinkV
     ///
     private let isJetpackSetup: Bool
 
-    init(email: String, title: String, isJetpackSetup: Bool) {
+    private let isSignup: Bool
+
+    init(email: String, title: String, isJetpackSetup: Bool, isSignup: Bool) {
         self.isJetpackSetup = isJetpackSetup
+        self.isSignup = isSignup
         let viewModel = WPComMagicLinkViewModel(email: email)
         super.init(rootView: WPComMagicLinkView(title: title,
                                                 isJetpackSetup: isJetpackSetup,
+                                                isSignup: isSignup,
                                                 viewModel: viewModel))
         rootView.onOpenMail = {
             let linkMailPresenter = LinkMailPresenter(emailAddress: email)
@@ -34,7 +38,7 @@ final class WPComMagicLinkHostingController: UIHostingController<WPComMagicLinkV
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         if isMovingFromParent, isJetpackSetup {
-            ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, tap: .dismiss))
+            ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, isSignup: isSignup, tap: .dismiss))
         }
     }
 }
@@ -49,12 +53,15 @@ struct WPComMagicLinkView: View {
     /// Whether the view is part of the login step of the Jetpack setup flow.
     private let isJetpackSetup: Bool
 
+    private let isSignup: Bool
+
     private let viewModel: WPComMagicLinkViewModel
     var onOpenMail: () -> Void = {}
 
-    init(title: String, isJetpackSetup: Bool, viewModel: WPComMagicLinkViewModel) {
+    init(title: String, isJetpackSetup: Bool, isSignup: Bool, viewModel: WPComMagicLinkViewModel) {
         self.title = title
         self.isJetpackSetup = isJetpackSetup
+        self.isSignup = isSignup
         self.viewModel = viewModel
     }
 
@@ -80,6 +87,10 @@ struct WPComMagicLinkView: View {
                     Text(Localization.checkYourEmail)
                         .font(.title3.bold())
                     AttributedText(viewModel.instructionString)
+
+                    Text(Localization.emailConfirmationHint)
+                        .multilineTextAlignment(.center)
+                        .padding(.top)
                 }
 
                 Spacer()
@@ -91,7 +102,7 @@ struct WPComMagicLinkView: View {
                 // Primary CTA
                 Button(Localization.openMail) {
                     if isJetpackSetup {
-                        ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, tap: .submit))
+                        ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, isSignup: isSignup, tap: .submit))
                     }
                     onOpenMail()
                 }
@@ -119,6 +130,11 @@ private extension WPComMagicLinkView {
             "Check your email on this device!",
             comment: "Message on the magic link screen of the WPCom login flow during Jetpack setup"
         )
+        static let emailConfirmationHint = NSLocalizedString(
+            "wpComMagicLinkView.emailConfirmationHint",
+            value: "Ensure your email is correct and double check your spam folder.",
+            comment: "Text hinting the user to ensure their email is correct and check their spam folder"
+        )
     }
 }
 
@@ -126,6 +142,7 @@ struct WPComMagicLinkView_Previews: PreviewProvider {
     static var previews: some View {
         WPComMagicLinkView(title: "Login",
                            isJetpackSetup: false,
+                           isSignup: false,
                            viewModel: .init(email: "test@example.com"))
     }
 }

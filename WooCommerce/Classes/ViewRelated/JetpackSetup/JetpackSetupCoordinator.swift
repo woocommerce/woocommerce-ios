@@ -26,9 +26,9 @@ final class JetpackSetupCoordinator {
     private lazy var emailLoginViewModel: WPComEmailLoginViewModel = {
         .init(siteURL: site.url,
               requiresConnectionOnly: requiresConnectionOnly,
-              allowAccountCreation: featureFlagService.isFeatureFlagEnabled(.jetpackSetupWPComAccountCreation),
+              allowAccountCreation: true,
               onPasswordUIRequest: showPasswordUI(email:),
-              onMagicLinkUIRequest: showMagicLinkUI(email:),
+              onMagicLinkUIRequest: showMagicLinkUI,
               onError: { [weak self] message in
             self?.showAlert(message: message)
         })
@@ -352,11 +352,12 @@ private extension JetpackSetupCoordinator {
         self.loginNavigationController = loginNavigationController
     }
 
-    func showMagicLinkUI(email: String) {
-        analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink))
+    func showMagicLinkUI(email: String, isSignup: Bool) {
+        analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, isSignup: isSignup))
         let viewController = WPComMagicLinkHostingController(email: email,
                                                              title: loginViewTitle,
-                                                             isJetpackSetup: true)
+                                                             isJetpackSetup: true,
+                                                             isSignup: isSignup)
         loginNavigationController?.pushViewController(viewController, animated: true)
     }
 

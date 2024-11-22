@@ -288,7 +288,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                             error: error)
         receiptEligibilityUseCase.isEligibleSendingReceiptAfterPayment = true
 
-        // When we make a payment thar results in card reader disconnection
+        // When we make a payment that results in card reader disconnection
         waitFor { promise in
             self.alertsPresenter.onPresentCalled = { viewModel in
                 if viewModel is CardPresentModalErrorWithoutEmail {

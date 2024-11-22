@@ -15,15 +15,17 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
     func test_it_inits_with_dimension_weight_unit() {
         // Given/When
         let expectedDimensionUnit = "in"
-        let expectedWeightUnit = "in"
-        let viewModel = WooShippingAddCustomPackageViewModel(dimensionsUnit: expectedDimensionUnit,
-                                                             weightUnit: expectedWeightUnit)
+        let expectedWeightUnit = "kg"
+        let viewModel = WooShippingAddCustomPackageViewModel(storeOptions: ShippingLabelStoreOptions(currencySymbol: "$",
+                                                                                                     dimensionUnit: expectedDimensionUnit,
+                                                                                                     weightUnit: expectedWeightUnit,
+                                                                                                     originCountry: "US"))
 
         // Then
         XCTAssertNotNil(viewModel)
         viewModel.checkDefaultInitProperties()
-        XCTAssertEqual(viewModel.dimensionsUnit, expectedDimensionUnit)
-        XCTAssertEqual(viewModel.weightUnit, expectedWeightUnit)
+        XCTAssertEqual(viewModel.storeOptions?.dimensionUnit, expectedDimensionUnit)
+        XCTAssertEqual(viewModel.storeOptions?.weightUnit, expectedWeightUnit)
     }
 
     func test_clear_field_values() {
@@ -164,7 +166,10 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         // Given
         let dimensionUnit = "cm"
         let weightUnit = "kg"
-        let viewModel = WooShippingAddCustomPackageViewModel(dimensionsUnit: dimensionUnit, weightUnit: weightUnit)
+        let viewModel = WooShippingAddCustomPackageViewModel(storeOptions: ShippingLabelStoreOptions(currencySymbol: "$",
+                                                                                                     dimensionUnit: dimensionUnit,
+                                                                                                     weightUnit: weightUnit,
+                                                                                                     originCountry: "US"))
         let length = "1"
         let width = "2"
         let height = "3"

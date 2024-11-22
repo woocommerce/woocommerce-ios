@@ -8,9 +8,9 @@ struct WooShippingAccountSettingsMapper: Mapper {
     ///
     let siteID: Int64
 
-    /// (Attempts) to convert a dictionary into WooShippingAccountSettingsResponse.
+    /// (Attempts) to convert a dictionary into WooShippingAccountSettings.
     ///
-    func map(response: Data) throws -> WooShippingAccountSettingsResponse {
+    func map(response: Data) throws -> WooShippingAccountSettings {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.yearMonthDayDateFormatter)
         decoder.userInfo = [
@@ -20,7 +20,7 @@ struct WooShippingAccountSettingsMapper: Mapper {
         if hasDataEnvelope(in: response) {
             return try decoder.decode(WooShippingAccountSettingsMapperEnvelope.self, from: response).data
         } else {
-            return try decoder.decode(WooShippingAccountSettingsResponse.self, from: response)
+            return try decoder.decode(WooShippingAccountSettings.self, from: response)
         }
     }
 }
@@ -30,7 +30,7 @@ struct WooShippingAccountSettingsMapper: Mapper {
 /// This entity allows us to parse all the things with JSONDecoder.
 ///
 private struct WooShippingAccountSettingsMapperEnvelope: Decodable {
-    let data: WooShippingAccountSettingsResponse
+    let data: WooShippingAccountSettings
 
     private enum CodingKeys: String, CodingKey {
         case data

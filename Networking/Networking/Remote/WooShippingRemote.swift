@@ -14,7 +14,7 @@ public protocol WooShippingRemoteProtocol {
     func loadPackages(siteID: Int64,
                       completion: @escaping (Result<WooShippingPackagesResponse, Error>) -> Void)
     func loadAccountSettings(siteID: Int64,
-                             completion: @escaping (Result<WooShippingAccountSettingsResponse, Error>) -> Void)
+                             completion: @escaping (Result<WooShippingAccountSettings, Error>) -> Void)
     func purchaseShippingLabel(siteID: Int64,
                                orderID: Int64,
                                originAddress: ShippingLabelAddress,
@@ -131,7 +131,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     ///   - siteID: Remote ID of the site.
     ///   - completion: Closure to be executed upon completion.
     public func loadAccountSettings(siteID: Int64,
-                                    completion: @escaping (Result<WooShippingAccountSettingsResponse, Error>) -> Void) {
+                                    completion: @escaping (Result<WooShippingAccountSettings, Error>) -> Void) {
         do {
             let path = Path.accountSettings
             let request = JetpackRequest(wooApiVersion: .wooShipping,

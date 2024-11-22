@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 21.2
+Exciting updates in this release enhance your WooCommerce experience! We've implemented GTIN support for products, improved Tap To Pay testing, and refined order editing for accuracy. Merchants can now control campaign CTA text in Blaze. Plus, better receipts communication, a refined dashboard view, and added support for WordPress.com account creation in Jetpack Setup.
+
 ## 21.1
 Dive into a smoother WooCommerce experience! We’ve fine-tuned the Watch app to showcase your order details flawlessly. Plus, we've added clearer error messages for payment reader connections. Update for an even better business pulse on your wrist and in your pocket.
 

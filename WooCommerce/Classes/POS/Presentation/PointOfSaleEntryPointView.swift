@@ -6,7 +6,6 @@ import protocol WooFoundation.Analytics
 
 struct PointOfSaleEntryPointView: View {
     @StateObject private var posModel: PointOfSaleAggregateModel
-    @StateObject private var viewModel: PointOfSaleDashboardViewModel
     @StateObject private var posModalManager = POSModalManager()
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
@@ -24,14 +23,10 @@ struct PointOfSaleEntryPointView: View {
                                                  orderService: orderService)
 
         self._posModel = StateObject(wrappedValue: posModel)
-        self._viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
-            posModel: posModel,
-            connectivityObserver: ServiceLocator.connectivityObserver)
-        )
     }
 
     var body: some View {
-        PointOfSaleDashboardView(viewModel: viewModel)
+        PointOfSaleDashboardView()
         .environmentObject(posModalManager)
         .environmentObject(posModel)
         .onAppear {

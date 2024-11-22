@@ -2,11 +2,9 @@ import SwiftUI
 
 struct PointOfSaleDashboardView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
-    @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel) {
-        self.viewModel = viewModel
-    }
+    @State private var showExitPOSModal: Bool = false
+    @State private var showSupport: Bool = false
 
     @State private var floatingSize: CGSize = .zero
 
@@ -30,7 +28,8 @@ struct PointOfSaleDashboardView: View {
                     .accessibilitySortPriority(2)
             }
 
-            POSFloatingControlView(viewModel: viewModel)
+            POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
+                                   showSupport: $showSupport)
                 .shadow(color: Color.black.opacity(0.12), radius: 4, y: 2)
                 .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
                 .trackSize(size: $floatingSize)
@@ -38,17 +37,12 @@ struct PointOfSaleDashboardView: View {
                 .renderedIf(posModel.itemListState != .initialLoading)
 
             POSConnectivityView()
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                .transition(.asymmetric(insertion: .push(from: .top), removal: .move(edge: .top)))
-                .zIndex(1) /// Consistent animations not working without setting explicit zIndex
-                .renderedIf(viewModel.showsConnectivityError)
         }
         .environment(\.floatingControlAreaSize,
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .environment(\.posBackgroundAppearance, posModel.paymentState != .processingPayment ? .primary : .secondary)
         .animation(.easeInOut, value: posModel.itemListState == .initialLoading)
-        .animation(.easeInOut(duration: Constants.connectivityAnimationDuration), value: viewModel.showsConnectivityError)
         .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
         .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
@@ -63,12 +57,12 @@ struct PointOfSaleDashboardView: View {
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)
                 .posInteractiveDismissDisabled(alertType.isDismissDisabled)
         }
-        .posModal(isPresented: $viewModel.showExitPOSModal) {
-            PointOfSaleExitPosAlertView(isPresented: $viewModel.showExitPOSModal)
+        .posModal(isPresented: $showExitPOSModal) {
+            PointOfSaleExitPosAlertView(isPresented: $showExitPOSModal)
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         }
         .posRootModal()
-        .sheet(isPresented: $viewModel.showSupport) {
+        .sheet(isPresented: $showSupport) {
             supportForm
         }
         .task {
@@ -107,12 +101,12 @@ struct PointOfSaleDashboardView: View {
 private extension PointOfSaleDashboardView {
     var supportForm: some View {
         NavigationView {
-            SupportForm(isPresented: $viewModel.showSupport,
+            SupportForm(isPresented: $showSupport,
                         viewModel: SupportFormViewModel(sourceTag: Constants.supportTag))
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(Localization.supportDone) {
-                        viewModel.showSupport = false
+                        showSupport = false
                     }
                 }
             }
@@ -123,7 +117,7 @@ private extension PointOfSaleDashboardView {
     func paymentsOnboardingView(from onboardingViewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
         onboardingViewModel.showSupport = {
             posModel.cancelCardPaymentsOnboarding()
-            viewModel.showSupport = true
+            showSupport = true
         }
         return PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(onboardingViewModel: onboardingViewModel,
                                                                             onDismissTap: {
@@ -155,7 +149,6 @@ private extension PointOfSaleDashboardView {
         static let floatingControlVerticalOffset: CGFloat = 0
         static let exitPOSSheetMaxWidth: CGFloat = 900.0
         static let supportTag = "origin:point-of-sale"
-        static let connectivityAnimationDuration: CGFloat = 1.0
     }
 
     enum Localization {
@@ -168,19 +161,9 @@ private extension PointOfSaleDashboardView {
 }
 
 #if DEBUG
-import class WooFoundation.MockAnalyticsPreview
-import class WooFoundation.MockAnalyticsProviderPreview
-
 #Preview {
-    let posModel = PointOfSaleAggregateModel(
-        itemProvider: POSItemProviderPreview(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderService: POSOrderPreviewService())
-    let posVM = PointOfSaleDashboardViewModel(posModel: posModel,
-                                              connectivityObserver: POSConnectivityObserverPreview())
-
     return NavigationStack {
-        PointOfSaleDashboardView(viewModel: posVM)
+        PointOfSaleDashboardView()
     }
 }
 #endif

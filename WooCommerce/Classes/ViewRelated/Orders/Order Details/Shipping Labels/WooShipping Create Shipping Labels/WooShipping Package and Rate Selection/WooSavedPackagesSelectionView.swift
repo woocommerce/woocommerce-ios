@@ -100,10 +100,10 @@ extension WooShippingPackageDataRepresentable {
 }
 
 struct WooSavedPackagesSelectionView: View {
-    @ObservedObject private var viewModel: WooSavedPackagesSelectionViewModel
+    @ObservedObject private var viewModel: WooShippingAddPackageViewModel
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
-    init(viewModel: WooSavedPackagesSelectionViewModel, addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
+    init(viewModel: WooShippingAddPackageViewModel, addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
         self.viewModel = viewModel
         self.addPackageAction = addPackageAction
     }
@@ -111,7 +111,7 @@ struct WooSavedPackagesSelectionView: View {
     var body: some View {
         VStack(spacing: 0) {
             Divider()
-            if viewModel.packagesRepository.loadingSavedPackages {
+            if viewModel.isLoadingPackages {
                 // TODO: think of a better progress/loading indicator
                 ProgressView()
                     .progressViewStyle(.circular)
@@ -123,13 +123,13 @@ struct WooSavedPackagesSelectionView: View {
             }
             .listStyle(.plain)
             .refreshable {
-                viewModel.packagesRepository.loadSavedPackages()
+                viewModel.loadPackages()
             }
             Divider()
             Button(WooShippingAddPackageView.Localization.addPackage) {
                 addPackageButtonTapped()
             }
-            .disabled(viewModel.selectedPackageId == nil || !viewModel.hasPackages)
+            .disabled(viewModel.selectedSavedPackageId == nil || !viewModel.hasSavedPackages)
             .buttonStyle(PrimaryButtonStyle())
             .padding()
         }
@@ -151,12 +151,12 @@ struct WooSavedPackagesSelectionView: View {
     private func packagesRows(for packages: [any WooShippingPackageDataRepresentable]) -> some View {
         ForEach(packages, id: \.id) { package in
             PackageOptionView(
-                isSelected: viewModel.selectedPackageId == package.id,
+                isSelected: viewModel.selectedSavedPackageId == package.id,
                 package: package,
                 showTopDivider: false,
                 showSource: true,
                 tapAction: {
-                    viewModel.selectedPackageId = viewModel.selectedPackageId == package.id ? nil : package.id
+                    viewModel.selectedSavedPackageId = viewModel.selectedSavedPackageId == package.id ? nil : package.id
                 }
             )
             .alignmentGuide(.listRowSeparatorLeading) { _ in
@@ -166,7 +166,7 @@ struct WooSavedPackagesSelectionView: View {
                 Button {
                     withAnimation {
                         _ = Task {
-                            return await viewModel.removePackage(package)
+                            return await viewModel.removeSavedPackage(package)
                         }
                         // TODO: handle error
                     }
@@ -181,7 +181,7 @@ struct WooSavedPackagesSelectionView: View {
 
     private func addPackageButtonTapped() {
         // call addPackageAction with data from selected package
-        guard let selectedPackage = viewModel.selectedPackage else { return }
+        guard let selectedPackage = viewModel.selectedSavedPackage else { return }
 
         addPackageAction(selectedPackage)
     }

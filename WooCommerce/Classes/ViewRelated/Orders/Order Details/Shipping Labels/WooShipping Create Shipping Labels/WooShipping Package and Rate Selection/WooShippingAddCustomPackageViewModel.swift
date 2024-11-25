@@ -14,21 +14,17 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     // Holds value for toggle that determines if we are showing button for saving the template
     @Published var showSaveTemplate: Bool = false
     @Published var packageTemplateName: String = ""
-    // The dimension unit used in the store (e.g. "in")
-    let dimensionsUnit: String
-    // The weight unit used in the store (e.g. "kg")
-    let weightUnit: String
+    @Published var storeOptions: ShippingLabelStoreOptions?
+    @Published var isLoadingStoreOptions: Bool = false
     @Published var packagesRepository: WooShippingPackagesRepositoryProtocol
 
     // MARK: Initialization
 
     init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
-         dimensionsUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
-         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
+         storeOptions: ShippingLabelStoreOptions? = nil,
          stores: StoresManager = ServiceLocator.stores,
          packagesRepository: WooShippingPackagesRepositoryProtocol) {
-        self.dimensionsUnit = dimensionsUnit ?? ""
-        self.weightUnit = weightUnit ?? ""
+        self.storeOptions = storeOptions
         self.stores = stores
         self.siteID = siteID
         self.packagesRepository = packagesRepository
@@ -52,15 +48,18 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
         return validFieldsCount != keysToCheck.count
     }
 
-    private var packageDataFromCurrentData: WooShippingPackageDataRepresentable {
+    private var packageDataFromCurrentData: WooShippingPackageDataRepresentable? {
+        guard let storeOptions else {
+            return nil
+        }
         return WooShippingPackageData(id: UUID().uuidString,
                                       name: packageTemplateName,
                                       length: fieldValues[.length] ?? "",
                                       width: fieldValues[.width] ?? "",
                                       height: fieldValues[.height] ?? "",
-                                      dimensionsUnit: dimensionsUnit,
+                                      dimensionsUnit: storeOptions.dimensionUnit,
                                       weight: fieldValues[.weight] ?? "",
-                                      weightUnit: weightUnit,
+                                      weightUnit: storeOptions.weightUnit,
                                       source: .custom,
                                       packageType: packageType.rawValue)
     }
@@ -93,13 +92,13 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     /// Saves custom package as template remotely.
     ///
     func savePackageAsTemplateAction() async -> Result<WooShippingPackageDataRepresentable, Error> {
-        guard let packageData = preparePackageData() else {
+        guard let packageData = preparePackageData(), let storeOptions else {
             return .failure(WooShippingAddCustomPackageViewModel.Error.packageDataNotValid)
         }
 
         let result =  await packagesRepository.saveCustomPackage(packageData,
-                                                          dimensionsUnit: dimensionsUnit,
-                                                          weightUnit: weightUnit,
+                                                                 dimensionsUnit: storeOptions.dimensionUnit,
+                                                                 weightUnit: storeOptions.weightUnit,
                                                           siteID: siteID,
                                                           stores: stores)
         switch result {
@@ -118,6 +117,24 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
             return !packageTemplateName.isEmpty
         }
         return true
+    }
+
+    func loadStoreOptions() {
+        guard isLoadingStoreOptions == false else { return }
+        
+        isLoadingStoreOptions = true
+        
+        let action = WooShippingAction.loadAccountSettings(siteID: siteID) { result in
+            switch result {
+            case .success(let settings):
+                self.storeOptions = settings.storeOptions
+            case .failure(let error):
+                // TODO: what to do if we do not have store options?
+                DDLogError("⛔️ Error loading account settings: \(error)")
+            }
+            self.isLoadingStoreOptions = false
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

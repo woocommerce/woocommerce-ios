@@ -30,7 +30,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
     // MARK: - Properties
 
     private let siteID: Int64
-    private let ordersRemote: OrdersRemote
+    private let ordersRemote: POSOrdersRemoteProtocol
 
     // MARK: - Initialization
 
@@ -39,12 +39,13 @@ public final class POSOrderService: POSOrderServiceProtocol {
             DDLogError("⛔️ Could not create POSOrderService due to not finding credentials")
             return nil
         }
-        self.init(siteID: siteID, network: AlamofireNetwork(credentials: credentials))
+        self.init(siteID: siteID,
+                  ordersRemote: OrdersRemote(network: AlamofireNetwork(credentials: credentials)))
     }
 
-    public init(siteID: Int64, network: Network) {
+    public init(siteID: Int64, ordersRemote: POSOrdersRemoteProtocol) {
         self.siteID = siteID
-        self.ordersRemote = OrdersRemote(network: network)
+        self.ordersRemote = ordersRemote
     }
 
     // MARK: - Protocol conformance

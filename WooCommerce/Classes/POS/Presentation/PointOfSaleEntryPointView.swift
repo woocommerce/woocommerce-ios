@@ -1,12 +1,9 @@
 import SwiftUI
-import class WooFoundation.CurrencyFormatter
 import protocol Yosemite.POSItemProvider
 import protocol Yosemite.POSOrderServiceProtocol
-import protocol WooFoundation.Analytics
 
 struct PointOfSaleEntryPointView: View {
     @StateObject private var posModel: PointOfSaleAggregateModel
-    @StateObject private var viewModel: PointOfSaleDashboardViewModel
     @StateObject private var posModalManager = POSModalManager()
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
@@ -14,9 +11,7 @@ struct PointOfSaleEntryPointView: View {
     init(itemProvider: POSItemProvider,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
-         orderService: POSOrderServiceProtocol,
-         currencyFormatter: CurrencyFormatter,
-         analytics: Analytics) {
+         orderService: POSOrderServiceProtocol) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         let posModel = PointOfSaleAggregateModel(itemProvider: itemProvider,
@@ -24,14 +19,10 @@ struct PointOfSaleEntryPointView: View {
                                                  orderService: orderService)
 
         self._posModel = StateObject(wrappedValue: posModel)
-        self._viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
-            posModel: posModel,
-            connectivityObserver: ServiceLocator.connectivityObserver)
-        )
     }
 
     var body: some View {
-        PointOfSaleDashboardView(viewModel: viewModel)
+        PointOfSaleDashboardView()
         .environmentObject(posModalManager)
         .environmentObject(posModel)
         .onAppear {
@@ -44,16 +35,10 @@ struct PointOfSaleEntryPointView: View {
 }
 
 #if DEBUG
-import class WooFoundation.MockAnalyticsPreview
-import class WooFoundation.MockAnalyticsProviderPreview
-
 #Preview {
     PointOfSaleEntryPointView(itemProvider: POSItemProviderPreview(),
                               onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                              orderService: POSOrderPreviewService(),
-                              currencyFormatter: .init(currencySettings: .init()),
-                              analytics: MockAnalyticsPreview(userHasOptedIn: true,
-                                                              analyticsProvider: MockAnalyticsProviderPreview()))
+                              orderService: POSOrderPreviewService())
 }
 #endif

@@ -371,7 +371,7 @@ extension PointOfSaleAggregateModel {
         }
         orderState = .syncing
         let cart = cartProducts.map {
-            POSCartItem(itemID: nil, product: $0.item, quantity: Decimal($0.quantity))
+            POSCartItem(product: $0.item, quantity: Decimal($0.quantity))
         }
 
         do {

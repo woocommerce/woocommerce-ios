@@ -5,13 +5,10 @@ import class WooFoundation.CurrencyFormatter
 /// POSCartItem is different from the CartItem in the POS app layer.
 /// - The POS cart UI might show the cart items differently from how they appear in an order in wp-admin.
 public struct POSCartItem {
-    /// Nil when the cart item is local and has not been synced remotely.
-    let itemID: Int64?
     let product: POSItem
     let quantity: Decimal
 
-    public init(itemID: Int64?, product: POSItem, quantity: Decimal) {
-        self.itemID = itemID
+    public init(product: POSItem, quantity: Decimal) {
         self.product = product
         self.quantity = quantity
     }

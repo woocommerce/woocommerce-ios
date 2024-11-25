@@ -44,8 +44,8 @@ struct POSOrderServiceTests {
 
         // When
         let cart: [POSCartItem] = [
-            makePOSCartItem(cartItemID: 1008, productID: 100, quantity: 2),
-            makePOSCartItem(cartItemID: 1009, productID: 102, quantity: 1)
+            makePOSCartItem(productID: 100, quantity: 2),
+            makePOSCartItem(productID: 102, quantity: 1)
         ]
         _ = try await sut.syncOrder(cart: cart, order: order)
 
@@ -66,7 +66,7 @@ struct POSOrderServiceTests {
 
         // When
         let cart: [POSCartItem] = [
-            makePOSCartItem(cartItemID: 1009, productID: 102, quantity: 1)
+            makePOSCartItem(productID: 102, quantity: 1)
         ]
         _ = try await sut.syncOrder(cart: cart, order: order)
 
@@ -88,11 +88,9 @@ struct POSOrderServiceTests {
 }
 
 private func makePOSCartItem(
-    cartItemID: Int64?,
     productID: Int64,
     quantity: Decimal) -> POSCartItem {
         return POSCartItem(
-            itemID: cartItemID,
             product: POSProduct(
                 itemID: UUID(),
                 productID: productID,
@@ -105,4 +103,3 @@ private func makePOSCartItem(
             quantity: quantity
         )
     }
-

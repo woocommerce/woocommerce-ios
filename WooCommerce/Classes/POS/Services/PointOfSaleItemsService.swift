@@ -6,8 +6,6 @@ import enum Yosemite.POSProductProviderError
 
 protocol PointOfSaleItemsServiceProtocol {
     var itemListStatePublisher: any Publisher<ItemListState, Never> { get }
-    @available(*, deprecated, message: "allItems will be removed in a future release. Use itemListState's associated value instead")
-    var allItems: [POSItem] { get }
     func loadInitialItems() async
     func loadNextItems() async
     func reload() async
@@ -16,7 +14,7 @@ protocol PointOfSaleItemsServiceProtocol {
 class PointOfSaleItemsService: PointOfSaleItemsServiceProtocol {
     private(set) var itemListStatePublisher: any Publisher<ItemListState, Never>
     private var itemListStateSubject: PassthroughSubject<ItemListState, Never> = .init()
-    private(set) var allItems: [POSItem] = []
+    private var allItems: [POSItem] = []
     private var currentPage: Int = Constants.initialPage
     private var mightHaveMorePages: Bool = true
     private let itemProvider: POSItemProvider

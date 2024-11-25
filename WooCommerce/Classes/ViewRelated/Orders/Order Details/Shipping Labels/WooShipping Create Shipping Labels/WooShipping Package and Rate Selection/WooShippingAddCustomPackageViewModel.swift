@@ -97,16 +97,16 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
             return .failure(WooShippingAddCustomPackageViewModel.Error.packageDataNotValid)
         }
 
-        let repositoryError = await packagesRepository.saveCustomPackage(packageData,
-                                                                         dimensionsUnit: dimensionsUnit,
-                                                                         weightUnit: weightUnit,
-                                                                         siteID: siteID,
-                                                                         stores: stores)
-        if let repositoryError {
-            return .failure(WooShippingAddCustomPackageViewModel.Error.failure(repositoryError))
-        }
-        else {
-            return await addPackageAction(package: packageData)
+        let result =  await packagesRepository.saveCustomPackage(packageData,
+                                                          dimensionsUnit: dimensionsUnit,
+                                                          weightUnit: weightUnit,
+                                                          siteID: siteID,
+                                                          stores: stores)
+        switch result {
+        case .success(let success):
+            return .success(success)
+        case .failure(let failure):
+            return .failure(WooShippingAddCustomPackageViewModel.Error.failure(failure))
         }
     }
 

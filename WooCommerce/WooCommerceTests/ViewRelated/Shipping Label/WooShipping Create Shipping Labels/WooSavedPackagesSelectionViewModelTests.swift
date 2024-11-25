@@ -228,14 +228,14 @@ final class MockWooShippingPackagesRepository: WooShippingPackagesRepositoryProt
     func saveCustomPackage(_ packageToAdd: WooShippingPackageDataRepresentable,
                            dimensionsUnit: String,
                            weightUnit: String, siteID:
-                           Int64, stores: StoresManager) async -> Error? {
+                           Int64, stores: StoresManager) async -> Result<any WooCommerce.WooShippingPackageDataRepresentable, any Error> {
         guard !customSavedPackages.contains(where: { package in
             return package.id == packageToAdd.id
         })  else {
-            return WooShippingPackagesRepositoryError.customPackageWithSameIdAlreadyExists
+            return .failure(WooShippingPackagesRepositoryError.customPackageWithSameIdAlreadyExists)
         }
         customSavedPackages.append(packageToAdd)
-        return nil
+        return .success(packageToAdd)
     }
 
     @MainActor

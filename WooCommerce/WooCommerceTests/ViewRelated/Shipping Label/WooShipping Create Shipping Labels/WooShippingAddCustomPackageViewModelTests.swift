@@ -211,7 +211,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
     @MainActor
     func test_save_package_as_template_action() async {
         // Given
-        let packagesRepository = MockWooShippingPackagesRepository()
+        let packagesRepository = WooShippingPackagesRepository()
         let siteID: Int64 = 1234
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID,

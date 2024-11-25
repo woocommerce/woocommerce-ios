@@ -17,7 +17,7 @@ protocol WooShippingPackagesRepositoryProtocol {
                            dimensionsUnit: String,
                            weightUnit: String,
                            siteID: Int64,
-                           stores: StoresManager) async -> Error?
+                           stores: StoresManager) async -> Result<WooShippingPackageDataRepresentable, Error>
     func savePredefinedPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error?
 }
 
@@ -196,11 +196,11 @@ final class WooShippingPackagesRepository: ObservableObject, WooShippingPackages
     func saveCustomPackage(_ packageToAdd: WooShippingPackageDataRepresentable,
                            dimensionsUnit: String,
                            weightUnit: String, siteID:
-                           Int64, stores: StoresManager) async -> Error? {
+                           Int64, stores: StoresManager) async -> Result<WooShippingPackageDataRepresentable, Error> {
         guard !customSavedPackages.contains(where: { package in
             return package.id == packageToAdd.id
         })  else {
-            return WooShippingPackagesRepositoryError.customPackageWithSameIdAlreadyExists
+            return .failure(WooShippingPackagesRepositoryError.customPackageWithSameIdAlreadyExists)
         }
 
         let customPackage = WooShippingCustomPackage(id: "",
@@ -239,9 +239,9 @@ final class WooShippingPackagesRepository: ObservableObject, WooShippingPackages
         case .success(let savedPackage):
             // append saved package so it is immediately available in UI without extra backend calls
             customSavedPackages.append(savedPackage)
-            return nil
+            return .success(savedPackage)
         case .failure(let error):
-            return error
+            return .failure(error)
         }
     }
 

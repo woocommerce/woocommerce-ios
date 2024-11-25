@@ -597,6 +597,7 @@ private extension AppDelegate {
                 .first(where: { $0 != nil })
                 .sink { site in
                     guard let site else {
+                        // This should never happen as we filter out nil values
                         return
                     }
                     _ = self.handleAuthenticationUrlForJetpackSetup(with: site, url: url, rootViewController: rootViewController)

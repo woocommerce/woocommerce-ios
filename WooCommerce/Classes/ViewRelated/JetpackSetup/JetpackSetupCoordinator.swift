@@ -15,6 +15,7 @@ final class JetpackSetupCoordinator {
     /// Whether Jetpack is installed and activated and only connection needs to be handled.
     private var requiresConnectionOnly: Bool
     private var jetpackConnectedEmail: String?
+    private let accountService: WordPressComAccountServiceProtocol
     private let stores: StoresManager
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
@@ -27,6 +28,7 @@ final class JetpackSetupCoordinator {
         .init(siteURL: site.url,
               requiresConnectionOnly: requiresConnectionOnly,
               allowAccountCreation: true,
+              accountService: accountService,
               onPasswordUIRequest: showPasswordUI(email:),
               onMagicLinkUIRequest: showMagicLinkUI,
               onError: { [weak self] message in
@@ -42,6 +44,7 @@ final class JetpackSetupCoordinator {
     init(site: Site,
          dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme,
          rootViewController: UIViewController,
+         accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
@@ -49,6 +52,7 @@ final class JetpackSetupCoordinator {
         self.dotcomAuthScheme = dotcomAuthScheme
         self.requiresConnectionOnly = false // to be updated later after fetching Jetpack status
         self.rootViewController = rootViewController
+        self.accountService = accountService
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
@@ -85,6 +89,17 @@ final class JetpackSetupCoordinator {
 
         startJetpackSetupFlow(authToken: authToken)
         return true
+    }
+
+    func startAuthentication(with email: String?) {
+        if let email {
+            Task { @MainActor in
+                analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress))
+                await emailLoginViewModel.checkWordPressComAccount(email: email)
+            }
+        } else {
+            showWPComEmailLogin()
+        }
     }
 }
 
@@ -157,17 +172,6 @@ private extension JetpackSetupCoordinator {
         /// confirms Jetpack plugin status by checking with the system plugin list.
         /// this is to avoid the edge case when Jetpack user is returned even though Jetpack plugin is not installed.
         requiresConnectionOnly = try await isJetpackInstalledAndActive()
-    }
-
-    func startAuthentication(with email: String?) {
-        if let email {
-            Task { @MainActor in
-                analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress))
-                await emailLoginViewModel.checkWordPressComAccount(email: email)
-            }
-        } else {
-            showWPComEmailLogin()
-        }
     }
 
     func displayAdminRoleRequiredError() {

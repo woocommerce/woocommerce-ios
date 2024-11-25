@@ -121,9 +121,9 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
 
     func loadStoreOptions() {
         guard isLoadingStoreOptions == false else { return }
-        
+
         isLoadingStoreOptions = true
-        
+
         let action = WooShippingAction.loadAccountSettings(siteID: siteID) { result in
             switch result {
             case .success(let settings):

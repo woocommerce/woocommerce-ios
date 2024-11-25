@@ -1,5 +1,4 @@
 import SwiftUI
-import enum Yosemite.WooShippingAction
 
 struct WooAddCustomPackageView: View {
     enum Constants {
@@ -8,32 +7,38 @@ struct WooAddCustomPackageView: View {
         static let scrollToDelay: Double = 0.5
     }
 
-    @StateObject private var customPackageViewModel = WooShippingAddCustomPackageViewModel()
+    @ObservedObject private var viewModel: WooShippingAddCustomPackageViewModel
 
     @FocusState var packageTemplateNameFieldFocused: Bool
     @FocusState var focusedField: WooShippingPackageUnitType?
 
     @State private var isSavingPackage: Bool = false
+    @State private var isAddingPackage: Bool = false
 
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
+
+    init(viewModel: WooShippingAddCustomPackageViewModel, addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
+        self.viewModel = viewModel
+        self.addPackageAction = addPackageAction
+    }
 
     private var packageTypeSelectionView: some View {
         Menu {
             // show selection
             ForEach(WooShippingPackageType.allCases, id: \.self) { option in
                 Button {
-                    customPackageViewModel.packageType = option
+                    viewModel.packageType = option
                 } label: {
                     Text(option.name)
                         .bodyStyle()
-                    if customPackageViewModel.packageType == option {
+                    if viewModel.packageType == option {
                         Image(uiImage: .checkmarkStyledImage)
                     }
                 }
             }
         } label: {
             HStack {
-                Text(customPackageViewModel.packageType.name)
+                Text(viewModel.packageType.name)
                     .bodyStyle()
                 Spacer()
                 Image(systemName: "chevron.up.chevron.down")
@@ -43,142 +48,117 @@ struct WooAddCustomPackageView: View {
         .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
     }
 
-    private var loadingView: some View {
-        VStack {
-            Spacer()
-            HStack {
-                Spacer()
-                if customPackageViewModel.isLoadingStoreOptions {
-                    ActivityIndicator(isAnimating: .constant(true), style: .large)
-                }
-                else {
-                    Button {
-                        customPackageViewModel.loadStoreOptions()
-                    } label: {
-                        Image(systemName: "arrow.trianglehead.counterclockwise")
-                    }
-                }
-                Spacer()
-            }
-            Spacer()
-        }
-    }
-
     var body: some View {
         GeometryReader { geometry in
-            if let storeOptions = customPackageViewModel.storeOptions {
-                ScrollViewReader { proxy in
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: Constants.defaultVerticalSpacing) {
-                            HStack {
-                                Text(Localization.packageType)
-                                    .font(.subheadline)
-                                Spacer()
-                            }
-                            packageTypeSelectionView
-                            VStack {
-                                AdaptiveStack(spacing: 8) {
-                                    ForEach(WooShippingPackageUnitType.dimensionUnits, id: \.self) { dimensionUnit in
-                                        unitInputView(for: dimensionUnit, unit: storeOptions.dimensionUnit)
-                                    }
-                                }
-                                // showing weight input only if we are saving the template
-                                if customPackageViewModel.showSaveTemplate {
-                                    unitInputView(for: WooShippingPackageUnitType.weight, unit: storeOptions.weightUnit)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: Constants.defaultVerticalSpacing) {
+                        HStack {
+                            Text(Localization.packageType)
+                                .font(.subheadline)
+                            Spacer()
+                        }
+                        packageTypeSelectionView
+                        VStack {
+                            AdaptiveStack(spacing: 8) {
+                                ForEach(WooShippingPackageUnitType.dimensionUnits, id: \.self) { dimensionUnit in
+                                    unitInputView(for: dimensionUnit, unit: viewModel.dimensionsUnit)
                                 }
                             }
-                            .toolbar {
-                                ToolbarItemGroup(placement: .keyboard) {
-                                    Group {
-                                        Button(action: {
-                                            onBackwardButtonTapped()
-                                        }, label: {
-                                            Image(systemName: "chevron.backward")
-                                        })
-                                        .disabled(focusedField == WooShippingPackageUnitType.allCases.first)
-                                        Button(action: {
-                                            onForwardButtonTapped()
-                                        }, label: {
-                                            Image(systemName: "chevron.forward")
-                                        })
-                                        .disabled(focusedField == WooShippingPackageUnitType.allCases.last)
-                                        Spacer()
-                                        Button {
-                                            dismissKeyboard()
-                                        } label: {
-                                            Text(Localization.keyboardDoneButton)
-                                                .bold()
-                                        }
-                                    }
-                                    .renderedIf(focusedField != nil)
-                                }
+                            // showing weight input only if we are saving the template
+                            if viewModel.showSaveTemplate {
+                                unitInputView(for: WooShippingPackageUnitType.weight, unit: viewModel.weightUnit)
                             }
-                            Toggle(isOn: $customPackageViewModel.showSaveTemplate) {
-                                Text(Localization.saveNewPackageTemplate)
-                                    .font(.subheadline)
-                            }
-                            .tint(Color.accentColor)
-                            if customPackageViewModel.showSaveTemplate {
-                                VStack {
-                                    TextField(Localization.savePackageTemplatePlaceholder, text: $customPackageViewModel.packageTemplateName)
-                                        .font(.body)
-                                        .focused($packageTemplateNameFieldFocused)
-                                        .padding()
-                                        .roundedBorder(cornerRadius: 8,
-                                                       lineColor: packageTemplateNameFieldFocused ? Color.accentColor : Color(.separator),
-                                                       lineWidth: packageTemplateNameFieldFocused ? 2 : 1)
+                        }
+                        .toolbar {
+                            ToolbarItemGroup(placement: .keyboard) {
+                                Group {
+                                    Button(action: {
+                                        onBackwardButtonTapped()
+                                    }, label: {
+                                        Image(systemName: "chevron.backward")
+                                    })
+                                    .disabled(focusedField == WooShippingPackageUnitType.allCases.first)
+                                    Button(action: {
+                                        onForwardButtonTapped()
+                                    }, label: {
+                                        Image(systemName: "chevron.forward")
+                                    })
+                                    .disabled(focusedField == WooShippingPackageUnitType.allCases.last)
                                     Spacer()
-                                    Button(Localization.savePackageTemplate) {
-                                        Task { @MainActor in
-                                            isSavingPackage = true
-                                            await savePackageAsTemplateButtonTapped()
-                                            isSavingPackage = false
-                                        }
+                                    Button {
+                                        dismissKeyboard()
+                                    } label: {
+                                        Text(Localization.keyboardDoneButton)
+                                            .bold()
                                     }
-                                    .disabled(!customPackageViewModel.validateCustomPackageInputFields())
-                                    .buttonStyle(SecondaryLoadingButtonStyle(isLoading: isSavingPackage))
-                                    .padding(.bottom)
                                 }
-                                .id(Constants.saveTemplateContentID) // Set the id for the button so we can scroll to it
+                                .renderedIf(focusedField != nil)
                             }
-                            else {
+                        }
+                        Toggle(isOn: $viewModel.showSaveTemplate) {
+                            Text(Localization.saveNewPackageTemplate)
+                                .font(.subheadline)
+                        }
+                        .tint(Color.accentColor)
+                        if viewModel.showSaveTemplate {
+                            VStack {
+                                TextField(Localization.savePackageTemplatePlaceholder, text: $viewModel.packageTemplateName)
+                                    .font(.body)
+                                    .focused($packageTemplateNameFieldFocused)
+                                    .padding()
+                                    .roundedBorder(cornerRadius: 8,
+                                                   lineColor: packageTemplateNameFieldFocused ? Color.accentColor : Color(.separator),
+                                                   lineWidth: packageTemplateNameFieldFocused ? 2 : 1)
                                 Spacer()
-                                Button(WooShippingAddPackageView.Localization.addPackage) {
-                                    addPackageButtonTapped()
+                                Button(Localization.savePackageTemplate) {
+                                    Task { @MainActor in
+                                        isSavingPackage = true
+                                        await savePackageAsTemplateButtonTapped()
+                                        isSavingPackage = false
+                                    }
                                 }
-                                .disabled(!customPackageViewModel.validateCustomPackageInputFields())
-                                .buttonStyle(PrimaryButtonStyle())
+                                .disabled(!viewModel.validateCustomPackageInputFields())
+                                .buttonStyle(SecondaryLoadingButtonStyle(isLoading: isSavingPackage))
                                 .padding(.bottom)
                             }
+                            .id(Constants.saveTemplateContentID) // Set the id for the button so we can scroll to it
                         }
-                        .padding(.horizontal)
-                        .frame(minHeight: geometry.size.height)
-                        .frame(width: geometry.size.width)
-                        .onChange(of: customPackageViewModel.showSaveTemplate) { newValue in
-                            packageTemplateNameFieldFocused = newValue
-                        }
-                        .onChange(of: packageTemplateNameFieldFocused) { focused in
-                            if focused {
-                                // More info about why small delay is added:
-                                // - https://github.com/woocommerce/woocommerce-ios/pull/14086#discussion_r1806036901
-                                DispatchQueue.main.asyncAfter(deadline: .now() + Constants.scrollToDelay, execute: {
-                                    withAnimation {
-                                        proxy.scrollTo(Constants.saveTemplateContentID, anchor: .top)
-                                    }
-                                })
+                        else {
+                            Spacer()
+                            Button(WooShippingAddPackageView.Localization.addPackage) {
+                                Task { @MainActor in
+                                    isAddingPackage = true
+                                    await addPackageButtonTapped()
+                                    isAddingPackage = false
+                                }
                             }
+                            .disabled(!viewModel.validateCustomPackageInputFields())
+                            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isAddingPackage))
+                            .padding(.bottom)
                         }
                     }
-                    .scrollDismissesKeyboard(.interactively)
-                    .disabled(isSavingPackage)
+                    .padding(.horizontal)
+                    .frame(minHeight: geometry.size.height)
+                    .frame(width: geometry.size.width)
+                    .onChange(of: viewModel.showSaveTemplate) { newValue in
+                        packageTemplateNameFieldFocused = newValue
+                    }
+                    .onChange(of: packageTemplateNameFieldFocused) { focused in
+                        if focused {
+                            // More info about why small delay is added:
+                            // - https://github.com/woocommerce/woocommerce-ios/pull/14086#discussion_r1806036901
+                            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.scrollToDelay, execute: {
+                                withAnimation {
+                                    proxy.scrollTo(Constants.saveTemplateContentID, anchor: .top)
+                                }
+                            })
+                        }
+                    }
                 }
+                .scrollDismissesKeyboard(.interactively)
+                .disabled(isSavingPackage)
             }
-            else {
-                loadingView
-            }
-        }
-        .task {
-            customPackageViewModel.loadStoreOptions()
         }
     }
 
@@ -186,26 +166,37 @@ struct WooAddCustomPackageView: View {
         WooShippingAddPackageUnitInputView(unitType: unitType,
                                            unit: unit,
                                            fieldValue: Binding(get: {
-            return self.customPackageViewModel.fieldValues[unitType] ?? ""
+            return self.viewModel.fieldValues[unitType] ?? ""
         }, set: { value in
-            self.customPackageViewModel.fieldValues[unitType] = value
+            self.viewModel.fieldValues[unitType] = value
         }), focusedField: _focusedField)
     }
 
     // MARK: - actions
 
-    private func addPackageButtonTapped() {
-        if let packageData = customPackageViewModel.addPackageAction() {
-            // call addPackageAction with data
-            addPackageAction(packageData)
+    @MainActor
+    private func addPackageButtonTapped() async {
+        let packageDataResult = await viewModel.addPackageAction()
+        // call addPackageAction with data
+        switch packageDataResult {
+        case .success(let data):
+            addPackageAction(data)
+        case .failure(let failure):
+            // show failure
+            print(failure)
         }
     }
 
     @MainActor
     private func savePackageAsTemplateButtonTapped() async {
-        if let packageData = await customPackageViewModel.savePackageAsTemplateAction() {
-            // call addPackageAction with data
-            addPackageAction(packageData)
+        let packageDataResult = await viewModel.savePackageAsTemplateAction()
+        // call addPackageAction with data
+        switch packageDataResult {
+        case .success(let data):
+            addPackageAction(data)
+        case .failure(let failure):
+            // show failure
+            print(failure)
         }
     }
 

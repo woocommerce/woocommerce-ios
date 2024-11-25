@@ -56,6 +56,35 @@ struct POSOrderServiceTests {
                     "Items should be deleted (quantity 0) or new (itemID 0)")
         }
     }
+
+    @Test func syncOrder_after_removing_item_from_cart_deletes_it_from_the_order() async throws {
+        // Given
+        let orderItems: [OrderItem] = [
+            .fake().copy(itemID: 1, name: "Item 1", productID: 100, quantity: 1),
+            .fake().copy(itemID: 2, name: "Item 2", productID: 102, quantity: 5)]
+        let order = Order.fake().copy(siteID: 123, orderID: 456, items: orderItems)
+
+        // When
+        let cart: [POSCartItem] = [
+            makePOSCartItem(cartItemID: 1009, productID: 102, quantity: 1)
+        ]
+        _ = try await sut.syncOrder(cart: cart, order: order)
+
+        // Then
+        let updatedOrderItems = try #require(mockOrdersRemote.spyUpdatePOSOrder?.items)
+
+        #expect(updatedOrderItems.contains(where: { item in
+            item.itemID == 1 && item.quantity == 0
+        }), "Item 1 should be deleted")
+
+        #expect(!updatedOrderItems.contains(where: { item in
+            item.productID == 100 && item.quantity > 0
+        }), "Product for item 1 should not be re-added")
+
+        #expect(updatedOrderItems.contains(where: { item in
+            item.productID == 102 && item.quantity > 0
+        }), "Product for item 2 should be re-added")
+    }
 }
 
 private func makePOSCartItem(

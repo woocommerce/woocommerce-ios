@@ -595,12 +595,12 @@ private extension AppDelegate {
             ServiceLocator.stores.sessionManager.defaultSitePublisher
                 .timeout(.seconds(30), scheduler: DispatchQueue.main)
                 .first(where: { $0 != nil })
-                .sink { site in
+                .sink { [weak self] site in
                     guard let site else {
                         // This should never happen as we filter out nil values
                         return
                     }
-                    _ = self.handleAuthenticationUrlForJetpackSetup(with: site, url: url, rootViewController: rootViewController)
+                    _ = self?.handleAuthenticationUrlForJetpackSetup(with: site, url: url, rootViewController: rootViewController)
                 }
                 .store(in: &subscriptions)
 

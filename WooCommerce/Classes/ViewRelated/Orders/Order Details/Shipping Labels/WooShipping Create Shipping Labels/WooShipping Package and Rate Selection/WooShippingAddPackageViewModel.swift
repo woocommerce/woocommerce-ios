@@ -11,14 +11,38 @@ final class WooShippingAddPackageViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.stores = stores
-        self.savedPackagesViewModel = WooSavedPackagesSelectionViewModel()
     }
 
     @Published private(set) var isLoadingPackages: Bool = false
 
-    @Published private(set) var savedPackagesViewModel: WooSavedPackagesSelectionViewModel
+    // MARK: - saved
+
+    @Published var selectedSavedPackageId: String? = nil  // Track the selected package index
+    @Published private(set) var customSavedPackages: [any WooShippingPackageDataRepresentable] = []
+    @Published private(set) var predefinedSavedPackages: [any WooShippingPackageDataRepresentable] = []
+    var hasSavedPackages: Bool {
+        return customSavedPackages.isNotEmpty || predefinedSavedPackages.isNotEmpty
+    }
+
+    var selectedSavedPackage: WooShippingPackageDataRepresentable? {
+        guard let selectedSavedPackageId else { return nil }
+
+        let packages = customSavedPackages + predefinedSavedPackages
+
+        for packageItem in packages {
+            if selectedSavedPackageId == packageItem.id {
+                return packageItem
+            }
+        }
+
+        return nil
+    }
+
+    // MARK: - carrier
 
     @Published private(set) var carrierPackages: [WooShippingCarrierPackages] = []
+
+    // MARK: - loading
 
     func loadPackages() {
         guard !isLoadingPackages else { return }
@@ -46,11 +70,25 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         let predefinedSavedPackages = packagesResult.savedPredefinedPackages.map {
             return $0.toPackageData(storeOptions: packagesResult.storeOptions)
         }
-        savedPackagesViewModel.updatePackages(customSavedPackages: customSavedPackages, predefinedSavedPackages: predefinedSavedPackages)
+        self.customSavedPackages = customSavedPackages
+        self.predefinedSavedPackages = predefinedSavedPackages
     }
 
     // star/unstar packages
+
     // delete saved packages
+    func removeSavedPackage(_ packageToRemove: WooShippingPackageDataRepresentable) async -> Error? {
+        // TODO: rewrite to directly use actions
+        // delete the package locally and on backend
+        customSavedPackages.removeAll { package in package.id == packageToRemove.id }
+        predefinedSavedPackages.removeAll { package in package.id == packageToRemove.id }
+
+        if self.selectedSavedPackageId == packageToRemove.id {
+            self.selectedSavedPackageId = nil
+        }
+
+        return nil
+    }
 }
 
 extension WooShippingCustomPackage {

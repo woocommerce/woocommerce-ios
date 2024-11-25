@@ -596,7 +596,7 @@ private extension AppDelegate {
                 .timeout(.seconds(30), scheduler: DispatchQueue.main)
                 .first(where: { $0 != nil })
                 .sink { site in
-                    guard let site = site else {
+                    guard let site else {
                         return
                     }
                     _ = self.handleAuthenticationUrlForJetpackSetup(with: site, url: url, rootViewController: rootViewController)

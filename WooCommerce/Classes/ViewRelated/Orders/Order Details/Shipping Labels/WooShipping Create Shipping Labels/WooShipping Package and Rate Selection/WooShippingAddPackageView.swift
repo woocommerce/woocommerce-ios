@@ -19,10 +19,17 @@ struct WooShippingAddPackageView: View {
 
     // Holds type of selected package, it can be `custom`, `carrier` or `saved`
     @State var selectedPackageType = PackageProviderType.custom
-    @StateObject var packagesRepository = WooShippingPackagesRepository.shared
+    @StateObject var packagesRepository: WooShippingPackagesRepository
+    @StateObject var customPackageViewModel: WooShippingAddCustomPackageViewModel
 
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
+    init(packagesRepository: WooShippingPackagesRepository = WooShippingPackagesRepository.shared,
+         addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
+        self._packagesRepository = StateObject(wrappedValue: packagesRepository)
+        self._customPackageViewModel = StateObject(wrappedValue: WooShippingAddCustomPackageViewModel(packagesRepository: packagesRepository))
+        self.addPackageAction = addPackageAction
+    }
     // MARK: - UI
 
     var body: some View {
@@ -71,7 +78,7 @@ struct WooShippingAddPackageView: View {
 
     @ViewBuilder
     private var customPackageView: some View {
-        WooAddCustomPackageView(viewModel: WooShippingAddCustomPackageViewModel(packagesRepository: packagesRepository)) { packageData in
+        WooAddCustomPackageView(viewModel: customPackageViewModel) { packageData in
             addPackageAction(packageData)
         }
     }

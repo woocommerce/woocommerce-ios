@@ -58,7 +58,7 @@ final class ProductTagStoreTests: XCTestCase {
         super.tearDown()
     }
 
-    func testSynchronizeProductTagsReturnsTagsUponSuccessfulResponse() throws {
+    func test_synchronizeAllProductTags_saves_all_tags_with_count_larger_than_0_to_storage() throws {
         // Given a stubed product-tags network response
         network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-all")
         network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-empty")
@@ -74,8 +74,8 @@ final class ProductTagStoreTests: XCTestCase {
             store.onAction(action)
         }
 
-        // Then a valid set of tags should be stored
-        XCTAssertEqual(storedProductTagsCount, 4)
+        // Then a valid set of tags (count > 0) should be stored
+        XCTAssertEqual(storedProductTagsCount, 3)
         XCTAssertNil(errorResponse)
     }
 
@@ -97,13 +97,13 @@ final class ProductTagStoreTests: XCTestCase {
         }
 
         // Then the combined set of tags should be stored
-        XCTAssertEqual(storedProductTagsCount, 5)
+        XCTAssertEqual(storedProductTagsCount, 4)
         XCTAssertNil(errorResponse)
     }
 
     func testSynchronizeProductTagsUpdatesStoredTagsSuccessfulResponse() {
         // Given an initial stored tag and a stubed product-tags network response
-        let initialTag = sampleTag(tagID: 34)
+        let initialTag = sampleTag(tagID: 35)
         storageManager.insertSampleProductTag(readOnlyProductTag: initialTag)
         network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-all")
         network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-empty")
@@ -144,7 +144,7 @@ final class ProductTagStoreTests: XCTestCase {
         }
 
         // Then first page of tags should be stored
-        XCTAssertEqual(storedProductTagsCount, 4)
+        XCTAssertEqual(storedProductTagsCount, 3)
 
         // And error should contain correct fromPageNumber
         switch errorResponse {
@@ -300,7 +300,7 @@ final class ProductTagStoreTests: XCTestCase {
         }
 
         // Then new tag should be stored and old tags should be deleted
-        XCTAssertEqual(storedProductTagsCount, 4)
+        XCTAssertEqual(storedProductTagsCount, 3)
         XCTAssertNil(errorResponse)
     }
 

@@ -238,6 +238,25 @@ final class ProductTagStoreTests: XCTestCase {
         XCTAssertNotNil(result?.failure)
     }
 
+    func test_addProductTags_returns_success_for_empty_tag_list() throws {
+        // When
+        var result: Result<[Networking.ProductTag], Error>?
+        waitForExpectation { (exp) in
+            let action = ProductTagAction.addProductTags(siteID: sampleSiteID, tags: []) { (aResult) in
+                result = aResult
+                exp.fulfill()
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let receivedResult = try XCTUnwrap(result)
+        XCTAssertTrue(receivedResult.isSuccess)
+
+        let addedTags = try receivedResult.get()
+        XCTAssertTrue(addedTags.isEmpty)
+    }
+
     func testAddProductTagReturnsErrorUponEmptyResponse() {
         // Given an empty network response
         XCTAssertEqual(storedProductTagsCount, 0)

@@ -1,8 +1,8 @@
 import Foundation
 import Combine
 import protocol Yosemite.POSItem
-import protocol Yosemite.POSItemProvider
-import enum Yosemite.POSProductProviderError
+import protocol Yosemite.PointOfSaleItemServiceProtocol
+import enum Yosemite.PointOfSaleProductServiceError
 
 protocol PointOfSaleItemsControllerProtocol {
     var itemListStatePublisher: any Publisher<ItemListState, Never> { get }
@@ -17,9 +17,9 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     private var allItems: [POSItem] = []
     private var currentPage: Int = Constants.initialPage
     private var mightHaveMorePages: Bool = true
-    private let itemProvider: POSItemProvider
+    private let itemProvider: PointOfSaleItemServiceProtocol
 
-    init(itemProvider: POSItemProvider) {
+    init(itemProvider: PointOfSaleItemServiceProtocol) {
         self.itemProvider = itemProvider
         itemListStatePublisher = itemListStateSubject.eraseToAnyPublisher()
     }
@@ -62,10 +62,10 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
             try await fetchItems(pageNumber: pageNumber)
             mightHaveMorePages = true
             updateItemListStateAfterLoadAttempt()
-        } catch POSProductProviderError.pageOutOfRange {
+        } catch PointOfSaleProductServiceError.pageOutOfRange {
             mightHaveMorePages = false
             updateItemListStateAfterLoadAttempt()
-            throw POSProductProviderError.pageOutOfRange
+            throw PointOfSaleProductServiceError.pageOutOfRange
         } catch {
             itemListStateSubject.send(.error(PointOfSaleErrorState.errorOnLoadingProducts()))
             throw error

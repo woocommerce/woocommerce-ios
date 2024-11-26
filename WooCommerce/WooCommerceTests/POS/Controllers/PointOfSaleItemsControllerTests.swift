@@ -3,12 +3,12 @@ import Combine
 @testable import WooCommerce
 
 final class PointOfSaleItemsControllerTests {
-    private let itemProvider: MockPOSItemProvider
+    private let itemProvider: MockPointOfSaleItemService
     private let sut: PointOfSaleItemsController
     @Published var itemListState: ItemListState = .initialLoading
 
     init() {
-        itemProvider = MockPOSItemProvider()
+        itemProvider = MockPointOfSaleItemService()
         sut = PointOfSaleItemsController(itemProvider: itemProvider)
         sut.itemListStatePublisher.assign(to: &$itemListState)
     }
@@ -26,7 +26,7 @@ final class PointOfSaleItemsControllerTests {
 
     @Test func loadInitialItems_results_in_loaded_state() async throws {
         // Given
-        let expectedItems = MockPOSItemProvider.makeInitialItems()
+        let expectedItems = MockPointOfSaleItemService.makeInitialItems()
         try #require(itemListState == .initialLoading)
 
         // When
@@ -39,7 +39,7 @@ final class PointOfSaleItemsControllerTests {
     @Test func loadInitialItems_when_called_multiple_times_then_items_are_not_duplicated() async throws {
         // Given
         try #require(itemListState == .initialLoading)
-        let expectedItems = MockPOSItemProvider.makeInitialItems()
+        let expectedItems = MockPointOfSaleItemService.makeInitialItems()
 
         // When
         await sut.loadInitialItems()
@@ -57,7 +57,7 @@ final class PointOfSaleItemsControllerTests {
     @Test func reload_results_in_loaded_state() async throws {
         // Given
         try #require(itemListState == .initialLoading)
-        let expectedItems = MockPOSItemProvider.makeInitialItems()
+        let expectedItems = MockPointOfSaleItemService.makeInitialItems()
 
         // When
         await sut.reload()
@@ -73,7 +73,7 @@ final class PointOfSaleItemsControllerTests {
     @Test func reload_when_called_multiple_times_then_items_are_not_duplicated() async throws {
         // Given
         try #require(itemListState == .initialLoading)
-        let expectedItems = MockPOSItemProvider.makeInitialItems()
+        let expectedItems = MockPointOfSaleItemService.makeInitialItems()
 
         // When
         await sut.reload()
@@ -108,7 +108,7 @@ final class PointOfSaleItemsControllerTests {
 
     @Test func loadItems_when_initial_items_has_items_then_state_is_loaded_with_initial_items() async throws {
         // Given
-        let initialItems = MockPOSItemProvider.makeInitialItems()
+        let initialItems = MockPointOfSaleItemService.makeInitialItems()
         itemProvider.items = initialItems
 
         try #require(itemListState == .initialLoading)
@@ -122,7 +122,7 @@ final class PointOfSaleItemsControllerTests {
 
     @Test func loadItems_when_simulateFetchNextPage_then_state_is_loaded_with_expected_items() async throws {
         // Given
-        let initialItems = MockPOSItemProvider.makeInitialItems()
+        let initialItems = MockPointOfSaleItemService.makeInitialItems()
         itemProvider.items = initialItems
         itemProvider.shouldSimulateTwoPages = true
 
@@ -208,7 +208,7 @@ final class PointOfSaleItemsControllerTests {
     @Test func reload_results_in_state_loaded_with_expected_items() async throws {
         // Given
         try #require(itemListState == .initialLoading)
-        let expectedItems = MockPOSItemProvider.makeInitialItems()
+        let expectedItems = MockPointOfSaleItemService.makeInitialItems()
 
         // When
         await sut.reload()

@@ -1,7 +1,7 @@
 #if DEBUG
 
 import Foundation
-import protocol Yosemite.POSItemProvider
+import protocol Yosemite.PointOfSaleItemServiceProtocol
 import protocol Yosemite.POSItem
 import enum Yosemite.ProductType
 import Combine
@@ -19,7 +19,7 @@ struct POSProductPreview: POSItem {
     let productType: ProductType
 }
 
-final class POSItemProviderPreview: POSItemProvider {
+final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
     func providePointOfSaleItems(pageNumber: Int) async throws -> [Yosemite.POSItem] {
         []
     }

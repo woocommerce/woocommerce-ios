@@ -1,6 +1,4 @@
 import SwiftUI
-import protocol Yosemite.POSItemProvider
-import protocol Yosemite.POSOrderServiceProtocol
 
 struct PointOfSaleEntryPointView: View {
     @StateObject private var posModel: PointOfSaleAggregateModel

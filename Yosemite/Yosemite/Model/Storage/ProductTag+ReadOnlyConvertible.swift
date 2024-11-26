@@ -22,6 +22,6 @@ extension Storage.ProductTag: ReadOnlyConvertible {
                           tagID: tagID,
                           name: name,
                           slug: slug,
-                          count: products?.count ?? 0)
+                          count: 0)
     }
 }

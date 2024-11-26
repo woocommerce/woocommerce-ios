@@ -16,7 +16,7 @@ public struct ProductTag: Codable, Equatable, GeneratedFakeable, GeneratedCopiab
                 tagID: Int64,
                 name: String,
                 slug: String,
-                count: Int) {
+                count: Int = 0) {
         self.siteID = siteID
         self.tagID = tagID
         self.name = name

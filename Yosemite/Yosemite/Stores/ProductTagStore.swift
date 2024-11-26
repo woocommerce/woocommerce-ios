@@ -163,10 +163,11 @@ private extension ProductTagStore {
     func upsertStoredProductTags(_ readOnlyProductTags: [Networking.ProductTag],
                                  in storage: StorageType,
                                  siteID: Int64) {
+        let storedItems = storage.loadProductTags(siteID: siteID)
         // Upserts the ProductTag models from the read-only version
         for readOnlyProductTag in readOnlyProductTags {
             let storageProductTag: Storage.ProductTag = {
-                if let storedTag = storage.loadProductTag(siteID: siteID, tagID: readOnlyProductTag.tagID) {
+                if let storedTag = storedItems.first(where: { $0.tagID == readOnlyProductTag.tagID }) {
                     return storedTag
                 }
                 return storage.insertNewObject(ofType: Storage.ProductTag.self)

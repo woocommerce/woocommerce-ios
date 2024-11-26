@@ -19,7 +19,9 @@ struct WooPackageGroup {
 struct WooCarrierPackagesView: View {
     let carrierTab: WooShippingCarrierPackages
     @Binding var selectedPackageId: String?  // Track the selected package index
-    @State private var starredPackages: Set<String> = []
+    @Binding var starredPackages: Set<String>
+    let tapAction: (String) -> Void
+    let starAction: (String) -> Void
 
     var body: some View {
         List {
@@ -32,16 +34,11 @@ struct WooCarrierPackagesView: View {
                             showTopDivider: false,
                             showSource: false,
                             tapAction: {
-                                selectedPackageId = selectedPackageId == package.id ? nil : package.id
+                                tapAction(package.id)
                             },
                             starAction: {
+                                starAction(package.id)
                                 // Just temporary, will be replaced with proper logic
-                                if starredPackages.contains(package.id) {
-                                    starredPackages.remove(package.id)
-                                }
-                                else {
-                                    starredPackages.insert(package.id)
-                                }
                             },
                             starred: starredPackages.contains(package.id)
                         )
@@ -101,7 +98,15 @@ struct WooCarrierPackagesSelectionView: View {
             }
             if let selectedCarrierTab = viewModel.selectedCarrierTab {
                 WooCarrierPackagesView(carrierTab: selectedCarrierTab,
-                                       selectedPackageId: $viewModel.selectedCarriersPackageId)
+                                       selectedPackageId: $viewModel.selectedCarriersPackageId,
+                                       starredPackages: $viewModel.starredCarriersPackages,
+                                       tapAction: { packageID in
+                    viewModel.selectedCarriersPackageId = viewModel.selectedCarriersPackageId == packageID ? nil : packageID
+                }, starAction: { packageID in
+                    Task {
+                        await viewModel.starUnstarPackage(packageID)
+                    }
+                })
             }
             Spacer()
             Divider()

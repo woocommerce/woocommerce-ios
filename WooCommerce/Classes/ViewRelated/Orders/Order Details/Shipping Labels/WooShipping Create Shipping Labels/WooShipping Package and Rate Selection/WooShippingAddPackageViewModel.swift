@@ -43,7 +43,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     @Published private(set) var carrierPackages: [WooShippingCarrierPackages] = []
     @Published var selectedCarriersTabIndex: Int? = nil
     @Published var selectedCarriersPackageId: String? = nil
-    @Published private(set) var starredCarriersPackages: Set<String> = []
+    @Published var starredCarriersPackages: Set<String> = []
     @Published private(set) var carrierTabs: [TopTabItem<EmptyView>] = []
     var selectedCarrierTab: WooShippingCarrierPackages? {
         guard let selectedCarriersTabIndex else { return nil }
@@ -113,7 +113,13 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     }
 
     // star/unstar packages
-    func starUnstarPackage(_ packageToStar: WooShippingPackageDataRepresentable) async -> Error? {
+    func starUnstarPackage(_ packageID: String) async -> Error? {
+        if starredCarriersPackages.contains(packageID) {
+            starredCarriersPackages.remove(packageID)
+        }
+        else {
+            starredCarriersPackages.insert(packageID)
+        }
         return nil
     }
 

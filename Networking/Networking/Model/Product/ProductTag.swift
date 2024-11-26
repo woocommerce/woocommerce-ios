@@ -8,6 +8,9 @@ public struct ProductTag: Codable, Equatable, GeneratedFakeable, GeneratedCopiab
     public let tagID: Int64
     public let name: String
     public let slug: String
+
+    /// The number of products associated with this tag - available only when syncing tags from `wc/v3/products/tags`.
+    /// This is default to 0 and ignored when fetched from `wc/v3/products`
     public let count: Int
 
     /// ProductTag initializer.

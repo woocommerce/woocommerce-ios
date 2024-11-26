@@ -14,7 +14,7 @@ struct PointOfSaleEntryPointView: View {
          orderService: POSOrderServiceProtocol) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
-        let posModel = PointOfSaleAggregateModel(itemProvider: itemProvider,
+        let posModel = PointOfSaleAggregateModel(itemsService: PointOfSaleItemsService(itemProvider: itemProvider),
                                                  cardPresentPaymentService: cardPresentPaymentService,
                                                  orderService: orderService)
 

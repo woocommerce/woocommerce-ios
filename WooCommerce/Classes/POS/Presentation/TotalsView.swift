@@ -446,7 +446,7 @@ private extension View {
 #if DEBUG
 #Preview {
     let posModel = PointOfSaleAggregateModel(
-        itemProvider: POSItemProviderPreview(),
+        itemsService: PointOfSaleItemsPreviewService(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderService: POSOrderPreviewService())
     TotalsView()

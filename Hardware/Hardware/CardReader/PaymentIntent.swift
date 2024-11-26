@@ -106,12 +106,12 @@ public extension PaymentIntent {
 //
 public extension PaymentIntent {
     static func initMetadata(store: String? = nil,
-                          customerName: String? = nil,
-                          customerEmail: String? = nil,
-                          siteURL: String? = nil,
-                          orderID: Int64? = nil,
-                          orderKey: String? = nil,
-                          paymentType: PaymentTypes? = nil,
+                             customerName: String? = nil,
+                             customerEmail: String? = nil,
+                             siteURL: String? = nil,
+                             orderID: Int64? = nil,
+                             orderKey: String? = nil,
+                             paymentType: PaymentTypes? = nil,
                              channel: PaymentChannel? = nil
     ) -> [String: String] {
         var metadata = [String: String]()

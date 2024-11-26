@@ -21,6 +21,7 @@ struct WooShippingAddPackageView: View {
     @State var selectedPackageType = PackageProviderType.custom
     @StateObject var packagesRepository: WooShippingPackagesRepository
     @StateObject var customPackageViewModel: WooShippingAddCustomPackageViewModel
+    @StateObject var packagesViewModel = WooShippingAddPackageViewModel()
 
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
@@ -59,6 +60,7 @@ struct WooShippingAddPackageView: View {
         .navigationViewStyle(.stack)
         .task {
             packagesRepository.loadPackages()
+            packagesViewModel.loadPackages()
         }
     }
 
@@ -92,7 +94,7 @@ struct WooShippingAddPackageView: View {
 
     @ViewBuilder
     private var savedPackageView: some View {
-        WooSavedPackagesSelectionView(viewModel: WooSavedPackagesSelectionViewModel(packagesRepository: packagesRepository)) { packageData in
+        WooSavedPackagesSelectionView(viewModel: packagesViewModel) { packageData in
             addPackageAction(packageData)
         }
     }

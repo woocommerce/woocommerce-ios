@@ -66,6 +66,6 @@ public enum ProductFactory {
                             upsellIDs: [1, 2],
                             crossSellIDs: [3, 4],
                             categories: [ProductCategory(categoryID: 1, siteID: 2, parentID: 6, name: "", slug: "")],
-                            tags: [ProductTag(siteID: 123, tagID: 1, name: "", slug: "", count: 0)])
+                            tags: [ProductTag(siteID: 123, tagID: 1, name: "", slug: "")])
     }
 }

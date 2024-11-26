@@ -39,7 +39,7 @@ struct ProductTagListMapper: Mapper {
                 .filter { $0.error == nil }
                 .compactMap { (tagCreated) -> ProductTag? in
                     if let name = tagCreated.name, let slug = tagCreated.slug {
-                        return ProductTag(siteID: tagCreated.siteID, tagID: tagCreated.tagID, name: name, slug: slug, count: 0)
+                        return ProductTag(siteID: tagCreated.siteID, tagID: tagCreated.tagID, name: name, slug: slug)
                     }
                     return nil
                 }

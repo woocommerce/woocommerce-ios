@@ -7,10 +7,6 @@ import Storage
 public final class ProductShippingClassStore: Store {
     private let remote: ProductShippingClassRemote
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ProductShippingClassRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -105,15 +101,10 @@ private extension ProductShippingClassStore {
     func upsertStoredProductShippingClassModelsInBackground(readOnlyProductShippingClassModels: [Networking.ProductShippingClass],
                                                             siteID: Int64,
                                                             onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
+        storageManager.performAndSave({ [weak self] storage in
             self?.upsertStoredProductShippingClassModels(readOnlyProductShippingClassModels: readOnlyProductShippingClassModels,
-                                                         in: derivedStorage, siteID: siteID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+                                                         in: storage, siteID: siteID)
+        }, completion: onCompletion, on: .main)
     }
 }
 

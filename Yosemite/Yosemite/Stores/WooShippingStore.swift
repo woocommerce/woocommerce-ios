@@ -100,7 +100,7 @@ private extension WooShippingStore {
     }
 
     func loadAccountSettings(siteID: Int64,
-                             completion: @escaping (Result<WooShippingAccountSettingsResponse, Error>) -> Void) {
+                             completion: @escaping (Result<WooShippingAccountSettings, Error>) -> Void) {
         remote.loadAccountSettings(siteID: siteID, completion: completion)
     }
 

@@ -1,13 +1,9 @@
 import SwiftUI
-import class WooFoundation.CurrencyFormatter
 import protocol Yosemite.POSItemProvider
 import protocol Yosemite.POSOrderServiceProtocol
-import protocol WooFoundation.Analytics
 
 struct PointOfSaleEntryPointView: View {
     @StateObject private var posModel: PointOfSaleAggregateModel
-    @StateObject private var viewModel: PointOfSaleDashboardViewModel
-    @StateObject private var cartViewModel: CartViewModel
     @StateObject private var posModalManager = POSModalManager()
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
@@ -15,28 +11,18 @@ struct PointOfSaleEntryPointView: View {
     init(itemProvider: POSItemProvider,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
-         orderService: POSOrderServiceProtocol,
-         currencyFormatter: CurrencyFormatter,
-         analytics: Analytics) {
+         orderService: POSOrderServiceProtocol) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         let posModel = PointOfSaleAggregateModel(itemProvider: itemProvider,
                                                  cardPresentPaymentService: cardPresentPaymentService,
                                                  orderService: orderService)
-        let cartViewModel = CartViewModel(posModel: posModel)
 
         self._posModel = StateObject(wrappedValue: posModel)
-        self._viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
-            posModel: posModel,
-            cartViewModel: cartViewModel,
-            connectivityObserver: ServiceLocator.connectivityObserver)
-        )
-        self._cartViewModel = StateObject(wrappedValue: cartViewModel)
     }
 
     var body: some View {
-        PointOfSaleDashboardView(viewModel: viewModel,
-                                 cartViewModel: cartViewModel)
+        PointOfSaleDashboardView()
         .environmentObject(posModalManager)
         .environmentObject(posModel)
         .onAppear {
@@ -49,16 +35,10 @@ struct PointOfSaleEntryPointView: View {
 }
 
 #if DEBUG
-import class WooFoundation.MockAnalyticsPreview
-import class WooFoundation.MockAnalyticsProviderPreview
-
 #Preview {
     PointOfSaleEntryPointView(itemProvider: POSItemProviderPreview(),
                               onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                              orderService: POSOrderPreviewService(),
-                              currencyFormatter: .init(currencySettings: .init()),
-                              analytics: MockAnalyticsPreview(userHasOptedIn: true,
-                                                              analyticsProvider: MockAnalyticsProviderPreview()))
+                              orderService: POSOrderPreviewService())
 }
 #endif

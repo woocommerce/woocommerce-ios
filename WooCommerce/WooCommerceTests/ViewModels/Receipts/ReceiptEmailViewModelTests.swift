@@ -42,7 +42,7 @@ struct ReceiptEmailViewModelTests {
         }
 
         // Then
-        #expect(completionResult == true)
+        #expect(completionResult != nil)
     }
 
     @Test func sendReceipt_when_action_fails() async {

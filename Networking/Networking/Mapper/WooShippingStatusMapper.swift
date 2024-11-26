@@ -33,9 +33,9 @@ struct WooShippingStatusMapper: Mapper {
     }
 }
 
-/// ShippingLabelPurchaseResponse Disposable Entity
+/// WooShippingStatusResponse Disposable Entity
 ///
-/// `Check Shipping Labels Status` endpoint returns the data wrapper in the `data` key.
+/// `Check Label Status` endpoint returns the data wrapper in the `data` key.
 ///
 private struct WooShippingStatusResponse: Decodable {
     let data: WooShippingStatusEnvelope
@@ -45,9 +45,9 @@ private struct WooShippingStatusResponse: Decodable {
     }
 }
 
-/// ShippingLabelPurchaseEnvelope Disposable Entity
+/// WooShippingStatusEnvelope Disposable Entity
 ///
-/// `Check Shipping Labels Status` endpoint returns the shipping label purchase in the `data.label` key.
+/// `Check Label Status` endpoint returns the shipping label purchase in the `data.label` key.
 ///
 private struct WooShippingStatusEnvelope: Decodable {
     let label: ShippingLabelStatusPollingResponse

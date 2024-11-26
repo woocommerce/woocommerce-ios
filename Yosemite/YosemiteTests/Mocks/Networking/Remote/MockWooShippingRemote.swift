@@ -25,7 +25,7 @@ final class MockWooShippingRemote {
     private var loadPackagesResults = [ResultKey: Result<WooShippingPackagesResponse, Error>]()
 
     /// The results to return based on the given arguments in `loadAccountSettings`
-    private var loadAccountSettingsResults = [ResultKey: Result<WooShippingAccountSettingsResponse, Error>]()
+    private var loadAccountSettingsResults = [ResultKey: Result<WooShippingAccountSettings, Error>]()
 
     /// The results to return based on the given arguments in `checkLabelStatus`
     private var checkLabelStatus = [ResultKey: Result<ShippingLabelStatusPollingResponse, Error>]()
@@ -53,7 +53,7 @@ final class MockWooShippingRemote {
 
     /// Set the value passed to the `completion` block if `loadAccountSettings` is called.
     func whenLoadAccountSettings(siteID: Int64,
-                                 thenReturn result: Result<WooShippingAccountSettingsResponse, Error>) {
+                                 thenReturn result: Result<WooShippingAccountSettings, Error>) {
         let key = ResultKey(siteID: siteID)
         loadAccountSettingsResults[key] = result
     }
@@ -124,7 +124,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
     }
 
     func loadAccountSettings(siteID: Int64,
-                             completion: @escaping (Result<WooShippingAccountSettingsResponse, Error>) -> Void) {
+                             completion: @escaping (Result<WooShippingAccountSettings, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
 

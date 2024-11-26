@@ -1,14 +1,14 @@
 import UIKit
 
-/// Modal presented on error. Shows email address which the receipt was sent to.
-final class CardPresentModalErrorEmailSent: CardPresentPaymentsModalViewModel {
+/// Modal presented on error
+final class CardPresentModalErrorWithoutEmail: CardPresentPaymentsModalViewModel {
     /// A closure to execute when the primary button is tapped
     private let tryAgainAction: () -> Void
 
     /// A closure to execute after the secondary button is tapped to dismiss the modal
     private let dismissCompletion: () -> Void
 
-    let textMode: PaymentsModalTextMode = .fullInfo
+    let textMode: PaymentsModalTextMode = .reducedBottomInfo
     let actionsMode: PaymentsModalActionsMode = .twoAction
 
     let topTitle: String
@@ -27,8 +27,6 @@ final class CardPresentModalErrorEmailSent: CardPresentPaymentsModalViewModel {
 
     let bottomSubtitle: String? = nil
 
-    let bottomAttributedSubtitle: NSAttributedString?
-
     var accessibilityLabel: String? {
         guard let bottomTitle = bottomTitle else {
             return topTitle
@@ -39,7 +37,6 @@ final class CardPresentModalErrorEmailSent: CardPresentPaymentsModalViewModel {
     init(errorDescription: String?,
          transactionType: CardPresentTransactionType,
          image: UIImage = .paymentErrorImage,
-         email: String,
          tryAgainAction: @escaping () -> Void,
          dismissCompletion: @escaping () -> Void) {
         self.topTitle = CardPresentModalError.Localization.paymentFailed(transactionType: transactionType)
@@ -49,14 +46,6 @@ final class CardPresentModalErrorEmailSent: CardPresentPaymentsModalViewModel {
         self.secondaryButtonTitle = CardPresentModalError.Localization.noThanks(transactionType: transactionType)
         self.tryAgainAction = tryAgainAction
         self.dismissCompletion = dismissCompletion
-
-        let formattedMessage = String(format: CardPresentModalError.Localization.receiptMessage, email)
-        let attributedString = NSMutableAttributedString(string: formattedMessage)
-        if let emailRange = formattedMessage.range(of: email) {
-            let nsRange = NSRange(emailRange, in: formattedMessage)
-            attributedString.addAttributes([.font: UIFont.footnote.bold], range: nsRange)
-        }
-        self.bottomAttributedSubtitle = attributedString
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {

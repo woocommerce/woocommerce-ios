@@ -25,7 +25,7 @@ public enum WooShippingAction: Action {
     /// Fetch list of packages.
     ///
     case loadAccountSettings(siteID: Int64,
-                             completion: (Result<WooShippingAccountSettingsResponse, Error>) -> Void)
+                             completion: (Result<WooShippingAccountSettings, Error>) -> Void)
 
     /// Purchase a shipping label.
     ///

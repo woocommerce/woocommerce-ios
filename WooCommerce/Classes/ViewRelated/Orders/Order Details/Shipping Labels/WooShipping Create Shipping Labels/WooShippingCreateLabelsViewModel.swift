@@ -123,7 +123,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                                                               account: defaultAccount,
                                                               userDefaults: userDefaults)
         self.destinationAddress = Self.getDestinationAddress(order: order, address: order.shippingAddress)
-        self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0) })
+        self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
         self.selectedPackage = selectedPackage
         self.selectedRate = selectedRate
         self.stores = stores
@@ -140,7 +140,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
         self.itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
         self.items = WooShippingItemsViewModel(dataSource: itemsDataSource)
-        self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0) })
+        self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
         self.originSiteAddress = shippingLabel.originAddress
         self.destinationAddress = shippingLabel.destinationAddress
         self.onLabelPurchase = nil

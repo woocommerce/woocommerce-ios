@@ -94,6 +94,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         selectedRate != nil && shippingLabel == nil
     }
 
+    /// If the label purchase is in progress.
+    @Published private(set) var isPurchasingLabel: Bool = false
+
     /// Closure to execute after the label is successfully purchased.
     let onLabelPurchase: ((_ markOrderComplete: Bool) -> Void)?
 
@@ -146,9 +149,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Purchases a shipping label with the provided label details and settings.
     func purchaseLabel() {
-        guard isPurchaseButtonEnabled, let originSiteAddress, let destinationAddress, let selectedPackage, let selectedRate else {
+        guard isPurchaseButtonEnabled, !isPurchasingLabel, let originSiteAddress, let destinationAddress, let selectedPackage, let selectedRate else {
             return
         }
+        isPurchasingLabel = true
         // For now we support purchasing labels in a single shipment only.
         // In future milestones we can create an array of `WooShippingPackagePurchase` with unique shipment IDs for each shipment.
         let package = WooShippingPackagePurchase(shipmentID: "shipment_0",
@@ -161,6 +165,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                                                              destinationAddress: destinationAddress,
                                                              package: package) { [weak self] result in
             guard let self else { return }
+            isPurchasingLabel = false
             switch result {
             case .success(let shippingLabel):
                 onLabelPurchase?(markOrderComplete)

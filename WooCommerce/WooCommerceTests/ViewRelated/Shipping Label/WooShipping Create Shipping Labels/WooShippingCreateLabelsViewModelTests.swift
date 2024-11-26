@@ -218,6 +218,36 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.postPurchase?.pickupURL, WooShippingCarrier(rawValue: expectedShippingLabel.carrierID)?.pickupURL)
         XCTAssertEqual(viewModel.postPurchase?.trackingURL, ShippingLabelTrackingURLGenerator.url(for: expectedShippingLabel))
     }
+
+    func test_purchaseLabel_sets_isPurchasingLabel_as_expected() {
+        // Given
+        var isPurchasingLabelDuringPurchase = false
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
+                                                         originAddress: SiteAddress(siteSettings: mapLoadGeneralSiteSettingsResponse()),
+                                                         selectedPackage: ShippingLabelPackageSelected.fake(),
+                                                         selectedRate: sampleSelectedRate(),
+                                                         stores: stores)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, completion):
+                isPurchasingLabelDuringPurchase = viewModel.isPurchasingLabel
+                completion(.success(ShippingLabel.fake()))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+        // Check isPurchaseLabel is false before purchase
+        XCTAssertFalse(viewModel.isPurchasingLabel)
+
+        // When
+        viewModel.purchaseLabel()
+
+        // Then
+        XCTAssertTrue(isPurchasingLabelDuringPurchase)
+        // Check isPurchaseLabel is false after purchase
+        XCTAssertFalse(viewModel.isPurchasingLabel)
+    }
 }
 
 private extension WooShippingCreateLabelsViewModelTests {

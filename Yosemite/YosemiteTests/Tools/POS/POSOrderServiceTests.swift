@@ -85,6 +85,28 @@ struct POSOrderServiceTests {
             item.productID == 102 && item.quantity > 0
         }), "Product for item 2 should be re-added")
     }
+
+    @Test func syncOrder_after_adding_to_cart_adds_it_to_the_order() async throws {
+        // Given
+        let orderItems: [OrderItem] = [
+            .fake().copy(itemID: 1, name: "Item 1", productID: 100, quantity: 1)
+        ]
+        let order = Order.fake().copy(siteID: 123, orderID: 456, items: orderItems)
+
+        // When
+        let cart: [POSCartItem] = [
+            makePOSCartItem(productID: 100, quantity: 1),
+            makePOSCartItem(productID: 102, quantity: 5)
+        ]
+        _ = try await sut.syncOrder(cart: cart, order: order)
+
+        // Then
+        let updatedOrderItems = try #require(mockOrdersRemote.spyUpdatePOSOrder?.items)
+
+        #expect(updatedOrderItems.contains(where: { item in
+            item.productID == 102 && item.quantity == 5
+        }), "Item for product 102 should be added")
+    }
 }
 
 private func makePOSCartItem(

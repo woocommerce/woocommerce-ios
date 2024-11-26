@@ -1,28 +1,36 @@
 import Foundation
+import Yosemite
 
 protocol WooShippingPackagesRepositoryProtocol {
-    var loadingSavedPackages: Bool { get }
     var customSavedPackages: [any WooShippingPackageDataRepresentable] { get }
     var predefinedSavedPackages: [any WooShippingPackageDataRepresentable] { get }
 
-    var loadingCarrierPackages: Bool { get }
     var carrierPackages: [WooShippingCarrierPackages] { get }
     var carrierPackagesPublisher: Published<[WooShippingCarrierPackages]>.Publisher { get }
 
+    var loadingPackages: Bool { get }
+
     func loadPackages()
-    func loadSavedPackages()
-    func loadCarrierPackages()
 
     func deleteSavedPackage(_ packageToRemove: WooShippingPackageDataRepresentable) async -> Error?
-    func addCustomPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error?
-    func addPredefinedPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error?
+    func saveCustomPackage(_ packageToAdd: WooShippingPackageDataRepresentable,
+                           dimensionsUnit: String,
+                           weightUnit: String,
+                           siteID: Int64,
+                           stores: StoresManager) async -> Result<WooShippingPackageDataRepresentable, Error>
+    func savePredefinedPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error?
+}
+
+enum WooShippingPackagesRepositoryError: Swift.Error {
+    case customPackageWithSameIdAlreadyExists
+    case predefinedPackageWithSameIdAlreadyExists
+    case failedSavingTemplate
 }
 
 final class WooShippingPackagesRepository: ObservableObject, WooShippingPackagesRepositoryProtocol {
-    @Published private(set) var loadingSavedPackages: Bool = false
     @Published private(set) var customSavedPackages: [any WooShippingPackageDataRepresentable] = []
     @Published private(set) var predefinedSavedPackages: [any WooShippingPackageDataRepresentable] = []
-    @Published private(set) var loadingCarrierPackages: Bool = false
+    @Published private(set) var loadingPackages: Bool = false
     @Published private(set) var carrierPackages: [WooShippingCarrierPackages] = []
     var carrierPackagesPublisher: Published<[WooShippingCarrierPackages]>.Publisher { $carrierPackages }
 
@@ -31,16 +39,11 @@ final class WooShippingPackagesRepository: ObservableObject, WooShippingPackages
     // MARK: - Packages loading
 
     func loadPackages() {
-        loadSavedPackages()
-        loadCarrierPackages()
-    }
-
-    func loadSavedPackages() {
-        guard !loadingSavedPackages else {
+        guard !loadingPackages else {
             return
         }
 
-        loadingSavedPackages = true
+        loadingPackages = true
 
         // TODO: add networking request to load live data
         if customSavedPackages.isEmpty {
@@ -99,16 +102,6 @@ final class WooShippingPackagesRepository: ObservableObject, WooShippingPackages
                                       packageType: "box"),
             ]
         }
-
-        loadingSavedPackages = false
-    }
-
-    func loadCarrierPackages() {
-        guard !loadingCarrierPackages else {
-            return
-        }
-
-        loadingCarrierPackages = true
 
         // TODO: add networking request to load live data
         let uspsPackageGroups: [WooPackageGroup] = [
@@ -182,12 +175,13 @@ final class WooShippingPackagesRepository: ObservableObject, WooShippingPackages
 
         carrierPackages = [uspsCarrier, dhlCarrier]
 
-        loadingCarrierPackages = false
+        loadingPackages = false
     }
 
     // MARK: - Packages updates
 
-    func deleteSavedPackage(_ packageToRemove: WooShippingPackageDataRepresentable) async -> Error? {
+    @MainActor
+    func deleteSavedPackage(_ packageToRemove: any WooShippingPackageDataRepresentable) async -> Error? {
         // delete the package locally and on backend
         customSavedPackages.removeAll { package in package.id == packageToRemove.id }
         predefinedSavedPackages.removeAll { package in package.id == packageToRemove.id }
@@ -198,15 +192,67 @@ final class WooShippingPackagesRepository: ObservableObject, WooShippingPackages
         return nil
     }
 
-    func addCustomPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error? {
-        customSavedPackages.append(packageToAdd)
+    @MainActor
+    func saveCustomPackage(_ packageToAdd: WooShippingPackageDataRepresentable,
+                           dimensionsUnit: String,
+                           weightUnit: String, siteID:
+                           Int64, stores: StoresManager) async -> Result<WooShippingPackageDataRepresentable, Error> {
+        guard !customSavedPackages.contains(where: { package in
+            return package.id == packageToAdd.id
+        })  else {
+            return .failure(WooShippingPackagesRepositoryError.customPackageWithSameIdAlreadyExists)
+        }
 
-        return nil
+        let customPackage = WooShippingCustomPackage(id: "",
+                                                     name: packageToAdd.name,
+                                                     rawType: packageToAdd.packageType,
+                                                     dimensions: "\(packageToAdd.length) x \(packageToAdd.width) x \(packageToAdd.height)",
+                                                     boxWeight: Double(packageToAdd.weight) ?? 0)
+        let savingPackageTemplateResult: Result<WooShippingPackageDataRepresentable, Error> = await withCheckedContinuation { continuation in
+            let action = WooShippingAction.createPackage(siteID: siteID,
+                                                         customPackage: customPackage,
+                                                         predefinedOption: nil) { [weak self] result in
+                switch result {
+                case let .success(packages):
+                    guard let self, let savedPackage = packages.customPackages.first(where: { $0.name == customPackage.name }) else {
+                        return continuation.resume(returning: .failure(WooShippingAddCustomPackageViewModel.Error.failedSavingTemplate))
+                    }
+                    let packageData = WooShippingPackageData(id: savedPackage.id,
+                                                             name: savedPackage.name,
+                                                             length: savedPackage.getLength().description,
+                                                             width: savedPackage.getWidth().description,
+                                                             height: savedPackage.getHeight().description,
+                                                             dimensionsUnit: dimensionsUnit,
+                                                             weight: savedPackage.boxWeight.description,
+                                                             weightUnit: weightUnit,
+                                                             source: .custom,
+                                                             packageType: savedPackage.rawType)
+                    continuation.resume(returning: .success(packageData))
+                case let .failure(error):
+                    DDLogError("⛔️ Error saving custom package with WCShip: \(error)")
+                    continuation.resume(returning: .failure(WooShippingPackagesRepositoryError.failedSavingTemplate))
+                }
+            }
+            stores.dispatch(action)
+        }
+        switch savingPackageTemplateResult {
+        case .success(let savedPackage):
+            // append saved package so it is immediately available in UI without extra backend calls
+            customSavedPackages.append(savedPackage)
+            return .success(savedPackage)
+        case .failure(let error):
+            return .failure(error)
+        }
     }
 
-    func addPredefinedPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error? {
+    @MainActor
+    func savePredefinedPackage(_ packageToAdd: any WooShippingPackageDataRepresentable) async -> Error? {
+        guard !predefinedSavedPackages.contains(where: { package in
+            return package.id == packageToAdd.id
+        })  else {
+            return WooShippingPackagesRepositoryError.predefinedPackageWithSameIdAlreadyExists
+        }
         predefinedSavedPackages.append(packageToAdd)
-
         return nil
     }
 }

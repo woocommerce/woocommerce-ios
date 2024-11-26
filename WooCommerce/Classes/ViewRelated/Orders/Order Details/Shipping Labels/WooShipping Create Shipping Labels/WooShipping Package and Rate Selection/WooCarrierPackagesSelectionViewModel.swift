@@ -3,7 +3,7 @@ import SwiftUI
 import Combine
 
 final class WooCarrierPackagesSelectionViewModel: ObservableObject {
-    @Published var packagesRepository: WooShippingPackagesRepositoryProtocol
+    @Published private var packagesRepository: WooShippingPackagesRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
 
     deinit {
@@ -61,5 +61,19 @@ final class WooCarrierPackagesSelectionViewModel: ObservableObject {
         guard let selectedTabIndex else { return nil }
 
         return carrierTabs[selectedTabIndex]
+    }
+
+    func isPackageStarred(_ package: WooShippingPackageDataRepresentable) -> Bool {
+        return packagesRepository.predefinedSavedPackages.contains { savedPackage in
+            savedPackage.id == package.id
+        }
+    }
+
+    func unstarPackage(_ packageToRemove: WooShippingPackageDataRepresentable) async -> Error? {
+        return await packagesRepository.deleteSavedPackage(packageToRemove)
+    }
+
+    func starPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error? {
+        return await packagesRepository.savePredefinedPackage(packageToAdd)
     }
 }

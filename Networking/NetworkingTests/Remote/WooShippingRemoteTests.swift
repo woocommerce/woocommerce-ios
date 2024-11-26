@@ -169,7 +169,7 @@ final class WooShippingRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "account/settings", filename: "wooshipping-get-account-settings-success")
 
         // When
-        let result: Result<WooShippingAccountSettingsResponse, Error> = waitFor { promise in
+        let result: Result<WooShippingAccountSettings, Error> = waitFor { promise in
             remote.loadAccountSettings(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -207,7 +207,7 @@ final class WooShippingRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "account/settings", filename: "generic_error")
 
         // When
-        let result: Result<WooShippingAccountSettingsResponse, Error> = waitFor { promise in
+        let result: Result<WooShippingAccountSettings, Error> = waitFor { promise in
             remote.loadAccountSettings(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -250,6 +250,46 @@ final class WooShippingRemoteTests: XCTestCase {
                                          originAddress: ShippingLabelAddress.fake(),
                                          destinationAddress: ShippingLabelAddress.fake(),
                                          package: WooShippingPackagePurchase.fake()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+
+    func test_checkLabelStatus_parses_success_response() throws {
+        // Given
+        let sampleLabelID: Int64 = 4321
+        let expectedLabelStatus = ShippingLabel.fake().status
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/status/\(sampleOrderID)/\(sampleLabelID)", filename: "wooshipping-label-status-success")
+
+        // When
+        let result: Result<ShippingLabelStatusPollingResponse, Error> = waitFor { promise in
+            remote.checkLabelStatus(siteID: self.sampleSiteID,
+                                    orderID: self.sampleOrderID,
+                                    labelID: sampleLabelID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let label = try XCTUnwrap(result.get())
+        XCTAssertEqual(label.status, expectedLabelStatus)
+    }
+
+    func test_checkLabelStatus_returns_error_on_failure() throws {
+        // Given
+        let sampleLabelID: Int64 = 4321
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/status/\(sampleOrderID)/\(sampleLabelID)", filename: "generic_error")
+
+        // When
+        let result: Result<ShippingLabelStatusPollingResponse, Error> = waitFor { promise in
+            remote.checkLabelStatus(siteID: self.sampleSiteID,
+                                    orderID: self.sampleOrderID,
+                                    labelID: sampleLabelID) { result in
                 promise(result)
             }
         }

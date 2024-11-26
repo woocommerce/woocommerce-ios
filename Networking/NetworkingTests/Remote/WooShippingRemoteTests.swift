@@ -169,7 +169,7 @@ final class WooShippingRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "account/settings", filename: "wooshipping-get-account-settings-success")
 
         // When
-        let result: Result<WooShippingAccountSettingsResponse, Error> = waitFor { promise in
+        let result: Result<WooShippingAccountSettings, Error> = waitFor { promise in
             remote.loadAccountSettings(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -207,7 +207,7 @@ final class WooShippingRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "account/settings", filename: "generic_error")
 
         // When
-        let result: Result<WooShippingAccountSettingsResponse, Error> = waitFor { promise in
+        let result: Result<WooShippingAccountSettings, Error> = waitFor { promise in
             remote.loadAccountSettings(siteID: self.sampleSiteID) { result in
                 promise(result)
             }

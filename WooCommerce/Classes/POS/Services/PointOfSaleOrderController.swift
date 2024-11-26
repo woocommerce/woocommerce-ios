@@ -94,6 +94,8 @@ private extension PointOfSaleOrderController {
     }
 }
 
+// This is named to note that it is for use within the AggregateModel and OrderController.
+// Conversely, PointOfSaleOrderState is available to the Views, as it doesn't include the Order.
 enum PointOfSaleInternalOrderState {
     case idle
     case syncing

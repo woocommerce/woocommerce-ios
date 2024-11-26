@@ -224,7 +224,7 @@ private extension WooShippingCreateLabelsView {
             Text(Localization.BottomSheet.purchaseLabel(with: viewModel.totalCost))
         }
         .buttonStyle(PrimaryButtonStyle())
-        .disabled(!viewModel.canPurchaseLabel)
+        .disabled(!viewModel.isPurchaseButtonEnabled)
     }
 }
 

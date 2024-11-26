@@ -14,7 +14,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.markOrderComplete)
-        XCTAssertFalse(viewModel.canPurchaseLabel)
+        XCTAssertFalse(viewModel.isPurchaseButtonEnabled)
         XCTAssertNil(viewModel.totalCost)
         XCTAssertFalse(viewModel.canViewLabel)
     }
@@ -29,7 +29,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(viewModel.postPurchase)
-        XCTAssertFalse(viewModel.canPurchaseLabel)
+        XCTAssertFalse(viewModel.isPurchaseButtonEnabled)
         XCTAssertNotNil(viewModel.totalCost)
         XCTAssertTrue(viewModel.canViewLabel)
         XCTAssertEqual(viewModel.shippingRates.count, 1)
@@ -139,7 +139,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                          selectedRate: sampleSelectedRate())
 
         // Then
-        XCTAssertTrue(viewModel.canPurchaseLabel)
+        XCTAssertTrue(viewModel.isPurchaseButtonEnabled)
     }
 
     func test_totalCost_has_expected_value_when_shipping_rate_is_set() throws {

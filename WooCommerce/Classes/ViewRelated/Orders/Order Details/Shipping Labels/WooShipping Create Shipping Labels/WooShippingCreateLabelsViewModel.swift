@@ -90,7 +90,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     @Published var markOrderComplete: Bool = false
 
     /// If the purchase button should be enabled.
-    var canPurchaseLabel: Bool {
+    var isPurchaseButtonEnabled: Bool {
         selectedRate != nil && shippingLabel == nil
     }
 
@@ -146,7 +146,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Purchases a shipping label with the provided label details and settings.
     func purchaseLabel() {
-        guard canPurchaseLabel, let originSiteAddress, let destinationAddress, let selectedPackage, let selectedRate else {
+        guard isPurchaseButtonEnabled, let originSiteAddress, let destinationAddress, let selectedPackage, let selectedRate else {
             return
         }
         // For now we support purchasing labels in a single shipment only.

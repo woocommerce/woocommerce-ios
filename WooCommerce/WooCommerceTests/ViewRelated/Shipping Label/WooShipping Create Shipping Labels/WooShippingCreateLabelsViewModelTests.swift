@@ -2,6 +2,7 @@ import XCTest
 @testable import WooCommerce
 @testable import Networking
 import WooFoundation
+import Yosemite
 
 final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     func test_inits_with_expected_values_for_shipping_label_creation() {
@@ -74,13 +75,25 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
     func test_onLabelPurchase_notifies_when_order_should_not_be_marked_complete() {
         // Given
-        let order = Order.fake()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, completion):
+                completion(.success(ShippingLabel.fake()))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
 
         // When
         let markOrderComplete: Bool = waitFor { promise in
-            let viewModel = WooShippingCreateLabelsViewModel(order: order, selectedRate: self.sampleSelectedRate(), onLabelPurchase: { complete in
+            let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
+                                                             originAddress: SiteAddress(siteSettings: self.mapLoadGeneralSiteSettingsResponse()),
+                                                             selectedPackage: ShippingLabelPackageSelected.fake(),
+                                                             selectedRate: self.sampleSelectedRate(),
+                                                             stores: stores) { complete in
                 promise(complete)
-            })
+            }
             viewModel.markOrderComplete = false
             viewModel.purchaseLabel()
         }
@@ -91,13 +104,25 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
     func test_onLabelPurchase_notifies_when_order_should_be_marked_complete() {
         // Given
-        let order = Order.fake()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, completion):
+                completion(.success(ShippingLabel.fake()))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
 
         // When
         let markOrderComplete: Bool = waitFor { promise in
-            let viewModel = WooShippingCreateLabelsViewModel(order: order, selectedRate: self.sampleSelectedRate(), onLabelPurchase: { complete in
+            let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
+                                                             originAddress: SiteAddress(siteSettings: self.mapLoadGeneralSiteSettingsResponse()),
+                                                             selectedPackage: ShippingLabelPackageSelected.fake(),
+                                                             selectedRate: self.sampleSelectedRate(),
+                                                             stores: stores) { complete in
                 promise(complete)
-            })
+            }
             viewModel.markOrderComplete = true
             viewModel.purchaseLabel()
         }
@@ -108,8 +133,10 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
     func test_canPurchaseLabel_true_when_shipping_rate_is_selected() throws {
         // Given
-        let order = Order.fake()
-        let viewModel = WooShippingCreateLabelsViewModel(order: order, selectedRate: self.sampleSelectedRate())
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
+                                                         originAddress: SiteAddress(siteSettings: mapLoadGeneralSiteSettingsResponse()),
+                                                         selectedPackage: ShippingLabelPackageSelected.fake(),
+                                                         selectedRate: sampleSelectedRate())
 
         // Then
         XCTAssertTrue(viewModel.canPurchaseLabel)
@@ -163,6 +190,33 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shippingRates[0].amount, "$40.06")
         XCTAssertEqual(viewModel.shippingRates[1].title, "Adult Signature Required")
         XCTAssertEqual(viewModel.shippingRates[1].amount, "$6.90")
+    }
+
+    func test_purchaseLabel_sets_postPurchase_with_purchased_shipping_label() {
+        // Given
+        let expectedShippingLabel = ShippingLabel.fake().copy(carrierID: "usps", trackingNumber: "1234567890")
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, completion):
+                completion(.success(expectedShippingLabel))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
+                                                         originAddress: SiteAddress(siteSettings: mapLoadGeneralSiteSettingsResponse()),
+                                                         selectedPackage: ShippingLabelPackageSelected.fake(),
+                                                         selectedRate: sampleSelectedRate(),
+                                                         stores: stores)
+
+        // When
+        viewModel.purchaseLabel()
+
+        // Then
+        XCTAssertNotNil(viewModel.postPurchase)
+        XCTAssertEqual(viewModel.postPurchase?.pickupURL, WooShippingCarrier(rawValue: expectedShippingLabel.carrierID)?.pickupURL)
+        XCTAssertEqual(viewModel.postPurchase?.trackingURL, ShippingLabelTrackingURLGenerator.url(for: expectedShippingLabel))
     }
 }
 

@@ -62,16 +62,35 @@ struct InPersonPaymentsMenu: View {
                                 onboardingUseCase: viewModel.onboardingUseCase)
                         }
 
-                        Button {
-                            viewModel.aboutTapToPayTapped()
-                        } label: {
+                        if viewModel.isTapToPayEducationEnabled {
                             PaymentsRow(image: Image(uiImage: .infoOutlineImage),
-                                        title: Localization.aboutTapToPayOnIPhone,
-                                        isActive: $viewModel.presentAboutTapToPay) {
-                                AboutTapToPayView(viewModel: viewModel.aboutTapToPayViewModel)
+                                        title: Localization.aboutTapToPayOnIPhone)
+                            .accessibilityAddTraits(.isButton)
+                            .onTapGesture {
+                                viewModel.aboutTapToPayTapped()
                             }
+                            .sheet(isPresented: $viewModel.presentAboutTapToPay,
+                                   onDismiss: {
+                                Task { @MainActor in
+                                    await viewModel.onAppear()
+                                }
+                            }) {
+                                TapToPayEducationView(viewModel: .init(flow: .about, onDismiss: {
+                                    viewModel.presentAboutTapToPay = false
+                                }))
+                            }
+                        } else {
+                            Button {
+                                viewModel.aboutTapToPayTapped()
+                            } label: {
+                                PaymentsRow(image: Image(uiImage: .infoOutlineImage),
+                                            title: Localization.aboutTapToPayOnIPhone,
+                                            isActive: $viewModel.presentAboutTapToPay) {
+                                    AboutTapToPayView(viewModel: viewModel.aboutTapToPayViewModel)
+                                }
+                            }
+                            .buttonStyle(.scrollViewRow)
                         }
-                        .buttonStyle(.scrollViewRow)
 
                         PaymentsRow(image: Image(uiImage: .feedbackOutlineIcon.withRenderingMode(.alwaysTemplate)),
                                     title: Localization.tapToPayOnIPhoneFeedback)

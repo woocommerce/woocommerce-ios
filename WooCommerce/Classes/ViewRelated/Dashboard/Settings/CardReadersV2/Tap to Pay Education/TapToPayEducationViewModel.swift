@@ -26,13 +26,14 @@ final class TapToPayEducationViewModel: ObservableObject {
     let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
     let siteID: Int64
 
-    var onDismiss: () -> Void = {}
+    private let onDismiss: () -> Void
 
     init(flow: Flow = .onboarding,
          siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          cardReaderSupportDeterminer: CardReaderSupportDetermining? = nil,
-         cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol? = nil) {
+         cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol? = nil,
+         onDismiss: @escaping () -> Void = {}) {
         self.flow = flow
         self.cardReaderSupportDeterminer = cardReaderSupportDeterminer ?? CardReaderSupportDeterminer(siteID: siteID, configuration: configuration)
         self.siteID = siteID
@@ -45,9 +46,11 @@ final class TapToPayEducationViewModel: ObservableObject {
             self.cardPresentPaymentsOnboardingUseCase.refresh()
         }
         self.isInteractiveDismissDisabled = flow == .onboarding ? true : false
-
+        self.onDismiss = onDismiss
         // TODO: Inject steps
-        steps = []
+        self.steps = []
+
+        reloadHasPreviousTapToPayUsage()
     }
 
     // MARK: - Navigation

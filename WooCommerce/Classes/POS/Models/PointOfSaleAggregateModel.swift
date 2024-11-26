@@ -55,7 +55,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     private let itemsService: PointOfSaleItemsServiceProtocol
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
-    private let orderService: PointOfSaleOrderServiceProtocol
+    private let orderController: PointOfSaleOrderControllerProtocol
     private let analytics: Analytics
 
     private var startPaymentOnCardReaderConnection: AnyCancellable?
@@ -65,12 +65,12 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
     init(itemsService: PointOfSaleItemsServiceProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
-         orderService: PointOfSaleOrderServiceProtocol,
+         orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
          paymentState: PointOfSalePaymentState = .idle) {
         self.itemsService = itemsService
         self.cardPresentPaymentService = cardPresentPaymentService
-        self.orderService = orderService
+        self.orderController = orderController
         self.analytics = analytics
         self.paymentState = paymentState
         publishItemListState()
@@ -127,7 +127,7 @@ extension PointOfSaleAggregateModel {
 
     func startNewCart() {
         removeAllItemsFromCart()
-        orderService.clearOrder()
+        orderController.clearOrder()
         setStateForEditing()
     }
 
@@ -185,7 +185,7 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     func collectPayment() async {
-        guard let order = orderService.order else {
+        guard let order = orderController.order else {
             return
             // Should this throw?
         }
@@ -349,14 +349,14 @@ extension PointOfSaleAggregateModel {
     @MainActor
     func checkOut() async {
         orderStage = .finalizing
-        await orderService.syncOrder(for: cart, retryHandler: { [weak self] in
+        await orderController.syncOrder(for: cart, retryHandler: { [weak self] in
             await self?.checkOut()
         })
         await startPaymentWhenCardReaderConnected()
     }
 
     func publishOrderState() {
-        orderService.orderStatePublisher
+        orderController.orderStatePublisher
             .map { $0.externalState }
             .assign(to: &$orderState)
     }

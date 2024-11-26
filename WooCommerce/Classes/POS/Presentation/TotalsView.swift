@@ -448,7 +448,7 @@ private extension View {
     let posModel = PointOfSaleAggregateModel(
         itemsService: PointOfSaleItemsPreviewService(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderService: POSOrderPreviewService())
+        orderController: PointOfSalePreviewOrderController())
     TotalsView()
         .environmentObject(posModel)
 }

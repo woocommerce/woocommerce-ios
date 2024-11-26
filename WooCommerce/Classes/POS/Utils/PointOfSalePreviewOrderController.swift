@@ -3,7 +3,7 @@ import enum Yosemite.OrderFactory
 import struct Yosemite.Order
 import Combine
 
-class POSOrderPreviewService: PointOfSaleOrderServiceProtocol {
+class PointOfSalePreviewOrderController: PointOfSaleOrderControllerProtocol {
     var orderStatePublisher: AnyPublisher<PointOfSaleInternalOrderState, Never> = Just(
         .loaded(
             .init(cartTotal: "$10.50",

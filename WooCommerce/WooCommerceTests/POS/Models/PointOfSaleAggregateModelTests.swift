@@ -13,7 +13,7 @@ struct PointOfSaleAggregateModelTests {
         init() {
             self.sut = PointOfSaleAggregateModel(itemsService: MockPointOfSaleItemsService(),
                                                  cardPresentPaymentService: MockCardPresentPaymentService(),
-                                                 orderService: MockPOSOrderService())
+                                                 orderController: MockPOSOrderService())
         }
 
         @Test func inits_with_building_order_stage() async throws {
@@ -71,7 +71,7 @@ struct PointOfSaleAggregateModelTests {
             analytics = WooAnalytics(analyticsProvider: analyticsProvider)
             sut = PointOfSaleAggregateModel(itemsService: MockPointOfSaleItemsService(),
                                             cardPresentPaymentService: MockCardPresentPaymentService(),
-                                            orderService: MockPOSOrderService(),
+                                            orderController: MockPOSOrderService(),
                                             analytics: analytics)
         }
 
@@ -154,16 +154,16 @@ struct PointOfSaleAggregateModelTests {
     struct OrderTests {
         private let cardPresentPaymentService = MockCardPresentPaymentService()
         private let itemsService = MockPointOfSaleItemsService()
-        private let orderService = MockPOSOrderService()
+        private let orderController = MockPOSOrderService()
         private let sut: PointOfSaleAggregateModel
 
         init() {
-            orderService.orderToReturn = Order.fake()
+            orderController.orderToReturn = Order.fake()
 
             sut = PointOfSaleAggregateModel(
                 itemsService: itemsService,
                 cardPresentPaymentService: cardPresentPaymentService,
-                orderService: orderService)
+                orderController: orderController)
 
             sut.addToCart(makeItem())
         }
@@ -206,7 +206,7 @@ struct PointOfSaleAggregateModelTests {
         @Test func checkOut_when_reader_is_already_connected_collectPayment_called() async throws {
             // Given
             cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
-            orderService.orderToReturn = Order.fake().copy(items: [.fake()])
+            orderController.orderToReturn = Order.fake().copy(items: [.fake()])
 
             // When
             await sut.checkOut()
@@ -259,7 +259,7 @@ struct PointOfSaleAggregateModelTests {
 
         @Test func checkOut_with_order_sync_failure_sets_orderState_syncing_then_error() async throws {
             // Given
-            orderService.orderToReturn = nil
+            orderController.orderToReturn = nil
 
             var cancellables = Set<AnyCancellable>()
             var orderStates: [PointOfSaleOrderState] = []
@@ -284,14 +284,14 @@ struct PointOfSaleAggregateModelTests {
     struct PaymentTests {
         private let cardPresentPaymentService = MockCardPresentPaymentService()
         private let itemsService = MockPointOfSaleItemsService()
-        private let orderService = MockPOSOrderService()
+        private let orderController = MockPOSOrderService()
         private let sut: PointOfSaleAggregateModel
 
         init() {
             sut = PointOfSaleAggregateModel(
                 itemsService: itemsService,
                 cardPresentPaymentService: cardPresentPaymentService,
-                orderService: orderService)
+                orderController: orderController)
         }
 
         @Test func init_sets_paymentState_to_idle() async throws {
@@ -300,7 +300,7 @@ struct PointOfSaleAggregateModelTests {
             let sut = PointOfSaleAggregateModel(
                 itemsService: itemsService,
                 cardPresentPaymentService: cardPresentPaymentService,
-                orderService: orderService)
+                orderController: orderController)
 
             // Then
             #expect(sut.paymentState == .idle)
@@ -311,7 +311,7 @@ struct PointOfSaleAggregateModelTests {
             let sut = PointOfSaleAggregateModel(
                 itemsService: itemsService,
                 cardPresentPaymentService: cardPresentPaymentService,
-                orderService: orderService,
+                orderController: orderController,
                 paymentState: .cardPaymentSuccessful)
 
             // When
@@ -338,7 +338,7 @@ struct PointOfSaleAggregateModelTests {
             let sut = PointOfSaleAggregateModel(
                 itemsService: itemsService,
                 cardPresentPaymentService: cardPresentPaymentService,
-                orderService: orderService,
+                orderController: orderController,
                 paymentState: .cardPaymentSuccessful)
 
             // When
@@ -365,7 +365,7 @@ struct PointOfSaleAggregateModelTests {
 
         @Test func cardPresentPaymentInlineMessage_when_paymentSuccess_then_total_set() async throws {
             // Given
-            orderService.orderToReturn = Order.fake().copy(currency: "$", total: "52.30")
+            orderController.orderToReturn = Order.fake().copy(currency: "$", total: "52.30")
             sut.addToCart(makeItem())
             await sut.checkOut()
 
@@ -383,7 +383,7 @@ struct PointOfSaleAggregateModelTests {
         @Test func paymentIntentCreationErrorMessage_when_paymentIntentCreationError_tryAgain_cancels_payment() async throws {
             // Given
             struct TestError: Error {}
-            orderService.orderToReturn = Order.fake()
+            orderController.orderToReturn = Order.fake()
             sut.addToCart(makeItem())
             await sut.checkOut()
 
@@ -406,7 +406,7 @@ struct PointOfSaleAggregateModelTests {
         @Test func paymentIntentCreationErrorMessage_when_paymentIntentCreationError_editOrder_moves_back_to_building() async throws {
             // Given
             struct TestError: Error {}
-            orderService.orderToReturn = Order.fake()
+            orderController.orderToReturn = Order.fake()
             sut.addToCart(makeItem())
             await sut.checkOut()
 
@@ -448,17 +448,17 @@ struct PointOfSaleAggregateModelTests {
         private let analytics: WooAnalytics
         private let cardPresentPaymentService = MockCardPresentPaymentService()
         private let itemsService = MockPointOfSaleItemsService()
-        private let orderService = MockPOSOrderService()
+        private let orderController = MockPOSOrderService()
         private let sut: PointOfSaleAggregateModel
 
         init() {
             analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-            orderService.orderToReturn = Order.fake()
+            orderController.orderToReturn = Order.fake()
 
             sut = PointOfSaleAggregateModel(
                 itemsService: itemsService,
                 cardPresentPaymentService: cardPresentPaymentService,
-                orderService: orderService,
+                orderController: orderController,
                 analytics: analytics)
 
             sut.addToCart(makeItem())

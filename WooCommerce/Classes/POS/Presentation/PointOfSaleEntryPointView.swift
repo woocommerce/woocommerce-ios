@@ -11,13 +11,13 @@ struct PointOfSaleEntryPointView: View {
     init(itemProvider: POSItemProvider,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
-         orderService: PointOfSaleOrderServiceProtocol) {
+         orderController: PointOfSaleOrderControllerProtocol) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         let posModel = PointOfSaleAggregateModel(
             itemsService: PointOfSaleItemsService(itemProvider: itemProvider),
             cardPresentPaymentService: cardPresentPaymentService,
-            orderService: orderService)
+            orderController: orderController)
 
         self._posModel = StateObject(wrappedValue: posModel)
     }
@@ -40,6 +40,6 @@ struct PointOfSaleEntryPointView: View {
     PointOfSaleEntryPointView(itemProvider: POSItemProviderPreview(),
                               onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                              orderService: POSOrderPreviewService())
+                              orderController: PointOfSalePreviewOrderController())
 }
 #endif

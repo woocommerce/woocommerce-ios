@@ -5,7 +5,7 @@ import struct Yosemite.Order
 import struct Yosemite.POSCartItem
 import class WooFoundation.CurrencyFormatter
 
-protocol PointOfSaleOrderServiceProtocol {
+protocol PointOfSaleOrderControllerProtocol {
     var orderStatePublisher: AnyPublisher<PointOfSaleInternalOrderState, Never> { get }
 
     @available(*, deprecated, message: "This property will be removed when possible. Use `orderState.loaded` instead.")
@@ -15,7 +15,7 @@ protocol PointOfSaleOrderServiceProtocol {
     func clearOrder()
 }
 
-final class PointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
+final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     init(orderService: POSOrderServiceProtocol,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.orderService = orderService
@@ -75,7 +75,7 @@ final class PointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
 }
 
 
-private extension PointOfSaleOrderService {
+private extension PointOfSaleOrderController {
     func totals(for order: Order) -> PointOfSaleOrderTotals {
         let totalsCalculator = OrderTotalsCalculator(for: order,
                                                      using: currencyFormatter)

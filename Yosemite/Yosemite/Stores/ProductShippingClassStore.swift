@@ -52,14 +52,12 @@ private extension ProductShippingClassStore {
                     return
                 }
 
-                if pageNumber == Default.firstPageNumber {
-                    self.deleteStoredProductShippingClassModels(siteID: siteID)
-                }
-
+                let shouldDeleteAllItems = pageNumber == Default.firstPageNumber
                 self.upsertStoredProductShippingClassModelsInBackground(readOnlyProductShippingClassModels: models,
-                                                                        siteID: siteID) {
-                                                                            let hasNextPage = models.count == pageSize
-                                                                            onCompletion(.success(hasNextPage))
+                                                                        siteID: siteID,
+                                                                        shouldDeleteAllStoredItems: shouldDeleteAllItems) {
+                    let hasNextPage = models.count == pageSize
+                    onCompletion(.success(hasNextPage))
                 }
             }
         }
@@ -80,14 +78,6 @@ private extension ProductShippingClassStore {
             }
         }
     }
-
-    /// Deletes any Storage.ProductShippingClass with the specified `siteID` and `productID`
-    ///
-    func deleteStoredProductShippingClassModels(siteID: Int64) {
-        let storage = storageManager.viewStorage
-        storage.deleteProductShippingClasses(siteID: siteID)
-        storage.saveIfNeeded()
-    }
 }
 
 
@@ -100,10 +90,15 @@ private extension ProductShippingClassStore {
     ///
     func upsertStoredProductShippingClassModelsInBackground(readOnlyProductShippingClassModels: [Networking.ProductShippingClass],
                                                             siteID: Int64,
+                                                            shouldDeleteAllStoredItems: Bool = false,
                                                             onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
+            if shouldDeleteAllStoredItems {
+                storage.deleteProductShippingClasses(siteID: siteID)
+            }
             self?.upsertStoredProductShippingClassModels(readOnlyProductShippingClassModels: readOnlyProductShippingClassModels,
-                                                         in: storage, siteID: siteID)
+                                                         in: storage,
+                                                         siteID: siteID)
         }, completion: onCompletion, on: .main)
     }
 }

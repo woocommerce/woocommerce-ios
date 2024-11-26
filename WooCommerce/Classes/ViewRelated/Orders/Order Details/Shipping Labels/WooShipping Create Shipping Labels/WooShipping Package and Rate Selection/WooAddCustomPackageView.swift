@@ -8,32 +8,38 @@ struct WooAddCustomPackageView: View {
         static let scrollToDelay: Double = 0.5
     }
 
-    @StateObject private var customPackageViewModel = WooShippingAddCustomPackageViewModel()
+    @ObservedObject private var viewModel: WooShippingAddCustomPackageViewModel
 
     @FocusState var packageTemplateNameFieldFocused: Bool
     @FocusState var focusedField: WooShippingPackageUnitType?
 
     @State private var isSavingPackage: Bool = false
+    @State private var isAddingPackage: Bool = false
 
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
+
+    init(viewModel: WooShippingAddCustomPackageViewModel, addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
+        self.viewModel = viewModel
+        self.addPackageAction = addPackageAction
+    }
 
     private var packageTypeSelectionView: some View {
         Menu {
             // show selection
             ForEach(WooShippingPackageType.allCases, id: \.self) { option in
                 Button {
-                    customPackageViewModel.packageType = option
+                    viewModel.packageType = option
                 } label: {
                     Text(option.name)
                         .bodyStyle()
-                    if customPackageViewModel.packageType == option {
+                    if viewModel.packageType == option {
                         Image(uiImage: .checkmarkStyledImage)
                     }
                 }
             }
         } label: {
             HStack {
-                Text(customPackageViewModel.packageType.name)
+                Text(viewModel.packageType.name)
                     .bodyStyle()
                 Spacer()
                 Image(systemName: "chevron.up.chevron.down")
@@ -48,12 +54,12 @@ struct WooAddCustomPackageView: View {
             Spacer()
             HStack {
                 Spacer()
-                if customPackageViewModel.isLoadingStoreOptions {
+                if viewModel.isLoadingStoreOptions {
                     ActivityIndicator(isAnimating: .constant(true), style: .large)
                 }
                 else {
                     Button {
-                        customPackageViewModel.loadStoreOptions()
+                        viewModel.loadStoreOptions()
                     } label: {
                         Image(systemName: "arrow.trianglehead.counterclockwise")
                     }
@@ -66,7 +72,7 @@ struct WooAddCustomPackageView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            if let storeOptions = customPackageViewModel.storeOptions {
+            if let storeOptions = viewModel.storeOptions {
                 ScrollViewReader { proxy in
                     ScrollView {
                         VStack(alignment: .leading, spacing: Constants.defaultVerticalSpacing) {
@@ -83,7 +89,7 @@ struct WooAddCustomPackageView: View {
                                     }
                                 }
                                 // showing weight input only if we are saving the template
-                                if customPackageViewModel.showSaveTemplate {
+                                if viewModel.showSaveTemplate {
                                     unitInputView(for: WooShippingPackageUnitType.weight, unit: storeOptions.weightUnit)
                                 }
                             }
@@ -113,14 +119,14 @@ struct WooAddCustomPackageView: View {
                                     .renderedIf(focusedField != nil)
                                 }
                             }
-                            Toggle(isOn: $customPackageViewModel.showSaveTemplate) {
+                            Toggle(isOn: $viewModel.showSaveTemplate) {
                                 Text(Localization.saveNewPackageTemplate)
                                     .font(.subheadline)
                             }
                             .tint(Color.accentColor)
-                            if customPackageViewModel.showSaveTemplate {
+                            if viewModel.showSaveTemplate {
                                 VStack {
-                                    TextField(Localization.savePackageTemplatePlaceholder, text: $customPackageViewModel.packageTemplateName)
+                                    TextField(Localization.savePackageTemplatePlaceholder, text: $viewModel.packageTemplateName)
                                         .font(.body)
                                         .focused($packageTemplateNameFieldFocused)
                                         .padding()
@@ -135,7 +141,7 @@ struct WooAddCustomPackageView: View {
                                             isSavingPackage = false
                                         }
                                     }
-                                    .disabled(!customPackageViewModel.validateCustomPackageInputFields())
+                                    .disabled(!viewModel.validateCustomPackageInputFields())
                                     .buttonStyle(SecondaryLoadingButtonStyle(isLoading: isSavingPackage))
                                     .padding(.bottom)
                                 }
@@ -144,17 +150,21 @@ struct WooAddCustomPackageView: View {
                             else {
                                 Spacer()
                                 Button(WooShippingAddPackageView.Localization.addPackage) {
-                                    addPackageButtonTapped()
+                                    Task { @MainActor in
+                                        isAddingPackage = true
+                                        await addPackageButtonTapped()
+                                        isAddingPackage = false
+                                    }
                                 }
-                                .disabled(!customPackageViewModel.validateCustomPackageInputFields())
-                                .buttonStyle(PrimaryButtonStyle())
+                                .disabled(!viewModel.validateCustomPackageInputFields())
+                                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isAddingPackage))
                                 .padding(.bottom)
                             }
                         }
                         .padding(.horizontal)
                         .frame(minHeight: geometry.size.height)
                         .frame(width: geometry.size.width)
-                        .onChange(of: customPackageViewModel.showSaveTemplate) { newValue in
+                        .onChange(of: viewModel.showSaveTemplate) { newValue in
                             packageTemplateNameFieldFocused = newValue
                         }
                         .onChange(of: packageTemplateNameFieldFocused) { focused in
@@ -178,7 +188,7 @@ struct WooAddCustomPackageView: View {
             }
         }
         .task {
-            customPackageViewModel.loadStoreOptions()
+            viewModel.loadStoreOptions()
         }
     }
 
@@ -186,26 +196,37 @@ struct WooAddCustomPackageView: View {
         WooShippingAddPackageUnitInputView(unitType: unitType,
                                            unit: unit,
                                            fieldValue: Binding(get: {
-            return self.customPackageViewModel.fieldValues[unitType] ?? ""
+            return self.viewModel.fieldValues[unitType] ?? ""
         }, set: { value in
-            self.customPackageViewModel.fieldValues[unitType] = value
+            self.viewModel.fieldValues[unitType] = value
         }), focusedField: _focusedField)
     }
 
     // MARK: - actions
 
-    private func addPackageButtonTapped() {
-        if let packageData = customPackageViewModel.addPackageAction() {
-            // call addPackageAction with data
-            addPackageAction(packageData)
+    @MainActor
+    private func addPackageButtonTapped() async {
+        let packageDataResult = await viewModel.addPackageAction()
+        // call addPackageAction with data
+        switch packageDataResult {
+        case .success(let data):
+            addPackageAction(data)
+        case .failure(let failure):
+            // show failure
+            print(failure)
         }
     }
 
     @MainActor
     private func savePackageAsTemplateButtonTapped() async {
-        if let packageData = await customPackageViewModel.savePackageAsTemplateAction() {
-            // call addPackageAction with data
-            addPackageAction(packageData)
+        let packageDataResult = await viewModel.savePackageAsTemplateAction()
+        // call addPackageAction with data
+        switch packageDataResult {
+        case .success(let data):
+            addPackageAction(data)
+        case .failure(let failure):
+            // show failure
+            print(failure)
         }
     }
 

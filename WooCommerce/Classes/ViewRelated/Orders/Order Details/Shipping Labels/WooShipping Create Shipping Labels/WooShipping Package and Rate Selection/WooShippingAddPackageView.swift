@@ -19,11 +19,17 @@ struct WooShippingAddPackageView: View {
 
     // Holds type of selected package, it can be `custom`, `carrier` or `saved`
     @State var selectedPackageType = PackageProviderType.custom
-    @StateObject var packagesRepository = WooShippingPackagesRepository.shared
-    @StateObject var packagesViewModel = WooShippingAddPackageViewModel()
+    @StateObject var packagesRepository: WooShippingPackagesRepository
+    @StateObject var customPackageViewModel: WooShippingAddCustomPackageViewModel
 
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
+    init(packagesRepository: WooShippingPackagesRepository = WooShippingPackagesRepository.shared,
+         addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
+        self._packagesRepository = StateObject(wrappedValue: packagesRepository)
+        self._customPackageViewModel = StateObject(wrappedValue: WooShippingAddCustomPackageViewModel(packagesRepository: packagesRepository))
+        self.addPackageAction = addPackageAction
+    }
     // MARK: - UI
 
     var body: some View {
@@ -53,7 +59,6 @@ struct WooShippingAddPackageView: View {
         .navigationViewStyle(.stack)
         .task {
             packagesRepository.loadPackages()
-            packagesViewModel.loadPackages()
         }
     }
 
@@ -73,7 +78,7 @@ struct WooShippingAddPackageView: View {
 
     @ViewBuilder
     private var customPackageView: some View {
-        WooAddCustomPackageView { packageData in
+        WooAddCustomPackageView(viewModel: customPackageViewModel) { packageData in
             addPackageAction(packageData)
         }
     }
@@ -87,7 +92,7 @@ struct WooShippingAddPackageView: View {
 
     @ViewBuilder
     private var savedPackageView: some View {
-        WooSavedPackagesSelectionView(viewModel: packagesViewModel) { packageData in
+        WooSavedPackagesSelectionView(viewModel: WooSavedPackagesSelectionViewModel(packagesRepository: packagesRepository)) { packageData in
             addPackageAction(packageData)
         }
     }

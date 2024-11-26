@@ -1,7 +1,7 @@
 import Foundation
 
 final class WooSavedPackagesSelectionViewModel: ObservableObject {
-    @Published var packagesRepository: WooShippingPackagesRepositoryProtocol
+    @Published private var packagesRepository: WooShippingPackagesRepositoryProtocol
     @Published var selectedPackageId: String?  // Track the selected package index
 
     var customSavedPackages: [any WooShippingPackageDataRepresentable] {
@@ -21,6 +21,10 @@ final class WooSavedPackagesSelectionViewModel: ObservableObject {
         return customSavedPackages.isNotEmpty || predefinedSavedPackages.isNotEmpty
     }
 
+    var loadingPackages: Bool {
+        return packagesRepository.loadingPackages
+    }
+
     var selectedPackage: WooShippingPackageDataRepresentable? {
         guard let selectedPackageId else { return nil }
 
@@ -33,6 +37,10 @@ final class WooSavedPackagesSelectionViewModel: ObservableObject {
         }
 
         return nil
+    }
+
+    func loadPackages() {
+        packagesRepository.loadPackages()
     }
 
     func removePackage(_ packageToRemove: WooShippingPackageDataRepresentable) async -> Error? {

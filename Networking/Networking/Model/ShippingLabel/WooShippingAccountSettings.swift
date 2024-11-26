@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents Account Settings for Shipping Labels.
 ///
-public struct WooShippingAccountSettingsResponse: Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct WooShippingAccountSettings: Equatable, GeneratedFakeable, GeneratedCopiable {
     public let storeOptions: ShippingLabelStoreOptions
     public let accountSettings: ShippingLabelAccountSettings
 
@@ -13,7 +13,7 @@ public struct WooShippingAccountSettingsResponse: Equatable, GeneratedFakeable, 
     }
 }
 
-extension WooShippingAccountSettingsResponse: Decodable {
+extension WooShippingAccountSettings: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 

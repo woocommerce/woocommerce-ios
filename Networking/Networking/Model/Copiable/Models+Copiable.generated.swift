@@ -4042,15 +4042,15 @@ extension Networking.WooPaymentsPayoutsSchedule {
     }
 }
 
-extension Networking.WooShippingAccountSettingsResponse {
+extension Networking.WooShippingAccountSettings {
     public func copy(
         storeOptions: CopiableProp<ShippingLabelStoreOptions> = .copy,
         accountSettings: CopiableProp<ShippingLabelAccountSettings> = .copy
-    ) -> Networking.WooShippingAccountSettingsResponse {
+    ) -> Networking.WooShippingAccountSettings {
         let storeOptions = storeOptions ?? self.storeOptions
         let accountSettings = accountSettings ?? self.accountSettings
 
-        return Networking.WooShippingAccountSettingsResponse(
+        return Networking.WooShippingAccountSettings(
             storeOptions: storeOptions,
             accountSettings: accountSettings
         )

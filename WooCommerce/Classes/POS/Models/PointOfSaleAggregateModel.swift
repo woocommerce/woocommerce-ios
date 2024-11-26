@@ -361,21 +361,21 @@ extension PointOfSaleAggregateModel {
             return
         }
         // calculate totals and sync order if there was a change in the cart
-        await syncOrder(for: cart, allItems: itemsService.allItems)
+        await syncOrder(for: cart)
     }
 
     @MainActor
-    private func syncOrder(for cartProducts: [CartItem], allItems: [POSItem]) async {
+    private func syncOrder(for cartProducts: [CartItem]) async {
         guard orderState.isSyncing == false else {
             return
         }
         orderState = .syncing
         let cart = cartProducts.map {
-            POSCartItem(itemID: nil, product: $0.item, quantity: Decimal($0.quantity))
+            POSCartItem(product: $0.item, quantity: Decimal($0.quantity))
         }
 
         do {
-            let syncedOrder = try await orderService.syncOrder(cart: cart, order: order, allProducts: allItems)
+            let syncedOrder = try await orderService.syncOrder(cart: cart, order: order)
             self.order = syncedOrder
             orderState = .loaded(totals(for: syncedOrder))
             await startPaymentWhenCardReaderConnected()
@@ -386,7 +386,7 @@ extension PointOfSaleAggregateModel {
             // Consider removing error or handle specific errors with our own formatting and localization
             orderState = .error(.init(message: error.localizedDescription, handler: { [weak self] in
                 Task {
-                    await self?.syncOrder(for: cartProducts, allItems: allItems)
+                    await self?.syncOrder(for: cartProducts)
                 }
             }))
         }

@@ -185,6 +185,8 @@
 		209AD3C52AC19E7500825D76 /* WooPaymentsDepositsOverviewMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3C42AC19E7500825D76 /* WooPaymentsDepositsOverviewMapper.swift */; };
 		20D210C32B1780CE0099E517 /* deposits-overview-all.json in Resources */ = {isa = PBXBuildFile; fileRef = 20D210C22B1780CE0099E517 /* deposits-overview-all.json */; };
 		20D210C52B1788E60099E517 /* deposits-overview-all-no-default-currency.json in Resources */ = {isa = PBXBuildFile; fileRef = 20D210C42B1788E60099E517 /* deposits-overview-all-no-default-currency.json */; };
+		20F616482CF4B74600F9FA2A /* POSOrdersRemoteProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F616472CF4B74600F9FA2A /* POSOrdersRemoteProtocol.swift */; };
+		20F616492CF4B8CD00F9FA2A /* POSOrdersRemoteProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F616472CF4B74600F9FA2A /* POSOrdersRemoteProtocol.swift */; };
 		21DB5B99C4107CF69C0A57EC /* Pods_NetworkingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */; };
 		24F98C522502E79800F49B68 /* FeatureFlagRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C512502E79800F49B68 /* FeatureFlagRemote.swift */; };
 		24F98C5E2502EDCF00F49B68 /* BundleWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C5D2502EDCF00F49B68 /* BundleWooTests.swift */; };
@@ -1470,6 +1472,7 @@
 		209AD3C42AC19E7500825D76 /* WooPaymentsDepositsOverviewMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsOverviewMapper.swift; sourceTree = "<group>"; };
 		20D210C22B1780CE0099E517 /* deposits-overview-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "deposits-overview-all.json"; sourceTree = "<group>"; };
 		20D210C42B1788E60099E517 /* deposits-overview-all-no-default-currency.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "deposits-overview-all-no-default-currency.json"; sourceTree = "<group>"; };
+		20F616472CF4B74600F9FA2A /* POSOrdersRemoteProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSOrdersRemoteProtocol.swift; sourceTree = "<group>"; };
 		24F98C512502E79800F49B68 /* FeatureFlagRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagRemote.swift; sourceTree = "<group>"; };
 		24F98C5D2502EDCF00F49B68 /* BundleWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleWooTests.swift; sourceTree = "<group>"; };
 		24F98C5F2502EF8200F49B68 /* FeatureFlagRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagRemoteTests.swift; sourceTree = "<group>"; };
@@ -2891,6 +2894,7 @@
 				03EB99872906A78400F06A39 /* JustInTimeMessagesRemote.swift */,
 				B5DAEFEF2180DD5A0002356A /* NotificationsRemote.swift */,
 				B557DA0120975500005962F4 /* OrdersRemote.swift */,
+				20F616472CF4B74600F9FA2A /* POSOrdersRemoteProtocol.swift */,
 				D8FBFF0A22D3ADB1006E3336 /* OrderStatsRemoteV4.swift */,
 				261CF1B7255AE62D0090D8D3 /* PaymentGatewayRemote.swift */,
 				45152808257A7C6E0076B03C /* ProductAttributesRemote.swift */,
@@ -4825,6 +4829,7 @@
 				263A6DBE2BEAA4A900C292B2 /* MIContainer.swift in Sources */,
 				263A6DBB2BEAA49B00C292B2 /* AnyCodable.swift in Sources */,
 				26373E0D2BFCEAFB008E6735 /* Address.swift in Sources */,
+				20F616492CF4B8CD00F9FA2A /* POSOrdersRemoteProtocol.swift in Sources */,
 				26373E2A2BFD08AF008E6735 /* WatchOS-Models+Copiable.swift in Sources */,
 				263A6DBC2BEAA49B00C292B2 /* AnyDecodable.swift in Sources */,
 				263A6DBD2BEAA49B00C292B2 /* AnyEncodable.swift in Sources */,
@@ -5084,6 +5089,7 @@
 				933A2732222234F800C2143A /* Logging.swift in Sources */,
 				CE50346021B5799F007573C6 /* SitePlan.swift in Sources */,
 				EE1CB9092B4BC8C500AD24D5 /* BlazeTargetOptionMappers.swift in Sources */,
+				20F616482CF4B74600F9FA2A /* POSOrdersRemoteProtocol.swift in Sources */,
 				DE2E8E9F295310C5002E4B14 /* WordPressSiteMapper.swift in Sources */,
 				B59325CC217E2B4C000B0E8E /* NoteListMapper.swift in Sources */,
 				B505F6CD20BEE37E00BB1B69 /* AccountMapper.swift in Sources */,

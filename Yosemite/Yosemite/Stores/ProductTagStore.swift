@@ -76,11 +76,10 @@ private extension ProductTagStore {
 
             switch result {
             case .success(let productTags):
-                if pageNumber == Default.firstPageNumber {
-                    self?.deleteUnusedStoredProductTags(siteID: siteID)
-                }
-
-                self?.upsertStoredProductTagsInBackground(productTags, siteID: siteID) {
+                let shouldRemoveUnusedTags = pageNumber == Default.firstPageNumber
+                self?.upsertStoredProductTagsInBackground(productTags,
+                                                          siteID: siteID,
+                                                          shouldRemoveUnusedTags: shouldRemoveUnusedTags) {
                     onCompletion(.success(productTags))
                 }
             case .failure(let error):
@@ -95,7 +94,7 @@ private extension ProductTagStore {
         remote.createProductTags(for: siteID, names: tags) { [weak self] (result) in
             switch result {
             case .success(let productTags):
-                self?.upsertStoredProductTagsInBackground(productTags, siteID: siteID) {
+                self?.upsertStoredProductTagsInBackground(productTags, siteID: siteID, shouldRemoveUnusedTags: false) {
                     onCompletion(.success(productTags))
                 }
             case .failure(let error):
@@ -126,17 +125,20 @@ private extension ProductTagStore {
     /// onCompletion will be called on the main thread!
     ///
     func upsertStoredProductTagsInBackground(_ readOnlyProductTags: [Networking.ProductTag],
-                                                   siteID: Int64,
-                                                   onCompletion: @escaping () -> Void) {
+                                             siteID: Int64,
+                                             shouldRemoveUnusedTags: Bool,
+                                             onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
+            if shouldRemoveUnusedTags {
+                self?.deleteUnusedStoredProductTags(siteID: siteID, in: storage)
+            }
             self?.upsertStoredProductTags(readOnlyProductTags, in: storage, siteID: siteID)
         }, completion: onCompletion, on: .main)
     }
 
     /// Deletes any Storage.ProductTag  that is not associated to a product on the specified `siteID`
     ///
-    func deleteUnusedStoredProductTags(siteID: Int64) {
-        let storage = storageManager.viewStorage
+    func deleteUnusedStoredProductTags(siteID: Int64, in storage: StorageType) {
         storage.deleteUnusedProductTags(siteID: siteID)
         storage.saveIfNeeded()
     }
@@ -160,8 +162,8 @@ private extension ProductTagStore {
     ///     - siteID: site ID for looking up the ProductTag.
     ///
     func upsertStoredProductTags(_ readOnlyProductTags: [Networking.ProductTag],
-                                       in storage: StorageType,
-                                       siteID: Int64) {
+                                 in storage: StorageType,
+                                 siteID: Int64) {
         // Upserts the ProductTag models from the read-only version
         for readOnlyProductTag in readOnlyProductTags {
             let storageProductTag: Storage.ProductTag = {

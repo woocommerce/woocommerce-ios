@@ -7,10 +7,6 @@ import Storage
 public final class ProductTagStore: Store {
     private let remote: ProductTagsRemote
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ProductTagsRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -132,14 +128,9 @@ private extension ProductTagStore {
     func upsertStoredProductTagsInBackground(_ readOnlyProductTags: [Networking.ProductTag],
                                                    siteID: Int64,
                                                    onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            self?.upsertStoredProductTags(readOnlyProductTags, in: derivedStorage, siteID: siteID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ [weak self] storage in
+            self?.upsertStoredProductTags(readOnlyProductTags, in: storage, siteID: siteID)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Deletes any Storage.ProductTag  that is not associated to a product on the specified `siteID`

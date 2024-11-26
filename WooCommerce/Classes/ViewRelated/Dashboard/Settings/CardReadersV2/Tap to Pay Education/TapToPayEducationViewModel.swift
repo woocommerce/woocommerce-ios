@@ -49,7 +49,38 @@ final class TapToPayEducationViewModel: ObservableObject {
         self.isInteractiveDismissDisabled = flow == .onboarding ? true : false
         self.onDismiss = onDismiss
         // TODO: Inject steps
-        self.steps = steps ?? []
+        self.steps = steps ?? [.init(
+            title: "How to accept contactless card with Tap to Pay on iPhone.",
+            imageName: "built-in-reader-preparing",
+            descriptionSteps: [
+                "Create an order on your iPhone, add products or a custom amount, "
+                + "and check out with Tap to Pay on iPhone.",
+                "Present your iPhone to the customer.",
+                "When you see the Done checkmark, the card read is complete and the "
+                + "transaction is being processed.",
+                "When you see the Done checkmark, the card read."
+            ]
+        ),
+        .init(
+            title: "Accept contactless payments with only an iPhone.",
+            imageName: "built-in-reader-set-up",
+            descriptionSteps: [
+                "With Tap to Pay on iPhone and the Woo app, you can accept in-person, "
+                + "contactless payments, right on your iPhone - from physical debit and "
+                + "credit cards, to Apple Pay and other digital wallets - no extra "
+                + "hardware needed. It’s easy, secure, and private."
+            ]
+        ),
+        .init(
+            title: "How to handle PIN entry for a card.",
+            imageName: "built-in-reader-processing",
+            descriptionSteps: [
+                "Customer is prompted to enter their card PIN under specific "
+                + "circumstances with Tap to Pay on iPhone. For customers needing visual "
+                + "or other assistance, accessibility options are accessed by selecting "
+                + "‘Accessibility Options’ on the PIN screen. Audible instructions guide customers."
+            ]
+        )]
 
         reloadHasPreviousTapToPayUsage()
     }

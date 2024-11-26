@@ -223,8 +223,8 @@ private extension WooShippingCreateLabelsView {
         } label: {
             Text(Localization.BottomSheet.purchaseLabel(with: viewModel.totalCost))
         }
-        .buttonStyle(PrimaryButtonStyle())
-        .disabled(!viewModel.canPurchaseLabel)
+        .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isPurchasingLabel))
+        .disabled(!viewModel.isPurchaseButtonEnabled)
     }
 }
 

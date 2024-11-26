@@ -5,6 +5,9 @@ import XCTest
 ///
 final class MockWooShippingRemote {
 
+    private(set) var purchaseShippingLabelCalled = false
+    private(set) var checkLabelStatusCallsCount = 0
+
     private struct ResultKey: Hashable {
         let siteID: Int64
     }
@@ -145,6 +148,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
             let key = ResultKey(siteID: siteID)
             if let result = self.purchaseShippingLabelResults[key] {
+                self.purchaseShippingLabelCalled = true
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")
@@ -161,6 +165,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
             let key = ResultKey(siteID: siteID)
             if let result = self.checkLabelStatus[key] {
+                self.checkLabelStatusCallsCount += 1
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

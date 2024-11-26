@@ -29,6 +29,7 @@ final class TapToPayEducationViewModel: ObservableObject {
     private let onDismiss: () -> Void
 
     init(flow: Flow = .onboarding,
+         steps: [TapToPayEducationStepViewModel]? = nil,
          siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          cardReaderSupportDeterminer: CardReaderSupportDetermining? = nil,
@@ -48,27 +49,9 @@ final class TapToPayEducationViewModel: ObservableObject {
         self.isInteractiveDismissDisabled = flow == .onboarding ? true : false
         self.onDismiss = onDismiss
         // TODO: Inject steps
-        self.steps = []
+        self.steps = steps ?? []
 
         reloadHasPreviousTapToPayUsage()
-    }
-
-    // MARK: - Navigation
-
-    func nextStep() {
-        if steps.count > selectedStep + 1 {
-            selectedStep += 1
-        }
-    }
-
-    func previousStep() {
-        if selectedStep > 0 {
-            selectedStep -= 1
-        }
-    }
-
-    func skip() {
-        selectedStep = steps.count - 1
     }
 
     // MARK: - Actions
@@ -122,6 +105,24 @@ final class TapToPayEducationViewModel: ObservableObject {
                 skip()
             }
         }
+    }
+
+    // MARK: - Navigation
+
+    private func nextStep() {
+        if steps.count > selectedStep + 1 {
+            selectedStep += 1
+        }
+    }
+
+    private func previousStep() {
+        if selectedStep > 0 {
+            selectedStep -= 1
+        }
+    }
+
+    private func skip() {
+        selectedStep = steps.count - 1
     }
 }
 

@@ -45,6 +45,7 @@
 		0191301B2CF4E782008C0C88 /* TapToPayEducationStepViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0191301A2CF4E77F008C0C88 /* TapToPayEducationStepViewModel.swift */; };
 		0191301D2CF4E7B7008C0C88 /* TapToPayEducationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0191301C2CF4E7B6008C0C88 /* TapToPayEducationViewModel.swift */; };
 		0191301F2CF4E80E008C0C88 /* TapToPayEducationStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0191301E2CF4E809008C0C88 /* TapToPayEducationStepView.swift */; };
+		019130212CF5B0FF008C0C88 /* TapToPayEducationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019130202CF5B0FF008C0C88 /* TapToPayEducationViewModelTests.swift */; };
 		01929C342CEF6354006C79ED /* CardPresentModalErrorWithoutEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01929C332CEF634E006C79ED /* CardPresentModalErrorWithoutEmail.swift */; };
 		01929C362CEF6D6E006C79ED /* CardPresentModalNonRetryableErrorWithoutEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01929C352CEF6D6A006C79ED /* CardPresentModalNonRetryableErrorWithoutEmail.swift */; };
 		01ADC1362C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ADC1352C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift */; };
@@ -3164,6 +3165,7 @@
 		0191301A2CF4E77F008C0C88 /* TapToPayEducationStepViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayEducationStepViewModel.swift; sourceTree = "<group>"; };
 		0191301C2CF4E7B6008C0C88 /* TapToPayEducationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayEducationViewModel.swift; sourceTree = "<group>"; };
 		0191301E2CF4E809008C0C88 /* TapToPayEducationStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayEducationStepView.swift; sourceTree = "<group>"; };
+		019130202CF5B0FF008C0C88 /* TapToPayEducationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayEducationViewModelTests.swift; sourceTree = "<group>"; };
 		01929C332CEF634E006C79ED /* CardPresentModalErrorWithoutEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalErrorWithoutEmail.swift; sourceTree = "<group>"; };
 		01929C352CEF6D6A006C79ED /* CardPresentModalNonRetryableErrorWithoutEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalNonRetryableErrorWithoutEmail.swift; sourceTree = "<group>"; };
 		01ADC1352C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift; sourceTree = "<group>"; };
@@ -7673,6 +7675,7 @@
 				039B7E6629F2855B00E21EF4 /* CardPresentPaymentOnboardingViewModelTests.swift */,
 				20B0D65D2AD45BDE0059735A /* AboutTapToPayContactlessLimitViewModelTests.swift */,
 				03B9E52A2A1505A7005C77F5 /* TapToPayReconnectionControllerTests.swift */,
+				019130202CF5B0FF008C0C88 /* TapToPayEducationViewModelTests.swift */,
 			);
 			path = "In-Person Payments";
 			sourceTree = "<group>";
@@ -16606,6 +16609,7 @@
 				093B265727DF05270026F92D /* UnitInputViewModelTests.swift in Sources */,
 				4552085B25829091001CF873 /* AddAttributeViewModelTests.swift in Sources */,
 				02F1E6BD2A39805C00C3E4C7 /* ProductDescriptionAICoordinatorTests.swift in Sources */,
+				019130212CF5B0FF008C0C88 /* TapToPayEducationViewModelTests.swift in Sources */,
 				CC33238C29CDF67D00CA9709 /* ComponentSettingsViewModelTests.swift in Sources */,
 				86F5FFE42CA30D9200C767C4 /* CustomFieldsListViewModelTests.swift in Sources */,
 				0261F5A728D454CF00B7AC72 /* ProductSearchUICommandTests.swift in Sources */,

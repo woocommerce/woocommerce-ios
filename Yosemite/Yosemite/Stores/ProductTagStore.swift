@@ -77,7 +77,9 @@ private extension ProductTagStore {
             switch result {
             case .success(let productTags):
                 let shouldRemoveUnusedTags = pageNumber == Default.firstPageNumber
-                self?.upsertStoredProductTagsInBackground(productTags,
+                /// Only upsert tags that are associated with at least 1 product.
+                let filteredTags = productTags.filter { $0.count > 0 }
+                self?.upsertStoredProductTagsInBackground(filteredTags,
                                                           siteID: siteID,
                                                           shouldRemoveUnusedTags: shouldRemoveUnusedTags) {
                     onCompletion(.success(productTags))

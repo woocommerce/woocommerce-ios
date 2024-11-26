@@ -169,6 +169,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             switch result {
             case .success(let shippingLabel):
                 onLabelPurchase?(markOrderComplete)
+                self.shippingLabel = shippingLabel
                 postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
             case .failure(let error):
                 DDLogError("⛔️ Error purchasing shipping label: \(error)")

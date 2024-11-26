@@ -177,102 +177,30 @@ struct PointOfSaleAggregateModelTests {
             #expect(orderController.clearOrderWasCalled == true)
         }
 
-        @Test func checkOut_when_reader_connects_collectPayment_called() async throws {
+        @Test func checkout_with_items_calls_sync_order() async throws {
             // Given
-            cardPresentPaymentService.connectedReader = nil
-            await sut.checkOut()
-            cardPresentPaymentService.collectPaymentWasCalled = false
+            sut.addToCart(makeItem())
+            let item = try #require(sut.cart.first)
 
             // When
-            // `await confirmation` callback only waits until this completes, not until some timeout.
-            // Since this is synchonous but triggers async combine behaviour, we can't use that approach.
-            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+            await sut.checkOut()
 
-            // Then
-            let timeout = ContinuousClock.now + .seconds(2)
-
-            while cardPresentPaymentService.collectPaymentWasCalled != true {
-                try await Task.sleep(for: .milliseconds(1))
-                try #require(.now < timeout)
-            }
+            let passedItem = try #require(orderController.spyCartProducts?.first)
+            #expect(passedItem.id == item.id)
         }
 
-        @Test func checkOut_when_reader_is_already_connected_collectPayment_called() async throws {
+//        The UI prevents no-item checkouts, but it's the controller's responsibility to handle this.
+        @Test func checkOut_without_items_calls_sync_order() async throws {
             // Given
-            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
-            orderController.orderStateToReturn = makeLoadedOrderState()
+            sut.removeAllItemsFromCart()
 
             // When
             await sut.checkOut()
 
             // Then
-            #expect(cardPresentPaymentService.collectPaymentWasCalled)
+            #expect(orderController.syncOrderWasCalled == true)
+            #expect(orderController.spyCartProducts?.isEmpty == true)
         }
-
-        @Test func after_disconnection_when_reader_reconnects_collectPayment_called() async throws {
-            // Given
-            cardPresentPaymentService.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
-            await sut.checkOut()
-            await cardPresentPaymentService.disconnectReader()
-            cardPresentPaymentService.collectPaymentWasCalled = false
-
-            // When
-            // `await confirmation` callback only waits until this completes, not until some timeout.
-            // Since this is synchonous but triggers async combine behaviour, we can't use that approach.
-            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
-
-            // Then
-            let timeout = ContinuousClock.now + .seconds(1)
-
-            while cardPresentPaymentService.collectPaymentWasCalled != true {
-                try await Task.sleep(for: .milliseconds(1))
-                try #require(.now < timeout)
-            }
-        }
-
-//        @Test func checkOut_with_no_previous_order_sets_orderState_syncing_then_loaded() async throws {
-//            // Given
-//            var cancellables = Set<AnyCancellable>()
-//            var orderStates: [PointOfSaleOrderState] = []
-//            await confirmation() { confirmation in
-//                // We can use `withObservationTracking` when we move to @Observable
-//                sut.$orderState.collect(3)
-//                    .sink { orderState in
-//                        orderStates.append(contentsOf: orderState)
-//                        confirmation()
-//                    }
-//                    .store(in: &cancellables)
-//
-//                // When
-//                await sut.checkOut()
-//            }
-//
-//            // Then
-//            #expect(orderStates == [.idle, .syncing, .loaded(.init(cartTotal: "$0.00", orderTotal: "", taxTotal: ""))])
-//        }
-//
-//        @Test func checkOut_with_order_sync_failure_sets_orderState_syncing_then_error() async throws {
-//            // Given
-//            orderController.orderToReturn = nil
-//
-//            var cancellables = Set<AnyCancellable>()
-//            var orderStates: [PointOfSaleOrderState] = []
-//            await confirmation() { confirmation in
-//                // We can use `withObservationTracking` when we move to @Observable
-//                sut.$orderState.collect(3)
-//                    .sink { orderState in
-//                        orderStates.append(contentsOf: orderState)
-//                        confirmation()
-//                    }
-//                    .store(in: &cancellables)
-//
-//                // When
-//                await sut.checkOut()
-//            }
-//
-//            // Then
-//            #expect(orderStates == [.idle, .syncing, .error(.init(message: "", handler: {}))])
-//        }
     }
 
     struct PaymentTests {
@@ -416,6 +344,63 @@ struct PointOfSaleAggregateModelTests {
             try #require(sut.orderStage == .finalizing)
             editOrderAction()
             #expect(sut.orderStage == .building)
+        }
+
+        @Test func checkOut_when_reader_connects_collectPayment_called() async throws {
+            // Given
+            cardPresentPaymentService.connectedReader = nil
+
+            orderController.orderStateToReturn = makeLoadedOrderState()
+            await sut.checkOut()
+            cardPresentPaymentService.collectPaymentWasCalled = false
+
+            // When
+            // `await confirmation` callback only waits until this completes, not until some timeout.
+            // Since this is synchonous but triggers async combine behaviour, we can't use that approach.
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+
+            // Then
+            let timeout = ContinuousClock.now + .seconds(2)
+
+            while cardPresentPaymentService.collectPaymentWasCalled != true {
+                try await Task.sleep(for: .milliseconds(1))
+                try #require(.now < timeout)
+            }
+        }
+
+        @Test func checkOut_when_reader_is_already_connected_collectPayment_called() async throws {
+            // Given
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+            orderController.orderStateToReturn = makeLoadedOrderState()
+
+            // When
+            await sut.checkOut()
+
+            // Then
+            #expect(cardPresentPaymentService.collectPaymentWasCalled)
+        }
+
+        @Test func after_disconnection_when_reader_reconnects_collectPayment_called() async throws {
+            // Given
+            cardPresentPaymentService.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+
+            orderController.orderStateToReturn = makeLoadedOrderState()
+            await sut.checkOut()
+            await cardPresentPaymentService.disconnectReader()
+            cardPresentPaymentService.collectPaymentWasCalled = false
+
+            // When
+            // `await confirmation` callback only waits until this completes, not until some timeout.
+            // Since this is synchonous but triggers async combine behaviour, we can't use that approach.
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+
+            // Then
+            let timeout = ContinuousClock.now + .seconds(1)
+
+            while cardPresentPaymentService.collectPaymentWasCalled != true {
+                try await Task.sleep(for: .milliseconds(1))
+                try #require(.now < timeout)
+            }
         }
 
         // MARK: Onboarding

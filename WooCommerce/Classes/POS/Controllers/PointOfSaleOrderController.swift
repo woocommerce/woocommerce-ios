@@ -124,3 +124,22 @@ enum PointOfSaleInternalOrderState {
         }
     }
 }
+
+extension PointOfSaleInternalOrderState: Equatable {
+    static func ==(lhs: PointOfSaleInternalOrderState, rhs: PointOfSaleInternalOrderState) -> Bool {
+        switch (lhs, rhs) {
+        case (.idle, .idle):
+            return true
+        case (.error(let lhsError), .error(let rhsError)):
+            return lhsError.title == rhsError.title &&
+            lhsError.message == rhsError.message
+        case (.syncing, .syncing):
+            return true
+        case (.loaded(let lhsTotals, let lhsOrder), .loaded(let rhsTotals, let rhsOrder)):
+            return lhsTotals == rhsTotals &&
+            lhsOrder == rhsOrder
+        default:
+            return false
+        }
+    }
+}

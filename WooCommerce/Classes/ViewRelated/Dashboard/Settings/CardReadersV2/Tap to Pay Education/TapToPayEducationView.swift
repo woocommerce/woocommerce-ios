@@ -2,10 +2,10 @@ import Foundation
 import SwiftUI
 
 struct TapToPayEducationView: View {
-    @ObservedObject private var viewModel: TapToPayEducationViewModel
+    @StateObject private var viewModel: TapToPayEducationViewModel
 
     init(viewModel: TapToPayEducationViewModel) {
-        self.viewModel = viewModel
+        self._viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
@@ -65,23 +65,5 @@ struct TapToPayEducationView: View {
                 siteID: viewModel.siteID,
                 onboardingUseCase: viewModel.cardPresentPaymentsOnboardingUseCase)
         })
-    }
-}
-
-// MARK: - Hosting Controller
-
-final class TapToPayEducationViewViewHostingController: UIHostingController<TapToPayEducationView> {
-    init(onDismiss: @escaping () -> Void) {
-        let viewModel = TapToPayEducationViewModel()
-        super.init(rootView: TapToPayEducationView(viewModel: viewModel))
-
-        viewModel.onDismiss = { [weak self] in
-            self?.dismiss(animated: true, completion: nil)
-            onDismiss()
-        }
-    }
-
-    required dynamic init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }

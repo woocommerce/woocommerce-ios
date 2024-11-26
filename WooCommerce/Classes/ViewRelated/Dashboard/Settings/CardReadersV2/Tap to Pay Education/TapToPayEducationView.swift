@@ -56,6 +56,15 @@ struct TapToPayEducationView: View {
                 }
             }
         }
+        .interactiveDismissDisabled(viewModel.isInteractiveDismissDisabled)
+        .sheet(isPresented: $viewModel.showingSetUpFlow,
+               onDismiss: viewModel.reloadHasPreviousTapToPayUsage,
+               content: {
+            TapToPaySettingsFlowPresentingView(
+                configuration: viewModel.configuration,
+                siteID: viewModel.siteID,
+                onboardingUseCase: viewModel.cardPresentPaymentsOnboardingUseCase)
+        })
     }
 }
 
@@ -70,8 +79,6 @@ final class TapToPayEducationViewViewHostingController: UIHostingController<TapT
             self?.dismiss(animated: true, completion: nil)
             onDismiss()
         }
-
-        isModalInPresentation = true
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {

@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 
 final class TapToPayEducationViewModel: ObservableObject {
     struct Action {
@@ -6,12 +7,45 @@ final class TapToPayEducationViewModel: ObservableObject {
         let action: () -> Void
     }
 
+    enum Flow {
+        case onboarding
+        case about
+    }
+
     @Published var selectedStep = 0
     @Published var steps: [TapToPayEducationStepViewModel]
+    @Published private(set) var isInteractiveDismissDisabled = false
+
+    @Published var showingSetUpFlow: Bool = false
+    @Published private(set) var hasPreviousTapToPayUsage = false
+
+    private let flow: Flow
+    private let cardReaderSupportDeterminer: CardReaderSupportDetermining
+
+    let configuration: CardPresentPaymentsConfiguration
+    let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
+    let siteID: Int64
 
     var onDismiss: () -> Void = {}
 
-    init() {
+    init(flow: Flow = .onboarding,
+         siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
+         configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
+         cardReaderSupportDeterminer: CardReaderSupportDetermining? = nil,
+         cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol? = nil) {
+        self.flow = flow
+        self.cardReaderSupportDeterminer = cardReaderSupportDeterminer ?? CardReaderSupportDeterminer(siteID: siteID, configuration: configuration)
+        self.siteID = siteID
+        self.configuration = configuration
+        if let cardPresentPaymentsOnboardingUseCase {
+            self.cardPresentPaymentsOnboardingUseCase = cardPresentPaymentsOnboardingUseCase
+        } else {
+            let onboardingUseCase = CardPresentPaymentsOnboardingUseCase()
+            self.cardPresentPaymentsOnboardingUseCase = onboardingUseCase
+            self.cardPresentPaymentsOnboardingUseCase.refresh()
+        }
+        self.isInteractiveDismissDisabled = flow == .onboarding ? true : false
+
         // TODO: Inject steps
         steps = []
     }
@@ -30,6 +64,10 @@ final class TapToPayEducationViewModel: ObservableObject {
         }
     }
 
+    func skip() {
+        selectedStep = steps.count - 1
+    }
+
     // MARK: - Actions
 
     var backAction: Action? {
@@ -46,9 +84,16 @@ final class TapToPayEducationViewModel: ObservableObject {
 
     var primaryAction: Action {
         if selectedStep == steps.count - 1 {
-            return Action(title: Localization.done) { [weak self] in
-                guard let self else { return }
-                onDismiss()
+            if flow == .about && !hasPreviousTapToPayUsage {
+                return Action(title: Localization.setUpTapToPay) { [weak self] in
+                    guard let self else { return }
+                    showingSetUpFlow = true
+                }
+            } else {
+                return Action(title: Localization.done) { [weak self] in
+                    guard let self else { return }
+                    onDismiss()
+                }
             }
         } else {
             return Action(title: Localization.next) { [weak self] in
@@ -59,14 +104,32 @@ final class TapToPayEducationViewModel: ObservableObject {
     }
 
     var secondaryAction: Action? {
-        guard selectedStep != steps.count - 1 else {
-            return nil
+        if selectedStep == steps.count - 1 {
+            if flow == .about, !hasPreviousTapToPayUsage {
+                return Action(title: Localization.done) { [weak self] in
+                    guard let self else { return }
+                    onDismiss()
+                }
+            } else {
+                return nil
+            }
+        } else {
+            return Action(title: Localization.skip) { [weak self] in
+                guard let self else { return }
+                skip()
+            }
+        }
+    }
+}
+
+extension TapToPayEducationViewModel {
+    func reloadHasPreviousTapToPayUsage() {
+        guard flow == .about else {
+            return
         }
 
-        return Action(title: Localization.skip) { [weak self] in
-            guard let self else { return }
-
-            selectedStep = steps.count - 1
+        Task { @MainActor in
+            hasPreviousTapToPayUsage = await cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
         }
     }
 }
@@ -95,4 +158,10 @@ private enum Localization {
         value: "Done",
         comment: "Text for the button to dismiss Tap to Pay education flow"
     )
+
+    static let setUpTapToPay = NSLocalizedString(
+        "tapToPay.education.setUpTapToPay",
+        value: "Set Up Tap to Pay on iPhone",
+        comment: "Button title for Set up Tap to Pay button in Tap to Pay education flow. The button opens the " +
+        "Set Up Tap to Pay on iPhone flow.")
 }

@@ -41,6 +41,30 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     // MARK: - carrier
 
     @Published private(set) var carrierPackages: [WooShippingCarrierPackages] = []
+    @Published var selectedCarriersTabIndex: Int? = nil
+    @Published var selectedCarriersPackageId: String? = nil
+    @Published private(set) var starredCarriersPackages: Set<String> = []
+    @Published private(set) var carrierTabs: [TopTabItem<EmptyView>] = []
+    var selectedCarrierTab: WooShippingCarrierPackages? {
+        guard let selectedCarriersTabIndex else { return nil }
+
+        return carrierPackages[selectedCarriersTabIndex]
+    }
+    var selectedCarriersPackage: WooShippingPackageDataRepresentable? {
+        guard let selectedCarriersPackageId else { return nil }
+
+        for carrierTab in carrierPackages {
+            for packageGroup in carrierTab.packageGroups {
+                for packageItem in packageGroup.packages {
+                    if selectedCarriersPackageId == packageItem.id {
+                        return packageItem
+                    }
+                }
+            }
+        }
+
+        return nil
+    }
 
     // MARK: - loading
 
@@ -70,11 +94,28 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         let predefinedSavedPackages = packagesResult.savedPredefinedPackages.map {
             return $0.toPackageData(storeOptions: packagesResult.storeOptions)
         }
+        let carrierPackages: [WooShippingCarrierPackages] = packagesResult.allPredefinedOptions.compactMap {
+            return $0.toCarrierPackages(storeOptions: packagesResult.storeOptions)
+        }
+        let carrierTabs: [TopTabItem<EmptyView>] = carrierPackages.map { carrierTab in
+            return TopTabItem(name: carrierTab.carrier.name, icon: carrierTab.carrier.logo, content: {
+                EmptyView()
+            })
+        }
+
         self.customSavedPackages = customSavedPackages
         self.predefinedSavedPackages = predefinedSavedPackages
+        self.carrierPackages = carrierPackages
+        self.carrierTabs = carrierTabs
+        if selectedCarriersTabIndex == nil {
+            self.selectedCarriersTabIndex = carrierPackages.isEmpty ? nil : 0
+        }
     }
 
     // star/unstar packages
+    func starUnstarPackage(_ packageToStar: WooShippingPackageDataRepresentable) async -> Error? {
+        return nil
+    }
 
     // delete saved packages
     func removeSavedPackage(_ packageToRemove: WooShippingPackageDataRepresentable) async -> Error? {
@@ -101,7 +142,23 @@ extension WooShippingCustomPackage {
                                       dimensionsUnit: storeOptions.dimensionUnit,
                                       weight: String(boxWeight),
                                       weightUnit: storeOptions.weightUnit,
-                                      source: .custom, packageType: rawType)
+                                      source: .custom,
+                                      packageType: rawType)
+    }
+}
+
+extension WooShippingPredefinedPackage {
+    func toPackageData(storeOptions: ShippingLabelStoreOptions, groupTitle: String) -> WooShippingPackageData {
+        return WooShippingPackageData(id: id,
+                                      name: name,
+                                      length: String(getLength()),
+                                      width: String(getWidth()),
+                                      height: String(getHeight()),
+                                      dimensionsUnit: storeOptions.dimensionUnit,
+                                      weight: String(boxWeight),
+                                      weightUnit: storeOptions.weightUnit,
+                                      source: .predefined(groupTitle),
+                                      packageType: isLetter ? "envelope" : "box")
     }
 }
 
@@ -117,5 +174,21 @@ extension WooShippingSavedPredefinedPackage {
                                       weightUnit: storeOptions.weightUnit,
                                       source: .predefined(groupTitle),
                                       packageType: self.package.isLetter ? "envelope" : "box")
+    }
+}
+
+extension WooShippingCarrierPredefinedOptions {
+    func toCarrierPackages(storeOptions: ShippingLabelStoreOptions) -> WooShippingCarrierPackages? {
+        guard let shippingCarrier = WooShippingCarrier(rawValue: carrierID) else { return nil }
+
+        let packageGroups = predefinedOptions.compactMap { predefinedOption in
+            let packages = predefinedOption.predefinedPackages.map { package in
+                return package.toPackageData(storeOptions: storeOptions, groupTitle: predefinedOption.title)
+            }
+            let group = WooPackageGroup(name: predefinedOption.title, packages: packages)
+            return group
+        }
+        let carrierPackages = WooShippingCarrierPackages(carrier: shippingCarrier, packageGroups: packageGroups)
+        return carrierPackages
     }
 }

@@ -19,7 +19,6 @@ struct WooShippingAddPackageView: View {
 
     // Holds type of selected package, it can be `custom`, `carrier` or `saved`
     @State var selectedPackageType = PackageProviderType.custom
-    @StateObject var packagesRepository = WooShippingPackagesRepository.shared
     @StateObject var packagesViewModel = WooShippingAddPackageViewModel()
 
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
@@ -52,7 +51,6 @@ struct WooShippingAddPackageView: View {
         }
         .navigationViewStyle(.stack)
         .task {
-            packagesRepository.loadPackages()
             packagesViewModel.loadPackages()
         }
     }
@@ -80,7 +78,7 @@ struct WooShippingAddPackageView: View {
 
     @ViewBuilder
     private var carrierPackageView: some View {
-        WooCarrierPackagesSelectionView(viewModel: WooCarrierPackagesSelectionViewModel(packagesRepository: packagesRepository)) { packageData in
+        WooCarrierPackagesSelectionView(viewModel: packagesViewModel) { packageData in
             addPackageAction(packageData)
         }
     }

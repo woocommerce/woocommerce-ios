@@ -15,12 +15,12 @@ public struct WooShippingPackagesResponse: Equatable, GeneratedFakeable, Generat
     public let savedPredefinedPackages: [WooShippingSavedPredefinedPackage]
 
     /// All predefined options
-    public let allPredefinedOptions: [WooShippingPredefinedOption]
+    public let allPredefinedOptions: [WooShippingCarrierPredefinedOptions]
 
     public init(storeOptions: ShippingLabelStoreOptions,
                 customPackages: [WooShippingCustomPackage],
                 savedPredefinedPackages: [WooShippingSavedPredefinedPackage],
-                allPredefinedOptions: [WooShippingPredefinedOption]) {
+                allPredefinedOptions: [WooShippingCarrierPredefinedOptions]) {
         self.storeOptions = storeOptions
         self.customPackages = customPackages
         self.savedPredefinedPackages = savedPredefinedPackages
@@ -44,21 +44,23 @@ extension WooShippingPackagesResponse: Decodable {
         }
 
         let allPredefinedPackagesData: [String: AnyCodable] = try packagesData.decode([String: AnyCodable].self, forKey: .predefined)
-        var allPredefinedOptions: [WooShippingPredefinedOption] = []
+        var allPredefinedOptions: [WooShippingCarrierPredefinedOptions] = []
         var allSavedPredefinedPackages: [WooShippingSavedPredefinedPackage] = []
 
         allPredefinedPackagesData.forEach { (key, value) in
             // key is a carrier id, for example "usps"
             if let provider: [String: Any]? = try? value.toDictionary() {
+                var providerOptions: [WooShippingPredefinedOption] = []
                 provider?.forEach({ (providerKey, providerValue) in
                     // providerKey is package group id, for example "pri_flat_boxes"
                     let providerValueDict = providerValue as? [String: Any]
                     let title: String = providerValueDict?["title"] as? String ?? ""
                     let packages = WooShippingPackagesResponse.getAllPredefinedPackages(packageDefinitions: providerValueDict)
                     let option = WooShippingPredefinedOption(title: title, providerID: key, predefinedPackages: packages)
-                    allPredefinedOptions.append(option)
+                    providerOptions.append(option)
                     allSavedPredefinedPackages.append(contentsOf: WooShippingPackagesResponse.savedPackages(savedOptions: savedPredefinedOptions, option: option))
                 })
+                allPredefinedOptions.append(WooShippingCarrierPredefinedOptions(carrierID: key, predefinedOptions: providerOptions))
             }
         }
 

@@ -75,10 +75,10 @@ struct WooCarrierPackagesSelectionView: View {
         static let tabPadding: CGFloat = 9.0
     }
 
-    @ObservedObject private var viewModel: WooCarrierPackagesSelectionViewModel
+    @ObservedObject private var viewModel: WooShippingAddPackageViewModel
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
-    init(viewModel: WooCarrierPackagesSelectionViewModel,
+    init(viewModel: WooShippingAddPackageViewModel,
          addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
         self.viewModel = viewModel
         self.addPackageAction = addPackageAction
@@ -86,10 +86,10 @@ struct WooCarrierPackagesSelectionView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if viewModel.selectedTabIndex != nil, viewModel.tabs.isNotEmpty {
-                TopTabView(tabs: viewModel.tabs,
+            if viewModel.selectedCarriersTabIndex != nil, viewModel.carrierTabs.isNotEmpty {
+                TopTabView(tabs: viewModel.carrierTabs,
                            showContent: .constant(false),
-                           selectedTabIndex: $viewModel.selectedTabIndex,
+                           selectedTabIndex: $viewModel.selectedCarriersTabIndex,
                            tabsContainerHorizontalPadding: nil,
                            selectedStateColor: Color.accentColor,
                            unselectedStateColor: .secondary,
@@ -101,14 +101,14 @@ struct WooCarrierPackagesSelectionView: View {
             }
             if let selectedCarrierTab = viewModel.selectedCarrierTab {
                 WooCarrierPackagesView(carrierTab: selectedCarrierTab,
-                                       selectedPackageId: $viewModel.selectedPackageId)
+                                       selectedPackageId: $viewModel.selectedCarriersPackageId)
             }
             Spacer()
             Divider()
             Button(WooShippingAddPackageView.Localization.addPackage) {
                 addPackageButtonTapped()
             }
-            .disabled(viewModel.selectedPackageId == nil)
+            .disabled(viewModel.selectedCarriersPackageId == nil)
             .buttonStyle(PrimaryButtonStyle())
             .padding()
         }
@@ -116,7 +116,7 @@ struct WooCarrierPackagesSelectionView: View {
 
     private func addPackageButtonTapped() {
         // call addPackageAction with data from selected package
-        guard let selectedPackage = viewModel.selectedPackage else { return }
+        guard let selectedPackage = viewModel.selectedCarriersPackage  else { return }
 
         addPackageAction(selectedPackage)
     }

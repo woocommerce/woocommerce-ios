@@ -115,10 +115,10 @@ private extension ProductShippingClassStore {
     func upsertStoredProductShippingClassModels(readOnlyProductShippingClassModels: [Networking.ProductShippingClass],
                                                 in storage: StorageType,
                                                 siteID: Int64) {
+        let storedItems = storage.loadProductShippingClasses(siteID: siteID)
         // Upserts the ProductShippingClass models from the read-only version
         for readOnlyProductShippingClass in readOnlyProductShippingClassModels {
-            let storageProductShippingClass = storage.loadProductShippingClass(siteID: siteID,
-                                                                               remoteID: readOnlyProductShippingClass.shippingClassID)
+            let storageProductShippingClass = storedItems?.first(where: { $0.shippingClassID == readOnlyProductShippingClass.shippingClassID })
                 ?? storage.insertNewObject(ofType: Storage.ProductShippingClass.self)
             storageProductShippingClass.update(with: readOnlyProductShippingClass)
         }

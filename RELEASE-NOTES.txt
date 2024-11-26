@@ -4,6 +4,7 @@
 -----
 - [*] Jetpack Setup: Fixed an issue where the WordPress.com authentication fails when using a passwordless account that's already connected to Jetpack [https://github.com/woocommerce/woocommerce-ios/pull/14501]
 - [*] Jetpack Setup: Fixed an issue with magic link handling when the app is cold started. [https://github.com/woocommerce/woocommerce-ios/pull/14502]
+- [Internal] Updated storage usage in ProductShippingClassStore [https://github.com/woocommerce/woocommerce-ios/pull/14520]
 
 21.2
 -----

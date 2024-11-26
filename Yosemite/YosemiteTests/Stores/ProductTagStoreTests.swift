@@ -351,6 +351,6 @@ final class ProductTagStoreTests: XCTestCase {
 
 private extension ProductTagStoreTests {
     func sampleTag(tagID: Int64) -> Networking.ProductTag {
-        return Networking.ProductTag(siteID: sampleSiteID, tagID: tagID, name: "Sample", slug: "sample")
+        return Networking.ProductTag(siteID: sampleSiteID, tagID: tagID, name: "Sample", slug: "sample", count: 0)
     }
 }

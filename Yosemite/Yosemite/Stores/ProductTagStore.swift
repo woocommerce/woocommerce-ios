@@ -131,17 +131,10 @@ private extension ProductTagStore {
                                              onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
             if shouldRemoveUnusedTags {
-                self?.deleteUnusedStoredProductTags(siteID: siteID, in: storage)
+                storage.deleteUnusedProductTags(siteID: siteID)
             }
             self?.upsertStoredProductTags(readOnlyProductTags, in: storage, siteID: siteID)
         }, completion: onCompletion, on: .main)
-    }
-
-    /// Deletes any Storage.ProductTag  that is not associated to a product on the specified `siteID`
-    ///
-    func deleteUnusedStoredProductTags(siteID: Int64, in storage: StorageType) {
-        storage.deleteUnusedProductTags(siteID: siteID)
-        storage.saveIfNeeded()
     }
 
     /// Deletes any Storage.ProductTag with the specified `siteID` and `productID`

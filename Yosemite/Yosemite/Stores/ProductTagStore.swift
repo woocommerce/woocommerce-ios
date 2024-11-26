@@ -109,8 +109,9 @@ private extension ProductTagStore {
         remote.deleteProductTags(for: siteID, ids: ids) { [weak self] (result) in
             switch result {
             case .success(let productTags):
-                self?.deleteStoredProductTags(siteID: siteID, ids: ids)
-                onCompletion(.success(productTags))
+                self?.deleteStoredProductTags(siteID: siteID, ids: ids) {
+                    onCompletion(.success(productTags))
+                }
             case .failure(let error):
                 onCompletion(.failure(error))
             }
@@ -145,10 +146,10 @@ private extension ProductTagStore {
 
     /// Deletes any Storage.ProductTag with the specified `siteID` and `productID`
     ///
-    func deleteStoredProductTags(siteID: Int64, ids: [Int64]) {
-        let storage = storageManager.viewStorage
-        storage.deleteProductTags(siteID: siteID, ids: ids)
-        storage.saveIfNeeded()
+    func deleteStoredProductTags(siteID: Int64, ids: [Int64], onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            storage.deleteProductTags(siteID: siteID, ids: ids)
+        }, completion: onCompletion, on: .main)
     }
 
 }

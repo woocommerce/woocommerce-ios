@@ -4,14 +4,14 @@ import protocol Yosemite.POSItem
 import protocol Yosemite.POSItemProvider
 import enum Yosemite.POSProductProviderError
 
-protocol PointOfSaleItemsServiceProtocol {
+protocol PointOfSaleItemsControllerProtocol {
     var itemListStatePublisher: any Publisher<ItemListState, Never> { get }
     func loadInitialItems() async
     func loadNextItems() async
     func reload() async
 }
 
-class PointOfSaleItemsService: PointOfSaleItemsServiceProtocol {
+class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     private(set) var itemListStatePublisher: any Publisher<ItemListState, Never>
     private var itemListStateSubject: PassthroughSubject<ItemListState, Never> = .init()
     private var allItems: [POSItem] = []

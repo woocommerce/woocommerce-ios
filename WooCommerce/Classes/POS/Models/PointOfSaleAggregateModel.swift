@@ -52,7 +52,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
     @Published private(set) var orderState: PointOfSaleOrderState = .idle
 
-    private let itemsService: PointOfSaleItemsServiceProtocol
+    private let itemsController: PointOfSaleItemsControllerProtocol
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
@@ -63,12 +63,12 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
     private var cancellables: Set<AnyCancellable> = []
 
-    init(itemsService: PointOfSaleItemsServiceProtocol,
+    init(itemsController: PointOfSaleItemsControllerProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
          paymentState: PointOfSalePaymentState = .idle) {
-        self.itemsService = itemsService
+        self.itemsController = itemsController
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderController = orderController
         self.analytics = analytics
@@ -84,22 +84,22 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 // MARK: - ItemList
 extension PointOfSaleAggregateModel {
     private func publishItemListState() {
-        itemsService.itemListStatePublisher.assign(to: &$itemListState)
+        itemsController.itemListStatePublisher.assign(to: &$itemListState)
     }
 
     @MainActor
     func loadInitialItems() async {
-        await itemsService.loadInitialItems()
+        await itemsController.loadInitialItems()
     }
 
     @MainActor
     func loadNextItems() async {
-        await itemsService.loadNextItems()
+        await itemsController.loadNextItems()
     }
 
     @MainActor
     func reload() async {
-        await itemsService.reload()
+        await itemsController.reload()
     }
 }
 

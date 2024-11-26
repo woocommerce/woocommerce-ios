@@ -39,7 +39,7 @@ final class POSItemProviderPreview: POSItemProvider {
     }
 }
 
-final class PointOfSaleItemsPreviewService: PointOfSaleItemsServiceProtocol {
+final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtocol {
     @Published var itemListState: ItemListState = .initialLoading
     var itemListStatePublisher: any Publisher<ItemListState, Never> { $itemListState }
 

@@ -159,7 +159,7 @@ private extension HubMenu {
                    let orderService = POSOrderService(siteID: viewModel.siteID,
                                                       credentials: viewModel.credentials) {
                     PointOfSaleEntryPointView(
-                        itemProvider: viewModel.posItemProvider,
+                        itemsController: PointOfSaleItemsController(itemProvider: viewModel.posItemProvider),
                         onPointOfSaleModeActiveStateChange: { isEnabled in
                             viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
                         },

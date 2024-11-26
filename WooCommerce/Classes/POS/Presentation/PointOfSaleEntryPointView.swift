@@ -8,14 +8,14 @@ struct PointOfSaleEntryPointView: View {
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
 
-    init(itemProvider: POSItemProvider,
+    init(itemsController: PointOfSaleItemsControllerProtocol,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         let posModel = PointOfSaleAggregateModel(
-            itemsService: PointOfSaleItemsService(itemProvider: itemProvider),
+            itemsController: itemsController,
             cardPresentPaymentService: cardPresentPaymentService,
             orderController: orderController)
 
@@ -37,7 +37,7 @@ struct PointOfSaleEntryPointView: View {
 
 #if DEBUG
 #Preview {
-    PointOfSaleEntryPointView(itemProvider: POSItemProviderPreview(),
+    PointOfSaleEntryPointView(itemsController: PointOfSalePreviewItemsController(),
                               onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                               orderController: PointOfSalePreviewOrderController())

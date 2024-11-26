@@ -2,14 +2,14 @@ import Testing
 import Combine
 @testable import WooCommerce
 
-final class PointOfSaleItemsServiceTests {
+final class PointOfSaleItemsControllerTests {
     private let itemProvider: MockPOSItemProvider
-    private let sut: PointOfSaleItemsService
+    private let sut: PointOfSaleItemsController
     @Published var itemListState: ItemListState = .initialLoading
 
     init() {
         itemProvider = MockPOSItemProvider()
-        sut = PointOfSaleItemsService(itemProvider: itemProvider)
+        sut = PointOfSaleItemsController(itemProvider: itemProvider)
         sut.itemListStatePublisher.assign(to: &$itemListState)
     }
 

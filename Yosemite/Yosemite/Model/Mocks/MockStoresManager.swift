@@ -41,6 +41,7 @@ public class MockStoresManager: StoresManager {
     private let googleAdsActionHandler: MockGoogleAdsActionHandler
     private let justInTimeMessageActionHandler: MockJustInTimeMessageActionHandler
     private let shippingMethodActionHandler: MockShippingMethodActionHandler
+    private let couponActionHandler: MockCouponActionHandler
 
 
 
@@ -76,6 +77,7 @@ public class MockStoresManager: StoresManager {
         googleAdsActionHandler = MockGoogleAdsActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         justInTimeMessageActionHandler = MockJustInTimeMessageActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         shippingMethodActionHandler = MockShippingMethodActionHandler(objectGraph: objectGraph, storageManager: storageManager)
+        couponActionHandler = MockCouponActionHandler(objectGraph: objectGraph, storageManager: storageManager)
     }
 
     /// Accessor for whether the user is logged in (spoiler: they always will be when mocking)
@@ -158,6 +160,8 @@ public class MockStoresManager: StoresManager {
             justInTimeMessageActionHandler.handle(action: action)
         case let action as ShippingMethodAction:
             shippingMethodActionHandler.handle(action: action)
+        case let action as CouponAction:
+            couponActionHandler.handle(action: action)
         default:
             fatalError("Unable to handle action: \(action.identifier) \(String(describing: action))")
         }

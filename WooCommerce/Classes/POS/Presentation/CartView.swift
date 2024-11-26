@@ -3,9 +3,8 @@ import protocol Yosemite.POSItem
 
 struct CartView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    private let viewModel = CartViewModel()
 
-    @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
-    @ObservedObject private var cartViewModel: CartViewModel
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
@@ -14,11 +13,6 @@ struct CartView: View {
     private var coordinateSpace: CoordinateSpace = .named(Constants.scrollViewCoordinateSpaceIdentifier)
     private var shouldApplyHeaderBottomShadow: Bool {
         posModel.cart.isNotEmpty && offSetPosition < 0
-    }
-
-    init(viewModel: PointOfSaleDashboardViewModel, cartViewModel: CartViewModel) {
-        self.viewModel = viewModel
-        self.cartViewModel = cartViewModel
     }
 
     var body: some View {
@@ -37,7 +31,7 @@ struct CartView: View {
 
                         Spacer()
 
-                        if let itemsInCartLabel = cartViewModel.itemsInCartLabel {
+                        if let itemsInCartLabel = viewModel.itemsInCartLabel(for: posModel.cart.count) {
                             Text(itemsInCartLabel)
                                 .font(Constants.itemsFont)
                                 .foregroundColor(Color.posSecondaryText)
@@ -150,7 +144,7 @@ private extension CartView {
     }
 
     var shouldPreventCartEditing: Bool {
-        cartViewModel.shouldPreventCartEditing(
+        viewModel.shouldPreventCartEditing(
             orderState: posModel.orderState,
             paymentState: posModel.paymentState)
     }
@@ -202,7 +196,7 @@ private extension CartView {
     var checkoutButton: some View {
         Button {
             Task { @MainActor in
-                await posModel.submitCart()
+                await posModel.checkOut()
             }
         } label: {
             Text(Localization.checkoutButtonTitle)
@@ -251,24 +245,7 @@ private extension CartView {
 }
 
 #if DEBUG
-import Combine
-import class WooFoundation.MockAnalyticsPreview
-import class WooFoundation.MockAnalyticsProviderPreview
-
 #Preview {
-    let posModel = PointOfSaleAggregateModel(
-        itemProvider: POSItemProviderPreview(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderService: POSOrderPreviewService())
-    // TODO:
-    // Simplify this by mocking `CartViewModel`
-    let totalsViewModel = TotalsViewModel(posModel: posModel,
-                                          cardPresentPaymentService: CardPresentPaymentPreviewService())
-    let cartViewModel = CartViewModel(posModel: posModel)
-    let dashboardViewModel = PointOfSaleDashboardViewModel(posModel: posModel,
-                                                           totalsViewModel: totalsViewModel,
-                                                           cartViewModel: cartViewModel,
-                                                           connectivityObserver: POSConnectivityObserverPreview())
-    CartView(viewModel: dashboardViewModel, cartViewModel: cartViewModel)
+    CartView()
 }
 #endif

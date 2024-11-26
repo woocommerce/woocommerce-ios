@@ -23,7 +23,7 @@ struct PointOfSaleAggregateModelTests {
         @Test func startNewCart_removes_all_items_from_cart_and_moves_back_to_building() async throws {
             // Given
             sut.addToCart(makeItem())
-            await sut.submitCart()
+            await sut.checkOut()
             try #require(sut.orderStage == .finalizing)
             try #require(sut.cart.isNotEmpty)
 
@@ -35,12 +35,12 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.cart.isEmpty)
         }
 
-        @Test func submitCart_moves_to_finalizing_order_stage() async throws {
+        @Test func checkOut_moves_to_finalizing_order_stage() async throws {
             // Given
             sut.addToCart(makeItem())
 
             // When
-            await sut.submitCart()
+            await sut.checkOut()
 
             // Then
             #expect(sut.orderStage == .finalizing)
@@ -49,7 +49,7 @@ struct PointOfSaleAggregateModelTests {
         @Test func addMoreToCart_moves_to_building_order_stage() async throws {
             // Given
             sut.addToCart(makeItem())
-            await sut.submitCart()
+            await sut.checkOut()
             try #require(sut.orderStage == .finalizing)
 
             // When
@@ -503,7 +503,6 @@ struct PointOfSaleAggregateModelTests {
         @Test func after_disconnection_when_reader_reconnects_collectPayment_called() async throws {
             // Given
             cardPresentPaymentService.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
-            sut.observeReaderReconnection()
             await sut.checkOut()
             await cardPresentPaymentService.disconnectReader()
             cardPresentPaymentService.collectPaymentWasCalled = false
@@ -708,7 +707,7 @@ struct PointOfSaleAggregateModelTests {
             struct TestError: Error {}
             orderService.orderToReturn = Order.fake()
             sut.addToCart(makeItem())
-            await sut.submitCart()
+            await sut.checkOut()
 
             // When paymentIntentCreationError event is received
             cardPresentPaymentService.paymentEvent = .show(

@@ -39,7 +39,7 @@ struct ReceiptEmailView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.cancel, action: {
-                        viewModel.onDismiss(false)
+                        viewModel.onDismiss(nil)
                     })
                 }
             }
@@ -86,20 +86,20 @@ private enum Localization {
 }
 
 final class ReceiptEmailViewHostingController: UIHostingController<ReceiptEmailView>, UIAdaptivePresentationControllerDelegate {
-    private var onDismiss: ((Bool) -> Void)
+    private var onDismiss: ((Order?) -> Void)
 
     init(order: Order,
          stores: StoresManager = ServiceLocator.stores,
          systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-         onDismiss: @escaping (Bool) -> Void) {
+         onDismiss: @escaping (Order?) -> Void) {
 
         self.onDismiss = onDismiss
         let viewModel = ReceiptEmailViewModel(order: order, stores: stores, onDismiss: onDismiss)
         super.init(rootView: ReceiptEmailView(viewModel: viewModel))
 
-        viewModel.onDismiss = { [weak self] success in
+        viewModel.onDismiss = { [weak self] order in
             self?.dismiss(animated: true, completion: nil)
-            onDismiss(success)
+            onDismiss(order)
         }
 
         presentationController?.delegate = self
@@ -111,6 +111,6 @@ final class ReceiptEmailViewHostingController: UIHostingController<ReceiptEmailV
     }
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        onDismiss(false)
+        onDismiss(nil)
     }
 }

@@ -153,10 +153,10 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         }
 
         // When
-        let errorAlert: CardPresentModalNonRetryableError = waitFor { [weak self] promise in
+        let errorAlert: CardPresentModalNonRetryableErrorWithoutEmail = waitFor { [weak self] promise in
             guard let self = self else { return }
             self.alertsPresenter.onPresentCalled = { viewModel in
-                guard let viewModel = viewModel as? CardPresentModalNonRetryableError else {
+                guard let viewModel = viewModel as? CardPresentModalNonRetryableErrorWithoutEmail else {
                     return
                 }
                 promise(viewModel)
@@ -243,6 +243,111 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         XCTAssertNil(markOrderAsPaidLocallyAction)
     }
 
+    func test_collectPayment_payment_processor_error_with_customer_then_modal_presented_with_email() async throws {
+        // Given we have an order with a customer
+        let email = "test@test.com"
+        let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5", billingAddress: Address.fake().copy(email: email))
+
+        setUpUseCase(order: order)
+        let interacPaymentMethod = PaymentMethod.interacPresent(details: .fake())
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: interacPaymentMethod)])
+        let error = CardReaderServiceError.paymentCapture(
+            underlyingError: .paymentDeclinedByPaymentProcessorAPI(declineReason: .insufficientFunds)
+        )
+        mockFailedCardPresentPaymentActions(intent: intent,
+                                            error: error)
+        receiptEligibilityUseCase.isEligibleSendingReceiptAfterPayment = true
+
+        // When we make a payment thar results in payment processor error
+        waitFor { promise in
+            self.alertsPresenter.onPresentCalled = { viewModel in
+                if viewModel is CardPresentModalErrorEmailSent {
+                    promise(())
+                }
+            }
+            self.useCase.collectPayment(using: .bluetoothScan,
+                                        channel: .storeManagement,
+                                        onFailure: { _ in },
+                                        onCancel: {},
+                                        onPaymentCompletion: {},
+                                        onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then we should present a modal with the email
+        let lastAlert = alertsPresenter.spyPresentedAlertViewModels.last as? CardPresentModalErrorEmailSent
+        XCTAssert(lastAlert?.bottomAttributedSubtitle?.string.contains(email) == true)
+    }
+
+    func test_collectPayment_card_reader_error_with_customer_then_modal_presented_without_email() async throws {
+        // Given we have an order with a customer
+        let email = "test@test.com"
+        let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5", billingAddress: Address.fake().copy(email: email))
+
+        setUpUseCase(order: order)
+        let interacPaymentMethod = PaymentMethod.interacPresent(details: .fake())
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: interacPaymentMethod)])
+        let error = CardReaderServiceError.disconnection(underlyingError: .bluetoothDisconnected)
+        mockFailedCardPresentPaymentActions(intent: intent,
+                                            error: error)
+        receiptEligibilityUseCase.isEligibleSendingReceiptAfterPayment = true
+
+        // When we make a payment that results in card reader disconnection
+        waitFor { promise in
+            self.alertsPresenter.onPresentCalled = { viewModel in
+                if viewModel is CardPresentModalErrorWithoutEmail {
+                    promise(())
+                }
+            }
+            self.useCase.collectPayment(using: .bluetoothScan,
+                                        channel: .storeManagement,
+                                        onFailure: { _ in },
+                                        onCancel: {},
+                                        onPaymentCompletion: {},
+                                        onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then we should present a default modal without the email
+        let lastAlert = alertsPresenter.spyPresentedAlertViewModels.last as? CardPresentModalErrorWithoutEmail
+        XCTAssertNotNil(lastAlert)
+    }
+
+    func test_collectPayment_payment_error_without_customer_then_default_modal_presented() async throws {
+        // Given we have an order withour a customer email
+        let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5", billingAddress: Address.fake())
+
+        setUpUseCase(order: order)
+        let interacPaymentMethod = PaymentMethod.interacPresent(details: .fake())
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: interacPaymentMethod)])
+        let error = CardReaderServiceError.paymentCapture(
+            underlyingError: .paymentDeclinedByPaymentProcessorAPI(declineReason: .insufficientFunds)
+        )
+        mockFailedCardPresentPaymentActions(intent: intent,
+                                            error: error)
+        receiptEligibilityUseCase.isEligibleSendingReceiptAfterPayment = true
+
+        // When we make a payment thar results in card reader disconnection
+        waitFor { promise in
+            self.alertsPresenter.onPresentCalled = { viewModel in
+                if viewModel is CardPresentModalError {
+                    promise(())
+                }
+            }
+            self.useCase.collectPayment(using: .bluetoothScan,
+                                        channel: .storeManagement,
+                                        onFailure: { _ in },
+                                        onCancel: {},
+                                        onPaymentCompletion: {},
+                                        onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then we should present a default modal without the email
+        let lastAlert = alertsPresenter.spyPresentedAlertViewModels.last as? CardPresentModalError
+        XCTAssertNotNil(lastAlert)
+    }
+
     func test_collectPayment_channel_is_passed_to_payment_capture_orchestrator() throws {
         // When
         useCase.collectPayment(using: .bluetoothScan,
@@ -268,6 +373,18 @@ private extension CollectOrderPaymentUseCaseTests {
                                                               onCompletion in
             onProcessingCompletion(intent)
             onCompletion(.success(capturedPaymentData))
+        }
+    }
+
+    func mockFailedCardPresentPaymentActions(intent: PaymentIntent, error: any Error) {
+        mockPaymentOrchestrator.mockCollectPaymentHandler = { onPreparingReader,
+                                                              onWaitingForInput,
+                                                              onProcessingMessage,
+                                                              onDisplayMessage,
+                                                              onProcessingCompletion,
+                                                              onCompletion in
+            onProcessingCompletion(intent)
+            onCompletion(.failure(error))
         }
     }
 }

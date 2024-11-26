@@ -313,6 +313,7 @@
 		74D7F29B20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D7F29A20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift */; };
 		74D7FFFA221F01E90008CC0E /* ShipmentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D7FFF9221F01E90008CC0E /* ShipmentStore.swift */; };
 		864177A82CDBC9A1001F9640 /* MockShippingMethodActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864177A72CDBC9A1001F9640 /* MockShippingMethodActionHandler.swift */; };
+		86969E762CEEEF220032E50F /* MockCouponActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86969E752CEEEF220032E50F /* MockCouponActionHandler.swift */; };
 		86BB4C962B89FCF30096E92D /* CustomerFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86BB4C952B89FCF30096E92D /* CustomerFilter.swift */; };
 		86DAA7982CD9E31E002AE55E /* MockPaymentActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DAA7972CD9E31E002AE55E /* MockPaymentActionHandler.swift */; };
 		86DAA79A2CD9E572002AE55E /* MockSiteActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DAA7992CD9E572002AE55E /* MockSiteActionHandler.swift */; };
@@ -831,6 +832,7 @@
 		79402E7AD394EEB60C39A4B8 /* Pods-YosemiteTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7F47E19203B04CF6BB5EA659 /* Pods-Yosemite.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.debug.xcconfig"; sourceTree = "<group>"; };
 		864177A72CDBC9A1001F9640 /* MockShippingMethodActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShippingMethodActionHandler.swift; sourceTree = "<group>"; };
+		86969E752CEEEF220032E50F /* MockCouponActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCouponActionHandler.swift; sourceTree = "<group>"; };
 		86BB4C952B89FCF30096E92D /* CustomerFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerFilter.swift; sourceTree = "<group>"; };
 		86DAA7972CD9E31E002AE55E /* MockPaymentActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPaymentActionHandler.swift; sourceTree = "<group>"; };
 		86DAA7992CD9E572002AE55E /* MockSiteActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSiteActionHandler.swift; sourceTree = "<group>"; };
@@ -1306,6 +1308,7 @@
 				86DAA7972CD9E31E002AE55E /* MockPaymentActionHandler.swift */,
 				86DAA7992CD9E572002AE55E /* MockSiteActionHandler.swift */,
 				86DAA79B2CD9E8C1002AE55E /* MockGoogleAdsActionHandler.swift */,
+				86969E752CEEEF220032E50F /* MockCouponActionHandler.swift */,
 				86DAA79D2CD9ED7B002AE55E /* MockJustInTimeMessageActionHandler.swift */,
 				864177A72CDBC9A1001F9640 /* MockShippingMethodActionHandler.swift */,
 			);
@@ -2577,6 +2580,7 @@
 				DEDA8DAF2B1847C80076BF0F /* WordPressThemeStore.swift in Sources */,
 				03EB99902907B97800F06A39 /* JustInTimeMessage.swift in Sources */,
 				031C1EAA27B1702800298699 /* WCPayCharge+ReadOnlyConvertible.swift in Sources */,
+				86969E762CEEEF220032E50F /* MockCouponActionHandler.swift in Sources */,
 				D8652E0D26303A8B00350F37 /* ReceiptAction.swift in Sources */,
 				0212AC62242C68B600C51F6C /* ResultsController+SortProducts.swift in Sources */,
 				741F34802195EA62005F5BD9 /* CommentAction.swift in Sources */,

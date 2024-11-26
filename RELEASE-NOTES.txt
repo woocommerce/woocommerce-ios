@@ -1,5 +1,12 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
+21.3
+-----
+- [*] Jetpack Setup: Fixed an issue with magic link handling when the app is cold started. [https://github.com/woocommerce/woocommerce-ios/pull/14502]
+
+21.3
+-----
+
 
 21.2
 -----
@@ -15,6 +22,8 @@
 - [*] Receipts: Added message confirming receipt sent to customer after successful payment. [https://github.com/woocommerce/woocommerce-ios/pull/14390]
 - [internal] Simplifies App Icon by only using a single image for all supported platforms. [https://github.com/woocommerce/woocommerce-ios/pull/14429]
 - [*] Dashboard: Performance card now shows cached Visitors and Conversion data correctly. [https://github.com/woocommerce/woocommerce-ios/pull/14438]
+- [internal] Updated WooCommerceScreenshot to make it work again for generating screenshots. [https://github.com/woocommerce/woocommerce-ios/pull/14335]
+- [*] Jetpack Setup: Added support for WordPress.com account creation. [https://github.com/woocommerce/woocommerce-ios/pull/14471]
 
 21.1
 -----

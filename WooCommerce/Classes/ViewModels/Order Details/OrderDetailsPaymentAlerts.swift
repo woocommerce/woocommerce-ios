@@ -76,6 +76,7 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
 
     func error(error: Error, tryAgain: @escaping () -> Void, dismissCompletion: @escaping () -> Void) {
         let viewModel = alertsProvider.error(error: error,
+                                             receiptState: .noEmailReceipt,
                                              tryAgain: tryAgain,
                                              dismissCompletion: dismissCompletion)
         presentViewModel(viewModel: viewModel)
@@ -83,6 +84,7 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
 
     func nonRetryableError(from: UIViewController?, error: Error, dismissCompletion: @escaping () -> Void) {
         let viewModel = alertsProvider.nonRetryableError(error: error,
+                                                         receiptState: .noEmailReceipt,
                                                          dismissCompletion: dismissCompletion)
         presentViewModel(viewModel: viewModel)
     }

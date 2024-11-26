@@ -2,11 +2,17 @@ import Combine
 import UIKit
 import WordPressAuthenticator
 import protocol WooFoundation.Analytics
+import enum WordPressKit.WordPressAPIError
+import struct WordPressKit.WordPressComRestApiEndpointError
 
 /// A protocol used to mock `WordPressComAccountService` for unit tests.
 protocol WordPressComAccountServiceProtocol {
     func isPasswordlessAccount(username: String, success: @escaping (Bool) -> Void, failure: @escaping (Error) -> Void)
-    func requestAuthenticationLink(for email: String, jetpackLogin: Bool, success: @escaping () -> Void, failure: @escaping (Error) -> Void)
+    func requestAuthenticationLink(for email: String,
+                                   jetpackLogin: Bool,
+                                   createAccountIfNotFound: Bool,
+                                   success: @escaping () -> Void,
+                                   failure: @escaping (Error) -> Void)
 }
 
 /// Conformance
@@ -21,22 +27,25 @@ final class WPComEmailLoginViewModel: ObservableObject {
 
     let termsAttributedString: NSAttributedString
 
+    let allowAccountCreation: Bool
     private let accountService: WordPressComAccountServiceProtocol
     private let analytics: Analytics
     private let onPasswordUIRequest: (String) -> Void
-    private let onMagicLinkUIRequest: (String) -> Void
+    private let onMagicLinkUIRequest: (_ email: String, _ isSignup: Bool) -> Void
     private let onError: (String) -> Void
 
     private var emailFieldSubscription: AnyCancellable?
 
     init(siteURL: String,
          requiresConnectionOnly: Bool,
+         allowAccountCreation: Bool,
          debounceDuration: Double = Constants.fieldDebounceDuration,
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          analytics: Analytics = ServiceLocator.analytics,
          onPasswordUIRequest: @escaping (String) -> Void,
-         onMagicLinkUIRequest: @escaping (String) -> Void,
+         onMagicLinkUIRequest: @escaping (String, Bool) -> Void,
          onError: @escaping (String) -> Void) {
+        self.allowAccountCreation = allowAccountCreation
         self.analytics = analytics
         self.accountService = accountService
         self.onPasswordUIRequest = onPasswordUIRequest
@@ -78,8 +87,22 @@ final class WPComEmailLoginViewModel: ObservableObject {
             }
             await startAuthentication(email: email, isPasswordlessAccount: passwordless)
         } catch {
-            analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))
-            onError(error.localizedDescription)
+            guard allowAccountCreation,
+                  let apiError = error as? WordPressAPIError<WordPressComRestApiEndpointError>,
+                  case .endpointError(let endpointError) = apiError,
+                  endpointError.apiErrorCode == Constants.unknownUserErrorCode else {
+                analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))
+                onError(error.localizedDescription)
+                return
+            }
+
+            guard email.isValidEmail() else {
+                analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))
+                onError(Localization.unknownUsername)
+                return
+            }
+
+            await requestAuthenticationLink(email: email, forAccountCreation: true)
         }
     }
 
@@ -93,19 +116,22 @@ final class WPComEmailLoginViewModel: ObservableObject {
     }
 
     @MainActor
-    func requestAuthenticationLink(email: String) async {
+    func requestAuthenticationLink(email: String, forAccountCreation: Bool = false) async {
         do {
             try await withCheckedThrowingContinuation { continuation in
-                accountService.requestAuthenticationLink(for: email, jetpackLogin: false, success: {
+                accountService.requestAuthenticationLink(for: email,
+                                                         jetpackLogin: false,
+                                                         createAccountIfNotFound: forAccountCreation,
+                                                         success: {
                     continuation.resume()
                 }, failure: { error in
                     continuation.resume(throwing: error)
                 })
             }
-            onMagicLinkUIRequest(email)
+            onMagicLinkUIRequest(email, forAccountCreation)
         } catch {
             onError(error.localizedDescription)
-            analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))
+            analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, isSignup: forAccountCreation, failure: error))
         }
     }
 }
@@ -116,6 +142,7 @@ extension WPComEmailLoginViewModel {
         static let jetpackTermsURL = "https://jetpack.com/redirect/?source=wpcom-tos&site="
         static let jetpackShareDetailsURL = "https://jetpack.com/redirect/?source=jetpack-support-what-data-does-jetpack-sync&site="
         static let wpcomErrorCodeKey = "WordPressComRestApiErrorCodeKey"
+        static let unknownUserErrorCode = "unknown_user"
     }
 
     enum Localization {
@@ -146,6 +173,11 @@ extension WPComEmailLoginViewModel {
         static let shareDetails = NSLocalizedString(
             "share details",
             comment: "The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen."
+        )
+        static let unknownUsername = NSLocalizedString(
+            "wpComEmailLoginViewModel.unknownUsername",
+            value: "We can\'t find a WordPress.com account connected to this username. You can enter an email to create a new account.",
+            comment: "Error message when the username is not found"
         )
     }
 }

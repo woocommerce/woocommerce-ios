@@ -21,6 +21,7 @@ extension Storage.ProductTag: ReadOnlyConvertible {
         return ProductTag(siteID: siteID,
                           tagID: tagID,
                           name: name,
-                          slug: slug)
+                          slug: slug,
+                          count: products?.count ?? 0)
     }
 }

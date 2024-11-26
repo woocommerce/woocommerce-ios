@@ -603,7 +603,7 @@ private extension ProductDetailPreviewViewModel {
                 ///
                 /// We will later upload the local tag using `saveLocalCategoriesAndTags` method
                 ///
-                tags.append(ProductTag(siteID: siteID, tagID: 0, name: aiTag, slug: ""))
+                tags.append(ProductTag(siteID: siteID, tagID: 0, name: aiTag, slug: "", count: 0))
             }
         }
 

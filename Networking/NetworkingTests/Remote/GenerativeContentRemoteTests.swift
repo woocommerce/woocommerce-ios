@@ -421,8 +421,8 @@ final class GenerativeContentRemoteTests: XCTestCase {
                                                dimensionUnit: "cm",
                                                weightUnit: "kg",
                                                categories: [],
-                                               tags: [.init(siteID: sampleSiteID, tagID: 1, name: "Food", slug: ""),
-                                                      .init(siteID: sampleSiteID, tagID: 2, name: "Grocery", slug: "")])
+                                               tags: [.init(siteID: sampleSiteID, tagID: 1, name: "Food", slug: "", count: 0),
+                                                      .init(siteID: sampleSiteID, tagID: 2, name: "Grocery", slug: "", count: 0)])
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
@@ -446,8 +446,8 @@ final class GenerativeContentRemoteTests: XCTestCase {
                                                dimensionUnit: "cm",
                                                weightUnit: "kg",
                                                categories: [],
-                                               tags: [.init(siteID: sampleSiteID, tagID: 1, name: "Food", slug: ""),
-                                                      .init(siteID: sampleSiteID, tagID: 2, name: "Grocery", slug: "")])
+                                               tags: [.init(siteID: sampleSiteID, tagID: 1, name: "Food", slug: "", count: 0),
+                                                      .init(siteID: sampleSiteID, tagID: 2, name: "Grocery", slug: "", count: 0)])
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)

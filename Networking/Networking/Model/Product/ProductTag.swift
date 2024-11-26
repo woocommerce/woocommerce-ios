@@ -8,17 +8,20 @@ public struct ProductTag: Codable, Equatable, GeneratedFakeable, GeneratedCopiab
     public let tagID: Int64
     public let name: String
     public let slug: String
+    public let count: Int
 
     /// ProductTag initializer.
     ///
     public init(siteID: Int64,
                 tagID: Int64,
                 name: String,
-                slug: String) {
+                slug: String,
+                count: Int) {
         self.siteID = siteID
         self.tagID = tagID
         self.name = name
         self.slug = slug
+        self.count = count
     }
 
     /// Public initializer for ProductTag.
@@ -33,8 +36,10 @@ public struct ProductTag: Codable, Equatable, GeneratedFakeable, GeneratedCopiab
         let tagID = try container.decode(Int64.self, forKey: .tagID)
         let name = try container.decode(String.self, forKey: .name)
         let slug = try container.decode(String.self, forKey: .slug)
+        /// `count` is available when fetching from `wc/v3/products/tags` but not from `wc/v3/products`
+        let count = (try container.decodeIfPresent(Int.self, forKey: .count)) ?? 0
 
-        self.init(siteID: siteID, tagID: tagID, name: name, slug: slug)
+        self.init(siteID: siteID, tagID: tagID, name: name, slug: slug, count: count)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -54,6 +59,7 @@ private extension ProductTag {
         case tagID  = "id"
         case name   = "name"
         case slug   = "slug"
+        case count  = "count"
     }
 }
 

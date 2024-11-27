@@ -9,25 +9,10 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         let packagesRepository = MockWooShippingPackagesRepository()
         let siteID: Int64 = 1234
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID, stores: mockStores, packagesRepository: packagesRepository)
-
-        // Then
-        XCTAssertNotNil(viewModel)
-        viewModel.checkDefaultInitProperties()
-    }
-
-    @MainActor
-    func test_it_inits_with_dimension_weight_unit() {
-        // Given/When
-        let expectedDimensionUnit = "in"
-        let expectedWeightUnit = "kg"
-        let packagesRepository = MockWooShippingPackagesRepository()
-        let siteID: Int64 = 1234
-        let mockStores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID,
                                                              storeOptions: ShippingLabelStoreOptions(currencySymbol: "$",
-                                                                                                     dimensionUnit: expectedDimensionUnit,
-                                                                                                     weightUnit: expectedWeightUnit,
+                                                                                                     dimensionUnit: "in",
+                                                                                                     weightUnit: "oz",
                                                                                                      originCountry: "US"),
                                                              stores: mockStores,
                                                              packagesRepository: packagesRepository)
@@ -35,8 +20,33 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(viewModel)
         viewModel.checkDefaultInitProperties()
-        XCTAssertEqual(viewModel.storeOptions?.dimensionUnit, expectedDimensionUnit)
-        XCTAssertEqual(viewModel.storeOptions?.weightUnit, expectedWeightUnit)
+    }
+
+    @MainActor
+    func test_it_inits_with_store_options() {
+        // Given/When
+        let expectedCurrencySymbol = "$"
+        let expectedDimensionUnit = "in"
+        let expectedWeightUnit = "kg"
+        let expectedOriginCountry = "US"
+        let packagesRepository = MockWooShippingPackagesRepository()
+        let siteID: Int64 = 1234
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID,
+                                                             storeOptions: ShippingLabelStoreOptions(currencySymbol: expectedCurrencySymbol,
+                                                                                                     dimensionUnit: expectedDimensionUnit,
+                                                                                                     weightUnit: expectedWeightUnit,
+                                                                                                     originCountry: expectedOriginCountry),
+                                                             stores: mockStores,
+                                                             packagesRepository: packagesRepository)
+
+        // Then
+        XCTAssertNotNil(viewModel)
+        viewModel.checkDefaultInitProperties()
+        XCTAssertEqual(viewModel.storeOptions.currencySymbol, expectedCurrencySymbol)
+        XCTAssertEqual(viewModel.storeOptions.dimensionUnit, expectedDimensionUnit)
+        XCTAssertEqual(viewModel.storeOptions.weightUnit, expectedWeightUnit)
+        XCTAssertEqual(viewModel.storeOptions.originCountry, expectedOriginCountry)
     }
 
     @MainActor
@@ -45,7 +55,13 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         let packagesRepository = MockWooShippingPackagesRepository()
         let siteID: Int64 = 1234
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID, stores: mockStores, packagesRepository: packagesRepository)
+        let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID,
+                                                             storeOptions: ShippingLabelStoreOptions(currencySymbol: "$",
+                                                                                                     dimensionUnit: "in",
+                                                                                                     weightUnit: "oz",
+                                                                                                     originCountry: "US"),
+                                                             stores: mockStores,
+                                                             packagesRepository: packagesRepository)
 
         // When
         viewModel.fieldValues[.height] = "1"
@@ -61,7 +77,13 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         let packagesRepository = MockWooShippingPackagesRepository()
         let siteID: Int64 = 1234
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID, stores: mockStores, packagesRepository: packagesRepository)
+        let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID,
+                                                             storeOptions: ShippingLabelStoreOptions(currencySymbol: "$",
+                                                                                                     dimensionUnit: "in",
+                                                                                                     weightUnit: "oz",
+                                                                                                     originCountry: "US"),
+                                                             stores: mockStores,
+                                                             packagesRepository: packagesRepository)
 
         // When
         viewModel.fillWithDummyFieldValues()
@@ -77,7 +99,13 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         let packagesRepository = MockWooShippingPackagesRepository()
         let siteID: Int64 = 1234
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID, stores: mockStores, packagesRepository: packagesRepository)
+        let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID,
+                                                             storeOptions: ShippingLabelStoreOptions(currencySymbol: "$",
+                                                                                                     dimensionUnit: "in",
+                                                                                                     weightUnit: "oz",
+                                                                                                     originCountry: "US"),
+                                                             stores: mockStores,
+                                                             packagesRepository: packagesRepository)
 
         // When
         viewModel.fillWithDummyDimensionFieldValues()
@@ -94,7 +122,13 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         let packagesRepository = MockWooShippingPackagesRepository()
         let siteID: Int64 = 1234
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID, stores: mockStores, packagesRepository: packagesRepository)
+        let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID,
+                                                             storeOptions: ShippingLabelStoreOptions(currencySymbol: "$",
+                                                                                                     dimensionUnit: "in",
+                                                                                                     weightUnit: "oz",
+                                                                                                     originCountry: "US"),
+                                                             stores: mockStores,
+                                                             packagesRepository: packagesRepository)
 
         // When
         viewModel.fillWithDummyDimensionFieldValues()
@@ -111,7 +145,13 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         let packagesRepository = MockWooShippingPackagesRepository()
         let siteID: Int64 = 1234
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID, stores: mockStores, packagesRepository: packagesRepository)
+        let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID,
+                                                             storeOptions: ShippingLabelStoreOptions(currencySymbol: "$",
+                                                                                                     dimensionUnit: "in",
+                                                                                                     weightUnit: "oz",
+                                                                                                     originCountry: "US"),
+                                                             stores: mockStores,
+                                                             packagesRepository: packagesRepository)
 
         // When
         viewModel.fillWithDummyDimensionFieldValues()
@@ -128,7 +168,13 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         let packagesRepository = MockWooShippingPackagesRepository()
         let siteID: Int64 = 1234
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID, stores: mockStores, packagesRepository: packagesRepository)
+        let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID,
+                                                             storeOptions: ShippingLabelStoreOptions(currencySymbol: "$",
+                                                                                                     dimensionUnit: "in",
+                                                                                                     weightUnit: "oz",
+                                                                                                     originCountry: "US"),
+                                                             stores: mockStores,
+                                                             packagesRepository: packagesRepository)
 
         // Then
         XCTAssertEqual(viewModel.validateCustomPackageInputFields(), false)
@@ -140,7 +186,13 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         let packagesRepository = MockWooShippingPackagesRepository()
         let siteID: Int64 = 1234
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID, stores: mockStores, packagesRepository: packagesRepository)
+        let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID,
+                                                             storeOptions: ShippingLabelStoreOptions(currencySymbol: "$",
+                                                                                                     dimensionUnit: "in",
+                                                                                                     weightUnit: "oz",
+                                                                                                     originCountry: "US"),
+                                                             stores: mockStores,
+                                                             packagesRepository: packagesRepository)
 
         // When
         viewModel.fillWithDummyFieldValues()
@@ -155,7 +207,13 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         let packagesRepository = MockWooShippingPackagesRepository()
         let siteID: Int64 = 1234
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID, stores: mockStores, packagesRepository: packagesRepository)
+        let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID,
+                                                             storeOptions: ShippingLabelStoreOptions(currencySymbol: "$",
+                                                                                                     dimensionUnit: "in",
+                                                                                                     weightUnit: "oz",
+                                                                                                     originCountry: "US"),
+                                                             stores: mockStores,
+                                                             packagesRepository: packagesRepository)
 
         // When
         viewModel.fillWithDummyFieldValues()

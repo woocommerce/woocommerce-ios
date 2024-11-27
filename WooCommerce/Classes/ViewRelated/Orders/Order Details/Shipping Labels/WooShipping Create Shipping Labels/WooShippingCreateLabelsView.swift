@@ -98,6 +98,7 @@ struct WooShippingCreateLabelsView: View {
                     CollapsibleHStack(spacing: Layout.bottomSheetSpacing) {
                         Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
                             .font(.subheadline)
+                            .tint(Color(.primary))
                         purchaseButton
                     }
                     .padding(.horizontal, Layout.bottomSheetPadding)

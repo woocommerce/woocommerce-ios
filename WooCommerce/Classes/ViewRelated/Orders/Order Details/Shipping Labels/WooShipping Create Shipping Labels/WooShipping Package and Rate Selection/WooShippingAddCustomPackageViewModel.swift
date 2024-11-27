@@ -95,8 +95,8 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
         let result =  await packagesRepository.saveCustomPackage(packageData,
                                                                  dimensionsUnit: storeOptions.dimensionUnit,
                                                                  weightUnit: storeOptions.weightUnit,
-                                                          siteID: siteID,
-                                                          stores: stores)
+                                                                 siteID: siteID,
+                                                                 stores: stores)
         switch result {
         case .success(let success):
             return .success(success)

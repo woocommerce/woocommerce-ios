@@ -17,7 +17,7 @@ struct TapToPayEducationStepView: View {
             Image(viewModel.imageName)
             if viewModel.descriptionSteps.count > 1 {
                 ForEach(viewModel.descriptionSteps.indices, id: \.self) { index in
-                    PaymentSettingsFlowHint(title: viewModel.format(index: index + 1),
+                    PaymentSettingsFlowHint(number: index + 1,
                                             text: viewModel.descriptionSteps[index])
                 }
             } else if let description = viewModel.descriptionSteps.first {

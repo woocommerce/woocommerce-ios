@@ -266,18 +266,13 @@ private extension BlazeStore {
     func insertStoredTargetTopicsInBackground(readonlyTopics: [Networking.BlazeTargetTopic],
                                               locale: String,
                                               onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
+        storageManager.performAndSave({ derivedStorage in
             derivedStorage.deleteBlazeTargetTopics(locale: locale)
             for topic in readonlyTopics {
                 let storageTopic = derivedStorage.insertNewObject(ofType: Storage.BlazeTargetTopic.self)
                 storageTopic.update(with: topic)
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 }
 

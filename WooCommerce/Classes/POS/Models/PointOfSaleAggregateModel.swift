@@ -5,9 +5,7 @@ import protocol Yosemite.POSItem
 import protocol WooFoundation.Analytics
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
-import protocol Yosemite.POSOrderServiceProtocol
 import struct Yosemite.POSCartItem
-import class WooFoundation.CurrencyFormatter
 
 protocol PointOfSaleAggregateModelProtocol {
     var orderStage: PointOfSaleOrderStage { get }
@@ -54,13 +52,10 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
     @Published private(set) var orderState: PointOfSaleOrderState = .idle
 
-    private var order: Order? = nil
-
-    private let itemsService: PointOfSaleItemsServiceProtocol
+    private let itemsController: PointOfSaleItemsControllerProtocol
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
-    private let orderService: POSOrderServiceProtocol
-    private let currencyFormatter: CurrencyFormatter
+    private let orderController: PointOfSaleOrderControllerProtocol
     private let analytics: Analytics
 
     private var startPaymentOnCardReaderConnection: AnyCancellable?
@@ -68,21 +63,20 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
     private var cancellables: Set<AnyCancellable> = []
 
-    init(itemsService: PointOfSaleItemsServiceProtocol,
+    init(itemsController: PointOfSaleItemsControllerProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
-         orderService: POSOrderServiceProtocol,
-         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+         orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
          paymentState: PointOfSalePaymentState = .idle) {
-        self.itemsService = itemsService
+        self.itemsController = itemsController
         self.cardPresentPaymentService = cardPresentPaymentService
-        self.orderService = orderService
-        self.currencyFormatter = currencyFormatter
+        self.orderController = orderController
         self.analytics = analytics
         self.paymentState = paymentState
         publishItemListState()
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
+        publishOrderState()
         setupReaderReconnectionObservation()
     }
 }
@@ -90,22 +84,22 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 // MARK: - ItemList
 extension PointOfSaleAggregateModel {
     private func publishItemListState() {
-        itemsService.itemListStatePublisher.assign(to: &$itemListState)
+        itemsController.itemListStatePublisher.assign(to: &$itemListState)
     }
 
     @MainActor
     func loadInitialItems() async {
-        await itemsService.loadInitialItems()
+        await itemsController.loadInitialItems()
     }
 
     @MainActor
     func loadNextItems() async {
-        await itemsService.loadNextItems()
+        await itemsController.loadNextItems()
     }
 
     @MainActor
     func reload() async {
-        await itemsService.reload()
+        await itemsController.reload()
     }
 }
 
@@ -133,7 +127,7 @@ extension PointOfSaleAggregateModel {
 
     func startNewCart() {
         removeAllItemsFromCart()
-        clearOrder()
+        orderController.clearOrder()
         setStateForEditing()
     }
 
@@ -191,7 +185,7 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     func collectPayment() async {
-        guard let order else {
+        guard let order = orderController.order else {
             return
             // Should this throw?
         }
@@ -355,67 +349,16 @@ extension PointOfSaleAggregateModel {
     @MainActor
     func checkOut() async {
         orderStage = .finalizing
-
-        guard CartItem.areOrderAndCartDifferent(order: order, cartItems: cart) else {
-            await startPaymentWhenCardReaderConnected()
-            return
-        }
-        // calculate totals and sync order if there was a change in the cart
-        await syncOrder(for: cart)
+        await orderController.syncOrder(for: cart, retryHandler: { [weak self] in
+            await self?.checkOut()
+        })
+        await startPaymentWhenCardReaderConnected()
     }
 
-    @MainActor
-    private func syncOrder(for cartProducts: [CartItem]) async {
-        guard orderState.isSyncing == false else {
-            return
-        }
-        orderState = .syncing
-        let cart = cartProducts.map {
-            POSCartItem(product: $0.item, quantity: Decimal($0.quantity))
-        }
-
-        do {
-            let syncedOrder = try await orderService.syncOrder(cart: cart, order: order)
-            self.order = syncedOrder
-            orderState = .loaded(totals(for: syncedOrder))
-            await startPaymentWhenCardReaderConnected()
-            DDLogInfo("🟢 [POS] Synced order: \(syncedOrder)")
-        } catch {
-            DDLogError("🔴 [POS] Error syncing order: \(error)")
-
-            // Consider removing error or handle specific errors with our own formatting and localization
-            orderState = .error(.init(message: error.localizedDescription, handler: { [weak self] in
-                Task {
-                    await self?.syncOrder(for: cartProducts)
-                }
-            }))
-        }
-    }
-
-    private func clearOrder() {
-        order = nil
-        orderState = .idle
-    }
-}
-
-// MARK: - Price formatters
-
-private extension PointOfSaleAggregateModel {
-    func totals(for order: Order) -> PointOfSaleOrderTotals {
-        let totalsCalculator = OrderTotalsCalculator(for: order,
-                                                     using: currencyFormatter)
-        return PointOfSaleOrderTotals(
-            cartTotal: formattedPrice(totalsCalculator.itemsTotal.stringValue,
-                                      currency: order.currency) ?? "",
-            orderTotal: formattedPrice(order.total, currency: order.currency) ?? "",
-            taxTotal: formattedPrice(order.totalTax, currency: order.currency) ?? "")
-    }
-
-    func formattedPrice(_ price: String?, currency: String?) -> String? {
-        guard let price, let currency else {
-            return nil
-        }
-        return currencyFormatter.formatAmount(price, with: currency)
+    func publishOrderState() {
+        orderController.orderStatePublisher
+            .map { $0.externalState }
+            .assign(to: &$orderState)
     }
 }
 

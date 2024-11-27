@@ -111,7 +111,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             case .success(let settings):
                 self.storeOptions = settings.storeOptions
             case .failure(let error):
-                // TODO: what to do if we do not have store options?
                 DDLogError("⛔️ Error loading account settings: \(error)")
                 // fallback to store settings
                 let shippingSettingsService = ServiceLocator.shippingSettingsService

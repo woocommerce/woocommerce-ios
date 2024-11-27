@@ -7,10 +7,6 @@ import Storage
 public final class CouponStore: Store {
     private let remote: CouponsRemoteProtocol
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
          network: Network,

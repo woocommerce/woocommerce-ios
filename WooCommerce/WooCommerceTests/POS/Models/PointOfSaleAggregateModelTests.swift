@@ -189,7 +189,7 @@ struct PointOfSaleAggregateModelTests {
             #expect(passedItem.id == item.id)
         }
 
-//        The UI prevents no-item checkouts, but it's the controller's responsibility to handle this.
+        // The UI prevents no-item checkouts, but it's the controller's responsibility to handle this.
         @Test func checkOut_without_items_calls_sync_order() async throws {
             // Given
             sut.removeAllItemsFromCart()

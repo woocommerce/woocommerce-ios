@@ -1,4 +1,5 @@
 import Testing
+import Combine
 @testable import WooCommerce
 
 struct TapToPayEducationViewModelTests {
@@ -74,13 +75,24 @@ struct TapToPayEducationViewModelTests {
         #expect(sut.showingSetUpFlow)
     }
 
-    @Test func primaryAction_when_about_and_has_previous_tap_to_pay_usage() {
+    @Test func primaryAction_when_about_and_has_previous_tap_to_pay_usage() async throws {
         // Given
         cardReaderSupportDeterminer.shouldReturnHasPreviousTapToPayUsage = true
         var isDismissed = false
         let sut = create(flow: .about, onDismiss: {
             isDismissed = true
         })
+
+        var cancellables = Set<AnyCancellable>()
+        await withCheckedContinuation { continuation in
+            sut.$hasPreviousTapToPayUsage
+                .sink { hasPreviousUsage in
+                    if hasPreviousUsage {
+                        continuation.resume()
+                    }
+                }
+                .store(in: &cancellables)
+        }
 
         // When & Then
         #expect(sut.primaryAction.title == "Next")
@@ -130,12 +142,23 @@ struct TapToPayEducationViewModelTests {
         #expect(sut.selectedStep == 2)
     }
 
-    @Test func secondaryAction_when_about_and_has_previous_tap_to_pay_usage() throws {
+    @Test func secondaryAction_when_about_and_has_previous_tap_to_pay_usage() async throws {
         // Given
         cardReaderSupportDeterminer.shouldReturnHasPreviousTapToPayUsage = true
         let sut = create(flow: .about)
         try #require(sut.secondaryAction?.title == "Skip")
         try #require(sut.selectedStep == 0)
+
+        var cancellables = Set<AnyCancellable>()
+        await withCheckedContinuation { continuation in
+            sut.$hasPreviousTapToPayUsage
+                .sink { hasPreviousUsage in
+                    if hasPreviousUsage {
+                        continuation.resume()
+                    }
+                }
+                .store(in: &cancellables)
+        }
 
         // When Skip is tapped
         sut.secondaryAction?.action()

@@ -56,7 +56,7 @@ private extension WooShippingItemsViewModel {
     ///
     func configureItemRows() {
         itemRows = dataSource.items.map { item in
-            WooShippingItemRowViewModel(item: item)
+            WooShippingItemRowViewModel(item: item, currency: dataSource.currency)
         }
     }
 
@@ -77,7 +77,7 @@ private extension WooShippingItemsViewModel {
     func formatPrice(for items: [ShippingLabelPackageItem]) -> String {
         let totalPrice = items.map { Decimal($0.value) * $0.quantity }.reduce(0, +)
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        return currencyFormatter.formatAmount(totalPrice) ?? totalPrice.description
+        return currencyFormatter.formatAmount(totalPrice, with: dataSource.currency) ?? totalPrice.description
     }
 }
 

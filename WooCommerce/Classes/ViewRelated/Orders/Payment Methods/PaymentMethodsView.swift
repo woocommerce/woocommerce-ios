@@ -243,21 +243,21 @@ extension PaymentMethodsView {
 struct PaymentMethodsView_Preview: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            PaymentMethodsView(viewModel: .init(total: "15.99", formattedTotal: "$15.99", flow: .orderPayment))
+            PaymentMethodsView(viewModel: .init(total: "15.99", formattedTotal: "$15.99", flow: .orderPayment, channel: .storeManagement))
                 .navigationBarTitleDisplayMode(.inline)
         }
         .environment(\.colorScheme, .light)
         .previewDisplayName("Light")
 
         NavigationView {
-            PaymentMethodsView(viewModel: .init(total: "15.99", formattedTotal: "$15.99", flow: .orderPayment))
+            PaymentMethodsView(viewModel: .init(total: "15.99", formattedTotal: "$15.99", flow: .orderPayment, channel: .storeManagement))
                 .navigationBarTitleDisplayMode(.inline)
         }
         .environment(\.colorScheme, .dark)
         .previewDisplayName("Dark")
 
         NavigationView {
-            PaymentMethodsView(viewModel: .init(total: "15.99", formattedTotal: "$15.99", flow: .orderPayment))
+            PaymentMethodsView(viewModel: .init(total: "15.99", formattedTotal: "$15.99", flow: .orderPayment, channel: .storeManagement))
                 .navigationBarTitleDisplayMode(.inline)
         }
         .environment(\.sizeCategory, .accessibilityExtraExtraLarge)

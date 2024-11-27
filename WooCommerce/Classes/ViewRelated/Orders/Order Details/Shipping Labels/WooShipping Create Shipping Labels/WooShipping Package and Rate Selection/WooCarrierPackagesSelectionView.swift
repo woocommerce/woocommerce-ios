@@ -1,4 +1,5 @@
 import SwiftUI
+import Foundation
 
 // Holds the data needed to display a tab in list of Carrier packages.
 struct WooShippingCarrierPackages: Identifiable {
@@ -17,50 +18,58 @@ struct WooPackageGroup {
 }
 
 struct WooCarrierPackagesView: View {
-    let carrierTab: WooShippingCarrierPackages
-    @Binding var selectedPackageId: String?  // Track the selected package index
-    @State private var starredPackages: Set<String> = []
+    @ObservedObject private var viewModel: WooCarrierPackagesSelectionViewModel
+
+    init(viewModel: WooCarrierPackagesSelectionViewModel) {
+        self.viewModel = viewModel
+    }
 
     var body: some View {
         List {
-            ForEach(carrierTab.packageGroups, id: \.id) { packageGroup in
-                Section {
-                    ForEach(packageGroup.packages, id: \.id) { package in
-                        PackageOptionView(
-                            isSelected: selectedPackageId == package.id,
-                            package: package,
-                            showTopDivider: false,
-                            showSource: false,
-                            tapAction: {
-                                selectedPackageId = selectedPackageId == package.id ? nil : package.id
-                            },
-                            starAction: {
-                                // Just temporary, will be replaced with proper logic
-                                if starredPackages.contains(package.id) {
-                                    starredPackages.remove(package.id)
-                                }
-                                else {
-                                    starredPackages.insert(package.id)
-                                }
-                            },
-                            starred: starredPackages.contains(package.id)
-                        )
-                        .alignmentGuide(.listRowSeparatorLeading) { _ in
-                            return 16
+            if let packageGroups = viewModel.selectedCarrierTab?.packageGroups {
+                ForEach(packageGroups, id: \.id) { packageGroup in
+                    Section {
+                        ForEach(packageGroup.packages, id: \.id) { package in
+                            PackageOptionView(
+                                isSelected: viewModel.selectedPackageId == package.id,
+                                package: package,
+                                showTopDivider: false,
+                                showSource: false,
+                                tapAction: {
+                                    viewModel.selectedPackageId = viewModel.selectedPackageId == package.id ? nil : package.id
+                                },
+                                starAction: {
+                                    // Just temporary, will be replaced with proper logic
+                                    if viewModel.isPackageStarred(package) {
+                                        Task {
+                                            await viewModel.unstarPackage(package)
+                                        }
+                                    }
+                                    else {
+                                        Task {
+                                            await viewModel.starPackage(package)
+                                        }
+                                    }
+                                },
+                                starred: viewModel.isPackageStarred(package)
+                            )
+                            .alignmentGuide(.listRowSeparatorLeading) { _ in
+                                return 16
+                            }
                         }
+                    } header: {
+                        HStack {
+                            Text(packageGroup.name.uppercased())
+                                .foregroundColor(.secondary)
+                                .fontWeight(.regular)
+                                .multilineTextAlignment(.leading)
+                            Spacer()
+                        }
+                        .padding(.horizontal)
+                        .background(Color.clear)
                     }
-                } header: {
-                    HStack {
-                        Text(packageGroup.name.uppercased())
-                            .foregroundColor(.secondary)
-                            .fontWeight(.regular)
-                            .multilineTextAlignment(.leading)
-                        Spacer()
-                    }
-                    .padding(.horizontal)
-                    .background(Color.clear)
+                    .listRowInsets(.zero)
                 }
-                .listRowInsets(.zero)
             }
         }
         .listStyle(.plain)
@@ -99,9 +108,8 @@ struct WooCarrierPackagesSelectionView: View {
                            tabItemContentHorizontalPadding: Constants.tabItemContentHorizontalPadding,
                            tabItemContentVerticalPadding: Constants.tabItemContentVerticalPadding)
             }
-            if let selectedCarrierTab = viewModel.selectedCarrierTab {
-                WooCarrierPackagesView(carrierTab: selectedCarrierTab,
-                                       selectedPackageId: $viewModel.selectedPackageId)
+            if viewModel.selectedCarrierTab != nil {
+                WooCarrierPackagesView(viewModel: viewModel)
             }
             Spacer()
             Divider()

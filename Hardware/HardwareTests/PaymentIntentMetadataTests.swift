@@ -121,4 +121,13 @@ final class PaymentIntentMetadataTests: XCTestCase {
         XCTAssertEqual(paymentType, "recurring")
         XCTAssertEqual(metadata.count, 1)
     }
+
+    func test_channel_parameter_sets_ipp_channel_metadata() throws {
+        // Given
+        let channelValues: [PaymentChannel] = [.storeManagement, .pos]
+        let metadataValues = channelValues.map { PaymentIntent.initMetadata(channel: $0)["ipp_channel"] }
+
+        // Then
+        XCTAssertEqual(metadataValues, ["mobile_store_management", "mobile_pos"])
+    }
 }

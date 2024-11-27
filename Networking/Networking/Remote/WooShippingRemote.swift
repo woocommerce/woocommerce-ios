@@ -21,6 +21,14 @@ public protocol WooShippingRemoteProtocol {
                                destinationAddress: ShippingLabelAddress,
                                package: WooShippingPackagePurchase,
                                completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void)
+    func checkLabelStatus(siteID: Int64,
+                          orderID: Int64,
+                          labelID: Int64,
+                          completion: @escaping (Result<ShippingLabelStatusPollingResponse, Error>) -> Void)
+    func printLabel(siteID: Int64,
+                    labelIDs: [Int64],
+                    paperSize: ShippingLabelPaperSize,
+                    completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
@@ -176,7 +184,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                 ParameterKey.customs: try package.encodedCustomsForm(),
             ]
             let path = "\(Path.purchase)/\(orderID)"
-            let request = JetpackRequest(wooApiVersion: .wcConnectV1,
+            let request = JetpackRequest(wooApiVersion: .wooShipping,
                                          method: .post,
                                          siteID: siteID,
                                          path: path,
@@ -188,6 +196,54 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
             completion(.failure(error))
         }
     }
+
+    /// Checks the shipping label status
+    ///
+    /// Used after purchasing a shipping label, to check for errors or confirm a successful purchase.
+    /// This is used instead of loading all purchased labels for the order to ensure up-to-date (non-cached) results.
+    /// - Parameters:
+    ///     - siteID: Remote ID of the site.
+    ///     - orderID: Remote ID of the order that owns the shipping labels.
+    ///     - labelID: Remote ID of the label to check the status of.
+    ///     - completion: Closure to be executed upon completion.
+    public func checkLabelStatus(siteID: Int64,
+                                 orderID: Int64,
+                                 labelID: Int64,
+                                 completion: @escaping (Result<ShippingLabelStatusPollingResponse, Error>) -> Void) {
+        let path = "\(Path.status)/\(orderID)/\(labelID)"
+        let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     availableAsRESTRequest: true)
+        let mapper = WooShippingStatusMapper(siteID: siteID, orderID: orderID)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Generates shipping label data for printing.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site that owns the shipping labels.
+    ///   - labelIDs: Remote IDs of the shipping labels.
+    ///   - paperSize: Paper size option (current options are "label", "legal", and "letter").
+    ///   - completion: Closure to be executed upon completion.
+    public func printLabel(siteID: Int64,
+                           labelIDs: [Int64],
+                           paperSize: ShippingLabelPaperSize,
+                           completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
+        let parameters: [String: Any] = [
+            ParameterKey.paperSize: paperSize.rawValue,
+            ParameterKey.labelIDCSV: labelIDs.map(String.init).joined(separator: ",")
+        ]
+        let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.print,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = ShippingLabelPrintDataMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 // MARK: Constants
@@ -197,6 +253,8 @@ private extension WooShippingRemote {
         static let rates = "label/rate"
         static let accountSettings = "account/settings"
         static let purchase = "label/purchase"
+        static let status = "label/status"
+        static let print = "label/print"
     }
 
     enum ParameterKey {
@@ -210,6 +268,8 @@ private extension WooShippingRemote {
         static let selectedRate = "selected_rate"
         static let hazmat = "hazmat"
         static let customs = "customs"
+        static let paperSize = "paper_size"
+        static let labelIDCSV = "label_id_csv"
     }
 }
 

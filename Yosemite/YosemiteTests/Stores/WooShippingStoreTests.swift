@@ -346,6 +346,56 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertTrue(remote.purchaseShippingLabelCalled)
         XCTAssertGreaterThan(remote.checkLabelStatusCallsCount, 1)
     }
+
+    func test_printLabel_returns_print_data_on_success() throws {
+        // Given
+        let expectedPrintData = ShippingLabelPrintData.fake()
+        let remote = MockWooShippingRemote()
+        remote.whenPrintLabel(siteID: sampleSiteID, thenReturn: .success(expectedPrintData))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let printData: ShippingLabelPrintData = waitFor { promise in
+            let action = WooShippingAction.printLabel(siteID: self.sampleSiteID,
+                                                     labelIDs: [123],
+                                                     paperSize: .letter) { result in
+                guard let printData = try? result.get() else {
+                    XCTFail("Error printing shipping label: \(String(describing: result.failure))")
+                    return
+                }
+                promise(printData)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(printData, expectedPrintData)
+    }
+
+    func test_printLabel_returns_error_on_failure() throws {
+        // Given
+        let expectedError = NetworkError.timeout()
+        let remote = MockWooShippingRemote()
+        remote.whenPrintLabel(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let error: Error = waitFor { promise in
+            let action = WooShippingAction.printLabel(siteID: self.sampleSiteID,
+                                                      labelIDs: [123],
+                                                      paperSize: .letter) { result in
+                guard let printData = result.failure else {
+                    XCTFail("Unexpected result when printing shipping label: \(result)")
+                    return
+                }
+                promise(printData)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
 }
 
 private extension WooShippingStoreTests {

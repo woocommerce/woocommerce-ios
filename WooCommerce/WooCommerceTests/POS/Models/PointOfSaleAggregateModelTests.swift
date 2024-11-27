@@ -205,7 +205,7 @@ struct PointOfSaleAggregateModelTests {
         @Test func when_collectPayment_is_called_channel_is_set_to_pos() async throws {
             // Given
             cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
-            orderService.orderToReturn = Order.fake().copy(items: [.fake()])
+            orderController.orderStateToReturn = makeLoadedOrderState(cartTotal: "$0.00")
 
             // When
             await sut.checkOut()

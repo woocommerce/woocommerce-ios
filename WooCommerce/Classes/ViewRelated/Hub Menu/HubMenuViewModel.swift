@@ -92,10 +92,10 @@ final class HubMenuViewModel: ObservableObject {
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
 
-    private(set) lazy var posItemProvider: POSItemProvider = {
+    private(set) lazy var posItemProvider: PointOfSaleItemServiceProtocol = {
         let currencySettings = ServiceLocator.currencySettings
 
-        return POSProductProvider(siteID: siteID,
+        return PointOfSaleProductService(siteID: siteID,
                                   currencySettings: currencySettings,
                                   credentials: credentials)
     }()

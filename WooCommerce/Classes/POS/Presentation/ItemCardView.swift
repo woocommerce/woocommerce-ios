@@ -76,6 +76,6 @@ private extension ItemCardView {
 
 #if DEBUG
 #Preview {
-    ItemCardView(item: POSItemProviderPreview().providePointOfSaleItem())
+    ItemCardView(item: PointOfSalePreviewItemService().providePointOfSaleItem())
 }
 #endif

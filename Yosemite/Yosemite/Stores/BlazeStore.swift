@@ -145,20 +145,15 @@ private extension BlazeStore {
                                                         siteID: Int64,
                                                         shouldClearExistingCampaigns: Bool = false,
                                                         onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            guard let self = self else { return }
+        storageManager.performAndSave({ [weak self] derivedStorage in
+            guard let self else { return }
             if shouldClearExistingCampaigns {
                 derivedStorage.deleteBlazeCampaignListItems(siteID: siteID)
             }
-            self.upsertStoredBlazeCampaignListItems(readOnlyCampaigns: readOnlyCampaigns,
-                                                    in: derivedStorage,
-                                                    siteID: siteID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+            upsertStoredBlazeCampaignListItems(readOnlyCampaigns: readOnlyCampaigns,
+                                               in: derivedStorage,
+                                               siteID: siteID)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates or Inserts the specified BlazeCampaignListItem entities

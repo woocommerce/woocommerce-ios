@@ -161,9 +161,10 @@ private extension BlazeStore {
     func upsertStoredBlazeCampaignListItems(readOnlyCampaigns: [Networking.BlazeCampaignListItem],
                                             in storage: StorageType,
                                             siteID: Int64) {
+        let allStoredItems = storage.loadAllBlazeCampaignListItems(siteID: siteID)
         for campaign in readOnlyCampaigns {
             let storageCampaign: Storage.BlazeCampaignListItem = {
-                if let storedCampaign = storage.loadBlazeCampaignListItem(siteID: siteID, campaignID: campaign.campaignID) {
+                if let storedCampaign = allStoredItems.first(where: { $0.campaignID == campaign.campaignID }) {
                     return storedCampaign
                 }
                 return storage.insertNewObject(ofType: Storage.BlazeCampaignListItem.self)

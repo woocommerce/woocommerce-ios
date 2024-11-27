@@ -27,6 +27,7 @@ struct WooShippingCreateLabelsView: View {
     private var isiPhonePortrait: Bool {
         verticalSizeClass == .regular && horizontalSizeClass == .compact
     }
+
     /// Tracks the size of the "Ship from" label in the Shipment Details address section.
     @State private var shipmentDetailsShipFromSize: CGSize = .zero
 

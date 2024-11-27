@@ -119,7 +119,6 @@ private func makePOSCartItem(
                 name: "",
                 price: "",
                 formattedPrice: "",
-                itemCategories: [],
                 productImageSource: nil,
                 productType: .simple),
             quantity: quantity

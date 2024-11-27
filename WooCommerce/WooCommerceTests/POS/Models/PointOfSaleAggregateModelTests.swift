@@ -485,7 +485,6 @@ private func makeItem(name: String = "") -> POSItem {
                       name: name,
                       price: "",
                       formattedPrice: "",
-                      itemCategories: [],
                       productImageSource: nil,
                       productType: .simple)
 }

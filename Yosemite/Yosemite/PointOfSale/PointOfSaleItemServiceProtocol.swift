@@ -4,7 +4,6 @@ public protocol POSItem {
     var name: String { get }
     var price: String { get }
     var formattedPrice: String { get }
-    var itemCategories: [String] { get }
     var productImageSource: String? { get }
     var productType: ProductType { get }
 }
@@ -17,7 +16,6 @@ extension POSItem {
         lhs.name == rhs.name &&
         lhs.price == rhs.price &&
         lhs.formattedPrice == rhs.formattedPrice &&
-        lhs.itemCategories == rhs.itemCategories &&
         lhs.productImageSource == rhs.productImageSource &&
         lhs.productType == rhs.productType
     }

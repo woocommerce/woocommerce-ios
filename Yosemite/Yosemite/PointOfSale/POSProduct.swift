@@ -4,7 +4,6 @@ struct POSProduct: POSItem {
     let name: String
     let price: String
     let formattedPrice: String
-    let itemCategories: [String]
     var productImageSource: String?
     let productType: ProductType
 
@@ -13,7 +12,6 @@ struct POSProduct: POSItem {
          name: String,
          price: String,
          formattedPrice: String,
-         itemCategories: [String],
          productImageSource: String?,
          productType: ProductType) {
         self.itemID = itemID
@@ -21,7 +19,6 @@ struct POSProduct: POSItem {
         self.name = name
         self.price = price
         self.formattedPrice = formattedPrice
-        self.itemCategories = itemCategories
         self.productImageSource = productImageSource
         self.productType = productType
     }

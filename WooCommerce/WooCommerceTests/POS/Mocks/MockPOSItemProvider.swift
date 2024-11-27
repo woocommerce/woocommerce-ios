@@ -49,7 +49,6 @@ extension MockPointOfSaleItemService {
                                   name: "Choco",
                                   price: "2",
                                   formattedPrice: "$2.00",
-                                  itemCategories: [],
                                   productImageSource: nil,
                                   productType: .simple)
 
@@ -58,7 +57,6 @@ extension MockPointOfSaleItemService {
                                   name: "Vanilla",
                                   price: "3",
                                   formattedPrice: "$3.00",
-                                  itemCategories: [],
                                   productImageSource: nil,
                                   productType: .simple)
         return [product1, product2]
@@ -73,7 +71,6 @@ extension MockPointOfSaleItemService {
                                   name: "Strawberry",
                                   price: "2",
                                   formattedPrice: "$2.00",
-                                  itemCategories: [],
                                   productImageSource: nil,
                                   productType: .simple)
 
@@ -82,7 +79,6 @@ extension MockPointOfSaleItemService {
                                   name: "Pistachio",
                                   price: "3",
                                   formattedPrice: "$3.00",
-                                  itemCategories: [],
                                   productImageSource: nil,
                                   productType: .simple)
         return [product3, product4]

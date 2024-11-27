@@ -62,7 +62,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
     func test_order_shipping_lines_converted_to_shippingLineViewModels() {
         // Given
-        let order = Order.fake().copy(shippingLines: [ShippingLine.fake().copy(shippingID: 1),
+        let order = Order.fake().copy(currency: "GBP",
+                                      shippingLines: [ShippingLine.fake().copy(shippingID: 1, total: "10"),
                                                       ShippingLine.fake().copy(shippingID: 2),
                                                       ShippingLine.fake().copy(shippingID: 3)])
 
@@ -71,6 +72,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(order.shippingLines.map({ $0.shippingID }), viewModel.shippingLines.map({ $0.id }))
+        XCTAssertEqual("£10.00", viewModel.shippingLines.first?.formattedTotal)
     }
 
     func test_onLabelPurchase_notifies_when_order_should_not_be_marked_complete() {

@@ -17,7 +17,7 @@ final class WooShippingItemsViewModelTests: XCTestCase {
         // Given
         let items = [sampleItem(id: 1, weight: 4, value: 10, quantity: 1),
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
-        let dataSource = MockDataSource(items: items)
+        let dataSource = MockDataSource(items: items, currency: "GBP")
 
         // When
         let viewModel = WooShippingItemsViewModel(dataSource: dataSource,
@@ -26,8 +26,8 @@ final class WooShippingItemsViewModelTests: XCTestCase {
 
         // Then
         assertEqual("2 items", viewModel.itemsCountLabel)
-        assertEqual("$12.50", viewModel.itemsPriceLabel)
-        assertEqual("7 oz • $12.50", viewModel.itemsDetailLabel)
+        assertEqual("£12.50", viewModel.itemsPriceLabel)
+        assertEqual("7 oz • £12.50", viewModel.itemsDetailLabel)
         assertEqual(2, viewModel.itemRows.count)
     }
 
@@ -60,7 +60,7 @@ final class WooShippingItemsViewModelTests: XCTestCase {
         // Given
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
-        let dataSource = MockDataSource(items: items)
+        let dataSource = MockDataSource(items: items, currency: "GBP")
 
         // When
         let viewModel = WooShippingItemsViewModel(dataSource: dataSource,
@@ -68,7 +68,7 @@ final class WooShippingItemsViewModelTests: XCTestCase {
                                                   shippingSettingsService: shippingSettingsService)
 
         // Then
-        assertEqual("13 oz • $22.50", viewModel.itemsDetailLabel)
+        assertEqual("13 oz • £22.50", viewModel.itemsDetailLabel)
     }
 
 }
@@ -88,8 +88,11 @@ private extension WooShippingItemsViewModelTests {
 
 private final class MockDataSource: WooShippingItemsDataSource {
     var items: [ShippingLabelPackageItem]
+    var currency: String
 
-    init(items: [ShippingLabelPackageItem]) {
+    init(items: [ShippingLabelPackageItem],
+         currency: String = "GBP") {
         self.items = items
+        self.currency = currency
     }
 }

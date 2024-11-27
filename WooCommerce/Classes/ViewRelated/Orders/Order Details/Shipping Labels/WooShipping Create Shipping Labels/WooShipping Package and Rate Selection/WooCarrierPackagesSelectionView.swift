@@ -84,6 +84,12 @@ struct WooCarrierPackagesSelectionView: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            if viewModel.isLoadingPackages {
+                // TODO: think of a better progress/loading indicator
+                ProgressView()
+                    .progressViewStyle(.circular)
+                    .padding()
+            }
             if viewModel.selectedCarriersTabIndex != nil, viewModel.carrierTabs.isNotEmpty {
                 TopTabView(tabs: viewModel.carrierTabs,
                            showContent: .constant(false),

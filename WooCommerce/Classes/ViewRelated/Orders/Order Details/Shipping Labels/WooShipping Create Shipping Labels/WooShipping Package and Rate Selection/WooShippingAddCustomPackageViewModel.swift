@@ -15,18 +15,15 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     // Holds value for toggle that determines if we are showing button for saving the template
     @Published var showSaveTemplate: Bool = false
     @Published var packageTemplateName: String = ""
-    @Published var packagesRepository: WooShippingPackagesRepositoryProtocol
 
     // MARK: Initialization
 
     init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          storeOptions: ShippingLabelStoreOptions,
-         stores: StoresManager = ServiceLocator.stores,
-         packagesRepository: WooShippingPackagesRepositoryProtocol) {
+         stores: StoresManager = ServiceLocator.stores) {
         self.storeOptions = storeOptions
         self.stores = stores
         self.siteID = siteID
-        self.packagesRepository = packagesRepository
     }
 
     // Field values are invalid if one of them is empty
@@ -92,11 +89,39 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
             return .failure(WooShippingAddCustomPackageViewModel.Error.packageDataNotValid)
         }
 
-        let result =  await packagesRepository.saveCustomPackage(packageData,
-                                                                 dimensionsUnit: storeOptions.dimensionUnit,
-                                                                 weightUnit: storeOptions.weightUnit,
-                                                                 siteID: siteID,
-                                                                 stores: stores)
+        let customPackage = WooShippingCustomPackage(id: "",
+                                                     name: packageData.name,
+                                                     rawType: packageData.packageType,
+                                                     dimensions: "\(packageData.length) x \(packageData.width) x \(packageData.height)",
+                                                     boxWeight: Double(packageData.weight) ?? 0)
+        let result: Result<WooShippingPackageDataRepresentable, Error> = await withCheckedContinuation { continuation in
+            let action = WooShippingAction.createPackage(siteID: siteID,
+                                                         customPackage: customPackage,
+                                                         predefinedOption: nil) { [weak self] result in
+                switch result {
+                case let .success(packages):
+                    guard let self, let savedPackage = packages.customPackages.first(where: { $0.name == customPackage.name }) else {
+                        return continuation.resume(returning: .failure(WooShippingAddCustomPackageViewModel.Error.failedSavingTemplate))
+                    }
+                    let packageData = WooShippingPackageData(id: savedPackage.id,
+                                                             name: savedPackage.name,
+                                                             length: savedPackage.getLength().description,
+                                                             width: savedPackage.getWidth().description,
+                                                             height: savedPackage.getHeight().description,
+                                                             dimensionsUnit: storeOptions.dimensionUnit,
+                                                             weight: savedPackage.boxWeight.description,
+                                                             weightUnit: storeOptions.weightUnit,
+                                                             source: .custom,
+                                                             packageType: savedPackage.rawType)
+                    continuation.resume(returning: .success(packageData))
+                case let .failure(error):
+                    DDLogError("⛔️ Error saving custom package with WCShip: \(error)")
+                    continuation.resume(returning: .failure(WooShippingAddCustomPackageViewModel.Error.failedSavingTemplate))
+                }
+            }
+            stores.dispatch(action)
+        }
+
         switch result {
         case .success(let success):
             return .success(success)

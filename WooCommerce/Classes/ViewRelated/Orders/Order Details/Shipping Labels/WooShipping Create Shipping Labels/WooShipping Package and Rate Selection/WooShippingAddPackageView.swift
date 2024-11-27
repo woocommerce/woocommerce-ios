@@ -26,11 +26,8 @@ struct WooShippingAddPackageView: View {
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
     init(storeOptions: ShippingLabelStoreOptions,
-         packagesRepository: WooShippingPackagesRepository = WooShippingPackagesRepository.shared,
          addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
-        self._packagesRepository = StateObject(wrappedValue: packagesRepository)
-        self._customPackageViewModel = StateObject(wrappedValue: WooShippingAddCustomPackageViewModel(storeOptions: storeOptions,
-                                                                                                      packagesRepository: packagesRepository))
+        self._customPackageViewModel = StateObject(wrappedValue: WooShippingAddCustomPackageViewModel(storeOptions: storeOptions))
         self.addPackageAction = addPackageAction
     }
     // MARK: - UI

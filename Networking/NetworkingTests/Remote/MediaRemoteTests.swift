@@ -207,7 +207,7 @@ final class MediaRemoteTests: XCTestCase {
 
     // MARK: - uploadMedia
 
-    func test_uploadMediaToWordPressSite_does_not_send_data_in_request_body() throws {
+    func test_uploadMedia_does_not_send_data_in_request_body() throws {
         // Given
         let remote = MediaRemote(network: network)
 
@@ -219,13 +219,13 @@ final class MediaRemoteTests: XCTestCase {
         XCTAssertNil(try request.asURLRequest().httpBody)
     }
 
-    /// Verifies that `uploadMediaToWordPressSite` properly parses the `media-upload-to-wordpress-site` sample response.
+    /// Verifies that `uploadMedia` properly parses the `media-upload` sample response.
     ///
-    func test_uploadMediaToWordPressSite_properly_returns_parsed_media() throws {
+    func test_uploadMedia_properly_returns_parsed_media() throws {
         // Given
         let remote = MediaRemote(network: network)
         let path = "sites/\(sampleSiteID)/media"
-        network.simulateResponse(requestUrlSuffix: path, filename: "media-upload-to-wordpress-site")
+        network.simulateResponse(requestUrlSuffix: path, filename: "media-upload")
 
         // When
         let result = waitFor { promise in

@@ -3,6 +3,8 @@ import SwiftUI
 struct WooShippingPostPurchaseView: View {
     @ObservedObject private(set) var viewModel: WooShippingPostPurchaseViewModel
 
+    @State private var isPrintingLabel = false
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(Localization.readyToPrint)
@@ -35,12 +37,16 @@ struct WooShippingPostPurchaseView: View {
                     .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
                 }
                 Button {
-                    // TODO: Request label from remote and open print dialog
+                    isPrintingLabel = true
+                    Task { @MainActor in
+                        await viewModel.printLabel()
+                        isPrintingLabel = false
+                    }
                 } label: {
                     Text(Localization.printButton)
                         .bold()
                 }
-                .buttonStyle(HighlightButtonStyle(background: Layout.panelHighlight, backgroundPressed: Layout.buttonPressed))
+                .buttonStyle(HighlightLoadingButtonStyle(isLoading: isPrintingLabel, background: Layout.panelHighlight, backgroundPressed: Layout.buttonPressed))
                 NavigationLink {
                     ShippingLabelPrintingInstructionsView()
                         .navigationTitle(Localization.infoTitle)

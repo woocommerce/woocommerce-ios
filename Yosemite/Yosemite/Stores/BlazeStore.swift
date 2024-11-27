@@ -198,18 +198,13 @@ private extension BlazeStore {
     func insertStoredTargetDevicesInBackground(readonlyDevices: [Networking.BlazeTargetDevice],
                                                locale: String,
                                                onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
+        storageManager.performAndSave({ derivedStorage in
             derivedStorage.deleteBlazeTargetDevices(locale: locale)
             for device in readonlyDevices {
                 let storageDevice = derivedStorage.insertNewObject(ofType: Storage.BlazeTargetDevice.self)
                 storageDevice.update(with: device)
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 }
 

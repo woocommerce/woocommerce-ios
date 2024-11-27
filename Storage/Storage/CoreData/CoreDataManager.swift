@@ -12,6 +12,56 @@ public final class CoreDataManager: StorageManagerType {
     /// A serial queue used to ensure there is only one writing operation at a time.
     private let writerQueue: OperationQueue
 
+    /// Module-private designated Initializer.
+    ///
+    /// - Parameter name: Identifier to be used for: [database, data model, container].
+    /// - Parameter crashLogger: allows logging a message of any severity level
+    ///
+    /// - Important: This should *match* with your actual Data Model file!.
+    ///
+    init(name: String,
+         crashLogger: CrashLogger,
+         modelsInventory: ManagedObjectModelsInventory?) {
+        self.crashLogger = crashLogger
+        self.writerQueue = OperationQueue()
+        self.writerQueue.name = "com.automattic.woocommerce.CoreDataManager.writer"
+        self.writerQueue.maxConcurrentOperationCount = 1
+
+        let inventory: ManagedObjectModelsInventory
+        do {
+            if let modelsInventory {
+                inventory = modelsInventory
+            } else {
+                inventory = try .from(packageName: name, bundle: Bundle(for: type(of: self)))
+            }
+        } catch {
+            // We'll throw a fatalError() because we can't really proceed without a
+            // ManagedObjectModel.
+            let error = CoreDataManagerError.modelInventoryLoadingFailed(name, error)
+            crashLogger.logFatalErrorAndExit(error, userInfo: nil)
+        }
+
+        let persistentContainer = Self.createPersistentContainer(with: name,
+                                                                 crashLogger: crashLogger,
+                                                                 modelsInventory: inventory)
+        self.persistentContainer = persistentContainer
+
+        self.viewStorage = {
+            let context = persistentContainer.viewContext
+            /// This simplifies the process of merging updates from persistent container to view context.
+            /// When disable auto merge, we need to handle merging manually using `NSManagedObjectContextDidSave` notifications.
+            context.automaticallyMergesChangesFromParent = true
+            context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+            return context
+        }()
+
+        self.writerDerivedStorage = {
+            let backgroundContext = persistentContainer.newBackgroundContext()
+            backgroundContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+            return backgroundContext
+        }()
+    }
+
     /// Public designated initializer.
     ///
     /// - Parameter name: Identifier to be used for: [database, data model, container].
@@ -19,40 +69,8 @@ public final class CoreDataManager: StorageManagerType {
     ///
     /// - Important: This should *match* with your actual Data Model file!.
     ///
-    public init(name: String, crashLogger: CrashLogger) {
-        self.crashLogger = crashLogger
-        self.writerQueue = OperationQueue()
-        self.writerQueue.name = "com.automattic.woocommerce.CoreDataManager.writer"
-        self.writerQueue.maxConcurrentOperationCount = 1
-
-        do {
-            let inventory = try ManagedObjectModelsInventory.from(packageName: name, bundle: Bundle(for: type(of: self)))
-            let persistentContainer = Self.createPersistentContainer(with: name,
-                                                                     crashLogger: crashLogger,
-                                                                     modelsInventory: inventory)
-            self.persistentContainer = persistentContainer
-
-            self.viewStorage = {
-                let context = persistentContainer.viewContext
-                /// This simplifies the process of merging updates from persistent container to view context.
-                /// When disable auto merge, we need to handle merging manually using `NSManagedObjectContextDidSave` notifications.
-                context.automaticallyMergesChangesFromParent = true
-                context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-                return context
-            }()
-
-            self.writerDerivedStorage = {
-                let backgroundContext = persistentContainer.newBackgroundContext()
-                backgroundContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-                return backgroundContext
-            }()
-
-        } catch {
-            // We'll throw a fatalError() because we can't really proceed without a
-            // ManagedObjectModel.
-            let error = CoreDataManagerError.modelInventoryLoadingFailed(name, error)
-            crashLogger.logFatalErrorAndExit(error, userInfo: nil)
-        }
+    public convenience init(name: String, crashLogger: CrashLogger) {
+        self.init(name: name, crashLogger: crashLogger, modelsInventory: nil)
     }
 
     /// Returns the Storage associated with the View Thread.

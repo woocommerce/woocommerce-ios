@@ -15,11 +15,13 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     var spyCollectPaymentGatewayAccount: PaymentGatewayAccount? = nil
     var spyCollectPaymentMethodTypes: [String]? = nil
     var spyCollectPaymentStripeSmallestCurrencyUnitMultiplier: Decimal? = nil
+    var spyChannel: PaymentChannel? = nil
     func collectPayment(for order: Order,
                         orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [String],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
+                        channel: PaymentChannel,
                         onPreparingReader: () -> Void,
                         onWaitingForInput: @escaping (CardReaderInput) -> Void,
                         onProcessingMessage: @escaping () -> Void,
@@ -31,6 +33,7 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
         spyCollectPaymentGatewayAccount = paymentGatewayAccount
         spyCollectPaymentMethodTypes = paymentMethodTypes
         spyCollectPaymentStripeSmallestCurrencyUnitMultiplier = stripeSmallestCurrencyUnitMultiplier
+        spyChannel = channel
 
         mockCollectPaymentHandler?(onPreparingReader,
                                    onWaitingForInput,

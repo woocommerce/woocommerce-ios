@@ -198,7 +198,7 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     private func collectPayment(for order: Order) async throws {
-        _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
+        _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth, channel: .pos)
     }
 
     func cancelThenCollectPayment() {

@@ -7,7 +7,7 @@ import enum Yosemite.OrderFactory
 import struct Yosemite.Order
 
 class POSOrderPreviewService: POSOrderServiceProtocol {
-    func syncOrder(cart: [POSCartItem], order: Order?, allProducts: [any POSItem]) async throws -> Order {
+    func syncOrder(cart: [POSCartItem], order: Order?) async throws -> Order {
         OrderFactory.emptyNewOrder
     }
 }

@@ -11,7 +11,7 @@ struct PointOfSaleAggregateModelTests {
         private let sut: PointOfSaleAggregateModel
 
         init() {
-            self.sut = PointOfSaleAggregateModel(itemProvider: MockPOSItemProvider(),
+            self.sut = PointOfSaleAggregateModel(itemsService: MockPointOfSaleItemsService(),
                                                  cardPresentPaymentService: MockCardPresentPaymentService(),
                                                  orderService: MockPOSOrderService())
         }
@@ -61,291 +61,6 @@ struct PointOfSaleAggregateModelTests {
 
     }
 
-    struct ItemListTests {
-        private let itemProvider: MockPOSItemProvider
-        private let sut: PointOfSaleAggregateModel
-
-        init() {
-            itemProvider = MockPOSItemProvider()
-            sut = PointOfSaleAggregateModel(itemProvider: itemProvider,
-                                            cardPresentPaymentService: MockCardPresentPaymentService(),
-                                            orderService: MockPOSOrderService())
-        }
-
-        @Test func loadInitialItems_requests_first_page() async throws {
-            // Given
-            try #require(sut.itemListState == .initialLoading)
-
-            // When
-            await sut.loadInitialItems()
-
-            // Then
-            #expect(itemProvider.spyLastRequestedPageNumber == 1)
-        }
-
-        @Test func loadInitialItems_results_in_loaded_state() async throws {
-            // Given
-            let expectedItems = MockPOSItemProvider.makeInitialItems()
-            try #require(sut.itemListState == .initialLoading)
-
-            // When
-            await sut.loadInitialItems()
-
-            // Then
-            #expect(sut.itemListState == .loaded(expectedItems))
-        }
-
-        @Test func loadInitialItems_when_called_multiple_times_then_items_are_not_duplicated() async throws {
-            // Given
-            try #require(sut.itemListState == .initialLoading)
-            let expectedItems = MockPOSItemProvider.makeInitialItems()
-
-            // When
-            await sut.loadInitialItems()
-            await sut.loadInitialItems()
-            await sut.loadInitialItems()
-
-            // Then
-            guard case .loaded(let items) = sut.itemListState else {
-                Issue.record("Expected loaded ItemList state, but got \(sut.itemListState)")
-                return
-            }
-            #expect(items.count == expectedItems.count)
-        }
-
-        @Test func reload_results_in_loaded_state() async throws {
-            // Given
-            try #require(sut.itemListState == .initialLoading)
-            let expectedItems = MockPOSItemProvider.makeInitialItems()
-
-            // When
-            await sut.reload()
-
-            // Then
-            guard case .loaded(let items) = sut.itemListState else {
-                Issue.record("Expected loaded ItemList state, but got \(sut.itemListState)")
-                return
-            }
-            #expect(items.count == expectedItems.count)
-        }
-
-        @Test func reload_when_called_multiple_times_then_items_are_not_duplicated() async throws {
-            // Given
-            try #require(sut.itemListState == .initialLoading)
-            let expectedItems = MockPOSItemProvider.makeInitialItems()
-
-            // When
-            await sut.reload()
-            await sut.reload()
-            await sut.reload()
-
-            // Then
-            guard case .loaded(let items) = sut.itemListState else {
-                Issue.record("Expected loaded ItemList state, but got \(sut.itemListState)")
-                return
-            }
-            #expect(items.count == expectedItems.count)
-        }
-
-        @Test func state_starts_as_initialLoading() {
-            // Given/When/Then
-            #expect(sut.itemListState == .initialLoading)
-        }
-
-        @Test func loadItems_when_initial_items_empty_then_state_is_empty() async throws {
-            // Given
-            let itemProvider = MockPOSItemProvider()
-            itemProvider.shouldReturnZeroItems = true
-            let sut = PointOfSaleAggregateModel(itemProvider: itemProvider,
-                                                cardPresentPaymentService: MockCardPresentPaymentService(),
-                                                orderService: MockPOSOrderService())
-
-            try #require(sut.itemListState == .initialLoading)
-
-            // When
-            await sut.loadNextItems()
-
-            // Then
-            #expect(sut.itemListState == .empty)
-        }
-
-        @Test func loadItems_when_initial_items_has_items_then_state_is_loaded_with_initial_items() async throws {
-            // Given
-            let initialItems = MockPOSItemProvider.makeInitialItems()
-            itemProvider.items = initialItems
-
-            try #require(sut.itemListState == .initialLoading)
-
-            // When
-            await sut.loadNextItems()
-
-            // Then
-            #expect(sut.itemListState == .loaded(initialItems))
-        }
-
-        @Test func loadItems_when_simulateFetchNextPage_then_state_is_loaded_with_expected_items() async throws {
-            // Given
-            let initialItems = MockPOSItemProvider.makeInitialItems()
-            itemProvider.items = initialItems
-            itemProvider.shouldSimulateTwoPages = true
-
-            // When
-            await sut.loadNextItems()
-
-            // Then
-            guard case .loaded(let items) = sut.itemListState else {
-                Issue.record("Expected loaded ItemList state, but got \(sut.itemListState)")
-                return
-            }
-            #expect(items.count == 4)
-        }
-
-        @Test func loadNextItems_requests_second_page() async throws {
-            // Given
-            try #require(sut.itemListState == .initialLoading)
-
-            // When
-            await sut.loadNextItems()
-
-            // Then
-            #expect(itemProvider.spyLastRequestedPageNumber == 2)
-        }
-
-        @Test func loadInitialItems_when_no_items_then_state_is_loaded_empty() async throws {
-            // Given
-            let itemProvider = MockPOSItemProvider()
-            itemProvider.shouldReturnZeroItems = true
-            let sut = PointOfSaleAggregateModel(itemProvider: itemProvider,
-                                                cardPresentPaymentService: MockCardPresentPaymentService(),
-                                                orderService: MockPOSOrderService())
-
-            try #require(sut.itemListState == .initialLoading)
-
-            // When
-            await sut.loadInitialItems()
-
-            // Then
-            #expect(sut.itemListState == .empty)
-        }
-
-        @Test func loadInitialItems_when_itemProvider_throws_error_then_state_is_error() async throws {
-            // Given
-            itemProvider.shouldThrowError = true
-            let expectedError = PointOfSaleErrorState(title: "Error loading products",
-                                                      subtitle: "Give it another go?",
-                                                      buttonText: "Retry")
-            try #require(sut.itemListState == .initialLoading)
-
-            // When
-            await sut.loadInitialItems()
-
-            // Then
-            #expect(sut.itemListState == .error(expectedError))
-        }
-
-        @Test func loadNextItems_when_itemProvider_throws_error_then_state_is_error() async throws {
-            // Given
-            itemProvider.shouldThrowError = true
-            let expectedError = PointOfSaleErrorState(title: "Error loading products",
-                                                      subtitle: "Give it another go?",
-                                                      buttonText: "Retry")
-            try #require(sut.itemListState == .initialLoading)
-
-            // When
-            await sut.loadNextItems()
-
-            // Then
-            #expect(sut.itemListState == .error(expectedError))
-        }
-
-        @Test func loadNextItems_after_itemProvider_throws_error_then_the_same_page_is_requested_next() async throws {
-            // Given
-            itemProvider.shouldThrowError = true
-            await sut.loadNextItems()
-            try #require(itemProvider.spyLastRequestedPageNumber == 2)
-            itemProvider.spyLastRequestedPageNumber = 0
-
-            // When
-            await sut.loadNextItems()
-
-            // Then
-            #expect(itemProvider.spyLastRequestedPageNumber == 2)
-        }
-
-        @Test func reload_results_in_state_loaded_with_expected_items() async throws {
-            // Given
-            try #require(sut.itemListState == .initialLoading)
-            let expectedItems = MockPOSItemProvider.makeInitialItems()
-
-            // When
-            await sut.reload()
-
-            // Then
-            #expect(sut.itemListState == .loaded(expectedItems))
-        }
-
-        @Test func reload_requests_first_page() async throws {
-            // Given
-            await sut.loadNextItems()
-            try #require(itemProvider.spyLastRequestedPageNumber == 2)
-
-            // When
-            await sut.reload()
-
-            // Then
-            #expect(itemProvider.spyLastRequestedPageNumber == 1)
-        }
-
-        @Test func loadNextItems_when_next_page_is_out_of_range_then_receives_error() async throws {
-            // Given
-            await sut.loadInitialItems()
-            try #require(itemProvider.spyLastRequestedPageNumber == 1)
-            let expectedError = PointOfSaleErrorState(title: "Error loading products",
-                                                      subtitle: "Give it another go?",
-                                                      buttonText: "Retry")
-
-            // When
-            itemProvider.simulateNextPageIsOutOfRange()
-            await sut.loadNextItems()
-
-            // Then
-            guard case .error = sut.itemListState else {
-                Issue.record("Expected error state, but got \(sut.itemListState)")
-                return
-            }
-            #expect(sut.itemListState == .error(expectedError))
-        }
-
-        @Test func loadNextItems_when_next_page_is_out_of_range_then_the_same_page_is_requested_next() async throws {
-            // Given
-            await sut.loadInitialItems()
-            try #require(itemProvider.spyLastRequestedPageNumber == 1)
-
-            // When
-            itemProvider.simulateNextPageIsOutOfRange()
-            await sut.loadNextItems()
-
-            // Then
-            try #require(itemProvider.spyLastRequestedPageNumber == 1)
-        }
-
-        @Test func reload_when_itemProvider_throws_error_then_state_is_error() async throws {
-            // Given
-            itemProvider.shouldThrowError = true
-            let expectedError = PointOfSaleErrorState(title: "Error loading products",
-                                                      subtitle: "Give it another go?",
-                                                      buttonText: "Retry")
-
-            try #require(sut.itemListState == .initialLoading)
-
-            // When
-            await sut.reload()
-
-            // Then
-            #expect(sut.itemListState == .error(expectedError))
-        }
-    }
-
     struct CartTests {
         let sut: PointOfSaleAggregateModel
         private let analytics: WooAnalytics!
@@ -354,7 +69,7 @@ struct PointOfSaleAggregateModelTests {
         init() {
             analyticsProvider = MockAnalyticsProvider()
             analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-            sut = PointOfSaleAggregateModel(itemProvider: MockPOSItemProvider(),
+            sut = PointOfSaleAggregateModel(itemsService: MockPointOfSaleItemsService(),
                                             cardPresentPaymentService: MockCardPresentPaymentService(),
                                             orderService: MockPOSOrderService(),
                                             analytics: analytics)
@@ -438,7 +153,7 @@ struct PointOfSaleAggregateModelTests {
 
     struct OrderTests {
         private let cardPresentPaymentService = MockCardPresentPaymentService()
-        private let itemProvider = MockPOSItemProvider()
+        private let itemsService = MockPointOfSaleItemsService()
         private let orderService = MockPOSOrderService()
         private let sut: PointOfSaleAggregateModel
 
@@ -446,7 +161,7 @@ struct PointOfSaleAggregateModelTests {
             orderService.orderToReturn = Order.fake()
 
             sut = PointOfSaleAggregateModel(
-                itemProvider: itemProvider,
+                itemsService: itemsService,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderService: orderService)
 
@@ -564,17 +279,30 @@ struct PointOfSaleAggregateModelTests {
             // Then
             #expect(orderStates == [.idle, .syncing, .error(.init(message: "", handler: {}))])
         }
+
+        @Test func when_collectPayment_is_called_channel_is_set_to_pos() async throws {
+            // Given
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+            orderService.orderToReturn = Order.fake().copy(items: [.fake()])
+
+            // When
+            await sut.checkOut()
+            #expect(cardPresentPaymentService.collectPaymentWasCalled)
+
+            // Then
+            #expect(cardPresentPaymentService.collectPaymentChannel == .pos)
+        }
     }
 
     struct PaymentTests {
         private let cardPresentPaymentService = MockCardPresentPaymentService()
-        private let itemProvider = MockPOSItemProvider()
+        private let itemsService = MockPointOfSaleItemsService()
         private let orderService = MockPOSOrderService()
         private let sut: PointOfSaleAggregateModel
 
         init() {
             sut = PointOfSaleAggregateModel(
-                itemProvider: itemProvider,
+                itemsService: itemsService,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderService: orderService)
         }
@@ -583,7 +311,7 @@ struct PointOfSaleAggregateModelTests {
             // Given that we don't specify a payment state
             // When we init
             let sut = PointOfSaleAggregateModel(
-                itemProvider: itemProvider,
+                itemsService: itemsService,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderService: orderService)
 
@@ -592,10 +320,9 @@ struct PointOfSaleAggregateModelTests {
         }
 
         @Test func startNewCart_sets_payment_state_to_idle() async throws {
-            // Note that this previously set it to `acceptingCard`, but that seems wrong
             // Given
             let sut = PointOfSaleAggregateModel(
-                itemProvider: itemProvider,
+                itemsService: itemsService,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderService: orderService,
                 paymentState: .cardPaymentSuccessful)
@@ -622,7 +349,7 @@ struct PointOfSaleAggregateModelTests {
         @Test func addMoreToCart_sets_payment_state_to_idle() async throws {
             // Given
             let sut = PointOfSaleAggregateModel(
-                itemProvider: itemProvider,
+                itemsService: itemsService,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderService: orderService,
                 paymentState: .cardPaymentSuccessful)
@@ -733,7 +460,7 @@ struct PointOfSaleAggregateModelTests {
         private let analyticsProvider = MockAnalyticsProvider()
         private let analytics: WooAnalytics
         private let cardPresentPaymentService = MockCardPresentPaymentService()
-        private let itemProvider = MockPOSItemProvider()
+        private let itemsService = MockPointOfSaleItemsService()
         private let orderService = MockPOSOrderService()
         private let sut: PointOfSaleAggregateModel
 
@@ -742,7 +469,7 @@ struct PointOfSaleAggregateModelTests {
             orderService.orderToReturn = Order.fake()
 
             sut = PointOfSaleAggregateModel(
-                itemProvider: itemProvider,
+                itemsService: itemsService,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderService: orderService,
                 analytics: analytics)

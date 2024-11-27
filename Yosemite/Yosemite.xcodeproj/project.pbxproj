@@ -147,9 +147,11 @@
 		209AD3CE2AC1A9C200825D76 /* WooPaymentsPayoutsOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3CD2AC1A9C200825D76 /* WooPaymentsPayoutsOverview.swift */; };
 		20BCF6F22B0E554500954840 /* SystemStatusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BCF6F12B0E554500954840 /* SystemStatusService.swift */; };
 		20BCF6F52B0E57AB00954840 /* MockSystemStatusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BCF6F42B0E57AB00954840 /* MockSystemStatusService.swift */; };
+		20CF75B82CF4C3B900ACCF4A /* MockPOSOrdersRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CF75B72CF4C3AD00ACCF4A /* MockPOSOrdersRemote.swift */; };
 		20D035002CDBBD6400C0F901 /* CommonReaderConfigProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D034FF2CDBBD6400C0F901 /* CommonReaderConfigProviderTests.swift */; };
 		20D035022CDBBE2A00C0F901 /* MockCardReaderCapableRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D035012CDBBE2A00C0F901 /* MockCardReaderCapableRemote.swift */; };
 		20D210C12B177EEF0099E517 /* WooPaymentsPayoutServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D210C02B177EEF0099E517 /* WooPaymentsPayoutServiceTests.swift */; };
+		20F616462CF4B4E500F9FA2A /* POSOrderServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F616452CF4B4DE00F9FA2A /* POSOrderServiceTests.swift */; };
 		24163B9E257F41A600F94EC3 /* StoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24163B9D257F41A600F94EC3 /* StoresManager.swift */; };
 		24163BA8257F41C500F94EC3 /* SessionManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24163BA7257F41C500F94EC3 /* SessionManagerProtocol.swift */; };
 		247CE7AB2582DB9300F9D9D1 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247CE7AA2582DB9300F9D9D1 /* String+Extensions.swift */; };
@@ -667,9 +669,11 @@
 		209AD3CD2AC1A9C200825D76 /* WooPaymentsPayoutsOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsOverview.swift; sourceTree = "<group>"; };
 		20BCF6F12B0E554500954840 /* SystemStatusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusService.swift; sourceTree = "<group>"; };
 		20BCF6F42B0E57AB00954840 /* MockSystemStatusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MockSystemStatusService.swift; path = ../../../WooCommerce/WooCommerceTests/Mocks/MockSystemStatusService.swift; sourceTree = "<group>"; };
+		20CF75B72CF4C3AD00ACCF4A /* MockPOSOrdersRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPOSOrdersRemote.swift; sourceTree = "<group>"; };
 		20D034FF2CDBBD6400C0F901 /* CommonReaderConfigProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonReaderConfigProviderTests.swift; sourceTree = "<group>"; };
 		20D035012CDBBE2A00C0F901 /* MockCardReaderCapableRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCardReaderCapableRemote.swift; sourceTree = "<group>"; };
 		20D210C02B177EEF0099E517 /* WooPaymentsPayoutServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutServiceTests.swift; sourceTree = "<group>"; };
+		20F616452CF4B4DE00F9FA2A /* POSOrderServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSOrderServiceTests.swift; sourceTree = "<group>"; };
 		24163B9D257F41A600F94EC3 /* StoresManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoresManager.swift; sourceTree = "<group>"; };
 		24163BA7257F41C500F94EC3 /* SessionManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManagerProtocol.swift; sourceTree = "<group>"; };
 		247CE7AA2582DB9300F9D9D1 /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
@@ -1255,6 +1259,14 @@
 				20D210C02B177EEF0099E517 /* WooPaymentsPayoutServiceTests.swift */,
 			);
 			path = Payments;
+			sourceTree = "<group>";
+		};
+		20F616442CF4B4D800F9FA2A /* POS */ = {
+			isa = PBXGroup;
+			children = (
+				20F616452CF4B4DE00F9FA2A /* POSOrderServiceTests.swift */,
+			);
+			path = POS;
 			sourceTree = "<group>";
 		};
 		247CE7AF2582DBD000F9D9D1 /* Mocks */ = {
@@ -1904,6 +1916,7 @@
 		B5C9DE1D2087FF20006B910A /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
+				20CF75B72CF4C3AD00ACCF4A /* MockPOSOrdersRemote.swift */,
 				D88303EE25E45E5500C877F9 /* CardPresentPayments */,
 				578CE7892475E78C00492EBF /* Networking */,
 				D8BD6A4B229D07C8007CAD6C /* custom-shipment-provider.plist */,
@@ -1993,6 +2006,7 @@
 		B5F2AE9320EBAD5200FEDC59 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				20F616442CF4B4D800F9FA2A /* POS */,
 				20D210BF2B177EDB0099E517 /* Payments */,
 				E18FDAFF28F98360008519BA /* InAppPurchases */,
 				02FF055723D984500058E6E7 /* Media */,
@@ -2659,6 +2673,7 @@
 				0391C13D29CC5E14008A3E86 /* OrderCardPresentPaymentEligibilityStoreTests.swift in Sources */,
 				B5C9DE222087FF20006B910A /* DispatcherTests.swift in Sources */,
 				DEDA8DB32B184B950076BF0F /* WordPressThemeStoreTests.swift in Sources */,
+				20CF75B82CF4C3B900ACCF4A /* MockPOSOrdersRemote.swift in Sources */,
 				45182D2327B55F9C00B4C05C /* InboxNotesStoreTests.swift in Sources */,
 				03FBDA2A263296C400ACE257 /* CouponStoreTests.swift in Sources */,
 				DAD988C42C4A5147009DE9E3 /* LocalIDStoreTests.swift in Sources */,
@@ -2710,6 +2725,7 @@
 				02DAE7FA291A9F36009342B7 /* MockDomainRemote.swift in Sources */,
 				741F34842195F752005F5BD9 /* CommentStoreTests.swift in Sources */,
 				B5C9DE282087FF20006B910A /* MockSiteStore.swift in Sources */,
+				20F616462CF4B4E500F9FA2A /* POSOrderServiceTests.swift in Sources */,
 				FEEB2F5F268A1C5E0075A6E0 /* User+RolesTests.swift in Sources */,
 				DEB387882C2C09FC0025256E /* MockGoogleListingsAndAdsRemote.swift in Sources */,
 				B5BC736820D1AA8F00B5B6FA /* AccountStoreTests.swift in Sources */,

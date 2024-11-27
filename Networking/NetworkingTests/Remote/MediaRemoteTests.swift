@@ -207,59 +207,6 @@ final class MediaRemoteTests: XCTestCase {
 
     // MARK: - uploadMedia
 
-    func test_uploadMedia_does_not_send_data_in_request_body() throws {
-        // Given
-        let remote = MediaRemote(network: network)
-
-        // When
-        remote.uploadMedia(for: self.sampleSiteID, productID: sampleProductID, mediaItems: [], completion: { _ in })
-
-        // Then
-        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
-        XCTAssertNil(try request.asURLRequest().httpBody)
-    }
-
-    /// Verifies that `uploadMedia` properly parses the `media-upload` sample response.
-    ///
-    func test_uploadMedia_properly_returns_parsed_media() throws {
-        // Given
-        let remote = MediaRemote(network: network)
-        let path = "sites/\(sampleSiteID)/media/new"
-        network.simulateResponse(requestUrlSuffix: path, filename: "media-upload")
-
-        // When
-        let result = waitFor { promise in
-            remote.uploadMedia(for: self.sampleSiteID,
-                                  productID: self.sampleProductID,
-                                  mediaItems: []) { result in
-                promise(result)
-            }
-        }
-
-        // Then
-        let mediaItems = try XCTUnwrap(result.get())
-        XCTAssertEqual(mediaItems.count, 1)
-    }
-
-    /// Verifies that `uploadMedia` properly relays Networking Layer errors.
-    ///
-    func test_uploadMedia_properly_relays_networking_errors() {
-        // Given
-        let remote = MediaRemote(network: network)
-
-        // When
-        let result = waitFor { promise in
-            remote.uploadMedia(for: self.sampleSiteID,
-                                  productID: self.sampleProductID,
-                                  mediaItems: []) { result in
-                promise(result)
-            }
-        }
-
-        // Then
-        XCTAssertTrue(result.isFailure)
-    }
-
     func test_uploadMediaToWordPressSite_does_not_send_data_in_request_body() throws {
         // Given
         let remote = MediaRemote(network: network)

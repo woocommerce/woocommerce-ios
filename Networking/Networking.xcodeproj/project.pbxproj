@@ -19,7 +19,6 @@
 		020D07BC23D856BF00FD9580 /* MediaRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020D07BB23D856BF00FD9580 /* MediaRemote.swift */; };
 		020D07BE23D8570800FD9580 /* MediaListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020D07BD23D8570800FD9580 /* MediaListMapper.swift */; };
 		020D07C023D8587700FD9580 /* MediaRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020D07BF23D8587700FD9580 /* MediaRemoteTests.swift */; };
-		020D07C223D858BB00FD9580 /* media-upload.json in Resources */ = {isa = PBXBuildFile; fileRef = 020D07C123D858BB00FD9580 /* media-upload.json */; };
 		020D0C03291504DE00BB3DCE /* UnauthenticatedRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020D0C02291504DE00BB3DCE /* UnauthenticatedRequestTests.swift */; };
 		020EF5E92A8BC957009D2169 /* ProductsTotalMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020EF5E82A8BC957009D2169 /* ProductsTotalMapper.swift */; };
 		020EF5ED2A8C8F4F009D2169 /* products-total.json in Resources */ = {isa = PBXBuildFile; fileRef = 020EF5EC2A8C8F4F009D2169 /* products-total.json */; };
@@ -1305,7 +1304,6 @@
 		020D07BB23D856BF00FD9580 /* MediaRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaRemote.swift; sourceTree = "<group>"; };
 		020D07BD23D8570800FD9580 /* MediaListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaListMapper.swift; sourceTree = "<group>"; };
 		020D07BF23D8587700FD9580 /* MediaRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaRemoteTests.swift; sourceTree = "<group>"; };
-		020D07C123D858BB00FD9580 /* media-upload.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-upload.json"; sourceTree = "<group>"; };
 		020D0C02291504DE00BB3DCE /* UnauthenticatedRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnauthenticatedRequestTests.swift; sourceTree = "<group>"; };
 		020EF5E82A8BC957009D2169 /* ProductsTotalMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsTotalMapper.swift; sourceTree = "<group>"; };
 		020EF5EC2A8C8F4F009D2169 /* products-total.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "products-total.json"; sourceTree = "<group>"; };
@@ -3266,7 +3264,6 @@
 				02F096C12406691100C0C1D5 /* media-library.json */,
 				02AF07EB27492FDD00B2D81E /* media-library-from-wordpress-site.json */,
 				EECB7EE7286555180028C888 /* media-update-product-id.json */,
-				020D07C123D858BB00FD9580 /* media-upload.json */,
 				02AF07ED27493AE700B2D81E /* media-upload-to-wordpress-site.json */,
 				B58D10C92114D22E00107ED4 /* new-order-note.json */,
 				022902D322E2436400059692 /* no_stats_permission_error.json */,
@@ -4692,7 +4689,6 @@
 				0359EA2127AAE58C0048DE2D /* wcpay-charge-card-present.json in Resources */,
 				451274A625276C82009911FF /* product-variation.json in Resources */,
 				CC80E3F92948C8BC00D5FF45 /* site-visits-quarter.json in Resources */,
-				020D07C223D858BB00FD9580 /* media-upload.json in Resources */,
 				CE71E23B2A4C666A00DB5376 /* reports-products-alt.json in Resources */,
 				31A451D127863A2E00FE81AA /* stripe-account-rejected-other.json in Resources */,
 				DEF13C5029629EEA0024A02B /* user-complete-without-data.json in Resources */,

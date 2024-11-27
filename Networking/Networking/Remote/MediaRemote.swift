@@ -18,10 +18,6 @@ public protocol MediaRemoteProtocol {
                                            pageNumber: Int,
                                            pageSize: Int,
                                            completion: @escaping (Result<[WordPressMedia], Error>) -> Void)
-    func uploadMedia(for siteID: Int64,
-                     productID: Int64,
-                     mediaItems: [UploadableMedia],
-                     completion: @escaping (Result<[Media], Error>) -> Void)
     func uploadMediaToWordPressSite(siteID: Int64,
                                     productID: Int64,
                                     mediaItem: UploadableMedia,
@@ -143,47 +139,6 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
         } catch {
             completion(.failure(error))
         }
-    }
-
-    /// Uploads an array of media in the local file system.
-    /// API reference: https://developer.wordpress.com/docs/api/1.1/post/sites/%24site/media/new/
-    ///
-    /// - Parameters:
-    ///     - siteID: Site for which we'll upload the media to.
-    ///     - productID: Product for which the media items are first added to.
-    ///     - context: Display or edit. Scope under which the request is made;
-    ///                determines fields present in response. Default is Display.
-    ///     - mediaItems: An array of uploadable media items.
-    ///     - completion: Closure to be executed upon completion.
-    ///
-    public func uploadMedia(for siteID: Int64,
-                            productID: Int64,
-                            mediaItems: [UploadableMedia],
-                            completion: @escaping (Result<[Media], Error>) -> Void) {
-
-        let formParameters: [String: String] = [Int](0..<mediaItems.count).reduce(into: [:]) { (parentIDsByKey, index) in
-            parentIDsByKey["attrs[\(index)][parent_id]"] = "\(productID)"
-            parentIDsByKey["attrs[\(index)][\(ParameterKey.altText)]"] = mediaItems[index].altText
-        }
-
-        let path = "sites/\(siteID)/media/new"
-        let request = DotcomRequest(wordpressApiVersion: .mark1_1,
-                                    method: .post,
-                                    path: path)
-        let mapper = MediaListMapper()
-
-        enqueueMultipartFormDataUpload(request, mapper: mapper, multipartFormData: { multipartFormData in
-            formParameters.forEach { (key, value) in
-                multipartFormData.append(Data(value.utf8), withName: key)
-            }
-
-            mediaItems.forEach { mediaItem in
-                multipartFormData.append(mediaItem.localURL,
-                                         withName: "media[]",
-                                         fileName: mediaItem.filename,
-                                         mimeType: mediaItem.mimeType)
-            }
-        }, completion: completion)
     }
 
     /// Uploads a media item in the local file system to the WordPress site via WordPress site API.

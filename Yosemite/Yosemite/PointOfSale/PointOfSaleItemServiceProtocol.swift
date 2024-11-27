@@ -8,19 +8,6 @@ public protocol POSItem {
     var productType: ProductType { get }
 }
 
-extension POSItem {
-    // Equatable conformance
-    static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.itemID == rhs.itemID &&
-        lhs.productID == rhs.productID &&
-        lhs.name == rhs.name &&
-        lhs.price == rhs.price &&
-        lhs.formattedPrice == rhs.formattedPrice &&
-        lhs.productImageSource == rhs.productImageSource &&
-        lhs.productType == rhs.productType
-    }
-}
-
 public protocol PointOfSaleItemServiceProtocol {
     func providePointOfSaleItems(pageNumber: Int) async throws -> [POSItem]
 }

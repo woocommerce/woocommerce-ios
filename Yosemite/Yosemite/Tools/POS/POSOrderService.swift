@@ -5,13 +5,10 @@ import class WooFoundation.CurrencyFormatter
 /// POSCartItem is different from the CartItem in the POS app layer.
 /// - The POS cart UI might show the cart items differently from how they appear in an order in wp-admin.
 public struct POSCartItem {
-    /// Nil when the cart item is local and has not been synced remotely.
-    let itemID: Int64?
     let product: POSItem
     let quantity: Decimal
 
-    public init(itemID: Int64?, product: POSItem, quantity: Decimal) {
-        self.itemID = itemID
+    public init(product: POSItem, quantity: Decimal) {
         self.product = product
         self.quantity = quantity
     }
@@ -22,16 +19,15 @@ public protocol POSOrderServiceProtocol {
     /// - Parameters:
     ///   - cart: Cart with optional items (product & quantity).
     ///   - order: Optional latest remotely synced order. Nil when syncing order for the first time.
-    ///   - allProducts: Necessary for removing existing order items with products that have been removed from the cart.
     /// - Returns: Order from the remote sync.
-    func syncOrder(cart: [POSCartItem], order: Order?, allProducts: [POSItem]) async throws -> Order
+    func syncOrder(cart: [POSCartItem], order: Order?) async throws -> Order
 }
 
 public final class POSOrderService: POSOrderServiceProtocol {
     // MARK: - Properties
 
     private let siteID: Int64
-    private let ordersRemote: OrdersRemote
+    private let ordersRemote: POSOrdersRemoteProtocol
 
     // MARK: - Initialization
 
@@ -40,19 +36,20 @@ public final class POSOrderService: POSOrderServiceProtocol {
             DDLogError("⛔️ Could not create POSOrderService due to not finding credentials")
             return nil
         }
-        self.init(siteID: siteID, network: AlamofireNetwork(credentials: credentials))
+        self.init(siteID: siteID,
+                  ordersRemote: OrdersRemote(network: AlamofireNetwork(credentials: credentials)))
     }
 
-    public init(siteID: Int64, network: Network) {
+    public init(siteID: Int64, ordersRemote: POSOrdersRemoteProtocol) {
         self.siteID = siteID
-        self.ordersRemote = OrdersRemote(network: network)
+        self.ordersRemote = ordersRemote
     }
 
     // MARK: - Protocol conformance
 
-    public func syncOrder(cart: [POSCartItem], order posOrder: Order?, allProducts: [POSItem]) async throws -> Order {
+    public func syncOrder(cart: [POSCartItem], order posOrder: Order?) async throws -> Order {
         let initialOrder: Order = posOrder ?? OrderFactory.emptyNewOrder.copy(siteID: siteID, status: .autoDraft)
-        let order = updateOrder(initialOrder, cart: cart, allProducts: allProducts).sanitizingLocalItems()
+        let order = updateOrder(initialOrder, cart: cart).sanitizingLocalItems()
         let syncedOrder: Order
         if posOrder != nil {
             syncedOrder = try await ordersRemote.updatePOSOrder(siteID: siteID, order: order, fields: [.items])
@@ -79,17 +76,14 @@ private struct POSOrderSyncProductType: OrderSyncProductTypeProtocol {
 }
 
 private extension POSOrderService {
-    func updateOrder(_ order: Order, cart: [POSCartItem], allProducts: [POSItem]) -> Order {
+    func updateOrder(_ order: Order, cart: [POSCartItem]) -> Order {
         let cartProducts = cart.map { POSOrderSyncProductType(productID: $0.product.productID,
                                                               price: $0.product.price,
                                                               productType: $0.product.productType) }
-        let allProducts = allProducts.map { POSOrderSyncProductType(productID: $0.productID,
-                                                                    price: $0.price,
-                                                                    productType: $0.productType) }
 
         // Removes all existing items by setting quantity to 0.
         let itemsToRemove = order.items.compactMap {
-            ProductInputTransformer.createUpdateProductInput(item: $0, quantity: 0, allProducts: allProducts, allProductVariations: [], defaultDiscount: 0)
+            Self.removalProductInput(item: $0)
         }
 
         // Adds items from the latest cart grouping cart items of the same product.
@@ -101,7 +95,7 @@ private extension POSOrderService {
         }
         let itemsToAdd: [OrderSyncProductInput] = productIDsSortedByOrderInCart.compactMap { productID in
             guard let quantity = quantitiesByProductID[productID],
-                  let product = allProducts.first(where: { $0.productID == productID }) else {
+                  let product = cartProducts.first(where: { $0.productID == productID }) else {
                 return nil
             }
             return OrderSyncProductInput(product: .product(product), quantity: quantity)
@@ -121,5 +115,23 @@ private extension POSOrderService {
             }
             return result
         }
+    }
+
+    /// Creates a new `OrderSyncProductInput` type meant to remove an existing item from `OrderSynchronizer`
+    ///
+    static func removalProductInput(item: OrderItem) -> OrderSyncProductInput? {
+        let productForRemoval = POSProductForRemoval(productID: item.productID)
+        // Return a new input with the new quantity but with the same item id to properly reference the update.
+        return OrderSyncProductInput(id: item.itemID,
+                                     product: .product(productForRemoval),
+                                     quantity: 0)
+    }
+
+    /// A simplified product struct, intended to contain only the `productID`
+    struct POSProductForRemoval: OrderSyncProductTypeProtocol {
+        var price: String = ""
+        var productID: Int64
+        var productType: ProductType = .simple
+        var bundledItems: [ProductBundleItem] = []
     }
 }

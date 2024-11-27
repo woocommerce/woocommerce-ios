@@ -15,6 +15,7 @@ final class JetpackSetupCoordinator {
     /// Whether Jetpack is installed and activated and only connection needs to be handled.
     private var requiresConnectionOnly: Bool
     private var jetpackConnectedEmail: String?
+    private let accountService: WordPressComAccountServiceProtocol
     private let stores: StoresManager
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
@@ -27,6 +28,7 @@ final class JetpackSetupCoordinator {
         .init(siteURL: site.url,
               requiresConnectionOnly: requiresConnectionOnly,
               allowAccountCreation: true,
+              accountService: accountService,
               onPasswordUIRequest: showPasswordUI(email:),
               onMagicLinkUIRequest: showMagicLinkUI,
               onError: { [weak self] message in
@@ -42,6 +44,7 @@ final class JetpackSetupCoordinator {
     init(site: Site,
          dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme,
          rootViewController: UIViewController,
+         accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
@@ -49,6 +52,7 @@ final class JetpackSetupCoordinator {
         self.dotcomAuthScheme = dotcomAuthScheme
         self.requiresConnectionOnly = false // to be updated later after fetching Jetpack status
         self.rootViewController = rootViewController
+        self.accountService = accountService
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
@@ -85,6 +89,17 @@ final class JetpackSetupCoordinator {
 
         startJetpackSetupFlow(authToken: authToken)
         return true
+    }
+
+    func startAuthentication(with email: String?) {
+        if let email {
+            Task { @MainActor in
+                analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress))
+                await emailLoginViewModel.checkWordPressComAccount(email: email)
+            }
+        } else {
+            showWPComEmailLogin()
+        }
     }
 }
 
@@ -157,17 +172,6 @@ private extension JetpackSetupCoordinator {
         /// confirms Jetpack plugin status by checking with the system plugin list.
         /// this is to avoid the edge case when Jetpack user is returned even though Jetpack plugin is not installed.
         requiresConnectionOnly = try await isJetpackInstalledAndActive()
-    }
-
-    func startAuthentication(with email: String?) {
-        if let email {
-            Task { @MainActor in
-                analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress))
-                await emailLoginViewModel.checkWordPressComAccount(email: email)
-            }
-        } else {
-            showWPComEmailLogin()
-        }
     }
 
     func displayAdminRoleRequiredError() {
@@ -345,11 +349,7 @@ private extension JetpackSetupCoordinator {
     func showWPComEmailLogin() {
         analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress))
         let emailLoginController = WPComEmailLoginHostingController(viewModel: emailLoginViewModel)
-        let loginNavigationController = LoginNavigationController(rootViewController: emailLoginController)
-        rootViewController.dismiss(animated: true) {
-            self.rootViewController.present(loginNavigationController, animated: true)
-        }
-        self.loginNavigationController = loginNavigationController
+        pushOrInitLoginViewController(emailLoginController)
     }
 
     func showMagicLinkUI(email: String, isSignup: Bool) {
@@ -358,7 +358,7 @@ private extension JetpackSetupCoordinator {
                                                              title: loginViewTitle,
                                                              isJetpackSetup: true,
                                                              isSignup: isSignup)
-        loginNavigationController?.pushViewController(viewController, animated: true)
+        pushOrInitLoginViewController(viewController)
     }
 
     func showPasswordUI(email: String) {
@@ -388,17 +388,7 @@ private extension JetpackSetupCoordinator {
             isJetpackSetup: true,
             viewModel: viewModel)
 
-        if let loginNavigationController {
-            loginNavigationController.pushViewController(viewController, animated: true)
-        } else {
-            /// If the user already is connected, the email screen is skipped.
-            /// The login flow starts here, so create the navigation controller if needed.
-            let loginNavigationController = LoginNavigationController(rootViewController: viewController)
-            rootViewController.dismiss(animated: true) {
-                self.rootViewController.present(loginNavigationController, animated: true)
-            }
-            self.loginNavigationController = loginNavigationController
-        }
+        pushOrInitLoginViewController(viewController)
     }
 
     func show2FALoginUI(with loginFields: LoginFields) {
@@ -406,6 +396,10 @@ private extension JetpackSetupCoordinator {
         guard let window = rootViewController.view.window else {
             logErrorAndExit("⛔️ Error finding window for security key login")
         }
+        guard let loginNavigationController else {
+            logErrorAndExit("⛔️ Error finding loginNavigationController for security key login")
+        }
+
         let viewModel = WPCom2FALoginViewModel(
             loginFields: loginFields,
             onAuthWindowRequest: { window },
@@ -420,7 +414,19 @@ private extension JetpackSetupCoordinator {
         let viewController = WPCom2FALoginHostingController(title: loginViewTitle,
                                                             isJetpackSetup: true,
                                                             viewModel: viewModel)
-        loginNavigationController?.pushViewController(viewController, animated: true)
+        loginNavigationController.pushViewController(viewController, animated: true)
+    }
+
+    func pushOrInitLoginViewController(_ viewController: UIViewController) {
+        if let loginNavigationController {
+            loginNavigationController.pushViewController(viewController, animated: true)
+        } else {
+            let loginNavigationController = LoginNavigationController(rootViewController: viewController)
+            rootViewController.dismiss(animated: true) {
+                self.rootViewController.present(loginNavigationController, animated: true)
+            }
+            self.loginNavigationController = loginNavigationController
+        }
     }
 }
 

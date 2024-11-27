@@ -1,6 +1,6 @@
 import Foundation
 
-final class TapToPayEducationStepViewModel: ObservableObject {
+final class TapToPayEducationStepViewModel {
     let title: String
     let imageName: String
     let descriptionSteps: [String]

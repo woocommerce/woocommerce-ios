@@ -943,7 +943,8 @@ final class EditableOrderViewModel: ObservableObject {
             paymentLink: order.paymentURL,
             total: order.total,
             formattedTotal: formattedTotal,
-            flow: .orderCreation)
+            flow: .orderCreation,
+            channel: .storeManagement)
 
         onFinishAndCollectPayment(order, collectPaymentViewModel)
     }

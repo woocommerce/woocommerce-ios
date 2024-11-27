@@ -199,6 +199,7 @@ public typealias CardReaderServiceError = Hardware.CardReaderServiceError
 public typealias CardReaderServiceUnderlyingError = Hardware.UnderlyingError
 public typealias CardReaderType = Hardware.CardReaderType
 public typealias CardReaderConfigError = Hardware.CardReaderConfigError
+public typealias PaymentChannel = Hardware.PaymentChannel
 public typealias PaymentMethod = Hardware.PaymentMethod
 public typealias PaymentParameters = Hardware.PaymentIntentParameters
 public typealias RefundParameters = Hardware.RefundParameters

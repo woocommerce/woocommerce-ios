@@ -340,20 +340,17 @@ private extension CouponStore {
                                          siteID: Int64,
                                          shouldClearExistingCoupons: Bool = false,
                                          onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            guard let self = self else { return }
-            if shouldClearExistingCoupons {
-                derivedStorage.deleteCoupons(siteID: siteID)
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else {
+                return
             }
-            self.upsertStoredCoupons(readOnlyCoupons: readOnlyCoupons,
-                                      in: derivedStorage,
-                                      siteID: siteID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+            if shouldClearExistingCoupons {
+                storage.deleteCoupons(siteID: siteID)
+            }
+            upsertStoredCoupons(readOnlyCoupons: readOnlyCoupons,
+                                in: storage,
+                                siteID: siteID)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates or Inserts the specified Coupon entities

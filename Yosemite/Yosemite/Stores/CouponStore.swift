@@ -352,10 +352,10 @@ private extension CouponStore {
     func upsertStoredCoupons(readOnlyCoupons: [Networking.Coupon],
                              in storage: StorageType,
                              siteID: Int64) {
+        let allStoredCoupons = storage.loadAllCoupons(siteID: siteID)
         for coupon in readOnlyCoupons {
             let storageCoupon: Storage.Coupon = {
-                if let storedCoupon = storage.loadCoupon(siteID: siteID,
-                                                         couponID: coupon.couponID) {
+                if let storedCoupon = allStoredCoupons.first(where: { $0.couponID == coupon.couponID }) {
                     return storedCoupon
                 }
                 return storage.insertNewObject(ofType: Storage.Coupon.self)
@@ -390,8 +390,9 @@ private extension CouponStore {
         let searchResult = storage.loadCouponSearchResult(keyword: keyword) ?? storage.insertNewObject(ofType: Storage.CouponSearchResult.self)
         searchResult.keyword = keyword
 
+        let allStoredCoupons = storage.loadAllCoupons(siteID: siteID)
         for coupon in readOnlyCoupons {
-            guard let storedCoupon = storage.loadCoupon(siteID: siteID, couponID: coupon.couponID) else {
+            guard let storedCoupon = allStoredCoupons.first(where: { $0.couponID == coupon.couponID }) else {
                 continue
             }
 

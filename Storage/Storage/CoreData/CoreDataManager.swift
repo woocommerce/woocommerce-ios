@@ -40,14 +40,14 @@ public final class CoreDataManager: StorageManagerType {
 
     /// Returns the Storage associated with the View Thread.
     ///
-    public var viewStorage: StorageType {
+    public lazy var viewStorage: StorageType = {
         let context = persistentContainer.viewContext
         /// This simplifies the process of merging updates from persistent container to view context.
         /// When disable auto merge, we need to handle merging manually using `NSManagedObjectContextDidSave` notifications.
         context.automaticallyMergesChangesFromParent = true
         context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         return context
-    }
+    }()
 
     /// Returns a shared derived storage instance dedicated for write operations.
     ///

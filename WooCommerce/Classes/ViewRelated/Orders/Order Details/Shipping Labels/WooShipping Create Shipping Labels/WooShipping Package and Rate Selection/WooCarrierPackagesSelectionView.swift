@@ -1,4 +1,5 @@
 import SwiftUI
+import Foundation
 
 // Holds the data needed to display a tab in list of Carrier packages.
 struct WooShippingCarrierPackages: Identifiable {

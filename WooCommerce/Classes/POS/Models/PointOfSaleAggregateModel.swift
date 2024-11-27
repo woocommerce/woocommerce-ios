@@ -2,14 +2,12 @@ import Foundation
 import Combine
 
 import protocol Yosemite.POSItem
-import protocol Yosemite.POSItemProvider
 import protocol WooFoundation.Analytics
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
 import protocol Yosemite.POSOrderServiceProtocol
 import struct Yosemite.POSCartItem
 import class WooFoundation.CurrencyFormatter
-import enum Yosemite.POSProductProviderError
 
 protocol PointOfSaleAggregateModelProtocol {
     var orderStage: PointOfSaleOrderStage { get }
@@ -58,32 +56,31 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
     private var order: Order? = nil
 
-    private let itemProvider: POSItemProvider
+    private let itemsService: PointOfSaleItemsServiceProtocol
+
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderService: POSOrderServiceProtocol
     private let currencyFormatter: CurrencyFormatter
     private let analytics: Analytics
 
-    private var allItems: [POSItem] = []
-    private var currentPage: Int = Constants.initialPage
-    private var mightHaveMorePages: Bool = true
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
 
     private var cancellables: Set<AnyCancellable> = []
 
-    init(itemProvider: POSItemProvider,
+    init(itemsService: PointOfSaleItemsServiceProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderService: POSOrderServiceProtocol,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics,
          paymentState: PointOfSalePaymentState = .idle) {
-        self.itemProvider = itemProvider
+        self.itemsService = itemsService
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderService = orderService
         self.currencyFormatter = currencyFormatter
         self.analytics = analytics
         self.paymentState = paymentState
+        publishItemListState()
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
         setupReaderReconnectionObservation()
@@ -92,70 +89,23 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
 // MARK: - ItemList
 extension PointOfSaleAggregateModel {
+    private func publishItemListState() {
+        itemsService.itemListStatePublisher.assign(to: &$itemListState)
+    }
+
     @MainActor
     func loadInitialItems() async {
-        mightHaveMorePages = true
-        itemListState = .initialLoading
-        try? await load(pageNumber: Constants.initialPage)
+        await itemsService.loadInitialItems()
     }
 
     @MainActor
     func loadNextItems() async {
-        do {
-            guard mightHaveMorePages else {
-                return
-            }
-            itemListState = .loading(allItems)
-
-            let nextPage = currentPage + 1
-            try await load(pageNumber: nextPage)
-            currentPage = nextPage
-        } catch {
-            // No need to do anything; this avoids us incorrectly incrementing currentPage.
-        }
+        await itemsService.loadNextItems()
     }
 
     @MainActor
     func reload() async {
-        allItems.removeAll()
-        currentPage = Constants.initialPage
-        mightHaveMorePages = true
-        itemListState = .loading(allItems)
-        try? await load(pageNumber: currentPage)
-    }
-
-    @MainActor
-    private func load(pageNumber: Int) async throws {
-        do {
-            try await fetchItems(pageNumber: pageNumber)
-
-            mightHaveMorePages = true
-            updateItemListStateAfterLoadAttempt()
-        } catch POSProductProviderError.pageOutOfRange {
-            mightHaveMorePages = false
-            updateItemListStateAfterLoadAttempt()
-            throw POSProductProviderError.pageOutOfRange
-        } catch {
-            itemListState = .error(PointOfSaleErrorState.errorOnLoadingProducts())
-            throw error
-        }
-    }
-
-    @MainActor
-    private func fetchItems(pageNumber: Int) async throws {
-        let newItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
-        let uniqueNewItems = newItems.filter { newItem in
-            !allItems.contains(where: { $0.productID == newItem.productID })
-        }
-        allItems.append(contentsOf: uniqueNewItems)
-    }
-
-    private func updateItemListStateAfterLoadAttempt() {
-        if allItems.count == 0 {
-            itemListState = .empty
-        } else {
-            itemListState = .loaded(allItems)
-        }
+        await itemsService.reload()
     }
 }
 
@@ -254,7 +204,7 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     private func collectPayment(for order: Order) async throws {
-        _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
+        _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth, channel: .pos)
     }
 
     func cancelThenCollectPayment() {
@@ -411,21 +361,21 @@ extension PointOfSaleAggregateModel {
             return
         }
         // calculate totals and sync order if there was a change in the cart
-        await syncOrder(for: cart, allItems: allItems)
+        await syncOrder(for: cart)
     }
 
     @MainActor
-    private func syncOrder(for cartProducts: [CartItem], allItems: [POSItem]) async {
+    private func syncOrder(for cartProducts: [CartItem]) async {
         guard orderState.isSyncing == false else {
             return
         }
         orderState = .syncing
         let cart = cartProducts.map {
-            POSCartItem(itemID: nil, product: $0.item, quantity: Decimal($0.quantity))
+            POSCartItem(product: $0.item, quantity: Decimal($0.quantity))
         }
 
         do {
-            let syncedOrder = try await orderService.syncOrder(cart: cart, order: order, allProducts: allItems)
+            let syncedOrder = try await orderService.syncOrder(cart: cart, order: order)
             self.order = syncedOrder
             orderState = .loaded(totals(for: syncedOrder))
             await startPaymentWhenCardReaderConnected()
@@ -436,7 +386,7 @@ extension PointOfSaleAggregateModel {
             // Consider removing error or handle specific errors with our own formatting and localization
             orderState = .error(.init(message: error.localizedDescription, handler: { [weak self] in
                 Task {
-                    await self?.syncOrder(for: cartProducts, allItems: allItems)
+                    await self?.syncOrder(for: cartProducts)
                 }
             }))
         }

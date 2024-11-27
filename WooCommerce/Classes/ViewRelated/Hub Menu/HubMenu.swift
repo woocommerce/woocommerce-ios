@@ -164,7 +164,7 @@ private extension HubMenu {
                             viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
                         },
                         cardPresentPaymentService: cardPresentPaymentService,
-                        orderService: orderService)
+                        orderController: PointOfSaleOrderController(orderService: orderService))
                 } else {
                     // TODO: When we have a singleton for the card payment service, this should not be required.
                     Text("Error creating card payment service")

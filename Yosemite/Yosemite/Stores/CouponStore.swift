@@ -341,9 +341,7 @@ private extension CouponStore {
                                          shouldClearExistingCoupons: Bool = false,
                                          onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
-            guard let self else {
-                return
-            }
+            guard let self else { return }
             if shouldClearExistingCoupons {
                 storage.deleteCoupons(siteID: siteID)
             }
@@ -383,15 +381,11 @@ private extension CouponStore {
     /// Upserts the Coupons, and associates them to the SearchResults Entity (in Background)
     ///
     func upsertSearchResultsInBackground(siteID: Int64, keyword: String, readOnlyCoupons: [Networking.Coupon], onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            self?.upsertStoredCoupons(readOnlyCoupons: readOnlyCoupons, in: derivedStorage, siteID: siteID)
-            self?.upsertStoredResults(siteID: siteID, keyword: keyword, readOnlyCoupons: readOnlyCoupons, in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
+            upsertStoredCoupons(readOnlyCoupons: readOnlyCoupons, in: storage, siteID: siteID)
+            upsertStoredResults(siteID: siteID, keyword: keyword, readOnlyCoupons: readOnlyCoupons, in: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Upserts the Coupons, and associates them to the Search Results Entity (in the specified Storage)

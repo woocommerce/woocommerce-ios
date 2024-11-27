@@ -11,7 +11,7 @@ final class WooShippingPostPurchaseViewModelTests: XCTestCase {
         let pickupURL = WooShippingCarrier.usps.pickupURL
 
         // When
-        let viewModel = WooShippingPostPurchaseViewModel(labelSizes: labelSizes, trackingURL: trackingURL, pickupURL: pickupURL)
+        let viewModel = WooShippingPostPurchaseViewModel(siteID: 123, labelID: 1, labelSizes: labelSizes, trackingURL: trackingURL, pickupURL: pickupURL)
 
         // Then
         XCTAssertEqual(viewModel.labelSizes, labelSizes)
@@ -68,4 +68,27 @@ final class WooShippingPostPurchaseViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.pickupURL, WooShippingCarrier.usps.pickupURL)
     }
 
+    @MainActor
+    func test_printLabel_fetches_label_data_from_remote() async {
+        // Given
+        var printData: ShippingLabelPrintData?
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .printLabel(_, _, _, completion):
+                let data = ShippingLabelPrintData.fake()
+                printData = data
+                completion(.success(data))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+        let viewModel = WooShippingPostPurchaseViewModel(shippingLabel: ShippingLabel.fake(), stores: stores)
+
+        // When
+        await viewModel.printLabel()
+
+        // Then
+        XCTAssertNotNil(printData)
+    }
 }

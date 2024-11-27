@@ -144,13 +144,19 @@ private extension WooShippingPostPurchaseView {
 }
 
 #Preview {
-    WooShippingPostPurchaseView(viewModel: WooShippingPostPurchaseViewModel(labelSizes: [.label, .legal, .a4],
+    WooShippingPostPurchaseView(viewModel: WooShippingPostPurchaseViewModel(siteID: 123,
+                                                                            labelID: 1,
+                                                                            labelSizes: [.label, .legal, .a4],
                                                                             trackingURL: URL(string: "https://woocommerce.com"),
                                                                             pickupURL: WooShippingCarrier.usps.pickupURL))
         .padding()
 }
 
 #Preview("Label without links") {
-    WooShippingPostPurchaseView(viewModel: WooShippingPostPurchaseViewModel(labelSizes: [.label, .legal, .a4], trackingURL: nil, pickupURL: nil))
+    WooShippingPostPurchaseView(viewModel: WooShippingPostPurchaseViewModel(siteID: 123,
+                                                                            labelID: 1,
+                                                                            labelSizes: [.label, .legal, .a4],
+                                                                            trackingURL: nil,
+                                                                            pickupURL: nil))
         .padding()
 }

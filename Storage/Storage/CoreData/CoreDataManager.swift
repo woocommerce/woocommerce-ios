@@ -27,9 +27,26 @@ public final class CoreDataManager: StorageManagerType {
 
         do {
             let inventory = try ManagedObjectModelsInventory.from(packageName: name, bundle: Bundle(for: type(of: self)))
-            self.persistentContainer = Self.createPersistentContainer(with: name,
-                                                                      crashLogger: crashLogger,
-                                                                      modelsInventory: inventory)
+            let persistentContainer = Self.createPersistentContainer(with: name,
+                                                                     crashLogger: crashLogger,
+                                                                     modelsInventory: inventory)
+            self.persistentContainer = persistentContainer
+
+            self.viewStorage = {
+                let context = persistentContainer.viewContext
+                /// This simplifies the process of merging updates from persistent container to view context.
+                /// When disable auto merge, we need to handle merging manually using `NSManagedObjectContextDidSave` notifications.
+                context.automaticallyMergesChangesFromParent = true
+                context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+                return context
+            }()
+
+            self.writerDerivedStorage = {
+                let backgroundContext = persistentContainer.newBackgroundContext()
+                backgroundContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+                return backgroundContext
+            }()
+
         } catch {
             // We'll throw a fatalError() because we can't really proceed without a
             // ManagedObjectModel.
@@ -40,22 +57,11 @@ public final class CoreDataManager: StorageManagerType {
 
     /// Returns the Storage associated with the View Thread.
     ///
-    public lazy var viewStorage: StorageType = {
-        let context = persistentContainer.viewContext
-        /// This simplifies the process of merging updates from persistent container to view context.
-        /// When disable auto merge, we need to handle merging manually using `NSManagedObjectContextDidSave` notifications.
-        context.automaticallyMergesChangesFromParent = true
-        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-        return context
-    }()
+    public let viewStorage: StorageType
 
     /// Returns a shared derived storage instance dedicated for write operations.
     ///
-    public lazy var writerDerivedStorage: StorageType = {
-        let backgroundContext = persistentContainer.newBackgroundContext()
-        backgroundContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-        return backgroundContext
-    }()
+    public let writerDerivedStorage: StorageType
 
     /// Persistent Container: Holds the full CoreData Stack
     ///

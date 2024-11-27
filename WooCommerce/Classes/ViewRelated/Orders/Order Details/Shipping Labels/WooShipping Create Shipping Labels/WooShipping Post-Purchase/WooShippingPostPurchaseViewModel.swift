@@ -59,7 +59,7 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
     func printLabel() async {
         do {
             let printData = try await requestPrintData()
-            // TODO: Present the print dialog
+            presentPrintDialog(with: printData)
         } catch {
             DDLogError("Error generating shipping label document for printing: \(error)")
         }
@@ -76,5 +76,12 @@ private extension WooShippingPostPurchaseViewModel {
             }
             stores.dispatch(action)
         }
+    }
+
+    /// Presents the print dialog with the provided print data.
+    func presentPrintDialog(with printData: ShippingLabelPrintData) {
+        let printController = UIPrintInteractionController()
+        printController.printingItem = printData.data
+        printController.present(animated: true)
     }
 }

@@ -151,51 +151,24 @@ private extension MediaStore {
                      uploadableMedia media: UploadableMedia,
                      shouldRemoveFileUponCompletion: Bool,
                      onCompletion: @escaping (Result<Media, Error>) -> Void) {
-        if isLoggedInWithoutWPCOMCredentials(siteID) || isSiteJetpackJCPConnected(siteID) {
-            remote.uploadMediaToWordPressSite(siteID: siteID,
-                                              productID: productID,
-                                              mediaItem: media) { result in
-                // Removes local media after the upload API request.
-                if shouldRemoveFileUponCompletion {
-                    do {
-                        try MediaFileManager().removeLocalMedia(at: media.localURL)
-                    } catch {
-                        onCompletion(.failure(error))
-                        return
-                    }
-                }
-
-                switch result {
-                case .success(let uploadedMedia):
-                    onCompletion(.success(uploadedMedia.toMedia()))
-                case .failure(let error):
+        remote.uploadMediaToWordPressSite(siteID: siteID,
+                                          productID: productID,
+                                          mediaItem: media) { result in
+            // Removes local media after the upload API request.
+            if shouldRemoveFileUponCompletion {
+                do {
+                    try MediaFileManager().removeLocalMedia(at: media.localURL)
+                } catch {
                     onCompletion(.failure(error))
+                    return
                 }
             }
-        } else {
-            remote.uploadMedia(for: siteID,
-                               productID: productID,
-                               mediaItems: [media]) { result in
-                // Removes local media after the upload API request.
-                if shouldRemoveFileUponCompletion {
-                    do {
-                        try MediaFileManager().removeLocalMedia(at: media.localURL)
-                    } catch {
-                        onCompletion(.failure(error))
-                        return
-                    }
-                }
 
-                switch result {
-                case .success(let uploadedMediaItems):
-                    guard let uploadedMedia = uploadedMediaItems.first, uploadedMediaItems.count == 1 else {
-                        onCompletion(.failure(MediaActionError.unexpectedMediaCount(count: uploadedMediaItems.count)))
-                        return
-                    }
-                    onCompletion(.success(uploadedMedia))
-                case .failure(let error):
-                    onCompletion(.failure(error))
-                }
+            switch result {
+            case .success(let uploadedMedia):
+                onCompletion(.success(uploadedMedia.toMedia()))
+            case .failure(let error):
+                onCompletion(.failure(error))
             }
         }
     }

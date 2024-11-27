@@ -1,4 +1,5 @@
 import SwiftUI
+import struct Yosemite.ShippingLabelStoreOptions
 
 struct WooShippingAddPackageView: View {
     enum PackageProviderType: CaseIterable {
@@ -24,10 +25,12 @@ struct WooShippingAddPackageView: View {
 
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
-    init(packagesRepository: WooShippingPackagesRepository = WooShippingPackagesRepository.shared,
+    init(storeOptions: ShippingLabelStoreOptions,
+         packagesRepository: WooShippingPackagesRepository = WooShippingPackagesRepository.shared,
          addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
         self._packagesRepository = StateObject(wrappedValue: packagesRepository)
-        self._customPackageViewModel = StateObject(wrappedValue: WooShippingAddCustomPackageViewModel(packagesRepository: packagesRepository))
+        self._customPackageViewModel = StateObject(wrappedValue: WooShippingAddCustomPackageViewModel(storeOptions: storeOptions,
+                                                                                                      packagesRepository: packagesRepository))
         self.addPackageAction = addPackageAction
     }
     // MARK: - UI
@@ -134,7 +137,10 @@ struct WooShippingAddPackageUnitInputView: View {
 }
 
 #Preview {
-    WooShippingAddPackageView { _ in }
+    WooShippingAddPackageView(storeOptions: ShippingLabelStoreOptions(currencySymbol: "$",
+                                                                      dimensionUnit: "in",
+                                                                      weightUnit: "oz",
+                                                                      originCountry: "US")) { _ in }
 }
 
 extension WooShippingAddPackageView {

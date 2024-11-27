@@ -1,7 +1,10 @@
 import SwiftUI
+import struct Yosemite.ShippingLabelStoreOptions
 
 struct WooShippingPackageAndRatePlaceholder: View {
     @State private var showAddPackage: Bool = false
+    let storeOptions: ShippingLabelStoreOptions
+
     var body: some View {
         VStack(spacing: .zero) {
             Button {
@@ -24,7 +27,7 @@ struct WooShippingPackageAndRatePlaceholder: View {
         .padding(Layout.padding)
         .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.border), lineWidth: Layout.borderLineWidth, dashed: true)
         .sheet(isPresented: $showAddPackage) {
-            WooShippingAddPackageView { packageData in
+            WooShippingAddPackageView(storeOptions: storeOptions) { packageData in
                 // TODO: use packageData
                 showAddPackage = false
             }
@@ -58,6 +61,9 @@ private extension WooShippingPackageAndRatePlaceholder {
 }
 
 #Preview {
-    WooShippingPackageAndRatePlaceholder()
+    WooShippingPackageAndRatePlaceholder(storeOptions: ShippingLabelStoreOptions(currencySymbol: "$",
+                                                                                 dimensionUnit: "in",
+                                                                                 weightUnit: "oz",
+                                                                                 originCountry: "US"))
         .padding()
 }

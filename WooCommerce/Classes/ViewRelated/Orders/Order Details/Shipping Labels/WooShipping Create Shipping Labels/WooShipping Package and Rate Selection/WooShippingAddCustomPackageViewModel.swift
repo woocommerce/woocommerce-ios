@@ -4,6 +4,7 @@ import Yosemite
 final class WooShippingAddCustomPackageViewModel: ObservableObject {
     private let stores: StoresManager
     private let siteID: Int64
+    let storeOptions: ShippingLabelStoreOptions
 
     // Holds values for all dimension input fields.
     // Using a dictionary so we can easily add/remove new types
@@ -14,14 +15,12 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     // Holds value for toggle that determines if we are showing button for saving the template
     @Published var showSaveTemplate: Bool = false
     @Published var packageTemplateName: String = ""
-    @Published var storeOptions: ShippingLabelStoreOptions?
-    @Published var isLoadingStoreOptions: Bool = false
     @Published var packagesRepository: WooShippingPackagesRepositoryProtocol
 
     // MARK: Initialization
 
     init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
-         storeOptions: ShippingLabelStoreOptions? = nil,
+         storeOptions: ShippingLabelStoreOptions,
          stores: StoresManager = ServiceLocator.stores,
          packagesRepository: WooShippingPackagesRepositoryProtocol) {
         self.storeOptions = storeOptions
@@ -49,9 +48,6 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     }
 
     private var packageDataFromCurrentData: WooShippingPackageDataRepresentable? {
-        guard let storeOptions else {
-            return nil
-        }
         return WooShippingPackageData(id: UUID().uuidString,
                                       name: packageTemplateName,
                                       length: fieldValues[.length] ?? "",
@@ -92,7 +88,7 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     /// Saves custom package as template remotely.
     ///
     func savePackageAsTemplateAction() async -> Result<WooShippingPackageDataRepresentable, Error> {
-        guard let packageData = preparePackageData(), let storeOptions else {
+        guard let packageData = preparePackageData() else {
             return .failure(WooShippingAddCustomPackageViewModel.Error.packageDataNotValid)
         }
 
@@ -117,24 +113,6 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
             return !packageTemplateName.isEmpty
         }
         return true
-    }
-
-    func loadStoreOptions() {
-        guard isLoadingStoreOptions == false else { return }
-
-        isLoadingStoreOptions = true
-
-        let action = WooShippingAction.loadAccountSettings(siteID: siteID) { result in
-            switch result {
-            case .success(let settings):
-                self.storeOptions = settings.storeOptions
-            case .failure(let error):
-                // TODO: what to do if we do not have store options?
-                DDLogError("⛔️ Error loading account settings: \(error)")
-            }
-            self.isLoadingStoreOptions = false
-        }
-        ServiceLocator.stores.dispatch(action)
     }
 }
 

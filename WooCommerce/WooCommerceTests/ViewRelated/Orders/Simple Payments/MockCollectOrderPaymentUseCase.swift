@@ -12,6 +12,7 @@ struct MockCollectOrderPaymentUseCase: CollectOrderPaymentProtocol {
     /// Calls `onCompleted` for a successful collect result, and `onFailure` for an errer .
     ///
     func collectPayment(using: Yosemite.CardReaderDiscoveryMethod,
+                        channel: PaymentChannel,
                         onFailure: @escaping (Error) -> Void,
                         onCancel: @escaping () -> Void,
                         onPaymentCompletion: @escaping () -> Void,

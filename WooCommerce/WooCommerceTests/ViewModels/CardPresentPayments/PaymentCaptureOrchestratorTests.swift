@@ -45,6 +45,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 paymentGatewayAccount: PaymentGatewayAccount.fake(),
                 paymentMethodTypes: ["card_present"],
                 stripeSmallestCurrencyUnitMultiplier: 100,
+                channel: .storeManagement,
                 onPreparingReader: {},
                 onWaitingForInput: { _ in },
                 onProcessingMessage: {},
@@ -76,6 +77,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 paymentGatewayAccount: PaymentGatewayAccount.fake(),
                 paymentMethodTypes: ["card_present"],
                 stripeSmallestCurrencyUnitMultiplier: 100,
+                channel: .storeManagement,
                 onPreparingReader: {},
                 onWaitingForInput: { _ in },
                 onProcessingMessage: {},
@@ -115,6 +117,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 paymentGatewayAccount: PaymentGatewayAccount.fake(),
                 paymentMethodTypes: ["card_present"],
                 stripeSmallestCurrencyUnitMultiplier: 100,
+                channel: .storeManagement,
                 onPreparingReader: {},
                 onWaitingForInput: { _ in },
                 onProcessingMessage: {},
@@ -139,7 +142,8 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 customerEmail: "bob.smith@example.com",
                 siteURL: "", // Could not test this: when set on the default site, it gets reset to an empty string.
                 orderID: 293,
-                paymentType: .single))
+                paymentType: .single,
+                channel: .storeManagement))
         assertEqual(expectedParameters, paymentParameters)
     }
 
@@ -167,6 +171,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 paymentGatewayAccount: account,
                 paymentMethodTypes: ["card_present"],
                 stripeSmallestCurrencyUnitMultiplier: 100,
+                channel: .storeManagement,
                 onPreparingReader: {},
                 onWaitingForInput: { _ in },
                 onProcessingMessage: {},
@@ -203,6 +208,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 paymentGatewayAccount: account,
                 paymentMethodTypes: ["card_present"],
                 stripeSmallestCurrencyUnitMultiplier: 100,
+                channel: .storeManagement,
                 onPreparingReader: {},
                 onWaitingForInput: { _ in },
                 onProcessingMessage: {},

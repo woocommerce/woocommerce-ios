@@ -189,7 +189,7 @@ struct PointOfSaleAggregateModelTests {
             #expect(passedItem.id == item.id)
         }
 
-//        The UI prevents no-item checkouts, but it's the controller's responsibility to handle this.
+        // The UI prevents no-item checkouts, but it's the controller's responsibility to handle this.
         @Test func checkOut_without_items_calls_sync_order() async throws {
             // Given
             sut.removeAllItemsFromCart()
@@ -200,6 +200,19 @@ struct PointOfSaleAggregateModelTests {
             // Then
             #expect(orderController.syncOrderWasCalled == true)
             #expect(orderController.spyCartProducts?.isEmpty == true)
+        }
+
+        @Test func when_collectPayment_is_called_channel_is_set_to_pos() async throws {
+            // Given
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+            orderController.orderStateToReturn = makeLoadedOrderState(cartTotal: "$0.00")
+
+            // When
+            await sut.checkOut()
+            #expect(cardPresentPaymentService.collectPaymentWasCalled)
+
+            // Then
+            #expect(cardPresentPaymentService.collectPaymentChannel == .pos)
         }
     }
 

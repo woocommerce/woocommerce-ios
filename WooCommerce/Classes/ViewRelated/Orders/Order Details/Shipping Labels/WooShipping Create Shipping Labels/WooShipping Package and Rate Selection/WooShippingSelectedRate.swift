@@ -13,6 +13,15 @@ struct WooShippingSelectedRate {
 }
 
 extension WooShippingSelectedRate {
+    var purchaseRate: ShippingLabelCarrierRate {
+        if let signatureRate = signatureRate {
+            return signatureRate
+        } else if let adultSignatureRate = adultSignatureRate {
+            return adultSignatureRate
+        }
+        return rate
+    }
+
     var totalRate: Double {
         if let signatureRate = signatureRate {
             return signatureRate.rate

@@ -11,7 +11,7 @@ struct PointOfSaleAggregateModelTests {
         private let sut: PointOfSaleAggregateModel
 
         init() {
-            self.sut = PointOfSaleAggregateModel(itemsService: MockPointOfSaleItemsService(),
+            self.sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
                                                  cardPresentPaymentService: MockCardPresentPaymentService(),
                                                  orderController: MockPointOfSaleOrderController())
         }
@@ -69,7 +69,7 @@ struct PointOfSaleAggregateModelTests {
         init() {
             analyticsProvider = MockAnalyticsProvider()
             analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-            sut = PointOfSaleAggregateModel(itemsService: MockPointOfSaleItemsService(),
+            sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
                                             cardPresentPaymentService: MockCardPresentPaymentService(),
                                             orderController: MockPointOfSaleOrderController(),
                                             analytics: analytics)
@@ -153,14 +153,14 @@ struct PointOfSaleAggregateModelTests {
 
     struct OrderTests {
         private let cardPresentPaymentService = MockCardPresentPaymentService()
-        private let itemsService = MockPointOfSaleItemsService()
+        private let itemsController = MockPointOfSaleItemsController()
         private let orderController = MockPointOfSaleOrderController()
         private let sut: PointOfSaleAggregateModel
 
         init() {
             orderController.orderStateToReturn = makeLoadedOrderState(cartTotal: "$0.00")
             sut = PointOfSaleAggregateModel(
-                itemsService: itemsService,
+                itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController)
 
@@ -218,13 +218,13 @@ struct PointOfSaleAggregateModelTests {
 
     struct PaymentTests {
         private let cardPresentPaymentService = MockCardPresentPaymentService()
-        private let itemsService = MockPointOfSaleItemsService()
+        private let itemsController = MockPointOfSaleItemsController()
         private let orderController = MockPointOfSaleOrderController()
         private let sut: PointOfSaleAggregateModel
 
         init() {
             sut = PointOfSaleAggregateModel(
-                itemsService: itemsService,
+                itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController)
         }
@@ -233,7 +233,7 @@ struct PointOfSaleAggregateModelTests {
             // Given that we don't specify a payment state
             // When we init
             let sut = PointOfSaleAggregateModel(
-                itemsService: itemsService,
+                itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController)
 
@@ -244,7 +244,7 @@ struct PointOfSaleAggregateModelTests {
         @Test func startNewCart_sets_payment_state_to_idle() async throws {
             // Given
             let sut = PointOfSaleAggregateModel(
-                itemsService: itemsService,
+                itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 paymentState: .cardPaymentSuccessful)
@@ -271,7 +271,7 @@ struct PointOfSaleAggregateModelTests {
         @Test func addMoreToCart_sets_payment_state_to_idle() async throws {
             // Given
             let sut = PointOfSaleAggregateModel(
-                itemsService: itemsService,
+                itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 paymentState: .cardPaymentSuccessful)
@@ -435,7 +435,7 @@ struct PointOfSaleAggregateModelTests {
         private let analyticsProvider = MockAnalyticsProvider()
         private let analytics: WooAnalytics
         private let cardPresentPaymentService = MockCardPresentPaymentService()
-        private let itemsService = MockPointOfSaleItemsService()
+        private let itemsController = MockPointOfSaleItemsController()
         private let orderController = MockPointOfSaleOrderController()
         private let sut: PointOfSaleAggregateModel
 
@@ -444,7 +444,7 @@ struct PointOfSaleAggregateModelTests {
             orderController.orderState = makeLoadedOrderState()
 
             sut = PointOfSaleAggregateModel(
-                itemsService: itemsService,
+                itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: analytics)

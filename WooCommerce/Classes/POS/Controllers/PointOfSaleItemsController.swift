@@ -1,25 +1,25 @@
 import Foundation
 import Combine
 import protocol Yosemite.POSItem
-import protocol Yosemite.POSItemProvider
-import enum Yosemite.POSProductProviderError
+import protocol Yosemite.PointOfSaleItemServiceProtocol
+import enum Yosemite.PointOfSaleProductServiceError
 
-protocol PointOfSaleItemsServiceProtocol {
+protocol PointOfSaleItemsControllerProtocol {
     var itemListStatePublisher: any Publisher<ItemListState, Never> { get }
     func loadInitialItems() async
     func loadNextItems() async
     func reload() async
 }
 
-class PointOfSaleItemsService: PointOfSaleItemsServiceProtocol {
+class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     private(set) var itemListStatePublisher: any Publisher<ItemListState, Never>
     private var itemListStateSubject: PassthroughSubject<ItemListState, Never> = .init()
     private var allItems: [POSItem] = []
     private var currentPage: Int = Constants.initialPage
     private var mightHaveMorePages: Bool = true
-    private let itemProvider: POSItemProvider
+    private let itemProvider: PointOfSaleItemServiceProtocol
 
-    init(itemProvider: POSItemProvider) {
+    init(itemProvider: PointOfSaleItemServiceProtocol) {
         self.itemProvider = itemProvider
         itemListStatePublisher = itemListStateSubject.eraseToAnyPublisher()
     }
@@ -62,10 +62,10 @@ class PointOfSaleItemsService: PointOfSaleItemsServiceProtocol {
             try await fetchItems(pageNumber: pageNumber)
             mightHaveMorePages = true
             updateItemListStateAfterLoadAttempt()
-        } catch POSProductProviderError.pageOutOfRange {
+        } catch PointOfSaleProductServiceError.pageOutOfRange {
             mightHaveMorePages = false
             updateItemListStateAfterLoadAttempt()
-            throw POSProductProviderError.pageOutOfRange
+            throw PointOfSaleProductServiceError.pageOutOfRange
         } catch {
             itemListStateSubject.send(.error(PointOfSaleErrorState.errorOnLoadingProducts()))
             throw error

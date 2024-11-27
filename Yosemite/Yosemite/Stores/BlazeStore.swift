@@ -368,18 +368,13 @@ private extension BlazeStore {
     func insertStoredCampaignObjectiveInBackground(readonlyObjectives: [Networking.BlazeCampaignObjective],
                                                    locale: String,
                                                    onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
+        storageManager.performAndSave({ derivedStorage in
             derivedStorage.deleteBlazeCampaignObjectives(locale: locale)
             for objective in readonlyObjectives {
                 let storageObjectives = derivedStorage.insertNewObject(ofType: Storage.BlazeCampaignObjective.self)
                 storageObjectives.update(with: objective)
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 }
 

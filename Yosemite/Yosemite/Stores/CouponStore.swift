@@ -375,14 +375,9 @@ private extension CouponStore {
     /// Triggers `onCompletion` on the main thread when done.
     ///
     func deleteStoredCoupon(siteID: Int64, couponID: Int64, onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
-            derivedStorage.deleteCoupon(siteID: siteID, couponID: couponID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ storage in
+            storage.deleteCoupon(siteID: siteID, couponID: couponID)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Upserts the Coupons, and associates them to the SearchResults Entity (in Background)

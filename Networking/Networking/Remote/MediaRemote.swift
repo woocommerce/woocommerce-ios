@@ -18,7 +18,7 @@ public protocol MediaRemoteProtocol {
                                            pageNumber: Int,
                                            pageSize: Int,
                                            completion: @escaping (Result<[WordPressMedia], Error>) -> Void)
-    func uploadMediaToWordPressSite(siteID: Int64,
+    func uploadMedia(siteID: Int64,
                                     productID: Int64,
                                     mediaItem: UploadableMedia,
                                     completion: @escaping (Result<WordPressMedia, Error>) -> Void)
@@ -150,10 +150,10 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
     ///   - productID: Product for which the media items are first added to.
     ///   - mediaItem: The media item to upload.
     ///   - completion: Closure to be executed upon completion.
-    public func uploadMediaToWordPressSite(siteID: Int64,
-                                           productID: Int64,
-                                           mediaItem: UploadableMedia,
-                                           completion: @escaping (Result<WordPressMedia, Error>) -> Void) {
+    public func uploadMedia(siteID: Int64,
+                            productID: Int64,
+                            mediaItem: UploadableMedia,
+                            completion: @escaping (Result<WordPressMedia, Error>) -> Void) {
         let formParameters: [String: String] = [
             ParameterKey.wordPressMediaPostID: "\(productID)",
             ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,

@@ -151,9 +151,9 @@ private extension MediaStore {
                      uploadableMedia media: UploadableMedia,
                      shouldRemoveFileUponCompletion: Bool,
                      onCompletion: @escaping (Result<Media, Error>) -> Void) {
-        remote.uploadMediaToWordPressSite(siteID: siteID,
-                                          productID: productID,
-                                          mediaItem: media) { result in
+        remote.uploadMedia(siteID: siteID,
+                           productID: productID,
+                           mediaItem: media) { result in
             // Removes local media after the upload API request.
             if shouldRemoveFileUponCompletion {
                 do {

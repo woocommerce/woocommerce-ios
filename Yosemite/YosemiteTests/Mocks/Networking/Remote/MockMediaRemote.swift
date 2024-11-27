@@ -131,10 +131,10 @@ extension MockMediaRemote: MediaRemoteProtocol {
         completion(result)
     }
 
-    func uploadMediaToWordPressSite(siteID: Int64,
-                                    productID: Int64,
-                                    mediaItem: UploadableMedia,
-                                    completion: @escaping (Result<WordPressMedia, Error>) -> Void) {
+    func uploadMedia(siteID: Int64,
+                     productID: Int64,
+                     mediaItem: UploadableMedia,
+                     completion: @escaping (Result<WordPressMedia, Error>) -> Void) {
         invocations.append(.uploadMediaToWordPressSite(siteID: siteID))
         guard let result = uploadMediaToWordPressSiteResultsBySiteID[siteID] else {
             XCTFail("\(String(describing: self)) Could not find result for site ID: \(siteID)")

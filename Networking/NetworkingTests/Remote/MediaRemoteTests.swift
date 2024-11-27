@@ -212,7 +212,7 @@ final class MediaRemoteTests: XCTestCase {
         let remote = MediaRemote(network: network)
 
         // When
-        remote.uploadMediaToWordPressSite(siteID: sampleSiteID, productID: sampleProductID, mediaItem: .fake(), completion: { _ in })
+        remote.uploadMedia(siteID: sampleSiteID, productID: sampleProductID, mediaItem: .fake(), completion: { _ in })
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
@@ -229,9 +229,9 @@ final class MediaRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.uploadMediaToWordPressSite(siteID: self.sampleSiteID,
-                                              productID: self.sampleProductID,
-                                              mediaItem: .fake()) { result in
+            remote.uploadMedia(siteID: self.sampleSiteID,
+                               productID: self.sampleProductID,
+                               mediaItem: .fake()) { result in
                 promise(result)
             }
         }
@@ -263,9 +263,9 @@ final class MediaRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.uploadMediaToWordPressSite(siteID: self.sampleSiteID,
-                                              productID: self.sampleProductID,
-                                              mediaItem: .fake()) { result in
+            remote.uploadMedia(siteID: self.sampleSiteID,
+                               productID: self.sampleProductID,
+                               mediaItem: .fake()) { result in
                 promise(result)
             }
         }

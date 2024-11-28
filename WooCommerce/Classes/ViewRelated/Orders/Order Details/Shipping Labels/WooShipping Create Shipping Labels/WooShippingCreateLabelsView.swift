@@ -37,37 +37,114 @@ struct WooShippingCreateLabelsView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                if let storeOptions = viewModel.storeOptions {
-                    VStack(spacing: Layout.verticalSpacing) {
-                        if viewModel.canViewLabel, let postPurchase = viewModel.postPurchase {
-                            WooShippingPostPurchaseView(viewModel: postPurchase)
-                        }
+                VStack(spacing: Layout.verticalSpacing) {
+                    if viewModel.canViewLabel, let postPurchase = viewModel.postPurchase {
+                        WooShippingPostPurchaseView(viewModel: postPurchase)
+                    }
 
-                        WooShippingItems(viewModel: viewModel.items)
+                    WooShippingItems(viewModel: viewModel.items)
 
-                        WooShippingHazmat(enabled: !viewModel.canViewLabel)
+                    WooShippingHazmat(enabled: !viewModel.canViewLabel)
 
-                        if viewModel.canViewLabel {
-                            EmptyView()
-                        } else if let shippingService = viewModel.shippingService {
-                            // TODO: Display package section
-                            // Package heading and edit button
-                            // Selected package details
-                            // Total shipment weight field
-                            WooShippingServiceView(viewModel: shippingService)
-                                .padding(.horizontal, -16)
-                        } else {
+                    if viewModel.canViewLabel {
+                        EmptyView()
+                    } else if let shippingService = viewModel.shippingService {
+                        // TODO: Display package section
+                        // Package heading and edit button
+                        // Selected package details
+                        // Total shipment weight field
+                        WooShippingServiceView(viewModel: shippingService)
+                            .padding(.horizontal, -16)
+                    } else {
+                        if let storeOptions = viewModel.storeOptions {
                             WooShippingPackageAndRatePlaceholder(storeOptions: storeOptions)
                         }
+                        else {
+                            loadingView
+                        }
                     }
-                    .padding(16)
                 }
-                else {
-                    loadingView
-                }
+                .padding(16)
             }
             .safeAreaInset(edge: .bottom) {
-                expandableBottomSheet
+                ExpandableBottomSheet(onChangeOfExpansion: { isExpanded in
+                    isShipmentDetailsExpanded = isExpanded
+                }) {
+                    if isShipmentDetailsExpanded && !viewModel.canViewLabel {
+                        CollapsibleHStack(spacing: Layout.bottomSheetSpacing) {
+                            Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
+                                .font(.subheadline)
+                                .tint(Color(.primary))
+                            purchaseButton
+                        }
+                        .padding(.horizontal, Layout.bottomSheetPadding)
+                    } else {
+                        VStack {
+                            Text(Localization.BottomSheet.shipmentDetails)
+                                .foregroundStyle(Color(.primary))
+                                .bold()
+                            if viewModel.selectedPackage != nil && !viewModel.canViewLabel {
+                                purchaseButton
+                            }
+                        }
+                        .padding(.horizontal, Layout.bottomSheetPadding)
+                    }
+                } expandableContent: {
+                    VStack(alignment: .leading, spacing: Layout.bottomSheetSpacing) {
+                        if isiPhonePortrait {
+                            Text(Localization.BottomSheet.orderDetails)
+                                .footnoteStyle()
+                        }
+                        CollapsibleHStack(horizontalAlignment: .leading, verticalAlignment: .top, spacing: .zero) {
+                            HStack(alignment: .firstTextBaseline, spacing: Layout.bottomSheetSpacing) {
+                                Text(Localization.BottomSheet.shipFrom)
+                                    .trackSize(size: $shipmentDetailsShipFromSize)
+                                Text(viewModel.originAddress)
+                                    .lineLimit(1)
+                                    .truncationMode(.tail)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                            .padding(Layout.bottomSheetPadding)
+                            Divider()
+                            HStack(alignment: .firstTextBaseline, spacing: Layout.bottomSheetSpacing) {
+                                Text(Localization.BottomSheet.shipTo)
+                                    .frame(width: shipmentDetailsShipFromSize.width, alignment: .leading)
+                                VStack(alignment: .leading) {
+                                    ForEach(viewModel.destinationAddressLines, id: \.self) { addressLine in
+                                        Text(addressLine)
+                                            .if(addressLine == viewModel.destinationAddressLines.first) { line in
+                                                line.bold()
+                                            }
+                                    }
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                            .padding(Layout.bottomSheetPadding)
+                        }
+                        .font(.subheadline)
+                        .roundedBorder(cornerRadius: Layout.cornerRadius, lineColor: Color(.separator), lineWidth: 0.5)
+                        
+                        // Always use a VStack in iPhone portrait orientation.
+                        // CollapsibleHStack will use an HStack even if some text is truncated.
+                        if isiPhonePortrait {
+                            VStack(spacing: Layout.bottomSheetPadding) {
+                                orderDetails
+                                Divider()
+                                    .padding(.trailing, Layout.bottomSheetPadding * -1)
+                                shipmentDetails
+                            }
+                        } else {
+                            HStack(alignment: .top, spacing: Layout.bottomSheetPadding) {
+                                orderDetails
+                                Divider()
+                                    .padding(.trailing, Layout.bottomSheetPadding * -1)
+                                shipmentDetails
+                            }
+                        }
+                    }
+                    .padding([.bottom, .horizontal], Layout.bottomSheetPadding)
+                }
+                .ignoresSafeArea(edges: .horizontal)
             }
             .navigationTitle(viewModel.canViewLabel ? Localization.viewLabelTitle : Localization.title)
             .navigationBarTitleDisplayMode(.inline)
@@ -83,97 +160,6 @@ struct WooShippingCreateLabelsView: View {
             guard viewModel.storeOptions == nil else { return }
             viewModel.loadStoreOptions()
         }
-    }
-
-    @ViewBuilder
-    private var expandableBottomSheet: some View {
-        if viewModel.storeOptions == nil {
-            EmptyView()
-        }
-        else {
-            ExpandableBottomSheet(onChangeOfExpansion: { isExpanded in
-                isShipmentDetailsExpanded = isExpanded
-            }) {
-                if isShipmentDetailsExpanded && !viewModel.canViewLabel {
-                    CollapsibleHStack(spacing: Layout.bottomSheetSpacing) {
-                        Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
-                            .font(.subheadline)
-                            .tint(Color(.primary))
-                        purchaseButton
-                    }
-                    .padding(.horizontal, Layout.bottomSheetPadding)
-                } else {
-                    VStack {
-                        Text(Localization.BottomSheet.shipmentDetails)
-                            .foregroundStyle(Color(.primary))
-                            .bold()
-                        if viewModel.selectedPackage != nil && !viewModel.canViewLabel {
-                            purchaseButton
-                        }
-                    }
-                    .padding(.horizontal, Layout.bottomSheetPadding)
-                }
-            } expandableContent: {
-                expandableContent
-            }
-            .ignoresSafeArea(edges: .horizontal)
-        }
-    }
-
-    private var expandableContent: some View {
-        VStack(alignment: .leading, spacing: Layout.bottomSheetSpacing) {
-            if isiPhonePortrait {
-                Text(Localization.BottomSheet.orderDetails)
-                    .footnoteStyle()
-            }
-            CollapsibleHStack(horizontalAlignment: .leading, verticalAlignment: .top, spacing: .zero) {
-                HStack(alignment: .firstTextBaseline, spacing: Layout.bottomSheetSpacing) {
-                    Text(Localization.BottomSheet.shipFrom)
-                        .trackSize(size: $shipmentDetailsShipFromSize)
-                    Text(viewModel.originAddress)
-                        .lineLimit(1)
-                        .truncationMode(.tail)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .padding(Layout.bottomSheetPadding)
-                Divider()
-                HStack(alignment: .firstTextBaseline, spacing: Layout.bottomSheetSpacing) {
-                    Text(Localization.BottomSheet.shipTo)
-                        .frame(width: shipmentDetailsShipFromSize.width, alignment: .leading)
-                    VStack(alignment: .leading) {
-                        ForEach(viewModel.destinationAddressLines, id: \.self) { addressLine in
-                            Text(addressLine)
-                                .if(addressLine == viewModel.destinationAddressLines.first) { line in
-                                    line.bold()
-                                }
-                        }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .padding(Layout.bottomSheetPadding)
-            }
-            .font(.subheadline)
-            .roundedBorder(cornerRadius: Layout.cornerRadius, lineColor: Color(.separator), lineWidth: 0.5)
-
-            // Always use a VStack in iPhone portrait orientation.
-            // CollapsibleHStack will use an HStack even if some text is truncated.
-            if isiPhonePortrait {
-                VStack(spacing: Layout.bottomSheetPadding) {
-                    orderDetails
-                    Divider()
-                        .padding(.trailing, Layout.bottomSheetPadding * -1)
-                    shipmentDetails
-                }
-            } else {
-                HStack(alignment: .top, spacing: Layout.bottomSheetPadding) {
-                    orderDetails
-                    Divider()
-                        .padding(.trailing, Layout.bottomSheetPadding * -1)
-                    shipmentDetails
-                }
-            }
-        }
-        .padding([.bottom, .horizontal], Layout.bottomSheetPadding)
     }
 
     private var loadingView: some View {

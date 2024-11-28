@@ -26,12 +26,11 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         // Given
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
                                                     originAddress: ShippingLabelAddress.fake(),
-                                                    destinationAddress: ShippingLabelAddress.fake(),
-                                                    selectedPackage: ShippingLabelPackageSelected.fake())
+                                                    destinationAddress: ShippingLabelAddress.fake())
 
         // Then
         XCTAssertNil(viewModel.selectedRate)
-        XCTAssertEqual(viewModel.loadingState, .loading)
+        XCTAssertEqual(viewModel.loadingState, .empty)
     }
 
     func test_loadLabelRates_generates_service_tabs_with_expected_data() throws {
@@ -39,7 +38,6 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
                                                     originAddress: ShippingLabelAddress.fake(),
                                                     destinationAddress: ShippingLabelAddress.fake(),
-                                                    selectedPackage: ShippingLabelPackageSelected.fake(),
                                                     stores: stores)
 
         // When
@@ -109,7 +107,6 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
                                                     originAddress: ShippingLabelAddress.fake(),
                                                     destinationAddress: ShippingLabelAddress.fake(),
-                                                    selectedPackage: ShippingLabelPackageSelected.fake(),
                                                     stores: stores)
 
         // When
@@ -126,12 +123,10 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
                                                     originAddress: ShippingLabelAddress.fake(),
                                                     destinationAddress: ShippingLabelAddress.fake(),
-                                                    selectedPackage: ShippingLabelPackageSelected.fake().copy(id: samplePackageID),
                                                     stores: stores)
-        XCTAssertNil(viewModel.selectedRate)
-        XCTAssertFalse(viewModel.serviceTabs[0].cards[1].selected)
 
         // When
+        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
         viewModel.selectRate(standardRate, signatureRate: nil, adultSignatureRate: nil)
 
         // Then
@@ -147,12 +142,9 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
                                                     originAddress: ShippingLabelAddress.fake(),
                                                     destinationAddress: ShippingLabelAddress.fake(),
-                                                    selectedPackage: ShippingLabelPackageSelected.fake().copy(id: samplePackageID),
                                                     stores: stores)
-        XCTAssertNil(viewModel.selectedRate)
-        XCTAssertFalse(viewModel.serviceTabs[0].cards[1].selected)
-
         // When
+        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
         viewModel.selectRate(sampleStandardRates()[1], signatureRate: sampleSignatureRates().first, adultSignatureRate: nil)
 
         // Then
@@ -167,12 +159,10 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
                                                     originAddress: ShippingLabelAddress.fake(),
                                                     destinationAddress: ShippingLabelAddress.fake(),
-                                                    selectedPackage: ShippingLabelPackageSelected.fake().copy(id: samplePackageID),
                                                     stores: stores)
-        XCTAssertNil(viewModel.selectedRate)
-        XCTAssertFalse(viewModel.serviceTabs[0].cards[1].selected)
 
         // When
+        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
         viewModel.selectRate(sampleStandardRates()[1], signatureRate: nil, adultSignatureRate: sampleAdultSignatureRates().first)
 
         // Then
@@ -188,12 +178,12 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
                                                     originAddress: ShippingLabelAddress.fake(),
                                                     destinationAddress: ShippingLabelAddress.fake(),
-                                                    selectedPackage: ShippingLabelPackageSelected.fake().copy(id: samplePackageID),
                                                     stores: stores) { rate in
             selectedRate = rate
         }
 
         // When
+        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
         viewModel.selectRate(sampleStandardRates()[1], signatureRate: nil, adultSignatureRate: nil)
 
         // Then
@@ -205,10 +195,10 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
                                                     originAddress: ShippingLabelAddress.fake(),
                                                     destinationAddress: ShippingLabelAddress.fake(),
-                                                    selectedPackage: ShippingLabelPackageSelected.fake().copy(id: samplePackageID),
                                                     stores: stores)
 
         // When
+        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
         viewModel.sortShipping(by: .price)
 
         // Then
@@ -222,10 +212,10 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
                                                     originAddress: ShippingLabelAddress.fake(),
                                                     destinationAddress: ShippingLabelAddress.fake(),
-                                                    selectedPackage: ShippingLabelPackageSelected.fake().copy(id: samplePackageID),
                                                     stores: stores)
 
         // When
+        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
         viewModel.sortShipping(by: .deliveryTime)
 
         // Then

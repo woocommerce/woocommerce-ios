@@ -48,7 +48,8 @@ struct WooShippingCreateLabelsView: View {
 
                     if viewModel.canViewLabel {
                         EmptyView()
-                    } else if let shippingService = viewModel.shippingService {
+                    } else if viewModel.selectedPackage != nil,
+                              let shippingService = viewModel.shippingService {
                         // TODO: Display package section
                         // Package heading and edit button
                         // Selected package details

@@ -3,7 +3,7 @@ import protocol Yosemite.POSItem
 
 struct CartView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
-    private let viewModel = CartViewModel()
+    private let viewHelper = CartViewHelper()
 
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
@@ -31,7 +31,7 @@ struct CartView: View {
 
                         Spacer()
 
-                        if let itemsInCartLabel = viewModel.itemsInCartLabel(for: posModel.cart.count) {
+                        if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: posModel.cart.count) {
                             Text(itemsInCartLabel)
                                 .font(Constants.itemsFont)
                                 .foregroundColor(Color.posSecondaryText)
@@ -144,7 +144,7 @@ private extension CartView {
     }
 
     var shouldPreventCartEditing: Bool {
-        viewModel.shouldPreventCartEditing(
+        viewHelper.shouldPreventCartEditing(
             orderState: posModel.orderState,
             paymentState: posModel.paymentState)
     }

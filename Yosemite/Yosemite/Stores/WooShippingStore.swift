@@ -61,6 +61,8 @@ public final class WooShippingStore: Store {
                                   pollingDelay: pollingDelay,
                                   pollingMaximumRetries: pollingMaximumRetries,
                                   completion: completion)
+        case let .printLabel(siteID, labelIDs, paperSize, completion):
+            printLabel(siteID: siteID, labelIDs: labelIDs, paperSize: paperSize, completion: completion)
         }
     }
 }
@@ -145,6 +147,13 @@ private extension WooShippingStore {
                 completion(.failure(error))
             }
         }
+    }
+
+    func printLabel(siteID: Int64,
+                    labelIDs: [Int64],
+                    paperSize: ShippingLabelPaperSize,
+                    completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
+        remote.printLabel(siteID: siteID, labelIDs: labelIDs, paperSize: paperSize, completion: completion)
     }
 }
 

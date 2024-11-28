@@ -12,6 +12,10 @@ public final class CoreDataManager: StorageManagerType {
     /// A serial queue used to ensure there is only one writing operation at a time.
     private let writerQueue: OperationQueue
 
+    let storeURL: URL
+
+    let storeDescription: NSPersistentStoreDescription
+
     /// Module-private designated Initializer.
     ///
     /// - Parameter name: Identifier to be used for: [database, data model, container].
@@ -41,10 +45,16 @@ public final class CoreDataManager: StorageManagerType {
             crashLogger.logFatalErrorAndExit(error, userInfo: nil)
         }
 
+        let storeURL = Self.storeURL(with: name)
+        let storeDescription = Self.storeDescription(with: storeURL)
         let persistentContainer = Self.createPersistentContainer(with: name,
+                                                                 storeURL: storeURL,
+                                                                 storeDescription: storeDescription,
                                                                  crashLogger: crashLogger,
                                                                  modelsInventory: inventory)
         self.persistentContainer = persistentContainer
+        self.storeURL = storeURL
+        self.storeDescription = storeDescription
 
         self.viewStorage = {
             let context = persistentContainer.viewContext
@@ -172,11 +182,11 @@ public final class CoreDataManager: StorageManagerType {
     }
 
     private static func createPersistentContainer(with storageName: String,
+                                                  storeURL: URL,
+                                                  storeDescription: NSPersistentStoreDescription,
                                                   crashLogger: CrashLogger,
                                                   modelsInventory: ManagedObjectModelsInventory) -> NSPersistentContainer {
         let container = NSPersistentContainer(name: storageName, managedObjectModel: modelsInventory.currentModel)
-        let storeURL = storeURL(with: storageName)
-        let storeDescription = storeDescription(with: storageName)
         container.persistentStoreDescriptions = [storeDescription]
 
         let migrationDebugMessages = migrateDataModelIfNecessary(using: container.persistentStoreCoordinator,
@@ -216,8 +226,7 @@ public final class CoreDataManager: StorageManagerType {
                                                      "retryError": underlyingError,
                                                      "appState": UIApplication.shared.applicationState.rawValue,
                                                      "migrationMessages": migrationDebugMessages]
-                crashLogger.logFatalErrorAndExit(error,
-                                                       userInfo: logProperties.compactMapValues { $0 })
+                crashLogger.logFatalErrorAndExit(error, userInfo: logProperties.compactMapValues { $0 })
             }
 
             let logProperties: [String: Any?] = ["persistentStoreLoadingError": persistentStoreLoadingError,
@@ -225,8 +234,8 @@ public final class CoreDataManager: StorageManagerType {
                                                  "appState": UIApplication.shared.applicationState.rawValue,
                                                  "migrationMessages": migrationDebugMessages]
             crashLogger.logMessage("[CoreDataManager] Recovered from persistent store loading error",
-                                        properties: logProperties.compactMapValues { $0 },
-                                        level: .info)
+                                   properties: logProperties.compactMapValues { $0 },
+                                   level: .info)
         }
 
         return container
@@ -287,11 +296,10 @@ public final class CoreDataManager: StorageManagerType {
 
 // MARK: - Descriptors
 //
-extension CoreDataManager {
+private extension CoreDataManager {
     /// Returns the PersistentStore Descriptor
     ///
-    static func storeDescription(with storageName: String) -> NSPersistentStoreDescription {
-        let storeURL = storeURL(with: storageName)
+    static func storeDescription(with storeURL: URL) -> NSPersistentStoreDescription {
         let description = NSPersistentStoreDescription(url: storeURL)
         description.shouldAddStoreAsynchronously = false
         description.shouldMigrateStoreAutomatically = false

@@ -121,11 +121,10 @@ public final class CustomerStore: Store {
                         self.mapSearchResultsToCustomerObjects(for: siteID, with: keyword, with: customers, onCompletion: onCompletion)
                     } else {
                         self.upsertCustomersAndSave(siteID: siteID,
-                                             readOnlyCustomers: customers,
-                                             shouldDeleteExistingCustomers: pageNumber == 1,
-                                             keyword: keyword,
-                                             in: self.sharedDerivedStorage,
-                                             onCompletion: {
+                                                    readOnlyCustomers: customers,
+                                                    shouldDeleteExistingCustomers: pageNumber == 1,
+                                                    keyword: keyword,
+                                                    onCompletion: {
                             onCompletion(.success(()))
                         })
                     }
@@ -190,7 +189,7 @@ public final class CustomerStore: Store {
                 guard let self else { return }
                 switch result {
                 case .success(let customer):
-                    self.upsertCustomersAndSave(siteID: siteID, readOnlyCustomers: [customer], in: self.sharedDerivedStorage, onCompletion: {
+                    self.upsertCustomersAndSave(siteID: siteID, readOnlyCustomers: [customer], onCompletion: {
                         onCompletion(.success(customer))
                     })
                 case .failure(let error):
@@ -215,10 +214,9 @@ public final class CustomerStore: Store {
             switch result {
             case .success(let customers):
                 self.upsertCustomersAndSave(siteID: siteID,
-                                     readOnlyCustomers: customers,
-                                     shouldDeleteExistingCustomers: pageNumber == 1,
-                                     in: self.sharedDerivedStorage,
-                                     onCompletion: {
+                                            readOnlyCustomers: customers,
+                                            shouldDeleteExistingCustomers: pageNumber == 1,
+                                            onCompletion: {
                     onCompletion(.success(!customers.isEmpty))
                 })
             case .failure(let error):
@@ -326,24 +324,20 @@ private extension CustomerStore {
     }
 
     private func upsertCustomersAndSave(siteID: Int64,
-                                 readOnlyCustomers: [StorageCustomerConvertible],
-                                 shouldDeleteExistingCustomers: Bool = false,
-                                 keyword: String? = nil,
-                                 in storage: StorageType,
-                                 onCompletion: @escaping () -> Void) {
-        storage.perform { [weak self] in
+                                        readOnlyCustomers: [StorageCustomerConvertible],
+                                        shouldDeleteExistingCustomers: Bool = false,
+                                        keyword: String? = nil,
+                                        onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
             if shouldDeleteExistingCustomers {
                 storage.deleteCustomers(siteID: siteID)
             }
 
             readOnlyCustomers.forEach {
-                self?.upsertCustomer(siteID: siteID, readOnlyCustomer: $0, keyword: keyword, in: storage)
+                self.upsertCustomer(siteID: siteID, readOnlyCustomer: $0, keyword: keyword, in: storage)
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: storage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 
     private func upsertWCAnalyticsCustomersAndSave(siteID: Int64,

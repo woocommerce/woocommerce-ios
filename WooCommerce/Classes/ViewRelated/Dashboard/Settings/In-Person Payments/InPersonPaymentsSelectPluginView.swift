@@ -82,7 +82,6 @@ struct InPersonPaymentsSelectPluginView: View {
             .padding(.top, 32)
             .padding(.horizontal, 16)
             .padding(.bottom, 24)
-            .background(Color(.tertiarySystemBackground).ignoresSafeArea())
         }
     }
 

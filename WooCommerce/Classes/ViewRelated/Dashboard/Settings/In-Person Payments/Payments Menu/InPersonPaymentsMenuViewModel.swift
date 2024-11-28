@@ -15,7 +15,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published private(set) var shouldShowPaymentOptionsSection: Bool = false
     @Published private(set) var shouldShowPayoutSummary: Bool = false
     @Published private(set) var setUpTryOutTapToPayRowTitle: String = Localization.setUpTapToPayOnIPhoneRowTitle
-    @Published private(set) var shouldShowTapToPayFeedbackRow: Bool = true
     @Published private(set) var shouldBadgeTapToPayOnIPhone: Bool = false
     @Published private(set) var shouldDisableManageCardReaders: Bool = true
     @Published var backgroundOnboardingInProgress: Bool = false
@@ -33,7 +32,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var presentCustomAmountAfterDismissingCollectPaymentMigrationSheet: Bool = false
     @Published var presentSetUpTryOutTapToPay: Bool = false
     @Published var presentAboutTapToPay: Bool = false
-    @Published var presentTapToPayFeedback: Bool = false
     @Published var presentPurchaseCardReader: Bool = false
     @Published var presentManageCardReaders: Bool = false
     @Published var presentCardReaderManuals: Bool = false
@@ -188,10 +186,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     func aboutTapToPayTapped() {
         presentAboutTapToPay = true
         analytics.track(.aboutTapToPayOnIPhoneTapped)
-    }
-
-    func tapToPayFeedbackTapped() {
-        presentTapToPayFeedback = true
     }
 
     func purchaseCardReaderTapped() {
@@ -406,7 +400,6 @@ private extension InPersonPaymentsMenuViewModel {
             deviceSupportsTapToPay
 
         await updateSetUpTryTapToPay()
-        await updateTapToPayFeedbackRowVisibility()
     }
 
     var countryEnabledForTapToPay: Bool {
@@ -418,15 +411,6 @@ private extension InPersonPaymentsMenuViewModel {
 
         setUpTryOutTapToPayRowTitle = tapToPayWasPreviouslyUsed ? Localization.tryOutTapToPayOnIPhoneRowTitle : Localization.setUpTapToPayOnIPhoneRowTitle
         shouldAlwaysHideSetUpButtonOnAboutTapToPay = tapToPayWasPreviouslyUsed
-    }
-
-    func updateTapToPayFeedbackRowVisibility() async {
-        guard let firstTapToPayTransactionDate = await dependencies.cardReaderSupportDeterminer.firstTapToPayTransactionDate(),
-              let thirtyDaysAgo = Calendar.current.date(byAdding: DateComponents(day: -30), to: Date()) else {
-            return self.shouldShowTapToPayFeedbackRow = false
-        }
-
-        shouldShowTapToPayFeedbackRow = firstTapToPayTransactionDate >= thirtyDaysAgo
     }
 }
 

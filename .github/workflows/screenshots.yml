@@ -42,6 +42,12 @@ jobs:
         name: screenshot-app
         path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/WooCommerce.app
 
+    - name: Archive Watch App
+      uses: actions/upload-artifact@v4
+      with:
+        name: watch-app
+        path: fastlane/DerivedData/Build/Products/Debug-watchsimulator/Woo Watch App.app
+
     - name: Archive Runner
       uses: actions/upload-artifact@v4
       with:
@@ -72,6 +78,12 @@ jobs:
       with:
         name: screenshot-app
         path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/WooCommerce.app
+
+    - name: Download Watch App
+      uses: actions/download-artifact@v4
+      with:
+        name: watch-app
+        path: fastlane/DerivedData/Build/Products/Debug-watchsimulator/Woo Watch App.app
 
     - name: Download Screenshot Runner
       uses: actions/download-artifact@v4

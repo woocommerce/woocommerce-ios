@@ -33,7 +33,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private(set) var shippingService: WooShippingServiceViewModel?
 
     /// Selected shipping rate when creating a shipping label.
-    private var selectedRate: WooShippingSelectedRate?
+    @Published private var selectedRate: WooShippingSelectedRate?
 
     /// Address to ship from (store address), formatted for display.
     private(set) lazy var originAddress: String = {
@@ -175,6 +175,13 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
 // MARK: Utils
 private extension WooShippingCreateLabelsViewModel {
+    /// Handles changes to the selected package.
+    /// Selecting a package also refreshes the available rates for the shipping service.
+    func handleNewSelectedPackage(_ selectedPackage: ShippingLabelPackageSelected) {
+        self.selectedPackage = selectedPackage
+        shippingService?.loadLabelRates(for: selectedPackage)
+    }
+
     /// Provides the formatted label and amount for a shipping rate, based on the provided base rate.
     func formatShippingRate(name: String, rate: Double, basedOn baseRate: Double? = nil) -> (title: String, amount: String) {
         let amount = {

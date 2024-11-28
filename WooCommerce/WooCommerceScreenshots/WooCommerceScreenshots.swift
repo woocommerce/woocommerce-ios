@@ -42,7 +42,6 @@ class WooCommerceScreenshots: XCTestCase {
 
             return false
         }
-        app.tap()
 
         try MyStoreScreen()
 

@@ -1395,6 +1395,61 @@ final class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(foundCharge, charge2)
     }
 
+    func test_loadBlazeCampaigns_by_siteID() {
+        // Given
+        let campaign1 = storage.insertNewObject(ofType: BlazeCampaignListItem.self)
+        campaign1.siteID = 1
+        campaign1.campaignID = "1"
+
+        let campaign2 = storage.insertNewObject(ofType: BlazeCampaignListItem.self)
+        campaign2.siteID = sampleSiteID
+        campaign2.campaignID = "2"
+
+        // When
+        let campaigns = storage.loadAllBlazeCampaignListItems(siteID: sampleSiteID)
+
+        // Then
+        XCTAssertEqual(campaigns, [campaign2])
+    }
+
+    func test_loadBlazeCampaign_by_siteID_campaignID() throws {
+        // Given
+        let campaign1 = storage.insertNewObject(ofType: BlazeCampaignListItem.self)
+        campaign1.siteID = sampleSiteID
+        campaign1.campaignID = "1"
+
+        let campaign2 = storage.insertNewObject(ofType: BlazeCampaignListItem.self)
+        campaign2.siteID = sampleSiteID
+        campaign2.campaignID = "2"
+
+        // When
+        let campaign = try XCTUnwrap(storage.loadBlazeCampaignListItem(siteID: sampleSiteID, campaignID: "1"))
+
+        // Then
+        XCTAssertEqual(campaign, campaign1)
+    }
+
+    func test_loadBlazeCampaigns_by_siteID_and_campaignIDs() {
+        // Given
+        let campaign1 = storage.insertNewObject(ofType: BlazeCampaignListItem.self)
+        campaign1.siteID = 1
+        campaign1.campaignID = "1"
+
+        let campaign2 = storage.insertNewObject(ofType: BlazeCampaignListItem.self)
+        campaign2.siteID = sampleSiteID
+        campaign2.campaignID = "2"
+
+        let campaign3 = storage.insertNewObject(ofType: BlazeCampaignListItem.self)
+        campaign3.siteID = sampleSiteID
+        campaign3.campaignID = "3"
+
+        // When
+        let campaigns = storage.loadBlazeCampaignListItems(siteID: sampleSiteID, with: ["2", "3"])
+
+        // Then
+        XCTAssertEqual(Set(campaigns), Set([campaign2, campaign3]))
+    }
+
     func test_loadAllBlazeTargetDevices_with_locale() throws {
         // Given
         let device1 = storage.insertNewObject(ofType: BlazeTargetDevice.self)

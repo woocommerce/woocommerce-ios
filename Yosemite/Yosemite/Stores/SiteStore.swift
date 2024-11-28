@@ -153,30 +153,24 @@ private extension SiteStore {
 private extension SiteStore {
     func upsertStoredSiteInBackground(readOnlySite: Networking.Site) async {
         await withCheckedContinuation { continuation in
-            let derivedStorage = sharedDerivedStorage
-            derivedStorage.perform {
+            storageManager.performAndSave({ derivedStorage in
                 let storageSite = derivedStorage.loadSite(siteID: readOnlySite.siteID) ?? derivedStorage.insertNewObject(ofType: Storage.Site.self)
                 storageSite.update(with: readOnlySite)
-            }
-
-            storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-                DispatchQueue.main.async(execute: { continuation.resume() })
-            }
+            }, completion: {
+                continuation.resume()
+            }, on: .main)
         }
     }
 
     func upsertStoredSiteInBackground(siteID: Int64, name: String) async {
         await withCheckedContinuation { continuation in
-            let derivedStorage = sharedDerivedStorage
-            derivedStorage.perform {
+            storageManager.performAndSave({ derivedStorage in
                 if let storageSite = derivedStorage.loadSite(siteID: siteID) {
                     storageSite.name = name
                 }
-            }
-
-            storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-                DispatchQueue.main.async(execute: { continuation.resume() })
-            }
+            }, completion: {
+                continuation.resume()
+            }, on: .main)
         }
     }
 }

@@ -13,8 +13,9 @@ final class CoreDataManagerTests: XCTestCase {
     /// Verifies that the Store URL contains the ContextIdentifier string.
     ///
     func test_storeUrl_maps_to_sqlite_file_with_context_identifier() {
-        XCTAssertEqual(CoreDataManager.storeURL(with: storageIdentifier).lastPathComponent, "WooCommerce.sqlite")
-        XCTAssertEqual(CoreDataManager.storeDescription(with: storageIdentifier).url?.lastPathComponent, "WooCommerce.sqlite")
+        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
+        XCTAssertEqual(manager.storeURL.lastPathComponent, "WooCommerce.sqlite")
+        XCTAssertEqual(manager.storeDescription.url?.lastPathComponent, "WooCommerce.sqlite")
     }
 
     /// Verifies that the PersistentContainer properly loads the sqlite database.
@@ -279,13 +280,14 @@ private extension CoreDataManagerTests {
     }
 
     func makeManager(using modelsInventory: ManagedObjectModelsInventory,
-                     deletingExistingStoreFiles deleteStoreFiles: Bool) throws -> CoreDataManager {
+                     deletingExistingStoreFiles: Bool) throws -> CoreDataManager {
+        let storeURL = CoreDataManager.storeURL(with: storageIdentifier)
+        if deletingExistingStoreFiles {
+            try deleteStoreFiles(at: storeURL)
+        }
         let manager = CoreDataManager(name: storageIdentifier,
                                       crashLogger: MockCrashLogger(),
                                       modelsInventory: modelsInventory)
-        if deleteStoreFiles {
-            try self.deleteStoreFiles(at: CoreDataManager.storeURL(with: storageIdentifier))
-        }
         return manager
     }
 

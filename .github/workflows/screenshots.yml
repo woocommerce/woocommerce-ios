@@ -39,20 +39,8 @@ jobs:
     - name: Archive App
       uses: actions/upload-artifact@v4
       with:
-        name: screenshot-app
-        path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/WooCommerce.app
-
-    - name: Archive Watch App
-      uses: actions/upload-artifact@v4
-      with:
-        name: watch-app
-        path: fastlane/DerivedData/Build/Products/Debug-watchsimulator/Woo Watch App.app
-
-    - name: Archive Runner
-      uses: actions/upload-artifact@v4
-      with:
-        name: screenshot-runner
-        path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/WooCommerceScreenshots-Runner.app
+        name: build
+        path: fastlane/DerivedData/Build/Products/
 
   capture:
     name: Capture
@@ -76,20 +64,8 @@ jobs:
     - name: Download Screenshot App
       uses: actions/download-artifact@v4
       with:
-        name: screenshot-app
-        path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/WooCommerce.app
-
-    - name: Download Watch App
-      uses: actions/download-artifact@v4
-      with:
-        name: watch-app
-        path: fastlane/DerivedData/Build/Products/Debug-watchsimulator/Woo Watch App.app
-
-    - name: Download Screenshot Runner
-      uses: actions/download-artifact@v4
-      with:
-        name: screenshot-runner
-        path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/WooCommerceScreenshots-Runner.app
+        name: build
+        path: fastlane/DerivedData/Build/Products/
 
     - name: Generate Screenshots
       run: |

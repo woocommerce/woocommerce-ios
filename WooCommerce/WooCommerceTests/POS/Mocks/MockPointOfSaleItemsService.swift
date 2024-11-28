@@ -1,12 +1,12 @@
 import Foundation
 import Combine
 @testable import WooCommerce
-import protocol Yosemite.POSItem
+import protocol Yosemite.POSDisplayableItem
 
 final class MockPointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     var itemListStatePublisher: any Publisher<WooCommerce.ItemListState, Never> = Empty()
 
-    var allItems: [any POSItem] = []
+    var allItems: [any POSDisplayableItem] = []
 
     func loadInitialItems() async { }
 

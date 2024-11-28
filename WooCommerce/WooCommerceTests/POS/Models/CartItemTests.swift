@@ -1,6 +1,6 @@
 import XCTest
 @testable import WooCommerce
-@testable import protocol Yosemite.POSItem
+@testable import typealias Yosemite.POSOrderableItem
 @testable import struct Yosemite.Order
 @testable import struct Yosemite.OrderItem
 @testable import struct Yosemite.POSProduct
@@ -28,27 +28,21 @@ final class CartItemTests: XCTestCase {
 
         // Then
         // order1
-        XCTAssertFalse(CartItem.areOrderAndCartDifferent(order: order1, cartItems: cart1Items))
-        XCTAssertTrue(CartItem.areOrderAndCartDifferent(order: order1, cartItems: cart2Items))
-        XCTAssertTrue(CartItem.areOrderAndCartDifferent(order: order1, cartItems: []))
+        XCTAssertTrue(cart1Items.matchesOrder(order1))
+        XCTAssertFalse(cart2Items.matchesOrder(order1))
+        XCTAssertFalse([CartItem]().matchesOrder(order1))
         // order2
-        XCTAssertFalse(CartItem.areOrderAndCartDifferent(order: order2, cartItems: cart2Items))
-        XCTAssertTrue(CartItem.areOrderAndCartDifferent(order: order2, cartItems: cart1Items))
-        XCTAssertTrue(CartItem.areOrderAndCartDifferent(order: order2, cartItems: []))
+        XCTAssertTrue(cart2Items.matchesOrder(order2))
+        XCTAssertFalse(cart1Items.matchesOrder(order2))
+        XCTAssertFalse([CartItem]().matchesOrder(order2))
         // nil order
-        XCTAssertTrue(CartItem.areOrderAndCartDifferent(order: nil, cartItems: cart1Items))
-        XCTAssertFalse(CartItem.areOrderAndCartDifferent(order: nil, cartItems: []))
+        XCTAssertFalse(cart1Items.matchesOrder(nil))
+        XCTAssertTrue([CartItem]().matchesOrder(nil))
     }
 }
 
 private extension CartItemTests {
-    static func makeItem(productId: Int64, price: String) -> POSItem {
-        return POSProduct(itemID: UUID(),
-                          productID: productId,
-                          name: "",
-                          price: price,
-                          formattedPrice: "",
-                          productImageSource: nil,
-                          productType: .simple)
+    static func makeItem(productId: Int64, price: String) -> any POSOrderableItem {
+        return POSProduct(id: UUID(), name: "", formattedPrice: "", productID: productId, price: price)
     }
 }

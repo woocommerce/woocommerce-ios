@@ -113,14 +113,11 @@ private func makePOSCartItem(
     productID: Int64,
     quantity: Decimal) -> POSCartItem {
         return POSCartItem(
-            product: POSProduct(
-                itemID: UUID(),
-                productID: productID,
-                name: "",
-                price: "",
-                formattedPrice: "",
-                productImageSource: nil,
-                productType: .simple),
+            item: POSProduct(id: UUID(),
+                             name: "",
+                             formattedPrice: "",
+                             productID: productID,
+                             price: ""),
             quantity: quantity
         )
     }

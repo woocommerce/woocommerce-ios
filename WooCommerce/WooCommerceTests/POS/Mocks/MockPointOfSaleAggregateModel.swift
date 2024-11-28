@@ -1,6 +1,6 @@
 import Foundation
 @testable import WooCommerce
-import protocol Yosemite.POSItem
+import typealias Yosemite.POSOrderableItem
 
 final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus
@@ -25,18 +25,6 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     var orderState: WooCommerce.PointOfSaleOrderState
 
-    var allItems: [POSItem] {
-        switch itemListState {
-        case .empty,
-                .initialLoading,
-                .error:
-            return []
-        case .loading(let items),
-            .loaded(let items):
-            return items
-        }
-    }
-
     var itemListState: ItemListState
     var blockReturnToItemSelection: Bool = false
 
@@ -60,9 +48,9 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     var cart: [CartItem] = []
 
-    func addToCart(_ item: any Yosemite.POSItem) { }
+    func addToCart(_ item: any POSOrderableItem) { }
 
-    func remove(cartItem: WooCommerce.CartItem) { }
+    func remove(cartItem: CartItem) { }
 
     var removeAllItemsFromCartCalled = false
     func removeAllItemsFromCart() {

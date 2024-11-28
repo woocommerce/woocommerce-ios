@@ -1,5 +1,6 @@
 import Testing
 import Combine
+import Foundation
 
 @testable import WooCommerce
 import struct Yosemite.Order
@@ -25,8 +26,9 @@ struct PointOfSaleOrderControllerTests {
 
     @Test func syncOrder_with_unchanged_items_doesnt_call_orderService() async throws {
         // Given
-        let cartItem = makeItem()
-        let orderItem = OrderItem.fake().copy(productID: cartItem.item.productID, quantity: 1)
+        let productID: Int64 = 123
+        let cartItem = makeItem(productID: productID, quantity: 1)
+        let orderItem = OrderItem.fake().copy(productID: productID, quantity: 1)
         let fakeOrder = Order.fake().copy(items: [orderItem])
         mockOrderService.orderToReturn = fakeOrder
         await sut.syncOrder(for: [cartItem], retryHandler: {})
@@ -139,30 +141,12 @@ struct PointOfSaleOrderControllerTests {
     }
 }
 
-import Foundation
-import protocol Yosemite.POSItem
-import enum Yosemite.ProductType
-
-private struct MockPOSItem: POSItem {
-    var name: String
-    var itemID: UUID = UUID()
-    var productID: Int64
-    var price: String
-    var formattedPrice: String
-    var itemCategories: [String] = []
-    var productImageSource: String? = nil
-    var productType: Yosemite.ProductType = .simple
-}
-
-private func makeItem(name: String = "",
-                      productID: Int64 = 100,
-                      price: String = "10.00",
-                      formattedPrice: String = "$10.00",
+private func makeItem(productID: Int64 = 1,
+                      name: String = "",
+                      formattedPrice: String = "",
                       quantity: Int = 1) -> CartItem {
     return CartItem(id: UUID(),
                     item: MockPOSItem(name: name,
-                                      productID: productID,
-                                      price: price,
                                       formattedPrice: formattedPrice),
                     quantity: quantity)
 }

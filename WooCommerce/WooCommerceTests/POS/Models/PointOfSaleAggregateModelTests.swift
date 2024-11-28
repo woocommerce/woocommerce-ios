@@ -1,7 +1,7 @@
 import Testing
 import Foundation
 @testable import WooCommerce
-import protocol Yosemite.POSItem
+import typealias Yosemite.POSOrderableItem
 @testable import struct Yosemite.POSProduct
 import struct Yosemite.Order
 import Combine
@@ -95,7 +95,7 @@ struct PointOfSaleAggregateModelTests {
             items.forEach(sut.addToCart(_:))
 
             // Then
-            #expect(sut.cart.map(\.item.itemID) == items.reversed().map(\.itemID))
+            #expect(sut.cart.map(\.item.id) == items.reversed().map(\.id))
         }
 
         @Test func removeItem_after_adding_two_items_removes_item_correctly() async throws {
@@ -479,14 +479,8 @@ struct PointOfSaleAggregateModelTests {
     }
 }
 
-private func makeItem(name: String = "") -> POSItem {
-    return POSProduct(itemID: UUID(),
-                      productID: 0,
-                      name: name,
-                      price: "",
-                      formattedPrice: "",
-                      productImageSource: nil,
-                      productType: .simple)
+private func makeItem(name: String = "") -> any POSOrderableItem {
+    return MockPOSItem(name: name, formattedPrice: "")
 }
 
 private func makeLoadedOrderState(cartTotal: String = "",

@@ -25,6 +25,10 @@ public protocol WooShippingRemoteProtocol {
                           orderID: Int64,
                           labelID: Int64,
                           completion: @escaping (Result<ShippingLabelStatusPollingResponse, Error>) -> Void)
+    func printLabel(siteID: Int64,
+                    labelIDs: [Int64],
+                    paperSize: ShippingLabelPaperSize,
+                    completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
@@ -215,6 +219,31 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
         let mapper = WooShippingStatusMapper(siteID: siteID, orderID: orderID)
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Generates shipping label data for printing.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site that owns the shipping labels.
+    ///   - labelIDs: Remote IDs of the shipping labels.
+    ///   - paperSize: Paper size option (current options are "label", "legal", and "letter").
+    ///   - completion: Closure to be executed upon completion.
+    public func printLabel(siteID: Int64,
+                           labelIDs: [Int64],
+                           paperSize: ShippingLabelPaperSize,
+                           completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
+        let parameters: [String: Any] = [
+            ParameterKey.paperSize: paperSize.rawValue,
+            ParameterKey.labelIDCSV: labelIDs.map(String.init).joined(separator: ",")
+        ]
+        let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.print,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = ShippingLabelPrintDataMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 // MARK: Constants
@@ -225,6 +254,7 @@ private extension WooShippingRemote {
         static let accountSettings = "account/settings"
         static let purchase = "label/purchase"
         static let status = "label/status"
+        static let print = "label/print"
     }
 
     enum ParameterKey {
@@ -238,6 +268,8 @@ private extension WooShippingRemote {
         static let selectedRate = "selected_rate"
         static let hazmat = "hazmat"
         static let customs = "customs"
+        static let paperSize = "paper_size"
+        static let labelIDCSV = "label_id_csv"
     }
 }
 

@@ -3,9 +3,9 @@ import WooFoundation
 @testable import Networking
 @testable import Yosemite
 
-final class POSProductProviderTests: XCTestCase {
+final class PointOfSaleProductServiceTests: XCTestCase {
     private var currencySettings: CurrencySettings!
-    private var itemProvider: POSItemProvider!
+    private var itemProvider: PointOfSaleItemServiceProtocol!
     private var network: MockNetwork!
     private let siteID: Int64 = 123
 
@@ -13,7 +13,7 @@ final class POSProductProviderTests: XCTestCase {
         super.setUp()
         network = MockNetwork()
         currencySettings = CurrencySettings()
-        itemProvider = POSProductProvider(siteID: siteID,
+        itemProvider = PointOfSaleProductService(siteID: siteID,
                                           currencySettings: currencySettings,
                                           network: network)
     }
@@ -24,9 +24,9 @@ final class POSProductProviderTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_POSItemProvider_when_fails_request_with_requestFailed_then_throws_error() async throws {
+    func test_PointOfSaleItemServiceProtocol_when_fails_request_with_requestFailed_then_throws_error() async throws {
         // Given
-        let expectedError = POSProductProviderError.requestFailed
+        let expectedError = PointOfSaleProductServiceError.requestFailed
         network.simulateError(requestUrlSuffix: "products", error: expectedError)
 
         // When
@@ -35,12 +35,12 @@ final class POSProductProviderTests: XCTestCase {
             XCTFail("Expected an error, but got success.")
         } catch {
             // Then
-            XCTAssertEqual(error as? POSProductProviderError, expectedError)
+            XCTAssertEqual(error as? PointOfSaleProductServiceError, expectedError)
         }
     }
 
-    func test_POSItemProvider_when_fails_request_with_pageOutOfRange_then_throws_error() async throws {
-        let expectedError = POSProductProviderError.pageOutOfRange
+    func test_PointOfSaleItemServiceProtocol_when_fails_request_with_pageOutOfRange_then_throws_error() async throws {
+        let expectedError = PointOfSaleProductServiceError.pageOutOfRange
         network.simulateError(requestUrlSuffix: "products", error: expectedError)
 
         // When
@@ -49,11 +49,11 @@ final class POSProductProviderTests: XCTestCase {
             XCTFail("Expected an error, but got success.")
         } catch {
             // Then
-            XCTAssertEqual(error as? POSProductProviderError, expectedError)
+            XCTAssertEqual(error as? PointOfSaleProductServiceError, expectedError)
         }
     }
 
-    func test_POSItemProvider_provides_no_items_when_store_has_no_products() async throws {
+    func test_PointOfSaleItemServiceProtocol_provides_no_items_when_store_has_no_products() async throws {
         // Given/When
         network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
         let expectedItems = try await itemProvider.providePointOfSaleItems()
@@ -62,7 +62,7 @@ final class POSProductProviderTests: XCTestCase {
         XCTAssertTrue(expectedItems.isEmpty)
     }
 
-    func test_POSItemProvider_provides_items_when_store_has_eligible_products() async throws {
+    func test_PointOfSaleItemServiceProtocol_provides_items_when_store_has_eligible_products() async throws {
         // Given
         let expectedProductName = "Dymo LabelWriter 4XL"
         let expectedProductID: Int64 = 208
@@ -85,7 +85,7 @@ final class POSProductProviderTests: XCTestCase {
         XCTAssertEqual(product.formattedPrice, expectedFormattedPrice)
     }
 
-    func test_POSItemProvider_when_eligibility_criteria_applies_then_returns_correct_number_of_items() async throws {
+    func test_PointOfSaleItemServiceProtocol_when_eligibility_criteria_applies_then_returns_correct_number_of_items() async throws {
         // Given
         let expectedNumberOfItems = 2
         let expectedItemNames = ["Dymo LabelWriter 4XL", "Private Hoodie"]

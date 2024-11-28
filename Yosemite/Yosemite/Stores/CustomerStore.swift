@@ -309,23 +309,20 @@ private extension CustomerStore {
                                             keyword: String,
                                             readOnlyCustomers: [Networking.Customer],
                                             onCompletion: @escaping () -> Void) {
-        sharedDerivedStorage.perform { [weak self] in
-            guard let self = self else { return }
-            let storedSearchResult = self.sharedDerivedStorage.loadCustomerSearchResult(siteID: siteID, keyword: keyword) ??
-            self.sharedDerivedStorage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
+        storageManager.performAndSave({ storage in
+            let storedSearchResult = storage.loadCustomerSearchResult(siteID: siteID, keyword: keyword) ??
+            storage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
 
             storedSearchResult.siteID = siteID
             storedSearchResult.keyword = keyword
 
+            let storedCustomers = storage.loadAllCustomers(siteID: siteID)
             for result in readOnlyCustomers {
-                if let storedCustomer = self.sharedDerivedStorage.loadCustomer(siteID: siteID, customerID: result.customerID) {
+                if let storedCustomer = storedCustomers.first(where: { $0.customerID == result.customerID }) {
                     storedSearchResult.addToCustomers(storedCustomer)
                 }
             }
-        }
-        storageManager.saveDerivedType(derivedStorage: self.sharedDerivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 
     private func upsertCustomersAndSave(siteID: Int64,

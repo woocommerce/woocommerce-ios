@@ -28,6 +28,15 @@ defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool true
 
 echo "--- 🧪 Testing"
 xcrun simctl list >> /dev/null
+
+# Wait for the simulator to be fully booted
+echo "--- ⏳ Waiting for Simulator to be Ready"
+while ! xcrun simctl list | grep "$DEVICE" | grep "Booted"; do
+  echo "Waiting for $DEVICE to boot..."
+  sleep 3
+done
+echo "--- ✅ Simulator is Ready"
+
 rake mocks &
 set +e
 bundle exec fastlane test_without_building name:"$TEST_NAME" device:"$DEVICE"

@@ -74,6 +74,9 @@ extension WooShippingPredefinedPackage: Decodable {
                 dimensions = dimensionsInner
             }
         }
+        else if let outerDimensionsString = try? container.decodeIfPresent(String.self, forKey: .outerDimensions) {
+            dimensions = outerDimensionsString
+        }
         let groupId = try container.decode(String.self, forKey: .groupId)
         var boxWeight: String = ""
         // Looks like some endpoints have boxWeight as String and some as Double
@@ -101,5 +104,6 @@ extension WooShippingPredefinedPackage: Decodable {
         case inner
         case groupId = "group_id"
         case boxWeight = "box_weight"
+        case outerDimensions = "outer_dimensions"
     }
 }

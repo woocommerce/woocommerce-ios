@@ -312,7 +312,7 @@ private extension CustomerStore {
             storedSearchResult.siteID = siteID
             storedSearchResult.keyword = keyword
 
-            let storedCustomers = storage.loadAllCustomers(siteID: siteID)
+            let storedCustomers = storage.loadCustomers(siteID: siteID, matching: readOnlyCustomers.map { $0.customerID })
             for result in readOnlyCustomers {
                 if let storedCustomer = storedCustomers.first(where: { $0.customerID == result.customerID }) {
                     storedSearchResult.addToCustomers(storedCustomer)
@@ -331,8 +331,20 @@ private extension CustomerStore {
                 storage.deleteCustomers(siteID: siteID)
             }
 
+            let storedCustomers = storage.loadCustomers(siteID: siteID, matching: readOnlyCustomers.map { $0.loadingID })
+            let storedSearchResults: CustomerSearchResult? = {
+                guard let keyword else {
+                    return nil
+                }
+                return storage.loadCustomerSearchResult(siteID: siteID, keyword: keyword)
+            }()
             readOnlyCustomers.forEach {
-                self?.upsertCustomer(siteID: siteID, readOnlyCustomer: $0, keyword: keyword, in: storage)
+                self?.upsertCustomer(siteID: siteID,
+                                     readOnlyCustomer: $0,
+                                     keyword: keyword,
+                                     storedCustomers: storedCustomers,
+                                     storedSearchResults: storedSearchResults,
+                                     in: storage)
             }
         }, completion: onCompletion, on: .main)
     }
@@ -355,22 +367,26 @@ private extension CustomerStore {
 
     /// Inserts or updates Customer entities into Storage
     ///
-    private func upsertCustomer(siteID: Int64, readOnlyCustomer: StorageCustomerConvertible, keyword: String? = nil, in storage: StorageType) {
+    private func upsertCustomer(siteID: Int64,
+                                readOnlyCustomer: StorageCustomerConvertible,
+                                keyword: String? = nil,
+                                storedCustomers: [Storage.Customer],
+                                storedSearchResults: Storage.CustomerSearchResult?,
+                                in storage: StorageType) {
         let storageCustomer: Storage.Customer = {
             // If the specific customerID for that siteID already exists, return it
             // If doesn't or the user is unregistered (loadingID == 0), insert a new one in Storage
             // Since we reset the customers everytime we request them, there's no risk of having duplicated unregistered customers
             if readOnlyCustomer.loadingID != 0,
-                let storedCustomer = storage.loadCustomer(siteID: siteID, customerID: readOnlyCustomer.loadingID) {
+               let storedCustomer = storedCustomers.first(where: { $0.customerID == readOnlyCustomer.loadingID }) {
                 return storedCustomer
             } else {
                 return storage.insertNewObject(ofType: Storage.Customer.self)
             }
         }()
 
-        if let keyword = keyword {
-            let storedSearchResult = self.sharedDerivedStorage.loadCustomerSearchResult(siteID: siteID, keyword: keyword) ??
-            self.sharedDerivedStorage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
+        if let keyword {
+            let storedSearchResult = storedSearchResults ?? storage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
 
             storedSearchResult.siteID = siteID
             storedSearchResult.keyword = keyword

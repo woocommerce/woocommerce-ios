@@ -297,6 +297,48 @@ final class WooShippingRemoteTests: XCTestCase {
         // Then
         XCTAssertNotNil(result.failure)
     }
+
+    func test_printLabel_returns_ShippingLabelPrintData() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/print", filename: "wooshipping-label-print-success")
+
+        // When
+        let printData: ShippingLabelPrintData = waitFor { promise in
+            remote.printLabel(siteID: self.sampleSiteID,
+                              labelIDs: [4321],
+                              paperSize: .label) { result in
+                guard let printData = try? result.get() else {
+                    XCTFail("Error printing shipping label: \(String(describing: result.failure))")
+                    return
+                }
+                promise(printData)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(printData.mimeType, "application/pdf")
+        XCTAssertFalse(printData.base64Content.isEmpty)
+        XCTAssertNotNil(printData.data)
+    }
+
+    func test_printLabel_returns_error_on_failure() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/print", filename: "generic_error")
+
+        // When
+        let result: Result<ShippingLabelPrintData, Error> = waitFor { promise in
+            remote.printLabel(siteID: self.sampleSiteID,
+                              labelIDs: [4321],
+                              paperSize: .label) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
 }
 
 private extension WooShippingRemoteTests {

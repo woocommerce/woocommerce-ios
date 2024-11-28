@@ -253,13 +253,9 @@ public final class CustomerStore: Store {
     }
 
     func deleteAllCustomers(from siteID: Int64, onCompletion: @escaping () -> Void) {
-        sharedDerivedStorage.perform { [weak self] in
-            self?.sharedDerivedStorage.deleteCustomers(siteID: siteID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: sharedDerivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ storage in
+            storage.deleteCustomers(siteID: siteID)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Maps CustomerSearchResult to Customer objects

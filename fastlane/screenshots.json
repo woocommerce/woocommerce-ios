@@ -18,18 +18,6 @@
 			"device_frame_offset": [138, 571]
 		},
 		{
-			"name": "iPhone 8 Plus",
-			"canvas_size": [1242,2208],
-			"text_size": [810, 371],
-			"text_offset": [216, 0],
-			"font_size": "68px",
-			"screenshot_size": [729, 1296],
-			"screenshot_offset": [257, 585],
-			"device_frame": "appstoreres/assets/iphone-8.png",
-			"device_frame_size": [838, 1727],
-			"device_frame_offset": [202, 372]
-		},
-		{
 			"name": "iPad Pro 12.9 (2nd Generation)",
 			"canvas_size": [2048,2732],
 			"text_size": [1848, 559],
@@ -95,48 +83,6 @@
 			"filename": "iPhone 11 Pro Max-05.png",
 			"background": "#674399",
 			"screenshot": "iPhone 11 Pro Max-5-dark-order-notification.png",
-			"text": "metadata/{locale}/app_store_screenshot_5.txt"
-		},
-
-		// iPhone 8 Plus
-		// Track sales and bestselling products
-		{
-			"device": "iPhone 8 Plus",
-			"filename": "iPhone 8 Plus-01.png",
-			"background": "#674399",
-			"screenshot": "iPhone 8 Plus-1-dark-order-dashboard.png",
-			"text": "metadata/{locale}/app_store_screenshot_1.txt"
-		},
-		// Create orders on the fly
-		{
-			"device": "iPhone 8 Plus",
-			"filename": "iPhone 8 Plus-02.png",
-			"background": "#C9356E",
-			"screenshot": "iPhone 8 Plus-2-light-order-creation.png",
-			"text": "metadata/{locale}/app_store_screenshot_2.txt"
-		},
-		// Take payments in person
-		{
-			"device": "iPhone 8 Plus",
-			"filename": "iPhone 8 Plus-03.png",
-			"background": "#674399",
-			"screenshot": "iPhone 8 Plus-3-dark-order-payment.png",
-			"text": "metadata/{locale}/app_store_screenshot_3.txt"
-		},
-		// Add and edit products with a touch
-		{
-			"device": "iPhone 8 Plus",
-			"filename": "iPhone 8 Plus-04.png",
-			"background": "#C9356E",
-			"screenshot": "iPhone 8 Plus-4-light-product-add.png",
-			"text": "metadata/{locale}/app_store_screenshot_4.txt"
-		},
-		// Get notified of every sale
-		{
-			"device": "iPhone 8 Plus",
-			"filename": "iPhone 8 Plus-05.png",
-			"background": "#674399",
-			"screenshot": "iPhone 8 Plus-5-dark-order-notification.png",
 			"text": "metadata/{locale}/app_store_screenshot_5.txt"
 		},
 

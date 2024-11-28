@@ -123,7 +123,7 @@ struct WooShippingCreateLabelsView: View {
                         }
                         .font(.subheadline)
                         .roundedBorder(cornerRadius: Layout.cornerRadius, lineColor: Color(.separator), lineWidth: 0.5)
-                        
+
                         // Always use a VStack in iPhone portrait orientation.
                         // CollapsibleHStack will use an HStack even if some text is truncated.
                         if isiPhonePortrait {

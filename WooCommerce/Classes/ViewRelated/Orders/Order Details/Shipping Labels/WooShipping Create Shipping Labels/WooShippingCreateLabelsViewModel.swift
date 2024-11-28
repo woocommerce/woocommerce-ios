@@ -27,18 +27,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     @Published private(set) var items: WooShippingItemsViewModel
 
     /// Selected package for the shipping label.
-    @Published private(set) var selectedPackage: ShippingLabelPackageSelected? {
-        didSet {
-            if let selectedPackage {
-                shippingService = WooShippingServiceViewModel(order: order,
-                                                              originAddress: originSiteAddress,
-                                                              destinationAddress: destinationAddress,
-                                                              selectedPackage: selectedPackage) { [weak self] selectedRate in
-                    self?.selectedRate = selectedRate
-                }
-            }
-        }
-    }
+    @Published private(set) var selectedPackage: ShippingLabelPackageSelected?
 
     /// View model for the label shipping service.
     private(set) var shippingService: WooShippingServiceViewModel?
@@ -127,6 +116,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.selectedPackage = selectedPackage
         self.selectedRate = selectedRate
         self.stores = stores
+        shippingService = WooShippingServiceViewModel(order: order,
+                                                      originAddress: originSiteAddress,
+                                                      destinationAddress: destinationAddress) { [weak self] selectedRate in
+            self?.selectedRate = selectedRate
+        }
     }
 
     /// Initialize the view model from an existing shipping label.

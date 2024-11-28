@@ -1,8 +1,8 @@
 import Testing
 @testable import WooCommerce
 
-struct CartViewModelTests {
-    let sut = CartViewModel()
+struct CartViewHelperTests {
+    let sut = CartViewHelper()
 
     @Test func shouldPreventCartEditing_when_paymentState_idle_and_order_is_syncing() async throws {
         // Given

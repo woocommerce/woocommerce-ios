@@ -48,6 +48,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let viewModel = PaymentMethodsViewModel(total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // When
@@ -74,6 +75,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let viewModel = PaymentMethodsViewModel(total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // When
@@ -107,6 +109,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let viewModel = PaymentMethodsViewModel(total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // When
@@ -136,6 +139,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let viewModel = PaymentMethodsViewModel(total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
@@ -166,6 +170,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
         var modifiedOrder: Order?
         var orderUpdateFields: [OrderUpdateField]?
@@ -199,6 +204,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let viewModel = PaymentMethodsViewModel(total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
@@ -237,6 +243,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let viewModel = PaymentMethodsViewModel(total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
@@ -289,6 +296,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // When
@@ -332,6 +340,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 total: "12",
                                                 formattedTotal: "¥12",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // When
@@ -370,6 +379,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // When
@@ -392,6 +402,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // When
@@ -414,6 +425,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // When
@@ -452,6 +464,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let viewModel = PaymentMethodsViewModel(total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // When
@@ -495,6 +508,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let viewModel = PaymentMethodsViewModel(total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // When
@@ -527,6 +541,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let viewModel = PaymentMethodsViewModel(total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // When
@@ -552,6 +567,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // When
@@ -575,6 +591,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // When
@@ -596,6 +613,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // When
@@ -622,6 +640,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // When
@@ -647,6 +666,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 total: "5",
                                                 formattedTotal: "$5.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // Then
@@ -667,6 +687,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 total: "5",
                                                 formattedTotal: "$5.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // Then
@@ -687,6 +708,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 total: "5",
                                                 formattedTotal: "$5.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // Then
@@ -713,6 +735,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 total: "5",
                                                 formattedTotal: "$5.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // Then
@@ -733,6 +756,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 total: "5",
                                                 formattedTotal: "$5.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // Then
@@ -753,6 +777,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 total: "5",
                                                 formattedTotal: "$5.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // Then
@@ -765,7 +790,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let viewModel = PaymentMethodsViewModel(paymentLink: nil,
                                                 total: "12",
                                                 formattedTotal: "$12.00",
-                                                flow: .simplePayment)
+                                                flow: .simplePayment,
+                                                channel: .storeManagement)
 
         // Then
         XCTAssertFalse(viewModel.showPaymentLinkRow)
@@ -778,7 +804,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let viewModel = PaymentMethodsViewModel(paymentLink: paymentURL,
                                                 total: "12",
                                                 formattedTotal: "$12.00",
-                                                flow: .simplePayment)
+                                                flow: .simplePayment,
+                                                channel: .storeManagement)
 
         // Then
         XCTAssertTrue(viewModel.showPaymentLinkRow)
@@ -790,7 +817,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let viewModel = PaymentMethodsViewModel(paymentLink: nil,
                                                 total: "12",
                                                 formattedTotal: "$12.00",
-                                                flow: .simplePayment)
+                                                flow: .simplePayment,
+                                                channel: .storeManagement)
 
         // Then
         XCTAssertFalse(viewModel.showScanToPayRow)
@@ -803,7 +831,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let viewModel = PaymentMethodsViewModel(paymentLink: paymentURL,
                                                 total: "12",
                                                 formattedTotal: "$12.00",
-                                                flow: .simplePayment)
+                                                flow: .simplePayment,
+                                                channel: .storeManagement)
 
         // Then
         XCTAssertTrue(viewModel.showScanToPayRow)
@@ -816,6 +845,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let viewModel = PaymentMethodsViewModel(total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // When
@@ -843,6 +873,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let viewModel = PaymentMethodsViewModel(total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // When
@@ -888,6 +919,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let viewModel = PaymentMethodsViewModel(total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // When
@@ -926,6 +958,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let viewModel = PaymentMethodsViewModel(total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // When
@@ -962,6 +995,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let viewModel = PaymentMethodsViewModel(total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
+                                                channel: .storeManagement,
                                                 dependencies: dependencies)
 
         // When

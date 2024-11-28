@@ -4,7 +4,11 @@ import Foundation
 class MockPOSOrderService: POSOrderServiceProtocol {
     var simulateSyncing = false
     var orderToReturn: Order?
-    func syncOrder(cart: [Yosemite.POSCartItem], order: Yosemite.Order?, allProducts: [any Yosemite.POSItem]) async throws -> Yosemite.Order {
+
+    var syncOrderWasCalled = false
+    func syncOrder(cart: [Yosemite.POSCartItem], order: Yosemite.Order?) async throws -> Yosemite.Order {
+        syncOrderWasCalled = true
+
         if simulateSyncing {
             try await Task.sleep(nanoseconds: UInt64(1 * Double(NSEC_PER_SEC)))
         }

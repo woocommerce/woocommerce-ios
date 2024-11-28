@@ -1,8 +1,7 @@
-import SwiftUI
-import Combine
+import Foundation
 import protocol Yosemite.POSItem
 
-final class CartViewModel {
+final class CartViewHelper {
     func itemsInCartLabel(for itemsCount: Int) -> String? {
         guard itemsCount > 0 else {
             return nil

@@ -5,6 +5,9 @@ import XCTest
 ///
 final class MockWooShippingRemote {
 
+    private(set) var purchaseShippingLabelCalled = false
+    private(set) var checkLabelStatusCallsCount = 0
+
     private struct ResultKey: Hashable {
         let siteID: Int64
     }
@@ -23,6 +26,12 @@ final class MockWooShippingRemote {
 
     /// The results to return based on the given arguments in `loadAccountSettings`
     private var loadAccountSettingsResults = [ResultKey: Result<WooShippingAccountSettings, Error>]()
+
+    /// The results to return based on the given arguments in `checkLabelStatus`
+    private var checkLabelStatus = [ResultKey: Result<ShippingLabelStatusPollingResponse, Error>]()
+
+    /// The results to return based on the given arguments in `printLabel`
+    private var printLabel = [ResultKey: Result<ShippingLabelPrintData, Error>]()
 
     /// Set the value passed to the `completion` block if `createPackage` is called.
     func whenCreatePackage(siteID: Int64,
@@ -57,6 +66,20 @@ final class MockWooShippingRemote {
                                    thenReturn result: Result<[ShippingLabelPurchase], Error>) {
         let key = ResultKey(siteID: siteID)
         purchaseShippingLabelResults[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `checkLabelStatus` is called.
+    func whenCheckLabelStatus(siteID: Int64,
+                              thenReturn result: Result<ShippingLabelStatusPollingResponse, Error>) {
+        let key = ResultKey(siteID: siteID)
+        checkLabelStatus[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `printLabel` is called.
+    func whenPrintLabel(siteID: Int64,
+                        thenReturn result: Result<ShippingLabelPrintData, Error>) {
+        let key = ResultKey(siteID: siteID)
+        printLabel[key] = result
     }
 }
 
@@ -135,6 +158,40 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
             let key = ResultKey(siteID: siteID)
             if let result = self.purchaseShippingLabelResults[key] {
+                self.purchaseShippingLabelCalled = true
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func checkLabelStatus(siteID: Int64,
+                          orderID: Int64,
+                          labelID: Int64,
+                          completion: @escaping (Result<ShippingLabelStatusPollingResponse, any Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = ResultKey(siteID: siteID)
+            if let result = self.checkLabelStatus[key] {
+                self.checkLabelStatusCallsCount += 1
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func printLabel(siteID: Int64,
+                    labelIDs: [Int64],
+                    paperSize: Networking.ShippingLabelPaperSize,
+                    completion: @escaping (Result<Networking.ShippingLabelPrintData, any Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = ResultKey(siteID: siteID)
+            if let result = self.printLabel[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

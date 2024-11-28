@@ -1,6 +1,6 @@
 import Foundation
 
-final class TotalsViewModel {
+final class TotalsViewHelper {
     func shouldShowTotalsFields(for paymentState: PointOfSalePaymentState) -> Bool {
         switch paymentState {
         case .idle,

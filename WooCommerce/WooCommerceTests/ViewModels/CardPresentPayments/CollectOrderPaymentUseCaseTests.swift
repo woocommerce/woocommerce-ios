@@ -64,7 +64,9 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         let _: Void = waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, onFailure: { _ in }, onCancel: {
+            self.useCase.collectPayment(using: .bluetoothScan,
+                                        channel: .storeManagement,
+                                        onFailure: { _ in }, onCancel: {
                 promise(())
             }, onPaymentCompletion: {}, onCompleted: {})
             self.mockPreflightController.cancelConnection(readerModel: Mocks.cardReaderModel, gatewayID: Mocks.paymentGatewayAccount, source: .foundReader)
@@ -85,7 +87,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
                 promise(())
             }, onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
@@ -110,7 +112,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When we make a successful payment
         waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
                 promise(())
             }, onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
@@ -162,6 +164,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
             useCase.collectPayment(
                 using: .bluetoothScan,
+                channel: .storeManagement,
                 onFailure: { _ in },
                 onCancel: {},
                 onPaymentCompletion: {},
@@ -197,7 +200,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
                 promise(())
             }, onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
@@ -230,7 +233,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
                 promise(())
             }, onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
@@ -263,6 +266,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                 }
             }
             self.useCase.collectPayment(using: .bluetoothScan,
+                                        channel: .storeManagement,
                                         onFailure: { _ in },
                                         onCancel: {},
                                         onPaymentCompletion: {},
@@ -296,6 +300,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                 }
             }
             self.useCase.collectPayment(using: .bluetoothScan,
+                                        channel: .storeManagement,
                                         onFailure: { _ in },
                                         onCancel: {},
                                         onPaymentCompletion: {},
@@ -330,6 +335,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                 }
             }
             self.useCase.collectPayment(using: .bluetoothScan,
+                                        channel: .storeManagement,
                                         onFailure: { _ in },
                                         onCancel: {},
                                         onPaymentCompletion: {},
@@ -340,6 +346,20 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         // Then we should present a default modal without the email
         let lastAlert = alertsPresenter.spyPresentedAlertViewModels.last as? CardPresentModalError
         XCTAssertNotNil(lastAlert)
+    }
+
+    func test_collectPayment_channel_is_passed_to_payment_capture_orchestrator() throws {
+        // When
+        useCase.collectPayment(using: .bluetoothScan,
+                               channel: .pos,
+                               onFailure: { _ in },
+                               onCancel: {},
+                               onPaymentCompletion: {},
+                               onCompleted: {})
+        mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+
+        // Then
+        XCTAssertEqual(mockPaymentOrchestrator.spyChannel, .pos)
     }
 }
 

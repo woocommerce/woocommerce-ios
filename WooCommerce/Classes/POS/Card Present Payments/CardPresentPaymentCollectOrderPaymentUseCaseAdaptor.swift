@@ -5,6 +5,7 @@ import struct Yosemite.Order
 import struct Yosemite.CardPresentPaymentsConfiguration
 import protocol Yosemite.StoresManager
 import enum Yosemite.CardPresentPaymentAction
+import enum Yosemite.PaymentChannel
 
 final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
     private let currencyFormatter: CurrencyFormatter
@@ -29,7 +30,8 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                             onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
                             configuration: CardPresentPaymentsConfiguration,
                             alertsPresenter: CardPresentPaymentsAlertPresenterAdaptor,
-                            paymentEventSubject: any Subject<CardPresentPaymentEvent, Never>) -> Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error> {
+                            paymentEventSubject: any Subject<CardPresentPaymentEvent, Never>,
+                            channel: PaymentChannel) -> Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error> {
         return Task {
             guard let formattedAmount = currencyFormatter.formatAmount(order.total, with: order.currency) else {
                 throw CardPresentPaymentServiceError.invalidAmount
@@ -58,6 +60,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
 
                     orderPaymentUseCase.collectPayment(
                         using: connectionMethod.discoveryMethod,
+                        channel: channel,
                         onFailure: { error in
                             guard let continuation = nillableContinuation else { return }
                             nillableContinuation = nil

@@ -16,7 +16,6 @@ final class ProductTagListMapperTests: XCTestCase {
         XCTAssertEqual(secondTag.tagID, 35)
         XCTAssertEqual(secondTag.name, "Oxford Shoes")
         XCTAssertEqual(secondTag.slug, "oxford-shoes")
-        XCTAssertEqual(secondTag.count, 2)
     }
 
     /// Verifies that all of the ProductTag Fields are parsed correctly.
@@ -29,7 +28,6 @@ final class ProductTagListMapperTests: XCTestCase {
         XCTAssertEqual(secondTag.tagID, 35)
         XCTAssertEqual(secondTag.name, "Oxford Shoes")
         XCTAssertEqual(secondTag.slug, "oxford-shoes")
-        XCTAssertEqual(secondTag.count, 2)
     }
 
     /// Verifies that all of the ProductTag Fields under `create` field are parsed correctly.

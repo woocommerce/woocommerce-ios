@@ -24,7 +24,7 @@
         "name": "Oxford Shoes",
         "slug": "oxford-shoes",
         "description": "",
-        "count": 2,
+        "count": 0,
         "_links": {
           "self": [
             {
@@ -43,7 +43,7 @@
         "name": "Leather Boots",
         "slug": "leather-boots",
         "description": "",
-        "count": 3,
+        "count": 0,
         "_links": {
           "self": [
             {
@@ -62,7 +62,7 @@
         "name": "Sneakers",
         "slug": "sneakers",
         "description": "A shoe suitable for playing sports",
-        "count": 4,
+        "count": 0,
         "_links": {
           "self": [
             {

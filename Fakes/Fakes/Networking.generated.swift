@@ -1628,8 +1628,7 @@ extension Networking.ProductTag {
             siteID: .fake(),
             tagID: .fake(),
             name: .fake(),
-            slug: .fake(),
-            count: .fake()
+            slug: .fake()
         )
     }
 }

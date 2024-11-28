@@ -2634,21 +2634,18 @@ extension Networking.ProductTag {
         siteID: CopiableProp<Int64> = .copy,
         tagID: CopiableProp<Int64> = .copy,
         name: CopiableProp<String> = .copy,
-        slug: CopiableProp<String> = .copy,
-        count: CopiableProp<Int> = .copy
+        slug: CopiableProp<String> = .copy
     ) -> Networking.ProductTag {
         let siteID = siteID ?? self.siteID
         let tagID = tagID ?? self.tagID
         let name = name ?? self.name
         let slug = slug ?? self.slug
-        let count = count ?? self.count
 
         return Networking.ProductTag(
             siteID: siteID,
             tagID: tagID,
             name: name,
-            slug: slug,
-            count: count
+            slug: slug
         )
     }
 }

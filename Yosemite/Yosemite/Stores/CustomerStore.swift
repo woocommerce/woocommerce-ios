@@ -162,8 +162,7 @@ public final class CustomerStore: Store {
                 self.upsertWCAnalyticsCustomersAndSave(siteID: siteID,
                                                        readOnlyCustomers: customers,
                                                        shouldDeleteExistingCustomers: filter != .all,
-                                                       keyword: keyword,
-                                                       in: self.sharedDerivedStorage) {
+                                                       keyword: keyword) {
                     let hasNextPage = customers.count == pageSize
                     onCompletion(.success(hasNextPage))
                 }
@@ -239,8 +238,7 @@ public final class CustomerStore: Store {
             case let .success(customers):
                 self.upsertWCAnalyticsCustomersAndSave(siteID: siteID,
                                                        readOnlyCustomers: customers,
-                                                       shouldDeleteExistingCustomers: pageNumber == 1,
-                                                       in: self.sharedDerivedStorage) {
+                                                       shouldDeleteExistingCustomers: pageNumber == 1) {
                     let hasNextPage = customers.count == pageSize
                     onCompletion(.success(hasNextPage))
                 }
@@ -329,13 +327,12 @@ private extension CustomerStore {
                                         keyword: String? = nil,
                                         onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
-            guard let self else { return }
             if shouldDeleteExistingCustomers {
                 storage.deleteCustomers(siteID: siteID)
             }
 
             readOnlyCustomers.forEach {
-                self.upsertCustomer(siteID: siteID, readOnlyCustomer: $0, keyword: keyword, in: storage)
+                self?.upsertCustomer(siteID: siteID, readOnlyCustomer: $0, keyword: keyword, in: storage)
             }
         }, completion: onCompletion, on: .main)
     }
@@ -344,9 +341,8 @@ private extension CustomerStore {
                                                    readOnlyCustomers: [WCAnalyticsCustomer],
                                                    shouldDeleteExistingCustomers: Bool = false,
                                                    keyword: String? = nil,
-                                                   in storage: StorageType,
                                                    onCompletion: @escaping () -> Void) {
-        storage.perform { [weak self] in
+        storageManager.performAndSave({ [weak self] storage in
             if shouldDeleteExistingCustomers {
                 storage.deleteWCAnalyticsCustomers(siteID: siteID)
             }
@@ -354,11 +350,7 @@ private extension CustomerStore {
             readOnlyCustomers.forEach {
                 self?.upsertWCAnalyticsCustomer(siteID: siteID, readOnlyCustomer: $0, keyword: keyword, in: storage)
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: storage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 
     /// Inserts or updates Customer entities into Storage

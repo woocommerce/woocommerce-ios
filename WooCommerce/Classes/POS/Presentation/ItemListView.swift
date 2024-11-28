@@ -1,5 +1,6 @@
 import SwiftUI
-import protocol Yosemite.POSItem
+import protocol Yosemite.POSDisplayableItem
+import typealias Yosemite.POSOrderableItem
 
 struct ItemListView: View {
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
@@ -22,7 +23,7 @@ struct ItemListView: View {
                 // a specific view within the ItemListView to handle them
                 EmptyView()
             case .loading(let items), .loaded(let items):
-                listView(items)
+                listView(items.map { AnyEquatablePOSDisplayableItem($0) })
             }
         }
         .refreshable {
@@ -123,18 +124,14 @@ private extension ItemListView {
     }
 
     @ViewBuilder
-    func listView(_ items: [POSItem]) -> some View {
+    func listView(_ items: [AnyEquatablePOSDisplayableItem]) -> some View {
         ScrollView {
             VStack {
                 if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                     bannerCardView
                 }
-                ForEach(items, id: \.productID) { item in
-                    Button(action: {
-                        posModel.addToCart(item)
-                    }, label: {
-                        ItemCardView(item: item)
-                    })
+                ForEach(items) { item in
+                    listRow(item: item)
                 }
                 GhostItemCardView()
                     .renderedIf(posModel.itemListState.isLoadingAfterInitialLoad)
@@ -157,6 +154,20 @@ private extension ItemListView {
                         lastScrollPosition = maxY
                     }
             })
+        }
+    }
+
+    @ViewBuilder
+    func listRow(item: AnyEquatablePOSDisplayableItem) -> some View {
+        switch item {
+        case is any POSOrderableItem:
+            Button(action: {
+                posModel.addToCart(item as! (any POSOrderableItem))
+            }, label: {
+                ItemCardView(item: item)
+            })
+        default:
+            ItemCardView(item: item)
         }
     }
 }

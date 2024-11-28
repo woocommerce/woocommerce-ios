@@ -1,11 +1,12 @@
 public protocol PointOfSaleItemDisplayable: Identifiable, Equatable {
+    var id: UUID { get }
     var name: String { get }
     var formattedPrice: String { get }
     var productImageSource: String? { get }
 }
 
 public protocol PointOfSaleItemOrderItemConvertable {
-    func toOrderItem() -> OrderItem
+    func toOrderSyncProductInput(quantity: Decimal) -> OrderSyncProductInput
     func matches(orderItem: OrderItem) -> Bool
 }
 

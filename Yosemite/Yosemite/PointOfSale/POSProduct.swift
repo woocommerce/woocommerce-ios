@@ -1,25 +1,29 @@
-struct POSProduct: POSItem {
-    let itemID: UUID
-    let productID: Int64
+import WooFoundation
+
+struct POSProduct: POSOrderableItem, OrderSyncProductTypeProtocol {
+    // POSOrderableItem
+    let id: UUID
     let name: String
-    let price: String
     let formattedPrice: String
     var productImageSource: String?
-    let productType: ProductType
 
-    init(itemID: UUID,
-         productID: Int64,
-         name: String,
-         price: String,
-         formattedPrice: String,
-         productImageSource: String?,
-         productType: ProductType) {
-        self.itemID = itemID
-        self.productID = productID
-        self.name = name
-        self.price = price
-        self.formattedPrice = formattedPrice
-        self.productImageSource = productImageSource
-        self.productType = productType
+    // OrderSyncProductTypeProtocol
+    let productID: Int64
+    let price: String
+    let productType: ProductType = .simple
+    let bundledItems: [ProductBundleItem] = []
+}
+
+extension POSProduct {
+    func toOrderSyncProductInput(quantity: Decimal) -> OrderSyncProductInput {
+        OrderSyncProductInput(product: .product(self), quantity: quantity)
+    }
+
+    func matches(orderItem: OrderItem) -> Bool {
+        // TODO: https://github.com/woocommerce/woocommerce-ios/pull/13328/files#r1687631533
+        // - we should also add a logic to compare prices
+        // - but we should be aware of the fact that some
+        // products already have tax in the price
+        return productID == orderItem.productID
     }
 }

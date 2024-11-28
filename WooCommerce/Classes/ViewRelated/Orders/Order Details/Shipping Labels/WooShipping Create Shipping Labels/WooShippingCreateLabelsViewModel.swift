@@ -151,7 +151,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                                                    length: Double(packageData.length) ?? 0,
                                                    width: Double(packageData.width) ?? 0,
                                                    height: Double(packageData.height) ?? 0,
-                                                   weight: Double(packageData.weight) ?? 0,
+                                                   weight: itemsDataSource.items.map(\.weight).reduce(0, +) + (Double(packageData.weight) ?? 0),
                                                    isLetter: WooShippingPackageType(rawValue: packageData.packageType) == .envelope,
                                                    hazmatCategory: nil, // Hazmat support will be added in a future milestone
                                                    customsForm: nil) // Customs form support will be added in a future milestone

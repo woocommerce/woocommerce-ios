@@ -54,6 +54,11 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     private(set) var paymentMethodsViewModel: PaymentMethodsViewModel?
     private var paymentMethodsNoticeSubscription: AnyCancellable?
 
+
+    var isTapToPayEducationEnabled: Bool {
+        dependencies.featureFlagService.isFeatureFlagEnabled(.tapToPayEducation)
+    }
+
     struct Dependencies {
         let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
         let onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol

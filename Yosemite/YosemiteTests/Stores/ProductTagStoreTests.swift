@@ -58,7 +58,7 @@ final class ProductTagStoreTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_synchronizeAllProductTags_saves_all_tags_with_count_larger_than_0_to_storage() throws {
+    func test_synchronizeAllProductTags_saves_all_tags_to_storage() throws {
         // Given a stubed product-tags network response
         network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-all")
         network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-empty")
@@ -103,7 +103,7 @@ final class ProductTagStoreTests: XCTestCase {
 
     func testSynchronizeProductTagsUpdatesStoredTagsSuccessfulResponse() {
         // Given an initial stored tag and a stubed product-tags network response
-        let initialTag = sampleTag(tagID: 35)
+        let initialTag = sampleTag(tagID: 34)
         storageManager.insertSampleProductTag(readOnlyProductTag: initialTag)
         network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-all")
         network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-empty")

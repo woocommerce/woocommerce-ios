@@ -10,12 +10,6 @@ public final class SiteStore: Store {
     // Keeps a strong reference to remote to keep requests alive.
     private let remote: SiteRemoteProtocol
 
-    /// Shared private StorageType for use when upserting sites into storage.
-    ///
-    private lazy var sharedDerivedStorage: StorageType = {
-        storageManager.writerDerivedStorage
-    }()
-
     public init(remote: SiteRemoteProtocol,
                 dispatcher: Dispatcher,
                 storageManager: StorageManagerType,

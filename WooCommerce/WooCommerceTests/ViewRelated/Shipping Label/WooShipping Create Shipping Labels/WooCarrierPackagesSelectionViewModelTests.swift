@@ -51,7 +51,7 @@ final class WooCarrierPackagesSelectionViewModelTests: XCTestCase {
 }
 
 final class MockWooShippingPackagesRepository: WooShippingPackagesRepositoryProtocol {
-    private(set) var loadingSavedPackages: Bool = false
+    private(set) var loadingPackages: Bool = false
     private(set) var customSavedPackages: [any WooShippingPackageDataRepresentable] = []
     private(set) var predefinedSavedPackages: [any WooShippingPackageDataRepresentable] = []
     private(set) var loadingCarrierPackages: Bool = false
@@ -59,12 +59,7 @@ final class MockWooShippingPackagesRepository: WooShippingPackagesRepositoryProt
     var carrierPackagesPublisher: Published<[WooShippingCarrierPackages]>.Publisher { $carrierPackages }
 
     func loadPackages() {
-        loadSavedPackages()
-        loadCarrierPackages()
-    }
-
-    func loadSavedPackages() {
-        loadingSavedPackages = true
+        loadingPackages = true
 
         customSavedPackages = [
             WooShippingPackageData(id: UUID().uuidString,
@@ -118,12 +113,6 @@ final class MockWooShippingPackagesRepository: WooShippingPackagesRepositoryProt
                                   source: .predefined("DHL Express"),
                                   packageType: "box"),
         ]
-
-        loadingSavedPackages = false
-    }
-
-    func loadCarrierPackages() {
-        loadingCarrierPackages = true
 
         let uspsPackageGroups: [WooPackageGroup] = [
             WooPackageGroup(name: "Flat Rate Boxes 1", packages: [
@@ -196,7 +185,7 @@ final class MockWooShippingPackagesRepository: WooShippingPackagesRepositoryProt
 
         carrierPackages = [uspsCarrier, dhlCarrier]
 
-        loadingCarrierPackages = false
+        loadingPackages = false
     }
 
     // MARK: - Packages updates
@@ -208,12 +197,15 @@ final class MockWooShippingPackagesRepository: WooShippingPackagesRepositoryProt
         return nil
     }
 
-    func addCustomPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error? {
+    func saveCustomPackage(_ packageToAdd: WooShippingPackageDataRepresentable,
+                           dimensionsUnit: String,
+                           weightUnit: String, siteID:
+                           Int64, stores: StoresManager) async -> Result<WooShippingPackageDataRepresentable, Error> {
         customSavedPackages.append(packageToAdd)
-        return nil
+        return .success(packageToAdd)
     }
 
-    func addPredefinedPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error? {
+    func savePredefinedPackage(_ packageToAdd: WooShippingPackageDataRepresentable) async -> Error? {
         predefinedSavedPackages.append(packageToAdd)
         return nil
     }

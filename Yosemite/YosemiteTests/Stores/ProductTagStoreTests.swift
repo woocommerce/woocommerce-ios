@@ -75,7 +75,7 @@ final class ProductTagStoreTests: XCTestCase {
         }
 
         // Then a valid set of tags (count > 0) should be stored
-        XCTAssertEqual(storedProductTagsCount, 3)
+        XCTAssertEqual(storedProductTagsCount, 4)
         XCTAssertNil(errorResponse)
     }
 
@@ -97,7 +97,7 @@ final class ProductTagStoreTests: XCTestCase {
         }
 
         // Then the combined set of tags should be stored
-        XCTAssertEqual(storedProductTagsCount, 4)
+        XCTAssertEqual(storedProductTagsCount, 5)
         XCTAssertNil(errorResponse)
     }
 
@@ -144,7 +144,7 @@ final class ProductTagStoreTests: XCTestCase {
         }
 
         // Then first page of tags should be stored
-        XCTAssertEqual(storedProductTagsCount, 3)
+        XCTAssertEqual(storedProductTagsCount, 4)
 
         // And error should contain correct fromPageNumber
         switch errorResponse {
@@ -274,34 +274,6 @@ final class ProductTagStoreTests: XCTestCase {
         // Then no tags should be stored
         XCTAssertEqual(storedProductTagsCount, 0)
         XCTAssertNotNil(result?.failure)
-    }
-
-    func testSynchronizeProductTagsDeletesUnusedTags() {
-        // Given some stored product tags without product relationships
-        let sampleTags = (1...5).map { id in
-            return sampleTag(tagID: id)
-        }
-        sampleTags.forEach { tag in
-            storageManager.insertSampleProductTag(readOnlyProductTag: tag)
-        }
-        XCTAssertEqual(storedProductTagsCount, sampleTags.count)
-
-        // When dispatching a `synchronizeAllProductTags` action
-        network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-all")
-        network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-empty")
-
-        var errorResponse: ProductTagActionError?
-        waitForExpectation { (exp) in
-            let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID) { error in
-                errorResponse = error
-                exp.fulfill()
-            }
-            store.onAction(action)
-        }
-
-        // Then new tag should be stored and old tags should be deleted
-        XCTAssertEqual(storedProductTagsCount, 3)
-        XCTAssertNil(errorResponse)
     }
 
     func testDeleteProductTagDeleteStoredTagSuccessfulResponse() {

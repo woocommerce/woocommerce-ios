@@ -76,12 +76,7 @@ private extension ProductTagStore {
 
             switch result {
             case .success(let productTags):
-                let shouldRemoveUnusedTags = pageNumber == Default.firstPageNumber
-                /// Only upsert tags that are associated with at least 1 product.
-                let filteredTags = productTags.filter { $0.count > 0 }
-                self?.upsertStoredProductTagsInBackground(filteredTags,
-                                                          siteID: siteID,
-                                                          shouldRemoveUnusedTags: shouldRemoveUnusedTags) {
+                self?.upsertStoredProductTagsInBackground(productTags, siteID: siteID) {
                     onCompletion(.success(productTags))
                 }
             case .failure(let error):
@@ -99,7 +94,7 @@ private extension ProductTagStore {
         remote.createProductTags(for: siteID, names: tags) { [weak self] (result) in
             switch result {
             case .success(let productTags):
-                self?.upsertStoredProductTagsInBackground(productTags, siteID: siteID, shouldRemoveUnusedTags: false) {
+                self?.upsertStoredProductTagsInBackground(productTags, siteID: siteID) {
                     onCompletion(.success(productTags))
                 }
             case .failure(let error):
@@ -132,12 +127,8 @@ private extension ProductTagStore {
     ///
     func upsertStoredProductTagsInBackground(_ readOnlyProductTags: [Networking.ProductTag],
                                              siteID: Int64,
-                                             shouldRemoveUnusedTags: Bool,
                                              onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
-            if shouldRemoveUnusedTags {
-                storage.deleteUnusedProductTags(siteID: siteID)
-            }
             self?.upsertStoredProductTags(readOnlyProductTags, in: storage, siteID: siteID)
         }, completion: onCompletion, on: .main)
     }

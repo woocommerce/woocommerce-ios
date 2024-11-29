@@ -7,6 +7,7 @@
 - [**] Media Library: On sites logged in with application password, when picking image from WordPress Media Library, all images will now load correctly. [https://github.com/woocommerce/woocommerce-ios/pull/14444]
 - [Internal] Updated storage usage in CouponStore [https://github.com/woocommerce/woocommerce-ios/pull/14530]
 - [Internal] Updated storage usage in ProductShippingClassStore [https://github.com/woocommerce/woocommerce-ios/pull/14520]
+- [Internal] Updated storage usage in SystemStatusStore [https://github.com/woocommerce/woocommerce-ios/pull/14559]
 
 21.2
 -----

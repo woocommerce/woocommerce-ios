@@ -23,7 +23,7 @@ struct ItemListView: View {
                 // a specific view within the ItemListView to handle them
                 EmptyView()
             case .loading(let items), .loaded(let items):
-                listView(items.map { AnyEquatablePOSDisplayableItem($0) })
+                listView(items)
             }
         }
         .refreshable {
@@ -124,13 +124,13 @@ private extension ItemListView {
     }
 
     @ViewBuilder
-    func listView(_ items: [AnyEquatablePOSDisplayableItem]) -> some View {
+    func listView(_ items: [any POSDisplayableItem]) -> some View {
         ScrollView {
             VStack {
                 if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                     bannerCardView
                 }
-                ForEach(items) { item in
+                ForEach(items, id: \.id) { item in
                     listRow(item: item)
                 }
                 GhostItemCardView()
@@ -158,7 +158,7 @@ private extension ItemListView {
     }
 
     @ViewBuilder
-    func listRow(item: AnyEquatablePOSDisplayableItem) -> some View {
+    func listRow(item: any POSDisplayableItem) -> some View {
         switch item {
         case is any POSOrderableItem:
             Button(action: {

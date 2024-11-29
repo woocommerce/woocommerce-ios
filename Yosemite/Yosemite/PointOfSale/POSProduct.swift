@@ -1,6 +1,6 @@
 import WooFoundation
 
-struct POSProduct: POSOrderableItem, OrderSyncProductTypeProtocol {
+struct POSProduct: POSOrderableItem, OrderSyncProductTypeProtocol, Equatable {
     // POSOrderableItem
     let id: UUID
     let name: String

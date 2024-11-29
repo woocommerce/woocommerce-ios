@@ -13,7 +13,7 @@ import Combine
 
 // MARK: - PreviewProvider helpers
 //
-struct POSProductPreview: POSOrderableItem {
+struct POSProductPreview: POSOrderableItem, Equatable {
     let id: UUID
     let name: String
     let formattedPrice: String

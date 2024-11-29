@@ -76,7 +76,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     private func fetchItems(pageNumber: Int) async throws {
         let newItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
         let uniqueNewItems = newItems.filter { newItem in
-            !allItems.contains(where: { AnyEquatablePOSDisplayableItem($0) == AnyEquatablePOSDisplayableItem(newItem) })
+            !allItems.contains(where: { $0.isEqual(to: newItem) })
         }
         allItems.append(contentsOf: uniqueNewItems)
     }

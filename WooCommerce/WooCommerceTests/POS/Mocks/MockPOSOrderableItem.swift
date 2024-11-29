@@ -6,11 +6,23 @@ import protocol Yosemite.OrderSyncProductTypeProtocol
 import struct Yosemite.ProductBundleItem
 import struct Yosemite.OrderItem
 
-struct MockPOSItem: POSOrderableItem {
+final class MockPOSItem: POSOrderableItem, Equatable {
     var name: String
-    var id: UUID = UUID()
+    var id: UUID
     var formattedPrice: String
-    var productImageSource: String? = nil
+    var productImageSource: String?
+
+    init(name: String,
+         id: UUID = UUID(),
+         formattedPrice: String,
+         productImageSource: String? = nil,
+         orderItemsToMatch: [OrderItem] = []) {
+        self.name = name
+        self.id = id
+        self.formattedPrice = formattedPrice
+        self.productImageSource = productImageSource
+        self.orderItemsToMatch = orderItemsToMatch
+    }
 
     func toOrderSyncProductInput(quantity: Decimal) -> OrderSyncProductInput {
         OrderSyncProductInput(
@@ -22,8 +34,19 @@ struct MockPOSItem: POSOrderableItem {
             bundleConfiguration: [])
     }
 
+    var orderItemsToMatch: [OrderItem]
     func matches(orderItem: OrderItem) -> Bool {
-        return false
+        guard orderItemsToMatch.contains(orderItem) == true else {
+            return false
+        }
+        return true
+    }
+
+    static func == (lhs: MockPOSItem, rhs: MockPOSItem) -> Bool {
+        return lhs.name == rhs.name &&
+        lhs.id == rhs.id &&
+        lhs.formattedPrice == rhs.formattedPrice &&
+        lhs.productImageSource == rhs.productImageSource
     }
 }
 

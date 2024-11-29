@@ -112,7 +112,6 @@ struct WooSavedPackagesSelectionView: View {
         VStack(spacing: 0) {
             Divider()
             if viewModel.isLoadingPackages {
-                // TODO: think of a better progress/loading indicator
                 ProgressView()
                     .progressViewStyle(.circular)
                     .padding()

@@ -43,7 +43,7 @@ extension ShippingLabelPackageSelected: Encodable {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(id, forKey: .id)
-        try container.encode(boxID, forKey: .boxID)
+        try container.encode(boxID.isEmpty ? "0" : boxID, forKey: .boxID)
         try container.encode(length, forKey: .length)
         try container.encode(width, forKey: .width)
         try container.encode(height, forKey: .height)

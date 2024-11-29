@@ -1,5 +1,4 @@
 import SwiftUI
-import enum Yosemite.WooShippingAction
 
 struct WooAddCustomPackageView: View {
     enum Constants {
@@ -63,12 +62,12 @@ struct WooAddCustomPackageView: View {
                         VStack {
                             AdaptiveStack(spacing: 8) {
                                 ForEach(WooShippingPackageUnitType.dimensionUnits, id: \.self) { dimensionUnit in
-                                    unitInputView(for: dimensionUnit, unit: viewModel.storeOptions.dimensionUnit)
+                                    unitInputView(for: dimensionUnit, unit: viewModel.dimensionsUnit)
                                 }
                             }
                             // showing weight input only if we are saving the template
                             if viewModel.showSaveTemplate {
-                                unitInputView(for: WooShippingPackageUnitType.weight, unit: viewModel.storeOptions.weightUnit)
+                                unitInputView(for: WooShippingPackageUnitType.weight, unit: viewModel.weightUnit)
                             }
                         }
                         .toolbar {

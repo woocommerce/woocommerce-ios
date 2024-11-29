@@ -58,7 +58,7 @@ final class ProductTagStoreTests: XCTestCase {
         super.tearDown()
     }
 
-    func testSynchronizeProductTagsReturnsTagsUponSuccessfulResponse() throws {
+    func test_synchronizeAllProductTags_saves_all_tags_to_storage() throws {
         // Given a stubed product-tags network response
         network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-all")
         network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-empty")
@@ -238,6 +238,25 @@ final class ProductTagStoreTests: XCTestCase {
         XCTAssertNotNil(result?.failure)
     }
 
+    func test_addProductTags_returns_success_for_empty_tag_list() throws {
+        // When
+        var result: Result<[Networking.ProductTag], Error>?
+        waitForExpectation { (exp) in
+            let action = ProductTagAction.addProductTags(siteID: sampleSiteID, tags: []) { (aResult) in
+                result = aResult
+                exp.fulfill()
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let receivedResult = try XCTUnwrap(result)
+        XCTAssertTrue(receivedResult.isSuccess)
+
+        let addedTags = try receivedResult.get()
+        XCTAssertTrue(addedTags.isEmpty)
+    }
+
     func testAddProductTagReturnsErrorUponEmptyResponse() {
         // Given an empty network response
         XCTAssertEqual(storedProductTagsCount, 0)
@@ -255,34 +274,6 @@ final class ProductTagStoreTests: XCTestCase {
         // Then no tags should be stored
         XCTAssertEqual(storedProductTagsCount, 0)
         XCTAssertNotNil(result?.failure)
-    }
-
-    func testSynchronizeProductTagsDeletesUnusedTags() {
-        // Given some stored product tags without product relationships
-        let sampleTags = (1...5).map { id in
-            return sampleTag(tagID: id)
-        }
-        sampleTags.forEach { tag in
-            storageManager.insertSampleProductTag(readOnlyProductTag: tag)
-        }
-        XCTAssertEqual(storedProductTagsCount, sampleTags.count)
-
-        // When dispatching a `synchronizeAllProductTags` action
-        network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-all")
-        network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-empty")
-
-        var errorResponse: ProductTagActionError?
-        waitForExpectation { (exp) in
-            let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID) { error in
-                errorResponse = error
-                exp.fulfill()
-            }
-            store.onAction(action)
-        }
-
-        // Then new tag should be stored and old tags should be deleted
-        XCTAssertEqual(storedProductTagsCount, 4)
-        XCTAssertNil(errorResponse)
     }
 
     func testDeleteProductTagDeleteStoredTagSuccessfulResponse() {

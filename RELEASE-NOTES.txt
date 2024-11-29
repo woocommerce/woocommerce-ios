@@ -4,6 +4,7 @@
 -----
 - [*] Jetpack Setup: Fixed an issue where the WordPress.com authentication fails when using a passwordless account that's already connected to Jetpack [https://github.com/woocommerce/woocommerce-ios/pull/14501]
 - [*] Jetpack Setup: Fixed an issue with magic link handling when the app is cold started. [https://github.com/woocommerce/woocommerce-ios/pull/14502]
+- [*] Product Tags: Improved the tag list screen by displaying the cached items on first load and fixed issue clearing all tags [https://github.com/woocommerce/woocommerce-ios/pull/14511]
 - [**] Media Library: On sites logged in with application password, when picking image from WordPress Media Library, all images will now load correctly. [https://github.com/woocommerce/woocommerce-ios/pull/14444]
 - [*] Media: Media upload will work for sites without XML-RPC. [https://github.com/woocommerce/woocommerce-ios/pull/14537]
 - [Internal] Updated CoreDataManager to be thread-safe [https://github.com/woocommerce/woocommerce-ios/pull/14534]

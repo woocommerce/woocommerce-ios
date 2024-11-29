@@ -1384,10 +1384,10 @@ final class StorageTypeExtensionsTests: XCTestCase {
         systemPlugin4.siteID = sampleSiteID
 
         // When
-        let storedSystemPlugins = storage.loadSystemPlugins(siteID: sampleSiteID, matching: ["Plugin1", "Plugin4"])
+        let storedSystemPlugins = storage.loadSystemPlugins(siteID: sampleSiteID, matching: ["Plugin 1", "Plugin 4"])
 
         // Then
-        XCTAssertEqual(Set(storedSystemPlugins), Set([systemPlugin1, systemPlugin4]))
+        XCTAssertEqual(storedSystemPlugins, [systemPlugin1, systemPlugin4])
     }
 
     func test_loadSystemPlugin_by_siteID_and_name() throws {

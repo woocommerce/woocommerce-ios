@@ -81,7 +81,6 @@ private extension SystemStatusStore {
         storageManager.performAndSave({ [weak self] storage in
             self?.upsertSystemPlugins(siteID: siteID, readonlySystemInformation: readonlySystemInformation, in: storage)
         }, completion: completionHandler, on: .main)
-        
     }
 
     /// Updates the store id from the system information.

@@ -111,10 +111,11 @@ private extension SystemStatusStore {
             return activePlugins + inactivePlugins
         }()
 
+        let storedPlugins = storage.loadSystemPlugins(siteID: siteID, matching: readonlySystemPlugins.map { $0.name })
         readonlySystemPlugins.forEach { readonlySystemPlugin in
             // load or create new StorageSystemPlugin matching the readonly one
             let storageSystemPlugin: StorageSystemPlugin = {
-                if let systemPlugin = storage.loadSystemPlugin(siteID: readonlySystemPlugin.siteID, name: readonlySystemPlugin.name) {
+                if let systemPlugin = storedPlugins.first(where: { $0.name == readonlySystemPlugin.name }) {
                     return systemPlugin
                 }
                 return storage.insertNewObject(ofType: StorageSystemPlugin.self)
@@ -132,13 +133,9 @@ private extension SystemStatusStore {
     /// Useful when a plugin has had multiple names.
     ///
     func fetchSystemPlugin(siteID: Int64, systemPluginNameList: [String], completionHandler: @escaping (SystemPlugin?) -> Void) {
-        let viewStorage = storageManager.viewStorage
-        for systemPluginName in systemPluginNameList {
-            if let systemPlugin = viewStorage.loadSystemPlugin(siteID: siteID, name: systemPluginName)?.toReadOnly() {
-                return completionHandler(systemPlugin)
-            }
-        }
-        completionHandler(nil)
+        let matchingPlugins = storageManager.viewStorage.loadSystemPlugins(siteID: siteID, matching: systemPluginNameList)
+            .map { $0.toReadOnly() }
+        completionHandler(matchingPlugins.first)
     }
 
     func fetchSystemPluginWithPath(siteID: Int64, pluginPath: String, onCompletion: @escaping (SystemPlugin?) -> Void) {

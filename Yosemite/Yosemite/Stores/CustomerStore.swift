@@ -5,9 +5,6 @@ import Storage
 public final class CustomerStore: Store {
     private let customerRemote: CustomerRemote
     private let wcAnalyticsCustomerRemote: WCAnalyticsCustomerRemote
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
 
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,

@@ -52,7 +52,7 @@ private extension SystemStatusStore {
             switch result {
             case .success(let systemInformation):
                 self.updateStoreID(siteID: siteID, readonlySystemInformation: systemInformation)
-                self.upsertSystemPluginsInBackground(siteID: siteID, readonlySystemInformation: systemInformation) { [weak self] _ in
+                self.upsertSystemPluginsInBackground(siteID: siteID, readonlySystemInformation: systemInformation) { [weak self] in
                     guard let self else { return }
                     let systemPlugins = self.storageManager.viewStorage.loadSystemPlugins(siteID: siteID).map { $0.toReadOnly() }
                     completionHandler(.success(.init(storeID: systemInformation.environment?.storeID, systemPlugins: systemPlugins)))
@@ -77,17 +77,11 @@ private extension SystemStatusStore {
     ///
     func upsertSystemPluginsInBackground(siteID: Int64,
                                          readonlySystemInformation: SystemStatus,
-                                         completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        let writerStorage = storageManager.writerDerivedStorage
-        writerStorage.perform {
-            self.upsertSystemPlugins(siteID: siteID, readonlySystemInformation: readonlySystemInformation, in: writerStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: writerStorage) {
-            DispatchQueue.main.async {
-                completionHandler(.success(()))
-            }
-        }
+                                         completionHandler: @escaping () -> Void) {
+        storageManager.performAndSave({ [weak self] storage in
+            self?.upsertSystemPlugins(siteID: siteID, readonlySystemInformation: readonlySystemInformation, in: storage)
+        }, completion: completionHandler, on: .main)
+        
     }
 
     /// Updates the store id from the system information.

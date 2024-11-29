@@ -24,7 +24,8 @@ struct PackageOptionView: View {
                 VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                     if showSource {
                         Text(package.source.userFriendlyDescription)
-                            .captionStyle()
+                            .font(.caption)
+                            .foregroundStyle(Color(.secondaryLabel))
                     }
                     Text(package.name)
                         .bodyStyle()
@@ -33,7 +34,8 @@ struct PackageOptionView: View {
                         Text("•")
                         Text(package.weightDescription)
                     }
-                    .subheadlineStyle()
+                    .font(.subheadline)
+                    .foregroundStyle(Color(.text))
                 }
                 .padding(.leading, Constants.textContentLeadingPadding)
                 Spacer()

@@ -329,18 +329,25 @@ private extension CustomerStore {
             }
 
             let storedCustomers = storage.loadCustomers(siteID: siteID, matching: readOnlyCustomers.map { $0.loadingID })
-            let storedSearchResults: CustomerSearchResult? = {
+            let storedSearchResult: CustomerSearchResult? = {
                 guard let keyword else {
                     return nil
                 }
-                return storage.loadCustomerSearchResult(siteID: siteID, keyword: keyword)
+                if let result = storage.loadCustomerSearchResult(siteID: siteID, keyword: keyword) {
+                    return result
+                } else {
+                    let result = storage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
+                    result.siteID = siteID
+                    result.keyword = keyword
+                    return result
+                }
             }()
+
             readOnlyCustomers.forEach {
                 self?.upsertCustomer(siteID: siteID,
                                      readOnlyCustomer: $0,
-                                     keyword: keyword,
                                      storedCustomers: storedCustomers,
-                                     storedSearchResults: storedSearchResults,
+                                     storedSearchResult: storedSearchResult,
                                      in: storage)
             }
         }, completion: onCompletion, on: .main)
@@ -361,13 +368,19 @@ private extension CustomerStore {
                 guard let keyword else {
                     return nil
                 }
-                return storage.loadWCAnalyticsCustomerSearchResult(siteID: siteID, keyword: keyword)
+                if let result = storage.loadWCAnalyticsCustomerSearchResult(siteID: siteID, keyword: keyword) {
+                    return result
+                } else {
+                    let result = storage.insertNewObject(ofType: Storage.WCAnalyticsCustomerSearchResult.self)
+                    result.siteID = siteID
+                    result.keyword = keyword
+                    return result
+                }
             }()
             readOnlyCustomers.forEach {
                 self?.upsertWCAnalyticsCustomer(siteID: siteID,
                                                 readOnlyCustomer: $0,
                                                 storedCustomers: storedCustomers,
-                                                keyword: keyword,
                                                 storedSearchResult: storedSearchResult,
                                                 in: storage)
             }
@@ -378,9 +391,8 @@ private extension CustomerStore {
     ///
     private func upsertCustomer(siteID: Int64,
                                 readOnlyCustomer: StorageCustomerConvertible,
-                                keyword: String? = nil,
                                 storedCustomers: [Storage.Customer],
-                                storedSearchResults: Storage.CustomerSearchResult?,
+                                storedSearchResult: Storage.CustomerSearchResult?,
                                 in storage: StorageType) {
         let storageCustomer: Storage.Customer = {
             // If the specific customerID for that siteID already exists, return it
@@ -394,15 +406,7 @@ private extension CustomerStore {
             }
         }()
 
-        if let keyword {
-            let storedSearchResult = storedSearchResults ?? storage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
-
-            storedSearchResult.siteID = siteID
-            storedSearchResult.keyword = keyword
-
-            storedSearchResult.addToCustomers(storageCustomer)
-        }
-
+        storedSearchResult?.addToCustomers(storageCustomer)
         storageCustomer.update(with: readOnlyCustomer)
     }
 
@@ -411,7 +415,6 @@ private extension CustomerStore {
     private func upsertWCAnalyticsCustomer(siteID: Int64,
                                            readOnlyCustomer: WCAnalyticsCustomer,
                                            storedCustomers: [Storage.WCAnalyticsCustomer],
-                                           keyword: String? = nil,
                                            storedSearchResult: Storage.WCAnalyticsCustomerSearchResult?,
                                            in storage: StorageType) {
         let storageCustomer: Storage.WCAnalyticsCustomer = {
@@ -422,15 +425,7 @@ private extension CustomerStore {
             }
         }()
 
-        if let keyword {
-            let result = storedSearchResult ?? storage.insertNewObject(ofType: Storage.WCAnalyticsCustomerSearchResult.self)
-
-            result.siteID = siteID
-            result.keyword = keyword
-
-            result.addToCustomers(storageCustomer)
-        }
-
+        storedSearchResult?.addToCustomers(storageCustomer)
         storageCustomer.update(with: readOnlyCustomer)
     }
 }

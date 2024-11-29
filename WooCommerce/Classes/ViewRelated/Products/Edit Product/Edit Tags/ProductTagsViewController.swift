@@ -105,7 +105,7 @@ private extension ProductTagsViewController {
         navigationItem.setRightBarButton(UIBarButtonItem(title: Strings.saveButton,
                                                          style: .done,
                                                          target: self,
-                                                         action: #selector(addTagsRemotely)),
+                                                         action: #selector(confirmTags)),
                                          animated: true)
         navigationItem.rightBarButtonItem?.isEnabled = true
     }
@@ -239,12 +239,21 @@ private extension ProductTagsViewController {
                                            searchQuery: partialTag)
     }
 
-    @objc func addTagsRemotely() {
+    @objc func confirmTags() {
         ServiceLocator.analytics.track(.productTagSettingsDoneButtonTapped, withProperties: [
             "has_changed_data": hasUnsavedChanges()
         ])
 
         textView.resignFirstResponder()
+
+        guard allTags.isNotEmpty else {
+            return onCompletion([])
+        }
+
+        createNewTagsRemotely()
+    }
+
+    func createNewTagsRemotely() {
         configureRightBarButtonItemAsSpinner()
 
         let action = ProductTagAction.addProductTags(siteID: product.siteID, tags: allTags) { [weak self] (result) in

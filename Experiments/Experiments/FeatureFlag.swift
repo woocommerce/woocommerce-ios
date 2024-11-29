@@ -203,4 +203,8 @@ public enum FeatureFlag: Int {
     /// Adds support for  sending receipts after the payment for POS
     ///
     case sendReceiptsForPointOfSale
+
+    /// Enables new Tap to Pay onboarding and education features
+    ///
+    case tapToPayEducation
 }

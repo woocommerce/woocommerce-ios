@@ -350,7 +350,7 @@ final class MediaStoreTests: XCTestCase {
 
         let mediaStore = createMediaStoreAndExportableMedia(at: targetURL, fileManager: fileManager)
 
-        let path = "sites/\(sampleSiteID)/media/new"
+        let path = "sites/\(sampleSiteID)/media"
         network.simulateResponse(requestUrlSuffix: path, filename: "media-upload")
 
         let asset = PHAsset()
@@ -386,7 +386,7 @@ final class MediaStoreTests: XCTestCase {
 
         let mediaStore = createMediaStoreAndExportableMedia(at: targetURL, fileManager: fileManager)
 
-        let path = "sites/\(sampleSiteID)/media/new"
+        let path = "sites/\(sampleSiteID)/media"
 
         network.simulateResponse(requestUrlSuffix: path, filename: "generic_error")
 
@@ -459,7 +459,7 @@ final class MediaStoreTests: XCTestCase {
 
         let remote = MockMediaRemote()
         let media = WordPressMedia.fake()
-        remote.whenUploadingMediaToWordPressSite(siteID: siteID, thenReturn: .success(media))
+        remote.whenUploadingMedia(siteID: siteID, thenReturn: .success(media))
 
         let mediaStore = createMediaStoreAndExportableMedia(at: targetURL, fileManager: fileManager, remote: remote)
 
@@ -478,7 +478,7 @@ final class MediaStoreTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(remote.invocations, [.uploadMediaToWordPressSite(siteID: siteID)])
+        XCTAssertEqual(remote.invocations, [.uploadMedia(siteID: siteID)])
 
         let mediaList = try XCTUnwrap(result.get())
         XCTAssertEqual(mediaList, media.toMedia())
@@ -501,7 +501,7 @@ final class MediaStoreTests: XCTestCase {
 
         let remote = MockMediaRemote()
         let media = WordPressMedia.fake()
-        remote.whenUploadingMediaToWordPressSite(siteID: sampleSiteID, thenReturn: .success(media))
+        remote.whenUploadingMedia(siteID: sampleSiteID, thenReturn: .success(media))
 
         let mediaStore = createMediaStoreAndExportableMedia(at: targetURL, fileManager: fileManager, remote: remote)
 
@@ -522,7 +522,7 @@ final class MediaStoreTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(remote.invocations, [.uploadMediaToWordPressSite(siteID: sampleSiteID)])
+        XCTAssertEqual(remote.invocations, [.uploadMedia(siteID: sampleSiteID)])
 
         let mediaList = try XCTUnwrap(result.get())
         XCTAssertEqual(mediaList, media.toMedia())
@@ -543,7 +543,7 @@ final class MediaStoreTests: XCTestCase {
         }()
 
         let remote = MockMediaRemote()
-        remote.whenUploadingMediaToWordPressSite(siteID: sampleSiteID, thenReturn: .failure(DotcomError.unauthorized))
+        remote.whenUploadingMedia(siteID: sampleSiteID, thenReturn: .failure(DotcomError.unauthorized))
 
         let mediaStore = createMediaStoreAndExportableMedia(at: targetURL, fileManager: fileManager, remote: remote)
 
@@ -564,7 +564,7 @@ final class MediaStoreTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(remote.invocations, [.uploadMediaToWordPressSite(siteID: sampleSiteID)])
+        XCTAssertEqual(remote.invocations, [.uploadMedia(siteID: sampleSiteID)])
 
         let error = try XCTUnwrap(result.failure as? DotcomError)
         XCTAssertEqual(error, .unauthorized)
@@ -582,7 +582,7 @@ final class MediaStoreTests: XCTestCase {
             return fileManager.temporaryDirectory.appendingPathComponent(filename, isDirectory: false)
         }()
 
-        let path = "sites/\(sampleSiteID)/media/new"
+        let path = "sites/\(sampleSiteID)/media"
         network.simulateResponse(requestUrlSuffix: path, filename: "media-upload")
 
         let mediaStore = createMediaStoreAndExportableMedia(at: fileURL, fileManager: fileManager)
@@ -613,7 +613,7 @@ final class MediaStoreTests: XCTestCase {
             return fileManager.temporaryDirectory.appendingPathComponent(filename, isDirectory: false)
         }()
 
-        let path = "sites/\(sampleSiteID)/media/new"
+        let path = "sites/\(sampleSiteID)/media"
         network.simulateResponse(requestUrlSuffix: path, filename: "generic_error")
 
         let mediaStore = createMediaStoreAndExportableMedia(at: fileURL, fileManager: fileManager)

@@ -4,7 +4,6 @@ import Yosemite
 final class WooShippingAddCustomPackageViewModel: ObservableObject {
     private let stores: StoresManager
     private let siteID: Int64
-    let storeOptions: ShippingLabelStoreOptions
 
     // Holds values for all dimension input fields.
     // Using a dictionary so we can easily add/remove new types
@@ -15,15 +14,21 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     // Holds value for toggle that determines if we are showing button for saving the template
     @Published var showSaveTemplate: Bool = false
     @Published var packageTemplateName: String = ""
+    // The dimension unit used in the store (e.g. "in")
+    let dimensionsUnit: String
+    // The weight unit used in the store (e.g. "kg")
+    let weightUnit: String
 
     // MARK: Initialization
 
     init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
-         storeOptions: ShippingLabelStoreOptions,
+         dimensionsUnit: String,
+         weightUnit: String,
          stores: StoresManager = ServiceLocator.stores) {
-        self.storeOptions = storeOptions
         self.stores = stores
         self.siteID = siteID
+        self.dimensionsUnit = dimensionsUnit
+        self.weightUnit = weightUnit
     }
 
     // Field values are invalid if one of them is empty
@@ -50,9 +55,9 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
                                       length: fieldValues[.length] ?? "",
                                       width: fieldValues[.width] ?? "",
                                       height: fieldValues[.height] ?? "",
-                                      dimensionsUnit: storeOptions.dimensionUnit,
+                                      dimensionsUnit: dimensionsUnit,
                                       weight: fieldValues[.weight] ?? "",
-                                      weightUnit: storeOptions.weightUnit,
+                                      weightUnit: weightUnit,
                                       source: .custom,
                                       packageType: packageType.rawValue)
     }
@@ -108,9 +113,9 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
                                                              length: savedPackage.getLength().description,
                                                              width: savedPackage.getWidth().description,
                                                              height: savedPackage.getHeight().description,
-                                                             dimensionsUnit: storeOptions.dimensionUnit,
+                                                             dimensionsUnit: dimensionsUnit,
                                                              weight: savedPackage.boxWeight.description,
-                                                             weightUnit: storeOptions.weightUnit,
+                                                             weightUnit: weightUnit,
                                                              source: .custom,
                                                              packageType: savedPackage.rawType)
                     continuation.resume(returning: .success(packageData))

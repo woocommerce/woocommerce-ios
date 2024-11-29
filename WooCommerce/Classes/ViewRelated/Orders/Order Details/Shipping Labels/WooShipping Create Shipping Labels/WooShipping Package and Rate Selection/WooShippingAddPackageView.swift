@@ -29,7 +29,8 @@ struct WooShippingAddPackageView: View {
          packagesRepository: WooShippingPackagesRepository = WooShippingPackagesRepository.shared,
          addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
         self._packagesRepository = StateObject(wrappedValue: packagesRepository)
-        self._customPackageViewModel = StateObject(wrappedValue: WooShippingAddCustomPackageViewModel(storeOptions: storeOptions))
+        self._customPackageViewModel = StateObject(wrappedValue: WooShippingAddCustomPackageViewModel(dimensionsUnit: storeOptions.dimensionUnit,
+                                                                                                      weightUnit: storeOptions.weightUnit))
         self.addPackageAction = addPackageAction
     }
     // MARK: - UI

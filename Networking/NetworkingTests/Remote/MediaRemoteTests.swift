@@ -212,7 +212,7 @@ final class MediaRemoteTests: XCTestCase {
         let remote = MediaRemote(network: network)
 
         // When
-        remote.uploadMedia(for: self.sampleSiteID, productID: sampleProductID, mediaItems: [], completion: { _ in })
+        remote.uploadMedia(siteID: sampleSiteID, productID: sampleProductID, mediaItem: .fake(), completion: { _ in })
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
@@ -224,67 +224,14 @@ final class MediaRemoteTests: XCTestCase {
     func test_uploadMedia_properly_returns_parsed_media() throws {
         // Given
         let remote = MediaRemote(network: network)
-        let path = "sites/\(sampleSiteID)/media/new"
+        let path = "sites/\(sampleSiteID)/media"
         network.simulateResponse(requestUrlSuffix: path, filename: "media-upload")
 
         // When
         let result = waitFor { promise in
-            remote.uploadMedia(for: self.sampleSiteID,
-                                  productID: self.sampleProductID,
-                                  mediaItems: []) { result in
-                promise(result)
-            }
-        }
-
-        // Then
-        let mediaItems = try XCTUnwrap(result.get())
-        XCTAssertEqual(mediaItems.count, 1)
-    }
-
-    /// Verifies that `uploadMedia` properly relays Networking Layer errors.
-    ///
-    func test_uploadMedia_properly_relays_networking_errors() {
-        // Given
-        let remote = MediaRemote(network: network)
-
-        // When
-        let result = waitFor { promise in
-            remote.uploadMedia(for: self.sampleSiteID,
-                                  productID: self.sampleProductID,
-                                  mediaItems: []) { result in
-                promise(result)
-            }
-        }
-
-        // Then
-        XCTAssertTrue(result.isFailure)
-    }
-
-    func test_uploadMediaToWordPressSite_does_not_send_data_in_request_body() throws {
-        // Given
-        let remote = MediaRemote(network: network)
-
-        // When
-        remote.uploadMediaToWordPressSite(siteID: sampleSiteID, productID: sampleProductID, mediaItem: .fake(), completion: { _ in })
-
-        // Then
-        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
-        XCTAssertNil(try request.asURLRequest().httpBody)
-    }
-
-    /// Verifies that `uploadMediaToWordPressSite` properly parses the `media-upload-to-wordpress-site` sample response.
-    ///
-    func test_uploadMediaToWordPressSite_properly_returns_parsed_media() throws {
-        // Given
-        let remote = MediaRemote(network: network)
-        let path = "sites/\(sampleSiteID)/media"
-        network.simulateResponse(requestUrlSuffix: path, filename: "media-upload-to-wordpress-site")
-
-        // When
-        let result = waitFor { promise in
-            remote.uploadMediaToWordPressSite(siteID: self.sampleSiteID,
-                                              productID: self.sampleProductID,
-                                              mediaItem: .fake()) { result in
+            remote.uploadMedia(siteID: self.sampleSiteID,
+                               productID: self.sampleProductID,
+                               mediaItem: .fake()) { result in
                 promise(result)
             }
         }
@@ -316,9 +263,9 @@ final class MediaRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.uploadMediaToWordPressSite(siteID: self.sampleSiteID,
-                                              productID: self.sampleProductID,
-                                              mediaItem: .fake()) { result in
+            remote.uploadMedia(siteID: self.sampleSiteID,
+                               productID: self.sampleProductID,
+                               mediaItem: .fake()) { result in
                 promise(result)
             }
         }

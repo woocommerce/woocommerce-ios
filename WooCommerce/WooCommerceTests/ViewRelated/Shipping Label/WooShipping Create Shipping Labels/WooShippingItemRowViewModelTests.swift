@@ -42,7 +42,7 @@ final class WooShippingItemRowViewModelTests: XCTestCase {
                                             attributes: [VariationAttributeViewModel(name: "Roast", value: "Espresso"),
                                                          VariationAttributeViewModel(name: "Size", value: "10 oz")],
                                             imageURL: URL(string: "https://woocommerce.com/woo.jpg"))
-        let row = WooShippingItemRowViewModel(item: item, shippingSettingsService: shippingSettingsService, currencySettings: currencySettings)
+        let row = WooShippingItemRowViewModel(item: item, currency: "GBP", shippingSettingsService: shippingSettingsService, currencySettings: currencySettings)
 
         // Then
         assertEqual(URL(string: "https://woocommerce.com/woo.jpg"), row.imageUrl)
@@ -50,7 +50,7 @@ final class WooShippingItemRowViewModelTests: XCTestCase {
         assertEqual("Little Nap Brazil", row.name)
         assertEqual("15 x 10 x 8 in • Espresso, 10 oz", row.detailsLabel)
         assertEqual("30 oz", row.weightLabel)
-        assertEqual("$60.00", row.priceLabel)
+        assertEqual("£60.00", row.priceLabel)
     }
 
 }

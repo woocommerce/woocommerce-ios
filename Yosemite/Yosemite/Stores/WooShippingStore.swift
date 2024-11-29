@@ -43,6 +43,26 @@ public final class WooShippingStore: Store {
             loadPackages(siteID: siteID, completion: completion)
         case .loadAccountSettings(let siteID, completion: let completion):
             loadAccountSettings(siteID: siteID, completion: completion)
+        case let .purchaseShippingLabel(siteID,
+                                        orderID,
+                                        originAddress,
+                                        destinationAddress,
+                                        package,
+                                        backendProcessingDelay,
+                                        pollingDelay,
+                                        pollingMaximumRetries,
+                                        completion):
+            purchaseShippingLabel(siteID: siteID,
+                                  orderID: orderID,
+                                  originAddress: originAddress,
+                                  destinationAddress: destinationAddress,
+                                  package: package,
+                                  backendProcessingDelay: backendProcessingDelay,
+                                  pollingDelay: pollingDelay,
+                                  pollingMaximumRetries: pollingMaximumRetries,
+                                  completion: completion)
+        case let .printLabel(siteID, labelIDs, paperSize, completion):
+            printLabel(siteID: siteID, labelIDs: labelIDs, paperSize: paperSize, completion: completion)
         }
     }
 }
@@ -85,4 +105,122 @@ private extension WooShippingStore {
                              completion: @escaping (Result<WooShippingAccountSettings, Error>) -> Void) {
         remote.loadAccountSettings(siteID: siteID, completion: completion)
     }
+
+    func purchaseShippingLabel(siteID: Int64,
+                               orderID: Int64,
+                               originAddress: ShippingLabelAddress,
+                               destinationAddress: ShippingLabelAddress,
+                               package: WooShippingPackagePurchase,
+                               backendProcessingDelay: TimeInterval,
+                               pollingDelay: TimeInterval,
+                               pollingMaximumRetries: Int64,
+                               completion: @escaping (Result<ShippingLabel, Error>) -> Void) {
+        // Make the initial purchase request.
+        remote.purchaseShippingLabel(siteID: siteID,
+                                     orderID: orderID,
+                                     originAddress: originAddress,
+                                     destinationAddress: destinationAddress,
+                                     package: package) { result in
+            switch result {
+            case .success(let labelPurchases):
+                // Purchase endpoint returns an array of labels, but the polling endpoint only takes a single label at a time.
+                // Since we only expect to purchase one label at a time, we get the first label from the response.
+                guard let labelID = labelPurchases.first?.shippingLabelID else {
+                    DDLogError("⛔️ No labels in Woo Shipping label purchase response")
+                    return completion(.failure(WooShippingLabelPurchaseError.purchaseMissingLabels))
+                }
+
+                // Wait to give the backend time to process the purchase
+                DispatchQueue.main.asyncAfter(deadline: .now() + backendProcessingDelay) { [weak self] in
+                    guard let self else { return }
+
+                    // Poll the status of the label purchase from the response above
+                    pollLabelStatus(withDelayInSeconds: pollingDelay,
+                                    maxErrorRetries: pollingMaximumRetries,
+                                    siteID: siteID,
+                                    orderID: orderID,
+                                    labelID: labelID,
+                                    completion: completion)
+                }
+            case .failure(let error):
+                DDLogError("⛔️ Error purchasing shipping label for order \(orderID): \(error)")
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func printLabel(siteID: Int64,
+                    labelIDs: [Int64],
+                    paperSize: ShippingLabelPaperSize,
+                    completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
+        remote.printLabel(siteID: siteID, labelIDs: labelIDs, paperSize: paperSize, completion: completion)
+    }
+}
+
+// MARK: Helpers
+private extension WooShippingStore {
+    /// Polls the status of the purchase for the provided label ID,
+    /// with a delay of 1 second each time, and a maximum of 3 retries for failed requests.
+    func pollLabelStatus(withDelayInSeconds delay: Double,
+                         maxErrorRetries: Int64,
+                         siteID: Int64,
+                         orderID: Int64,
+                         labelID: Int64,
+                         completion: @escaping (Result<ShippingLabel, Error>) -> Void) {
+        remote.checkLabelStatus(siteID: siteID, orderID: orderID, labelID: labelID) { [weak self] result in
+            switch result {
+            case .success(let labelStatusResponse):
+                // If label has PURCHASED status, stop polling
+                if labelStatusResponse.status == .purchased,
+                   let label = labelStatusResponse.getPurchasedLabel() {
+                    completion(.success(label))
+                }
+
+                // If label has PURCHASE_ERROR status, return error and stop polling
+                else if labelStatusResponse.status == .purchaseError {
+                    DDLogError("⛔️ Error purchasing shipping label for order \(orderID)")
+                    completion(.failure(WooShippingLabelPurchaseError.purchaseErrorStatus))
+                }
+
+                // If no error but status is not PURCHASED, poll again after delay
+                else {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+                        self?.pollLabelStatus(withDelayInSeconds: delay,
+                                              maxErrorRetries: maxErrorRetries,
+                                              siteID: siteID,
+                                              orderID: orderID,
+                                              labelID: labelID,
+                                              completion: completion)
+                    }
+                }
+
+            case .failure(let error):
+                // If there are retries left, poll again after delay
+                if maxErrorRetries > 0 {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+                        self?.pollLabelStatus(withDelayInSeconds: delay,
+                                              maxErrorRetries: maxErrorRetries - 1,
+                                              siteID: siteID,
+                                              orderID: orderID,
+                                              labelID: labelID,
+                                              completion: completion)
+                    }
+                }
+
+                // If there are no retries left, stop polling
+                else {
+                    DDLogError("⛔️ Error checking shipping label status for order \(orderID): \(error)")
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+}
+
+/// Represents errors that can be returned when purchasing a shipping label
+public enum WooShippingLabelPurchaseError: Error {
+    /// API returns a `PURCHASE_ERROR` status for a label
+    case purchaseErrorStatus
+    /// No labels are returned by initial purchase request
+    case purchaseMissingLabels
 }

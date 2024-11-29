@@ -65,6 +65,8 @@ final class PaymentMethodsViewModel: ObservableObject {
 
     let total: String
 
+    let channel: PaymentChannel
+
     /// Transmits notice presentation intents.
     ///
     private let presentNoticeSubject: PassthroughSubject<PaymentMethodsNotice, Never>
@@ -151,6 +153,7 @@ final class PaymentMethodsViewModel: ObservableObject {
          total: String,
          formattedTotal: String,
          flow: WooAnalyticsEvent.PaymentsFlow.Flow,
+         channel: PaymentChannel,
          dependencies: Dependencies = Dependencies()) {
         self.siteID = siteID
         self.orderID = orderID
@@ -158,6 +161,7 @@ final class PaymentMethodsViewModel: ObservableObject {
         self.total = total
         self.formattedTotal = formattedTotal
         self.flow = flow
+        self.channel = channel
         self.orderDurationRecorder = dependencies.orderDurationRecorder
         presentNoticeSubject = dependencies.presentNoticeSubject
         cardPresentPaymentsOnboardingPresenter = dependencies.cardPresentPaymentsOnboardingPresenter
@@ -256,6 +260,7 @@ final class PaymentMethodsViewModel: ObservableObject {
 
         collectPaymentsUseCase?.collectPayment(
             using: discoveryMethod,
+            channel: channel,
             onFailure: { [weak self] error in
                 self?.trackFlowFailed()
                 // Update order in case its status and/or other details are updated after a failed in-person payment

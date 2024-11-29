@@ -1,7 +1,7 @@
 #if DEBUG
 
 import Foundation
-import protocol Yosemite.POSItemProvider
+import protocol Yosemite.PointOfSaleItemServiceProtocol
 import protocol Yosemite.POSItem
 import enum Yosemite.ProductType
 import Combine
@@ -19,18 +19,13 @@ struct POSProductPreview: POSItem {
     let productType: ProductType
 }
 
-final class POSItemProviderPreview: POSItemProvider {
+final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
     func providePointOfSaleItems(pageNumber: Int) async throws -> [Yosemite.POSItem] {
         []
     }
 
     func providePointOfSaleItems() -> [POSItem] {
-        return [
-            POSProductPreview(itemID: UUID(), productID: 1, name: "Product 1", price: "1.00", formattedPrice: "$1.00", itemCategories: [], productType: .simple),
-            POSProductPreview(itemID: UUID(), productID: 2, name: "Product 2", price: "2.00", formattedPrice: "$2.00", itemCategories: [], productType: .simple),
-            POSProductPreview(itemID: UUID(), productID: 3, name: "Product 3", price: "3.00", formattedPrice: "$3.00", itemCategories: [], productType: .simple),
-            POSProductPreview(itemID: UUID(), productID: 4, name: "Product 4", price: "4.00", formattedPrice: "$4.00", itemCategories: [], productType: .simple)
-        ]
+        return mockItems
     }
 
     func providePointOfSaleItem() -> POSItem {
@@ -44,6 +39,33 @@ final class POSItemProviderPreview: POSItemProvider {
     }
 }
 
+final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtocol {
+    @Published var itemListState: ItemListState = .initialLoading
+    var itemListStatePublisher: any Publisher<ItemListState, Never> { $itemListState }
+
+    var allItems: [any Yosemite.POSItem] = []
+
+    func loadInitialItems() async {
+        itemListState = .loaded(mockItems)
+    }
+
+    func loadNextItems() async {
+        itemListState = .loading(mockItems)
+    }
+
+    func reload() async {
+        itemListState = .loaded([])
+    }
+}
+
+private var mockItems: [POSItem] {
+    return [
+        POSProductPreview(itemID: UUID(), productID: 1, name: "Product 1", price: "1.00", formattedPrice: "$1.00", itemCategories: [], productType: .simple),
+        POSProductPreview(itemID: UUID(), productID: 2, name: "Product 2", price: "2.00", formattedPrice: "$2.00", itemCategories: [], productType: .simple),
+        POSProductPreview(itemID: UUID(), productID: 3, name: "Product 3", price: "3.00", formattedPrice: "$3.00", itemCategories: [], productType: .simple),
+        POSProductPreview(itemID: UUID(), productID: 4, name: "Product 4", price: "4.00", formattedPrice: "$4.00", itemCategories: [], productType: .simple)
+    ]
+}
 
 final class POSConnectivityObserverPreview: ConnectivityObserver {
     @Published private(set) var currentStatus: ConnectivityStatus = .unknown

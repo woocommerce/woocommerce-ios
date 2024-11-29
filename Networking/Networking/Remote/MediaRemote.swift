@@ -19,9 +19,9 @@ public protocol MediaRemoteProtocol {
                                            pageSize: Int,
                                            completion: @escaping (Result<[WordPressMedia], Error>) -> Void)
     func uploadMedia(siteID: Int64,
-                                    productID: Int64,
-                                    mediaItem: UploadableMedia,
-                                    completion: @escaping (Result<WordPressMedia, Error>) -> Void)
+                     productID: Int64,
+                     mediaItem: UploadableMedia,
+                     completion: @escaping (Result<WordPressMedia, Error>) -> Void)
     func updateProductID(siteID: Int64,
                          productID: Int64,
                          mediaID: Int64,

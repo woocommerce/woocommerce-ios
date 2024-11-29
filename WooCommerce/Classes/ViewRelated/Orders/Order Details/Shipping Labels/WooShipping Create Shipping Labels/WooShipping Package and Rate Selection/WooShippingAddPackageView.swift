@@ -122,9 +122,7 @@ struct WooShippingAddPackageView: View {
                 }
                 else {
                     Button {
-                        createLabelsViewModel.loadStoreOptions { storeOptions in
-                            loadCustomPackageViewModelWithStoreOptions(storeOptions)
-                        }
+                        createLabelsViewModel.loadStoreOptions()
                     } label: {
                         Image(systemName: "arrow.trianglehead.counterclockwise")
                     }

@@ -49,8 +49,8 @@ jobs:
 
     strategy:
       matrix:
-        language: [ar-SA, de-DE, en-US, es-ES, fr-FR, he, id, it, ja, ko, nl-NL, pt-BR, ru, sv, tr, zh-Hans, zh-Hant]
-        mode: [dark, light]
+        language: [ar-SA]
+        mode: [light]
     steps:
     - uses: actions/checkout@v1
     - name: "Set up Ruby"
@@ -77,6 +77,13 @@ jobs:
       with:
         name: "screenshot-log-${{ matrix.language }}-${{ matrix.mode }}"
         path: fastlane/logs
+
+    - name: Store test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: "test-results-${{ matrix.language }}-${{ matrix.mode }}"
+        path: fastlane/screenshots/test_output
 
     - name: Archive Generated Screenshots
       run: |

@@ -15,7 +15,7 @@ final class WooShippingServiceViewModel: ObservableObject {
     @Published private(set) var selectedRate: WooShippingSelectedRate?
 
     /// State of loading shipping rates.
-    private(set) var loadingState: LabelRatesState = .loading
+    private(set) var loadingState: LabelRatesState = .empty
 
     /// Available standard shipping rates.
     private var standardRates: [ShippingLabelCarrierRate] = []
@@ -33,7 +33,6 @@ final class WooShippingServiceViewModel: ObservableObject {
     init(order: Order,
          originAddress: ShippingLabelAddress?,
          destinationAddress: ShippingLabelAddress?,
-         selectedPackage: ShippingLabelPackageSelected,
          stores: StoresManager = ServiceLocator.stores,
          onSelectRate: ((_ selectedRate: WooShippingSelectedRate) -> Void)? = nil) {
         self.siteID = order.siteID
@@ -42,7 +41,6 @@ final class WooShippingServiceViewModel: ObservableObject {
         self.destinationAddress = destinationAddress
         self.stores = stores
         self.onSelectRate = onSelectRate
-        loadLabelRates(for: selectedPackage)
     }
 
     /// Sorts the shipping services by the provided sort order.
@@ -115,6 +113,7 @@ extension WooShippingServiceViewModel {
 
     /// States for label rates.
     enum LabelRatesState {
+        case empty
         case loading
         case loaded
         case error
@@ -171,7 +170,7 @@ private extension WooShippingServiceViewModel {
             generateServiceTabs()
         case .loaded:
             generateServiceTabs()
-        case .error:
+        case .empty, .error:
             serviceTabs = []
         }
         loadingState = state

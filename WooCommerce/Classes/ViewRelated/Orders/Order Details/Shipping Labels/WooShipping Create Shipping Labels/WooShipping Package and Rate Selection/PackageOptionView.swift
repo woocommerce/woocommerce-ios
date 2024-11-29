@@ -7,7 +7,7 @@ struct PackageOptionView: View {
         static let contentPadding: CGFloat = 16.0
     }
 
-    var isSelected: Bool
+    var isSelected: Bool?
     var package: WooShippingPackageDataRepresentable
     var showTopDivider: Bool
     var showSource: Bool
@@ -18,9 +18,11 @@ struct PackageOptionView: View {
     var body: some View {
         HStack(spacing: 0) {
             HStack {
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .foregroundColor(isSelected ? Color(.withColorStudio(.wooCommercePurple, shade: .shade60)) : .gray)
-                    .font(.title)
+                if let isSelected {
+                    Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                        .foregroundColor(isSelected ? Color(.withColorStudio(.wooCommercePurple, shade: .shade60)) : .gray)
+                        .font(.title)
+                }
                 VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                     if showSource {
                         Text(package.source.userFriendlyDescription)

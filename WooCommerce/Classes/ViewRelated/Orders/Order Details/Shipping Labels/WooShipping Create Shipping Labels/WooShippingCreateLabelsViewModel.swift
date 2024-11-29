@@ -100,7 +100,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     @Published var storeOptions: ShippingLabelStoreOptions?
     @Published var isLoadingStoreOptions: Bool = false
 
-    func loadStoreOptions() {
+    func loadStoreOptions(completion: ((ShippingLabelStoreOptions) -> Void)? = nil) {
         guard isLoadingStoreOptions == false,
               let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else { return }
 
@@ -110,6 +110,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             switch result {
             case .success(let settings):
                 self.storeOptions = settings.storeOptions
+                completion?(settings.storeOptions)
             case .failure(let error):
                 DDLogError("⛔️ Error loading account settings: \(error)")
                 // fallback to store settings

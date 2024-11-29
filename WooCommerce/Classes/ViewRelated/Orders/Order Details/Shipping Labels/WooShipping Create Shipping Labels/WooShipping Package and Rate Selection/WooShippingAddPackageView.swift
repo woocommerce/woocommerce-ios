@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 import struct Yosemite.ShippingLabelStoreOptions
 
 struct WooShippingAddPackageView: View {
@@ -21,18 +22,27 @@ struct WooShippingAddPackageView: View {
     // Holds type of selected package, it can be `custom`, `carrier` or `saved`
     @State var selectedPackageType = PackageProviderType.custom
     @StateObject var packagesRepository: WooShippingPackagesRepository
-    @StateObject var customPackageViewModel: WooShippingAddCustomPackageViewModel
+    @State var customPackageViewModel: WooShippingAddCustomPackageViewModel?
+    @ObservedObject var createLabelsViewModel: WooShippingCreateLabelsViewModel
 
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
-    init(storeOptions: ShippingLabelStoreOptions,
+    @State private var cancellable: AnyCancellable?
+
+    init(createLabelsViewModel: WooShippingCreateLabelsViewModel,
          packagesRepository: WooShippingPackagesRepository = WooShippingPackagesRepository.shared,
          addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
+        self.createLabelsViewModel = createLabelsViewModel
         self._packagesRepository = StateObject(wrappedValue: packagesRepository)
-        self._customPackageViewModel = StateObject(wrappedValue: WooShippingAddCustomPackageViewModel(dimensionsUnit: storeOptions.dimensionUnit,
-                                                                                                      weightUnit: storeOptions.weightUnit))
         self.addPackageAction = addPackageAction
     }
+
+    private func loadCustomPackageViewModelWithStoreOptions(_ storeOptions: ShippingLabelStoreOptions?) {
+        guard let storeOptions, customPackageViewModel == nil else { return }
+        customPackageViewModel = WooShippingAddCustomPackageViewModel(dimensionsUnit: storeOptions.dimensionUnit,
+                                                                      weightUnit: storeOptions.weightUnit)
+    }
+
     // MARK: - UI
 
     var body: some View {
@@ -63,6 +73,18 @@ struct WooShippingAddPackageView: View {
         .task {
             packagesRepository.loadPackages()
         }
+        .onAppear() {
+            if let storeOptions = createLabelsViewModel.storeOptions {
+                loadCustomPackageViewModelWithStoreOptions(storeOptions)
+            }
+            else {
+                cancellable = createLabelsViewModel.$storeOptions
+                    .receive(on: DispatchQueue.main)
+                    .sink { storeOptions in
+                        loadCustomPackageViewModelWithStoreOptions(storeOptions)
+                    }
+            }
+        }
     }
 
     // MARK: UI components
@@ -81,9 +103,37 @@ struct WooShippingAddPackageView: View {
 
     @ViewBuilder
     private var customPackageView: some View {
-        WooAddCustomPackageView(viewModel: customPackageViewModel) { packageData in
-            addPackageAction(packageData)
+        if let customPackageViewModel {
+            WooAddCustomPackageView(viewModel: customPackageViewModel) { packageData in
+                addPackageAction(packageData)
+            }
         }
+        else {
+            storeOptionsLoadingView
+        }
+    }
+
+    private var storeOptionsLoadingView: some View {
+        VStack {
+            HStack {
+                Spacer()
+                if createLabelsViewModel.isLoadingStoreOptions {
+                    ActivityIndicator(isAnimating: .constant(true), style: .large)
+                }
+                else {
+                    Button {
+                        createLabelsViewModel.loadStoreOptions { storeOptions in
+                            loadCustomPackageViewModelWithStoreOptions(storeOptions)
+                        }
+                    } label: {
+                        Image(systemName: "arrow.trianglehead.counterclockwise")
+                    }
+                }
+                Spacer()
+            }
+            Spacer()
+        }
+        .padding()
     }
 
     @ViewBuilder
@@ -134,13 +184,6 @@ struct WooShippingAddPackageUnitInputView: View {
         }
         .frame(minHeight: 48)
     }
-}
-
-#Preview {
-    WooShippingAddPackageView(storeOptions: ShippingLabelStoreOptions(currencySymbol: "$",
-                                                                      dimensionUnit: "in",
-                                                                      weightUnit: "oz",
-                                                                      originCountry: "US")) { _ in }
 }
 
 extension WooShippingAddPackageView {

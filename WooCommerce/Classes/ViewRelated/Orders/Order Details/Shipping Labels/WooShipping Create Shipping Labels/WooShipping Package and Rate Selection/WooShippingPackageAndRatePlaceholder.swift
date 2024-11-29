@@ -3,7 +3,7 @@ import struct Yosemite.ShippingLabelStoreOptions
 
 struct WooShippingPackageAndRatePlaceholder: View {
     @State private var showAddPackage: Bool = false
-    let storeOptions: ShippingLabelStoreOptions
+    @ObservedObject var viewModel: WooShippingCreateLabelsViewModel
 
     var body: some View {
         VStack(spacing: .zero) {
@@ -27,7 +27,7 @@ struct WooShippingPackageAndRatePlaceholder: View {
         .padding(Layout.padding)
         .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.border), lineWidth: Layout.borderLineWidth, dashed: true)
         .sheet(isPresented: $showAddPackage) {
-            WooShippingAddPackageView(storeOptions: storeOptions) { packageData in
+            WooShippingAddPackageView(createLabelsViewModel: viewModel) { packageData in
                 // TODO: use packageData
                 showAddPackage = false
             }
@@ -58,12 +58,4 @@ private extension WooShippingPackageAndRatePlaceholder {
             comment: "Message in the shipping rate section during shipping label creation, when there is no selected package."
         )
     }
-}
-
-#Preview {
-    WooShippingPackageAndRatePlaceholder(storeOptions: ShippingLabelStoreOptions(currencySymbol: "$",
-                                                                                 dimensionUnit: "in",
-                                                                                 weightUnit: "oz",
-                                                                                 originCountry: "US"))
-        .padding()
 }

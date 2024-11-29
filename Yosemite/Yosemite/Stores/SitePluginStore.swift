@@ -123,16 +123,11 @@ private extension SitePluginStore {
     /// Triggers `completionHandler` on main thread.
     ///
     func upsertSitePluginsInBackground(siteID: Int64, readonlyPlugins: [SitePlugin], completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        let writerStorage = storageManager.writerDerivedStorage
-        writerStorage.perform {
-            self.upsertSitePlugins(siteID: siteID, readonlyPlugins: readonlyPlugins, in: writerStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: writerStorage) {
-            DispatchQueue.main.async {
-                completionHandler(.success(()))
-            }
-        }
+        storageManager.performAndSave ({ [weak self] storage in
+            self?.upsertSitePlugins(siteID: siteID, readonlyPlugins: readonlyPlugins, in: storage)
+        }, completion: {
+            completionHandler(.success(()))
+        }, on: .main)
     }
 
     /// Updates or inserts Readonly `SitePlugin` entities in specified storage.

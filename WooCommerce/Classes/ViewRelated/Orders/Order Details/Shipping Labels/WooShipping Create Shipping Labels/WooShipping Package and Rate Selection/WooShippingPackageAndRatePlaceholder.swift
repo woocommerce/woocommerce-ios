@@ -1,5 +1,4 @@
 import SwiftUI
-import struct Yosemite.ShippingLabelStoreOptions
 
 struct WooShippingPackageAndRatePlaceholder: View {
     @State private var showAddPackage: Bool = false

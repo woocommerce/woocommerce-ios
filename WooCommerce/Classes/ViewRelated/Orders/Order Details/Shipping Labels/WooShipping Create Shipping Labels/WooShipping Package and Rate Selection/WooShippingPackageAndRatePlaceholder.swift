@@ -1,7 +1,11 @@
 import SwiftUI
 
 struct WooShippingPackageAndRatePlaceholder: View {
+    /// Action to perform when a package is selected.
+    let onSelectPackage: (WooShippingPackageDataRepresentable) -> Void
+
     @State private var showAddPackage: Bool = false
+
     var body: some View {
         VStack(spacing: .zero) {
             Button {
@@ -25,7 +29,7 @@ struct WooShippingPackageAndRatePlaceholder: View {
         .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.border), lineWidth: Layout.borderLineWidth, dashed: true)
         .sheet(isPresented: $showAddPackage) {
             WooShippingAddPackageView { packageData in
-                // TODO: use packageData
+                onSelectPackage(packageData)
                 showAddPackage = false
             }
         }
@@ -58,6 +62,6 @@ private extension WooShippingPackageAndRatePlaceholder {
 }
 
 #Preview {
-    WooShippingPackageAndRatePlaceholder()
+    WooShippingPackageAndRatePlaceholder(onSelectPackage: { _ in })
         .padding()
 }

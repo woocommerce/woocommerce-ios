@@ -6,6 +6,7 @@
 - [*] Jetpack Setup: Fixed an issue with magic link handling when the app is cold started. [https://github.com/woocommerce/woocommerce-ios/pull/14502]
 - [**] Media Library: On sites logged in with application password, when picking image from WordPress Media Library, all images will now load correctly. [https://github.com/woocommerce/woocommerce-ios/pull/14444]
 - [Internal] Updated storage usage in CouponStore [https://github.com/woocommerce/woocommerce-ios/pull/14530]
+- [Internal] Updated storage usage in ProductShippingClassStore [https://github.com/woocommerce/woocommerce-ios/pull/14520]
 
 21.2
 -----

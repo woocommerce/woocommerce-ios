@@ -180,7 +180,8 @@ private extension SetUpTapToPayPaymentPromptView {
         )
 
         static let skipButton = NSLocalizedString(
-            "Return to Payments",
+            "SetUpTapToPayPaymentPrompt.skipButton.title",
+            value: "Not now",
             comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip " +
             "to the trial payment and dismiss the Set up Tap to Pay on iPhone flow"
         )

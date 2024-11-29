@@ -224,6 +224,27 @@ final class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(customerSearchResult, storedCustomerSearchResult)
     }
 
+    func test_loadWCAnalyticsCustomers_by_siteID_and_customerIDs() {
+        // Given
+        let customer1 = storage.insertNewObject(ofType: WCAnalyticsCustomer.self)
+        customer1.siteID = sampleSiteID
+        customer1.customerID = 1
+
+        let customer2 = storage.insertNewObject(ofType: WCAnalyticsCustomer.self)
+        customer2.siteID = sampleSiteID
+        customer2.customerID = 2
+
+        let customer3 = storage.insertNewObject(ofType: WCAnalyticsCustomer.self)
+        customer3.siteID = sampleSiteID
+        customer3.customerID = 3
+
+        // When
+        let results = storage.loadWCAnalyticsCustomers(siteID: sampleSiteID, matching: [1, 3])
+
+        // Then
+        XCTAssertEqual(Set(results), Set([customer1, customer3]))
+    }
+
     func test_loadOrderFeeLine_by_siteID_feeID() throws {
         // Given
         let feeID: Int64 = 123

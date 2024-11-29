@@ -724,6 +724,13 @@ public extension StorageType {
         return allObjects(ofType: WCAnalyticsCustomer.self, matching: predicate, sortedBy: [])
     }
 
+    /// Returns stored WCAnalyticsCustomer given a `siteID` matching `customerIDs`
+    ///
+    func loadWCAnalyticsCustomers(siteID: Int64, matching customerIDs: [Int64]) -> [WCAnalyticsCustomer] {
+        let predicate = NSPredicate(format: "siteID == %lld && customerID in %@", siteID, customerIDs)
+        return allObjects(ofType: WCAnalyticsCustomer.self, matching: predicate, sortedBy: [])
+    }
+
     /// Returns a WCAnalyticsCustomerSearchResult given a `siteID` and a `keyword`
     ///
     func loadWCAnalyticsCustomerSearchResult(siteID: Int64, keyword: String) -> WCAnalyticsCustomerSearchResult? {

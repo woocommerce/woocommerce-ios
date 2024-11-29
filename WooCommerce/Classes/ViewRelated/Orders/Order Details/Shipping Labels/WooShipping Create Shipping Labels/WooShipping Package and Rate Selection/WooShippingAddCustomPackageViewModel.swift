@@ -49,7 +49,7 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
         return validFieldsCount != keysToCheck.count
     }
 
-    private var packageDataFromCurrentData: WooShippingPackageDataRepresentable? {
+    private var packageDataFromCurrentData: WooShippingPackageDataRepresentable {
         return WooShippingPackageData(id: UUID().uuidString,
                                       name: packageTemplateName,
                                       length: fieldValues[.length] ?? "",

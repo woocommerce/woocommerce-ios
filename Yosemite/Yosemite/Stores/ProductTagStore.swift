@@ -133,7 +133,7 @@ private extension ProductTagStore {
         }, completion: onCompletion, on: .main)
     }
 
-    /// Deletes any Storage.ProductTag with the specified `siteID` and `productID`
+    /// Deletes any Storage.ProductTag with the specified `siteID` and `tagID`'s
     ///
     func deleteStoredProductTags(siteID: Int64, ids: [Int64], onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ storage in

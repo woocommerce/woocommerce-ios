@@ -207,7 +207,14 @@ extension ProductTagsViewController: KeyboardScrollable {
 //
 private extension ProductTagsViewController {
     func loadTags() {
-        displayGhostContent(over: tableView)
+        let cachedTags = self.fetchedTags
+        if cachedTags.isEmpty {
+            /// Display the loading state only cached items are unavailable.
+            displayGhostContent(over: tableView)
+        } else {
+            /// Otherwise, display cached items right away.
+            tagsLoaded(tags: cachedTags.map { $0.name } )
+        }
 
         let action = ProductTagAction.synchronizeAllProductTags(siteID: product.siteID) { [weak self] error in
             if let error = error {

@@ -62,7 +62,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
     func test_order_shipping_lines_converted_to_shippingLineViewModels() {
         // Given
-        let order = Order.fake().copy(shippingLines: [ShippingLine.fake().copy(shippingID: 1),
+        let order = Order.fake().copy(currency: "GBP",
+                                      shippingLines: [ShippingLine.fake().copy(shippingID: 1, total: "10"),
                                                       ShippingLine.fake().copy(shippingID: 2),
                                                       ShippingLine.fake().copy(shippingID: 3)])
 
@@ -71,6 +72,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(order.shippingLines.map({ $0.shippingID }), viewModel.shippingLines.map({ $0.id }))
+        XCTAssertEqual("£10.00", viewModel.shippingLines.first?.formattedTotal)
     }
 
     func test_onLabelPurchase_notifies_when_order_should_not_be_marked_complete() {
@@ -247,6 +249,34 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertTrue(isPurchasingLabelDuringPurchase)
         // Check isPurchaseLabel is false after purchase
         XCTAssertFalse(viewModel.isPurchasingLabel)
+    }
+
+    func test_selectPackage_sets_selectedPackage_with_package_data() {
+        // Given
+        let packageData = WooShippingPackageData(id: "small_flat_box",
+                                                 name: "Small Flat Rate Box",
+                                                 length: "21.91",
+                                                 width: "13.65",
+                                                 height: "4.13",
+                                                 dimensionsUnit: "cm",
+                                                 weight: "0",
+                                                 weightUnit: "kg",
+                                                 source: .predefined("usps"),
+                                                 packageType: "box")
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake())
+
+        // When
+        viewModel.selectPackage(packageData)
+
+        // Then
+        XCTAssertNotNil(viewModel.selectedPackage)
+        XCTAssertEqual(viewModel.selectedPackage?.id, "shipment_0")
+        XCTAssertEqual(viewModel.selectedPackage?.boxID, "small_flat_box")
+        XCTAssertEqual(viewModel.selectedPackage?.length, 21.91)
+        XCTAssertEqual(viewModel.selectedPackage?.width, 13.65)
+        XCTAssertEqual(viewModel.selectedPackage?.height, 4.13)
+        XCTAssertEqual(viewModel.selectedPackage?.weight, 0)
+        XCTAssertEqual(viewModel.selectedPackage?.isLetter, false)
     }
 }
 

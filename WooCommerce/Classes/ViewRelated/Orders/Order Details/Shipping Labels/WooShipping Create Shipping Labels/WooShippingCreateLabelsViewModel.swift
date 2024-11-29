@@ -27,24 +27,13 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     @Published private(set) var items: WooShippingItemsViewModel
 
     /// Selected package for the shipping label.
-    @Published private(set) var selectedPackage: ShippingLabelPackageSelected? {
-        didSet {
-            if let selectedPackage {
-                shippingService = WooShippingServiceViewModel(order: order,
-                                                              originAddress: originSiteAddress,
-                                                              destinationAddress: destinationAddress,
-                                                              selectedPackage: selectedPackage) { [weak self] selectedRate in
-                    self?.selectedRate = selectedRate
-                }
-            }
-        }
-    }
+    @Published private(set) var selectedPackage: ShippingLabelPackageSelected?
 
     /// View model for the label shipping service.
     private(set) var shippingService: WooShippingServiceViewModel?
 
     /// Selected shipping rate when creating a shipping label.
-    private var selectedRate: WooShippingSelectedRate?
+    @Published private var selectedRate: WooShippingSelectedRate?
 
     /// Address to ship from (store address), formatted for display.
     private(set) lazy var originAddress: String = {
@@ -123,10 +112,15 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                                                               account: defaultAccount,
                                                               userDefaults: userDefaults)
         self.destinationAddress = Self.getDestinationAddress(order: order, address: order.shippingAddress)
-        self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0) })
+        self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
         self.selectedPackage = selectedPackage
         self.selectedRate = selectedRate
         self.stores = stores
+        shippingService = WooShippingServiceViewModel(order: order,
+                                                      originAddress: originSiteAddress,
+                                                      destinationAddress: destinationAddress) { [weak self] selectedRate in
+            self?.selectedRate = selectedRate
+        }
     }
 
     /// Initialize the view model from an existing shipping label.
@@ -140,11 +134,29 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
         self.itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
         self.items = WooShippingItemsViewModel(dataSource: itemsDataSource)
-        self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0) })
+        self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
         self.originSiteAddress = shippingLabel.originAddress
         self.destinationAddress = shippingLabel.destinationAddress
         self.onLabelPurchase = nil
         self.stores = stores
+    }
+
+    /// Handles package selection for the shipping label.
+    /// Selecting a package also refreshes the available rates for the shipping service.
+    func selectPackage(_ packageData: WooShippingPackageDataRepresentable) {
+        // For now we support purchasing labels in a single package for a single shipment.
+        // In future milestones we can handle an array of packages with unique IDs for each shipment.
+        let package = ShippingLabelPackageSelected(id: "shipment_0",
+                                                   boxID: packageData.id,
+                                                   length: Double(packageData.length) ?? 0,
+                                                   width: Double(packageData.width) ?? 0,
+                                                   height: Double(packageData.height) ?? 0,
+                                                   weight: itemsDataSource.items.map(\.weight).reduce(0, +) + (Double(packageData.weight) ?? 0),
+                                                   isLetter: WooShippingPackageType(rawValue: packageData.packageType) == .envelope,
+                                                   hazmatCategory: nil, // Hazmat support will be added in a future milestone
+                                                   customsForm: nil) // Customs form support will be added in a future milestone
+        selectedPackage = package
+        shippingService?.loadLabelRates(for: package)
     }
 
     /// Purchases a shipping label with the provided label details and settings.

@@ -38,4 +38,11 @@ public enum WooShippingAction: Action {
                                pollingDelay: TimeInterval = 1.0,
                                pollingMaximumRetries: Int64 = 3,
                                completion: (Result<ShippingLabel, Error>) -> Void)
+
+    /// Generates a shipping label document for printing.
+    ///
+    case printLabel(siteID: Int64,
+                    labelIDs: [Int64],
+                    paperSize: ShippingLabelPaperSize,
+                    completion: (Result<ShippingLabelPrintData, Error>) -> Void)
 }

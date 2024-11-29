@@ -38,27 +38,22 @@ extension MockActionHandler {
     /// A helper for saving mock objects into Core Data
     func save<T, U>(mocks: [T], as dataType: U.Type, onCompletion: @escaping (Error?) -> ()) where U: ReadOnlyConvertible & NSManagedObject {
 
-        var error: Error?
-
-        let storage = storageManager.viewStorage
-
-        storage.perform {
+        storageManager.performAndSave({ storage in
             let objects: [NSManagedObject] = mocks.map {
                 let newObject = storage.insertNewObject(ofType: U.self)
                 newObject.update(with: $0 as! U.ReadOnlyType)
                 return newObject
             }
 
-            do {
-                try storage.obtainPermanentIDs(for: objects)
+            // Obtain permanent IDs inside the same block
+            try storage.obtainPermanentIDs(for: objects)
+        }, completion: { result in
+            switch result {
+            case .success:
+                onCompletion(nil)
+            case .failure(let error):
+                onCompletion(error)
             }
-            catch let err {
-                error = err
-            }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: storage) {
-            onCompletion(error)
-        }
+        }, on: .main)
     }
 }

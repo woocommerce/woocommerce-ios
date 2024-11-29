@@ -12,11 +12,11 @@ final class WooShipping_ShippingLineViewModelTests: XCTestCase {
         let shippingLine = ShippingLine.fake().copy(shippingID: 123, methodTitle: "Flat Rate Shipping", total: "2.50")
 
         // When
-        let viewModel = WooShipping_ShippingLineViewModel(shippingLine: shippingLine, currencyFormatter: currencyFormatter)
+        let viewModel = WooShipping_ShippingLineViewModel(shippingLine: shippingLine, currency: "GBP", currencyFormatter: currencyFormatter)
 
         // Then
         assertEqual(shippingLine.shippingID, viewModel.id)
         assertEqual(shippingLine.methodTitle, viewModel.title)
-        assertEqual("$2.50", viewModel.formattedTotal)
+        assertEqual("£2.50", viewModel.formattedTotal)
     }
 }

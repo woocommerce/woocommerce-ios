@@ -5,7 +5,7 @@ import class Networking.AlamofireNetwork
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
-public enum POSProductProviderError: Error {
+public enum PointOfSaleProductServiceError: Error {
     case requestFailed
     case pageOutOfRange
     case unknown
@@ -13,7 +13,7 @@ public enum POSProductProviderError: Error {
 
 /// Product provider for the Point of Sale feature
 ///
-public final class POSProductProvider: POSItemProvider {
+public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
     private var siteID: Int64
     private var currencySettings: CurrencySettings
     private let productsRemote: ProductsRemote
@@ -41,7 +41,7 @@ public final class POSProductProvider: POSItemProvider {
         let products = try await productsRemote.loadSimpleProductsForPointOfSale(for: siteID, pageNumber: pageNumber)
 
         if pageNumber != 1 && products.count == 0 {
-            throw POSProductProviderError.pageOutOfRange
+            throw PointOfSaleProductServiceError.pageOutOfRange
         }
 
         let eligibilityCriteria: [(Product) -> Bool] = [
@@ -77,7 +77,7 @@ public final class POSProductProvider: POSItemProvider {
     }
 }
 
-private extension POSProductProvider {
+private extension PointOfSaleProductService {
     func filterProducts(products: [Product], using criteria: [(Product) -> Bool]) -> [Product] {
         return products.filter { product in
             criteria.allSatisfy { $0(product) }

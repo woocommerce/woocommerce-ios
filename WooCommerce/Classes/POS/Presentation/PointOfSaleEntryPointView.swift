@@ -1,6 +1,4 @@
 import SwiftUI
-import protocol Yosemite.POSItemProvider
-import protocol Yosemite.POSOrderServiceProtocol
 
 struct PointOfSaleEntryPointView: View {
     @StateObject private var posModel: PointOfSaleAggregateModel
@@ -8,15 +6,16 @@ struct PointOfSaleEntryPointView: View {
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
 
-    init(itemProvider: POSItemProvider,
+    init(itemsController: PointOfSaleItemsControllerProtocol,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
-         orderService: POSOrderServiceProtocol) {
+         orderController: PointOfSaleOrderControllerProtocol) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
-        let posModel = PointOfSaleAggregateModel(itemsService: PointOfSaleItemsService(itemProvider: itemProvider),
-                                                 cardPresentPaymentService: cardPresentPaymentService,
-                                                 orderService: orderService)
+        let posModel = PointOfSaleAggregateModel(
+            itemsController: itemsController,
+            cardPresentPaymentService: cardPresentPaymentService,
+            orderController: orderController)
 
         self._posModel = StateObject(wrappedValue: posModel)
     }
@@ -36,9 +35,9 @@ struct PointOfSaleEntryPointView: View {
 
 #if DEBUG
 #Preview {
-    PointOfSaleEntryPointView(itemProvider: POSItemProviderPreview(),
+    PointOfSaleEntryPointView(itemsController: PointOfSalePreviewItemsController(),
                               onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                              orderService: POSOrderPreviewService())
+                              orderController: PointOfSalePreviewOrderController())
 }
 #endif

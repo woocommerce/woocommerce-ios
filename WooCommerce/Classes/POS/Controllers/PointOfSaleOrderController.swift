@@ -36,15 +36,16 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     @MainActor
     func syncOrder(for cartItems: [CartItem],
                    retryHandler: @escaping () async -> Void) async {
+        let posCartItems = cartItems.map {
+            POSCartItem(item: $0.item, quantity: Decimal($0.quantity))
+        }
+
         guard !orderState.isSyncing,
-              !cartItems.matchesOrder(order) else {
+              !posCartItems.matches(order: order) else {
             return
         }
 
         orderState = .syncing
-        let posCartItems = cartItems.map {
-            POSCartItem(item: $0.item, quantity: Decimal($0.quantity))
-        }
 
         do {
             let syncedOrder = try await orderService.syncOrder(cart: posCartItems, order: order)

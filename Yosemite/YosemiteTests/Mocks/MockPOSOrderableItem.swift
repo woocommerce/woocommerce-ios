@@ -1,10 +1,5 @@
 import Foundation
-import typealias Yosemite.POSOrderableItem
-import enum Yosemite.ProductType
-import struct Yosemite.OrderSyncProductInput
-import protocol Yosemite.OrderSyncProductTypeProtocol
-import struct Yosemite.ProductBundleItem
-import struct Yosemite.OrderItem
+@testable import Yosemite
 
 final class MockPOSItem: POSOrderableItem, Equatable {
     var name: String
@@ -16,12 +11,14 @@ final class MockPOSItem: POSOrderableItem, Equatable {
          id: UUID = UUID(),
          formattedPrice: String,
          productImageSource: String? = nil,
-         orderItemsToMatch: [OrderItem] = []) {
+         orderItemsToMatch: [OrderItem] = [],
+         matcher: ((OrderItem) -> Bool)?) {
         self.name = name
         self.id = id
         self.formattedPrice = formattedPrice
         self.productImageSource = productImageSource
         self.orderItemsToMatch = orderItemsToMatch
+        self.matcher = matcher
     }
 
     func toOrderSyncProductInput(quantity: Decimal) -> OrderSyncProductInput {

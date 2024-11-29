@@ -134,10 +134,11 @@ private extension SitePluginStore {
     /// Also removes stale plugins that no longer exist in remote plugin list.
     ///
     func upsertSitePlugins(siteID: Int64, readonlyPlugins: [SitePlugin], in storage: StorageType) {
+        let storedPlugins = storage.loadPlugins(siteID: siteID)
         readonlyPlugins.forEach { readonlyPlugin in
             // load or create new StorageSitePlugin matching the readonly one
             let storagePlugin: StorageSitePlugin = {
-                if let plugin = storage.loadPlugin(siteID: readonlyPlugin.siteID, name: readonlyPlugin.name) {
+                if let plugin = storedPlugins.first(where: { $0.name == readonlyPlugin.name }) {
                     return plugin
                 }
                 return storage.insertNewObject(ofType: StorageSitePlugin.self)

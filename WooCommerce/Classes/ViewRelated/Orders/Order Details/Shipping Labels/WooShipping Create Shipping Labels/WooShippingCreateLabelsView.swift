@@ -57,7 +57,7 @@ struct WooShippingCreateLabelsView: View {
                         WooShippingServiceView(viewModel: shippingService)
                             .padding(.horizontal, -16)
                     } else {
-                        WooShippingPackageAndRatePlaceholder()
+                        WooShippingPackageAndRatePlaceholder(onSelectPackage: viewModel.selectPackage)
                     }
                 }
                 .padding(16)

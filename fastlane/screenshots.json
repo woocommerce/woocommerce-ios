@@ -63,7 +63,7 @@
 			"filename": "iPhone 11 Pro Max-01.png",
 			"background": "#674399",
 			"screenshot": "iPhone 11 Pro Max-1-dark-order-dashboard.png",
-			"text": "metadata/{locale}/promo_screenshot_1.txt"
+			"text": "metadata/{locale}/app_store_screenshot_1.txt"
 		},
 		// Create orders on the fly
 		{
@@ -71,7 +71,7 @@
 			"filename": "iPhone 11 Pro Max-02.png",
 			"background": "#C9356E",
 			"screenshot": "iPhone 11 Pro Max-2-light-order-creation.png",
-			"text": "metadata/{locale}/promo_screenshot_2.txt"
+			"text": "metadata/{locale}/app_store_screenshot_2.txt"
 		},
 		// Take payments in person
 		{
@@ -79,7 +79,7 @@
 			"filename": "iPhone 11 Pro Max-03.png",
 			"background": "#674399",
 			"screenshot": "iPhone 11 Pro Max-3-dark-order-payment.png",
-			"text": "metadata/{locale}/promo_screenshot_3.txt"
+			"text": "metadata/{locale}/app_store_screenshot_3.txt"
 		},
 		// Add and edit products with a touch
 		{
@@ -87,7 +87,7 @@
 			"filename": "iPhone 11 Pro Max-04.png",
 			"background": "#C9356E",
 			"screenshot": "iPhone 11 Pro Max-4-light-product-add.png",
-			"text": "metadata/{locale}/promo_screenshot_4.txt"
+			"text": "metadata/{locale}/app_store_screenshot_4.txt"
 		},
 		// Get notified of every sale
 		{
@@ -95,7 +95,7 @@
 			"filename": "iPhone 11 Pro Max-05.png",
 			"background": "#674399",
 			"screenshot": "iPhone 11 Pro Max-5-dark-order-notification.png",
-			"text": "metadata/{locale}/promo_screenshot_5.txt"
+			"text": "metadata/{locale}/app_store_screenshot_5.txt"
 		},
 
 		// iPhone 8 Plus
@@ -105,7 +105,7 @@
 			"filename": "iPhone 8 Plus-01.png",
 			"background": "#674399",
 			"screenshot": "iPhone 8 Plus-1-dark-order-dashboard.png",
-			"text": "metadata/{locale}/promo_screenshot_1.txt"
+			"text": "metadata/{locale}/app_store_screenshot_1.txt"
 		},
 		// Create orders on the fly
 		{
@@ -113,7 +113,7 @@
 			"filename": "iPhone 8 Plus-02.png",
 			"background": "#C9356E",
 			"screenshot": "iPhone 8 Plus-2-light-order-creation.png",
-			"text": "metadata/{locale}/promo_screenshot_2.txt"
+			"text": "metadata/{locale}/app_store_screenshot_2.txt"
 		},
 		// Take payments in person
 		{
@@ -121,7 +121,7 @@
 			"filename": "iPhone 8 Plus-03.png",
 			"background": "#674399",
 			"screenshot": "iPhone 8 Plus-3-dark-order-payment.png",
-			"text": "metadata/{locale}/promo_screenshot_3.txt"
+			"text": "metadata/{locale}/app_store_screenshot_3.txt"
 		},
 		// Add and edit products with a touch
 		{
@@ -129,7 +129,7 @@
 			"filename": "iPhone 8 Plus-04.png",
 			"background": "#C9356E",
 			"screenshot": "iPhone 8 Plus-4-light-product-add.png",
-			"text": "metadata/{locale}/promo_screenshot_4.txt"
+			"text": "metadata/{locale}/app_store_screenshot_4.txt"
 		},
 		// Get notified of every sale
 		{
@@ -137,7 +137,7 @@
 			"filename": "iPhone 8 Plus-05.png",
 			"background": "#674399",
 			"screenshot": "iPhone 8 Plus-5-dark-order-notification.png",
-			"text": "metadata/{locale}/promo_screenshot_5.txt"
+			"text": "metadata/{locale}/app_store_screenshot_5.txt"
 		},
 
 
@@ -148,7 +148,7 @@
 			"filename": "iPad Pro (12.9-inch) (2nd generation)-01.png",
 			"background": "#674399",
 			"screenshot": "iPad Pro (12.9-inch) (2nd generation)-1-dark-order-dashboard.png",
-			"text": "metadata/{locale}/promo_screenshot_1.txt"
+			"text": "metadata/{locale}/app_store_screenshot_1.txt"
 		},
 		// Create orders on the fly
 		{
@@ -156,7 +156,7 @@
 			"filename": "iPad Pro (12.9-inch) (2nd generation)-02.png",
 			"background": "#C9356E",
 			"screenshot": "iPad Pro (12.9-inch) (2nd generation)-2-light-order-creation.png",
-			"text": "metadata/{locale}/promo_screenshot_2.txt"
+			"text": "metadata/{locale}/app_store_screenshot_2.txt"
 		},
 		// Take payments in person
 		{
@@ -164,7 +164,7 @@
 			"filename": "iPad Pro (12.9-inch) (2nd generation)-03.png",
 			"background": "#674399",
 			"screenshot": "iPad Pro (12.9-inch) (2nd generation)-3-dark-order-payment.png",
-			"text": "metadata/{locale}/promo_screenshot_3.txt"
+			"text": "metadata/{locale}/app_store_screenshot_3.txt"
 		},
 		// Add and edit products with a touch
 		{
@@ -172,7 +172,7 @@
 			"filename": "iPad Pro (12.9-inch) (2nd generation)-04.png",
 			"background": "#C9356E",
 			"screenshot": "iPad Pro (12.9-inch) (2nd generation)-4-light-product-add.png",
-			"text": "metadata/{locale}/promo_screenshot_4.txt"
+			"text": "metadata/{locale}/app_store_screenshot_4.txt"
 		},
 		// Get notified of every sale
 		{
@@ -180,7 +180,7 @@
 			"filename": "iPad Pro (12.9-inch) (2nd generation)-05.png",
 			"background": "#674399",
 			"screenshot": "iPad Pro (12.9-inch) (2nd generation)-5-dark-order-notification.png",
-			"text": "metadata/{locale}/promo_screenshot_5.txt"
+			"text": "metadata/{locale}/app_store_screenshot_5.txt"
 		},
 
 		/// iPad Pro 12.9 (3rd Generation)
@@ -190,7 +190,7 @@
 			"filename": "iPad Pro (12.9-inch) (3rd generation)-01.png",
 			"background": "#674399",
 			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-1-dark-order-dashboard.png",
-			"text": "metadata/{locale}/promo_screenshot_1.txt"
+			"text": "metadata/{locale}/app_store_screenshot_1.txt"
 		},
 		// Create orders on the fly
 		{
@@ -198,7 +198,7 @@
 			"filename": "iPad Pro (12.9-inch) (3rd generation)-02.png",
 			"background": "#C9356E",
 			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-2-light-order-creation.png",
-			"text": "metadata/{locale}/promo_screenshot_2.txt"
+			"text": "metadata/{locale}/app_store_screenshot_2.txt"
 		},
 		// Take payments in person
 		{
@@ -206,7 +206,7 @@
 			"filename": "iPad Pro (12.9-inch) (3rd generation)-03.png",
 			"background": "#674399",
 			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-3-dark-order-payment.png",
-			"text": "metadata/{locale}/promo_screenshot_3.txt"
+			"text": "metadata/{locale}/app_store_screenshot_3.txt"
 		},
 		// Add and edit products with a touch
 		{
@@ -214,7 +214,7 @@
 			"filename": "iPad Pro (12.9-inch) (3rd generation)-04.png",
 			"background": "#C9356E",
 			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-4-light-product-add.png",
-			"text": "metadata/{locale}/promo_screenshot_4.txt"
+			"text": "metadata/{locale}/app_store_screenshot_4.txt"
 		},
 		// Get notified of every sale
 		{
@@ -222,7 +222,7 @@
 			"filename": "iPad Pro (12.9-inch) (3rd generation)-05.png",
 			"background": "#674399",
 			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-5-dark-order-notification.png",
-			"text": "metadata/{locale}/promo_screenshot_5.txt"
+			"text": "metadata/{locale}/app_store_screenshot_5.txt"
 		}
 	]
 }

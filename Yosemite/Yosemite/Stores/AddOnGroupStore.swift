@@ -56,15 +56,9 @@ private extension AddOnGroupStore {
     /// onCompletion will be called on the main thread!
     ///
     func upsertAddOnGroupsInBackground(siteID: Int64, readOnlyAddOnGroups: [AddOnGroup], onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let derivedStorage = storageManager.writerDerivedStorage
-        derivedStorage.perform {
-            self.upsertAddOnGroups(siteID: siteID, readOnlyAddOnGroups: readOnlyAddOnGroups, in: derivedStorage)
-        }
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async {
-                onCompletion(.success(()))
-            }
-        }
+        storageManager.performAndSave({ [weak self] storage in
+            self?.upsertAddOnGroups(siteID: siteID, readOnlyAddOnGroups: readOnlyAddOnGroups, in: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly `AddOnGroups` entities into the Storage Layer.

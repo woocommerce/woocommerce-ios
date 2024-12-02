@@ -62,6 +62,8 @@ private extension WooShippingPackageAndRatePlaceholder {
     }
 }
 
+#if DEBUG
+
 import struct Yosemite.Order
 
 #Preview {
@@ -72,7 +74,6 @@ import struct Yosemite.Order
 
 // MARK: - Sample Data
 
-#if DEBUG
 extension Order {
     static let sampleOrder = Order(siteID: 0,
                                   orderID: 0,

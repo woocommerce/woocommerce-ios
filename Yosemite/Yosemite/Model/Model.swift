@@ -186,6 +186,7 @@ public typealias WooShippingPredefinedPackage = Networking.WooShippingPredefined
 public typealias WooShippingCreatePackageResponse = Networking.WooShippingCreatePackageResponse
 public typealias WooShippingPackagesResponse = Networking.WooShippingPackagesResponse
 public typealias WooShippingPackagePurchase = Networking.WooShippingPackagePurchase
+public typealias WooShippingPredefinedSavedOption = Networking.WooShippingPredefinedSavedOption
 public typealias WPComPlan = Networking.WPComPlan
 public typealias WPComSitePlan = Networking.WPComSitePlan
 public typealias LoadSiteCurrentPlanError = Networking.LoadSiteCurrentPlanError

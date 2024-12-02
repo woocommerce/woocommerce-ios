@@ -17,10 +17,6 @@ extension ProductVariation: TaxClassRequestable {}
 public class TaxStore: Store {
     private let remote: TaxRemote
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = TaxRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)

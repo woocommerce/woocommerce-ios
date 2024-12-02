@@ -21,7 +21,6 @@ struct WooShippingAddPackageView: View {
 
     // Holds type of selected package, it can be `custom`, `carrier` or `saved`
     @State var selectedPackageType = PackageProviderType.custom
-    @StateObject var packagesRepository: WooShippingPackagesRepository
     @StateObject var packagesViewModel = WooShippingAddPackageViewModel()
     @State var customPackageViewModel: WooShippingAddCustomPackageViewModel?
     @ObservedObject var createLabelsViewModel: WooShippingCreateLabelsViewModel
@@ -31,10 +30,8 @@ struct WooShippingAddPackageView: View {
     @State private var cancellable: AnyCancellable?
 
     init(createLabelsViewModel: WooShippingCreateLabelsViewModel,
-         packagesRepository: WooShippingPackagesRepository = WooShippingPackagesRepository.shared,
          addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
         self.createLabelsViewModel = createLabelsViewModel
-        self._packagesRepository = StateObject(wrappedValue: packagesRepository)
         self.addPackageAction = addPackageAction
     }
 
@@ -72,7 +69,6 @@ struct WooShippingAddPackageView: View {
         }
         .navigationViewStyle(.stack)
         .task {
-            packagesRepository.loadPackages()
             packagesViewModel.loadPackages()
         }
         .onAppear() {
@@ -138,7 +134,7 @@ struct WooShippingAddPackageView: View {
 
     @ViewBuilder
     private var carrierPackageView: some View {
-        WooCarrierPackagesSelectionView(viewModel: WooCarrierPackagesSelectionViewModel(packagesRepository: packagesRepository)) { packageData in
+        WooCarrierPackagesSelectionView(viewModel: packagesViewModel) { packageData in
             addPackageAction(packageData)
         }
     }

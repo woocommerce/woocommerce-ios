@@ -91,18 +91,6 @@ struct InPersonPaymentsMenu: View {
                             }
                             .buttonStyle(.scrollViewRow)
                         }
-
-                        PaymentsRow(image: Image(uiImage: .feedbackOutlineIcon.withRenderingMode(.alwaysTemplate)),
-                                    title: Localization.tapToPayOnIPhoneFeedback)
-                        .accessibility(addTraits: .isButton)
-                        .foregroundColor(Color(uiColor: .textLink))
-                        .onTapGesture {
-                            viewModel.tapToPayFeedbackTapped()
-                        }
-                        .sheet(isPresented: $viewModel.presentTapToPayFeedback) {
-                            Survey(source: .tapToPayFirstPayment)
-                        }
-                        .renderedIf(viewModel.shouldShowTapToPayFeedbackRow)
                     } header: {
                         Text(Localization.tapToPaySectionTitle.uppercased())
                             .accessibilityAddTraits(.isHeader)
@@ -377,12 +365,6 @@ private extension InPersonPaymentsMenu {
             value: "About Tap to Pay",
             comment: "Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits " +
             "of Tap to Pay on iPhone, relevant to the store territory."
-        ).localizedCapitalized
-
-        static let tapToPayOnIPhoneFeedback = NSLocalizedString(
-            "menu.payments.tapToPay.feedback.row.title",
-            value: "Share Feedback",
-            comment: "Navigates to a screen to share feedback about Tap to Pay on iPhone."
         ).localizedCapitalized
 
         static let done = NSLocalizedString(

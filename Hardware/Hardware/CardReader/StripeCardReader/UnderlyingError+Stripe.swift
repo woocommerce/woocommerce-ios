@@ -10,115 +10,263 @@ extension UnderlyingError {
             return nil
         }
 
-        switch error.code {
-        case ErrorCode.Code.notConnectedToReader.rawValue:
-            self = .notConnectedToReader
-        case ErrorCode.Code.alreadyConnectedToReader.rawValue:
-            self = .alreadyConnectedToReader
-        case ErrorCode.Code.confirmInvalidPaymentIntent.rawValue:
-            self = .confirmInvalidPaymentIntent
-        case ErrorCode.Code.unsupportedSDK.rawValue:
-            self = .unsupportedSDK
-        case ErrorCode.Code.featureNotAvailableWithConnectedReader.rawValue:
-            self = .featureNotAvailableWithConnectedReader
-        case ErrorCode.Code.canceled.rawValue:
-            self = .commandCancelled(from: .unknown)
-        case ErrorCode.Code.locationServicesDisabled.rawValue:
-            self = .locationServicesDisabled
-        case ErrorCode.Code.bluetoothDisabled.rawValue:
-            self = .bluetoothDisabled
-        case ErrorCode.Code.bluetoothError.rawValue:
-            self = .bluetoothError
-        case ErrorCode.Code.bluetoothScanTimedOut.rawValue:
-            self = .bluetoothScanTimedOut
-        case ErrorCode.Code.bluetoothLowEnergyUnsupported.rawValue:
-            self = .bluetoothLowEnergyUnsupported
-        case ErrorCode.Code.bluetoothConnectionFailedBatteryCriticallyLow.rawValue:
-            self = .bluetoothConnectionFailedBatteryCriticallyLow
-        case ErrorCode.Code.readerSoftwareUpdateFailedBatteryLow.rawValue:
-            self = .readerSoftwareUpdateFailedBatteryLow
-        case ErrorCode.Code.readerSoftwareUpdateFailedInterrupted.rawValue:
-            self = .readerSoftwareUpdateFailedInterrupted
-        case ErrorCode.Code.readerSoftwareUpdateFailed.rawValue:
-            self = .readerSoftwareUpdateFailed
-        case ErrorCode.Code.readerSoftwareUpdateFailedReaderError.rawValue:
-            self = .readerSoftwareUpdateFailedReader
-        case ErrorCode.Code.readerSoftwareUpdateFailedServerError.rawValue:
-            self = .readerSoftwareUpdateFailedServer
-        case ErrorCode.Code.cardInsertNotRead.rawValue:
-            self = .cardInsertNotRead
-        case ErrorCode.Code.cardSwipeNotRead.rawValue:
-            self = .cardSwipeNotRead
-        case ErrorCode.Code.cardReadTimedOut.rawValue:
-            self = .cardReadTimeOut
-        case ErrorCode.Code.cardRemoved.rawValue:
-            self = .cardRemoved
-        case ErrorCode.Code.cardLeftInReader.rawValue:
-            self = .cardLeftInReader
-        case ErrorCode.Code.readerBusy.rawValue:
-            self = .readerBusy
-        case ErrorCode.Code.incompatibleReader.rawValue:
-            self = .readerIncompatible
-        case ErrorCode.Code.readerCommunicationError.rawValue:
-            self = .readerCommunicationError
-        case ErrorCode.Code.bluetoothConnectTimedOut.rawValue:
-            self = .bluetoothConnectTimedOut
-        case ErrorCode.Code.bluetoothDisconnected.rawValue:
-            self = .bluetoothDisconnected
-        case ErrorCode.Code.unsupportedReaderVersion.rawValue:
-            self = .unsupportedReaderVersion
-        case ErrorCode.Code.connectFailedReaderIsInUse.rawValue:
-            self = .connectFailedReaderIsInUse
-        case ErrorCode.Code.unexpectedSdkError.rawValue:
-            self = .unexpectedSDKError
-        case ErrorCode.Code.declinedByStripeAPI.rawValue:
-            // https://stripe.dev/stripe-terminal-ios/docs/Errors.html#/c:@SCPErrorKeyStripeAPIDeclineCode
-            let declineCode = error.userInfo[ErrorKey.stripeAPIDeclineCode.rawValue] as? String
-            let declineReason = DeclineReason(with: declineCode ?? "")
-            self = .paymentDeclinedByPaymentProcessorAPI(declineReason: declineReason)
-        case ErrorCode.Code.declinedByReader.rawValue:
-            self = .paymentDeclinedByCardReader
-        case ErrorCode.Code.notConnectedToInternet.rawValue:
-            self = .notConnectedToInternet
-        case ErrorCode.Code.requestTimedOut.rawValue:
-            self = .requestTimedOut
-        case ErrorCode.Code.sessionExpired.rawValue:
-            self = .readerSessionExpired
-        case ErrorCode.Code.stripeAPIError.rawValue:
-            self = .processorAPIError
-        case ErrorCode.Code.passcodeNotEnabled.rawValue:
-            self = .passcodeNotEnabled
-        case ErrorCode.Code.appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn.rawValue:
-            self = .appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn
-        case ErrorCode.Code.nfcDisabled.rawValue:
-            self = .nfcDisabled
-        case ErrorCode.Code.appleBuiltInReaderFailedToPrepare.rawValue:
-            self = .appleBuiltInReaderFailedToPrepare
-        case ErrorCode.Code.appleBuiltInReaderTOSAcceptanceCanceled.rawValue:
-            self = .appleBuiltInReaderTOSAcceptanceCanceled
-        case ErrorCode.Code.appleBuiltInReaderTOSNotYetAccepted.rawValue:
-            self = .appleBuiltInReaderTOSNotYetAccepted
-        case ErrorCode.Code.appleBuiltInReaderTOSAcceptanceFailed.rawValue:
-            self = .appleBuiltInReaderTOSAcceptanceFailed
-        case ErrorCode.Code.appleBuiltInReaderMerchantBlocked.rawValue:
-            self = .appleBuiltInReaderMerchantBlocked
-        case ErrorCode.Code.appleBuiltInReaderInvalidMerchant.rawValue:
-            self = .appleBuiltInReaderInvalidMerchant
-        case ErrorCode.Code.appleBuiltInReaderDeviceBanned.rawValue:
-            self = .appleBuiltInReaderDeviceBanned
-        case ErrorCode.Code.unsupportedMobileDeviceConfiguration.rawValue:
-            self = .unsupportedMobileDeviceConfiguration
-        case ErrorCode.Code.readerNotAccessibleInBackground.rawValue:
-            self = .readerNotAccessibleInBackground
-        case ErrorCode.Code.commandNotAllowedDuringCall.rawValue:
-            self = .commandNotAllowedDuringCall
-        case ErrorCode.Code.invalidAmount.rawValue:
-            self = .invalidAmount
-        case ErrorCode.Code.invalidCurrency.rawValue:
-            self = .invalidCurrency
-        default:
-            return nil
+        if let stripeError = StripeTerminal.ErrorCode.Code(rawValue: error.code) {
+            switch stripeError {
+            case .notConnectedToReader:
+                self = .notConnectedToReader
+            case .alreadyConnectedToReader:
+                self = .alreadyConnectedToReader
+            case .confirmInvalidPaymentIntent:
+                self = .confirmInvalidPaymentIntent
+            case .unsupportedSDK:
+                self = .unsupportedSDK
+            case .featureNotAvailableWithConnectedReader:
+                self = .featureNotAvailableWithConnectedReader
+            case .canceled:
+                self = .commandCancelled(from: .unknown)
+            case .locationServicesDisabled:
+                self = .locationServicesDisabled
+            case .bluetoothDisabled:
+                self = .bluetoothDisabled
+            case .bluetoothError:
+                self = .bluetoothError
+            case .bluetoothScanTimedOut:
+                self = .bluetoothScanTimedOut
+            case .bluetoothLowEnergyUnsupported:
+                self = .bluetoothLowEnergyUnsupported
+            case .bluetoothConnectionFailedBatteryCriticallyLow:
+                self = .bluetoothConnectionFailedBatteryCriticallyLow
+            case .readerSoftwareUpdateFailedBatteryLow:
+                self = .readerSoftwareUpdateFailedBatteryLow
+            case .readerSoftwareUpdateFailedInterrupted:
+                self = .readerSoftwareUpdateFailedInterrupted
+            case .readerSoftwareUpdateFailed:
+                self = .readerSoftwareUpdateFailed
+            case .readerSoftwareUpdateFailedReaderError:
+                self = .readerSoftwareUpdateFailedReader
+            case .readerSoftwareUpdateFailedServerError:
+                self = .readerSoftwareUpdateFailedServer
+            case .cardInsertNotRead:
+                self = .cardInsertNotRead
+            case .cardSwipeNotRead:
+                self = .cardSwipeNotRead
+            case .cardReadTimedOut:
+                self = .cardReadTimeOut
+            case .cardRemoved:
+                self = .cardRemoved
+            case .cardLeftInReader:
+                self = .cardLeftInReader
+            case .readerBusy:
+                self = .readerBusy
+            case .incompatibleReader:
+                self = .readerIncompatible
+            case .readerCommunicationError:
+                self = .readerCommunicationError
+            case .bluetoothConnectTimedOut:
+                self = .bluetoothConnectTimedOut
+            case .bluetoothDisconnected:
+                self = .bluetoothDisconnected
+            case .unsupportedReaderVersion:
+                self = .unsupportedReaderVersion
+            case .connectFailedReaderIsInUse:
+                self = .connectFailedReaderIsInUse
+            case .unexpectedSdkError:
+                self = .unexpectedSDKError
+            case .declinedByStripeAPI:
+                // https://stripe.dev/stripe-terminal-ios/docs/Errors.html#/c:@SCPErrorKeyStripeAPIDeclineCode
+                let declineCode = error.userInfo[ErrorKey.stripeAPIDeclineCode.rawValue] as? String
+                let declineReason = DeclineReason(with: declineCode ?? "")
+                self = .paymentDeclinedByPaymentProcessorAPI(declineReason: declineReason)
+            case .declinedByReader:
+                self = .paymentDeclinedByCardReader
+            case .notConnectedToInternet:
+                self = .notConnectedToInternet
+            case .requestTimedOut:
+                self = .requestTimedOut
+            case .sessionExpired:
+                self = .readerSessionExpired
+            case .stripeAPIError:
+                self = .processorAPIError
+            case .passcodeNotEnabled:
+                self = .passcodeNotEnabled
+            case .appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn:
+                self = .appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn
+            case .nfcDisabled:
+                self = .nfcDisabled
+            case .appleBuiltInReaderFailedToPrepare:
+                self = .appleBuiltInReaderFailedToPrepare
+            case .appleBuiltInReaderTOSAcceptanceCanceled:
+                self = .appleBuiltInReaderTOSAcceptanceCanceled
+            case .appleBuiltInReaderTOSNotYetAccepted:
+                self = .appleBuiltInReaderTOSNotYetAccepted
+            case .appleBuiltInReaderTOSAcceptanceFailed:
+                self = .appleBuiltInReaderTOSAcceptanceFailed
+            case .appleBuiltInReaderMerchantBlocked:
+                self = .appleBuiltInReaderMerchantBlocked
+            case .appleBuiltInReaderInvalidMerchant:
+                self = .appleBuiltInReaderInvalidMerchant
+            case .appleBuiltInReaderDeviceBanned:
+                self = .appleBuiltInReaderDeviceBanned
+            case .unsupportedMobileDeviceConfiguration:
+                self = .unsupportedMobileDeviceConfiguration
+            case .readerNotAccessibleInBackground:
+                self = .readerNotAccessibleInBackground
+            case .commandNotAllowedDuringCall:
+                self = .commandNotAllowedDuringCall
+            case .invalidAmount:
+                self = .invalidAmount
+            case .invalidCurrency:
+                self = .invalidCurrency
+            case .cancelFailedAlreadyCompleted:
+                self = .cancelFailedAlreadyCompleted
+            case .connectionTokenProviderCompletedWithNothing:
+                self = .connectionTokenProviderCompletedWithNothing
+            case .connectionTokenProviderCompletedWithNothingWhileForwarding:
+                self = .connectionTokenProviderCompletedWithNothingWhileForwarding
+            case .nilPaymentIntent:
+                self = .nilPaymentIntent
+            case .nilSetupIntent:
+                self = .nilSetupIntent
+            case .nilRefundPaymentMethod:
+                self = .nilRefundPaymentMethod
+            case .invalidRefundParameters:
+                self = .invalidRefundParameters
+            case .invalidClientSecret:
+                self = .invalidClientSecret
+            case .invalidDiscoveryConfiguration:
+                self = .invalidDiscoveryConfiguration
+            case .invalidReaderForUpdate:
+                self = .invalidReaderForUpdate
+            case .featureNotAvailable:
+                self = .featureNotAvailable
+            case .invalidListLocationsLimitParameter:
+                self = .invalidListLocationsLimitParameter
+            case .bluetoothConnectionInvalidLocationIdParameter:
+                self = .bluetoothConnectionInvalidLocationIdParameter
+            case .invalidRequiredParameter:
+                self = .invalidRequiredParameter
+            case .invalidRequiredParameterOnBehalfOf:
+                self = .invalidRequiredParameterOnBehalfOf
+            case .accountIdMismatchWhileForwarding:
+                self = .accountIdMismatchWhileForwarding
+            case .updatePaymentIntentUnavailableWhileOffline:
+                self = .updatePaymentIntentUnavailableWhileOffline
+            case .updatePaymentIntentUnavailableWhileOfflineModeEnabled:
+                self = .updatePaymentIntentUnavailableWhileOfflineModeEnabled
+            case .forwardingTestModePaymentInLiveMode:
+                self = .forwardingTestModePaymentInLiveMode
+            case .forwardingLiveModePaymentInTestMode:
+                self = .forwardingLiveModePaymentInTestMode
+            case .readerConnectionConfigurationInvalid:
+                self = .readerConnectionConfigurationInvalid
+            case .requestDynamicCurrencyConversionRequiresUpdatePaymentIntent:
+                self = .requestDynamicCurrencyConversionRequiresUpdatePaymentIntent
+            case .dynamicCurrencyConversionNotAvailable:
+                self = .dynamicCurrencyConversionNotAvailable
+            case .surchargingNotAvailable:
+                self = .surchargingNotAvailable
+            case .readerTippingParameterInvalid:
+                self = .readerTippingParameterInvalid
+            case .surchargeNoticeRequiresUpdatePaymentIntent:
+                self = .surchargeNoticeRequiresUpdatePaymentIntent
+            case .surchargeUnavailableWithDynamicCurrencyConversion:
+                self = .surchargeUnavailableWithDynamicCurrencyConversion
+            case .invalidLocationIdParameter:
+                self = .invalidLocationIdParameter
+            case .collectInputsInvalidParameter:
+                self = .collectInputsInvalidParameter
+            case .collectInputsUnsupported:
+                self = .collectInputsUnsupported
+            case .bluetoothAccessDenied:
+                self = .bluetoothAccessDenied
+            case .readerSoftwareUpdateFailedExpiredUpdate:
+                self = .readerSoftwareUpdateFailedExpiredUpdate
+            case .offlinePaymentsDatabaseTooLarge:
+                self = .offlinePaymentsDatabaseTooLarge
+            case .readerConnectionNotAvailableOffline:
+                self = .readerConnectionNotAvailableOffline
+            case .readerConnectionOfflineLocationMismatch:
+                self = .readerConnectionOfflineLocationMismatch
+            case .readerConnectionOfflineNeedsUpdate:
+                self = .readerConnectionOfflineNeedsUpdate
+            case .readerConnectionOfflinePairingUnseenDisabled:
+                self = .readerConnectionOfflinePairingUnseenDisabled
+            case .noLastSeenAccount:
+                self = .noLastSeenAccount
+            case .amountExceedsMaxOfflineAmount:
+                self = .amountExceedsMaxOfflineAmount
+            case .invalidOfflineCurrency:
+                self = .invalidOfflineCurrency
+            case .missingEMVData:
+                self = .missingEMVData
+            case .commandNotAllowed:
+                self = .commandNotAllowed
+            case .collectInputsTimedOut:
+                self = .collectInputsTimedOut
+            case .usbDiscoveryTimedOut:
+                self = .usbDiscoveryTimedOut
+            case .bluetoothPeerRemovedPairingInformation:
+                self = .bluetoothPeerRemovedPairingInformation
+            case .bluetoothAlreadyPairedWithAnotherDevice:
+                self = .bluetoothAlreadyPairedWithAnotherDevice
+            case .unknownReaderIpAddress:
+                self = .unknownReaderIpAddress
+            case .internetConnectTimeOut:
+                self = .internetConnectTimeOut
+            case .bluetoothReconnectStarted:
+                self = .bluetoothReconnectStarted
+            case .appleBuiltInReaderAccountDeactivated:
+                self = .appleBuiltInReaderAccountDeactivated
+            case .readerMissingEncryptionKeys:
+                self = .readerMissingEncryptionKeys
+            case .usbDisconnected:
+                self = .usbDisconnected
+            case .unexpectedReaderError:
+                self = .unexpectedReaderError
+            case .encryptionKeyFailure:
+                self = .encryptionKeyFailure
+            case .encryptionKeyStillInitializing:
+                self = .encryptionKeyStillInitializing
+            case .collectInputsApplicationError:
+                self = .collectInputsApplicationError
+            case .commandRequiresCardholderConsent:
+                self = .commandRequiresCardholderConsent
+            case .refundFailed:
+                self = .refundFailed
+            case .cardSwipeNotAvailable:
+                self = .cardSwipeNotAvailable
+            case .interacNotSupportedOffline:
+                self = .interacNotSupportedOffline
+            case .offlineAndCardExpired:
+                self = .offlineAndCardExpired
+            case .offlineTransactionDeclined:
+                self = .offlineTransactionDeclined
+            case .offlineCollectAndConfirmMismatch:
+                self = .offlineCollectAndConfirmMismatch
+            case .onlinePinNotSupportedOffline:
+                self = .onlinePinNotSupportedOffline
+            case .offlineTestCardInLivemode:
+                self = .offlineTestCardInLivemode
+            case .stripeAPIResponseDecodingError:
+                self = .stripeAPIResponseDecodingError
+            case .internalNetworkError:
+                self = .internalNetworkError
+            case .connectionTokenProviderCompletedWithError:
+                self = .connectionTokenProviderCompletedWithError
+            case .connectionTokenProviderCompletedWithErrorWhileForwarding:
+                self = .connectionTokenProviderCompletedWithErrorWhileForwarding
+            case .connectionTokenProviderTimedOut:
+                self = .connectionTokenProviderTimedOut
+            case .notConnectedToInternetAndOfflineBehaviorRequireOnline:
+                self = .notConnectedToInternetAndOfflineBehaviorRequireOnline
+            case .offlineBehaviorForceOfflineWithFeatureDisabled:
+                self = .offlineBehaviorForceOfflineWithFeatureDisabled
+            @unknown default:
+                return nil
+            }
         }
+
+        return nil
     }
 }
 #endif

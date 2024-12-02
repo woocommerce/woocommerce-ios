@@ -189,10 +189,12 @@ private extension TaxStore {
     ///     - storage: Where we should save all the things!
     ///
     func upsertStoredTaxRates(readOnlyTaxRates: [Networking.TaxRate], siteID: Int64, in storage: StorageType) {
+        /// Load all tax rates in the store assuming there cannot be too many items.
+        /// To further optimize this we might want to load the rates matching a given set of IDs.
+        let storedTaxRates = storage.loadTaxRates(siteID: siteID)
         for readOnlyTaxRate in readOnlyTaxRates {
             let storageTaxRate: Storage.TaxRate = {
-                if let storedTaxRate = storage.loadTaxRate(siteID: siteID,
-                                                           taxRateID: readOnlyTaxRate.id) {
+                if let storedTaxRate = storedTaxRates.first(where: { $0.id == readOnlyTaxRate.id }) {
                     return storedTaxRate
                 }
 

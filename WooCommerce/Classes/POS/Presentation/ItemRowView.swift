@@ -117,7 +117,7 @@ private extension ItemRowView {
 #if DEBUG
 #Preview {
     ItemRowView(cartItem: CartItem(id: UUID(),
-                                   item: POSItemProviderPreview().providePointOfSaleItem(),
+                                   item: PointOfSalePreviewItemService().providePointOfSaleItem(),
                                    quantity: 2),
                 onItemRemoveTapped: { })
 }

@@ -48,7 +48,8 @@ struct WooShippingCreateLabelsView: View {
 
                     if viewModel.canViewLabel {
                         EmptyView()
-                    } else if let shippingService = viewModel.shippingService {
+                    } else if viewModel.selectedPackage != nil,
+                              let shippingService = viewModel.shippingService {
                         // TODO: Display package section
                         // Package heading and edit button
                         // Selected package details
@@ -56,7 +57,7 @@ struct WooShippingCreateLabelsView: View {
                         WooShippingServiceView(viewModel: shippingService)
                             .padding(.horizontal, -16)
                     } else {
-                        WooShippingPackageAndRatePlaceholder()
+                        WooShippingPackageAndRatePlaceholder(onSelectPackage: viewModel.selectPackage)
                     }
                 }
                 .padding(16)
@@ -69,6 +70,7 @@ struct WooShippingCreateLabelsView: View {
                         CollapsibleHStack(spacing: Layout.bottomSheetSpacing) {
                             Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
                                 .font(.subheadline)
+                                .tint(Color(.primary))
                             purchaseButton
                         }
                         .padding(.horizontal, Layout.bottomSheetPadding)
@@ -223,8 +225,8 @@ private extension WooShippingCreateLabelsView {
         } label: {
             Text(Localization.BottomSheet.purchaseLabel(with: viewModel.totalCost))
         }
-        .buttonStyle(PrimaryButtonStyle())
-        .disabled(!viewModel.canPurchaseLabel)
+        .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isPurchasingLabel))
+        .disabled(!viewModel.isPurchaseButtonEnabled)
     }
 }
 

@@ -2751,6 +2751,16 @@ extension Networking.WooPaymentsPayoutsSchedule {
         )
     }
 }
+extension Networking.WooShippingAccountSettings {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingAccountSettings {
+        .init(
+            storeOptions: .fake(),
+            accountSettings: .fake()
+        )
+    }
+}
 extension Networking.WooShippingCreatePackageResponse {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -2758,18 +2768,6 @@ extension Networking.WooShippingCreatePackageResponse {
         .init(
             customPackages: .fake(),
             predefinedOptions: .fake()
-        )
-    }
-}
-extension Networking.WooShippingPackagesResponse {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.WooShippingPackagesResponse {
-        .init(
-            storeOptions: .fake(),
-            customPackages: .fake(),
-            savedPredefinedPackages: .fake(),
-            allPredefinedOptions: .fake()
         )
     }
 }
@@ -2786,6 +2784,30 @@ extension Networking.WooShippingCustomPackage {
         )
     }
 }
+extension Networking.WooShippingPackagePurchase {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingPackagePurchase {
+        .init(
+            shipmentID: .fake(),
+            package: .fake(),
+            rate: .fake(),
+            productIDs: .fake()
+        )
+    }
+}
+extension Networking.WooShippingPackagesResponse {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingPackagesResponse {
+        .init(
+            storeOptions: .fake(),
+            customPackages: .fake(),
+            savedPredefinedPackages: .fake(),
+            allPredefinedOptions: .fake()
+        )
+    }
+}
 extension Networking.WooShippingPredefinedOption {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -2794,6 +2816,20 @@ extension Networking.WooShippingPredefinedOption {
             title: .fake(),
             providerID: .fake(),
             predefinedPackages: .fake()
+        )
+    }
+}
+extension Networking.WooShippingPredefinedPackage {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingPredefinedPackage {
+        .init(
+            id: .fake(),
+            name: .fake(),
+            isLetter: .fake(),
+            dimensions: .fake(),
+            boxWeight: .fake(),
+            groupId: .fake()
         )
     }
 }
@@ -2807,16 +2843,15 @@ extension Networking.WooShippingPredefinedSavedOption {
         )
     }
 }
-extension Networking.WooShippingPredefinedPackage {
+extension Networking.WooShippingSavedPredefinedPackage {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooShippingPredefinedPackage {
-        .init(id: .fake(),
-              name: .fake(),
-              isLetter: .fake(),
-              dimensions: .fake(),
-              boxWeight: .fake(),
-              groupId: .fake())
+    public static func fake() -> Networking.WooShippingSavedPredefinedPackage {
+        .init(
+            groupTitle: .fake(),
+            providerID: .fake(),
+            package: .fake()
+        )
     }
 }
 extension Networking.WordPressMedia {

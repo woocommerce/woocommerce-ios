@@ -23,6 +23,8 @@ final class OrderDetailsViewModel {
     ///
     private var syncStateController: OrderDetailsSyncStateControlling
 
+    private let receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol
+
     var orderStatus: OrderStatus? {
         return lookUpOrderStatus(for: order)
     }
@@ -32,7 +34,8 @@ final class OrderDetailsViewModel {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         syncStateController: OrderDetailsSyncStateControlling = OrderDetailsSyncStateController(syncState: .notSynced)) {
+         syncStateController: OrderDetailsSyncStateControlling = OrderDetailsSyncStateController(syncState: .notSynced),
+         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase()) {
         self.order = order
         self.stores = stores
         self.storageManager = storageManager
@@ -42,6 +45,7 @@ final class OrderDetailsViewModel {
         self.configurationLoader = CardPresentConfigurationLoader(stores: stores)
         self.dataSource = OrderDetailsDataSource(order: order,
                                                  cardPresentPaymentsConfiguration: configurationLoader.configuration)
+        self.receiptEligibilityUseCase = receiptEligibilityUseCase
     }
 
     func update(order newOrder: Order) {
@@ -196,7 +200,8 @@ final class OrderDetailsViewModel {
                                        paymentLink: order.paymentURL,
                                        total: order.total,
                                        formattedTotal: formattedTotal,
-                                       flow: .orderPayment)
+                                       flow: .orderPayment,
+                                       channel: .storeManagement)
     }
 
     /// Helpers
@@ -921,6 +926,29 @@ private extension OrderDetailsViewModel {
             isPluginActive(pluginNames) { isActive in
                 continuation.resume(returning: isActive)
             }
+        }
+    }
+}
+
+extension OrderDetailsViewModel {
+    /// Marks the order as pending if the WooCommerce version is eligible to send a receipt after payment.
+    /// Orders can be set to failed when payment fails.
+    /// We need to set it back to pending order when collecting payment to trigger all the related notifications when payment turns to failed again.
+    ///
+    func markOrderPaymentPending() {
+        guard order.status != .pending else {
+            return
+        }
+
+        receiptEligibilityUseCase.isEligibleSendingReceiptAfterPayment { [weak self] isEligible in
+            guard isEligible, let self else {
+                return
+            }
+
+            let action = OrderAction.updateOrderStatus(siteID: order.siteID,
+                                                       orderID: order.orderID,
+                                                       status: .pending, onCompletion: { _ in })
+            stores.dispatch(action)
         }
     }
 }

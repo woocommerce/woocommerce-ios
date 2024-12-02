@@ -14,6 +14,9 @@ final class WooShippingRemoteTests: XCTestCase {
     /// Dummy Order ID
     private let sampleOrderID: Int64 = 1234
 
+    /// Dummy Shipment ID
+    private let sampleShipmentID: String = "shipment_0"
+
     override func setUp() {
         super.setUp()
         network.removeAllSimulatedResponses()
@@ -152,6 +155,183 @@ final class WooShippingRemoteTests: XCTestCase {
         // When
         let result: Result<WooShippingPackagesResponse, Error> = waitFor { promise in
             remote.loadPackages(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+
+    func test_loadAccountSettings_parses_success_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "account/settings", filename: "wooshipping-get-account-settings-success")
+
+        // When
+        let result: Result<WooShippingAccountSettings, Error> = waitFor { promise in
+            remote.loadAccountSettings(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let successResponse = try XCTUnwrap(result.get())
+        XCTAssertEqual(successResponse.storeOptions.currencySymbol, "$")
+        XCTAssertEqual(successResponse.storeOptions.dimensionUnit, "cm")
+        XCTAssertEqual(successResponse.storeOptions.weightUnit, "kg")
+        XCTAssertEqual(successResponse.storeOptions.originCountry, "US")
+
+        XCTAssertEqual(successResponse.accountSettings.canManagePayments, false)
+        XCTAssertEqual(successResponse.accountSettings.canEditSettings, true)
+        XCTAssertEqual(successResponse.accountSettings.storeOwnerDisplayName, "John Smith")
+        XCTAssertEqual(successResponse.accountSettings.storeOwnerUsername, "jsmith")
+        XCTAssertEqual(successResponse.accountSettings.storeOwnerWpcomUsername, "jsmith")
+        XCTAssertEqual(successResponse.accountSettings.storeOwnerWpcomEmail, "jsmith@example.com")
+
+        XCTAssertEqual(successResponse.accountSettings.paymentMethods.count, 1)
+        XCTAssertEqual(successResponse.accountSettings.paymentMethods.first?.paymentMethodID, 3190997)
+        XCTAssertEqual(successResponse.accountSettings.paymentMethods.first?.name, "Test User")
+        XCTAssertEqual(successResponse.accountSettings.paymentMethods.first?.cardType, .visa)
+        XCTAssertEqual(successResponse.accountSettings.paymentMethods.first?.cardDigits, "4242")
+
+        XCTAssertEqual(successResponse.accountSettings.selectedPaymentMethodID, 3190997)
+        XCTAssertEqual(successResponse.accountSettings.isEmailReceiptsEnabled, true)
+        XCTAssertEqual(successResponse.accountSettings.paperSize, .label)
+        XCTAssertEqual(successResponse.accountSettings.lastSelectedPackageID, "")
+    }
+
+    func test_loadAccountSettings_returns_error_on_failure() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "account/settings", filename: "generic_error")
+
+        // When
+        let result: Result<WooShippingAccountSettings, Error> = waitFor { promise in
+            remote.loadAccountSettings(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+
+    func test_purchaseShippingLabel_parses_success_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/purchase/\(sampleOrderID)", filename: "wooshipping-purchase-success")
+
+        // When
+        let result: Result<[ShippingLabelPurchase], Error> = waitFor { promise in
+            remote.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                         orderID: self.sampleOrderID,
+                                         originAddress: ShippingLabelAddress.fake(),
+                                         destinationAddress: ShippingLabelAddress.fake(),
+                                         package: WooShippingPackagePurchase.fake()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let labels = try XCTUnwrap(result.get())
+        XCTAssertEqual(labels.count, 1)
+    }
+
+    func test_purchaseShippingLabel_returns_error_on_failure() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/purchase/\(sampleOrderID)", filename: "generic_error")
+
+        // When
+        let result: Result<[ShippingLabelPurchase], Error> = waitFor { promise in
+            remote.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                         orderID: self.sampleOrderID,
+                                         originAddress: ShippingLabelAddress.fake(),
+                                         destinationAddress: ShippingLabelAddress.fake(),
+                                         package: WooShippingPackagePurchase.fake()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+
+    func test_checkLabelStatus_parses_success_response() throws {
+        // Given
+        let sampleLabelID: Int64 = 4321
+        let expectedLabelStatus = ShippingLabel.fake().status
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/status/\(sampleOrderID)/\(sampleLabelID)", filename: "wooshipping-label-status-success")
+
+        // When
+        let result: Result<ShippingLabelStatusPollingResponse, Error> = waitFor { promise in
+            remote.checkLabelStatus(siteID: self.sampleSiteID,
+                                    orderID: self.sampleOrderID,
+                                    labelID: sampleLabelID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let label = try XCTUnwrap(result.get())
+        XCTAssertEqual(label.status, expectedLabelStatus)
+    }
+
+    func test_checkLabelStatus_returns_error_on_failure() throws {
+        // Given
+        let sampleLabelID: Int64 = 4321
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/status/\(sampleOrderID)/\(sampleLabelID)", filename: "generic_error")
+
+        // When
+        let result: Result<ShippingLabelStatusPollingResponse, Error> = waitFor { promise in
+            remote.checkLabelStatus(siteID: self.sampleSiteID,
+                                    orderID: self.sampleOrderID,
+                                    labelID: sampleLabelID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+
+    func test_printLabel_returns_ShippingLabelPrintData() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/print", filename: "wooshipping-label-print-success")
+
+        // When
+        let printData: ShippingLabelPrintData = waitFor { promise in
+            remote.printLabel(siteID: self.sampleSiteID,
+                              labelIDs: [4321],
+                              paperSize: .label) { result in
+                guard let printData = try? result.get() else {
+                    XCTFail("Error printing shipping label: \(String(describing: result.failure))")
+                    return
+                }
+                promise(printData)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(printData.mimeType, "application/pdf")
+        XCTAssertFalse(printData.base64Content.isEmpty)
+        XCTAssertNotNil(printData.data)
+    }
+
+    func test_printLabel_returns_error_on_failure() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/print", filename: "generic_error")
+
+        // When
+        let result: Result<ShippingLabelPrintData, Error> = waitFor { promise in
+            remote.printLabel(siteID: self.sampleSiteID,
+                              labelIDs: [4321],
+                              paperSize: .label) { result in
                 promise(result)
             }
         }

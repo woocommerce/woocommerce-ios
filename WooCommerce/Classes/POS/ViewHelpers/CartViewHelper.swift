@@ -1,16 +1,8 @@
-import SwiftUI
-import Combine
+import Foundation
 import protocol Yosemite.POSItem
 
-final class CartViewModel: CartViewModelProtocol {
-    let posModel: PointOfSaleAggregateModel
-
-    init(posModel: PointOfSaleAggregateModel) {
-        self.posModel = posModel
-    }
-
-    var itemsInCartLabel: String? {
-        let itemsCount = posModel.cart.count
+final class CartViewHelper {
+    func itemsInCartLabel(for itemsCount: Int) -> String? {
         guard itemsCount > 0 else {
             return nil
         }
@@ -27,8 +19,6 @@ final class CartViewModel: CartViewModelProtocol {
         return orderState.isSyncing
     }
 }
-
-
 
 private extension PointOfSalePaymentState {
     var allowsCartEditing: Bool {

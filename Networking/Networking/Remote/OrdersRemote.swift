@@ -220,19 +220,6 @@ public class OrdersRemote: Remote {
         }
     }
 
-    public func createPOSOrder(siteID: Int64, order: Order, fields: [CreateOrderField]) async throws -> Order {
-        return try await withCheckedThrowingContinuation { continuation in
-            createOrder(siteID: siteID, order: order, giftCard: nil, fields: fields) { result in
-                switch result {
-                case let .success(order):
-                    continuation.resume(returning: order)
-                case let .failure(error):
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
-    }
-
     /// Updates the `OrderStatus` of a given Order.
     ///
     /// - Parameters:
@@ -325,19 +312,6 @@ public class OrdersRemote: Remote {
         }
     }
 
-    public func updatePOSOrder(siteID: Int64, order: Order, fields: [UpdateOrderField]) async throws -> Order {
-        return try await withCheckedThrowingContinuation { continuation in
-            updateOrder(from: siteID, order: order, giftCard: nil, fields: fields) { result in
-                switch result {
-                case let .success(order):
-                    continuation.resume(returning: order)
-                case let .failure(error):
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
-    }
-
     /// Adds an order note to a specific Order.
     ///
     /// - Parameters:
@@ -408,6 +382,34 @@ public class OrdersRemote: Remote {
         let mapper = EntityDateModifiedMapper()
 
         return try await enqueue(request, mapper: mapper)
+    }
+}
+
+extension OrdersRemote: POSOrdersRemoteProtocol {
+    public func createPOSOrder(siteID: Int64, order: Order, fields: [CreateOrderField]) async throws -> Order {
+        return try await withCheckedThrowingContinuation { continuation in
+            createOrder(siteID: siteID, order: order, giftCard: nil, fields: fields) { result in
+                switch result {
+                case let .success(order):
+                    continuation.resume(returning: order)
+                case let .failure(error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+
+    public func updatePOSOrder(siteID: Int64, order: Order, fields: [UpdateOrderField]) async throws -> Order {
+        return try await withCheckedThrowingContinuation { continuation in
+            updateOrder(from: siteID, order: order, giftCard: nil, fields: fields) { result in
+                switch result {
+                case let .success(order):
+                    continuation.resume(returning: order)
+                case let .failure(error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
     }
 }
 

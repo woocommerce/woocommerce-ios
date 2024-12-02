@@ -4,6 +4,7 @@ import struct Yosemite.Order
 import struct Yosemite.CardPresentPaymentsConfiguration
 import struct Yosemite.CardReader
 import enum Yosemite.CardPresentPaymentAction
+import enum Yosemite.PaymentChannel
 import protocol Yosemite.StoresManager
 
 final class CardPresentPaymentService: CardPresentPaymentFacade {
@@ -124,7 +125,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     }
 
     @MainActor
-    func collectPayment(for order: Order, using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentResult {
+    func collectPayment(for order: Order, using connectionMethod: CardReaderConnectionMethod, channel: PaymentChannel) async throws -> CardPresentPaymentResult {
         paymentTask?.cancel()
 
         // What happens if `start` gets called while there's a connection ongoing but not finished?
@@ -142,7 +143,8 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             onboardingPresenter: onboardingAdaptor,
             configuration: cardPresentPaymentsConfiguration,
             alertsPresenter: paymentAlertsPresenterAdaptor,
-            paymentEventSubject: paymentEventSubject)
+            paymentEventSubject: paymentEventSubject,
+            channel: channel)
 
         self.paymentTask = paymentTask
 

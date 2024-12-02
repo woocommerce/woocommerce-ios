@@ -90,10 +90,12 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .productGlobalUniqueIdentifierSupport:
             return true
         case .paymentsOnboardingInPointOfSale:
-            return buildConfig == .localDeveloper
+            return true
         case .sendReceiptAfterPayment:
             return false
         case .sendReceiptsForPointOfSale:
+            return false
+        case .tapToPayEducation:
             return false
         default:
             return true

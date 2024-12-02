@@ -1,9 +1,9 @@
 import Foundation
-import protocol Yosemite.POSItemProvider
+import protocol Yosemite.PointOfSaleItemServiceProtocol
 import protocol Yosemite.POSItem
 @testable import struct Yosemite.POSProduct
 
-final class MockPOSItemProvider: POSItemProvider {
+final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
     var items: [POSItem] = []
     var shouldThrowError = false
     var shouldReturnZeroItems = false
@@ -27,11 +27,11 @@ final class MockPOSItemProvider: POSItemProvider {
             simulateFetchNextPage()
             return items
         }
-        return MockPOSItemProvider.makeInitialItems()
+        return MockPointOfSaleItemService.makeInitialItems()
     }
 
     func simulateFetchNextPage() {
-        items.append(contentsOf: MockPOSItemProvider.makeSecondPageItems())
+        items.append(contentsOf: MockPointOfSaleItemService.makeSecondPageItems())
     }
 
     func simulateNextPageIsOutOfRange() {
@@ -39,7 +39,7 @@ final class MockPOSItemProvider: POSItemProvider {
     }
 }
 
-extension MockPOSItemProvider {
+extension MockPointOfSaleItemService {
     static func makeInitialItems() -> [POSItem] {
         let fakeUUID1 = UUID(uuidString: "DC55E3B9-9D83-4C07-82A7-4C300A50E84E") ?? UUID()
         let fakeUUID2 = UUID(uuidString: "DC55E3B8-9D82-4C06-82A5-4C300A50E84A") ?? UUID()

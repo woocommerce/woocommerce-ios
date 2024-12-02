@@ -12,4 +12,10 @@ public struct WooShippingSavedPredefinedPackage: Equatable, GeneratedFakeable, I
     public var id: String {
         return package.id
     }
+
+    public init(groupTitle: String, providerID: String, package: WooShippingPredefinedPackage) {
+        self.groupTitle = groupTitle
+        self.providerID = providerID
+        self.package = package
+    }
 }

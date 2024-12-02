@@ -111,7 +111,7 @@ struct WooSavedPackagesSelectionView: View {
     var body: some View {
         VStack(spacing: 0) {
             Divider()
-            if viewModel.packagesRepository.loadingSavedPackages {
+            if viewModel.loadingPackages {
                 // TODO: think of a better progress/loading indicator
                 ProgressView()
                     .progressViewStyle(.circular)
@@ -123,7 +123,7 @@ struct WooSavedPackagesSelectionView: View {
             }
             .listStyle(.plain)
             .refreshable {
-                viewModel.packagesRepository.loadSavedPackages()
+                viewModel.loadPackages()
             }
             Divider()
             Button(WooShippingAddPackageView.Localization.addPackage) {
@@ -184,64 +184,5 @@ struct WooSavedPackagesSelectionView: View {
         guard let selectedPackage = viewModel.selectedPackage else { return }
 
         addPackageAction(selectedPackage)
-    }
-}
-
-struct PackageOptionView: View {
-    enum Constants {
-        static let verticalSpacing: CGFloat = 4.0
-        static let textContentLeadingPadding: CGFloat = 4.0
-        static let contentPadding: CGFloat = 16.0
-    }
-
-    var isSelected: Bool
-    var package: WooShippingPackageDataRepresentable
-    var showTopDivider: Bool
-    var showSource: Bool
-    var tapAction: () -> Void
-    var starAction: (() -> Void)?
-    var starred: Bool?
-
-    var body: some View {
-        HStack(spacing: 0) {
-            HStack {
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .foregroundColor(isSelected ? Color(.withColorStudio(.wooCommercePurple, shade: .shade60)) : .gray)
-                    .font(.title)
-                VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                    if showSource {
-                        Text(package.source.userFriendlyDescription)
-                            .captionStyle()
-                    }
-                    Text(package.name)
-                        .bodyStyle()
-                    HStack {
-                        Text(package.dimensionsDescription)
-                        Text("•")
-                        Text(package.weightDescription)
-                    }
-                    .subheadlineStyle()
-                }
-                .padding(.leading, Constants.textContentLeadingPadding)
-                Spacer()
-            }
-            .contentShape(Rectangle())
-            .onTapGesture {
-                tapAction()
-            }
-            .padding(Constants.contentPadding)
-            if let starAction, let starred {
-                VStack {
-                    Image(systemName: starred ? "star.fill": "star")
-                        .foregroundStyle(.secondary)
-                        .padding(Constants.contentPadding)
-                    Spacer()
-                }
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    starAction()
-                }
-            }
-        }
     }
 }

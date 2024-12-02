@@ -82,13 +82,8 @@ public final class SingleOrderScreen: ScreenObject {
         return try PaymentMethodsScreen()
     }
 
-    @discardableResult
     public func goBackToOrdersScreen() throws -> OrdersScreen {
         let orderDetailTableView = app.tables["order-details-table-view"]
-        // On smaller screen, the Summary area might not be visible anymore. We need to bring it back so when returning
-        // back from Payment Details, it can be detected.
-        orderDetailTableView.swipeDown()
-
 
         guard orderDetailTableView.horizontalSizeClass == .compact else {
             return try OrdersScreen()

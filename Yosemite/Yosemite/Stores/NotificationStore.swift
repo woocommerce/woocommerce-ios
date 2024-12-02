@@ -101,30 +101,28 @@ private extension NotificationStore {
                 return
             }
 
-            self?.deleteLocalMissingNotes(from: hashes) { [weak self] in
+            self?.deleteLocalMissingNotes(from: hashes) { [weak self] outdatedIDs in
 
-                self?.determineUpdatedNotes(using: hashes) { [weak self] outdatedIDs in
+                guard let self = self else {
+                    return
+                }
+                
+                guard outdatedIDs.isEmpty == false else {
+                    onCompletion(nil)
+                    return
+                }
+                
+                self.remote.loadNotes(noteIDs: outdatedIDs, pageSize: Constants.maximumPageSize) { [weak self] result in
                     guard let self = self else {
                         return
                     }
-
-                    guard outdatedIDs.isEmpty == false else {
-                        onCompletion(nil)
-                        return
-                    }
-
-                    self.remote.loadNotes(noteIDs: outdatedIDs, pageSize: Constants.maximumPageSize) { [weak self] result in
-                        guard let self = self else {
-                            return
-                        }
-
-                        switch result {
-                        case .failure(let error):
-                            onCompletion(error)
-                        case .success(let notes):
-                            self.updateLocalNotes(with: notes) {
-                                onCompletion(nil)
-                            }
+                    
+                    switch result {
+                    case .failure(let error):
+                        onCompletion(error)
+                    case .success(let notes):
+                        self.updateLocalNotes(with: notes) {
+                            onCompletion(nil)
                         }
                     }
                 }
@@ -220,8 +218,9 @@ extension NotificationStore {
     ///
     /// - Parameter remoteIds: Collection of remote Note IDs.
     ///
-    func deleteLocalMissingNotes(from hashes: [NoteHash], completion: @escaping (() -> Void)) {
-        storageManager.performAndSave({ storage in
+    func deleteLocalMissingNotes(from hashes: [NoteHash], completion: @escaping (([Int64]) -> Void)) {
+        storageManager.performAndSave({ [weak self] storage -> [Int64] in
+            guard let self else { return [] }
             // The beauty of threadsafe Immutable Entities!!
             let remoteIDs = hashes.map { $0.noteID }
             let predicate = NSPredicate(format: "NOT (noteID IN %@)", remoteIDs)
@@ -230,7 +229,15 @@ extension NotificationStore {
             for orphan in allObjects {
                 storage.deleteObject(orphan)
             }
-        }, completion: completion, on: .main)
+            return determineOutdatedNotes(using: hashes, in: storage)
+        }, completion: { result in
+            switch result {
+            case .success(let outdatedNoteIDs):
+                completion(outdatedNoteIDs)
+            case .failure:
+                completion([])
+            }
+        }, on: .main)
     }
 
     /// Given a collection of Notes, this method will insert missing local ones, and update the others that can be found.
@@ -262,29 +269,23 @@ extension NotificationStore {
     /// Given a collection of NoteHash Entities, this method will determine the `.noteID`'s of those entities that
     /// are either not locally found, or got their `.hash` field outdated.
     ///
-    func determineUpdatedNotes(using hashes: [NoteHash], completion: @escaping ([Int64]) -> Void) {
-        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
+    func determineOutdatedNotes(using hashes: [NoteHash], in storage: StorageType) -> [Int64] {
 
-        derivedStorage.perform {
-            let remoteIds = hashes.map { $0.noteID }
-            let predicate = NSPredicate(format: "noteID IN %@", remoteIds)
-            var localHashes = [Int64: Int64]()
+        let remoteIds = hashes.map { $0.noteID }
+        let predicate = NSPredicate(format: "noteID IN %@", remoteIds)
+        var localHashes = [Int64: Int64]()
 
-            for note in derivedStorage.allObjects(ofType: StorageNote.self, matching: predicate, sortedBy: nil) {
-                localHashes[note.noteID] = Int64(note.noteHash)
-            }
-
-            let outdated = hashes.filter { remote in
-                let localHash = localHashes[remote.noteID]
-                return localHash == nil || localHash != remote.hash
-            }
-
-            let outdatedIds = outdated.map { $0.noteID }
-
-            DispatchQueue.main.async {
-                completion(outdatedIds)
-            }
+        for note in storage.allObjects(ofType: StorageNote.self, matching: predicate, sortedBy: nil) {
+            localHashes[note.noteID] = Int64(note.noteHash)
         }
+
+        let outdated = hashes.filter { remote in
+            let localHash = localHashes[remote.noteID]
+            return localHash == nil || localHash != remote.hash
+        }
+
+        let outdatedIds = outdated.map { $0.noteID }
+        return outdatedIds
     }
 
     /// Invalidates the Hash for the specified Notifications.

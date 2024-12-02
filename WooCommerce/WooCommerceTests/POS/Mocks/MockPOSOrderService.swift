@@ -18,6 +18,8 @@ class MockPOSOrderService: POSOrderServiceProtocol {
         }
         return order
     }
+
+    func sendOrderReceipt(order: Yosemite.Order, toEmailAddress: String) async throws { }
 }
 
 enum MockPOSOrderServiceError: Error {

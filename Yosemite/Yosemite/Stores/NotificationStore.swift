@@ -315,31 +315,6 @@ extension NotificationStore {
     }
 }
 
-
-// MARK: - Thread Safety Helpers
-//
-extension NotificationStore {
-    /// Returns the current shared derived StorageType, if any. Otherwise proceeds to create a new
-    /// derived StorageType, given a specified StorageManagerType.
-    ///
-    static func sharedDerivedStorage(with manager: StorageManagerType) -> StorageType {
-        lock.lock()
-        if privateStorage == nil {
-            privateStorage = manager.writerDerivedStorage
-        }
-        lock.unlock()
-
-        return privateStorage
-    }
-
-    /// Nukes the private Shared Derived Storage instance.
-    ///
-    static func resetSharedDerivedStorage() {
-        privateStorage = nil
-    }
-}
-
-
 // MARK: - Constants!
 //
 extension NotificationStore {

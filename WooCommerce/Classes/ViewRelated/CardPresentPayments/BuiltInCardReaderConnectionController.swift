@@ -4,6 +4,7 @@ import UIKit
 import Storage
 import SwiftUI
 import Yosemite
+import Experiments
 
 /// Facilitates connecting to a card reader
 ///
@@ -84,6 +85,8 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
 
     private let alertsProvider: AlertProvider
 
+    private let featureFlagService: FeatureFlagService
+
     /// The reader we want the user to consider connecting to
     ///
     private var candidateReader: CardReader?
@@ -122,6 +125,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         alertsProvider: AlertProvider,
         configuration: CardPresentPaymentsConfiguration,
         analyticsTracker: CardReaderConnectionAnalyticsTracker,
+        featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
         allowTermsOfServiceAcceptance: Bool = true
     ) {
         siteID = forSiteID
@@ -132,6 +136,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         self.alertsProvider = alertsProvider
         self.configuration = configuration
         self.analyticsTracker = analyticsTracker
+        self.featureFlagService = featureFlagService
         self.allowTermsOfServiceAcceptance = allowTermsOfServiceAcceptance
 
         configureResultsControllers()
@@ -369,24 +374,27 @@ private extension BuiltInCardReaderConnectionController {
         }
         stores.dispatch(softwareUpdateAction)
 
-        let onboardingAction = CardPresentPaymentAction.observeBuiltInCardReaderOnboardingState { [weak self] onboardingEvents in
-            guard let self = self else { return }
 
-            onboardingEvents
-                .subscribe(on: DispatchQueue.main)
-                .sink { [weak self] event in
+        if featureFlagService.isFeatureFlagEnabled(.tapToPayEducation) {
+            let onboardingAction = CardPresentPaymentAction.observeBuiltInCardReaderOnboardingState { [weak self] onboardingEvents in
                 guard let self = self else { return }
-                switch event {
-                case .didAcceptTermsOfService:
-                    self.isMerchantEducationInProgress.send(true)
-                    self.alertsPresenter.presentMerchantEducation { [weak self] in
-                        self?.isMerchantEducationInProgress.send(false)
+
+                onboardingEvents
+                    .subscribe(on: DispatchQueue.main)
+                    .sink { [weak self] event in
+                        guard let self = self else { return }
+                        switch event {
+                        case .didAcceptTermsOfService:
+                            self.isMerchantEducationInProgress.send(true)
+                            self.alertsPresenter.presentMerchantEducation { [weak self] in
+                                self?.isMerchantEducationInProgress.send(false)
+                            }
+                        }
                     }
-                }
+                    .store(in: &self.subscriptions)
             }
-            .store(in: &self.subscriptions)
+            stores.dispatch(onboardingAction)
         }
-        stores.dispatch(onboardingAction)
 
 
         let options = CardReaderConnectionOptions(

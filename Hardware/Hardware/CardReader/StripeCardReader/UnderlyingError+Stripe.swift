@@ -65,6 +65,8 @@ extension UnderlyingError {
             self = .bluetoothConnectTimedOut
         case ErrorCode.Code.bluetoothDisconnected.rawValue:
             self = .bluetoothDisconnected
+        case ErrorCode.Code.bluetoothAccessDenied.rawValue:
+            self = .bluetoothDenied
         case ErrorCode.Code.unsupportedReaderVersion.rawValue:
             self = .unsupportedReaderVersion
         case ErrorCode.Code.connectFailedReaderIsInUse.rawValue:

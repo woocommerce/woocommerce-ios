@@ -1,4 +1,6 @@
 import Foundation
+import Yosemite
+import Hardware
 import UIKit
 
 struct BluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlertsProviding {
@@ -9,7 +11,12 @@ struct BluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlerts
 
     func scanningFailed(error: Error,
                         close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalScanningFailed(error: error, primaryAction: close)
+        switch error {
+        case CardReaderServiceError.bluetoothDenied, CardReaderServiceError.discovery(underlyingError: .bluetoothDenied):
+            return CardPresentModalBluetoothRequired(error: error, primaryAction: close)
+        default:
+            return CardPresentModalScanningFailed(error: error, primaryAction: close)
+        }
     }
 
     func connectingToReader() -> CardPresentPaymentsModalViewModel {

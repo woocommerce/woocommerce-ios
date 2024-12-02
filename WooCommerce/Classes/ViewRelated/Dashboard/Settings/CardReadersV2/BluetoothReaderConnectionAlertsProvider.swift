@@ -1,6 +1,5 @@
 import Foundation
 import Yosemite
-import Hardware
 import UIKit
 
 struct BluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlertsProviding {

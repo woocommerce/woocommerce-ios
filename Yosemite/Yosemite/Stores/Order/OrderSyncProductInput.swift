@@ -1,11 +1,22 @@
-public protocol OrderSyncProductTypeProtocol {
+import Networking
+
+public protocol OrderSyncProductTypeProtocol: Hashable {
     var price: String { get }
     var productID: Int64 { get }
     var productType: ProductType { get }
     var bundledItems: [ProductBundleItem] { get }
+
+    func isEqual(to: any OrderSyncProductTypeProtocol) -> Bool
 }
 
 extension Product: OrderSyncProductTypeProtocol {}
+
+public extension OrderSyncProductTypeProtocol where Self: Equatable {
+    func isEqual(to other: any OrderSyncProductTypeProtocol) -> Bool {
+        guard let other = other as? Self else { return false }
+        return self == other
+    }
+}
 
 /// Product input for an `OrderSynchronizer` type.
 ///
@@ -27,24 +38,26 @@ public struct OrderSyncProductInput {
     /// Types of products the synchronizer supports
     ///
     public enum ProductType: Hashable {
-        case product(OrderSyncProductTypeProtocol)
+        case product(any OrderSyncProductTypeProtocol)
         case variation(ProductVariation)
 
         public func hash(into hasher: inout Hasher) {
             switch self {
             case .product(let product):
-                hasher.combine("product-\(product.productID)")
+                hasher.combine("productType-product-")
+                hasher.combine(product)
             case .variation(let variation):
-                hasher.combine("variation-\(variation.productVariationID)")
+                hasher.combine("productType-variation")
+                hasher.combine(variation)
             }
         }
 
         public static func == (lhs: OrderSyncProductInput.ProductType, rhs: OrderSyncProductInput.ProductType) -> Bool {
             switch (lhs, rhs) {
-            case (.product(let l), .product(let r)):
-                return l.productID == r.productID
-            case (.variation(let l), .variation(let r)):
-                return l.productVariationID == r.productVariationID
+            case (.product(let lhsProduct), .product(let rhsProduct)):
+                return lhsProduct.isEqual(to: rhsProduct)
+            case (.variation(let lhsVariation), .variation(let rhsVariation)):
+                return lhsVariation == rhsVariation
             default:
                 return false
             }

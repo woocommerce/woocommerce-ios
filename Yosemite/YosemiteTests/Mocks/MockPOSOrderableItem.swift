@@ -12,7 +12,7 @@ final class MockPOSItem: POSOrderableItem, Equatable {
          formattedPrice: String,
          productImageSource: String? = nil,
          orderItemsToMatch: [OrderItem] = [],
-         matcher: ((OrderItem) -> Bool)?) {
+         matcher: ((OrderItem) -> Bool)? = nil) {
         self.name = name
         self.id = id
         self.formattedPrice = formattedPrice

@@ -64,10 +64,11 @@ private extension AddOnGroupStore {
     /// Updates (OR Inserts) the specified ReadOnly `AddOnGroups` entities into the Storage Layer.
     ///
     func upsertAddOnGroups(siteID: Int64, readOnlyAddOnGroups: [AddOnGroup], in storage: StorageType) {
+        let storedGroups = storage.loadAddOnGroups(siteID: siteID)
         readOnlyAddOnGroups.forEach { readOnlyAddOnGroup in
             //  Get or create the stored add-on group
             let storedAddOnGroup: StorageAddOnGroup = {
-                guard let existingGroup = storage.loadAddOnGroup(siteID: siteID, groupID: readOnlyAddOnGroup.groupID) else {
+                guard let existingGroup = storedGroups.first(where: { $0.groupID == readOnlyAddOnGroup.groupID }) else {
                     return storage.insertNewObject(ofType: StorageAddOnGroup.self)
                 }
                 return existingGroup
@@ -80,7 +81,10 @@ private extension AddOnGroupStore {
 
         // Delete stale groups
         let activeIDs = readOnlyAddOnGroups.map { $0.groupID }
-        storage.deleteStaleAddOnGroups(siteID: siteID, activeGroupIDs: activeIDs)
+        let staleGroups = storedGroups.filter { !activeIDs.contains($0.groupID) }
+        staleGroups.forEach {
+            storage.deleteObject($0)
+        }
     }
 
     /// Replaces the `storageGroup.addOns` with the new `readOnlyGroup.addOns`

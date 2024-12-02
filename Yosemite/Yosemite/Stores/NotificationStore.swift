@@ -103,20 +103,15 @@ private extension NotificationStore {
 
             self?.deleteLocalMissingNotes(from: hashes) { [weak self] outdatedIDs in
 
-                guard let self = self else {
-                    return
-                }
-                
                 guard outdatedIDs.isEmpty == false else {
                     onCompletion(nil)
                     return
                 }
-                
-                self.remote.loadNotes(noteIDs: outdatedIDs, pageSize: Constants.maximumPageSize) { [weak self] result in
+
+                self?.remote.loadNotes(noteIDs: outdatedIDs, pageSize: Constants.maximumPageSize) { result in
                     guard let self = self else {
                         return
                     }
-                    
                     switch result {
                     case .failure(let error):
                         onCompletion(error)

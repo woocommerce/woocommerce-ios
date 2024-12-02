@@ -119,10 +119,6 @@ extension UnderlyingError {
                 self = .invalidCurrency
             case .cancelFailedAlreadyCompleted:
                 self = .cancelFailedAlreadyCompleted
-            case .connectionTokenProviderCompletedWithNothing:
-                self = .connectionTokenProviderCompletedWithNothing
-            case .connectionTokenProviderCompletedWithNothingWhileForwarding:
-                self = .connectionTokenProviderCompletedWithNothingWhileForwarding
             case .nilPaymentIntent:
                 self = .nilPaymentIntent
             case .nilSetupIntent:
@@ -139,60 +135,30 @@ extension UnderlyingError {
                 self = .invalidReaderForUpdate
             case .featureNotAvailable:
                 self = .featureNotAvailable
-            case .invalidListLocationsLimitParameter:
-                self = .invalidListLocationsLimitParameter
             case .bluetoothConnectionInvalidLocationIdParameter:
                 self = .bluetoothConnectionInvalidLocationIdParameter
             case .invalidRequiredParameter:
                 self = .invalidRequiredParameter
-            case .invalidRequiredParameterOnBehalfOf:
-                self = .invalidRequiredParameterOnBehalfOf
-            case .accountIdMismatchWhileForwarding:
-                self = .accountIdMismatchWhileForwarding
-            case .updatePaymentIntentUnavailableWhileOffline:
-                self = .updatePaymentIntentUnavailableWhileOffline
-            case .updatePaymentIntentUnavailableWhileOfflineModeEnabled:
-                self = .updatePaymentIntentUnavailableWhileOfflineModeEnabled
             case .forwardingTestModePaymentInLiveMode:
                 self = .forwardingTestModePaymentInLiveMode
             case .forwardingLiveModePaymentInTestMode:
                 self = .forwardingLiveModePaymentInTestMode
             case .readerConnectionConfigurationInvalid:
                 self = .readerConnectionConfigurationInvalid
-            case .requestDynamicCurrencyConversionRequiresUpdatePaymentIntent:
-                self = .requestDynamicCurrencyConversionRequiresUpdatePaymentIntent
-            case .dynamicCurrencyConversionNotAvailable:
-                self = .dynamicCurrencyConversionNotAvailable
-            case .surchargingNotAvailable:
-                self = .surchargingNotAvailable
             case .readerTippingParameterInvalid:
                 self = .readerTippingParameterInvalid
-            case .surchargeNoticeRequiresUpdatePaymentIntent:
-                self = .surchargeNoticeRequiresUpdatePaymentIntent
-            case .surchargeUnavailableWithDynamicCurrencyConversion:
-                self = .surchargeUnavailableWithDynamicCurrencyConversion
             case .invalidLocationIdParameter:
                 self = .invalidLocationIdParameter
-            case .collectInputsInvalidParameter:
-                self = .collectInputsInvalidParameter
-            case .collectInputsUnsupported:
-                self = .collectInputsUnsupported
             case .bluetoothAccessDenied:
                 self = .bluetoothAccessDenied
             case .readerSoftwareUpdateFailedExpiredUpdate:
                 self = .readerSoftwareUpdateFailedExpiredUpdate
-            case .offlinePaymentsDatabaseTooLarge:
-                self = .offlinePaymentsDatabaseTooLarge
             case .readerConnectionNotAvailableOffline:
                 self = .readerConnectionNotAvailableOffline
             case .readerConnectionOfflineLocationMismatch:
                 self = .readerConnectionOfflineLocationMismatch
             case .readerConnectionOfflineNeedsUpdate:
                 self = .readerConnectionOfflineNeedsUpdate
-            case .readerConnectionOfflinePairingUnseenDisabled:
-                self = .readerConnectionOfflinePairingUnseenDisabled
-            case .noLastSeenAccount:
-                self = .noLastSeenAccount
             case .amountExceedsMaxOfflineAmount:
                 self = .amountExceedsMaxOfflineAmount
             case .invalidOfflineCurrency:
@@ -253,15 +219,37 @@ extension UnderlyingError {
                 self = .internalNetworkError
             case .connectionTokenProviderCompletedWithError:
                 self = .connectionTokenProviderCompletedWithError
-            case .connectionTokenProviderCompletedWithErrorWhileForwarding:
-                self = .connectionTokenProviderCompletedWithErrorWhileForwarding
             case .connectionTokenProviderTimedOut:
                 self = .connectionTokenProviderTimedOut
             case .notConnectedToInternetAndOfflineBehaviorRequireOnline:
                 self = .notConnectedToInternetAndOfflineBehaviorRequireOnline
-            case .offlineBehaviorForceOfflineWithFeatureDisabled:
-                self = .offlineBehaviorForceOfflineWithFeatureDisabled
-            @unknown default:
+            /// Our `DefaultConnectionTokenProvider` implementation of `fetchConnectionToken` never calls completion block with `(nil, nil)`.
+            case .connectionTokenProviderCompletedWithNothing,
+                /// Offline mode is not supported.
+                .connectionTokenProviderCompletedWithNothingWhileForwarding,
+                .accountIdMismatchWhileForwarding,
+                .updatePaymentIntentUnavailableWhileOffline,
+                .updatePaymentIntentUnavailableWhileOfflineModeEnabled,
+                .offlinePaymentsDatabaseTooLarge,
+                .readerConnectionOfflinePairingUnseenDisabled,
+                .noLastSeenAccount,
+                .connectionTokenProviderCompletedWithErrorWhileForwarding,
+                .offlineBehaviorForceOfflineWithFeatureDisabled,
+                /// We don’t request a list of locations directly, but request the store location instead.
+                .invalidListLocationsLimitParameter,
+                /// `on_behalf_of` parameter is not set in the payment intent.
+                .invalidRequiredParameterOnBehalfOf,
+                /// Dynamic currency conversion not supported.
+                .requestDynamicCurrencyConversionRequiresUpdatePaymentIntent,
+                .dynamicCurrencyConversionNotAvailable,
+                /// Surcharging is not supported.
+                .surchargingNotAvailable,
+                .surchargeNoticeRequiresUpdatePaymentIntent,
+                .surchargeUnavailableWithDynamicCurrencyConversion,
+                /// Collecting on-screen inputs from card reader is not supported.
+                .collectInputsInvalidParameter,
+                .collectInputsUnsupported:
+                assertionFailure("Unexpected Stripe error that we should consider handling: \(stripeError)")
                 return nil
             }
         }

@@ -220,14 +220,6 @@ public enum UnderlyingError: Error, Equatable {
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorCancelFailedAlreadyCompleted
     case cancelFailedAlreadyCompleted
 
-    /// The connection token provider finished without providing a token.
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorConnectionTokenProviderCompletedWithNothing
-    case connectionTokenProviderCompletedWithNothing
-
-    /// The connection token provider finished without providing a token while forwarding.
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorConnectionTokenProviderCompletedWithNothingWhileForwarding
-    case connectionTokenProviderCompletedWithNothingWhileForwarding
-
     /// The payment intent is missing.
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorNilPaymentIntent
     case nilPaymentIntent
@@ -260,10 +252,6 @@ public enum UnderlyingError: Error, Equatable {
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorFeatureNotAvailable
     case featureNotAvailable
 
-    /// The list locations limit parameter is invalid.
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorInvalidListLocationsLimitParameter
-    case invalidListLocationsLimitParameter
-
     /// The Bluetooth connection has an invalid location ID parameter.
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorBluetoothConnectionInvalidLocationIdParameter
     case bluetoothConnectionInvalidLocationIdParameter
@@ -271,22 +259,6 @@ public enum UnderlyingError: Error, Equatable {
     /// A required parameter is invalid.
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorInvalidRequiredParameter
     case invalidRequiredParameter
-
-    /// The 'on behalf of' parameter is invalid.
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorInvalidRequiredParameterOnBehalfOf
-    case invalidRequiredParameterOnBehalfOf
-
-    /// There is an account ID mismatch while forwarding.
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorAccountIdMismatchWhileForwarding
-    case accountIdMismatchWhileForwarding
-
-    /// Updating the payment intent is not possible while offline.
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorUpdatePaymentIntentUnavailableWhileOffline
-    case updatePaymentIntentUnavailableWhileOffline
-
-    /// Updating the payment intent is not possible while offline mode is enabled.
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorUpdatePaymentIntentUnavailableWhileOfflineModeEnabled
-    case updatePaymentIntentUnavailableWhileOfflineModeEnabled
 
     /// Forwarding a test mode payment in live mode is prohibited.
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorForwardingTestModePaymentInLiveMode
@@ -300,41 +272,13 @@ public enum UnderlyingError: Error, Equatable {
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorReaderConnectionConfigurationInvalid
     case readerConnectionConfigurationInvalid
 
-    /// Dynamic currency conversion requires a payment intent update.
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorRequestDynamicCurrencyConversionRequiresUpdatePaymentIntent
-    case requestDynamicCurrencyConversionRequiresUpdatePaymentIntent
-
-    /// Dynamic currency conversion is unavailable.
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorDynamicCurrencyConversionNotAvailable
-    case dynamicCurrencyConversionNotAvailable
-
-    /// Surcharging is unavailable.
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorSurchargingNotAvailable
-    case surchargingNotAvailable
-
     /// The reader tipping parameter is invalid.
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorReaderTippingParameterInvalid
     case readerTippingParameterInvalid
 
-    /// Surcharge notice requires a payment intent update.
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorSurchargeNoticeRequiresUpdatePaymentIntent
-    case surchargeNoticeRequiresUpdatePaymentIntent
-
-    /// Surcharge is unavailable with dynamic currency conversion.
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorSurchargeUnavailableWithDynamicCurrencyConversion
-    case surchargeUnavailableWithDynamicCurrencyConversion
-
     /// The location ID parameter is invalid.
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorInvalidLocationIdParameter
     case invalidLocationIdParameter
-
-    /// The collect inputs parameter is invalid.
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorCollectInputsInvalidParameter
-    case collectInputsInvalidParameter
-
-    /// Collect inputs is not supported.
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorCollectInputsUnsupported
-    case collectInputsUnsupported
 
     /// Bluetooth access is denied.
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorBluetoothAccessDenied
@@ -343,10 +287,6 @@ public enum UnderlyingError: Error, Equatable {
     /// The reader software update failed due to an expired update.
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorReaderSoftwareUpdateFailedExpiredUpdate
     case readerSoftwareUpdateFailedExpiredUpdate
-
-    /// The offline payments database is too large.
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorOfflinePaymentsDatabaseTooLarge
-    case offlinePaymentsDatabaseTooLarge
 
     /// The reader connection is unavailable offline.
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorReaderConnectionNotAvailableOffline
@@ -359,14 +299,6 @@ public enum UnderlyingError: Error, Equatable {
     /// The offline reader connection needs an update.
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorReaderConnectionOfflineNeedsUpdate
     case readerConnectionOfflineNeedsUpdate
-
-    /// Offline pairing unseen is disabled for the reader connection.
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorReaderConnectionOfflinePairingUnseenDisabled
-    case readerConnectionOfflinePairingUnseenDisabled
-
-    /// No last seen account is found.
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorNoLastSeenAccount
-    case noLastSeenAccount
 
     /// The amount exceeds the maximum allowed for offline transactions.
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorAmountExceedsMaxOfflineAmount
@@ -488,10 +420,6 @@ public enum UnderlyingError: Error, Equatable {
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorConnectionTokenProviderCompletedWithError
     case connectionTokenProviderCompletedWithError
 
-    /// The connection token provider finished with an error while forwarding.
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorConnectionTokenProviderCompletedWithErrorWhileForwarding
-    case connectionTokenProviderCompletedWithErrorWhileForwarding
-
     /// The connection token provider operation timed out.
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorConnectionTokenProviderTimedOut
     case connectionTokenProviderTimedOut
@@ -499,10 +427,6 @@ public enum UnderlyingError: Error, Equatable {
     /// Not connected to the internet, but online behavior is required.
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorNotConnectedToInternetAndOfflineBehaviorRequireOnline
     case notConnectedToInternetAndOfflineBehaviorRequireOnline
-
-    /// Offline behavior is set to force offline, but the feature is disabled.
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorOfflineBehaviorForceOfflineWithFeatureDisabled
-    case offlineBehaviorForceOfflineWithFeatureDisabled
 }
 
 extension UnderlyingError {
@@ -811,14 +735,6 @@ extension UnderlyingError: LocalizedError {
             return NSLocalizedString("The operation could not be canceled because it was already completed.",
                                      comment: "Error message when an operation cannot be canceled because it is already completed.")
 
-        case .connectionTokenProviderCompletedWithNothing:
-            return NSLocalizedString("The connection token provider finished without providing a token.",
-                                     comment: "Error message when the connection token provider completes without providing a token.")
-
-        case .connectionTokenProviderCompletedWithNothingWhileForwarding:
-            return NSLocalizedString("The connection token provider finished without providing a token while forwarding.",
-                                     comment: "Error message when the connection token provider completes without providing a token while forwarding.")
-
         case .nilPaymentIntent:
             return NSLocalizedString("The payment intent is missing.",
                                      comment: "Error message when the payment intent is missing.")
@@ -851,33 +767,13 @@ extension UnderlyingError: LocalizedError {
             return NSLocalizedString("The feature is unavailable.",
                                      comment: "Error message when a feature is unavailable.")
 
-        case .invalidListLocationsLimitParameter:
-            return NSLocalizedString("The list locations limit parameter is invalid.",
-                                     comment: "Error message when the list locations limit parameter is invalid.")
-
         case .bluetoothConnectionInvalidLocationIdParameter:
-            return NSLocalizedString("The Bluetooth connection has an invalid location ID parameter.",
+            return NSLocalizedString("The Bluetooth connection has an invalid location ID.",
                                      comment: "Error message when the Bluetooth connection has an invalid location ID parameter.")
 
         case .invalidRequiredParameter:
             return NSLocalizedString("A required parameter is invalid.",
                                      comment: "Error message when a required parameter is invalid.")
-
-        case .invalidRequiredParameterOnBehalfOf:
-            return NSLocalizedString("The 'on behalf of' parameter is invalid.",
-                                     comment: "Error message when the 'on behalf of' parameter is invalid.")
-
-        case .accountIdMismatchWhileForwarding:
-            return NSLocalizedString("There is an account ID mismatch while forwarding.",
-                                     comment: "Error message when there is an account ID mismatch while forwarding.")
-
-        case .updatePaymentIntentUnavailableWhileOffline:
-            return NSLocalizedString("Updating the payment intent is not possible while offline.",
-                                     comment: "Error message when updating the payment intent is not possible while offline.")
-
-        case .updatePaymentIntentUnavailableWhileOfflineModeEnabled:
-            return NSLocalizedString("Updating the payment intent is not possible while offline mode is enabled.",
-                                     comment: "Error message when updating the payment intent is not possible while offline mode is enabled.")
 
         case .forwardingTestModePaymentInLiveMode:
             return NSLocalizedString("Forwarding a test mode payment in live mode is prohibited.",
@@ -891,41 +787,13 @@ extension UnderlyingError: LocalizedError {
             return NSLocalizedString("The reader connection configuration is invalid.",
                                      comment: "Error message when the reader connection configuration is invalid.")
 
-        case .requestDynamicCurrencyConversionRequiresUpdatePaymentIntent:
-            return NSLocalizedString("Dynamic currency conversion requires a payment intent update.",
-                                     comment: "Error message when dynamic currency conversion requires a payment intent update.")
-
-        case .dynamicCurrencyConversionNotAvailable:
-            return NSLocalizedString("Dynamic currency conversion is unavailable.",
-                                     comment: "Error message when dynamic currency conversion is unavailable.")
-
-        case .surchargingNotAvailable:
-            return NSLocalizedString("Surcharging is unavailable.",
-                                     comment: "Error message when surcharging is unavailable.")
-
         case .readerTippingParameterInvalid:
             return NSLocalizedString("The reader tipping parameter is invalid.",
                                      comment: "Error message when the reader tipping parameter is invalid.")
 
-        case .surchargeNoticeRequiresUpdatePaymentIntent:
-            return NSLocalizedString("Surcharge notice requires a payment intent update.",
-                                     comment: "Error message when surcharge notice requires a payment intent update.")
-
-        case .surchargeUnavailableWithDynamicCurrencyConversion:
-            return NSLocalizedString("Surcharge is unavailable with dynamic currency conversion.",
-                                     comment: "Error message when surcharge is unavailable with dynamic currency conversion.")
-
         case .invalidLocationIdParameter:
-            return NSLocalizedString("The location ID parameter is invalid.",
+            return NSLocalizedString("The location ID is invalid.",
                                      comment: "Error message when the location ID parameter is invalid.")
-
-        case .collectInputsInvalidParameter:
-            return NSLocalizedString("The collect inputs parameter is invalid.",
-                                     comment: "Error message when the collect inputs parameter is invalid.")
-
-        case .collectInputsUnsupported:
-            return NSLocalizedString("Collect inputs is not supported.",
-                                     comment: "Error message when collect inputs is not supported.")
 
         case .bluetoothAccessDenied:
             return NSLocalizedString("Bluetooth access is denied.",
@@ -935,29 +803,17 @@ extension UnderlyingError: LocalizedError {
             return NSLocalizedString("The reader software update failed due to an expired update.",
                                      comment: "Error message when the reader software update fails due to an expired update.")
 
-        case .offlinePaymentsDatabaseTooLarge:
-            return NSLocalizedString("The offline payments database is too large.",
-                                     comment: "Error message when the offline payments database is too large.")
-
         case .readerConnectionNotAvailableOffline:
             return NSLocalizedString("The reader connection is unavailable offline.",
                                      comment: "Error message when the reader connection is unavailable offline.")
 
         case .readerConnectionOfflineLocationMismatch:
-            return NSLocalizedString("There is a location mismatch in the offline reader connection.",
-                                     comment: "Error message when there is a location mismatch in the offline reader connection.")
+            return NSLocalizedString("Reader connection failed because the reader was most recently connected to a different location while online.",
+                                     comment: "Error message when there is a location mismatch in the reader connection.")
 
         case .readerConnectionOfflineNeedsUpdate:
             return NSLocalizedString("The offline reader connection needs an update.",
                                      comment: "Error message when the offline reader connection needs an update.")
-
-        case .readerConnectionOfflinePairingUnseenDisabled:
-            return NSLocalizedString("Offline pairing unseen is disabled for the reader connection.",
-                                     comment: "Error message when offline pairing unseen is disabled for the reader connection.")
-
-        case .noLastSeenAccount:
-            return NSLocalizedString("No last seen account is found.",
-                                     comment: "Error message when no last seen account is found.")
 
         case .amountExceedsMaxOfflineAmount:
             return NSLocalizedString("The amount exceeds the maximum allowed for offline transactions.",
@@ -1079,10 +935,6 @@ extension UnderlyingError: LocalizedError {
             return NSLocalizedString("The connection token provider finished with an error.",
                                      comment: "Error message when the connection token provider finishes with an error.")
 
-        case .connectionTokenProviderCompletedWithErrorWhileForwarding:
-            return NSLocalizedString("The connection token provider finished with an error while forwarding.",
-                                     comment: "Error message when the connection token provider finishes with an error while forwarding.")
-
         case .connectionTokenProviderTimedOut:
             return NSLocalizedString("The connection token provider operation timed out.",
                                      comment: "Error message when the connection token provider operation times out.")
@@ -1090,10 +942,6 @@ extension UnderlyingError: LocalizedError {
         case .notConnectedToInternetAndOfflineBehaviorRequireOnline:
             return NSLocalizedString("Not connected to the internet, but online behavior is required.",
                                      comment: "Error message when not connected to the internet, but online behavior is required.")
-
-        case .offlineBehaviorForceOfflineWithFeatureDisabled:
-            return NSLocalizedString("Offline behavior is set to force offline, but the feature is disabled.",
-                                     comment: "Error message when offline behavior is set to force offline, but the feature is disabled.")
         }
     }
 }

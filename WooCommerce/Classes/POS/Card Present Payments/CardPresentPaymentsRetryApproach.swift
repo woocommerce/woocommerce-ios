@@ -93,8 +93,6 @@ private extension CardReaderServiceUnderlyingError {
                 .invalidAmount,
                 .invalidCurrency,
                 .cancelFailedAlreadyCompleted,
-                .connectionTokenProviderCompletedWithNothing,
-                .connectionTokenProviderCompletedWithNothingWhileForwarding,
                 .nilPaymentIntent,
                 .nilSetupIntent,
                 .nilRefundPaymentMethod,
@@ -103,10 +101,8 @@ private extension CardReaderServiceUnderlyingError {
                 .invalidDiscoveryConfiguration,
                 .invalidReaderForUpdate,
                 .featureNotAvailable,
-                .invalidListLocationsLimitParameter,
                 .bluetoothConnectionInvalidLocationIdParameter,
-                .invalidRequiredParameter,
-                .invalidRequiredParameterOnBehalfOf:
+                .invalidRequiredParameter:
             return .tryAgain(retryAction: retryAction)
         case .paymentDeclinedByPaymentProcessorAPI,
                 .paymentDeclinedByCardReader:
@@ -126,29 +122,16 @@ private extension CardReaderServiceUnderlyingError {
                 .unsupportedMobileDeviceConfiguration,
                 .featureNotAvailableWithConnectedReader,
                 .readerIncompatible,
-                .accountIdMismatchWhileForwarding,
-                .updatePaymentIntentUnavailableWhileOffline,
-                .updatePaymentIntentUnavailableWhileOfflineModeEnabled,
                 .forwardingTestModePaymentInLiveMode,
                 .forwardingLiveModePaymentInTestMode,
                 .readerConnectionConfigurationInvalid,
-                .requestDynamicCurrencyConversionRequiresUpdatePaymentIntent,
-                .dynamicCurrencyConversionNotAvailable,
-                .surchargingNotAvailable,
                 .readerTippingParameterInvalid,
-                .surchargeNoticeRequiresUpdatePaymentIntent,
-                .surchargeUnavailableWithDynamicCurrencyConversion,
                 .invalidLocationIdParameter,
-                .collectInputsInvalidParameter,
-                .collectInputsUnsupported,
                 .bluetoothAccessDenied,
                 .readerSoftwareUpdateFailedExpiredUpdate,
-                .offlinePaymentsDatabaseTooLarge,
                 .readerConnectionNotAvailableOffline,
                 .readerConnectionOfflineLocationMismatch,
                 .readerConnectionOfflineNeedsUpdate,
-                .readerConnectionOfflinePairingUnseenDisabled,
-                .noLastSeenAccount,
                 .amountExceedsMaxOfflineAmount,
                 .invalidOfflineCurrency,
                 .missingEMVData,
@@ -179,10 +162,8 @@ private extension CardReaderServiceUnderlyingError {
                 .stripeAPIResponseDecodingError,
                 .internalNetworkError,
                 .connectionTokenProviderCompletedWithError,
-                .connectionTokenProviderCompletedWithErrorWhileForwarding,
                 .connectionTokenProviderTimedOut,
-                .notConnectedToInternetAndOfflineBehaviorRequireOnline,
-                .offlineBehaviorForceOfflineWithFeatureDisabled:
+                .notConnectedToInternetAndOfflineBehaviorRequireOnline:
             return .dontRetry
         }
     }

@@ -286,12 +286,13 @@ private extension ShippingLabelStore {
                                                      shippingLabels: [ShippingLabel],
                                                      settings: ShippingLabelSettings,
                                                      onCompletion: @escaping () -> Void) {
+        guard shippingLabels.isEmpty == false else {
+            return onCompletion()
+        }
+
         storageManager.performAndSave ({ [weak self] storage in
             guard let self = self else { return }
             guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
-                return
-            }
-            guard shippingLabels.isEmpty == false else {
                 return
             }
             self.upsertShippingLabels(siteID: siteID, orderID: orderID, shippingLabels: shippingLabels, storageOrder: order, using: storage)

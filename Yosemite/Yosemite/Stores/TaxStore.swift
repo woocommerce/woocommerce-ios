@@ -174,20 +174,15 @@ private extension TaxStore {
                                           siteID: Int64,
                                           shouldDeleteExistingTaxRates: Bool,
                                           onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
+        storageManager.performAndSave({ [weak self] storage in
             guard let self = self else { return }
 
             if shouldDeleteExistingTaxRates {
-                derivedStorage.deleteTaxRates(siteID: siteID)
+                storage.deleteTaxRates(siteID: siteID)
             }
 
-            self.upsertStoredTaxRates(readOnlyTaxRates: readOnlyTaxRates, siteID: siteID, in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+            self.upsertStoredTaxRates(readOnlyTaxRates: readOnlyTaxRates, siteID: siteID, in: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly TaxRate Entities into the Storage Layer.

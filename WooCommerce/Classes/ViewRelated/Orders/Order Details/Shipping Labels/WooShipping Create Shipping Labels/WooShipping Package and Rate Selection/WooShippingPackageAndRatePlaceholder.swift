@@ -62,8 +62,9 @@ private extension WooShippingPackageAndRatePlaceholder {
     }
 }
 
+#if DEBUG
+
 import struct Yosemite.Order
-import Fakes
 
 #Preview {
     WooShippingPackageAndRatePlaceholder(onSelectPackage: { _ in },
@@ -73,7 +74,6 @@ import Fakes
 
 // MARK: - Sample Data
 
-#if DEBUG
 extension Order {
     static let sampleOrder = Order(siteID: 0,
                                   orderID: 0,
@@ -87,7 +87,7 @@ extension Order {
                                   status: .pending,
                                   currency: "USD",
                                   currencySymbol: "$",
-                                  customerNote: "",
+                                  customerNote: "note",
                                   dateCreated: Date(),
                                   dateModified: Date(),
                                   datePaid: nil,

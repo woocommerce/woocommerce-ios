@@ -110,9 +110,7 @@ struct WooCarrierPackagesSelectionView: View {
                                        tapAction: { packageID in
                     viewModel.selectedCarriersPackageId = viewModel.selectedCarriersPackageId == packageID ? nil : packageID
                 }, starAction: { packageID in
-                    Task {
-                        await viewModel.starUnstarPackage(packageID)
-                    }
+                    viewModel.starUnstarPackage(packageID, carrierID: selectedCarrierTab.carrier.rawValue)
                 })
             }
             Spacer()

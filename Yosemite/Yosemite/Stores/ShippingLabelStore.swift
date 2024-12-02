@@ -381,24 +381,18 @@ private extension ShippingLabelStore {
     func upsertShippingLabelAccountSettingsInBackground(siteID: Int64,
                                                         accountSettings: ShippingLabelAccountSettings,
                                                         onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
-            self.upsertShippingLabelAccountSettings(siteID: siteID, accountSettings: accountSettings)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ [weak self] storage in
+            self?.upsertShippingLabelAccountSettings(siteID: siteID, accountSettings: accountSettings, using: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates/inserts the specified readonly ShippingLabelAccountSettings entity in the current thread.
     ///
-    func upsertShippingLabelAccountSettings(siteID: Int64, accountSettings: ShippingLabelAccountSettings) {
-        let derivedStorage = sharedDerivedStorage
-        let storageAccountSettings = derivedStorage.loadShippingLabelAccountSettings(siteID: siteID) ??
-            derivedStorage.insertNewObject(ofType: Storage.ShippingLabelAccountSettings.self)
+    func upsertShippingLabelAccountSettings(siteID: Int64, accountSettings: ShippingLabelAccountSettings, using storage: StorageType) {
+        let storageAccountSettings = storage.loadShippingLabelAccountSettings(siteID: siteID) ??
+            storage.insertNewObject(ofType: Storage.ShippingLabelAccountSettings.self)
         storageAccountSettings.update(with: accountSettings)
-        handleShippingLabelPaymentMethods(accountSettings, storageAccountSettings, derivedStorage)
+        handleShippingLabelPaymentMethods(accountSettings, storageAccountSettings, storage)
     }
 
     /// Updates/inserts the ShippingLabelPaymentMethod items from the provided account settings.

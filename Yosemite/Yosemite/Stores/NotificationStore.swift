@@ -221,23 +221,16 @@ extension NotificationStore {
     /// - Parameter remoteIds: Collection of remote Note IDs.
     ///
     func deleteLocalMissingNotes(from hashes: [NoteHash], completion: @escaping (() -> Void)) {
-        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
-
-        derivedStorage.perform {
+        storageManager.performAndSave({ storage in
             // The beauty of threadsafe Immutable Entities!!
             let remoteIDs = hashes.map { $0.noteID }
             let predicate = NSPredicate(format: "NOT (noteID IN %@)", remoteIDs)
 
-            for orphan in derivedStorage.allObjects(ofType: Storage.Note.self, matching: predicate, sortedBy: nil) {
-                derivedStorage.deleteObject(orphan)
+            let allObjects = storage.allObjects(ofType: Storage.Note.self, matching: predicate, sortedBy: nil)
+            for orphan in allObjects {
+                storage.deleteObject(orphan)
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async {
-                completion()
-            }
-        }
+        }, completion: completion, on: .main)
     }
 
     /// Given a collection of Notes, this method will insert missing local ones, and update the others that can be found.
@@ -247,43 +240,23 @@ extension NotificationStore {
     ///     - completion: Callback to be executed on completion
     ///
     func updateLocalNotes(with remoteNotes: [Note], onCompletion: (() -> Void)? = nil) {
-        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
-
-        derivedStorage.perform {
+        storageManager.performAndSave({ storage in
             for remoteNote in remoteNotes {
-                let localNote = derivedStorage.loadNotification(noteID: remoteNote.noteID) ?? derivedStorage.insertNewObject(ofType: Storage.Note.self)
+                let localNote = storage.loadNotification(noteID: remoteNote.noteID) ?? storage.insertNewObject(ofType: Storage.Note.self)
                 localNote.update(with: remoteNote)
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            guard let onCompletion = onCompletion else {
-                return
-            }
-
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates the read status for the specified Notifications. The callback happens on the Main Thread.
     ///
     func updateLocalNoteReadStatus(for noteIDs: [Int64], read: Bool, onCompletion: (() -> Void)? = nil) {
-        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
-
-        derivedStorage.perform {
-            let notifications = noteIDs.compactMap { derivedStorage.loadNotification(noteID: $0) }
+        storageManager.performAndSave({ storage in
+            let notifications = noteIDs.compactMap { storage.loadNotification(noteID: $0) }
             for note in notifications {
                 note.read = read
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            guard let onCompletion = onCompletion else {
-                return
-            }
-
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 
     /// Given a collection of NoteHash Entities, this method will determine the `.noteID`'s of those entities that
@@ -317,22 +290,12 @@ extension NotificationStore {
     /// Invalidates the Hash for the specified Notifications.
     ///
     func invalidateCache(for noteIDs: [Int64], onCompletion: (() -> Void)? = nil) {
-        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
-
-        derivedStorage.perform {
-            let notifications = noteIDs.compactMap { derivedStorage.loadNotification(noteID: $0) }
+        storageManager.performAndSave({ storage in
+            let notifications = noteIDs.compactMap { storage.loadNotification(noteID: $0) }
             for note in notifications {
                 note.noteHash = Int64.min
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            guard let onCompletion = onCompletion else {
-                return
-            }
-
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 
     /// Runs a No-OP in the Shared Derived Storage. On completion, the callback will be executed on the main thread.
@@ -348,20 +311,10 @@ extension NotificationStore {
     /// Updates the deletion "status" for the specified Notification. The callback happens on the Main Thread.
     ///
     func markLocalNoteAsDeleted(for noteID: Int64, isDeleted: Bool, onCompletion: (() -> Void)? = nil) {
-        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
-
-        derivedStorage.perform {
-            let notification = derivedStorage.loadNotification(noteID: noteID)
+        storageManager.performAndSave({ storage in
+            let notification = storage.loadNotification(noteID: noteID)
             notification?.deleteInProgress = isDeleted
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            guard let onCompletion = onCompletion else {
-                return
-            }
-
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 }
 

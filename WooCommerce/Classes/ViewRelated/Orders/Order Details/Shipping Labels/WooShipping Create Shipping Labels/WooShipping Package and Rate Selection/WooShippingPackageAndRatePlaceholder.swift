@@ -63,7 +63,6 @@ private extension WooShippingPackageAndRatePlaceholder {
 }
 
 import struct Yosemite.Order
-import Fakes
 
 #Preview {
     WooShippingPackageAndRatePlaceholder(onSelectPackage: { _ in },

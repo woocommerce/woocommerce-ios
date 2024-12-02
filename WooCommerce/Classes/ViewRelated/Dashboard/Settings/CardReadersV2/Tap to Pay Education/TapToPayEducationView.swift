@@ -67,3 +67,24 @@ struct TapToPayEducationView: View {
         })
     }
 }
+
+// MARK: - Hosting Controller
+
+final class TapToPayEducationViewViewHostingController: UIHostingController<TapToPayEducationView> {
+    init(onDismiss: @escaping () -> Void) {
+        let viewModel = TapToPayEducationViewModel(flow: .onboarding, onDismiss: onDismiss)
+        super.init(rootView: TapToPayEducationView(viewModel: viewModel))
+
+        viewModel.onDismiss = { [weak self] in
+            guard let self else { return }
+
+            self.dismiss(animated: true) {
+                onDismiss()
+            }
+        }
+    }
+    
+    @MainActor @preconcurrency required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}

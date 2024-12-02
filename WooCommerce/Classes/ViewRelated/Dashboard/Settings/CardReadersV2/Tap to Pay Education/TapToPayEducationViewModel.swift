@@ -26,7 +26,7 @@ final class TapToPayEducationViewModel: ObservableObject {
     let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
     let siteID: Int64
 
-    private let onDismiss: () -> Void
+    var onDismiss: () -> Void
 
     init(flow: Flow = .onboarding,
          steps: [TapToPayEducationStepViewModel]? = nil,

@@ -1,5 +1,4 @@
 import SwiftUI
-import protocol Yosemite.POSItem
 
 struct CartView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel

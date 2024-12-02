@@ -379,8 +379,7 @@ extension ScreenshotObjectGraph {
         static let roseGoldShades = createProduct(
             name: "Rose Gold Shades",
             price: 199.0,
-            quantity: 0,
-            image: ProductImage.fromUrl("https://automatticwidgets.com/wp-content/uploads/2020/01/annie-theby-FlP6C5pkMKs-unsplash.png")
+            quantity: 0
         )
 
         static let blackCoralShades = createProduct(

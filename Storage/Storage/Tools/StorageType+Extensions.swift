@@ -561,7 +561,7 @@ public extension StorageType {
         return allObjects(ofType: BlazeCampaignListItem.self, matching: predicate, sortedBy: nil)
     }
 
-    /// Returns  stored BlazeCampaignListItem s for a site matching the given IDs
+    /// Returns stored BlazeCampaignListItem s for a site matching the given IDs
     ///
     func loadBlazeCampaignListItems(siteID: Int64, with campaignIDs: [String]) -> [BlazeCampaignListItem] {
         let predicate = NSPredicate(format: "siteID == %lld && campaignID in %@", siteID, campaignIDs)

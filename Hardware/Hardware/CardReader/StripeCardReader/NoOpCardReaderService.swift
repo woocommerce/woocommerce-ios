@@ -15,6 +15,10 @@ public struct NoOpCardReaderService: CardReaderService {
     public var softwareUpdateEvents: AnyPublisher<CardReaderSoftwareUpdateState, Never>
     = CurrentValueSubject<CardReaderSoftwareUpdateState, Never>(.none).eraseToAnyPublisher()
 
+    /// The Publisher that emits the current state of the built-in card reader onboarding
+    public var builtInCardReaderOnboardingEvents: AnyPublisher<BuiltInCardReaderOnboardingState, Never>
+    = PassthroughSubject<BuiltInCardReaderOnboardingState, Never>().eraseToAnyPublisher()
+
     public init() {}
     // MARK: - Commands
 

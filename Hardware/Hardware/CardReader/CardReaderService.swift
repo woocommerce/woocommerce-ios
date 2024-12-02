@@ -16,6 +16,9 @@ public protocol CardReaderService {
     /// The Publisher that emits software update state changes
     var softwareUpdateEvents: AnyPublisher<CardReaderSoftwareUpdateState, Never> { get }
 
+    /// The Publisher that emits the state of the built-in card reader onboarding
+    var builtInCardReaderOnboardingEvents: AnyPublisher<BuiltInCardReaderOnboardingState, Never> { get }
+
     // MARK: - Commands
 
     /// Checks for support of a given reader type and discovery method combination. Does not start discovery.

@@ -45,7 +45,7 @@ extension Color {
             )
         )
     }
-    
+
     static var posOverlayFillInverted: Color {
         Color(
             UIColor(
@@ -54,14 +54,13 @@ extension Color {
             )
         )
     }
-    
 
     // MARK: - Text
 
     static var posPrimaryText: Color {
         return Color.primary
     }
-    
+
     static var posPrimaryTextInverted: Color {
         Color(
             UIColor(

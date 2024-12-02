@@ -11,6 +11,7 @@
 - [Internal] Updated CoreDataManager to be thread-safe [https://github.com/woocommerce/woocommerce-ios/pull/14534]
 - [Internal] Updated storage usage in CouponStore [https://github.com/woocommerce/woocommerce-ios/pull/14530]
 - [Internal] Updated storage usage in ProductShippingClassStore [https://github.com/woocommerce/woocommerce-ios/pull/14520]
+- [Internal] updated storage usage in SettingStore [https://github.com/woocommerce/woocommerce-ios/pull/14569]
 
 21.2
 -----

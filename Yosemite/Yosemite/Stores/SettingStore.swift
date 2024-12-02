@@ -216,9 +216,10 @@ private extension SettingStore {
     }
 
     func upsertSettings(_ readOnlySiteSettings: [SiteSetting], in storage: StorageType, siteID: Int64, settingGroup: SiteSettingGroup) {
+        let storageSiteSettings = storage.loadSiteSettings(siteID: siteID, settingGroupKey: settingGroup.rawValue)
         // Upsert the settings from the read-only site settings
         for readOnlyItem in readOnlySiteSettings {
-            if let existingStorageItem = storage.loadSiteSetting(siteID: siteID, settingID: readOnlyItem.settingID) {
+            if let existingStorageItem = storageSiteSettings?.first(where: { $0.settingID == readOnlyItem.settingID }) {
                 existingStorageItem.update(with: readOnlyItem)
             } else {
                 let newStorageItem = storage.insertNewObject(ofType: Storage.SiteSetting.self)
@@ -227,7 +228,7 @@ private extension SettingStore {
         }
 
         // Now, remove any objects that exist in storageSiteSettings but not in readOnlySiteSettings
-        if let storageSiteSettings = storage.loadSiteSettings(siteID: siteID, settingGroupKey: settingGroup.rawValue) {
+        if let storageSiteSettings {
             storageSiteSettings.forEach({ storageItem in
                 if readOnlySiteSettings.first(where: { $0.settingID == storageItem.settingID } ) == nil {
                     storage.deleteObject(storageItem)

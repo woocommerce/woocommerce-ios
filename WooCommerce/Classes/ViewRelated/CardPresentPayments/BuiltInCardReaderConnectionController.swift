@@ -112,6 +112,8 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
 
     private var allowTermsOfServiceAcceptance: Bool
 
+    private var isMerchantEducationInProgress: CurrentValueSubject<Bool, Never> = .init(false)
+
     init(
         forSiteID: Int64,
         storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -366,6 +368,27 @@ private extension BuiltInCardReaderConnectionController {
             .store(in: &self.subscriptions)
         }
         stores.dispatch(softwareUpdateAction)
+
+        let onboardingAction = CardPresentPaymentAction.observeBuiltInCardReaderOnboardingState { [weak self] onboardingEvents in
+            guard let self = self else { return }
+
+            onboardingEvents
+                .subscribe(on: DispatchQueue.main)
+                .sink { [weak self] event in
+                guard let self = self else { return }
+                switch event {
+                case .didAcceptTermsOfService:
+                    self.isMerchantEducationInProgress.send(true)
+                    self.alertsPresenter.presentMerchantEducation { [weak self] in
+                        self?.isMerchantEducationInProgress.send(false)
+                    }
+                }
+            }
+            .store(in: &self.subscriptions)
+        }
+        stores.dispatch(onboardingAction)
+
+
         let options = CardReaderConnectionOptions(
             builtInOptions: BuiltInCardReaderConnectionOptions(termsOfServiceAcceptancePermitted: allowTermsOfServiceAcceptance))
 
@@ -537,8 +560,15 @@ private extension BuiltInCardReaderConnectionController {
     /// Calls the completion with a success result
     ///
     private func returnSuccess(result: CardReaderConnectionResult) {
-        onCompletion?(.success(result))
-        state = .idle
+        isMerchantEducationInProgress.eraseToAnyPublisher()
+            .filter { $0 == false }
+            .first()
+            .sink { [weak self] _ in
+                guard let self else { return }
+                onCompletion?(.success(result))
+                state = .idle
+            }
+            .store(in: &subscriptions)
     }
 
     /// Calls the completion with a failure result

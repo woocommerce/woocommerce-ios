@@ -7,12 +7,6 @@ import Storage
 public class OrderNoteStore: Store {
     private let remote: OrdersRemote
 
-    /// Shared private StorageType for use during then entire OrderNotes sync process
-    ///
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = OrdersRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -85,29 +79,19 @@ extension OrderNoteStore {
     /// Updates (OR Inserts) the specified ReadOnly OrderNote Entity into the Storage Layer.
     ///
     func upsertStoredOrderNoteInBackground(readOnlyOrderNote: Networking.OrderNote, orderID: Int64, siteID: Int64, onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
-            self.saveNote(derivedStorage, readOnlyOrderNote, orderID, siteID: siteID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ [weak self] storage in
+            self?.saveNote(storage, readOnlyOrderNote, orderID, siteID: siteID)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly OrderNote Entities into the Storage Layer.
     ///
     func upsertStoredOrderNotesInBackground(readOnlyOrderNotes: [Networking.OrderNote], orderID: Int64, siteID: Int64, onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
+        storageManager.performAndSave({ [weak self] storage in
             for readOnlyOrderNote in readOnlyOrderNotes {
-                self.saveNote(derivedStorage, readOnlyOrderNote, orderID, siteID: siteID)
+                self?.saveNote(storage, readOnlyOrderNote, orderID, siteID: siteID)
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 
     /// Using the provided StorageType, update or insert a Storage.OrderNote using the provided ReadOnly

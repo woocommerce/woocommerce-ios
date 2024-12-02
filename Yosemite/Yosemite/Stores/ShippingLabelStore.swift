@@ -310,21 +310,16 @@ private extension ShippingLabelStore {
     func upsertShippingLabelRefundInBackground(shippingLabel: ShippingLabel,
                                                refund: ShippingLabelRefund,
                                                onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
+        storageManager.performAndSave ({ [weak self] storage in
             guard let self = self else { return }
             // If a shipping label does not exist in storage, skip upserting the refund in storage.
-            guard let shippingLabel = derivedStorage.loadShippingLabel(siteID: shippingLabel.siteID,
-                                                                       orderID: shippingLabel.orderID,
-                                                                       shippingLabelID: shippingLabel.shippingLabelID) else {
+            guard let shippingLabel = storage.loadShippingLabel(siteID: shippingLabel.siteID,
+                                                                orderID: shippingLabel.orderID,
+                                                                shippingLabelID: shippingLabel.shippingLabelID) else {
                 return
             }
-            self.update(shippingLabel: shippingLabel, withRefund: refund)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+            self.update(shippingLabel: shippingLabel, withRefund: refund, using: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates/inserts the specified readonly ShippingLabel entities in the current thread.
@@ -342,7 +337,7 @@ private extension ShippingLabelStore {
             storageShippingLabel.update(with: shippingLabel)
             storageShippingLabel.order = storageOrder
 
-            update(shippingLabel: storageShippingLabel, withRefund: shippingLabel.refund)
+            update(shippingLabel: storageShippingLabel, withRefund: shippingLabel.refund, using: storage)
 
             let originAddress = storageShippingLabel.originAddress ?? storage.insertNewObject(ofType: Storage.ShippingLabelAddress.self)
             originAddress.update(with: shippingLabel.originAddress)
@@ -362,10 +357,9 @@ private extension ShippingLabelStore {
         }
     }
 
-    func update(shippingLabel storageShippingLabel: StorageShippingLabel, withRefund refund: ShippingLabelRefund?) {
-        let derivedStorage = sharedDerivedStorage
+    func update(shippingLabel storageShippingLabel: StorageShippingLabel, withRefund refund: ShippingLabelRefund?, using storage: StorageType) {
         if let refund = refund {
-            let storageRefund = storageShippingLabel.refund ?? derivedStorage.insertNewObject(ofType: Storage.ShippingLabelRefund.self)
+            let storageRefund = storageShippingLabel.refund ?? storage.insertNewObject(ofType: Storage.ShippingLabelRefund.self)
             storageRefund.update(with: refund)
             storageShippingLabel.refund = storageRefund
         } else {

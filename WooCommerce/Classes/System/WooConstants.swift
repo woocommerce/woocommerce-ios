@@ -194,14 +194,6 @@ extension WooConstants {
         case inAppFeedback = "https://automattic.survey.fm/woo-app-general-feedback-user-survey"
 #endif
 
-        /// URL for the Tap to Pay first payment survey
-        ///
-#if DEBUG
-        case tapToPayFirstPaymentFeedback = "https://automattic.survey.fm/woo-app-tap-to-pay-survey"
-#else
-        case tapToPayFirstPaymentFeedback = "https://automattic.survey.fm/woo-app-–-first-ttp-survey"
-#endif
-
         /// URL for the products feedback survey
         ///
         case productsFeedback = "https://automattic.survey.fm/woo-app-feature-feedback-products"

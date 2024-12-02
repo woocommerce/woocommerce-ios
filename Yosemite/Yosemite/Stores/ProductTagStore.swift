@@ -7,10 +7,6 @@ import Storage
 public final class ProductTagStore: Store {
     private let remote: ProductTagsRemote
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ProductTagsRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -80,10 +76,6 @@ private extension ProductTagStore {
 
             switch result {
             case .success(let productTags):
-                if pageNumber == Default.firstPageNumber {
-                    self?.deleteUnusedStoredProductTags(siteID: siteID)
-                }
-
                 self?.upsertStoredProductTagsInBackground(productTags, siteID: siteID) {
                     onCompletion(.success(productTags))
                 }
@@ -96,6 +88,9 @@ private extension ProductTagStore {
     /// Create new product tags associated with a given Site ID.
     ///
     func addProductTags(siteID: Int64, tags: [String], onCompletion: @escaping (Result<[ProductTag], Error>) -> Void) {
+        guard tags.isEmpty == false else {
+            return onCompletion(.success([]))
+        }
         remote.createProductTags(for: siteID, names: tags) { [weak self] (result) in
             switch result {
             case .success(let productTags):
@@ -114,8 +109,9 @@ private extension ProductTagStore {
         remote.deleteProductTags(for: siteID, ids: ids) { [weak self] (result) in
             switch result {
             case .success(let productTags):
-                self?.deleteStoredProductTags(siteID: siteID, ids: ids)
-                onCompletion(.success(productTags))
+                self?.deleteStoredProductTags(siteID: siteID, ids: ids) {
+                    onCompletion(.success(productTags))
+                }
             case .failure(let error):
                 onCompletion(.failure(error))
             }
@@ -130,32 +126,19 @@ private extension ProductTagStore {
     /// onCompletion will be called on the main thread!
     ///
     func upsertStoredProductTagsInBackground(_ readOnlyProductTags: [Networking.ProductTag],
-                                                   siteID: Int64,
-                                                   onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            self?.upsertStoredProductTags(readOnlyProductTags, in: derivedStorage, siteID: siteID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+                                             siteID: Int64,
+                                             onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ [weak self] storage in
+            self?.upsertStoredProductTags(readOnlyProductTags, in: storage, siteID: siteID)
+        }, completion: onCompletion, on: .main)
     }
 
-    /// Deletes any Storage.ProductTag  that is not associated to a product on the specified `siteID`
+    /// Deletes any Storage.ProductTag with the specified `siteID` and `tagID`'s
     ///
-    func deleteUnusedStoredProductTags(siteID: Int64) {
-        let storage = storageManager.viewStorage
-        storage.deleteUnusedProductTags(siteID: siteID)
-        storage.saveIfNeeded()
-    }
-
-    /// Deletes any Storage.ProductTag with the specified `siteID` and `productID`
-    ///
-    func deleteStoredProductTags(siteID: Int64, ids: [Int64]) {
-        let storage = storageManager.viewStorage
-        storage.deleteProductTags(siteID: siteID, ids: ids)
-        storage.saveIfNeeded()
+    func deleteStoredProductTags(siteID: Int64, ids: [Int64], onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            storage.deleteProductTags(siteID: siteID, ids: ids)
+        }, completion: onCompletion, on: .main)
     }
 
 }
@@ -169,12 +152,13 @@ private extension ProductTagStore {
     ///     - siteID: site ID for looking up the ProductTag.
     ///
     func upsertStoredProductTags(_ readOnlyProductTags: [Networking.ProductTag],
-                                       in storage: StorageType,
-                                       siteID: Int64) {
+                                 in storage: StorageType,
+                                 siteID: Int64) {
+        let storedItems = storage.loadProductTags(siteID: siteID)
         // Upserts the ProductTag models from the read-only version
         for readOnlyProductTag in readOnlyProductTags {
             let storageProductTag: Storage.ProductTag = {
-                if let storedTag = storage.loadProductTag(siteID: siteID, tagID: readOnlyProductTag.tagID) {
+                if let storedTag = storedItems.first(where: { $0.tagID == readOnlyProductTag.tagID }) {
                     return storedTag
                 }
                 return storage.insertNewObject(ofType: Storage.ProductTag.self)

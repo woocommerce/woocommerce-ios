@@ -127,10 +127,8 @@ struct TopTabView<Content: View>: View {
                                         })
                                 }
                                 .onAppear {
-                                    withAnimation {
-                                        scrollViewProxy.scrollTo(selectedTab, anchor: .center)
-                                        underlineOffset = calculateOffset(index: selectedTab)
-                                    }
+                                    scrollViewProxy.scrollTo(selectedTab, anchor: .center)
+                                    underlineOffset = calculateOffset(index: selectedTab)
                                 }
                             }
                             .padding(.horizontal, tabPadding)

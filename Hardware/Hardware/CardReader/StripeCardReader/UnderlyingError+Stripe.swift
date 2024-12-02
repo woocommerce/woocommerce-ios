@@ -150,7 +150,7 @@ extension UnderlyingError {
             case .invalidLocationIdParameter:
                 self = .invalidLocationIdParameter
             case .bluetoothAccessDenied:
-                self = .bluetoothAccessDenied
+                self = .bluetoothDenied
             case .readerSoftwareUpdateFailedExpiredUpdate:
                 self = .readerSoftwareUpdateFailedExpiredUpdate
             case .readerConnectionNotAvailableOffline:

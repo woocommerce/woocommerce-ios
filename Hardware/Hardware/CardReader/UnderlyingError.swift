@@ -100,6 +100,9 @@ public enum UnderlyingError: Error, Equatable {
     /// The Bluetooth device was disconnected unexpectedly.
     case bluetoothDisconnected
 
+    /// The user has denied the app permission to use Bluetooth
+    case bluetoothDenied
+
     /// An attempt to process a payment was made from a reader with an unsupported reader version.
     /// You will need to update your reader to the most recent version in order to accept payments
     case unsupportedReaderVersion
@@ -279,10 +282,6 @@ public enum UnderlyingError: Error, Equatable {
     /// The location ID parameter is invalid.
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorInvalidLocationIdParameter
     case invalidLocationIdParameter
-
-    /// Bluetooth access is denied.
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorBluetoothAccessDenied
-    case bluetoothAccessDenied
 
     /// The reader software update failed due to an expired update.
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorReaderSoftwareUpdateFailedExpiredUpdate
@@ -535,6 +534,14 @@ extension UnderlyingError: LocalizedError {
         case .bluetoothConnectionFailedBatteryCriticallyLow:
             return NSLocalizedString("Unable to connect to reader - the reader has a critically low battery - charge the reader and try again.",
                                      comment: "Error message the card reader battery level is too low to connect to the phone or tablet.")
+
+        case .bluetoothDenied:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.bluetoothDenied",
+                value: "This app needs permission to access Bluetooth to connect to your card reader. " +
+                       "You can grant permission in the system's Settings app, in the Woo section.",
+                comment: "Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions"
+            )
 
         case .readerSoftwareUpdateFailedBatteryLow:
             return NSLocalizedString("Unable to update card reader software - the reader battery is too low.",
@@ -794,10 +801,6 @@ extension UnderlyingError: LocalizedError {
         case .invalidLocationIdParameter:
             return NSLocalizedString("The location ID is invalid.",
                                      comment: "Error message when the location ID parameter is invalid.")
-
-        case .bluetoothAccessDenied:
-            return NSLocalizedString("Bluetooth access is denied.",
-                                     comment: "Error message when Bluetooth access is denied.")
 
         case .readerSoftwareUpdateFailedExpiredUpdate:
             return NSLocalizedString("The reader software update failed due to an expired update.",

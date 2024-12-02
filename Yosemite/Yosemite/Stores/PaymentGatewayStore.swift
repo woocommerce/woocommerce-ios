@@ -91,14 +91,14 @@ private extension PaymentGatewayStore {
     /// Updates (OR Inserts) the specified ReadOnly Payment Gateways Entities in the current thread
     ///
     func upsertPaymentGateways(siteID: Int64, paymentGateways: [PaymentGateway], using storage: StorageType) {
+        let storedGateways = storage.loadAllPaymentGateways(siteID: siteID)
         for gateway in paymentGateways {
-            let storageGateway = storage.loadPaymentGateway(siteID: gateway.siteID, gatewayID: gateway.gatewayID) ??
+            let storageGateway = storedGateways.first(where: { $0.gatewayID == gateway.gatewayID }) ??
             storage.insertNewObject(ofType: Storage.PaymentGateway.self)
             storageGateway.update(with: gateway)
         }
 
         // Now, remove any objects that exist in storage but not in paymentGateways
-        let storedGateways = storage.loadAllPaymentGateways(siteID: siteID)
         storedGateways.forEach { storedGateway in
             if !paymentGateways.contains(where: { $0.gatewayID == storedGateway.gatewayID }) {
                 storage.deleteObject(storedGateway)

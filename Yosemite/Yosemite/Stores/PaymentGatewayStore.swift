@@ -89,31 +89,25 @@ private extension PaymentGatewayStore {
     /// *in a background thread*. `onCompletion` will be called on the main thread!
     ///
     func upsertPaymentGatewaysInBackground(siteID: Int64, paymentGateways: [PaymentGateway], onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            self?.upsertPaymentGateways(siteID: siteID, paymentGateways: paymentGateways)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ [weak self] storage in
+            self?.upsertPaymentGateways(siteID: siteID, paymentGateways: paymentGateways, using: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly Payment Gateways Entities in the current thread
     ///
-    func upsertPaymentGateways(siteID: Int64, paymentGateways: [PaymentGateway]) {
-        let derivedStorage = sharedDerivedStorage
+    func upsertPaymentGateways(siteID: Int64, paymentGateways: [PaymentGateway], using storage: StorageType) {
         for gateway in paymentGateways {
-            let storageGateway = derivedStorage.loadPaymentGateway(siteID: gateway.siteID, gatewayID: gateway.gatewayID) ??
-                derivedStorage.insertNewObject(ofType: Storage.PaymentGateway.self)
+            let storageGateway = storage.loadPaymentGateway(siteID: gateway.siteID, gatewayID: gateway.gatewayID) ??
+            storage.insertNewObject(ofType: Storage.PaymentGateway.self)
             storageGateway.update(with: gateway)
         }
 
         // Now, remove any objects that exist in storage but not in paymentGateways
-        let storedGateways = derivedStorage.loadAllPaymentGateways(siteID: siteID)
+        let storedGateways = storage.loadAllPaymentGateways(siteID: siteID)
         storedGateways.forEach { storedGateway in
             if !paymentGateways.contains(where: { $0.gatewayID == storedGateway.gatewayID }) {
-                derivedStorage.deleteObject(storedGateway)
+                storage.deleteObject(storedGateway)
             }
         }
     }

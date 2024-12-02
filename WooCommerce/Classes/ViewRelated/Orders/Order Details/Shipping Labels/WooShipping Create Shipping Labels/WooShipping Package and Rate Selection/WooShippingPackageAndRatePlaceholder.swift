@@ -87,7 +87,7 @@ extension Order {
                                   status: .pending,
                                   currency: "USD",
                                   currencySymbol: "$",
-                                  customerNote: "",
+                                  customerNote: "note",
                                   dateCreated: Date(),
                                   dateModified: Date(),
                                   datePaid: nil,

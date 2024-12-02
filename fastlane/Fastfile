@@ -25,8 +25,8 @@ SCREENSHOTS_DIR =  File.join(FASTLANE_DIR, 'screenshots')
 FASTLANE_METADATA_FOLDER = File.join(FASTLANE_DIR, 'metadata')
 WORKSPACE_PATH = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce.xcworkspace')
 BUILDKITE_RELEASE_PIPELINE = 'release-builds.yml'
-IOS_LOCALES = %w[ar de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
-SIMULATOR_VERSION = '15.5' # For screenshots
+IOS_LOCALES = %w[ar-SA de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
+SIMULATOR_VERSION = '16.0' # For screenshots
 SCREENSHOTS_SCHEME = 'WooCommerceScreenshots'
 SCREENSHOT_DEVICES = [
   'iPhone 11 Pro Max',
@@ -1083,7 +1083,7 @@ platform :ios do
       'promo_screenshot_5.txt'
     ].each do |filename|
       source = File.join(Dir.pwd, 'appstoreres', 'metadata', 'source', filename)
-      destination = File.join(en_us_path, filename)
+      destination = File.join(en_us_path, filename.gsub('promo_', 'app_store_'))
       FileUtils.cp(source, destination)
     end
 

@@ -26,8 +26,19 @@ install_swiftpm_dependencies
 echo "--- :keyboard: Connecting Hardware Keyboard"
 defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool true
 
-echo "--- 🧪 Testing"
+echo "--- 🚀 Booting Simulator"
 xcrun simctl list >> /dev/null
+xcrun simctl boot "$DEVICE"
+
+# Wait for the simulator to be fully booted
+echo "⏳ Waiting for Simulator to be Ready"
+while ! xcrun simctl list | grep "$DEVICE" | grep "Booted"; do
+  echo "Waiting for $DEVICE to boot..."
+  sleep 2
+done
+echo "✅ Simulator is Ready"
+
+echo "--- 🧪 Testing"
 rake mocks &
 set +e
 bundle exec fastlane test_without_building name:"$TEST_NAME" device:"$DEVICE"

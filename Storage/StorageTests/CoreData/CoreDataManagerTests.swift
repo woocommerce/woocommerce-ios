@@ -280,13 +280,14 @@ private extension CoreDataManagerTests {
     }
 
     func makeManager(using modelsInventory: ManagedObjectModelsInventory,
-                     deletingExistingStoreFiles deleteStoreFiles: Bool) throws -> CoreDataManager {
+                     deletingExistingStoreFiles: Bool) throws -> CoreDataManager {
+        let storeURL = CoreDataManager.storeURL(with: storageIdentifier)
+        if deletingExistingStoreFiles {
+            try deleteStoreFiles(at: storeURL)
+        }
         let manager = CoreDataManager(name: storageIdentifier,
                                       crashLogger: MockCrashLogger(),
                                       modelsInventory: modelsInventory)
-        if deleteStoreFiles {
-            try self.deleteStoreFiles(at: manager.storeURL)
-        }
         return manager
     }
 

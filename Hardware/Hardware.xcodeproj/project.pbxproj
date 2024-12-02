@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		012CB49C2CFE04E300093169 /* BuiltInCardReaderOnboardingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012CB49B2CFE04E300093169 /* BuiltInCardReaderOnboardingState.swift */; };
 		028C39E028255CFE0007BA25 /* Models+Copiable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028C39DF28255CFE0007BA25 /* Models+Copiable.generated.swift */; };
 		02B5147A28254ED300750B71 /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 02B5147928254ED300750B71 /* Codegen */; };
 		02FDAB102CEEF11F00B6C8AA /* PaymentChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FDAB0F2CEEF11D00B6C8AA /* PaymentChannel.swift */; };
@@ -159,6 +160,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		012CB49B2CFE04E300093169 /* BuiltInCardReaderOnboardingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuiltInCardReaderOnboardingState.swift; sourceTree = "<group>"; };
 		02351FF56149ADCD11338B19 /* Pods-SampleReceiptPrinter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleReceiptPrinter.release.xcconfig"; path = "Target Support Files/Pods-SampleReceiptPrinter/Pods-SampleReceiptPrinter.release.xcconfig"; sourceTree = "<group>"; };
 		028C39DF28255CFE0007BA25 /* Models+Copiable.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Models+Copiable.generated.swift"; sourceTree = "<group>"; };
 		02FDAB0F2CEEF11D00B6C8AA /* PaymentChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentChannel.swift; sourceTree = "<group>"; };
@@ -485,6 +487,7 @@
 				D80B4659260E1E160092EDC0 /* StatementDescriptor.swift */,
 				D88ECCE2262095A10094398A /* UpdateTimeEstimate.swift */,
 				E1E125AB26EB582B0068A9B0 /* CardReaderSoftwareUpdateState.swift */,
+				012CB49B2CFE04E300093169 /* BuiltInCardReaderOnboardingState.swift */,
 				D845BDC1262D98C400A3E40F /* CardBrand.swift */,
 				DAE622402B8E120F00FAE1D8 /* Wallet.swift */,
 				D845BDD9262DAADB00A3E40F /* PaymentMethod.swift */,
@@ -864,6 +867,7 @@
 				03B440AA2754DFC400759429 /* UnderlyingError.swift in Sources */,
 				E1E125AC26EB582B0068A9B0 /* CardReaderSoftwareUpdateState.swift in Sources */,
 				D88FDB3125DD21B000CB0DBD /* CardReader.swift in Sources */,
+				012CB49C2CFE04E300093169 /* BuiltInCardReaderOnboardingState.swift in Sources */,
 				039D948B2760C0660044EF38 /* NoOpCardReaderService.swift in Sources */,
 				D845BDDA262DAADB00A3E40F /* PaymentMethod.swift in Sources */,
 				D81AE85A25E6A62800D9CFD3 /* StripeCardReaderDiscoveryCache.swift in Sources */,

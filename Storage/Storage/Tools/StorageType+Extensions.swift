@@ -623,6 +623,13 @@ public extension StorageType {
         return allObjects(ofType: Coupon.self, matching: predicate, sortedBy: nil)
     }
 
+    /// Returns all stored coupons for a site
+    ///
+    func loadCoupons(siteID: Int64, with couponIDs: [Int64]) -> [Coupon] {
+        let predicate = NSPredicate(format: "siteID == %lld && couponID in %@", siteID, couponIDs)
+        return allObjects(ofType: Coupon.self, matching: predicate, sortedBy: nil)
+    }
+
     /// Retrieves the Stored CouponSearchResult Lookup.
     ///
     func loadCouponSearchResult(keyword: String) -> CouponSearchResult? {

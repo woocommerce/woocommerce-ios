@@ -1171,6 +1171,27 @@ final class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(Set([coupon1, coupon2]), Set(storedCoupons))
     }
 
+    func test_loadCoupons_by_siteID_and_couponIDs() throws {
+        // Given
+        let coupon1 = storage.insertNewObject(ofType: Coupon.self)
+        coupon1.siteID = sampleSiteID
+        coupon1.couponID = 1
+
+        let coupon2 = storage.insertNewObject(ofType: Coupon.self)
+        coupon2.siteID = sampleSiteID
+        coupon2.couponID = 2
+
+        let coupon3 = storage.insertNewObject(ofType: Coupon.self)
+        coupon3.siteID = sampleSiteID
+        coupon3.couponID = 3
+
+        // When
+        let storedCoupons = try XCTUnwrap(storage.loadCoupons(siteID: sampleSiteID, with: [1, 3]))
+
+        // Then
+        XCTAssertEqual(Set([coupon1, coupon3]), Set(storedCoupons))
+    }
+
     func test_loadCouponSearchResult_by_keyword() throws {
         // Given
         let keyword = "test"

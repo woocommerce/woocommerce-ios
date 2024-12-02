@@ -43,11 +43,11 @@ class WooCommerceScreenshots: XCTestCase {
             return false
         }
 
-        try MyStoreScreen()
-
         // My Store
-        .dismissTopBannerIfNeeded()
-        .thenTakeScreenshot(named: "order-dashboard")
+        try TabNavComponent()
+            .goToMyStoreScreen()
+            .dismissTopBannerIfNeeded()
+            .thenTakeScreenshot(named: "order-dashboard")
 
         // Orders
         try TabNavComponent()

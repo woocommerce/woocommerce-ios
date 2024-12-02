@@ -5,7 +5,7 @@ struct ReceiptEmailView: View {
     @ObservedObject var viewModel: ReceiptEmailViewModel
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 VStack(spacing: 0) {
                     Divider()

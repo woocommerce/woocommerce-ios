@@ -323,10 +323,9 @@ private extension ShippingLabelStore {
                               storageOrder: StorageOrder,
                               using storage: StorageType) {
 
+        let storedLabels = storage.loadAllShippingLabels(siteID: siteID, orderID: orderID)
         for shippingLabel in shippingLabels {
-            let storageShippingLabel = storage.loadShippingLabel(siteID: shippingLabel.siteID,
-                                                                 orderID: shippingLabel.orderID,
-                                                                 shippingLabelID: shippingLabel.shippingLabelID) ??
+            let storageShippingLabel = storedLabels.first(where: { $0.shippingLabelID == shippingLabel.shippingLabelID }) ??
             storage.insertNewObject(ofType: Storage.ShippingLabel.self)
             storageShippingLabel.update(with: shippingLabel)
             storageShippingLabel.order = storageOrder
@@ -344,7 +343,7 @@ private extension ShippingLabelStore {
 
         // Now, remove any objects that exist in storage but not in shippingLabels
         let shippingLabelIDs = shippingLabels.map(\.shippingLabelID)
-        storage.loadAllShippingLabels(siteID: siteID, orderID: orderID).filter {
+        storedLabels.filter {
             !shippingLabelIDs.contains($0.shippingLabelID)
         }.forEach {
             storage.deleteObject($0)

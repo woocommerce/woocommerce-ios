@@ -1,5 +1,5 @@
 import protocol Yosemite.POSDisplayableItem
-import typealias Yosemite.POSOrderableItem
+import protocol Yosemite.POSOrderableItem
 
 enum ItemListState: Equatable {
     case empty

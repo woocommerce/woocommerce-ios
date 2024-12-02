@@ -1,6 +1,6 @@
 import SwiftUI
 import protocol Yosemite.POSDisplayableItem
-import typealias Yosemite.POSOrderableItem
+import protocol Yosemite.POSOrderableItem
 
 struct ItemListView: View {
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize

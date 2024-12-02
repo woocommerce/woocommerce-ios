@@ -1,5 +1,5 @@
 import Foundation
-import typealias Yosemite.POSOrderableItem
+import protocol Yosemite.POSOrderableItem
 
 struct CartItem {
     let id: UUID

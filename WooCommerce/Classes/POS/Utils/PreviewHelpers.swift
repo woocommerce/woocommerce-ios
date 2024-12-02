@@ -3,7 +3,7 @@
 import Foundation
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import protocol Yosemite.POSDisplayableItem
-import typealias Yosemite.POSOrderableItem
+import protocol Yosemite.POSOrderableItem
 import protocol Yosemite.OrderSyncProductTypeProtocol
 import struct Yosemite.OrderSyncProductInput
 import enum Yosemite.ProductType

@@ -1,6 +1,6 @@
 import Foundation
 @testable import WooCommerce
-import typealias Yosemite.POSOrderableItem
+import protocol Yosemite.POSOrderableItem
 
 final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus

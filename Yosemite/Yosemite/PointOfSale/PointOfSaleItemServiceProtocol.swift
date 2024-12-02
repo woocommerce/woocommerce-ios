@@ -33,7 +33,7 @@ public protocol PointOfSaleItemOrderItemConvertable {
 }
 
 public typealias POSDisplayableItem = PointOfSaleItemDisplayable
-public typealias POSOrderableItem = POSDisplayableItem & PointOfSaleItemOrderItemConvertable
+public protocol POSOrderableItem: POSDisplayableItem & PointOfSaleItemOrderItemConvertable {}
 
 public protocol PointOfSaleItemServiceProtocol {
     func providePointOfSaleItems(pageNumber: Int) async throws -> [any POSDisplayableItem]

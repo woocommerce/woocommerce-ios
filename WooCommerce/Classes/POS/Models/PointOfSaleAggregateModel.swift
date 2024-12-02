@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-import typealias Yosemite.POSOrderableItem
+import protocol Yosemite.POSOrderableItem
 import protocol WooFoundation.Analytics
 import struct Yosemite.Order
 import struct Yosemite.OrderItem

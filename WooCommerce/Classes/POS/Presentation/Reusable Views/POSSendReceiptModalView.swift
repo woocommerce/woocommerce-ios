@@ -35,8 +35,8 @@ struct POSSendReceiptModalView: View {
                     .frame(minWidth: UIScreen.main.bounds.width / 2)
                 })
                 .padding(Constants.buttonPadding)
-                .foregroundColor(Constants.posPrimaryTextInverted)
-                .background(Constants.posOverlayFillInverted)
+                .foregroundColor(Color.posPrimaryTextInverted)
+                .background(Color.posOverlayFillInverted)
                 .cornerRadius(Constants.buttonCornerRadius)
 
                 Spacer()
@@ -80,24 +80,5 @@ private extension POSSendReceiptModalView {
         static let buttonPadding: CGFloat = 32
         static let buttonFont: POSFontStyle = .posBodyEmphasized
         static let buttonCornerRadius: CGFloat = 8
-
-        // Extract
-        static var posOverlayFillInverted: Color {
-            Color(
-                UIColor(
-                    light: .black,
-                    dark: .white
-                )
-            )
-        }
-        // Extract
-        static var posPrimaryTextInverted: Color {
-            Color(
-                UIColor(
-                    light: UIColor(.white),
-                    dark: UIColor(.black)
-                )
-            )
-        }
     }
 }

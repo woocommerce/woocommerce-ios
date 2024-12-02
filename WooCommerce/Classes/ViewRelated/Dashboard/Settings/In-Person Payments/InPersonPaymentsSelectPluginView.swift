@@ -25,8 +25,8 @@ struct InPersonPaymentsSelectPluginRow: View {
         .background(
             RoundedRectangle(cornerRadius: 8)
                 .stroke(borderColor, lineWidth: 1)
-                .background(Color(.tertiarySystemBackground))
                )
+        .contentShape(Rectangle()) // Ensures the whole HStack is tappable.
         .accessibilityElement(children: .combine)
                 .accessibilityLabel(name)
                 .accessibilityRemoveTraits([.isImage])
@@ -82,7 +82,6 @@ struct InPersonPaymentsSelectPluginView: View {
             .padding(.top, 32)
             .padding(.horizontal, 16)
             .padding(.bottom, 24)
-            .background(Color(.tertiarySystemBackground).ignoresSafeArea())
         }
     }
 

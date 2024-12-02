@@ -53,7 +53,7 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     }
 
     private var packageDataFromCurrentData: WooShippingPackageDataRepresentable {
-        return WooShippingPackageData(id: UUID().uuidString,
+        return WooShippingPackageData(id: packageTemplateName,
                                       name: packageTemplateName,
                                       length: fieldValues[.length] ?? "",
                                       width: fieldValues[.width] ?? "",

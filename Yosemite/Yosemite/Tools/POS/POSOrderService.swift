@@ -29,7 +29,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
 
     private let siteID: Int64
     private let ordersRemote: POSOrdersRemoteProtocol
-    private let receiptsRemote: ReceiptRemote
+    private let receiptsRemote: POSReceiptsRemoteProtocol
 
     // MARK: - Initialization
 
@@ -38,14 +38,16 @@ public final class POSOrderService: POSOrderServiceProtocol {
             DDLogError("⛔️ Could not create POSOrderService due to not finding credentials")
             return nil
         }
+        let network = AlamofireNetwork(credentials: credentials)
         self.init(siteID: siteID,
-                  ordersRemote: OrdersRemote(network: AlamofireNetwork(credentials: credentials)))
+                  ordersRemote: OrdersRemote(network: network),
+                  receiptsRemote: ReceiptRemote(network: network))
     }
 
-    public init(siteID: Int64, network: Network, ordersRemote: POSOrdersRemoteProtocol) {
+    public init(siteID: Int64, ordersRemote: POSOrdersRemoteProtocol, receiptsRemote: POSReceiptsRemoteProtocol) {
         self.siteID = siteID
         self.ordersRemote = ordersRemote
-        self.receiptsRemote = ReceiptRemote(network: network)
+        self.receiptsRemote = receiptsRemote
     }
 
     // MARK: - Protocol conformance
@@ -69,8 +71,8 @@ public final class POSOrderService: POSOrderServiceProtocol {
         let updatedBillingAddress = order.billingAddress?.copy(email: toEmailAddress)
         let updatedOrder = order.copy(billingAddress: updatedBillingAddress)
 
-        let _ = try await ordersRemote.updatePOSOrder(siteID: siteID, order: updatedOrder, fields: [.billingAddress])        
-        try await receiptsRemote.sendReceipt(siteID: siteID, orderID: order.orderID)
+        let _ = try await ordersRemote.updatePOSOrder(siteID: siteID, order: updatedOrder, fields: [.billingAddress])
+        try await receiptsRemote.sendPOSReceipt(siteID: siteID, orderID: order.orderID)
     }
 }
 

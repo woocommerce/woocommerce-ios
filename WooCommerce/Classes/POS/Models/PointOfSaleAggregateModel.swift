@@ -198,15 +198,12 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     func sendReceipt(to emailAddress: String) async {
-        guard let order else {
+        guard let order = orderController.order else {
             return
         }
-        do {
-            // TODO: Add eligiblity for correct WC and WCPay versions
-            try await orderService.sendOrderReceipt(order: order, toEmailAddress: emailAddress)
-        } catch {
-            debugPrint(error)
-        }
+        // TODO:
+        // Add eligiblity for correct WC and WCPay versions
+        await orderController.sendOrderReceipt(order: order, toEmailAddress: emailAddress)
     }
 
     @MainActor

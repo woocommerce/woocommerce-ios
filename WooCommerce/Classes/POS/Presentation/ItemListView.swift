@@ -124,7 +124,7 @@ private extension ItemListView {
     }
 
     @ViewBuilder
-    func listView(_ items: [any POSDisplayableItem]) -> some View {
+    func listView(_ items: [POSDisplayableItem]) -> some View {
         ScrollView {
             VStack {
                 if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
@@ -158,8 +158,8 @@ private extension ItemListView {
     }
 
     @ViewBuilder
-    func listRow(item: any POSDisplayableItem) -> some View {
-        if let item = item as? any POSOrderableItem {
+    func listRow(item: POSDisplayableItem) -> some View {
+        if let item = item as? POSOrderableItem {
             Button(action: {
                 posModel.addToCart(item)
             }, label: {

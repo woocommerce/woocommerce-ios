@@ -14,7 +14,7 @@ protocol PointOfSaleItemsControllerProtocol {
 class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     private(set) var itemListStatePublisher: any Publisher<ItemListState, Never>
     private var itemListStateSubject: PassthroughSubject<ItemListState, Never> = .init()
-    private var allItems: [any POSDisplayableItem] = []
+    private var allItems: [POSDisplayableItem] = []
     private var currentPage: Int = Constants.initialPage
     private var mightHaveMorePages: Bool = true
     private let itemProvider: PointOfSaleItemServiceProtocol

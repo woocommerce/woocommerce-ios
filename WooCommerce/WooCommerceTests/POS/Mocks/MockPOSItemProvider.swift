@@ -4,14 +4,14 @@ import protocol Yosemite.POSDisplayableItem
 @testable import struct Yosemite.POSProduct
 
 final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
-    var items: [any POSDisplayableItem] = []
+    var items: [POSDisplayableItem] = []
     var shouldThrowError = false
     var shouldReturnZeroItems = false
     var shouldSimulateTwoPages = false
     private var isPageOutOfRange = false
 
     var spyLastRequestedPageNumber: Int?
-    func providePointOfSaleItems(pageNumber: Int) async throws -> [any POSDisplayableItem] {
+    func providePointOfSaleItems(pageNumber: Int) async throws -> [POSDisplayableItem] {
         if isPageOutOfRange {
             throw MockError.pageOutOfRange
         }
@@ -40,7 +40,7 @@ final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
 }
 
 extension MockPointOfSaleItemService {
-    static func makeInitialItems() -> [any POSDisplayableItem] {
+    static func makeInitialItems() -> [POSDisplayableItem] {
         let fakeUUID1 = UUID(uuidString: "DC55E3B9-9D83-4C07-82A7-4C300A50E84E") ?? UUID()
         let fakeUUID2 = UUID(uuidString: "DC55E3B8-9D82-4C06-82A5-4C300A50E84A") ?? UUID()
 
@@ -56,7 +56,7 @@ extension MockPointOfSaleItemService {
         return [product1, product2]
     }
 
-    static func makeSecondPageItems() -> [any POSDisplayableItem] {
+    static func makeSecondPageItems() -> [POSDisplayableItem] {
         let fakeUUID3 = UUID(uuidString: "DC55E3B9-9D83-4C07-82A7-4C300A50E86D") ?? UUID()
         let fakeUUID4 = UUID(uuidString: "DC55E3B8-9D82-4C06-82A5-4C300A50E86F") ?? UUID()
 

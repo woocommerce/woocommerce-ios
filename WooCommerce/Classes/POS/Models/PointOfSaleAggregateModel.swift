@@ -26,7 +26,7 @@ protocol PointOfSaleAggregateModelProtocol {
     func reload() async
 
     var cart: [CartItem] { get }
-    func addToCart(_ item: any POSOrderableItem)
+    func addToCart(_ item: POSOrderableItem)
     func remove(cartItem: CartItem)
     func removeAllItemsFromCart()
     func addMoreToCart()
@@ -106,7 +106,7 @@ extension PointOfSaleAggregateModel {
 // MARK: - Cart
 
 extension PointOfSaleAggregateModel {
-    func addToCart(_ item: any POSOrderableItem) {
+    func addToCart(_ item: POSOrderableItem) {
         cart.insert(CartItem(id: UUID(), item: item, quantity: 1), at: 0)
         Task { @MainActor in
             analytics.track(.pointOfSaleAddItemToCart)

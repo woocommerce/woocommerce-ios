@@ -4,8 +4,8 @@ import protocol Yosemite.POSOrderableItem
 enum ItemListState: Equatable {
     case empty
     case initialLoading
-    case loading(_ currentItems: [any POSDisplayableItem])
-    case loaded(_ items: [any POSDisplayableItem])
+    case loading(_ currentItems: [POSDisplayableItem])
+    case loaded(_ items: [POSDisplayableItem])
     case error(PointOfSaleErrorState)
 
     var isLoadingAfterInitialLoad: Bool {

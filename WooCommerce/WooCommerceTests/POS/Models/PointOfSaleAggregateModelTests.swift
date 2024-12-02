@@ -479,7 +479,7 @@ struct PointOfSaleAggregateModelTests {
     }
 }
 
-private func makeItem(name: String = "") -> any POSOrderableItem {
+private func makeItem(name: String = "") -> POSOrderableItem {
     return MockPOSItem(name: name, formattedPrice: "")
 }
 

@@ -1,23 +1,23 @@
 /// POSDisplayableItem contains only the properties required to show an item in the Point Of Sale.
 /// The item may only be visible, not neccesarily something you can add to the cart.
 /// This protocol will become less specific in future; e.g. not all items in the POS necessarily have a price.
-public protocol POSDisplayableItem: Identifiable {
+public protocol POSDisplayableItem {
     var id: UUID { get }
     var name: String { get }
     var formattedPrice: String { get }
     var productImageSource: String? { get }
 
-    func isEqual(to other: any POSDisplayableItem) -> Bool
+    func isEqual(to other: POSDisplayableItem) -> Bool
 }
 
 public extension POSDisplayableItem where Self: Equatable {
-    func isEqual(to other: any POSDisplayableItem) -> Bool {
+    func isEqual(to other: POSDisplayableItem) -> Bool {
         guard let other = other as? Self else { return false }
         return self == other
     }
 }
 
-public extension Sequence where Element == any POSDisplayableItem {
+public extension Sequence where Element == POSDisplayableItem {
     func isEqual(to other: any Sequence<Element>) -> Bool {
         let lhsArray = Array(self)
         let rhsArray = Array(other)
@@ -42,13 +42,13 @@ public protocol PointOfSaleItemOrderItemConvertable {
 }
 
 public protocol PointOfSaleItemServiceProtocol {
-    func providePointOfSaleItems(pageNumber: Int) async throws -> [any POSDisplayableItem]
+    func providePointOfSaleItems(pageNumber: Int) async throws -> [POSDisplayableItem]
 }
 
 // Default implementation for convenience, so we do not need to pass the first page explicitly
 // if no pageNumber is given.
 extension PointOfSaleItemServiceProtocol {
-    func providePointOfSaleItems(pageNumber: Int = 1) async throws -> [any POSDisplayableItem] {
+    func providePointOfSaleItems(pageNumber: Int = 1) async throws -> [POSDisplayableItem] {
         try await providePointOfSaleItems(pageNumber: pageNumber)
     }
 }

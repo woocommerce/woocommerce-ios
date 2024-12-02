@@ -6,7 +6,7 @@ import protocol Yosemite.POSDisplayableItem
 final class MockPointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     var itemListStatePublisher: any Publisher<WooCommerce.ItemListState, Never> = Empty()
 
-    var allItems: [any POSDisplayableItem] = []
+    var allItems: [POSDisplayableItem] = []
 
     func loadInitialItems() async { }
 

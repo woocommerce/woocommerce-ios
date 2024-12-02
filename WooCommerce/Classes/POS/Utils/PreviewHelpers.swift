@@ -36,15 +36,15 @@ struct POSProductPreview: POSOrderableItem, Equatable {
 }
 
 final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
-    func providePointOfSaleItems(pageNumber: Int) async throws -> [any POSDisplayableItem] {
+    func providePointOfSaleItems(pageNumber: Int) async throws -> [POSDisplayableItem] {
         []
     }
 
-    func providePointOfSaleItems() -> [any POSDisplayableItem] {
+    func providePointOfSaleItems() -> [POSDisplayableItem] {
         return mockItems
     }
 
-    func providePointOfSaleItem() -> any POSOrderableItem {
+    func providePointOfSaleItem() -> POSOrderableItem {
         POSProductPreview(id: UUID(),
                           name: "Product 1",
                           formattedPrice: "$1.00")
@@ -55,7 +55,7 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
     @Published var itemListState: ItemListState = .initialLoading
     var itemListStatePublisher: any Publisher<ItemListState, Never> { $itemListState }
 
-    var allItems: [any POSDisplayableItem] = []
+    var allItems: [POSDisplayableItem] = []
 
     func loadInitialItems() async {
         itemListState = .loaded(mockItems)
@@ -70,7 +70,7 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
     }
 }
 
-private var mockItems: [any POSDisplayableItem] {
+private var mockItems: [POSDisplayableItem] {
     return [
         POSProductPreview(id: UUID(), name: "Product 1", formattedPrice: "$1.00"),
         POSProductPreview(id: UUID(), name: "Product 2", formattedPrice: "$2.00"),

@@ -129,6 +129,8 @@ public final class CardPresentPaymentStore: Store {
             cancelRefund(onCompletion: completion)
         case .observeCardReaderUpdateState(onCompletion: let completion):
             observeCardReaderUpdateState(onCompletion: completion)
+        case .observeBuiltInCardReaderOnboardingState(let completion):
+            observeBuiltInCardReaderOnboardingState(onCompletion: completion)
         case .startCardReaderUpdate:
             startCardReaderUpdate()
         case .reset:
@@ -398,6 +400,10 @@ private extension CardPresentPaymentStore {
 
     func observeCardReaderUpdateState(onCompletion: (AnyPublisher<CardReaderSoftwareUpdateState, Never>) -> Void) {
         onCompletion(cardReaderService.softwareUpdateEvents)
+    }
+
+    func observeBuiltInCardReaderOnboardingState(onCompletion: @escaping (AnyPublisher<BuiltInCardReaderOnboardingState, Never>) -> Void) {
+        onCompletion(cardReaderService.builtInCardReaderOnboardingEvents)
     }
 
     func startCardReaderUpdate() {

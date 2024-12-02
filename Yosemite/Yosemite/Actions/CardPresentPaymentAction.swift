@@ -82,6 +82,9 @@ public enum CardPresentPaymentAction: Action {
     /// Check the state of available software updates.
     case observeCardReaderUpdateState(onCompletion: (AnyPublisher<CardReaderSoftwareUpdateState, Never>) -> Void)
 
+    /// Check the state of the built-in card reader onboarding
+    case observeBuiltInCardReaderOnboardingState(onCompletion: (AnyPublisher<BuiltInCardReaderOnboardingState, Never>) -> Void)
+
     /// Update card reader firmware.
     case startCardReaderUpdate
 

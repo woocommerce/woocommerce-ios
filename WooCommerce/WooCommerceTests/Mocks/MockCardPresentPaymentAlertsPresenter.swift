@@ -39,6 +39,10 @@ final class MockCardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPrese
     func dismiss() {
         // no-op
     }
+
+    func presentMerchantEducation(completion: @escaping () -> Void) {
+        completion()
+    }
 }
 
 enum MockCardPresentPaymentAlertsPresenterMode {

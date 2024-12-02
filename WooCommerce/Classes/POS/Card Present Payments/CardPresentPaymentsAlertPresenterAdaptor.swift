@@ -98,5 +98,7 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
         latestReaderConnectionHandler = nil
     }
 
-    func presentMerchantEducation(completion: @escaping () -> Void) {}
+    func presentMerchantEducation(completion: @escaping () -> Void) {
+        completion()
+    }
 }

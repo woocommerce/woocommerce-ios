@@ -46,5 +46,7 @@ final class SilenceablePassthroughCardPresentPaymentAlertsPresenter<AlertPresent
         alertSubscription?.cancel()
     }
 
-    func presentMerchantEducation(completion: @escaping () -> Void) {}
+    func presentMerchantEducation(completion: @escaping () -> Void) {
+        completion()
+    }
 }

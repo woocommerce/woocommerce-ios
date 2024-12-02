@@ -1,5 +1,4 @@
 import Foundation
-import protocol Yosemite.POSItem
 
 final class CartViewHelper {
     func itemsInCartLabel(for itemsCount: Int) -> String? {

@@ -7,6 +7,7 @@ import class WidgetKit.WidgetCenter
 import protocol WooFoundation.Analytics
 import protocol Yosemite.StoresManager
 import struct Yosemite.Site
+import TipKit
 
 import CocoaLumberjack
 import KeychainAccess
@@ -119,6 +120,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupNoticePresenter()
         setupUniversalLinkRouter()
         disableAnimationsIfNeeded()
+        setupTipsIfSupported()
 
         // Don't track startup waiting time if user starts logged out
         if !ServiceLocator.stores.isAuthenticated {
@@ -494,6 +496,20 @@ private extension AppDelegate {
             ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .appLink))
         default:
             break
+        }
+    }
+
+    /// Configures TipKit if supported (iOS 17.0+).
+    ///
+    func setupTipsIfSupported() {
+        guard #available(iOS 17.0, *) else {
+            return
+        }
+
+        do {
+            try Tips.configure()
+        } catch {
+            DDLogError("Error configuring TipKit: \(error)")
         }
     }
 }

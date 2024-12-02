@@ -330,7 +330,8 @@ extension UnderlyingError: LocalizedError {
         case .bluetoothDenied:
             return NSLocalizedString(
                 "hardware.cardReader.underlyingError.bluetoothDenied",
-                value: "This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this.",
+                value: "This app needs permission to access Bluetooth to connect to your card reader. " +
+                       "You can grant permission in the system's Settings app, in the Woo section.",
                 comment: "Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions"
             )
         case .readerSoftwareUpdateFailedBatteryLow:

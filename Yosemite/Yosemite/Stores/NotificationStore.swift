@@ -301,11 +301,7 @@ extension NotificationStore {
     /// Runs a No-OP in the Shared Derived Storage. On completion, the callback will be executed on the main thread.
     ///
     func performSharedDerivedStorageNoOp(onCompletion: @escaping () -> Void) {
-        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
-
-        derivedStorage.perform {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ _ in }, completion: onCompletion, on: .main)
     }
 
     /// Updates the deletion "status" for the specified Notification. The callback happens on the Main Thread.

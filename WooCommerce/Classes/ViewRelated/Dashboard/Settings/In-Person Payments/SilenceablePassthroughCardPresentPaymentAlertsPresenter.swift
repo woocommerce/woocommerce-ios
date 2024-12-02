@@ -45,4 +45,6 @@ final class SilenceablePassthroughCardPresentPaymentAlertsPresenter<AlertPresent
         alertsPresenter = nil
         alertSubscription?.cancel()
     }
+
+    func presentMerchantEducation(completion: @escaping () -> Void) {}
 }

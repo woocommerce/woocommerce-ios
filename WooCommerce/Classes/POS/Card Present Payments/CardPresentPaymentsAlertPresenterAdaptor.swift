@@ -97,4 +97,6 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
     func reset() {
         latestReaderConnectionHandler = nil
     }
+
+    func presentMerchantEducation(completion: @escaping () -> Void) {}
 }

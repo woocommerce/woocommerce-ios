@@ -6,6 +6,7 @@ protocol CardPresentPaymentAlertsPresenting<AlertDetails> {
     associatedtype AlertDetails
     func present(viewModel: AlertDetails)
     func presentWCSettingsWebView(adminURL: URL, completion: @escaping () -> Void)
+    func presentMerchantEducation(completion: @escaping () -> Void)
     func foundSeveralReaders(readerIDs: [String],
                              connect: @escaping (String) -> Void,
                              cancelSearch: @escaping () -> Void)
@@ -142,5 +143,15 @@ final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresentin
     func dismiss() {
         dismissCommonAndPresent(animated: true)
         dismissSeveralFoundAndPresent(animated: true)
+    }
+
+    func presentMerchantEducation(completion: @escaping () -> Void) {
+        let viewController = TapToPayEducationViewViewHostingController(onDismiss: completion)
+
+        if let modalController {
+            modalController.present(viewController, animated: true)
+        } else {
+            rootViewController?.present(viewController, animated: true)
+        }
     }
 }

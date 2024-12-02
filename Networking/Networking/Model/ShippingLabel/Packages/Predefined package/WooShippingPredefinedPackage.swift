@@ -62,7 +62,21 @@ extension WooShippingPredefinedPackage: Decodable {
         let id = try container.decode(String.self, forKey: .id)
         let name = try container.decode(String.self, forKey: .name)
         let isLetter = try container.decodeIfPresent(Bool.self, forKey: .isLetter) ?? false
-        let dimensions = try container.decode(String.self, forKey: .dimensions)
+        var dimensions: String = ""
+        if let dimensionsString = try? container.decodeIfPresent(String.self, forKey: .dimensions) {
+            dimensions = dimensionsString
+        }
+        else if let dimensionsDict = try? container.decodeIfPresent([String: String].self, forKey: .dimensions) {
+            if let dimensionsOuter = dimensionsDict["outer"] {
+                dimensions = dimensionsOuter
+            }
+            else if let dimensionsInner = dimensionsDict["inner"] {
+                dimensions = dimensionsInner
+            }
+        }
+        else if let outerDimensionsString = try? container.decodeIfPresent(String.self, forKey: .outerDimensions) {
+            dimensions = outerDimensionsString
+        }
         let groupId = try container.decode(String.self, forKey: .groupId)
         var boxWeight: String = ""
         // Looks like some endpoints have boxWeight as String and some as Double
@@ -86,7 +100,10 @@ extension WooShippingPredefinedPackage: Decodable {
         case name
         case isLetter = "is_letter"
         case dimensions
+        case outer
+        case inner
         case groupId = "group_id"
         case boxWeight = "box_weight"
+        case outerDimensions = "outer_dimensions"
     }
 }

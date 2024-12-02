@@ -5,6 +5,7 @@ struct WooShippingPackageAndRatePlaceholder: View {
     let onSelectPackage: (WooShippingPackageDataRepresentable) -> Void
 
     @State private var showAddPackage: Bool = false
+    @ObservedObject var viewModel: WooShippingCreateLabelsViewModel
 
     var body: some View {
         VStack(spacing: .zero) {
@@ -28,7 +29,7 @@ struct WooShippingPackageAndRatePlaceholder: View {
         .padding(Layout.padding)
         .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.border), lineWidth: Layout.borderLineWidth, dashed: true)
         .sheet(isPresented: $showAddPackage) {
-            WooShippingAddPackageView { packageData in
+            WooShippingAddPackageView(createLabelsViewModel: viewModel) { packageData in
                 onSelectPackage(packageData)
                 showAddPackage = false
             }
@@ -61,7 +62,56 @@ private extension WooShippingPackageAndRatePlaceholder {
     }
 }
 
+import struct Yosemite.Order
+import Fakes
+
 #Preview {
-    WooShippingPackageAndRatePlaceholder(onSelectPackage: { _ in })
+    WooShippingPackageAndRatePlaceholder(onSelectPackage: { _ in },
+                                         viewModel: WooShippingCreateLabelsViewModel(order: Order.sampleOrder))
         .padding()
 }
+
+// MARK: - Sample Data
+
+#if DEBUG
+extension Order {
+    static let sampleOrder = Order(siteID: 0,
+                                  orderID: 0,
+                                  parentID: 0,
+                                  customerID: 0,
+                                  orderKey: "1",
+                                  isEditable: false,
+                                  needsPayment: true,
+                                  needsProcessing: true,
+                                  number: "1",
+                                  status: .pending,
+                                  currency: "USD",
+                                  currencySymbol: "$",
+                                  customerNote: "",
+                                  dateCreated: Date(),
+                                  dateModified: Date(),
+                                  datePaid: nil,
+                                  discountTotal: "",
+                                  discountTax: "",
+                                  shippingTotal: "",
+                                  shippingTax: "",
+                                  total: "1.00",
+                                  totalTax: "",
+                                  paymentMethodID: "stripe",
+                                  paymentMethodTitle: "Credit Card (Stripe)",
+                                  paymentURL: nil,
+                                  chargeID: nil,
+                                  items: [],
+                                  billingAddress: nil,
+                                  shippingAddress: nil,
+                                  shippingLines: [],
+                                  coupons: [],
+                                  refunds: [],
+                                  fees: [],
+                                  taxes: [],
+                                  customFields: [],
+                                  renewalSubscriptionID: nil,
+                                  appliedGiftCards: [],
+                                  attributionInfo: nil)
+}
+#endif

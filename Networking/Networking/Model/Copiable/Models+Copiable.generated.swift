@@ -4122,7 +4122,7 @@ extension Networking.WooShippingPackagesResponse {
         storeOptions: CopiableProp<ShippingLabelStoreOptions> = .copy,
         customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
         savedPredefinedPackages: CopiableProp<[WooShippingSavedPredefinedPackage]> = .copy,
-        allPredefinedOptions: CopiableProp<[WooShippingPredefinedOption]> = .copy
+        allPredefinedOptions: CopiableProp<[WooShippingCarrierPredefinedOptions]> = .copy
     ) -> Networking.WooShippingPackagesResponse {
         let storeOptions = storeOptions ?? self.storeOptions
         let customPackages = customPackages ?? self.customPackages

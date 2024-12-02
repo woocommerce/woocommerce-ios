@@ -61,19 +61,19 @@ private extension POSSendReceiptModalView {
         static let title = NSLocalizedString(
             "pointOfSale.sendreceipt.modal.title",
             value: "Receipt",
-            comment: "")
+            comment: "Button title for the receipt button")
         static let subtitle = NSLocalizedString(
             "pointOfSale.sendreceipt.modal.subtitle",
             value: "Email",
-            comment: "")
+            comment: "Subtitle for the view where an email address should be entered when sending receipts")
         static let buttonTitle = NSLocalizedString(
             "pointOfSale.sendreceipt.modal.button.title",
             value: "Send",
-            comment: "")
+            comment: "Button title for sending a receipt")
         static let textfieldPlaceholder = NSLocalizedString(
             "pointOfSale.sendreceipt.modal.textfield.placeholder",
             value: "Enter an email",
-            comment: "")
+            comment: "Placeholder for the view where an email address should be entered when sending receipts")
     }
     struct Constants {
         static let buttonSpacing: CGFloat = 12

@@ -292,22 +292,17 @@ private extension ShippingLabelStore {
                                                      shippingLabels: [ShippingLabel],
                                                      settings: ShippingLabelSettings,
                                                      onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
+        storageManager.performAndSave ({ [weak self] storage in
             guard let self = self else { return }
-            guard let order = derivedStorage.loadOrder(siteID: siteID, orderID: orderID) else {
+            guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
                 return
             }
             guard shippingLabels.isEmpty == false else {
                 return
             }
-            self.upsertShippingLabels(siteID: siteID, orderID: orderID, shippingLabels: shippingLabels, storageOrder: order)
-            self.upsertShippingLabelSettings(siteID: siteID, orderID: orderID, settings: settings, storageOrder: order)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+            self.upsertShippingLabels(siteID: siteID, orderID: orderID, shippingLabels: shippingLabels, storageOrder: order, using: storage)
+            self.upsertShippingLabelSettings(siteID: siteID, orderID: orderID, settings: settings, storageOrder: order, using: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates/inserts the specified readonly shipping label refund for a shipping label *in a background thread*.
@@ -333,34 +328,37 @@ private extension ShippingLabelStore {
     }
 
     /// Updates/inserts the specified readonly ShippingLabel entities in the current thread.
-    func upsertShippingLabels(siteID: Int64, orderID: Int64, shippingLabels: [ShippingLabel], storageOrder: StorageOrder) {
-        let derivedStorage = sharedDerivedStorage
+    func upsertShippingLabels(siteID: Int64,
+                              orderID: Int64,
+                              shippingLabels: [ShippingLabel],
+                              storageOrder: StorageOrder,
+                              using storage: StorageType) {
 
         for shippingLabel in shippingLabels {
-            let storageShippingLabel = derivedStorage.loadShippingLabel(siteID: shippingLabel.siteID,
-                                                                        orderID: shippingLabel.orderID,
-                                                                        shippingLabelID: shippingLabel.shippingLabelID) ??
-                derivedStorage.insertNewObject(ofType: Storage.ShippingLabel.self)
+            let storageShippingLabel = storage.loadShippingLabel(siteID: shippingLabel.siteID,
+                                                                 orderID: shippingLabel.orderID,
+                                                                 shippingLabelID: shippingLabel.shippingLabelID) ??
+            storage.insertNewObject(ofType: Storage.ShippingLabel.self)
             storageShippingLabel.update(with: shippingLabel)
             storageShippingLabel.order = storageOrder
 
             update(shippingLabel: storageShippingLabel, withRefund: shippingLabel.refund)
 
-            let originAddress = storageShippingLabel.originAddress ?? derivedStorage.insertNewObject(ofType: Storage.ShippingLabelAddress.self)
+            let originAddress = storageShippingLabel.originAddress ?? storage.insertNewObject(ofType: Storage.ShippingLabelAddress.self)
             originAddress.update(with: shippingLabel.originAddress)
             storageShippingLabel.originAddress = originAddress
 
-            let destinationAddress = storageShippingLabel.destinationAddress ?? derivedStorage.insertNewObject(ofType: Storage.ShippingLabelAddress.self)
+            let destinationAddress = storageShippingLabel.destinationAddress ?? storage.insertNewObject(ofType: Storage.ShippingLabelAddress.self)
             destinationAddress.update(with: shippingLabel.destinationAddress)
             storageShippingLabel.destinationAddress = destinationAddress
         }
 
         // Now, remove any objects that exist in storage but not in shippingLabels
         let shippingLabelIDs = shippingLabels.map(\.shippingLabelID)
-        derivedStorage.loadAllShippingLabels(siteID: siteID, orderID: orderID).filter {
+        storage.loadAllShippingLabels(siteID: siteID, orderID: orderID).filter {
             !shippingLabelIDs.contains($0.shippingLabelID)
         }.forEach {
-            derivedStorage.deleteObject($0)
+            storage.deleteObject($0)
         }
     }
 
@@ -376,10 +374,9 @@ private extension ShippingLabelStore {
     }
 
     /// Updates/inserts the specified readonly ShippingLabelSettings entity in the current thread.
-    func upsertShippingLabelSettings(siteID: Int64, orderID: Int64, settings: ShippingLabelSettings, storageOrder: StorageOrder) {
-        let derivedStorage = sharedDerivedStorage
-        let storageSettings = derivedStorage.loadShippingLabelSettings(siteID: siteID, orderID: orderID) ??
-            derivedStorage.insertNewObject(ofType: Storage.ShippingLabelSettings.self)
+    func upsertShippingLabelSettings(siteID: Int64, orderID: Int64, settings: ShippingLabelSettings, storageOrder: StorageOrder, using storage: StorageType) {
+        let storageSettings = storage.loadShippingLabelSettings(siteID: siteID, orderID: orderID) ??
+        storage.insertNewObject(ofType: Storage.ShippingLabelSettings.self)
         storageSettings.update(with: settings)
         storageSettings.order = storageOrder
     }

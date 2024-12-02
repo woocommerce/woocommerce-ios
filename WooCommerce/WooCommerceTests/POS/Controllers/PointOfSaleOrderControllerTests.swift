@@ -1,5 +1,6 @@
 import Testing
 import Combine
+import Foundation
 
 @testable import WooCommerce
 import struct Yosemite.Order
@@ -23,11 +24,11 @@ struct PointOfSaleOrderControllerTests {
         #expect(mockOrderService.syncOrderWasCalled == false)
     }
 
-    @Test func syncOrder_with_unchanged_items_doesnt_call_orderService() async throws {
+    @Test func syncOrder_with_cart_matching_order_doesnt_call_orderService() async throws {
         // Given
-        let cartItem = makeItem()
-        let orderItem = OrderItem.fake().copy(productID: cartItem.item.productID, quantity: 1)
+        let orderItem = OrderItem.fake().copy(quantity: 1)
         let fakeOrder = Order.fake().copy(items: [orderItem])
+        let cartItem = makeItem(orderItemsToMatch: [orderItem])
         mockOrderService.orderToReturn = fakeOrder
         await sut.syncOrder(for: [cartItem], retryHandler: {})
         mockOrderService.syncOrderWasCalled = false
@@ -43,14 +44,14 @@ struct PointOfSaleOrderControllerTests {
         // Given
         mockOrderService.simulateSyncing = true
         Task {
-            await sut.syncOrder(for: [makeItem(productID: 1, quantity: 1)], retryHandler: {})
+            await sut.syncOrder(for: [makeItem(quantity: 1)], retryHandler: {})
         }
         try await Task.sleep(nanoseconds: UInt64(100 * Double(NSEC_PER_MSEC)))
         mockOrderService.syncOrderWasCalled = false
 
         // When
-        await sut.syncOrder(for: [makeItem(productID: 1, quantity: 2),
-                                  makeItem(productID: 5, quantity: 5)],
+        await sut.syncOrder(for: [makeItem(quantity: 2),
+                                  makeItem(quantity: 5)],
                             retryHandler: {})
 
         // Then
@@ -69,13 +70,17 @@ struct PointOfSaleOrderControllerTests {
 
     @Test func syncOrder_with_changes_from_previous_order_calls_orderService() async throws {
         // Given
-        let cartItem = makeItem(productID: 5, quantity: 1)
-        let orderItem = OrderItem.fake().copy(productID: 5, quantity: 1)
+        let cartItem = makeItem(quantity: 1)
+        let orderItem = OrderItem.fake().copy(quantity: 1)
         let fakeOrder = Order.fake().copy(items: [orderItem])
         mockOrderService.orderToReturn = fakeOrder
 
+        let futureOrderItem = OrderItem.fake().copy(quantity: 5)
+
         // When
-        await sut.syncOrder(for: [cartItem, makeItem(productID: 9, quantity: 1)], retryHandler: {})
+        await sut.syncOrder(for: [cartItem,
+                                  makeItem(quantity: 5, orderItemsToMatch: [futureOrderItem])],
+                            retryHandler: {})
 
         // Then
         #expect(mockOrderService.syncOrderWasCalled)
@@ -139,30 +144,13 @@ struct PointOfSaleOrderControllerTests {
     }
 }
 
-import Foundation
-import protocol Yosemite.POSItem
-import enum Yosemite.ProductType
-
-private struct MockPOSItem: POSItem {
-    var name: String
-    var itemID: UUID = UUID()
-    var productID: Int64
-    var price: String
-    var formattedPrice: String
-    var itemCategories: [String] = []
-    var productImageSource: String? = nil
-    var productType: Yosemite.ProductType = .simple
-}
-
 private func makeItem(name: String = "",
-                      productID: Int64 = 100,
-                      price: String = "10.00",
-                      formattedPrice: String = "$10.00",
-                      quantity: Int = 1) -> CartItem {
+                      formattedPrice: String = "",
+                      quantity: Int = 1,
+                      orderItemsToMatch: [OrderItem] = []) -> CartItem {
     return CartItem(id: UUID(),
                     item: MockPOSItem(name: name,
-                                      productID: productID,
-                                      price: price,
-                                      formattedPrice: formattedPrice),
+                                      formattedPrice: formattedPrice,
+                                      orderItemsToMatch: orderItemsToMatch),
                     quantity: quantity)
 }

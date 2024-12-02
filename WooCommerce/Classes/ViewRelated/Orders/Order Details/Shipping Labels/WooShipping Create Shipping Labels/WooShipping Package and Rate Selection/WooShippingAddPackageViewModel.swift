@@ -180,6 +180,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         // delete the package locally and on backend
         customSavedPackages.removeAll { package in package.id == packageToRemove.id }
         predefinedSavedPackages.removeAll { package in package.id == packageToRemove.id }
+        starredCarriersPackages.remove(packageToRemove.id)
 
         if self.selectedSavedPackageId == packageToRemove.id {
             self.selectedSavedPackageId = nil

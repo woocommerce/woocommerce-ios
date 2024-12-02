@@ -127,10 +127,8 @@ struct TopTabView<Content: View>: View {
                                         })
                                 }
                                 .onAppear {
-                                    withAnimation {
-                                        scrollViewProxy.scrollTo(selectedTab, anchor: .center)
-                                        underlineOffset = calculateOffset(index: selectedTab)
-                                    }
+                                    scrollViewProxy.scrollTo(selectedTab, anchor: .center)
+                                    underlineOffset = calculateOffset(index: selectedTab)
                                 }
                             }
                             .padding(.horizontal, tabPadding)
@@ -143,8 +141,15 @@ struct TopTabView<Content: View>: View {
                                 alignment: .bottomLeading
                             )
                             .onChange(of: selectedTab, perform: { newSelectedTab in
+                                let animate = selectedTabIndex != newSelectedTab
                                 selectedTabIndex = newSelectedTab
-                                withAnimation {
+                                if animate {
+                                    withAnimation {
+                                        scrollViewProxy.scrollTo(newSelectedTab, anchor: .center)
+                                        underlineOffset = calculateOffset(index: newSelectedTab)
+                                    }
+                                }
+                                else {
                                     scrollViewProxy.scrollTo(newSelectedTab, anchor: .center)
                                     underlineOffset = calculateOffset(index: newSelectedTab)
                                 }
@@ -222,6 +227,9 @@ struct TopTabView<Content: View>: View {
                 }
                 .frame(height: contentSize.height)
             }
+        }
+        .onAppear() {
+            selectedTab = selectedTabIndex ?? 0
         }
     }
 

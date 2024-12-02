@@ -159,14 +159,13 @@ private extension ItemListView {
 
     @ViewBuilder
     func listRow(item: any POSDisplayableItem) -> some View {
-        switch item {
-        case is any POSOrderableItem:
+        if let item = item as? any POSOrderableItem {
             Button(action: {
-                posModel.addToCart(item as! (any POSOrderableItem))
+                posModel.addToCart(item)
             }, label: {
                 ItemCardView(item: item)
             })
-        default:
+        } else {
             ItemCardView(item: item)
         }
     }

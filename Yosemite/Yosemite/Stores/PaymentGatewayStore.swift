@@ -8,12 +8,6 @@ public final class PaymentGatewayStore: Store {
 
     private let remote: PaymentGatewayRemote
 
-    /// Shared private StorageType for use during then entire Orders sync process
-    ///
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = PaymentGatewayRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)

@@ -51,7 +51,10 @@ struct WooCarrierPackagesView: View {
                                         }
                                     }
                                 },
-                                starred: viewModel.isPackageStarred(package)
+                                starred: viewModel.isPackageStarred(package),
+                                starTipTitle: (packageGroups.first?.id == packageGroup.id && packageGroup.packages.first?.id == package.id)
+                                                ? Localization.starTipTitle : nil,
+                                starTipMessage: Localization.starTipMessage
                             )
                             .alignmentGuide(.listRowSeparatorLeading) { _ in
                                 return 16
@@ -127,5 +130,16 @@ struct WooCarrierPackagesSelectionView: View {
         guard let selectedPackage = viewModel.selectedPackage else { return }
 
         addPackageAction(selectedPackage)
+    }
+}
+
+private extension WooCarrierPackagesView {
+    enum Localization {
+        static let starTipTitle = NSLocalizedString("wooShipping.createLabels.packageOption.tip.title",
+                                                    value: "Save frequently used packages",
+                                                    comment: "Title of the tip for starring packages in the Woo Shipping label creation flow.")
+        static let starTipMessage = NSLocalizedString("wooShipping.createLabels.packageOption.tip.message",
+                                                      value: "Tap the star to add or remove a package from the Saved tab.",
+                                                      comment: "Message for the tip for starring packages in the Woo Shipping label creation flow.")
     }
 }

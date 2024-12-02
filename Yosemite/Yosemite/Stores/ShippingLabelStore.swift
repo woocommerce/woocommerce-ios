@@ -7,12 +7,6 @@ import Storage
 public final class ShippingLabelStore: Store {
     private let remote: ShippingLabelRemoteProtocol
 
-    /// Shared private StorageType for use during then entire Orders sync process
-    ///
-    private lazy var sharedDerivedStorage: StorageType = {
-        storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ShippingLabelRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)

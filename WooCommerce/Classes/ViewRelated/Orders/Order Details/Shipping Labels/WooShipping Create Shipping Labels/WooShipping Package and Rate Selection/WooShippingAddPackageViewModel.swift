@@ -46,6 +46,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     @Published var selectedCarriersPackageId: String? = nil
     @Published var starredCarriersPackages: Set<String> = []
     @Published private(set) var carrierTabs: [TopTabItem<EmptyView>] = []
+    private var allPredefinedOptions: [WooShippingCarrierPredefinedOptions] = []
     var selectedCarrierTab: WooShippingCarrierPackages? {
         guard let selectedCarriersTabIndex else { return nil }
 
@@ -110,6 +111,8 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         self.carrierTabs = carrierTabs
         self.storeOptions = packagesResult.storeOptions
 
+        self.allPredefinedOptions = packagesResult.allPredefinedOptions
+
         predefinedSavedPackages.forEach { package in
             starredCarriersPackages.insert(package.id)
         }
@@ -131,11 +134,33 @@ final class WooShippingAddPackageViewModel: ObservableObject {
             let createAction = WooShippingAction.createPackage(siteID: siteID, customPackage: nil, predefinedOption: predefined) { result in
                 switch result {
                 case .success(let response):
-                    // TODO check predefined from response.predefinedOptions and use them to reinstate
-
                     guard let storeOptions = self.storeOptions else {
                         return
                     }
+                    var jointIDs: [String] = []
+                    for option in response.predefinedOptions {
+                        for packageID in option.predefinedPackageIDs {
+                            jointIDs.append("\(option.id)-\(packageID)")
+                        }
+                    }
+
+                    var allPredefinedSaved: [any WooShippingPackageDataRepresentable] = []
+                    for carrier in self.allPredefinedOptions {
+                        let carrierID = carrier.carrierID
+                        for option in carrier.predefinedOptions {
+                            for package in option.predefinedPackages {
+                                let jointID = "\(carrierID)-\(package.id)"
+                                if jointIDs.contains(jointID) {
+                                    allPredefinedSaved.append(package.toPackageData(storeOptions: storeOptions,
+                                                                                    groupTitle: option.title,
+                                                                                    sourceID: option.providerID))
+                                }
+                            }
+                        }
+                    }
+
+                    self.predefinedSavedPackages = allPredefinedSaved
+
                     self.customSavedPackages = response.customPackages.map {
                         return $0.toPackageData(storeOptions: storeOptions)
                     }

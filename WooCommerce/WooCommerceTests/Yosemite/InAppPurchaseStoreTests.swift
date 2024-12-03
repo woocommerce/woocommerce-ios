@@ -140,7 +140,6 @@ final class InAppPurchaseStoreTests: XCTestCase {
         XCTAssertNotNil(transaction.appAccountToken)
     }
 
-    @available(iOS 16.0, *)
     func test_purchase_product_ensure_xcode_environment() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "iap/orders", filename: "iap-order-create")

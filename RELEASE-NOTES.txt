@@ -9,6 +9,7 @@
 - [*] Payments onboarding: the custom background color of the "Choose your Payment Provider" UI when both WooPayments and Stripe Extension are available was removed to enable use cases with different container background colors. [https://github.com/woocommerce/woocommerce-ios/pull/14546]
 - [*] Media: Media upload will work for sites without XML-RPC. [https://github.com/woocommerce/woocommerce-ios/pull/14537]
 - [Internal] Updated CoreDataManager to be thread-safe [https://github.com/woocommerce/woocommerce-ios/pull/14534]
+- [Internal] Core Data: Migrate storage usage in SiteStore [https://github.com/woocommerce/woocommerce-ios/pull/14548]
 - [Internal] Updated storage usage in CouponStore [https://github.com/woocommerce/woocommerce-ios/pull/14530]
 - [Internal] Update storage usage for BlazeStore [https://github.com/woocommerce/woocommerce-ios/pull/14532]
 - [Internal] Updated storage usage in ProductShippingClassStore [https://github.com/woocommerce/woocommerce-ios/pull/14520]

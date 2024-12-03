@@ -52,16 +52,7 @@ public final class ReceiptRemote: Remote {
 
 extension ReceiptRemote: POSReceiptsRemoteProtocol {
     public func sendPOSReceipt(siteID: Int64, orderID: Int64) async throws {
-        return try await withCheckedThrowingContinuation { continuation in
-            Task {
-                do {
-                    try await sendReceipt(siteID: siteID, orderID: orderID)
-                    continuation.resume(returning: ())
-                } catch {
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
+        try await sendReceipt(siteID: siteID, orderID: orderID)
     }
 }
 

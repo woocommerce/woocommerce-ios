@@ -51,7 +51,7 @@ struct WooCarrierPackagesView: View {
                     HStack {
                         Text(packageGroup.name.uppercased())
                             .foregroundColor(.secondary)
-                            .fontWeight(.regular)
+                            .captionStyle()
                             .multilineTextAlignment(.leading)
                         Spacer()
                     }

@@ -66,7 +66,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
 
     public func sendOrderReceipt(order: Order, toEmailAddress: String) async throws {
         guard order.billingAddress?.email == nil || order.billingAddress?.email == "" else {
-            throw NSError(domain: "Email already set", code: 0)
+            throw POSOrderServiceError.emailAlreadySet
         }
         let updatedBillingAddress = order.billingAddress?.copy(email: toEmailAddress)
         let updatedOrder = order.copy(billingAddress: updatedBillingAddress)
@@ -149,5 +149,11 @@ private extension POSOrderService {
         var productID: Int64
         var productType: ProductType = .simple
         var bundledItems: [ProductBundleItem] = []
+    }
+}
+
+private extension POSOrderService {
+    enum POSOrderServiceError: Error {
+        case emailAlreadySet
     }
 }

@@ -48,7 +48,8 @@ struct WooShippingCreateLabelsView: View {
 
                     if viewModel.canViewLabel {
                         EmptyView()
-                    } else if let shippingService = viewModel.shippingService {
+                    } else if viewModel.selectedPackage != nil,
+                              let shippingService = viewModel.shippingService {
                         // TODO: Display package section
                         // Package heading and edit button
                         // Selected package details
@@ -56,7 +57,7 @@ struct WooShippingCreateLabelsView: View {
                         WooShippingServiceView(viewModel: shippingService)
                             .padding(.horizontal, -16)
                     } else {
-                        WooShippingPackageAndRatePlaceholder()
+                        WooShippingPackageAndRatePlaceholder(onSelectPackage: viewModel.selectPackage, viewModel: viewModel)
                     }
                 }
                 .padding(16)
@@ -150,6 +151,10 @@ struct WooShippingCreateLabelsView: View {
                     }
                 }
             }
+        }
+        .onAppear() {
+            guard viewModel.storeOptions == nil else { return }
+            viewModel.loadStoreOptions()
         }
     }
 }

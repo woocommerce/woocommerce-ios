@@ -26,9 +26,8 @@ class WooCommerceScreenshots: XCTestCase {
         app.launchArguments.append("mocked-network-layer")
         app.launchArguments.append("-simulate-stripe-card-reader")
         app.launchArguments.append("disable-animations")
-        app.launchArguments.append("-mocks-port")
         app.launchArguments.append("-mocks-push-notification")
-        app.launchArguments.append("\(server.listenAddress.port)")
+        app.launchArguments.append(contentsOf: ["-mocks-port", "\(server.listenAddress.port)"])
 
         app.launch()
 
@@ -42,13 +41,12 @@ class WooCommerceScreenshots: XCTestCase {
 
             return false
         }
-        app.tap()
-
-        try MyStoreScreen()
 
         // My Store
-        .dismissTopBannerIfNeeded()
-        .thenTakeScreenshot(named: "order-dashboard")
+        try TabNavComponent()
+            .goToMyStoreScreen()
+            .dismissTopBannerIfNeeded()
+            .thenTakeScreenshot(named: "order-dashboard")
 
         // Orders
         try TabNavComponent()

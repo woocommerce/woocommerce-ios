@@ -805,7 +805,7 @@ extension UnderlyingError: LocalizedError {
         case .readerSoftwareUpdateFailedExpiredUpdate:
             return NSLocalizedString(
                 "hardware.cardReader.underlyingError.readerSoftwareUpdateFailedExpiredUpdate",
-                value: "Updating the reader software failed because the update has expired. " + 
+                value: "Updating the reader software failed because the update has expired. " +
                 "Please disconnect and reconnect from the reader to retrieve a new update.",
                 comment: "Error message when the reader software update fails due to an expired update."
             )
@@ -849,7 +849,7 @@ extension UnderlyingError: LocalizedError {
         case .internetConnectTimeOut:
             return NSLocalizedString(
                 "hardware.cardReader.underlyingError.internetConnectTimeOut",
-                value: "Connecting to reader over the internet timed out. " + 
+                value: "Connecting to reader over the internet timed out. " +
                 "Make sure your device and reader are on the same Wifi network and your reader is connected to the Wifi network.",
                 comment: "Error message when the internet connection operation timed out."
             )
@@ -893,7 +893,7 @@ extension UnderlyingError: LocalizedError {
         case .refundFailed:
             return NSLocalizedString(
                 "hardware.cardReader.underlyingError.refundFailed",
-                value: "The refund failed. The customer’s bank or card issuer was unable to process it correctly " + 
+                value: "The refund failed. The customer’s bank or card issuer was unable to process it correctly " +
                 "(e.g., a closed bank account or a problem with the card).",
                 comment: "Error message when the refund operation failed."
             )

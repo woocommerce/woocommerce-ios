@@ -56,7 +56,6 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
         loginFacade.delegate = self
     }
 
-    @available(iOS 16, *)
     func loginWithSecurityKey() {
         guard let twoStepNonce = loginFields.nonceInfo?.nonceWebauthn else {
             return handleError(.webAuthNonceNotFound)
@@ -130,8 +129,7 @@ extension WPCom2FALoginViewModel: ASAuthorizationControllerDelegate, ASAuthoriza
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
 
         // Validate necessary data
-        guard #available(iOS 16, *),
-              let credential = authorization.credential as? ASAuthorizationPlatformPublicKeyCredentialAssertion,
+        guard let credential = authorization.credential as? ASAuthorizationPlatformPublicKeyCredentialAssertion,
               let challengeInfo = loginFields.webauthnChallengeInfo,
               let clientDataJson = extractClientData(from: credential, challengeInfo: challengeInfo) else {
             return handleError(.webAuthChallengeRequestFailed)
@@ -152,7 +150,6 @@ extension WPCom2FALoginViewModel: ASAuthorizationControllerDelegate, ASAuthoriza
     }
 
     // Some password managers(like 1P) don't deliver `rawClientDataJSON`. In those cases we need to assemble it manually.
-    @available(iOS 16, *)
     func extractClientData(from credential: ASAuthorizationPlatformPublicKeyCredentialAssertion, challengeInfo: WebauthnChallengeInfo) -> Data? {
 
         if credential.rawClientDataJSON.count > 0 {
@@ -177,7 +174,6 @@ extension WPCom2FALoginViewModel: ASAuthorizationControllerDelegate, ASAuthoriza
 // MARK: - Helpers
 //
 private extension WPCom2FALoginViewModel {
-    @available(iOS 16, *)
     func signChallenge(_ challengeInfo: WebauthnChallengeInfo) {
 
         loginFields.nonceInfo?.updateNonce(with: challengeInfo.twoStepNonce)

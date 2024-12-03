@@ -80,7 +80,11 @@ extension OrderNoteStore {
     ///
     func upsertStoredOrderNoteInBackground(readOnlyOrderNote: Networking.OrderNote, orderID: Int64, siteID: Int64, onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
-            self?.saveNote(storage, readOnlyOrderNote, orderID, siteID: siteID)
+            guard let storageOrder = storage.loadOrder(siteID: siteID, orderID: orderID) else {
+                DDLogWarn("⚠️ Could not persist the OrderNote with ID \(readOnlyOrderNote.noteID) — unable to retrieve stored order with ID \(orderID).")
+                return
+            }
+            self?.saveNote(storage, readOnlyOrderNote, storageOrder, siteID: siteID)
         }, completion: onCompletion, on: .main)
     }
 
@@ -88,8 +92,12 @@ extension OrderNoteStore {
     ///
     func upsertStoredOrderNotesInBackground(readOnlyOrderNotes: [Networking.OrderNote], orderID: Int64, siteID: Int64, onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
+            guard let storageOrder = storage.loadOrder(siteID: siteID, orderID: orderID) else {
+                DDLogWarn("⚠️ Could not persist the OrderNotes — unable to retrieve stored order with ID \(orderID).")
+                return
+            }
             for readOnlyOrderNote in readOnlyOrderNotes {
-                self?.saveNote(storage, readOnlyOrderNote, orderID, siteID: siteID)
+                self?.saveNote(storage, readOnlyOrderNote, storageOrder, siteID: siteID)
             }
         }, completion: onCompletion, on: .main)
     }
@@ -97,14 +105,9 @@ extension OrderNoteStore {
     /// Using the provided StorageType, update or insert a Storage.OrderNote using the provided ReadOnly
     /// OrderNote. This func does *not* persist any unsaved changes to storage.
     ///
-    private func saveNote(_ storage: StorageType, _ readOnlyOrderNote: OrderNote, _ orderID: Int64, siteID: Int64) {
-        if let existingStorageNote = storage.loadOrderNote(noteID: readOnlyOrderNote.noteID) {
+    private func saveNote(_ storage: StorageType, _ readOnlyOrderNote: OrderNote, _ storageOrder: StorageOrder, siteID: Int64) {
+        if let existingStorageNote = storageOrder.notes?.first(where: { $0.noteID == readOnlyOrderNote.noteID }) {
             existingStorageNote.update(with: readOnlyOrderNote)
-            return
-        }
-
-        guard let storageOrder = storage.loadOrder(siteID: siteID, orderID: orderID) else {
-            DDLogWarn("⚠️ Could not persist the OrderNote with ID \(readOnlyOrderNote.noteID) — unable to retrieve stored order with ID \(orderID).")
             return
         }
 

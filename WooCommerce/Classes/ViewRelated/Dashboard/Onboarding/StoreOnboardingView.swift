@@ -28,11 +28,6 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
         self.site = site
         super.init(rootView: StoreOnboardingView(viewModel: viewModel,
                                                  shareFeedbackAction: shareFeedbackAction))
-        if #unavailable(iOS 16.0) {
-            viewModel.onStateChange = { [weak self] in
-                self?.view.invalidateIntrinsicContentSize()
-            }
-        }
 
         rootView.taskTapped = { [weak self] task in
             guard let self,

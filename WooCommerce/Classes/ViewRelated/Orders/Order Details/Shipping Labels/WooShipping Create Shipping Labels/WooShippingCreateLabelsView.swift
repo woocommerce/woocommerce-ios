@@ -57,7 +57,7 @@ struct WooShippingCreateLabelsView: View {
                         WooShippingServiceView(viewModel: shippingService)
                             .padding(.horizontal, -16)
                     } else {
-                        WooShippingPackageAndRatePlaceholder(onSelectPackage: viewModel.selectPackage)
+                        WooShippingPackageAndRatePlaceholder(onSelectPackage: viewModel.selectPackage, viewModel: viewModel)
                     }
                 }
                 .padding(16)
@@ -151,6 +151,10 @@ struct WooShippingCreateLabelsView: View {
                     }
                 }
             }
+        }
+        .onAppear() {
+            guard viewModel.storeOptions == nil else { return }
+            viewModel.loadStoreOptions()
         }
     }
 }

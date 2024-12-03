@@ -44,7 +44,7 @@ public struct OrderSyncProductInput {
         public func hash(into hasher: inout Hasher) {
             switch self {
             case .product(let product):
-                hasher.combine("productType-product-")
+                hasher.combine("productType-product")
                 hasher.combine(product)
             case .variation(let variation):
                 hasher.combine("productType-variation")

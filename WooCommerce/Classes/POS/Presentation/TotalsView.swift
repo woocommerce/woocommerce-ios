@@ -78,8 +78,9 @@ struct TotalsView: View {
         }
         .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
         .geometryGroupIfSupported()
-        .sheet(isPresented: $isShowingSendReceiptModal) {
-            POSSendReceiptModalView()
+        .posModal(isPresented: $isShowingSendReceiptModal) {
+            POSSendReceiptModalView(isPresented: $isShowingSendReceiptModal)
+                .posModalSizing()
         }
     }
 

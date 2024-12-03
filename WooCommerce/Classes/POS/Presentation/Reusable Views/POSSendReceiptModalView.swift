@@ -2,7 +2,7 @@ import SwiftUI
 
 struct POSSendReceiptModalView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
-    @Environment(\.dismiss) private var dismiss
+    @Binding var isPresented: Bool
 
     @State private var textFieldInput: String = ""
 
@@ -32,7 +32,6 @@ struct POSSendReceiptModalView: View {
                         Text(Localization.buttonTitle)
                             .font(Constants.buttonFont)
                     }
-                    .frame(minWidth: UIScreen.main.bounds.width / 2)
                 })
                 .padding(Constants.buttonPadding)
                 .foregroundColor(Color.posPrimaryTextInverted)
@@ -43,16 +42,10 @@ struct POSSendReceiptModalView: View {
             }
             .padding(.top)
             .padding()
-
-            Button(action: {
-                dismiss()
-            }) {
-                Image(systemName: "xmark")
-                    .foregroundColor(.gray)
-                    .font(.title2)
-                    .padding()
-            }
         }
+        .posModalCloseButton(action: {
+            isPresented = false
+        })
     }
 }
 

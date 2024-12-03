@@ -51,6 +51,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     @Published private(set) var cart: [CartItem] = []
 
     @Published private(set) var orderState: PointOfSaleOrderState = .idle
+    private var internalOrderState: PointOfSaleInternalOrderState = .idle
 
     private let itemsController: PointOfSaleItemsControllerProtocol
 
@@ -77,6 +78,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
         publishOrderState()
+        observeInternalOrderState()
         setupReaderReconnectionObservation()
     }
 }
@@ -198,12 +200,11 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     func sendReceipt(to emailAddress: String) async {
-        guard let order = orderController.order else {
-            return
-        }
         // TODO:
         // Add eligiblity for correct WC and WCPay versions
-        await orderController.sendOrderReceipt(order: order, toEmailAddress: emailAddress)
+        if case let .loaded(_, order) = internalOrderState {
+            await orderController.sendOrderReceipt(order: order, toEmailAddress: emailAddress)
+        }
     }
 
     @MainActor
@@ -369,6 +370,14 @@ extension PointOfSaleAggregateModel {
         orderController.orderStatePublisher
             .map { $0.externalState }
             .assign(to: &$orderState)
+    }
+
+    private func observeInternalOrderState() {
+        orderController.orderStatePublisher
+            .sink { [weak self] state in
+                self?.internalOrderState = state
+            }
+            .store(in: &cancellables)
     }
 }
 

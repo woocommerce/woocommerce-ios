@@ -159,32 +159,22 @@ private extension NotificationStore {
     func updateReadStatus(for noteIDs: [Int64], read: Bool, onCompletion: @escaping (Error?) -> Void) {
         /// Optimistically Update
         ///
-        updateLocalNoteReadStatus(for: noteIDs, read: read)
+        updateLocalNoteReadStatus(for: noteIDs, read: read) { [weak self] in
 
-        /// On error we'll just mark the Note for Refresh
-        ///
-        remote.updateReadStatus(noteIDs: noteIDs, read: read) { [weak self] error in
-            guard let self = self else {
-                return
-            }
+            /// On error we'll just mark the Note for Refresh
+            ///
+            self?.remote.updateReadStatus(noteIDs: noteIDs, read: read) { [weak self] error in
+                guard let self else {
+                    return onCompletion(error)
+                }
 
-            guard let error = error else {
-
-                /// What is this about:
-                /// Notice that there are few conditions in which the Network Request's callback may run *before*
-                /// the Optimisitc Update, such as in Unit Tests.
-                /// This may cause the Callback to run before the Read Flag has been toggled, which isn't cool.
-                /// *FORGIVE ME*, this is a workaround: the onCompletion closure must run after a No-OP in the derived
-                /// storage.
-                ///
-                self.performSharedDerivedStorageNoOp {
+                if let error {
+                    invalidateCache(for: noteIDs) {
+                        onCompletion(error)
+                    }
+                } else {
                     onCompletion(nil)
                 }
-                return
-            }
-
-            self.invalidateCache(for: noteIDs) {
-                onCompletion(error)
             }
         }
     }
@@ -250,7 +240,7 @@ extension NotificationStore {
 
     /// Updates the read status for the specified Notifications. The callback happens on the Main Thread.
     ///
-    func updateLocalNoteReadStatus(for noteIDs: [Int64], read: Bool, onCompletion: (() -> Void)? = nil) {
+    func updateLocalNoteReadStatus(for noteIDs: [Int64], read: Bool, onCompletion: @escaping (() -> Void)) {
         storageManager.performAndSave({ storage in
             let notifications = noteIDs.compactMap { storage.loadNotification(noteID: $0) }
             for note in notifications {
@@ -290,12 +280,6 @@ extension NotificationStore {
                 note.noteHash = Int64.min
             }
         }, completion: onCompletion, on: .main)
-    }
-
-    /// Runs a No-OP in the Shared Derived Storage. On completion, the callback will be executed on the main thread.
-    ///
-    func performSharedDerivedStorageNoOp(onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ _ in }, completion: onCompletion, on: .main)
     }
 
     /// Updates the deletion "status" for the specified Notification. The callback happens on the Main Thread.

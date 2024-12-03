@@ -739,212 +739,368 @@ extension UnderlyingError: LocalizedError {
                                      "the currency for payment is not supported for Tap to Pay on iPhone.")
 
         case .cancelFailedAlreadyCompleted:
-            return NSLocalizedString("The operation could not be canceled because it was already completed.",
-                                     comment: "Error message when an operation cannot be canceled because it is already completed.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.cancelFailedAlreadyCompleted",
+                value: "The operation could not be canceled because it was already completed.",
+                comment: "Error message when an operation cannot be canceled because it is already completed."
+            )
 
         case .nilPaymentIntent:
-            return NSLocalizedString("The payment intent is missing.",
-                                     comment: "Error message when the payment intent is missing.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.nilPaymentIntent",
+                value: "The payment intent is missing.",
+                comment: "Error message when the payment intent is missing."
+            )
 
         case .nilSetupIntent:
-            return NSLocalizedString("The setup intent is missing.",
-                                     comment: "Error message when the setup intent is missing.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.nilSetupIntent",
+                value: "The setup intent is missing.",
+                comment: "Error message when the setup intent is missing."
+            )
 
         case .nilRefundPaymentMethod:
-            return NSLocalizedString("The refund payment method is missing.",
-                                     comment: "Error message when the refund payment method is missing.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.nilRefundPaymentMethod",
+                value: "The refund payment method is missing.",
+                comment: "Error message when the refund payment method is missing."
+            )
 
         case .invalidRefundParameters:
-            return NSLocalizedString("The refund parameters are invalid.",
-                                     comment: "Error message when the refund parameters are invalid.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.invalidRefundParameters",
+                value: "The refund parameters are invalid.",
+                comment: "Error message when the refund parameters are invalid."
+            )
 
         case .invalidClientSecret:
-            return NSLocalizedString("The client secret is invalid.",
-                                     comment: "Error message when the client secret is invalid.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.invalidClientSecret",
+                value: "The client secret is invalid.",
+                comment: "Error message when the client secret is invalid."
+            )
 
         case .invalidDiscoveryConfiguration:
-            return NSLocalizedString("The discovery configuration is invalid.",
-                                     comment: "Error message when the discovery configuration is invalid.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.invalidDiscoveryConfiguration",
+                value: "The discovery configuration is invalid.",
+                comment: "Error message when the discovery configuration is invalid."
+            )
 
         case .invalidReaderForUpdate:
-            return NSLocalizedString("The reader for update is invalid.",
-                                     comment: "Error message when the reader for update is invalid.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.invalidReaderForUpdate",
+                value: "The reader for update is invalid.",
+                comment: "Error message when the reader for update is invalid."
+            )
 
         case .featureNotAvailable:
-            return NSLocalizedString("The feature is unavailable.",
-                                     comment: "Error message when a feature is unavailable.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.featureNotAvailable",
+                value: "The feature is unavailable.",
+                comment: "Error message when a feature is unavailable."
+            )
 
         case .bluetoothConnectionInvalidLocationIdParameter:
-            return NSLocalizedString("The Bluetooth connection has an invalid location ID.",
-                                     comment: "Error message when the Bluetooth connection has an invalid location ID parameter.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.bluetoothConnectionInvalidLocationIdParameter",
+                value: "The Bluetooth connection has an invalid location ID.",
+                comment: "Error message when the Bluetooth connection has an invalid location ID parameter."
+            )
 
         case .invalidRequiredParameter:
-            return NSLocalizedString("A required parameter is invalid.",
-                                     comment: "Error message when a required parameter is invalid.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.invalidRequiredParameter",
+                value: "A required parameter is invalid.",
+                comment: "Error message when a required parameter is invalid."
+            )
 
         case .forwardingTestModePaymentInLiveMode:
-            return NSLocalizedString("Forwarding a test mode payment in live mode is prohibited.",
-                                     comment: "Error message when forwarding a test mode payment in live mode is prohibited.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.forwardingTestModePaymentInLiveMode",
+                value: "Forwarding a test mode payment in live mode is prohibited.",
+                comment: "Error message when forwarding a test mode payment in live mode is prohibited."
+            )
 
         case .forwardingLiveModePaymentInTestMode:
-            return NSLocalizedString("Forwarding a live mode payment in test mode is prohibited.",
-                                     comment: "Error message when forwarding a live mode payment in test mode is prohibited.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.forwardingLiveModePaymentInTestMode",
+                value: "Forwarding a live mode payment in test mode is prohibited.",
+                comment: "Error message when forwarding a live mode payment in test mode is prohibited."
+            )
 
         case .readerConnectionConfigurationInvalid:
-            return NSLocalizedString("The reader connection configuration is invalid.",
-                                     comment: "Error message when the reader connection configuration is invalid.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.readerConnectionConfigurationInvalid",
+                value: "The reader connection configuration is invalid.",
+                comment: "Error message when the reader connection configuration is invalid."
+            )
 
         case .readerTippingParameterInvalid:
-            return NSLocalizedString("The reader tipping parameter is invalid.",
-                                     comment: "Error message when the reader tipping parameter is invalid.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.readerTippingParameterInvalid",
+                value: "The reader tipping parameter is invalid.",
+                comment: "Error message when the reader tipping parameter is invalid."
+            )
 
         case .invalidLocationIdParameter:
-            return NSLocalizedString("The location ID is invalid.",
-                                     comment: "Error message when the location ID parameter is invalid.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.invalidLocationIdParameter",
+                value: "The location ID is invalid.",
+                comment: "Error message when the location ID parameter is invalid."
+            )
 
         case .readerSoftwareUpdateFailedExpiredUpdate:
-            return NSLocalizedString("The reader software update failed due to an expired update.",
-                                     comment: "Error message when the reader software update fails due to an expired update.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.readerSoftwareUpdateFailedExpiredUpdate",
+                value: "The reader software update failed due to an expired update.",
+                comment: "Error message when the reader software update fails due to an expired update."
+            )
 
         case .readerConnectionNotAvailableOffline:
-            return NSLocalizedString("The reader connection is unavailable offline.",
-                                     comment: "Error message when the reader connection is unavailable offline.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.readerConnectionNotAvailableOffline",
+                value: "The reader connection is unavailable offline.",
+                comment: "Error message when the reader connection is unavailable offline."
+            )
 
         case .readerConnectionOfflineLocationMismatch:
-            return NSLocalizedString("Reader connection failed because the reader was most recently connected to a different location while online.",
-                                     comment: "Error message when there is a location mismatch in the reader connection.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.readerConnectionOfflineLocationMismatch",
+                value: "Reader connection failed because the reader was most recently connected to a different location while online.",
+                comment: "Error message when there is a location mismatch in the reader connection."
+            )
 
         case .readerConnectionOfflineNeedsUpdate:
-            return NSLocalizedString("The offline reader connection needs an update.",
-                                     comment: "Error message when the offline reader connection needs an update.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.readerConnectionOfflineNeedsUpdate",
+                value: "The offline reader connection needs an update.",
+                comment: "Error message when the offline reader connection needs an update."
+            )
 
         case .amountExceedsMaxOfflineAmount:
-            return NSLocalizedString("The amount exceeds the maximum allowed for offline transactions.",
-                                     comment: "Error message when the amount exceeds the maximum allowed for offline transactions.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.amountExceedsMaxOfflineAmount",
+                value: "The amount exceeds the maximum allowed for offline transactions.",
+                comment: "Error message when the amount exceeds the maximum allowed for offline transactions."
+            )
 
         case .invalidOfflineCurrency:
-            return NSLocalizedString("The offline currency is invalid.",
-                                     comment: "Error message when the offline currency is invalid.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.invalidOfflineCurrency",
+                value: "The offline currency is invalid.",
+                comment: "Error message when the offline currency is invalid."
+            )
 
         case .missingEMVData:
-            return NSLocalizedString("EMV data is missing.",
-                                     comment: "Error message when EMV data is missing.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.missingEMVData",
+                value: "EMV data is missing.",
+                comment: "Error message when EMV data is missing."
+            )
 
         case .commandNotAllowed:
-            return NSLocalizedString("The command is not allowed.",
-                                     comment: "Error message when the command is not allowed.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.commandNotAllowed",
+                value: "The command is not allowed.",
+                comment: "Error message when the command is not allowed."
+            )
 
         case .collectInputsTimedOut:
-            return NSLocalizedString("Collect inputs operation timed out.",
-                                     comment: "Error message when the collect inputs operation timed out.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.collectInputsTimedOut",
+                value: "Collect inputs operation timed out.",
+                comment: "Error message when the collect inputs operation timed out."
+            )
 
         case .usbDiscoveryTimedOut:
-            return NSLocalizedString("USB discovery operation timed out.",
-                                     comment: "Error message when the USB discovery operation timed out.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.usbDiscoveryTimedOut",
+                value: "USB discovery operation timed out.",
+                comment: "Error message when the USB discovery operation timed out."
+            )
 
         case .bluetoothPeerRemovedPairingInformation:
-            return NSLocalizedString("The Bluetooth peer removed pairing information.",
-                                     comment: "Error message when the Bluetooth peer removed pairing information.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.bluetoothPeerRemovedPairingInformation",
+                value: "The Bluetooth peer removed pairing information.",
+                comment: "Error message when the Bluetooth peer removed pairing information."
+            )
 
         case .bluetoothAlreadyPairedWithAnotherDevice:
-            return NSLocalizedString("Bluetooth is already paired with another device.",
-                                     comment: "Error message when Bluetooth is already paired with another device.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.bluetoothAlreadyPairedWithAnotherDevice",
+                value: "Bluetooth is already paired with another device.",
+                comment: "Error message when Bluetooth is already paired with another device."
+            )
 
         case .unknownReaderIpAddress:
-            return NSLocalizedString("The reader's IP address is unknown.",
-                                     comment: "Error message when the reader's IP address is unknown.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.unknownReaderIpAddress",
+                value: "The reader's IP address is unknown.",
+                comment: "Error message when the reader's IP address is unknown."
+            )
 
         case .internetConnectTimeOut:
-            return NSLocalizedString("Internet connection operation timed out.",
-                                     comment: "Error message when the internet connection operation timed out.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.internetConnectTimeOut",
+                value: "Internet connection operation timed out.",
+                comment: "Error message when the internet connection operation timed out."
+            )
 
         case .bluetoothReconnectStarted:
-            return NSLocalizedString("Bluetooth reconnect has started.",
-                                     comment: "Error message when Bluetooth reconnect has started.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.bluetoothReconnectStarted",
+                value: "Bluetooth reconnect has started.",
+                comment: "Error message when Bluetooth reconnect has started."
+            )
 
         case .appleBuiltInReaderAccountDeactivated:
-            return NSLocalizedString("The Apple built-in reader account is deactivated.",
-                                     comment: "Error message when the Apple built-in reader account is deactivated.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.appleBuiltInReaderAccountDeactivated",
+                value: "The Apple built-in reader account is deactivated.",
+                comment: "Error message when the Apple built-in reader account is deactivated."
+            )
 
         case .readerMissingEncryptionKeys:
-            return NSLocalizedString("The reader is missing encryption keys.",
-                                     comment: "Error message when the reader is missing encryption keys.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.readerMissingEncryptionKeys",
+                value: "The reader is missing encryption keys.",
+                comment: "Error message when the reader is missing encryption keys."
+            )
 
         case .usbDisconnected:
-            return NSLocalizedString("USB connection was disconnected.",
-                                     comment: "Error message when the USB connection was disconnected.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.usbDisconnected",
+                value: "USB connection was disconnected.",
+                comment: "Error message when the USB connection was disconnected."
+            )
 
         case .unexpectedReaderError:
-            return NSLocalizedString("An unexpected error occurred with the reader.",
-                                     comment: "Error message when an unexpected error occurs with the reader.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.unexpectedReaderError",
+                value: "An unexpected error occurred with the reader.",
+                comment: "Error message when an unexpected error occurs with the reader."
+            )
 
         case .encryptionKeyFailure:
-            return NSLocalizedString("There is a failure with the encryption key.",
-                                     comment: "Error message when there is a failure with the encryption key.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.encryptionKeyFailure",
+                value: "There is a failure with the encryption key.",
+                comment: "Error message when there is a failure with the encryption key."
+            )
 
         case .encryptionKeyStillInitializing:
-            return NSLocalizedString("The encryption key is still initializing.",
-                                     comment: "Error message when the encryption key is still initializing.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.encryptionKeyStillInitializing",
+                value: "The encryption key is still initializing.",
+                comment: "Error message when the encryption key is still initializing."
+            )
 
         case .collectInputsApplicationError:
-            return NSLocalizedString("There is an application error with collect inputs.",
-                                     comment: "Error message when there is an application error with collect inputs.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.collectInputsApplicationError",
+                value: "There is an application error with collect inputs.",
+                comment: "Error message when there is an application error with collect inputs."
+            )
 
         case .commandRequiresCardholderConsent:
-            return NSLocalizedString("The command requires cardholder consent.",
-                                     comment: "Error message when the command requires cardholder consent.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.commandRequiresCardholderConsent",
+                value: "The command requires cardholder consent.",
+                comment: "Error message when the command requires cardholder consent."
+            )
 
         case .refundFailed:
-            return NSLocalizedString("The refund operation failed.",
-                                     comment: "Error message when the refund operation failed.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.refundFailed",
+                value: "The refund operation failed.",
+                comment: "Error message when the refund operation failed."
+            )
 
         case .cardSwipeNotAvailable:
-            return NSLocalizedString("Card swipe functionality is unavailable.",
-                                     comment: "Error message when card swipe functionality is unavailable.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.cardSwipeNotAvailable",
+                value: "Card swipe functionality is unavailable.",
+                comment: "Error message when card swipe functionality is unavailable."
+            )
 
         case .interacNotSupportedOffline:
-            return NSLocalizedString("Interac is not supported in offline mode.",
-                                     comment: "Error message when Interac is not supported in offline mode.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.interacNotSupportedOffline",
+                value: "Interac is not supported in offline mode.",
+                comment: "Error message when Interac is not supported in offline mode."
+            )
 
         case .offlineAndCardExpired:
-            return NSLocalizedString("The card is expired and offline mode is active.",
-                                     comment: "Error message when the card is expired and offline mode is active.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.offlineAndCardExpired",
+                value: "The card is expired and offline mode is active.",
+                comment: "Error message when the card is expired and offline mode is active."
+            )
 
         case .offlineTransactionDeclined:
-            return NSLocalizedString("The offline transaction was declined.",
-                                     comment: "Error message when the offline transaction was declined.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.offlineTransactionDeclined",
+                value: "The offline transaction was declined.",
+                comment: "Error message when the offline transaction was declined."
+            )
 
         case .offlineCollectAndConfirmMismatch:
-            return NSLocalizedString("There is a mismatch between offline collect and confirm.",
-                                     comment: "Error message when there is a mismatch between offline collect and confirm.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.offlineCollectAndConfirmMismatch",
+                value: "There is a mismatch between offline collect and confirm.",
+                comment: "Error message when there is a mismatch between offline collect and confirm."
+            )
 
         case .onlinePinNotSupportedOffline:
-            return NSLocalizedString("Online PIN is not supported in offline mode.",
-                                     comment: "Error message when online PIN is not supported in offline mode.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.onlinePinNotSupportedOffline",
+                value: "Online PIN is not supported in offline mode.",
+                comment: "Error message when online PIN is not supported in offline mode."
+            )
 
         case .offlineTestCardInLivemode:
-            return NSLocalizedString("A test card is used in live mode while offline.",
-                                     comment: "Error message when a test card is used in live mode while offline.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.offlineTestCardInLivemode",
+                value: "A test card is used in live mode while offline.",
+                comment: "Error message when a test card is used in live mode while offline."
+            )
 
         case .stripeAPIResponseDecodingError:
-            return NSLocalizedString("There is an error decoding the Stripe API response.",
-                                     comment: "Error message when there is an error decoding the Stripe API response.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.stripeAPIResponseDecodingError",
+                value: "There is an error decoding the Stripe API response.",
+                comment: "Error message when there is an error decoding the Stripe API response."
+            )
 
         case .internalNetworkError:
-            return NSLocalizedString("An internal network error occurred.",
-                                     comment: "Error message when an internal network error occurs.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.internalNetworkError",
+                value: "An internal network error occurred.",
+                comment: "Error message when an internal network error occurs."
+            )
 
         case .connectionTokenProviderCompletedWithError:
-            return NSLocalizedString("The connection token provider finished with an error.",
-                                     comment: "Error message when the connection token provider finishes with an error.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.connectionTokenProviderCompletedWithError",
+                value: "The connection token provider finished with an error.",
+                comment: "Error message when the connection token provider finishes with an error."
+            )
 
         case .connectionTokenProviderTimedOut:
-            return NSLocalizedString("The connection token provider operation timed out.",
-                                     comment: "Error message when the connection token provider operation times out.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.connectionTokenProviderTimedOut",
+                value: "The connection token provider operation timed out.",
+                comment: "Error message when the connection token provider operation times out."
+            )
 
         case .notConnectedToInternetAndOfflineBehaviorRequireOnline:
-            return NSLocalizedString("Not connected to the internet, but online behavior is required.",
-                                     comment: "Error message when not connected to the internet, but online behavior is required.")
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.notConnectedToInternetAndOfflineBehaviorRequireOnline",
+                value: "Not connected to the internet, but online behavior is required.",
+                comment: "Error message when not connected to the internet, but online behavior is required."
+            )
         }
     }
 }

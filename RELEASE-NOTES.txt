@@ -14,6 +14,7 @@
 - [Internal] Update storage usage for BlazeStore [https://github.com/woocommerce/woocommerce-ios/pull/14532]
 - [Internal] Updated storage usage in ProductShippingClassStore [https://github.com/woocommerce/woocommerce-ios/pull/14520]
 - [Internal] Updated storage usage in SystemStatusStore [https://github.com/woocommerce/woocommerce-ios/pull/14559]
+- [Internal] Updated storage usage in SitePluginStore [https://github.com/woocommerce/woocommerce-ios/pull/14560]
 - [Internal] Updated storage usage in ShippingLabelStore [https://github.com/woocommerce/woocommerce-ios/pull/14566]
 - [*] Fixed: Improved the error message displayed when Bluetooth permission is denied during the card reader connection process. [https://github.com/woocommerce/woocommerce-ios/pull/14561]
 

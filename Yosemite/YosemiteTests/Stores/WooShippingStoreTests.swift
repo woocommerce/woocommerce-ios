@@ -79,6 +79,52 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(result.failure, .duplicatePackageNames)
     }
 
+    // MARK: `deletePackage`
+
+    func test_deletePackage_returns_success_response() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let response = WooShippingCreatePackageResponse.fake().copy(customPackages: [WooShippingCustomPackage.fake()])
+        remote.whenDeletePackage(siteID: sampleSiteID, thenReturn: .success(response))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<WooShippingCreatePackageResponse, PackageCreationError> = waitFor { promise in
+            let action = WooShippingAction.deletePackage(siteID: self.sampleSiteID,
+                                                         packageID: WooShippingCustomPackage.fake().id) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let actualResponse = try result.get()
+        XCTAssertEqual(actualResponse, response)
+    }
+
+    func test_deletePackage_returns_error_on_failure() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let error = DotcomError.unknown(code: "duplicate_custom_package_names_of_existing_packages",
+                                        message: "At least one of the new custom packages has the same name as existing packages.")
+        remote.whenDeletePackage(siteID: sampleSiteID, thenReturn: .failure(error))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<WooShippingCreatePackageResponse, PackageCreationError> = waitFor { promise in
+            let action = WooShippingAction.deletePackage(siteID: self.sampleSiteID,
+                                                         packageID: WooShippingCustomPackage.fake().id) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure, .duplicatePackageNames)
+    }
+
     // MARK: `loadLabelRates`
 
     func test_loadLabelRates_returns_success_response_with_rates() throws {

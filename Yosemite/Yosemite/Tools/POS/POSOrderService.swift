@@ -5,12 +5,76 @@ import class WooFoundation.CurrencyFormatter
 /// POSCartItem is different from the CartItem in the POS app layer.
 /// - The POS cart UI might show the cart items differently from how they appear in an order in wp-admin.
 public struct POSCartItem {
-    let product: POSItem
+    let item: POSOrderableItem
     let quantity: Decimal
 
-    public init(product: POSItem, quantity: Decimal) {
-        self.product = product
+    public init(item: POSOrderableItem, quantity: Decimal) {
+        self.item = item
         self.quantity = quantity
+    }
+}
+
+extension [POSCartItem] {
+    public func matches(order: Order?) -> Bool {
+        guard let order else {
+            return self.isEmpty
+        }
+
+        let consolidatedCartItems = self.reduce(into: [POSCartItem]()) { partialResult, nextItem in
+            if let matchingIndex = partialResult.firstIndex(where: { $0.item.isEqual(to: nextItem.item) }) {
+                let itemToUpdate = partialResult[matchingIndex]
+                partialResult[matchingIndex] = POSCartItem(item: itemToUpdate.item, quantity: itemToUpdate.quantity + nextItem.quantity)
+            } else {
+                partialResult.append(nextItem)
+            }
+        }
+
+        let consolidatedOrderItems = order.items.reduce(into: [OrderItem]()) { partialResult, nextItem in
+            if let matchingIndex = partialResult.firstIndex(where: { $0.productID == nextItem.productID && $0.variationID == nextItem.variationID }) {
+                let itemToUpdate = partialResult[matchingIndex]
+                partialResult[matchingIndex] = itemToUpdate.copy(quantity: itemToUpdate.quantity + nextItem.quantity)
+            } else {
+                partialResult.append(nextItem)
+            }
+        }
+
+        guard consolidatedCartItems.count == consolidatedOrderItems.count else {
+            return false
+        }
+
+        for cartItem in consolidatedCartItems {
+            guard consolidatedOrderItems.contains(where: { orderItem in
+                cartItem.item.matches(orderItem: orderItem) && cartItem.quantity == orderItem.quantity
+            }) else {
+                return false
+            }
+        }
+        return true
+    }
+
+    func createGroupedOrderSyncProductInputs() -> [OrderSyncProductInput.ProductType: OrderSyncProductInput] {
+        let orderSyncProductInputs = self.map { $0.item.toOrderSyncProductInput(quantity: $0.quantity) }
+
+        // Group items by their `product`, which is actually a `ProductType` enum, representing a product or variation,
+        // with an associated value for the underlying item.
+        let groupedItems = Dictionary(grouping: orderSyncProductInputs, by: { $0.product })
+
+        // Convert each group into a single `OrderSyncProductInput`
+        let output = groupedItems.compactMapValues { items -> OrderSyncProductInput? in
+            guard let firstItem = items.first else { return nil }
+
+            // Aggregate the quantity for this item
+            let totalQuantity = items.reduce(Decimal(0)) { $0 + $1.quantity }
+
+            // Return a copy of the first item, with the aggregate quantity
+            return OrderSyncProductInput(product: firstItem.product,
+                                         quantity: totalQuantity,
+                                         discount: firstItem.discount,
+                                         baseSubtotal: firstItem.baseSubtotal,
+                                         bundleConfiguration: firstItem.bundleConfiguration)
+        }
+
+        return output
     }
 }
 
@@ -93,45 +157,19 @@ private struct POSOrderSyncProductType: OrderSyncProductTypeProtocol {
 
 private extension POSOrderService {
     func updateOrder(_ order: Order, cart: [POSCartItem]) -> Order {
-        let cartProducts = cart.map { POSOrderSyncProductType(productID: $0.product.productID,
-                                                              price: $0.product.price,
-                                                              productType: $0.product.productType) }
-
         // Removes all existing items by setting quantity to 0.
         let itemsToRemove = order.items.compactMap {
             Self.removalProductInput(item: $0)
         }
 
-        // Adds items from the latest cart grouping cart items of the same product.
-        let quantitiesByProductID = createQuantitiesByProductID(from: cart)
-        let productIDsSortedByOrderInCart = quantitiesByProductID.keys.sorted { lhs, rhs in
-            let lhsIndexInCart = cartProducts.firstIndex(where: { $0.productID == lhs }) ?? 0
-            let rhsIndexInCart = cartProducts.firstIndex(where: { $0.productID == rhs }) ?? 0
-            return lhsIndexInCart < rhsIndexInCart
-        }
-        let itemsToAdd: [OrderSyncProductInput] = productIDsSortedByOrderInCart.compactMap { productID in
-            guard let quantity = quantitiesByProductID[productID],
-                  let product = cartProducts.first(where: { $0.productID == productID }) else {
-                return nil
-            }
-            return OrderSyncProductInput(product: .product(product), quantity: quantity)
-        }
+        // Adds items from the latest cart grouping by item.
+        let itemsToAdd = cart.createGroupedOrderSyncProductInputs().values
         let itemsToSync = itemsToRemove + itemsToAdd
 
         return ProductInputTransformer.updateMultipleItems(with: itemsToSync, on: order, shouldUpdateOrDeleteZeroQuantities: .update)
     }
 
-    func createQuantitiesByProductID(from cart: [POSCartItem]) -> [Int64: Decimal] {
-        cart.reduce([Int64: Decimal]()) { partialResult, cartItem in
-            var result = partialResult
-            if let quantity = partialResult[cartItem.product.productID] {
-                result[cartItem.product.productID] = quantity + cartItem.quantity
-            } else {
-                result[cartItem.product.productID] = cartItem.quantity
-            }
-            return result
-        }
-    }
+
 
     /// Creates a new `OrderSyncProductInput` type meant to remove an existing item from `OrderSynchronizer`
     ///

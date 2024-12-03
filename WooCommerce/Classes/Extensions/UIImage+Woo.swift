@@ -1561,10 +1561,6 @@ extension UIImage {
         UIImage(imageLiteralResourceName: "unlimited-products-icon")
     }
 
-    static var feedbackOutlineIcon: UIImage {
-        UIImage(named: "icon-feedback-outline")!
-    }
-
     static var appPasswordTutorialImage: UIImage {
         UIImage(named: "app-password-tutorial-1")!
     }

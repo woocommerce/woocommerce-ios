@@ -35,20 +35,21 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     private(set) var order: Order? = nil
 
     @MainActor
-    func syncOrder(for cartProducts: [CartItem],
+    func syncOrder(for cartItems: [CartItem],
                    retryHandler: @escaping () async -> Void) async {
+        let posCartItems = cartItems.map {
+            POSCartItem(item: $0.item, quantity: Decimal($0.quantity))
+        }
+
         guard !orderState.isSyncing,
-              CartItem.areOrderAndCartDifferent(order: order, cartItems: cartProducts) else {
+              !posCartItems.matches(order: order) else {
             return
         }
 
         orderState = .syncing
-        let cartItems = cartProducts.map {
-            POSCartItem(product: $0.item, quantity: Decimal($0.quantity))
-        }
 
         do {
-            let syncedOrder = try await orderService.syncOrder(cart: cartItems, order: order)
+            let syncedOrder = try await orderService.syncOrder(cart: posCartItems, order: order)
             self.order = syncedOrder
             orderState = .loaded(totals(for: syncedOrder), syncedOrder)
             DDLogInfo("🟢 [POS] Synced order: \(syncedOrder)")

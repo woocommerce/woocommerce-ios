@@ -1,5 +1,6 @@
 import SwiftUI
-import protocol Yosemite.POSItem
+import protocol Yosemite.POSDisplayableItem
+import protocol Yosemite.POSOrderableItem
 
 struct ItemListView: View {
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
@@ -123,18 +124,14 @@ private extension ItemListView {
     }
 
     @ViewBuilder
-    func listView(_ items: [POSItem]) -> some View {
+    func listView(_ items: [POSDisplayableItem]) -> some View {
         ScrollView {
             VStack {
                 if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                     bannerCardView
                 }
-                ForEach(items, id: \.productID) { item in
-                    Button(action: {
-                        posModel.addToCart(item)
-                    }, label: {
-                        ItemCardView(item: item)
-                    })
+                ForEach(items, id: \.id) { item in
+                    listRow(item: item)
                 }
                 GhostItemCardView()
                     .renderedIf(posModel.itemListState.isLoadingAfterInitialLoad)
@@ -157,6 +154,19 @@ private extension ItemListView {
                         lastScrollPosition = maxY
                     }
             })
+        }
+    }
+
+    @ViewBuilder
+    func listRow(item: POSDisplayableItem) -> some View {
+        if let item = item as? POSOrderableItem {
+            Button(action: {
+                posModel.addToCart(item)
+            }, label: {
+                ItemCardView(item: item)
+            })
+        } else {
+            ItemCardView(item: item)
         }
     }
 }

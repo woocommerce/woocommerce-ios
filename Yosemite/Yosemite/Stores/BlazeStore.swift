@@ -8,10 +8,6 @@ import Storage
 public final class BlazeStore: Store {
     private let remote: BlazeRemoteProtocol
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
          network: Network,
@@ -145,20 +141,15 @@ private extension BlazeStore {
                                                         siteID: Int64,
                                                         shouldClearExistingCampaigns: Bool = false,
                                                         onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            guard let self = self else { return }
+        storageManager.performAndSave({ [weak self] derivedStorage in
+            guard let self else { return }
             if shouldClearExistingCampaigns {
                 derivedStorage.deleteBlazeCampaignListItems(siteID: siteID)
             }
-            self.upsertStoredBlazeCampaignListItems(readOnlyCampaigns: readOnlyCampaigns,
-                                                    in: derivedStorage,
-                                                    siteID: siteID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+            upsertStoredBlazeCampaignListItems(readOnlyCampaigns: readOnlyCampaigns,
+                                               in: derivedStorage,
+                                               siteID: siteID)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates or Inserts the specified BlazeCampaignListItem entities
@@ -166,9 +157,10 @@ private extension BlazeStore {
     func upsertStoredBlazeCampaignListItems(readOnlyCampaigns: [Networking.BlazeCampaignListItem],
                                             in storage: StorageType,
                                             siteID: Int64) {
+        let storedItems = storage.loadBlazeCampaignListItems(siteID: siteID, with: readOnlyCampaigns.map { $0.campaignID })
         for campaign in readOnlyCampaigns {
             let storageCampaign: Storage.BlazeCampaignListItem = {
-                if let storedCampaign = storage.loadBlazeCampaignListItem(siteID: siteID, campaignID: campaign.campaignID) {
+                if let storedCampaign = storedItems.first(where: { $0.campaignID == campaign.campaignID }) {
                     return storedCampaign
                 }
                 return storage.insertNewObject(ofType: Storage.BlazeCampaignListItem.self)
@@ -202,18 +194,13 @@ private extension BlazeStore {
     func insertStoredTargetDevicesInBackground(readonlyDevices: [Networking.BlazeTargetDevice],
                                                locale: String,
                                                onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
+        storageManager.performAndSave({ derivedStorage in
             derivedStorage.deleteBlazeTargetDevices(locale: locale)
             for device in readonlyDevices {
                 let storageDevice = derivedStorage.insertNewObject(ofType: Storage.BlazeTargetDevice.self)
                 storageDevice.update(with: device)
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 }
 
@@ -241,18 +228,13 @@ private extension BlazeStore {
     func insertStoredTargetLanguagesInBackground(readonlyLanguages: [Networking.BlazeTargetLanguage],
                                                  locale: String,
                                                  onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
+        storageManager.performAndSave({ derivedStorage in
             derivedStorage.deleteBlazeTargetLanguages(locale: locale)
             for language in readonlyLanguages {
                 let storageLanguage = derivedStorage.insertNewObject(ofType: Storage.BlazeTargetLanguage.self)
                 storageLanguage.update(with: language)
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 }
 
@@ -280,18 +262,13 @@ private extension BlazeStore {
     func insertStoredTargetTopicsInBackground(readonlyTopics: [Networking.BlazeTargetTopic],
                                               locale: String,
                                               onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
+        storageManager.performAndSave({ derivedStorage in
             derivedStorage.deleteBlazeTargetTopics(locale: locale)
             for topic in readonlyTopics {
                 let storageTopic = derivedStorage.insertNewObject(ofType: Storage.BlazeTargetTopic.self)
                 storageTopic.update(with: topic)
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 }
 
@@ -387,18 +364,13 @@ private extension BlazeStore {
     func insertStoredCampaignObjectiveInBackground(readonlyObjectives: [Networking.BlazeCampaignObjective],
                                                    locale: String,
                                                    onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
+        storageManager.performAndSave({ derivedStorage in
             derivedStorage.deleteBlazeCampaignObjectives(locale: locale)
             for objective in readonlyObjectives {
                 let storageObjectives = derivedStorage.insertNewObject(ofType: Storage.BlazeCampaignObjective.self)
                 storageObjectives.update(with: objective)
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 }
 

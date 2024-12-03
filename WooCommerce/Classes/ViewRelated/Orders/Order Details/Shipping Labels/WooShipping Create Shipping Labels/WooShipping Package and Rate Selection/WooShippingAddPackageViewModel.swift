@@ -124,7 +124,8 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     }
 
     // delete saved packages
-    func removeSavedPackage(_ packageToRemove: WooShippingPackageDataRepresentable) async -> Error? {
+    @MainActor
+    func removeSavedPackage(_ packageToRemove: WooShippingPackageDataRepresentable) {
         // TODO: rewrite to directly use actions
         // delete the package locally and on backend
         customSavedPackages.removeAll { package in package.id == packageToRemove.id }
@@ -134,7 +135,17 @@ final class WooShippingAddPackageViewModel: ObservableObject {
             self.selectedSavedPackageId = nil
         }
 
-        return nil
+        let deleteAction = WooShippingAction.deletePackage(siteID: siteID, packageID: packageToRemove.id) { result in
+            // TODO handle/parse te response
+            switch result {
+            case .success(let packagesResult):
+                break
+            case .failure:
+                break
+            }
+        }
+
+        ServiceLocator.stores.dispatch(deleteAction)
     }
 }
 

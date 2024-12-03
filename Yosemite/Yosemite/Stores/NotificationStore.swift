@@ -9,10 +9,6 @@ public class NotificationStore: Store {
     private let remote: NotificationsRemote
     private let devicesRemote: DevicesRemote
 
-    /// Thread Safety
-    ///
-    private static let lock = NSLock()
-
     /// Shared private StorageType for use during then entire notification sync process
     ///
     private static var privateStorage: StorageType!

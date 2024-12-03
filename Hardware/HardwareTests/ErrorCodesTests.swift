@@ -218,6 +218,166 @@ final class CardReaderServiceErrorTests: XCTestCase {
         XCTAssertEqual(.invalidCurrency, domainError(stripeCode: 2950))
     }
 
+    func test_stripe_cancel_failed_already_completed_maps_to_expected_error() {
+        XCTAssertEqual(.cancelFailedAlreadyCompleted, domainError(stripeCode: 1010))
+    }
+
+    func test_stripe_nil_payment_intent_maps_to_expected_error() {
+        XCTAssertEqual(.nilPaymentIntent, domainError(stripeCode: 1540))
+    }
+
+    func test_stripe_nil_setup_intent_maps_to_expected_error() {
+        XCTAssertEqual(.nilSetupIntent, domainError(stripeCode: 1542))
+    }
+
+    func test_stripe_nil_refund_payment_method_maps_to_expected_error() {
+        XCTAssertEqual(.nilRefundPaymentMethod, domainError(stripeCode: 1550))
+    }
+
+    func test_stripe_invalid_refund_parameters_maps_to_expected_error() {
+        XCTAssertEqual(.invalidRefundParameters, domainError(stripeCode: 1555))
+    }
+
+    func test_stripe_invalid_client_secret_maps_to_expected_error() {
+        XCTAssertEqual(.invalidClientSecret, domainError(stripeCode: 1560))
+    }
+
+    func test_stripe_invalid_discovery_configuration_maps_to_expected_error() {
+        XCTAssertEqual(.invalidDiscoveryConfiguration, domainError(stripeCode: 1590))
+    }
+
+    func test_stripe_invalid_reader_for_update_maps_to_expected_error() {
+        XCTAssertEqual(.invalidReaderForUpdate, domainError(stripeCode: 1861))
+    }
+
+    func test_stripe_feature_not_available_maps_to_expected_error() {
+        XCTAssertEqual(.featureNotAvailable, domainError(stripeCode: 1890))
+    }
+
+    func test_stripe_bluetooth_connection_invalid_location_id_parameter_maps_to_expected_error() {
+        XCTAssertEqual(.bluetoothConnectionInvalidLocationIdParameter, domainError(stripeCode: 1910))
+    }
+
+    func test_stripe_invalid_required_parameter_maps_to_expected_error() {
+        XCTAssertEqual(.invalidRequiredParameter, domainError(stripeCode: 1920))
+    }
+
+    func test_stripe_forwarding_test_mode_payment_in_live_mode_maps_to_expected_error() {
+        XCTAssertEqual(.forwardingTestModePaymentInLiveMode, domainError(stripeCode: 1937))
+    }
+
+    func test_stripe_forwarding_live_mode_payment_in_test_mode_maps_to_expected_error() {
+        XCTAssertEqual(.forwardingLiveModePaymentInTestMode, domainError(stripeCode: 1938))
+    }
+
+    func test_stripe_reader_connection_configuration_invalid_maps_to_expected_error() {
+        XCTAssertEqual(.readerConnectionConfigurationInvalid, domainError(stripeCode: 1940))
+    }
+
+    func test_stripe_reader_tipping_parameter_invalid_maps_to_expected_error() {
+        XCTAssertEqual(.readerTippingParameterInvalid, domainError(stripeCode: 1950))
+    }
+
+    func test_stripe_invalid_location_id_parameter_maps_to_expected_error() {
+        XCTAssertEqual(.invalidLocationIdParameter, domainError(stripeCode: 1960))
+    }
+
+    func test_stripe_reader_software_update_failed_expired_update_maps_to_expected_error() {
+        XCTAssertEqual(.readerSoftwareUpdateFailedExpiredUpdate, domainError(stripeCode: 2670))
+    }
+
+    func test_stripe_missing_emv_data_maps_to_expected_error() {
+        XCTAssertEqual(.missingEMVData, domainError(stripeCode: 2892))
+    }
+
+    func test_stripe_command_not_allowed_maps_to_expected_error() {
+        XCTAssertEqual(.commandNotAllowed, domainError(stripeCode: 2900))
+    }
+
+    func test_stripe_bluetooth_peer_removed_pairing_information_maps_to_expected_error() {
+        XCTAssertEqual(.bluetoothPeerRemovedPairingInformation, domainError(stripeCode: 3240))
+    }
+
+    func test_stripe_bluetooth_already_paired_with_another_device_maps_to_expected_error() {
+        XCTAssertEqual(.bluetoothAlreadyPairedWithAnotherDevice, domainError(stripeCode: 3241))
+    }
+
+    func test_stripe_unknown_reader_ip_address_maps_to_expected_error() {
+        XCTAssertEqual(.unknownReaderIpAddress, domainError(stripeCode: 3860))
+    }
+
+    func test_stripe_internet_connect_time_out_maps_to_expected_error() {
+        XCTAssertEqual(.internetConnectTimeOut, domainError(stripeCode: 3870))
+    }
+
+    func test_stripe_bluetooth_reconnect_started_maps_to_expected_error() {
+        XCTAssertEqual(.bluetoothReconnectStarted, domainError(stripeCode: 3890))
+    }
+
+    func test_stripe_apple_built_in_reader_account_deactivated_maps_to_expected_error() {
+        XCTAssertEqual(.appleBuiltInReaderAccountDeactivated, domainError(stripeCode: 3970))
+    }
+
+    func test_stripe_reader_missing_encryption_keys_maps_to_expected_error() {
+        XCTAssertEqual(.readerMissingEncryptionKeys, domainError(stripeCode: 3980))
+    }
+
+    func test_stripe_unexpected_reader_error_maps_to_expected_error() {
+        XCTAssertEqual(.unexpectedReaderError, domainError(stripeCode: 5001))
+    }
+
+    func test_stripe_command_requires_cardholder_consent_maps_to_expected_error() {
+        XCTAssertEqual(.commandRequiresCardholderConsent, domainError(stripeCode: 6700))
+    }
+
+    func test_stripe_refund_failed_maps_to_expected_error() {
+        XCTAssertEqual(.refundFailed, domainError(stripeCode: 6800))
+    }
+
+    func test_stripe_card_swipe_not_available_maps_to_expected_error() {
+        XCTAssertEqual(.cardSwipeNotAvailable, domainError(stripeCode: 6900))
+    }
+
+    func test_stripe_interac_not_supported_offline_maps_to_expected_error() {
+        XCTAssertEqual(.interacNotSupportedOffline, domainError(stripeCode: 6901))
+    }
+
+    func test_stripe_offline_and_card_expired_maps_to_expected_error() {
+        XCTAssertEqual(.offlineAndCardExpired, domainError(stripeCode: 6902))
+    }
+
+    func test_stripe_offline_transaction_declined_maps_to_expected_error() {
+        XCTAssertEqual(.offlineTransactionDeclined, domainError(stripeCode: 6903))
+    }
+
+    func test_stripe_offline_collect_and_confirm_mismatch_maps_to_expected_error() {
+        XCTAssertEqual(.offlineCollectAndConfirmMismatch, domainError(stripeCode: 6904))
+    }
+
+    func test_stripe_online_pin_not_supported_offline_maps_to_expected_error() {
+        XCTAssertEqual(.onlinePinNotSupportedOffline, domainError(stripeCode: 6905))
+    }
+
+    func test_stripe_offline_test_card_in_livemode_maps_to_expected_error() {
+        XCTAssertEqual(.offlineTestCardInLivemode, domainError(stripeCode: 6906))
+    }
+
+    func test_stripe_api_response_decoding_error_maps_to_expected_error() {
+        XCTAssertEqual(.stripeAPIResponseDecodingError, domainError(stripeCode: 9030))
+    }
+
+    func test_stripe_internal_network_error_maps_to_expected_error() {
+        XCTAssertEqual(.internalNetworkError, domainError(stripeCode: 9040))
+    }
+
+    func test_stripe_connection_token_provider_completed_with_error_maps_to_expected_error() {
+        XCTAssertEqual(.connectionTokenProviderCompletedWithError, domainError(stripeCode: 9050))
+    }
+
+    func test_stripe_connection_token_provider_timed_out_maps_to_expected_error() {
+        XCTAssertEqual(.connectionTokenProviderTimedOut, domainError(stripeCode: 9052))
+    }
+
     func test_stripe_catch_all_error() {
         // Any error code not mapped to an specific error will be
         // mapped to `internalServiceError`

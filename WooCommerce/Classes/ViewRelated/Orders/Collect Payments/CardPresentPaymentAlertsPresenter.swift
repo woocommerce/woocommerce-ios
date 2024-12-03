@@ -147,11 +147,6 @@ final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresentin
 
     func presentMerchantEducation(completion: @escaping () -> Void) {
         let viewController = TapToPayEducationViewViewHostingController(onDismiss: completion)
-
-        if let modalController {
-            modalController.present(viewController, animated: true)
-        } else {
-            rootViewController?.present(viewController, animated: true)
-        }
+        modalController?.present(viewController, animated: true)
     }
 }

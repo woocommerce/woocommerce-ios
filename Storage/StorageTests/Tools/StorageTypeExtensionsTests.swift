@@ -1372,7 +1372,7 @@ final class StorageTypeExtensionsTests: XCTestCase {
         systemPlugin1.siteID = sampleSiteID
 
         let systemPlugin2 = storage.insertNewObject(ofType: SystemPlugin.self)
-        systemPlugin2.name = "Plugin 2"
+        systemPlugin2.name = "Plugin 1"
         systemPlugin2.siteID = sampleSiteID + 1
 
         let systemPlugin3 = storage.insertNewObject(ofType: SystemPlugin.self)

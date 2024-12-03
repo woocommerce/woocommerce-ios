@@ -153,24 +153,10 @@ extension UnderlyingError {
                 self = .bluetoothDenied
             case .readerSoftwareUpdateFailedExpiredUpdate:
                 self = .readerSoftwareUpdateFailedExpiredUpdate
-            case .readerConnectionNotAvailableOffline:
-                self = .readerConnectionNotAvailableOffline
-            case .readerConnectionOfflineLocationMismatch:
-                self = .readerConnectionOfflineLocationMismatch
-            case .readerConnectionOfflineNeedsUpdate:
-                self = .readerConnectionOfflineNeedsUpdate
-            case .amountExceedsMaxOfflineAmount:
-                self = .amountExceedsMaxOfflineAmount
-            case .invalidOfflineCurrency:
-                self = .invalidOfflineCurrency
             case .missingEMVData:
                 self = .missingEMVData
             case .commandNotAllowed:
                 self = .commandNotAllowed
-            case .collectInputsTimedOut:
-                self = .collectInputsTimedOut
-            case .usbDiscoveryTimedOut:
-                self = .usbDiscoveryTimedOut
             case .bluetoothPeerRemovedPairingInformation:
                 self = .bluetoothPeerRemovedPairingInformation
             case .bluetoothAlreadyPairedWithAnotherDevice:
@@ -185,16 +171,8 @@ extension UnderlyingError {
                 self = .appleBuiltInReaderAccountDeactivated
             case .readerMissingEncryptionKeys:
                 self = .readerMissingEncryptionKeys
-            case .usbDisconnected:
-                self = .usbDisconnected
             case .unexpectedReaderError:
                 self = .unexpectedReaderError
-            case .encryptionKeyFailure:
-                self = .encryptionKeyFailure
-            case .encryptionKeyStillInitializing:
-                self = .encryptionKeyStillInitializing
-            case .collectInputsApplicationError:
-                self = .collectInputsApplicationError
             case .commandRequiresCardholderConsent:
                 self = .commandRequiresCardholderConsent
             case .refundFailed:
@@ -221,8 +199,6 @@ extension UnderlyingError {
                 self = .connectionTokenProviderCompletedWithError
             case .connectionTokenProviderTimedOut:
                 self = .connectionTokenProviderTimedOut
-            case .notConnectedToInternetAndOfflineBehaviorRequireOnline:
-                self = .notConnectedToInternetAndOfflineBehaviorRequireOnline
             /// Our `DefaultConnectionTokenProvider` implementation of `fetchConnectionToken` never calls completion block with `(nil, nil)`.
             case .connectionTokenProviderCompletedWithNothing,
                 /// Offline mode is not supported.
@@ -235,6 +211,14 @@ extension UnderlyingError {
                 .noLastSeenAccount,
                 .connectionTokenProviderCompletedWithErrorWhileForwarding,
                 .offlineBehaviorForceOfflineWithFeatureDisabled,
+                .readerConnectionNotAvailableOffline,
+                .readerConnectionOfflineLocationMismatch,
+                .readerConnectionOfflineNeedsUpdate,
+                .amountExceedsMaxOfflineAmount,
+                .invalidOfflineCurrency,
+                .encryptionKeyFailure,
+                .encryptionKeyStillInitializing,
+                .notConnectedToInternetAndOfflineBehaviorRequireOnline,
                 /// We don’t request a list of locations directly, but request the store location instead.
                 .invalidListLocationsLimitParameter,
                 /// `on_behalf_of` parameter is not set in the payment intent.
@@ -248,7 +232,12 @@ extension UnderlyingError {
                 .surchargeUnavailableWithDynamicCurrencyConversion,
                 /// Collecting on-screen inputs from card reader is not supported.
                 .collectInputsInvalidParameter,
-                .collectInputsUnsupported:
+                .collectInputsUnsupported,
+                .collectInputsTimedOut,
+                .collectInputsApplicationError,
+                /// USB discovery is not supported.
+                .usbDiscoveryTimedOut,
+                .usbDisconnected:
                 assertionFailure("Unexpected Stripe error that we should consider handling: \(stripeError)")
                 return nil
             }

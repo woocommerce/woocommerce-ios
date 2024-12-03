@@ -7,6 +7,8 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
 
+    private let starAnimation: Animation = .spring(duration: 0.2)
+
     init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
@@ -167,11 +169,16 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     @MainActor
     func starUnstarPackage(_ packageID: String, carrierID: String) {
         if starredCarriersPackages.contains(packageID) {
-            starredCarriersPackages.remove(packageID)
+            _ = withAnimation(starAnimation) {
+                starredCarriersPackages.remove(packageID)
+            }
             // TODO: call delete action when it is ready
         }
         else {
-            starredCarriersPackages.insert(packageID)
+            _ = withAnimation(starAnimation) {
+                starredCarriersPackages.insert(packageID)
+            }
+
             let predefined = WooShippingPredefinedSavedOption(id: carrierID, predefinedPackageIDs: [packageID])
             let createAction = WooShippingAction.createPackage(siteID: siteID, customPackage: nil, predefinedOption: predefined) { result in
                 switch result {

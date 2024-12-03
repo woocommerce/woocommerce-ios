@@ -2,7 +2,6 @@ import AppIntents
 import Foundation
 
 
-@available(iOS 16, *)
 struct CreateOrderAppIntent: AppIntent {
     // looks up in our Localizable.string to localize
     static var title: LocalizedStringResource = "Create order"
@@ -17,7 +16,6 @@ struct CreateOrderAppIntent: AppIntent {
     }
 }
 
-@available(iOS 16, *)
 extension CreateOrderAppIntent {
     enum Localization {
         // Here to be added to Localizable.strings so it can be looked up by the `LocalizedStringResource` above

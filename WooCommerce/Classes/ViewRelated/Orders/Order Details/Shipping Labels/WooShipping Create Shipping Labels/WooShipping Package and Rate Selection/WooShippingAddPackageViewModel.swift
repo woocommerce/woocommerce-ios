@@ -7,6 +7,8 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
 
+    private let starAnimation: Animation = .spring(duration: 0.2)
+
     init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
@@ -115,10 +117,14 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     // star/unstar packages
     func starUnstarPackage(_ packageID: String) async -> Error? {
         if starredCarriersPackages.contains(packageID) {
-            starredCarriersPackages.remove(packageID)
+            _ = withAnimation(starAnimation) {
+                starredCarriersPackages.remove(packageID)
+            }
         }
         else {
-            starredCarriersPackages.insert(packageID)
+            _ = withAnimation(starAnimation) {
+                starredCarriersPackages.insert(packageID)
+            }
         }
         return nil
     }

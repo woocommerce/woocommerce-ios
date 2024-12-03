@@ -75,14 +75,18 @@ final class PointOfSaleProductServiceTests: XCTestCase {
         let expectedItems = try await itemProvider.providePointOfSaleItems()
 
         // Then
-        guard let product = expectedItems.first else {
+        guard let item = expectedItems.first else {
             return XCTFail("No eligible products")
         }
         XCTAssertEqual(expectedItems.count, expectedNumberOfEligibleProducts)
-        XCTAssertEqual(product.name, expectedProductName)
-        XCTAssertEqual(product.productID, expectedProductID)
+        XCTAssertEqual(item.name, expectedProductName)
+        XCTAssertEqual(item.formattedPrice, expectedFormattedPrice)
+
+        guard let product = item as? POSProduct else {
+            return XCTFail("Expected a POSProduct")
+        }
         XCTAssertEqual(product.price, expectedProductPrice)
-        XCTAssertEqual(product.formattedPrice, expectedFormattedPrice)
+        XCTAssertEqual(product.productID, expectedProductID)
     }
 
     func test_PointOfSaleItemServiceProtocol_when_eligibility_criteria_applies_then_returns_correct_number_of_items() async throws {

@@ -124,7 +124,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
     }
 }
 
-private struct POSOrderSyncProductType: OrderSyncProductTypeProtocol {
+private struct POSOrderSyncProductType: OrderSyncProductTypeProtocol, Hashable {
     let productID: Int64
     let price: String
     // Not used in POS but have to be included for the app usage.

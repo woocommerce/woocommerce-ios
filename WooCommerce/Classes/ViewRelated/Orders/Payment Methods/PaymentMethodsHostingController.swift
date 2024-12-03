@@ -49,15 +49,8 @@ struct HostedPaymentMethodsView: View {
     var viewModel: PaymentMethodsViewModel
 
     var body: some View {
-        if #available(iOS 16.0, *) {
-            NavigationStack {
-                paymentMethodsView
-            }
-        } else {
-            NavigationView {
-                paymentMethodsView
-            }
-            .navigationViewStyle(.stack)
+        NavigationStack {
+            paymentMethodsView
         }
     }
 

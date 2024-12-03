@@ -160,10 +160,8 @@ private extension CodeScannerViewController {
     /// Enables and starts live stream video, if available.
     func startLiveVideo() {
         session.sessionPreset = .photo
-        if #available(iOS 16.0, *) {
-            if session.isMultitaskingCameraAccessSupported {
-                session.isMultitaskingCameraAccessEnabled = true
-            }
+        if session.isMultitaskingCameraAccessSupported {
+            session.isMultitaskingCameraAccessEnabled = true
         }
 
         guard let captureDevice = AVCaptureDevice.default(for: .video),

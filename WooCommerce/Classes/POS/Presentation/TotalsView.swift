@@ -79,8 +79,12 @@ struct TotalsView: View {
         .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
         .geometryGroupIfSupported()
         .posModal(isPresented: $isShowingSendReceiptModal) {
-            POSSendReceiptModalView(isPresented: $isShowingSendReceiptModal)
-                .posModalSizing()
+            POSSendReceiptModalView(sendReceipt: { email in
+                Task {
+                    await posModel.sendReceipt(to: email)
+                }
+            }, isPresented: $isShowingSendReceiptModal)
+            .posModalSizing()
         }
     }
 

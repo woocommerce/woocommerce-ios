@@ -1,10 +1,10 @@
 import SwiftUI
 
 struct POSSendReceiptModalView: View {
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
-    @Binding var isPresented: Bool
+    private(set) var sendReceipt: (String) -> ()
 
     @State private var textFieldInput: String = ""
+    @Binding var isPresented: Bool
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
@@ -24,9 +24,7 @@ struct POSSendReceiptModalView: View {
                     .padding(.horizontal)
 
                 Button(action: {
-                    Task { @MainActor in
-                        await posModel.sendReceipt(to: textFieldInput)
-                    }
+                    sendReceipt(textFieldInput)
                 }, label: {
                     HStack(spacing: Constants.buttonSpacing) {
                         Text(Localization.buttonTitle)

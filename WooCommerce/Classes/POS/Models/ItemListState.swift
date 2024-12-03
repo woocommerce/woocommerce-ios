@@ -1,10 +1,11 @@
-import protocol Yosemite.POSItem
+import protocol Yosemite.POSDisplayableItem
+import protocol Yosemite.POSOrderableItem
 
 enum ItemListState: Equatable {
     case empty
     case initialLoading
-    case loading(_ currentItems: [POSItem])
-    case loaded(_ items: [POSItem])
+    case loading(_ currentItems: [POSDisplayableItem])
+    case loaded(_ items: [POSDisplayableItem])
     case error(PointOfSaleErrorState)
 
     var isLoadingAfterInitialLoad: Bool {
@@ -16,16 +17,14 @@ enum ItemListState: Equatable {
         }
     }
 
-    // Equatable conformance for testing:
     static func == (lhs: ItemListState, rhs: ItemListState) -> Bool {
         switch (lhs, rhs) {
-        case (.empty, .empty):
-            return true
-        case (.initialLoading, .initialLoading):
+        case (.empty, .empty),
+            (.initialLoading, .initialLoading):
             return true
         case (.loading(let lhsItems), .loading(let rhsItems)),
             (.loaded(let lhsItems), .loaded(let rhsItems)):
-            return lhsItems.map { $0.itemID } == rhsItems.map { $0.itemID }
+            return lhsItems.isEqual(to: rhsItems)
         case (.error(let lhsError), .error(let rhsError)):
             return lhsError == rhsError
         default:

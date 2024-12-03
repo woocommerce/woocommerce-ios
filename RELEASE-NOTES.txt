@@ -4,12 +4,18 @@
 -----
 - [*] Jetpack Setup: Fixed an issue where the WordPress.com authentication fails when using a passwordless account that's already connected to Jetpack [https://github.com/woocommerce/woocommerce-ios/pull/14501]
 - [*] Jetpack Setup: Fixed an issue with magic link handling when the app is cold started. [https://github.com/woocommerce/woocommerce-ios/pull/14502]
+- [*] Product Tags: Improved the tag list screen by displaying the cached items on first load and fixed issue clearing all tags [https://github.com/woocommerce/woocommerce-ios/pull/14511]
 - [**] Media Library: On sites logged in with application password, when picking image from WordPress Media Library, all images will now load correctly. [https://github.com/woocommerce/woocommerce-ios/pull/14444]
+- [*] Payments onboarding: the custom background color of the "Choose your Payment Provider" UI when both WooPayments and Stripe Extension are available was removed to enable use cases with different container background colors. [https://github.com/woocommerce/woocommerce-ios/pull/14546]
 - [*] Media: Media upload will work for sites without XML-RPC. [https://github.com/woocommerce/woocommerce-ios/pull/14537]
 - [Internal] Updated CoreDataManager to be thread-safe [https://github.com/woocommerce/woocommerce-ios/pull/14534]
+- [Internal] Core Data: Migrate storage usage in SiteStore [https://github.com/woocommerce/woocommerce-ios/pull/14548]
 - [Internal] Updated storage usage in CouponStore [https://github.com/woocommerce/woocommerce-ios/pull/14530]
+- [Internal] Update storage usage for BlazeStore [https://github.com/woocommerce/woocommerce-ios/pull/14532]
 - [Internal] Updated storage usage in ProductShippingClassStore [https://github.com/woocommerce/woocommerce-ios/pull/14520]
 - [Internal] Updated storage usage in SitePluginStore [https://github.com/woocommerce/woocommerce-ios/pull/14560]
+- [Internal] Updated storage usage in ShippingLabelStore [https://github.com/woocommerce/woocommerce-ios/pull/14566]
+- [*] Fixed: Improved the error message displayed when Bluetooth permission is denied during the card reader connection process. [https://github.com/woocommerce/woocommerce-ios/pull/14561]
 
 21.2
 -----

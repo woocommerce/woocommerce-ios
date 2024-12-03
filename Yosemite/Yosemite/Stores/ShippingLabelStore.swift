@@ -7,12 +7,6 @@ import Storage
 public final class ShippingLabelStore: Store {
     private let remote: ShippingLabelRemoteProtocol
 
-    /// Shared private StorageType for use during then entire Orders sync process
-    ///
-    private lazy var sharedDerivedStorage: StorageType = {
-        storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ShippingLabelRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -292,22 +286,18 @@ private extension ShippingLabelStore {
                                                      shippingLabels: [ShippingLabel],
                                                      settings: ShippingLabelSettings,
                                                      onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            guard let self = self else { return }
-            guard let order = derivedStorage.loadOrder(siteID: siteID, orderID: orderID) else {
-                return
-            }
-            guard shippingLabels.isEmpty == false else {
-                return
-            }
-            self.upsertShippingLabels(siteID: siteID, orderID: orderID, shippingLabels: shippingLabels, storageOrder: order)
-            self.upsertShippingLabelSettings(siteID: siteID, orderID: orderID, settings: settings, storageOrder: order)
+        guard shippingLabels.isEmpty == false else {
+            return onCompletion()
         }
 
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave ({ [weak self] storage in
+            guard let self = self else { return }
+            guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
+                return
+            }
+            self.upsertShippingLabels(siteID: siteID, orderID: orderID, shippingLabels: shippingLabels, storageOrder: order, using: storage)
+            self.upsertShippingLabelSettings(siteID: siteID, orderID: orderID, settings: settings, storageOrder: order, using: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates/inserts the specified readonly shipping label refund for a shipping label *in a background thread*.
@@ -315,59 +305,55 @@ private extension ShippingLabelStore {
     func upsertShippingLabelRefundInBackground(shippingLabel: ShippingLabel,
                                                refund: ShippingLabelRefund,
                                                onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
+        storageManager.performAndSave ({ [weak self] storage in
             guard let self = self else { return }
             // If a shipping label does not exist in storage, skip upserting the refund in storage.
-            guard let shippingLabel = derivedStorage.loadShippingLabel(siteID: shippingLabel.siteID,
-                                                                       orderID: shippingLabel.orderID,
-                                                                       shippingLabelID: shippingLabel.shippingLabelID) else {
+            guard let shippingLabel = storage.loadShippingLabel(siteID: shippingLabel.siteID,
+                                                                orderID: shippingLabel.orderID,
+                                                                shippingLabelID: shippingLabel.shippingLabelID) else {
                 return
             }
-            self.update(shippingLabel: shippingLabel, withRefund: refund)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+            self.update(shippingLabel: shippingLabel, withRefund: refund, using: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates/inserts the specified readonly ShippingLabel entities in the current thread.
-    func upsertShippingLabels(siteID: Int64, orderID: Int64, shippingLabels: [ShippingLabel], storageOrder: StorageOrder) {
-        let derivedStorage = sharedDerivedStorage
+    func upsertShippingLabels(siteID: Int64,
+                              orderID: Int64,
+                              shippingLabels: [ShippingLabel],
+                              storageOrder: StorageOrder,
+                              using storage: StorageType) {
 
+        let storedLabels = storage.loadAllShippingLabels(siteID: siteID, orderID: orderID)
         for shippingLabel in shippingLabels {
-            let storageShippingLabel = derivedStorage.loadShippingLabel(siteID: shippingLabel.siteID,
-                                                                        orderID: shippingLabel.orderID,
-                                                                        shippingLabelID: shippingLabel.shippingLabelID) ??
-                derivedStorage.insertNewObject(ofType: Storage.ShippingLabel.self)
+            let storageShippingLabel = storedLabels.first(where: { $0.shippingLabelID == shippingLabel.shippingLabelID }) ??
+            storage.insertNewObject(ofType: Storage.ShippingLabel.self)
             storageShippingLabel.update(with: shippingLabel)
             storageShippingLabel.order = storageOrder
 
-            update(shippingLabel: storageShippingLabel, withRefund: shippingLabel.refund)
+            update(shippingLabel: storageShippingLabel, withRefund: shippingLabel.refund, using: storage)
 
-            let originAddress = storageShippingLabel.originAddress ?? derivedStorage.insertNewObject(ofType: Storage.ShippingLabelAddress.self)
+            let originAddress = storageShippingLabel.originAddress ?? storage.insertNewObject(ofType: Storage.ShippingLabelAddress.self)
             originAddress.update(with: shippingLabel.originAddress)
             storageShippingLabel.originAddress = originAddress
 
-            let destinationAddress = storageShippingLabel.destinationAddress ?? derivedStorage.insertNewObject(ofType: Storage.ShippingLabelAddress.self)
+            let destinationAddress = storageShippingLabel.destinationAddress ?? storage.insertNewObject(ofType: Storage.ShippingLabelAddress.self)
             destinationAddress.update(with: shippingLabel.destinationAddress)
             storageShippingLabel.destinationAddress = destinationAddress
         }
 
         // Now, remove any objects that exist in storage but not in shippingLabels
         let shippingLabelIDs = shippingLabels.map(\.shippingLabelID)
-        derivedStorage.loadAllShippingLabels(siteID: siteID, orderID: orderID).filter {
+        storedLabels.filter {
             !shippingLabelIDs.contains($0.shippingLabelID)
         }.forEach {
-            derivedStorage.deleteObject($0)
+            storage.deleteObject($0)
         }
     }
 
-    func update(shippingLabel storageShippingLabel: StorageShippingLabel, withRefund refund: ShippingLabelRefund?) {
-        let derivedStorage = sharedDerivedStorage
+    func update(shippingLabel storageShippingLabel: StorageShippingLabel, withRefund refund: ShippingLabelRefund?, using storage: StorageType) {
         if let refund = refund {
-            let storageRefund = storageShippingLabel.refund ?? derivedStorage.insertNewObject(ofType: Storage.ShippingLabelRefund.self)
+            let storageRefund = storageShippingLabel.refund ?? storage.insertNewObject(ofType: Storage.ShippingLabelRefund.self)
             storageRefund.update(with: refund)
             storageShippingLabel.refund = storageRefund
         } else {
@@ -376,10 +362,9 @@ private extension ShippingLabelStore {
     }
 
     /// Updates/inserts the specified readonly ShippingLabelSettings entity in the current thread.
-    func upsertShippingLabelSettings(siteID: Int64, orderID: Int64, settings: ShippingLabelSettings, storageOrder: StorageOrder) {
-        let derivedStorage = sharedDerivedStorage
-        let storageSettings = derivedStorage.loadShippingLabelSettings(siteID: siteID, orderID: orderID) ??
-            derivedStorage.insertNewObject(ofType: Storage.ShippingLabelSettings.self)
+    func upsertShippingLabelSettings(siteID: Int64, orderID: Int64, settings: ShippingLabelSettings, storageOrder: StorageOrder, using storage: StorageType) {
+        let storageSettings = storage.loadShippingLabelSettings(siteID: siteID, orderID: orderID) ??
+        storage.insertNewObject(ofType: Storage.ShippingLabelSettings.self)
         storageSettings.update(with: settings)
         storageSettings.order = storageOrder
     }
@@ -390,24 +375,18 @@ private extension ShippingLabelStore {
     func upsertShippingLabelAccountSettingsInBackground(siteID: Int64,
                                                         accountSettings: ShippingLabelAccountSettings,
                                                         onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
-            self.upsertShippingLabelAccountSettings(siteID: siteID, accountSettings: accountSettings)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ [weak self] storage in
+            self?.upsertShippingLabelAccountSettings(siteID: siteID, accountSettings: accountSettings, using: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates/inserts the specified readonly ShippingLabelAccountSettings entity in the current thread.
     ///
-    func upsertShippingLabelAccountSettings(siteID: Int64, accountSettings: ShippingLabelAccountSettings) {
-        let derivedStorage = sharedDerivedStorage
-        let storageAccountSettings = derivedStorage.loadShippingLabelAccountSettings(siteID: siteID) ??
-            derivedStorage.insertNewObject(ofType: Storage.ShippingLabelAccountSettings.self)
+    func upsertShippingLabelAccountSettings(siteID: Int64, accountSettings: ShippingLabelAccountSettings, using storage: StorageType) {
+        let storageAccountSettings = storage.loadShippingLabelAccountSettings(siteID: siteID) ??
+            storage.insertNewObject(ofType: Storage.ShippingLabelAccountSettings.self)
         storageAccountSettings.update(with: accountSettings)
-        handleShippingLabelPaymentMethods(accountSettings, storageAccountSettings, derivedStorage)
+        handleShippingLabelPaymentMethods(accountSettings, storageAccountSettings, storage)
     }
 
     /// Updates/inserts the ShippingLabelPaymentMethod items from the provided account settings.

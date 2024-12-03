@@ -59,6 +59,7 @@ private extension CardReaderServiceUnderlyingError {
                 .bluetoothError,
                 .bluetoothScanTimedOut,
                 .bluetoothConnectionFailedBatteryCriticallyLow,
+                .bluetoothDenied,
                 .readerSoftwareUpdateFailedBatteryLow,
                 .readerSoftwareUpdateFailedInterrupted,
                 .readerSoftwareUpdateFailed,

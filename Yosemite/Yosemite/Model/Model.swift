@@ -190,7 +190,6 @@ public typealias StoredProductSettings = Networking.StoredProductSettings
 public typealias CardReader = Hardware.CardReader
 public typealias CardReaderConnectionOptions = Hardware.CardReaderConnectionOptions
 public typealias BuiltInCardReaderConnectionOptions = Hardware.BuiltInCardReaderConnectionOptions
-public typealias BuiltInCardReaderOnboardingState = Hardware.BuiltInCardReaderOnboardingState
 public typealias CardReaderDiscoveryMethod = Hardware.CardReaderDiscoveryMethod
 public typealias CardReaderEvent = Hardware.CardReaderEvent
 public typealias CardReaderInput = Hardware.CardReaderInput

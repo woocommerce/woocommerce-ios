@@ -16,7 +16,7 @@ public final class StripeCardReaderService: NSObject {
     private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
     private let readerEventsSubject = PassthroughSubject<CardReaderEvent, Never>()
     private let softwareUpdateSubject = CurrentValueSubject<CardReaderSoftwareUpdateState, Never>(.none)
-    private let builtInReaderOnboardingState = PassthroughSubject<BuiltInCardReaderOnboardingState, Never>()
+    private let builtInCardReaderAcceptToSSubject = PassthroughSubject<Void, Never>()
 
     private var connectionAttemptInvalidated: Bool = false
 
@@ -64,8 +64,8 @@ extension StripeCardReaderService: CardReaderService {
         softwareUpdateSubject.eraseToAnyPublisher()
     }
 
-    public var builtInCardReaderOnboardingEvents: AnyPublisher<BuiltInCardReaderOnboardingState, Never> {
-        builtInReaderOnboardingState.eraseToAnyPublisher()
+    public var builtInCardReaderAcceptToSEvents: AnyPublisher<Void, Never> {
+        builtInCardReaderAcceptToSSubject.eraseToAnyPublisher()
     }
 
     // MARK: - CardReaderService conformance. Commands
@@ -997,7 +997,7 @@ extension StripeCardReaderService: LocalMobileReaderDelegate {
     }
 
     public func localMobileReaderDidAcceptTermsOfService(_ reader: Reader) {
-        builtInReaderOnboardingState.send(.didAcceptTermsOfService)
+        builtInCardReaderAcceptToSSubject.send(())
     }
 }
 

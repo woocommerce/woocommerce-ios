@@ -376,22 +376,21 @@ private extension BuiltInCardReaderConnectionController {
 
 
         if featureFlagService.isFeatureFlagEnabled(.tapToPayEducation) {
-            let onboardingAction = CardPresentPaymentAction.observeBuiltInCardReaderOnboardingState { [weak self] onboardingEvents in
-                guard let self = self else { return }
+            let onboardingAction = CardPresentPaymentAction.observeBuiltInCardReaderAcceptToS { [weak self] events in
+                guard let self else { return }
 
-                onboardingEvents
+                events
                     .subscribe(on: DispatchQueue.main)
-                    .sink { [weak self] event in
-                        guard let self = self else { return }
-                        switch event {
-                        case .didAcceptTermsOfService:
-                            self.isMerchantEducationInProgress.send(true)
-                            self.alertsPresenter.presentMerchantEducation { [weak self] in
-                                self?.isMerchantEducationInProgress.send(false)
-                            }
+                    .sink { [weak self] in
+                        guard let self else { return }
+
+                        isMerchantEducationInProgress.send(true)
+                        alertsPresenter.presentMerchantEducation { [weak self] in
+                            guard let self else { return }
+                            isMerchantEducationInProgress.send(false)
                         }
                     }
-                    .store(in: &self.subscriptions)
+                    .store(in: &subscriptions)
             }
             stores.dispatch(onboardingAction)
         }

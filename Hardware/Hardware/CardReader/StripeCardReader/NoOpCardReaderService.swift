@@ -15,9 +15,9 @@ public struct NoOpCardReaderService: CardReaderService {
     public var softwareUpdateEvents: AnyPublisher<CardReaderSoftwareUpdateState, Never>
     = CurrentValueSubject<CardReaderSoftwareUpdateState, Never>(.none).eraseToAnyPublisher()
 
-    /// The Publisher that emits the current state of the built-in card reader onboarding
-    public var builtInCardReaderOnboardingEvents: AnyPublisher<BuiltInCardReaderOnboardingState, Never>
-    = PassthroughSubject<BuiltInCardReaderOnboardingState, Never>().eraseToAnyPublisher()
+    /// The Publisher that emits the when when TTP Terms and Services are accepted
+    public var builtInCardReaderAcceptToSEvents: AnyPublisher<Void, Never>
+    = PassthroughSubject<Void, Never>().eraseToAnyPublisher()
 
     public init() {}
     // MARK: - Commands

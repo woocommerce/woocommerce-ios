@@ -16,11 +16,6 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
         self.parentNavigationController = parentNavigationController
 
         super.init(rootView: BlazeCampaignDashboardView(viewModel: viewModel))
-        if #unavailable(iOS 16.0) {
-            viewModel.onStateChange = { [weak self] in
-                self?.view.invalidateIntrinsicContentSize()
-            }
-        }
 
         rootView.createCampaignTapped = { [weak self] productID in
             guard let self else { return }

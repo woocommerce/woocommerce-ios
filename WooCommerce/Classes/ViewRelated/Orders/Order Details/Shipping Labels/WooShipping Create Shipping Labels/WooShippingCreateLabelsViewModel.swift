@@ -86,6 +86,41 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// If the label purchase is in progress.
     @Published private(set) var isPurchasingLabel: Bool = false
 
+    @Published var storeOptions: ShippingLabelStoreOptions?
+    @Published var isLoadingStoreOptions: Bool = false
+
+    func loadStoreOptions(completion: ((ShippingLabelStoreOptions) -> Void)? = nil) {
+        guard isLoadingStoreOptions == false,
+              let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else { return }
+
+        isLoadingStoreOptions = true
+
+        let action = WooShippingAction.loadAccountSettings(siteID: siteID) { result in
+            switch result {
+            case .success(let settings):
+                self.storeOptions = settings.storeOptions
+                completion?(settings.storeOptions)
+            case .failure(let error):
+                DDLogError("⛔️ Error loading account settings: \(error)")
+                // fallback to store settings
+                let shippingSettingsService = ServiceLocator.shippingSettingsService
+                let currencySettings = ServiceLocator.currencySettings
+                let currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
+                let originCountry = SiteAddress().countryCode.rawValue
+                if let dimensionUnit = shippingSettingsService.dimensionUnit,
+                   let weightUnit = shippingSettingsService.weightUnit {
+                    let fallbackStoreOptions = ShippingLabelStoreOptions(currencySymbol: currencySymbol,
+                                                            dimensionUnit: dimensionUnit,
+                                                            weightUnit: weightUnit,
+                                                            originCountry: originCountry)
+                    self.storeOptions = fallbackStoreOptions
+                }
+            }
+            self.isLoadingStoreOptions = false
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
     /// Closure to execute after the label is successfully purchased.
     let onLabelPurchase: ((_ markOrderComplete: Bool) -> Void)?
 

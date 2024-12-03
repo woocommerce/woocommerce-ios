@@ -26,10 +26,31 @@ public struct OrderSyncProductInput {
 
     /// Types of products the synchronizer supports
     ///
-    public enum ProductType {
+    public enum ProductType: Hashable {
         case product(OrderSyncProductTypeProtocol)
         case variation(ProductVariation)
+
+        public func hash(into hasher: inout Hasher) {
+            switch self {
+            case .product(let product):
+                hasher.combine("product-\(product.productID)")
+            case .variation(let variation):
+                hasher.combine("variation-\(variation.productVariationID)")
+            }
+        }
+
+        public static func == (lhs: OrderSyncProductInput.ProductType, rhs: OrderSyncProductInput.ProductType) -> Bool {
+            switch (lhs, rhs) {
+            case (.product(let l), .product(let r)):
+                return l.productID == r.productID
+            case (.variation(let l), .variation(let r)):
+                return l.productVariationID == r.productVariationID
+            default:
+                return false
+            }
+        }
     }
+
     public var id: Int64 = .zero
     let product: ProductType
     let quantity: Decimal

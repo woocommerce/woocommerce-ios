@@ -12,7 +12,7 @@ protocol PointOfSaleOrderControllerProtocol {
     var order: Order? { get }
 
     func syncOrder(for cartProducts: [CartItem], retryHandler: @escaping () async -> Void) async
-    func sendOrderReceipt(order: Order, toEmailAddress: String) async
+    func sendOrderReceipt(order: Order, recipientEmail: String) async
     func clearOrder()
 }
 
@@ -69,9 +69,9 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         }))
     }
 
-    func sendOrderReceipt(order: Order, toEmailAddress: String) async {
+    func sendOrderReceipt(order: Order, recipientEmail: String) async {
         do {
-            try await orderService.sendOrderReceipt(order: order, toEmailAddress: toEmailAddress)
+            try await orderService.sendOrderReceipt(order: order, recipientEmail: recipientEmail)
         } catch {
             // TODO:
             debugPrint("Error: \(error)")

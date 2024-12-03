@@ -203,7 +203,7 @@ extension PointOfSaleAggregateModel {
         // TODO:
         // Add eligiblity for correct WC and WCPay versions
         if case let .loaded(_, order) = internalOrderState {
-            await orderController.sendOrderReceipt(order: order, toEmailAddress: emailAddress)
+            await orderController.sendOrderReceipt(order: order, recipientEmail: emailAddress)
         }
     }
 

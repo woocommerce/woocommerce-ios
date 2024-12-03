@@ -124,7 +124,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
     // star/unstar packages
     @MainActor
-    @discardableResult func starUnstarPackage(_ packageID: String, carrierID: String) -> Error? {
+    @discardableResult func starUnstarPackage(_ packageID: String, carrierID: String) {
         if starredCarriersPackages.contains(packageID) {
             starredCarriersPackages.remove(packageID)
         }
@@ -171,7 +171,6 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
             ServiceLocator.stores.dispatch(createAction)
         }
-        return nil
     }
 
     // delete saved packages

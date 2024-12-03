@@ -100,17 +100,9 @@ final class TopPerformerDataViewController: UIViewController {
 private extension TopPerformerDataViewController {
     func updateUIInLoadingState() {
         viewModel.update(state: .loading(cached: []))
-        if #unavailable(iOS 16.0) {
-            hostingController?.view.invalidateIntrinsicContentSize()
-        }
     }
 
     func updateUIInLoadedState() {
-        defer {
-            if #unavailable(iOS 16.0) {
-                hostingController?.view.invalidateIntrinsicContentSize()
-            }
-        }
         guard let items = topEarnerStats?.items?.sorted(by: >), items.isNotEmpty else {
             return viewModel.update(state: .loaded(rows: []))
         }

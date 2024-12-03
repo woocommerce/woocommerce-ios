@@ -18,58 +18,47 @@ struct WooPackageGroup {
 }
 
 struct WooCarrierPackagesView: View {
-    @ObservedObject private var viewModel: WooCarrierPackagesSelectionViewModel
-
-    init(viewModel: WooCarrierPackagesSelectionViewModel) {
-        self.viewModel = viewModel
-    }
+    let carrierTab: WooShippingCarrierPackages
+    @Binding var selectedPackageId: String?  // Track the selected package index
+    @Binding var starredPackages: Set<String>
+    let tapAction: (String) -> Void
+    let starAction: (String) -> Void
 
     var body: some View {
         List {
-            if let packageGroups = viewModel.selectedCarrierTab?.packageGroups {
-                ForEach(packageGroups, id: \.id) { packageGroup in
-                    Section {
-                        ForEach(packageGroup.packages, id: \.id) { package in
-                            PackageOptionView(
-                                isSelected: viewModel.selectedPackageId == package.id,
-                                package: package,
-                                showTopDivider: false,
-                                showSource: false,
-                                tapAction: {
-                                    viewModel.selectedPackageId = viewModel.selectedPackageId == package.id ? nil : package.id
-                                },
-                                starAction: {
-                                    // Just temporary, will be replaced with proper logic
-                                    if viewModel.isPackageStarred(package) {
-                                        Task {
-                                            await viewModel.unstarPackage(package)
-                                        }
-                                    }
-                                    else {
-                                        Task {
-                                            await viewModel.starPackage(package)
-                                        }
-                                    }
-                                },
-                                starred: viewModel.isPackageStarred(package)
-                            )
-                            .alignmentGuide(.listRowSeparatorLeading) { _ in
-                                return 16
-                            }
+            ForEach(carrierTab.packageGroups, id: \.id) { packageGroup in
+                Section {
+                    ForEach(packageGroup.packages, id: \.id) { package in
+                        PackageOptionView(
+                            isSelected: selectedPackageId == package.id,
+                            package: package,
+                            showTopDivider: false,
+                            showSource: false,
+                            tapAction: {
+                                tapAction(package.id)
+                            },
+                            starAction: {
+                                starAction(package.id)
+                                // Just temporary, will be replaced with proper logic
+                            },
+                            starred: starredPackages.contains(package.id)
+                        )
+                        .alignmentGuide(.listRowSeparatorLeading) { _ in
+                            return 16
                         }
-                    } header: {
-                        HStack {
-                            Text(packageGroup.name.uppercased())
-                                .foregroundColor(.secondary)
-                                .fontWeight(.regular)
-                                .multilineTextAlignment(.leading)
-                            Spacer()
-                        }
-                        .padding(.horizontal)
-                        .background(Color.clear)
                     }
-                    .listRowInsets(.zero)
+                } header: {
+                    HStack {
+                        Text(packageGroup.name.uppercased())
+                            .foregroundColor(.secondary)
+                            .fontWeight(.regular)
+                            .multilineTextAlignment(.leading)
+                        Spacer()
+                    }
+                    .padding(.horizontal)
+                    .background(Color.clear)
                 }
+                .listRowInsets(.zero)
             }
         }
         .listStyle(.plain)
@@ -84,10 +73,10 @@ struct WooCarrierPackagesSelectionView: View {
         static let tabPadding: CGFloat = 9.0
     }
 
-    @ObservedObject private var viewModel: WooCarrierPackagesSelectionViewModel
+    @ObservedObject private var viewModel: WooShippingAddPackageViewModel
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
-    init(viewModel: WooCarrierPackagesSelectionViewModel,
+    init(viewModel: WooShippingAddPackageViewModel,
          addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
         self.viewModel = viewModel
         self.addPackageAction = addPackageAction
@@ -95,10 +84,16 @@ struct WooCarrierPackagesSelectionView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if viewModel.selectedTabIndex != nil, viewModel.tabs.isNotEmpty {
-                TopTabView(tabs: viewModel.tabs,
+            if viewModel.isLoadingPackages {
+                // TODO: think of a better progress/loading indicator
+                ProgressView()
+                    .progressViewStyle(.circular)
+                    .padding()
+            }
+            if viewModel.selectedCarriersTabIndex != nil, viewModel.carrierTabs.isNotEmpty {
+                TopTabView(tabs: viewModel.carrierTabs,
                            showContent: .constant(false),
-                           selectedTabIndex: $viewModel.selectedTabIndex,
+                           selectedTabIndex: $viewModel.selectedCarriersTabIndex,
                            tabsContainerHorizontalPadding: nil,
                            selectedStateColor: Color.accentColor,
                            unselectedStateColor: .secondary,
@@ -108,15 +103,24 @@ struct WooCarrierPackagesSelectionView: View {
                            tabItemContentHorizontalPadding: Constants.tabItemContentHorizontalPadding,
                            tabItemContentVerticalPadding: Constants.tabItemContentVerticalPadding)
             }
-            if viewModel.selectedCarrierTab != nil {
-                WooCarrierPackagesView(viewModel: viewModel)
+            if let selectedCarrierTab = viewModel.selectedCarrierTab {
+                WooCarrierPackagesView(carrierTab: selectedCarrierTab,
+                                       selectedPackageId: $viewModel.selectedCarriersPackageId,
+                                       starredPackages: $viewModel.starredCarriersPackages,
+                                       tapAction: { packageID in
+                    viewModel.selectedCarriersPackageId = viewModel.selectedCarriersPackageId == packageID ? nil : packageID
+                }, starAction: { packageID in
+                    Task {
+                        await viewModel.starUnstarPackage(packageID)
+                    }
+                })
             }
             Spacer()
             Divider()
             Button(WooShippingAddPackageView.Localization.addPackage) {
                 addPackageButtonTapped()
             }
-            .disabled(viewModel.selectedPackageId == nil)
+            .disabled(viewModel.selectedCarriersPackageId == nil)
             .buttonStyle(PrimaryButtonStyle())
             .padding()
         }
@@ -124,7 +128,7 @@ struct WooCarrierPackagesSelectionView: View {
 
     private func addPackageButtonTapped() {
         // call addPackageAction with data from selected package
-        guard let selectedPackage = viewModel.selectedPackage else { return }
+        guard let selectedPackage = viewModel.selectedCarriersPackage  else { return }
 
         addPackageAction(selectedPackage)
     }

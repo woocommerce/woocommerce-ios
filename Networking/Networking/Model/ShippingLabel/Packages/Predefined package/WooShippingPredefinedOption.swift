@@ -21,6 +21,13 @@ public struct WooShippingPredefinedOption: Equatable, GeneratedFakeable {
     }
 }
 
+/// Represents a predefined carrier option in Shipping Labels for the WooCommerce Shipping extension.
+///
+public struct WooShippingCarrierPredefinedOptions: Equatable, GeneratedFakeable {
+    public let carrierID: String
+    public let predefinedOptions: [WooShippingPredefinedOption]
+}
+
 // MARK: Decodable
 extension WooShippingPredefinedOption: Decodable {
     public init(from decoder: Decoder) throws {

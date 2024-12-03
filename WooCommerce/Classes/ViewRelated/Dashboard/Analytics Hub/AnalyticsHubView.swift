@@ -111,10 +111,7 @@ struct AnalyticsHubView: View {
     @StateObject var viewModel: AnalyticsHubViewModel
 
     var body: some View {
-        RefreshablePlainList(action: {
-            viewModel.trackAnalyticsInteraction()
-            await viewModel.updateData()
-        }) {
+        ScrollView {
             VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
                 AnalyticsTimeRangeCard(viewModel: viewModel.timeRangeCard,
                                        selectionType: $viewModel.timeRangeSelectionType)
@@ -131,6 +128,10 @@ struct AnalyticsHubView: View {
 
                 Spacer()
             }
+        }
+        .refreshable {
+            viewModel.trackAnalyticsInteraction()
+            await viewModel.updateData()
         }
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)

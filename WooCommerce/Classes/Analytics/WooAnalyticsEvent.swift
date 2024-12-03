@@ -78,8 +78,6 @@ extension WooAnalyticsEvent {
         case couponManagement = "coupon_management"
         /// Shown in store setup task list
         case storeSetup = "store_setup"
-        /// Tap to Pay on iPhone feedback button shown in the Payments menu after the first payment with TTP
-        case tapToPayFirstPaymentPaymentsMenu
         /// Shown in Product details form for a AI generated product
         case productCreationAI = "product_creation_ai"
         /// Shown in the order form after adding a shipping line

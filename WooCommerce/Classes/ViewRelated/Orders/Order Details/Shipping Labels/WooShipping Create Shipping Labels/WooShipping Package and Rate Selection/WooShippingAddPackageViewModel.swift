@@ -122,11 +122,53 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         }
     }
 
+    private func transformSavedPackages(_ response: WooShippingCreatePackageResponse) {
+        guard let storeOptions = self.storeOptions else {
+            return
+        }
+
+        // helper function for creating jointIDs for easier checking if package should be used or not
+        func jointID(carrierID: String, packageID: String) -> String {
+            return "\(carrierID)-\(packageID)"
+        }
+
+        var jointIDs: [String] = []
+        for option in response.predefinedOptions {
+            for packageID in option.predefinedPackageIDs {
+                jointIDs.append(jointID(carrierID: option.id, packageID: packageID))
+            }
+        }
+
+        var allPredefinedSaved: [any WooShippingPackageDataRepresentable] = []
+
+        // use predefined saved packages from list of all packages
+        // since the response gives us IDs we need to get them manually from the list
+        for carrier in self.allPredefinedOptions {
+            let carrierID = carrier.carrierID
+            for option in carrier.predefinedOptions {
+                for package in option.predefinedPackages {
+                    if jointIDs.contains(jointID(carrierID: carrierID, packageID: package.id)) {
+                        allPredefinedSaved.append(package.toPackageData(storeOptions: storeOptions,
+                                                                        groupTitle: option.title,
+                                                                        sourceID: option.providerID))
+                    }
+                }
+            }
+        }
+
+        self.predefinedSavedPackages = allPredefinedSaved
+
+        self.customSavedPackages = response.customPackages.map {
+            return $0.toPackageData(storeOptions: storeOptions)
+        }
+    }
+
     // star/unstar packages
     @MainActor
-    @discardableResult func starUnstarPackage(_ packageID: String, carrierID: String) {
+    func starUnstarPackage(_ packageID: String, carrierID: String) {
         if starredCarriersPackages.contains(packageID) {
             starredCarriersPackages.remove(packageID)
+            // TODO: call delete action when it is ready
         }
         else {
             starredCarriersPackages.insert(packageID)
@@ -134,36 +176,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
             let createAction = WooShippingAction.createPackage(siteID: siteID, customPackage: nil, predefinedOption: predefined) { result in
                 switch result {
                 case .success(let response):
-                    guard let storeOptions = self.storeOptions else {
-                        return
-                    }
-                    var jointIDs: [String] = []
-                    for option in response.predefinedOptions {
-                        for packageID in option.predefinedPackageIDs {
-                            jointIDs.append("\(option.id)-\(packageID)")
-                        }
-                    }
-
-                    var allPredefinedSaved: [any WooShippingPackageDataRepresentable] = []
-                    for carrier in self.allPredefinedOptions {
-                        let carrierID = carrier.carrierID
-                        for option in carrier.predefinedOptions {
-                            for package in option.predefinedPackages {
-                                let jointID = "\(carrierID)-\(package.id)"
-                                if jointIDs.contains(jointID) {
-                                    allPredefinedSaved.append(package.toPackageData(storeOptions: storeOptions,
-                                                                                    groupTitle: option.title,
-                                                                                    sourceID: option.providerID))
-                                }
-                            }
-                        }
-                    }
-
-                    self.predefinedSavedPackages = allPredefinedSaved
-
-                    self.customSavedPackages = response.customPackages.map {
-                        return $0.toPackageData(storeOptions: storeOptions)
-                    }
+                    self.transformSavedPackages(response)
                 case .failure(let error):
                     break
                 }

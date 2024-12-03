@@ -18,6 +18,7 @@ struct TotalsView: View {
     }
     @State private var isShowingPaymentsButtonSpacing: Bool = false
     @State private var isShowingSendReceiptModal: Bool = false
+    @State private var isShowingReceiptsNotEligibleAlert: Bool = false
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
@@ -85,6 +86,10 @@ struct TotalsView: View {
                 }
             }, isPresented: $isShowingSendReceiptModal)
             .posModalSizing()
+        }
+        .posModal(isPresented: $isShowingReceiptsNotEligibleAlert) {
+            Text("Oopsie, needs to update wc version")
+                .posModalSizing()
         }
     }
 
@@ -230,7 +235,11 @@ private extension TotalsView {
 
     private var sendReceiptButton: some View {
         Button(action: {
-            isShowingSendReceiptModal = true
+            if posModel.eligibleWooCommerceVersionForPOSReceipts {
+                isShowingSendReceiptModal = true
+            } else {
+                isShowingReceiptsNotEligibleAlert = true
+            }
         }, label: {
             HStack(spacing: Constants.buttonSpacing) {
                 Text(Localization.sendReceipt)

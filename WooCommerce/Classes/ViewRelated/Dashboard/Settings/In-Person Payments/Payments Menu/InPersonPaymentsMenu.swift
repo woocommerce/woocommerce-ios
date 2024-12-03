@@ -255,8 +255,7 @@ struct InPersonPaymentsMenu: View {
 
     @ViewBuilder
     var payoutSummary: some View {
-        if #available(iOS 16.0, *),
-           viewModel.shouldShowPayoutSummary {
+        if viewModel.shouldShowPayoutSummary {
             if viewModel.isLoadingPayoutSummary {
                 WooPaymentsPayoutsOverviewView(viewModel: payoutSummaryLoadingViewModel)
                     .redacted(reason: .placeholder)

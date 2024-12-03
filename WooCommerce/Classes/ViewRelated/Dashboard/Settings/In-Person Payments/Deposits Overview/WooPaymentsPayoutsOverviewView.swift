@@ -1,7 +1,6 @@
 import SwiftUI
 import Yosemite
 
-@available(iOS 16.0, *)
 struct WooPaymentsPayoutsOverviewView: View {
     @ObservedObject var viewModel: WooPaymentsPayoutsOverviewViewModel
 
@@ -29,7 +28,6 @@ struct WooPaymentsPayoutsOverviewView: View {
     }
 }
 
-@available(iOS 16.0, *)
 struct WooPaymentsPayoutsOverviewView_Previews: PreviewProvider {
     static var previews: some View {
         let overviewData = WooPaymentsPayoutsOverviewByCurrency(

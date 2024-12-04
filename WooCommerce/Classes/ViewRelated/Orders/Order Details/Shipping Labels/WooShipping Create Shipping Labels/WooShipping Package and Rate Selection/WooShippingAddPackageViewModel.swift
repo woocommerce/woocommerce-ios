@@ -115,9 +115,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
         self.allPredefinedOptions = packagesResult.allPredefinedOptions
 
-        predefinedSavedPackages.forEach { package in
-            starredCarriersPackages.insert(package.id)
-        }
+        starredCarriersPackages = Set(predefinedSavedPackages.map { $0.id })
 
         if selectedCarriersTabIndex == nil {
             self.selectedCarriersTabIndex = carrierPackages.isEmpty ? nil : 0

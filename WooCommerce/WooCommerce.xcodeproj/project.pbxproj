@@ -26,6 +26,7 @@
 		011D7A352CEC87B70007C187 /* CardPresentModalErrorEmailSent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011D7A342CEC87B60007C187 /* CardPresentModalErrorEmailSent.swift */; };
 		011DF3442C53A5CF000AFDD9 /* PointOfSaleCardPresentPaymentValidatingOrderMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011DF3432C53A5CF000AFDD9 /* PointOfSaleCardPresentPaymentValidatingOrderMessageViewModel.swift */; };
 		011DF3462C53A919000AFDD9 /* PointOfSaleCardPresentPaymentActivityIndicatingMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011DF3452C53A919000AFDD9 /* PointOfSaleCardPresentPaymentActivityIndicatingMessageView.swift */; };
+		013D2FB62CFF54BB00845D75 /* TapToPayEducationConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D2FB52CFF54B600845D75 /* TapToPayEducationConfiguration.swift */; };
 		014BD4B82C64E2BA0011A66E /* PointOfSaleOrderSyncErrorMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014BD4B72C64E2BA0011A66E /* PointOfSaleOrderSyncErrorMessageView.swift */; };
 		014BD4BA2C64FC0E0011A66E /* PointOfSaleOrderSyncErrorMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014BD4B92C64FC0E0011A66E /* PointOfSaleOrderSyncErrorMessageViewModel.swift */; };
 		0157A9962C4FEA7200866FFD /* PointOfSaleLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0157A9952C4FEA7200866FFD /* PointOfSaleLoadingView.swift */; };
@@ -3151,6 +3152,7 @@
 		011D7A342CEC87B60007C187 /* CardPresentModalErrorEmailSent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalErrorEmailSent.swift; sourceTree = "<group>"; };
 		011DF3432C53A5CF000AFDD9 /* PointOfSaleCardPresentPaymentValidatingOrderMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentValidatingOrderMessageViewModel.swift; sourceTree = "<group>"; };
 		011DF3452C53A919000AFDD9 /* PointOfSaleCardPresentPaymentActivityIndicatingMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentActivityIndicatingMessageView.swift; sourceTree = "<group>"; };
+		013D2FB52CFF54B600845D75 /* TapToPayEducationConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayEducationConfiguration.swift; sourceTree = "<group>"; };
 		014BD4B72C64E2BA0011A66E /* PointOfSaleOrderSyncErrorMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleOrderSyncErrorMessageView.swift; sourceTree = "<group>"; };
 		014BD4B92C64FC0E0011A66E /* PointOfSaleOrderSyncErrorMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleOrderSyncErrorMessageViewModel.swift; sourceTree = "<group>"; };
 		0157A9952C4FEA7200866FFD /* PointOfSaleLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleLoadingView.swift; sourceTree = "<group>"; };
@@ -6275,6 +6277,7 @@
 		019130152CF49A52008C0C88 /* Tap to Pay Education */ = {
 			isa = PBXGroup;
 			children = (
+				013D2FB52CFF54B600845D75 /* TapToPayEducationConfiguration.swift */,
 				0191301E2CF4E809008C0C88 /* TapToPayEducationStepView.swift */,
 				019130182CF49A77008C0C88 /* TapToPayEducationView.swift */,
 				0191301C2CF4E7B6008C0C88 /* TapToPayEducationViewModel.swift */,
@@ -15114,6 +15117,7 @@
 				31C21FA426D9949000916E2E /* SeveralReadersFoundViewController.swift in Sources */,
 				205B7ED12C19FD8500D14A36 /* PointOfSaleCardPresentPaymentErrorMessageViewModel.swift in Sources */,
 				CECEFA6D2CA2CEB50071C7DB /* WooShippingPackageAndRatePlaceholder.swift in Sources */,
+				013D2FB62CFF54BB00845D75 /* TapToPayEducationConfiguration.swift in Sources */,
 				02E3B62829026C8F007E0F13 /* AccountCreationForm.swift in Sources */,
 				CEE125512CC66C8700D3183D /* WooShippingServiceCardViewModel.swift in Sources */,
 				CC078531266E706300BA9AC1 /* ErrorTopBannerFactory.swift in Sources */,

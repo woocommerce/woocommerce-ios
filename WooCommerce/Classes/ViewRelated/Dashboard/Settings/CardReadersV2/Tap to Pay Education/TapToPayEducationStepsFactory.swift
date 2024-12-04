@@ -23,7 +23,10 @@ struct TapToPayEducationStepsFactory {
                   description: Localization.Intro.description),
             .init(title: Localization.ContactlessCard.title,
                   imageName: "tap-to-pay-education-contactless-cards-us",
-                  descriptionSteps: Localization.ContactlessCard.descriptionSteps)
+                  descriptionSteps: Localization.ContactlessCard.descriptionSteps),
+            .init(title: Localization.ApplePay.title,
+                  imageName: "tap-to-pay-education-apple-pay-us",
+                  descriptionSteps: Localization.ApplePay.descriptionSteps)
         ]
     }
 
@@ -38,6 +41,9 @@ struct TapToPayEducationStepsFactory {
             .init(title: Localization.ContactlessCard.title,
                   imageName: "tap-to-pay-education-contactless-cards-gb",
                   descriptionSteps: Localization.ContactlessCard.descriptionSteps),
+            .init(title: Localization.ApplePay.title,
+                  imageName: "tap-to-pay-education-apple-pay-gb",
+                  descriptionSteps: Localization.ApplePay.descriptionSteps)
         ]
     }
 }
@@ -93,6 +99,36 @@ private enum Localization {
                 comment: "Fourth description step for the 'How to accept contactless card' Tap to Pay merchant education"
             )
         ]
+    }
 
+    enum ApplePay {
+        static let title = NSLocalizedString(
+            "tapToPay.education.step.applePay.title",
+            value: "How to accept Apple Pay and other digital wallets with Tap to Pay on iPhone.",
+            comment: "Title for the 'How to accept Apple Pay' Tap to Pay merchant education"
+        )
+
+        static let descriptionSteps: [String] = [
+            NSLocalizedString(
+                "tapToPay.education.step.applePay.descriptionStep1",
+                value: "Create an order on your iPhone, add products or a custom amount, and check out with Tap to Pay on iPhone.",
+                comment: "First description step for the 'How to accept Apple Pay' Tap to Pay merchant education"
+            ),
+            NSLocalizedString(
+                "tapToPay.education.step.applePay.descriptionStep2",
+                value: "Present your iPhone to the customer.",
+                comment: "Second description step for the 'How to accept Apple Pay' Tap to Pay merchant education"
+            ),
+            NSLocalizedString(
+                "tapToPay.education.step.applePay.descriptionStep3",
+                value: "Your customer holds their device near your iPhone, over the contactless symbol.",
+                comment: "Third description step for the 'How to accept Apple Pay' Tap to Pay merchant education"
+            ),
+            NSLocalizedString(
+                "tapToPay.education.step.applePay.descriptionStep4",
+                value: "When you see the Done checkmark, the card read is complete and the transaction is being processed.",
+                comment: "Fourth description step for the 'How to accept Apple Pay' Tap to Pay merchant education"
+            )
+        ]
     }
 }

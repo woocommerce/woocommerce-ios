@@ -23,6 +23,7 @@ struct WooCarrierPackagesView: View {
     @Binding var starredPackages: Set<String>
     let tapAction: (String) -> Void
     let starAction: (String) -> Void
+    let onRefresh: () -> Void
 
     var body: some View {
         List {
@@ -62,6 +63,9 @@ struct WooCarrierPackagesView: View {
             }
         }
         .listStyle(.plain)
+        .refreshable {
+            onRefresh()
+        }
     }
 }
 
@@ -84,12 +88,6 @@ struct WooCarrierPackagesSelectionView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if viewModel.isLoadingPackages {
-                // TODO: think of a better progress/loading indicator
-                ProgressView()
-                    .progressViewStyle(.circular)
-                    .padding()
-            }
             if viewModel.selectedCarriersTabIndex != nil, viewModel.carrierTabs.isNotEmpty {
                 TopTabView(tabs: viewModel.carrierTabs,
                            showContent: .constant(false),
@@ -103,6 +101,11 @@ struct WooCarrierPackagesSelectionView: View {
                            tabItemContentHorizontalPadding: Constants.tabItemContentHorizontalPadding,
                            tabItemContentVerticalPadding: Constants.tabItemContentVerticalPadding)
             }
+            if viewModel.isLoadingPackages {
+                ProgressView()
+                    .progressViewStyle(.circular)
+                    .padding()
+            }
             if let selectedCarrierTab = viewModel.selectedCarrierTab {
                 WooCarrierPackagesView(carrierTab: selectedCarrierTab,
                                        selectedPackageId: $viewModel.selectedCarriersPackageId,
@@ -111,6 +114,8 @@ struct WooCarrierPackagesSelectionView: View {
                     viewModel.selectedCarriersPackageId = viewModel.selectedCarriersPackageId == packageID ? nil : packageID
                 }, starAction: { packageID in
                     viewModel.starUnstarPackage(packageID, carrierID: selectedCarrierTab.carrier.rawValue)
+                }, onRefresh: {
+                    viewModel.loadPackages()
                 })
             }
             Spacer()

@@ -1,5 +1,4 @@
 import Foundation
-import protocol Yosemite.POSItem
 
 final class CartViewHelper {
     func itemsInCartLabel(for itemsCount: Int) -> String? {
@@ -17,6 +16,10 @@ final class CartViewHelper {
             return true
         }
         return orderState.isSyncing
+    }
+
+    func shouldShowClearCartButton(cart: [CartItem], orderStage: PointOfSaleOrderStage) -> Bool {
+        cart.isNotEmpty && orderStage == .building
     }
 }
 

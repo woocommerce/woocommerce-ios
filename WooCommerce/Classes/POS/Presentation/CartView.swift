@@ -1,5 +1,4 @@
 import SwiftUI
-import protocol Yosemite.POSItem
 
 struct CartView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
@@ -57,7 +56,7 @@ struct CartView: View {
                             )
                     }
                     .padding(.leading, Constants.itemHorizontalPadding)
-                    .renderedIf(posModel.cart.isNotEmpty && posModel.orderStage == .building)
+                    .renderedIf(shouldShowClearCartButton)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -147,6 +146,12 @@ private extension CartView {
         viewHelper.shouldPreventCartEditing(
             orderState: posModel.orderState,
             paymentState: posModel.paymentState)
+    }
+
+    var shouldShowClearCartButton: Bool {
+        viewHelper.shouldShowClearCartButton(
+            cart: posModel.cart,
+            orderStage: posModel.orderStage)
     }
 }
 

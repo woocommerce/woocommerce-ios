@@ -2,40 +2,52 @@
 
 import Foundation
 import protocol Yosemite.PointOfSaleItemServiceProtocol
-import protocol Yosemite.POSItem
+import protocol Yosemite.POSDisplayableItem
+import protocol Yosemite.POSOrderableItem
+import protocol Yosemite.OrderSyncProductTypeProtocol
+import struct Yosemite.OrderSyncProductInput
 import enum Yosemite.ProductType
+import struct Yosemite.ProductBundleItem
+import struct Yosemite.OrderItem
 import Combine
 
 // MARK: - PreviewProvider helpers
 //
-struct POSProductPreview: POSItem {
-    let itemID: UUID
-    let productID: Int64
+struct POSProductPreview: POSOrderableItem, Equatable {
+    let id: UUID
     let name: String
-    let price: String
     let formattedPrice: String
-    let itemCategories: [String]
     var productImageSource: String?
-    let productType: ProductType
+
+    struct POSProductPreviewType: OrderSyncProductTypeProtocol {
+        var price: String = ""
+        var productID: Int64 = 0
+        var productType: Yosemite.ProductType = .simple
+        var bundledItems: [Yosemite.ProductBundleItem] = []
+    }
+
+    func toOrderSyncProductInput(quantity: Decimal) -> OrderSyncProductInput {
+        OrderSyncProductInput(product: .product(POSProductPreviewType()), quantity: 1)
+    }
+
+    func matches(orderItem: OrderItem) -> Bool {
+        return false
+    }
 }
 
 final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
-    func providePointOfSaleItems(pageNumber: Int) async throws -> [Yosemite.POSItem] {
+    func providePointOfSaleItems(pageNumber: Int) async throws -> [POSDisplayableItem] {
         []
     }
 
-    func providePointOfSaleItems() -> [POSItem] {
+    func providePointOfSaleItems() -> [POSDisplayableItem] {
         return mockItems
     }
 
-    func providePointOfSaleItem() -> POSItem {
-        POSProductPreview(itemID: UUID(),
-                          productID: 1,
+    func providePointOfSaleItem() -> POSOrderableItem {
+        POSProductPreview(id: UUID(),
                           name: "Product 1",
-                          price: "1.00",
-                          formattedPrice: "$1.00",
-                          itemCategories: [],
-                          productType: ProductType.simple)
+                          formattedPrice: "$1.00")
     }
 }
 
@@ -43,7 +55,7 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
     @Published var itemListState: ItemListState = .initialLoading
     var itemListStatePublisher: any Publisher<ItemListState, Never> { $itemListState }
 
-    var allItems: [any Yosemite.POSItem] = []
+    var allItems: [POSDisplayableItem] = []
 
     func loadInitialItems() async {
         itemListState = .loaded(mockItems)
@@ -58,12 +70,12 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
     }
 }
 
-private var mockItems: [POSItem] {
+private var mockItems: [POSDisplayableItem] {
     return [
-        POSProductPreview(itemID: UUID(), productID: 1, name: "Product 1", price: "1.00", formattedPrice: "$1.00", itemCategories: [], productType: .simple),
-        POSProductPreview(itemID: UUID(), productID: 2, name: "Product 2", price: "2.00", formattedPrice: "$2.00", itemCategories: [], productType: .simple),
-        POSProductPreview(itemID: UUID(), productID: 3, name: "Product 3", price: "3.00", formattedPrice: "$3.00", itemCategories: [], productType: .simple),
-        POSProductPreview(itemID: UUID(), productID: 4, name: "Product 4", price: "4.00", formattedPrice: "$4.00", itemCategories: [], productType: .simple)
+        POSProductPreview(id: UUID(), name: "Product 1", formattedPrice: "$1.00"),
+        POSProductPreview(id: UUID(), name: "Product 2", formattedPrice: "$2.00"),
+        POSProductPreview(id: UUID(), name: "Product 3", formattedPrice: "$3.00"),
+        POSProductPreview(id: UUID(), name: "Product 4", formattedPrice: "$4.00")
     ]
 }
 

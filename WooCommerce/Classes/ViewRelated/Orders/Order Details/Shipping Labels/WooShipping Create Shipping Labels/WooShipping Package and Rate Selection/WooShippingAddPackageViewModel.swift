@@ -170,7 +170,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
             _ = withAnimation(starAnimation) {
                 starredCarriersPackages.remove(packageID)
             }
-            // TODO: call delete action when it is ready
+            // TODO: use delete action when it is ready
         }
         else {
             _ = withAnimation(starAnimation) {
@@ -182,8 +182,9 @@ final class WooShippingAddPackageViewModel: ObservableObject {
                 switch result {
                 case .success(let response):
                     self.transformSavedPackages(response)
-                case .failure(let error):
+                case .failure(_):
                     // TODO: should we undo the starring of the package if request fails?
+                    self.starredCarriersPackages.remove(packageID)
                     break
                 }
             }

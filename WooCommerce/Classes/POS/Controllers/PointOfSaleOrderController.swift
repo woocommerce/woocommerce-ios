@@ -12,6 +12,7 @@ protocol PointOfSaleOrderControllerProtocol {
     var order: Order? { get }
 
     func syncOrder(for cartProducts: [CartItem], retryHandler: @escaping () async -> Void) async
+    func sendReceipt(recipientEmail: String) async
     func clearOrder()
 }
 
@@ -67,6 +68,18 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
                 await retryHandler()
             }
         }))
+    }
+
+    func sendReceipt(recipientEmail: String) async {
+        guard let order = order else {
+            return
+        }
+        do {
+            try await orderService.sendReceipt(order: order, recipientEmail: recipientEmail)
+        } catch {
+            // TODO:
+            // https://github.com/woocommerce/woocommerce-ios/issues/14464
+        }
     }
 
     func clearOrder() {

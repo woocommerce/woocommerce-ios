@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-import protocol Yosemite.POSItem
+import protocol Yosemite.POSOrderableItem
 import protocol WooFoundation.Analytics
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
@@ -26,7 +26,7 @@ protocol PointOfSaleAggregateModelProtocol {
     func reload() async
 
     var cart: [CartItem] { get }
-    func addToCart(_ item: POSItem)
+    func addToCart(_ item: POSOrderableItem)
     func remove(cartItem: CartItem)
     func removeAllItemsFromCart()
     func addMoreToCart()
@@ -106,7 +106,7 @@ extension PointOfSaleAggregateModel {
 // MARK: - Cart
 
 extension PointOfSaleAggregateModel {
-    func addToCart(_ item: POSItem) {
+    func addToCart(_ item: POSOrderableItem) {
         cart.insert(CartItem(id: UUID(), item: item, quantity: 1), at: 0)
         Task { @MainActor in
             analytics.track(.pointOfSaleAddItemToCart)
@@ -194,6 +194,11 @@ extension PointOfSaleAggregateModel {
         } catch {
             DDLogError("Error taking payment: \(error)")
         }
+    }
+
+    @MainActor
+    func sendReceipt(to emailAddress: String) async {
+        await orderController.sendReceipt(recipientEmail: emailAddress)
     }
 
     @MainActor

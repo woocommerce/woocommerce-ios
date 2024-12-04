@@ -176,7 +176,7 @@ private extension CardReaderSettingsAlerts {
 
     func scanningFailed(error: Error, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         switch error {
-        case CardReaderServiceError.bluetoothDenied:
+        case CardReaderServiceError.bluetoothDenied, CardReaderServiceError.discovery(underlyingError: .bluetoothDenied):
             return CardPresentModalBluetoothRequired(error: error, primaryAction: close)
         default:
             return CardPresentModalScanningFailed(error: error, primaryAction: close)

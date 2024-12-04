@@ -232,8 +232,7 @@ final class ProductFormViewModelTests: XCTestCase {
         // Given
         let product = Product.fake()
         let viewModel = createViewModel(product: product,
-                                        formType: .edit,
-                                        featureFlagService: MockFeatureFlagService(favoriteProducts: true))
+                                        formType: .edit)
 
         // When
         XCTAssertTrue(viewModel.canFavoriteProduct())
@@ -243,19 +242,7 @@ final class ProductFormViewModelTests: XCTestCase {
         // Given
         let product = Product.fake()
         let viewModel = createViewModel(product: product,
-                                        formType: .add,
-                                        featureFlagService: MockFeatureFlagService(favoriteProducts: true))
-
-        // When
-        XCTAssertFalse(viewModel.canFavoriteProduct())
-    }
-
-    func test_canFavoriteProduct_is_false_when_feature_flag_off() {
-        // Given
-        let product = Product.fake()
-        let viewModel = createViewModel(product: product,
-                                        formType: .add,
-                                        featureFlagService: MockFeatureFlagService(favoriteProducts: false))
+                                        formType: .add)
 
         // When
         XCTAssertFalse(viewModel.canFavoriteProduct())
@@ -267,8 +254,7 @@ final class ProductFormViewModelTests: XCTestCase {
         let mockUseCase = MockFavoriteProductsUseCase()
         let viewModel = createViewModel(product: product,
                                         formType: .add,
-                                        favoriteProductsUseCase: mockUseCase,
-                                        featureFlagService: MockFeatureFlagService(favoriteProducts: true))
+                                        favoriteProductsUseCase: mockUseCase)
 
         // When
         viewModel.markAsFavorite()
@@ -284,8 +270,7 @@ final class ProductFormViewModelTests: XCTestCase {
         let mockUseCase = MockFavoriteProductsUseCase()
         let viewModel = createViewModel(product: product,
                                         formType: .add,
-                                        favoriteProductsUseCase: mockUseCase,
-                                        featureFlagService: MockFeatureFlagService(favoriteProducts: true))
+                                        favoriteProductsUseCase: mockUseCase)
 
         // When
         viewModel.removeFromFavorite()

@@ -21,7 +21,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let blazeCampaignObjective: Bool
     private let revampedShippingLabelCreation: Bool
     private let viewEditCustomFieldsInProductsAndOrders: Bool
-    private let favoriteProducts: Bool
     private let paymentsOnboardingInPointOfSale: Bool
     private let isProductGlobalUniqueIdentifierSupported: Bool
     private let isSendReceiptAfterPaymentEnabled: Bool
@@ -45,7 +44,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          blazeCampaignObjective: Bool = false,
          revampedShippingLabelCreation: Bool = false,
          viewEditCustomFieldsInProductsAndOrders: Bool = false,
-         favoriteProducts: Bool = false,
          paymentsOnboardingInPointOfSale: Bool = false,
          isProductGlobalUniqueIdentifierSupported: Bool = false,
          isSendReceiptAfterPaymentEnabled: Bool = false) {
@@ -68,7 +66,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.blazeCampaignObjective = blazeCampaignObjective
         self.revampedShippingLabelCreation = revampedShippingLabelCreation
         self.viewEditCustomFieldsInProductsAndOrders = viewEditCustomFieldsInProductsAndOrders
-        self.favoriteProducts = favoriteProducts
         self.paymentsOnboardingInPointOfSale = paymentsOnboardingInPointOfSale
         self.isProductGlobalUniqueIdentifierSupported = isProductGlobalUniqueIdentifierSupported
         self.isSendReceiptAfterPaymentEnabled = isSendReceiptAfterPaymentEnabled
@@ -114,8 +111,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return revampedShippingLabelCreation
         case .viewEditCustomFieldsInProductsAndOrders:
             return viewEditCustomFieldsInProductsAndOrders
-        case .favoriteProducts:
-            return favoriteProducts
         case .paymentsOnboardingInPointOfSale:
             return paymentsOnboardingInPointOfSale
         case .productGlobalUniqueIdentifierSupport:

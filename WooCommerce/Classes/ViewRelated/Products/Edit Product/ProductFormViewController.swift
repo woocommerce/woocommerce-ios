@@ -6,6 +6,7 @@ import WordPressUI
 import Yosemite
 import SwiftUI
 import protocol Storage.StorageManagerType
+import TipKit
 
 /// The entry UI for adding/editing a Product.
 final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: UIViewController, UITableViewDelegate {
@@ -50,7 +51,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let productImageActionHandler: ProductImageActionHandler
     private let productUIImageLoader: ProductUIImageLoader
     private let productImageUploader: ProductImageUploaderProtocol
-    private var tooltipPresenter: TooltipPresenter?
 
     private let currency: String
 
@@ -78,13 +78,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
     private var descriptionAICoordinator: ProductDescriptionAICoordinator?
     private let subscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
-
-    private lazy var tooltipUseCase = ProductDescriptionAITooltipUseCase(isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
-    private var didShowTooltip = false {
-        didSet {
-            tooltipUseCase.numberOfTimesWriteWithAITooltipIsShown += 1
-        }
-    }
+    private var aiTipCoordinator: TipPresenter?
 
     /// The coordinator for sharing products
     ///
@@ -190,10 +184,26 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         viewModel.trackProductFormLoaded()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if #available(iOS 17.0, *) {
+            aiTipCoordinator = TipPresenter(tip: ProductFormAITip())
+            ProductFormAITip.isDescriptionAIEnabled = aiEligibilityChecker.isFeatureEnabled(.description)
+            ProductFormAITip.emptyProductDescription = product.description?.isEmpty == true
+            guard let indexPath = findDescriptionAICellIndexPath(),
+                  let descriptionAICell = tableView.cellForRow(at: indexPath) as? ButtonTableViewCell else {
+                return
+            }
+            aiTipCoordinator?.displayTip(animated, on: descriptionAICell.button, view: self)
+        }
+    }
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
         view.endEditing(true)
+
+        aiTipCoordinator?.dismissTip()
 
         if isBeingDismissedInAnyWay {
             productImageUploader.startEmittingErrors(key: .init(siteID: viewModel.productModel.siteID,
@@ -403,19 +413,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         popoverController?.barButtonItem = moreOptionsButton
 
         present(actionSheet, animated: true)
-    }
-
-    // MARK: - UIScrollViewDelegate
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard !didShowTooltip else {
-            return
-        }
-
-        if let tooltipPresenter,
-           isDescriptionAICellVisible() {
-            tooltipPresenter.showTooltip()
-            didShowTooltip = true
-        }
     }
 
     // MARK: - UITableViewDelegate
@@ -679,68 +676,8 @@ private extension ProductFormViewController {
     }
 }
 
-// MARK: - Tooltip
-//
+// MARK: Tip
 private extension ProductFormViewController {
-    func tooltipTargetPoint() -> CGPoint {
-        guard let indexPath = findDescriptionAICellIndexPath() else {
-            return .zero
-        }
-
-        guard let cell = tableView.cellForRow(at: indexPath),
-              let buttonCell = cell as? ButtonTableViewCell,
-              let imageView = buttonCell.button.imageView else {
-            return .zero
-        }
-
-        let rectOfButtonInTableView = tableView.convert(buttonCell.button.frame, from: buttonCell)
-
-        return CGPoint(
-            x: rectOfButtonInTableView.minX + imageView.frame.midX,
-            y: rectOfButtonInTableView.maxY
-        )
-    }
-
-    func updateTooltipPresenter() {
-        if let tooltipPresenter {
-            tooltipPresenter.removeTooltip()
-            self.tooltipPresenter = nil
-        }
-
-        guard tooltipUseCase.shouldShowTooltip(for: product) == true else {
-            return
-        }
-
-        let tooltip = Tooltip(containerWidth: tableView.bounds.width)
-
-        tooltip.title = Localization.AITooltip.title
-        tooltip.message = Localization.AITooltip.message
-        tooltip.primaryButtonTitle = Localization.AITooltip.gotIt
-        tooltipPresenter = TooltipPresenter(
-            containerView: tableView,
-            tooltip: tooltip,
-            target: .point(tooltipTargetPoint),
-            primaryTooltipAction: { [weak self] in
-                self?.tooltipUseCase.hasDismissedWriteWithAITooltip = true
-            }
-        )
-        tooltipPresenter?.tooltipVerticalPosition = .below
-
-        if isDescriptionAICellVisible() {
-            tooltipPresenter?.showTooltip()
-            didShowTooltip = true
-        }
-    }
-
-    func isDescriptionAICellVisible() -> Bool {
-        guard let indexPath = findDescriptionAICellIndexPath() else {
-            return false
-        }
-
-        let cellRect = tableView.rectForRow(at: indexPath)
-        return tableView.bounds.contains(cellRect)
-    }
-
     func findDescriptionAICellIndexPath() -> IndexPath? {
         for (sectionIndex, section) in tableViewModel.sections.enumerated() {
             if case .primaryFields(rows: let sectionRows) = section {
@@ -890,8 +827,6 @@ private extension ProductFormViewController {
         } else {
             tableView.reloadData()
         }
-
-        updateTooltipPresenter()
     }
 
     func updateDataSourceActions() {
@@ -2099,15 +2034,6 @@ private enum Localization {
         comment: "The title of the alert when there is an error duplicating the product"
     )
     static let defaultTitle = NSLocalizedString("productForm.defaultTitle", value: "Product", comment: "Product title")
-
-    enum AITooltip {
-        static let title = NSLocalizedString("Write with AI",
-                                             comment: "The title of the Write with AI tooltip")
-        static let message = NSLocalizedString("Use our AI-powered tool to quickly generate product descriptions. Just input keywords and we'll do the rest!",
-                                               comment: "The message for the Write with AI tooltip")
-        static let gotIt = NSLocalizedString("Got it",
-                                             comment: "Button title that dismisses the Write with AI tooltip")
-    }
 }
 
 private enum URLs {

@@ -3,6 +3,8 @@ import TipKit
 
 @available(iOS 17.0, *)
 struct InvertedTipStyle: TipViewStyle {
+    var showCloseButton: Bool = true
+
     func makeBody(configuration: TipViewStyle.Configuration) -> some View {
         VStack(alignment: .leading) {
             HStack(alignment: .top) {
@@ -27,6 +29,7 @@ struct InvertedTipStyle: TipViewStyle {
                                     .scaledToFit()
                                     .foregroundStyle(Color(.invertedLink))
                             }
+                            .renderedIf(showCloseButton)
                         }
                         configuration.message?
                             .font(.body)

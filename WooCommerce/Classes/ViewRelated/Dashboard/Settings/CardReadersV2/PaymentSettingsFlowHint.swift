@@ -17,6 +17,8 @@ struct PaymentSettingsFlowHint: View {
             Spacer()
         }
         .padding(.horizontal, 8)
+        .accessibilityElement()
+        .accessibilityLabel("\(number). \(text)")
     }
 }
 

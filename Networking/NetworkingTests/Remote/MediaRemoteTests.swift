@@ -99,14 +99,14 @@ final class MediaRemoteTests: XCTestCase {
         // Then
         let mediaItems = try XCTUnwrap(result.get())
         XCTAssertEqual(mediaItems.count, 3)
-        let textMedia = mediaItems[0]
+        let textMedia = mediaItems[2]
         XCTAssertEqual(textMedia.mediaID, 28)
         XCTAssertEqual(textMedia.slug, "xanh-3")
         XCTAssertEqual(textMedia.mimeType, "text/plain")
         XCTAssertEqual(textMedia.title?.rendered, "Xanh-3")
         XCTAssertEqual(textMedia.src, "https://ninja.media/wp-content/uploads/2023/12/Xanh-3.txt")
 
-        let imageMedia = mediaItems[1]
+        let imageMedia = mediaItems[0]
         XCTAssertEqual(imageMedia.mediaID, 22)
         XCTAssertEqual(imageMedia.date, Date(timeIntervalSince1970: 1637546157))
         XCTAssertEqual(imageMedia.slug, "img_0111-2")

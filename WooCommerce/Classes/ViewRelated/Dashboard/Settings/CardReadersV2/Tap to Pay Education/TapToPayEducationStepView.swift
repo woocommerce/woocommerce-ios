@@ -25,7 +25,7 @@ struct TapToPayEducationStepView: View {
                 }
             } else if let description = viewModel.descriptionSteps.first {
                 Text(description)
-                    .font(.callout)
+                    .font(.body)
             }
             Spacer(minLength: 0)
         }

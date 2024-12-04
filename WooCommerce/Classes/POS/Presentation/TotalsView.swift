@@ -63,6 +63,11 @@ struct TotalsView: View {
                     }
                     .animation(.default, value: posModel.cardPresentPaymentInlineMessage)
                     paymentsActionButtons
+                    if isShowingReceiptsNotEligibleAlert {
+                        POSReceiptEligibilityBanner()
+                            .padding(.bottom, 8)
+                            .animation(.easeInOut(duration: 0.3), value: isShowingReceiptsNotEligibleAlert)
+                    }
                     Spacer()
                 }
                 .animation(.default, value: isShowingCardReaderStatus)
@@ -86,10 +91,6 @@ struct TotalsView: View {
                 }
             }, isPresented: $isShowingSendReceiptModal)
             .posModalSizing()
-        }
-        .posModal(isPresented: $isShowingReceiptsNotEligibleAlert) {
-            Text("Oopsie, needs to update wc version")
-                .posModalSizing()
         }
     }
 
@@ -365,6 +366,27 @@ private extension TotalsView {
         }
 
         return .primary
+    }
+}
+
+extension TotalsView {
+    private struct POSReceiptEligibilityBanner: View {
+        var body: some View {
+            HStack(spacing: 8) {
+                Image(uiImage: .appIconDefault)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 40, height: 40)
+                    .clipShape(Circle())
+                    .padding(4)
+                Text("Please update WooCommerce to version 9.5.0")
+                    .foregroundColor(Color.posPrimaryText)
+            }
+            .padding()
+            .background(Color.posPrimaryBackground)
+            .cornerRadius(20)
+            .padding(.horizontal, 16)
+        }
     }
 }
 

@@ -13,6 +13,7 @@
 - [Internal] Updated storage usage in CouponStore [https://github.com/woocommerce/woocommerce-ios/pull/14530]
 - [Internal] Update storage usage for BlazeStore [https://github.com/woocommerce/woocommerce-ios/pull/14532]
 - [Internal] Updated storage usage in ProductShippingClassStore [https://github.com/woocommerce/woocommerce-ios/pull/14520]
+- [Internal] Updated storage usage in ShippingMethodStore [https://github.com/woocommerce/woocommerce-ios/pull/14568]
 - [Internal] Updated storage usage in TaxStore [https://github.com/woocommerce/woocommerce-ios/pull/14567]
 - [Internal] Updated storage usage in SystemStatusStore [https://github.com/woocommerce/woocommerce-ios/pull/14559]
 - [Internal] Updated storage usage in SitePluginStore [https://github.com/woocommerce/woocommerce-ios/pull/14560]

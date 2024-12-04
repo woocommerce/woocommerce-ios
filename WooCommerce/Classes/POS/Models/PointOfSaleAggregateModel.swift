@@ -197,6 +197,11 @@ extension PointOfSaleAggregateModel {
     }
 
     @MainActor
+    func sendReceipt(to emailAddress: String) async {
+        await orderController.sendReceipt(recipientEmail: emailAddress)
+    }
+
+    @MainActor
     private func collectPayment(for order: Order) async throws {
         _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth, channel: .pos)
     }

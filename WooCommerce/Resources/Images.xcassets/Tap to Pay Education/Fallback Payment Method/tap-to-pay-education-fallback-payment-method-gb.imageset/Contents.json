@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "tap-to-pay-education-fallback-payment-method-gb.pdf",
+      "filename" : "tap-to-pay-education-fallback-payment-method-gb-light.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "tap-to-pay-education-fallback-payment-method-gb-dark.pdf",
       "idiom" : "universal"
     }
   ],

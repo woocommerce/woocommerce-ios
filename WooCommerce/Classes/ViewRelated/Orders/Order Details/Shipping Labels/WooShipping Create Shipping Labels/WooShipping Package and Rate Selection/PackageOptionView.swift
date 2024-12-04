@@ -87,6 +87,7 @@ private extension View {
     func popoverTipIfSupported(tip: StarActionTip?) -> some View {
         if #available(iOS 17.0, *), let tip {
             self.popoverTip(tip)
+                .tipViewStyle(InvertedTipStyle())
         } else {
             self
         }

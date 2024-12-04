@@ -185,7 +185,6 @@ final class WooShippingAddPackageViewModel: ObservableObject {
                 case .failure(_):
                     // TODO: should we undo the starring of the package if request fails?
                     self.starredCarriersPackages.remove(packageID)
-                    break
                 }
             }
 

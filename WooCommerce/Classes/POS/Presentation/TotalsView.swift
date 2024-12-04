@@ -391,7 +391,7 @@ extension TotalsView {
                 }
             }
         }
-        
+
         enum Constants {
             static let elementSpacing: CGFloat = 8
             static let cornerRadius: CGFloat = 20
@@ -399,7 +399,7 @@ extension TotalsView {
             static let imagePadding: CGFloat = 4
             static let bannerPadding: CGFloat = 16
         }
-        
+
         enum Localization {
             static let updateWooCommerceVersionText = NSLocalizedString(
                 "pos.totalsView.receipts.banner.updateWooCommerceVersionText",

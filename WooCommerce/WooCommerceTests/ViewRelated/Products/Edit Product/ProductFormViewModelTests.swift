@@ -261,7 +261,6 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.canFavoriteProduct())
     }
 
-    @MainActor
     func test_markAsFavorite_marks_product_as_favorite() async {
         // Given
         let product = Product.fake()

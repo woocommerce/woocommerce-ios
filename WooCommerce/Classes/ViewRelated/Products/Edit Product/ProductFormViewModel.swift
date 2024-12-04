@@ -876,12 +876,10 @@ extension ProductFormViewModel {
         await favoriteProductsUseCase.isFavorite(productID: product.productID)
     }
 
-    @MainActor
     func markAsFavorite() {
         favoriteProductsUseCase.markAsFavorite(productID: product.productID)
     }
 
-    @MainActor
     func removeFromFavorite() {
         favoriteProductsUseCase.removeFromFavorite(productID: product.productID)
     }

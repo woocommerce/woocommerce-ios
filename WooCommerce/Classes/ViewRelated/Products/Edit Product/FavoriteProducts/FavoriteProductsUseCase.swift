@@ -47,13 +47,11 @@ struct DefaultFavoriteProductsUseCase: FavoriteProductsUseCase {
         self.featureFlagService = featureFlagService
     }
 
-    @MainActor
     func markAsFavorite(productID: Int64) {
         let action = AppSettingsAction.setProductIDAsFavorite(productID: productID, siteID: siteID)
         stores.dispatch(action)
     }
 
-    @MainActor
     func removeFromFavorite(productID: Int64) {
         let action = AppSettingsAction.removeProductIDAsFavorite(productID: productID, siteID: siteID)
         stores.dispatch(action)

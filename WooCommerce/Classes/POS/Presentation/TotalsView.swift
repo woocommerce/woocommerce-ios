@@ -18,7 +18,7 @@ struct TotalsView: View {
     }
     @State private var isShowingPaymentsButtonSpacing: Bool = false
     @State private var isShowingSendReceiptModal: Bool = false
-    @State private var isShowingReceiptsNotEligibleAlert: Bool = false
+    @State private var isShowingReceiptsNotEligibleBanner: Bool = false
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
@@ -49,7 +49,6 @@ struct TotalsView: View {
                                 .transition(.opacity)
                                 .background(cardReaderViewLayout.backgroundColor)
                                 .accessibilityShowsLargeContentViewer()
-                                .minimumScaleFactor(0.1)
                                 .layoutPriority(1)
                         }
 
@@ -64,12 +63,6 @@ struct TotalsView: View {
                     .animation(.default, value: posModel.cardPresentPaymentInlineMessage)
                     paymentsActionButtons
                     Spacer()
-                    if isShowingReceiptsNotEligibleAlert {
-                        VStack {
-                            POSReceiptEligibilityBanner(isVisible: $isShowingReceiptsNotEligibleAlert)
-                            Spacer()
-                        }
-                    }
                 }
                 .animation(.default, value: isShowingCardReaderStatus)
             case .error(let viewModel):
@@ -240,7 +233,7 @@ private extension TotalsView {
             if posModel.eligibleWooCommerceVersionForPOSReceipts {
                 isShowingSendReceiptModal = true
             } else {
-                isShowingReceiptsNotEligibleAlert = true
+                isShowingReceiptsNotEligibleBanner = true
             }
         }, label: {
             HStack(spacing: Constants.buttonSpacing) {
@@ -273,6 +266,9 @@ private extension TotalsView {
                         isShowingPaymentsButtonSpacing = true
                     }
                 }
+            if isShowingReceiptsNotEligibleBanner {
+                POSReceiptEligibilityBanner(isVisible: $isShowingReceiptsNotEligibleBanner)
+            }
             Spacer().frame(height: Constants.paymentsButtonSpacing)
         }
         else {
@@ -375,25 +371,40 @@ extension TotalsView {
         @Binding var isVisible: Bool
 
         var body: some View {
-            HStack(spacing: 8) {
+            HStack(spacing: Constants.elementSpacing) {
                 Image(uiImage: .appIconDefault)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 40, height: 40)
+                    .frame(width: Constants.imagesize, height: Constants.imagesize)
                     .clipShape(Circle())
-                    .padding(4)
-                Text("Please update WooCommerce to version 9.5.0")
+                    .padding(Constants.imagePadding)
+                Text(Localization.updateWooCommerceVersionText)
                     .foregroundColor(Color.posPrimaryText)
             }
             .padding()
             .background(Color.posPrimaryBackground)
-            .cornerRadius(20)
-            .padding(.horizontal, 16)
+            .cornerRadius(Constants.cornerRadius)
+            .padding(.horizontal, Constants.bannerPadding)
             .onTapGesture {
                 withAnimation {
                     isVisible = false
                 }
             }
+        }
+        
+        enum Constants {
+            static let elementSpacing: CGFloat = 8
+            static let cornerRadius: CGFloat = 20
+            static let imagesize: CGFloat = 40
+            static let imagePadding: CGFloat = 4
+            static let bannerPadding: CGFloat = 16
+        }
+        
+        enum Localization {
+            static let updateWooCommerceVersionText = NSLocalizedString(
+                "pos.totalsView.receipts.banner.updateWooCommerceVersionText",
+                value: "Please update WooCommerce to version 9.5.0",
+                comment: "Text for the banner requiring specific WooCommerce version.")
         }
     }
 }

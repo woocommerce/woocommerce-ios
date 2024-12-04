@@ -117,6 +117,7 @@ final class InAppPurchaseStoreTests: XCTestCase {
         XCTAssert(result.isFailure)
     }
 
+    // TODO: re-enable the test case when it can pass consistently.
     func test_purchase_product_completes_purchase() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "iap/orders", filename: "iap-order-create")

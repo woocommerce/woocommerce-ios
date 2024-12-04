@@ -1,3 +1,4 @@
+import Foundation
 import Testing
 @testable import WooCommerce
 
@@ -68,4 +69,20 @@ struct CartViewHelperTests {
         #expect(sut.itemsInCartLabel(for: count) == expected)
     }
 
+    @Test func shouldShowClearCartButton_empty_cart_false() async throws {
+        #expect(sut.shouldShowClearCartButton(cart: [], orderStage: .building) == false)
+        #expect(sut.shouldShowClearCartButton(cart: [], orderStage: .finalizing) == false)
+    }
+
+    @Test func shouldShowClearCartButton_items_in_cart_and_building_true() async throws {
+        #expect(sut.shouldShowClearCartButton(cart: [makeItem()], orderStage: .building) == true)
+    }
+
+    @Test func shouldShowClearCartButton_items_in_cart_and_finalizing_false() async throws {
+        #expect(sut.shouldShowClearCartButton(cart: [makeItem()], orderStage: .finalizing) == false)
+    }
+}
+
+private func makeItem() -> CartItem {
+    CartItem(id: UUID(), item: MockPOSItem(name: "Item", formattedPrice: "$1.00"), quantity: 1)
 }

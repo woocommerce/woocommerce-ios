@@ -16,64 +16,72 @@ struct PackageOptionView: View {
     var starAction: (() -> Void)?
     var starred: Bool?
 
-    /// Title for an optional tip to explain the star action.
+    /// Title for an optional tip.
     ///
     /// Set this title to display the tip once.
-    var starTipTitle: String? = nil
-    /// Optional message for the tip to explain the star action.
-    var starTipMessage: String? = nil
+    var tipTitle: Text? = nil
+    /// Optional message for the tip.
+    var tipMessage: Text? = nil
+    /// Optional image for the tip.
+    var tipImage: Image? = nil
 
-    /// Tip to display on the star image, to explain the star action.
-    private var tip: StarActionTip? {
-        guard #available(iOS 17.0, *), let starTipTitle else {
+    /// Tip to display above the package option view, if `tipTitle` is set.
+    private var tip: PackageOptionTip? {
+        guard #available(iOS 17.0, *), let tipTitle else {
             return nil
         }
-        return StarActionTip(title: starTipTitle, message: starTipMessage)
+        return PackageOptionTip(title: tipTitle, message: tipMessage, image: tipImage)
     }
 
     var body: some View {
-        HStack(spacing: 0) {
-            HStack {
-                if let isSelected {
-                    Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                        .foregroundColor(isSelected ? Color(.withColorStudio(.wooCommercePurple, shade: .shade60)) : .gray)
-                        .font(.title)
-                }
-                VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                    if showSource {
-                        Text(package.source.userFriendlyDescription)
-                            .font(.caption)
-                            .foregroundStyle(Color(.secondaryLabel))
-                    }
-                    Text(package.name)
-                        .bodyStyle()
-                    HStack {
-                        Text(package.dimensionsDescription)
-                        Text("•")
-                        Text(package.weightDescription)
-                    }
-                    .font(.subheadline)
-                    .foregroundStyle(Color(.text))
-                }
-                .padding(.leading, Constants.textContentLeadingPadding)
-                Spacer()
+        VStack {
+            if #available(iOS 17.0, *), starAction != nil, let tip {
+                TipView(tip, arrowEdge: .bottom)
+                    .tipCornerRadius(0)
+                    .tipImageSize(CGSize(width: 16, height: 16))
             }
-            .contentShape(Rectangle())
-            .onTapGesture {
-                tapAction()
-            }
-            .padding(Constants.contentPadding)
-            if let starAction, let starred {
-                VStack {
-                    Image(systemName: starred ? "star.fill": "star")
-                        .foregroundStyle(.secondary)
-                        .padding(Constants.contentPadding)
-                        .popoverTipIfSupported(tip: tip)
+            HStack(spacing: 0) {
+                HStack {
+                    if let isSelected {
+                        Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                            .foregroundColor(isSelected ? Color(.withColorStudio(.wooCommercePurple, shade: .shade60)) : .gray)
+                            .font(.title)
+                    }
+                    VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                        if showSource {
+                            Text(package.source.userFriendlyDescription)
+                                .font(.caption)
+                                .foregroundStyle(Color(.secondaryLabel))
+                        }
+                        Text(package.name)
+                            .bodyStyle()
+                        HStack {
+                            Text(package.dimensionsDescription)
+                            Text("•")
+                            Text(package.weightDescription)
+                        }
+                        .font(.subheadline)
+                        .foregroundStyle(Color(.text))
+                    }
+                    .padding(.leading, Constants.textContentLeadingPadding)
                     Spacer()
                 }
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    starAction()
+                    tapAction()
+                }
+                .padding(Constants.contentPadding)
+                if let starAction, let starred {
+                    VStack {
+                        Image(systemName: starred ? "star.fill": "star")
+                            .foregroundStyle(.secondary)
+                            .padding(Constants.contentPadding)
+                        Spacer()
+                    }
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        starAction()
+                    }
                 }
             }
         }
@@ -84,7 +92,7 @@ struct PackageOptionView: View {
 private extension View {
     /// Shows the provided tip as a popover if the platform supports it.
     @ViewBuilder
-    func popoverTipIfSupported(tip: StarActionTip?) -> some View {
+    func popoverTipIfSupported(tip: PackageOptionTip?) -> some View {
         if #available(iOS 17.0, *), let tip {
             self.popoverTip(tip)
                 .tipViewStyle(InvertedTipStyle())
@@ -94,22 +102,16 @@ private extension View {
     }
 }
 
-// MARK: Star Action Tip
-private struct StarActionTip: Tip {
+// MARK: Package Option Tip
+private struct PackageOptionTip: Tip {
     var title: Text
 
     var message: Text?
 
-    init(title: String,
-         message: String?) {
-        self.title = Text(title)
-        if let message {
-            self.message = Text(message)
-        }
-    }
+    var image: Image?
 
     var id: String {
-        "star-action-tip"
+        "package-option-tip"
     }
 
     @available(iOS 17.0, *)

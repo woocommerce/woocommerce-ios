@@ -52,9 +52,10 @@ struct WooCarrierPackagesView: View {
                                     }
                                 },
                                 starred: viewModel.isPackageStarred(package),
-                                starTipTitle: (packageGroups.first?.id == packageGroup.id && packageGroup.packages.first?.id == package.id)
-                                                ? Localization.starTipTitle : nil,
-                                starTipMessage: Localization.starTipMessage
+                                tipTitle: (packageGroups.first?.id == packageGroup.id && packageGroup.packages.first?.id == package.id)
+                                                ? Text(Localization.starTipTitle) : nil,
+                                tipMessage: Text(Localization.starTipMessage),
+                                tipImage: Image(systemName: "star")
                             )
                             .alignmentGuide(.listRowSeparatorLeading) { _ in
                                 return 16

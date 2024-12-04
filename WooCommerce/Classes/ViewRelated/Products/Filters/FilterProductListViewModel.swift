@@ -78,22 +78,13 @@ final class FilterProductListViewModel: FilterListViewModel {
         self.productCategoryFilterViewModel = ProductListFilter.productCategory(siteID: siteID).createViewModel(filters: filters)
         self.productFavoriteFilterViewModel = ProductListFilter.favoriteProducts.createViewModel(filters: filters)
 
-        if featureFlagService.isFeatureFlagEnabled(.favoriteProducts) {
-            self.filterTypeViewModels = [
-                stockStatusFilterViewModel,
-                productStatusFilterViewModel,
-                productTypeFilterViewModel,
-                productCategoryFilterViewModel,
-                productFavoriteFilterViewModel
-            ]
-        } else {
-            self.filterTypeViewModels = [
-                stockStatusFilterViewModel,
-                productStatusFilterViewModel,
-                productTypeFilterViewModel,
-                productCategoryFilterViewModel,
-            ]
-        }
+        self.filterTypeViewModels = [
+            stockStatusFilterViewModel,
+            productStatusFilterViewModel,
+            productTypeFilterViewModel,
+            productCategoryFilterViewModel,
+            productFavoriteFilterViewModel
+        ]
     }
 
     var criteria: Filters {

@@ -185,10 +185,6 @@ public enum FeatureFlag: Int {
     ///
     case blazeCampaignObjective
 
-    /// Allows marking product as favorite
-    ///
-    case favoriteProducts
-
     /// Enables support for the new product global unique identifier
     ///
     case productGlobalUniqueIdentifierSupport

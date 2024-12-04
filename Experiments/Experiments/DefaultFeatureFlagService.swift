@@ -85,8 +85,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .blazeCampaignObjective:
             return true
-        case .favoriteProducts:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .productGlobalUniqueIdentifierSupport:
             return true
         case .paymentsOnboardingInPointOfSale:

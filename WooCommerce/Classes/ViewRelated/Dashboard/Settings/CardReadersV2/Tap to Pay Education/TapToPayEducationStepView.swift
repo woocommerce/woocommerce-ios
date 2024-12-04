@@ -18,6 +18,7 @@ struct TapToPayEducationStepView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(maxHeight: 350)
+                .accessibilityHidden(true)
             if viewModel.descriptionSteps.count > 1 {
                 ForEach(viewModel.descriptionSteps.indices, id: \.self) { index in
                     PaymentSettingsFlowHint(number: index + 1,

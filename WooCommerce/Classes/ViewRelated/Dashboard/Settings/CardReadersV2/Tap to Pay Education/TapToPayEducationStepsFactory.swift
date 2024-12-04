@@ -1,31 +1,37 @@
 import Foundation
 import WooFoundation
+import Yosemite
 
-struct TapToPayEducationConfiguration {
-    static func steps(for country: CountryCode) -> [TapToPayEducationStepViewModel] {
-        switch country {
+struct TapToPayEducationStepsFactory {
+    static func steps(configuration: CardPresentPaymentsConfiguration) -> [TapToPayEducationStepViewModel] {
+        switch configuration.countryCode {
         case .US:
-            Self.US
+            return createUS()
         case .GB:
-            Self.GB
+            return createGB(configuration: configuration)
         default:
-            Self.US
+            return createUS()
         }
     }
 
     // MARK: - US
 
-    static var US: [TapToPayEducationStepViewModel] {
+    private static func createUS() -> [TapToPayEducationStepViewModel] {
         [
-            .init(title: Localization.Intro.title, imageName: "tap-to-pay-education-intro-us", description: Localization.Intro.description)
+            .init(title: Localization.Intro.title,
+                  imageName: "tap-to-pay-education-intro-us",
+                  description: Localization.Intro.description)
         ]
     }
 
     // MARK: - GB
 
-    static var GB: [TapToPayEducationStepViewModel] {
+    private static func createGB(configuration: CardPresentPaymentsConfiguration) -> [TapToPayEducationStepViewModel] {
         [
-            .init(title: Localization.Intro.title, imageName: "tap-to-pay-education-intro-gb", description: Localization.Intro.description)
+            .init(title: Localization.Intro.title,
+                  imageName: "tap-to-pay-education-intro-gb",
+                  description: Localization.Intro.description,
+                  limit: .init(configuration: configuration))
         ]
     }
 }

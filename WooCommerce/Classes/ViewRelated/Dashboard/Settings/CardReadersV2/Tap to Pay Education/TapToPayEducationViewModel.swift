@@ -18,6 +18,7 @@ final class TapToPayEducationViewModel: ObservableObject {
 
     @Published var showingSetUpFlow: Bool = false
     @Published private(set) var hasPreviousTapToPayUsage = false
+    @Published var shouldShowContactlessLimit: Bool = false
 
     private let flow: Flow
     private let cardReaderSupportDeterminer: CardReaderSupportDetermining
@@ -29,7 +30,7 @@ final class TapToPayEducationViewModel: ObservableObject {
     private let onDismiss: () -> Void
 
     init(flow: Flow = .onboarding,
-         steps: [TapToPayEducationStepViewModel],
+         steps: [TapToPayEducationStepViewModel]? = nil,
          siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          cardReaderSupportDeterminer: CardReaderSupportDetermining? = nil,
@@ -48,7 +49,7 @@ final class TapToPayEducationViewModel: ObservableObject {
         }
         self.isInteractiveDismissDisabled = flow == .onboarding ? true : false
         self.onDismiss = onDismiss
-        self.steps = steps
+        self.steps = steps ?? TapToPayEducationStepsFactory.steps(configuration: configuration)
 
         reloadHasPreviousTapToPayUsage()
     }

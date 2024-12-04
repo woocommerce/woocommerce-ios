@@ -27,6 +27,12 @@ struct TapToPayEducationStepView: View {
                 Text(description)
                     .font(.body)
             }
+
+            if let limit = viewModel.limit {
+                AboutTapToPayContactlessLimitView(viewModel: limit)
+                    .padding([.top, .bottom])
+            }
+
             Spacer(minLength: 0)
         }
         .padding([.leading, .trailing], 24)

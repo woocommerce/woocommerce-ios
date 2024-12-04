@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct POSSendReceiptModalView: View {
-    private(set) var sendReceipt: (String) -> ()
+    let sendReceipt: (String) -> ()
 
     @State private var textFieldInput: String = ""
     @Binding var isPresented: Bool

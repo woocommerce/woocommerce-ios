@@ -3,7 +3,7 @@ import XCTest
 @testable import Yosemite
 
 final class FilterProductListViewModelTests: XCTestCase {
-    let filterProductCategory = ProductCategory(categoryID: 0, siteID: 0, parentID: 0, name: "", slug: "")
+    let filterProductCategory = ProductCategory(categoryID: 0, siteID: 0, parentID: 0, name: "", slug: "category")
 
     func testCriteriaWithDefaultFilters() {
         // Given
@@ -67,6 +67,21 @@ final class FilterProductListViewModelTests: XCTestCase {
                                                                   favoriteProduct: nil,
                                                                   numberOfActiveFilters: 0)
         XCTAssertEqual(viewModel.criteria, expectedCriteria)
+    }
+
+    func test_it_provides_analytics_description_based_on_selected_filters() {
+        // Given
+        let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
+                                                         productStatus: .draft,
+                                                         promotableProductType: PromotableProductType(productType: .grouped,
+                                                                                                      isAvailable: true,
+                                                                                                      promoteUrl: nil),
+                                                         productCategory: filterProductCategory,
+                                                         favoriteProduct: FavoriteProductsFilter(),
+                                                         numberOfActiveFilters: 5)
+
+        // Then
+        XCTAssertEqual(filters.analyticsDescription, "instock,draft,grouped,category,favorite_products")
     }
 
     // MARK: Favorite product feature flag

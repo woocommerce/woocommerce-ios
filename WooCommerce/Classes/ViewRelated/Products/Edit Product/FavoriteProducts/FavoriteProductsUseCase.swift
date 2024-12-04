@@ -18,6 +18,8 @@ struct FavoriteProductsFilter: Equatable, FilterType {
     let description = Localization.favoriteProducts
 
     let isActive = true
+
+    let analyticsDescription = "favorite_products"
 }
 
 private extension FavoriteProductsFilter {

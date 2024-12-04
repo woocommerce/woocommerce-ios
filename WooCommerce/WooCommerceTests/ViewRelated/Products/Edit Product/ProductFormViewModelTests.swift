@@ -253,7 +253,8 @@ final class ProductFormViewModelTests: XCTestCase {
         let product = Product.fake()
         let mockUseCase = MockFavoriteProductsUseCase()
         let viewModel = createViewModel(product: product,
-                                        formType: .add,
+                                        formType: .edit,
+                                        stores: stores,
                                         favoriteProductsUseCase: mockUseCase)
 
         // When
@@ -263,13 +264,13 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertEqual(mockUseCase.markAsFavoriteCalledForProductID, product.productID)
     }
 
-    @MainActor
     func test_removeFromFavorite_removes_product_as_favorite() async {
         // Given
         let product = Product.fake()
         let mockUseCase = MockFavoriteProductsUseCase()
         let viewModel = createViewModel(product: product,
-                                        formType: .add,
+                                        formType: .edit,
+                                        stores: stores,
                                         favoriteProductsUseCase: mockUseCase)
 
         // When

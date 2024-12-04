@@ -26,6 +26,7 @@
 		011D7A352CEC87B70007C187 /* CardPresentModalErrorEmailSent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011D7A342CEC87B60007C187 /* CardPresentModalErrorEmailSent.swift */; };
 		011DF3442C53A5CF000AFDD9 /* PointOfSaleCardPresentPaymentValidatingOrderMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011DF3432C53A5CF000AFDD9 /* PointOfSaleCardPresentPaymentValidatingOrderMessageViewModel.swift */; };
 		011DF3462C53A919000AFDD9 /* PointOfSaleCardPresentPaymentActivityIndicatingMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011DF3452C53A919000AFDD9 /* PointOfSaleCardPresentPaymentActivityIndicatingMessageView.swift */; };
+		013D2FB42CFEFEC600845D75 /* BuiltInCardReaderMerchantEducationPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D2FB32CFEFEA800845D75 /* BuiltInCardReaderMerchantEducationPresenter.swift */; };
 		014BD4B82C64E2BA0011A66E /* PointOfSaleOrderSyncErrorMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014BD4B72C64E2BA0011A66E /* PointOfSaleOrderSyncErrorMessageView.swift */; };
 		014BD4BA2C64FC0E0011A66E /* PointOfSaleOrderSyncErrorMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014BD4B92C64FC0E0011A66E /* PointOfSaleOrderSyncErrorMessageViewModel.swift */; };
 		0157A9962C4FEA7200866FFD /* PointOfSaleLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0157A9952C4FEA7200866FFD /* PointOfSaleLoadingView.swift */; };
@@ -3154,6 +3155,7 @@
 		011D7A342CEC87B60007C187 /* CardPresentModalErrorEmailSent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalErrorEmailSent.swift; sourceTree = "<group>"; };
 		011DF3432C53A5CF000AFDD9 /* PointOfSaleCardPresentPaymentValidatingOrderMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentValidatingOrderMessageViewModel.swift; sourceTree = "<group>"; };
 		011DF3452C53A919000AFDD9 /* PointOfSaleCardPresentPaymentActivityIndicatingMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentActivityIndicatingMessageView.swift; sourceTree = "<group>"; };
+		013D2FB32CFEFEA800845D75 /* BuiltInCardReaderMerchantEducationPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuiltInCardReaderMerchantEducationPresenter.swift; sourceTree = "<group>"; };
 		014BD4B72C64E2BA0011A66E /* PointOfSaleOrderSyncErrorMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleOrderSyncErrorMessageView.swift; sourceTree = "<group>"; };
 		014BD4B92C64FC0E0011A66E /* PointOfSaleOrderSyncErrorMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleOrderSyncErrorMessageViewModel.swift; sourceTree = "<group>"; };
 		0157A9952C4FEA7200866FFD /* PointOfSaleLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleLoadingView.swift; sourceTree = "<group>"; };
@@ -12482,6 +12484,7 @@
 				D8815ADE26383EE700EDAD62 /* CardPresentPaymentsModalViewController.xib */,
 				03E471BD29388787001A58AD /* BuiltInCardReaderConnectionController.swift */,
 				03BB9EA4292E2D0C00251E9E /* CardReaderConnectionController.swift */,
+				013D2FB32CFEFEA800845D75 /* BuiltInCardReaderMerchantEducationPresenter.swift */,
 				035DBA46292D0994003E5125 /* CardPresentPaymentPreflightController.swift */,
 				D8EE9690264D328A0033B2F9 /* LegacyReceiptViewController.swift */,
 				D8EE9691264D328A0033B2F9 /* LegacyReceiptViewController.xib */,
@@ -15763,6 +15766,7 @@
 				0260B1B12805321B00FCFE8C /* OrderDetailsPaymentAlertsProtocol.swift in Sources */,
 				4556ED38270645A6005CBC0D /* ShippingLabelCarrierSectionHeader.swift in Sources */,
 				267C01CF29E89E1700FCC97B /* StorePlanSynchronizer.swift in Sources */,
+				013D2FB42CFEFEC600845D75 /* BuiltInCardReaderMerchantEducationPresenter.swift in Sources */,
 				B541B21C2189F3D8008FE7C1 /* StringStyles.swift in Sources */,
 				B58B4AB82108F14700076FDD /* NoticeNotificationInfo.swift in Sources */,
 				DA4080722CC2967C002A4577 /* WooShippingAddCustomPackageViewModel.swift in Sources */,

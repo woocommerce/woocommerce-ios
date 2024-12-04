@@ -81,6 +81,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
 
     private let siteID: Int64
     private let alertsPresenter: AlertPresenter
+    private let merchantEducationPresenter: BuiltInCardReaderMerchantEducationPresenting?
     private let configuration: CardPresentPaymentsConfiguration
 
     private let alertsProvider: AlertProvider
@@ -123,6 +124,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         stores: StoresManager = ServiceLocator.stores,
         alertsPresenter: AlertPresenter,
         alertsProvider: AlertProvider,
+        merchantEducationPresenter: BuiltInCardReaderMerchantEducationPresenting? = nil,
         configuration: CardPresentPaymentsConfiguration,
         analyticsTracker: CardReaderConnectionAnalyticsTracker,
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -134,6 +136,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         state = .idle
         self.alertsPresenter = alertsPresenter
         self.alertsProvider = alertsProvider
+        self.merchantEducationPresenter = merchantEducationPresenter
         self.configuration = configuration
         self.analyticsTracker = analyticsTracker
         self.featureFlagService = featureFlagService
@@ -375,7 +378,7 @@ private extension BuiltInCardReaderConnectionController {
         stores.dispatch(softwareUpdateAction)
 
 
-        if featureFlagService.isFeatureFlagEnabled(.tapToPayEducation) {
+        if featureFlagService.isFeatureFlagEnabled(.tapToPayEducation), let presenter = merchantEducationPresenter {
             let onboardingAction = CardPresentPaymentAction.observeBuiltInCardReaderAcceptToS { [weak self] events in
                 guard let self else { return }
 
@@ -385,7 +388,7 @@ private extension BuiltInCardReaderConnectionController {
                         guard let self else { return }
 
                         isMerchantEducationInProgress.send(true)
-                        alertsPresenter.presentMerchantEducation { [weak self] in
+                        presenter.presentMerchantEducation { [weak self] in
                             guard let self else { return }
                             isMerchantEducationInProgress.send(false)
                         }

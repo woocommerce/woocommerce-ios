@@ -15,6 +15,9 @@ struct TapToPayEducationStepView: View {
                 .bold()
                 .multilineTextAlignment(.center)
             Image(viewModel.imageName)
+                .resizable()
+                .scaledToFit()
+                .frame(maxHeight: 350)
             if viewModel.descriptionSteps.count > 1 {
                 ForEach(viewModel.descriptionSteps.indices, id: \.self) { index in
                     PaymentSettingsFlowHint(number: index + 1,

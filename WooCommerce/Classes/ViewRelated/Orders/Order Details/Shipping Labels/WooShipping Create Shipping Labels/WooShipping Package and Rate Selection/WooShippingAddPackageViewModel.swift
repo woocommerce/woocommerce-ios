@@ -204,20 +204,6 @@ final class WooShippingAddPackageViewModel: ObservableObject {
             self.selectedSavedPackageId = nil
         }
 
-        var predefined: WooShippingPredefinedSavedOption? = nil
-        var custom: WooShippingCustomPackage? = nil
-
-        switch packageToRemove.source {
-        case .custom:
-            custom = WooShippingCustomPackage(id: packageToRemove.id,
-                                              name: packageToRemove.name,
-                                              rawType: packageToRemove.packageType,
-                                              dimensions: "\(packageToRemove.length) x \(packageToRemove.width) x \(packageToRemove.height)",
-                                              boxWeight: Double(packageToRemove.weight) ?? 0.0)
-        case .predefined(_, let sourceID):
-            predefined = WooShippingPredefinedSavedOption(id: sourceID, predefinedPackageIDs: [packageToRemove.id])
-        }
-
         return nil
     }
 }

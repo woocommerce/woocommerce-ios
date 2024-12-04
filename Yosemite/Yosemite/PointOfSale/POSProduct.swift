@@ -14,7 +14,7 @@ struct POSProduct: POSOrderableItem, OrderSyncProductTypeProtocol, Equatable {
     let bundledItems: [ProductBundleItem] = []
 }
 
-extension POSProduct {
+extension POSProduct: Hashable {
     func toOrderSyncProductInput(quantity: Decimal) -> OrderSyncProductInput {
         OrderSyncProductInput(product: .product(self), quantity: quantity)
     }

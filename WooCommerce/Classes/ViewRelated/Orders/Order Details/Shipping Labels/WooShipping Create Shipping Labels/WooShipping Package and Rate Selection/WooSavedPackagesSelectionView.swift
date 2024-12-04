@@ -2,14 +2,14 @@ import SwiftUI
 
 enum WooShippingPackageSource {
     case custom
-    case predefined(String)
+    case predefined(sourceTitle: String, sourceID: String)
 
     var userFriendlyDescription: String {
         switch self {
         case .custom:
             return NSLocalizedString("Custom Package", comment: "Label used to mark a custom package in list of saved packages")
-        case .predefined(let source):
-            return source
+        case .predefined(let sourceTitle, _):
+            return sourceTitle
         }
     }
 }

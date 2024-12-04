@@ -261,7 +261,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                  dimensionsUnit: "cm",
                                                  weight: "0",
                                                  weightUnit: "kg",
-                                                 source: .predefined("usps"),
+                                                 source: .predefined(sourceTitle: "usps", sourceID: "usps"),
                                                  packageType: "box")
         let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake())
 

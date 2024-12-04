@@ -43,7 +43,10 @@ struct TapToPayEducationStepsFactory {
                   descriptionSteps: Localization.ContactlessCard.descriptionSteps),
             .init(title: Localization.ApplePay.title,
                   imageName: "tap-to-pay-education-apple-pay-gb",
-                  descriptionSteps: Localization.ApplePay.descriptionSteps)
+                  descriptionSteps: Localization.ApplePay.descriptionSteps),
+            .init(title: Localization.FallbackPaymentMethod.title,
+                  imageName: "tap-to-pay-education-fallback-payment-method-gb",
+                  description: Localization.FallbackPaymentMethod.description),
         ]
     }
 }
@@ -130,5 +133,24 @@ private enum Localization {
                 comment: "Fourth description step for the 'How to accept Apple Pay' Tap to Pay merchant education"
             )
         ]
+    }
+
+    enum FallbackPaymentMethod {
+        static let title = NSLocalizedString(
+            "tapToPay.education.step.fallbackMethod.title",
+            value: "How to accept an alternative payment method.",
+            comment: "Title for the 'Fallback payment method' Tap to Pay merchant education step"
+        )
+
+        static let description = NSLocalizedString(
+            "tapToPay.education.step.fallbackMethod.description",
+            value: "Some cards are not able to complete contactless transactions using a PIN, which can result in payment failure.\n\n" +
+                   "Ask the customer if they have another contactless card or digital wallet and select Try Collecting Again to " +
+                   "continue the transaction using Tap to Pay on iPhone.\n\nOtherwise, select Try Another Payment Method and choose a " +
+                   "supported alternative, such as Cash, Share Payment Link, Cash Reader, or Scan to Pay.",
+            comment: "Message displayed when a contactless transaction fails due to PIN issues. Provides steps to retry using " +
+                     "another contactless payment method or alternative payment options."
+        )
+
     }
 }

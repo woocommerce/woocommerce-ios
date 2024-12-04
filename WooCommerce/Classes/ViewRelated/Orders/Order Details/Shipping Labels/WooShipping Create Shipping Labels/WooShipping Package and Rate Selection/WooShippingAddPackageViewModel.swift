@@ -182,7 +182,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
                 switch result {
                 case .success(let response):
                     self.transformSavedPackages(response)
-                case .failure(_):
+                case .failure:
                     // TODO: should we undo the starring of the package if request fails?
                     self.starredCarriersPackages.remove(packageID)
                 }

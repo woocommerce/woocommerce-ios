@@ -63,12 +63,13 @@ struct TotalsView: View {
                     }
                     .animation(.default, value: posModel.cardPresentPaymentInlineMessage)
                     paymentsActionButtons
-                    if isShowingReceiptsNotEligibleAlert {
-                        POSReceiptEligibilityBanner()
-                            .padding(.bottom, 8)
-                            .animation(.easeInOut(duration: 0.3), value: isShowingReceiptsNotEligibleAlert)
-                    }
                     Spacer()
+                    if isShowingReceiptsNotEligibleAlert {
+                        VStack {
+                            POSReceiptEligibilityBanner(isVisible: $isShowingReceiptsNotEligibleAlert)
+                            Spacer()
+                        }
+                    }
                 }
                 .animation(.default, value: isShowingCardReaderStatus)
             case .error(let viewModel):
@@ -371,6 +372,8 @@ private extension TotalsView {
 
 extension TotalsView {
     private struct POSReceiptEligibilityBanner: View {
+        @Binding var isVisible: Bool
+
         var body: some View {
             HStack(spacing: 8) {
                 Image(uiImage: .appIconDefault)
@@ -386,6 +389,11 @@ extension TotalsView {
             .background(Color.posPrimaryBackground)
             .cornerRadius(20)
             .padding(.horizontal, 16)
+            .onTapGesture {
+                withAnimation {
+                    isVisible = false
+                }
+            }
         }
     }
 }

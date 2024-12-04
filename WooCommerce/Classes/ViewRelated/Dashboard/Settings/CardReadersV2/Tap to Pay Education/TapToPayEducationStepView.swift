@@ -26,6 +26,7 @@ struct TapToPayEducationStepView: View {
             } else if let description = viewModel.descriptionSteps.first {
                 Text(description)
                     .font(.body)
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
             if let limit = viewModel.limit {

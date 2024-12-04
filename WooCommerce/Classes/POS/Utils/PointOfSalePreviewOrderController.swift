@@ -18,7 +18,7 @@ class PointOfSalePreviewOrderController: PointOfSaleOrderControllerProtocol {
     func syncOrder(for cartProducts: [CartItem],
                    retryHandler: @escaping () async -> Void) async { }
 
-    func sendOrderReceipt(order: Order, recipientEmail: String) async { }
+    func sendReceipt(recipientEmail: String) async { }
 
     func clearOrder() { }
 }

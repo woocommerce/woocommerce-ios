@@ -130,7 +130,6 @@
 		02EF1672292F0D1900D90AD6 /* load-plan-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 02EF1671292F0D1900D90AD6 /* load-plan-success.json */; };
 		02EFF81D2ABC3D0E0015ABB2 /* order-gift-card-invalid-error.json in Resources */ = {isa = PBXBuildFile; fileRef = 02EFF81B2ABC3D0E0015ABB2 /* order-gift-card-invalid-error.json */; };
 		02EFF81E2ABC3D0E0015ABB2 /* order-gift-card-cannot-apply-error.json in Resources */ = {isa = PBXBuildFile; fileRef = 02EFF81C2ABC3D0E0015ABB2 /* order-gift-card-cannot-apply-error.json */; };
-		02F096C22406691100C0C1D5 /* media-library.json in Resources */ = {isa = PBXBuildFile; fileRef = 02F096C12406691100C0C1D5 /* media-library.json */; };
 		02F4AA2929791623002AA0E8 /* create-doman-cart-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 02F4AA2829791623002AA0E8 /* create-doman-cart-success.json */; };
 		0313651928AE559D00EEE571 /* PaymentGatewayMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0313651828AE559D00EEE571 /* PaymentGatewayMapper.swift */; };
 		0313651B28AE60E000EEE571 /* payment-gateway-cod.json in Resources */ = {isa = PBXBuildFile; fileRef = 0313651A28AE60E000EEE571 /* payment-gateway-cod.json */; };
@@ -1416,7 +1415,6 @@
 		02EF1671292F0D1900D90AD6 /* load-plan-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "load-plan-success.json"; sourceTree = "<group>"; };
 		02EFF81B2ABC3D0E0015ABB2 /* order-gift-card-invalid-error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-gift-card-invalid-error.json"; sourceTree = "<group>"; };
 		02EFF81C2ABC3D0E0015ABB2 /* order-gift-card-cannot-apply-error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-gift-card-cannot-apply-error.json"; sourceTree = "<group>"; };
-		02F096C12406691100C0C1D5 /* media-library.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-library.json"; sourceTree = "<group>"; };
 		02F4AA2829791623002AA0E8 /* create-doman-cart-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "create-doman-cart-success.json"; sourceTree = "<group>"; };
 		0313651828AE559D00EEE571 /* PaymentGatewayMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayMapper.swift; sourceTree = "<group>"; };
 		0313651A28AE60E000EEE571 /* payment-gateway-cod.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "payment-gateway-cod.json"; sourceTree = "<group>"; };
@@ -3264,7 +3262,6 @@
 				B505F6D420BEE4E600BB1B69 /* me.json */,
 				93D8BBFE226BC1DA00AD2EB3 /* me-settings.json */,
 				EEDADD272B7C6A5E00F7302B /* media.json */,
-				02F096C12406691100C0C1D5 /* media-library.json */,
 				02AF07EB27492FDD00B2D81E /* media-library-from-wordpress-site.json */,
 				EECB7EE7286555180028C888 /* media-update-product-id.json */,
 				B58D10C92114D22E00107ED4 /* new-order-note.json */,
@@ -4680,7 +4677,6 @@
 				CE71E2292A4C35C900DB5376 /* reports-products.json in Resources */,
 				CE19CB11222486A600E8AF7A /* order-statuses.json in Resources */,
 				EEA6584C2966CC4800112DF0 /* product-id-only-without-data.json in Resources */,
-				02F096C22406691100C0C1D5 /* media-library.json in Resources */,
 				028CB717290223CB00331C09 /* create-account-error-password.json in Resources */,
 				CE71E2372A4C3F3900DB5376 /* reports-products-without-data.json in Resources */,
 				D800DA0E25EFEC21001E13CE /* wcpay-connection-token.json in Resources */,

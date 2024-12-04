@@ -39,4 +39,6 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     func clearOrder() {
         clearOrderWasCalled = true
     }
+
+    func sendReceipt(recipientEmail: String) async { }
 }

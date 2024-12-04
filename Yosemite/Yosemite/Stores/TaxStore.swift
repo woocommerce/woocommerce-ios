@@ -17,10 +17,6 @@ extension ProductVariation: TaxClassRequestable {}
 public class TaxStore: Store {
     private let remote: TaxRemote
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = TaxRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -143,14 +139,9 @@ private extension TaxStore {
     /// on the main thread!
     ///
     func upsertStoredTaxClassesInBackground(readOnlyTaxClasses: [Networking.TaxClass], onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
-            self.upsertStoredTaxClasses(readOnlyTaxClasses: readOnlyTaxClasses, in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ [weak self] storage in
+            self?.upsertStoredTaxClasses(readOnlyTaxClasses: readOnlyTaxClasses, in: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly TaxClass Entities into the Storage Layer.
@@ -179,20 +170,15 @@ private extension TaxStore {
                                           siteID: Int64,
                                           shouldDeleteExistingTaxRates: Bool,
                                           onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
+        storageManager.performAndSave({ [weak self] storage in
             guard let self = self else { return }
 
             if shouldDeleteExistingTaxRates {
-                derivedStorage.deleteTaxRates(siteID: siteID)
+                storage.deleteTaxRates(siteID: siteID)
             }
 
-            self.upsertStoredTaxRates(readOnlyTaxRates: readOnlyTaxRates, siteID: siteID, in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+            self.upsertStoredTaxRates(readOnlyTaxRates: readOnlyTaxRates, siteID: siteID, in: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly TaxRate Entities into the Storage Layer.
@@ -203,10 +189,12 @@ private extension TaxStore {
     ///     - storage: Where we should save all the things!
     ///
     func upsertStoredTaxRates(readOnlyTaxRates: [Networking.TaxRate], siteID: Int64, in storage: StorageType) {
+        /// Load all tax rates in the store assuming there cannot be too many items.
+        /// To further optimize this we might want to load the rates matching a given set of IDs.
+        let storedTaxRates = storage.loadTaxRates(siteID: siteID)
         for readOnlyTaxRate in readOnlyTaxRates {
             let storageTaxRate: Storage.TaxRate = {
-                if let storedTaxRate = storage.loadTaxRate(siteID: siteID,
-                                                           taxRateID: readOnlyTaxRate.id) {
+                if let storedTaxRate = storedTaxRates.first(where: { $0.id == readOnlyTaxRate.id }) {
                     return storedTaxRate
                 }
 

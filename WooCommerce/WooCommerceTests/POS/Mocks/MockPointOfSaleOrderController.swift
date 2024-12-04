@@ -40,5 +40,5 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         clearOrderWasCalled = true
     }
 
-    func sendOrderReceipt(order: Yosemite.Order, recipientEmail: String) async { }
+    func sendReceipt(recipientEmail: String) async { }
 }

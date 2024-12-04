@@ -1,7 +1,7 @@
 import Networking
 
 final class MockReceiptsOrderRemote: POSReceiptsRemoteProtocol {
-    func sendPOSReceipt(siteID: Int64, orderID: Int64) async throws { }
+    func sendReceipt(siteID: Int64, orderID: Int64) async throws { }
 }
 
 final class MockPOSOrdersRemote: POSOrdersRemoteProtocol {

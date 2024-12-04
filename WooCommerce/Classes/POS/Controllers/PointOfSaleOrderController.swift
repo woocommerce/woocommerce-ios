@@ -69,7 +69,7 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
             }
         }))
     }
-    
+
     func sendReceipt(recipientEmail: String) async {
         guard let order = order else {
             return

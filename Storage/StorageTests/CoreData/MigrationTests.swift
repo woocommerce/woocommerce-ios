@@ -3186,6 +3186,23 @@ final class MigrationTests: XCTestCase {
         let migratedPaymentGateway = try XCTUnwrap(targetContext.first(entityName: "PaymentGateway"))
         XCTAssertEqual(migratedPaymentGateway.value(forKey: "features") as? [String], ["products", "refunds"])
     }
+
+    func test_migrating_from_118_to_119_loads_payment_gateway_account_supportedCurrencies_successfully() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 118")
+        let sourceContext = sourceContainer.viewContext
+
+        _ = insertPaymentGatewayAccount(to: sourceContext)
+        try sourceContext.save()
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 119")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedPaymentGatewayAccount = try XCTUnwrap(targetContext.first(entityName: "PaymentGatewayAccount"))
+        XCTAssertEqual(migratedPaymentGatewayAccount.value(forKey: "supportedCurrency") as? [String], ["USD"])
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

@@ -40,6 +40,8 @@ struct OrderCustomAmountsSection: View {
 
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize: DynamicTypeSize
+
     var body: some View {
         VStack {
             HStack {
@@ -100,8 +102,23 @@ struct OrderCustomAmountsSection: View {
 
     @ViewBuilder private var optionsWithDetentsBottomSheetContent: some View {
         optionsBottomSheetContent
-            .presentationDetents([.height(218)])
+            .presentationDetents(detentsForOptionsBottomSheet)
             .presentationDragIndicator(.visible)
+    }
+
+    private var detentsForOptionsBottomSheet: Set<PresentationDetent> {
+        switch dynamicTypeSize {
+        case .xSmall, .small, .medium, .large:
+            return [.height(175), .medium]
+        case .xLarge, .xxLarge:
+            return [.height(200), .medium]
+        case .xxxLarge:
+            return [.height(230), .medium]
+        case .accessibility1, .accessibility2, .accessibility3, .accessibility4, .accessibility5:
+            return [.medium, .large]
+        @unknown default:
+            return [.large]
+        }
     }
 
     @ViewBuilder private var optionsBottomSheetContent: some View {

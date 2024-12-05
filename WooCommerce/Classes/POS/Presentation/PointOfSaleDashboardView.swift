@@ -93,6 +93,8 @@ struct PointOfSaleDashboardView: View {
                             Task { @MainActor in
                                 await posModel.sendReceipt(to: email)
                                 posModel.requestReceiptCompleted()
+                                // TODO: Receipt request error handling
+                                // https://github.com/woocommerce/woocommerce-ios/issues/14464
                             }
                         })
                     default:

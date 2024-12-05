@@ -9,6 +9,7 @@ enum PointOfSalePaymentState {
     case processingPayment
     case paymentError
     case cardPaymentSuccessful
+    case requestingReceipt
 }
 
 extension PointOfSalePaymentState {
@@ -49,7 +50,8 @@ extension PointOfSalePaymentState {
         switch self {
         case .processingPayment,
                 .paymentError,
-                .cardPaymentSuccessful:
+                .cardPaymentSuccessful,
+                .requestingReceipt:
             return true
         case .idle,
                 .validatingOrder,

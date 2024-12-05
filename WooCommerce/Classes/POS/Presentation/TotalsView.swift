@@ -79,18 +79,19 @@ struct TotalsView: View {
         }
         .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
         .geometryGroupIfSupported()
-        .posModal(isPresented: $isShowingSendReceiptModal) {
-            POSSendReceiptModalView(sendReceipt: { email in
-                Task { @MainActor in
-                    do {
-                        try await posModel.sendReceipt(to: email)
-                    } catch {
-                        isShowingSendReceiptError = true
-                    }
-                }
-            }, isPresented: $isShowingSendReceiptModal)
-            .posModalSizing()
-        }
+// Tempo: Moved to `ReceiptView` in pos dashboard
+//        .posModal(isPresented: $isShowingSendReceiptModal) {
+//            POSSendReceiptModalView(sendReceipt: { email in
+//                Task { @MainActor in
+//                    do {
+//                        try await posModel.sendReceipt(to: email)
+//                    } catch {
+//                        isShowingSendReceiptError = true
+//                    }
+//                }
+//            }, isPresented: $isShowingSendReceiptModal)
+//            .posModalSizing()
+//        }
         .posModal(isPresented: $isShowingSendReceiptError) {
             POSSendReceiptModalErrorView(isPresented: $isShowingSendReceiptError)
                 .posModalSizing()
@@ -240,7 +241,8 @@ private extension TotalsView {
     private var sendReceiptButton: some View {
         Button(action: {
             if posModel.eligibleWooCommerceVersionForPOSReceipts {
-                isShowingSendReceiptModal = true
+                //isShowingSendReceiptModal = true
+                posModel.setStateForRequestReceipt()
             } else {
                 isShowingReceiptsNotEligibleBanner = true
             }
@@ -363,7 +365,8 @@ private extension TotalsView {
                 .validatingOrder,
                 .preparingReader,
                 .processingPayment,
-                .cardPaymentSuccessful:
+                .cardPaymentSuccessful,
+                .requestingReceipt:
             break
         }
 

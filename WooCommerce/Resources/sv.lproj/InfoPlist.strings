@@ -17,6 +17,8 @@
     <string>För att ta foton eller videoklipp som du kan lägga till för dina produkter, för att skanna en streckkod och hitta ett produkt-SKU eller för supportärenden.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Platsåtkomst krävs för att ta emot betalningar.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Woo använder din mikrofon så att du kan spela in ljud när du spelar in videor för din butiks mediabibliotek.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>För att spara foton från kameran för produktbilder, eller för att lägga till foton eller videoklipp till dina produkter eller supportärenden.</string>
     <key>OpenOrdersAction.Title</key>

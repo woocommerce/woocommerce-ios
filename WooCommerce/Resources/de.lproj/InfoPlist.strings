@@ -17,6 +17,8 @@
     <string>Um Fotos oder Videos aufzunehmen, damit du diese zu deinen Produkten hinzufügen kannst, um Barcodes für Produkt-SKUs zu scannen oder für Support-Tickets.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Standortzugriff ist erforderlich, um Zahlungen zu akzeptieren.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Woo verwendet dein Mikrofon für die Audioaufnahme, wenn du Videos für die Mediathek deines Shops erstellst.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Um Fotos aus der Kamera für Produktbilder zu speichern oder Fotos oder Videos zu deinen Produkten oder Support-Tickets hinzuzufügen.</string>
     <key>OpenOrdersAction.Title</key>

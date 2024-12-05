@@ -2,6 +2,19 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 119 (Release 21.3.0.0)
+- @itsmeichigo 2024-12-05
+    - Updated transformable types for `Coupon`'s `emailRestrictions`, `excludedProductCategories`, `excludedProducts`, `productCategories`, `products`, `usedBy` to NSArray instead of Swift Array.
+    - Updated `PaymentGateway`'s `features` transformable type to NSArray.
+    - Updated `PaymentGatewayAccount`'s `supportedCurrency` transformable type to NSArray.
+    - Updated transformable types for `Product`'s `crossSellIDs`, `groupedProducts`, `relatedIDs`, `upsellIDs`, `variations` to NSArray.
+    - Updated `ProductAttribute`'s `options` transformable type to NSArray.
+    - Updated `ProductBundleItem`'s `allowedVariations` transformable type to NSArray.
+    - Updated `ProductCompositeComponent`'s `optionIDs` transformable type to NSArray.
+    - Updated `ShippingLabel`'s `productIDs` and `productNames` transformable types to NSArray.
+    - Updated `Site`'s `jetpackConnectionActivePlugins` transformable type to NSArray.
+    - Updated `TaxRate`'s `cities` and `postcodes` transformable types to NSArray.
+
 ## Model 118 (Release 21.0.0.0)
 - @cvargascasaseca 2024-10-25
     - Added `globalUniqueID` attribute to `Product` and `ProductVariation` entities.

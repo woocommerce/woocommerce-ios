@@ -443,7 +443,7 @@
         <attribute name="buttonText" attributeType="String" defaultValueString=""/>
         <attribute name="catalogVisibilityKey" attributeType="String"/>
         <attribute name="combineVariationQuantities" optional="YES" attributeType="Boolean" usesScalarValueType="NO"/>
-        <attribute name="crossSellIDs" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
+        <attribute name="crossSellIDs" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="NSArray"/>
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="dateCreated" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="dateModified" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -456,7 +456,7 @@
         <attribute name="featured" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="fullDescription" optional="YES" attributeType="String"/>
         <attribute name="globalUniqueID" optional="YES" attributeType="String"/>
-        <attribute name="groupedProducts" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
+        <attribute name="groupedProducts" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="NSArray"/>
         <attribute name="groupOfQuantity" optional="YES" attributeType="String"/>
         <attribute name="isSampleItem" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="manageStock" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -475,7 +475,7 @@
         <attribute name="purchaseNote" optional="YES" attributeType="String"/>
         <attribute name="ratingCount" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="regularPrice" optional="YES" attributeType="String"/>
-        <attribute name="relatedIDs" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
+        <attribute name="relatedIDs" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="NSArray"/>
         <attribute name="reviewsAllowed" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="salePrice" optional="YES" attributeType="String"/>
         <attribute name="shippingClass" optional="YES" attributeType="String"/>
@@ -492,8 +492,8 @@
         <attribute name="taxClass" optional="YES" attributeType="String"/>
         <attribute name="taxStatusKey" attributeType="String"/>
         <attribute name="totalSales" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="upsellIDs" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
-        <attribute name="variations" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
+        <attribute name="upsellIDs" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="NSArray"/>
+        <attribute name="variations" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="NSArray"/>
         <attribute name="virtual" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="weight" optional="YES" attributeType="String"/>
         <relationship name="addOns" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ProductAddOn" inverseName="product" inverseEntity="ProductAddOn"/>
@@ -542,7 +542,7 @@
     <entity name="ProductAttribute" representedClassName="ProductAttribute" syncable="YES">
         <attribute name="attributeID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
-        <attribute name="options" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
+        <attribute name="options" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="NSArray"/>
         <attribute name="position" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="variation" attributeType="Boolean" usesScalarValueType="YES"/>

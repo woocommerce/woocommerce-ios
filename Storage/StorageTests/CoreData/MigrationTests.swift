@@ -3203,6 +3203,53 @@ final class MigrationTests: XCTestCase {
         let migratedPaymentGatewayAccount = try XCTUnwrap(targetContext.first(entityName: "PaymentGatewayAccount"))
         XCTAssertEqual(migratedPaymentGatewayAccount.value(forKey: "supportedCurrency") as? [String], ["USD"])
     }
+
+    func test_migrating_from_118_to_119_loads_product_and_productAttribute_transformable_attributes_successfully() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 118")
+        let sourceContext = sourceContainer.viewContext
+
+        let product = insertProduct(to: sourceContext, forModel: 118)
+        // Populates transformable attributes.
+        let productCrossSellIDs: [Int64] = [630, 688]
+        let groupedProductIDs: [Int64] = [94, 134]
+        let productRelatedIDs: [Int64] = [270, 37]
+        let productUpsellIDs: [Int64] = [1126, 1216]
+        let productVariationIDs: [Int64] = [927, 1110]
+        product.setValue(productCrossSellIDs, forKey: "crossSellIDs")
+        product.setValue(groupedProductIDs, forKey: "groupedProducts")
+        product.setValue(productRelatedIDs, forKey: "relatedIDs")
+        product.setValue(productUpsellIDs, forKey: "upsellIDs")
+        product.setValue(productVariationIDs, forKey: "variations")
+
+        let productAttribute = insertProductAttribute(to: sourceContext)
+        // Populates transformable attributes.
+        let attributeOptions = ["Woody", "Andy Panda"]
+        productAttribute.setValue(attributeOptions, forKey: "options")
+
+        product.mutableSetValue(forKey: "attributes").add(productAttribute)
+
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "Product"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "ProductAttribute"), 1)
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 119")
+
+        // Assert
+        let targetContext = targetContainer.viewContext
+
+        let persistedProduct = try XCTUnwrap(targetContext.first(entityName: "Product"))
+        XCTAssertEqual(persistedProduct.value(forKey: "crossSellIDs") as? [Int64], productCrossSellIDs)
+        XCTAssertEqual(persistedProduct.value(forKey: "groupedProducts") as? [Int64], groupedProductIDs)
+        XCTAssertEqual(persistedProduct.value(forKey: "relatedIDs") as? [Int64], productRelatedIDs)
+        XCTAssertEqual(persistedProduct.value(forKey: "upsellIDs") as? [Int64], productUpsellIDs)
+        XCTAssertEqual(persistedProduct.value(forKey: "variations") as? [Int64], productVariationIDs)
+
+        let persistedAttribute = try XCTUnwrap(targetContext.first(entityName: "ProductAttribute"))
+        XCTAssertEqual(persistedAttribute.value(forKey: "options") as? [String], attributeOptions)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

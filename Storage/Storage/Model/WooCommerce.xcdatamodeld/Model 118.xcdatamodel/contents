@@ -588,7 +588,7 @@
         <attribute name="componentID" attributeType="String" defaultValueString=""/>
         <attribute name="defaultOptionID" attributeType="String" defaultValueString=""/>
         <attribute name="imageURL" attributeType="String" defaultValueString=""/>
-        <attribute name="optionIDs" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
+        <attribute name="optionIDs" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="NSArray"/>
         <attribute name="optionType" attributeType="String" defaultValueString=""/>
         <attribute name="title" attributeType="String" defaultValueString=""/>
         <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="compositeComponents" inverseEntity="Product"/>

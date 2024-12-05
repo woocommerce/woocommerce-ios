@@ -1,15 +1,11 @@
 import Foundation
 import Combine
 
-import protocol Yosemite.POSItem
-import protocol Yosemite.POSItemProvider
+import protocol Yosemite.POSOrderableItem
 import protocol WooFoundation.Analytics
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
-import protocol Yosemite.POSOrderServiceProtocol
 import struct Yosemite.POSCartItem
-import class WooFoundation.CurrencyFormatter
-import enum Yosemite.POSProductProviderError
 
 protocol PointOfSaleAggregateModelProtocol {
     var orderStage: PointOfSaleOrderStage { get }
@@ -24,18 +20,15 @@ protocol PointOfSaleAggregateModelProtocol {
     func cancelCardPaymentsOnboarding()
     func trackCardPaymentsOnboardingShown()
 
-    @available(*, deprecated, message: "`allItems` is due for removal, use `itemListState` instead.")
-    var allItems: [POSItem] { get }
     var itemListState: ItemListState { get }
     func loadInitialItems() async
     func loadNextItems() async
     func reload() async
 
     var cart: [CartItem] { get }
-    func addToCart(_ item: POSItem)
+    func addToCart(_ item: POSOrderableItem)
     func remove(cartItem: CartItem)
     func removeAllItemsFromCart()
-    func submitCart() async
     func addMoreToCart()
     func startNewCart()
 
@@ -53,119 +46,67 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     @Published var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
     private var onOnboardingCancellation: (() -> Void)?
 
-    @Published private(set) var allItems: [POSItem] = []
     @Published private(set) var itemListState: ItemListState = .initialLoading
 
     @Published private(set) var cart: [CartItem] = []
 
     @Published private(set) var orderState: PointOfSaleOrderState = .idle
 
-    private var order: Order? = nil
+    private let itemsController: PointOfSaleItemsControllerProtocol
 
-    private let itemProvider: POSItemProvider
     private let cardPresentPaymentService: CardPresentPaymentFacade
-    private let orderService: POSOrderServiceProtocol
-    private let currencyFormatter: CurrencyFormatter
+    private let orderController: PointOfSaleOrderControllerProtocol
     private let analytics: Analytics
 
-    private var currentPage: Int = Constants.initialPage
-    private var mightHaveMorePages: Bool = true
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
 
     private var cancellables: Set<AnyCancellable> = []
 
-    init(itemProvider: POSItemProvider,
+    init(itemsController: PointOfSaleItemsControllerProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
-         orderService: POSOrderServiceProtocol,
-         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+         orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
          paymentState: PointOfSalePaymentState = .idle) {
-        self.itemProvider = itemProvider
+        self.itemsController = itemsController
         self.cardPresentPaymentService = cardPresentPaymentService
-        self.orderService = orderService
-        self.currencyFormatter = currencyFormatter
+        self.orderController = orderController
         self.analytics = analytics
         self.paymentState = paymentState
+        publishItemListState()
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
+        publishOrderState()
         setupReaderReconnectionObservation()
     }
 }
 
 // MARK: - ItemList
 extension PointOfSaleAggregateModel {
+    private func publishItemListState() {
+        itemsController.itemListStatePublisher.assign(to: &$itemListState)
+    }
+
     @MainActor
     func loadInitialItems() async {
-        mightHaveMorePages = true
-        itemListState = .initialLoading
-        try? await load(pageNumber: Constants.initialPage)
+        await itemsController.loadInitialItems()
     }
 
     @MainActor
     func loadNextItems() async {
-        do {
-            guard mightHaveMorePages else {
-                return
-            }
-            itemListState = .loading(allItems)
-
-            let nextPage = currentPage + 1
-            try await load(pageNumber: nextPage)
-            currentPage = nextPage
-        } catch {
-            // No need to do anything; this avoids us incorrectly incrementing currentPage.
-        }
+        await itemsController.loadNextItems()
     }
 
     @MainActor
     func reload() async {
-        allItems.removeAll()
-        currentPage = Constants.initialPage
-        mightHaveMorePages = true
-        itemListState = .loading(allItems)
-        try? await load(pageNumber: currentPage)
-    }
-
-    @MainActor
-    private func load(pageNumber: Int) async throws {
-        do {
-            try await fetchItems(pageNumber: pageNumber)
-
-            mightHaveMorePages = true
-            updateItemListStateAfterLoadAttempt()
-        } catch POSProductProviderError.pageOutOfRange {
-            mightHaveMorePages = false
-            updateItemListStateAfterLoadAttempt()
-            throw POSProductProviderError.pageOutOfRange
-        } catch {
-            itemListState = .error(PointOfSaleErrorState.errorOnLoadingProducts())
-            throw error
-        }
-    }
-
-    @MainActor
-    private func fetchItems(pageNumber: Int) async throws {
-        let newItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
-        let uniqueNewItems = newItems.filter { newItem in
-            !allItems.contains(where: { $0.productID == newItem.productID })
-        }
-        allItems.append(contentsOf: uniqueNewItems)
-    }
-
-    private func updateItemListStateAfterLoadAttempt() {
-        if allItems.count == 0 {
-            itemListState = .empty
-        } else {
-            itemListState = .loaded(allItems)
-        }
+        await itemsController.reload()
     }
 }
 
 // MARK: - Cart
 
 extension PointOfSaleAggregateModel {
-    func addToCart(_ item: POSItem) {
+    func addToCart(_ item: POSOrderableItem) {
         cart.insert(CartItem(id: UUID(), item: item, quantity: 1), at: 0)
         Task { @MainActor in
             analytics.track(.pointOfSaleAddItemToCart)
@@ -180,19 +121,13 @@ extension PointOfSaleAggregateModel {
         cart.removeAll()
     }
 
-    @MainActor
-    func submitCart() async {
-        orderStage = .finalizing
-        await checkOut()
-    }
-
     func addMoreToCart() {
         setStateForEditing()
     }
 
     func startNewCart() {
         removeAllItemsFromCart()
-        clearOrder()
+        orderController.clearOrder()
         setStateForEditing()
     }
 
@@ -250,7 +185,7 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     func collectPayment() async {
-        guard let order else {
+        guard let order = orderController.order else {
             return
             // Should this throw?
         }
@@ -262,8 +197,13 @@ extension PointOfSaleAggregateModel {
     }
 
     @MainActor
+    func sendReceipt(to emailAddress: String) async {
+        await orderController.sendReceipt(recipientEmail: emailAddress)
+    }
+
+    @MainActor
     private func collectPayment(for order: Order) async throws {
-        _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
+        _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth, channel: .pos)
     }
 
     func cancelThenCollectPayment() {
@@ -411,102 +351,24 @@ private extension PointOfSaleAggregateModel {
 // MARK: - Order syncing
 
 extension PointOfSaleAggregateModel {
-    func checkOut() async {
-        guard CartItem.areOrderAndCartDifferent(order: order, cartItems: cart) else {
-            await startPaymentWhenCardReaderConnected()
-            return
-        }
-        // calculate totals and sync order if there was a change in the cart
-        await syncOrder(for: cart, allItems: allItems)
-    }
-
     @MainActor
-    private func syncOrder(for cartProducts: [CartItem], allItems: [POSItem]) async {
-        guard orderState.isSyncing == false else {
-            return
-        }
-        orderState = .syncing
-        let cart = cartProducts.map {
-            POSCartItem(itemID: nil, product: $0.item, quantity: Decimal($0.quantity))
-        }
-
-        do {
-            let syncedOrder = try await orderService.syncOrder(cart: cart, order: order, allProducts: allItems)
-            self.order = syncedOrder
-            orderState = .loaded(totals(for: syncedOrder))
-            await startPaymentWhenCardReaderConnected()
-            DDLogInfo("🟢 [POS] Synced order: \(syncedOrder)")
-        } catch {
-            DDLogError("🔴 [POS] Error syncing order: \(error)")
-
-            // Consider removing error or handle specific errors with our own formatting and localization
-            orderState = .error(.init(message: error.localizedDescription, handler: { [weak self] in
-                Task {
-                    await self?.syncOrder(for: cartProducts, allItems: allItems)
-                }
-            }))
-        }
+    func checkOut() async {
+        orderStage = .finalizing
+        await orderController.syncOrder(for: cart, retryHandler: { [weak self] in
+            await self?.checkOut()
+        })
+        await startPaymentWhenCardReaderConnected()
     }
 
-    private func clearOrder() {
-        order = nil
-        orderState = .idle
-    }
-}
-
-// MARK: - Price formatters
-
-private extension PointOfSaleAggregateModel {
-    func totals(for order: Order) -> PointOfSaleOrderTotals {
-        let totalsCalculator = OrderTotalsCalculator(for: order,
-                                                     using: currencyFormatter)
-        return PointOfSaleOrderTotals(
-            cartTotal: formattedPrice(totalsCalculator.itemsTotal.stringValue,
-                                      currency: order.currency) ?? "",
-            orderTotal: formattedPrice(order.total, currency: order.currency) ?? "",
-            taxTotal: formattedPrice(order.totalTax, currency: order.currency) ?? "")
-    }
-
-    func formattedPrice(_ price: String?, currency: String?) -> String? {
-        guard let price, let currency else {
-            return nil
-        }
-        return currencyFormatter.formatAmount(price, with: currency)
+    func publishOrderState() {
+        orderController.orderStatePublisher
+            .map { $0.externalState }
+            .assign(to: &$orderState)
     }
 }
 
 private extension PointOfSaleAggregateModel {
     enum Constants {
         static let initialPage: Int = 1
-    }
-}
-
-struct PointOfSaleErrorState: Equatable {
-    let title: String
-    let subtitle: String
-    let buttonText: String
-
-    static func errorOnLoadingProducts() -> Self {
-        PointOfSaleErrorState(title: Constants.failedToLoadTitle,
-                              subtitle: Constants.failedToLoadSubtitle,
-                              buttonText: Constants.failedToLoadButtonTitle)
-    }
-
-    enum Constants {
-        static let failedToLoadTitle = NSLocalizedString(
-            "pos.itemList.failedToLoadTitle",
-            value: "Error loading products",
-            comment: "Text appearing on the item list screen when there's an error loading products."
-        )
-        static let failedToLoadSubtitle = NSLocalizedString(
-            "pos.itemList.failedToLoadSubtitle",
-            value: "Give it another go?",
-            comment: "Text appearing on the item list screen as subtitle when there's an error loading products."
-        )
-        static let failedToLoadButtonTitle = NSLocalizedString(
-            "pos.itemList.failedToLoadButtonTitle",
-            value: "Retry",
-            comment: "Text for the button appearing on the item list screen when there's an error loading products."
-        )
     }
 }

@@ -174,6 +174,228 @@ final class WooShippingStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
+
+    // MARK: `purchaseShippingLabel`
+
+    func test_purchaseShippingLabel_returns_shipping_label_on_success() throws {
+        // Given
+        let expectedLabel = ShippingLabel.fake().copy(shippingLabelID: 13579)
+        let labelStatusResponse = ShippingLabelStatusPollingResponse.purchased(expectedLabel)
+        let remote = MockWooShippingRemote()
+        remote.whenPurchaseShippingLabel(siteID: sampleSiteID, thenReturn: .success([ShippingLabelPurchase.fake().copy(shippingLabelID: 13579)]))
+        remote.whenCheckLabelStatus(siteID: sampleSiteID, thenReturn: .success(labelStatusResponse))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<ShippingLabel, Error> = waitFor { promise in
+            let action = WooShippingAction.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                                                 orderID: self.sampleOrderID,
+                                                                 originAddress: .fake(),
+                                                                 destinationAddress: .fake(),
+                                                                 package: .fake()) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let actualLabel = try XCTUnwrap(result.get())
+        XCTAssertEqual(actualLabel, expectedLabel)
+    }
+
+    func test_purchaseShippingLabel_returns_error_on_purchaseShippingLabel_request_failure() throws {
+        // Given
+        let expectedError = NetworkError.timeout()
+        let remote = MockWooShippingRemote()
+        remote.whenPurchaseShippingLabel(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<ShippingLabel, Error> = waitFor { promise in
+            let action = WooShippingAction.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                                                 orderID: self.sampleOrderID,
+                                                                 originAddress: .fake(),
+                                                                 destinationAddress: .fake(),
+                                                                 package: .fake()) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
+
+    func test_purchaseShippingLabel_returns_error_on_checkLabelStatus_request_failure() throws {
+        // Given
+        let expectedError = NetworkError.timeout()
+        let remote = MockWooShippingRemote()
+        remote.whenPurchaseShippingLabel(siteID: sampleSiteID, thenReturn: .success([ShippingLabelPurchase.fake().copy(shippingLabelID: 13579)]))
+        remote.whenCheckLabelStatus(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<ShippingLabel, Error> = waitFor { promise in
+            let action = WooShippingAction.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                                                 orderID: self.sampleOrderID,
+                                                                 originAddress: .fake(),
+                                                                 destinationAddress: .fake(),
+                                                                 package: .fake(),
+                                                                 backendProcessingDelay: 0.01,
+                                                                 pollingDelay: 0.01,
+                                                                 pollingMaximumRetries: 3) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
+
+    func test_purchaseShippingLabel_returns_error_on_purchase_error() throws {
+        // Given
+        let expectedLabel = ShippingLabel.fake().copy(shippingLabelID: 13579, status: .purchaseError)
+        let labelStatusResponse = ShippingLabelStatusPollingResponse.purchased(expectedLabel)
+        let remote = MockWooShippingRemote()
+        remote.whenPurchaseShippingLabel(siteID: sampleSiteID, thenReturn: .success([ShippingLabelPurchase.fake().copy(shippingLabelID: 13579)]))
+        remote.whenCheckLabelStatus(siteID: sampleSiteID, thenReturn: .success(labelStatusResponse))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<ShippingLabel, Error> = waitFor { promise in
+            let action = WooShippingAction.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                                                 orderID: self.sampleOrderID,
+                                                                 originAddress: .fake(),
+                                                                 destinationAddress: .fake(),
+                                                                 package: .fake()) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? WooShippingLabelPurchaseError, .purchaseErrorStatus)
+    }
+
+    func test_purchaseShippingLabel_does_not_return_error_if_purchase_remains_in_progress() throws {
+        // Given
+        let inProgressLabel = ShippingLabel.fake().copy(shippingLabelID: 13579, status: .purchaseInProgress)
+        let labelStatusResponse = ShippingLabelStatusPollingResponse.purchased(inProgressLabel)
+        let remote = MockWooShippingRemote()
+        remote.whenPurchaseShippingLabel(siteID: sampleSiteID, thenReturn: .success([ShippingLabelPurchase.fake().copy(shippingLabelID: 13579)]))
+        remote.whenCheckLabelStatus(siteID: sampleSiteID, thenReturn: .success(labelStatusResponse))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        var purchaseResult: Result<ShippingLabel, Error>? = nil
+        let action = WooShippingAction.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                                             orderID: self.sampleOrderID,
+                                                             originAddress: .fake(),
+                                                             destinationAddress: .fake(),
+                                                             package: .fake(),
+                                                             backendProcessingDelay: 0.01,
+                                                             pollingDelay: 0.01,
+                                                             // Irrelevant, because it caps retries on error only.
+                                                             // Here just for reference.
+                                                             pollingMaximumRetries: 3,
+                                                             completion: { purchaseResult = $0 })
+
+        // We want to test that purchaseShippingLabel does not call its completion ("return") with
+        // an error for the entire duration of the polling it makes under the hood when the status
+        // is progress. So, let's set an inverted expectation: Let's validate that the result will
+        // never be an error.
+        let exp = expectation(
+            for: NSPredicate(block: { _, _ in
+                switch purchaseResult {
+                case .failure: return true
+                default: return false
+                }
+            }),
+            evaluatedWith: nil
+        )
+        exp.isInverted = true
+
+        // When
+        store.onAction(action)
+
+        // Then
+        //
+        // The action has been dispatched and should result in:
+        //
+        // 1. API call to get the purchase labels
+        // 2. Wait for the given delay to "give the backend time to process the labels"
+        // 3. API call to get the status of those labels, which will be "in progress"
+        // 4. Another API call after a delay to check the status again
+        // 5. More API calls to check the status, because there currently is no limit to how many retries we fire...
+        //
+        // By waiting for an interval greater than the sum of the delays on the inverted expectation we will:
+        //
+        // - Simulate the whole process, including the retry mechanism
+        // - Ensure that the completion never gets called with an error throughout the process
+        //
+        // The delays configured above are both 0.01. Using a 0.1 timeout – one order of magnitude bigger –
+        wait(for: [exp], timeout: 0.1)
+
+        // To ensure we didn't get a false positive, with the test simply waiting for the given timeout
+        // but nothing happening in the SUT, let's inspect the remote test double to ensure that both
+        // the purchase labels and the check status API calls were made. For the status, let's also
+        // verify more that one was made, to ensure that it polled upon a "in progress" status.
+        XCTAssertTrue(remote.purchaseShippingLabelCalled)
+        XCTAssertGreaterThan(remote.checkLabelStatusCallsCount, 1)
+    }
+
+    func test_printLabel_returns_print_data_on_success() throws {
+        // Given
+        let expectedPrintData = ShippingLabelPrintData.fake()
+        let remote = MockWooShippingRemote()
+        remote.whenPrintLabel(siteID: sampleSiteID, thenReturn: .success(expectedPrintData))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let printData: ShippingLabelPrintData = waitFor { promise in
+            let action = WooShippingAction.printLabel(siteID: self.sampleSiteID,
+                                                     labelIDs: [123],
+                                                     paperSize: .letter) { result in
+                guard let printData = try? result.get() else {
+                    XCTFail("Error printing shipping label: \(String(describing: result.failure))")
+                    return
+                }
+                promise(printData)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(printData, expectedPrintData)
+    }
+
+    func test_printLabel_returns_error_on_failure() throws {
+        // Given
+        let expectedError = NetworkError.timeout()
+        let remote = MockWooShippingRemote()
+        remote.whenPrintLabel(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let error: Error = waitFor { promise in
+            let action = WooShippingAction.printLabel(siteID: self.sampleSiteID,
+                                                      labelIDs: [123],
+                                                      paperSize: .letter) { result in
+                guard let printData = result.failure else {
+                    XCTFail("Unexpected result when printing shipping label: \(result)")
+                    return
+                }
+                promise(printData)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
 }
 
 private extension WooShippingStoreTests {

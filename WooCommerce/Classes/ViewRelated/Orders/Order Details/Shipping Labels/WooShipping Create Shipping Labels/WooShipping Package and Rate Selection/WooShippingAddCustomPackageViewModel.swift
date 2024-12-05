@@ -22,13 +22,13 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     // MARK: Initialization
 
     init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
-         dimensionsUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
-         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
+         dimensionsUnit: String,
+         weightUnit: String,
          stores: StoresManager = ServiceLocator.stores) {
-        self.dimensionsUnit = dimensionsUnit ?? ""
-        self.weightUnit = weightUnit ?? ""
         self.stores = stores
         self.siteID = siteID
+        self.dimensionsUnit = dimensionsUnit
+        self.weightUnit = weightUnit
     }
 
     // Field values are invalid if one of them is empty
@@ -49,19 +49,8 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
         return validFieldsCount != keysToCheck.count
     }
 
-    func clearFieldValues() {
-        fieldValues.removeAll()
-    }
-
-    func resetValues() {
-        clearFieldValues()
-        packageType = .box
-        showSaveTemplate = false
-        packageTemplateName = ""
-    }
-
     private var packageDataFromCurrentData: WooShippingPackageDataRepresentable {
-        return WooShippingPackageData(id: UUID().uuidString,
+        return WooShippingPackageData(id: packageTemplateName,
                                       name: packageTemplateName,
                                       length: fieldValues[.length] ?? "",
                                       width: fieldValues[.width] ?? "",
@@ -79,36 +68,45 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
         return packageDataFromCurrentData
     }
 
-    func addPackageAction() -> WooShippingPackageDataRepresentable? {
-        let packageData = preparePackageData()
+    enum Error: Swift.Error {
+        case packageDataNotValid
+        case failedSavingTemplate
+        case failure(Swift.Error)
+    }
 
-        // Cleanup after adding package
-        resetValues()
+    func addPackageAction(package: WooShippingPackageDataRepresentable? = nil) async -> Result<WooShippingPackageDataRepresentable, Error> {
+        guard let packageData = package ?? preparePackageData() else {
+            return .failure(WooShippingAddCustomPackageViewModel.Error.packageDataNotValid)
+        }
 
-        // TODO: implement adding a package with the package data
-        return packageData
+        // TODO: use WooShippingAction to POST the package to backend
+        // - if successful, return the package data
+        // - if not, return error
+
+        return .success(packageData)
     }
 
     @MainActor
     /// Saves custom package as template remotely.
     ///
-    func savePackageAsTemplateAction() async -> WooShippingPackageDataRepresentable? {
+    func savePackageAsTemplateAction() async -> Result<WooShippingPackageDataRepresentable, Error> {
         guard let packageData = preparePackageData() else {
-            return nil
+            return .failure(WooShippingAddCustomPackageViewModel.Error.packageDataNotValid)
         }
+
         let customPackage = WooShippingCustomPackage(id: "",
                                                      name: packageData.name,
                                                      rawType: packageData.packageType,
                                                      dimensions: "\(packageData.length) x \(packageData.width) x \(packageData.height)",
                                                      boxWeight: Double(packageData.weight) ?? 0)
-        return await withCheckedContinuation { continuation in
+        let result: Result<WooShippingPackageDataRepresentable, Error> = await withCheckedContinuation { continuation in
             let action = WooShippingAction.createPackage(siteID: siteID,
                                                          customPackage: customPackage,
                                                          predefinedOption: nil) { [weak self] result in
                 switch result {
                 case let .success(packages):
                     guard let self, let savedPackage = packages.customPackages.first(where: { $0.name == customPackage.name }) else {
-                        return continuation.resume(returning: nil)
+                        return continuation.resume(returning: .failure(WooShippingAddCustomPackageViewModel.Error.failedSavingTemplate))
                     }
                     let packageData = WooShippingPackageData(id: savedPackage.id,
                                                              name: savedPackage.name,
@@ -120,15 +118,20 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
                                                              weightUnit: weightUnit,
                                                              source: .custom,
                                                              packageType: savedPackage.rawType)
-                    // Cleanup after package is successfully saved
-                    resetValues()
-                    continuation.resume(returning: packageData)
+                    continuation.resume(returning: .success(packageData))
                 case let .failure(error):
                     DDLogError("⛔️ Error saving custom package with WCShip: \(error)")
-                    continuation.resume(returning: nil)
+                    continuation.resume(returning: .failure(WooShippingAddCustomPackageViewModel.Error.failedSavingTemplate))
                 }
             }
             stores.dispatch(action)
+        }
+
+        switch result {
+        case .success(let success):
+            return .success(success)
+        case .failure(let failure):
+            return .failure(WooShippingAddCustomPackageViewModel.Error.failure(failure))
         }
     }
 
@@ -176,8 +179,8 @@ extension WooShippingPackageUnitType {
                                               value: "Height",
                                               comment: "Info label for height input field")
         static let packageWeight = NSLocalizedString("wooShipping.createLabel.addPackage.packageWeight",
-                                              value: "Package weight",
-                                              comment: "Info label for weight input field")
+                                                     value: "Package weight",
+                                                     comment: "Info label for weight input field")
     }
 }
 

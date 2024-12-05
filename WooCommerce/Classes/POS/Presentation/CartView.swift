@@ -1,11 +1,9 @@
 import SwiftUI
-import protocol Yosemite.POSItem
 
 struct CartView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    private let viewHelper = CartViewHelper()
 
-    @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
-    @ObservedObject private var cartViewModel: CartViewModel
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
@@ -14,11 +12,6 @@ struct CartView: View {
     private var coordinateSpace: CoordinateSpace = .named(Constants.scrollViewCoordinateSpaceIdentifier)
     private var shouldApplyHeaderBottomShadow: Bool {
         posModel.cart.isNotEmpty && offSetPosition < 0
-    }
-
-    init(viewModel: PointOfSaleDashboardViewModel, cartViewModel: CartViewModel) {
-        self.viewModel = viewModel
-        self.cartViewModel = cartViewModel
     }
 
     var body: some View {
@@ -37,7 +30,7 @@ struct CartView: View {
 
                         Spacer()
 
-                        if let itemsInCartLabel = cartViewModel.itemsInCartLabel {
+                        if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: posModel.cart.count) {
                             Text(itemsInCartLabel)
                                 .font(Constants.itemsFont)
                                 .foregroundColor(Color.posSecondaryText)
@@ -63,7 +56,7 @@ struct CartView: View {
                             )
                     }
                     .padding(.leading, Constants.itemHorizontalPadding)
-                    .renderedIf(posModel.cart.isNotEmpty && posModel.orderStage == .building)
+                    .renderedIf(shouldShowClearCartButton)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -150,9 +143,15 @@ private extension CartView {
     }
 
     var shouldPreventCartEditing: Bool {
-        cartViewModel.shouldPreventCartEditing(
+        viewHelper.shouldPreventCartEditing(
             orderState: posModel.orderState,
             paymentState: posModel.paymentState)
+    }
+
+    var shouldShowClearCartButton: Bool {
+        viewHelper.shouldShowClearCartButton(
+            cart: posModel.cart,
+            orderStage: posModel.orderStage)
     }
 }
 
@@ -202,7 +201,7 @@ private extension CartView {
     var checkoutButton: some View {
         Button {
             Task { @MainActor in
-                await posModel.submitCart()
+                await posModel.checkOut()
             }
         } label: {
             Text(Localization.checkoutButtonTitle)
@@ -251,21 +250,7 @@ private extension CartView {
 }
 
 #if DEBUG
-import Combine
-import class WooFoundation.MockAnalyticsPreview
-import class WooFoundation.MockAnalyticsProviderPreview
-
 #Preview {
-    let posModel = PointOfSaleAggregateModel(
-        itemProvider: POSItemProviderPreview(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderService: POSOrderPreviewService())
-    // TODO:
-    // Simplify this by mocking `CartViewModel`
-    let cartViewModel = CartViewModel(posModel: posModel)
-    let dashboardViewModel = PointOfSaleDashboardViewModel(posModel: posModel,
-                                                           cartViewModel: cartViewModel,
-                                                           connectivityObserver: POSConnectivityObserverPreview())
-    CartView(viewModel: dashboardViewModel, cartViewModel: cartViewModel)
+    CartView()
 }
 #endif

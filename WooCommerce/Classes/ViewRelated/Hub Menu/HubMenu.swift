@@ -159,14 +159,12 @@ private extension HubMenu {
                    let orderService = POSOrderService(siteID: viewModel.siteID,
                                                       credentials: viewModel.credentials) {
                     PointOfSaleEntryPointView(
-                        itemProvider: viewModel.posItemProvider,
+                        itemsController: PointOfSaleItemsController(itemProvider: viewModel.posItemProvider),
                         onPointOfSaleModeActiveStateChange: { isEnabled in
                             viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
                         },
                         cardPresentPaymentService: cardPresentPaymentService,
-                        orderService: orderService,
-                        currencyFormatter: .init(currencySettings: ServiceLocator.currencySettings),
-                        analytics: ServiceLocator.analytics)
+                        orderController: PointOfSaleOrderController(orderService: orderService))
                 } else {
                     // TODO: When we have a singleton for the card payment service, this should not be required.
                     Text("Error creating card payment service")

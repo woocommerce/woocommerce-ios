@@ -2,7 +2,7 @@ import SwiftUI
 
 struct TotalsView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
-    private let viewModel = TotalsViewModel()
+    private let viewHelper = TotalsViewHelper()
 
     /// Used together with .matchedGeometryEffect to synchronize the animations of shimmeringLineView and text fields.
     /// This makes SwiftUI treat these views as a single entity in the context of animation.
@@ -14,9 +14,10 @@ struct TotalsView: View {
     // _should be_ showing, so that we can animate the change.
     @State private var isShowingTotalsFields: Bool = false
     private var shouldShowTotalsFields: Bool {
-        viewModel.shouldShowTotalsFields(for: posModel.paymentState)
+        viewHelper.shouldShowTotalsFields(for: posModel.paymentState)
     }
     @State private var isShowingPaymentsButtonSpacing: Bool = false
+    @State private var isShowingSendReceiptModal: Bool = false
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
@@ -55,7 +56,7 @@ struct TotalsView: View {
                             totalsFieldsView
                                 .transition(.opacity)
                                 .animation(.default, value: posModel.orderState.isSyncing)
-                                .opacity(viewModel.shouldShowTotalsFields(for: posModel.paymentState) ? 1 : 0)
+                                .opacity(viewHelper.shouldShowTotalsFields(for: posModel.paymentState) ? 1 : 0)
                                 .layoutPriority(2)
                         }
                     }
@@ -77,6 +78,14 @@ struct TotalsView: View {
         }
         .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
         .geometryGroupIfSupported()
+        .posModal(isPresented: $isShowingSendReceiptModal) {
+            POSSendReceiptModalView(sendReceipt: { email in
+                Task { @MainActor in
+                    await posModel.sendReceipt(to: email)
+                }
+            }, isPresented: $isShowingSendReceiptModal)
+            .posModalSizing()
+        }
     }
 
     private var backgroundColor: Color {
@@ -214,15 +223,14 @@ private extension TotalsView {
             .frame(minWidth: UIScreen.main.bounds.width / 2)
         })
         .padding(Constants.buttonPadding)
-        .foregroundColor(Constants.posPrimaryTextInverted)
-        .background(Constants.posOverlayFillInverted)
+        .foregroundColor(Color.posPrimaryTextInverted)
+        .background(Color.posOverlayFillInverted)
         .cornerRadius(Constants.buttonCornerRadius)
     }
 
     private var sendReceiptButton: some View {
         Button(action: {
-            // no-op
-            // https://github.com/woocommerce/woocommerce-ios/issues/14461
+            isShowingSendReceiptModal = true
         }, label: {
             HStack(spacing: Constants.buttonSpacing) {
                 Text(Localization.sendReceipt)
@@ -385,24 +393,6 @@ private extension TotalsView {
         static let matchedGeometryTotalId: String = "pos_totals_view_total_matched_geometry_id"
 
         static let totalsFieldsHideAnimationDelay: CGFloat = 0.3
-
-        static var posOverlayFillInverted: Color {
-            Color(
-                UIColor(
-                    light: .black,
-                    dark: .white
-                )
-            )
-        }
-
-        static var posPrimaryTextInverted: Color {
-            Color(
-                UIColor(
-                    light: UIColor(.white),
-                    dark: UIColor(.black)
-                )
-            )
-        }
     }
 
     enum Localization {
@@ -446,9 +436,9 @@ private extension View {
 #if DEBUG
 #Preview {
     let posModel = PointOfSaleAggregateModel(
-        itemProvider: POSItemProviderPreview(),
+        itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderService: POSOrderPreviewService())
+        orderController: PointOfSalePreviewOrderController())
     TotalsView()
         .environmentObject(posModel)
 }

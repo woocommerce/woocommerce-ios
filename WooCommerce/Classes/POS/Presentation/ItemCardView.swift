@@ -1,13 +1,13 @@
-import protocol Yosemite.POSItem
+import protocol Yosemite.POSDisplayableItem
 import SwiftUI
 
 struct ItemCardView: View {
-    private let item: POSItem
+    private let item: POSDisplayableItem
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
-    init(item: POSItem) {
+    init(item: POSDisplayableItem) {
         self.item = item
     }
 
@@ -76,6 +76,6 @@ private extension ItemCardView {
 
 #if DEBUG
 #Preview {
-    ItemCardView(item: POSItemProviderPreview().providePointOfSaleItem())
+    ItemCardView(item: PointOfSalePreviewItemService().providePointOfSaleItem())
 }
 #endif

@@ -19,10 +19,7 @@ final class MockMediaRemote {
     private var loadMediaLibraryFromWordPressSiteResultsBySiteID = [Int64: Result<[WordPressMedia], Error>]()
 
     /// The results to return based on the given site ID in `uploadMedia`
-    private var uploadMediaResultsBySiteID = [Int64: Result<[Media], Error>]()
-
-    /// The results to return based on the given site ID in `uploadMediaToWordPressSite`
-    private var uploadMediaToWordPressSiteResultsBySiteID = [Int64: Result<WordPressMedia, Error>]()
+    private var uploadMediaResultsBySiteID = [Int64: Result<WordPressMedia, Error>]()
 
     /// The results to return based on the given site ID in `updateProductID`
     private var updateProductIDResultsBySiteID = [Int64: Result<Media, Error>]()
@@ -46,13 +43,8 @@ final class MockMediaRemote {
     }
 
     /// Returns the value as a publisher when `uploadMedia` is called.
-    func whenUploadingMedia(siteID: Int64, thenReturn result: Result<[Media], Error>) {
+    func whenUploadingMedia(siteID: Int64, thenReturn result: Result<WordPressMedia, Error>) {
         uploadMediaResultsBySiteID[siteID] = result
-    }
-
-    /// Returns the value as a publisher when `uploadMediaToWordPressSite` is called.
-    func whenUploadingMediaToWordPressSite(siteID: Int64, thenReturn result: Result<WordPressMedia, Error>) {
-        uploadMediaToWordPressSiteResultsBySiteID[siteID] = result
     }
 
     /// Returns the value as a publisher when `updateProductID` is called.
@@ -72,7 +64,6 @@ extension MockMediaRemote {
         case loadMediaLibrary(siteID: Int64)
         case loadMediaLibraryFromWordPressSite(siteID: Int64)
         case uploadMedia(siteID: Int64)
-        case uploadMediaToWordPressSite(siteID: Int64)
         case updateProductID(siteID: Int64)
         case updateProductIDToWordPressSite(siteID: Int64)
     }
@@ -119,24 +110,12 @@ extension MockMediaRemote: MediaRemoteProtocol {
         completion(result)
     }
 
-    func uploadMedia(for siteID: Int64,
+    func uploadMedia(siteID: Int64,
                      productID: Int64,
-                     mediaItems: [UploadableMedia],
-                     completion: @escaping (Result<[Media], Error>) -> Void) {
+                     mediaItem: UploadableMedia,
+                     completion: @escaping (Result<WordPressMedia, Error>) -> Void) {
         invocations.append(.uploadMedia(siteID: siteID))
         guard let result = uploadMediaResultsBySiteID[siteID] else {
-            XCTFail("\(String(describing: self)) Could not find result for site ID: \(siteID)")
-            return
-        }
-        completion(result)
-    }
-
-    func uploadMediaToWordPressSite(siteID: Int64,
-                                    productID: Int64,
-                                    mediaItem: UploadableMedia,
-                                    completion: @escaping (Result<WordPressMedia, Error>) -> Void) {
-        invocations.append(.uploadMediaToWordPressSite(siteID: siteID))
-        guard let result = uploadMediaToWordPressSiteResultsBySiteID[siteID] else {
             XCTFail("\(String(describing: self)) Could not find result for site ID: \(siteID)")
             return
         }

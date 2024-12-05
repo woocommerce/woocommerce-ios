@@ -10,12 +10,12 @@ final class ReceiptEmailViewModel: ObservableObject {
     private let stores: StoresManager
     var noticePresenter: NoticePresenter
     var emailValidator: (String) -> Bool = EmailFormatValidator.validate
-    var onDismiss: (Bool) -> Void
+    var onDismiss: (Order?) -> Void
 
     init(order: Order,
          stores: StoresManager,
          noticesPresenter: NoticePresenter = DefaultNoticePresenter(),
-         onDismiss: @escaping (Bool) -> Void = { _ in }) {
+         onDismiss: @escaping (Order?) -> Void = { _ in }) {
         self.order = order
         self.stores = stores
         self.noticePresenter = noticesPresenter
@@ -33,10 +33,10 @@ final class ReceiptEmailViewModel: ObservableObject {
                 guard let self else { return }
                 self.state = .idle
                 switch result {
-                case .success:
+                case let .success(order):
                     self.state = .success
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                        self.onDismiss(true)
+                        self.onDismiss(order)
                     }
                 case let .failure(error):
                     DDLogError("Sending email receipt failed: \(error.localizedDescription)")

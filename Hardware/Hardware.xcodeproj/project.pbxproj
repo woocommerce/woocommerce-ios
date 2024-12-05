@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		028C39E028255CFE0007BA25 /* Models+Copiable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028C39DF28255CFE0007BA25 /* Models+Copiable.generated.swift */; };
 		02B5147A28254ED300750B71 /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 02B5147928254ED300750B71 /* Codegen */; };
+		02FDAB102CEEF11F00B6C8AA /* PaymentChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FDAB0F2CEEF11D00B6C8AA /* PaymentChannel.swift */; };
 		030338102705F7D400764131 /* ReceiptTotalLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0303380F2705F7D400764131 /* ReceiptTotalLine.swift */; };
 		035DBA3929251ED6003E5125 /* CardReaderInputOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035DBA3829251ED6003E5125 /* CardReaderInputOptions.swift */; };
 		035DBA41292BBEB2003E5125 /* CardReaderDiscoveryMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035DBA40292BBEB2003E5125 /* CardReaderDiscoveryMethod.swift */; };
@@ -160,6 +161,7 @@
 /* Begin PBXFileReference section */
 		02351FF56149ADCD11338B19 /* Pods-SampleReceiptPrinter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleReceiptPrinter.release.xcconfig"; path = "Target Support Files/Pods-SampleReceiptPrinter/Pods-SampleReceiptPrinter.release.xcconfig"; sourceTree = "<group>"; };
 		028C39DF28255CFE0007BA25 /* Models+Copiable.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Models+Copiable.generated.swift"; sourceTree = "<group>"; };
+		02FDAB0F2CEEF11D00B6C8AA /* PaymentChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentChannel.swift; sourceTree = "<group>"; };
 		0303380F2705F7D400764131 /* ReceiptTotalLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptTotalLine.swift; sourceTree = "<group>"; };
 		035DBA3829251ED6003E5125 /* CardReaderInputOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderInputOptions.swift; sourceTree = "<group>"; };
 		035DBA40292BBEB2003E5125 /* CardReaderDiscoveryMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderDiscoveryMethod.swift; sourceTree = "<group>"; };
@@ -469,6 +471,7 @@
 				D89B8F0B25DDC9D30001C726 /* ChargeStatus.swift */,
 				D88FDB2525DD21B000CB0DBD /* PaymentIntent.swift */,
 				E1E125AD26EB66B30068A9B0 /* FallibleCancelable.swift */,
+				02FDAB0F2CEEF11D00B6C8AA /* PaymentChannel.swift */,
 				D89B8F0125DDC7500001C726 /* PaymentIntentStatus.swift */,
 				D88FDB2325DD21B000CB0DBD /* PaymentIntentParameters.swift */,
 				03CF78D627DF9BE500523706 /* RefundParameters.swift */,
@@ -844,6 +847,7 @@
 				D845BDB8262D97B300A3E40F /* ReceiptDetails.swift in Sources */,
 				D88FDB2D25DD21B000CB0DBD /* PaymentIntentParameters.swift in Sources */,
 				028C39E028255CFE0007BA25 /* Models+Copiable.generated.swift in Sources */,
+				02FDAB102CEEF11F00B6C8AA /* PaymentChannel.swift in Sources */,
 				D89B8F0825DDC8F60001C726 /* Charge.swift in Sources */,
 				D845BDCC262D9B7700A3E40F /* CardBrand+Stripe.swift in Sources */,
 				D88FDB2E25DD21B000CB0DBD /* CardReaderEvent.swift in Sources */,

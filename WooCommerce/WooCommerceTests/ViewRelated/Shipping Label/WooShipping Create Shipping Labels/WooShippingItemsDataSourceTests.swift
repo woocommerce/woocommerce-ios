@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
 import Yosemite
+import WooFoundation
 
 final class WooShippingItemsDataSourceTests: XCTestCase {
 
@@ -60,4 +61,16 @@ final class WooShippingItemsDataSourceTests: XCTestCase {
         assertEqual(2, dataSource.items.count)
     }
 
+    func test_it_inits_with_order_currency() {
+        // Given
+        ServiceLocator.setCurrencySettings(CurrencySettings()) // Default is USD
+        let orderCurrency = "GBP"
+        let order = Order.fake().copy(currency: orderCurrency)
+
+        // When
+        let dataSource = DefaultWooShippingItemsDataSource(order: order)
+
+        // Then
+        assertEqual(orderCurrency, dataSource.currency)
+    }
 }

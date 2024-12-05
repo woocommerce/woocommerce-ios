@@ -561,6 +561,13 @@ public extension StorageType {
         return allObjects(ofType: BlazeCampaignListItem.self, matching: predicate, sortedBy: nil)
     }
 
+    /// Returns stored BlazeCampaignListItem s for a site matching the given IDs
+    ///
+    func loadBlazeCampaignListItems(siteID: Int64, with campaignIDs: [String]) -> [BlazeCampaignListItem] {
+        let predicate = NSPredicate(format: "siteID == %lld && campaignID in %@", siteID, campaignIDs)
+        return allObjects(ofType: BlazeCampaignListItem.self, matching: predicate, sortedBy: nil)
+    }
+
     // MARK: BlazeTargetDevice
 
     /// Returns all Blaze target devices with the given locale.
@@ -613,6 +620,13 @@ public extension StorageType {
     ///
     func loadAllCoupons(siteID: Int64) -> [Coupon] {
         let predicate = \Coupon.siteID == siteID
+        return allObjects(ofType: Coupon.self, matching: predicate, sortedBy: nil)
+    }
+
+    /// Returns all stored coupons for a site
+    ///
+    func loadCoupons(siteID: Int64, with couponIDs: [Int64]) -> [Coupon] {
+        let predicate = NSPredicate(format: "siteID == %lld && couponID in %@", siteID, couponIDs)
         return allObjects(ofType: Coupon.self, matching: predicate, sortedBy: nil)
     }
 
@@ -696,6 +710,13 @@ public extension StorageType {
         return allObjects(ofType: Customer.self, matching: predicate, sortedBy: [])
     }
 
+    /// Returns stored Customers given a `siteID` matching `customerIDs`
+    ///
+    func loadCustomers(siteID: Int64, matching customerIDs: [Int64]) -> [Customer] {
+        let predicate = NSPredicate(format: "siteID == %lld && customerID in %@", siteID, customerIDs)
+        return allObjects(ofType: Customer.self, matching: predicate, sortedBy: [])
+    }
+
     /// Returns a CustomerSearchResult given a `siteID` and a `keyword`
     ///
     func loadCustomerSearchResult(siteID: Int64, keyword: String) -> CustomerSearchResult? {
@@ -717,6 +738,13 @@ public extension StorageType {
         return allObjects(ofType: WCAnalyticsCustomer.self, matching: predicate, sortedBy: [])
     }
 
+    /// Returns stored WCAnalyticsCustomer given a `siteID` matching `customerIDs`
+    ///
+    func loadWCAnalyticsCustomers(siteID: Int64, matching customerIDs: [Int64]) -> [WCAnalyticsCustomer] {
+        let predicate = NSPredicate(format: "siteID == %lld && customerID in %@", siteID, customerIDs)
+        return allObjects(ofType: WCAnalyticsCustomer.self, matching: predicate, sortedBy: [])
+    }
+
     /// Returns a WCAnalyticsCustomerSearchResult given a `siteID` and a `keyword`
     ///
     func loadWCAnalyticsCustomerSearchResult(siteID: Int64, keyword: String) -> WCAnalyticsCustomerSearchResult? {
@@ -730,6 +758,14 @@ public extension StorageType {
     ///
     func loadSystemPlugins(siteID: Int64) -> [SystemPlugin] {
         let predicate = \SystemPlugin.siteID == siteID
+        let descriptor = NSSortDescriptor(keyPath: \SystemPlugin.name, ascending: true)
+        return allObjects(ofType: SystemPlugin.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Returns stored system plugins for a provided `siteID` matching the given `names`
+    ///
+    func loadSystemPlugins(siteID: Int64, matching names: [String]) -> [SystemPlugin] {
+        let predicate = NSPredicate(format: "siteID == %lld && name in %@", siteID, names)
         let descriptor = NSSortDescriptor(keyPath: \SystemPlugin.name, ascending: true)
         return allObjects(ofType: SystemPlugin.self, matching: predicate, sortedBy: [descriptor])
     }

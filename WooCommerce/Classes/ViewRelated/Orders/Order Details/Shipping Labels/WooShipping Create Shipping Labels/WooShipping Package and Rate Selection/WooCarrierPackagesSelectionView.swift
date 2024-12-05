@@ -1,4 +1,5 @@
 import SwiftUI
+import Foundation
 
 // Holds the data needed to display a tab in list of Carrier packages.
 struct WooShippingCarrierPackages: Identifiable {
@@ -19,7 +20,10 @@ struct WooPackageGroup {
 struct WooCarrierPackagesView: View {
     let carrierTab: WooShippingCarrierPackages
     @Binding var selectedPackageId: String?  // Track the selected package index
-    @State private var starredPackages: Set<String> = []
+    @Binding var starredPackages: Set<String>
+    let tapAction: (String) -> Void
+    let starAction: (String) -> Void
+    let onRefresh: () -> Void
 
     var body: some View {
         List {
@@ -32,16 +36,11 @@ struct WooCarrierPackagesView: View {
                             showTopDivider: false,
                             showSource: false,
                             tapAction: {
-                                selectedPackageId = selectedPackageId == package.id ? nil : package.id
+                                tapAction(package.id)
                             },
                             starAction: {
+                                starAction(package.id)
                                 // Just temporary, will be replaced with proper logic
-                                if starredPackages.contains(package.id) {
-                                    starredPackages.remove(package.id)
-                                }
-                                else {
-                                    starredPackages.insert(package.id)
-                                }
                             },
                             starred: starredPackages.contains(package.id)
                         )
@@ -53,7 +52,7 @@ struct WooCarrierPackagesView: View {
                     HStack {
                         Text(packageGroup.name.uppercased())
                             .foregroundColor(.secondary)
-                            .fontWeight(.regular)
+                            .captionStyle()
                             .multilineTextAlignment(.leading)
                         Spacer()
                     }
@@ -64,6 +63,9 @@ struct WooCarrierPackagesView: View {
             }
         }
         .listStyle(.plain)
+        .refreshable {
+            onRefresh()
+        }
     }
 }
 
@@ -75,10 +77,10 @@ struct WooCarrierPackagesSelectionView: View {
         static let tabPadding: CGFloat = 9.0
     }
 
-    @ObservedObject private var viewModel: WooCarrierPackagesSelectionViewModel
+    @ObservedObject private var viewModel: WooShippingAddPackageViewModel
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
-    init(viewModel: WooCarrierPackagesSelectionViewModel,
+    init(viewModel: WooShippingAddPackageViewModel,
          addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
         self.viewModel = viewModel
         self.addPackageAction = addPackageAction
@@ -86,10 +88,10 @@ struct WooCarrierPackagesSelectionView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if viewModel.selectedTabIndex != nil, viewModel.tabs.isNotEmpty {
-                TopTabView(tabs: viewModel.tabs,
+            if viewModel.selectedCarriersTabIndex != nil, viewModel.carrierTabs.isNotEmpty {
+                TopTabView(tabs: viewModel.carrierTabs,
                            showContent: .constant(false),
-                           selectedTabIndex: $viewModel.selectedTabIndex,
+                           selectedTabIndex: $viewModel.selectedCarriersTabIndex,
                            tabsContainerHorizontalPadding: nil,
                            selectedStateColor: Color.accentColor,
                            unselectedStateColor: .secondary,
@@ -99,16 +101,29 @@ struct WooCarrierPackagesSelectionView: View {
                            tabItemContentHorizontalPadding: Constants.tabItemContentHorizontalPadding,
                            tabItemContentVerticalPadding: Constants.tabItemContentVerticalPadding)
             }
+            if viewModel.isLoadingPackages {
+                ProgressView()
+                    .progressViewStyle(.circular)
+                    .padding()
+            }
             if let selectedCarrierTab = viewModel.selectedCarrierTab {
                 WooCarrierPackagesView(carrierTab: selectedCarrierTab,
-                                       selectedPackageId: $viewModel.selectedPackageId)
+                                       selectedPackageId: $viewModel.selectedCarriersPackageId,
+                                       starredPackages: $viewModel.starredCarriersPackages,
+                                       tapAction: { packageID in
+                    viewModel.selectedCarriersPackageId = viewModel.selectedCarriersPackageId == packageID ? nil : packageID
+                }, starAction: { packageID in
+                    viewModel.starUnstarPackage(packageID, carrierID: selectedCarrierTab.carrier.rawValue)
+                }, onRefresh: {
+                    viewModel.loadPackages()
+                })
             }
             Spacer()
             Divider()
             Button(WooShippingAddPackageView.Localization.addPackage) {
                 addPackageButtonTapped()
             }
-            .disabled(viewModel.selectedPackageId == nil)
+            .disabled(viewModel.selectedCarriersPackageId == nil)
             .buttonStyle(PrimaryButtonStyle())
             .padding()
         }
@@ -116,7 +131,7 @@ struct WooCarrierPackagesSelectionView: View {
 
     private func addPackageButtonTapped() {
         // call addPackageAction with data from selected package
-        guard let selectedPackage = viewModel.selectedPackage else { return }
+        guard let selectedPackage = viewModel.selectedCarriersPackage  else { return }
 
         addPackageAction(selectedPackage)
     }

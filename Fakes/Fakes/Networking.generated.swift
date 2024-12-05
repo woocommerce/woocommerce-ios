@@ -2751,10 +2751,10 @@ extension Networking.WooPaymentsPayoutsSchedule {
         )
     }
 }
-extension Networking.WooShippingAccountSettingsResponse {
+extension Networking.WooShippingAccountSettings {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooShippingAccountSettingsResponse {
+    public static func fake() -> Networking.WooShippingAccountSettings {
         .init(
             storeOptions: .fake(),
             accountSettings: .fake()

@@ -44,15 +44,15 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
     func success(receiptState: CardReaderTransactionAlertReceiptState) -> CardPresentPaymentsModalViewModel {
         switch receiptState {
         case let .paymentSuccessEmailSent(email, printReceiptAction, noReceiptAction):
-            return CardPresentModalSuccessEmailSent(printReceipt: printReceiptAction,
-                                                    noReceiptAction: noReceiptAction,
-                                                    email: email)
+            return CardPresentModalBuiltInSuccessEmailSent(printReceipt: printReceiptAction,
+                                                           noReceiptAction: noReceiptAction,
+                                                           email: email)
         case let .promptToSendEmailReceipt(printReceiptAction, emailReceiptAction, noReceiptAction):
-            return CardPresentModalSuccess(printReceipt: printReceiptAction,
-                                           emailReceipt: emailReceiptAction,
-                                           noReceiptAction: noReceiptAction)
+            return CardPresentModalBuiltInSuccess(printReceipt: printReceiptAction,
+                                                  emailReceipt: emailReceiptAction,
+                                                  noReceiptAction: noReceiptAction)
         case let .emailSendingNotSupported(printReceiptAction, noReceiptAction):
-            return CardPresentModalSuccessWithoutEmail(printReceipt: printReceiptAction, noReceiptAction: noReceiptAction)
+            return CardPresentModalBuiltInSuccessWithoutEmail(printReceipt: printReceiptAction, noReceiptAction: noReceiptAction)
         }
     }
 
@@ -68,14 +68,21 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
                                                   transactionType: .collectPayment,
                                                   image: .builtInReaderError,
                                                   email: email,
-                                                  primaryAction: tryAgain,
+                                                  tryAgainAction: tryAgain,
                                                   dismissCompletion: dismissCompletion)
-        default:
+        case let .promptToSendEmailReceipt(emailReceiptAction):
             return CardPresentModalError(errorDescription: builtInReaderDescription(for: error),
                                          transactionType: .collectPayment,
                                          image: .builtInReaderError,
-                                         primaryAction: tryAgain,
+                                         tryAgainAction: tryAgain,
+                                         emailReceiptAction: emailReceiptAction,
                                          dismissCompletion: dismissCompletion)
+        case .noEmailReceipt:
+            return CardPresentModalErrorWithoutEmail(errorDescription: builtInReaderDescription(for: error),
+                                                     transactionType: .collectPayment,
+                                                     image: .builtInReaderError,
+                                                     tryAgainAction: tryAgain,
+                                                     dismissCompletion: dismissCompletion)
         }
     }
 
@@ -89,11 +96,17 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
                                                        image: .builtInReaderError,
                                                        email: email,
                                                        onDismiss: dismissCompletion)
-        default:
+        case let .promptToSendEmailReceipt(emailReceiptAction):
             CardPresentModalNonRetryableError(amount: amount,
                                               errorDescription: builtInReaderDescription(for: error),
                                               image: .builtInReaderError,
-                                              onDismiss: dismissCompletion)
+                                              onDismiss: dismissCompletion,
+                                              emailReceiptAction: emailReceiptAction)
+        case .noEmailReceipt:
+            CardPresentModalNonRetryableErrorWithoutEmail(amount: amount,
+                                                          errorDescription: builtInReaderDescription(for: error),
+                                                          image: .builtInReaderError,
+                                                          onDismiss: dismissCompletion)
         }
     }
 

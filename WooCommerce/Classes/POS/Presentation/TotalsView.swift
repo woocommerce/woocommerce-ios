@@ -239,6 +239,7 @@ private extension TotalsView {
             HStack(spacing: Constants.buttonSpacing) {
                 Text(Localization.sendReceipt)
                     .font(Constants.buttonFont)
+                    .transaction { $0.animation = nil }
             }
             .frame(minWidth: UIScreen.main.bounds.width / 2)
         })

@@ -3322,6 +3322,29 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(persistedLabel.value(forKey: "productIDs") as? [Int64], productIDs)
         XCTAssertEqual(persistedLabel.value(forKey: "productNames") as? [String], productNames)
     }
+
+    func test_migrating_from_118_to_119_loads_site_jetpackConnectionActivePlugins_successfully() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 118")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertSite(to: sourceContext)
+        // Populates transformable attributes.
+        let jetpackConnectionActivePlugins: [String] = ["blaze, wcpay"]
+        site.setValue(jetpackConnectionActivePlugins, forKey: "jetpackConnectionActivePlugins")
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "Site"), 1)
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 119")
+
+        // Assert
+        let targetContext = targetContainer.viewContext
+
+        let persistedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))
+        XCTAssertEqual(persistedSite.value(forKey: "jetpackConnectionActivePlugins") as? [String], jetpackConnectionActivePlugins)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

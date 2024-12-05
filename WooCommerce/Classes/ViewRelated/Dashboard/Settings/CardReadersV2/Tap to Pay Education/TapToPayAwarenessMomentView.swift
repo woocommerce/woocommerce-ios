@@ -23,20 +23,16 @@ struct TapToPayAwarenessMomentView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: Constants.spacing) {
-                orientationAdaptiveStack(spacing: Constants.spacing) {
-                    VStack(spacing: Constants.spacing) {
-                        Text(Localization.title)
-                            .font(.title.weight(.bold))
-                            .multilineTextAlignment(.center)
-                        Text(Localization.subtitle)
-                            .font(.title3)
-                            .multilineTextAlignment(.center)
-                    }
-                    Image(imageName)
-                        .resizable()
-                        .scaledToFit()
-                }
+            VStack(spacing: 20) {
+                Text(Localization.title)
+                    .font(.title.weight(.bold))
+                    .multilineTextAlignment(.center)
+                Text(Localization.subtitle)
+                    .font(.title3)
+                    .multilineTextAlignment(.center)
+                Image(imageName)
+                    .resizable()
+                    .scaledToFit()
 
                 Spacer()
 
@@ -73,21 +69,6 @@ struct TapToPayAwarenessMomentView: View {
             }
         }
     }
-
-    private func orientationAdaptiveStack(spacing: CGFloat,
-                                          @ViewBuilder content: @escaping () -> some View) -> some View {
-        Group {
-            if UIDevice.current.orientation.isPortrait {
-                VStack(spacing: spacing, content: content)
-            } else {
-                HStack(spacing: spacing, content: content)
-            }
-        }
-    }
-}
-
-private enum Constants {
-    static let spacing: CGFloat = 20
 }
 
 private enum Localization {

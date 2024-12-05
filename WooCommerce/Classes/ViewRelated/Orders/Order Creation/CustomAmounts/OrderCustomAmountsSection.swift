@@ -109,42 +109,44 @@ struct OrderCustomAmountsSection: View {
             Text(Localization.optionsDialogAddCustomAmountTitle)
                 .subheadlineStyle()
                 .fixedSize(horizontal: false, vertical: true)
+                .padding(.top, Layout.optionsBottomSheetContentVerticalSpacing)
+                .padding([.leading, .trailing], Layout.optionsBottomSheetPadding)
 
-            Grid(alignment: .leading,
-                 horizontalSpacing: Layout.optionsBottomSheetSymbolLabelSpacing,
-                 verticalSpacing: Layout.optionsBottomSheetContentVerticalSpacing) {
-                optionRow(symbol: sectionViewModel.currencySymbol,
-                          title: Localization.optionsDialogFixedAmountButtonTitle) {
+            List {
+                Button {
                     addCustomAmountOption = .fixedAmount
                     showAddCustomAmountsAfterOptionsDialog()
+                } label: {
+                    optionLabel(symbol: sectionViewModel.currencySymbol,
+                                title: Localization.optionsDialogFixedAmountButtonTitle)
                 }
+                .listRowSeparator(.hidden)
                 .accessibilityIdentifier(Accessibility.fixedAmountIdentifier)
 
-                optionRow(symbol: "%",
-                          title: Localization.optionsDialogPercentageButtonTitle) {
+                Button {
                     addCustomAmountOption = .orderTotalPercentage
                     showAddCustomAmountsAfterOptionsDialog()
+                } label: {
+                    optionLabel(symbol: "%",
+                                title: Localization.optionsDialogPercentageButtonTitle)
                 }
+                .listRowSeparator(.hidden)
                 .accessibilityIdentifier(Accessibility.percentageAmountIdentifier)
             }
+            .listStyle(.plain)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .padding(Layout.optionsBottomSheetPadding)
-        .scrollVerticallyIfNeeded()
+        .padding([.top, .bottom], Layout.optionsBottomSheetPadding)
     }
 
-    @ViewBuilder private func optionRow(symbol: String, title: String, action: @escaping () -> Void) -> some View {
-        GridRow {
+    @ViewBuilder private func optionLabel(symbol: String, title: String) -> some View {
+        Label {
+            Text(title)
+        } icon: {
             Text(symbol)
-            Button {
-                action()
-            } label: {
-                Text(title)
-                    .multilineTextAlignment(.leading)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
         }
+        .multilineTextAlignment(.leading)
+        .fixedSize(horizontal: false, vertical: true)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .bodyStyle()
     }
 }

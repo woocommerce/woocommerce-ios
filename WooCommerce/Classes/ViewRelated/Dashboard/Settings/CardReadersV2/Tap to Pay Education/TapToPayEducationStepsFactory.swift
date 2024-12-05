@@ -44,6 +44,9 @@ struct TapToPayEducationStepsFactory {
             .init(title: Localization.ApplePay.title,
                   imageName: "tap-to-pay-education-apple-pay-gb",
                   descriptionSteps: Localization.ApplePay.descriptionSteps),
+            .init(title: Localization.PIN.title,
+                  imageName: "tap-to-pay-education-pin-gb",
+                  description: Localization.PIN.description),
             .init(title: Localization.FallbackPaymentMethod.title,
                   imageName: "tap-to-pay-education-fallback-payment-method-gb",
                   description: Localization.FallbackPaymentMethod.description),
@@ -133,6 +136,25 @@ private enum Localization {
                 comment: "Fourth description step for the 'How to accept Apple Pay' Tap to Pay merchant education"
             )
         ]
+    }
+
+    enum PIN {
+        static let title = NSLocalizedString(
+            "tapToPay.education.step.pin.title",
+            value: "How to handle PIN entry for a card.",
+            comment: "Title for the 'PIN entry' Tap to Pay merchant education step"
+        )
+
+        static let description = NSLocalizedString(
+            "tapToPay.education.step.pin.description",
+            value: "Customers are prompted to enter their card PIN under specific circumstances with Tap to Pay on iPhone.\n\n" +
+                   "For customers needing visual or other assistance, accessibility options are accessed by selecting " +
+                   "‘Accessibility Options’ on the PIN screen. Audible instructions guide customers to draw their PIN on the " +
+                   "screen or tap the screen to indicate each digit - tapping once for 1, twice for 2, and so on. " +
+                   "To submit their PIN, they simply swipe right with two fingers.",
+            comment: "Instructions for customers using accessibility options during PIN entry with Tap to Pay on iPhone." +
+                     "Describes how to use audible guidance for drawing or tapping the PIN digits and the gesture to submit."
+        )
     }
 
     enum FallbackPaymentMethod {

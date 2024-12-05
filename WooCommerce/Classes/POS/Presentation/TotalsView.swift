@@ -17,7 +17,6 @@ struct TotalsView: View {
         viewHelper.shouldShowTotalsFields(for: posModel.paymentState)
     }
     @State private var isShowingPaymentsButtonSpacing: Bool = false
-    @State private var isShowingSendReceiptModal: Bool = false
     @State private var isShowingReceiptsNotEligibleBanner: Bool = false
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
@@ -78,14 +77,6 @@ struct TotalsView: View {
         }
         .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
         .geometryGroupIfSupported()
-        .posModal(isPresented: $isShowingSendReceiptModal) {
-            POSSendReceiptModalView(sendReceipt: { email in
-                Task { @MainActor in
-                    await posModel.sendReceipt(to: email)
-                }
-            }, isPresented: $isShowingSendReceiptModal)
-            .posModalSizing()
-        }
     }
 
     private var backgroundColor: Color {
@@ -231,7 +222,7 @@ private extension TotalsView {
     private var sendReceiptButton: some View {
         Button(action: {
             if posModel.eligibleWooCommerceVersionForPOSReceipts {
-                isShowingSendReceiptModal = true
+                posModel.requestReceipt()
             } else {
                 isShowingReceiptsNotEligibleBanner = true
             }
@@ -367,7 +358,8 @@ private extension TotalsView {
                 .validatingOrder,
                 .preparingReader,
                 .processingPayment,
-                .cardPaymentSuccessful:
+                .cardPaymentSuccessful,
+                .requestingReceipt:
             break
         }
 

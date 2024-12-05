@@ -374,9 +374,19 @@ extension PointOfSaleAggregateModel {
     }
 }
 
-// MARK: - Receipts eligibility checks
+// MARK: - Receipts
 
 extension PointOfSaleAggregateModel {
+    func requestReceipt() {
+        paymentState = .requestingReceipt
+    }
+
+    func requestReceiptCompleted() {
+        if paymentState == .requestingReceipt {
+            paymentState = .cardPaymentSuccessful
+        }
+    }
+
     func checkWooCommerceVersionForPOSReceipts() {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return

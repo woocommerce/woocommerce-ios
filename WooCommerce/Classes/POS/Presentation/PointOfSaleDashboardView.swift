@@ -87,9 +87,19 @@ struct PointOfSaleDashboardView: View {
                 }
 
                 if posModel.orderStage == .finalizing {
-                    TotalsView()
-                        .accessibilitySortPriority(2)
-                        .transition(.move(edge: .trailing))
+                    switch posModel.paymentState {
+                    case .requestingReceipt:
+                        RequestReceiptView(sendReceipt: { email in
+                            Task { @MainActor in
+                                await posModel.sendReceipt(to: email)
+                                posModel.requestReceiptCompleted()
+                            }
+                        })
+                    default:
+                        TotalsView()
+                            .accessibilitySortPriority(2)
+                            .transition(.move(edge: .trailing))
+                    }
                 }
             }
             .animation(.default, value: posModel.orderStage)

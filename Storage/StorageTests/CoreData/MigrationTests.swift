@@ -3296,6 +3296,32 @@ final class MigrationTests: XCTestCase {
         let persistedComponent = try XCTUnwrap(targetContext.first(entityName: "ProductCompositeComponent"))
         XCTAssertEqual(persistedComponent.value(forKey: "optionIDs") as? [Int64], optionIDs)
     }
+
+    func test_migrating_from_118_to_119_loads_shippingLabel_transformable_attributes_successfully() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 118")
+        let sourceContext = sourceContainer.viewContext
+
+        let shippingLabel = insertShippingLabel(to: sourceContext)
+        // Populates transformable attributes.
+        let productIDs: [Int64] = [33]
+        let productNames: [String] = ["Test"]
+        shippingLabel.setValue(productIDs, forKey: "productIDs")
+        shippingLabel.setValue(productNames, forKey: "productNames")
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "ShippingLabel"), 1)
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 119")
+
+        // Assert
+        let targetContext = targetContainer.viewContext
+
+        let persistedLabel = try XCTUnwrap(targetContext.first(entityName: "ShippingLabel"))
+        XCTAssertEqual(persistedLabel.value(forKey: "productIDs") as? [Int64], productIDs)
+        XCTAssertEqual(persistedLabel.value(forKey: "productNames") as? [String], productNames)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

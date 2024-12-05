@@ -50,11 +50,7 @@ public final class ReceiptRemote: Remote {
     }
 }
 
-extension ReceiptRemote: POSReceiptsRemoteProtocol {
-    public func sendPOSReceipt(siteID: Int64, orderID: Int64) async throws {
-        try await sendReceipt(siteID: siteID, orderID: orderID)
-    }
-}
+extension ReceiptRemote: POSReceiptsRemoteProtocol { }
 
 private extension ReceiptRemote {
     enum ParameterKeys {

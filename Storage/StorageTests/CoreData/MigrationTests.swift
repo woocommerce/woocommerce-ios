@@ -3201,7 +3201,7 @@ final class MigrationTests: XCTestCase {
         // Then
         let targetContext = targetContainer.viewContext
         let migratedPaymentGatewayAccount = try XCTUnwrap(targetContext.first(entityName: "PaymentGatewayAccount"))
-        XCTAssertEqual(migratedPaymentGatewayAccount.value(forKey: "supportedCurrency") as? [String], ["USD"])
+        XCTAssertEqual(migratedPaymentGatewayAccount.value(forKey: "supportedCurrencies") as? [String], ["USD"])
     }
 
     func test_migrating_from_118_to_119_loads_product_and_productAttribute_transformable_attributes_successfully() throws {
@@ -3249,6 +3249,29 @@ final class MigrationTests: XCTestCase {
 
         let persistedAttribute = try XCTUnwrap(targetContext.first(entityName: "ProductAttribute"))
         XCTAssertEqual(persistedAttribute.value(forKey: "options") as? [String], attributeOptions)
+    }
+
+    func test_migrating_from_118_to_119_loads_productBundleItem_allowedVariations_successfully() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 118")
+        let sourceContext = sourceContainer.viewContext
+
+        let item = insertProductBundleItem(to: sourceContext)
+        // Populates transformable attributes.
+        let allowedVariations: [Int64] = [630, 688]
+        item.setValue(allowedVariations, forKey: "allowedVariations")
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "ProductBundleItem"), 1)
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 119")
+
+        // Assert
+        let targetContext = targetContainer.viewContext
+
+        let persistedItem = try XCTUnwrap(targetContext.first(entityName: "ProductBundleItem"))
+        XCTAssertEqual(persistedItem.value(forKey: "allowedVariations") as? [Int64], allowedVariations)
     }
 }
 

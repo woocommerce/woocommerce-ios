@@ -149,7 +149,7 @@ final class EditableOrderViewModel: ObservableObject {
     /// When the value is non-nil, the bundle product configuration screen is shown.
     @Published var productToConfigureViewModel: ConfigurableBundleProductViewModel?
 
-    @Published private(set) var customAmountsSectionViewModel: OrderCustomAmountsSectionViewModel = .init()
+    @Published private(set) var customAmountsSectionViewModel: OrderCustomAmountsSectionViewModel
 
     // MARK: Status properties
 
@@ -491,6 +491,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.initialCustomer = initialCustomer
         self.barcodeScannerItemFinder = BarcodeScannerItemFinder(stores: stores)
         self.quantityDebounceDuration = quantityDebounceDuration
+        self.customAmountsSectionViewModel = OrderCustomAmountsSectionViewModel(currencySettings: currencySettings)
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.

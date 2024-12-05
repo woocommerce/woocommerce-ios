@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 /// View model for `OrderCustomAmountsSection` that controls the visibility states of modals from various sources.
 final class OrderCustomAmountsSectionViewModel: ObservableObject {
@@ -7,6 +8,17 @@ final class OrderCustomAmountsSectionViewModel: ObservableObject {
 
     /// Defines whether the new custom amount options dialog is presented.
     @Published var showAddCustomAmountOptionsDialog: Bool = false
+
+    let currencySettings: CurrencySettings
+    init(currencySettings: CurrencySettings) {
+        self.currencySettings = currencySettings
+    }
+
+    /// The site's currency symbol. When we support creating orders in other currencies,
+    /// the appropriate code will need to be passed in from the EditableOrderViewModel.
+    var currencySymbol: String {
+        currencySettings.currencySymbol
+    }
 }
 
 struct OrderCustomAmountsSection: View {
@@ -100,7 +112,7 @@ struct OrderCustomAmountsSection: View {
                 .padding(.bottom, Layout.optionsBottomSheetContentTitleBottomPadding)
 
             HStack {
-                Text("$")
+                Text(sectionViewModel.currencySymbol)
                     .frame(minWidth: Layout.optionsBottomSheetButtonSymbolWidth)
                     .padding(.trailing, Layout.optionsBottomSheetButtonSymbolTrailing)
 

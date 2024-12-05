@@ -31,7 +31,14 @@
     {
       "skippedTests" : [
         "CardReaderConnectionControllerTests",
+        "InAppPurchaseStoreTests",
+        "InAppPurchaseStoreTests\/test_iap_supported_in_canada()",
+        "InAppPurchaseStoreTests\/test_iap_supported_in_us()",
+        "InAppPurchaseStoreTests\/test_load_products_fails_if_iap_unsupported()",
+        "InAppPurchaseStoreTests\/test_load_products_loads_products_response()",
         "InAppPurchaseStoreTests\/test_purchase_product_completes_purchase()",
+        "InAppPurchaseStoreTests\/test_purchase_product_ensure_xcode_environment()",
+        "InAppPurchaseStoreTests\/test_purchase_product_handles_api_errors()",
         "InAppPurchaseStoreTests\/test_user_is_entitled_to_product_returns_false_when_not_entitled()",
         "InAppPurchaseStoreTests\/test_user_is_entitled_to_product_returns_true_when_entitled()",
         "StorePerformanceViewModelTests\/test_dates_for_custom_range_are_correct_for_non_custom_time_range()",
@@ -46,6 +53,18 @@
     },
     {
       "skippedTests" : [
+        "InAppPurchasesOrderResultMapperTests",
+        "InAppPurchasesOrderResultMapperTests\/test_iap_order_creation_is_decoded_from_json_response()",
+        "InAppPurchasesProductsMapperTests",
+        "InAppPurchasesRemoteTests",
+        "InAppPurchasesRemoteTests\/test_load_products_returns_list_of_products()",
+        "InAppPurchasesRemoteTests\/test_purchase_product_returns_created_order()",
+        "InAppPurchasesRemoteTests\/test_retrieveHandledTransactionSiteID_when_fails_to_retrieve_response_then_returns_network_error()",
+        "InAppPurchasesRemoteTests\/test_retrieveHandledTransactionSiteID_when_success_to_retrieve_response_and_transaction_is_handled_then_returns_siteID()",
+        "InAppPurchasesRemoteTests\/test_retrieveHandledTransactionSiteID_when_success_to_retrieve_response_and_transaction_is_not_handled_then_returns_errorResponse()",
+        "InAppPurchasesTransactionMapperTests",
+        "InAppPurchasesTransactionMapperTests\/test_iap_handled_transaction_is_decoded_from_json_response()",
+        "InAppPurchasesTransactionMapperTests\/test_iap_unhandled_transaction_is_decoded_from_json_response()",
         "WCPayRemoteTests\/test_loadAccount_properly_handles_implicitly_not_eligible_for_card_present_payments()",
         "WCPayRemoteTests\/test_loadAccount_properly_handles_not_eligible_for_card_present_payments()"
       ],

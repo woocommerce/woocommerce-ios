@@ -3169,6 +3169,23 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedCoupon.value(forKey: "usedBy") as? [String], ["me@example.com"])
         XCTAssertEqual(migratedCoupon.value(forKey: "emailRestrictions") as? [String], ["*@woocommerce.com"])
     }
+
+    func test_migrating_from_118_to_119_loads_payment_gateway_features_successfully() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 118")
+        let sourceContext = sourceContainer.viewContext
+
+        _ = insertPaymentGateway(to: sourceContext)
+        try sourceContext.save()
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 119")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedPaymentGateway = try XCTUnwrap(targetContext.first(entityName: "PaymentGateway"))
+        XCTAssertEqual(migratedPaymentGateway.value(forKey: "features") as? [String], ["products", "refunds"])
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -3656,7 +3673,7 @@ private extension MigrationTests {
             "title": "WooCommerce Payments",
             "gatewayDescription": "WooCommerce Payments - easy payments by Woo",
             "enabled": true,
-            "features": [String]()
+            "features": ["products", "refunds"]
         ])
     }
 

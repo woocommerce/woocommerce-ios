@@ -3,12 +3,17 @@ import Testing
 
 struct POSOrderServiceTests {
     let sut: POSOrderService
+    let mockReceiptsRemote: MockReceiptsOrderRemote
     let mockOrdersRemote: MockPOSOrdersRemote
 
     init() {
+        let mockReceiptsRemote = MockReceiptsOrderRemote()
         let mockOrdersRemote = MockPOSOrdersRemote()
+
+        self.mockReceiptsRemote = mockReceiptsRemote
         self.mockOrdersRemote = mockOrdersRemote
-        self.sut = POSOrderService(siteID: 123, ordersRemote: mockOrdersRemote)
+
+        self.sut = POSOrderService(siteID: 123, ordersRemote: mockOrdersRemote, receiptsRemote: mockReceiptsRemote)
     }
 
     @Test
@@ -113,15 +118,11 @@ private func makePOSCartItem(
     productID: Int64,
     quantity: Decimal) -> POSCartItem {
         return POSCartItem(
-            product: POSProduct(
-                itemID: UUID(),
-                productID: productID,
-                name: "",
-                price: "",
-                formattedPrice: "",
-                itemCategories: [],
-                productImageSource: nil,
-                productType: .simple),
+            item: POSProduct(id: UUID(),
+                             name: "",
+                             formattedPrice: "",
+                             productID: productID,
+                             price: ""),
             quantity: quantity
         )
     }

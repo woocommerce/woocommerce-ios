@@ -10,12 +10,6 @@ public final class SiteStore: Store {
     // Keeps a strong reference to remote to keep requests alive.
     private let remote: SiteRemoteProtocol
 
-    /// Shared private StorageType for use when upserting sites into storage.
-    ///
-    private lazy var sharedDerivedStorage: StorageType = {
-        storageManager.writerDerivedStorage
-    }()
-
     public init(remote: SiteRemoteProtocol,
                 dispatcher: Dispatcher,
                 storageManager: StorageManagerType,
@@ -153,30 +147,24 @@ private extension SiteStore {
 private extension SiteStore {
     func upsertStoredSiteInBackground(readOnlySite: Networking.Site) async {
         await withCheckedContinuation { continuation in
-            let derivedStorage = sharedDerivedStorage
-            derivedStorage.perform {
+            storageManager.performAndSave({ derivedStorage in
                 let storageSite = derivedStorage.loadSite(siteID: readOnlySite.siteID) ?? derivedStorage.insertNewObject(ofType: Storage.Site.self)
                 storageSite.update(with: readOnlySite)
-            }
-
-            storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-                DispatchQueue.main.async(execute: { continuation.resume() })
-            }
+            }, completion: {
+                continuation.resume()
+            }, on: .main)
         }
     }
 
     func upsertStoredSiteInBackground(siteID: Int64, name: String) async {
         await withCheckedContinuation { continuation in
-            let derivedStorage = sharedDerivedStorage
-            derivedStorage.perform {
+            storageManager.performAndSave({ derivedStorage in
                 if let storageSite = derivedStorage.loadSite(siteID: siteID) {
                     storageSite.name = name
                 }
-            }
-
-            storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-                DispatchQueue.main.async(execute: { continuation.resume() })
-            }
+            }, completion: {
+                continuation.resume()
+            }, on: .main)
         }
     }
 }

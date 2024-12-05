@@ -50,6 +50,8 @@ public final class ReceiptRemote: Remote {
     }
 }
 
+extension ReceiptRemote: POSReceiptsRemoteProtocol { }
+
 private extension ReceiptRemote {
     enum ParameterKeys {
         static let expirationDays: String = "expiration_days"

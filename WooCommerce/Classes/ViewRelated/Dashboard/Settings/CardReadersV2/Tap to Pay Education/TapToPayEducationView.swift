@@ -78,7 +78,7 @@ final class TapToPayEducationViewHostingController: UIHostingController<TapToPay
         viewModel.onDismiss = { [weak self] in
             guard let self else { return }
 
-            self.dismiss(animated: true) {
+            dismiss(animated: true) {
                 onDismiss()
             }
         }

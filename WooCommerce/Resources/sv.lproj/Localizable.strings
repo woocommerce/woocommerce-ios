@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-08 22:11:33+0000 */
+/* Translation-Revision-Date: 2024-11-25 16:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -950,11 +950,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Automattic-familjen";
 
-/* Hint showing the deposit schedule for a merchant's WooPayments account. e.g. Available funds are deposited automatically, every Wednesday. %1$@ will be replaced with a translated frequency description, e.g. 'every day' or 'monthly on the 28th' */
-"Available funds are deposited automatically, %1$@." = "Tillgängliga medel sätts in automatiskt %1$@.";
+/* Hint showing the payout schedule for a merchant's WooPayments account. e.g. Available funds are paid out automatically, every Wednesday. %1$@ will be replaced with a translated frequency description, e.g. 'every day' or 'monthly on the 28th' */
+"Available funds are paid out automatically, %1$@." = "Tillgängliga medel betalas ut automatiskt %1$@.";
 
-/* Hint showing the deposit schedule for a merchant's WooPayments account with a manual schedule. */
-"Available funds are deposited manually, on request." = "Tillgängliga medel sätts in manuellt på begäran.";
+/* Hint showing the payout schedule for a merchant's WooPayments account with a manual schedule. */
+"Available funds are paid out manually, on request." = "Tillgängliga medel betalas ut manuellt på begäran.";
 
 /* Label for average value of orders in the Analytics Hub */
 "Average Order Value" = "Genomsnittligt beställningsvärde";
@@ -2073,7 +2073,8 @@ which should be translated separately and considered part of this sentence. */
 /* Custom line index in Customs Form of Shipping Label flow */
 "Custom Line %1$d" = "Anpassad rad %1$d";
 
-/* Custom Package menu in Shipping Label Add New Package flow */
+/* Custom Package menu in Shipping Label Add New Package flow
+   Label used to mark a custom package in list of saved packages */
 "Custom Package" = "Anpassat paket";
 
 /* Label for one of the filters in order date range
@@ -2823,7 +2824,7 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
 "Error updating Order #%1$d" = "Det gick inte att uppdatera beställning #%1$d";
 
-/* String indicating that a deposit date is an estimate. Shown on whe WooPayments Deposits View. %1$@ will be replaced with a locale-appropriate date string. */
+/* String indicating that a payout date is an estimate. Shown on whe WooPayments Payouts View. %1$@ will be replaced with a locale-appropriate date string. */
 "Est. %1$@" = "Beräknat %1$@";
 
 /* Estimated setup time title text shown on the Woo payments setup instructions screen. */
@@ -3110,7 +3111,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the view which shows the full feature list for paid plans. */
 "Full Feature List" = "Fullständig funktionslista";
 
-/* Hint regarding available/pending balances shown in the WooPayments Deposits View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
+/* Hint regarding available/pending balances shown in the WooPayments Payouts View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
 "Funds become available after pending for %1$d days." = "Medlen blir tillgängliga efter att ha inväntat granskning i %1$d dagar.";
 
 /* Format of the Global Unique Identifier on the Inventory Settings row */
@@ -3701,6 +3702,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product Inventory Settings navigation title
    Title of the Inventory Settings row on Product main screen
+   Title of the product form bottom sheet action for editing external inventory.
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Lagersaldo";
 
@@ -4408,7 +4410,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Myanmar" = "Myanmar";
 
-/* String used when there's no date available for a deposit type on the WooPayments Deposits View. */
+/* String used when there's no date available for a payout type on the WooPayments Payouts View. */
 "N\/A" = "N\/A";
 
 /* Name text field placeholder
@@ -4896,6 +4898,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view. */
 "OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "Kan inte hämta kvitto.";
+
+/* Title for notice that's shown when trying to edit an order that's in a different currency. This action isn't supported in the app. Placeholders: %1$@ is the order currency code (e.g. USD), %2$@ is the site currency code (e.g. GBP.) */
+"OrderDetailsViewModel.editingOrderWithCurrencyConflictNotice.title" = "Du kan bara redigera den här ordern på webben, eftersom den använder %1$@, och din valutan för din webbplats är %2$@.";
 
 /* Description of the subscription billing interval for a product. Reads like: 'Every 2 months'. */
 "OrderSubscriptionTableViewCellViewModel.billingInterval" = "Var %1$@ %2$@";
@@ -6028,11 +6033,8 @@ which should be translated separately and considered part of this sentence. */
 /* Details section title in the Edit Address Form */
 "SHIPPING ADDRESS" = "LEVERANSADRESS";
 
-/* Edit Product SKU navigation title
-   Title of the cell in Product Inventory Settings > SKU
-   Title of the product form bottom sheet action for editing short description.
-   Title of the product search filter to search for products that match the SKU.
-   Title of the SKU row on Product main screen */
+/* Title of the cell in Product Inventory Settings > SKU
+   Title of the product search filter to search for products that match the SKU. */
 "SKU" = "Artikelnr";
 
 /* The message of the alert when there is an error updating the product SKU */
@@ -9674,6 +9676,12 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button in the Blaze Edit Ad screen. */
 "blazeEditAdView.cancel" = "Avbryt";
 
+/* Placeholder for CTA Text field in the Blaze Edit Ad screen. */
+"blazeEditAdView.ctaText.placeholder" = "CTA-text";
+
+/* CTA Text title text in the Blaze Edit Ad screen. */
+"blazeEditAdView.ctaText.title" = "Uppmaning till åtgärd";
+
 /* Placeholder for Description text field in the Blaze Edit Ad screen. */
 "blazeEditAdView.description.placeholder" = "Beskrivningstext för Blaze-annonsen";
 
@@ -9703,6 +9711,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Blaze Edit Ad screen. */
 "blazeEditAdView.title" = "Redigera annons";
+
+/* Edit Blaze Ad screen: Error message if CTA Text exceeds the character limit. */
+"blazeEditAdViewModel.ctaText.lengthExceedsLimit" = "CTA-text får inte överstiga %1$d tecken";
 
 /* Edit Blaze Ad screen: Error message if Description field is empty. */
 "blazeEditAdViewModel.description.emptyError" = "Beskrivning kan inte vara tom";
@@ -9977,6 +9988,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "Skannar efter läsare";
+
+/* Message informing the user that a receipt has been sent to their email address. %1$@ is the email address */
+"cardPresentPaymentsModal.error.receiptMessage" = "Ett kvitto har skickats till %1$@";
+
+/* Button to email receipts. Presented to users after a payment has been successfully collected */
+"cardPresentPaymentsModal.success.emailReceipt" = "Kvitto via e-post";
+
+/* Label informing users that the payment succeeded. Presented to users when a payment is collected */
+"cardPresentPaymentsModal.success.paymentSuccessful" = "Betalning lyckades";
+
+/* Button to print receipts. Presented to users after a payment has been successfully collected */
+"cardPresentPaymentsModal.success.printReceipt" = "Skriv ut kvitto";
+
+/* Message informing the user that a receipt has been sent to their email address. %1$@ is the email address */
+"cardPresentPaymentsModal.success.receiptMessage" = "Ett kvitto har skickats till %1$@";
+
+/* Button when the user does not want to print or email receipt. Presented to users after a payment has been successfully collected */
+"cardPresentPaymentsModal.success.saveReceiptAndContinue" = "Spara kvitto och fortsätt";
 
 /* Title for the toggle that specifies whether to add a note to the order with the change data. */
 "cashPaymentTenderView.addNoteToggle.title" = "Registrera transaktionsinformation i beställningsanteckning";
@@ -10461,45 +10490,6 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the sign-up fee for a subscription product on the Price Settings row. Reads like: 'Sign-up fee: $0.99'. */
 "defaultProductFormTableViewModel.subscriptionSignupFeeFormat" = "Registreringsavgift: %1$@";
 
-/* Accessibility label for the collapse chevron on the Deposit summary */
-"deposits.currency.overview.accessibility.hide" = "Dölj insättningsuppgifter";
-
-/* Accessibility label for the expand chevron on the Deposit summary */
-"deposits.currency.overview.accessibility.show" = "Visa insättningsuppgifter";
-
-/* Title for available funds overview in WooPayments Deposits view. This shows the balance which can be paid out. */
-"deposits.currency.overview.availableFunds" = "Tillgängliga medel";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.canceled.title" = "Avbruten";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.estimated.title" = "Beräknad";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.failed.title" = "Misslyckades";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.inTransit.title" = "På väg";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.paid.title" = "Betald";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.pending.title" = "Väntande";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.unknown.title" = "Okänt";
-
-/* Section header for the last deposit in the WooPayments Deposits overview */
-"deposits.currency.overview.lastDeposit" = "Senaste insättning";
-
-/* Button text to view more about payment schedules on the WooPayments Deposits View. */
-"deposits.currency.overview.learnMore" = "Läs mer om när du får dina medel";
-
-/* Title for pending funds overview in WooPayments Deposits view. This shows the balance which will be made available for pay out later. */
-"deposits.currency.overview.pendingFunds" = "Medel som inväntar granskning";
-
 /* Title of the downloadable file bottom sheet action for adding document from device. */
 "downloadableFileSource.deviceDocument" = "Dokument på enhet";
 
@@ -10542,16 +10532,16 @@ which should be translated separately and considered part of this sentence. */
 /* The EU notice banner content describing how the shipping customs shall be configured */
 "eu_shipping_instructions_info" = "Leverans till länder som följer EU:s tullregler kräver nu att du tydligt beskriver varje vara. Om du till exempel skickar kläder måste du ange vilken typ av kläder det är (t.ex. herrskjortor, flickvästar, pojkjackor) för att beskrivningen ska vara godtagbar. Annars kan leveranser försenas eller avbrytas i tullen.";
 
-/* every {dayname}, shown in a sentence like 'Available funds are deposited automatically, every Wednesday' %1$@ will be replaced with the localized day name */
+/* every {dayname}, shown in a sentence like 'Available funds are paid out automatically, every Wednesday' %1$@ will be replaced with the localized day name */
 "every %1$@" = "varje %1$@";
 
-/* Shown in a sentence like 'Available funds are deposited automatically, every day' */
+/* Shown in a sentence like 'Available funds are paid out automatically, every day' */
 "every day" = "varje dag";
 
-/* Shown in a sentence like 'Available funds are deposited automatically every month. */
+/* Shown in a sentence like 'Available funds are paid out automatically every month. */
 "every month" = "varje månad";
 
-/* Shown in a sentence like 'Available funds are deposited automatically, every month on the 15th' */
+/* Shown in a sentence like 'Available funds are paid out automatically, every month on the 15th' */
 "every month on the %1$@" = "varje månad den %1$@";
 
 /* Placeholder for the site url textfield.
@@ -10711,6 +10701,9 @@ which should be translated separately and considered part of this sentence. */
 /* A message that tells the user why the app is requesting access to the user’s location information while the app is running in the foreground. */
 "infoplist.NSLocationWhenInUseUsageDescription" = "Platsåtkomst krävs för att ta emot betalningar.";
 
+/* A message that tells the user why the app needs access to Microphone. */
+"infoplist.NSMicrophoneUsageDescription" = "Woo använder din mikrofon så att du kan spela in ljud när du spelar in videor för din butiks mediabibliotek.";
+
 /* A message that tells the user why the app is requesting access to the user’s photo library. */
 "infoplist.NSPhotoLibraryUsageDescription" = "För att spara foton från kameran för produktbilder, eller för att lägga till foton eller videoklipp till dina produkter eller supportärenden.";
 
@@ -10780,7 +10773,7 @@ which should be translated separately and considered part of this sentence. */
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "manuell återbetalning";
 
-/* on request (lower case), shown in a sentence like 'Deposit schedule: manual, on request' */
+/* on request (lower case), shown in a sentence like 'Payout schedule: manual, on request' */
 "manually, on request" = "manuellt, på begäran";
 
 /* Menu option for taking an image or video with the device's camera. */
@@ -10815,9 +10808,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the section related to card readers inside In-Person Payments settings */
 "menu.payments.cardReader.section.title" = "Kortläsare";
-
-/* An accessibility label used when the balances are loading on the payments menu */
-"menu.payments.depositSummary.loading.accessibilityLabel" = "Hämtar saldon …";
 
 /* Notice text after completing a payment order from In-Person Payments in the Menu */
 "menu.payments.inPersonPayments.collectPayment.notice.orderCompleted" = "🎉 Beställning färdigbehandlad";
@@ -10863,6 +10853,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the section related to changing payment settings inside the In-Person Payments menu */
 "menu.payments.paymentSettings.section.title" = "﻿Inställningar";
 
+/* An accessibility label used when the balances are loading on the payments menu */
+"menu.payments.payoutSummary.loading.accessibilityLabel" = "Hämtar saldon …";
+
 /* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory. */
 "menu.payments.tapToPay.about.row.title" = "Om Tap to Pay";
 
@@ -10873,13 +10866,13 @@ which should be translated separately and considered part of this sentence. */
 "menu.payments.tapToPay.section.title" = "Tap to Pay";
 
 /* Title for a done button in the navigation bar */
-"menu.payments.wooPaymentsDeposits.navigation.done.button.title" = "Klar";
+"menu.payments.wooPaymentsPayouts.navigation.done.button.title" = "Klar";
 
-/* Title for the row related to Woo Payments Deposits/Balances. */
-"menu.payments.wooPaymentsDeposits.row.title" = "Woo Betalningsbalans";
+/* Title for the row related to Woo Payments Payouts/Balances. */
+"menu.payments.wooPaymentsPayouts.row.title" = "Woo-betalningssaldo";
 
-/* Title for the section related to Woo Payments Deposits/Balances. */
-"menu.payments.wooPaymentsDeposits.section.title" = "Woo Betalningsbalans";
+/* Title for the section related to Woo Payments Payouts/Balances. */
+"menu.payments.wooPaymentsPayouts.section.title" = "Woo-betalningssaldo";
 
 /* Display label for a product's subscription period when it is a single month. */
 "month" = "Månad";
@@ -10967,6 +10960,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "Lägg till frakt";
+
+/* Text for the cancel button to dismiss Send Receipt to Customer screen */
+"order.receiptEmailView.cancel" = "Avbryt";
+
+/* Email field placeholder */
+"order.receiptEmailView.emailFieldHint" = "Ange e-post";
+
+/* Email text field title */
+"order.receiptEmailView.emailFieldTitle" = "E-post";
+
+/* Title for the button to send the receipt to the customer */
+"order.receiptEmailView.emailReceipt" = "Kvitto via e-post";
+
+/* An error that is shown when sending email receipt fails. */
+"order.receiptEmailView.errorNotice" = "Ett fel uppstod när kvittot skickades via e-post. Försök igen.";
+
+/* Notice text when the merchant enters an invalid email */
+"order.receiptEmailView.invalidEmailError" = "Ange en giltig e-postadress.";
+
+/* Title for the screen to update customer email address and send receipt */
+"order.receiptEmailView.title" = "Kvitto till kund via e-post";
 
 /* Button to add a shipping line to the order during order creation */
 "order.shippingLineDetails.addShipping" = "Lägg till frakt";
@@ -11197,6 +11211,45 @@ which should be translated separately and considered part of this sentence. */
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "betalningar, tryck för att betala, woocommerce, woo, personliga betalningar, ta emot personliga betalningar, betalningar, läsare, kortläsare, beställ kortläsare";
 
+/* Accessibility label for the collapse chevron on the Payout summary */
+"payouts.currency.overview.accessibility.hide" = "Dölj utbetalningsdetaljer";
+
+/* Accessibility label for the expand chevron on the Payout summary */
+"payouts.currency.overview.accessibility.show" = "Visa utbetalningsdetaljer";
+
+/* Title for available funds overview in WooPayments Payouts view. This shows the balance which can be paid out. */
+"payouts.currency.overview.availableFunds" = "Tillgängliga medel";
+
+/* Section header for the last payout in the WooPayments Payouts overview */
+"payouts.currency.overview.lastPayout" = "Sista utbetalningen";
+
+/* Button text to view more about payment schedules on the WooPayments Payouts View. */
+"payouts.currency.overview.learnMore" = "Läs mer om när du får dina medel";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.canceled.title" = "Avbruten";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.estimated.title" = "Beräknad";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.failed.title" = "Misslyckad";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.inTransit.title" = "På väg";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.paid.title" = "Betald";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.pending.title" = "Inväntar granskning";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.unknown.title" = "Okänt";
+
+/* Title for pending funds overview in WooPayments Payouts view. This shows the balance which will be made available for pay out later. */
+"payouts.currency.overview.pendingFunds" = "Medel som inväntar granskning";
+
 /* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
 "plan ended" = "paketet har avslutats";
 
@@ -11257,12 +11310,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "Prova annan betalningsmetod";
 
-/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout
-   Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentIntentCreationError.backToCheckout.button.title" = "Försök betala igen";
+/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.checkout.button.title" = "Redigera beställning";
 
 /* Error message. Presented to users after payment intent creation fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentIntentCreationError.title" = "Fel vid betalningsförberedelse";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.tryPaymentAgain.button.title" = "Försök att genomföra betalningen igen";
 
 /* Indicates to wait while payment is processing. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.message" = "Vänta …";
@@ -11614,6 +11669,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title for new order button */
 "pos.totalsView.newOrder" = "Ny beställning";
+
+/* Button title for the receipt button */
+"pos.totalsView.sendReceipt" = "Kvitto";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "Delsumma";
@@ -12715,11 +12773,20 @@ which should be translated separately and considered part of this sentence. */
 /* Generic error on the 2FA login screen */
 "wpCom2FALoginViewModel.unknownError" = "Hoppsan, något gick fel. Försök igen!";
 
+/* Text hinting that an account will be created if the email is not associated with an existing account. */
+"wpComEmailLoginView.accountCreationHint" = "Om du inte har något konto så använder vi den här e-postadressen för att skapa ett.";
+
+/* Error message when the username is not found */
+"wpComEmailLoginViewModel.unknownUsername" = "Vi hittar inget konto hos WordPress.com som är kopplat till det här användarnamnet. Du kan ange en e-postadress för att skapa ett nytt konto.";
+
 /* Button to dismiss an error alert in the WPCom login flow */
 "wpComLoginCoordinator.cancelButton" = "Avbryt";
 
 /* Title for the screens in the login flow */
 "wpComLoginCoordinator.title" = "Logga in";
+
+/* Text hinting the user to ensure their email is correct and check their spam folder */
+"wpComMagicLinkView.emailConfirmationHint" = "Kontrollera att din e-postadress är korrekt och dubbelkolla din skräppostmapp.";
 
 /* A clickable text link that willredirect the user to a website */
 "www.usps.com\/hazmat" = "www.usps.com\/hazmat";

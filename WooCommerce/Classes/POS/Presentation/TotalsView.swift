@@ -80,7 +80,7 @@ struct TotalsView: View {
         .geometryGroupIfSupported()
         .posModal(isPresented: $isShowingSendReceiptModal) {
             POSSendReceiptModalView(sendReceipt: { email in
-                Task {
+                Task { @MainActor in
                     await posModel.sendReceipt(to: email)
                 }
             }, isPresented: $isShowingSendReceiptModal)

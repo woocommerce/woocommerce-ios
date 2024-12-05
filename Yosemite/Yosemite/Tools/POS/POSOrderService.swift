@@ -85,7 +85,7 @@ public protocol POSOrderServiceProtocol {
     ///   - order: Optional latest remotely synced order. Nil when syncing order for the first time.
     /// - Returns: Order from the remote sync.
     func syncOrder(cart: [POSCartItem], order: Order?) async throws -> Order
-    func sendOrderReceipt(order: Order, recipientEmail: String) async throws
+    func sendReceipt(order: Order, recipientEmail: String) async throws
 }
 
 public final class POSOrderService: POSOrderServiceProtocol {
@@ -128,7 +128,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
         return syncedOrder
     }
 
-    public func sendOrderReceipt(order: Order, recipientEmail: String) async throws {
+    public func sendReceipt(order: Order, recipientEmail: String) async throws {
         guard order.billingAddress?.email == nil || order.billingAddress?.email == "" else {
             throw POSOrderServiceError.emailAlreadySet
         }
@@ -136,11 +136,11 @@ public final class POSOrderService: POSOrderServiceProtocol {
         let updatedOrder = order.copy(billingAddress: updatedBillingAddress)
 
         let _ = try await ordersRemote.updatePOSOrder(siteID: siteID, order: updatedOrder, fields: [.billingAddress])
-        try await receiptsRemote.sendPOSReceipt(siteID: siteID, orderID: order.orderID)
+        try await receiptsRemote.sendReceipt(siteID: siteID, orderID: order.orderID)
     }
 }
 
-private struct POSOrderSyncProductType: OrderSyncProductTypeProtocol {
+private struct POSOrderSyncProductType: OrderSyncProductTypeProtocol, Hashable {
     let productID: Int64
     let price: String
     // Not used in POS but have to be included for the app usage.

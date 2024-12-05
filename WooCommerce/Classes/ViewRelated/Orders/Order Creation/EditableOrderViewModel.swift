@@ -111,7 +111,7 @@ final class EditableOrderViewModel: ObservableObject {
         !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
     }
 
-    var enableAddingCustomAmountViaOrderTotalPercentage: Bool {
+    var orderIsNotEmpty: Bool {
         orderSynchronizer.order.items.isNotEmpty || orderSynchronizer.order.fees.isNotEmpty
     }
 
@@ -1026,8 +1026,11 @@ final class EditableOrderViewModel: ObservableObject {
     /// Starts the flow to add a custom amount.
     func addCustomAmount() {
         editingFee = nil
-        enableAddingCustomAmountViaOrderTotalPercentage ?
-        customAmountsSectionViewModel.showAddCustomAmountOptionsDialog.toggle() : customAmountsSectionViewModel.showAddCustomAmount.toggle()
+        if orderIsNotEmpty {
+            customAmountsSectionViewModel.showAddCustomAmountOptionsDialog = true
+        } else {
+            customAmountsSectionViewModel.showAddCustomAmount = true
+        }
     }
 
     func onCreateOrderTapped() {

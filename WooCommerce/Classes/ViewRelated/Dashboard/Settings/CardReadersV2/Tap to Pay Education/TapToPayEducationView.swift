@@ -9,7 +9,7 @@ struct TapToPayEducationView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 8) {
                 TabView(selection: $viewModel.selectedStep) {
                     ForEach(0..<viewModel.steps.count, id: \.self) { index in

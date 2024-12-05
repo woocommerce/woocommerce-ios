@@ -47,6 +47,10 @@ struct POSSendReceiptModalView: View {
     }
 }
 
+#Preview {
+    POSSendReceiptModalView(sendReceipt: { _ in }, isPresented: .constant(true))
+}
+
 private extension POSSendReceiptModalView {
     struct Localization {
         static let title = NSLocalizedString(

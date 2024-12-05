@@ -18,6 +18,7 @@ struct TotalsView: View {
     }
     @State private var isShowingPaymentsButtonSpacing: Bool = false
     @State private var isShowingSendReceiptModal: Bool = false
+    @State private var isShowingSendReceiptError: Bool = false
     @State private var isShowingReceiptsNotEligibleBanner: Bool = false
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
@@ -81,10 +82,18 @@ struct TotalsView: View {
         .posModal(isPresented: $isShowingSendReceiptModal) {
             POSSendReceiptModalView(sendReceipt: { email in
                 Task { @MainActor in
-                    await posModel.sendReceipt(to: email)
+                    do {
+                        try await posModel.sendReceipt(to: email)
+                    } catch {
+                        isShowingSendReceiptError = true
+                    }
                 }
             }, isPresented: $isShowingSendReceiptModal)
             .posModalSizing()
+        }
+        .posModal(isPresented: $isShowingSendReceiptError) {
+            POSSendReceiptModalErrorView(isPresented: $isShowingSendReceiptError)
+                .posModalSizing()
         }
     }
 

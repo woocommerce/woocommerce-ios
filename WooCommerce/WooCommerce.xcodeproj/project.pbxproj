@@ -1554,6 +1554,7 @@
 		6885E2CC2C32B14B004C8D70 /* TotalsViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6885E2CB2C32B14B004C8D70 /* TotalsViewHelper.swift */; };
 		6888A2C82A668D650026F5C0 /* FullFeatureListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6888A2C72A668D650026F5C0 /* FullFeatureListView.swift */; };
 		6888A2CA2A66C42C0026F5C0 /* FullFeatureListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6888A2C92A66C42C0026F5C0 /* FullFeatureListViewModel.swift */; };
+		6896D7E52D0166BD00D371AA /* POSSendReceiptModalErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6896D7E42D0166BB00D371AA /* POSSendReceiptModalErrorView.swift */; };
 		68A38DF52B293B030090C263 /* MockProductListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A38DF42B293B030090C263 /* MockProductListViewModel.swift */; };
 		68A5221B2BA1804900A6A584 /* PluginDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A5221A2BA1804900A6A584 /* PluginDetailsViewModelTests.swift */; };
 		68A905012ACCFC13004C71D3 /* CollapsibleProductCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A905002ACCFC13004C71D3 /* CollapsibleProductCard.swift */; };
@@ -2505,8 +2506,6 @@
 		DA81B4362C8F2BB8000F3466 /* MarkOrderAsReadUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA25ADDC2C86145E00AE81FE /* MarkOrderAsReadUseCase.swift */; };
 		DAAF53B82CF75701006D8880 /* WooShippingAddPackageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAAF53B72CF75701006D8880 /* WooShippingAddPackageViewModel.swift */; };
 		DAB4099F2CA5A329008EE1F2 /* WooShippingAddPackageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB4099E2CA5A329008EE1F2 /* WooShippingAddPackageView.swift */; };
-		DAD988C62C4A9CF9009DE9E3 /* CartItem+Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD988C52C4A9CF9009DE9E3 /* CartItem+Order.swift */; };
-		DAD988C92C4A9D6C009DE9E3 /* CartItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD988C82C4A9D6C009DE9E3 /* CartItemTests.swift */; };
 		DAF689E12CD23954008B8398 /* WooAddCustomPackageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAF689E02CD23941008B8398 /* WooAddCustomPackageView.swift */; };
 		DE001323279A793A00EB0350 /* CouponWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE001322279A793A00EB0350 /* CouponWooTests.swift */; };
 		DE0134152A2EED52000A6F54 /* ProductSharingMessageGenerationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0134142A2EED52000A6F54 /* ProductSharingMessageGenerationView.swift */; };
@@ -4620,6 +4619,7 @@
 		6885E2CB2C32B14B004C8D70 /* TotalsViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalsViewHelper.swift; sourceTree = "<group>"; };
 		6888A2C72A668D650026F5C0 /* FullFeatureListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullFeatureListView.swift; sourceTree = "<group>"; };
 		6888A2C92A66C42C0026F5C0 /* FullFeatureListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullFeatureListViewModel.swift; sourceTree = "<group>"; };
+		6896D7E42D0166BB00D371AA /* POSSendReceiptModalErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSSendReceiptModalErrorView.swift; sourceTree = "<group>"; };
 		68A38DF42B293B030090C263 /* MockProductListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductListViewModel.swift; sourceTree = "<group>"; };
 		68A5221A2BA1804900A6A584 /* PluginDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginDetailsViewModelTests.swift; sourceTree = "<group>"; };
 		68A905002ACCFC13004C71D3 /* CollapsibleProductCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleProductCard.swift; sourceTree = "<group>"; };
@@ -5609,8 +5609,6 @@
 		DA4104392C247B6900E8456A /* PointOfSalePreviewOrderController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSalePreviewOrderController.swift; sourceTree = "<group>"; };
 		DAAF53B72CF75701006D8880 /* WooShippingAddPackageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingAddPackageViewModel.swift; sourceTree = "<group>"; };
 		DAB4099E2CA5A329008EE1F2 /* WooShippingAddPackageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingAddPackageView.swift; sourceTree = "<group>"; };
-		DAD988C52C4A9CF9009DE9E3 /* CartItem+Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CartItem+Order.swift"; sourceTree = "<group>"; };
-		DAD988C82C4A9D6C009DE9E3 /* CartItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartItemTests.swift; sourceTree = "<group>"; };
 		DAF689E02CD23941008B8398 /* WooAddCustomPackageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAddCustomPackageView.swift; sourceTree = "<group>"; };
 		DE001322279A793A00EB0350 /* CouponWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponWooTests.swift; sourceTree = "<group>"; };
 		DE0134142A2EED52000A6F54 /* ProductSharingMessageGenerationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSharingMessageGenerationView.swift; sourceTree = "<group>"; };
@@ -6261,6 +6259,7 @@
 				016C6B962C74AB17000D86FD /* POSConnectivityView.swift */,
 				68D3E98C2C7C371B005B6278 /* POSBottomShadowViewModifier.swift */,
 				683AC4AB2CEF019700FF0A5E /* POSSendReceiptModalView.swift */,
+				6896D7E42D0166BB00D371AA /* POSSendReceiptModalErrorView.swift */,
 				20D2CCA22C7E175700051705 /* WavesProgressViewStyle.swift */,
 			);
 			path = "Reusable Views";
@@ -16049,6 +16048,7 @@
 				029B0F57234197B80010C1F3 /* ProductSearchUICommand.swift in Sources */,
 				DE19BB0C26C2688B00AB70D9 /* SingleSelectionList.swift in Sources */,
 				261B526E29B795DB00DF7AB6 /* SupportFormMetadataProvider.swift in Sources */,
+				6896D7E52D0166BD00D371AA /* POSSendReceiptModalErrorView.swift in Sources */,
 				CEE1138F2CFA2D8900F53E30 /* PackageOptionView.swift in Sources */,
 				2004E2C42C076D3800D62521 /* CardPresentPaymentEvent.swift in Sources */,
 				68ED2BD62ADD2C8C00ECA88D /* LineDetailView.swift in Sources */,

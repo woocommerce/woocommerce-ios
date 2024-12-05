@@ -4,10 +4,12 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     var body: some View {
         VStack(alignment: .center, spacing: Constants.headerSpacing) {
             successIcon
+                .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
             VStack(alignment: .center, spacing: Constants.textSpacing) {
                 Text(viewModel.title)

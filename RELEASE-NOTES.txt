@@ -13,6 +13,7 @@
 - [Internal] Updated storage usage in CouponStore [https://github.com/woocommerce/woocommerce-ios/pull/14530]
 - [Internal] Update storage usage for BlazeStore [https://github.com/woocommerce/woocommerce-ios/pull/14532]
 - [Internal] Updated storage usage in ProductShippingClassStore [https://github.com/woocommerce/woocommerce-ios/pull/14520]
+- [Internal] Updated storage usage in DataStore [https://github.com/woocommerce/woocommerce-ios/pull/14575]
 - [Internal] Updated storage usage in PaymentGatewayStore [https://github.com/woocommerce/woocommerce-ios/pull/14570]
 - [Internal] updated storage usage in SettingStore [https://github.com/woocommerce/woocommerce-ios/pull/14569]
 - [Internal] Updated storage usage in ShippingMethodStore [https://github.com/woocommerce/woocommerce-ios/pull/14568]
@@ -21,6 +22,7 @@
 - [Internal] Updated storage usage in SitePluginStore [https://github.com/woocommerce/woocommerce-ios/pull/14560]
 - [Internal] Updated storage usage in ShippingLabelStore [https://github.com/woocommerce/woocommerce-ios/pull/14566]
 - [*] Fixed: Improved the error message displayed when Bluetooth permission is denied during the card reader connection process. [https://github.com/woocommerce/woocommerce-ios/pull/14561]
+- [*] Payments: error details are now displayed for more Stripe errors, instead of a generic error message. [https://github.com/woocommerce/woocommerce-ios/pull/14583]
 
 21.2
 -----

@@ -2,7 +2,7 @@ import SwiftUI
 
 struct POSReceiptEligibilityBanner: View {
     @Binding var isVisible: Bool
-    
+
     var body: some View {
         HStack(spacing: Constants.elementSpacing) {
             Image(uiImage: .appIconDefault)
@@ -34,7 +34,7 @@ private extension POSReceiptEligibilityBanner {
         static let imagePadding: CGFloat = 4
         static let bannerPadding: CGFloat = 16
     }
-    
+
     enum Localization {
         static let updateWooCommerceVersionText = NSLocalizedString(
             "pos.totalsView.receipts.banner.updateWooCommerceVersionText",

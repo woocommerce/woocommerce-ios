@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23231" systemVersion="24A335" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23507" systemVersion="24B91" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -75,9 +75,9 @@
         <attribute name="dateExpires" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="dateModified" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="discountType" optional="YES" attributeType="String"/>
-        <attribute name="emailRestrictions" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
-        <attribute name="excludedProductCategories" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
-        <attribute name="excludedProducts" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
+        <attribute name="emailRestrictions" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="NSArray"/>
+        <attribute name="excludedProductCategories" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="NSArray"/>
+        <attribute name="excludedProducts" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="NSArray"/>
         <attribute name="excludeSaleItems" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="freeShipping" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="fullDescription" optional="YES" attributeType="String"/>
@@ -85,13 +85,13 @@
         <attribute name="limitUsageToXItems" optional="YES" attributeType="Integer 64" usesScalarValueType="YES"/>
         <attribute name="maximumAmount" optional="YES" attributeType="String"/>
         <attribute name="minimumAmount" optional="YES" attributeType="String"/>
-        <attribute name="productCategories" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
-        <attribute name="products" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
+        <attribute name="productCategories" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="NSArray"/>
+        <attribute name="products" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="NSArray"/>
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="usageCount" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="usageLimit" optional="YES" attributeType="Integer 64" usesScalarValueType="NO"/>
         <attribute name="usageLimitPerUser" optional="YES" attributeType="Integer 64" usesScalarValueType="YES"/>
-        <attribute name="usedBy" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
+        <attribute name="usedBy" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="NSArray"/>
         <relationship name="searchResults" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CouponSearchResult" inverseName="coupons" inverseEntity="CouponSearchResult"/>
     </entity>
     <entity name="CouponSearchResult" representedClassName="CouponSearchResult" syncable="YES">

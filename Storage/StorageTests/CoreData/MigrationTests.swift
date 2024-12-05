@@ -3146,6 +3146,29 @@ final class MigrationTests: XCTestCase {
 		let savedGlobalUniqueID = try XCTUnwrap(migratedProductVariation.value(forKey: "globalUniqueID") as? String)
 		XCTAssertEqual(savedGlobalUniqueID, globalUniqueID)
 	}
+
+    func test_migrating_from_118_to_119_loads_coupon_details_successfully_after_updating_transformable_attributes_types() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 118")
+        let sourceContext = sourceContainer.viewContext
+
+        _ = insertCoupon(to: sourceContext)
+        try sourceContext.save()
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 119")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedCoupon = try XCTUnwrap(targetContext.first(entityName: "Coupon"))
+
+        XCTAssertEqual(migratedCoupon.value(forKey: "productCategories") as? [Int64], [1092281])
+        XCTAssertEqual(migratedCoupon.value(forKey: "excludedProductCategories") as? [Int64], [128121212])
+        XCTAssertEqual(migratedCoupon.value(forKey: "products") as? [Int64], [1231, 111])
+        XCTAssertEqual(migratedCoupon.value(forKey: "excludedProducts") as? [Int64], [19182, 192])
+        XCTAssertEqual(migratedCoupon.value(forKey: "usedBy") as? [String], ["me@example.com"])
+        XCTAssertEqual(migratedCoupon.value(forKey: "emailRestrictions") as? [String], ["*@woocommerce.com"])
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

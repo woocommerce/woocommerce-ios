@@ -105,44 +105,47 @@ struct OrderCustomAmountsSection: View {
     }
 
     @ViewBuilder private var optionsBottomSheetContent: some View {
-        VStack (alignment: .leading, spacing: Layout.optionsBottomSheetContentVerticalSpacing) {
+        VStack (spacing: Layout.optionsBottomSheetContentVerticalSpacing) {
             Text(Localization.optionsDialogAddCustomAmountTitle)
                 .subheadlineStyle()
-                .padding(.top, Layout.optionsBottomSheetContentTitleTopPadding)
-                .padding(.bottom, Layout.optionsBottomSheetContentTitleBottomPadding)
+                .fixedSize(horizontal: false, vertical: true)
 
-            HStack {
-                Text(sectionViewModel.currencySymbol)
-                    .frame(minWidth: Layout.optionsBottomSheetButtonSymbolWidth)
-                    .padding(.trailing, Layout.optionsBottomSheetButtonSymbolTrailing)
-
-                Button(Localization.optionsDialogFixedAmountButtonTitle) {
+            Grid(alignment: .leading,
+                 horizontalSpacing: Layout.optionsBottomSheetSymbolLabelSpacing,
+                 verticalSpacing: Layout.optionsBottomSheetContentVerticalSpacing) {
+                optionRow(symbol: sectionViewModel.currencySymbol,
+                          title: Localization.optionsDialogFixedAmountButtonTitle) {
                     addCustomAmountOption = .fixedAmount
                     showAddCustomAmountsAfterOptionsDialog()
-
                 }
-                .bodyStyle()
                 .accessibilityIdentifier(Accessibility.fixedAmountIdentifier)
-            }
-            .padding(.bottom, Layout.optionsBottomSheetContentVerticalSpacing)
 
-            HStack {
-                Text("%")
-                    .frame(minWidth: Layout.optionsBottomSheetButtonSymbolWidth)
-                    .padding(.trailing, Layout.optionsBottomSheetButtonSymbolTrailing)
-
-                Button(Localization.optionsDialogPercentageButtonTitle) {
+                optionRow(symbol: "%",
+                          title: Localization.optionsDialogPercentageButtonTitle) {
                     addCustomAmountOption = .orderTotalPercentage
                     showAddCustomAmountsAfterOptionsDialog()
                 }
-                .bodyStyle()
                 .accessibilityIdentifier(Accessibility.percentageAmountIdentifier)
             }
-
-            Spacer()
         }
-        .padding(.leading, Layout.optionsBottomSheetVerticalPadding)
-        .padding(.trailing, Layout.optionsBottomSheetVerticalPadding)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .padding(Layout.optionsBottomSheetPadding)
+        .scrollVerticallyIfNeeded()
+    }
+
+    @ViewBuilder private func optionRow(symbol: String, title: String, action: @escaping () -> Void) -> some View {
+        GridRow {
+            Text(symbol)
+            Button {
+                action()
+            } label: {
+                Text(title)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+        .bodyStyle()
     }
 }
 
@@ -168,11 +171,9 @@ private extension OrderCustomAmountsSection {
 private extension OrderCustomAmountsSection {
     enum Layout {
         static let optionsBottomSheetContentVerticalSpacing: CGFloat = 16
-        static let optionsBottomSheetContentTitleTopPadding: CGFloat = 30
         static let optionsBottomSheetContentTitleBottomPadding: CGFloat = 8
-        static let optionsBottomSheetButtonSymbolWidth: CGFloat = 20
-        static let optionsBottomSheetButtonSymbolTrailing: CGFloat = 18
-        static let optionsBottomSheetVerticalPadding: CGFloat = 16
+        static let optionsBottomSheetSymbolLabelSpacing: CGFloat = 18
+        static let optionsBottomSheetPadding: CGFloat = 16
         static let rowHeight: CGFloat = 56
 
     }

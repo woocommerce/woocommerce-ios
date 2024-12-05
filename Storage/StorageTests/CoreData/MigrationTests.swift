@@ -3273,6 +3273,29 @@ final class MigrationTests: XCTestCase {
         let persistedItem = try XCTUnwrap(targetContext.first(entityName: "ProductBundleItem"))
         XCTAssertEqual(persistedItem.value(forKey: "allowedVariations") as? [Int64], allowedVariations)
     }
+
+    func test_migrating_from_118_to_119_loads_productCompositeComponent_optionIDs_successfully() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 118")
+        let sourceContext = sourceContainer.viewContext
+
+        let component = insertProductCompositeComponent(to: sourceContext)
+        // Populates transformable attributes.
+        let optionIDs: [Int64] = [63443, 32345436]
+        component.setValue(optionIDs, forKey: "optionIDs")
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "ProductCompositeComponent"), 1)
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 119")
+
+        // Assert
+        let targetContext = targetContainer.viewContext
+
+        let persistedComponent = try XCTUnwrap(targetContext.first(entityName: "ProductCompositeComponent"))
+        XCTAssertEqual(persistedComponent.value(forKey: "optionIDs") as? [Int64], optionIDs)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -4117,6 +4140,19 @@ private extension MigrationTests {
             "metadataID": 18149,
             "key": "New Metadata Key",
             "value": "New Metadata Value"
+        ])
+    }
+
+    @discardableResult
+    func insertProductCompositeComponent(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "ProductCompositeComponent", properties: [
+            "componentDescription": "Test description",
+            "componentID": "1489",
+            "defaultOptionID": "33",
+            "imageURL": "https://example.com/components/test.jpg",
+            "optionIDs": [134, 234],
+            "optionType": "unknown",
+            "title": "Test component"
         ])
     }
 }

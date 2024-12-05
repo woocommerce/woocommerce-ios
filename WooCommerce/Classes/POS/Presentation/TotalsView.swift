@@ -253,27 +253,39 @@ private extension TotalsView {
 
     @ViewBuilder
     private var paymentsActionButtons: some View {
-        if posModel.paymentState == .cardPaymentSuccessful {
-            if isShowingPaymentsButtonSpacing {
-                Spacer().frame(height: Constants.paymentsButtonSpacing)
-            }
-            sendReceiptButton
-                .renderedIf(shouldShowSendReceiptButton)
-            newOrderButton
-                .onAppear {
-                    isShowingPaymentsButtonSpacing = false
-                    withAnimation(.default.delay(Constants.paymentsButtonButtonSpacingAnimationDelay)) {
-                        isShowingPaymentsButtonSpacing = true
+        ZStack {
+            VStack {
+                if posModel.paymentState == .cardPaymentSuccessful {
+                    if isShowingPaymentsButtonSpacing {
+                        Spacer().frame(height: Constants.paymentsButtonSpacing)
                     }
+                    sendReceiptButton
+                        .renderedIf(shouldShowSendReceiptButton)
+                    newOrderButton
+                        .onAppear {
+                            isShowingPaymentsButtonSpacing = false
+                            withAnimation(.default.delay(Constants.paymentsButtonButtonSpacingAnimationDelay)) {
+                                isShowingPaymentsButtonSpacing = true
+                            }
+                        }
+                    Spacer().frame(height: Constants.paymentsButtonSpacing)
                 }
-            if isShowingReceiptsNotEligibleBanner {
-                POSReceiptEligibilityBanner(isVisible: $isShowingReceiptsNotEligibleBanner)
+                else {
+                    EmptyView()
+                }
             }
-            Spacer().frame(height: Constants.paymentsButtonSpacing)
+
+            if isShowingReceiptsNotEligibleBanner {
+                VStack {
+                    Spacer()
+                    POSReceiptEligibilityBanner(isVisible: $isShowingReceiptsNotEligibleBanner)
+                        .padding(.bottom)
+                        .transition(.move(edge: .bottom))
+                }
+                .ignoresSafeArea(edges: .bottom)
+            }
         }
-        else {
-            EmptyView()
-        }
+        .ignoresSafeArea()
     }
 
     @ViewBuilder private var cardReaderView: some View {

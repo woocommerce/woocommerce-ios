@@ -710,6 +710,13 @@ public extension StorageType {
         return allObjects(ofType: Customer.self, matching: predicate, sortedBy: [])
     }
 
+    /// Returns stored Customers given a `siteID` matching `customerIDs`
+    ///
+    func loadCustomers(siteID: Int64, matching customerIDs: [Int64]) -> [Customer] {
+        let predicate = NSPredicate(format: "siteID == %lld && customerID in %@", siteID, customerIDs)
+        return allObjects(ofType: Customer.self, matching: predicate, sortedBy: [])
+    }
+
     /// Returns a CustomerSearchResult given a `siteID` and a `keyword`
     ///
     func loadCustomerSearchResult(siteID: Int64, keyword: String) -> CustomerSearchResult? {
@@ -728,6 +735,13 @@ public extension StorageType {
 
     func loadAllWCAnalyticsCustomers(siteID: Int64) -> [WCAnalyticsCustomer] {
         let predicate = \WCAnalyticsCustomer.siteID == siteID
+        return allObjects(ofType: WCAnalyticsCustomer.self, matching: predicate, sortedBy: [])
+    }
+
+    /// Returns stored WCAnalyticsCustomer given a `siteID` matching `customerIDs`
+    ///
+    func loadWCAnalyticsCustomers(siteID: Int64, matching customerIDs: [Int64]) -> [WCAnalyticsCustomer] {
+        let predicate = NSPredicate(format: "siteID == %lld && customerID in %@", siteID, customerIDs)
         return allObjects(ofType: WCAnalyticsCustomer.self, matching: predicate, sortedBy: [])
     }
 

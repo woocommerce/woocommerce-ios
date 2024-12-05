@@ -14,6 +14,10 @@ struct MockSystemStatusActionHandler: MockActionHandler {
             synchronizeSystemPlugins(siteID: siteID) { result in
                 onCompletion(result.map { SystemInformation(systemPlugins: $0) })
             }
+        case .fetchSystemPluginListWithNameList(let siteID, let systemPluginNameList, let onCompletion):
+            let systemPlugins = objectGraph.systemPlugins(for: siteID)
+            let filteredSystemPlugins = systemPlugins.first { systemPluginNameList.contains($0.name) }
+            onCompletion(filteredSystemPlugins)
         default:
             break
         }

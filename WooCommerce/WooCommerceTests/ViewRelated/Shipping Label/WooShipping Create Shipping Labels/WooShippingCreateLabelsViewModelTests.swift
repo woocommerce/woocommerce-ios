@@ -250,6 +250,34 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // Check isPurchaseLabel is false after purchase
         XCTAssertFalse(viewModel.isPurchasingLabel)
     }
+
+    func test_selectPackage_sets_selectedPackage_with_package_data() {
+        // Given
+        let packageData = WooShippingPackageData(id: "small_flat_box",
+                                                 name: "Small Flat Rate Box",
+                                                 length: "21.91",
+                                                 width: "13.65",
+                                                 height: "4.13",
+                                                 dimensionsUnit: "cm",
+                                                 weight: "0",
+                                                 weightUnit: "kg",
+                                                 source: .predefined(sourceTitle: "usps", sourceID: "usps"),
+                                                 packageType: "box")
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake())
+
+        // When
+        viewModel.selectPackage(packageData)
+
+        // Then
+        XCTAssertNotNil(viewModel.selectedPackage)
+        XCTAssertEqual(viewModel.selectedPackage?.id, "shipment_0")
+        XCTAssertEqual(viewModel.selectedPackage?.boxID, "small_flat_box")
+        XCTAssertEqual(viewModel.selectedPackage?.length, 21.91)
+        XCTAssertEqual(viewModel.selectedPackage?.width, 13.65)
+        XCTAssertEqual(viewModel.selectedPackage?.height, 4.13)
+        XCTAssertEqual(viewModel.selectedPackage?.weight, 0)
+        XCTAssertEqual(viewModel.selectedPackage?.isLetter, false)
+    }
 }
 
 private extension WooShippingCreateLabelsViewModelTests {

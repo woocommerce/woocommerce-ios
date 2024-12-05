@@ -1386,7 +1386,7 @@ final class StorageTypeExtensionsTests: XCTestCase {
 
     // MARK: - System plugins
 
-    func test_loadSystemPlugins_by_siteID_and_sorted_by_name() throws {
+    func test_loadSystemPlugins_by_siteID_and_sorted_by_name() {
         // Given
         let systemPlugin1 = storage.insertNewObject(ofType: SystemPlugin.self)
         systemPlugin1.name = "Plugin 1"
@@ -1401,10 +1401,35 @@ final class StorageTypeExtensionsTests: XCTestCase {
         systemPlugin3.siteID = sampleSiteID
 
         // When
-        let storedSystemPlugins = try XCTUnwrap(storage.loadSystemPlugins(siteID: sampleSiteID))
+        let storedSystemPlugins = storage.loadSystemPlugins(siteID: sampleSiteID)
 
         // Then
         XCTAssertEqual(storedSystemPlugins, [systemPlugin1, systemPlugin3])
+    }
+
+    func test_loadSystemPlugins_by_siteID_matching_names() {
+        // Given
+        let systemPlugin1 = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin1.name = "Plugin 1"
+        systemPlugin1.siteID = sampleSiteID
+
+        let systemPlugin2 = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin2.name = "Plugin 1"
+        systemPlugin2.siteID = sampleSiteID + 1
+
+        let systemPlugin3 = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin3.name = "Plugin 3"
+        systemPlugin3.siteID = sampleSiteID
+
+        let systemPlugin4 = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin4.name = "Plugin 4"
+        systemPlugin4.siteID = sampleSiteID
+
+        // When
+        let storedSystemPlugins = storage.loadSystemPlugins(siteID: sampleSiteID, matching: ["Plugin 1", "Plugin 4"])
+
+        // Then
+        XCTAssertEqual(storedSystemPlugins, [systemPlugin1, systemPlugin4])
     }
 
     func test_loadSystemPlugin_by_siteID_and_name() throws {
@@ -1456,6 +1481,61 @@ final class StorageTypeExtensionsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(foundCharge, charge2)
+    }
+
+    func test_loadBlazeCampaigns_by_siteID() {
+        // Given
+        let campaign1 = storage.insertNewObject(ofType: BlazeCampaignListItem.self)
+        campaign1.siteID = 1
+        campaign1.campaignID = "1"
+
+        let campaign2 = storage.insertNewObject(ofType: BlazeCampaignListItem.self)
+        campaign2.siteID = sampleSiteID
+        campaign2.campaignID = "2"
+
+        // When
+        let campaigns = storage.loadAllBlazeCampaignListItems(siteID: sampleSiteID)
+
+        // Then
+        XCTAssertEqual(campaigns, [campaign2])
+    }
+
+    func test_loadBlazeCampaign_by_siteID_campaignID() throws {
+        // Given
+        let campaign1 = storage.insertNewObject(ofType: BlazeCampaignListItem.self)
+        campaign1.siteID = sampleSiteID
+        campaign1.campaignID = "1"
+
+        let campaign2 = storage.insertNewObject(ofType: BlazeCampaignListItem.self)
+        campaign2.siteID = sampleSiteID
+        campaign2.campaignID = "2"
+
+        // When
+        let campaign = try XCTUnwrap(storage.loadBlazeCampaignListItem(siteID: sampleSiteID, campaignID: "1"))
+
+        // Then
+        XCTAssertEqual(campaign, campaign1)
+    }
+
+    func test_loadBlazeCampaigns_by_siteID_and_campaignIDs() {
+        // Given
+        let campaign1 = storage.insertNewObject(ofType: BlazeCampaignListItem.self)
+        campaign1.siteID = 1
+        campaign1.campaignID = "1"
+
+        let campaign2 = storage.insertNewObject(ofType: BlazeCampaignListItem.self)
+        campaign2.siteID = sampleSiteID
+        campaign2.campaignID = "2"
+
+        let campaign3 = storage.insertNewObject(ofType: BlazeCampaignListItem.self)
+        campaign3.siteID = sampleSiteID
+        campaign3.campaignID = "3"
+
+        // When
+        let campaigns = storage.loadBlazeCampaignListItems(siteID: sampleSiteID, with: ["2", "3"])
+
+        // Then
+        XCTAssertEqual(Set(campaigns), Set([campaign2, campaign3]))
     }
 
     func test_loadAllBlazeTargetDevices_with_locale() throws {

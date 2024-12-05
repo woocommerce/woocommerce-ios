@@ -87,13 +87,9 @@ struct OrderCustomAmountsSection: View {
     }
 
     @ViewBuilder private var optionsWithDetentsBottomSheetContent: some View {
-        if #available(iOS 16.0, *) {
-            optionsBottomSheetContent
-                .presentationDetents([.height(218)])
-                .presentationDragIndicator(.visible)
-        } else {
-            optionsBottomSheetContent
-        }
+        optionsBottomSheetContent
+            .presentationDetents([.height(218)])
+            .presentationDragIndicator(.visible)
     }
 
     @ViewBuilder private var optionsBottomSheetContent: some View {

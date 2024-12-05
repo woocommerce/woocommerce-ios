@@ -69,7 +69,7 @@ private extension SelectedPackageView {
                                                         dimensionsUnit: "in",
                                                         weight: "4",
                                                         weightUnit: "oz",
-                                                        source: .predefined("USPS Priority Mail Flat Rate Boxes"),
+                                                        source: .predefined(sourceTitle: "USPS Priority Mail Flat Rate Boxes", sourceID: "usps"),
                                                         packageType: "box"),
                         weightUnit: "oz",
                         totalWeight: .constant("6"))

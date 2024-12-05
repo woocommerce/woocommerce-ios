@@ -100,6 +100,9 @@ public enum UnderlyingError: Error, Equatable {
     /// The Bluetooth device was disconnected unexpectedly.
     case bluetoothDisconnected
 
+    /// The user has denied the app permission to use Bluetooth
+    case bluetoothDenied
+
     /// An attempt to process a payment was made from a reader with an unsupported reader version.
     /// You will need to update your reader to the most recent version in order to accept payments
     case unsupportedReaderVersion
@@ -215,6 +218,166 @@ public enum UnderlyingError: Error, Equatable {
     /// The reader may support a different set of currencies than WCPay or Stripe.
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorInvalidCurrency
     case invalidCurrency
+
+    /// The operation could not be canceled because it was already completed.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorCancelFailedAlreadyCompleted
+    case cancelFailedAlreadyCompleted
+
+    /// The payment intent is missing.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorNilPaymentIntent
+    case nilPaymentIntent
+
+    /// The setup intent is missing.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorNilSetupIntent
+    case nilSetupIntent
+
+    /// The refund payment method is missing.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorNilRefundPaymentMethod
+    case nilRefundPaymentMethod
+
+    /// The refund parameters are invalid.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorInvalidRefundParameters
+    case invalidRefundParameters
+
+    /// The client secret is invalid.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorInvalidClientSecret
+    case invalidClientSecret
+
+    /// The discovery configuration is invalid.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorInvalidDiscoveryConfiguration
+    case invalidDiscoveryConfiguration
+
+    /// The reader for update is invalid.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorInvalidReaderForUpdate
+    case invalidReaderForUpdate
+
+    /// The feature is unavailable.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorFeatureNotAvailable
+    case featureNotAvailable
+
+    /// The Bluetooth connection has an invalid location ID parameter.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorBluetoothConnectionInvalidLocationIdParameter
+    case bluetoothConnectionInvalidLocationIdParameter
+
+    /// A required parameter is invalid.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorInvalidRequiredParameter
+    case invalidRequiredParameter
+
+    /// Forwarding a test mode payment in live mode is prohibited.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorForwardingTestModePaymentInLiveMode
+    case forwardingTestModePaymentInLiveMode
+
+    /// Forwarding a live mode payment in test mode is prohibited.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorForwardingLiveModePaymentInTestMode
+    case forwardingLiveModePaymentInTestMode
+
+    /// The reader connection configuration is invalid.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorReaderConnectionConfigurationInvalid
+    case readerConnectionConfigurationInvalid
+
+    /// The reader tipping parameter is invalid.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorReaderTippingParameterInvalid
+    case readerTippingParameterInvalid
+
+    /// The location ID parameter is invalid.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorInvalidLocationIdParameter
+    case invalidLocationIdParameter
+
+    /// The reader software update failed due to an expired update.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorReaderSoftwareUpdateFailedExpiredUpdate
+    case readerSoftwareUpdateFailedExpiredUpdate
+
+    /// EMV data is missing.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorMissingEMVData
+    case missingEMVData
+
+    /// The command is not allowed.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorCommandNotAllowed
+    case commandNotAllowed
+
+    /// The Bluetooth peer removed pairing information.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorBluetoothPeerRemovedPairingInformation
+    case bluetoothPeerRemovedPairingInformation
+
+    /// Bluetooth is already paired with another device.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorBluetoothAlreadyPairedWithAnotherDevice
+    case bluetoothAlreadyPairedWithAnotherDevice
+
+    /// The reader's IP address is unknown.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorUnknownReaderIpAddress
+    case unknownReaderIpAddress
+
+    /// Internet connection operation timed out.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorInternetConnectTimeOut
+    case internetConnectTimeOut
+
+    /// Bluetooth reconnect has started.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorBluetoothReconnectStarted
+    case bluetoothReconnectStarted
+
+    /// The Apple built-in reader account is deactivated.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorTapToPayReaderAccountDeactivated
+    case appleBuiltInReaderAccountDeactivated
+
+    /// The reader is missing encryption keys.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorReaderMissingEncryptionKeys
+    case readerMissingEncryptionKeys
+
+    /// An unexpected error occurred with the reader.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorUnexpectedReaderError
+    case unexpectedReaderError
+
+    /// The command requires cardholder consent.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorCommandRequiresCardholderConsent
+    case commandRequiresCardholderConsent
+
+    /// The refund operation failed.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorRefundFailed
+    case refundFailed
+
+    /// Card swipe functionality is unavailable.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorCardSwipeNotAvailable
+    case cardSwipeNotAvailable
+
+    /// Interac is not supported in offline mode.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorInteracNotSupportedOffline
+    case interacNotSupportedOffline
+
+    /// The card is expired and offline mode is active.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorOfflineAndCardExpired
+    case offlineAndCardExpired
+
+    /// The offline transaction was declined.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorOfflineTransactionDeclined
+    case offlineTransactionDeclined
+
+    /// There is a mismatch between offline collect and confirm.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorOfflineCollectAndConfirmMismatch
+    case offlineCollectAndConfirmMismatch
+
+    /// Online PIN is not supported in offline mode.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorOnlinePinNotSupportedOffline
+    case onlinePinNotSupportedOffline
+
+    /// A test card is used in live mode while offline.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorOfflineTestCardInLivemode
+    case offlineTestCardInLivemode
+
+    /// There is an error decoding the Stripe API response.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorStripeAPIResponseDecodingError
+    case stripeAPIResponseDecodingError
+
+    /// An internal network error occurred.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorInternalNetworkError
+    case internalNetworkError
+
+    /// The connection token provider finished with an error.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorConnectionTokenProviderCompletedWithError
+    case connectionTokenProviderCompletedWithError
+
+    /// The connection token provider operation timed out.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorConnectionTokenProviderTimedOut
+    case connectionTokenProviderTimedOut
 }
 
 extension UnderlyingError {
@@ -323,6 +486,14 @@ extension UnderlyingError: LocalizedError {
         case .bluetoothConnectionFailedBatteryCriticallyLow:
             return NSLocalizedString("Unable to connect to reader - the reader has a critically low battery - charge the reader and try again.",
                                      comment: "Error message the card reader battery level is too low to connect to the phone or tablet.")
+
+        case .bluetoothDenied:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.bluetoothDenied",
+                value: "This app needs permission to access Bluetooth to connect to your card reader. " +
+                       "You can grant permission in the system's Settings app, in the Woo section.",
+                comment: "Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions"
+            )
 
         case .readerSoftwareUpdateFailedBatteryLow:
             return NSLocalizedString("Unable to update card reader software - the reader battery is too low.",
@@ -518,6 +689,291 @@ extension UnderlyingError: LocalizedError {
                                      "reader or another payment method.",
                                      comment: "Error message shown when Tap to Pay on iPhone cannot be used because " +
                                      "the currency for payment is not supported for Tap to Pay on iPhone.")
+
+        case .cancelFailedAlreadyCompleted:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.cancelFailedAlreadyCompleted",
+                value: "The operation could not be canceled because it was already completed.",
+                comment: "Error message when an operation cannot be canceled because it is already completed."
+            )
+
+        case .nilPaymentIntent:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.nilPaymentIntent",
+                value: "Please contact support - the payment intent is missing.",
+                comment: "Error message when the payment intent is missing."
+            )
+
+        case .nilSetupIntent:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.nilSetupIntent",
+                value: "Please contact support - the setup intent is missing.",
+                comment: "Error message when the setup intent is missing."
+            )
+
+        case .nilRefundPaymentMethod:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.nilRefundPaymentMethod",
+                value: "Please contact support - the refund payment method is missing.",
+                comment: "Error message when the refund payment method is missing."
+            )
+
+        case .invalidRefundParameters:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.invalidRefundParameters",
+                value: "Please contact support - the refund parameters are invalid.",
+                comment: "Error message when the refund parameters are invalid."
+            )
+
+        case .invalidClientSecret:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.invalidClientSecret",
+                value: "Please contact support - the client secret is invalid.",
+                comment: "Error message when the client secret is invalid."
+            )
+
+        case .invalidDiscoveryConfiguration:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.invalidDiscoveryConfiguration",
+                value: "Please contact support - the discovery configuration is invalid.",
+                comment: "Error message when the discovery configuration is invalid."
+            )
+
+        case .invalidReaderForUpdate:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.invalidReaderForUpdate",
+                value: "The reader for update is invalid.",
+                comment: "Error message when the reader for update is invalid."
+            )
+
+        case .featureNotAvailable:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.featureNotAvailable",
+                value: "Please contact support - the feature is unavailable.",
+                comment: "Error message when a feature is unavailable."
+            )
+
+        case .bluetoothConnectionInvalidLocationIdParameter:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.bluetoothConnectionInvalidLocationIdParameter",
+                value: "The Bluetooth connection has an invalid location ID.",
+                comment: "Error message when the Bluetooth connection has an invalid location ID parameter."
+            )
+
+        case .invalidRequiredParameter:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.invalidRequiredParameter",
+                value: "Please contact support - a required parameter is invalid.",
+                comment: "Error message when a required parameter is invalid."
+            )
+
+        case .forwardingTestModePaymentInLiveMode:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.forwardingTestModePaymentInLiveMode",
+                value: "Forwarding a test mode payment in live mode is prohibited.",
+                comment: "Error message when forwarding a test mode payment in live mode is prohibited."
+            )
+
+        case .forwardingLiveModePaymentInTestMode:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.forwardingLiveModePaymentInTestMode",
+                value: "Forwarding a live mode payment in test mode is prohibited.",
+                comment: "Error message when forwarding a live mode payment in test mode is prohibited."
+            )
+
+        case .readerConnectionConfigurationInvalid:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.readerConnectionConfigurationInvalid",
+                value: "The reader connection configuration is invalid.",
+                comment: "Error message when the reader connection configuration is invalid."
+            )
+
+        case .readerTippingParameterInvalid:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.readerTippingParameterInvalid",
+                value: "Please contact support - the reader tipping parameter is invalid.",
+                comment: "Error message when the reader tipping parameter is invalid."
+            )
+
+        case .invalidLocationIdParameter:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.invalidLocationIdParameter",
+                value: "The location ID is invalid.",
+                comment: "Error message when the location ID parameter is invalid."
+            )
+
+        case .readerSoftwareUpdateFailedExpiredUpdate:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.readerSoftwareUpdateFailedExpiredUpdate",
+                value: "Updating the reader software failed because the update has expired. " +
+                "Please disconnect and reconnect from the reader to retrieve a new update.",
+                comment: "Error message when the reader software update fails due to an expired update."
+            )
+
+        case .missingEMVData:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.missingEMVData",
+                value: "The reader failed to read the data from the presented payment method. " +
+                "If you encounter this error repeatedly, the reader may be faulty and please contact support.",
+                comment: "Error message when EMV data is missing."
+            )
+
+        case .commandNotAllowed:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.commandNotAllowed",
+                value: "Please contact support - the command is not allowed to execute by the operating system.",
+                comment: "Error message when the command is not allowed."
+            )
+
+        case .bluetoothPeerRemovedPairingInformation:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.bluetoothPeerRemovedPairingInformation",
+                value: "The reader has removed this device pairing information. Try forgetting the reader in iOS Settings.",
+                comment: "Error message when the Bluetooth peer removed pairing information."
+            )
+
+        case .bluetoothAlreadyPairedWithAnotherDevice:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.bluetoothAlreadyPairedWithAnotherDevice",
+                value: "The Bluetooth reader is already paired to another device. The reader must have its pairing reset to connect to this device.",
+                comment: "Error message when Bluetooth is already paired with another device."
+            )
+
+        case .unknownReaderIpAddress:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.unknownReaderIpAddress",
+                value: "The reader returned from discovery does not have an IP address and cannot be connected to.",
+                comment: "Error message when the reader's IP address is unknown."
+            )
+
+        case .internetConnectTimeOut:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.internetConnectTimeOut",
+                value: "Connecting to reader over the internet timed out. " +
+                "Make sure your device and reader are on the same Wifi network and your reader is connected to the Wifi network.",
+                comment: "Error message when the internet connection operation timed out."
+            )
+
+        case .bluetoothReconnectStarted:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.bluetoothReconnectStarted",
+                value: "The Bluetooth reader has disconnected and we are attempting to reconnect.",
+                comment: "Error message when Bluetooth reconnect has started."
+            )
+
+        case .appleBuiltInReaderAccountDeactivated:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.appleBuiltInReaderAccountDeactivated",
+                value: "The linked Apple ID account has been deactivated.",
+                comment: "Error message when the Apple built-in reader account is deactivated."
+            )
+
+        case .readerMissingEncryptionKeys:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.readerMissingEncryptionKeys",
+                value: "The reader is missing encryption keys required for taking payments and has disconnected and rebooted. " +
+                "Reconnect to the reader to attempt to re-install the keys. If the error persists, please contact support.",
+                comment: "Error message when the reader is missing encryption keys."
+            )
+
+        case .unexpectedReaderError:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.unexpectedReaderError",
+                value: "An unexpected error occurred with the reader.",
+                comment: "Error message when an unexpected error occurs with the reader."
+            )
+
+        case .commandRequiresCardholderConsent:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.commandRequiresCardholderConsent",
+                value: "The cardholder must give consent in order for this operation to succeed.",
+                comment: "Error message when the command requires cardholder consent."
+            )
+
+        case .refundFailed:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.refundFailed",
+                value: "The refund failed. The customer’s bank or card issuer was unable to process it correctly " +
+                "(e.g., a closed bank account or a problem with the card).",
+                comment: "Error message when the refund operation failed."
+            )
+
+        case .cardSwipeNotAvailable:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.cardSwipeNotAvailable",
+                value: "Card swipe functionality is unavailable.",
+                comment: "Error message when card swipe functionality is unavailable."
+            )
+
+        case .interacNotSupportedOffline:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.interacNotSupportedOffline",
+                value: "Interac is not supported in offline mode.",
+                comment: "Error message when Interac is not supported in offline mode."
+            )
+
+        case .offlineAndCardExpired:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.offlineAndCardExpired",
+                value: "Confirming a payment while offline and the card was identified as being expired.",
+                comment: "Error message when the card is expired and offline mode is active."
+            )
+
+        case .offlineTransactionDeclined:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.offlineTransactionDeclined",
+                value: "Confirming a payment while offline and the card’s verification failed.",
+                comment: "Error message when the offline transaction was declined."
+            )
+
+        case .offlineCollectAndConfirmMismatch:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.offlineCollectAndConfirmMismatch",
+                value: "Please ensure the network connection is consistent at payment collection and confirmation.",
+                comment: "Error message when there is a mismatch between offline collect and confirm."
+            )
+
+        case .onlinePinNotSupportedOffline:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.onlinePinNotSupportedOffline",
+                value: "Online PIN is not supported in offline mode. Please retry the payment with another card.",
+                comment: "Error message when online PIN is not supported in offline mode."
+            )
+
+        case .offlineTestCardInLivemode:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.offlineTestCardInLivemode",
+                value: "A test card is used in live mode while offline.",
+                comment: "Error message when a test card is used in live mode while offline."
+            )
+
+        case .stripeAPIResponseDecodingError:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.stripeAPIResponseDecodingError",
+                value: "Please contact support - there was an error decoding the Stripe API response.",
+                comment: "Error message when there is an error decoding the Stripe API response."
+            )
+
+        case .internalNetworkError:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.internalNetworkError",
+                value: "An unknown network error occurred.",
+                comment: "Error message when an internal network error occurs."
+            )
+
+        case .connectionTokenProviderCompletedWithError:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.connectionTokenProviderCompletedWithError",
+                value: "There was an error fetching the connection token.",
+                comment: "Error message when the connection token provider finishes with an error."
+            )
+
+        case .connectionTokenProviderTimedOut:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.connectionTokenProviderTimedOut",
+                value: "The connection token request timed out.",
+                comment: "Error message when the connection token provider operation times out."
+            )
         }
     }
 }

@@ -8,12 +8,6 @@ public final class PaymentGatewayStore: Store {
 
     private let remote: PaymentGatewayRemote
 
-    /// Shared private StorageType for use during then entire Orders sync process
-    ///
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = PaymentGatewayRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -89,31 +83,25 @@ private extension PaymentGatewayStore {
     /// *in a background thread*. `onCompletion` will be called on the main thread!
     ///
     func upsertPaymentGatewaysInBackground(siteID: Int64, paymentGateways: [PaymentGateway], onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            self?.upsertPaymentGateways(siteID: siteID, paymentGateways: paymentGateways)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ [weak self] storage in
+            self?.upsertPaymentGateways(siteID: siteID, paymentGateways: paymentGateways, using: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly Payment Gateways Entities in the current thread
     ///
-    func upsertPaymentGateways(siteID: Int64, paymentGateways: [PaymentGateway]) {
-        let derivedStorage = sharedDerivedStorage
+    func upsertPaymentGateways(siteID: Int64, paymentGateways: [PaymentGateway], using storage: StorageType) {
+        let storedGateways = storage.loadAllPaymentGateways(siteID: siteID)
         for gateway in paymentGateways {
-            let storageGateway = derivedStorage.loadPaymentGateway(siteID: gateway.siteID, gatewayID: gateway.gatewayID) ??
-                derivedStorage.insertNewObject(ofType: Storage.PaymentGateway.self)
+            let storageGateway = storedGateways.first(where: { $0.gatewayID == gateway.gatewayID }) ??
+            storage.insertNewObject(ofType: Storage.PaymentGateway.self)
             storageGateway.update(with: gateway)
         }
 
         // Now, remove any objects that exist in storage but not in paymentGateways
-        let storedGateways = derivedStorage.loadAllPaymentGateways(siteID: siteID)
         storedGateways.forEach { storedGateway in
             if !paymentGateways.contains(where: { $0.gatewayID == storedGateway.gatewayID }) {
-                derivedStorage.deleteObject(storedGateway)
+                storage.deleteObject(storedGateway)
             }
         }
     }

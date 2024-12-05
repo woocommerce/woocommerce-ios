@@ -17,6 +17,7 @@ struct TotalsView: View {
         viewHelper.shouldShowTotalsFields(for: posModel.paymentState)
     }
     @State private var isShowingPaymentsButtonSpacing: Bool = false
+    @State private var isShowingSendReceiptModal: Bool = false
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
@@ -77,6 +78,14 @@ struct TotalsView: View {
         }
         .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
         .geometryGroupIfSupported()
+        .posModal(isPresented: $isShowingSendReceiptModal) {
+            POSSendReceiptModalView(sendReceipt: { email in
+                Task { @MainActor in
+                    await posModel.sendReceipt(to: email)
+                }
+            }, isPresented: $isShowingSendReceiptModal)
+            .posModalSizing()
+        }
     }
 
     private var backgroundColor: Color {
@@ -214,15 +223,14 @@ private extension TotalsView {
             .frame(minWidth: UIScreen.main.bounds.width / 2)
         })
         .padding(Constants.buttonPadding)
-        .foregroundColor(Constants.posPrimaryTextInverted)
-        .background(Constants.posOverlayFillInverted)
+        .foregroundColor(Color.posPrimaryTextInverted)
+        .background(Color.posOverlayFillInverted)
         .cornerRadius(Constants.buttonCornerRadius)
     }
 
     private var sendReceiptButton: some View {
         Button(action: {
-            // no-op
-            // https://github.com/woocommerce/woocommerce-ios/issues/14461
+            isShowingSendReceiptModal = true
         }, label: {
             HStack(spacing: Constants.buttonSpacing) {
                 Text(Localization.sendReceipt)
@@ -385,24 +393,6 @@ private extension TotalsView {
         static let matchedGeometryTotalId: String = "pos_totals_view_total_matched_geometry_id"
 
         static let totalsFieldsHideAnimationDelay: CGFloat = 0.3
-
-        static var posOverlayFillInverted: Color {
-            Color(
-                UIColor(
-                    light: .black,
-                    dark: .white
-                )
-            )
-        }
-
-        static var posPrimaryTextInverted: Color {
-            Color(
-                UIColor(
-                    light: UIColor(.white),
-                    dark: UIColor(.black)
-                )
-            )
-        }
     }
 
     enum Localization {

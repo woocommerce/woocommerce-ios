@@ -3345,6 +3345,32 @@ final class MigrationTests: XCTestCase {
         let persistedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))
         XCTAssertEqual(persistedSite.value(forKey: "jetpackConnectionActivePlugins") as? [String], jetpackConnectionActivePlugins)
     }
+
+    func test_migrating_from_118_to_119_loads_TaxRate_transformable_attributes_successfully() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 118")
+        let sourceContext = sourceContainer.viewContext
+
+        let taxRate = insertTaxRate(to: sourceContext, forModel: 118)
+        // Populates transformable attributes.
+        let cities = ["San Francisco, New York"]
+        let postCodes = ["19503", "10004"]
+        taxRate.setValue(cities, forKey: "cities")
+        taxRate.setValue(postCodes, forKey: "postcodes")
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "TaxRate"), 1)
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 119")
+
+        // Assert
+        let targetContext = targetContainer.viewContext
+
+        let persistedTaxRate = try XCTUnwrap(targetContext.first(entityName: "TaxRate"))
+        XCTAssertEqual(persistedTaxRate.value(forKey: "cities") as? [String], cities)
+        XCTAssertEqual(persistedTaxRate.value(forKey: "postcodes") as? [String], postCodes)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

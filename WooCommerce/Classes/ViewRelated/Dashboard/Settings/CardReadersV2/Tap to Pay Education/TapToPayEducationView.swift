@@ -70,7 +70,7 @@ struct TapToPayEducationView: View {
 
 // MARK: - Hosting Controller
 
-final class TapToPayEducationViewViewHostingController: UIHostingController<TapToPayEducationView> {
+final class TapToPayEducationViewHostingController: UIHostingController<TapToPayEducationView> {
     init(onDismiss: @escaping () -> Void) {
         let viewModel = TapToPayEducationViewModel(flow: .onboarding, onDismiss: onDismiss)
         super.init(rootView: TapToPayEducationView(viewModel: viewModel))

@@ -129,9 +129,8 @@ private extension POSEligibilityChecker {
         let countryCode = SiteAddress(siteSettings: siteSettings.siteSettings).countryCode
         let currency = currencySettings.currencyCode
         switch (countryCode, currency) {
-            case (.US, .USD):
-                return true
-            case (.GB, .GBP):
+            case (.US, .USD),
+                (.GB, .GBP):
                 return true
             default:
                 return false

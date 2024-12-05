@@ -122,7 +122,7 @@ struct OrderCustomAmountsSection: View {
     }
 
     @ViewBuilder private var optionsBottomSheetContent: some View {
-        VStack (spacing: Layout.optionsBottomSheetContentVerticalSpacing) {
+        VStack (alignment: .leading, spacing: Layout.optionsBottomSheetContentVerticalSpacing) {
             Text(Localization.optionsDialogAddCustomAmountTitle)
                 .subheadlineStyle()
                 .fixedSize(horizontal: false, vertical: true)

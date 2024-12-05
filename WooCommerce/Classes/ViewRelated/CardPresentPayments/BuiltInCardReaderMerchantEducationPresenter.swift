@@ -1,6 +1,5 @@
 import Foundation
 import UIKit
-import WordPressUI
 
 protocol BuiltInCardReaderMerchantEducationPresenting {
     func presentMerchantEducation(completion: @escaping () -> Void)

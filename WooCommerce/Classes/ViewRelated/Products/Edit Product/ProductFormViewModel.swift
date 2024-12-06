@@ -314,6 +314,9 @@ extension ProductFormViewModel {
     }
 
     func canFavoriteProduct() -> Bool {
+        guard featureFlagService.isFeatureFlagEnabled(.favoriteProducts) else {
+            return false
+        }
         return formType != .add
     }
 

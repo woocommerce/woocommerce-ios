@@ -17,6 +17,8 @@
     <string>כדי לצלם תמונות או סרטוני וידאו להוספה למוצרים שלך, לסרוק ברקוד ל-SKU של מוצר או לכרטיסטי תמיכה.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>נדרשת גישה למיקום כדי לקבל תשלומים.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>השירות של Woo משתמש במיקרופון שלך כדי לאפשר לך להקליט אודיו בצילומי וידאו לספריית המדיה של החנות.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>כדי לשמור תמונות מהמצלמה לצורך תמונות של מוצרים, או כדי להוסיף תמונות או סרטוני וידאו למוצרים או לכרטיסי תמיכה.</string>
     <key>OpenOrdersAction.Title</key>

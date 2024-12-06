@@ -24,6 +24,7 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
                 }
             }
             PaymentsActionButtons()
+                .matchedGeometryEffect(id: animation.actionButtonsTransitionId, in: animation.namespace, properties: .position)
         }
         .multilineTextAlignment(.center)
     }

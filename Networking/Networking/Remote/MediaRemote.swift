@@ -18,11 +18,7 @@ public protocol MediaRemoteProtocol {
     func updateProductID(siteID: Int64,
                          productID: Int64,
                          mediaID: Int64,
-                         completion: @escaping (Result<Media, Error>) -> Void)
-    func updateProductIDToWordPressSite(siteID: Int64,
-                                        productID: Int64,
-                                        mediaID: Int64,
-                                        completion: @escaping (Result<WordPressMedia, Error>) -> Void)
+                         completion: @escaping (Result<WordPressMedia, Error>) -> Void)
 }
 
 /// Media: Remote Endpoints
@@ -138,31 +134,6 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
         }
     }
 
-    /// Sets the provided `productID` as `parent_id` of the `media`.
-    ///
-    /// API reference: https://developer.wordpress.com/docs/api/1.1/post/sites/%24site/media/%24media_ID/
-    ///
-    /// - Parameters:
-    ///     - siteID: Site in which the media was uploaded to.
-    ///     - productID: Product ID to use as `parent_id` of the media.
-    ///     - mediaID: ID of media for which `parent_id` needs to be updated.
-    ///     - completion: Closure to be executed upon completion.
-    ///
-    public func updateProductID(siteID: Int64,
-                                productID: Int64,
-                                mediaID: Int64,
-                                completion: @escaping (Result<Media, Error>) -> Void) {
-        let formParameters: [String: String] = [
-            ParameterKey.wordPressMediaParentID: "\(productID)",
-            ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
-        ]
-        let path = "sites/\(siteID)/media/\(mediaID)"
-        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: formParameters)
-        let mapper = MediaMapper()
-
-        enqueue(request, mapper: mapper, completion: completion)
-    }
-
     /// Sets the provided `productID` as post ID of the Media in WordPress site using WordPress site API
     ///
     /// API reference: to the WordPress site.via WordPress site API
@@ -174,10 +145,10 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
     ///     - mediaID: ID of media for which post ID needs to be updated.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func updateProductIDToWordPressSite(siteID: Int64,
-                                               productID: Int64,
-                                               mediaID: Int64,
-                                               completion: @escaping (Result<WordPressMedia, Error>) -> Void) {
+    public func updateProductID(siteID: Int64,
+                                productID: Int64,
+                                mediaID: Int64,
+                                completion: @escaping (Result<WordPressMedia, Error>) -> Void) {
         let parameters: [String: String] = [
             ParameterKey.wordPressMediaPostID: "\(productID)",
             ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,

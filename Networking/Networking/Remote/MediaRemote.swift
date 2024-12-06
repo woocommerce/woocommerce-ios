@@ -5,19 +5,12 @@ public protocol MediaRemoteProtocol {
     func loadMedia(siteID: Int64,
                    mediaID: Int64,
                    completion: @escaping (Result<WordPressMedia, Error>) -> Void)
-    func loadMediaLibrary(for siteID: Int64,
+    func loadMediaLibrary(siteID: Int64,
                           productID: Int64?,
                           imagesOnly: Bool,
                           pageNumber: Int,
                           pageSize: Int,
-                          context: String?,
-                          completion: @escaping (Result<[Media], Error>) -> Void)
-    func loadMediaLibraryFromWordPressSite(siteID: Int64,
-                                           productID: Int64?,
-                                           imagesOnly: Bool,
-                                           pageNumber: Int,
-                                           pageSize: Int,
-                                           completion: @escaping (Result<[WordPressMedia], Error>) -> Void)
+                          completion: @escaping (Result<[WordPressMedia], Error>) -> Void)
     func uploadMedia(siteID: Int64,
                      productID: Int64,
                      mediaItem: UploadableMedia,
@@ -65,43 +58,6 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
         }
     }
 
-    /// Loads an array of media from the site's WP Media Library.
-    /// API reference: https://developer.wordpress.com/docs/api/1.2/get/sites/%24site/media/
-    ///
-    /// - Parameters:
-    ///   - siteID: Site for which we'll load the media from.
-    ///   - productID: Loads media attached to a specific product ID. Loads all media if nil.
-    ///   - imagesOnly: Whether only images should be loaded.
-    ///   - pageNumber: The index of the page of media data to load from, starting from 1.
-    ///   - pageSize: The number of media items to return.
-    ///   - completion: Closure to be executed upon completion.
-    ///
-    public func loadMediaLibrary(for siteID: Int64,
-                                 productID: Int64? = nil,
-                                 imagesOnly: Bool,
-                                 pageNumber: Int = Default.pageNumber,
-                                 pageSize: Int = 25,
-                                 context: String? = Default.context,
-                                 completion: @escaping (Result<[Media], Error>) -> Void) {
-        let parameters: [String: Any] = [
-            ParameterKey.contextKey: context ?? Default.context,
-            ParameterKey.dotComPageSize: pageSize,
-            ParameterKey.pageNumber: pageNumber,
-            ParameterKey.fields: "ID,date,URL,thumbnails,title,alt,extension,mime_type,file",
-            ParameterKey.mimeType: imagesOnly ? "image" : nil,
-            ParameterKey.postID: productID
-        ].compactMapValues { $0 }
-
-        let path = "sites/\(siteID)/media"
-        let request = DotcomRequest(wordpressApiVersion: .mark1_1,
-                                    method: .get,
-                                    path: path,
-                                    parameters: parameters)
-        let mapper = MediaListMapper()
-
-        enqueue(request, mapper: mapper, completion: completion)
-    }
-
     /// Loads an array of media from the site's WP Media Library via WordPress site API.
     /// API reference: https://developer.wordpress.org/rest-api/reference/media/#list-media
     ///
@@ -112,12 +68,12 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
     ///   - pageNumber: The index of the page of media data to load from, starting from 1.
     ///   - pageSize: The number of media items to return.
     ///   - completion: Closure to be executed upon completion.
-    public func loadMediaLibraryFromWordPressSite(siteID: Int64,
-                                                  productID: Int64? = nil,
-                                                  imagesOnly: Bool,
-                                                  pageNumber: Int = Default.pageNumber,
-                                                  pageSize: Int = 25,
-                                                  completion: @escaping (Result<[WordPressMedia], Error>) -> Void) {
+    public func loadMediaLibrary(siteID: Int64,
+                                 productID: Int64? = nil,
+                                 imagesOnly: Bool,
+                                 pageNumber: Int = Default.pageNumber,
+                                 pageSize: Int = 25,
+                                 completion: @escaping (Result<[WordPressMedia], Error>) -> Void) {
         let parameters: [String: Any] = [
             ParameterKey.dotOrgPageSize: pageSize,
             ParameterKey.pageNumber: pageNumber,

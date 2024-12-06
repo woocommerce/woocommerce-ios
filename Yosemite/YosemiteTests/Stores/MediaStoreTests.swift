@@ -103,17 +103,17 @@ final class MediaStoreTests: XCTestCase {
     func test_retrieveMediaLibrary_returns_media_list() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "media", filename: "media-library")
-        let expectedMedia = Media(mediaID: 2352,
-                                  date: date(with: "2020-02-21T12:15:38+08:00"),
+        let expectedMedia = Media(mediaID: 22,
+                                  date: date(with: "2021-11-22T01:55:57"),
                                   fileExtension: "jpeg",
-                                  filename: "img_0002-8.jpeg",
+                                  filename: "2021/11/img_0111-2-scaled.jpeg",
                                   mimeType: "image/jpeg",
-                                  src: "https://test.com/wp-content/uploads/2020/02/img_0002-8.jpeg",
-                                  thumbnailURL: "https://test.com/wp-content/uploads/2020/02/img_0002-8-150x150.jpeg",
-                                  name: "DSC_0010",
-                                  alt: "",
-                                  height: nil,
-                                  width: nil)
+                                  src: "https://ninja.media/wp-content/uploads/2021/11/img_0111-2-scaled.jpeg",
+                                  thumbnailURL: "https://ninja.media/wp-content/uploads/2021/11/img_0111-2-150x150.jpeg",
+                                  name: "img_0111-2",
+                                  alt: "Floral",
+                                  height: 1920,
+                                  width: 2560)
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network)
@@ -131,7 +131,7 @@ final class MediaStoreTests: XCTestCase {
 
         // Then
         let mediaItems = try XCTUnwrap(result.get())
-        XCTAssertEqual(mediaItems.count, 5)
+        XCTAssertEqual(mediaItems.count, 3)
         XCTAssertEqual(mediaItems.first, expectedMedia)
     }
 
@@ -141,8 +141,8 @@ final class MediaStoreTests: XCTestCase {
         // Given
         network.simulateResponse(requestUrlSuffix: "media", filename: "media-library")
 
-        let expectedMedia = Media(mediaID: 2348,
-                                  date: date(with: "2020-02-21T11:58:24+08:00"),
+        let expectedMedia = Media(mediaID: 20,
+                                  date: date(with: "2021-11-22T01:55:57"),
                                   fileExtension: "jpeg",
                                   filename: "img_0111-1-12-тест.jpeg",
                                   mimeType: "image/jpeg",
@@ -150,8 +150,8 @@ final class MediaStoreTests: XCTestCase {
                                   thumbnailURL: "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-тест-150x150.jpeg",
                                   name: "img_0111-1",
                                   alt: "",
-                                  height: nil,
-                                  width: nil)
+                                  height: 1708,
+                                  width: 2560)
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network)
@@ -169,7 +169,7 @@ final class MediaStoreTests: XCTestCase {
 
         // Then
         let mediaItems = try XCTUnwrap(result.get())
-        XCTAssertEqual(mediaItems.count, 5)
+        XCTAssertEqual(mediaItems.count, 3)
         XCTAssertTrue(mediaItems.contains(expectedMedia))
     }
 
@@ -194,8 +194,8 @@ final class MediaStoreTests: XCTestCase {
         }
 
         // Then
-        let error = try XCTUnwrap(result.failure as? DotcomError)
-        XCTAssertEqual(error, .unauthorized)
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertTrue(error is DecodingError)
     }
 
     /// Verifies that `MediaAction.retrieveMediaLibrary` returns an error whenever there is no backend response.
@@ -251,7 +251,7 @@ final class MediaStoreTests: XCTestCase {
         let siteID = WooConstants.placeholderSiteID
         let remote = MockMediaRemote()
         let media = WordPressMedia.fake()
-        remote.whenLoadingMediaLibraryFromWordPressSite(siteID: siteID, thenReturn: .success([media]))
+        remote.whenLoadingMediaLibrary(siteID: siteID, thenReturn: .success([media]))
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network,
@@ -269,7 +269,7 @@ final class MediaStoreTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(remote.invocations, [.loadMediaLibraryFromWordPressSite(siteID: siteID)])
+        XCTAssertEqual(remote.invocations, [.loadMediaLibrary(siteID: siteID)])
 
         let mediaList = try XCTUnwrap(result.get())
         XCTAssertEqual(mediaList, [media.toMedia()])
@@ -280,7 +280,7 @@ final class MediaStoreTests: XCTestCase {
         // Given
         let remote = MockMediaRemote()
         let media = WordPressMedia.fake()
-        remote.whenLoadingMediaLibraryFromWordPressSite(siteID: sampleSiteID, thenReturn: .success([media]))
+        remote.whenLoadingMediaLibrary(siteID: sampleSiteID, thenReturn: .success([media]))
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network,
@@ -300,7 +300,7 @@ final class MediaStoreTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(remote.invocations, [.loadMediaLibraryFromWordPressSite(siteID: sampleSiteID)])
+        XCTAssertEqual(remote.invocations, [.loadMediaLibrary(siteID: sampleSiteID)])
 
         let mediaList = try XCTUnwrap(result.get())
         XCTAssertEqual(mediaList, [media.toMedia()])
@@ -310,7 +310,7 @@ final class MediaStoreTests: XCTestCase {
     func test_retrieveMediaLibrary_from_jcp_site_returns_error_upon_empty_response() throws {
         // Given
         let remote = MockMediaRemote()
-        remote.whenLoadingMediaLibraryFromWordPressSite(siteID: sampleSiteID, thenReturn: .failure(DotcomError.unauthorized))
+        remote.whenLoadingMediaLibrary(siteID: sampleSiteID, thenReturn: .failure(DotcomError.unauthorized))
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network,
@@ -330,7 +330,7 @@ final class MediaStoreTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(remote.invocations, [.loadMediaLibraryFromWordPressSite(siteID: sampleSiteID)])
+        XCTAssertEqual(remote.invocations, [.loadMediaLibrary(siteID: sampleSiteID)])
 
         let error = try XCTUnwrap(result.failure as? DotcomError)
         XCTAssertEqual(error, .unauthorized)
@@ -832,7 +832,7 @@ private extension MediaStoreTests {
     }
 
     func date(with dateString: String) -> Date {
-        guard let date = DateFormatter.Defaults.iso8601.date(from: dateString) else {
+        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
             return Date()
         }
         return date

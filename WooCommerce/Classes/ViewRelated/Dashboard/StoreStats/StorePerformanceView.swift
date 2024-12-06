@@ -156,6 +156,7 @@ private extension StorePerformanceView {
                 }
             }
             .disabled(viewModel.syncingData)
+            .accessibilityIdentifier("performance-time-range-menu")
         }
     }
 

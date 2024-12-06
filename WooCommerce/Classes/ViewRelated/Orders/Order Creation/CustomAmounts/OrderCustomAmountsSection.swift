@@ -42,6 +42,8 @@ struct OrderCustomAmountsSection: View {
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize: DynamicTypeSize
 
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
     var body: some View {
         VStack {
             HStack {
@@ -85,7 +87,10 @@ struct OrderCustomAmountsSection: View {
         .if(viewModel.customAmountRows.isEmpty, transform: { $0.padding([.leading, .trailing]) })
         .if(!viewModel.customAmountRows.isEmpty, transform: { $0.padding() })
         .background(Color(.listForeground(modal: true)))
-        .sheet(isPresented: $sectionViewModel.showCustomAmountOptionsDialog) {
+        .popover(isPresented: isCustomAmountOptionsPopoverPresented) {
+            optionsPopoverContent
+        }
+        .sheet(isPresented: isCustomAmountOptionsSheetPresented) {
             optionsWithDetentsBottomSheetContent
         }
         .sheet(isPresented: $sectionViewModel.showAddCustomAmount,
@@ -95,6 +100,57 @@ struct OrderCustomAmountsSection: View {
         }, content: {
             AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel(with: addCustomAmountOption))
         })
+    }
+
+    // Computed bindings based on horizontalSizeClass
+    private var isCustomAmountOptionsPopoverPresented: Binding<Bool> {
+        Binding(
+            get: { sectionViewModel.showCustomAmountOptionsDialog && horizontalSizeClass == .regular },
+            set: { newValue in
+                if horizontalSizeClass == .regular {
+                    sectionViewModel.showCustomAmountOptionsDialog = newValue
+                }
+            }
+        )
+    }
+
+    private var isCustomAmountOptionsSheetPresented: Binding<Bool> {
+        Binding(
+            get: { sectionViewModel.showCustomAmountOptionsDialog && horizontalSizeClass == .compact },
+            set: { newValue in
+                if horizontalSizeClass == .compact {
+                    sectionViewModel.showCustomAmountOptionsDialog = newValue
+                }
+            }
+        )
+    }
+
+    @ViewBuilder private var optionsPopoverContent: some View {
+        optionsBottomSheetContent
+            .frame(width: optionsPopoverSize.width, height: optionsPopoverSize.height)
+    }
+
+    private var optionsPopoverSize: CGSize {
+        switch dynamicTypeSize {
+        case .xSmall, .small:
+            return CGSize(width: 325, height: 175)
+        case .medium, .large:
+            return CGSize(width: 375, height: 175)
+        case .xLarge:
+            return CGSize(width: 400, height: 175)
+        case .xxLarge, .xxxLarge:
+            return CGSize(width: 400, height: 200)
+        case .accessibility1:
+            return CGSize(width: 475, height: 225)
+        case .accessibility2:
+            return CGSize(width: 550, height: 250)
+        case .accessibility3:
+            return CGSize(width: 550, height: 350)
+        case .accessibility4, .accessibility5:
+            return CGSize(width: 550, height: 400)
+        @unknown default:
+            return CGSize(width: 550, height: 350)
+        }
     }
 
     @ViewBuilder private var optionsWithDetentsBottomSheetContent: some View {

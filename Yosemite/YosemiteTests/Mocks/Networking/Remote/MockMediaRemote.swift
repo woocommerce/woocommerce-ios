@@ -12,7 +12,7 @@ final class MockMediaRemote {
     /// The results to return based on the given site ID in `loadMedia`
     private var loadMediaResultsBySiteID = [Int64: Result<WordPressMedia, Error>]()
 
-    /// The results to return based on the given site ID in `loadMediaLibraryFromWordPressSite`
+    /// The results to return based on the given site ID in `loadMediaLibrary`
     private var loadMediaLibraryResultsBySiteID = [Int64: Result<[WordPressMedia], Error>]()
 
     /// The results to return based on the given site ID in `uploadMedia`

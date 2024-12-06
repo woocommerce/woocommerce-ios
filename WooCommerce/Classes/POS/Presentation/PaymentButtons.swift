@@ -14,6 +14,14 @@ struct PaymentsActionButtons: View {
                 .renderedIf(shouldShowSendReceiptButton)
             newOrderButton
         }
+        .posModal(isPresented: $isShowingSendReceiptModal) {
+            POSSendReceiptModalView(sendReceipt: { email in
+                Task { @MainActor in
+                    await posModel.sendReceipt(to: email)
+                }
+            }, isPresented: $isShowingSendReceiptModal)
+            .posModalSizing()
+        }
     }
 }
 

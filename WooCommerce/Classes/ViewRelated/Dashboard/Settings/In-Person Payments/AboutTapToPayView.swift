@@ -168,9 +168,7 @@ struct AboutTapToPayContactlessLimitView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .topLeading)
-        .background(Color.withColorStudio(
-            name: .wooCommercePurple,
-            shade: .shade0))
+        .background(Color(.wooCommercePurple(.shade0)))
         .cornerRadius(Layout.cornerRadius)
         .sheet(isPresented: $showingWebView) {
             WebViewSheet(viewModel: viewModel.webViewModel) {

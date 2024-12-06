@@ -192,10 +192,6 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private var storedTaxRate: TaxRate? = nil
 
-    /// Display the custom amount screen to edit it
-    ///
-    @Published var showEditCustomAmount: Bool = false
-
     /// Defines if the toggle to store the tax rate in the selector should be enabled by default
     ///
     var shouldStoreTaxRateInSelectorByDefault: Bool {
@@ -1028,7 +1024,7 @@ final class EditableOrderViewModel: ObservableObject {
     func addCustomAmount() {
         editingFee = nil
         if orderIsNotEmpty {
-            customAmountsSectionViewModel.showAddCustomAmountOptionsDialog = true
+            customAmountsSectionViewModel.showCustomAmountOptionsDialog = true
         } else {
             customAmountsSectionViewModel.showAddCustomAmount = true
         }
@@ -1615,7 +1611,7 @@ private extension EditableOrderViewModel {
                                                     onEditCustomAmount: {
                         self.analytics.track(.orderCreationEditCustomAmountTapped)
                         self.editingFee = fee
-                        self.showEditCustomAmount = true
+                        self.customAmountsSectionViewModel.showCustomAmountOptionsDialog = true
                     })
                 }
             }

@@ -6,8 +6,8 @@ final class OrderCustomAmountsSectionViewModel: ObservableObject {
     /// Defines whether the new custom amount modal is presented.
     @Published var showAddCustomAmount: Bool = false
 
-    /// Defines whether the new custom amount options dialog is presented.
-    @Published var showAddCustomAmountOptionsDialog: Bool = false
+    /// Defines whether the custom amount options dialog is presented.
+    @Published var showCustomAmountOptionsDialog: Bool = false
 
     let currencySettings: CurrencySettings
     init(currencySettings: CurrencySettings) {
@@ -85,10 +85,7 @@ struct OrderCustomAmountsSection: View {
         .if(viewModel.customAmountRows.isEmpty, transform: { $0.padding([.leading, .trailing]) })
         .if(!viewModel.customAmountRows.isEmpty, transform: { $0.padding() })
         .background(Color(.listForeground(modal: true)))
-        .sheet(isPresented: $sectionViewModel.showAddCustomAmountOptionsDialog, onDismiss: onDismissOptionsDialog) {
-            optionsWithDetentsBottomSheetContent
-        }
-        .sheet(isPresented: $viewModel.showEditCustomAmount, onDismiss: onDismissOptionsDialog) {
+        .sheet(isPresented: $sectionViewModel.showCustomAmountOptionsDialog) {
             optionsWithDetentsBottomSheetContent
         }
         .sheet(isPresented: $sectionViewModel.showAddCustomAmount,
@@ -173,17 +170,9 @@ private extension OrderCustomAmountsSection {
         viewModel.onAddCustomAmountButtonTapped()
     }
 
-    func onDismissOptionsDialog() {
-        if showAddCustomAmountAfterOptionsDialog {
-            showAddCustomAmountAfterOptionsDialog = false
-            sectionViewModel.showAddCustomAmount = true
-        }
-    }
-
     func showAddCustomAmountsAfterOptionsDialog() {
-        showAddCustomAmountAfterOptionsDialog = true
-        sectionViewModel.showAddCustomAmountOptionsDialog = false
-        viewModel.showEditCustomAmount = false
+        sectionViewModel.showCustomAmountOptionsDialog = false
+        sectionViewModel.showAddCustomAmount = true
     }
 }
 

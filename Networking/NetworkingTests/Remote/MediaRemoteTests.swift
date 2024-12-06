@@ -82,12 +82,12 @@ final class MediaRemoteTests: XCTestCase {
     }
     // MARK: - Load Media From Media Library `loadMediaLibrary` via WordPress Site API
 
-    /// Verifies that `loadMediaLibrary` properly parses the `media-library-from-wordpress-site` sample response.
+    /// Verifies that `loadMediaLibrary` properly parses the `media-library` sample response.
     ///
     func test_loadMediaLibrary_properly_returns_parsed_media_list() throws {
         // Given
         let remote = MediaRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "media", filename: "media-library-from-wordpress-site")
+        network.simulateResponse(requestUrlSuffix: "media", filename: "media-library")
 
         // When
         let result = waitFor { promise in

@@ -102,7 +102,7 @@ final class MediaStoreTests: XCTestCase {
     ///
     func test_retrieveMediaLibrary_returns_media_list() throws {
         // Given
-        network.simulateResponse(requestUrlSuffix: "media", filename: "media-library-from-wordpress-site")
+        network.simulateResponse(requestUrlSuffix: "media", filename: "media-library")
         let expectedMedia = Media(mediaID: 22,
                                   date: date(with: "2021-11-22T01:55:57"),
                                   fileExtension: "jpeg",
@@ -139,7 +139,7 @@ final class MediaStoreTests: XCTestCase {
     ///
     func test_retrieveMediaLibrary_returns_media_list_when_URLs_contain_special_chars() throws {
         // Given
-        network.simulateResponse(requestUrlSuffix: "media", filename: "media-library-from-wordpress-site")
+        network.simulateResponse(requestUrlSuffix: "media", filename: "media-library")
 
         let expectedMedia = Media(mediaID: 20,
                                   date: date(with: "2021-11-22T01:55:57"),

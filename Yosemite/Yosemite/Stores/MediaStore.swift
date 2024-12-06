@@ -101,22 +101,12 @@ private extension MediaStore {
                               pageNumber: Int,
                               pageSize: Int,
                               onCompletion: @escaping (Result<[Media], Error>) -> Void) {
-        if isLoggedInWithoutWPCOMCredentials(siteID) || isSiteJetpackJCPConnected(siteID) {
-            remote.loadMediaLibraryFromWordPressSite(siteID: siteID,
-                                                     productID: productID,
-                                                     imagesOnly: imagesOnly,
-                                                     pageNumber: pageNumber,
-                                                     pageSize: pageSize) { result in
-                onCompletion(result.map { $0.map { $0.toMedia() } })
-            }
-        } else {
-            remote.loadMediaLibrary(for: siteID,
-                                    productID: productID,
-                                    imagesOnly: imagesOnly,
-                                    pageNumber: pageNumber,
-                                    pageSize: pageSize,
-                                    context: nil,
-                                    completion: onCompletion)
+        remote.loadMediaLibrary(siteID: siteID,
+                                productID: productID,
+                                imagesOnly: imagesOnly,
+                                pageNumber: pageNumber,
+                                pageSize: pageSize) { result in
+            onCompletion(result.map { $0.map { $0.toMedia() } })
         }
     }
 

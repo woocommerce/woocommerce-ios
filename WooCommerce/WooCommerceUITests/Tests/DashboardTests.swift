@@ -14,7 +14,7 @@ final class DashboardTests: XCTestCase {
         try LoginFlow.login()
     }
 
-    func test_load_performance_dashboard_card() throws {
+    func test_load_performance_card() throws {
         try TabNavComponent().goToMyStoreScreen()
             .verifyTodayStatsLoaded()
             .goToThisWeekTab()
@@ -25,8 +25,7 @@ final class DashboardTests: XCTestCase {
             .verifyThisYearStatsLoaded()
     }
 
-    /// TODO: Update tests after the new stats screen is released.
-    func skipped_test_view_detailed_chart_stats() throws {
+    func test_view_detailed_chart_performance_card() throws {
         let myStoreScreen = try MyStoreScreen()
 
         var dailyRevenue = try TabNavComponent()

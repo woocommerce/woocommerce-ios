@@ -74,7 +74,7 @@ public final class MyStoreScreen: ScreenObject {
     }
 
     public func tapChart() {
-        app.images["chart-image"].tap()
+        app.otherElements["store-stats-chart"].tap()
     }
 
     public func verifyRevenueUpdated(originalRevenue: String, updatedRevenue: String) {

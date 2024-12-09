@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct SelectedPackageView: View {
+struct WooShippingSelectedPackageView: View {
     let package: WooShippingPackageDataRepresentable
     let weightUnit: String
     @Binding var totalWeight: String
@@ -16,10 +16,10 @@ struct SelectedPackageView: View {
                 }
                 .buttonStyle(TextButtonStyle())
             }
-            PackageOptionView(package: package,
-                              showTopDivider: false,
-                              showSource: true,
-                              tapAction: {})
+            WooShippingPackageOptionView(package: package,
+                                         showTopDivider: false,
+                                         showSource: true,
+                                         tapAction: {})
             .roundedBorder(cornerRadius: Constants.cornerRadius, lineColor: Constants.lineColor, lineWidth: Constants.lineWidth)
             .padding(.bottom)
             shipmentWeight
@@ -44,7 +44,7 @@ struct SelectedPackageView: View {
     }
 }
 
-private extension SelectedPackageView {
+private extension WooShippingSelectedPackageView {
     enum Constants {
         static let cornerRadius: CGFloat = 8
         static let lineColor = Color(.separator)
@@ -62,7 +62,7 @@ private extension SelectedPackageView {
 }
 
 #Preview {
-    SelectedPackageView(package: WooShippingPackageData(name: "Small Flat Rate Box",
+    WooShippingSelectedPackageView(package: WooShippingPackageData(name: "Small Flat Rate Box",
                                                         length: "12",
                                                         width: "6",
                                                         height: "6",

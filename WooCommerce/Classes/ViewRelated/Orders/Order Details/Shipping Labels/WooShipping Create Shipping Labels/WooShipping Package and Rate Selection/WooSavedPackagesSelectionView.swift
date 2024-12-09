@@ -149,7 +149,7 @@ struct WooSavedPackagesSelectionView: View {
 
     private func packagesRows(for packages: [any WooShippingPackageDataRepresentable]) -> some View {
         ForEach(packages, id: \.id) { package in
-            PackageOptionView(
+            WooShippingPackageOptionView(
                 isSelected: viewModel.selectedSavedPackageId == package.id,
                 package: package,
                 showTopDivider: false,

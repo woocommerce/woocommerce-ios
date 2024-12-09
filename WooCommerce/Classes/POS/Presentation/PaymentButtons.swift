@@ -3,24 +3,38 @@ import SwiftUI
 struct PaymentsActionButtons: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @State private var isShowingSendReceiptModal: Bool = false
+    @State private var isShowingReceiptNotEligibleBanner: Bool = false
 
     private var shouldShowSendReceiptButton: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sendReceiptsForPointOfSale)
     }
 
     var body: some View {
-        VStack {
-            sendReceiptButton
-                .renderedIf(shouldShowSendReceiptButton)
-            newOrderButton
-        }
-        .posModal(isPresented: $isShowingSendReceiptModal) {
-            POSSendReceiptModalView(sendReceipt: { email in
-                Task { @MainActor in
-                    await posModel.sendReceipt(to: email)
+        ZStack {
+            VStack {
+                sendReceiptButton
+                    .renderedIf(shouldShowSendReceiptButton)
+                newOrderButton
+            }
+            .posModal(isPresented: $isShowingSendReceiptModal) {
+                POSSendReceiptModalView(sendReceipt: { email in
+                    Task { @MainActor in
+                        await posModel.sendReceipt(to: email)
+                    }
+                }, isPresented: $isShowingSendReceiptModal)
+                .posModalSizing()
+            }
+
+            if isShowingReceiptNotEligibleBanner {
+                VStack {
+                    Spacer()
+                    POSReceiptEligibilityBanner(isVisible: $isShowingReceiptNotEligibleBanner)
+                        .renderedIf(shouldShowSendReceiptButton)
+                        .transition(.move(edge: .bottom))
+                        .padding(.bottom)
                 }
-            }, isPresented: $isShowingSendReceiptModal)
-            .posModalSizing()
+                .ignoresSafeArea()
+            }
         }
     }
 }
@@ -28,7 +42,11 @@ struct PaymentsActionButtons: View {
 private extension PaymentsActionButtons {
     var sendReceiptButton: some View {
         Button(action: {
-            isShowingSendReceiptModal = true
+            if posModel.eligibleWooCommerceVersionForPOSReceipts {
+                isShowingSendReceiptModal = true
+            } else {
+                isShowingReceiptNotEligibleBanner = true
+            }
         }, label: {
             HStack(spacing: Constants.buttonSpacing) {
                 Text(Localization.sendReceipt)

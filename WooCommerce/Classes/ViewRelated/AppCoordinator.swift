@@ -124,14 +124,14 @@ private extension AppCoordinator {
 
     func handleLocalNotificationResponse(_ response: UNNotificationResponse) {
         let identifier = response.notification.request.identifier
-        
+
         let userInfo = response.notification.request.content.userInfo
         guard response.actionIdentifier != UNNotificationDismissActionIdentifier else {
             analytics.track(event: .LocalNotification.dismissed(type: LocalNotification.Scenario.identifierForAnalytics(identifier),
                                                                 userInfo: userInfo))
             return
         }
-        
+
         analytics.track(event: .LocalNotification.tapped(type: LocalNotification.Scenario.identifierForAnalytics(identifier),
                                                          userInfo: userInfo))
     }

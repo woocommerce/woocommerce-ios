@@ -98,8 +98,23 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         let predefinedSavedPackages = packagesResult.savedPredefinedPackages.map {
             return $0.toPackageData(storeOptions: packagesResult.storeOptions)
         }
-        let carrierPackages: [WooShippingCarrierPackages] = packagesResult.allPredefinedOptions.compactMap {
+        var carrierPackages: [WooShippingCarrierPackages] = packagesResult.allPredefinedOptions.compactMap {
             return $0.toCarrierPackages(storeOptions: packagesResult.storeOptions)
+        }
+        if self.carrierPackages.isNotEmpty {
+            // sort new packages so they stay in similar order
+            // sort only if we already had carrier packages before
+            let sortedCarrierPackages = self.carrierPackages.sorted { (carrierA, carrierB) in
+                let carrierAIndex = self.carrierPackages.firstIndex(where: { $0.id == carrierA.id })
+                let carrierBIndex = self.carrierPackages.firstIndex(where: { $0.id == carrierB.id })
+                if let firstI = carrierAIndex, let secondI = carrierBIndex {
+                    return firstI < secondI
+                }
+                else {
+                    return carrierAIndex != nil
+                }
+            }
+            carrierPackages = sortedCarrierPackages
         }
         let carrierTabs: [TopTabItem<EmptyView>] = carrierPackages.map { carrierTab in
             return TopTabItem(name: carrierTab.carrier.name, icon: carrierTab.carrier.logo, content: {

@@ -17,6 +17,8 @@
     <string>Para tirar fotos ou gravar vídeos a serem adicionados aos seus produtos, escanear o código de barras da SKU do produto ou usar em tíquetes de suporte.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>O acesso à localização é obrigatório para aceitar pagamentos.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>O Woo usa seu microfone para que você possa captar áudio ao gravar vídeos para a biblioteca de mídia da sua loja.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Para salvar fotos de produtos que estão na câmera ou adicionar fotos ou vídeos aos produtos ou tíquetes de suporte.</string>
     <key>OpenOrdersAction.Title</key>

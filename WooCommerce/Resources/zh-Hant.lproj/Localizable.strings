@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-13 11:54:04+0000 */
+/* Translation-Revision-Date: 2024-11-26 13:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -950,11 +950,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Automattic 品牌系列";
 
-/* Hint showing the deposit schedule for a merchant's WooPayments account. e.g. Available funds are deposited automatically, every Wednesday. %1$@ will be replaced with a translated frequency description, e.g. 'every day' or 'monthly on the 28th' */
-"Available funds are deposited automatically, %1$@." = "可用款項將自動於%1$@存入。";
+/* Hint showing the payout schedule for a merchant's WooPayments account. e.g. Available funds are paid out automatically, every Wednesday. %1$@ will be replaced with a translated frequency description, e.g. 'every day' or 'monthly on the 28th' */
+"Available funds are paid out automatically, %1$@." = "%1$@會自動發放可用款項。";
 
-/* Hint showing the deposit schedule for a merchant's WooPayments account with a manual schedule. */
-"Available funds are deposited manually, on request." = "可用款項將依要求手動存入。";
+/* Hint showing the payout schedule for a merchant's WooPayments account with a manual schedule. */
+"Available funds are paid out manually, on request." = "可用款項將依要求手動發放。";
 
 /* Label for average value of orders in the Analytics Hub */
 "Average Order Value" = "平均訂單金額";
@@ -2073,7 +2073,8 @@ which should be translated separately and considered part of this sentence. */
 /* Custom line index in Customs Form of Shipping Label flow */
 "Custom Line %1$d" = "自訂行 %1$d";
 
-/* Custom Package menu in Shipping Label Add New Package flow */
+/* Custom Package menu in Shipping Label Add New Package flow
+   Label used to mark a custom package in list of saved packages */
 "Custom Package" = "自訂包裹";
 
 /* Label for one of the filters in order date range
@@ -2823,7 +2824,7 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
 "Error updating Order #%1$d" = "更新訂單 (編號：%1$d) 時發生錯誤";
 
-/* String indicating that a deposit date is an estimate. Shown on whe WooPayments Deposits View. %1$@ will be replaced with a locale-appropriate date string. */
+/* String indicating that a payout date is an estimate. Shown on whe WooPayments Payouts View. %1$@ will be replaced with a locale-appropriate date string. */
 "Est. %1$@" = "預計存入日期：%1$@";
 
 /* Estimated setup time title text shown on the Woo payments setup instructions screen. */
@@ -3110,7 +3111,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the view which shows the full feature list for paid plans. */
 "Full Feature List" = "完整功能清單";
 
-/* Hint regarding available/pending balances shown in the WooPayments Deposits View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
+/* Hint regarding available/pending balances shown in the WooPayments Payouts View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
 "Funds become available after pending for %1$d days." = "款項待確認 %1$d 天後，現在已可提供。";
 
 /* Format of the Global Unique Identifier on the Inventory Settings row */
@@ -3701,6 +3702,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product Inventory Settings navigation title
    Title of the Inventory Settings row on Product main screen
+   Title of the product form bottom sheet action for editing external inventory.
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "庫存";
 
@@ -4408,7 +4410,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Myanmar" = "緬甸";
 
-/* String used when there's no date available for a deposit type on the WooPayments Deposits View. */
+/* String used when there's no date available for a payout type on the WooPayments Payouts View. */
 "N\/A" = "N\/A";
 
 /* Name text field placeholder
@@ -4896,6 +4898,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view. */
 "OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "無法擷取收據。";
+
+/* Title for notice that's shown when trying to edit an order that's in a different currency. This action isn't supported in the app. Placeholders: %1$@ is the order currency code (e.g. USD), %2$@ is the site currency code (e.g. GBP.) */
+"OrderDetailsViewModel.editingOrderWithCurrencyConflictNotice.title" = "很抱歉，你只能在網頁上編輯此訂單，這是因為此訂單使用「%1$@」，而貴網站採用的幣值為：%2$@。";
 
 /* Description of the subscription billing interval for a product. Reads like: 'Every 2 months'. */
 "OrderSubscriptionTableViewCellViewModel.billingInterval" = "每 %2$@ %1$@";
@@ -6028,11 +6033,8 @@ which should be translated separately and considered part of this sentence. */
 /* Details section title in the Edit Address Form */
 "SHIPPING ADDRESS" = "運送地址";
 
-/* Edit Product SKU navigation title
-   Title of the cell in Product Inventory Settings > SKU
-   Title of the product form bottom sheet action for editing short description.
-   Title of the product search filter to search for products that match the SKU.
-   Title of the SKU row on Product main screen */
+/* Title of the cell in Product Inventory Settings > SKU
+   Title of the product search filter to search for products that match the SKU. */
 "SKU" = "貨號";
 
 /* The message of the alert when there is an error updating the product SKU */
@@ -9674,6 +9676,12 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button in the Blaze Edit Ad screen. */
 "blazeEditAdView.cancel" = "取消";
 
+/* Placeholder for CTA Text field in the Blaze Edit Ad screen. */
+"blazeEditAdView.ctaText.placeholder" = "行動呼籲文字";
+
+/* CTA Text title text in the Blaze Edit Ad screen. */
+"blazeEditAdView.ctaText.title" = "行動呼籲";
+
 /* Placeholder for Description text field in the Blaze Edit Ad screen. */
 "blazeEditAdView.description.placeholder" = "Blaze 廣告的說明文字";
 
@@ -9703,6 +9711,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Blaze Edit Ad screen. */
 "blazeEditAdView.title" = "編輯廣告";
+
+/* Edit Blaze Ad screen: Error message if CTA Text exceeds the character limit. */
+"blazeEditAdViewModel.ctaText.lengthExceedsLimit" = "行動呼籲文字不能超過 %1$d 個字元";
 
 /* Edit Blaze Ad screen: Error message if Description field is empty. */
 "blazeEditAdViewModel.description.emptyError" = "說明不得空白";
@@ -9977,6 +9988,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "掃瞄讀卡機";
+
+/* Message informing the user that a receipt has been sent to their email address. %1$@ is the email address */
+"cardPresentPaymentsModal.error.receiptMessage" = "收據已傳送至 %1$@";
+
+/* Button to email receipts. Presented to users after a payment has been successfully collected */
+"cardPresentPaymentsModal.success.emailReceipt" = "電子郵件收據";
+
+/* Label informing users that the payment succeeded. Presented to users when a payment is collected */
+"cardPresentPaymentsModal.success.paymentSuccessful" = "付款成功";
+
+/* Button to print receipts. Presented to users after a payment has been successfully collected */
+"cardPresentPaymentsModal.success.printReceipt" = "列印收據";
+
+/* Message informing the user that a receipt has been sent to their email address. %1$@ is the email address */
+"cardPresentPaymentsModal.success.receiptMessage" = "收據已傳送至 %1$@";
+
+/* Button when the user does not want to print or email receipt. Presented to users after a payment has been successfully collected */
+"cardPresentPaymentsModal.success.saveReceiptAndContinue" = "儲存收據並繼續";
 
 /* Title for the toggle that specifies whether to add a note to the order with the change data. */
 "cashPaymentTenderView.addNoteToggle.title" = "在訂單備註中記錄交易詳細資料";
@@ -10461,45 +10490,6 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the sign-up fee for a subscription product on the Price Settings row. Reads like: 'Sign-up fee: $0.99'. */
 "defaultProductFormTableViewModel.subscriptionSignupFeeFormat" = "註冊費：%1$@";
 
-/* Accessibility label for the collapse chevron on the Deposit summary */
-"deposits.currency.overview.accessibility.hide" = "隱藏存款詳細資料";
-
-/* Accessibility label for the expand chevron on the Deposit summary */
-"deposits.currency.overview.accessibility.show" = "顯示存款詳細資料";
-
-/* Title for available funds overview in WooPayments Deposits view. This shows the balance which can be paid out. */
-"deposits.currency.overview.availableFunds" = "可用款項";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.canceled.title" = "已取消";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.estimated.title" = "估計值";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.failed.title" = "失敗";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.inTransit.title" = "運送中";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.paid.title" = "已付費";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.pending.title" = "待確認";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.unknown.title" = "未知";
-
-/* Section header for the last deposit in the WooPayments Deposits overview */
-"deposits.currency.overview.lastDeposit" = "上次存款";
-
-/* Button text to view more about payment schedules on the WooPayments Deposits View. */
-"deposits.currency.overview.learnMore" = "深入瞭解何時會收到款項";
-
-/* Title for pending funds overview in WooPayments Deposits view. This shows the balance which will be made available for pay out later. */
-"deposits.currency.overview.pendingFunds" = "待確認款項";
-
 /* Title of the downloadable file bottom sheet action for adding document from device. */
 "downloadableFileSource.deviceDocument" = "裝置上的文件";
 
@@ -10542,16 +10532,16 @@ which should be translated separately and considered part of this sentence. */
 /* The EU notice banner content describing how the shipping customs shall be configured */
 "eu_shipping_instructions_info" = "如需運送至遵循歐盟 (EU) 海關規定的國家\/地區，現在必須清楚描述每件商品。 舉例來說，若要寄送衣服，你必須指明衣服種類 (例如，男性襯衫、女童背心、男童外套)，海關才會採納相關資訊。 否則貨件可能會在海關階段延誤或中斷。";
 
-/* every {dayname}, shown in a sentence like 'Available funds are deposited automatically, every Wednesday' %1$@ will be replaced with the localized day name */
+/* every {dayname}, shown in a sentence like 'Available funds are paid out automatically, every Wednesday' %1$@ will be replaced with the localized day name */
 "every %1$@" = "每 %1$@";
 
-/* Shown in a sentence like 'Available funds are deposited automatically, every day' */
+/* Shown in a sentence like 'Available funds are paid out automatically, every day' */
 "every day" = "每天";
 
-/* Shown in a sentence like 'Available funds are deposited automatically every month. */
+/* Shown in a sentence like 'Available funds are paid out automatically every month. */
 "every month" = "每月";
 
-/* Shown in a sentence like 'Available funds are deposited automatically, every month on the 15th' */
+/* Shown in a sentence like 'Available funds are paid out automatically, every month on the 15th' */
 "every month on the %1$@" = "可於每月 %1$@存入";
 
 /* Placeholder for the site url textfield.
@@ -10711,6 +10701,9 @@ which should be translated separately and considered part of this sentence. */
 /* A message that tells the user why the app is requesting access to the user’s location information while the app is running in the foreground. */
 "infoplist.NSLocationWhenInUseUsageDescription" = "須提供定位權限才能接受付款。";
 
+/* A message that tells the user why the app needs access to Microphone. */
+"infoplist.NSMicrophoneUsageDescription" = "錄製商店媒體庫的影片時，Woo 會使用麥克風錄音。";
+
 /* A message that tells the user why the app is requesting access to the user’s photo library. */
 "infoplist.NSPhotoLibraryUsageDescription" = "用於儲存相機照片做為商品圖片，或為商品或支援票證新增照片或影片。";
 
@@ -10780,7 +10773,7 @@ which should be translated separately and considered part of this sentence. */
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "手動退款";
 
-/* on request (lower case), shown in a sentence like 'Deposit schedule: manual, on request' */
+/* on request (lower case), shown in a sentence like 'Payout schedule: manual, on request' */
 "manually, on request" = "依要求手動存入";
 
 /* Menu option for taking an image or video with the device's camera. */
@@ -10815,9 +10808,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the section related to card readers inside In-Person Payments settings */
 "menu.payments.cardReader.section.title" = "讀卡機";
-
-/* An accessibility label used when the balances are loading on the payments menu */
-"menu.payments.depositSummary.loading.accessibilityLabel" = "正在載入餘額…";
 
 /* Notice text after completing a payment order from In-Person Payments in the Menu */
 "menu.payments.inPersonPayments.collectPayment.notice.orderCompleted" = "🎉 已完成訂單";
@@ -10863,6 +10853,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the section related to changing payment settings inside the In-Person Payments menu */
 "menu.payments.paymentSettings.section.title" = "設定";
 
+/* An accessibility label used when the balances are loading on the payments menu */
+"menu.payments.payoutSummary.loading.accessibilityLabel" = "正在載入餘額…";
+
 /* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory. */
 "menu.payments.tapToPay.about.row.title" = "關於「卡緊收」";
 
@@ -10873,13 +10866,13 @@ which should be translated separately and considered part of this sentence. */
 "menu.payments.tapToPay.section.title" = "卡緊收";
 
 /* Title for a done button in the navigation bar */
-"menu.payments.wooPaymentsDeposits.navigation.done.button.title" = "完成";
+"menu.payments.wooPaymentsPayouts.navigation.done.button.title" = "完成";
 
-/* Title for the row related to Woo Payments Deposits/Balances. */
-"menu.payments.wooPaymentsDeposits.row.title" = "Woo Payments 餘額";
+/* Title for the row related to Woo Payments Payouts/Balances. */
+"menu.payments.wooPaymentsPayouts.row.title" = "Woo Payments 餘額";
 
-/* Title for the section related to Woo Payments Deposits/Balances. */
-"menu.payments.wooPaymentsDeposits.section.title" = "Woo Payments 餘額";
+/* Title for the section related to Woo Payments Payouts/Balances. */
+"menu.payments.wooPaymentsPayouts.section.title" = "Woo Payments 餘額";
 
 /* Display label for a product's subscription period when it is a single month. */
 "month" = "月";
@@ -10967,6 +10960,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "新增運送";
+
+/* Text for the cancel button to dismiss Send Receipt to Customer screen */
+"order.receiptEmailView.cancel" = "取消";
+
+/* Email field placeholder */
+"order.receiptEmailView.emailFieldHint" = "輸入電子郵件地址";
+
+/* Email text field title */
+"order.receiptEmailView.emailFieldTitle" = "電子郵件地址";
+
+/* Title for the button to send the receipt to the customer */
+"order.receiptEmailView.emailReceipt" = "電子郵件收據";
+
+/* An error that is shown when sending email receipt fails. */
+"order.receiptEmailView.errorNotice" = "傳送電子郵件收據時發生錯誤， 請再試一次。";
+
+/* Notice text when the merchant enters an invalid email */
+"order.receiptEmailView.invalidEmailError" = "請輸入有效的電子郵件地址。";
+
+/* Title for the screen to update customer email address and send receipt */
+"order.receiptEmailView.title" = "傳送電子郵件收據給顧客";
 
 /* Button to add a shipping line to the order during order creation */
 "order.shippingLineDetails.addShipping" = "新增運送方式";
@@ -11197,6 +11211,45 @@ which should be translated separately and considered part of this sentence. */
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "付款、點選支付、woocommerce、woo、親自收款、收取款項、款項、讀卡機、信用卡讀卡機、訂購讀卡機";
 
+/* Accessibility label for the collapse chevron on the Payout summary */
+"payouts.currency.overview.accessibility.hide" = "隱藏款項詳細資料";
+
+/* Accessibility label for the expand chevron on the Payout summary */
+"payouts.currency.overview.accessibility.show" = "顯示款項詳細資料";
+
+/* Title for available funds overview in WooPayments Payouts view. This shows the balance which can be paid out. */
+"payouts.currency.overview.availableFunds" = "可用款項";
+
+/* Section header for the last payout in the WooPayments Payouts overview */
+"payouts.currency.overview.lastPayout" = "上次款項";
+
+/* Button text to view more about payment schedules on the WooPayments Payouts View. */
+"payouts.currency.overview.learnMore" = "深入了解何時會收到款項";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.canceled.title" = "已取消";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.estimated.title" = "估計值";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.failed.title" = "失敗";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.inTransit.title" = "運送中";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.paid.title" = "已付費";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.pending.title" = "待確認";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.unknown.title" = "不明";
+
+/* Title for pending funds overview in WooPayments Payouts view. This shows the balance which will be made available for pay out later. */
+"payouts.currency.overview.pendingFunds" = "待確認款項";
+
 /* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
 "plan ended" = "方案已結束";
 
@@ -11257,12 +11310,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "嘗試其他付款方式";
 
-/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout
-   Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentIntentCreationError.backToCheckout.button.title" = "再次嘗試付款";
+/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.checkout.button.title" = "編輯訂單";
 
 /* Error message. Presented to users after payment intent creation fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentIntentCreationError.title" = "付款準備作業錯誤";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.tryPaymentAgain.button.title" = "再次嘗試付款";
 
 /* Indicates to wait while payment is processing. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.message" = "請稍候…";
@@ -11614,6 +11669,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title for new order button */
 "pos.totalsView.newOrder" = "新訂單";
+
+/* Button title for the receipt button */
+"pos.totalsView.sendReceipt" = "收據";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "小計";
@@ -12715,11 +12773,20 @@ which should be translated separately and considered part of this sentence. */
 /* Generic error on the 2FA login screen */
 "wpCom2FALoginViewModel.unknownError" = "糟糕，出狀況了。 請再試一次！";
 
+/* Text hinting that an account will be created if the email is not associated with an existing account. */
+"wpComEmailLoginView.accountCreationHint" = "如果你沒有帳號，系統會使用此電子郵件地址建立帳號。";
+
+/* Error message when the username is not found */
+"wpComEmailLoginViewModel.unknownUsername" = "我們找不到此使用者名稱所連結的 WordPress.com 帳號。 請輸入電子郵件地址建立新帳號。";
+
 /* Button to dismiss an error alert in the WPCom login flow */
 "wpComLoginCoordinator.cancelButton" = "取消";
 
 /* Title for the screens in the login flow */
 "wpComLoginCoordinator.title" = "登入";
+
+/* Text hinting the user to ensure their email is correct and check their spam folder */
+"wpComMagicLinkView.emailConfirmationHint" = "請確定電子郵件地址是否正確，並再次查看垃圾郵件資料夾。";
 
 /* A clickable text link that willredirect the user to a website */
 "www.usps.com\/hazmat" = "www.usps.com\/hazmat";

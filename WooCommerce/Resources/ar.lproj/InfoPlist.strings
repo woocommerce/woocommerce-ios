@@ -17,6 +17,8 @@
     <string>لالتقاط صور أو مقاطع فيديو لإضافتها إلى منتجاتك، قم بإجراء مسح ضوئي للرمز الشريطي الخاص بوحدة SKU للمنتج أو تذاكر الدعم</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>يلزم الوصول إلى الموقع لقبول المدفوعات.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>يستخدم Woo الميكروفون للسماح لك بالتقاط الصوت عند تسجيل الفيديوهات لمكتبة الوسائط في متجرك.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>لحفظ الصور من كاميرا خاصة بصور المنتجات أو لإضافة صور أو مقاطع فيديو إلى منتجاتك أو تذاكر الدعم الخاصة بك.</string>
     <key>OpenOrdersAction.Title</key>

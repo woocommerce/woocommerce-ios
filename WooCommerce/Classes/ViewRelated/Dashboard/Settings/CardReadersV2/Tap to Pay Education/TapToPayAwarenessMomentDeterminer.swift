@@ -59,27 +59,20 @@ struct TapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining {
     // MARK: - Previous Presentation
 
     func setPresented() {
-        userDefaults.set(true, forKey: Constants.previousPresentationKey)
+        userDefaults.set(true, forKey: UserDefaults.Key.tapToPayAwarenessMomentPresented.rawValue)
     }
 
     private func wasPresented() -> Bool {
-        userDefaults.bool(forKey: Constants.previousPresentationKey)
+        userDefaults.bool(forKey: UserDefaults.Key.tapToPayAwarenessMomentPresented.rawValue)
     }
 
     // MARK: - Attempt
 
     private func setAttempted() {
-        userDefaults.set(true, forKey: Constants.firstAttemptKey)
+        userDefaults.set(true, forKey: UserDefaults.Key.tapToPayAwarenessMomentFirstLaunchCompleted.rawValue)
     }
 
     private func isFirstAttempt() -> Bool {
-        !userDefaults.bool(forKey: Constants.firstAttemptKey)
-    }
-}
-
-extension TapToPayAwarenessMomentDeterminer {
-    enum Constants {
-        static let previousPresentationKey = "TapToPayAwarenessMomentDeterminer.previousPresentationKey"
-        static let firstAttemptKey = "TapToPayAwarenessMomentDeterminer.firstAttemptKey"
+        !userDefaults.bool(forKey: UserDefaults.Key.tapToPayAwarenessMomentFirstLaunchCompleted.rawValue)
     }
 }

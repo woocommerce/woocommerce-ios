@@ -163,9 +163,9 @@ private class MockUserDefaults: UserDefaults {
 
     override func bool(forKey defaultName: String) -> Bool {
         switch defaultName {
-        case TapToPayAwarenessMomentDeterminer.Constants.previousPresentationKey:
+        case UserDefaults.Key.tapToPayAwarenessMomentPresented.rawValue:
             return hasPreviousPresentation
-        case TapToPayAwarenessMomentDeterminer.Constants.firstAttemptKey:
+        case UserDefaults.Key.tapToPayAwarenessMomentFirstLaunchCompleted.rawValue:
             return hasFirstAttempt
         default:
             return false
@@ -174,9 +174,9 @@ private class MockUserDefaults: UserDefaults {
 
     override func set(_ value: Bool, forKey defaultName: String) {
         switch defaultName {
-        case TapToPayAwarenessMomentDeterminer.Constants.previousPresentationKey:
+        case UserDefaults.Key.tapToPayAwarenessMomentPresented.rawValue:
             hasPreviousPresentation = value
-        case TapToPayAwarenessMomentDeterminer.Constants.firstAttemptKey:
+        case UserDefaults.Key.tapToPayAwarenessMomentFirstLaunchCompleted.rawValue:
             hasFirstAttempt = value
         default:
             break

@@ -1,1 +1,3 @@
-Sumérgete en una experiencia de WooCommerce más fluida. Hemos perfeccionado la aplicación Watch para que muestre los detalles de tu pedido a la perfección. Además, hemos añadido mensajes de error más claros para las conexiones de lectores de pagos. Actualízate para tener un pulso empresarial aún mejor en tu muñeca y en tu bolsillo.
+En solo dos semanas, hemos llenado hasta los topes esta versión. Es compatible con el identificador global de producto GTIN y puedes editar la llamada a la acción en las campañas de Blaze.
+
+La configuración de la tienda para los pagos en persona es más rápida, las confirmaciones de recibo enviado son más claras y la opción Tap to Pay en iPhone es más fácil. Además, hemos mejorado las estadísticas del escritorio y eliminado algunos errores.

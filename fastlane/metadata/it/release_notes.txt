@@ -1,1 +1,3 @@
-Goditi un'esperienza WooCommerce più fluida. Abbiamo perfezionato l'app Watch per mostrare i dettagli degli ordini in modo impeccabile. Inoltre, abbiamo aggiunto messaggi di errore più chiari per i collegamenti con il lettore dei pagamenti. Effettua l'aggiornamento per avere sempre al polso e in tasca la situazione aggiornata della tua attività.
+In sole due settimane abbiamo riempito questa release di contenuti. È disponibile il supporto per l'identificatore di prodotto globale GTIN ed è possibile modificare l'invito all'azione nelle campagne Blaze.
+
+L'impostazione del negozio per i pagamenti di persona è più veloce, le conferme di invio ricevute sono più chiare e il test Tap to Pay su iPhone è più fluido. Inoltre, abbiamo migliorato le statistiche della bacheca ed eliminato alcuni bug.

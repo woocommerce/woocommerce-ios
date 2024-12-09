@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import WooFoundation
+import Combine
 
 /// Provides view data for `WooShippingCreateLabelsView`.
 ///
@@ -11,6 +12,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private let originSiteAddress: ShippingLabelAddress?
     private let destinationAddress: ShippingLabelAddress?
     private let stores: StoresManager
+    private var subscriptions: Set<AnyCancellable> = []
+    private var debounceDuration: Double = 1
 
     /// The purchased shipping label.
     @Published private var shippingLabel: ShippingLabel?
@@ -112,6 +115,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          userDefaults: UserDefaults = .standard,
          stores: StoresManager = ServiceLocator.stores,
          itemsDataSource: WooShippingItemsDataSource? = nil,
+         debounceDuration: Double = 1,
          onLabelPurchase: ((Bool) -> Void)? = nil) {
         self.order = order
         let itemsDataSource = itemsDataSource ?? DefaultWooShippingItemsDataSource(order: order)
@@ -132,13 +136,16 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.selectedPackage = selectedPackage
         self.selectedRate = selectedRate
         self.stores = stores
+        self.debounceDuration = debounceDuration
         shippingService = WooShippingServiceViewModel(order: order,
                                                       originAddress: originSiteAddress,
-                                                      destinationAddress: destinationAddress) { [weak self] selectedRate in
+                                                      destinationAddress: destinationAddress,
+                                                      stores: stores) { [weak self] selectedRate in
             self?.selectedRate = selectedRate
         }
 
         observeSelectedPackage()
+        observeForLabelRates()
     }
 
     /// Initialize the view model from an existing shipping label.
@@ -163,7 +170,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Selecting a package also refreshes the available rates for the shipping service.
     func selectPackage(_ packageData: WooShippingPackageDataRepresentable) {
         selectedPackage = packageData
-        shippingService?.loadLabelRates(for: fromPackageDataToPackageSelected(packageData, weight: Double(shipmentWeight) ?? 0, shipmentID: shipmentID))
     }
 
     /// Purchases a shipping label with the provided label details and settings.
@@ -243,6 +249,19 @@ private extension WooShippingCreateLabelsViewModel {
                 return (itemsWeight + (Double(selectedPackage.weight) ?? 0)).description
             }
             .assign(to: &$shipmentWeight)
+    }
+
+    /// Observes the selected package and shipment weight and requests the available shipping rates.
+    func observeForLabelRates() {
+        $shipmentWeight
+            .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main)
+            .removeDuplicates()
+            .combineLatest($selectedPackage)
+            .sink { [weak self] weight, selectedPackage in
+                guard let self, let selectedPackage, let shippingService else { return }
+                shippingService.loadLabelRates(for: fromPackageDataToPackageSelected(selectedPackage, weight: Double(weight) ?? 0, shipmentID: shipmentID))
+            }
+            .store(in: &subscriptions)
     }
 
     /// Provides the formatted label and amount for a shipping rate, based on the provided base rate.

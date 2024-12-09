@@ -263,7 +263,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedPackage?.id, samplePackageData().id)
     }
 
-    func test_selectedPackage_sets_shipmentWeight_with_items_and_package_weight() {
+    func test_selectPackage_sets_shipmentWeight_with_items_and_package_weight() {
         // Given
         let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(), itemsDataSource: MockItemsDataSource())
 
@@ -272,6 +272,36 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.shipmentWeight, "1.25")
+    }
+
+    func test_changing_shipmentWeight_loads_new_label_rates_with_updated_weight() {
+        // Given
+        let expectedWeight = 2.5
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
+                                                         originAddress: SiteAddress(siteSettings: self.mapLoadGeneralSiteSettingsResponse()),
+                                                         selectedPackage: samplePackageData(),
+                                                         stores: stores,
+                                                         itemsDataSource: MockItemsDataSource(),
+                                                         debounceDuration: 0)
+
+
+        // When
+        let packageWeightForLabelRates: Double? = waitFor { promise in
+            stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+                switch action {
+                case let .loadLabelRates(_, _, _, _, packages, _):
+                    promise(packages.first?.weight)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+
+            viewModel.shipmentWeight = expectedWeight.description
+        }
+
+        // Then
+        XCTAssertEqual(packageWeightForLabelRates, expectedWeight)
     }
 }
 

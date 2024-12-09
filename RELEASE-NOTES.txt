@@ -30,6 +30,7 @@
 - [*] Fixed: Improved the error message displayed when Bluetooth permission is denied during the card reader connection process. [https://github.com/woocommerce/woocommerce-ios/pull/14561]
 - [*] Payments: error details are now displayed for more Stripe errors, instead of a generic error message. [https://github.com/woocommerce/woocommerce-ios/pull/14583]
 - [*] Order Creation: fixed layout of custom amount type selection drawer. [https://github.com/woocommerce/woocommerce-ios/pull/14619]
+- [*] Widgets: Show revenue compact amount in widgets, instead of $123,456,789 (and being truncated) we show $123,5m. [https://github.com/woocommerce/woocommerce-ios/pull/14634]
 
 21.2
 -----

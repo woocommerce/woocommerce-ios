@@ -127,6 +127,7 @@ struct TopTabView<Content: View>: View {
                                         })
                                 }
                                 .onAppear {
+                                    selectedTab = selectedTabIndex ?? 0
                                     scrollViewProxy.scrollTo(selectedTab, anchor: .center)
                                     underlineOffset = calculateOffset(index: selectedTab)
                                 }
@@ -227,9 +228,6 @@ struct TopTabView<Content: View>: View {
                 }
                 .frame(height: contentSize.height)
             }
-        }
-        .onAppear() {
-            selectedTab = selectedTabIndex ?? 0
         }
     }
 

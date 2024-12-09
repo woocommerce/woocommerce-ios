@@ -153,9 +153,25 @@ final class CurrencySettingsTests: XCTestCase {
 
     /// Test currency symbol lookup returns correctly encoded symbol.
     ///
-    func testCurrencySymbol() {
+    func testCurrencySymbol_passing_code() {
         moneyFormat = CurrencySettings()
         let symbol = moneyFormat?.symbol(from: CurrencyCode.AED)
         XCTAssertEqual("د.إ", symbol)
+    }
+
+    func test_currencySymbol_default() {
+        moneyFormat = CurrencySettings()
+        let symbol = moneyFormat?.currencySymbol
+        XCTAssertEqual("$", symbol)
+    }
+
+    func test_currencySymbol_euros() {
+        moneyFormat = CurrencySettings(currencyCode: .EUR,
+                                       currencyPosition: .left,
+                                       thousandSeparator: "",
+                                       decimalSeparator: "",
+                                       numberOfDecimals: 2)
+        let symbol = moneyFormat?.currencySymbol
+        XCTAssertEqual("€", symbol)
     }
 }

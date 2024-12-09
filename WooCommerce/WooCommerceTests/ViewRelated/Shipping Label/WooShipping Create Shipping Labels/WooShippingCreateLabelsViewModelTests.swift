@@ -235,6 +235,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, completion):
                 isPurchasingLabelDuringPurchase = viewModel.isPurchasingLabel
                 completion(.success(ShippingLabel.fake()))
+            case let .loadLabelRates(_, _, _, _, _, completion):
+                completion(.success([]))
             default:
                 XCTFail("Unexpected action: \(action)")
             }

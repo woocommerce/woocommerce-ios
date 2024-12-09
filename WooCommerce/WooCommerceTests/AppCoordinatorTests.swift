@@ -446,7 +446,6 @@ final class AppCoordinatorTests: XCTestCase {
         let appCoordinator = makeCoordinator(window: window,
                                              analytics: WooAnalytics(analyticsProvider: analytics),
                                              pushNotesManager: pushNotesManager)
-        let siteID: Int64 = 123
 
         // When
         appCoordinator.start()
@@ -469,7 +468,6 @@ final class AppCoordinatorTests: XCTestCase {
         let appCoordinator = makeCoordinator(window: window,
                                              analytics: WooAnalytics(analyticsProvider: analytics),
                                              pushNotesManager: pushNotesManager)
-        let siteID: Int64 = 123
 
         // When
         appCoordinator.start()

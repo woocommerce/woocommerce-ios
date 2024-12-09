@@ -23,6 +23,8 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
                         .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
                 }
             }
+            PaymentsActionButtons()
+                .matchedGeometryEffect(id: animation.actionButtonsTransitionId, in: animation.namespace, properties: .position)
         }
         .multilineTextAlignment(.center)
     }

@@ -39,14 +39,12 @@ struct TapToPayAwarenessMomentView: View {
                 Button(Localization.enable, action: {
                     destination = PaymentsMenuDestination.tapToPay
                     dismiss()
-
                 })
                 .buttonStyle(PrimaryButtonStyle())
 
                 Button(Localization.learnMore, action: {
                     destination = PaymentsMenuDestination.aboutTapToPay
                     dismiss()
-
                 })
                 .buttonStyle(TextButtonStyle())
                 .padding(.bottom)

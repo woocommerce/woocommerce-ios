@@ -64,8 +64,6 @@ private extension PaymentsActionButtons {
 
 extension PaymentsActionButtons {
     enum Constants {
-        static let paymentsButtonSpacing: CGFloat = 80
-        static let paymentsButtonButtonSpacingAnimationDelay: CGFloat = 0.3
         static let buttonSpacing: CGFloat = 12
         static let buttonPadding: CGFloat = 32
         static let buttonFont: POSFontStyle = .posBodyEmphasized

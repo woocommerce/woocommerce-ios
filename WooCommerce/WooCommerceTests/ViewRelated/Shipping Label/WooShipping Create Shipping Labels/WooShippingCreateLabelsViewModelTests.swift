@@ -271,7 +271,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         viewModel.selectPackage(samplePackageData())
 
         // Then
-        XCTAssertEqual(viewModel.shipmentWeight, 1.25)
+        XCTAssertEqual(viewModel.shipmentWeight, "1.25")
     }
 }
 
@@ -351,8 +351,13 @@ private extension WooShippingCreateLabelsViewModelTests {
 }
 
 private final class MockItemsDataSource: WooShippingItemsDataSource {
-    var items: [ShippingLabelPackageItem] = [
-        ShippingLabelPackageItem(productOrVariationID: 1, name: "Shirt", weight: 0.5, quantity: 2, value: 9.99, dimensions: ProductDimensions.fake(), attributes: [], imageURL: nil),
-    ]
-    var currency: String = "GBP"
+    var items = [ShippingLabelPackageItem(productOrVariationID: 1,
+                                          name: "Shirt",
+                                          weight: 0.5,
+                                          quantity: 2,
+                                          value: 9.99,
+                                          dimensions: ProductDimensions.fake(),
+                                          attributes: [],
+                                          imageURL: nil)]
+    var currency = "GBP"
 }

@@ -34,14 +34,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Selected package data for the shipping label.
     @Published private(set) var selectedPackage: WooShippingPackageDataRepresentable?
 
-    /// Total weight for the shipment.
-    var shipmentWeight: Double {
-        let itemsWeight = itemsDataSource.items.map { $0.weight * Double(truncating: $0.quantity as NSDecimalNumber) }.reduce(0, +)
-        guard let selectedPackage else {
-            return itemsWeight
-        }
-        return itemsWeight + (Double(selectedPackage.weight) ?? 0)
-    }
+    /// String representing the total weight for the shipment.
+    @Published var shipmentWeight: String = ""
 
     /// View model for the label shipping service.
     private(set) var shippingService: WooShippingServiceViewModel?
@@ -102,37 +96,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     @Published var storeOptions: ShippingLabelStoreOptions?
     @Published var isLoadingStoreOptions: Bool = false
-
-    func loadStoreOptions(completion: ((ShippingLabelStoreOptions) -> Void)? = nil) {
-        guard isLoadingStoreOptions == false,
-              let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else { return }
-
-        isLoadingStoreOptions = true
-
-        let action = WooShippingAction.loadAccountSettings(siteID: siteID) { result in
-            switch result {
-            case .success(let settings):
-                self.storeOptions = settings.storeOptions
-                completion?(settings.storeOptions)
-            case .failure(let error):
-                DDLogError("⛔️ Error loading account settings: \(error)")
-                // fallback to store settings
-                let shippingSettingsService = ServiceLocator.shippingSettingsService
-                let currencySettings = ServiceLocator.currencySettings
-                let currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
-                let originCountry = SiteAddress().countryCode.rawValue
-                if let dimensionUnit = shippingSettingsService.dimensionUnit,
-                   let weightUnit = shippingSettingsService.weightUnit {
-                    let fallbackStoreOptions = ShippingLabelStoreOptions(currencySymbol: currencySymbol,
-                                                            dimensionUnit: dimensionUnit,
-                                                            weightUnit: weightUnit,
-                                                            originCountry: originCountry)
-                    self.storeOptions = fallbackStoreOptions
-                }
-            }
-            self.isLoadingStoreOptions = false
-        }
-        ServiceLocator.stores.dispatch(action)
+    var weightUnit: String {
+        storeOptions?.weightUnit ?? ServiceLocator.shippingSettingsService.weightUnit ?? ""
     }
 
     /// Closure to execute after the label is successfully purchased.
@@ -172,6 +137,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                                                       destinationAddress: destinationAddress) { [weak self] selectedRate in
             self?.selectedRate = selectedRate
         }
+
+        observeSelectedPackage()
     }
 
     /// Initialize the view model from an existing shipping label.
@@ -196,7 +163,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Selecting a package also refreshes the available rates for the shipping service.
     func selectPackage(_ packageData: WooShippingPackageDataRepresentable) {
         selectedPackage = packageData
-        shippingService?.loadLabelRates(for: fromPackageDataToPackageSelected(packageData, weight: shipmentWeight, shipmentID: shipmentID))
+        shippingService?.loadLabelRates(for: fromPackageDataToPackageSelected(packageData, weight: Double(shipmentWeight) ?? 0, shipmentID: shipmentID))
     }
 
     /// Purchases a shipping label with the provided label details and settings.
@@ -207,7 +174,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         isPurchasingLabel = true
         let packagePurchase = WooShippingPackagePurchase(shipmentID: shipmentID,
                                                          package: fromPackageDataToPackageSelected(selectedPackage,
-                                                                                                   weight: shipmentWeight,
+                                                                                                   weight: Double(shipmentWeight) ?? 0,
                                                                                                    shipmentID: shipmentID),
                                                          rate: selectedRate.purchaseRate,
                                                          productIDs: itemsDataSource.items.map(\.productOrVariationID))
@@ -229,10 +196,55 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         }
         stores.dispatch(action)
     }
+
+    func loadStoreOptions(completion: ((ShippingLabelStoreOptions) -> Void)? = nil) {
+        guard isLoadingStoreOptions == false,
+              let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else { return }
+
+        isLoadingStoreOptions = true
+
+        let action = WooShippingAction.loadAccountSettings(siteID: siteID) { result in
+            switch result {
+            case .success(let settings):
+                self.storeOptions = settings.storeOptions
+                completion?(settings.storeOptions)
+            case .failure(let error):
+                DDLogError("⛔️ Error loading account settings: \(error)")
+                // fallback to store settings
+                let shippingSettingsService = ServiceLocator.shippingSettingsService
+                let currencySettings = ServiceLocator.currencySettings
+                let currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
+                let originCountry = SiteAddress().countryCode.rawValue
+                if let dimensionUnit = shippingSettingsService.dimensionUnit,
+                   let weightUnit = shippingSettingsService.weightUnit {
+                    let fallbackStoreOptions = ShippingLabelStoreOptions(currencySymbol: currencySymbol,
+                                                            dimensionUnit: dimensionUnit,
+                                                            weightUnit: weightUnit,
+                                                            originCountry: originCountry)
+                    self.storeOptions = fallbackStoreOptions
+                }
+            }
+            self.isLoadingStoreOptions = false
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
 }
 
 // MARK: Utils
 private extension WooShippingCreateLabelsViewModel {
+    /// Observes the selected package and updates the shipment weight.
+    func observeSelectedPackage() {
+        let itemsWeight = itemsDataSource.items.map { $0.weight * Double(truncating: $0.quantity as NSDecimalNumber) }.reduce(0, +)
+        $selectedPackage
+            .map { selectedPackage in
+                guard let selectedPackage else {
+                    return itemsWeight.description
+                }
+                return (itemsWeight + (Double(selectedPackage.weight) ?? 0)).description
+            }
+            .assign(to: &$shipmentWeight)
+    }
+
     /// Provides the formatted label and amount for a shipping rate, based on the provided base rate.
     func formatShippingRate(name: String, rate: Double, basedOn baseRate: Double? = nil) -> (title: String, amount: String) {
         let amount = {

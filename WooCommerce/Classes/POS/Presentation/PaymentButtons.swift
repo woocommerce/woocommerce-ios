@@ -62,7 +62,7 @@ private extension PaymentsActionButtons {
     }
 }
 
-extension PaymentsActionButtons {
+private extension PaymentsActionButtons {
     enum Constants {
         static let buttonSpacing: CGFloat = 12
         static let buttonPadding: CGFloat = 32

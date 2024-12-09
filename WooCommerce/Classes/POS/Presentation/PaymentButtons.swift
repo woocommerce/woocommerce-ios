@@ -25,17 +25,6 @@ struct PaymentsActionButtons: View {
     }
 }
 
-#if DEBUG
-#Preview {
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
-    PaymentsActionButtons()
-        .environmentObject(posModel)
-}
-#endif
-
 private extension PaymentsActionButtons {
     var sendReceiptButton: some View {
         Button(action: {
@@ -94,3 +83,14 @@ extension PaymentsActionButtons {
             comment: "Button title for the receipt button")
     }
 }
+
+#if DEBUG
+#Preview {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
+    PaymentsActionButtons()
+        .environmentObject(posModel)
+}
+#endif

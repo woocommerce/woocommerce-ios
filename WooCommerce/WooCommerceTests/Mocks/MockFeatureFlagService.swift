@@ -1,7 +1,7 @@
 @testable import WooCommerce
 import Experiments
 
-class MockFeatureFlagService: FeatureFlagService {
+final class MockFeatureFlagService: FeatureFlagService {
     var isInboxOn: Bool
     var isShowInboxCTAEnabled: Bool
     var isUpdateOrderOptimisticallyOn: Bool
@@ -25,7 +25,7 @@ class MockFeatureFlagService: FeatureFlagService {
     var paymentsOnboardingInPointOfSale: Bool
     var isProductGlobalUniqueIdentifierSupported: Bool
     var isSendReceiptAfterPaymentEnabled: Bool
-    var tapToPayEducation: Bool = false
+    var tapToPayEducation: Bool
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,

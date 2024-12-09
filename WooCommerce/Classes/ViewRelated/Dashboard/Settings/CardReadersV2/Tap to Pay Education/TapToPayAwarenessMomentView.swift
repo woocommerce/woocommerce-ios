@@ -103,3 +103,12 @@ private enum Localization {
         comment: "A title for CTA to open a view explaining Tap to Pay"
     )
 }
+
+#Preview("US Tap to Pay Awareness Moment") {
+    TapToPayAwarenessMomentView(deepLinkNavigator: nil, countryCode: .US)
+}
+
+#Preview("GB Tap to Pay Awareness Moment") {
+    TapToPayAwarenessMomentView(deepLinkNavigator: nil, countryCode: .GB)
+        .preferredColorScheme(.dark)
+}

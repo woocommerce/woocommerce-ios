@@ -6,7 +6,7 @@ struct PointOfSaleItemListFullscreenView<Content: View>: View {
     var body: some View {
         ZStack {
             VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
-                POSHeaderTitleView(foregroundColor: .posSecondaryText)
+                POSHeaderTitleView(foregroundColor: .posSecondaryText, context: .root, backAction: {})
                 Spacer()
             }
 

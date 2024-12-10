@@ -1,10 +1,11 @@
 import enum Yosemite.POSItem
+import struct Yosemite.POSParentProduct
 
 enum ItemListState: Equatable {
     case empty
     case initialLoading
-    case loading(_ currentItems: [POSItem], parent: POSItem?, pageInfo: PageInfo)
-    case loaded(_ items: [POSItem], parent: POSItem?, pageInfo: PageInfo)
+    case loading(_ currentItems: [POSItem], context: NavigationContext, pageInfo: PageInfo)
+    case loaded(_ items: [POSItem], context: NavigationContext, pageInfo: PageInfo)
     case error(PointOfSaleErrorState)
 
     var isLoadingAfterInitialLoad: Bool {
@@ -20,4 +21,9 @@ enum ItemListState: Equatable {
 struct PageInfo: Equatable {
     let currentPage: Int
     let hasMorePages: Bool
+}
+
+enum NavigationContext: Equatable {
+    case root
+    case child(parent: POSParentProduct, parentItem: POSItem)
 }

@@ -39,19 +39,23 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
     var allItems: [POSItem] = []
 
     func loadInitialItems() async {
-        itemListState = .loaded(mockItems, parent: nil, pageInfo: .init(currentPage: 1, hasMorePages: true))
+        itemListState = .loaded(mockItems, context: .root, pageInfo: .init(currentPage: 1, hasMorePages: true))
     }
 
     func loadNextItems() async {
-        itemListState = .loading(mockItems, parent: nil, pageInfo: .init(currentPage: 1, hasMorePages: true))
+        itemListState = .loading(mockItems, context: .root, pageInfo: .init(currentPage: 1, hasMorePages: true))
     }
 
     func reload() async {
-        itemListState = .loaded([], parent: nil, pageInfo: .init(currentPage: 1, hasMorePages: true))
+        itemListState = .loaded([], context: .root, pageInfo: .init(currentPage: 1, hasMorePages: true))
     }
 
     func loadChildItems(for parentItem: POSParentProduct) async {
-        itemListState = .loaded([], parent: .parentProduct(parentItem), pageInfo: .init(currentPage: 1, hasMorePages: true))
+        itemListState = .loaded([], context: .child(parent: parentItem, parentItem: .parentProduct(parentItem)), pageInfo: .init(currentPage: 1, hasMorePages: true))
+    }
+
+    func goBack() {
+        itemListState = .loaded([], context: .root, pageInfo: .init(currentPage: 1, hasMorePages: true))
     }
 }
 

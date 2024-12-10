@@ -1,6 +1,7 @@
 import SwiftUI
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
+import struct Yosemite.POSParentProduct
 
 struct ItemListView: View {
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
@@ -22,10 +23,10 @@ struct ItemListView: View {
                 // a specific view within the ItemListView to handle them
                 headerView()
                 EmptyView()
-            case .loading(let items, let parent, let pageInfo),
-                    .loaded(let items, let parent, let pageInfo):
-                headerView(parentItem: parent)
-                listView(items)
+            case .loading(let items, let context, _),
+                    .loaded(let items, let context, _):
+                headerView(context: context).transition(.slide)
+                listView(items).transition(.slide)
             }
         }
         .refreshable {
@@ -43,19 +44,14 @@ struct ItemListView: View {
 ///
 private extension ItemListView {
     @ViewBuilder
-    func headerView(parentItem: POSItem? = nil) -> some View {
+    func headerView(context: NavigationContext = .root) -> some View {
         VStack {
             HStack {
-                if let parentItem {
-                    Button {
-                        Task { @MainActor in
-                            await posModel.reload()
-                        }
-                    } label: {
-                        Image(systemName: "chevron.backward")
+                POSHeaderTitleView(context: context) {
+                    withAnimation {
+                        posModel.goBack()
                     }
                 }
-                POSHeaderTitleView()
                 if !shouldShowHeaderBanner {
                     Spacer()
                     Button(action: {
@@ -179,8 +175,8 @@ private extension ItemListView {
             })
         case .parentProduct(let parentProduct):
             Button(action: {
-                Task { @MainActor in
-                    await posModel.showChildren(for: parentProduct)
+                withAnimation {
+                    posModel.showChildren(for: parentProduct)
                 }
             }, label: {
                 ParentProductCardView(parentProduct: parentProduct)

@@ -26,7 +26,7 @@ protocol PointOfSaleAggregateModelProtocol {
     func loadInitialItems() async
     func loadNextItems() async
     func reload() async
-    func showChildren(for: POSParentProduct) async
+    func showChildren(for: POSParentProduct)
 
     var cart: [CartItem] { get }
     func addToCart(_ item: POSOrderableItem)
@@ -111,9 +111,14 @@ extension PointOfSaleAggregateModel {
         await itemsController.reload()
     }
 
-    @MainActor
-    func showChildren(for parentProduct: POSParentProduct) async {
-        await itemsController.loadChildItems(for: parentProduct)
+    func showChildren(for parentProduct: POSParentProduct) {
+        Task { @MainActor in
+            await itemsController.loadChildItems(for: parentProduct)
+        }
+    }
+
+    func goBack() {
+        itemsController.goBack()
     }
 }
 

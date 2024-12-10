@@ -76,7 +76,7 @@ private extension VariationCardView {
 
 #if DEBUG
 #Preview {
-    let variation = POSVariation(id: UUID(), name: "Product 5", formattedPrice: "$5.00", productID: 5, variationID: 10)
+    let variation = POSVariation(id: UUID(), name: "Product 5", formattedPrice: "$5.00", price: "5.00", productID: 5, variationID: 10)
     VariationCardView(variation: variation)
 }
 #endif

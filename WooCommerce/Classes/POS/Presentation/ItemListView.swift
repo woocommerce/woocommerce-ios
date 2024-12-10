@@ -183,7 +183,7 @@ private extension ItemListView {
             })
         case .variation(let variation):
             Button(action: {
-                DDLogInfo("Variation \(variation.id) tapped")
+                posModel.addToCart(variation)
             }, label: {
                 VariationCardView(variation: variation)
             })

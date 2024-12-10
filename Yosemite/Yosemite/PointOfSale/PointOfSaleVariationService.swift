@@ -56,8 +56,9 @@ private extension POSVariation {
         self.id = UUID()
         self.name = "Variation \(variation.productVariationID) of \(variation.productID)"
         self.formattedPrice = formattedPrice
+        self.price = variation.price
         self.productID = variation.productID
-        self.variationID = variation.productVariationID
+        self.productVariationID = variation.productVariationID
         self.productImageSource = variation.image?.src
     }
 }

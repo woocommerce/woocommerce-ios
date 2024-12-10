@@ -8,10 +8,6 @@ import Storage
 public final class MetaDataStore: Store {
     private let remote: MetaDataRemoteProtocol
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
          network: Network,

@@ -1,7 +1,7 @@
 import UITestsFoundation
 import XCTest
 
-final class StatsTests: XCTestCase {
+final class DashboardTests: XCTestCase {
 
     override func setUpWithError() throws {
         continueAfterFailure = false
@@ -14,8 +14,7 @@ final class StatsTests: XCTestCase {
         try LoginFlow.login()
     }
 
-    /// TODO: Update tests after the new stats screen is released.
-    func skipped_test_load_stats_screen() throws {
+    func test_load_performance_card() throws {
         try TabNavComponent().goToMyStoreScreen()
             .verifyTodayStatsLoaded()
             .goToThisWeekTab()
@@ -26,8 +25,7 @@ final class StatsTests: XCTestCase {
             .verifyThisYearStatsLoaded()
     }
 
-    /// TODO: Update tests after the new stats screen is released.
-    func skipped_test_view_detailed_chart_stats() throws {
+    func test_view_detailed_chart_performance_card() throws {
         let myStoreScreen = try MyStoreScreen()
 
         var dailyRevenue = try TabNavComponent()

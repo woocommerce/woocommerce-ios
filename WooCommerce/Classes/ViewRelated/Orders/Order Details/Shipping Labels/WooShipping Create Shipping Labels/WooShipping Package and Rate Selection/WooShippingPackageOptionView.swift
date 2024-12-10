@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct PackageOptionView: View {
+struct WooShippingPackageOptionView: View {
     enum Constants {
         static let verticalSpacing: CGFloat = 4.0
         static let textContentLeadingPadding: CGFloat = 4.0

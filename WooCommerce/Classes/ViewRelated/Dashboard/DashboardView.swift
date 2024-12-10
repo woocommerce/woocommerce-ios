@@ -187,6 +187,9 @@ struct DashboardView: View {
         .sheet(isPresented: $viewModel.showingInAppFeedbackSurvey) {
             Survey(source: .inAppFeedback)
         }
+        .sheet(isPresented: $viewModel.showingTapToPayAwarenessMoment) {
+            TapToPayAwarenessMomentView()
+        }
         .onAppear {
             Task {
                 await viewModel.onViewAppear()

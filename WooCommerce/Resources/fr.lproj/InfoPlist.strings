@@ -17,6 +17,8 @@
     <string>Pour prendre des photos ou des vidéos pour les ajouter à vos produits ou tickets d’assistance, ou pour scanner un code-barre pour obtenir la référence du produit.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>L’accès à la localisation est requis pour accepter les paiements.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Woo utilise votre micro pour vous permettre de capter l’audio lors de l’enregistrement de vidéos pour la médiathèque de votre boutique.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Pour enregistrer des photos de l’appareil photo comme images de produits, ou pour ajouter des photos ou des vidéos à vos produits ou tickets d’assistance.</string>
     <key>OpenOrdersAction.Title</key>

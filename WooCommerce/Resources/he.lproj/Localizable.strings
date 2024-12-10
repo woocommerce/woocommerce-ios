@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-14 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-11-26 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -950,11 +950,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "משפחת Automattic";
 
-/* Hint showing the deposit schedule for a merchant's WooPayments account. e.g. Available funds are deposited automatically, every Wednesday. %1$@ will be replaced with a translated frequency description, e.g. 'every day' or 'monthly on the 28th' */
-"Available funds are deposited automatically, %1$@." = "הכספים הזמינים יופקדו ידנית, %1$@.";
+/* Hint showing the payout schedule for a merchant's WooPayments account. e.g. Available funds are paid out automatically, every Wednesday. %1$@ will be replaced with a translated frequency description, e.g. 'every day' or 'monthly on the 28th' */
+"Available funds are paid out automatically, %1$@." = "יתרות זמינות משולמות באופן אוטומטי, %1$@.";
 
-/* Hint showing the deposit schedule for a merchant's WooPayments account with a manual schedule. */
-"Available funds are deposited manually, on request." = "הכספים הזמינים יופקדו ידנית, לפי בקשה.";
+/* Hint showing the payout schedule for a merchant's WooPayments account with a manual schedule. */
+"Available funds are paid out manually, on request." = "יתרות זמינות משולמות באופן ידני לפי בקשה.";
 
 /* Label for average value of orders in the Analytics Hub */
 "Average Order Value" = "ערך הזמנות ממוצע";
@@ -2073,7 +2073,8 @@ which should be translated separately and considered part of this sentence. */
 /* Custom line index in Customs Form of Shipping Label flow */
 "Custom Line %1$d" = "שורה מותאמת אישית ⁦%1$d⁩";
 
-/* Custom Package menu in Shipping Label Add New Package flow */
+/* Custom Package menu in Shipping Label Add New Package flow
+   Label used to mark a custom package in list of saved packages */
 "Custom Package" = "חבילה מותאמת אישית";
 
 /* Label for one of the filters in order date range
@@ -2823,7 +2824,7 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
 "Error updating Order #%1$d" = "שגיאה בעדכון של הזמנה מס' ⁦%1$d⁩";
 
-/* String indicating that a deposit date is an estimate. Shown on whe WooPayments Deposits View. %1$@ will be replaced with a locale-appropriate date string. */
+/* String indicating that a payout date is an estimate. Shown on whe WooPayments Payouts View. %1$@ will be replaced with a locale-appropriate date string. */
 "Est. %1$@" = "בסביבות ה-%1$@";
 
 /* Estimated setup time title text shown on the Woo payments setup instructions screen. */
@@ -3110,7 +3111,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the view which shows the full feature list for paid plans. */
 "Full Feature List" = "רשימת האפשרויות המלאה";
 
-/* Hint regarding available/pending balances shown in the WooPayments Deposits View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
+/* Hint regarding available/pending balances shown in the WooPayments Payouts View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
 "Funds become available after pending for %1$d days." = "כספים נעשים זמינים לאחר תקופת המתנה בת ⁦%1$d⁩ ימים.";
 
 /* Format of the Global Unique Identifier on the Inventory Settings row */
@@ -3701,6 +3702,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product Inventory Settings navigation title
    Title of the Inventory Settings row on Product main screen
+   Title of the product form bottom sheet action for editing external inventory.
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "מלאי";
 
@@ -4408,7 +4410,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Myanmar" = "מיאנמר";
 
-/* String used when there's no date available for a deposit type on the WooPayments Deposits View. */
+/* String used when there's no date available for a payout type on the WooPayments Payouts View. */
 "N\/A" = "אין מידע";
 
 /* Name text field placeholder
@@ -4896,6 +4898,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view. */
 "OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "לא ניתן לאחזר את הקבלה.";
+
+/* Title for notice that's shown when trying to edit an order that's in a different currency. This action isn't supported in the app. Placeholders: %1$@ is the order currency code (e.g. USD), %2$@ is the site currency code (e.g. GBP.) */
+"OrderDetailsViewModel.editingOrderWithCurrencyConflictNotice.title" = "מצטערים, אפשר לערוך את ההזמנה הזאת רק באתר האינטרנט, מאחר שהיא משתמשת במטבע %1$@ והאתר שלך מוגדר למטבע %2$@.";
 
 /* Description of the subscription billing interval for a product. Reads like: 'Every 2 months'. */
 "OrderSubscriptionTableViewCellViewModel.billingInterval" = "כל %1$@ %2$@";
@@ -6028,11 +6033,8 @@ which should be translated separately and considered part of this sentence. */
 /* Details section title in the Edit Address Form */
 "SHIPPING ADDRESS" = "כתובת למשלוח";
 
-/* Edit Product SKU navigation title
-   Title of the cell in Product Inventory Settings > SKU
-   Title of the product form bottom sheet action for editing short description.
-   Title of the product search filter to search for products that match the SKU.
-   Title of the SKU row on Product main screen */
+/* Title of the cell in Product Inventory Settings > SKU
+   Title of the product search filter to search for products that match the SKU. */
 "SKU" = "מק\"ט";
 
 /* The message of the alert when there is an error updating the product SKU */
@@ -9674,6 +9676,12 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button in the Blaze Edit Ad screen. */
 "blazeEditAdView.cancel" = "ביטול";
 
+/* Placeholder for CTA Text field in the Blaze Edit Ad screen. */
+"blazeEditAdView.ctaText.placeholder" = "טקסט CTA";
+
+/* CTA Text title text in the Blaze Edit Ad screen. */
+"blazeEditAdView.ctaText.title" = "קריאות לפעולה";
+
 /* Placeholder for Description text field in the Blaze Edit Ad screen. */
 "blazeEditAdView.description.placeholder" = "טקסט התיאור לפרסומת ב-Blaze";
 
@@ -9703,6 +9711,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Blaze Edit Ad screen. */
 "blazeEditAdView.title" = "לערוך את הפרסומת";
+
+/* Edit Blaze Ad screen: Error message if CTA Text exceeds the character limit. */
+"blazeEditAdViewModel.ctaText.lengthExceedsLimit" = "טקסט CTA לא יכול לחרוג מ-⁦%1$d⁩ תווים";
 
 /* Edit Blaze Ad screen: Error message if Description field is empty. */
 "blazeEditAdViewModel.description.emptyError" = "התיאור לא יכול להיות ריק";
@@ -9977,6 +9988,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "המערכת סורקת כדי לאתר קורא";
+
+/* Message informing the user that a receipt has been sent to their email address. %1$@ is the email address */
+"cardPresentPaymentsModal.error.receiptMessage" = "הקבלה נשלחה אל %1$@";
+
+/* Button to email receipts. Presented to users after a payment has been successfully collected */
+"cardPresentPaymentsModal.success.emailReceipt" = "לשלוח קבלה באימייל";
+
+/* Label informing users that the payment succeeded. Presented to users when a payment is collected */
+"cardPresentPaymentsModal.success.paymentSuccessful" = "התשלום בוצע בהצלחה";
+
+/* Button to print receipts. Presented to users after a payment has been successfully collected */
+"cardPresentPaymentsModal.success.printReceipt" = "להדפיס קבלה";
+
+/* Message informing the user that a receipt has been sent to their email address. %1$@ is the email address */
+"cardPresentPaymentsModal.success.receiptMessage" = "הקבלה נשלחה אל %1$@";
+
+/* Button when the user does not want to print or email receipt. Presented to users after a payment has been successfully collected */
+"cardPresentPaymentsModal.success.saveReceiptAndContinue" = "לשמור את הקבלה ולהמשיך";
 
 /* Title for the toggle that specifies whether to add a note to the order with the change data. */
 "cashPaymentTenderView.addNoteToggle.title" = "לרשום את פרטי העסקה בהערות ההזמנה";
@@ -10461,45 +10490,6 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the sign-up fee for a subscription product on the Price Settings row. Reads like: 'Sign-up fee: $0.99'. */
 "defaultProductFormTableViewModel.subscriptionSignupFeeFormat" = "דמי הרשמה: %1$@";
 
-/* Accessibility label for the collapse chevron on the Deposit summary */
-"deposits.currency.overview.accessibility.hide" = "להסתיר פרטי הפקדה";
-
-/* Accessibility label for the expand chevron on the Deposit summary */
-"deposits.currency.overview.accessibility.show" = "להציג פרטי הפקדה";
-
-/* Title for available funds overview in WooPayments Deposits view. This shows the balance which can be paid out. */
-"deposits.currency.overview.availableFunds" = "כספים זמינים";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.canceled.title" = "בוטל";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.estimated.title" = "משוער";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.failed.title" = "נכשל";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.inTransit.title" = "במעבר";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.paid.title" = "שולם";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.pending.title" = "בהמתנה";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.unknown.title" = "לא ידוע";
-
-/* Section header for the last deposit in the WooPayments Deposits overview */
-"deposits.currency.overview.lastDeposit" = "הפקדה אחרונה";
-
-/* Button text to view more about payment schedules on the WooPayments Deposits View. */
-"deposits.currency.overview.learnMore" = "למידע נוסף על המועד לקבלת הכספים שלך";
-
-/* Title for pending funds overview in WooPayments Deposits view. This shows the balance which will be made available for pay out later. */
-"deposits.currency.overview.pendingFunds" = "כספים בהמתנה לאישור";
-
 /* Title of the downloadable file bottom sheet action for adding document from device. */
 "downloadableFileSource.deviceDocument" = "מסמך במכשיר";
 
@@ -10542,16 +10532,16 @@ which should be translated separately and considered part of this sentence. */
 /* The EU notice banner content describing how the shipping customs shall be configured */
 "eu_shipping_instructions_info" = "במשלוחים למדינות שעונות על כללי המכס של האיחוד האירופי חובה לספק כעת תיאור ברור וספציפי לגבי כל פריט. לדוגמה, אם המשלוח כולל בגדים, יש לציין את סוגי הבגדים במשלוח (למשל, חולצות גברים, אפודות של נשים, ג'קטים של ילדים) כדי שהתיאור יענה על הדרישות. אחרת, ייתכן שמשלוחים יעוכבו או יחסמו במכס.";
 
-/* every {dayname}, shown in a sentence like 'Available funds are deposited automatically, every Wednesday' %1$@ will be replaced with the localized day name */
+/* every {dayname}, shown in a sentence like 'Available funds are paid out automatically, every Wednesday' %1$@ will be replaced with the localized day name */
 "every %1$@" = "כל %1$@";
 
-/* Shown in a sentence like 'Available funds are deposited automatically, every day' */
+/* Shown in a sentence like 'Available funds are paid out automatically, every day' */
 "every day" = "בכל יום";
 
-/* Shown in a sentence like 'Available funds are deposited automatically every month. */
+/* Shown in a sentence like 'Available funds are paid out automatically every month. */
 "every month" = "בכל חודש";
 
-/* Shown in a sentence like 'Available funds are deposited automatically, every month on the 15th' */
+/* Shown in a sentence like 'Available funds are paid out automatically, every month on the 15th' */
 "every month on the %1$@" = "ביום ה-%1$@ בכל חודש";
 
 /* Placeholder for the site url textfield.
@@ -10711,6 +10701,9 @@ which should be translated separately and considered part of this sentence. */
 /* A message that tells the user why the app is requesting access to the user’s location information while the app is running in the foreground. */
 "infoplist.NSLocationWhenInUseUsageDescription" = "נדרשת גישה למיקום כדי לקבל תשלומים.";
 
+/* A message that tells the user why the app needs access to Microphone. */
+"infoplist.NSMicrophoneUsageDescription" = "השירות של Woo משתמש במיקרופון שלך כדי לאפשר לך להקליט אודיו בצילומי וידאו לספריית המדיה של החנות.";
+
 /* A message that tells the user why the app is requesting access to the user’s photo library. */
 "infoplist.NSPhotoLibraryUsageDescription" = "כדי לשמור תמונות מהמצלמה לצורך תמונות של מוצרים, או כדי להוסיף תמונות או סרטוני וידאו למוצרים או לכרטיסי תמיכה.";
 
@@ -10780,7 +10773,7 @@ which should be translated separately and considered part of this sentence. */
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "החזר כספי ידני";
 
-/* on request (lower case), shown in a sentence like 'Deposit schedule: manual, on request' */
+/* on request (lower case), shown in a sentence like 'Payout schedule: manual, on request' */
 "manually, on request" = "ידנית, לפי בקשה";
 
 /* Menu option for taking an image or video with the device's camera. */
@@ -10815,9 +10808,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the section related to card readers inside In-Person Payments settings */
 "menu.payments.cardReader.section.title" = "קוראי כרטיסים";
-
-/* An accessibility label used when the balances are loading on the payments menu */
-"menu.payments.depositSummary.loading.accessibilityLabel" = "טוען יתרות...";
 
 /* Notice text after completing a payment order from In-Person Payments in the Menu */
 "menu.payments.inPersonPayments.collectPayment.notice.orderCompleted" = "🎉 ההזמנה הושלמה";
@@ -10863,6 +10853,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the section related to changing payment settings inside the In-Person Payments menu */
 "menu.payments.paymentSettings.section.title" = "הגדרות";
 
+/* An accessibility label used when the balances are loading on the payments menu */
+"menu.payments.payoutSummary.loading.accessibilityLabel" = "טוען יתרות...";
+
 /* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory. */
 "menu.payments.tapToPay.about.row.title" = "אודות Tap To Pay";
 
@@ -10873,13 +10866,13 @@ which should be translated separately and considered part of this sentence. */
 "menu.payments.tapToPay.section.title" = "Tap to Pay";
 
 /* Title for a done button in the navigation bar */
-"menu.payments.wooPaymentsDeposits.navigation.done.button.title" = "בוצע";
+"menu.payments.wooPaymentsPayouts.navigation.done.button.title" = "בוצע";
 
-/* Title for the row related to Woo Payments Deposits/Balances. */
-"menu.payments.wooPaymentsDeposits.row.title" = "יתרת תשלומים ב-Woo";
+/* Title for the row related to Woo Payments Payouts/Balances. */
+"menu.payments.wooPaymentsPayouts.row.title" = "יתרת תשלומים ב-Woo";
 
-/* Title for the section related to Woo Payments Deposits/Balances. */
-"menu.payments.wooPaymentsDeposits.section.title" = "יתרת תשלומים ב-Woo";
+/* Title for the section related to Woo Payments Payouts/Balances. */
+"menu.payments.wooPaymentsPayouts.section.title" = "יתרת תשלומים ב-Woo";
 
 /* Display label for a product's subscription period when it is a single month. */
 "month" = "חודש";
@@ -10967,6 +10960,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "להוסיף משלוח";
+
+/* Text for the cancel button to dismiss Send Receipt to Customer screen */
+"order.receiptEmailView.cancel" = "ביטול";
+
+/* Email field placeholder */
+"order.receiptEmailView.emailFieldHint" = "להזין אימייל";
+
+/* Email text field title */
+"order.receiptEmailView.emailFieldTitle" = "אימייל";
+
+/* Title for the button to send the receipt to the customer */
+"order.receiptEmailView.emailReceipt" = "לשלוח קבלה באימייל";
+
+/* An error that is shown when sending email receipt fails. */
+"order.receiptEmailView.errorNotice" = "שגיאה בשליחת הקבלה ללקוח באימייל. יש לנסות שוב.";
+
+/* Notice text when the merchant enters an invalid email */
+"order.receiptEmailView.invalidEmailError" = "יש להזין כתובת אימייל תקפה.";
+
+/* Title for the screen to update customer email address and send receipt */
+"order.receiptEmailView.title" = "לשלוח ללקוח את הקבלה באימייל";
 
 /* Button to add a shipping line to the order during order creation */
 "order.shippingLineDetails.addShipping" = "להוסיף משלוח";
@@ -11197,6 +11211,45 @@ which should be translated separately and considered part of this sentence. */
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "תשלומים, הצמדה לתשלום, tap to pay, ‏WooCommerce, ‏Woo, תשלומים באופן אישי, לגבות תשלומים באופן אישי, תשלומים, קורא, קורא כרטיסים, להזמין קורא כרטיסים";
 
+/* Accessibility label for the collapse chevron on the Payout summary */
+"payouts.currency.overview.accessibility.hide" = "להסתיר את פרטי התשלום";
+
+/* Accessibility label for the expand chevron on the Payout summary */
+"payouts.currency.overview.accessibility.show" = "להציג את פרטי התשלום";
+
+/* Title for available funds overview in WooPayments Payouts view. This shows the balance which can be paid out. */
+"payouts.currency.overview.availableFunds" = "יתרות זמינות";
+
+/* Section header for the last payout in the WooPayments Payouts overview */
+"payouts.currency.overview.lastPayout" = "תשלום אחרון";
+
+/* Button text to view more about payment schedules on the WooPayments Payouts View. */
+"payouts.currency.overview.learnMore" = "למידע נוסף על המועד לקבלת היתרות שלך";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.canceled.title" = "בוטל";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.estimated.title" = "משוער";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.failed.title" = "נכשל";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.inTransit.title" = "במעבר";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.paid.title" = "שולם";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.pending.title" = "בהמתנה";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.unknown.title" = "לא ידוע";
+
+/* Title for pending funds overview in WooPayments Payouts view. This shows the balance which will be made available for pay out later. */
+"payouts.currency.overview.pendingFunds" = "יתרות בהמתנה לאישור";
+
 /* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
 "plan ended" = "התוכנית הסתיימה";
 
@@ -11257,12 +11310,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "לנסות אמצעי תשלום אחר";
 
-/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout
-   Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentIntentCreationError.backToCheckout.button.title" = "לנסות את התשלום שוב";
+/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.checkout.button.title" = "עריכת הזמנה";
 
 /* Error message. Presented to users after payment intent creation fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentIntentCreationError.title" = "שגיאה בהכנת התשלום";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.tryPaymentAgain.button.title" = "לנסות את התשלום שוב";
 
 /* Indicates to wait while payment is processing. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.message" = "רק רגע...";
@@ -11614,6 +11669,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title for new order button */
 "pos.totalsView.newOrder" = "הזמנה חדשה";
+
+/* Button title for the receipt button */
+"pos.totalsView.sendReceipt" = "קבלה";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "סכום ביניים";
@@ -12715,11 +12773,20 @@ which should be translated separately and considered part of this sentence. */
 /* Generic error on the 2FA login screen */
 "wpCom2FALoginViewModel.unknownError" = "אופס, משהו השתבש. יש לנסות שוב!";
 
+/* Text hinting that an account will be created if the email is not associated with an existing account. */
+"wpComEmailLoginView.accountCreationHint" = "אם אין לך חשבון, אנחנו נשתמש בכתובת האימייל הזאת כדי ליצור אחד.";
+
+/* Error message when the username is not found */
+"wpComEmailLoginViewModel.unknownUsername" = "לא הצלחנו לאתר חשבון WordPress.com שמקושר לשם המשתמש הזה. באפשרותך להזין אימייל כדי ליצור חשבון חדש.";
+
 /* Button to dismiss an error alert in the WPCom login flow */
 "wpComLoginCoordinator.cancelButton" = "ביטול";
 
 /* Title for the screens in the login flow */
 "wpComLoginCoordinator.title" = "להתחבר";
+
+/* Text hinting the user to ensure their email is correct and check their spam folder */
+"wpComMagicLinkView.emailConfirmationHint" = "יש לוודא שכתובת האימייל שלך נכונה ולבדוק שוב את התיבה של דואר הזבל.";
 
 /* A clickable text link that willredirect the user to a website */
 "www.usps.com\/hazmat" = "www.usps.com\/hazmat.";

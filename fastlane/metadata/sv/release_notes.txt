@@ -1,1 +1,3 @@
-Ta del av en smidigare WooCommerce-upplevelse. Vi har finjusterat Watch-appen för felfri visning av din beställningsinformation. Vi har dessutom lagt till tydligare felmeddelanden för betalningsläsaranslutningar. Uppdatera nu för att få bättre koll på din verksamhet, både i klocka och telefon.
+På bara två veckor har vi proppat den här utgåvan full. Det finns stöd för GTIN:s globala produktidentifierare, och du kan redigera uppmaningen till handling i Blaze-kampanjer.
+
+Butiksinställningar för personliga betalningar går fortare, bekräftelser av skickade kvitton är tydligare och det är smidigare att testa ”Tryck för att betala” på iPhone. Dessutom har vi förbättrat adminpanelens statistik och åtgärdat några buggar.

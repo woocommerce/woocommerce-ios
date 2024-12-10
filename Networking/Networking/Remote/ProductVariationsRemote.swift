@@ -32,12 +32,15 @@ public protocol ProductVariationsRemoteProtocol {
                                  productVariations: [ProductVariation],
                                  completion: @escaping (Result<[ProductVariation], Error>) -> Void)
     func deleteProductVariation(siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
+    func fetchProductVariations(for siteID: Int64,
+                                parentProductID: Int64,
+                                pageNumber: Int,
+                                pageSize: Int) async throws -> [ProductVariation]
 }
 
 /// ProductVariation: Remote Endpoints
 ///
 public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
-
     /// Retrieves all of the `ProductVariation`s available.
     ///
     /// - Parameters:
@@ -57,6 +60,36 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                          pageNumber: Int = Default.pageNumber,
                                          pageSize: Int = Default.pageSize,
                                          completion: @escaping ([ProductVariation]?, Error?) -> Void) {
+        let request = productVariationsRequest(for: siteID,
+                                               productID: productID,
+                                               variationIDs: variationIDs,
+                                               context: context,
+                                               pageNumber: pageNumber,
+                                               pageSize: pageSize)
+        let mapper = ProductVariationListMapper(siteID: siteID, productID: productID)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    public func fetchProductVariations(for siteID: Int64,
+                                       parentProductID: Int64,
+                                       pageNumber: Int,
+                                       pageSize: Int = Default.pageSize) async throws -> [ProductVariation] {
+        let request = productVariationsRequest(for: siteID,
+                                               productID: parentProductID,
+                                               variationIDs: [],
+                                               context: nil,
+                                               pageNumber: pageNumber,
+                                               pageSize: pageSize)
+        let mapper = ProductVariationListMapper(siteID: siteID, productID: parentProductID)
+        return try await enqueue(request, mapper: mapper)
+    }
+
+    private func productVariationsRequest(for siteID: Int64,
+                                          productID: Int64,
+                                          variationIDs: [Int64],
+                                          context: String?,
+                                          pageNumber: Int,
+                                          pageSize: Int) -> JetpackRequest {
         let stringOfVariationIDs = variationIDs.map { String($0) }
             .joined(separator: ",")
         let parameters = [
@@ -74,8 +107,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                      path: path,
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
-        let mapper = ProductVariationListMapper(siteID: siteID, productID: productID)
-        enqueue(request, mapper: mapper, completion: completion)
+        return request
     }
 
     /// Retrieves a specific `ProductVariation`.

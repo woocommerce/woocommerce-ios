@@ -172,6 +172,12 @@ private extension ItemListView {
             }, label: {
                 ParentProductCardView(parentProduct: parentProduct)
             })
+        case .variation(let variation):
+            Button(action: {
+                DDLogInfo("Variation \(variation.id) tapped")
+            }, label: {
+                VariationCardView(variation: variation)
+            })
         }
     }
 }

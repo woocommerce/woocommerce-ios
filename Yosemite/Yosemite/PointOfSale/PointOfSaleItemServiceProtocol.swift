@@ -1,6 +1,7 @@
 public enum POSItem: Equatable, Identifiable {
     case product(POSProduct)
     case parentProduct(POSParentProduct)
+    case variation(POSVariation)
 
     public var id: UUID {
         switch self {
@@ -8,6 +9,8 @@ public enum POSItem: Equatable, Identifiable {
             return product.id
         case .parentProduct(let parentProduct):
             return parentProduct.id
+        case .variation(let variation):
+            return variation.id
         }
     }
 }

@@ -842,6 +842,7 @@
 		2084B7AC2C776F0F00EFBD2E /* PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2084B7AB2C776F0F00EFBD2E /* PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModelTests.swift */; };
 		2084B7AE2C77845C00EFBD2E /* PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2084B7AD2C77845C00EFBD2E /* PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModelTests.swift */; };
 		2085BC3F2D085FFB001C183C /* ParentProductCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2085BC3E2D085FFB001C183C /* ParentProductCardView.swift */; };
+		2085BC432D086C53001C183C /* VariationCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2085BC422D086C53001C183C /* VariationCardView.swift */; };
 		209AD3D02AC1EDDA00825D76 /* WooPaymentsPayoutsCurrencyOverviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3CF2AC1EDDA00825D76 /* WooPaymentsPayoutsCurrencyOverviewViewModel.swift */; };
 		209AD3D22AC1EDF600825D76 /* WooPaymentsPayoutsCurrencyOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3D12AC1EDF600825D76 /* WooPaymentsPayoutsCurrencyOverviewView.swift */; };
 		209B15672AD85F070094152A /* OperatingSystemVersion+Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209B15662AD85F070094152A /* OperatingSystemVersion+Localization.swift */; };
@@ -3978,6 +3979,7 @@
 		2084B7AB2C776F0F00EFBD2E /* PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModelTests.swift; sourceTree = "<group>"; };
 		2084B7AD2C77845C00EFBD2E /* PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModelTests.swift; sourceTree = "<group>"; };
 		2085BC3E2D085FFB001C183C /* ParentProductCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentProductCardView.swift; sourceTree = "<group>"; };
+		2085BC422D086C53001C183C /* VariationCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariationCardView.swift; sourceTree = "<group>"; };
 		20929C9DFB2CE5CB264C27EC /* Pods-Woo Watch App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Woo Watch App.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Woo Watch App/Pods-Woo Watch App.debug.xcconfig"; sourceTree = "<group>"; };
 		209AD3CF2AC1EDDA00825D76 /* WooPaymentsPayoutsCurrencyOverviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsCurrencyOverviewViewModel.swift; sourceTree = "<group>"; };
 		209AD3D12AC1EDF600825D76 /* WooPaymentsPayoutsCurrencyOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsCurrencyOverviewView.swift; sourceTree = "<group>"; };
@@ -6940,6 +6942,7 @@
 				026826A32BF59DF60036F959 /* CartView.swift */,
 				026826A22BF59DF60036F959 /* ItemRowView.swift */,
 				026826A42BF59DF60036F959 /* ProductCardView.swift */,
+				2085BC422D086C53001C183C /* VariationCardView.swift */,
 				2085BC3E2D085FFB001C183C /* ParentProductCardView.swift */,
 				68D8FBD02BFEF9C700477C42 /* TotalsView.swift */,
 				68AF3C3A2D01481A006F1ED2 /* POSReceiptEligibilityBanner.swift */,
@@ -15257,6 +15260,7 @@
 				02CE43022768CBF60006EAEF /* ProducBarcodeScannerCoordinator.swift in Sources */,
 				CC254F3426C4113B005F3C82 /* ShippingLabelPackageSelection.swift in Sources */,
 				AECD57D226DFDF7500A3B580 /* EditOrderAddressForm.swift in Sources */,
+				2085BC432D086C53001C183C /* VariationCardView.swift in Sources */,
 				26C6E8EC26E8FF4800C7BB0F /* LazyNavigationLink.swift in Sources */,
 				45E9A6E724DAE23300A600E8 /* ProductReviewsViewModel.swift in Sources */,
 				DEC51A9D274F8528009F3DF4 /* JCPJetpackInstallStepsViewModel.swift in Sources */,

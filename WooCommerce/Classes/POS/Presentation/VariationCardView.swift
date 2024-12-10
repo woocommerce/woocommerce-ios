@@ -1,0 +1,82 @@
+import struct Yosemite.POSVariation
+import SwiftUI
+
+struct VariationCardView: View {
+    private let variation: POSVariation
+
+    @ScaledMetric private var scale: CGFloat = 1.0
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    init(variation: POSVariation) {
+        self.variation = variation
+    }
+
+    var body: some View {
+        HStack(spacing: Constants.cardSpacing) {
+            if let imageSource = variation.productImageSource {
+                ProductImageThumbnail(productImageURL: URL(string: imageSource),
+                                      productImageSize: Constants.productCardSize * scale,
+                                      scale: scale,
+                                      foregroundColor: .clear,
+                                      cachesOriginalImage: true)
+                .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
+                       height: Constants.productCardSize * scale)
+                .clipped()
+            } else {
+                Rectangle()
+                    .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
+                           height: Constants.productCardSize * scale)
+                    .foregroundColor(Color(.secondarySystemFill))
+            }
+
+            DynamicHStack(spacing: Constants.textSpacing) {
+                Spacer().renderedIf(dynamicTypeSize.isAccessibilitySize)
+                Text(variation.name)
+                    .lineLimit(2)
+                    .foregroundStyle(Color.posPrimaryText)
+                    .multilineTextAlignment(.leading)
+                    .font(Constants.itemNameFont)
+                Spacer()
+                Text(variation.formattedPrice)
+                    .foregroundStyle(Color.posPrimaryText)
+                    .font(Constants.itemPriceFont)
+                Spacer().renderedIf(dynamicTypeSize.isAccessibilitySize)
+            }
+            .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
+            .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
+        .background(Color.posSecondaryBackground)
+        .overlay {
+            RoundedRectangle(cornerRadius: Constants.productCardCornerRadius)
+                .stroke(Color.black, lineWidth: Constants.nilOutline)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: Constants.productCardCornerRadius))
+        .shadow(color: Color.black.opacity(0.08), radius: 4, y: 2)
+    }
+}
+
+private extension VariationCardView {
+    enum Constants {
+        static let productCardSize: CGFloat = 112
+        static let maximumProductCardSize: CGFloat = Constants.productCardSize * 2
+        static let productCardCornerRadius: CGFloat = 8
+        // The use of stroke means the shape is rendered as an outline (border) rather than a filled shape,
+        // since we still have to give it a value, we use 0 so it renders no border but it's shaped as one.
+        static let nilOutline: CGFloat = 0
+        static let cardSpacing: CGFloat = 0
+        static let textSpacing: CGFloat = 8
+        static let horizontalTextPadding: CGFloat = 32
+        static let verticalTextPadding: CGFloat = 8
+        static let itemNameFont: POSFontStyle = .posBodyEmphasized
+        static let itemPriceFont: POSFontStyle = .posBodyRegular
+    }
+}
+
+#if DEBUG
+#Preview {
+    let variation = POSVariation(id: UUID(), name: "Product 5", formattedPrice: "$5.00", productID: 5, variationID: 10)
+    VariationCardView(variation: variation)
+}
+#endif

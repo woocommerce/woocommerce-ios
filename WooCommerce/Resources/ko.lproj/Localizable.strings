@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-06 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-11-26 09:54:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -950,11 +950,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Automattic 가족";
 
-/* Hint showing the deposit schedule for a merchant's WooPayments account. e.g. Available funds are deposited automatically, every Wednesday. %1$@ will be replaced with a translated frequency description, e.g. 'every day' or 'monthly on the 28th' */
-"Available funds are deposited automatically, %1$@." = "사용 가능한 자금이 자동으로 예치됩니다(%1$@).";
+/* Hint showing the payout schedule for a merchant's WooPayments account. e.g. Available funds are paid out automatically, every Wednesday. %1$@ will be replaced with a translated frequency description, e.g. 'every day' or 'monthly on the 28th' */
+"Available funds are paid out automatically, %1$@." = "사용 가능한 자금이 자동으로 지급됩니다(%1$@).";
 
-/* Hint showing the deposit schedule for a merchant's WooPayments account with a manual schedule. */
-"Available funds are deposited manually, on request." = "사용 가능한 자금이 요청 시 수동으로 예치됩니다.";
+/* Hint showing the payout schedule for a merchant's WooPayments account with a manual schedule. */
+"Available funds are paid out manually, on request." = "사용 가능한 자금이 요청 시 수동으로 지급됩니다.";
 
 /* Label for average value of orders in the Analytics Hub */
 "Average Order Value" = "평균 주문 값";
@@ -2073,7 +2073,8 @@ which should be translated separately and considered part of this sentence. */
 /* Custom line index in Customs Form of Shipping Label flow */
 "Custom Line %1$d" = "사용자 정의 라인 %1$d";
 
-/* Custom Package menu in Shipping Label Add New Package flow */
+/* Custom Package menu in Shipping Label Add New Package flow
+   Label used to mark a custom package in list of saved packages */
 "Custom Package" = "사용자 정의 패키지";
 
 /* Label for one of the filters in order date range
@@ -2823,7 +2824,7 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
 "Error updating Order #%1$d" = "주문 #%1$d 업데이트 중 오류 발생";
 
-/* String indicating that a deposit date is an estimate. Shown on whe WooPayments Deposits View. %1$@ will be replaced with a locale-appropriate date string. */
+/* String indicating that a payout date is an estimate. Shown on whe WooPayments Payouts View. %1$@ will be replaced with a locale-appropriate date string. */
 "Est. %1$@" = "%1$@(으)로 예상";
 
 /* Estimated setup time title text shown on the Woo payments setup instructions screen. */
@@ -3110,8 +3111,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the view which shows the full feature list for paid plans. */
 "Full Feature List" = "전체 기능 목록";
 
-/* Hint regarding available/pending balances shown in the WooPayments Deposits View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
+/* Hint regarding available/pending balances shown in the WooPayments Payouts View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
 "Funds become available after pending for %1$d days." = "%1$d일 대기 후 자금을 이용할 수 있게 됩니다.";
+
+/* Format of the Global Unique Identifier on the Inventory Settings row */
+"GTIN, UPC, EAN, ISBN: %@" = "GTIN, UPC, EAN, ISBN: %@";
 
 /* Country option for a site address. */
 "Gabon" = "가봉";
@@ -3657,6 +3661,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message for invalid format of ITN in Customs screen of Shipping Label flow */
 "Invalid ITN format" = "유효하지 않은 ITN 형식";
 
+/* Error when an empty Identifier is returned from the barcode scanner */
+"Invalid Identifier" = "유효하지 않은 식별자";
+
 /* The title of the alert when there is an error with the package name */
 "Invalid Package Name" = "유효하지 않은 패키지 이름";
 
@@ -3695,6 +3702,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product Inventory Settings navigation title
    Title of the Inventory Settings row on Product main screen
+   Title of the product form bottom sheet action for editing external inventory.
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "재고";
 
@@ -4402,7 +4410,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Myanmar" = "미얀마";
 
-/* String used when there's no date available for a deposit type on the WooPayments Deposits View. */
+/* String used when there's no date available for a payout type on the WooPayments Payouts View. */
 "N\/A" = "해당 없음";
 
 /* Name text field placeholder
@@ -4890,6 +4898,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view. */
 "OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "영수증을 검색할 수 없습니다.";
+
+/* Title for notice that's shown when trying to edit an order that's in a different currency. This action isn't supported in the app. Placeholders: %1$@ is the order currency code (e.g. USD), %2$@ is the site currency code (e.g. GBP.) */
+"OrderDetailsViewModel.editingOrderWithCurrencyConflictNotice.title" = "죄송합니다. 이 주문에서는 %1$@을(를) 사용하고 사이트의 통화는 %2$@이므로 웹에서만 이 주문을 편집할 수 있습니다.";
 
 /* Description of the subscription billing interval for a product. Reads like: 'Every 2 months'. */
 "OrderSubscriptionTableViewCellViewModel.billingInterval" = "%1$@당 %2$@";
@@ -5559,6 +5570,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Product Type row on Product main screen */
 "Product type" = "제품 유형";
 
+/* Error message when the scanner found a product but isn't purchasable.%@ is the Identifier code. */
+"Product with Identifier \"%@\" is not purchasable." = "식별자가 \"%@\"인 상품은 구매할 수 없습니다.";
+
+/* Error message when the scanner cannot find a matching product.%@ is the Identifier barcode. */
+"Product with Identifier \"%@\" not found." = "식별자가 \"%@\"인 상품을 찾을 수 없습니다.";
+
 /* The instruction text below the scan area in the barcode scanner for product barcode. */
 "ProductBarcodeInputScanner.instructionText" = "상품 바코드 또는 QR 코드 스캔";
 
@@ -6016,11 +6033,8 @@ which should be translated separately and considered part of this sentence. */
 /* Details section title in the Edit Address Form */
 "SHIPPING ADDRESS" = "배송지";
 
-/* Edit Product SKU navigation title
-   Title of the cell in Product Inventory Settings > SKU
-   Title of the product form bottom sheet action for editing short description.
-   Title of the product search filter to search for products that match the SKU.
-   Title of the SKU row on Product main screen */
+/* Title of the cell in Product Inventory Settings > SKU
+   Title of the product search filter to search for products that match the SKU. */
 "SKU" = "SKU";
 
 /* The message of the alert when there is an error updating the product SKU */
@@ -9662,6 +9676,12 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button in the Blaze Edit Ad screen. */
 "blazeEditAdView.cancel" = "취소";
 
+/* Placeholder for CTA Text field in the Blaze Edit Ad screen. */
+"blazeEditAdView.ctaText.placeholder" = "CTA 텍스트";
+
+/* CTA Text title text in the Blaze Edit Ad screen. */
+"blazeEditAdView.ctaText.title" = "행동 유도";
+
 /* Placeholder for Description text field in the Blaze Edit Ad screen. */
 "blazeEditAdView.description.placeholder" = "Blaze 광고용 설명 텍스트";
 
@@ -9691,6 +9711,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Blaze Edit Ad screen. */
 "blazeEditAdView.title" = "광고 편집";
+
+/* Edit Blaze Ad screen: Error message if CTA Text exceeds the character limit. */
+"blazeEditAdViewModel.ctaText.lengthExceedsLimit" = "CTA 텍스트는 %1$d자 이하여야 합니다.";
 
 /* Edit Blaze Ad screen: Error message if Description field is empty. */
 "blazeEditAdViewModel.description.emptyError" = "설명은 비워 둘 수 없음";
@@ -9965,6 +9988,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "리더 스캔 중";
+
+/* Message informing the user that a receipt has been sent to their email address. %1$@ is the email address */
+"cardPresentPaymentsModal.error.receiptMessage" = "영수증이 %1$@(으)로 발송됨";
+
+/* Button to email receipts. Presented to users after a payment has been successfully collected */
+"cardPresentPaymentsModal.success.emailReceipt" = "이메일 영수증";
+
+/* Label informing users that the payment succeeded. Presented to users when a payment is collected */
+"cardPresentPaymentsModal.success.paymentSuccessful" = "결제 성공";
+
+/* Button to print receipts. Presented to users after a payment has been successfully collected */
+"cardPresentPaymentsModal.success.printReceipt" = "영수증 인쇄";
+
+/* Message informing the user that a receipt has been sent to their email address. %1$@ is the email address */
+"cardPresentPaymentsModal.success.receiptMessage" = "영수증이 %1$@(으)로 발송됨";
+
+/* Button when the user does not want to print or email receipt. Presented to users after a payment has been successfully collected */
+"cardPresentPaymentsModal.success.saveReceiptAndContinue" = "영수증 저장 및 계속";
 
 /* Title for the toggle that specifies whether to add a note to the order with the change data. */
 "cashPaymentTenderView.addNoteToggle.title" = "주문 메모에 거래 상세 정보 기록";
@@ -10449,45 +10490,6 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the sign-up fee for a subscription product on the Price Settings row. Reads like: 'Sign-up fee: $0.99'. */
 "defaultProductFormTableViewModel.subscriptionSignupFeeFormat" = "등록 수수료: %1$@";
 
-/* Accessibility label for the collapse chevron on the Deposit summary */
-"deposits.currency.overview.accessibility.hide" = "예치금 상세 정보 숨기기";
-
-/* Accessibility label for the expand chevron on the Deposit summary */
-"deposits.currency.overview.accessibility.show" = "예치금 상세 정보 표시";
-
-/* Title for available funds overview in WooPayments Deposits view. This shows the balance which can be paid out. */
-"deposits.currency.overview.availableFunds" = "사용 가능한 자금";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.canceled.title" = "취소됨";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.estimated.title" = "예상됨";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.failed.title" = "실패";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.inTransit.title" = "전환 중";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.paid.title" = "결제됨";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.pending.title" = "대기 중";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.unknown.title" = "알 수 없음";
-
-/* Section header for the last deposit in the WooPayments Deposits overview */
-"deposits.currency.overview.lastDeposit" = "마지막 예치금";
-
-/* Button text to view more about payment schedules on the WooPayments Deposits View. */
-"deposits.currency.overview.learnMore" = "언제 자금을 받게 되는지 더 알아보기";
-
-/* Title for pending funds overview in WooPayments Deposits view. This shows the balance which will be made available for pay out later. */
-"deposits.currency.overview.pendingFunds" = "대기 중인 자금";
-
 /* Title of the downloadable file bottom sheet action for adding document from device. */
 "downloadableFileSource.deviceDocument" = "기기의 문서";
 
@@ -10530,16 +10532,16 @@ which should be translated separately and considered part of this sentence. */
 /* The EU notice banner content describing how the shipping customs shall be configured */
 "eu_shipping_instructions_info" = "EU(유럽연합) 세관 규칙을 따르는 국가로 배송 시 모든 아이템을 명확하게 설명해야 합니다. 예를 들어, 의류를 발송하는 경우 설명이 수락될 수 있으려면 의류 유형을 표시해야 합니다(예: 남성용 셔츠, 여아용 조끼, 남아용 재킷). 그렇지 않으면 배송이 세관에서 지체되거나 차단될 수 있습니다.";
 
-/* every {dayname}, shown in a sentence like 'Available funds are deposited automatically, every Wednesday' %1$@ will be replaced with the localized day name */
+/* every {dayname}, shown in a sentence like 'Available funds are paid out automatically, every Wednesday' %1$@ will be replaced with the localized day name */
 "every %1$@" = "%1$@마다";
 
-/* Shown in a sentence like 'Available funds are deposited automatically, every day' */
+/* Shown in a sentence like 'Available funds are paid out automatically, every day' */
 "every day" = "매일";
 
-/* Shown in a sentence like 'Available funds are deposited automatically every month. */
+/* Shown in a sentence like 'Available funds are paid out automatically every month. */
 "every month" = "매월";
 
-/* Shown in a sentence like 'Available funds are deposited automatically, every month on the 15th' */
+/* Shown in a sentence like 'Available funds are paid out automatically, every month on the 15th' */
 "every month on the %1$@" = "매월 %1$@에";
 
 /* Placeholder for the site url textfield.
@@ -10699,6 +10701,9 @@ which should be translated separately and considered part of this sentence. */
 /* A message that tells the user why the app is requesting access to the user’s location information while the app is running in the foreground. */
 "infoplist.NSLocationWhenInUseUsageDescription" = "결제를 수락하려면 위치 접근 권한이 필요합니다.";
 
+/* A message that tells the user why the app needs access to Microphone. */
+"infoplist.NSMicrophoneUsageDescription" = "Woo에서 스토어의 미디어 라이브러리에 사용할 비디오를 녹화할 때 마이크를 사용하여 오디오를 캡처할 수 있습니다.";
+
 /* A message that tells the user why the app is requesting access to the user’s photo library. */
 "infoplist.NSPhotoLibraryUsageDescription" = "상품 이미지의 카메라 사진을 저장하거나 사진 또는 비디오를 상품 또는 지원 티켓에 추가하는 방법입니다.";
 
@@ -10768,7 +10773,7 @@ which should be translated separately and considered part of this sentence. */
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "수동 환불";
 
-/* on request (lower case), shown in a sentence like 'Deposit schedule: manual, on request' */
+/* on request (lower case), shown in a sentence like 'Payout schedule: manual, on request' */
 "manually, on request" = "요청 시 수동으로";
 
 /* Menu option for taking an image or video with the device's camera. */
@@ -10803,9 +10808,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the section related to card readers inside In-Person Payments settings */
 "menu.payments.cardReader.section.title" = "카드 리더";
-
-/* An accessibility label used when the balances are loading on the payments menu */
-"menu.payments.depositSummary.loading.accessibilityLabel" = "잔액 로드 중...";
 
 /* Notice text after completing a payment order from In-Person Payments in the Menu */
 "menu.payments.inPersonPayments.collectPayment.notice.orderCompleted" = "🎉 주문 완료됨";
@@ -10851,6 +10853,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the section related to changing payment settings inside the In-Person Payments menu */
 "menu.payments.paymentSettings.section.title" = "설정";
 
+/* An accessibility label used when the balances are loading on the payments menu */
+"menu.payments.payoutSummary.loading.accessibilityLabel" = "잔액 로드 중...";
+
 /* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory. */
 "menu.payments.tapToPay.about.row.title" = "Tap to Pay 개요";
 
@@ -10861,13 +10866,13 @@ which should be translated separately and considered part of this sentence. */
 "menu.payments.tapToPay.section.title" = "Tap to Pay";
 
 /* Title for a done button in the navigation bar */
-"menu.payments.wooPaymentsDeposits.navigation.done.button.title" = "완료";
+"menu.payments.wooPaymentsPayouts.navigation.done.button.title" = "완료";
 
-/* Title for the row related to Woo Payments Deposits/Balances. */
-"menu.payments.wooPaymentsDeposits.row.title" = "Woo Payments 잔액";
+/* Title for the row related to Woo Payments Payouts/Balances. */
+"menu.payments.wooPaymentsPayouts.row.title" = "Woo Payments 잔액";
 
-/* Title for the section related to Woo Payments Deposits/Balances. */
-"menu.payments.wooPaymentsDeposits.section.title" = "Woo Payments 잔액";
+/* Title for the section related to Woo Payments Payouts/Balances. */
+"menu.payments.wooPaymentsPayouts.section.title" = "Woo Payments 잔액";
 
 /* Display label for a product's subscription period when it is a single month. */
 "month" = "월";
@@ -10955,6 +10960,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "배송 추가";
+
+/* Text for the cancel button to dismiss Send Receipt to Customer screen */
+"order.receiptEmailView.cancel" = "취소";
+
+/* Email field placeholder */
+"order.receiptEmailView.emailFieldHint" = "이메일 입력";
+
+/* Email text field title */
+"order.receiptEmailView.emailFieldTitle" = "이메일";
+
+/* Title for the button to send the receipt to the customer */
+"order.receiptEmailView.emailReceipt" = "이메일 영수증";
+
+/* An error that is shown when sending email receipt fails. */
+"order.receiptEmailView.errorNotice" = "이메일 영수증 발송 중 오류가 발생했습니다. 다시 시도해 주세요.";
+
+/* Notice text when the merchant enters an invalid email */
+"order.receiptEmailView.invalidEmailError" = "유효한 이메일 주소를 입력하세요.";
+
+/* Title for the screen to update customer email address and send receipt */
+"order.receiptEmailView.title" = "고객에게 이메일 영수증 발송";
 
 /* Button to add a shipping line to the order during order creation */
 "order.shippingLineDetails.addShipping" = "배송 추가";
@@ -11185,6 +11211,45 @@ which should be translated separately and considered part of this sentence. */
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "결제, 탭 투 페이, 우커머스, 우, 대면 결제, 대면 결제, 대면 결제 받기, 결제, 리더, 카드 리더, 주문 카드 리더";
 
+/* Accessibility label for the collapse chevron on the Payout summary */
+"payouts.currency.overview.accessibility.hide" = "지급금 상세 정보 숨기기";
+
+/* Accessibility label for the expand chevron on the Payout summary */
+"payouts.currency.overview.accessibility.show" = "지급금 상세 정보 표시";
+
+/* Title for available funds overview in WooPayments Payouts view. This shows the balance which can be paid out. */
+"payouts.currency.overview.availableFunds" = "사용 가능한 자금";
+
+/* Section header for the last payout in the WooPayments Payouts overview */
+"payouts.currency.overview.lastPayout" = "지난 지급금";
+
+/* Button text to view more about payment schedules on the WooPayments Payouts View. */
+"payouts.currency.overview.learnMore" = "언제 자금을 받게 되는지 더 알아보기";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.canceled.title" = "취소됨";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.estimated.title" = "예상됨";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.failed.title" = "실패";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.inTransit.title" = "전환 중";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.paid.title" = "결제됨";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.pending.title" = "대기 중";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.unknown.title" = "알 수 없음";
+
+/* Title for pending funds overview in WooPayments Payouts view. This shows the balance which will be made available for pay out later. */
+"payouts.currency.overview.pendingFunds" = "대기 중인 자금";
+
 /* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
 "plan ended" = "요금제 종료됨";
 
@@ -11245,12 +11310,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "다른 결제 수단 시도";
 
-/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout
-   Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentIntentCreationError.backToCheckout.button.title" = "다시 결제 시도";
+/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.checkout.button.title" = "주문 수정";
 
 /* Error message. Presented to users after payment intent creation fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentIntentCreationError.title" = "결제 준비 오류";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.tryPaymentAgain.button.title" = "다시 결제 시도";
 
 /* Indicates to wait while payment is processing. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.message" = "기다려주세요...";
@@ -11602,6 +11669,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title for new order button */
 "pos.totalsView.newOrder" = "새 주문";
+
+/* Button title for the receipt button */
+"pos.totalsView.sendReceipt" = "영수증";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "소계";
@@ -12703,11 +12773,20 @@ which should be translated separately and considered part of this sentence. */
 /* Generic error on the 2FA login screen */
 "wpCom2FALoginViewModel.unknownError" = "오류가 발생했습니다. 다시 시도해 보세요!";
 
+/* Text hinting that an account will be created if the email is not associated with an existing account. */
+"wpComEmailLoginView.accountCreationHint" = "계정이 없다면 이 이메일을 사용하여 계정을 만드시면 됩니다.";
+
+/* Error message when the username is not found */
+"wpComEmailLoginViewModel.unknownUsername" = "이 사용자명에 연결된 워드프레스닷컴 계정을 찾을 수 없습니다. 이메일을 입력하여 새 계정을 만들 수 있습니다.";
+
 /* Button to dismiss an error alert in the WPCom login flow */
 "wpComLoginCoordinator.cancelButton" = "취소";
 
 /* Title for the screens in the login flow */
 "wpComLoginCoordinator.title" = "로그인";
+
+/* Text hinting the user to ensure their email is correct and check their spam folder */
+"wpComMagicLinkView.emailConfirmationHint" = "이메일이 올바른지 확인하고 스팸 폴더를 다시 확인하세요.";
 
 /* A clickable text link that willredirect the user to a website */
 "www.usps.com\/hazmat" = "www.usps.com\/hazmat";

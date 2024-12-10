@@ -83,7 +83,7 @@ public struct ProductInputTransformer {
                                                 quantity: Decimal,
                                                 discount: Decimal? = nil,
                                                 bundleConfiguration: [BundledProductConfiguration] = [],
-                                                allProducts: [OrderSyncProductTypeProtocol],
+                                                allProducts: [any OrderSyncProductTypeProtocol],
                                                 allProductVariations: Set<ProductVariation>,
                                                 defaultDiscount: Decimal) -> OrderSyncProductInput? {
         // Finds the product or productVariation associated with the order item.

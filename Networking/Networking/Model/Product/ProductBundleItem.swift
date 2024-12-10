@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents an item in a Product Bundle
 ///
-public struct ProductBundleItem: Codable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct ProductBundleItem: Codable, Equatable, Hashable, GeneratedCopiable, GeneratedFakeable {
     /// Bundled item ID
     public let bundledItemID: Int64
 

@@ -23,8 +23,6 @@ protocol WooShippingPackageDataRepresentable {
     var height: String { get }
     var weight: String { get }
     // local
-    var weightDescription: String { get }
-    var dimensionsDescription: String { get }
     var source: WooShippingPackageSource { get } // custom, predefined
     var packageType: String { get } // box, envelope
 }
@@ -38,8 +36,6 @@ struct WooShippingPackageData: WooShippingPackageDataRepresentable {
     let height: String
     let weight: String
     // local
-    let weightDescription: String
-    let dimensionsDescription: String
     let source: WooShippingPackageSource
     let packageType: String
 
@@ -48,9 +44,7 @@ struct WooShippingPackageData: WooShippingPackageDataRepresentable {
          length: String,
          width: String,
          height: String,
-         dimensionsUnit: String,
          weight: String,
-         weightUnit: String,
          source: WooShippingPackageSource,
          packageType: String) {
         self.id = id
@@ -62,18 +56,13 @@ struct WooShippingPackageData: WooShippingPackageDataRepresentable {
 
         self.source = source
         self.packageType = packageType
-
-        self.dimensionsDescription = WooShippingPackageData.createDimensionsDescription(length: length, width: width, height: height, unit: dimensionsUnit)
-        self.weightDescription = WooShippingPackageData.createWeightsDescription(weight: weight, unit: weightUnit)
     }
 
     init(name: String,
          length: String,
          width: String,
          height: String,
-         dimensionsUnit: String,
          weight: String,
-         weightUnit: String,
          source: WooShippingPackageSource,
          packageType: String) {
         self.init(id: name,
@@ -81,20 +70,18 @@ struct WooShippingPackageData: WooShippingPackageDataRepresentable {
                   length: length,
                   width: width,
                   height: height,
-                  dimensionsUnit: dimensionsUnit,
                   weight: weight,
-                  weightUnit: weightUnit,
                   source: source,
                   packageType: packageType)
     }
 }
 
 extension WooShippingPackageDataRepresentable {
-    static func createDimensionsDescription(length: String, width: String, height: String, unit: String) -> String {
+    func dimensionsDescription(unit: String) -> String {
         return "\(length) x \(width) x \(height) \( unit)"
     }
 
-    static func createWeightsDescription(weight: String, unit: String) -> String {
+    func weightDescription(unit: String) -> String {
         return "\(weight) \(unit)"
     }
 }

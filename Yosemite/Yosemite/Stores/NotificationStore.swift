@@ -216,7 +216,7 @@ extension NotificationStore {
             switch result {
             case .success(let outdatedNoteIDs):
                 completion(outdatedNoteIDs)
-            case .failure:
+            case .failure: // This case should not happen as no error is thrown above
                 completion([])
             }
         }, on: .main)

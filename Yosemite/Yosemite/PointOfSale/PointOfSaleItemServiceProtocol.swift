@@ -1,3 +1,14 @@
+public enum POSItem: Equatable, Identifiable {
+    case product(POSProduct)
+
+    public var id: UUID {
+        switch self {
+        case .product(let product):
+            return product.id
+        }
+    }
+}
+
 /// POSDisplayableItem contains only the properties required to show an item in the Point Of Sale.
 /// The item may only be visible, not neccesarily something you can add to the cart.
 /// This protocol will become less specific in future; e.g. not all items in the POS necessarily have a price.
@@ -42,13 +53,13 @@ public protocol PointOfSaleItemOrderItemConvertable {
 }
 
 public protocol PointOfSaleItemServiceProtocol {
-    func providePointOfSaleItems(pageNumber: Int) async throws -> [POSDisplayableItem]
+    func providePointOfSaleItems(pageNumber: Int) async throws -> [POSItem]
 }
 
 // Default implementation for convenience, so we do not need to pass the first page explicitly
 // if no pageNumber is given.
 extension PointOfSaleItemServiceProtocol {
-    func providePointOfSaleItems(pageNumber: Int = 1) async throws -> [POSDisplayableItem] {
+    func providePointOfSaleItems(pageNumber: Int = 1) async throws -> [POSItem] {
         try await providePointOfSaleItems(pageNumber: pageNumber)
     }
 }

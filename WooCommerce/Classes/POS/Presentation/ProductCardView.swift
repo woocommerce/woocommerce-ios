@@ -1,19 +1,19 @@
-import protocol Yosemite.POSDisplayableItem
+import struct Yosemite.POSProduct
 import SwiftUI
 
-struct ItemCardView: View {
-    private let item: POSDisplayableItem
+struct ProductCardView: View {
+    private let product: POSProduct
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
-    init(item: POSDisplayableItem) {
-        self.item = item
+    init(product: POSProduct) {
+        self.product = product
     }
 
     var body: some View {
         HStack(spacing: Constants.cardSpacing) {
-            if let imageSource = item.productImageSource {
+            if let imageSource = product.productImageSource {
                 ProductImageThumbnail(productImageURL: URL(string: imageSource),
                                       productImageSize: Constants.productCardSize * scale,
                                       scale: scale,
@@ -31,13 +31,13 @@ struct ItemCardView: View {
 
             DynamicHStack(spacing: Constants.textSpacing) {
                 Spacer().renderedIf(dynamicTypeSize.isAccessibilitySize)
-                Text(item.name)
+                Text(product.name)
                     .lineLimit(2)
                     .foregroundStyle(Color.posPrimaryText)
                     .multilineTextAlignment(.leading)
                     .font(Constants.itemNameFont)
                 Spacer()
-                Text(item.formattedPrice)
+                Text(product.formattedPrice)
                     .foregroundStyle(Color.posPrimaryText)
                     .font(Constants.itemPriceFont)
                 Spacer().renderedIf(dynamicTypeSize.isAccessibilitySize)
@@ -57,7 +57,7 @@ struct ItemCardView: View {
     }
 }
 
-private extension ItemCardView {
+private extension ProductCardView {
     enum Constants {
         static let productCardSize: CGFloat = 112
         static let maximumProductCardSize: CGFloat = Constants.productCardSize * 2
@@ -76,6 +76,7 @@ private extension ItemCardView {
 
 #if DEBUG
 #Preview {
-    ItemCardView(item: PointOfSalePreviewItemService().providePointOfSaleItem())
+    let product = POSProduct(id: UUID(), name: "Product 5", formattedPrice: "$5.00", productID: 5, price: "5.00")
+    ProductCardView(product: product)
 }
 #endif

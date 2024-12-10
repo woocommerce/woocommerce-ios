@@ -115,9 +115,11 @@ private extension ItemRowView {
 }
 
 #if DEBUG
+import struct Yosemite.POSProduct
 #Preview {
+    let orderableItem = POSProduct(id: UUID(), name: "Product 3", formattedPrice: "$3.00", productID: 3, price: "3.00")
     ItemRowView(cartItem: CartItem(id: UUID(),
-                                   item: PointOfSalePreviewItemService().providePointOfSaleItem(),
+                                   item: orderableItem,
                                    quantity: 2),
                 onItemRemoveTapped: { })
 }

@@ -1,25 +1,34 @@
 import WooFoundation
 
-struct POSProduct: POSOrderableItem, OrderSyncProductTypeProtocol, Equatable {
+public struct POSProduct: POSOrderableItem, OrderSyncProductTypeProtocol, Equatable {
     // POSOrderableItem
-    let id: UUID
-    let name: String
-    let formattedPrice: String
-    var productImageSource: String?
+    public let id: UUID
+    public let name: String
+    public let formattedPrice: String
+    public var productImageSource: String?
 
     // OrderSyncProductTypeProtocol
-    let productID: Int64
-    let price: String
-    let productType: ProductType = .simple
-    let bundledItems: [ProductBundleItem] = []
+    public let productID: Int64
+    public let price: String
+    public let productType: ProductType = .simple
+    public let bundledItems: [ProductBundleItem] = []
+
+    public init(id: UUID, name: String, formattedPrice: String, productImageSource: String? = nil, productID: Int64, price: String) {
+        self.id = id
+        self.name = name
+        self.formattedPrice = formattedPrice
+        self.productImageSource = productImageSource
+        self.productID = productID
+        self.price = price
+    }
 }
 
 extension POSProduct: Hashable {
-    func toOrderSyncProductInput(quantity: Decimal) -> OrderSyncProductInput {
+    public func toOrderSyncProductInput(quantity: Decimal) -> OrderSyncProductInput {
         OrderSyncProductInput(product: .product(self), quantity: quantity)
     }
 
-    func matches(orderItem: OrderItem) -> Bool {
+    public func matches(orderItem: OrderItem) -> Bool {
         // TODO: https://github.com/woocommerce/woocommerce-ios/pull/13328/files#r1687631533
         // - we should also add a logic to compare prices
         // - but we should be aware of the fact that some

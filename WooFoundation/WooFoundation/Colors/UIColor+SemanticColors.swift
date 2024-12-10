@@ -2,11 +2,10 @@ import UIKit
 
 // MARK: - Base colors.
 public extension UIColor {
-    /// Accent. Purple-50 (Light Mode) and Purple-30 (Dark Mode)
+    /// Accent. WooCommercePurple-40
     ///
     static var accent: UIColor {
-        return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
-                       dark: .withColorStudio(.wooCommercePurple, shade: .shade30))
+        return .withColorStudio(.wooCommercePurple, shade: .shade40)
     }
 
     /// Accent Dark. Purple-70 (Light Mode) and Purple-50 (Dark Mode)
@@ -27,11 +26,10 @@ public extension UIColor {
                         dark: withColorStudio(.red, shade: .shade30))
     }
 
-    /// Primary. WooCommercePurple-60 (< iOS 13 and Light Mode) and WooCommercePurple-30 (Dark Mode)
+    /// Primary. WooCommercePurple-40
     ///
     static var primary: UIColor {
-        return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
-                       dark: .withColorStudio(.wooCommercePurple, shade: .shade30))
+        return .withColorStudio(.wooCommercePurple, shade: .shade40)
     }
 
     /// Warning. Orange-30 (< iOS 13 and Light Mode) and Orange-50 (Dark Mode)
@@ -184,8 +182,7 @@ public extension UIColor {
     /// Primary Button Background.
     ///
     static var primaryButtonBackground: UIColor {
-        return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
-                       dark: .withColorStudio(.wooCommercePurple, shade: .shade50))
+        return .withColorStudio(.wooCommercePurple, shade: .shade40)
     }
 
     /// Primary Button Title.

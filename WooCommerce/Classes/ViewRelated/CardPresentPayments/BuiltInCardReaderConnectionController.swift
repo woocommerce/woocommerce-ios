@@ -438,7 +438,7 @@ private extension BuiltInCardReaderConnectionController {
 
                 // If we were installing a software update, introduce a small delay so the user can
                 // actually see a success message showing the installation was complete
-                if case .updating(progress: 1, let isEducationInProgress) = self.state {
+                if case .updating(progress: 1, _) = self.state {
                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
                         success()
                     }

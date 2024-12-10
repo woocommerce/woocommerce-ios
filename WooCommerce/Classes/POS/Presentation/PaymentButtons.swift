@@ -2,7 +2,7 @@ import SwiftUI
 
 struct PaymentsActionButtons: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
-    @State private var isShowingSendReceiptModal: Bool = false
+    @Binding var isShowingSendReceiptView: Bool
     @Binding private(set) var isShowingReceiptNotEligibleBanner: Bool
 
     private var shouldShowSendReceiptButton: Bool {
@@ -16,14 +16,6 @@ struct PaymentsActionButtons: View {
                     .renderedIf(shouldShowSendReceiptButton)
                 newOrderButton
             }
-            .posModal(isPresented: $isShowingSendReceiptModal) {
-                POSSendReceiptModalView(sendReceipt: { email in
-                    Task { @MainActor in
-                        await posModel.sendReceipt(to: email)
-                    }
-                }, isPresented: $isShowingSendReceiptModal)
-                .posModalSizing()
-            }
         }
     }
 }
@@ -32,7 +24,7 @@ private extension PaymentsActionButtons {
     var sendReceiptButton: some View {
         Button(action: {
             if posModel.eligibleWooCommerceVersionForPOSReceipts {
-                isShowingSendReceiptModal = true
+                isShowingSendReceiptView = true
             } else {
                 isShowingReceiptNotEligibleBanner = true
             }
@@ -95,7 +87,7 @@ private extension PaymentsActionButtons {
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
-    PaymentsActionButtons(isShowingReceiptNotEligibleBanner: .constant(true))
+    PaymentsActionButtons( isShowingSendReceiptView: .constant(false), isShowingReceiptNotEligibleBanner: .constant(true))
         .environmentObject(posModel)
 }
 #endif

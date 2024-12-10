@@ -14,7 +14,12 @@ public enum PointOfSaleVariationServiceError: Error {
 
 /// Variation provider for the Point of Sale feature
 ///
-public final class PointOfSaleVariationService {
+
+public protocol PointOfSaleVariationServiceProtocol {
+    func providePointOfSaleItems(for: POSParentProduct, pageNumber: Int) async throws -> [POSItem]
+}
+
+public final class PointOfSaleVariationService: PointOfSaleVariationServiceProtocol {
     private let siteID: Int64
     private let currencyFormatter: CurrencyFormatter
     private let variationService: ProductVariationsRemoteProtocol
@@ -25,10 +30,18 @@ public final class PointOfSaleVariationService {
         self.variationService = ProductVariationsRemote(network: network)
     }
 
-    public func providePointOfSaleItems(parentProductID: Int64, pageNumber: Int) async throws -> [POSItem] {
+    public convenience init(siteID: Int64,
+                            currencySettings: CurrencySettings,
+                            credentials: Credentials?) {
+        self.init(siteID: siteID,
+                  currencySettings: currencySettings,
+                  network: AlamofireNetwork(credentials: credentials))
+    }
+
+    public func providePointOfSaleItems(for parentProduct: POSParentProduct, pageNumber: Int) async throws -> [POSItem] {
         return try await variationService.fetchProductVariations(
             for: siteID,
-            parentProductID: parentProductID,
+            parentProductID: parentProduct.productID,
             pageNumber: pageNumber,
             pageSize: 25)
         .map { variation in

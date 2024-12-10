@@ -9,6 +9,7 @@ import struct Yosemite.OrderSyncProductInput
 import enum Yosemite.ProductType
 import struct Yosemite.ProductBundleItem
 import struct Yosemite.OrderItem
+import struct Yosemite.POSParentProduct
 import Combine
 
 // MARK: - PreviewProvider helpers
@@ -38,15 +39,19 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
     var allItems: [POSItem] = []
 
     func loadInitialItems() async {
-        itemListState = .loaded(mockItems)
+        itemListState = .loaded(mockItems, parent: nil, pageInfo: .init(currentPage: 1, hasMorePages: true))
     }
 
     func loadNextItems() async {
-        itemListState = .loading(mockItems)
+        itemListState = .loading(mockItems, parent: nil, pageInfo: .init(currentPage: 1, hasMorePages: true))
     }
 
     func reload() async {
-        itemListState = .loaded([])
+        itemListState = .loaded([], parent: nil, pageInfo: .init(currentPage: 1, hasMorePages: true))
+    }
+
+    func loadChildItems(for parentItem: POSParentProduct) async {
+        itemListState = .loaded([], parent: .parentProduct(parentItem), pageInfo: .init(currentPage: 1, hasMorePages: true))
     }
 }
 

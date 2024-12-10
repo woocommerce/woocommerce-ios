@@ -100,6 +100,14 @@ final class HubMenuViewModel: ObservableObject {
                                   credentials: credentials)
     }()
 
+    private(set) lazy var posVariationProvider: PointOfSaleVariationServiceProtocol = {
+        let currencySettings = ServiceLocator.currencySettings
+
+        return PointOfSaleVariationService(siteID: siteID,
+                                           currencySettings: currencySettings,
+                                           credentials: credentials)
+    }()
+
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)
 
     @Published private(set) var shouldShowNewFeatureBadgeOnPayments: Bool = false

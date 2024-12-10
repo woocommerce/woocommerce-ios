@@ -16,13 +16,15 @@ struct ItemListView: View {
 
     var body: some View {
         VStack {
-            headerView
             switch posModel.itemListState {
             case .initialLoading, .empty, .error:
                 // These cases are handled directly in the dashboard, we do not render
                 // a specific view within the ItemListView to handle them
+                headerView()
                 EmptyView()
-            case .loading(let items), .loaded(let items):
+            case .loading(let items, let parent, let pageInfo),
+                    .loaded(let items, let parent, let pageInfo):
+                headerView(parentItem: parent)
                 listView(items)
             }
         }
@@ -41,9 +43,18 @@ struct ItemListView: View {
 ///
 private extension ItemListView {
     @ViewBuilder
-    var headerView: some View {
+    func headerView(parentItem: POSItem? = nil) -> some View {
         VStack {
             HStack {
+                if let parentItem {
+                    Button {
+                        Task { @MainActor in
+                            await posModel.reload()
+                        }
+                    } label: {
+                        Image(systemName: "chevron.backward")
+                    }
+                }
                 POSHeaderTitleView()
                 if !shouldShowHeaderBanner {
                     Spacer()
@@ -168,7 +179,9 @@ private extension ItemListView {
             })
         case .parentProduct(let parentProduct):
             Button(action: {
-                DDLogInfo("Parent product \(parentProduct.id) tapped")
+                Task { @MainActor in
+                    await posModel.showChildren(for: parentProduct)
+                }
             }, label: {
                 ParentProductCardView(parentProduct: parentProduct)
             })

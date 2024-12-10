@@ -62,7 +62,7 @@ struct CartView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
             .padding(.vertical, POSHeaderLayoutConstants.sectionVerticalPadding)
-            .if(shouldApplyHeaderBottomShadow, transform: { $0.applyBottomShadow() })
+            .if(shouldApplyHeaderBottomShadow, transform: { $0.applyBottomShadow(backgroundColor: backgroundColor) })
 
             if posModel.cart.isNotEmpty {
                 ScrollViewReader { proxy in

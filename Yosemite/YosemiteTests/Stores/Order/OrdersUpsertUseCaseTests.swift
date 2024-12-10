@@ -8,7 +8,7 @@ import Storage
 final class OrdersUpsertUseCaseTests: XCTestCase {
 
     private let defaultSiteID: Int64 = 10
-    private var storageManager: StorageManagerType!
+    private var storageManager: MockStorageManager!
     private var viewStorage: StorageType {
         storageManager.viewStorage
     }

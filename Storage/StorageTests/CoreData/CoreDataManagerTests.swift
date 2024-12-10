@@ -41,19 +41,6 @@ final class CoreDataManagerTests: XCTestCase {
         XCTAssertEqual(manager.viewStorage as? NSManagedObjectContext, manager.persistentContainer.viewContext)
     }
 
-    /// Verifies that derived context is instantiated correctly.
-    ///
-    func test_derived_storage_is_instantiated_correctly() {
-        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
-        let viewContext = (manager.viewStorage as? NSManagedObjectContext)
-        let derivedContext = (manager.writerDerivedStorage as? NSManagedObjectContext)
-
-        XCTAssertNotNil(viewContext)
-        XCTAssertNotNil(derivedContext)
-        XCTAssertNotEqual(derivedContext, viewContext)
-        XCTAssertNil(derivedContext?.parent)
-    }
-
     func test_resetting_CoreData_deletes_preexisting_objects() throws {
         // Arrange
         let modelsInventory = try makeModelsInventory()

@@ -9,26 +9,30 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
     @State private var isShowingReceiptNotEligibleBanner: Bool = false
 
     var body: some View {
-        VStack(alignment: .center, spacing: Constants.headerSpacing) {
-            successIcon
-                .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-                .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
-            VStack(alignment: .center, spacing: Constants.textSpacing) {
-                Text(viewModel.title)
-                    .font(.posTitleEmphasized)
-                    .foregroundStyle(Color.posPrimaryText)
-                    .accessibilityAddTraits(.isHeader)
-                    .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
-
-                if let message = viewModel.message {
-                    Text(message)
-                        .font(.posBodyRegular)
+        ZStack {
+            VStack(alignment: .center, spacing: Constants.headerSpacing) {
+                successIcon
+                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+                    .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
+                VStack(alignment: .center, spacing: Constants.textSpacing) {
+                    Text(viewModel.title)
+                        .font(.posTitleEmphasized)
                         .foregroundStyle(Color.posPrimaryText)
-                        .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
+                        .accessibilityAddTraits(.isHeader)
+                        .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
+
+                    if let message = viewModel.message {
+                        Text(message)
+                            .font(.posBodyRegular)
+                            .foregroundStyle(Color.posPrimaryText)
+                            .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
+                    }
                 }
+                PaymentsActionButtons(isShowingReceiptNotEligibleBanner: $isShowingReceiptNotEligibleBanner)
+                    .matchedGeometryEffect(id: animation.actionButtonsTransitionId, in: animation.namespace, properties: .position)
             }
-            PaymentsActionButtons(isShowingReceiptNotEligibleBanner: $isShowingReceiptNotEligibleBanner)
-                .matchedGeometryEffect(id: animation.actionButtonsTransitionId, in: animation.namespace, properties: .position)
+            .multilineTextAlignment(.center)
+
             if isShowingReceiptNotEligibleBanner {
                 VStack {
                     Spacer()
@@ -36,9 +40,9 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
                         .transition(.move(edge: .bottom))
                         .padding(.bottom)
                 }
+                .edgesIgnoringSafeArea(.bottom)
             }
         }
-        .multilineTextAlignment(.center)
     }
 
     private var successIcon: some View {

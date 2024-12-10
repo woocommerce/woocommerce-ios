@@ -95,15 +95,6 @@ public final class CoreDataManager: StorageManagerType {
     ///
     public let persistentContainer: NSPersistentContainer
 
-    /// Saves the derived storage. Note: the closure may be called on a different thread
-    ///
-    public func saveDerivedType(derivedStorage: StorageType, _ closure: @escaping () -> Void) {
-        derivedStorage.perform {
-            derivedStorage.saveIfNeeded()
-            closure()
-        }
-    }
-
     /// Execute the given operation with a background context and save the changes.
     ///
     /// This function _does not block_ its running thread. The operation is executed in background and its return value

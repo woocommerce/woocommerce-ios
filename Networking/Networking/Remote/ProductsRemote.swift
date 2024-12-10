@@ -207,7 +207,6 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: POSConstants.productsPerPage,
-            ParameterKey.productType: POSConstants.productType,
             ParameterKey.orderBy: OrderKey.name.value,
             ParameterKey.order: Order.ascending.value,
             ParameterKey.productStatus: POSConstants.productStatus,

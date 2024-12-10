@@ -54,21 +54,32 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
         return mapProductsToPOSItems(products: filteredProducts)
     }
 
-    // Maps result to POSItem.product, and populate the output with:
-    // - Formatted price based on store's currency settings.
+    // Maps result to POSItem, either parent or product case, and populates the output with:
+    // - The name, productID, and item ID.
+    // - Formatted price based on store's currency settings, for products.
     // - Product thumbnail, if any.
     private func mapProductsToPOSItems(products: [Product]) -> [POSItem] {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        return products.map { product in
+        return products.compactMap { product in
             let formattedPrice = currencyFormatter.formatAmount(product.price) ?? "-"
             let thumbnailSource = product.images.first?.src
 
-            return .product(POSProduct(id: UUID(),
-                                       name: product.name,
-                                       formattedPrice: formattedPrice,
-                                       productImageSource: thumbnailSource,
-                                       productID: product.productID,
-                                       price: product.price))
+            switch product.productType {
+            case .simple:
+                return .product(POSProduct(id: UUID(),
+                                           name: product.name,
+                                           formattedPrice: formattedPrice,
+                                           productImageSource: thumbnailSource,
+                                           productID: product.productID,
+                                           price: product.price))
+            case .variable:
+                return .parentProduct(POSParentProduct(id: UUID(),
+                                                       name: product.name,
+                                                       productImageSource: thumbnailSource,
+                                                       productID: product.productID))
+            default:
+                return nil
+            }
         }
     }
 }

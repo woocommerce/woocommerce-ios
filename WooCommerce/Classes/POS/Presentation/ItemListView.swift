@@ -166,6 +166,12 @@ private extension ItemListView {
             }, label: {
                 ProductCardView(product: product)
             })
+        case .parentProduct(let parentProduct):
+            Button(action: {
+                DDLogInfo("Parent product \(parentProduct.id) tapped")
+            }, label: {
+                ParentProductCardView(parentProduct: parentProduct)
+            })
         }
     }
 }

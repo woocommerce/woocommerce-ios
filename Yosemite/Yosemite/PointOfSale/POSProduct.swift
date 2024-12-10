@@ -1,6 +1,6 @@
 import WooFoundation
 
-public struct POSProduct: POSOrderableItem, OrderSyncProductTypeProtocol, Equatable {
+public struct POSProduct: POSOrderableItem, OrderSyncProductTypeProtocol, Equatable, Hashable, Identifiable {
     // POSOrderableItem
     public let id: UUID
     public let name: String
@@ -23,7 +23,7 @@ public struct POSProduct: POSOrderableItem, OrderSyncProductTypeProtocol, Equata
     }
 }
 
-extension POSProduct: Hashable {
+extension POSProduct {
     public func toOrderSyncProductInput(quantity: Decimal) -> OrderSyncProductInput {
         OrderSyncProductInput(product: .product(self), quantity: quantity)
     }

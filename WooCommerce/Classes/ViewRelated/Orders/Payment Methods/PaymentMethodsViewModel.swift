@@ -215,6 +215,7 @@ final class PaymentMethodsViewModel: ObservableObject {
             return presentNoticeSubject.send(.error(Localization.genericCollectError))
         }
         let alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
+        let merchantEducationPresenter = BuiltInCardReaderMerchantEducationPresenter(rootViewController: rootViewController)
         let analyticsTracker = CardReaderConnectionAnalyticsTracker(
             configuration: cardPresentPaymentsConfiguration,
             siteID: siteID,
@@ -233,6 +234,7 @@ final class PaymentMethodsViewModel: ObservableObject {
             forSiteID: siteID,
             alertsPresenter: alertsPresenter,
             alertsProvider: tapToPayAlertsProvider,
+            merchantEducationPresenter: merchantEducationPresenter,
             configuration: cardPresentPaymentsConfiguration,
             analyticsTracker: analyticsTracker)
 

@@ -6,6 +6,8 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
+    @State private var isShowingReceiptNotEligibleBanner: Bool = false
+
     var body: some View {
         VStack(alignment: .center, spacing: Constants.headerSpacing) {
             successIcon
@@ -25,8 +27,16 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
                         .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
                 }
             }
-            PaymentsActionButtons()
+            PaymentsActionButtons(isShowingReceiptNotEligibleBanner: $isShowingReceiptNotEligibleBanner)
                 .matchedGeometryEffect(id: animation.actionButtonsTransitionId, in: animation.namespace, properties: .position)
+            if isShowingReceiptNotEligibleBanner {
+                VStack {
+                    Spacer()
+                    POSReceiptEligibilityBanner(isVisible: $isShowingReceiptNotEligibleBanner)
+                        .transition(.move(edge: .bottom))
+                        .padding(.bottom)
+                }
+            }
         }
         .multilineTextAlignment(.center)
     }

@@ -3,7 +3,7 @@ import SwiftUI
 struct PaymentsActionButtons: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @State private var isShowingSendReceiptModal: Bool = false
-    @State private var isShowingReceiptNotEligibleBanner: Bool = false
+    @Binding private(set) var isShowingReceiptNotEligibleBanner: Bool
 
     private var shouldShowSendReceiptButton: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sendReceiptsForPointOfSale)
@@ -23,17 +23,6 @@ struct PaymentsActionButtons: View {
                     }
                 }, isPresented: $isShowingSendReceiptModal)
                 .posModalSizing()
-            }
-
-            if isShowingReceiptNotEligibleBanner {
-                VStack {
-                    Spacer()
-                    POSReceiptEligibilityBanner(isVisible: $isShowingReceiptNotEligibleBanner)
-                        .renderedIf(shouldShowSendReceiptButton)
-                        .transition(.move(edge: .bottom))
-                        .padding(.bottom)
-                }
-                .ignoresSafeArea()
             }
         }
     }
@@ -106,7 +95,7 @@ private extension PaymentsActionButtons {
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
-    PaymentsActionButtons()
+    PaymentsActionButtons(isShowingReceiptNotEligibleBanner: .constant(true))
         .environmentObject(posModel)
 }
 #endif

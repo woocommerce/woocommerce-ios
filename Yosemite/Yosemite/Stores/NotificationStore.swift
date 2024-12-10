@@ -194,11 +194,10 @@ private extension NotificationStore {
 //
 extension NotificationStore {
 
-    /// Deletes the collection of local notifications that cannot be found in a given collection of
-    /// remote hashes.
+    /// Deletes the collection of local notifications that cannot be found in a given collection of remote hashes.
     ///
     /// - Parameters:
-    ///    - remoteIds: Collection of remote Note IDs.
+    ///    - hashes: Collection of remote hashes to compare local notifications with.
     ///    - completion: Callback closure returning outdated note IDs.
     ///
     func deleteLocalMissingNotes(from hashes: [NoteHash], completion: @escaping (([Int64]) -> Void)) {

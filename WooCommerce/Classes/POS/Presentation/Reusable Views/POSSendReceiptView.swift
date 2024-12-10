@@ -20,19 +20,14 @@ struct POSSendReceiptView: View {
             }
             .padding()
 
-            Text(Localization.title)
-                .font(.largeTitle)
-                .bold()
-
-            Text(Localization.subtitle)
-                .font(.headline)
-
             TextField(Localization.textfieldPlaceholder, text: $textFieldInput)
                 .keyboardType(.emailAddress)
                 .textInputAutocapitalization(.none)
                 .autocorrectionDisabled()
-                .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
-                .padding(.horizontal)
+                .multilineTextAlignment(.center)
+                .font(POSFontStyle.posTitleRegular)
+                .focused()
+                .padding()
 
             Button(action: {
                 Task { @MainActor in
@@ -45,6 +40,7 @@ struct POSSendReceiptView: View {
                 }
             })
             .padding(Constants.buttonPadding)
+            .frame(maxWidth: .infinity)
             .foregroundColor(Color.posPrimaryTextInverted)
             .background(Color.posOverlayFillInverted)
             .cornerRadius(Constants.buttonCornerRadius)
@@ -66,21 +62,24 @@ private extension POSSendReceiptView {
 
 private extension POSSendReceiptView {
     struct Localization {
-        static let title = NSLocalizedString(
-            "pointOfSale.sendreceipt.modal.title",
-            value: "Receipt",
-            comment: "Button title for the receipt button")
-        static let subtitle = NSLocalizedString(
-            "pointOfSale.sendreceipt.modal.subtitle",
-            value: "Email",
-            comment: "Subtitle for the view where an email address should be entered when sending receipts")
         static let buttonTitle = NSLocalizedString(
             "pointOfSale.sendreceipt.modal.button.title",
             value: "Send",
             comment: "Button title for sending a receipt")
         static let textfieldPlaceholder = NSLocalizedString(
             "pointOfSale.sendreceipt.modal.textfield.placeholder",
-            value: "Enter an email",
+            value: "Type email",
             comment: "Placeholder for the view where an email address should be entered when sending receipts")
     }
 }
+
+#if DEBUG
+#Preview {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
+    POSSendReceiptView(isShowingSendReceiptView: .constant(true))
+        .environmentObject(posModel)
+}
+#endif

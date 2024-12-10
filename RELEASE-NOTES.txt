@@ -16,6 +16,7 @@
 - [Internal] Core Data: Optimize storage usage in CustomerStore [https://github.com/woocommerce/woocommerce-ios/pull/14552]
 - [Internal] Update storage usage for BlazeStore [https://github.com/woocommerce/woocommerce-ios/pull/14532]
 - [Internal] Updated storage usage in ProductShippingClassStore [https://github.com/woocommerce/woocommerce-ios/pull/14520]
+- [Internal] Updated storage usage in NotificationStore [https://github.com/woocommerce/woocommerce-ios/pull/14577]
 - [Internal] Updated storage usage in OrderNoteStore [https://github.com/woocommerce/woocommerce-ios/pull/14572]
 - [Internal] Updated storage usage in AddOnGroupStore [https://github.com/woocommerce/woocommerce-ios/pull/14576]
 - [Internal] Updated storage usage in InboxNoteStore [https://github.com/woocommerce/woocommerce-ios/pull/14574]

@@ -6,7 +6,7 @@ protocol BuiltInCardReaderMerchantEducationPresenting {
 }
 
 final class BuiltInCardReaderMerchantEducationPresenter: BuiltInCardReaderMerchantEducationPresenting {
-    private weak var rootViewController: UIViewController?
+    private weak var rootViewController: ViewControllerPresenting?
 
     init(rootViewController: UIViewController) {
         self.rootViewController = rootViewController
@@ -14,7 +14,7 @@ final class BuiltInCardReaderMerchantEducationPresenter: BuiltInCardReaderMercha
 
     func presentMerchantEducation(completion: @escaping () -> Void) {
         let viewController = TapToPayEducationViewHostingController(onDismiss: completion)
-        let topViewController = rootViewController?.topmostPresentedViewController
+        let topViewController = rootViewController?.presentedViewController
         topViewController?.present(viewController, animated: true)
     }
 }

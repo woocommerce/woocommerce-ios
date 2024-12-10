@@ -44,14 +44,21 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         ///
         case connectToReader
 
+        /// Connection to a card reader is in progress.
+        /// `educationInProgress` is `true` if the merchant education is in progress.
+        ///
+        case connecting(educationInProgress: Bool)
+
         /// A failure occurred while connecting. The search may continue or be canceled. At this time we
         /// do not present the detailed error from the service.
+        /// `educationInProgress` is `true` if the merchant education is in progress.
         ///
-        case connectingFailed(Error)
+        case connectingFailed(error: Error, educationInProgress: Bool)
 
         /// A mandatory update is being installed
+        /// `educationInProgress` is `true` if the merchant education is in progress
         ///
-        case updating(progress: Float)
+        case updating(progress: Float, educationInProgress: Bool)
 
         /// User chose to retry the connection to the card reader. Starts the search again, by dismissing modals and initializing from scratch
         ///
@@ -68,6 +75,10 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         /// dereferenced and the state set to `idle`
         ///
         case discoveryFailed(Error)
+
+        /// Waiting for other blocking events such as merchant education to complete to finish the connection process
+        ///
+        case waitingToComplete(CardReaderConnectionResult)
     }
 
     private let storageManager: StorageManagerType
@@ -115,8 +126,6 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     }
 
     private var allowTermsOfServiceAcceptance: Bool
-
-    private var isMerchantEducationInProgress: CurrentValueSubject<Bool, Never> = .init(false)
 
     init(
         forSiteID: Int64,
@@ -188,12 +197,14 @@ private extension BuiltInCardReaderConnectionController {
             onCancel(from: cancellationSource)
         case .connectToReader:
             onConnectToReader()
-        case .connectingFailed(let error):
+        case .connectingFailed(let error, _):
             onConnectingFailed(error: error)
         case .discoveryFailed(let error):
             onDiscoveryFailed(error: error)
-        case .updating(progress: let progress):
+        case .updating(progress: let progress, _):
             onUpdateProgress(progress: progress)
+        case .waitingToComplete, .connecting:
+            break
         }
     }
 
@@ -360,15 +371,15 @@ private extension BuiltInCardReaderConnectionController {
                 switch event {
                 case .started(cancelable: let cancelable):
                     self.softwareUpdateCancelable = cancelable
-                    self.state = .updating(progress: 0)
+                    self.state = .updating(progress: 0, educationInProgress: isEducationInProgress)
                 case .installing(progress: let progress):
                     if progress >= 0.995 {
                         self.softwareUpdateCancelable = nil
                     }
-                    self.state = .updating(progress: progress)
+                    self.state = .updating(progress: progress, educationInProgress: isEducationInProgress)
                 case .completed:
                     self.softwareUpdateCancelable = nil
-                    self.state = .updating(progress: 1)
+                    self.state = .updating(progress: 1, educationInProgress: isEducationInProgress)
                 default:
                     break
                 }
@@ -385,12 +396,15 @@ private extension BuiltInCardReaderConnectionController {
                 events
                     .subscribe(on: DispatchQueue.main)
                     .sink { [weak self] in
-                        guard let self else { return }
+                        guard let self, !isEducationInProgress else { return }
 
-                        isMerchantEducationInProgress.send(true)
+                        state = updatedState(educationInProgress: true)
                         presenter.presentMerchantEducation { [weak self] in
                             guard let self else { return }
-                            isMerchantEducationInProgress.send(false)
+                            state = updatedState(educationInProgress: false)
+                            if case .waitingToComplete(let result) = state {
+                                returnSuccess(result: result)
+                            }
                         }
                     }
                     .store(in: &subscriptions)
@@ -411,14 +425,25 @@ private extension BuiltInCardReaderConnectionController {
             case .success(let reader):
                 self.analyticsTracker.connectionSuccess(batteryLevel: reader.batteryLevel,
                                                         cardReaderModel: reader.readerType.model)
-                // If we were installing a software update, introduce a small delay so the user can
-                // actually see a success message showing the installation was complete
-                if case .updating(progress: 1) = self.state {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+
+                let success = { [weak self] in
+                    guard let self else { return }
+
+                    if isEducationInProgress {
+                        self.state = .waitingToComplete(.connected(reader))
+                    } else {
                         self.returnSuccess(result: .connected(reader))
                     }
+                }
+
+                // If we were installing a software update, introduce a small delay so the user can
+                // actually see a success message showing the installation was complete
+                if case .updating(progress: 1, let isEducationInProgress) = self.state {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                        success()
+                    }
                 } else {
-                    self.returnSuccess(result: .connected(reader))
+                    success()
                 }
             case .failure(let error):
                 // The TOS acceptance flow happens during connection, not discovery, and cancelations from Apple's
@@ -429,12 +454,13 @@ private extension BuiltInCardReaderConnectionController {
                     self.analyticsTracker.connectionFailed(error: error,
                                                            cardReaderModel: candidateReader.readerType.model)
 
-                    self.state = .connectingFailed(error)
+                    self.state = .connectingFailed(error: error, educationInProgress: isEducationInProgress)
                 }
             }
         }
         stores.dispatch(action)
 
+        state = .connecting(educationInProgress: isEducationInProgress)
         alertsPresenter.present(viewModel: alertsProvider.connectingToReader())
     }
 
@@ -570,15 +596,8 @@ private extension BuiltInCardReaderConnectionController {
     /// Calls the completion with a success result
     ///
     private func returnSuccess(result: CardReaderConnectionResult) {
-        isMerchantEducationInProgress.eraseToAnyPublisher()
-            .filter { $0 == false }
-            .first()
-            .sink { [weak self] _ in
-                guard let self else { return }
-                onCompletion?(.success(result))
-                state = .idle
-            }
-            .store(in: &subscriptions)
+        onCompletion?(.success(result))
+        state = .idle
     }
 
     /// Calls the completion with a failure result
@@ -601,6 +620,34 @@ private extension CardReaderServiceUnderlyingError {
             return false
         default:
             return true
+        }
+    }
+}
+
+// MARK: - Merchant Education
+
+private extension BuiltInCardReaderConnectionController {
+    private var isEducationInProgress: Bool {
+        switch state {
+        case .connecting(let educationInProgress),
+                .connectingFailed(_, let educationInProgress),
+                .updating(_, let educationInProgress):
+            return educationInProgress
+        default:
+            return false
+        }
+    }
+
+    private func updatedState(educationInProgress: Bool) -> ControllerState {
+        switch state {
+        case .connecting:
+            return .connecting(educationInProgress: educationInProgress)
+        case .updating(progress: let progress, educationInProgress: _):
+            return .updating(progress: progress, educationInProgress: educationInProgress)
+        case .connectingFailed(let error, _):
+            return .connectingFailed(error: error, educationInProgress: educationInProgress)
+        default:
+            return state
         }
     }
 }

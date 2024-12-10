@@ -78,6 +78,7 @@ struct CartView: View {
                             }
                         }
                         .animation(Constants.cartAnimation, value: posModel.cart.map(\.id))
+                        .padding(.bottom, floatingControlAreaSize.height)
                         .background(GeometryReader { geometry in
                             Color.clear.preference(key: ScrollOffSetPreferenceKey.self,
                                                    value: geometry.frame(in: coordinateSpace).origin.y)

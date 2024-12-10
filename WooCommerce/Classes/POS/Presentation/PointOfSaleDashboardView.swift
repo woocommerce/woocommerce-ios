@@ -38,6 +38,9 @@ struct PointOfSaleDashboardView: View {
 
             POSConnectivityView()
         }
+        .environment(\.floatingControlAreaSize,
+                      CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
+                                 floatingSize.height + Constants.floatingControlVerticalOffset))
         .environment(\.posBackgroundAppearance, posModel.paymentState != .processingPayment ? .primary : .secondary)
         .animation(.easeInOut, value: posModel.itemListState == .initialLoading)
         .background(Color.posPrimaryBackground)

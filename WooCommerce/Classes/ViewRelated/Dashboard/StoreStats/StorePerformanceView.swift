@@ -156,6 +156,7 @@ private extension StorePerformanceView {
                 }
             }
             .disabled(viewModel.syncingData)
+            .accessibilityIdentifier("performance-time-range-menu")
         }
     }
 
@@ -171,6 +172,7 @@ private extension StorePerformanceView {
                     .fontWeight(.semibold)
                     .foregroundStyle(statsValueColor)
                     .largeTitleStyle()
+                    .accessibilityIdentifier("revenue-value")
 
                 Text(Localization.revenue)
                     .if(!viewModel.hasRevenue) { $0.foregroundStyle(Color(.textSubtle)) }
@@ -267,6 +269,7 @@ private extension StorePerformanceView {
                     viewModel.didSelectStatsInterval(at: selectedIndex)
                 }
                 .frame(height: Layout.chartViewHeight)
+                .accessibilityIdentifier("store-stats-chart")
 
                 if viewModel.hasRevenue,
                    let granularityText = viewModel.granularityText {

@@ -425,6 +425,8 @@ extension InPersonPaymentsMenuViewModel: DeepLinkNavigator {
             collectPayment()
         case .tapToPay:
             presentSetUpTryOutTapToPay = true
+        case .aboutTapToPay:
+            presentAboutTapToPay = true
         }
     }
 }

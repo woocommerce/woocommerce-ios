@@ -65,7 +65,7 @@ public final class CoreDataManager: StorageManagerType {
             return context
         }()
 
-        self.writerDerivedStorage = {
+        self.writerStorage = {
             let backgroundContext = persistentContainer.newBackgroundContext()
             backgroundContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
             return backgroundContext
@@ -87,9 +87,9 @@ public final class CoreDataManager: StorageManagerType {
     ///
     public let viewStorage: StorageType
 
-    /// Returns a shared derived storage instance dedicated for write operations.
+    /// Returns a storage instance dedicated for write operations.
     ///
-    public let writerDerivedStorage: StorageType
+    private let writerStorage: StorageType
 
     /// Persistent Container: Holds the full CoreData Stack
     ///
@@ -116,7 +116,7 @@ public final class CoreDataManager: StorageManagerType {
     public func performAndSave(_ operation: @escaping (StorageType) -> Void,
                                completion: (() -> Void)?,
                                on queue: DispatchQueue) {
-        let derivedStorage = writerDerivedStorage
+        let derivedStorage = writerStorage
         writerQueue.addOperation(AsyncBlockOperation { done in
             derivedStorage.perform {
                 operation(derivedStorage)
@@ -142,7 +142,7 @@ public final class CoreDataManager: StorageManagerType {
                                   completion: @escaping (Result<T, Error>) -> Void,
                                   on queue: DispatchQueue) {
         assert((T.self is NSManagedObject.Type) == false, "Managed objects should not be sent between different contexts to avoid threading issues.")
-        let derivedStorage = writerDerivedStorage
+        let derivedStorage = writerStorage
         writerQueue.addOperation(AsyncBlockOperation { done in
             derivedStorage.perform {
                 let result = Result(catching: { try operation(derivedStorage) })

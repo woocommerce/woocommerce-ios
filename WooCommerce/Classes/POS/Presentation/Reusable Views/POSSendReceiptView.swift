@@ -4,6 +4,8 @@ struct POSSendReceiptView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
 
     @State private var textFieldInput: String = ""
+    @State private var isLoading: Bool = false
+
     @Binding private(set) var isShowingSendReceiptView: Bool
 
     var body: some View {
@@ -31,12 +33,21 @@ struct POSSendReceiptView: View {
 
             Button(action: {
                 Task { @MainActor in
+                    isLoading = true
                     await posModel.sendReceipt(to: textFieldInput)
+                    isLoading = false
+                    isShowingSendReceiptView = false
                 }
             }, label: {
                 HStack(spacing: Constants.buttonSpacing) {
-                    Text(Localization.buttonTitle)
-                        .font(Constants.buttonFont)
+                    if !isLoading {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
+                            .tint(Color.posPrimaryTextInverted)
+                    } else {
+                        Text(Localization.buttonTitle)
+                            .font(Constants.buttonFont)
+                    }
                 }
             })
             .padding(Constants.buttonPadding)

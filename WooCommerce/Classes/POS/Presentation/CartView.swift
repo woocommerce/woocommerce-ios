@@ -251,6 +251,12 @@ private extension CartView {
 
 #if DEBUG
 #Preview {
-    CartView()
+    let itemsController = PointOfSalePreviewItemsController()
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
+    return CartView()
+        .environmentObject(posModel)
 }
 #endif

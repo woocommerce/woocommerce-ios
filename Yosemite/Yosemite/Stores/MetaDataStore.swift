@@ -116,25 +116,20 @@ private extension MetaDataStore {
                                                orderID: Int64,
                                                siteID: Int64,
                                                onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-
-        derivedStorage.perform {
-            let storedMetaData = derivedStorage.loadOrderMetaData(siteID: siteID, orderID: orderID)
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
+            let storedMetaData = storage.loadOrderMetaData(siteID: siteID, orderID: orderID)
 
             for readOnlyOrderMetaData in readOnlyOrderMetaDatas {
-                self.saveMetaData(derivedStorage, readOnlyOrderMetaData, storedMetaData, orderID: orderID, siteID: siteID)
+                saveMetaData(storage, readOnlyOrderMetaData, storedMetaData, orderID: orderID, siteID: siteID)
             }
 
             storedMetaData.forEach { storedMetaData in
                 if !readOnlyOrderMetaDatas.contains(where: { $0.metadataID == storedMetaData.metadataID }) {
-                    derivedStorage.deleteObject(storedMetaData)
+                    storage.deleteObject(storedMetaData)
                 }
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 
     /// Using the provided StorageType, update or insert a Storage.MetaData using the provided ReadOnly

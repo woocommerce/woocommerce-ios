@@ -120,8 +120,12 @@ private extension MetaDataStore {
             guard let self else { return }
             let storedMetaData = storage.loadOrderMetaData(siteID: siteID, orderID: orderID)
 
+            guard let storageOrder = storage.loadOrder(siteID: siteID, orderID: orderID) else {
+                DDLogWarn("⚠️ Could not persist the Order MetaData — unable to retrieve stored order with ID \(orderID).")
+                return
+            }
             for readOnlyOrderMetaData in readOnlyOrderMetaDatas {
-                saveMetaData(storage, readOnlyOrderMetaData, storedMetaData, orderID: orderID, siteID: siteID)
+                saveMetaData(storage, readOnlyOrderMetaData, storedMetaData, storageOrder: storageOrder)
             }
 
             storedMetaData.forEach { storedMetaData in
@@ -140,14 +144,9 @@ private extension MetaDataStore {
     ///   - orderID: ID of the order.
     ///   - siteID: Site id of the order.
     ///
-    func saveMetaData(_ storage: StorageType, _ readOnlyMetaData: MetaData, _ storedMetaData: [Storage.MetaData], orderID: Int64, siteID: Int64) {
+    func saveMetaData(_ storage: StorageType, _ readOnlyMetaData: MetaData, _ storedMetaData: [Storage.MetaData], storageOrder: Storage.Order) {
         if let existingStorageMetaData = storedMetaData.first(where: { $0.metadataID == readOnlyMetaData.metadataID }) {
             existingStorageMetaData.update(with: readOnlyMetaData)
-            return
-        }
-
-        guard let storageOrder = storage.loadOrder(siteID: siteID, orderID: orderID) else {
-            DDLogWarn("⚠️ Could not persist the Order MetaData with ID \(readOnlyMetaData.metadataID) — unable to retrieve stored order with ID \(orderID).")
             return
         }
 

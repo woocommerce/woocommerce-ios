@@ -190,24 +190,25 @@ private extension MetaDataStore {
                                                  productID: Int64,
                                                  siteID: Int64,
                                                  onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
-            let storedMetaData = derivedStorage.loadProductMetaData(siteID: siteID, productID: productID)
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
 
+            let storedMetaData = storage.loadProductMetaData(siteID: siteID, productID: productID)
+
+            guard let storageProduct = storage.loadProduct(siteID: siteID, productID: productID) else {
+                DDLogWarn("⚠️ Could not persist the Product MetaData — unable to retrieve stored product with ID \(productID).")
+                return
+            }
             for readOnlyProductMetaData in readOnlyProductMetaDatas {
-                self.saveMetaData(derivedStorage, readOnlyProductMetaData, storedMetaData, productID: productID, siteID: siteID)
+                saveMetaData(storage, readOnlyProductMetaData, storedMetaData, storageProduct: storageProduct)
             }
 
             storedMetaData.forEach { storedMetaData in
                 if !readOnlyProductMetaDatas.contains(where: { $0.metadataID == storedMetaData.metadataID }) {
-                    derivedStorage.deleteObject(storedMetaData)
+                    storage.deleteObject(storedMetaData)
                 }
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 
     /// Using the provided StorageType, update or insert a Storage.MetaData using the provided ReadOnly
@@ -218,20 +219,15 @@ private extension MetaDataStore {
     ///   - productID: ID of the product.
     ///   - siteID: Site id of the product.
     ///
-    func saveMetaData(_ storage: StorageType, _ readOnlyMetaData: MetaData, _ storedMetaData: [Storage.MetaData], productID: Int64, siteID: Int64) {
+    func saveMetaData(_ storage: StorageType, _ readOnlyMetaData: MetaData, _ storedMetaData: [Storage.MetaData], storageProduct: Storage.Product) {
         if let existingStorageMetaData = storedMetaData.first(where: { $0.metadataID == readOnlyMetaData.metadataID }) {
             existingStorageMetaData.update(with: readOnlyMetaData)
             return
         }
 
-        guard let storageOrder = storage.loadProduct(siteID: siteID, productID: productID) else {
-            DDLogWarn("⚠️ Could not persist the Product MetaData with ID \(readOnlyMetaData.metadataID) — unable to retrieve stored product with ID \(productID).")
-            return
-        }
-
         let newStorageMetaData = storage.insertNewObject(ofType: Storage.MetaData.self)
         newStorageMetaData.update(with: readOnlyMetaData)
-        newStorageMetaData.product = storageOrder
-        storageOrder.addToCustomFields(newStorageMetaData)
+        newStorageMetaData.product = storageProduct
+        storageProduct.addToCustomFields(newStorageMetaData)
     }
 }

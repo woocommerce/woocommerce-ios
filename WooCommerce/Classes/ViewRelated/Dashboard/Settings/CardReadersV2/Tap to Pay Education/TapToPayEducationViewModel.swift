@@ -19,6 +19,7 @@ final class TapToPayEducationViewModel: ObservableObject {
     @Published var showingSetUpFlow: Bool = false
     @Published private(set) var hasPreviousTapToPayUsage = false
     @Published var shouldShowContactlessLimit: Bool = false
+    @Published private(set) var dismiss: Bool = false
 
     private let flow: Flow
     private let cardReaderSupportDeterminer: CardReaderSupportDetermining
@@ -27,15 +28,12 @@ final class TapToPayEducationViewModel: ObservableObject {
     let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
     let siteID: Int64
 
-    var onDismiss: () -> Void
-
     init(flow: Flow = .onboarding,
          steps: [TapToPayEducationStepViewModel]? = nil,
          siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          cardReaderSupportDeterminer: CardReaderSupportDetermining? = nil,
-         cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol? = nil,
-         onDismiss: @escaping () -> Void = {}) {
+         cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol? = nil) {
         self.flow = flow
         self.cardReaderSupportDeterminer = cardReaderSupportDeterminer ?? CardReaderSupportDeterminer(siteID: siteID, configuration: configuration)
         self.siteID = siteID
@@ -48,7 +46,6 @@ final class TapToPayEducationViewModel: ObservableObject {
             self.cardPresentPaymentsOnboardingUseCase.refresh()
         }
         self.isInteractiveDismissDisabled = flow == .onboarding ? true : false
-        self.onDismiss = onDismiss
         self.steps = steps ?? TapToPayEducationStepsFactory.steps(configuration: configuration)
 
         reloadHasPreviousTapToPayUsage()
@@ -78,7 +75,7 @@ final class TapToPayEducationViewModel: ObservableObject {
             } else {
                 return Action(title: Localization.done) { [weak self] in
                     guard let self else { return }
-                    onDismiss()
+                    dismiss = true
                 }
             }
         } else {
@@ -94,7 +91,7 @@ final class TapToPayEducationViewModel: ObservableObject {
             if flow == .about, !hasPreviousTapToPayUsage {
                 return Action(title: Localization.done) { [weak self] in
                     guard let self else { return }
-                    onDismiss()
+                    dismiss = true
                 }
             } else {
                 return nil

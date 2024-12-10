@@ -3,9 +3,12 @@ import SwiftUI
 
 struct TapToPayEducationView: View {
     @StateObject private var viewModel: TapToPayEducationViewModel
+    @Environment(\.dismiss) private var dismiss
+    private var completion: () -> Void
 
-    init(viewModel: TapToPayEducationViewModel) {
+    init(viewModel: TapToPayEducationViewModel, completion: @escaping () -> Void = {}) {
         self._viewModel = StateObject(wrappedValue: viewModel)
+        self.completion = completion
     }
 
     var body: some View {
@@ -65,26 +68,11 @@ struct TapToPayEducationView: View {
                 siteID: viewModel.siteID,
                 onboardingUseCase: viewModel.cardPresentPaymentsOnboardingUseCase)
         })
-    }
-}
-
-// MARK: - Hosting Controller
-
-final class TapToPayEducationViewHostingController: UIHostingController<TapToPayEducationView> {
-    init(onDismiss: @escaping () -> Void) {
-        let viewModel = TapToPayEducationViewModel(flow: .onboarding, onDismiss: onDismiss)
-        super.init(rootView: TapToPayEducationView(viewModel: viewModel))
-
-        viewModel.onDismiss = { [weak self] in
-            guard let self else { return }
-
-            dismiss(animated: true) {
-                onDismiss()
-            }
+        .onChange(of: viewModel.dismiss) { _ in
+            dismiss()
         }
-    }
-
-    @MainActor @preconcurrency required dynamic init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        .onDisappear {
+            completion()
+        }
     }
 }

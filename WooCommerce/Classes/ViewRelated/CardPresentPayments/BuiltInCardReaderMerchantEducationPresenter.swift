@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import UIKit
 
 protocol BuiltInCardReaderMerchantEducationPresenting {
@@ -13,7 +14,7 @@ final class BuiltInCardReaderMerchantEducationPresenter: BuiltInCardReaderMercha
     }
 
     func presentMerchantEducation(completion: @escaping () -> Void) {
-        let viewController = TapToPayEducationViewHostingController(onDismiss: completion)
+        let viewController = UIHostingController(rootView: TapToPayEducationView(viewModel: .init(), completion: completion))
         let topViewController = rootViewController?.presentedViewController
         topViewController?.present(viewController, animated: true)
     }

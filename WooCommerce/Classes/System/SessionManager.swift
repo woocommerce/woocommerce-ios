@@ -215,6 +215,7 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.blazeAbandonedCampaignCreationReminderOpened] = nil
         defaults[.blazeSelectedCampaignObjective] = nil
         defaults[.wpcomSiteSuspended] = nil
+        defaults[.tapToPayAwarenessMomentFirstLaunchCompleted] = nil
         resetTimestampsValues()
         imageCache.clearCache()
     }

@@ -40,7 +40,7 @@ struct POSSendReceiptView: View {
                 }
             }, label: {
                 HStack(spacing: Constants.buttonSpacing) {
-                    if !isLoading {
+                    if isLoading {
                         ProgressView()
                             .progressViewStyle(CircularProgressViewStyle())
                             .tint(Color.posPrimaryTextInverted)

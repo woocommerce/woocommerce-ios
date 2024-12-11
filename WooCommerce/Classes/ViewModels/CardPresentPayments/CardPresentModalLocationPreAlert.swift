@@ -4,7 +4,7 @@ import UIKit
 ///
 final class CardPresentModalLocationPreAlert: CardPresentPaymentsModalViewModel {
     /// Called when continue button is tapped
-    private let continueAction: () -> Void
+    private let requestPermission: () -> Void
 
     let textMode: PaymentsModalTextMode = .fullInfo
     let actionsMode: PaymentsModalActionsMode = .oneAction
@@ -20,12 +20,12 @@ final class CardPresentModalLocationPreAlert: CardPresentPaymentsModalViewModel 
         return topTitle + (bottomTitle ?? "") + (bottomSubtitle ?? "")
     }
 
-    init(continueAction: @escaping () -> Void) {
-        self.continueAction = continueAction
+    init(requestPermission: @escaping () -> Void) {
+        self.requestPermission = requestPermission
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        continueAction()
+        requestPermission()
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {}

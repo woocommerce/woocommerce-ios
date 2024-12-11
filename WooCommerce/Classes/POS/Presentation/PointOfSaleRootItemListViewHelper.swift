@@ -2,6 +2,7 @@ import SwiftUI
 import Yosemite
 
 // TODO: Maybe not a view helper because it's not stateless
+// TODO: Try replacing this with another `PointOfSaleItemsController` for child items
 final class PointOfSaleRootItemListViewHelper: ObservableObject {
     @Published var childItemListState: ItemListState = .empty
     private var allChildItems: [UUID: [POSItem]] = [:]

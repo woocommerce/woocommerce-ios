@@ -1,10 +1,16 @@
 import SwiftUI
+import class WordPressShared.EmailFormatValidator
 
 struct POSSendReceiptModalView: View {
     let sendReceipt: (String) -> ()
 
     @State private var textFieldInput: String = ""
     @Binding var isPresented: Bool
+
+    var isEmailValid: Bool {
+        EmailFormatValidator.validate(string: textFieldInput)
+    }
+    @State private var isShowingInvalidEmailWarning: Bool = false
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
@@ -24,17 +30,29 @@ struct POSSendReceiptModalView: View {
                     .padding(.horizontal)
 
                 Button(action: {
-                    sendReceipt(textFieldInput)
+                    if isEmailValid {
+                        isShowingInvalidEmailWarning = false
+                        sendReceipt(textFieldInput)
+                    } else {
+                        isShowingInvalidEmailWarning = true
+                    }
                 }, label: {
                     HStack(spacing: Constants.buttonSpacing) {
                         Text(Localization.buttonTitle)
                             .font(Constants.buttonFont)
+                            .padding(Constants.buttonPadding)
+                            .foregroundColor(Color.posPrimaryTextInverted)
+                            .background(isEmailValid ? .gray : Color.posOverlayFillInverted)
                     }
                 })
-                .padding(Constants.buttonPadding)
-                .foregroundColor(Color.posPrimaryTextInverted)
-                .background(Color.posOverlayFillInverted)
+                .buttonStyle(.plain)
                 .cornerRadius(Constants.buttonCornerRadius)
+                .disabled(!isEmailValid)
+                
+                if !isShowingInvalidEmailWarning {
+                    Text("Please type a valid email address")
+                        .foregroundColor(.red)
+                }
 
                 Spacer()
             }

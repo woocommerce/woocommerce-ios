@@ -68,7 +68,6 @@ struct WooShippingCreateLabelsView: View {
                     VStack {
                         if !isShipmentDetailsExpanded {
                             Text(Localization.BottomSheet.shipmentDetails)
-                                .lineLimit(0)
                                 .foregroundStyle(Color(.primary))
                                 .bold()
                         }

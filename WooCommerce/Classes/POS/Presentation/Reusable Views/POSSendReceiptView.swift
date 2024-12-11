@@ -1,13 +1,18 @@
 import SwiftUI
+import class WordPressShared.EmailFormatValidator
 
 struct POSSendReceiptView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
 
     @State private var textFieldInput: String = ""
     @State private var isLoading: Bool = false
-    @State private var isError: Bool = false
+    @State private var errorMessage: String?
 
     @Binding private(set) var isShowingSendReceiptView: Bool
+
+    private var isEmailValid: Bool {
+        EmailFormatValidator.validate(string: textFieldInput)
+    }
 
     var body: some View {
         VStack(alignment: .center, spacing: 20) {
@@ -31,20 +36,25 @@ struct POSSendReceiptView: View {
                 .font(POSFontStyle.posTitleRegular)
                 .focused()
                 .padding()
-            if isError {
-                Text(Localization.errorText)
+            if let errorMessage = errorMessage {
+                Text(errorMessage)
                     .font(POSFontStyle.posBodyRegular)
                     .foregroundColor(.red)
             }
 
             Button(action: {
                 Task { @MainActor in
+                    guard isEmailValid else {
+                        errorMessage = Localization.emailValidationErrorText
+                        return
+                    }
                     isLoading = true
                     do {
                         try await posModel.sendReceipt(to: textFieldInput)
                         isShowingSendReceiptView = false
+                        errorMessage = nil
                     } catch {
-                        isError = true
+                        errorMessage = Localization.sendReceiptErrorText
                     }
                     isLoading = false
                 }
@@ -94,10 +104,14 @@ private extension POSSendReceiptView {
             "pointOfSale.sendreceipt.modal.textfield.placeholder",
             value: "Type email",
             comment: "Placeholder for the view where an email address should be entered when sending receipts")
-        static let errorText = NSLocalizedString(
-            "pointOfSale.sendreceipt.modal.errortext",
+        static let sendReceiptErrorText = NSLocalizedString(
+            "pointOfSale.sendreceipt.modal.sendReceiptErrorText",
             value: "Error trying to send this email. Try again.",
             comment: "Generic error message that is displayed when there's an error emailing a receipt.")
+        static let emailValidationErrorText = NSLocalizedString(
+            "pointOfSale.sendreceipt.modal.emailValidationErrorText",
+            value: "Please enter a valid email.",
+            comment: "Error message that is displayed when an invalid email is used when emailing a receipt.")
     }
 }
 

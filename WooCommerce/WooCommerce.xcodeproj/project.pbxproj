@@ -56,6 +56,8 @@
 		01A5923C2D07195E001BF129 /* CardPresentPaymentsLocationPreAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A5923B2D07195E001BF129 /* CardPresentPaymentsLocationPreAlertView.swift */; };
 		01ADC1362C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ADC1352C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift */; };
 		01ADC1382C9AB6050036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ADC1372C9AB6050036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift */; };
+		01BB6C072D09DC560094D55B /* CardPresentModalLocationPreAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BB6C062D09DC470094D55B /* CardPresentModalLocationPreAlert.swift */; };
+		01BB6C0A2D09E9630094D55B /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BB6C092D09E9630094D55B /* LocationService.swift */; };
 		01BD77442C58CED400147191 /* PointOfSaleCardPresentPaymentProcessingMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BD77432C58CED400147191 /* PointOfSaleCardPresentPaymentProcessingMessageView.swift */; };
 		01BD77462C58D0D000147191 /* PointOfSaleCardPresentPaymentSuccessMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BD77452C58D0D000147191 /* PointOfSaleCardPresentPaymentSuccessMessageView.swift */; };
 		01BD77482C58D19C00147191 /* PointOfSaleCardPresentPaymentCancelledOnReaderMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BD77472C58D19C00147191 /* PointOfSaleCardPresentPaymentCancelledOnReaderMessageView.swift */; };
@@ -3189,6 +3191,8 @@
 		01A5923B2D07195E001BF129 /* CardPresentPaymentsLocationPreAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsLocationPreAlertView.swift; sourceTree = "<group>"; };
 		01ADC1352C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift; sourceTree = "<group>"; };
 		01ADC1372C9AB6050036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift; sourceTree = "<group>"; };
+		01BB6C062D09DC470094D55B /* CardPresentModalLocationPreAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalLocationPreAlert.swift; sourceTree = "<group>"; };
+		01BB6C092D09E9630094D55B /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		01BD77432C58CED400147191 /* PointOfSaleCardPresentPaymentProcessingMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentProcessingMessageView.swift; sourceTree = "<group>"; };
 		01BD77452C58D0D000147191 /* PointOfSaleCardPresentPaymentSuccessMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentSuccessMessageView.swift; sourceTree = "<group>"; };
 		01BD77472C58D19C00147191 /* PointOfSaleCardPresentPaymentCancelledOnReaderMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentCancelledOnReaderMessageView.swift; sourceTree = "<group>"; };
@@ -6301,6 +6305,14 @@
 				019630B32D01DB4000219D80 /* TapToPayAwarenessMomentView.swift */,
 			);
 			path = "Tap to Pay Education";
+			sourceTree = "<group>";
+		};
+		01BB6C082D09E9200094D55B /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				01BB6C092D09E9630094D55B /* LocationService.swift */,
+			);
+			path = Location;
 			sourceTree = "<group>";
 		};
 		0202B6932387ACE000F3EBE0 /* TabBar */ = {
@@ -10248,6 +10260,7 @@
 		B55D4C2220B716CE00D7A50F /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				01BB6C082D09E9200094D55B /* Location */,
 				26BCA03E2C35E965000BE96C /* BackgroundTasks */,
 				EEADF61C281A3DB7001B40F1 /* ShippingValueLocalizer */,
 				DE792E1926EF37D80071200C /* Connectivity */,
@@ -12512,6 +12525,7 @@
 		D8815AE526383FC200EDAD62 /* CardPresentPayments */ = {
 			isa = PBXGroup;
 			children = (
+				01BB6C062D09DC470094D55B /* CardPresentModalLocationPreAlert.swift */,
 				D8815AE626383FD600EDAD62 /* CardPresentPaymentsModalViewModel.swift */,
 				0396CFAC2981476800E91436 /* CardPresentModalBuiltInConnectingFailed.swift */,
 				032E481C2982996E00469D92 /* CardPresentModalBuiltInConnectingFailedNonRetryable.swift */,
@@ -15246,6 +15260,7 @@
 				B58B4AB22108F01700076FDD /* NoticeView.swift in Sources */,
 				20D2CCA52C7E328300051705 /* POSModalCloseButton.swift in Sources */,
 				DA25ADDD2C86145E00AE81FE /* MarkOrderAsReadUseCase.swift in Sources */,
+				01BB6C072D09DC560094D55B /* CardPresentModalLocationPreAlert.swift in Sources */,
 				74B5713621CD7604008F9B8E /* SharingHelper.swift in Sources */,
 				261F1A7929C2AB2E001D9861 /* FreeTrialBannerViewModel.swift in Sources */,
 				DEF657A82C895B0500ACD61E /* BlazeCampaignObjectivePickerViewModel.swift in Sources */,
@@ -16340,6 +16355,7 @@
 				DE86E9272A4BEA2500A89A5B /* FeedbackView.swift in Sources */,
 				CC72BB6427BD842500837876 /* DisclosureIndicator.swift in Sources */,
 				77E53EC52510C193003D385F /* ProductDownloadListViewController+Droppable.swift in Sources */,
+				01BB6C0A2D09E9630094D55B /* LocationService.swift in Sources */,
 				3F50FE4328CAEBA800C89201 /* AppLocalizedString.swift in Sources */,
 				0259D5F92581F0E6003B1CD6 /* ShippingLabelPaperSizeOptionView.swift in Sources */,
 				D81F2D37225F0D160084BF9C /* EmptyListMessageWithActionView.swift in Sources */,

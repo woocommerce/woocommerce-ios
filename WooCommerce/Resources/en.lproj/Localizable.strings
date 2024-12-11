@@ -12324,6 +12324,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the toggle to mark the order as complete on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.markComplete" = "Mark this order complete and notify the customer";
 
+/* Label for the toggle to mark the order as complete on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.afterPurchaseMarkComplete" = "After purchasing a label, mark this order as complete and notify the customer";
+
 /* Header for order details section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.orderDetails" = "Order details";
 

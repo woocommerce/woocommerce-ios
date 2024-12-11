@@ -87,7 +87,7 @@ private extension PaymentsActionButtons {
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
-    PaymentsActionButtons( isShowingSendReceiptView: .constant(false), isShowingReceiptNotEligibleBanner: .constant(true))
+    PaymentsActionButtons(isShowingSendReceiptView: .constant(false), isShowingReceiptNotEligibleBanner: .constant(true))
         .environmentObject(posModel)
 }
 #endif

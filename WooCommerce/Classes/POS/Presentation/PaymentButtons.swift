@@ -2,8 +2,7 @@ import SwiftUI
 
 struct PaymentsActionButtons: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
-    @State private var isShowingSendReceiptModal: Bool = false
-    @State private var sendReceiptError: Bool = false
+    @Binding var isShowingSendReceiptView: Bool
     @Binding private(set) var isShowingReceiptNotEligibleBanner: Bool
 
     private var shouldShowSendReceiptButton: Bool {
@@ -17,26 +16,6 @@ struct PaymentsActionButtons: View {
                     .renderedIf(shouldShowSendReceiptButton)
                 newOrderButton
             }
-            .sheet(isPresented: $sendReceiptError) {
-                // Temporary:
-                HStack {
-                    Text("Error")
-                    Text("Error sending receipt")
-                }
-            }
-            .posModal(isPresented: $isShowingSendReceiptModal) {
-                POSSendReceiptModalView(sendReceipt: { email in
-                    Task { @MainActor in
-                        do {
-                            try await posModel.sendReceipt(to: email)
-                            sendReceiptError = false
-                        } catch {
-                            sendReceiptError = true
-                        }
-                    }
-                }, isPresented: $isShowingSendReceiptModal)
-                .posModalSizing()
-            }
         }
     }
 }
@@ -45,7 +24,7 @@ private extension PaymentsActionButtons {
     var sendReceiptButton: some View {
         Button(action: {
             if posModel.eligibleWooCommerceVersionForPOSReceipts {
-                isShowingSendReceiptModal = true
+                isShowingSendReceiptView = true
             } else {
                 isShowingReceiptNotEligibleBanner = true
             }
@@ -108,7 +87,7 @@ private extension PaymentsActionButtons {
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
-    PaymentsActionButtons(isShowingReceiptNotEligibleBanner: .constant(true))
+    PaymentsActionButtons(isShowingSendReceiptView: .constant(false), isShowingReceiptNotEligibleBanner: .constant(true))
         .environmentObject(posModel)
 }
 #endif

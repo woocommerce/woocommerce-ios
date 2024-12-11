@@ -60,10 +60,15 @@ protocol CardReaderConnectionAlertsProviding<AlertDetails> {
                           bluetooth: @escaping () -> Void,
                           cancel: @escaping () -> Void) -> AlertDetails
 
+    /// Shows a modal explaining the proceeding native iOS location alert
+    ///
     func locationRequestPreAlert(continueAction: @escaping () -> Void) -> AlertDetails
 
-    func locationRequired(tryAgain: @escaping () -> Void,
-                          dismiss: @escaping () -> Void) -> AlertDetails
+    /// Shows a modal requiring location permissions to proceed
+    /// Skip callback is provided in case the alert presenter wants to skip the location requirement
+    ///
+    func locationRequired(dismiss: @escaping () -> Void,
+                          skip: @escaping () -> Void) -> AlertDetails
 }
 
 

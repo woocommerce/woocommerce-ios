@@ -4,6 +4,7 @@ import CoreLocation
 protocol LocationServiceProtocol {
     func requestPermission(_ completion: @escaping (LocationAuthorizationStatus) -> Void)
     func observePermissionChanges(_ onChange: @escaping (LocationAuthorizationStatus) -> Void)
+    func stopObservingPermissionChanges()
     var authorizationStatus: LocationAuthorizationStatus { get }
 }
 
@@ -37,6 +38,10 @@ final class LocationService: NSObject, LocationServiceProtocol {
 
     func observePermissionChanges(_ onChange: @escaping (LocationAuthorizationStatus) -> Void) {
         onStatusChange = onChange
+    }
+
+    func stopObservingPermissionChanges() {
+        onStatusChange = nil
     }
 
     var authorizationStatus: LocationAuthorizationStatus {

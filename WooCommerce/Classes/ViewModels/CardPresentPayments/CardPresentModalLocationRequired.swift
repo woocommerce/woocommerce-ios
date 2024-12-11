@@ -3,9 +3,7 @@ import UIKit
 /// Modal presented when location permission is denied
 ///
 final class CardPresentModalLocationRequired: CardPresentPaymentsModalViewModel {
-    private let tryAgain: () -> Void
     private let dismiss: () -> Void
-    private let locationService: LocationServiceProtocol
 
     let textMode: PaymentsModalTextMode = .fullInfo
     let actionsMode: PaymentsModalActionsMode = .twoAction
@@ -21,18 +19,8 @@ final class CardPresentModalLocationRequired: CardPresentPaymentsModalViewModel 
         return topTitle + (bottomTitle ?? "")
     }
 
-    init(tryAgain: @escaping () -> Void,
-         dismiss: @escaping () -> Void,
-         locationService: LocationServiceProtocol = LocationService()) {
-        self.tryAgain = tryAgain
+    init(dismiss: @escaping () -> Void) {
         self.dismiss = dismiss
-        self.locationService = locationService
-
-        // Location permission changes don't refresh the application
-        // for better UX, request a refresh when the user changes the permission
-        locationService.observePermissionChanges { [weak self] _ in
-            self?.tryAgain()
-        }
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {

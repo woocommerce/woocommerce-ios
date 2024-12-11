@@ -1,5 +1,4 @@
 import Foundation
-import protocol Experiments.FeatureFlagService
 import protocol Networking.Network
 import class Networking.ProductsRemote
 import class Networking.AlamofireNetwork
@@ -18,23 +17,23 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
     private var siteID: Int64
     private var currencySettings: CurrencySettings
     private let productsRemote: ProductsRemote
-    private let featureFlagService: FeatureFlagService
+    private let isVariableProductsFeatureEnabled: Bool
 
-    public init(siteID: Int64, currencySettings: CurrencySettings, network: Network, featureFlagService: FeatureFlagService) {
+    public init(siteID: Int64, currencySettings: CurrencySettings, network: Network, isVariableProductsFeatureEnabled: Bool) {
         self.siteID = siteID
         self.currencySettings = currencySettings
         self.productsRemote = ProductsRemote(network: network)
-        self.featureFlagService = featureFlagService
+        self.isVariableProductsFeatureEnabled = isVariableProductsFeatureEnabled
     }
 
     public convenience init(siteID: Int64,
                             currencySettings: CurrencySettings,
                             credentials: Credentials?,
-                            featureFlagService: FeatureFlagService) {
+                            isVariableProductsFeatureEnabled: Bool) {
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
                   network: AlamofireNetwork(credentials: credentials),
-                  featureFlagService: featureFlagService)
+                  isVariableProductsFeatureEnabled: isVariableProductsFeatureEnabled)
     }
 
     /// Provides a list of products for the Point of Sale, by fetching simple products from the remote, applying any eligibility criteria,
@@ -43,7 +42,7 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
     /// - pageNumber: Number of the page that should be retrieved. If none given, defaults to 1
     ///
     public func providePointOfSaleItems(pageNumber: Int = 1) async throws -> [POSDisplayableItem] {
-        let productTypes: [ProductType] = featureFlagService.isFeatureFlagEnabled(.variableProductsInPointOfSale) ?
+        let productTypes: [ProductType] = isVariableProductsFeatureEnabled ?
         [.simple, .variable] : [.simple]
         let products = try await productsRemote.loadProductsForPointOfSale(for: siteID, productTypes: productTypes, pageNumber: pageNumber)
 

@@ -204,7 +204,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     /// - productTypes: A list of product types to be included in the results.
     /// - pageNumber: Number of page that should be retrieved.
     ///
-    public func loadProductsForPointOfSale(for siteID: Int64, productTypes: [ProductType], pageNumber: Int = 1) async throws -> [Product] {
+    public func loadProductsForPointOfSale(for siteID: Int64, productTypes: [ProductType] = [.simple], pageNumber: Int = 1) async throws -> [Product] {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: POSConstants.productsPerPage,

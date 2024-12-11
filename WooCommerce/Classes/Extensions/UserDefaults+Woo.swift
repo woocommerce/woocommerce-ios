@@ -69,6 +69,10 @@ extension UserDefaults {
         // Whether the site is suspended on WordPress.com and can't be connected using Jetpack
         //
         case wpcomSiteSuspended
+
+        // Tap to Pay awareness moment
+        case tapToPayAwarenessMomentPresented
+        case tapToPayAwarenessMomentFirstLaunchCompleted
     }
 }
 

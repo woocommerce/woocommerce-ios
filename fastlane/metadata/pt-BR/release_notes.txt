@@ -1,1 +1,3 @@
-Tenha uma experiência mais fluida no WooCommerce! Ajustamos o app para Apple Watch para mostrar os detalhes do pedido perfeitamente. E mais, adicionamos mensagens de erro mais claras para conexões de leitores de pagamento. Atualize para acompanhar melhor os negócios diretamente do seu pulso e da palma da sua mão.
+Em apenas duas semanas, enchemos esta versão de novidades. Agora o identificador de produto global GTIN é compatível, e você pode editar a chamada para ação em campanhas do Blaze.
+
+A configuração de pagamentos presenciais para lojas ficou mais rápida, as confirmações de envio de recibo mais claras, e os testes do Tap to Pay on iPhone mais simples. Além disso, melhoramos as estatísticas do painel e eliminamos alguns bugs.

@@ -30,7 +30,7 @@ struct WooCarrierPackagesView: View {
             ForEach(carrierTab.packageGroups, id: \.id) { packageGroup in
                 Section {
                     ForEach(packageGroup.packages, id: \.id) { package in
-                        PackageOptionView(
+                        WooShippingPackageOptionView(
                             isSelected: selectedPackageId == package.id,
                             package: package,
                             showTopDivider: false,

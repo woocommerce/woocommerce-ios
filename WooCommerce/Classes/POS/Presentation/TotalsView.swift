@@ -16,17 +16,9 @@ struct TotalsView: View {
     private var shouldShowTotalsFields: Bool {
         viewHelper.shouldShowTotalsFields(for: posModel.paymentState)
     }
-    @State private var isShowingPaymentsButtonSpacing: Bool = false
-    @State private var isShowingSendReceiptModal: Bool = false
-    @State private var isShowingSendReceiptError: Bool = false
-    @State private var isShowingReceiptsNotEligibleBanner: Bool = false
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
-
-    private var shouldShowSendReceiptButton: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sendReceiptsForPointOfSale)
-    }
 
     var body: some View {
         HStack {
@@ -62,7 +54,6 @@ struct TotalsView: View {
                         }
                     }
                     .animation(.default, value: posModel.cardPresentPaymentInlineMessage)
-                    paymentsActionButtons
                     Spacer()
                 }
                 .animation(.default, value: isShowingCardReaderStatus)
@@ -79,23 +70,6 @@ struct TotalsView: View {
         }
         .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
         .geometryGroupIfSupported()
-// Tempo: Moved to `ReceiptView` in pos dashboard
-//        .posModal(isPresented: $isShowingSendReceiptModal) {
-//            POSSendReceiptModalView(sendReceipt: { email in
-//                Task { @MainActor in
-//                    do {
-//                        try await posModel.sendReceipt(to: email)
-//                    } catch {
-//                        isShowingSendReceiptError = true
-//                    }
-//                }
-//            }, isPresented: $isShowingSendReceiptModal)
-//            .posModalSizing()
-//        }
-        .posModal(isPresented: $isShowingSendReceiptError) {
-            POSSendReceiptModalErrorView(isPresented: $isShowingSendReceiptError)
-                .posModalSizing()
-        }
     }
 
     private var backgroundColor: Color {
@@ -222,70 +196,6 @@ private extension TotalsView {
 }
 
 private extension TotalsView {
-    private var newOrderButton: some View {
-        Button(action: {
-            posModel.startNewCart()
-        }, label: {
-            HStack(spacing: Constants.buttonSpacing) {
-                Text(Localization.newOrder)
-                    .font(Constants.buttonFont)
-            }
-            .frame(minWidth: UIScreen.main.bounds.width / 2)
-        })
-        .padding(Constants.buttonPadding)
-        .foregroundColor(Color.posPrimaryTextInverted)
-        .background(Color.posOverlayFillInverted)
-        .cornerRadius(Constants.buttonCornerRadius)
-    }
-
-    private var sendReceiptButton: some View {
-        Button(action: {
-            if posModel.eligibleWooCommerceVersionForPOSReceipts {
-                //isShowingSendReceiptModal = true
-                posModel.setStateForRequestReceipt()
-            } else {
-                isShowingReceiptsNotEligibleBanner = true
-            }
-        }, label: {
-            HStack(spacing: Constants.buttonSpacing) {
-                Text(Localization.sendReceipt)
-                    .font(Constants.buttonFont)
-            }
-            .frame(minWidth: UIScreen.main.bounds.width / 2)
-        })
-        .padding(Constants.buttonPadding)
-        .foregroundColor(Color.posPrimaryText)
-        .background(Color.clear)
-        .overlay {
-            RoundedRectangle(cornerRadius: Constants.buttonCornerRadius)
-                        .stroke(Color.posPrimaryText, lineWidth: 1.0)
-        }
-    }
-
-    @ViewBuilder
-    private var paymentsActionButtons: some View {
-        if posModel.paymentState == .cardPaymentSuccessful {
-            if isShowingPaymentsButtonSpacing {
-                Spacer().frame(height: Constants.paymentsButtonSpacing)
-            }
-            sendReceiptButton
-                .renderedIf(shouldShowSendReceiptButton)
-            newOrderButton
-                .onAppear {
-                    isShowingPaymentsButtonSpacing = false
-                    withAnimation(.default.delay(Constants.paymentsButtonButtonSpacingAnimationDelay)) {
-                        isShowingPaymentsButtonSpacing = true
-                    }
-                }
-            if isShowingReceiptsNotEligibleBanner {
-                POSReceiptEligibilityBanner(isVisible: $isShowingReceiptsNotEligibleBanner)
-            }
-            Spacer().frame(height: Constants.paymentsButtonSpacing)
-        }
-        else {
-            EmptyView()
-        }
-    }
 
     @ViewBuilder private var cardReaderView: some View {
         switch posModel.cardReaderConnectionStatus {
@@ -378,54 +288,9 @@ private extension TotalsView {
     }
 }
 
-extension TotalsView {
-    private struct POSReceiptEligibilityBanner: View {
-        @Binding var isVisible: Bool
-
-        var body: some View {
-            HStack(spacing: Constants.elementSpacing) {
-                Image(uiImage: .appIconDefault)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: Constants.imagesize, height: Constants.imagesize)
-                    .clipShape(Circle())
-                    .padding(Constants.imagePadding)
-                Text(Localization.updateWooCommerceVersionText)
-                    .foregroundColor(Color.posPrimaryText)
-            }
-            .padding()
-            .background(Color.posPrimaryBackground)
-            .cornerRadius(Constants.cornerRadius)
-            .padding(.horizontal, Constants.bannerPadding)
-            .onTapGesture {
-                withAnimation {
-                    isVisible = false
-                }
-            }
-        }
-
-        enum Constants {
-            static let elementSpacing: CGFloat = 8
-            static let cornerRadius: CGFloat = 20
-            static let imagesize: CGFloat = 40
-            static let imagePadding: CGFloat = 4
-            static let bannerPadding: CGFloat = 16
-        }
-
-        enum Localization {
-            static let updateWooCommerceVersionText = NSLocalizedString(
-                "pos.totalsView.receipts.banner.updateWooCommerceVersionText",
-                value: "Please update WooCommerce to version 9.5.0",
-                comment: "Text for the banner requiring specific WooCommerce version.")
-        }
-    }
-}
-
 private extension TotalsView {
     enum Constants {
         static let pricesIdealWidth: CGFloat = 382
-        static let buttonCornerRadius: CGFloat = 8
-
         static let verticalSpacing: CGFloat = 56
 
         static let totalsLineViewPadding: EdgeInsets = .init(top: 20, leading: 24, bottom: 20, trailing: 24)
@@ -442,12 +307,6 @@ private extension TotalsView {
         static let shimmeringWidth: CGFloat = 334
         static let subtotalsShimmeringHeight: CGFloat = 36
         static let totalShimmeringHeight: CGFloat = 40
-
-        static let paymentsButtonSpacing: CGFloat = 80
-        static let paymentsButtonButtonSpacingAnimationDelay: CGFloat = 0.3
-        static let buttonSpacing: CGFloat = 12
-        static let buttonPadding: CGFloat = 32
-        static let buttonFont: POSFontStyle = .posBodyEmphasized
 
         /// Used for synchronizing animations of shimmeringLine and textField
         static let matchedGeometrySubtotalId: String = "pos_totals_view_subtotal_matched_geometry_id"
@@ -470,14 +329,6 @@ private extension TotalsView {
             "pos.totalsView.taxes",
             value: "Taxes",
             comment: "Title for taxes amount field")
-        static let newOrder = NSLocalizedString(
-            "pos.totalsView.newOrder",
-            value: "New order",
-            comment: "Button title for new order button")
-        static let sendReceipt = NSLocalizedString(
-            "pos.totalsView.sendReceipt",
-            value: "Receipt",
-            comment: "Button title for the receipt button")
     }
 }
 

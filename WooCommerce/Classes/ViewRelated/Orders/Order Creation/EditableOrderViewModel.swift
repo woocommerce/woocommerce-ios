@@ -111,7 +111,7 @@ final class EditableOrderViewModel: ObservableObject {
         !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
     }
 
-    var enableAddingCustomAmountViaOrderTotalPercentage: Bool {
+    var orderIsNotEmpty: Bool {
         orderSynchronizer.order.items.isNotEmpty || orderSynchronizer.order.fees.isNotEmpty
     }
 
@@ -149,7 +149,7 @@ final class EditableOrderViewModel: ObservableObject {
     /// When the value is non-nil, the bundle product configuration screen is shown.
     @Published var productToConfigureViewModel: ConfigurableBundleProductViewModel?
 
-    @Published private(set) var customAmountsSectionViewModel: OrderCustomAmountsSectionViewModel = .init()
+    @Published private(set) var customAmountsSectionViewModel: OrderCustomAmountsSectionViewModel
 
     // MARK: Status properties
 
@@ -191,10 +191,6 @@ final class EditableOrderViewModel: ObservableObject {
     /// Selected tax rate to apply to the order
     ///
     @Published private var storedTaxRate: TaxRate? = nil
-
-    /// Display the custom amount screen to edit it
-    ///
-    @Published var showEditCustomAmount: Bool = false
 
     /// Defines if the toggle to store the tax rate in the selector should be enabled by default
     ///
@@ -491,6 +487,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.initialCustomer = initialCustomer
         self.barcodeScannerItemFinder = BarcodeScannerItemFinder(stores: stores)
         self.quantityDebounceDuration = quantityDebounceDuration
+        self.customAmountsSectionViewModel = OrderCustomAmountsSectionViewModel(currencySettings: currencySettings)
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.
@@ -1026,8 +1023,11 @@ final class EditableOrderViewModel: ObservableObject {
     /// Starts the flow to add a custom amount.
     func addCustomAmount() {
         editingFee = nil
-        enableAddingCustomAmountViaOrderTotalPercentage ?
-        customAmountsSectionViewModel.showAddCustomAmountOptionsDialog.toggle() : customAmountsSectionViewModel.showAddCustomAmount.toggle()
+        if orderIsNotEmpty {
+            customAmountsSectionViewModel.showCustomAmountOptionsDialog = true
+        } else {
+            customAmountsSectionViewModel.showAddCustomAmount = true
+        }
     }
 
     func onCreateOrderTapped() {
@@ -1611,7 +1611,7 @@ private extension EditableOrderViewModel {
                                                     onEditCustomAmount: {
                         self.analytics.track(.orderCreationEditCustomAmountTapped)
                         self.editingFee = fee
-                        self.showEditCustomAmount = true
+                        self.customAmountsSectionViewModel.showCustomAmountOptionsDialog = true
                     })
                 }
             }

@@ -15,6 +15,10 @@ struct TapToPayEducationStepView: View {
                 .bold()
                 .multilineTextAlignment(.center)
             Image(viewModel.imageName)
+                .resizable()
+                .scaledToFit()
+                .frame(maxHeight: 350)
+                .accessibilityHidden(true)
             if viewModel.descriptionSteps.count > 1 {
                 ForEach(viewModel.descriptionSteps.indices, id: \.self) { index in
                     PaymentSettingsFlowHint(number: index + 1,
@@ -22,8 +26,15 @@ struct TapToPayEducationStepView: View {
                 }
             } else if let description = viewModel.descriptionSteps.first {
                 Text(description)
-                    .font(.callout)
+                    .font(.body)
+                    .fixedSize(horizontal: false, vertical: true)
             }
+
+            if let limit = viewModel.limit {
+                AboutTapToPayContactlessLimitView(viewModel: limit)
+                    .padding([.top, .bottom])
+            }
+
             Spacer(minLength: 0)
         }
         .padding([.leading, .trailing], 24)

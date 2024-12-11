@@ -18,6 +18,8 @@ final class TapToPayEducationViewModel: ObservableObject {
 
     @Published var showingSetUpFlow: Bool = false
     @Published private(set) var hasPreviousTapToPayUsage = false
+    @Published var shouldShowContactlessLimit: Bool = false
+    @Published private(set) var dismiss: Bool = false
 
     private let flow: Flow
     private let cardReaderSupportDeterminer: CardReaderSupportDetermining
@@ -26,15 +28,12 @@ final class TapToPayEducationViewModel: ObservableObject {
     let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
     let siteID: Int64
 
-    private let onDismiss: () -> Void
-
     init(flow: Flow = .onboarding,
          steps: [TapToPayEducationStepViewModel]? = nil,
          siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          cardReaderSupportDeterminer: CardReaderSupportDetermining? = nil,
-         cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol? = nil,
-         onDismiss: @escaping () -> Void = {}) {
+         cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol? = nil) {
         self.flow = flow
         self.cardReaderSupportDeterminer = cardReaderSupportDeterminer ?? CardReaderSupportDeterminer(siteID: siteID, configuration: configuration)
         self.siteID = siteID
@@ -47,40 +46,7 @@ final class TapToPayEducationViewModel: ObservableObject {
             self.cardPresentPaymentsOnboardingUseCase.refresh()
         }
         self.isInteractiveDismissDisabled = flow == .onboarding ? true : false
-        self.onDismiss = onDismiss
-        // TODO: Inject steps
-        self.steps = steps ?? [.init(
-            title: "How to accept contactless card with Tap to Pay on iPhone.",
-            imageName: "built-in-reader-preparing",
-            descriptionSteps: [
-                "Create an order on your iPhone, add products or a custom amount, "
-                + "and check out with Tap to Pay on iPhone.",
-                "Present your iPhone to the customer.",
-                "When you see the Done checkmark, the card read is complete and the "
-                + "transaction is being processed.",
-                "When you see the Done checkmark, the card read."
-            ]
-        ),
-        .init(
-            title: "Accept contactless payments with only an iPhone.",
-            imageName: "built-in-reader-set-up",
-            descriptionSteps: [
-                "With Tap to Pay on iPhone and the Woo app, you can accept in-person, "
-                + "contactless payments, right on your iPhone - from physical debit and "
-                + "credit cards, to Apple Pay and other digital wallets - no extra "
-                + "hardware needed. It’s easy, secure, and private."
-            ]
-        ),
-        .init(
-            title: "How to handle PIN entry for a card.",
-            imageName: "built-in-reader-processing",
-            descriptionSteps: [
-                "Customer is prompted to enter their card PIN under specific "
-                + "circumstances with Tap to Pay on iPhone. For customers needing visual "
-                + "or other assistance, accessibility options are accessed by selecting "
-                + "‘Accessibility Options’ on the PIN screen. Audible instructions guide customers."
-            ]
-        )]
+        self.steps = steps ?? TapToPayEducationStepsFactory.steps(configuration: configuration)
 
         reloadHasPreviousTapToPayUsage()
     }
@@ -109,7 +75,7 @@ final class TapToPayEducationViewModel: ObservableObject {
             } else {
                 return Action(title: Localization.done) { [weak self] in
                     guard let self else { return }
-                    onDismiss()
+                    dismiss = true
                 }
             }
         } else {
@@ -125,7 +91,7 @@ final class TapToPayEducationViewModel: ObservableObject {
             if flow == .about, !hasPreviousTapToPayUsage {
                 return Action(title: Localization.done) { [weak self] in
                     guard let self else { return }
-                    onDismiss()
+                    dismiss = true
                 }
             } else {
                 return nil

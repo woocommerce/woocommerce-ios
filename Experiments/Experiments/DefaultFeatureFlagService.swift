@@ -97,6 +97,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .tapToPayEducation:
             return false
+        case .variableProductsInPointOfSale:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

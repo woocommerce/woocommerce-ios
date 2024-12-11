@@ -154,7 +154,6 @@ public final class CoreDataManager: StorageManagerType {
         viewContext.performAndWait {
             viewContext.reset()
             self.deleteAllStoredObjects(in: viewContext)
-            viewContext.saveIfNeeded()
         }
 
         /// Delete all objects in the background context to avoid discrepancy with the view context

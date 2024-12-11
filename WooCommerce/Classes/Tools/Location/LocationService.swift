@@ -3,6 +3,7 @@ import CoreLocation
 
 protocol LocationServiceProtocol {
     func requestPermission(_ completion: @escaping (LocationAuthorizationStatus) -> Void)
+    func observePermissionChanges(_ onChange: @escaping (LocationAuthorizationStatus) -> Void)
     var authorizationStatus: LocationAuthorizationStatus { get }
 }
 
@@ -15,6 +16,7 @@ enum LocationAuthorizationStatus {
 final class LocationService: NSObject, LocationServiceProtocol {
     private let locationManager = CLLocationManager()
     private var permissionCompletion: ((LocationAuthorizationStatus) -> Void)?
+    private var onStatusChange: ((LocationAuthorizationStatus) -> Void)?
 
     override init() {
         super.init()
@@ -33,6 +35,10 @@ final class LocationService: NSObject, LocationServiceProtocol {
         locationManager.requestWhenInUseAuthorization()
     }
 
+    func observePermissionChanges(_ onChange: @escaping (LocationAuthorizationStatus) -> Void) {
+        onStatusChange = onChange
+    }
+
     var authorizationStatus: LocationAuthorizationStatus {
         let status = locationManager.authorizationStatus
         return authorizationStatus(from: status)
@@ -44,6 +50,10 @@ extension LocationService: CLLocationManagerDelegate {
         if let completion = permissionCompletion {
             completion(authorizationStatus(from: status))
             permissionCompletion = nil
+        }
+
+        if let onChange = onStatusChange {
+            onChange(authorizationStatus(from: status))
         }
     }
 }

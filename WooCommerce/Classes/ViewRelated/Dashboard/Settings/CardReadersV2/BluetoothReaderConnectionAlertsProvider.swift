@@ -88,4 +88,9 @@ struct BluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlerts
     func locationRequestPreAlert(continueAction: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalLocationPreAlert(continueAction: continueAction)
     }
+
+    func locationRequired(tryAgain: @escaping () -> Void,
+                          dismiss: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalLocationRequired(tryAgain: tryAgain, dismiss: dismiss)
+    }
 }

@@ -61,6 +61,9 @@ protocol CardReaderConnectionAlertsProviding<AlertDetails> {
                           cancel: @escaping () -> Void) -> AlertDetails
 
     func locationRequestPreAlert(continueAction: @escaping () -> Void) -> AlertDetails
+
+    func locationRequired(tryAgain: @escaping () -> Void,
+                          dismiss: @escaping () -> Void) -> AlertDetails
 }
 
 

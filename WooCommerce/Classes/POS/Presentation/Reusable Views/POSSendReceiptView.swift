@@ -49,12 +49,14 @@ struct POSSendReceiptView: View {
                             .font(Constants.buttonFont)
                     }
                 }
+                .frame(maxWidth: .infinity)
             })
             .padding(Constants.buttonPadding)
             .frame(maxWidth: .infinity)
             .foregroundColor(Color.posPrimaryTextInverted)
             .background(Color.posOverlayFillInverted)
             .cornerRadius(Constants.buttonCornerRadius)
+            .contentShape(Rectangle())
 
             Spacer()
         }

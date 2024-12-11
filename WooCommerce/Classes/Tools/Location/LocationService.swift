@@ -15,11 +15,12 @@ enum LocationAuthorizationStatus {
 }
 
 final class LocationService: NSObject, LocationServiceProtocol {
-    private let locationManager = CLLocationManager()
+    private let locationManager: CLLocationManager
     private var permissionCompletion: ((LocationAuthorizationStatus) -> Void)?
     private var onStatusChange: ((LocationAuthorizationStatus) -> Void)?
 
-    override init() {
+    init(locationManager: CLLocationManager = CLLocationManager()) {
+        self.locationManager = locationManager
         super.init()
         locationManager.delegate = self
     }
@@ -51,14 +52,14 @@ final class LocationService: NSObject, LocationServiceProtocol {
 }
 
 extension LocationService: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         if let completion = permissionCompletion {
-            completion(authorizationStatus(from: status))
+            completion(authorizationStatus(from: manager.authorizationStatus))
             permissionCompletion = nil
         }
 
         if let onChange = onStatusChange {
-            onChange(authorizationStatus(from: status))
+            onChange(authorizationStatus(from: manager.authorizationStatus))
         }
     }
 }

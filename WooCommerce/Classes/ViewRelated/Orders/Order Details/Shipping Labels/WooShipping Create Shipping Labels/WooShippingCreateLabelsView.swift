@@ -51,7 +51,6 @@ struct WooShippingCreateLabelsView: View {
                     } else if let package = viewModel.selectedPackage,
                               let shippingService = viewModel.shippingService {
                         WooShippingSelectedPackageView(package: package,
-                                                       weightUnit: viewModel.weightUnit,
                                                        totalWeight: $viewModel.shipmentWeight)
                         WooShippingServiceView(viewModel: shippingService)
                             .padding(.horizontal, -16)
@@ -151,6 +150,8 @@ struct WooShippingCreateLabelsView: View {
                 }
                 .ignoresSafeArea(edges: .horizontal)
             }
+            .shippingWeightUnit(viewModel.weightUnit)
+            .shippingDimensionsUnit(viewModel.dimensionsUnit)
             .navigationTitle(viewModel.canViewLabel ? Localization.viewLabelTitle : Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -160,10 +161,6 @@ struct WooShippingCreateLabelsView: View {
                     }
                 }
             }
-        }
-        .onAppear() {
-            guard viewModel.storeOptions == nil else { return }
-            viewModel.loadStoreOptions()
         }
     }
 }
@@ -240,6 +237,22 @@ private extension WooShippingCreateLabelsView {
         }
         .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isPurchasingLabel))
         .disabled(!viewModel.isPurchaseButtonEnabled)
+    }
+}
+
+// MARK: Store Options
+extension EnvironmentValues {
+    @Entry var shippingWeightUnit: String = ServiceLocator.shippingSettingsService.weightUnit ?? ""
+    @Entry var shippingDimensionsUnit: String = ServiceLocator.shippingSettingsService.dimensionUnit ?? ""
+}
+
+extension View {
+    func shippingWeightUnit(_ weightUnit: String) -> some View {
+        environment(\.shippingWeightUnit, weightUnit)
+    }
+
+    func shippingDimensionsUnit(_ dimensionsUnit: String) -> some View {
+        environment(\.shippingDimensionsUnit, dimensionsUnit)
     }
 }
 

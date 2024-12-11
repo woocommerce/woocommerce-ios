@@ -64,6 +64,12 @@ extension WooShippingPackagesResponse: Decodable {
             }
         }
 
+        // sort to make sure they are always in same order
+        // since we get the carriers data as a dictionary (key is carrier id)
+        allPredefinedOptions.sort {
+            return $0.carrierID < $1.carrierID
+        }
+
         self.init(storeOptions: storeOptions,
                   customPackages: customPackages,
                   savedPredefinedPackages: allSavedPredefinedPackages,

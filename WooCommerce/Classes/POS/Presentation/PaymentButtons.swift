@@ -3,6 +3,7 @@ import SwiftUI
 struct PaymentsActionButtons: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @State private var isShowingSendReceiptModal: Bool = false
+    @State private var sendReceiptError: Bool = false
     @Binding private(set) var isShowingReceiptNotEligibleBanner: Bool
 
     private var shouldShowSendReceiptButton: Bool {
@@ -16,10 +17,22 @@ struct PaymentsActionButtons: View {
                     .renderedIf(shouldShowSendReceiptButton)
                 newOrderButton
             }
+            .sheet(isPresented: $sendReceiptError) {
+                // Temporary:
+                HStack {
+                    Text("Error")
+                    Text("Error sending receipt")
+                }
+            }
             .posModal(isPresented: $isShowingSendReceiptModal) {
                 POSSendReceiptModalView(sendReceipt: { email in
                     Task { @MainActor in
-                        try await posModel.sendReceipt(to: email)
+                        do {
+                            try await posModel.sendReceipt(to: email)
+                            sendReceiptError = false
+                        } catch {
+                            sendReceiptError = true
+                        }
                     }
                 }, isPresented: $isShowingSendReceiptModal)
                 .posModalSizing()

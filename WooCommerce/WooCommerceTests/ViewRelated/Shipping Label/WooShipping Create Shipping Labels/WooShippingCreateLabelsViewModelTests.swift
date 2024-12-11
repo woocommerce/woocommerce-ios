@@ -374,9 +374,7 @@ private extension WooShippingCreateLabelsViewModelTests {
                                length: "21.91",
                                width: "13.65",
                                height: "4.13",
-                               dimensionsUnit: "cm",
                                weight: ".25",
-                               weightUnit: "kg",
                                source: .predefined(sourceTitle: "usps", sourceID: "usps"),
                                packageType: "box")
     }

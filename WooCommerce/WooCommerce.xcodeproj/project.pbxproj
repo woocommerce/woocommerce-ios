@@ -53,7 +53,6 @@
 		019630B42D01DB4800219D80 /* TapToPayAwarenessMomentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019630B32D01DB4000219D80 /* TapToPayAwarenessMomentView.swift */; };
 		019630B62D02018C00219D80 /* TapToPayAwarenessMomentDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019630B52D02018400219D80 /* TapToPayAwarenessMomentDeterminer.swift */; };
 		019630B82D0211F400219D80 /* TapToPayAwarenessMomentDeterminerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019630B72D0211F400219D80 /* TapToPayAwarenessMomentDeterminerTests.swift */; };
-		01A5923C2D07195E001BF129 /* CardPresentPaymentsLocationPreAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A5923B2D07195E001BF129 /* CardPresentPaymentsLocationPreAlertView.swift */; };
 		01ADC1362C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ADC1352C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift */; };
 		01ADC1382C9AB6050036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ADC1372C9AB6050036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift */; };
 		01BB6C072D09DC560094D55B /* CardPresentModalLocationPreAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BB6C062D09DC470094D55B /* CardPresentModalLocationPreAlert.swift */; };
@@ -3188,7 +3187,6 @@
 		019630B32D01DB4000219D80 /* TapToPayAwarenessMomentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayAwarenessMomentView.swift; sourceTree = "<group>"; };
 		019630B52D02018400219D80 /* TapToPayAwarenessMomentDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayAwarenessMomentDeterminer.swift; sourceTree = "<group>"; };
 		019630B72D0211F400219D80 /* TapToPayAwarenessMomentDeterminerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayAwarenessMomentDeterminerTests.swift; sourceTree = "<group>"; };
-		01A5923B2D07195E001BF129 /* CardPresentPaymentsLocationPreAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsLocationPreAlertView.swift; sourceTree = "<group>"; };
 		01ADC1352C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift; sourceTree = "<group>"; };
 		01ADC1372C9AB6050036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift; sourceTree = "<group>"; };
 		01BB6C062D09DC470094D55B /* CardPresentModalLocationPreAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalLocationPreAlert.swift; sourceTree = "<group>"; };
@@ -13336,7 +13334,6 @@
 				0373A1302A1E3FD700731236 /* TapToPayBadgePromotionChecker.swift */,
 				B90C65CC29ACE2D6004CAB9E /* CardPresentPaymentOnboardingStateCache.swift */,
 				B946880F29B8DD01000646B0 /* InPersonPaymentsMenuViewController+Activity.swift */,
-				01A5923B2D07195E001BF129 /* CardPresentPaymentsLocationPreAlertView.swift */,
 			);
 			path = "In-Person Payments";
 			sourceTree = "<group>";
@@ -15325,7 +15322,6 @@
 				6837631C2C2E847D00AD51D0 /* CartViewHelper.swift in Sources */,
 				45CDAFAE2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.swift in Sources */,
 				D85B8333222FABD1002168F3 /* StatusListTableViewCell.swift in Sources */,
-				01A5923C2D07195E001BF129 /* CardPresentPaymentsLocationPreAlertView.swift in Sources */,
 				DE2E8EB729547771002E4B14 /* ApplicationPasswordDisabledViewModel.swift in Sources */,
 				0259D65D2582248D003B1CD6 /* PrintShippingLabelViewController.swift in Sources */,
 				D881A31B256B5CC500FE5605 /* ULErrorViewController.swift in Sources */,

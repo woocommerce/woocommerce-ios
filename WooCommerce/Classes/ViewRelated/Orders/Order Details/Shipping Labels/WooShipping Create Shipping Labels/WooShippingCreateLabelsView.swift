@@ -73,7 +73,7 @@ struct WooShippingCreateLabelsView: View {
                         }
                         if !viewModel.canViewLabel {
                             if isiPhonePortrait {
-                                VStack {
+                                VStack(spacing: Layout.bottomSheetSpacing) {
                                     if isShipmentDetailsExpanded {
                                         Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
                                             .font(.subheadline)
@@ -83,7 +83,7 @@ struct WooShippingCreateLabelsView: View {
                                 }
                             }
                             else {
-                                HStack {
+                                HStack(spacing: Layout.bottomSheetSpacing) {
                                     Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
                                         .font(.subheadline)
                                         .tint(Color(.primary))

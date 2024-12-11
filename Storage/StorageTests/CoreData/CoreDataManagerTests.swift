@@ -53,8 +53,9 @@ final class CoreDataManagerTests: XCTestCase {
                 _ = storage.insertNewObject(ofType: ShippingLine.self)
             }, completion: {
                 XCTAssertEqual(viewContext.countObjects(ofType: ShippingLine.self), 1)
-                manager.reset()
-                expectation.fulfill()
+                manager.reset {
+                    expectation.fulfill()
+                }
             }, on: .main)
         }
 

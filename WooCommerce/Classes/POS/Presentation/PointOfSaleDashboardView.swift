@@ -87,23 +87,9 @@ struct PointOfSaleDashboardView: View {
                 }
 
                 if posModel.orderStage == .finalizing {
-                    // If I want a full-screen view, I need the order from posModel
-                    switch posModel.paymentState {
-                    case .requestingReceipt:
-                        ReceiptView(sendReceipt: { email in
-                            Task { @MainActor in
-                                do {
-                                    try await posModel.sendReceipt(to: email)
-                                } catch {
-                                    // no-op
-                                }
-                            }
-                        })
-                    default:
-                        TotalsView()
-                            .accessibilitySortPriority(2)
-                            .transition(.move(edge: .trailing))
-                    }
+                    TotalsView()
+                        .accessibilitySortPriority(2)
+                        .transition(.move(edge: .trailing))
                 }
             }
             .animation(.default, value: posModel.orderStage)

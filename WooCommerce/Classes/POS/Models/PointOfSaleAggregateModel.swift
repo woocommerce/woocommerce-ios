@@ -137,10 +137,6 @@ extension PointOfSaleAggregateModel {
         orderController.clearOrder()
         setStateForEditing()
     }
-    
-    func setStateForRequestReceipt() {
-        paymentState = .requestingReceipt
-    }
 
     private func setStateForEditing() {
         orderStage = .building

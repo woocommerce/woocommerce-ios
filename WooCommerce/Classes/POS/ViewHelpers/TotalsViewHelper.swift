@@ -11,8 +11,7 @@ final class TotalsViewHelper {
             return true
         case .processingPayment,
                 .paymentError,
-                .cardPaymentSuccessful,
-                .requestingReceipt:
+                .cardPaymentSuccessful:
             return false
         }
     }

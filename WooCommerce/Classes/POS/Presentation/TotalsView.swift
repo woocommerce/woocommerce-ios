@@ -275,8 +275,7 @@ private extension TotalsView {
                 .validatingOrder,
                 .preparingReader,
                 .processingPayment,
-                .cardPaymentSuccessful,
-                .requestingReceipt:
+                .cardPaymentSuccessful:
             break
         }
 

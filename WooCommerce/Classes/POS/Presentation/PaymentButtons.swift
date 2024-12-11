@@ -19,7 +19,7 @@ struct PaymentsActionButtons: View {
             .posModal(isPresented: $isShowingSendReceiptModal) {
                 POSSendReceiptModalView(sendReceipt: { email in
                     Task { @MainActor in
-                        await posModel.sendReceipt(to: email)
+                        try await posModel.sendReceipt(to: email)
                     }
                 }, isPresented: $isShowingSendReceiptModal)
                 .posModalSizing()

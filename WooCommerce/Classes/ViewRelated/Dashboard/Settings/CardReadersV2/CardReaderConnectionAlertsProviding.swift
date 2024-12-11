@@ -59,6 +59,8 @@ protocol CardReaderConnectionAlertsProviding<AlertDetails> {
     func selectSearchType(tapToPay: @escaping () -> Void,
                           bluetooth: @escaping () -> Void,
                           cancel: @escaping () -> Void) -> AlertDetails
+
+    func locationRequestPreAlert(continueAction: @escaping () -> Void) -> AlertDetails
 }
 
 

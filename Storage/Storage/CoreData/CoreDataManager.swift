@@ -112,7 +112,7 @@ public final class CoreDataManager: StorageManagerType {
             derivedStorage.perform {
                 operation(derivedStorage)
 
-                derivedStorage.saveIfNeeded()
+                (derivedStorage as! NSManagedObjectContext).saveIfNeeded()
                 queue.async { completion?() }
                 done()
             }
@@ -138,7 +138,7 @@ public final class CoreDataManager: StorageManagerType {
             derivedStorage.perform {
                 let result = Result(catching: { try operation(derivedStorage) })
                 if case .success = result {
-                    derivedStorage.saveIfNeeded()
+                    (derivedStorage as! NSManagedObjectContext).saveIfNeeded()
                 }
                 queue.async { completion(result) }
                 done()

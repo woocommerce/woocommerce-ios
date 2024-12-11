@@ -43,6 +43,7 @@ public class MockStorageManager: StorageManagerType {
 
     /// Persists the Derived Storage's Changes.
     ///
+    @available(*, deprecated, message: "Use `MockStorageManager`'s `performAndSave` to handle write operations instead of writing directly.")
     public func saveDerivedType(derivedStorage: StorageType, _ closure: @escaping () -> Void) {
         derivedStorage.perform {
             derivedStorage.saveIfNeeded()
@@ -158,5 +159,12 @@ extension MockStorageManager {
         }
 
         return url
+    }
+}
+
+extension StorageType {
+    @available(*, deprecated, message: "Use `MockStorageManager`'s `performAndSave` to handle write operations instead of writing directly.")
+    func saveIfNeeded() {
+        (self as! NSManagedObjectContext).saveIfNeeded()
     }
 }

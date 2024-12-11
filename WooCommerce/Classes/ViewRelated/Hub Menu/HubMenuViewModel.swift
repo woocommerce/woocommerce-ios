@@ -28,7 +28,7 @@ enum HubMenuNavigationDestination: Hashable {
     case inAppPurchase
     case subscriptions
     case customers
-    case pointOfSales
+//    case pointOfSales
     case reviewDetails(parcel: ProductReviewFromNoteParcel)
 }
 
@@ -667,7 +667,7 @@ extension HubMenuViewModel {
         let accessibilityIdentifier: String = "menu-pointOfSale"
         let trackingOption: String = "pointOfSale"
         let iconBadge: HubMenuBadgeType? = nil
-        let navigationDestination: HubMenuNavigationDestination? = .pointOfSales
+        let navigationDestination: HubMenuNavigationDestination? = nil //.pointOfSales
     }
 
     struct Subscriptions: HubMenuItem {

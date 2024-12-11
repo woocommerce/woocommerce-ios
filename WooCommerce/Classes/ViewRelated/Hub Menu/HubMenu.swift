@@ -46,6 +46,20 @@ struct HubMenu: View {
             ServiceLocator.analytics.track(.hubMenuSettingsTapped)
         case HubMenuViewModel.Blaze.id:
             ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
+        case HubMenuViewModel.PointOfSaleEntryPoint.id:
+            if let cardPresentPaymentService = viewModel.cardPresentPaymentService,
+               let orderService = POSOrderService(siteID: viewModel.siteID,
+                                                  credentials: viewModel.credentials) {
+                let pos = PointOfSaleEntryPointView(
+                    itemsController: PointOfSaleItemsController(rootItemProvider: viewModel.posItemProvider, variationProvider: viewModel.posVariationProvider),
+                    onPointOfSaleModeActiveStateChange: { isEnabled in
+                        viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
+                    },
+                    cardPresentPaymentService: cardPresentPaymentService,
+                    orderController: PointOfSaleOrderController(orderService: orderService))
+
+                pos.presentInNewKeyWindow()
+            }
         default:
             break
         }
@@ -154,21 +168,21 @@ private extension HubMenu {
                 SubscriptionsView(viewModel: .init())
             case .customers:
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
-            case .pointOfSales:
-                if let cardPresentPaymentService = viewModel.cardPresentPaymentService,
-                   let orderService = POSOrderService(siteID: viewModel.siteID,
-                                                      credentials: viewModel.credentials) {
-                    PointOfSaleEntryPointView(
-                        itemsController: PointOfSaleItemsController(rootItemProvider: viewModel.posItemProvider, variationProvider: viewModel.posVariationProvider),
-                        onPointOfSaleModeActiveStateChange: { isEnabled in
-                            viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
-                        },
-                        cardPresentPaymentService: cardPresentPaymentService,
-                        orderController: PointOfSaleOrderController(orderService: orderService))
-                } else {
-                    // TODO: When we have a singleton for the card payment service, this should not be required.
-                    Text("Error creating card payment service")
-                }
+//            case .pointOfSales:
+//                if let cardPresentPaymentService = viewModel.cardPresentPaymentService,
+//                   let orderService = POSOrderService(siteID: viewModel.siteID,
+//                                                      credentials: viewModel.credentials) {
+//                    PointOfSaleEntryPointView(
+//                        itemsController: PointOfSaleItemsController(rootItemProvider: viewModel.posItemProvider, variationProvider: viewModel.posVariationProvider),
+//                        onPointOfSaleModeActiveStateChange: { isEnabled in
+//                            viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
+//                        },
+//                        cardPresentPaymentService: cardPresentPaymentService,
+//                        orderController: PointOfSaleOrderController(orderService: orderService))
+//                } else {
+//                    // TODO: When we have a singleton for the card payment service, this should not be required.
+//                    Text("Error creating card payment service")
+//                }
             case .reviewDetails(let parcel):
                 reviewDetailView(parcel: parcel)
             case .blazeCampaignDetails(let campaignID):
@@ -417,5 +431,60 @@ struct HubMenu_Previews: PreviewProvider {
 
         HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
             .previewLayout(.fixed(width: 1024, height: 768))
+    }
+}
+
+extension View {
+    func presentInNewKeyWindow() {
+        guard let keyWindow = UIApplication.shared.windows.first,
+                  let windowScene = keyWindow.windowScene else {
+                print("Error: Could not find a valid window scene")
+                return
+            }
+
+        // Create a new UIWindow
+        let newWindow = UIWindow(windowScene: windowScene)
+
+        // Create a hosting controller with your SwiftUI view
+        let rootView = self.environment(\.dismissWindow) {
+            newWindow.isHidden = true
+            releaseWindow(newWindow)
+        }
+        let hostingController = UIHostingController(rootView: rootView)
+
+        // Set the rootViewController of the new window
+        newWindow.rootViewController = hostingController
+
+        // Set the window level to appear above the current window
+        newWindow.windowLevel = .normal + 1
+
+        // Make the window key and visible
+        newWindow.makeKeyAndVisible()
+
+        retainWindow(newWindow)
+    }
+}
+
+private func retainWindow(_ window: UIWindow) {
+    // Store the window in a static array to retain it
+    retainedWindows.append(window)
+}
+
+
+private func releaseWindow(_ window: UIWindow) {
+    // Remove the window from the retained list
+    retainedWindows.removeAll { $0 == window }
+}
+
+private var retainedWindows: [UIWindow] = []
+
+private struct DismissWindowKey: EnvironmentKey {
+    static let defaultValue: () -> Void = {}
+}
+
+extension EnvironmentValues {
+    var dismissWindow: () -> Void {
+        get { self[DismissWindowKey.self] }
+        set { self[DismissWindowKey.self] = newValue }
     }
 }

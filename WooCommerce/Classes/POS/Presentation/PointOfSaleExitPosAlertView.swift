@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleExitPosAlertView: View {
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dismissWindow) private var dismissWindow
     @Binding private var isPresented: Bool
 
     init(isPresented: Binding<Bool>) {
@@ -27,7 +27,7 @@ struct PointOfSaleExitPosAlertView: View {
                 .font(.posBodyRegular)
                 .padding(.bottom, Constants.bodyBottomPadding)
             Button {
-                dismiss()
+                dismissWindow()
             } label: {
                 Text(Localization.exitButton)
             }

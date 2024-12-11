@@ -369,15 +369,15 @@ private extension BuiltInCardReaderConnectionController {
         case .authorized:
             state = .connectToReader
         case .denied:
-            // TODO
-            DDLogInfo("Denied")
-            break
+            alertsPresenter.present(viewModel: alertsProvider.locationRequired(tryAgain: { [weak self] in
+                self?.onRequestLocationPermission()
+            }, dismiss: { [weak self] in
+                self?.state = .cancel(.locationPermissionDenied)
+            }))
         case .notDetermined:
             alertsPresenter.present(viewModel: alertsProvider.locationRequestPreAlert { [weak self] in
-                guard let self else { return }
-                locationService.requestPermission { [weak self] _ in
-                    guard let self else { return }
-                    onRequestLocationPermission()
+                self?.locationService.requestPermission { [weak self] _ in
+                    self?.onRequestLocationPermission()
                 }
             })
         }

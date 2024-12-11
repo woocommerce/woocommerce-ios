@@ -6,6 +6,11 @@ struct WooShippingSelectedPackageView: View {
 
     @Environment(\.shippingWeightUnit) private var weightUnit
 
+    @State private var showPackageSelection = false
+
+    /// Closure to perform when a new package is selected.
+    let updateSelectedPackage: (WooShippingPackageDataRepresentable) -> Void
+
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -13,7 +18,7 @@ struct WooShippingSelectedPackageView: View {
                     .headlineStyle()
                 Spacer()
                 PencilEditButton {
-                    // TODO: Edit selected package
+                    showPackageSelection = true
                 }
                 .buttonStyle(TextButtonStyle())
             }
@@ -24,6 +29,9 @@ struct WooShippingSelectedPackageView: View {
             .roundedBorder(cornerRadius: Constants.cornerRadius, lineColor: Constants.lineColor, lineWidth: Constants.lineWidth)
             .padding(.bottom)
             shipmentWeight
+        }
+        .sheet(isPresented: $showPackageSelection) {
+            WooShippingAddPackageView(addPackageAction: updateSelectedPackage)
         }
     }
 
@@ -70,5 +78,6 @@ private extension WooShippingSelectedPackageView {
                                                                    weight: "4",
                                                                    source: .predefined(sourceTitle: "USPS Priority Mail Flat Rate Boxes", sourceID: "usps"),
                                                                    packageType: "box"),
-                                   totalWeight: .constant("6"))
+                                   totalWeight: .constant("6"),
+                                   updateSelectedPackage: { _ in })
 }

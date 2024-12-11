@@ -51,7 +51,8 @@ struct WooShippingCreateLabelsView: View {
                     } else if let package = viewModel.selectedPackage,
                               let shippingService = viewModel.shippingService {
                         WooShippingSelectedPackageView(package: package,
-                                                       totalWeight: $viewModel.shipmentWeight)
+                                                       totalWeight: $viewModel.shipmentWeight,
+                                                       updateSelectedPackage: viewModel.selectPackage)
                         WooShippingServiceView(viewModel: shippingService)
                             .padding(.horizontal, -16)
                     } else {

@@ -96,8 +96,9 @@ final class HubMenuViewModel: ObservableObject {
         let currencySettings = ServiceLocator.currencySettings
 
         return PointOfSaleProductService(siteID: siteID,
-                                  currencySettings: currencySettings,
-                                  credentials: credentials)
+                                         currencySettings: currencySettings,
+                                         credentials: credentials,
+                                         featureFlagService: featureFlagService)
     }()
 
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)

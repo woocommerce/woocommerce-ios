@@ -51,7 +51,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
     @Published private(set) var eligibleWooCommerceVersionForPOSReceipts: Bool = false
 
-    @Published private(set) var itemListState: ItemListState = .initialLoading
+    @Published var itemListState: ItemListState = .initialLoading
 
     @Published private(set) var cart: [CartItem] = []
 

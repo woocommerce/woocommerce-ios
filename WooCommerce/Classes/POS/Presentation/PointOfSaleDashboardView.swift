@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 struct PointOfSaleDashboardView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
@@ -74,7 +75,12 @@ struct PointOfSaleDashboardView: View {
         GeometryReader { geometry in
             HStack {
                 if posModel.orderStage == .building {
-                    ItemListView()
+                    // TODO: DI variations service
+                    let currencySettings = ServiceLocator.currencySettings
+                    let variationService = PointOfSaleVariationService(siteID: ServiceLocator.stores.sessionManager.defaultStoreID!,
+                                                                       currencySettings: currencySettings,
+                                                                       credentials: ServiceLocator.stores.sessionManager.defaultCredentials)
+                    PointOfSaleRootItemListView(viewHelper: .init(variationProvider: variationService))
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .leading))
                 }

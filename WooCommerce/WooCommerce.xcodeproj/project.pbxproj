@@ -277,6 +277,9 @@
 		0259D5FF2581F3FA003B1CD6 /* ShippingLabelPaperSizeOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0259D5FE2581F3FA003B1CD6 /* ShippingLabelPaperSizeOptionsViewController.swift */; };
 		0259D65D2582248D003B1CD6 /* PrintShippingLabelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0259D65B2582248D003B1CD6 /* PrintShippingLabelViewController.swift */; };
 		0259D65E2582248D003B1CD6 /* PrintShippingLabelViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0259D65C2582248D003B1CD6 /* PrintShippingLabelViewController.xib */; };
+		0259EEF82D0975CB00FFC3DB /* PointOfSaleItemListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0259EEF72D0975CB00FFC3DB /* PointOfSaleItemListView.swift */; };
+		0259EEFE2D097CF000FFC3DB /* PointOfSaleRootItemListViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0259EEFD2D097CF000FFC3DB /* PointOfSaleRootItemListViewHelper.swift */; };
+		0259EF002D097D2000FFC3DB /* PointOfSaleRootItemListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0259EEFF2D097D2000FFC3DB /* PointOfSaleRootItemListView.swift */; };
 		0259EF77246BF4EC00B84FDF /* ProductDetailsFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0259EF76246BF4EC00B84FDF /* ProductDetailsFactoryTests.swift */; };
 		025A1246247CDF55008EA761 /* ProductFormViewModel+ChangesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025A1245247CDF55008EA761 /* ProductFormViewModel+ChangesTests.swift */; };
 		025A1248247CE793008EA761 /* ProductFormViewModel+ObservablesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025A1247247CE793008EA761 /* ProductFormViewModel+ObservablesTests.swift */; };
@@ -3410,6 +3413,9 @@
 		0259D5FE2581F3FA003B1CD6 /* ShippingLabelPaperSizeOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaperSizeOptionsViewController.swift; sourceTree = "<group>"; };
 		0259D65B2582248D003B1CD6 /* PrintShippingLabelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintShippingLabelViewController.swift; sourceTree = "<group>"; };
 		0259D65C2582248D003B1CD6 /* PrintShippingLabelViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PrintShippingLabelViewController.xib; sourceTree = "<group>"; };
+		0259EEF72D0975CB00FFC3DB /* PointOfSaleItemListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleItemListView.swift; sourceTree = "<group>"; };
+		0259EEFD2D097CF000FFC3DB /* PointOfSaleRootItemListViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleRootItemListViewHelper.swift; sourceTree = "<group>"; };
+		0259EEFF2D097D2000FFC3DB /* PointOfSaleRootItemListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleRootItemListView.swift; sourceTree = "<group>"; };
 		0259EF76246BF4EC00B84FDF /* ProductDetailsFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsFactoryTests.swift; sourceTree = "<group>"; };
 		025A1245247CDF55008EA761 /* ProductFormViewModel+ChangesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormViewModel+ChangesTests.swift"; sourceTree = "<group>"; };
 		025A1247247CE793008EA761 /* ProductFormViewModel+ObservablesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormViewModel+ObservablesTests.swift"; sourceTree = "<group>"; };
@@ -6947,6 +6953,9 @@
 				68D8FBD02BFEF9C700477C42 /* TotalsView.swift */,
 				68AF3C3A2D01481A006F1ED2 /* POSReceiptEligibilityBanner.swift */,
 				DA1D68C12C36F0980097859A /* PointOfSaleAssets.swift */,
+				0259EEF72D0975CB00FFC3DB /* PointOfSaleItemListView.swift */,
+				0259EEFD2D097CF000FFC3DB /* PointOfSaleRootItemListViewHelper.swift */,
+				0259EEFF2D097D2000FFC3DB /* PointOfSaleRootItemListView.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -15442,6 +15451,7 @@
 				02162729237965E8000208D2 /* ProductFormTableViewModel.swift in Sources */,
 				68E6749F2A4DA01C0034BA1E /* WooWPComPlan.swift in Sources */,
 				DE65C1F92C48E89C003EF8D1 /* WebCheckoutViewModel.swift in Sources */,
+				0259EEFE2D097CF000FFC3DB /* PointOfSaleRootItemListViewHelper.swift in Sources */,
 				DEF3300C270444070073AE29 /* ShippingLabelSelectedRate.swift in Sources */,
 				CE2A9FBF23BFB1BE002BEC1C /* LedgerTableViewCell.swift in Sources */,
 				035DBA47292D0995003E5125 /* CardPresentPaymentPreflightController.swift in Sources */,
@@ -15561,6 +15571,7 @@
 				B57C5C9221B80E3C00FF82B2 /* APNSDevice+Woo.swift in Sources */,
 				174CA86C27D90E8900126524 /* WooAboutScreenConfiguration.swift in Sources */,
 				02A652FF246A908D00755A01 /* BottomSheetListSelectorPresenter.swift in Sources */,
+				0259EF002D097D2000FFC3DB /* PointOfSaleRootItemListView.swift in Sources */,
 				D82BB3AA26454F3300A82741 /* CardPresentModalProcessing.swift in Sources */,
 				02B2AD8D2CD0A89800929CE8 /* POSModalSizing.swift in Sources */,
 				B9CB14DC2A41FACD005912C2 /* BarcodeScannerErrorNoticeFactory.swift in Sources */,
@@ -16282,6 +16293,7 @@
 				DE9F2D292A1B1AB2004E5957 /* FirstProductCreatedView.swift in Sources */,
 				260C32BE2527A2DE00157BC2 /* IssueRefundViewModel.swift in Sources */,
 				02D29A9229F7C39200473D6D /* UIImage+Text.swift in Sources */,
+				0259EEF82D0975CB00FFC3DB /* PointOfSaleItemListView.swift in Sources */,
 				09F5DE5D27CF948000E5A4D2 /* BulkUpdateOptionsModel.swift in Sources */,
 				03076D36290C162E008EE839 /* WebViewSheet.swift in Sources */,
 				039B7E6329F136F200E21EF4 /* SetUpTapToPayOnboardingViewController.swift in Sources */,

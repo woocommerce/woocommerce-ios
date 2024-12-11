@@ -356,11 +356,11 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        DispatchQueue.global(qos: .background).async {
+        backgroundContext.perform {
             orderUseCase.upsert([order])
             productStore.upsertStoredProducts(readOnlyProducts: [product], in: backgroundContext)
-            backgroundContext.saveIfNeeded()
         }
+        storageManager.saveDerivedType(derivedStorage: backgroundContext, {})
 
         // Then
         self.waitUntil {

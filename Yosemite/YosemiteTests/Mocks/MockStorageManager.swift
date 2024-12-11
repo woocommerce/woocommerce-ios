@@ -17,7 +17,7 @@ public class MockStorageManager: StorageManagerType {
         return persistentContainer.viewContext
     }
 
-    /// Returns a shared derived storage instance dedicated for write operations.
+    /// Returns a shared derived storage instance dedicated for write operations in the background.
     ///
     public lazy var writerDerivedStorage: StorageType = {
         let childManagedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
@@ -43,7 +43,6 @@ public class MockStorageManager: StorageManagerType {
 
     /// Persists the Derived Storage's Changes.
     ///
-    @available(*, deprecated, message: "Use `MockStorageManager`'s `performAndSave` to handle write operations instead of writing directly.")
     public func saveDerivedType(derivedStorage: StorageType, _ closure: @escaping () -> Void) {
         derivedStorage.perform {
             derivedStorage.saveIfNeeded()

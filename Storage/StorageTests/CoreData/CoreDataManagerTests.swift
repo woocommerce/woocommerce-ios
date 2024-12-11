@@ -140,8 +140,13 @@ final class CoreDataManagerTests: XCTestCase {
         let modelsInventory = try makeModelsInventory()
         var manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
 
-        insertAccount(to: manager.viewStorage)
-        manager.viewStorage.saveIfNeeded()
+        waitFor { promise in
+            manager.performAndSave({ storage in
+                self.insertAccount(to: storage)
+            }, completion: {
+                promise(())
+            }, on: .main)
+        }
 
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
         XCTAssertNotNil(NSEntityDescription.entity(forEntityName: Note.entityName,
@@ -193,8 +198,13 @@ final class CoreDataManagerTests: XCTestCase {
 
         var manager = try makeManager(using: olderModelsInventory, deletingExistingStoreFiles: true)
 
-        insertAccount(to: manager.viewStorage)
-        manager.viewStorage.saveIfNeeded()
+        waitFor { promise in
+            manager.performAndSave({ storage in
+                self.insertAccount(to: storage)
+            }, completion: {
+                promise(())
+            }, on: .main)
+        }
 
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
         // The ShippineLineTax entity does not exist in Model 33.
@@ -229,8 +239,13 @@ final class CoreDataManagerTests: XCTestCase {
 
         var manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
 
-        insertAccount(to: manager.viewStorage)
-        manager.viewStorage.saveIfNeeded()
+        waitFor { promise in
+            manager.performAndSave({ storage in
+                self.insertAccount(to: storage)
+            }, completion: {
+                promise(())
+            }, on: .main)
+        }
 
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
         try assertThat(manager, isCompatibleWith: modelsInventory.currentModel)

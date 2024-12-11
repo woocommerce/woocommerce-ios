@@ -18,10 +18,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchLogo" translatesAutoresizingMaskIntoConstraints="NO" id="Q7F-qQ-dHf">
-                                <rect key="frame" x="105.5" y="285.5" width="164" height="96"/>
+                                <rect key="frame" x="93" y="308" width="188" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="96" id="7sQ-ha-Jah"/>
-                                    <constraint firstAttribute="width" constant="164" id="vPF-SU-lG8"/>
+                                    <constraint firstAttribute="height" constant="50" id="7sQ-ha-Jah"/>
+                                    <constraint firstAttribute="width" constant="188" id="vPF-SU-lG8"/>
                                 </constraints>
                             </imageView>
                         </subviews>
@@ -39,7 +39,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="LaunchLogo" width="164" height="96"/>
+        <image name="LaunchLogo" width="188" height="50"/>
         <namedColor name="WooCommercePurple40">
             <color red="0.52941176470588236" green="0.24313725490196078" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

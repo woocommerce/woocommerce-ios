@@ -82,6 +82,11 @@ struct POSSendReceiptView: View {
             Spacer()
         }
         .padding()
+        .onChange(of: textFieldInput) { _ in
+            if errorMessage != nil {
+                errorMessage = nil
+            }
+        }
     }
 }
 

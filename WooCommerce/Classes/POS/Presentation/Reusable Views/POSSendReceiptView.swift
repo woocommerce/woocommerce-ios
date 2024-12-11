@@ -67,6 +67,7 @@ struct POSSendReceiptView: View {
             .background(Color.posOverlayFillInverted)
             .cornerRadius(Constants.buttonCornerRadius)
             .contentShape(Rectangle())
+            .disabled(isLoading)
 
             Spacer()
         }

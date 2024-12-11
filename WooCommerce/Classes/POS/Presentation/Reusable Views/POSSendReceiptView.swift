@@ -5,11 +5,12 @@ struct POSSendReceiptView: View {
 
     @State private var textFieldInput: String = ""
     @State private var isLoading: Bool = false
+    @State private var isError: Bool = false
 
     @Binding private(set) var isShowingSendReceiptView: Bool
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .center, spacing: 20) {
             HStack {
                 Button(action: {
                     isShowingSendReceiptView = false
@@ -30,13 +31,22 @@ struct POSSendReceiptView: View {
                 .font(POSFontStyle.posTitleRegular)
                 .focused()
                 .padding()
+            if isError {
+                Text(Localization.errorText)
+                    .font(POSFontStyle.posBodyRegular)
+                    .foregroundColor(.red)
+            }
 
             Button(action: {
                 Task { @MainActor in
                     isLoading = true
-                    await posModel.sendReceipt(to: textFieldInput)
+                    do {
+                        try await posModel.sendReceipt(to: textFieldInput)
+                        isShowingSendReceiptView = false
+                    } catch {
+                        isError = true
+                    }
                     isLoading = false
-                    isShowingSendReceiptView = false
                 }
             }, label: {
                 HStack(spacing: Constants.buttonSpacing) {
@@ -83,6 +93,10 @@ private extension POSSendReceiptView {
             "pointOfSale.sendreceipt.modal.textfield.placeholder",
             value: "Type email",
             comment: "Placeholder for the view where an email address should be entered when sending receipts")
+        static let errorText = NSLocalizedString(
+            "pointOfSale.sendreceipt.modal.errortext",
+            value: "Error trying to send this email. Try again.",
+            comment: "Generic error message that is displayed when there's an error emailing a receipt.")
     }
 }
 

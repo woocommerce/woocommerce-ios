@@ -55,7 +55,7 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
     func reload() async {
     }
 
-    func loadChildItems(for parent: POSItem) async -> ItemListState {
+    func childState(for parent: POSItem) -> ItemListState {
         return .loaded([], pageInfo: .init(currentPage: 1, hasMorePages: true))
     }
 }

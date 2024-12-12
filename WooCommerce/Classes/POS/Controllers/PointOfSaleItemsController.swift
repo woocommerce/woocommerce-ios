@@ -11,7 +11,7 @@ protocol PointOfSaleItemsControllerProtocol {
     func loadInitialItems() async
     func loadNextItems() async
     func reload() async
-    func loadChildItems(for parent: POSItem) async -> ItemListState
+    func childState(for parent: POSItem) -> ItemListState
 }
 
 class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
@@ -132,24 +132,16 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
         }
     }
 
-    @MainActor
-    func loadChildItems(for parent: POSItem) async -> ItemListState {
-        do {
-            if let existingState = itemsStackState.itemStates[parent] {
-                return existingState
+    func childState(for parent: POSItem) -> ItemListState {
+        if let existingState = itemsStackState.itemStates[parent] {
+            return existingState
+        } else {
+            Task { @MainActor in
+                try await load(pageNumber: Constants.initialPage, parent: parent)
             }
 
-            try await load(pageNumber: Constants.initialPage, parent: parent)
-
-            if let newState = itemsStackState.itemStates[parent] {
-                return newState
-            } else {
-                throw PointOfSaleItemsControllerError.noChildItemsFound
-            }
-        } catch {
-            DDLogError("Error loading child items for \(parent): \(error)")
+            return .loading([], pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true))
         }
-        return ItemListState.loaded([], pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true))
     }
 
     private enum Constants {

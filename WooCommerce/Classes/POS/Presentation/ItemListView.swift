@@ -289,11 +289,20 @@ struct ItemList: View {
                     bannerCardView
                 }
 
-                switch state {
-                case .loading(let items, pageInfo: let pageInfo),
-                        .loaded(let items, pageInfo: let pageInfo):
-                    headerView(parentItem: rootItem)
-                    listRows(items)
+                if let rootItem {
+                    switch posModel.childState(for: rootItem) {
+                    case .loading(let items, pageInfo: let pageInfo),
+                            .loaded(let items, pageInfo: let pageInfo):
+                        headerView(parentItem: rootItem)
+                        listRows(items)
+                    }
+                } else {
+                    switch posModel.itemsViewState.itemsStackState.rootState {
+                    case .loading(let items, pageInfo: let pageInfo),
+                            .loaded(let items, pageInfo: let pageInfo):
+                        headerView(parentItem: rootItem)
+                        listRows(items)
+                    }
                 }
             }
             .frame(maxWidth: .infinity)

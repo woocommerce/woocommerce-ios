@@ -114,8 +114,8 @@ extension PointOfSaleAggregateModel {
         await itemsController.reload()
     }
 
-    func childState(for parent: POSItem) async -> ItemListState {
-        return await itemsController.loadChildItems(for: parent)
+    func childState(for parent: POSItem) -> ItemListState {
+        return itemsController.childState(for: parent)
     }
 }
 

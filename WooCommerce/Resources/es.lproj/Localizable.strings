@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-06 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-11-27 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -950,11 +950,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Familia Automattic";
 
-/* Hint showing the deposit schedule for a merchant's WooPayments account. e.g. Available funds are deposited automatically, every Wednesday. %1$@ will be replaced with a translated frequency description, e.g. 'every day' or 'monthly on the 28th' */
-"Available funds are deposited automatically, %1$@." = "Los fondos disponibles se depositan automáticamente, %1$@.";
+/* Hint showing the payout schedule for a merchant's WooPayments account. e.g. Available funds are paid out automatically, every Wednesday. %1$@ will be replaced with a translated frequency description, e.g. 'every day' or 'monthly on the 28th' */
+"Available funds are paid out automatically, %1$@." = "Los fondos disponibles se pagan automáticamente %1$@.";
 
-/* Hint showing the deposit schedule for a merchant's WooPayments account with a manual schedule. */
-"Available funds are deposited manually, on request." = "Los fondos disponibles se depositan manualmente, previa solicitud.";
+/* Hint showing the payout schedule for a merchant's WooPayments account with a manual schedule. */
+"Available funds are paid out manually, on request." = "Los fondos disponibles se pagan manualmente, previa solicitud.";
 
 /* Label for average value of orders in the Analytics Hub */
 "Average Order Value" = "Valor medio de los pedidos";
@@ -2073,7 +2073,8 @@ which should be translated separately and considered part of this sentence. */
 /* Custom line index in Customs Form of Shipping Label flow */
 "Custom Line %1$d" = "Línea personalizada %1$d";
 
-/* Custom Package menu in Shipping Label Add New Package flow */
+/* Custom Package menu in Shipping Label Add New Package flow
+   Label used to mark a custom package in list of saved packages */
 "Custom Package" = "Paquete personalizado";
 
 /* Label for one of the filters in order date range
@@ -2823,7 +2824,7 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
 "Error updating Order #%1$d" = "Error al actualizar el pedido n.º %1$d";
 
-/* String indicating that a deposit date is an estimate. Shown on whe WooPayments Deposits View. %1$@ will be replaced with a locale-appropriate date string. */
+/* String indicating that a payout date is an estimate. Shown on whe WooPayments Payouts View. %1$@ will be replaced with a locale-appropriate date string. */
 "Est. %1$@" = "Est. %1$@";
 
 /* Estimated setup time title text shown on the Woo payments setup instructions screen. */
@@ -3110,8 +3111,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the view which shows the full feature list for paid plans. */
 "Full Feature List" = "Lista completa de las funciones";
 
-/* Hint regarding available/pending balances shown in the WooPayments Deposits View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
+/* Hint regarding available/pending balances shown in the WooPayments Payouts View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
 "Funds become available after pending for %1$d days." = "Los fondos estarán disponibles después de estar pendientes durante %1$d días.";
+
+/* Format of the Global Unique Identifier on the Inventory Settings row */
+"GTIN, UPC, EAN, ISBN: %@" = "GTIN, UPC, EAN, ISBN: %@";
 
 /* Country option for a site address. */
 "Gabon" = "Gabón";
@@ -3657,6 +3661,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message for invalid format of ITN in Customs screen of Shipping Label flow */
 "Invalid ITN format" = "Formato del número de transacción internacional no válido";
 
+/* Error when an empty Identifier is returned from the barcode scanner */
+"Invalid Identifier" = "Identificador no válido";
+
 /* The title of the alert when there is an error with the package name */
 "Invalid Package Name" = "Nombre del paquete no válido";
 
@@ -3695,6 +3702,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product Inventory Settings navigation title
    Title of the Inventory Settings row on Product main screen
+   Title of the product form bottom sheet action for editing external inventory.
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Inventario";
 
@@ -4402,7 +4410,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Myanmar" = "Birmania";
 
-/* String used when there's no date available for a deposit type on the WooPayments Deposits View. */
+/* String used when there's no date available for a payout type on the WooPayments Payouts View. */
 "N\/A" = "n\/d";
 
 /* Name text field placeholder
@@ -4890,6 +4898,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view. */
 "OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "No se ha podido recuperar el recibo.";
+
+/* Title for notice that's shown when trying to edit an order that's in a different currency. This action isn't supported in the app. Placeholders: %1$@ is the order currency code (e.g. USD), %2$@ is the site currency code (e.g. GBP.) */
+"OrderDetailsViewModel.editingOrderWithCurrencyConflictNotice.title" = "Solo puedes editar este pedido en la web, ya que utiliza %1$@ y la moneda de tu sitio es %2$@.";
 
 /* Description of the subscription billing interval for a product. Reads like: 'Every 2 months'. */
 "OrderSubscriptionTableViewCellViewModel.billingInterval" = "Cada %1$@ %2$@";
@@ -5559,6 +5570,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Product Type row on Product main screen */
 "Product type" = "Tipo de producto";
 
+/* Error message when the scanner found a product but isn't purchasable.%@ is the Identifier code. */
+"Product with Identifier \"%@\" is not purchasable." = "El producto con el identificador «%@» no se puede comprar.";
+
+/* Error message when the scanner cannot find a matching product.%@ is the Identifier barcode. */
+"Product with Identifier \"%@\" not found." = "No se ha encontrado ningún producto con el identificador «%@».";
+
 /* The instruction text below the scan area in the barcode scanner for product barcode. */
 "ProductBarcodeInputScanner.instructionText" = "Escanear código de barras de producto o código QR";
 
@@ -6016,11 +6033,8 @@ which should be translated separately and considered part of this sentence. */
 /* Details section title in the Edit Address Form */
 "SHIPPING ADDRESS" = "DIRECCIÓN DE ENVÍO";
 
-/* Edit Product SKU navigation title
-   Title of the cell in Product Inventory Settings > SKU
-   Title of the product form bottom sheet action for editing short description.
-   Title of the product search filter to search for products that match the SKU.
-   Title of the SKU row on Product main screen */
+/* Title of the cell in Product Inventory Settings > SKU
+   Title of the product search filter to search for products that match the SKU. */
 "SKU" = "SKU";
 
 /* The message of the alert when there is an error updating the product SKU */
@@ -9662,6 +9676,12 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button in the Blaze Edit Ad screen. */
 "blazeEditAdView.cancel" = "Cancelar";
 
+/* Placeholder for CTA Text field in the Blaze Edit Ad screen. */
+"blazeEditAdView.ctaText.placeholder" = "Texto de la llamada a la acción";
+
+/* CTA Text title text in the Blaze Edit Ad screen. */
+"blazeEditAdView.ctaText.title" = "Llamada a la acción";
+
 /* Placeholder for Description text field in the Blaze Edit Ad screen. */
 "blazeEditAdView.description.placeholder" = "Texto de descripción para el anuncio de Blaze";
 
@@ -9691,6 +9711,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Blaze Edit Ad screen. */
 "blazeEditAdView.title" = "Editar anuncio";
+
+/* Edit Blaze Ad screen: Error message if CTA Text exceeds the character limit. */
+"blazeEditAdViewModel.ctaText.lengthExceedsLimit" = "El texto de la llamada a la acción no puede tener más de %1$d caracteres.";
 
 /* Edit Blaze Ad screen: Error message if Description field is empty. */
 "blazeEditAdViewModel.description.emptyError" = "La descripción no puede estar vacía.";
@@ -9965,6 +9988,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "Buscando lector";
+
+/* Message informing the user that a receipt has been sent to their email address. %1$@ is the email address */
+"cardPresentPaymentsModal.error.receiptMessage" = "Se ha enviado un recibo a %1$@";
+
+/* Button to email receipts. Presented to users after a payment has been successfully collected */
+"cardPresentPaymentsModal.success.emailReceipt" = "Enviar recibo por correo electrónico";
+
+/* Label informing users that the payment succeeded. Presented to users when a payment is collected */
+"cardPresentPaymentsModal.success.paymentSuccessful" = "Pago correcto";
+
+/* Button to print receipts. Presented to users after a payment has been successfully collected */
+"cardPresentPaymentsModal.success.printReceipt" = "Imprimir recibo";
+
+/* Message informing the user that a receipt has been sent to their email address. %1$@ is the email address */
+"cardPresentPaymentsModal.success.receiptMessage" = "Se ha enviado un recibo a %1$@";
+
+/* Button when the user does not want to print or email receipt. Presented to users after a payment has been successfully collected */
+"cardPresentPaymentsModal.success.saveReceiptAndContinue" = "Guardar recibo y continuar";
 
 /* Title for the toggle that specifies whether to add a note to the order with the change data. */
 "cashPaymentTenderView.addNoteToggle.title" = "Registrar detalles de la transacción en una nota del pedido";
@@ -10449,45 +10490,6 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the sign-up fee for a subscription product on the Price Settings row. Reads like: 'Sign-up fee: $0.99'. */
 "defaultProductFormTableViewModel.subscriptionSignupFeeFormat" = "Tarifa de inscripción: %1$@";
 
-/* Accessibility label for the collapse chevron on the Deposit summary */
-"deposits.currency.overview.accessibility.hide" = "Ocultar detalles del depósito";
-
-/* Accessibility label for the expand chevron on the Deposit summary */
-"deposits.currency.overview.accessibility.show" = "Mostrar detalles del depósito";
-
-/* Title for available funds overview in WooPayments Deposits view. This shows the balance which can be paid out. */
-"deposits.currency.overview.availableFunds" = "Fondos disponibles";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.canceled.title" = "Cancelado";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.estimated.title" = "Estimado";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.failed.title" = "Fallido";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.inTransit.title" = "En tránsito";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.paid.title" = "Pagado";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.pending.title" = "Pendiente";
-
-/* A status for a deposit, shown in a small badge view */
-"deposits.currency.overview.depositTable.status.unknown.title" = "Desconocido";
-
-/* Section header for the last deposit in the WooPayments Deposits overview */
-"deposits.currency.overview.lastDeposit" = "Último depósito";
-
-/* Button text to view more about payment schedules on the WooPayments Deposits View. */
-"deposits.currency.overview.learnMore" = "Obtén más información acerca de cuándo recibirás tus fondos.";
-
-/* Title for pending funds overview in WooPayments Deposits view. This shows the balance which will be made available for pay out later. */
-"deposits.currency.overview.pendingFunds" = "Fondos pendientes";
-
 /* Title of the downloadable file bottom sheet action for adding document from device. */
 "downloadableFileSource.deviceDocument" = "Documento en el dispositivo";
 
@@ -10530,16 +10532,16 @@ which should be translated separately and considered part of this sentence. */
 /* The EU notice banner content describing how the shipping customs shall be configured */
 "eu_shipping_instructions_info" = "Ahora, para hacer envíos a países en los que se aplica la normativa aduanera de la Unión Europea (UE), debes describir cada artículo con claridad. Por ejemplo, si envías ropa, para que se acepte la descripción, debes indicar el tipo de ropa del que se trata (camisas de hombre, chalecos para chicas, chaquetas para chicos, etc.). De lo contrario, los envíos pueden sufrir retrasos o interrupciones en la aduana.";
 
-/* every {dayname}, shown in a sentence like 'Available funds are deposited automatically, every Wednesday' %1$@ will be replaced with the localized day name */
+/* every {dayname}, shown in a sentence like 'Available funds are paid out automatically, every Wednesday' %1$@ will be replaced with the localized day name */
 "every %1$@" = "todos los %1$@";
 
-/* Shown in a sentence like 'Available funds are deposited automatically, every day' */
+/* Shown in a sentence like 'Available funds are paid out automatically, every day' */
 "every day" = "todos los días";
 
-/* Shown in a sentence like 'Available funds are deposited automatically every month. */
+/* Shown in a sentence like 'Available funds are paid out automatically every month. */
 "every month" = "todos los meses";
 
-/* Shown in a sentence like 'Available funds are deposited automatically, every month on the 15th' */
+/* Shown in a sentence like 'Available funds are paid out automatically, every month on the 15th' */
 "every month on the %1$@" = "todos los meses en el %1$@";
 
 /* Placeholder for the site url textfield.
@@ -10699,6 +10701,9 @@ which should be translated separately and considered part of this sentence. */
 /* A message that tells the user why the app is requesting access to the user’s location information while the app is running in the foreground. */
 "infoplist.NSLocationWhenInUseUsageDescription" = "Se requiere acceso a la ubicación para aceptar pagos.";
 
+/* A message that tells the user why the app needs access to Microphone. */
+"infoplist.NSMicrophoneUsageDescription" = "Woo usa tu micrófono para que puedas grabar audio a la vez que grabas vídeos para la biblioteca de medios de tu tienda.";
+
 /* A message that tells the user why the app is requesting access to the user’s photo library. */
 "infoplist.NSPhotoLibraryUsageDescription" = "Para guardar fotos de la cámara para las imágenes de los productos, o para añadir fotos o videos a tus productos o tiques de soporte.";
 
@@ -10768,7 +10773,7 @@ which should be translated separately and considered part of this sentence. */
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "reembolso manual";
 
-/* on request (lower case), shown in a sentence like 'Deposit schedule: manual, on request' */
+/* on request (lower case), shown in a sentence like 'Payout schedule: manual, on request' */
 "manually, on request" = "manualmente, previa solicitud";
 
 /* Menu option for taking an image or video with the device's camera. */
@@ -10803,9 +10808,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the section related to card readers inside In-Person Payments settings */
 "menu.payments.cardReader.section.title" = "Lectores de tarjetas";
-
-/* An accessibility label used when the balances are loading on the payments menu */
-"menu.payments.depositSummary.loading.accessibilityLabel" = "Cargando saldo...";
 
 /* Notice text after completing a payment order from In-Person Payments in the Menu */
 "menu.payments.inPersonPayments.collectPayment.notice.orderCompleted" = "🎉 Pedido completado";
@@ -10851,6 +10853,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the section related to changing payment settings inside the In-Person Payments menu */
 "menu.payments.paymentSettings.section.title" = "Ajustes";
 
+/* An accessibility label used when the balances are loading on the payments menu */
+"menu.payments.payoutSummary.loading.accessibilityLabel" = "Cargando saldo...";
+
 /* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory. */
 "menu.payments.tapToPay.about.row.title" = "Acerca de Tap to Pay";
 
@@ -10861,13 +10866,13 @@ which should be translated separately and considered part of this sentence. */
 "menu.payments.tapToPay.section.title" = "Tap to Pay";
 
 /* Title for a done button in the navigation bar */
-"menu.payments.wooPaymentsDeposits.navigation.done.button.title" = "Hecho";
+"menu.payments.wooPaymentsPayouts.navigation.done.button.title" = "Hecho";
 
-/* Title for the row related to Woo Payments Deposits/Balances. */
-"menu.payments.wooPaymentsDeposits.row.title" = "Saldo de pagos de Woo";
+/* Title for the row related to Woo Payments Payouts/Balances. */
+"menu.payments.wooPaymentsPayouts.row.title" = "Saldo de pagos de Woo";
 
-/* Title for the section related to Woo Payments Deposits/Balances. */
-"menu.payments.wooPaymentsDeposits.section.title" = "Saldo de pagos de Woo";
+/* Title for the section related to Woo Payments Payouts/Balances. */
+"menu.payments.wooPaymentsPayouts.section.title" = "Saldo de pagos de Woo";
 
 /* Display label for a product's subscription period when it is a single month. */
 "month" = "Mes";
@@ -10955,6 +10960,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "Añadir envío";
+
+/* Text for the cancel button to dismiss Send Receipt to Customer screen */
+"order.receiptEmailView.cancel" = "Cancelar";
+
+/* Email field placeholder */
+"order.receiptEmailView.emailFieldHint" = "Introducir correo electrónico";
+
+/* Email text field title */
+"order.receiptEmailView.emailFieldTitle" = "Correo electrónico";
+
+/* Title for the button to send the receipt to the customer */
+"order.receiptEmailView.emailReceipt" = "Enviar recibo por correo electrónico";
+
+/* An error that is shown when sending email receipt fails. */
+"order.receiptEmailView.errorNotice" = "Error al enviar el recibo por correo electrónico. Inténtalo de nuevo.";
+
+/* Notice text when the merchant enters an invalid email */
+"order.receiptEmailView.invalidEmailError" = "Introduce una dirección de correo electrónico válida.";
+
+/* Title for the screen to update customer email address and send receipt */
+"order.receiptEmailView.title" = "Enviar recibo al cliente por correo electrónico";
 
 /* Button to add a shipping line to the order during order creation */
 "order.shippingLineDetails.addShipping" = "Añadir envío";
@@ -11185,6 +11211,45 @@ which should be translated separately and considered part of this sentence. */
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "pagos, toca para pagar, woocommerce, woo, pagos en persona, recibir pago, pagos, lector, lector de tarjetas, pedir lector de tarjetas";
 
+/* Accessibility label for the collapse chevron on the Payout summary */
+"payouts.currency.overview.accessibility.hide" = "Ocultar detalles del pago";
+
+/* Accessibility label for the expand chevron on the Payout summary */
+"payouts.currency.overview.accessibility.show" = "Mostrar detalles del pago";
+
+/* Title for available funds overview in WooPayments Payouts view. This shows the balance which can be paid out. */
+"payouts.currency.overview.availableFunds" = "Fondos disponibles";
+
+/* Section header for the last payout in the WooPayments Payouts overview */
+"payouts.currency.overview.lastPayout" = "Último pago";
+
+/* Button text to view more about payment schedules on the WooPayments Payouts View. */
+"payouts.currency.overview.learnMore" = "Obtén más información acerca de cuándo recibirás tus fondos.";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.canceled.title" = "Cancelado";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.estimated.title" = "Estimado";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.failed.title" = "Fallido";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.inTransit.title" = "En tránsito";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.paid.title" = "Pagado";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.pending.title" = "Pendiente";
+
+/* A status for a payout, shown in a small badge view */
+"payouts.currency.overview.payoutTable.status.unknown.title" = "Desconocido";
+
+/* Title for pending funds overview in WooPayments Payouts view. This shows the balance which will be made available for pay out later. */
+"payouts.currency.overview.pendingFunds" = "Fondos pendientes";
+
 /* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
 "plan ended" = "plan finalizado";
 
@@ -11245,12 +11310,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "Prueba otro método de pago";
 
-/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout
-   Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentIntentCreationError.backToCheckout.button.title" = "Intentar efectuar el pago de nuevo";
+/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.checkout.button.title" = "Editar pedido";
 
 /* Error message. Presented to users after payment intent creation fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentIntentCreationError.title" = "Error en la preparación del pago";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.tryPaymentAgain.button.title" = "Intentar efectuar el pago de nuevo";
 
 /* Indicates to wait while payment is processing. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.message" = "Espera…";
@@ -11602,6 +11669,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title for new order button */
 "pos.totalsView.newOrder" = "Nuevo pedido";
+
+/* Button title for the receipt button */
+"pos.totalsView.sendReceipt" = "Recibo";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "Subtotal";
@@ -12703,11 +12773,20 @@ which should be translated separately and considered part of this sentence. */
 /* Generic error on the 2FA login screen */
 "wpCom2FALoginViewModel.unknownError" = "Vaya, se ha producido un error. Inténtalo de nuevo.";
 
+/* Text hinting that an account will be created if the email is not associated with an existing account. */
+"wpComEmailLoginView.accountCreationHint" = "Si no tienes una cuenta, usaremos este correo electrónico para crear una.";
+
+/* Error message when the username is not found */
+"wpComEmailLoginViewModel.unknownUsername" = "No encontramos una cuenta de WordPress.com asociada a este nombre de usuario. Puedes introducir un correo electrónico para crear una cuenta.";
+
 /* Button to dismiss an error alert in the WPCom login flow */
 "wpComLoginCoordinator.cancelButton" = "Cancelar";
 
 /* Title for the screens in the login flow */
 "wpComLoginCoordinator.title" = "Acceder";
+
+/* Text hinting the user to ensure their email is correct and check their spam folder */
+"wpComMagicLinkView.emailConfirmationHint" = "Comprueba que tu correo electrónico está bien escrito y vuelve a mirar en tu carpeta de spam.";
 
 /* A clickable text link that willredirect the user to a website */
 "www.usps.com\/hazmat" = "www.usps.com\/hazmat";

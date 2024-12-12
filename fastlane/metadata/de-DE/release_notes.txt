@@ -1,1 +1,3 @@
-Genieße ein reibungsloseres WooCommerce-Erlebnis! Wir haben die Watch-App optimiert, damit deine Bestelldetails einwandfrei angezeigt werden. Außerdem haben Fehlermeldungen bei Zahlungslesegeräten jetzt ein klareres Erscheinungsbild. Führe für ein besseres Erlebnis sowohl auf deiner Watch als auch auf deinem Smartphone ein Update durch.
+Wir haben diese neue Version in nur zwei Wochen mit unzähligen Neuerungen ausgestattet! Es gibt nun einen GTIN-Support für die global eindeutige Produktkennung. Außerdem kannst du den Call-to-Action in Blaze-Kampagnen bearbeiten.
+
+Das Einrichten persönlicher Zahlungen im Shop gelingt nun noch schneller, die Bestätigung für den Versand von Belegen ist eindeutiger und der Test von „Tap to Pay“ auf dem iPhone ist jetzt noch nahtloser. Außerdem haben wir die Dashboard-Statistiken verbessert und einige Bugs behoben.

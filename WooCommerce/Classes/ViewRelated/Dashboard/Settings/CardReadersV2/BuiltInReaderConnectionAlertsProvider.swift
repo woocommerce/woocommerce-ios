@@ -68,4 +68,13 @@ struct BuiltInReaderConnectionAlertsProvider: CardReaderConnectionAlertsProvidin
                           cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalSelectSearchType(tapOnIPhoneAction: tapToPay, bluetoothAction: bluetooth, cancelAction: cancel)
     }
+
+    func locationRequestPreAlert(requestPermission: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalLocationPreAlert(requestPermission: requestPermission)
+    }
+
+    func locationRequired(dismiss: @escaping () -> Void,
+                          skip: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalLocationRequired(dismiss: dismiss)
+    }
 }

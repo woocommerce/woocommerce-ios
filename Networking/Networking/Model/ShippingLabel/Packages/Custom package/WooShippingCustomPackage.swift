@@ -92,6 +92,6 @@ extension WooShippingCustomPackage: Codable {
         case name
         case type
         case dimensions
-        case boxWeight
+        case boxWeight = "box_weight"
     }
 }

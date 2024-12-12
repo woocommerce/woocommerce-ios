@@ -164,6 +164,14 @@ extension MockCardReaderSettingsAlerts: BluetoothReaderConnnectionAlertsProvidin
     func selectSearchType(tapToPay: @escaping () -> Void, bluetooth: @escaping () -> Void, cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         return MockCardPresentPaymentsModalViewModel()
     }
+
+    func locationRequestPreAlert(requestPermission: @escaping () -> Void) -> any AlertDetails {
+        return MockCardPresentPaymentsModalViewModel()
+    }
+
+    func locationRequired(dismiss: @escaping () -> Void, skip: @escaping () -> Void) -> any AlertDetails {
+        return MockCardPresentPaymentsModalViewModel()
+    }
 }
 
 

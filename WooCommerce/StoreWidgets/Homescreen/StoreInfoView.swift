@@ -79,7 +79,7 @@ private struct StatsCard: View {
                     Text(StoreInfoView.Localization.revenue)
                         .statTitleStyle()
 
-                    Text(entryData.revenue)
+                    Text(entryData.revenueCompact)
                         .statValueStyle()
 
                 }
@@ -132,7 +132,7 @@ private struct AccessibilityStatsCard: View {
                 Text(StoreInfoView.Localization.revenue)
                     .statTitleStyle()
 
-                Text(entryData.revenue)
+                Text(entryData.revenueCompact)
                     .statValueStyle()
             }
 
@@ -278,12 +278,14 @@ private extension UnableToFetchView {
 }
 
 // MARK: - Previews
+#if DEBUG
+import class WooFoundation.CurrencySettings
 
 struct StoreWidgets_Previews: PreviewProvider {
     static var exampleData = StoreInfoData(range: "Today",
                                            name: "Ernest Shop",
-                                           revenue: "$132.234",
-                                           revenueCompact: "$132",
+                                           revenue: StoreInfoFormatter.formattedAmountString(for: Decimal(123456789), with: CurrencySettings()),
+                                           revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: Decimal(123456789), with: CurrencySettings()),
                                            visitors: "67",
                                            orders: "23",
                                            conversion: "34%",
@@ -307,3 +309,4 @@ struct StoreWidgets_Previews: PreviewProvider {
             .previewDisplayName("Unable to fetch data")
     }
 }
+#endif

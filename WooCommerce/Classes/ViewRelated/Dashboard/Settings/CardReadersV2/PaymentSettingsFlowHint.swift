@@ -9,7 +9,7 @@ struct PaymentSettingsFlowHint: View {
             Text(number, format: .number)
                 .font(.callout)
                 .padding(.all, 12)
-                .background(Color(UIColor.systemGray6))
+                .background(Color(.init(light: .systemGray6, dark: .darkGray)))
                 .clipShape(Circle())
             Text(text)
                 .font(.callout)
@@ -17,6 +17,8 @@ struct PaymentSettingsFlowHint: View {
             Spacer()
         }
         .padding(.horizontal, 8)
+        .accessibilityElement()
+        .accessibilityLabel("\(number). \(text)")
     }
 }
 

@@ -108,7 +108,6 @@ final class HubMenuViewModel: ObservableObject {
     @Published private var isSiteEligibleForBlaze = false
     @Published private var isSiteEligibleForGoogleAds = false
     @Published private var isSiteEligibleForInbox = false
-    @Published private var loadingGoogleAdsCampaigns = false
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -327,13 +326,13 @@ private extension HubMenuViewModel {
         $shouldShowNewFeatureBadgeOnPayments
             .combineLatest($isSiteEligibleForInbox,
                            $isSiteEligibleForBlaze,
-                           $isSiteEligibleForGoogleAds.combineLatest($loadingGoogleAdsCampaigns))
+                           $isSiteEligibleForGoogleAds)
             .map { [weak self] combinedResult -> [HubMenuItem] in
                 guard let self else { return [] }
-                let (shouldShowBadgeOnPayments, eligibleForInbox, eligibleForBlaze, (eligibleForGoogleAds, loadingGoogleAdsCampaigns)) = combinedResult
+                let (shouldShowBadgeOnPayments, eligibleForInbox, eligibleForBlaze, eligibleForGoogleAds) = combinedResult
                 return createGeneralElements(
                     shouldShowBadgeOnPayments: shouldShowBadgeOnPayments,
-                    shouldShowGoogleAds: eligibleForGoogleAds && !loadingGoogleAdsCampaigns,
+                    eligibleForGoogleAds: eligibleForGoogleAds,
                     eligibleForBlaze: eligibleForBlaze,
                     eligibleForInbox: eligibleForInbox
                 )
@@ -342,14 +341,14 @@ private extension HubMenuViewModel {
     }
 
     func createGeneralElements(shouldShowBadgeOnPayments: Bool,
-                               shouldShowGoogleAds: Bool,
+                               eligibleForGoogleAds: Bool,
                                eligibleForBlaze: Bool,
                                eligibleForInbox: Bool) -> [HubMenuItem] {
         var items: [HubMenuItem] = [
             Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil)
         ]
 
-        if shouldShowGoogleAds {
+        if eligibleForGoogleAds {
             items.append(GoogleAds())
         }
 
@@ -444,10 +443,6 @@ private extension HubMenuViewModel {
     func checkIfSiteHasGoogleAdsCampaigns() async -> Bool {
         guard isSiteEligibleForGoogleAds else {
             return false
-        }
-        loadingGoogleAdsCampaigns = true
-        defer {
-            loadingGoogleAdsCampaigns = false
         }
         do {
             let campaigns = try await fetchGoogleAdsCampaigns()

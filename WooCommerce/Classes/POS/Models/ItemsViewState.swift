@@ -23,7 +23,7 @@ extension ItemsViewState: Hashable {
     }
 }
 
-enum ItemListViewState: Equatable {
+enum ItemListState: Equatable {
     case loading(_ currentItems: [POSItem], pageInfo: PageInfo)
     case loaded(_ items: [POSItem], pageInfo: PageInfo)
 
@@ -37,7 +37,7 @@ enum ItemListViewState: Equatable {
     }
 }
 
-extension ItemListViewState: Hashable {
+extension ItemListState: Hashable {
     public func hash(into hasher: inout Hasher) {
         switch self {
         case .loading(let items, let pageInfo),

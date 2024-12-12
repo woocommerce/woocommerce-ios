@@ -8,18 +8,18 @@ import protocol Yosemite.PointOfSaleVariationServiceProtocol
 
 protocol PointOfSaleItemsControllerProtocol {
     var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { get }
-    var itemListViewStatePublisher: any Publisher<ItemListViewState, Never> { get }
+    var itemListStatePublisher: any Publisher<ItemListState, Never> { get }
     func loadInitialItems() async
     func loadNextItems() async
     func reload() async
-    func loadChildItems(for parentItem: POSParentProduct) async -> ItemListViewState
+    func loadChildItems(for parentItem: POSParentProduct) async -> ItemListState
 }
 
 class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     private(set) var itemsViewStatePublisher: any Publisher<ItemsViewState, Never>
     private var itemsViewStateSubject: PassthroughSubject<ItemsViewState, Never> = .init()
-    private(set) var itemListViewStatePublisher: any Publisher<ItemListViewState, Never>
-    private var itemListViewStateSubject: PassthroughSubject<ItemListViewState, Never> = .init()
+    private(set) var itemListStatePublisher: any Publisher<ItemListState, Never>
+    private var itemListStateSubject: PassthroughSubject<ItemListState, Never> = .init()
     private var allItems: [POSItem] = []
     private var currentPage: Int = Constants.initialPage
     private var mightHaveMorePages: Bool = true
@@ -33,7 +33,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
         self.rootItemProvider = rootItemProvider
         self.variationProvider = variationProvider
         itemsViewStatePublisher = itemsViewStateSubject.eraseToAnyPublisher()
-        itemListViewStatePublisher = itemListViewStateSubject.eraseToAnyPublisher()
+        itemListStatePublisher = itemListStateSubject.eraseToAnyPublisher()
     }
 
     @MainActor
@@ -49,7 +49,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
             guard mightHaveMorePages else {
                 return
             }
-            itemListViewStateSubject.send(.loading(allItems, pageInfo: PageInfo(currentPage: currentPage, hasMorePages: true)))
+            itemListStateSubject.send(.loading(allItems, pageInfo: PageInfo(currentPage: currentPage, hasMorePages: true)))
 
             let nextPage = currentPage + 1
             try await load(pageNumber: nextPage)
@@ -64,7 +64,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
         allItems.removeAll()
         currentPage = Constants.initialPage
         mightHaveMorePages = true
-        itemListViewStateSubject.send(.loading(allItems, pageInfo: PageInfo(currentPage: currentPage, hasMorePages: true)))
+        itemListStateSubject.send(.loading(allItems, pageInfo: PageInfo(currentPage: currentPage, hasMorePages: true)))
         try? await load(pageNumber: currentPage)
     }
 
@@ -98,27 +98,27 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
             itemsViewStateSubject.send(.empty)
         } else {
             itemsViewStateSubject.send(.itemsList)
-            itemListViewStateSubject.send(.loaded(allItems, pageInfo: PageInfo(currentPage: currentPage, hasMorePages: true)))
+            itemListStateSubject.send(.loaded(allItems, pageInfo: PageInfo(currentPage: currentPage, hasMorePages: true)))
         }
     }
 
     @MainActor
-    func loadChildItems(for parentProduct: POSParentProduct) async -> ItemListViewState {
+    func loadChildItems(for parentProduct: POSParentProduct) async -> ItemListState {
         do {
             let existingItems = allChildItems[parentProduct.id] ?? []
             if existingItems.isNotEmpty {
-                return ItemListViewState.loaded(existingItems, pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true))
+                return ItemListState.loaded(existingItems, pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true))
             }
 
             let newItems = try await variationProvider.providePointOfSaleItems(for: parentProduct, pageNumber: Constants.initialPage)
             let updatedItems = existingItems + newItems
 
             allChildItems[parentProduct.id] = updatedItems
-            return ItemListViewState.loaded(updatedItems, pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true))
+            return ItemListState.loaded(updatedItems, pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true))
         } catch {
             DDLogError("Error loading child items for \(parentProduct): \(error)")
         }
-        return ItemListViewState.loaded([], pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true))
+        return ItemListState.loaded([], pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true))
     }
 
     private enum Constants {

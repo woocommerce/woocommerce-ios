@@ -280,7 +280,7 @@ struct ItemList: View {
 
     var rootItem: POSItem?
 
-    @State var state: ItemListViewState = .loading([], pageInfo: .init(currentPage: 1, hasMorePages: true))
+    @State var state: ItemListState = .loading([], pageInfo: .init(currentPage: 1, hasMorePages: true))
 
     var body: some View {
         ScrollView {

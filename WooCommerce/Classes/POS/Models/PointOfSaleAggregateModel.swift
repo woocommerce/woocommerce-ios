@@ -26,8 +26,8 @@ protocol PointOfSaleAggregateModelProtocol {
     func loadInitialItems() async
     func loadNextItems() async
     func reload() async
-    func childState(for parentProduct: POSParentProduct) async -> ItemListViewState
-    var rootState: ItemListViewState { get }
+    func childState(for parentProduct: POSParentProduct) async -> ItemListState
+    var rootState: ItemListState { get }
 
     var cart: [CartItem] { get }
     func addToCart(_ item: POSOrderableItem)
@@ -58,7 +58,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
     @Published private(set) var orderState: PointOfSaleOrderState = .idle
 
-    @Published private(set) var rootState: ItemListViewState = .loading([], pageInfo: .init(currentPage: 1, hasMorePages: true))
+    @Published private(set) var rootState: ItemListState = .loading([], pageInfo: .init(currentPage: 1, hasMorePages: true))
 
     private let itemsController: PointOfSaleItemsControllerProtocol
 
@@ -97,7 +97,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 extension PointOfSaleAggregateModel {
     private func publishItemListState() {
         itemsController.itemsViewStatePublisher.assign(to: &$itemsViewState)
-        itemsController.itemListViewStatePublisher.assign(to: &$rootState)
+        itemsController.itemListStatePublisher.assign(to: &$rootState)
     }
 
     @MainActor
@@ -115,7 +115,7 @@ extension PointOfSaleAggregateModel {
         await itemsController.reload()
     }
 
-    func childState(for parentProduct: POSParentProduct) async -> ItemListViewState {
+    func childState(for parentProduct: POSParentProduct) async -> ItemListState {
         return await itemsController.loadChildItems(for: parentProduct)
     }
 }

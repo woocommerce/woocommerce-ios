@@ -62,7 +62,7 @@ struct CartView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
             .padding(.vertical, POSHeaderLayoutConstants.sectionVerticalPadding)
-            .if(shouldApplyHeaderBottomShadow, transform: { $0.applyBottomShadow() })
+            .if(shouldApplyHeaderBottomShadow, transform: { $0.applyBottomShadow(backgroundColor: backgroundColor) })
 
             if posModel.cart.isNotEmpty {
                 ScrollViewReader { proxy in
@@ -78,7 +78,6 @@ struct CartView: View {
                             }
                         }
                         .animation(Constants.cartAnimation, value: posModel.cart.map(\.id))
-                        .padding(.bottom, floatingControlAreaSize.height)
                         .background(GeometryReader { geometry in
                             Color.clear.preference(key: ScrollOffSetPreferenceKey.self,
                                                    value: geometry.frame(in: coordinateSpace).origin.y)
@@ -86,6 +85,10 @@ struct CartView: View {
                         .onPreferenceChange(ScrollOffSetPreferenceKey.self) { position in
                             self.offSetPosition = position
                         }
+
+                        Spacer()
+                            .frame(height: floatingControlAreaSize.height)
+                            .renderedIf(posModel.orderStage == .finalizing)
                     }
                     .coordinateSpace(name: Constants.scrollViewCoordinateSpaceIdentifier)
                     .onChange(of: posModel.cart.first?.id) { itemToScrollTo in
@@ -251,6 +254,12 @@ private extension CartView {
 
 #if DEBUG
 #Preview {
-    CartView()
+    let itemsController = PointOfSalePreviewItemsController()
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
+    return CartView()
+        .environmentObject(posModel)
 }
 #endif

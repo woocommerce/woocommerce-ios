@@ -85,4 +85,12 @@ struct BluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlerts
         CardPresentModalUpdateFailedLowBattery(batteryLevel: batteryLevel, close: close)
     }
 
+    func locationRequestPreAlert(requestPermission: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalLocationPreAlert(requestPermission: requestPermission)
+    }
+
+    func locationRequired(dismiss: @escaping () -> Void,
+                          skip: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalLocationRequired(dismiss: dismiss)
+    }
 }

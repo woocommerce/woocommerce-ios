@@ -242,7 +242,7 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
                 viewModel: PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel()))
 
             /// Not-yet supported types
-        case .selectSearchType:
+        case .selectSearchType, .locationRequestPreAlert, .locationRequired:
             return nil
         }
     }

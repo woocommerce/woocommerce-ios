@@ -155,6 +155,10 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
             cancelPayment(paymentOrchestrator: paymentOrchestrator)
         case .paymentSuccess(done: let done):
             done()
+        case .locationRequestPreAlert:
+            return
+        case .locationRequired(let dismiss, _):
+            dismiss()
         }
     }
 }

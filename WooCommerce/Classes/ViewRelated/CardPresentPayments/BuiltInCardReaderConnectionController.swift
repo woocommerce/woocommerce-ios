@@ -38,6 +38,10 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         ///
         case searching
 
+        /// Requests location permission during the connection process
+        ///
+        case requestLocationPermission
+
         /// Attempting to connect to a card reader. The completion passed to `searchAndConnect`
         /// will be called with a `success` `Bool` `True` result if successful, after which the view controller
         /// passed to `searchAndConnect` will be dereferenced and the state set to `idle`
@@ -83,6 +87,8 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
 
     private let storageManager: StorageManagerType
     private let stores: StoresManager
+
+    private let locationService: LocationService
 
     private var state: ControllerState {
         didSet {
@@ -137,6 +143,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         configuration: CardPresentPaymentsConfiguration,
         analyticsTracker: CardReaderConnectionAnalyticsTracker,
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+        locationService: LocationService = LocationService(),
         allowTermsOfServiceAcceptance: Bool = true
     ) {
         siteID = forSiteID
@@ -149,6 +156,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         self.configuration = configuration
         self.analyticsTracker = analyticsTracker
         self.featureFlagService = featureFlagService
+        self.locationService = locationService
         self.allowTermsOfServiceAcceptance = allowTermsOfServiceAcceptance
 
         configureResultsControllers()
@@ -195,6 +203,8 @@ private extension BuiltInCardReaderConnectionController {
             onRetry()
         case .cancel(let cancellationSource):
             onCancel(from: cancellationSource)
+        case .requestLocationPermission:
+            onRequestLocationPermission()
         case .connectToReader:
             onConnectToReader()
         case .connectingFailed(let error, _):
@@ -274,7 +284,7 @@ private extension BuiltInCardReaderConnectionController {
                 ///
                 if cardReaders.isNotEmpty {
                     self.candidateReader = cardReaders.first
-                    self.state = .connectToReader
+                    self.state = .requestLocationPermission
                     return
                 }
             },
@@ -296,7 +306,7 @@ private extension BuiltInCardReaderConnectionController {
         /// like to connect to it
         ///
         if candidateReader != nil {
-            self.state = .connectToReader
+            self.state = .requestLocationPermission
             return
         }
 
@@ -349,6 +359,44 @@ private extension BuiltInCardReaderConnectionController {
             self?.returnSuccess(result: .canceled(cancellationSource))
         }
         stores.dispatch(action)
+    }
+
+    /// Handle location permission status and request
+    ///
+    func onRequestLocationPermission() {
+        let status = locationService.authorizationStatus
+        switch status {
+        case .authorized:
+            state = .connectToReader
+        case .denied:
+            // Refresh the view if the location permission state changes
+            locationService.observePermissionChanges { [weak self] _ in
+                guard let self else { return }
+                locationService.stopObservingPermissionChanges()
+                if case .requestLocationPermission = state {
+                    onRequestLocationPermission()
+                }
+            }
+
+            alertsPresenter.present(viewModel: alertsProvider.locationRequired(
+                dismiss: { [weak self] in
+                    guard let self else { return }
+                    locationService.stopObservingPermissionChanges()
+                    state = .cancel(.locationPermissionDenied)
+                },
+                skip: { [weak self] in
+                    guard let self else { return }
+                    locationService.stopObservingPermissionChanges()
+                    state = .connectToReader
+                }
+            ))
+        case .notDetermined:
+            alertsPresenter.present(viewModel: alertsProvider.locationRequestPreAlert { [weak self] in
+                self?.locationService.requestPermission { [weak self] _ in
+                    self?.onRequestLocationPermission()
+                }
+            })
+        }
     }
 
     /// Connect to the candidate card reader

@@ -3,35 +3,26 @@ import class WordPressShared.EmailFormatValidator
 import Yosemite
 
 final class ReceiptService {
-    private let orderService: POSOrderService
     private let orderController: PointOfSaleOrderControllerProtocol
 
-    init?(orderController: PointOfSaleOrderControllerProtocol) {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID,
-              let credentials = ServiceLocator.stores.sessionManager.defaultCredentials,
-              let orderService = POSOrderService(siteID: siteID, credentials: credentials) else {
-            return nil
-        }
-        self.orderService = orderService
+    init(orderController: PointOfSaleOrderControllerProtocol) {
         self.orderController = orderController
     }
 
     func sendReceipt(to emailAddress: String) async throws {
-        guard let order = orderController.order else {
-            throw NSError(domain: "", code: 0)
-        }
-        try await orderService.sendReceipt(order: order, recipientEmail: emailAddress)
+        try await orderController.sendReceipt(recipientEmail: emailAddress)
     }
 }
 
 struct POSSendReceiptView: View {
+    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @State private var textFieldInput: String = ""
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
 
     @Binding private(set) var isShowingSendReceiptView: Bool
 
-    private let receiptService: ReceiptService?
+    private let receiptService: ReceiptService
 
     private var isEmailValid: Bool {
         EmailFormatValidator.validate(string: textFieldInput)
@@ -116,7 +107,7 @@ struct POSSendReceiptView: View {
             isLoading = true
             do {
                 errorMessage = nil
-                try await receiptService?.sendReceipt(to: textFieldInput)
+                try await receiptService.sendReceipt(to: textFieldInput)
                 isShowingSendReceiptView = false
             } catch {
                 errorMessage = Localization.sendReceiptErrorText
@@ -156,13 +147,13 @@ private extension POSSendReceiptView {
     }
 }
 
-#if DEBUG
-#Preview {
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
-    POSSendReceiptView(orderController: posModel.orderController, isShowingSendReceiptView: .constant(true))
-        .environmentObject(posModel)
-}
-#endif
+//#if DEBUG
+//#Preview {
+//    let posModel = PointOfSaleAggregateModel(
+//        itemsController: PointOfSalePreviewItemsController(),
+//        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+//        orderController: PointOfSalePreviewOrderController())
+//    POSSendReceiptView(orderController: posModel.orderController, isShowingSendReceiptView: .constant(true))
+//        .environmentObject(posModel)
+//}
+//#endif

@@ -17,19 +17,23 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
     private var siteID: Int64
     private var currencySettings: CurrencySettings
     private let productsRemote: ProductsRemote
+    private let isVariableProductsFeatureEnabled: Bool
 
-    public init(siteID: Int64, currencySettings: CurrencySettings, network: Network) {
+    public init(siteID: Int64, currencySettings: CurrencySettings, network: Network, isVariableProductsFeatureEnabled: Bool) {
         self.siteID = siteID
         self.currencySettings = currencySettings
         self.productsRemote = ProductsRemote(network: network)
+        self.isVariableProductsFeatureEnabled = isVariableProductsFeatureEnabled
     }
 
     public convenience init(siteID: Int64,
                             currencySettings: CurrencySettings,
-                            credentials: Credentials?) {
+                            credentials: Credentials?,
+                            isVariableProductsFeatureEnabled: Bool) {
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
-                  network: AlamofireNetwork(credentials: credentials))
+                  network: AlamofireNetwork(credentials: credentials),
+                  isVariableProductsFeatureEnabled: isVariableProductsFeatureEnabled)
     }
 
     /// Provides a list of products for the Point of Sale, by fetching simple products from the remote, applying any eligibility criteria,
@@ -38,7 +42,9 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
     /// - pageNumber: Number of the page that should be retrieved. If none given, defaults to 1
     ///
     public func providePointOfSaleItems(pageNumber: Int = 1) async throws -> [POSDisplayableItem] {
-        let products = try await productsRemote.loadSimpleProductsForPointOfSale(for: siteID, pageNumber: pageNumber)
+        let productTypes: [ProductType] = isVariableProductsFeatureEnabled ?
+        [.simple, .variable] : [.simple]
+        let products = try await productsRemote.loadProductsForPointOfSale(for: siteID, productTypes: productTypes, pageNumber: pageNumber)
 
         if pageNumber != 1 && products.count == 0 {
             throw PointOfSaleProductServiceError.pageOutOfRange

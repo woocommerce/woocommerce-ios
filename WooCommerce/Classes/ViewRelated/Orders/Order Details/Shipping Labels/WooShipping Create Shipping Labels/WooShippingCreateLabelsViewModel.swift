@@ -97,11 +97,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// If the label purchase is in progress.
     @Published private(set) var isPurchasingLabel: Bool = false
 
-    @Published var storeOptions: ShippingLabelStoreOptions?
-    @Published var isLoadingStoreOptions: Bool = false
-    var weightUnit: String {
-        storeOptions?.weightUnit ?? ServiceLocator.shippingSettingsService.weightUnit ?? ""
-    }
+    /// Unit to use for weight measurements.
+    @Published var weightUnit: String = ServiceLocator.shippingSettingsService.weightUnit ?? ""
+
+    /// Unit to use for dimensions measurements.
+    @Published var dimensionsUnit: String = ServiceLocator.shippingSettingsService.dimensionUnit ?? ""
 
     /// Closure to execute after the label is successfully purchased.
     let onLabelPurchase: ((_ markOrderComplete: Bool) -> Void)?
@@ -146,6 +146,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
         observeSelectedPackage()
         observeForLabelRates()
+        loadStoreOptions()
     }
 
     /// Initialize the view model from an existing shipping label.
@@ -203,36 +204,21 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         stores.dispatch(action)
     }
 
-    func loadStoreOptions(completion: ((ShippingLabelStoreOptions) -> Void)? = nil) {
-        guard isLoadingStoreOptions == false,
-              let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else { return }
+    /// Updates store options (weight and dimensions units) with remote settings.
+    func loadStoreOptions() {
+        guard let siteID = stores.sessionManager.defaultStoreID else { return }
 
-        isLoadingStoreOptions = true
-
-        let action = WooShippingAction.loadAccountSettings(siteID: siteID) { result in
+        let action = WooShippingAction.loadAccountSettings(siteID: siteID) { [weak self] result in
             switch result {
             case .success(let settings):
-                self.storeOptions = settings.storeOptions
-                completion?(settings.storeOptions)
+                guard let self else { return }
+                weightUnit = settings.storeOptions.weightUnit
+                dimensionsUnit = settings.storeOptions.dimensionUnit
             case .failure(let error):
                 DDLogError("⛔️ Error loading account settings: \(error)")
-                // fallback to store settings
-                let shippingSettingsService = ServiceLocator.shippingSettingsService
-                let currencySettings = ServiceLocator.currencySettings
-                let currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
-                let originCountry = SiteAddress().countryCode.rawValue
-                if let dimensionUnit = shippingSettingsService.dimensionUnit,
-                   let weightUnit = shippingSettingsService.weightUnit {
-                    let fallbackStoreOptions = ShippingLabelStoreOptions(currencySymbol: currencySymbol,
-                                                            dimensionUnit: dimensionUnit,
-                                                            weightUnit: weightUnit,
-                                                            originCountry: originCountry)
-                    self.storeOptions = fallbackStoreOptions
-                }
             }
-            self.isLoadingStoreOptions = false
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 }
 

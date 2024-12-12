@@ -3,7 +3,7 @@
 
 agents:
   queue: mac
-  hostname: MV-MKE-ARM64-002
+  hostname: MV-MKE-ARM64-003
 
 env:
   IMAGE_ID: $IMAGE_ID

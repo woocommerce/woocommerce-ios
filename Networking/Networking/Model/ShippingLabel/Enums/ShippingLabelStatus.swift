@@ -6,6 +6,7 @@ public enum ShippingLabelStatus: GeneratedFakeable {
     case purchased
     case purchaseError
     case purchaseInProgress
+    case unknown
 }
 
 /// RawRepresentable Conformance
@@ -21,8 +22,8 @@ extension ShippingLabelStatus: RawRepresentable {
         case Keys.purchaseError:
             self = .purchaseError
         default:
-            assertionFailure("Unexpected value for `ShippingLabelStatus`: \(rawValue)")
-            self = .purchased
+            DDLogError("⛔️ Unexpected value for `ShippingLabelStatus`: \(rawValue)")
+            self = .unknown
         }
     }
 
@@ -36,6 +37,8 @@ extension ShippingLabelStatus: RawRepresentable {
             return Keys.purchaseInProgress
         case .purchaseError:
             return Keys.purchaseError
+        case .unknown:
+            return ""
         }
     }
 }

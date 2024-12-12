@@ -85,6 +85,10 @@ struct CartView: View {
                         .onPreferenceChange(ScrollOffSetPreferenceKey.self) { position in
                             self.offSetPosition = position
                         }
+
+                        Spacer()
+                            .frame(height: floatingControlAreaSize.height)
+                            .renderedIf(posModel.orderStage == .finalizing)
                     }
                     .coordinateSpace(name: Constants.scrollViewCoordinateSpaceIdentifier)
                     .onChange(of: posModel.cart.first?.id) { itemToScrollTo in
@@ -108,8 +112,7 @@ struct CartView: View {
                         .accessibilityAddTraits(.isHeader)
                 }
             case .finalizing:
-                Spacer()
-                    .frame(height: floatingControlAreaSize.height)
+                EmptyView()
             }
         }
         .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)

@@ -18,7 +18,12 @@ struct PointOfSaleRootItemListView: View {
                     HStack {
                         POSHeaderTitleView(context: .root) {}
                     }
-                    PointOfSaleItemListView(itemListState: $posModel.itemListState) { item in
+                    PointOfSaleItemListView(itemListState: $posModel.itemListState,
+                                            reload: {
+                        await posModel.reload()
+                    }, loadNextItems: {
+                        await posModel.loadNextItems()
+                    }) { item in
                         // TODO: try replacing item type with generic "top-level item" (leaf or parent item)
                         switch item {
                             case .product(let product):
@@ -51,7 +56,12 @@ struct PointOfSaleRootItemListView: View {
                             state = .rootItemList
                         }
                     }
-                    PointOfSaleItemListView(itemListState: $viewHelper.childItemListState) { item in
+                    PointOfSaleItemListView(itemListState: $viewHelper.childItemListState,
+                                            reload: {
+                        await viewHelper.reloadChildItems()
+                    }, loadNextItems: {
+                        await viewHelper.loadNextChildItems()
+                    }) { item in
                         // TODO: try replacing item type with generic child item
                         switch item {
                             case .variation(let variation):

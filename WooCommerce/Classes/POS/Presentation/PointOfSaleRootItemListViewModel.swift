@@ -2,21 +2,31 @@ import SwiftUI
 import Yosemite
 import WooFoundation
 
-// TODO: Maybe not a view helper because it's not stateless
-// TODO: Try replacing this with another `PointOfSaleItemsController` for child items
+enum PointOfSaleItemListFullscreenState: Identifiable {
+    case initialLoading
+    case empty
+    case error(PointOfSaleErrorState)
+
+    var id: String {
+        switch self {
+            case .initialLoading:
+                return "initialLoading"
+            case .empty:
+                return "empty"
+            case .error(let errorState):
+                // Assuming PointOfSaleErrorState handles its own unique identification
+                return "error-\(errorState)"
+        }
+    }
+}
+
 final class PointOfSaleRootItemListViewModel: ObservableObject {
     @Published var itemListState: ItemListState = .initialLoading
     @Published var variationItemListState: ItemListState = .empty
-    @Published var isShowingLoadingView: Bool = false
+    @Published var fullscreenState: PointOfSaleItemListFullscreenState?
 
     private let itemsController: PointOfSaleItemsControllerProtocol
     private(set) var variationChildItemsController: PointOfSaleItemsControllerProtocol?
-
-//    @Published var childItemListState: ItemListState = .empty
-//    private var allChildItems: [UUID: [POSItem]] = [:]
-//    private let variationProvider: PointOfSaleVariationServiceProtocol
-//    private var currentPage: Int = Constants.initialPage
-//    private var mightHaveMorePages: Bool = true
 
     private let siteID: Int64
     private let credentials: Credentials
@@ -37,15 +47,19 @@ final class PointOfSaleRootItemListViewModel: ObservableObject {
         publishItemListState()
 
         $itemListState
-                    .scan(false) { hasShownLoadingView, newState in
-                        // If never set to true, check condition
-                        if !hasShownLoadingView && newState == .initialLoading {
-                            return true
-                        }
-                        // Allow resetting to false
-                        return hasShownLoadingView && newState != .initialLoading ? false : hasShownLoadingView
-                    }
-                    .assign(to: &$isShowingLoadingView)
+            .map { itemListState in
+                switch itemListState {
+                    case .initialLoading:
+                        return .initialLoading
+                    case .empty:
+                        return .empty
+                    case .error(let error):
+                        return .error(error)
+                    case .loaded, .loading:
+                        return nil
+                }
+            }
+            .assign(to: &$fullscreenState)
     }
 
     func showVariationItems(for parentProduct: POSVariableProductParent) {

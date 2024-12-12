@@ -17,6 +17,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     private var allItems: [POSDisplayableItem] = []
     private var currentPage: Int = Constants.initialPage
     private var mightHaveMorePages: Bool = true
+    private var hasLoadedInitialItems: Bool = false
     private let itemProvider: PointOfSaleItemServiceProtocol
 
     init(itemProvider: PointOfSaleItemServiceProtocol) {
@@ -26,6 +27,11 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
 
     @MainActor
     func loadInitialItems() async {
+        guard !hasLoadedInitialItems else {
+            itemListStateSubject.send(.loaded(allItems))
+            return
+        }
+        hasLoadedInitialItems = true
         mightHaveMorePages = true
         itemListStateSubject.send(.initialLoading)
         try? await load(pageNumber: Constants.initialPage)

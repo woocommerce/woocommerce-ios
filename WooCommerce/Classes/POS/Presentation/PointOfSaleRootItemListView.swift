@@ -77,11 +77,21 @@ struct PointOfSaleRootItemListView: View {
         .task {
             await viewModel.loadInitialItems()
         }
-        .fullScreenCover(isPresented: $viewModel.isShowingLoadingView) {
-            // TODO: recover opacity transition
-            PointOfSaleLoadingView()
-                .transition(.opacity)
-                .ignoresSafeArea()
+        .fullScreenCover(item: $viewModel.fullscreenState) { fullscreenState in
+            switch fullscreenState {
+                case .initialLoading:
+                    PointOfSaleLoadingView()
+                        .transition(.opacity)
+                        .ignoresSafeArea()
+                case .empty:
+                    PointOfSaleItemListEmptyView()
+                case .error(let error):
+                    PointOfSaleItemListErrorView(error: error, onRetry: {
+                        Task {
+                            await viewModel.loadInitialItems()
+                        }
+                    })
+            }
         }
     }
 }

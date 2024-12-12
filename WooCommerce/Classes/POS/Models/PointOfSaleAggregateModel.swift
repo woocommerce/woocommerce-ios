@@ -11,6 +11,7 @@ import enum Yosemite.SystemStatusAction
 protocol PointOfSaleAggregateModelProtocol {
     var orderStage: PointOfSaleOrderStage { get }
 
+    var itemListViewModel: PointOfSaleRootItemListViewModel { get }
     var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus { get }
     func connectCardReader()
     func disconnectCardReader()
@@ -21,10 +22,6 @@ protocol PointOfSaleAggregateModelProtocol {
     func cancelCardPaymentsOnboarding()
     func trackCardPaymentsOnboardingShown()
 
-    var itemListState: ItemListState { get }
-    func loadInitialItems() async
-    func loadNextItems() async
-    func reload() async
 
     var cart: [CartItem] { get }
     func addToCart(_ item: POSOrderableItem)
@@ -49,13 +46,11 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
     @Published private(set) var eligibleWooCommerceVersionForPOSReceipts: Bool = false
 
-    @Published var itemListState: ItemListState = .initialLoading
-
     @Published private(set) var cart: [CartItem] = []
 
     @Published private(set) var orderState: PointOfSaleOrderState = .idle
 
-    private let itemsController: PointOfSaleItemsControllerProtocol
+    let itemListViewModel: PointOfSaleRootItemListViewModel
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
@@ -71,12 +66,11 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
          orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
          paymentState: PointOfSalePaymentState = .idle) {
-        self.itemsController = itemsController
+        self.itemListViewModel = .init()
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderController = orderController
         self.analytics = analytics
         self.paymentState = paymentState
-        publishItemListState()
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
         publishOrderState()
@@ -89,26 +83,6 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 }
 
 // MARK: - ItemList
-extension PointOfSaleAggregateModel {
-    private func publishItemListState() {
-        itemsController.itemListStatePublisher.assign(to: &$itemListState)
-    }
-
-    @MainActor
-    func loadInitialItems() async {
-        await itemsController.loadInitialItems()
-    }
-
-    @MainActor
-    func loadNextItems() async {
-        await itemsController.loadNextItems()
-    }
-
-    @MainActor
-    func reload() async {
-        await itemsController.reload()
-    }
-}
 
 // MARK: - Cart
 

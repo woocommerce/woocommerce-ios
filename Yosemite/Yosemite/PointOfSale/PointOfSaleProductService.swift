@@ -63,18 +63,34 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
     // Maps result to POSProduct, and populate the output with:
     // - Formatted price based on store's currency settings.
     // - Product thumbnail, if any.
-    private func mapProductsToPOSItems(products: [Product]) -> [POSOrderableItem] {
+    private func mapProductsToPOSItems(products: [Product]) -> [POSDisplayableItem] {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         return products.map { product in
             let formattedPrice = currencyFormatter.formatAmount(product.price) ?? "-"
             let thumbnailSource = product.images.first?.src
 
-            return POSProduct(id: UUID(),
-                              name: product.name,
-                              formattedPrice: formattedPrice,
-                              productImageSource: thumbnailSource,
-                              productID: product.productID,
-                              price: product.price)
+            switch product.productType {
+                case .simple:
+                    return POSProduct(id: UUID(),
+                                      name: product.name,
+                                      formattedPrice: formattedPrice,
+                                      productImageSource: thumbnailSource,
+                                      productID: product.productID,
+                                      price: product.price)
+                case .variable:
+                    return POSVariableProductParent(id: UUID(),
+                                                    name: product.name,
+                                                    formattedPrice: formattedPrice,
+                                                    productImageSource: nil,
+                                                    productID: product.productID)
+                default:
+                    return POSProduct(id: UUID(),
+                                      name: product.name,
+                                      formattedPrice: formattedPrice,
+                                      productImageSource: thumbnailSource,
+                                      productID: product.productID,
+                                      price: product.price)
+            }
         }
     }
 }

@@ -5,8 +5,12 @@ import WooFoundation
 // TODO: Maybe not a view helper because it's not stateless
 // TODO: Try replacing this with another `PointOfSaleItemsController` for child items
 final class PointOfSaleRootItemListViewModel: ObservableObject {
+    @Published var itemListState: ItemListState = .initialLoading
+    @Published var variationItemListState: ItemListState = .empty
+    @Published var isShowingLoadingView: Bool = false
+
     private let itemsController: PointOfSaleItemsControllerProtocol
-    private var variationChildItemsController: PointOfSaleItemsControllerProtocol?
+    private(set) var variationChildItemsController: PointOfSaleItemsControllerProtocol?
 
 //    @Published var childItemListState: ItemListState = .empty
 //    private var allChildItems: [UUID: [POSItem]] = [:]
@@ -18,7 +22,9 @@ final class PointOfSaleRootItemListViewModel: ObservableObject {
     private let credentials: Credentials
     private let currencySettings: CurrencySettings
 
-    init(variationProvider: PointOfSaleVariationServiceProtocol) {
+    private var variationServicesByParentID: [Int64: PointOfSaleVariationService] = [:]
+
+    init() {
         self.siteID = ServiceLocator.stores.sessionManager.defaultStoreID!
         self.credentials = ServiceLocator.stores.sessionManager.defaultCredentials!
         self.currencySettings = ServiceLocator.currencySettings
@@ -28,64 +34,81 @@ final class PointOfSaleRootItemListViewModel: ObservableObject {
                                                         credentials: ServiceLocator.stores.sessionManager.defaultCredentials!,
                                                         isVariableProductsFeatureEnabled: true)
         self.itemsController = PointOfSaleItemsController(itemProvider: productProvider)
+        publishItemListState()
 
+        $itemListState
+                    .scan(false) { hasShownLoadingView, newState in
+                        // If never set to true, check condition
+                        if !hasShownLoadingView && newState == .initialLoading {
+                            return true
+                        }
+                        // Allow resetting to false
+                        return hasShownLoadingView && newState != .initialLoading ? false : hasShownLoadingView
+                    }
+                    .assign(to: &$isShowingLoadingView)
+    }
+
+    func showVariationItems(for parentProduct: POSVariableProductParent) {
+        let service: PointOfSaleVariationService = {
+            if let service = variationServicesByParentID[parentProduct.productID] {
+                return service
+            } else {
+                let service = PointOfSaleVariationService(siteID: siteID,
+                                                          currencySettings: currencySettings,
+                                                          credentials: credentials,
+                                                          parentProduct: parentProduct)
+                variationServicesByParentID[parentProduct.productID] = service
+                return service
+            }
+        }()
+        let itemsController = PointOfSaleItemsController(itemProvider: service)
+        variationChildItemsController = itemsController
+        publishVariationItemListState()
+        Task {
+            await itemsController.loadInitialItems()
+        }
+    }
+}
+
+extension PointOfSaleRootItemListViewModel {
+    private func publishItemListState() {
+        itemsController.itemListStatePublisher.assign(to: &$itemListState)
     }
 
     @MainActor
-    func loadChildItems(for parentProduct: POSParentProduct) async {
-//        do {
-//            let existingItems = allChildItems[parentProduct.id] ?? []
-//            childItemListState = .loading(existingItems, context: .child(parent: parentProduct, parentItem: .parentProduct(parentProduct)), pageInfo: PageInfo(currentPage: Constants.initialPage, hasMorePages: true))
-//
-//            let newItems = try await variationProvider.providePointOfSaleItems(for: parentProduct, pageNumber: Constants.initialPage)
-//            let updatedItems = existingItems + newItems
-//
-//            allChildItems[parentProduct.id] = updatedItems
-//            childItemListState = .loaded(updatedItems, context: .child(parent: parentProduct, parentItem: .parentProduct(parentProduct)), pageInfo: PageInfo(currentPage: Constants.initialPage, hasMorePages: true))
-//        } catch {
-//            DDLogError("Error loading child items for \(parentProduct): \(error)")
-//        }
+    func loadInitialItems() async {
+        await itemsController.loadInitialItems()
     }
 
     @MainActor
-    func loadNextChildItems() async {
-//        do {
-//            guard mightHaveMorePages else {
-//                return
-//            }
-////            childItemListState = .loading(allItems, context: .root, pageInfo: PageInfo(currentPage: currentPage, hasMorePages: true))
-//
-//            let nextPage = currentPage + 1
-//            try await load(pageNumber: nextPage)
-//            currentPage = nextPage
-//        } catch {
-//            // Handle errors without incrementing currentPage.
-//        }
+    func loadNextItems() async {
+        await itemsController.loadNextItems()
     }
 
     @MainActor
-    func reloadChildItems() async {
-//        allChildItems.removeAll()
-//        currentPage = Constants.initialPage
-//        mightHaveMorePages = true
-////        childItemListState = .loading(allItems, context: .root, pageInfo: PageInfo(currentPage: currentPage, hasMorePages: true))
-//        try? await load(pageNumber: currentPage)
+    func reload() async {
+        await itemsController.reload()
+    }
+}
+
+extension PointOfSaleRootItemListViewModel {
+    private func publishVariationItemListState() {
+        variationChildItemsController?.itemListStatePublisher.assign(to: &$variationItemListState)
     }
 
     @MainActor
-    private func load(pageNumber: Int) async throws {
-//        do {
-//            try await fetchItems(pageNumber: pageNumber)
-//            mightHaveMorePages = true
-//            updateItemListStateAfterLoadAttempt()
-//        } catch PointOfSaleProductServiceError.pageOutOfRange {
-//            mightHaveMorePages = false
-//            updateItemListStateAfterLoadAttempt()
-//            throw PointOfSaleProductServiceError.pageOutOfRange
-//        } catch {
-//            itemListStateSubject.send(.error(PointOfSaleErrorState.errorOnLoadingProducts()))
-//            throw error
-//        }
+    func loadVariationInitialItems() async {
+        await variationChildItemsController?.loadInitialItems()
+    }
+
+    @MainActor
+    func loadVariationNextItems() async {
+        await variationChildItemsController?.loadNextItems()
+    }
+
+    @MainActor
+    func reloadVariations() async {
+        await variationChildItemsController?.reload()
     }
 }
 

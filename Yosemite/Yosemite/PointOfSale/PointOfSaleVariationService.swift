@@ -15,40 +15,62 @@ public enum PointOfSaleVariationServiceError: Error {
 /// Variation provider for the Point of Sale feature
 ///
 
-public protocol PointOfSaleVariationServiceProtocol {
-    func providePointOfSaleItems(for: POSParentProduct, pageNumber: Int) async throws -> [POSDisplayableItem]
-}
 
-public final class PointOfSaleVariationService: PointOfSaleVariationServiceProtocol {
+public final class PointOfSaleVariationService: PointOfSaleItemServiceProtocol {
     private let siteID: Int64
     private let currencyFormatter: CurrencyFormatter
     private let variationService: ProductVariationsRemoteProtocol
+    private let parentProduct: POSVariableProductParent
 
-    public init(siteID: Int64, currencySettings: CurrencySettings, network: Network) {
+    public init(siteID: Int64, currencySettings: CurrencySettings, network: Network, parentProduct: POSVariableProductParent) {
         self.siteID = siteID
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.variationService = ProductVariationsRemote(network: network)
+        self.parentProduct = parentProduct
     }
 
     public convenience init(siteID: Int64,
                             currencySettings: CurrencySettings,
-                            credentials: Credentials?) {
+                            credentials: Credentials?,
+                            parentProduct: POSVariableProductParent) {
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
-                  network: AlamofireNetwork(credentials: credentials))
+                  network: AlamofireNetwork(credentials: credentials),
+                  parentProduct: parentProduct)
     }
 
-    public func providePointOfSaleItems(for parentProduct: POSParentProduct, pageNumber: Int) async throws -> [POSDisplayableItem] {
-        throw PointOfSaleVariationServiceError.unknown
+    public func providePointOfSaleItems(pageNumber: Int) async throws -> [any POSDisplayableItem] {
+        try await variationService.fetchProductVariations(
+            for: siteID,
+            parentProductID: parentProduct.productID,
+            pageNumber: pageNumber,
+            pageSize: 25)
+        .map { variation in
+            POSVariation(id: UUID(),
+                         name: "\(parentProduct.name) Variation \(variation.productVariationID)",
+                         formattedPrice: variation.price,
+                         price: variation.price,
+                         productID: variation.productID,
+                         variationID: variation.productVariationID)
+        }
+    }
+
+    private func providePointOfSaleItems(for parentProduct: POSParentProduct, pageNumber: Int) async throws -> [POSDisplayableItem] {
         // TODO
-//        return try await variationService.fetchProductVariations(
-//            for: siteID,
-//            parentProductID: parentProduct.productID,
-//            pageNumber: pageNumber,
-//            pageSize: 25)
-//        .map { variation in
+        return try await variationService.fetchProductVariations(
+            for: siteID,
+            parentProductID: parentProduct.productID,
+            pageNumber: pageNumber,
+            pageSize: 25)
+        .map { variation in
+            POSVariation(id: UUID(),
+                         name: "\(parentProduct.name) Variation \(variation.productVariationID)",
+                         formattedPrice: variation.price,
+                         price: variation.price,
+                         productID: variation.productID,
+                         variationID: variation.productVariationID)
 //                .variation(POSVariation(variation: variation, currencyFormatter: currencyFormatter))
-//        }
+        }
     }
 }
 

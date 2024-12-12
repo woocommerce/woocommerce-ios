@@ -209,8 +209,9 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: POSConstants.productsPerPage,
             // When both productType and productTypes are provided, the productType is ignored in WC versions 9.6+.
-            ParameterKey.productType: POSConstants.productType,
-            ParameterKey.productTypes: productTypes.map { $0.rawValue }.joined(separator: ","),
+            // TODO: uncomment the following lines. Commented out for easier testing with variable products in all WC versions.
+//            ParameterKey.productType: POSConstants.productType,
+//            ParameterKey.productTypes: productTypes.map { $0.rawValue }.joined(separator: ","),
             ParameterKey.orderBy: OrderKey.name.value,
             ParameterKey.order: Order.ascending.value,
             ParameterKey.productStatus: POSConstants.productStatus,

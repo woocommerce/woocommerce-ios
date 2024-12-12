@@ -1,13 +1,13 @@
-import struct Yosemite.POSParentProduct
+import Yosemite
 import SwiftUI
 
 struct ParentProductCardView: View {
-    private let parentProduct: POSParentProduct
+    private let parentProduct: POSVariableProductParent
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
-    init(parentProduct: POSParentProduct) {
+    init(parentProduct: POSVariableProductParent) {
         self.parentProduct = parentProduct
     }
 
@@ -69,9 +69,9 @@ private extension ParentProductCardView {
     }
 }
 
-#if DEBUG
-#Preview {
-    let parentProduct = POSParentProduct(id: UUID(), name: "Parent product 1", productImageSource: nil, productID: 42)
-    ParentProductCardView(parentProduct: parentProduct)
-}
-#endif
+//#if DEBUG
+//#Preview {
+//    let parentProduct = POSParentProduct(id: UUID(), name: "Parent product 1", productImageSource: nil, productID: 42)
+//    ParentProductCardView(parentProduct: parentProduct)
+//}
+//#endif

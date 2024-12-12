@@ -11,23 +11,8 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            switch posModel.itemListState {
-            case .initialLoading:
-                PointOfSaleLoadingView()
-                    .transition(.opacity)
-                    .ignoresSafeArea()
-            case .empty:
-                PointOfSaleItemListEmptyView()
-            case .error(let errorContents):
-                PointOfSaleItemListErrorView(error: errorContents, onRetry: {
-                    Task {
-                        await posModel.loadInitialItems()
-                    }
-                })
-            case .loading, .loaded:
                 contentView
                     .accessibilitySortPriority(2)
-            }
 
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
                                    showSupport: $showSupport)
@@ -35,7 +20,7 @@ struct PointOfSaleDashboardView: View {
                 .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
                 .trackSize(size: $floatingSize)
                 .accessibilitySortPriority(1)
-                .renderedIf(posModel.itemListState != .initialLoading)
+                .renderedIf(posModel.itemListViewModel.itemListState != .initialLoading)
 
             POSConnectivityView()
         }
@@ -43,7 +28,7 @@ struct PointOfSaleDashboardView: View {
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .environment(\.posBackgroundAppearance, posModel.paymentState != .processingPayment ? .primary : .secondary)
-        .animation(.easeInOut, value: posModel.itemListState == .initialLoading)
+        .animation(.easeInOut, value: posModel.itemListViewModel.itemListState == .initialLoading)
         .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
         .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
@@ -66,21 +51,13 @@ struct PointOfSaleDashboardView: View {
         .sheet(isPresented: $showSupport) {
             supportForm
         }
-        .task {
-            await posModel.loadInitialItems()
-        }
     }
 
     private var contentView: some View {
         GeometryReader { geometry in
             HStack {
                 if posModel.orderStage == .building {
-                    // TODO: DI variations service
-                    let currencySettings = ServiceLocator.currencySettings
-                    let variationService = PointOfSaleVariationService(siteID: ServiceLocator.stores.sessionManager.defaultStoreID!,
-                                                                       currencySettings: currencySettings,
-                                                                       credentials: ServiceLocator.stores.sessionManager.defaultCredentials)
-                    PointOfSaleRootItemListView(viewModel: .init(variationProvider: variationService))
+                    PointOfSaleRootItemListView(viewModel: posModel.itemListViewModel)
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .leading))
                 }

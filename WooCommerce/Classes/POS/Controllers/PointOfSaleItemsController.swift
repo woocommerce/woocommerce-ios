@@ -5,7 +5,6 @@ import protocol Yosemite.POSDisplayableItem
 import struct Yosemite.POSParentProduct
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import enum Yosemite.PointOfSaleProductServiceError
-import protocol Yosemite.PointOfSaleVariationServiceProtocol
 
 protocol PointOfSaleItemsControllerProtocol {
     var itemListStatePublisher: any Publisher<ItemListState, Never> { get }

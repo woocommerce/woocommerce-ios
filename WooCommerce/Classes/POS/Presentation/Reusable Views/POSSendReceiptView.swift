@@ -72,6 +72,7 @@ struct POSSendReceiptView: View {
             Spacer()
         }
         .padding()
+        .animation(.easeInOut, value: errorMessage)
         .onChange(of: textFieldInput) { _ in
             errorMessage = nil
         }

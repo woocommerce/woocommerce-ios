@@ -37,15 +37,7 @@ extension POSProduct {
     }
 }
 
-public protocol POSParentItem: POSDisplayableItem & PointOfSaleParentItemProtocol {}
-
-public protocol PointOfSaleParentItemProtocol {
-//    var childrenState: ItemListState { get set }
-//    var currentPage: Int { get set }
-//    var hasMoreChildren: Bool { get set }
-}
-
-public struct POSVariableProductParent: POSDisplayableItem, POSParentItem, Equatable {
+public struct POSVariableProductParent: POSDisplayableItem, Equatable {
     public static func == (lhs: POSVariableProductParent, rhs: POSVariableProductParent) -> Bool {
         return lhs.id == rhs.id &&
         lhs.name == rhs.name &&
@@ -59,44 +51,6 @@ public struct POSVariableProductParent: POSDisplayableItem, POSParentItem, Equat
     public let formattedPrice: String
     public let productImageSource: String?
 
-    // POSParentItem
-//    public var childrenState: ItemListState
-//    public var currentPage: Int
-//    public var hasMoreChildren: Bool
-
     // VariableProduct fetch requirements
     public let productID: Int64
 }
-
-//struct POSVariableProduct: POSOrderableItem, Equatable {
-//    // POSDisplayableItem
-//    var id: UUID
-//    var parentProductID: Int64
-//    var variationID: Int64
-//    var name: String
-//    var formattedPrice: String
-//    var productImageSource: String?
-//
-//    // POSOrderableItem
-//    func toOrderSyncProductInput(quantity: Decimal) -> OrderSyncProductInput {
-//        OrderSyncProductInput(product: .variation(POSVariationType(price: formattedPrice,
-//                                                                   productVariationID: variationID,
-//                                                                   productID: parentProductID)),
-//                              quantity: quantity)
-//    }
-//
-//    func matches(orderItem: OrderItem) -> Bool {
-//        return variationID == orderItem.productID
-////        return productID == orderItem.productID
-//    }
-//}
-//
-//struct POSVariationType: OrderSyncProductVariationTypeProtocol {
-//    let price: String
-//    let productVariationID: Int64
-//    let productID: Int64
-//
-//    func isEqual(to type: any OrderSyncProductVariationTypeProtocol) -> Bool {
-//        price == type.price && productVariationID == type.productVariationID && productID == type.productID
-//    }
-//}

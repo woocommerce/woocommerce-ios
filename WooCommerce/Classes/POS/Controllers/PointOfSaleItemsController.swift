@@ -11,7 +11,7 @@ protocol PointOfSaleItemsControllerProtocol {
     func loadInitialItems() async
     func loadNextItems() async
     func reload() async
-    func loadChildItems(for parentItem: POSParentProduct) async
+    func loadChildItems(for parentItem: POSParentProduct) async -> ItemListViewState
     func goBack()
 }
 
@@ -99,19 +99,22 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     }
 
     @MainActor
-    func loadChildItems(for parentProduct: POSParentProduct) async {
+    func loadChildItems(for parentProduct: POSParentProduct) async -> ItemListViewState {
         do {
             let existingItems = allChildItems[parentProduct.id] ?? []
-            itemListStateSubject.send(.loading(existingItems, context: .child(parent: parentProduct, parentItem: .parentProduct(parentProduct)), pageInfo: PageInfo(currentPage: Constants.initialPage, hasMorePages: true)))
+            if existingItems.isNotEmpty {
+                return ItemListViewState.loaded(existingItems, context: .child(parent: parentProduct, parentItem: .parentProduct(parentProduct)), pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true))
+            }
 
             let newItems = try await variationProvider.providePointOfSaleItems(for: parentProduct, pageNumber: Constants.initialPage)
             let updatedItems = existingItems + newItems
 
             allChildItems[parentProduct.id] = updatedItems
-            itemListStateSubject.send(.loaded(updatedItems, context: .child(parent: parentProduct, parentItem: .parentProduct(parentProduct)), pageInfo: PageInfo(currentPage: Constants.initialPage, hasMorePages: true)))
+            return ItemListViewState.loaded(updatedItems, context: .child(parent: parentProduct, parentItem: .parentProduct(parentProduct)), pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true))
         } catch {
             DDLogError("Error loading child items for \(parentProduct): \(error)")
         }
+        return ItemListViewState.loaded([], context: .child(parent: parentProduct, parentItem: .parentProduct(parentProduct)), pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true))
     }
 
     func goBack() {

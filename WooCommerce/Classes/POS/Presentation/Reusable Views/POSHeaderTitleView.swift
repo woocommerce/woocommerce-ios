@@ -2,21 +2,10 @@ import SwiftUI
 
 struct POSHeaderTitleView: View {
     var foregroundColor: Color = Color.posPrimaryText
+
     let context: NavigationContext
-    let backAction: () -> Void
 
     var body: some View {
-        if case .child = context {
-            Spacer()
-            Button {
-                backAction()
-            } label: {
-                Image(systemName: "chevron.backward")
-                    .font(.posTitleRegular)
-            }
-            Spacer()
-        }
-
         Text(title(for: context))
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(Constants.padding)
@@ -53,5 +42,5 @@ private extension POSHeaderTitleView {
 }
 
 #Preview {
-    POSHeaderTitleView(context: .root, backAction: {})
+    POSHeaderTitleView(context: .root)
 }

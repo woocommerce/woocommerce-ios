@@ -1,4 +1,4 @@
-public enum POSItem: Equatable, Identifiable {
+public enum POSItem: Equatable, Identifiable, Hashable {
     case product(POSProduct)
     case parentProduct(POSParentProduct)
     case variation(POSVariation)

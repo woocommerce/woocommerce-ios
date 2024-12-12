@@ -26,7 +26,8 @@ protocol PointOfSaleAggregateModelProtocol {
     func loadInitialItems() async
     func loadNextItems() async
     func reload() async
-    func showChildren(for: POSParentProduct)
+    func childState(for parentProduct: POSParentProduct) async -> ItemListViewState
+    var rootState: ItemListViewState { get }
 
     var cart: [CartItem] { get }
     func addToCart(_ item: POSOrderableItem)
@@ -56,6 +57,8 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     @Published private(set) var cart: [CartItem] = []
 
     @Published private(set) var orderState: PointOfSaleOrderState = .idle
+
+    @Published private(set) var rootState: ItemListViewState = .loading([], context: .root, pageInfo: .init(currentPage: 1, hasMorePages: true))
 
     private let itemsController: PointOfSaleItemsControllerProtocol
 
@@ -94,6 +97,16 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 extension PointOfSaleAggregateModel {
     private func publishItemListState() {
         itemsController.itemListStatePublisher.assign(to: &$itemListState)
+        $itemListState.map { itemListState in
+            switch itemListState {
+            case .loading(let items, let context, let pageInfo):
+                return .loading(items, context: context, pageInfo: pageInfo)
+            case .loaded(let items, let context, let pageInfo):
+                return .loaded(items, context: context, pageInfo: pageInfo)
+            default:
+                return .loading([], context: .root, pageInfo: .init(currentPage: 1, hasMorePages: true))
+            }
+        }.assign(to: &$rootState)
     }
 
     @MainActor
@@ -111,10 +124,8 @@ extension PointOfSaleAggregateModel {
         await itemsController.reload()
     }
 
-    func showChildren(for parentProduct: POSParentProduct) {
-        Task { @MainActor in
-            await itemsController.loadChildItems(for: parentProduct)
-        }
+    func childState(for parentProduct: POSParentProduct) async -> ItemListViewState {
+        return await itemsController.loadChildItems(for: parentProduct)
     }
 
     func goBack() {

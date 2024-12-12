@@ -9,49 +9,70 @@ struct ItemListView: View {
 
     @EnvironmentObject var posModel: PointOfSaleAggregateModel
 
-    @State private var lastScrollPosition: CGFloat = 0
-    @State private var showSimpleProductsModal: Bool = false
-
-    @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
-    private var isHeaderBannerDismissed: Bool = false
+    @State private var path: [POSItem] = []
 
     var body: some View {
-        VStack {
-            switch posModel.itemListState {
-            case .initialLoading, .empty, .error:
-                // These cases are handled directly in the dashboard, we do not render
-                // a specific view within the ItemListView to handle them
-                headerView()
-                EmptyView()
-            case .loading(let items, let context, _),
-                    .loaded(let items, let context, _):
-                headerView(context: context).transition(.slide)
-                listView(items).transition(.slide)
+        NavigationStack(path: $path) {
+            VStack {
+                switch posModel.itemListState {
+                case .initialLoading, .empty, .error:
+                    // These cases are handled directly in the dashboard, we do not render
+                    // a specific view within the ItemListView to handle them
+                    EmptyView()
+                case .loading(_, _, _),
+                        .loaded(_, _, _):
+                    ItemList(rootItem: nil, showChildren: { item in
+                        path.append(item)
+                    })
+                    .refreshable {
+                        await posModel.reload()
+                    }
+                }
             }
+            .navigationDestination(for: POSItem.self, destination: { item in
+                ItemList(rootItem: item, showChildren: { item in
+                    path.append(item)
+                })
+                .background(Color.posPrimaryBackground)
+                .toolbar(.hidden, for: .navigationBar)
+            })
+            .background(Color.posPrimaryBackground)
+            .accessibilityElement(children: .contain)
         }
-        .refreshable {
-            await posModel.reload()
-        }
-        .background(Color.posPrimaryBackground)
-        .accessibilityElement(children: .contain)
-        .posModal(isPresented: $showSimpleProductsModal) {
-            SimpleProductsOnlyInformation(isPresented: $showSimpleProductsModal)
-        }
+    }
+}
+
+// Hmmm don't love this but it works to keep the back navigation swipe even though we hide the default nav bar.
+// It may have implications on the rest of the app. If we can scope it down to POS only, that would be better.
+extension UINavigationController {
+    override open func viewDidLoad() {
+        super.viewDidLoad()
+        interactivePopGestureRecognizer?.delegate = self
+    }
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return viewControllers.count > 1
     }
 }
 
 /// View Helpers
 ///
-private extension ItemListView {
+private extension ItemList {
     @ViewBuilder
     func headerView(context: NavigationContext = .root) -> some View {
         VStack {
             HStack {
-                POSHeaderTitleView(context: context) {
-                    withAnimation {
-                        posModel.goBack()
+                if case .child = context {
+                    Spacer()
+                    Button {
+                        dismiss()
+                    } label: {
+                        Text("\(Image(systemName: "chevron.backward")) Back")
+                            .font(.posTitleRegular)
                     }
+
+                    Spacer()
                 }
+                POSHeaderTitleView(context: context)
                 if !shouldShowHeaderBanner {
                     Spacer()
                     Button(action: {
@@ -129,69 +150,9 @@ private extension ItemListView {
             .font(POSFontStyle.posDetailEmphasized.font())
             .foregroundColor(Color(.accent))
     }
-
-    @ViewBuilder
-    func listView(_ items: [POSItem]) -> some View {
-        ScrollView {
-            VStack {
-                if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
-                    bannerCardView
-                }
-                ForEach(items) { item in
-                    listRow(item: item)
-                }
-                GhostItemCardView()
-                    .renderedIf(posModel.itemListState.isLoadingAfterInitialLoad)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.bottom, floatingControlAreaSize.height)
-            .padding(.horizontal, Constants.itemListPadding)
-            .background(GeometryReader { proxy in
-                Color.clear
-                    .onChange(of: proxy.frame(in: .global).maxY) { maxY in
-                        if posModel.itemListState.isLoadingAfterInitialLoad {
-                            return
-                        }
-                        let threshold = Constants.viewHeight * Constants.scrollThresholdMultiplier
-                        if maxY < threshold && maxY < lastScrollPosition {
-                            Task {
-                                await posModel.loadNextItems()
-                            }
-                        }
-                        lastScrollPosition = maxY
-                    }
-            })
-        }
-    }
-
-    @ViewBuilder
-    func listRow(item: POSItem) -> some View {
-        switch item {
-        case .product(let product):
-            Button(action: {
-                posModel.addToCart(product)
-            }, label: {
-                ProductCardView(product: product)
-            })
-        case .parentProduct(let parentProduct):
-            Button(action: {
-                withAnimation {
-                    posModel.showChildren(for: parentProduct)
-                }
-            }, label: {
-                ParentProductCardView(parentProduct: parentProduct)
-            })
-        case .variation(let variation):
-            Button(action: {
-                posModel.addToCart(variation)
-            }, label: {
-                VariationCardView(variation: variation)
-            })
-        }
-    }
 }
 
-private extension ItemListView {
+private extension ItemList {
     var shouldShowHeaderBanner: Bool {
         posModel.itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
     }
@@ -252,7 +213,7 @@ private extension GhostItemCardView {
 
 /// Constants
 ///
-private extension ItemListView {
+private extension ItemList {
     enum Constants {
         static let bannerTitleFont: POSFontStyle = .posBodyEmphasized
         static let bannerSubtitleFont: POSFontStyle = .posDetailRegular
@@ -312,3 +273,106 @@ private extension ItemListView {
     ItemListView()
 }
 #endif
+
+struct ItemList: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
+    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var posModel: PointOfSaleAggregateModel
+
+    @State private var lastScrollPosition: CGFloat = 0
+    @State private var showSimpleProductsModal: Bool = false
+
+    @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
+    private var isHeaderBannerDismissed: Bool = false
+
+    var rootItem: POSItem?
+
+    @State var state: ItemListViewState?
+
+    let showChildren: (POSItem) -> Void
+
+    var body: some View {
+        ScrollView {
+            VStack {
+                if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
+                    bannerCardView
+                }
+
+                switch state {
+                case .loading(let items, context: let context, pageInfo: let pageInfo),
+                        .loaded(let items, context: let context, pageInfo: let pageInfo):
+                    headerView(context: context)
+                    listRows(items)
+                case .none:
+                    EmptyView()
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.bottom, floatingControlAreaSize.height)
+            .padding(.horizontal, Constants.itemListPadding)
+            .background(GeometryReader { proxy in
+                Color.clear
+                    .onChange(of: proxy.frame(in: .global).maxY) { maxY in
+                        if posModel.itemListState.isLoadingAfterInitialLoad {
+                            return
+                        }
+                        let threshold = Constants.viewHeight * Constants.scrollThresholdMultiplier
+                        if maxY < threshold && maxY < lastScrollPosition {
+                            Task {
+                                await posModel.loadNextItems()
+                            }
+                        }
+                        lastScrollPosition = maxY
+                    }
+            })
+            .posModal(isPresented: $showSimpleProductsModal) {
+                SimpleProductsOnlyInformation(isPresented: $showSimpleProductsModal)
+            }
+            .task {
+                guard let rootItem else {
+                    state = posModel.rootState
+                    return
+                }
+                guard case .parentProduct(let parentProduct) = rootItem else { return }
+                state = await posModel.childState(for: parentProduct)
+            }
+        }
+    }
+
+    @ViewBuilder
+    func listRows(_ items: [POSItem]) -> some View {
+                ForEach(items) { item in
+                    listRow(item: item)
+                }
+                GhostItemCardView()
+                    .renderedIf(state?.isLoading ?? false)
+
+    }
+
+    @ViewBuilder
+    func listRow(item: POSItem) -> some View {
+        switch item {
+        case .product(let product):
+            Button(action: {
+                posModel.addToCart(product)
+            }, label: {
+                ProductCardView(product: product)
+            })
+        case .parentProduct(let parentProduct):
+            Button(action: {
+                withAnimation {
+                    showChildren(item)
+                }
+            }, label: {
+                ParentProductCardView(parentProduct: parentProduct)
+            })
+        case .variation(let variation):
+            Button(action: {
+                posModel.addToCart(variation)
+            }, label: {
+                VariationCardView(variation: variation)
+            })
+        }
+    }
+}

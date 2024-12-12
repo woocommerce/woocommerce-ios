@@ -1,6 +1,6 @@
 import Foundation
 
-struct PointOfSaleErrorState: Equatable {
+struct PointOfSaleErrorState: Equatable, Hashable {
     let title: String
     let subtitle: String
     let buttonText: String

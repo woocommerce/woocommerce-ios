@@ -50,8 +50,8 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
         itemListState = .loaded([], context: .root, pageInfo: .init(currentPage: 1, hasMorePages: true))
     }
 
-    func loadChildItems(for parentItem: POSParentProduct) async {
-        itemListState = .loaded([], context: .child(parent: parentItem, parentItem: .parentProduct(parentItem)), pageInfo: .init(currentPage: 1, hasMorePages: true))
+    func loadChildItems(for parentItem: Yosemite.POSParentProduct) async -> ItemListViewState {
+        return .loaded([], context: .child(parent: parentItem, parentItem: .parentProduct(parentItem)), pageInfo: .init(currentPage: 1, hasMorePages: true))
     }
 
     func goBack() {

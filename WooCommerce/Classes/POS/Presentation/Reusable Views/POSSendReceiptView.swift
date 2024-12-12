@@ -3,14 +3,23 @@ import class WordPressShared.EmailFormatValidator
 import Yosemite
 
 final class ReceiptService {
-    private let orderController: PointOfSaleOrderControllerProtocol
+    private let orderService: POSOrderServiceProtocol
 
-    init(orderController: PointOfSaleOrderControllerProtocol) {
-        self.orderController = orderController
+    init?() {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID,
+              let credentials = ServiceLocator.stores.sessionManager.defaultCredentials,
+              let orderService = POSOrderService(siteID: siteID, credentials: credentials) else {
+            return nil
+        }
+
+        self.orderService = orderService
     }
 
-    func sendReceipt(to emailAddress: String) async throws {
-        try await orderController.sendReceipt(recipientEmail: emailAddress)
+    func sendReceipt(for order: Order?, to emailAddress: String) async throws {
+        guard let order else {
+            throw NSError(domain: "", code: 0)
+        }
+        try await orderService.sendReceipt(order: order, recipientEmail: emailAddress)
     }
 }
 
@@ -22,16 +31,14 @@ struct POSSendReceiptView: View {
 
     @Binding private(set) var isShowingSendReceiptView: Bool
 
-    private let receiptService: ReceiptService
+    private let receiptService: ReceiptService? = ReceiptService()
 
     private var isEmailValid: Bool {
         EmailFormatValidator.validate(string: textFieldInput)
     }
 
-    init(orderController: PointOfSaleOrderControllerProtocol,
-         isShowingSendReceiptView: Binding<Bool>) {
+    init(isShowingSendReceiptView: Binding<Bool>) {
             self._isShowingSendReceiptView = isShowingSendReceiptView
-            self.receiptService = ReceiptService(orderController: orderController)
         }
 
     var body: some View {
@@ -107,7 +114,7 @@ struct POSSendReceiptView: View {
             isLoading = true
             do {
                 errorMessage = nil
-                try await receiptService.sendReceipt(to: textFieldInput)
+                try await receiptService?.sendReceipt(for: posModel.orderController.order, to: textFieldInput)
                 isShowingSendReceiptView = false
             } catch {
                 errorMessage = Localization.sendReceiptErrorText

@@ -176,7 +176,7 @@ final class HubMenuViewModel: ObservableObject {
             refreshGoogleAdsCampaignCheck()
         }
 
-        if isSiteEligibleForBlaze {
+        if !isSiteEligibleForBlaze {
             refreshBlazeEligibilityCheck()
         }
     }

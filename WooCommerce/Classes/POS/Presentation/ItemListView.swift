@@ -9,10 +9,8 @@ struct ItemListView: View {
 
     @EnvironmentObject var posModel: PointOfSaleAggregateModel
 
-    @State private var path: [POSItem] = []
-
     var body: some View {
-        NavigationStack(path: $path) {
+        NavigationStack {
             VStack {
                 switch posModel.itemListState {
                 case .initialLoading, .empty, .error:
@@ -21,18 +19,14 @@ struct ItemListView: View {
                     EmptyView()
                 case .loading(_, _, _),
                         .loaded(_, _, _):
-                    ItemList(rootItem: nil, showChildren: { item in
-                        path.append(item)
-                    })
+                    ItemList(rootItem: nil)
                     .refreshable {
                         await posModel.reload()
                     }
                 }
             }
             .navigationDestination(for: POSItem.self, destination: { item in
-                ItemList(rootItem: item, showChildren: { item in
-                    path.append(item)
-                })
+                ItemList(rootItem: item)
                 .background(Color.posPrimaryBackground)
                 .toolbar(.hidden, for: .navigationBar)
             })
@@ -290,8 +284,6 @@ struct ItemList: View {
 
     @State var state: ItemListViewState?
 
-    let showChildren: (POSItem) -> Void
-
     var body: some View {
         ScrollView {
             VStack {
@@ -342,11 +334,11 @@ struct ItemList: View {
 
     @ViewBuilder
     func listRows(_ items: [POSItem]) -> some View {
-                ForEach(items) { item in
-                    listRow(item: item)
-                }
-                GhostItemCardView()
-                    .renderedIf(state?.isLoading ?? false)
+        ForEach(items) { item in
+            listRow(item: item)
+        }
+        GhostItemCardView()
+            .renderedIf(state?.isLoading ?? false)
 
     }
 
@@ -360,13 +352,9 @@ struct ItemList: View {
                 ProductCardView(product: product)
             })
         case .parentProduct(let parentProduct):
-            Button(action: {
-                withAnimation {
-                    showChildren(item)
-                }
-            }, label: {
+            NavigationLink(value: item) {
                 ParentProductCardView(parentProduct: parentProduct)
-            })
+            }
         case .variation(let variation):
             Button(action: {
                 posModel.addToCart(variation)

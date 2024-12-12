@@ -11,10 +11,10 @@
             "custom": [
               {
                 "name": "Custom name",
-                "boxWeight": "0.01",
+                "box_weight": "0.01",
                 "id": "849225dc153",
                 "type": "box",
-                "isLetter": false,
+                "is_letter": false,
                 "dimensions": "12 x 12 x 12",
                 "is_user_defined": true
               }

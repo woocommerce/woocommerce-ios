@@ -3,13 +3,16 @@ import SwiftUI
 
 struct TapToPayEducationView: View {
     @StateObject private var viewModel: TapToPayEducationViewModel
+    @Environment(\.dismiss) private var dismiss
+    private var completion: () -> Void
 
-    init(viewModel: TapToPayEducationViewModel) {
+    init(viewModel: TapToPayEducationViewModel, completion: @escaping () -> Void = {}) {
         self._viewModel = StateObject(wrappedValue: viewModel)
+        self.completion = completion
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 8) {
                 TabView(selection: $viewModel.selectedStep) {
                     ForEach(0..<viewModel.steps.count, id: \.self) { index in
@@ -65,5 +68,11 @@ struct TapToPayEducationView: View {
                 siteID: viewModel.siteID,
                 onboardingUseCase: viewModel.cardPresentPaymentsOnboardingUseCase)
         })
+        .onChange(of: viewModel.dismiss) { _ in
+            dismiss()
+        }
+        .onDisappear {
+            completion()
+        }
     }
 }

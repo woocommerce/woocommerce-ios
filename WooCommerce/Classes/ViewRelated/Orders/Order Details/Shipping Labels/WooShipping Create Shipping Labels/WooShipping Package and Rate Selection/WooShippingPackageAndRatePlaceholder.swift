@@ -29,7 +29,7 @@ struct WooShippingPackageAndRatePlaceholder: View {
         .padding(Layout.padding)
         .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.border), lineWidth: Layout.borderLineWidth, dashed: true)
         .sheet(isPresented: $showAddPackage) {
-            WooShippingAddPackageView(createLabelsViewModel: viewModel) { packageData in
+            WooShippingAddPackageView() { packageData in
                 onSelectPackage(packageData)
                 showAddPackage = false
             }

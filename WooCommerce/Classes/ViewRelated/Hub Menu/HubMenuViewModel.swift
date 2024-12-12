@@ -96,17 +96,9 @@ final class HubMenuViewModel: ObservableObject {
         let currencySettings = ServiceLocator.currencySettings
 
         return PointOfSaleProductService(siteID: siteID,
-                                  currencySettings: currencySettings,
+                                         currencySettings: currencySettings,
                                          credentials: credentials,
-                                         isVariableProductsFeatureEnabled: true)
-    }()
-
-    private(set) lazy var posVariationProvider: PointOfSaleVariationServiceProtocol = {
-        let currencySettings = ServiceLocator.currencySettings
-
-        return PointOfSaleVariationService(siteID: siteID,
-                                           currencySettings: currencySettings,
-                                           credentials: credentials)
+                                         isVariableProductsFeatureEnabled: featureFlagService.isFeatureFlagEnabled(.variableProductsInPointOfSale))
     }()
 
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)

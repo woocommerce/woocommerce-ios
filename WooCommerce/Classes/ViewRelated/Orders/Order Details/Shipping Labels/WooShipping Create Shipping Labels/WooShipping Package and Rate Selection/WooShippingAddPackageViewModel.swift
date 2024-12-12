@@ -11,16 +11,36 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
     private let starAnimation: Animation = .spring(duration: 0.2)
 
-    init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
+    // Holds type of selected package, it can be `custom`, `carrier` or `saved`
+    @Published var selectedPackageType: WooShippingAddPackageView.PackageProviderType
+
+    init(selectedPackage: WooShippingPackageDataRepresentable? = nil,
+         siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.stores = stores
         self.storage = storage
+        selectedPackageType = .custom
+        previousSelectedPackage = selectedPackage
+        // Optimistically set the selected package ID.
+        // We will select the correct package type (custom, carrier or saved) after loading the packages.
+        switch selectedPackage?.source {
+        case .custom:
+            selectedSavedPackageId = selectedPackage?.id
+        case .predefined:
+            selectedCarriersPackageId = selectedPackage?.id
+            selectedSavedPackageId = selectedPackage?.id
+        case nil:
+            break
+        }
         configureResultsController()
     }
 
     @Published private(set) var isLoadingPackages: Bool = false
+
+    /// Holds the previously selected package data, which can be transformed e.g. to select the correct tabs in the view.
+    private let previousSelectedPackage: WooShippingPackageDataRepresentable?
 
     // MARK: - saved
 
@@ -156,8 +176,25 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
         starredCarriersPackages = Set(predefinedSavedPackages.map { $0.id })
 
+        // Select package type matching the previous selected package, if it is the currently selected package
+        if let previousSelectedPackage, previousSelectedPackage.id == selectedSavedPackageId || previousSelectedPackage.id == selectedCarriersPackageId {
+            switch previousSelectedPackage.source {
+            case .predefined:
+                selectedPackageType = predefinedSavedPackages.contains(where: { $0.id == previousSelectedPackage.id }) ? .saved : .carrier
+            case .custom:
+                selectedPackageType = customSavedPackages.contains(where: { $0.id == previousSelectedPackage.id }) ? .saved : .custom
+            }
+        }
+
         if selectedCarriersTabIndex == nil {
-            self.selectedCarriersTabIndex = carrierPackages.isEmpty ? nil : 0
+            // Select the carriers tab matching the previous selected carriers package, if it is the currently selected package
+            if let previousSelectedPackage, selectedCarriersPackageId == previousSelectedPackage.id {
+                selectedCarriersTabIndex = carrierPackages.firstIndex { carrierTab in
+                    return carrierTab.carrier.rawValue == previousSelectedPackage.source.sourceID
+                }
+            } else {
+                selectedCarriersTabIndex = carrierPackages.isEmpty ? nil : 0
+            }
         }
     }
 

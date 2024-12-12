@@ -12,6 +12,13 @@ enum WooShippingPackageSource {
             return sourceTitle
         }
     }
+
+    var sourceID: String? {
+        guard case .predefined(_, let sourceID) = self else {
+            return nil
+        }
+        return sourceID
+    }
 }
 
 protocol WooShippingPackageDataRepresentable {

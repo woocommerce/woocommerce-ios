@@ -17,11 +17,8 @@ struct WooShippingAddPackageView: View {
     }
 
     @Environment(\.presentationMode) var presentationMode
-
-    // Holds type of selected package, it can be `custom`, `carrier` or `saved`
-    @State var selectedPackageType = PackageProviderType.custom
-    @StateObject var packagesViewModel = WooShippingAddPackageViewModel()
-    @State var customPackageViewModel = WooShippingAddCustomPackageViewModel()
+    @ObservedObject var packagesViewModel: WooShippingAddPackageViewModel
+    @ObservedObject var customPackageViewModel: WooShippingAddCustomPackageViewModel
 
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
@@ -30,8 +27,16 @@ struct WooShippingAddPackageView: View {
     @Environment(\.shippingWeightUnit) private var weightUnit
     @Environment(\.shippingDimensionsUnit) private var dimensionsUnit
 
-    init(addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
+    init(selectedPackage: WooShippingPackageDataRepresentable? = nil,
+         addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
         self.addPackageAction = addPackageAction
+        packagesViewModel = WooShippingAddPackageViewModel(selectedPackage: selectedPackage)
+        switch selectedPackage?.source {
+        case .custom:
+            customPackageViewModel = WooShippingAddCustomPackageViewModel(selectedPackage: selectedPackage)
+        default:
+            customPackageViewModel = WooShippingAddCustomPackageViewModel()
+        }
     }
 
     // MARK: - UI
@@ -39,7 +44,7 @@ struct WooShippingAddPackageView: View {
     var body: some View {
         NavigationView {
             VStack {
-                Picker("", selection: $selectedPackageType) {
+                Picker("", selection: $packagesViewModel.selectedPackageType) {
                     ForEach(PackageProviderType.allCases, id: \.self) {
                         Text($0.name)
                     }
@@ -67,7 +72,7 @@ struct WooShippingAddPackageView: View {
 
     @ViewBuilder
     private var selectedPackageTypeView: some View {
-        switch selectedPackageType {
+        switch packagesViewModel.selectedPackageType {
         case .custom:
             WooAddCustomPackageView(viewModel: customPackageViewModel,
                                     addPackageAction: addPackageAction)

@@ -31,7 +31,7 @@ struct WooShippingSelectedPackageView: View {
             shipmentWeight
         }
         .sheet(isPresented: $showPackageSelection) {
-            WooShippingAddPackageView { newPackage in
+            WooShippingAddPackageView(selectedPackage: package) { newPackage in
                 updateSelectedPackage(newPackage)
                 showPackageSelection = false
             }

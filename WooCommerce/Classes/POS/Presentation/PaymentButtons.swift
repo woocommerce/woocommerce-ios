@@ -2,25 +2,20 @@ import SwiftUI
 
 struct PaymentsActionButtons: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
-    @State private var isShowingSendReceiptModal: Bool = false
+    @Binding var isShowingSendReceiptView: Bool
+    @Binding private(set) var isShowingReceiptNotEligibleBanner: Bool
 
     private var shouldShowSendReceiptButton: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sendReceiptsForPointOfSale)
     }
 
     var body: some View {
-        VStack {
-            sendReceiptButton
-                .renderedIf(shouldShowSendReceiptButton)
-            newOrderButton
-        }
-        .posModal(isPresented: $isShowingSendReceiptModal) {
-            POSSendReceiptModalView(sendReceipt: { email in
-                Task { @MainActor in
-                    await posModel.sendReceipt(to: email)
-                }
-            }, isPresented: $isShowingSendReceiptModal)
-            .posModalSizing()
+        ZStack {
+            VStack {
+                sendReceiptButton
+                    .renderedIf(shouldShowSendReceiptButton)
+                newOrderButton
+            }
         }
     }
 }
@@ -28,7 +23,11 @@ struct PaymentsActionButtons: View {
 private extension PaymentsActionButtons {
     var sendReceiptButton: some View {
         Button(action: {
-            isShowingSendReceiptModal = true
+            if posModel.eligibleWooCommerceVersionForPOSReceipts {
+                isShowingSendReceiptView = true
+            } else {
+                isShowingReceiptNotEligibleBanner = true
+            }
         }, label: {
             HStack(spacing: Constants.buttonSpacing) {
                 Text(Localization.sendReceipt)
@@ -88,7 +87,7 @@ private extension PaymentsActionButtons {
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
-    PaymentsActionButtons()
+    PaymentsActionButtons(isShowingSendReceiptView: .constant(false), isShowingReceiptNotEligibleBanner: .constant(true))
         .environmentObject(posModel)
 }
 #endif

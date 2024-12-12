@@ -14,6 +14,7 @@ final class SetUpTapToPayInformationViewController: UIHostingController<SetUpTap
     private var viewModel: SetUpTapToPayInformationViewModel
 
     private lazy var alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: self)
+    private lazy var merchantEducationPresenter = BuiltInCardReaderMerchantEducationPresenter(rootViewController: self)
 
     /// Connection Controller (helps connect readers)
     ///
@@ -22,6 +23,7 @@ final class SetUpTapToPayInformationViewController: UIHostingController<SetUpTap
             forSiteID: viewModel.siteID,
             alertsPresenter: alertsPresenter,
             alertsProvider: BuiltInReaderConnectionAlertsProvider(),
+            merchantEducationPresenter: merchantEducationPresenter,
             configuration: viewModel.configuration,
             analyticsTracker: viewModel.connectionAnalyticsTracker)
     }()

@@ -56,7 +56,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     private let itemsController: PointOfSaleItemsControllerProtocol
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
-    private let orderController: PointOfSaleOrderControllerProtocol
+    private(set) var orderController: PointOfSaleOrderControllerProtocol
     private let analytics: Analytics
 
     private var startPaymentOnCardReaderConnection: AnyCancellable?
@@ -195,11 +195,6 @@ extension PointOfSaleAggregateModel {
         } catch {
             DDLogError("Error taking payment: \(error)")
         }
-    }
-
-    @MainActor
-    func sendReceipt(to emailAddress: String) async throws {
-        try await orderController.sendReceipt(recipientEmail: emailAddress)
     }
 
     @MainActor

@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
+    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+
     let viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
     @Environment(\.colorScheme) var colorScheme
@@ -11,7 +13,8 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
 
     var body: some View {
         if isShowingSendReceiptView {
-            POSSendReceiptView(isShowingSendReceiptView: $isShowingSendReceiptView)
+            POSSendReceiptView(orderController: posModel.orderController,
+                               isShowingSendReceiptView: $isShowingSendReceiptView)
         } else {
             ZStack {
                 VStack(alignment: .center, spacing: Constants.headerSpacing) {

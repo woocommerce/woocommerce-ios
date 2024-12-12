@@ -36,6 +36,10 @@ struct POSSendReceiptView: View {
                 .font(POSFontStyle.posTitleRegular)
                 .focused()
                 .padding()
+                .onSubmit {
+                    sendReceipt()
+                }
+
             if let errorMessage = errorMessage {
                 Text(errorMessage)
                     .font(POSFontStyle.posBodyRegular)
@@ -43,21 +47,7 @@ struct POSSendReceiptView: View {
             }
 
             Button(action: {
-                Task { @MainActor in
-                    guard isEmailValid else {
-                        errorMessage = Localization.emailValidationErrorText
-                        return
-                    }
-                    isLoading = true
-                    do {
-                        try await posModel.sendReceipt(to: textFieldInput)
-                        isShowingSendReceiptView = false
-                        errorMessage = nil
-                    } catch {
-                        errorMessage = Localization.sendReceiptErrorText
-                    }
-                    isLoading = false
-                }
+                sendReceipt()
             }, label: {
                 HStack(spacing: Constants.buttonSpacing) {
                     if isLoading {
@@ -84,6 +74,24 @@ struct POSSendReceiptView: View {
         .padding()
         .onChange(of: textFieldInput) { _ in
             errorMessage = nil
+        }
+    }
+
+    private func sendReceipt() {
+        Task { @MainActor in
+            guard isEmailValid else {
+                errorMessage = Localization.emailValidationErrorText
+                return
+            }
+            isLoading = true
+            do {
+                try await posModel.sendReceipt(to: textFieldInput)
+                isShowingSendReceiptView = false
+                errorMessage = nil
+            } catch {
+                errorMessage = Localization.sendReceiptErrorText
+            }
+            isLoading = false
         }
     }
 }

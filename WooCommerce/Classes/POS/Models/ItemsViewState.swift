@@ -1,26 +1,36 @@
 import enum Yosemite.POSItem
 import struct Yosemite.POSParentProduct
 
-enum ItemsViewState: Equatable {
+struct ItemsViewState: Equatable {
+    let containerState: ContainerState
+    let itemsStackState: ItemsStackState
+}
+
+enum ContainerState: Equatable {
     case empty
     case initialLoading
-    case itemsList
+    case content
     case error(PointOfSaleErrorState)
 }
 
-extension ItemsViewState: Hashable {
+extension ContainerState: Hashable {
     public func hash(into hasher: inout Hasher) {
         switch self {
         case .empty:
             hasher.combine(0)
         case .initialLoading:
             hasher.combine(1)
-        case .itemsList:
+        case .content:
             hasher.combine(2)
         case .error(let error):
             hasher.combine(error)
         }
     }
+}
+
+struct ItemsStackState: Equatable {
+    var rootState: ItemListState
+    var itemStates: [POSItem: ItemListState]
 }
 
 enum ItemListState: Equatable {

@@ -36,21 +36,23 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
     @Published var itemListState: ItemListState = .loading([], pageInfo: .init(currentPage: 1, hasMorePages: true))
     var itemListStatePublisher: any Publisher<ItemListState, Never> { $itemListState }
 
-    @Published var itemsViewState: ItemsViewState = .initialLoading
+    @Published var itemsViewState: ItemsViewState = ItemsViewState(
+        containerState: .initialLoading,
+        itemsStackState: .init(
+            rootState: .loaded([],
+                               pageInfo: .init(currentPage: 1, hasMorePages: true)),
+            itemStates: [:]))
     var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { $itemsViewState }
 
     var allItems: [POSItem] = []
 
     func loadInitialItems() async {
-        itemsViewState = .itemsList
     }
 
     func loadNextItems() async {
-        itemsViewState = .itemsList
     }
 
     func reload() async {
-        itemsViewState = .itemsList
     }
 
     func loadChildItems(for parentItem: Yosemite.POSParentProduct) async -> ItemListState {

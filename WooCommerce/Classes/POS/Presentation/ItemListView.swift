@@ -12,13 +12,13 @@ struct ItemListView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                switch posModel.itemsViewState {
+                switch posModel.itemsViewState.containerState {
                 case .initialLoading, .empty, .error:
                     // These cases are handled directly in the dashboard, we do not render
                     // a specific view within the ItemListView to handle them
                     EmptyView()
-                case .itemsList:
-                    ItemList(rootItem: nil, state: posModel.rootState)
+                case .content:
+                    ItemList(rootItem: nil, state: posModel.itemsViewState.itemsStackState.rootState)
                     .refreshable {
                         await posModel.reload()
                     }
@@ -153,8 +153,8 @@ private extension ItemList {
 
 private extension ItemsViewState {
     var eligibleToShowSimpleProductsBanner: Bool {
-        switch self {
-        case .itemsList:
+        switch containerState {
+        case .content:
             return true
         case .empty,
             .initialLoading,
@@ -319,7 +319,7 @@ struct ItemList: View {
             }
             .task {
                 guard let rootItem else {
-                    state = posModel.rootState
+                    state = posModel.itemsViewState.itemsStackState.rootState
                     return
                 }
                 guard case .parentProduct(let parentProduct) = rootItem else { return }
@@ -339,7 +339,7 @@ struct ItemList: View {
     }
 }
 
-struct ItemListRow : View {
+struct ItemListRow: View {
     let item: POSItem
     @EnvironmentObject var posModel: PointOfSaleAggregateModel
 

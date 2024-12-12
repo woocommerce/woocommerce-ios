@@ -27,7 +27,6 @@ protocol PointOfSaleAggregateModelProtocol {
     func loadNextItems() async
     func reload() async
     func childState(for parentProduct: POSParentProduct) async -> ItemListState
-    var rootState: ItemListState { get }
 
     var cart: [CartItem] { get }
     func addToCart(_ item: POSOrderableItem)
@@ -52,13 +51,14 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
     @Published private(set) var eligibleWooCommerceVersionForPOSReceipts: Bool = false
 
-    @Published private(set) var itemsViewState: ItemsViewState = .initialLoading
+    @Published private(set) var itemsViewState: ItemsViewState = .init(
+        containerState: .initialLoading,
+        itemsStackState: .init(rootState: .loading([], pageInfo: .init(currentPage: 1, hasMorePages: true)),
+                               itemStates: [:]))
 
     @Published private(set) var cart: [CartItem] = []
 
     @Published private(set) var orderState: PointOfSaleOrderState = .idle
-
-    @Published private(set) var rootState: ItemListState = .loading([], pageInfo: .init(currentPage: 1, hasMorePages: true))
 
     private let itemsController: PointOfSaleItemsControllerProtocol
 
@@ -97,7 +97,6 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 extension PointOfSaleAggregateModel {
     private func publishItemListState() {
         itemsController.itemsViewStatePublisher.assign(to: &$itemsViewState)
-        itemsController.itemListStatePublisher.assign(to: &$rootState)
     }
 
     @MainActor

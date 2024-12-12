@@ -10,7 +10,7 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            switch posModel.itemsViewState {
+            switch posModel.itemsViewState.containerState {
             case .initialLoading:
                 PointOfSaleLoadingView()
                     .transition(.opacity)
@@ -23,7 +23,7 @@ struct PointOfSaleDashboardView: View {
                         await posModel.loadInitialItems()
                     }
                 })
-            case .itemsList:
+            case .content:
                 contentView
                     .accessibilitySortPriority(2)
             }
@@ -34,7 +34,7 @@ struct PointOfSaleDashboardView: View {
                 .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
                 .trackSize(size: $floatingSize)
                 .accessibilitySortPriority(1)
-                .renderedIf(posModel.itemsViewState != .initialLoading)
+                .renderedIf(posModel.itemsViewState.containerState != .initialLoading)
 
             POSConnectivityView()
         }
@@ -42,7 +42,7 @@ struct PointOfSaleDashboardView: View {
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .environment(\.posBackgroundAppearance, posModel.paymentState != .processingPayment ? .primary : .secondary)
-        .animation(.easeInOut, value: posModel.itemsViewState == .initialLoading)
+        .animation(.easeInOut, value: posModel.itemsViewState.containerState == .initialLoading)
         .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
         .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {

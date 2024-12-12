@@ -861,58 +861,6 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.iconBolt)
     }
 
-    func test_free_trial_illustration_is_not_nil() {
-        XCTAssertNotNil(UIImage.freeTrialIllustration)
-    }
-
-    func test_ecommerce_icon_is_not_nil() {
-        XCTAssertNotNil(UIImage.ecommerceIcon)
-    }
-
-    func test_support_icon_is_not_nil() {
-        XCTAssertNotNil(UIImage.supportIcon)
-    }
-
-    func test_backups_icon_is_not_nil() {
-        XCTAssertNotNil(UIImage.backupsIcon)
-    }
-
-    func test_gifts_icon_is_not_nil() {
-        XCTAssertNotNil(UIImage.giftIcon)
-    }
-
-    func test_emailOutline_icon_is_not_nil() {
-        XCTAssertNotNil(UIImage.emailOutlineIcon)
-    }
-
-    func test_shippingOutline_icon_is_not_nil() {
-        XCTAssertNotNil(UIImage.shippingOutlineIcon)
-    }
-
-    func test_advertising_icon_is_not_nil() {
-        XCTAssertNotNil(UIImage.advertisingIcon)
-    }
-
-    func test_launch_icon_is_not_nil() {
-        XCTAssertNotNil(UIImage.launchIcon)
-    }
-
-    func test_paymentsOption_icon_is_not_nil() {
-        XCTAssertNotNil(UIImage.paymentOptionsIcon)
-    }
-
-    func test_premiumThemes_icon_is_not_nil() {
-        XCTAssertNotNil(UIImage.premiumThemesIcon)
-    }
-
-    func test_siteSecurity_icon_is_not_nil() {
-        XCTAssertNotNil(UIImage.siteSecurityIcon)
-    }
-
-    func test_unlimitedProducts_icon_is_not_nil() {
-        XCTAssertNotNil(UIImage.unlimitedProductsIcon)
-    }
-
     func test_subscriptionProductImage_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.subscriptionProductImage)
     }

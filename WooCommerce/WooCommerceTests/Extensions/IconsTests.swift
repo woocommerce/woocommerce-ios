@@ -276,26 +276,6 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.mailboxImage)
     }
 
-    func test_storeCreationPlanImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.storeCreationPlanImage)
-    }
-
-    func test_storeCreationProgress1_is_not_nil() {
-        XCTAssertNotNil(UIImage.storeCreationProgress1)
-    }
-
-    func test_storeCreationProgress2_is_not_nil() {
-        XCTAssertNotNil(UIImage.storeCreationProgress2)
-    }
-
-    func test_storeCreationProgress3_is_not_nil() {
-        XCTAssertNotNil(UIImage.storeCreationProgress3)
-    }
-
-    func test_storeCreationProgress4_is_not_nil() {
-        XCTAssertNotNil(UIImage.storeCreationProgress4)
-    }
-
     func test_swapHorizontal_is_not_nil() {
         XCTAssertNotNil(UIImage.swapHorizontal)
     }
@@ -330,10 +310,6 @@ final class IconsTests: XCTestCase {
 
     func test_getPaidImage_is_not_nil() {
         XCTAssertNotNil(UIImage.getPaidImage)
-    }
-
-    func test_storeSummaryImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.storeSummaryImage)
     }
 
     func testCotImageIsNotNil() {

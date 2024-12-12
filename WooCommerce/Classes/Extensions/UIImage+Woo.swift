@@ -531,12 +531,6 @@ extension UIImage {
         return UIImage(named: "icon-mailbox")!
     }
 
-    /// Store plan image used in the store creation flow.
-    ///
-    static var storeCreationPlanImage: UIImage {
-        UIImage(named: "store-creation-plan")!
-    }
-
     /// Store Image
     ///
     static var storeImage: UIImage {
@@ -547,26 +541,6 @@ extension UIImage {
     ///
     static var storeDetailsImage: UIImage {
         UIImage(named: "icon-store-details")!
-    }
-
-    /// Store creation progress step 1
-    static var storeCreationProgress1: UIImage {
-        UIImage(named: "store-creation-progress-1")!
-    }
-
-    /// Store creation progress step 2
-    static var storeCreationProgress2: UIImage {
-        UIImage(named: "store-creation-progress-2")!
-    }
-
-    /// Store creation progress step 3
-    static var storeCreationProgress3: UIImage {
-        UIImage(named: "store-creation-progress-3")!
-    }
-
-    /// Store creation progress step 4
-    static var storeCreationProgress4: UIImage {
-        UIImage(named: "store-creation-progress-4")!
     }
 
     /// Swap icon - horizontal
@@ -608,12 +582,6 @@ extension UIImage {
     ///
     static var getPaidImage: UIImage {
         UIImage(named: "icon-get-paid")!
-    }
-
-    /// Store summary image used in the store creation flow.
-    ///
-    static var storeSummaryImage: UIImage {
-        return UIImage(named: "store-summary")!
     }
 
     /// Cog Image

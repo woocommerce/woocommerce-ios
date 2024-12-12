@@ -186,56 +186,12 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_generalElements_does_not_include_google_ads_when_site_is_eligible_and_fetching_campaigns() {
+    func test_generalElements_includes_google_ads_when_site_is_eligible() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         // Setting site ID is required before setting `Site`.
         stores.updateDefaultStore(storeID: sampleSiteID)
         stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
-
-        var fetchingCampaigns = false
-        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
-            switch action {
-            case .fetchAdsCampaigns:
-                fetchingCampaigns = true
-            default:
-                break
-            }
-        }
-
-        let checker = MockGoogleAdsEligibilityChecker(isEligible: true)
-
-        // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         stores: stores,
-                                         googleAdsEligibilityChecker: checker)
-        waitUntil {
-            checker.siteEligibilityCheckTriggered
-        }
-        viewModel.setupMenuElements()
-
-        // Then
-        XCTAssertTrue(fetchingCampaigns)
-        XCTAssertNil(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.GoogleAds.id }))
-    }
-
-    @MainActor
-    func test_generalElements_includes_google_ads_when_site_is_eligible_and_done_fetching_campaigns() throws {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        // Setting site ID is required before setting `Site`.
-        stores.updateDefaultStore(storeID: sampleSiteID)
-        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
-
-        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
-            switch action {
-            case .fetchAdsCampaigns(_, let onCompletion):
-                onCompletion(.success([]))
-            default:
-                break
-            }
-        }
 
         let checker = MockGoogleAdsEligibilityChecker(isEligible: true)
 
@@ -537,22 +493,13 @@ final class HubMenuViewModelTests: XCTestCase {
         let generalAppSettings = try mockGeneralAppSettingsStorage(isInAppPurchaseEnabled: true)
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let googleAdsEligibilityChecker = MockGoogleAdsEligibilityChecker(isEligible: true)
-        let inboxEligibilityChecker = MockInboxEligibilityChecker()
+        var inboxEligibilityChecker = MockInboxEligibilityChecker()
         inboxEligibilityChecker.isEligible = true
 
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         // Setting site ID is required before setting `Site`.
         stores.updateDefaultStore(storeID: sampleSiteID)
         stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID, isWordPressComStore: true))
-
-        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
-            switch action {
-            case .fetchAdsCampaigns(_, let onCompletion):
-                onCompletion(.success([]))
-            default:
-                break
-            }
-        }
 
         let navigationPath = NavigationPath(["testPath1", "testPath2"])
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,

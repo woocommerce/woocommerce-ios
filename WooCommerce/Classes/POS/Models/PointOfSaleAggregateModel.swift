@@ -11,7 +11,6 @@ import enum Yosemite.SystemStatusAction
 protocol PointOfSaleAggregateModelProtocol {
     var orderStage: PointOfSaleOrderStage { get }
 
-    var itemListViewModel: PointOfSaleRootItemListViewModel { get }
     var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus { get }
     func connectCardReader()
     func disconnectCardReader()
@@ -21,7 +20,6 @@ protocol PointOfSaleAggregateModelProtocol {
     var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel? { get set }
     func cancelCardPaymentsOnboarding()
     func trackCardPaymentsOnboardingShown()
-
 
     var cart: [CartItem] { get }
     func addToCart(_ item: POSOrderableItem)
@@ -50,8 +48,6 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
     @Published private(set) var orderState: PointOfSaleOrderState = .idle
 
-    let itemListViewModel: PointOfSaleRootItemListViewModel
-
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
     private let analytics: Analytics
@@ -66,7 +62,6 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
          orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
          paymentState: PointOfSalePaymentState = .idle) {
-        self.itemListViewModel = .init()
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderController = orderController
         self.analytics = analytics

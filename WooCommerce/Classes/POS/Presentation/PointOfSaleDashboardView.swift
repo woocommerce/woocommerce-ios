@@ -3,6 +3,7 @@ import Yosemite
 
 struct PointOfSaleDashboardView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @StateObject private var itemListViewModel: PointOfSaleRootItemListViewModel = .init()
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
@@ -11,8 +12,25 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
+            if let fullscreenState = itemListViewModel.fullscreenState {
+                switch fullscreenState {
+                    case .initialLoading:
+                        PointOfSaleLoadingView()
+                            .transition(.opacity)
+                            .ignoresSafeArea()
+                    case .empty:
+                        PointOfSaleItemListEmptyView()
+                    case .error(let error):
+                        PointOfSaleItemListErrorView(error: error, onRetry: {
+                            Task {
+                                await itemListViewModel.loadInitialItems()
+                            }
+                        })
+                }
+            } else {
                 contentView
                     .accessibilitySortPriority(2)
+            }
 
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
                                    showSupport: $showSupport)
@@ -20,6 +38,7 @@ struct PointOfSaleDashboardView: View {
                 .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
                 .trackSize(size: $floatingSize)
                 .accessibilitySortPriority(1)
+                .renderedIf(itemListViewModel.itemListState != .initialLoading)
 
             POSConnectivityView()
         }
@@ -28,7 +47,7 @@ struct PointOfSaleDashboardView: View {
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .environment(\.posBackgroundAppearance, posModel.paymentState != .processingPayment ? .primary : .secondary)
         // TODO: see what this does
-//        .animation(.easeInOut, value: posModel.itemListViewModel.isFullScreen)
+        .animation(.easeInOut, value: itemListViewModel.itemListState != .initialLoading)
         .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
         .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
@@ -51,13 +70,16 @@ struct PointOfSaleDashboardView: View {
         .sheet(isPresented: $showSupport) {
             supportForm
         }
+        .task {
+            await itemListViewModel.loadInitialItems()
+        }
     }
 
     private var contentView: some View {
         GeometryReader { geometry in
             HStack {
                 if posModel.orderStage == .building {
-                    PointOfSaleRootItemListView(viewModel: posModel.itemListViewModel)
+                    PointOfSaleRootItemListView(viewModel: itemListViewModel)
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .leading))
                 }

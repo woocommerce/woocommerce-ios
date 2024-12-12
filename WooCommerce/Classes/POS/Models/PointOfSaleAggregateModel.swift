@@ -22,7 +22,7 @@ protocol PointOfSaleAggregateModelProtocol {
     func cancelCardPaymentsOnboarding()
     func trackCardPaymentsOnboardingShown()
 
-    var itemListState: ItemListState { get }
+    var itemsViewState: ItemsViewState { get }
     func loadInitialItems() async
     func loadNextItems() async
     func reload() async
@@ -52,7 +52,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
     @Published private(set) var eligibleWooCommerceVersionForPOSReceipts: Bool = false
 
-    @Published private(set) var itemListState: ItemListState = .initialLoading
+    @Published private(set) var itemsViewState: ItemsViewState = .initialLoading
 
     @Published private(set) var cart: [CartItem] = []
 
@@ -96,7 +96,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 // MARK: - ItemList
 extension PointOfSaleAggregateModel {
     private func publishItemListState() {
-        itemsController.itemListStatePublisher.assign(to: &$itemListState)
+        itemsController.itemsViewStatePublisher.assign(to: &$itemsViewState)
         itemsController.itemListViewStatePublisher.assign(to: &$rootState)
     }
 

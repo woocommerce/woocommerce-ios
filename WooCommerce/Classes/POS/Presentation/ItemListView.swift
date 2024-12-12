@@ -12,7 +12,7 @@ struct ItemListView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                switch posModel.itemListState {
+                switch posModel.itemsViewState {
                 case .initialLoading, .empty, .error:
                     // These cases are handled directly in the dashboard, we do not render
                     // a specific view within the ItemListView to handle them
@@ -147,11 +147,11 @@ private extension ItemList {
 
 private extension ItemList {
     var shouldShowHeaderBanner: Bool {
-        posModel.itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
+        posModel.itemsViewState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
     }
 }
 
-private extension ItemListState {
+private extension ItemsViewState {
     var eligibleToShowSimpleProductsBanner: Bool {
         switch self {
         case .itemsList:

@@ -7,7 +7,7 @@ import enum Yosemite.PointOfSaleProductServiceError
 import protocol Yosemite.PointOfSaleVariationServiceProtocol
 
 protocol PointOfSaleItemsControllerProtocol {
-    var itemListStatePublisher: any Publisher<ItemListState, Never> { get }
+    var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { get }
     var itemListViewStatePublisher: any Publisher<ItemListViewState, Never> { get }
     func loadInitialItems() async
     func loadNextItems() async
@@ -16,8 +16,8 @@ protocol PointOfSaleItemsControllerProtocol {
 }
 
 class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
-    private(set) var itemListStatePublisher: any Publisher<ItemListState, Never>
-    private var itemListStateSubject: PassthroughSubject<ItemListState, Never> = .init()
+    private(set) var itemsViewStatePublisher: any Publisher<ItemsViewState, Never>
+    private var itemsViewStateSubject: PassthroughSubject<ItemsViewState, Never> = .init()
     private(set) var itemListViewStatePublisher: any Publisher<ItemListViewState, Never>
     private var itemListViewStateSubject: PassthroughSubject<ItemListViewState, Never> = .init()
     private var allItems: [POSItem] = []
@@ -32,14 +32,14 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
          variationProvider: PointOfSaleVariationServiceProtocol) {
         self.rootItemProvider = rootItemProvider
         self.variationProvider = variationProvider
-        itemListStatePublisher = itemListStateSubject.eraseToAnyPublisher()
+        itemsViewStatePublisher = itemsViewStateSubject.eraseToAnyPublisher()
         itemListViewStatePublisher = itemListViewStateSubject.eraseToAnyPublisher()
     }
 
     @MainActor
     func loadInitialItems() async {
         mightHaveMorePages = true
-        itemListStateSubject.send(.initialLoading)
+        itemsViewStateSubject.send(.initialLoading)
         try? await load(pageNumber: Constants.initialPage)
     }
 
@@ -79,7 +79,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
             updateItemListStateAfterLoadAttempt()
             throw PointOfSaleProductServiceError.pageOutOfRange
         } catch {
-            itemListStateSubject.send(.error(PointOfSaleErrorState.errorOnLoadingProducts()))
+            itemsViewStateSubject.send(.error(PointOfSaleErrorState.errorOnLoadingProducts()))
             throw error
         }
     }
@@ -95,9 +95,9 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
 
     private func updateItemListStateAfterLoadAttempt() {
         if allItems.isEmpty {
-            itemListStateSubject.send(.empty)
+            itemsViewStateSubject.send(.empty)
         } else {
-            itemListStateSubject.send(.itemsList)
+            itemsViewStateSubject.send(.itemsList)
             itemListViewStateSubject.send(.loaded(allItems, pageInfo: PageInfo(currentPage: currentPage, hasMorePages: true)))
         }
     }

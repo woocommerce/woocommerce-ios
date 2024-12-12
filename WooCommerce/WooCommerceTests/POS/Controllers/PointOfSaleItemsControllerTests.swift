@@ -5,7 +5,7 @@ import Combine
 final class PointOfSaleItemsControllerTests {
     private let itemProvider: MockPointOfSaleItemService
     private let sut: PointOfSaleItemsController
-    @Published var itemListState: ItemListState = .initialLoading
+    @Published var itemListState: ItemsViewState = .initialLoading
 
     init() {
         itemProvider = MockPointOfSaleItemService()

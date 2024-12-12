@@ -4,7 +4,7 @@ import Combine
 import protocol Yosemite.POSDisplayableItem
 
 final class MockPointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
-    var itemListStatePublisher: any Publisher<WooCommerce.ItemListState, Never> = Empty()
+    var itemListStatePublisher: any Publisher<WooCommerce.ItemsViewState, Never> = Empty()
 
     var allItems: [POSDisplayableItem] = []
 

@@ -1,14 +1,14 @@
 import enum Yosemite.POSItem
 import struct Yosemite.POSParentProduct
 
-enum ItemListState: Equatable {
+enum ItemsViewState: Equatable {
     case empty
     case initialLoading
     case itemsList
     case error(PointOfSaleErrorState)
 }
 
-extension ItemListState: Hashable {
+extension ItemsViewState: Hashable {
     public func hash(into hasher: inout Hasher) {
         switch self {
         case .empty:

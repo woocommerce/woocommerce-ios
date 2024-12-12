@@ -1,6 +1,5 @@
 import SwiftUI
 import Combine
-import struct Yosemite.ShippingLabelStoreOptions
 
 struct WooShippingAddPackageView: View {
     enum PackageProviderType: CaseIterable {

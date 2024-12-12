@@ -50,7 +50,7 @@ private extension CardPresentModalLocationPreAlert {
         static let settings = NSLocalizedString(
             "cardPresentPayment.locationPreAlert.settingsNotice",
             value: "You can change this option later in the Settings app.",
-            comment: "A notice at the bottom explaining that location services can be changes in the Settings app later"
+            comment: "A notice at the bottom explaining that location services can be changed in the Settings app later"
         )
 
         static let continueButton = NSLocalizedString(

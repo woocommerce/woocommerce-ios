@@ -1,8 +1,6 @@
 import Foundation
 import Combine
 import protocol Yosemite.POSDisplayableItem
-//import enum Yosemite.POSItem
-import struct Yosemite.POSParentProduct
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import enum Yosemite.PointOfSaleProductServiceError
 

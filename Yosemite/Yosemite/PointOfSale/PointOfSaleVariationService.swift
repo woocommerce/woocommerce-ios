@@ -46,30 +46,7 @@ public final class PointOfSaleVariationService: PointOfSaleItemServiceProtocol {
             pageNumber: pageNumber,
             pageSize: 25)
         .map { variation in
-            POSVariation(id: UUID(),
-                         name: "\(parentProduct.name) Variation \(variation.productVariationID)",
-                         formattedPrice: variation.price,
-                         price: variation.price,
-                         productID: variation.productID,
-                         variationID: variation.productVariationID)
-        }
-    }
-
-    private func providePointOfSaleItems(for parentProduct: POSParentProduct, pageNumber: Int) async throws -> [POSDisplayableItem] {
-        // TODO
-        return try await variationService.fetchProductVariations(
-            for: siteID,
-            parentProductID: parentProduct.productID,
-            pageNumber: pageNumber,
-            pageSize: 25)
-        .map { variation in
-            POSVariation(id: UUID(),
-                         name: "\(parentProduct.name) Variation \(variation.productVariationID)",
-                         formattedPrice: variation.price,
-                         price: variation.price,
-                         productID: variation.productID,
-                         variationID: variation.productVariationID)
-//                .variation(POSVariation(variation: variation, currencyFormatter: currencyFormatter))
+            POSVariation(variation: variation, currencyFormatter: currencyFormatter)
         }
     }
 }

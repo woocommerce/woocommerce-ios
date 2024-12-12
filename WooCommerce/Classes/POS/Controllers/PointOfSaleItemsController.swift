@@ -11,7 +11,7 @@ protocol PointOfSaleItemsControllerProtocol {
     func loadInitialItems() async
     func loadNextItems() async
     func reload() async
-    func loadChildItems(for parentItem: POSParentProduct) async -> ItemListState
+    func loadChildItems(for parent: POSItem) async -> ItemListState
 }
 
 class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
@@ -20,7 +20,6 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     private var itemsStackState: ItemsStackState
     private let rootItemProvider: PointOfSaleItemServiceProtocol
 
-    private var allChildItems: [UUID: [POSItem]] = [:]
     private let variationProvider: PointOfSaleVariationServiceProtocol
 
     init(rootItemProvider: PointOfSaleItemServiceProtocol,
@@ -134,20 +133,21 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     }
 
     @MainActor
-    func loadChildItems(for parentProduct: POSParentProduct) async -> ItemListState {
+    func loadChildItems(for parent: POSItem) async -> ItemListState {
         do {
-            let existingItems = allChildItems[parentProduct.id] ?? []
-            if existingItems.isNotEmpty {
-                return ItemListState.loaded(existingItems, pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true))
+            if let existingState = itemsStackState.itemStates[parent] {
+                return existingState
             }
 
-            let newItems = try await variationProvider.providePointOfSaleItems(for: parentProduct, pageNumber: Constants.initialPage)
-            let updatedItems = existingItems + newItems
+            try await load(pageNumber: Constants.initialPage, parent: parent)
 
-            allChildItems[parentProduct.id] = updatedItems
-            return ItemListState.loaded(updatedItems, pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true))
+            if let newState = itemsStackState.itemStates[parent] {
+                return newState
+            } else {
+                throw PointOfSaleItemsControllerError.noChildItemsFound
+            }
         } catch {
-            DDLogError("Error loading child items for \(parentProduct): \(error)")
+            DDLogError("Error loading child items for \(parent): \(error)")
         }
         return ItemListState.loaded([], pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true))
     }
@@ -159,6 +159,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
 
 enum PointOfSaleItemsControllerError: Error {
     case cannotFetchChildrenForNonParentItem
+    case noChildItemsFound
 }
 
 extension ItemListState {

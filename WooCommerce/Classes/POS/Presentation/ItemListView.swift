@@ -322,8 +322,7 @@ struct ItemList: View {
                     state = posModel.itemsViewState.itemsStackState.rootState
                     return
                 }
-                guard case .parentProduct(let parentProduct) = rootItem else { return }
-                state = await posModel.childState(for: parentProduct)
+                state = await posModel.childState(for: rootItem)
             }
         }
     }

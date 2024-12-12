@@ -7,7 +7,7 @@ import struct Yosemite.Order
 import struct Yosemite.OrderItem
 import struct Yosemite.POSCartItem
 import enum Yosemite.SystemStatusAction
-import struct Yosemite.POSParentProduct
+import enum Yosemite.POSItem
 
 protocol PointOfSaleAggregateModelProtocol {
     var orderStage: PointOfSaleOrderStage { get }
@@ -26,7 +26,7 @@ protocol PointOfSaleAggregateModelProtocol {
     func loadInitialItems() async
     func loadNextItems() async
     func reload() async
-    func childState(for parentProduct: POSParentProduct) async -> ItemListState
+    func childState(for parent: POSItem) async -> ItemListState
 
     var cart: [CartItem] { get }
     func addToCart(_ item: POSOrderableItem)
@@ -114,8 +114,8 @@ extension PointOfSaleAggregateModel {
         await itemsController.reload()
     }
 
-    func childState(for parentProduct: POSParentProduct) async -> ItemListState {
-        return await itemsController.loadChildItems(for: parentProduct)
+    func childState(for parent: POSItem) async -> ItemListState {
+        return await itemsController.loadChildItems(for: parent)
     }
 }
 

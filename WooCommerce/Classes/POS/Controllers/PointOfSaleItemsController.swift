@@ -17,10 +17,7 @@ protocol PointOfSaleItemsControllerProtocol {
 class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     private(set) var itemsViewStatePublisher: any Publisher<ItemsViewState, Never>
     private var itemsViewStateSubject: PassthroughSubject<ItemsViewState, Never> = .init()
-    private var allItems: [POSItem] = []
     private var itemsStackState: ItemsStackState
-    private var currentPage: Int = Constants.initialPage
-    private var mightHaveMorePages: Bool = true
     private let rootItemProvider: PointOfSaleItemServiceProtocol
 
     private var allChildItems: [UUID: [POSItem]] = [:]
@@ -36,11 +33,13 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
 
     @MainActor
     func loadInitialItems() async {
-        mightHaveMorePages = true
-        itemsViewStateSubject.send(ItemsViewState(containerState: .initialLoading, itemsStackState: .init(rootState: .loading([], pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true)), itemStates: [:])))
+        itemsStackState = .init(rootState: .loading([], pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true)), itemStates: [:])
+        itemsViewStateSubject.send(ItemsViewState(containerState: .initialLoading,
+                                                  itemsStackState: itemsStackState))
         do {
             try await load(pageNumber: Constants.initialPage)
         } catch {
+            itemsStackState = .init(rootState: .loaded([], pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: false)), itemStates: [:])
             itemsViewStateSubject.send(ItemsViewState(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
                                                       itemsStackState: itemsStackState))
         }
@@ -49,14 +48,18 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     @MainActor
     func loadNextItems() async {
         do {
-            guard mightHaveMorePages else {
+            guard itemsStackState.rootState.pageInfo.hasMorePages else {
                 return
             }
+            let nextPage = itemsStackState.rootState.pageInfo.currentPage + 1
+            itemsStackState = .init(rootState: .loading(itemsStackState.rootState.items, pageInfo: .init(currentPage: itemsStackState.rootState.pageInfo.currentPage, hasMorePages: true)),
+                                    itemStates: itemsStackState.itemStates)
             itemsViewStateSubject.send(ItemsViewState(containerState: .content, itemsStackState: itemsStackState))
 
-            let nextPage = currentPage + 1
+
             try await load(pageNumber: nextPage)
-            currentPage = nextPage
+            itemsStackState = .init(rootState: .loaded(itemsStackState.rootState.items, pageInfo: .init(currentPage: nextPage, hasMorePages: true)),
+                                    itemStates: itemsStackState.itemStates)
         } catch {
             // Handle errors without incrementing currentPage.
         }
@@ -64,11 +67,9 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
 
     @MainActor
     func reload() async {
-        currentPage = Constants.initialPage
-        mightHaveMorePages = true
         itemsStackState.rootState = .loading([], pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true))
         itemsViewStateSubject.send(ItemsViewState(containerState: .content, itemsStackState: itemsStackState))
-        try? await load(pageNumber: currentPage)
+        try? await load(pageNumber: Constants.initialPage)
     }
 
     @MainActor
@@ -79,11 +80,9 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
             } else {
                 try await fetchItems(pageNumber: pageNumber)
             }
-            mightHaveMorePages = true
             updateItemViewStateAfterLoadAttempt()
         } catch PointOfSaleProductServiceError.pageOutOfRange {
-            mightHaveMorePages = false
-            updateItemViewStateAfterLoadAttempt()
+            updateItemViewStateAfterLoadAttempt(parent: parent, mightHaveMorePages: false)
             throw PointOfSaleProductServiceError.pageOutOfRange
         }
     }
@@ -117,7 +116,16 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
                                             pageInfo: .init(currentPage: pageNumber, hasMorePages: true))
     }
 
-    private func updateItemViewStateAfterLoadAttempt() {
+    private func updateItemViewStateAfterLoadAttempt(parent: POSItem? = nil, mightHaveMorePages: Bool = true) {
+        if !mightHaveMorePages {
+            if let parent {
+                if let currentState = itemsStackState.itemStates[parent] {
+                    itemsStackState.itemStates[parent] = .loaded(currentState.items, pageInfo: .init(currentPage: currentState.pageInfo.currentPage, hasMorePages: false))
+                }
+            } else {
+                itemsStackState.rootState = .loaded(itemsStackState.rootState.items, pageInfo: .init(currentPage: itemsStackState.rootState.pageInfo.currentPage, hasMorePages: false))
+            }
+        }
         if itemsStackState.rootState.items.isEmpty {
             itemsViewStateSubject.send(.init(containerState: .empty, itemsStackState: itemsStackState))
         } else {
@@ -159,6 +167,14 @@ extension ItemListState {
         case .loading(let items, _),
                 .loaded(let items, _):
             return items
+        }
+    }
+
+    var pageInfo: PageInfo {
+        switch self {
+        case .loading(_, pageInfo: let pageInfo),
+                .loaded(_, pageInfo: let pageInfo):
+            return pageInfo
         }
     }
 }

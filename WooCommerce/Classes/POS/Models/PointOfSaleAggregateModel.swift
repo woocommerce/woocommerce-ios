@@ -204,8 +204,8 @@ extension PointOfSaleAggregateModel {
     }
 
     @MainActor
-    func sendReceipt(to emailAddress: String) async {
-        await orderController.sendReceipt(recipientEmail: emailAddress)
+    func sendReceipt(to emailAddress: String) async throws {
+        try await orderController.sendReceipt(recipientEmail: emailAddress)
     }
 
     @MainActor

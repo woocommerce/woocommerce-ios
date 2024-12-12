@@ -86,9 +86,9 @@ struct POSSendReceiptView: View {
             }
             isLoading = true
             do {
+                errorMessage = nil
                 try await posModel.sendReceipt(to: textFieldInput)
                 isShowingSendReceiptView = false
-                errorMessage = nil
             } catch {
                 errorMessage = Localization.sendReceiptErrorText
             }

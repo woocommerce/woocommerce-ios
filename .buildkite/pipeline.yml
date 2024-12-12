@@ -94,6 +94,7 @@ steps:
   - label: ":microscope: UI Tests (iPhone)"
     command: .buildkite/commands/run-ui-tests.sh UITests 'iPhone 16'
     depends_on: build
+    if: build.branch == 'trunk'
     plugins: [$CI_TOOLKIT]
     artifact_paths:
       - fastlane/test_output/*
@@ -104,6 +105,7 @@ steps:
   - label: ":microscope: UI Tests (iPad)"
     command: .buildkite/commands/run-ui-tests.sh UITests "iPad (10th generation)"
     depends_on: build
+    if: build.branch == 'trunk'
     plugins: [$CI_TOOLKIT]
     artifact_paths:
       - fastlane/test_output/*

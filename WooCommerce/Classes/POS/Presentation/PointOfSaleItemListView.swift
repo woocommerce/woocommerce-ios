@@ -1,6 +1,5 @@
 import SwiftUI
 import Yosemite
-//import enum Yosemite.POSItem
 
 /// Displays a list of items in POS. Can be a list of parent/product items, or child items.
 /// It supports pull-to-refresh and infinite scrolling.
@@ -19,20 +18,34 @@ struct PointOfSaleItemListView<Content>: View where Content: View {
     var body: some View {
         VStack {
             switch itemListState {
-            case .initialLoading, .empty, .error:
-                // These cases are handled directly in the dashboard, we do not render
-                // a specific view within the ItemListView to handle them
-                EmptyView()
-            case .loading(let items),
-                    .loaded(let items):
-                listView(items: items)
-//                        .transition(.slide)
+                case .initialLoading:
+                    // These cases are handled directly in the dashboard, we do not render
+                    // a specific view within the ItemListView to handle them
+                    // TODO: make this view generic? this is empty for top-level items, and non-empty for variation items
+//                    EmptyView()
+                    listView(items: [])
+                        .transition(.slide)
+                case .empty:
+                    PointOfSaleItemListEmptyView()
+                case let .error(error):
+                    PointOfSaleItemListErrorView(error: error, onRetry: {
+                        Task {
+                            // TODO: DI loadInitialItems
+                            //                            await viewModel.loadInitialItems()
+                        }
+                    })
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .edgesIgnoringSafeArea(.all)
+                case .loading(let items),
+                        .loaded(let items):
+                    listView(items: items)
+                        .transition(.slide)
             }
         }
         .refreshable {
-            // TODO: DI reload
-//            await posModel.reload()
-            await reload()
+            Task { @MainActor in
+                await reload()
+            }
         }
         .background(Color.posPrimaryBackground)
         .accessibilityElement(children: .contain)
@@ -44,6 +57,7 @@ struct PointOfSaleItemListView<Content>: View where Content: View {
     private func listView(items: [POSDisplayableItem]) -> some View {
         ScrollView {
             VStack {
+                // TODO: recover banner view
 //                if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
 //                    bannerCardView
 //                }
@@ -51,7 +65,7 @@ struct PointOfSaleItemListView<Content>: View where Content: View {
                     itemContent(item)
                 }
                 GhostItemCardView()
-                    .renderedIf(itemListState.isLoadingAfterInitialLoad)
+                    .renderedIf(itemListState.isLoading)
             }
             .frame(maxWidth: .infinity)
             .padding(.bottom, floatingControlAreaSize.height)
@@ -59,14 +73,12 @@ struct PointOfSaleItemListView<Content>: View where Content: View {
             .background(GeometryReader { proxy in
                 Color.clear
                     .onChange(of: proxy.frame(in: .global).maxY) { maxY in
-                        if itemListState.isLoadingAfterInitialLoad {
+                        if itemListState.isLoading {
                             return
                         }
                         let threshold = Constants.viewHeight * Constants.scrollThresholdMultiplier
                         if maxY < threshold && maxY < lastScrollPosition {
                             Task {
-                                // TODO: DI loadNextItems
-//                                await posModel.loadNextItems()
                                 await loadNextItems()
                             }
                         }

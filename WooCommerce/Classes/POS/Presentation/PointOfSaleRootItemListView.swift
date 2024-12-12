@@ -14,33 +14,10 @@ struct PointOfSaleRootItemListView: View {
 
     var body: some View {
         Group {
-            // TODO: handle empty, error states
-            //            switch viewModel.itemListState {
-            //                case .initialLoading:
-            //                    PointOfSaleLoadingView()
-            //                        .transition(.opacity)
-            //                        .ignoresSafeArea()
-            //                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-            //                        .edgesIgnoringSafeArea(.all)
-            //                case .empty:
-            //                    PointOfSaleItemListEmptyView()
-            //                case .error(let errorContents):
-            //                    PointOfSaleItemListErrorView(error: errorContents, onRetry: {
-            //                        Task {
-            //                            await viewModel.loadInitialItems()
-            //                        }
-            //                    })
-            //                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            //                    .edgesIgnoringSafeArea(.all)
-            //                case .loading, .loaded:
-            //
-            //            }
             switch state {
                 case .rootItemList:
                     VStack {
-                        HStack {
-                            POSHeaderTitleView() {}
-                        }
+                        POSHeaderTitleView()
                         PointOfSaleItemListView(itemListState: $viewModel.itemListState,
                                                 reload: {
                             await viewModel.reload()
@@ -54,19 +31,12 @@ struct PointOfSaleRootItemListView: View {
                                     ItemCardView(item: item)
                                 })
                             } else if let item = item as? POSVariableProductParent {
-                                // TODO: Can try `navigationDestination`
                                 Button(action: {
                                     viewModel.showVariationItems(for: item)
                                     state = .variationItemList(item)
                                 }, label: {
                                     ParentProductCardView(parentProduct: item)
                                 })
-                                // NOTE: This navigates to the destination view in fullscreen
-//                                NavigationLink {
-//                                    Text("Child items for \(item.name)")
-//                                } label: {
-//                                    ParentProductCardView(parentProduct: item)
-//                                }
                             } else {
                                 ItemCardView(item: item)
                             }
@@ -97,31 +67,10 @@ struct PointOfSaleRootItemListView: View {
                                 }, label: {
                                     ItemCardView(item: item)
                                 })
+                            } else {
+                                EmptyView()
                             }
-//                            Button(action: {
-//                                posModel.addToCart(variation)
-//                            }, label: {
-//                                VariationCardView(variation: variation)
-//                            })
                         }
-                        //                    PointOfSaleItemListView(itemListState: $viewModel.childItemListState,
-                        //                                            reload: {
-                        //                        await viewModel.reloadChildItems()
-                        //                    }, loadNextItems: {
-                        //                        await viewModel.loadNextChildItems()
-                        //                    }) { item in
-                        //                        // TODO: try replacing item type with generic child item
-                        //                        switch item {
-                        //                            case .variation(let variation):
-                        //                                Button(action: {
-                        //                                    posModel.addToCart(variation)
-                        //                                }, label: {
-                        //                                    VariationCardView(variation: variation)
-                        //                                })
-                        //                            default:
-                        //                                EmptyView()
-                        //                        }
-                        //                    }
                     }
             }
         }
@@ -136,28 +85,6 @@ struct PointOfSaleRootItemListView: View {
         }
     }
 }
-
-//struct FullScreenCoverView: View {
-//    @Binding var isPresented: Bool
-//    @State private var opacity: Double = 0.0
-//
-//    var body: some View {
-//        ZStack {
-//            Color.black.edgesIgnoringSafeArea(.all) // Background color
-//                .opacity(opacity) // Apply opacity to background
-//
-//            PointOfSaleLoadingView()
-//        }
-//        .onAppear {
-//            withAnimation {
-//                opacity = 1.0 // Fade in when appearing
-//            }
-//        }
-//        .onDisappear {
-//            opacity = 0.0 // Reset opacity when disappearing
-//        }
-//    }
-//}
 
 //#Preview {
 //    PointOfSaleRootItemListView()

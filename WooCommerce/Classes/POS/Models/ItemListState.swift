@@ -8,9 +8,9 @@ enum ItemListState: Equatable {
     case loaded(_ items: [POSDisplayableItem])
     case error(PointOfSaleErrorState)
 
-    var isLoadingAfterInitialLoad: Bool {
+    var isLoading: Bool {
         switch self {
-        case .loading:
+        case .loading, .initialLoading:
             return true
         default:
             return false

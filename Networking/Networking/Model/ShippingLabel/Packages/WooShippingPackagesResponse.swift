@@ -60,15 +60,14 @@ extension WooShippingPackagesResponse: Decodable {
                     providerOptions.append(option)
                     allSavedPredefinedPackages.append(contentsOf: WooShippingPackagesResponse.savedPackages(savedOptions: savedPredefinedOptions, option: option))
                 })
+                providerOptions.sort { $0.title < $1.title }
                 allPredefinedOptions.append(WooShippingCarrierPredefinedOptions(carrierID: key, predefinedOptions: providerOptions))
             }
         }
 
         // sort to make sure they are always in same order
         // since we get the carriers data as a dictionary (key is carrier id)
-        allPredefinedOptions.sort {
-            return $0.carrierID < $1.carrierID
-        }
+        allPredefinedOptions.sort { $0.carrierID < $1.carrierID }
 
         self.init(storeOptions: storeOptions,
                   customPackages: customPackages,

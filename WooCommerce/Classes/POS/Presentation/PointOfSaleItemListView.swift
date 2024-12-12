@@ -1,5 +1,6 @@
 import SwiftUI
-import enum Yosemite.POSItem
+import Yosemite
+//import enum Yosemite.POSItem
 
 /// Displays a list of items in POS. Can be a list of parent/product items, or child items.
 /// It supports pull-to-refresh and infinite scrolling.
@@ -13,7 +14,7 @@ struct PointOfSaleItemListView<Content>: View where Content: View {
     let reload: () async -> Void
     let loadNextItems: () async -> Void
 
-    @ViewBuilder var itemContent: (POSItem) -> Content
+    @ViewBuilder var itemContent: (POSDisplayableItem) -> Content
 
     var body: some View {
         VStack {
@@ -22,9 +23,10 @@ struct PointOfSaleItemListView<Content>: View where Content: View {
                 // These cases are handled directly in the dashboard, we do not render
                 // a specific view within the ItemListView to handle them
                 EmptyView()
-            case .loading(let items, _, _),
-                    .loaded(let items, _, _):
-                listView(items: items).transition(.slide)
+            case .loading(let items),
+                    .loaded(let items):
+                listView(items: items)
+//                        .transition(.slide)
             }
         }
         .refreshable {
@@ -39,13 +41,13 @@ struct PointOfSaleItemListView<Content>: View where Content: View {
         }
     }
 
-    private func listView(items: [POSItem]) -> some View {
+    private func listView(items: [POSDisplayableItem]) -> some View {
         ScrollView {
             VStack {
 //                if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
 //                    bannerCardView
 //                }
-                ForEach(items) { item in
+                ForEach(items, id: \.id) { item in
                     itemContent(item)
                 }
                 GhostItemCardView()
@@ -89,6 +91,45 @@ private enum Constants {
     static let bannerCardPadding: CGFloat = 16
     static let viewHeight: CGFloat = UIScreen.main.bounds.height
     static let scrollThresholdMultiplier: CGFloat = 1.7
+}
+
+struct GhostItemCardView: View {
+    @ScaledMetric private var scale: CGFloat = 1.0
+
+    var body: some View {
+        HStack(spacing: 0) {
+            Rectangle()
+                .frame(width: Constants.productCardSize * scale, height: Constants.productCardSize * scale)
+            HStack {
+                Rectangle()
+                    .foregroundColor(Constants.textForegroundColor)
+                    .frame(width: Constants.textWidth * 2 * scale, height: Constants.textHeight * scale)
+                    .padding(.horizontal)
+                Spacer()
+                Rectangle()
+                    .foregroundColor(Constants.textForegroundColor)
+                    .frame(width: Constants.textWidth * scale, height: Constants.textHeight * scale)
+                    .padding(.horizontal)
+            }
+            .frame(height: Constants.productCardSize * scale)
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: Constants.cornerRadius)
+        }
+        .foregroundColor(Constants.cardForegroundColor)
+        .shimmering()
+    }
+}
+
+private extension GhostItemCardView {
+    enum Constants {
+        static let cornerRadius: CGFloat = 8
+        static let cardForegroundColor: Color = Color.gray.opacity(0.5)
+        static let textForegroundColor: Color = Color.gray.opacity(0.8)
+        static let productCardSize: CGFloat = 112
+        static let textWidth: CGFloat = 112
+        static let textHeight: CGFloat = 32
+    }
 }
 
 //#Preview {

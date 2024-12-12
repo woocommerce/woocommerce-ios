@@ -17,19 +17,23 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
     private var siteID: Int64
     private var currencySettings: CurrencySettings
     private let productsRemote: ProductsRemote
+    private let isVariableProductsFeatureEnabled: Bool
 
-    public init(siteID: Int64, currencySettings: CurrencySettings, network: Network) {
+    public init(siteID: Int64, currencySettings: CurrencySettings, network: Network, isVariableProductsFeatureEnabled: Bool) {
         self.siteID = siteID
         self.currencySettings = currencySettings
         self.productsRemote = ProductsRemote(network: network)
+        self.isVariableProductsFeatureEnabled = isVariableProductsFeatureEnabled
     }
 
     public convenience init(siteID: Int64,
                             currencySettings: CurrencySettings,
-                            credentials: Credentials?) {
+                            credentials: Credentials?,
+                            isVariableProductsFeatureEnabled: Bool) {
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
-                  network: AlamofireNetwork(credentials: credentials))
+                  network: AlamofireNetwork(credentials: credentials),
+                  isVariableProductsFeatureEnabled: isVariableProductsFeatureEnabled)
     }
 
     /// Provides a list of products for the Point of Sale, by fetching simple products from the remote, applying any eligibility criteria,
@@ -37,8 +41,10 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
     ///
     /// - pageNumber: Number of the page that should be retrieved. If none given, defaults to 1
     ///
-    public func providePointOfSaleItems(pageNumber: Int = 1) async throws -> [POSItem] {
-        let products = try await productsRemote.loadSimpleProductsForPointOfSale(for: siteID, pageNumber: pageNumber)
+    public func providePointOfSaleItems(pageNumber: Int = 1) async throws -> [POSDisplayableItem] {
+        let productTypes: [ProductType] = isVariableProductsFeatureEnabled ?
+        [.simple, .variable] : [.simple]
+        let products = try await productsRemote.loadProductsForPointOfSale(for: siteID, productTypes: productTypes, pageNumber: pageNumber)
 
         if pageNumber != 1 && products.count == 0 {
             throw PointOfSaleProductServiceError.pageOutOfRange
@@ -54,32 +60,21 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
         return mapProductsToPOSItems(products: filteredProducts)
     }
 
-    // Maps result to POSItem, either parent or product case, and populates the output with:
-    // - The name, productID, and item ID.
-    // - Formatted price based on store's currency settings, for products.
+    // Maps result to POSProduct, and populate the output with:
+    // - Formatted price based on store's currency settings.
     // - Product thumbnail, if any.
-    private func mapProductsToPOSItems(products: [Product]) -> [POSItem] {
+    private func mapProductsToPOSItems(products: [Product]) -> [POSOrderableItem] {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        return products.compactMap { product in
+        return products.map { product in
             let formattedPrice = currencyFormatter.formatAmount(product.price) ?? "-"
             let thumbnailSource = product.images.first?.src
 
-            switch product.productType {
-            case .simple:
-                return .product(POSProduct(id: UUID(),
-                                           name: product.name,
-                                           formattedPrice: formattedPrice,
-                                           productImageSource: thumbnailSource,
-                                           productID: product.productID,
-                                           price: product.price))
-            case .variable:
-                return .parentProduct(POSParentProduct(id: UUID(),
-                                                       name: product.name,
-                                                       productImageSource: thumbnailSource,
-                                                       productID: product.productID))
-            default:
-                return nil
-            }
+            return POSProduct(id: UUID(),
+                              name: product.name,
+                              formattedPrice: formattedPrice,
+                              productImageSource: thumbnailSource,
+                              productID: product.productID,
+                              price: product.price)
         }
     }
 }

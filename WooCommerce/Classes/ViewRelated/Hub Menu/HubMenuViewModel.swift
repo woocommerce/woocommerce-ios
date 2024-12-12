@@ -97,7 +97,8 @@ final class HubMenuViewModel: ObservableObject {
 
         return PointOfSaleProductService(siteID: siteID,
                                   currencySettings: currencySettings,
-                                  credentials: credentials)
+                                         credentials: credentials,
+                                         isVariableProductsFeatureEnabled: true)
     }()
 
     private(set) lazy var posVariationProvider: PointOfSaleVariationServiceProtocol = {

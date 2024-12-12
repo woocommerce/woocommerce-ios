@@ -2,33 +2,52 @@
 
 import Foundation
 import protocol Yosemite.PointOfSaleItemServiceProtocol
-import enum Yosemite.POSItem
-import struct Yosemite.POSProduct
+import protocol Yosemite.POSDisplayableItem
+import protocol Yosemite.POSOrderableItem
 import protocol Yosemite.OrderSyncProductTypeProtocol
 import struct Yosemite.OrderSyncProductInput
 import enum Yosemite.ProductType
 import struct Yosemite.ProductBundleItem
 import struct Yosemite.OrderItem
-import struct Yosemite.POSParentProduct
 import Combine
 
 // MARK: - PreviewProvider helpers
 //
+struct POSProductPreview: POSOrderableItem, Equatable {
+    let id: UUID
+    let name: String
+    let formattedPrice: String
+    var productImageSource: String?
+
+    struct POSProductPreviewType: OrderSyncProductTypeProtocol {
+        var price: String = ""
+        var productID: Int64 = 0
+        var productType: Yosemite.ProductType = .simple
+        var bundledItems: [Yosemite.ProductBundleItem] = []
+    }
+
+    func toOrderSyncProductInput(quantity: Decimal) -> OrderSyncProductInput {
+        OrderSyncProductInput(product: .product(POSProductPreviewType()), quantity: 1)
+    }
+
+    func matches(orderItem: OrderItem) -> Bool {
+        return false
+    }
+}
+
 final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
-    func providePointOfSaleItems(pageNumber: Int) async throws -> [POSItem] {
+    func providePointOfSaleItems(pageNumber: Int) async throws -> [POSDisplayableItem] {
         []
     }
 
-    func providePointOfSaleItems() -> [POSItem] {
+    func providePointOfSaleItems() -> [POSDisplayableItem] {
         return mockItems
     }
 
-    func providePointOfSaleItem() -> POSItem {
-        .product(POSProduct(id: UUID(),
-                            name: "Product 1",
-                            formattedPrice: "$1.00",
-                            productID: 0,
-                            price: "1.00"))
+    func providePointOfSaleItem() -> POSOrderableItem {
+        POSProductPreview(id: UUID(),
+                          name: "Product 1",
+                          formattedPrice: "$1.00")
     }
 }
 
@@ -36,35 +55,27 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
     @Published var itemListState: ItemListState = .initialLoading
     var itemListStatePublisher: any Publisher<ItemListState, Never> { $itemListState }
 
-    var allItems: [POSItem] = []
+    var allItems: [POSDisplayableItem] = []
 
     func loadInitialItems() async {
-        itemListState = .loaded(mockItems, context: .root, pageInfo: .init(currentPage: 1, hasMorePages: true))
+        itemListState = .loaded(mockItems)
     }
 
     func loadNextItems() async {
-        itemListState = .loading(mockItems, context: .root, pageInfo: .init(currentPage: 1, hasMorePages: true))
+        itemListState = .loading(mockItems)
     }
 
     func reload() async {
-        itemListState = .loaded([], context: .root, pageInfo: .init(currentPage: 1, hasMorePages: true))
-    }
-
-    func loadChildItems(for parentItem: POSParentProduct) async {
-        itemListState = .loaded([], context: .child(parent: parentItem, parentItem: .parentProduct(parentItem)), pageInfo: .init(currentPage: 1, hasMorePages: true))
-    }
-
-    func goBack() {
-        itemListState = .loaded([], context: .root, pageInfo: .init(currentPage: 1, hasMorePages: true))
+        itemListState = .loaded([])
     }
 }
 
-private var mockItems: [POSItem] {
+private var mockItems: [POSDisplayableItem] {
     return [
-        .product(POSProduct(id: UUID(), name: "Product 1", formattedPrice: "$1.00", productID: 1, price: "1.00")),
-        .product(POSProduct(id: UUID(), name: "Product 2", formattedPrice: "$2.00", productID: 2, price: "2.00")),
-        .product(POSProduct(id: UUID(), name: "Product 3", formattedPrice: "$3.00", productID: 3, price: "3.00")),
-        .product(POSProduct(id: UUID(), name: "Product 4", formattedPrice: "$4.00", productID: 4, price: "4.00"))
+        POSProductPreview(id: UUID(), name: "Product 1", formattedPrice: "$1.00"),
+        POSProductPreview(id: UUID(), name: "Product 2", formattedPrice: "$2.00"),
+        POSProductPreview(id: UUID(), name: "Product 3", formattedPrice: "$3.00"),
+        POSProductPreview(id: UUID(), name: "Product 4", formattedPrice: "$4.00")
     ]
 }
 

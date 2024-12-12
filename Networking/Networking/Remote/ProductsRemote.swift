@@ -197,16 +197,20 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Retrieves simple products for the Point of Sale
+    /// Retrieves products for the Point of Sale. Simple and variable products are loaded for WC version 9.6+, otherwise only simple products are loaded.
     ///
     /// - Parameters:
     /// - siteID: Site for which we'll fetch remote products.
+    /// - productTypes: A list of product types to be included in the results.
     /// - pageNumber: Number of page that should be retrieved.
     ///
-    public func loadSimpleProductsForPointOfSale(for siteID: Int64, pageNumber: Int = 1) async throws -> [Product] {
+    public func loadProductsForPointOfSale(for siteID: Int64, productTypes: [ProductType] = [.simple], pageNumber: Int = 1) async throws -> [Product] {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: POSConstants.productsPerPage,
+            // When both productType and productTypes are provided, the productType is ignored in WC versions 9.6+.
+            ParameterKey.productType: POSConstants.productType,
+            ParameterKey.productTypes: productTypes.map { $0.rawValue }.joined(separator: ","),
             ParameterKey.orderBy: OrderKey.name.value,
             ParameterKey.order: Order.ascending.value,
             ParameterKey.productStatus: POSConstants.productStatus,
@@ -610,6 +614,7 @@ public extension ProductsRemote {
         static let globalUniqueID: String = "global_unique_id"
         static let productStatus: String = "status"
         static let productType: String = "type"
+        static let productTypes: String = "include_types"
         static let stockStatus: String = "stock_status"
         static let category: String   = "category"
         static let fields: String     = "_fields"

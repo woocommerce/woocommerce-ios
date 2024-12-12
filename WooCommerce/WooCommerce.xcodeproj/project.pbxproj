@@ -278,7 +278,7 @@
 		0259D65D2582248D003B1CD6 /* PrintShippingLabelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0259D65B2582248D003B1CD6 /* PrintShippingLabelViewController.swift */; };
 		0259D65E2582248D003B1CD6 /* PrintShippingLabelViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0259D65C2582248D003B1CD6 /* PrintShippingLabelViewController.xib */; };
 		0259EEF82D0975CB00FFC3DB /* PointOfSaleItemListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0259EEF72D0975CB00FFC3DB /* PointOfSaleItemListView.swift */; };
-		0259EEFE2D097CF000FFC3DB /* PointOfSaleRootItemListViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0259EEFD2D097CF000FFC3DB /* PointOfSaleRootItemListViewHelper.swift */; };
+		0259EEFE2D097CF000FFC3DB /* PointOfSaleRootItemListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0259EEFD2D097CF000FFC3DB /* PointOfSaleRootItemListViewModel.swift */; };
 		0259EF002D097D2000FFC3DB /* PointOfSaleRootItemListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0259EEFF2D097D2000FFC3DB /* PointOfSaleRootItemListView.swift */; };
 		0259EF77246BF4EC00B84FDF /* ProductDetailsFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0259EF76246BF4EC00B84FDF /* ProductDetailsFactoryTests.swift */; };
 		025A1246247CDF55008EA761 /* ProductFormViewModel+ChangesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025A1245247CDF55008EA761 /* ProductFormViewModel+ChangesTests.swift */; };
@@ -388,6 +388,7 @@
 		02817B39242B34560050AD8B /* ToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02817B38242B34560050AD8B /* ToolbarView.swift */; };
 		028203CF297662A200217369 /* DomainSelectorDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028203CE297662A200217369 /* DomainSelectorDataProvider.swift */; };
 		02820F3422C257B700DE0D37 /* UITableView+HeaderFooterHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02820F3322C257B700DE0D37 /* UITableView+HeaderFooterHelpers.swift */; };
+		0282663E2D0A85FD003B2E58 /* ItemCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0282663D2D0A85FD003B2E58 /* ItemCardView.swift */; };
 		028296EC237D28B600E84012 /* TextViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028296EA237D28B600E84012 /* TextViewViewController.swift */; };
 		028296ED237D28B600E84012 /* TextViewViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 028296EB237D28B600E84012 /* TextViewViewController.xib */; };
 		02829BAA288FA8B300951E1E /* MockUserNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02829BA9288FA8B300951E1E /* MockUserNotification.swift */; };
@@ -3414,7 +3415,7 @@
 		0259D65B2582248D003B1CD6 /* PrintShippingLabelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintShippingLabelViewController.swift; sourceTree = "<group>"; };
 		0259D65C2582248D003B1CD6 /* PrintShippingLabelViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PrintShippingLabelViewController.xib; sourceTree = "<group>"; };
 		0259EEF72D0975CB00FFC3DB /* PointOfSaleItemListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleItemListView.swift; sourceTree = "<group>"; };
-		0259EEFD2D097CF000FFC3DB /* PointOfSaleRootItemListViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleRootItemListViewHelper.swift; sourceTree = "<group>"; };
+		0259EEFD2D097CF000FFC3DB /* PointOfSaleRootItemListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleRootItemListViewModel.swift; sourceTree = "<group>"; };
 		0259EEFF2D097D2000FFC3DB /* PointOfSaleRootItemListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleRootItemListView.swift; sourceTree = "<group>"; };
 		0259EF76246BF4EC00B84FDF /* ProductDetailsFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsFactoryTests.swift; sourceTree = "<group>"; };
 		025A1245247CDF55008EA761 /* ProductFormViewModel+ChangesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormViewModel+ChangesTests.swift"; sourceTree = "<group>"; };
@@ -3525,6 +3526,7 @@
 		02817B38242B34560050AD8B /* ToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarView.swift; sourceTree = "<group>"; };
 		028203CE297662A200217369 /* DomainSelectorDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainSelectorDataProvider.swift; sourceTree = "<group>"; };
 		02820F3322C257B700DE0D37 /* UITableView+HeaderFooterHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+HeaderFooterHelpers.swift"; sourceTree = "<group>"; };
+		0282663D2D0A85FD003B2E58 /* ItemCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCardView.swift; sourceTree = "<group>"; };
 		028296EA237D28B600E84012 /* TextViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewViewController.swift; sourceTree = "<group>"; };
 		028296EB237D28B600E84012 /* TextViewViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TextViewViewController.xib; sourceTree = "<group>"; };
 		02829BA9288FA8B300951E1E /* MockUserNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserNotification.swift; sourceTree = "<group>"; };
@@ -6954,8 +6956,9 @@
 				68AF3C3A2D01481A006F1ED2 /* POSReceiptEligibilityBanner.swift */,
 				DA1D68C12C36F0980097859A /* PointOfSaleAssets.swift */,
 				0259EEF72D0975CB00FFC3DB /* PointOfSaleItemListView.swift */,
-				0259EEFD2D097CF000FFC3DB /* PointOfSaleRootItemListViewHelper.swift */,
+				0259EEFD2D097CF000FFC3DB /* PointOfSaleRootItemListViewModel.swift */,
 				0259EEFF2D097D2000FFC3DB /* PointOfSaleRootItemListView.swift */,
+				0282663D2D0A85FD003B2E58 /* ItemCardView.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -15451,7 +15454,7 @@
 				02162729237965E8000208D2 /* ProductFormTableViewModel.swift in Sources */,
 				68E6749F2A4DA01C0034BA1E /* WooWPComPlan.swift in Sources */,
 				DE65C1F92C48E89C003EF8D1 /* WebCheckoutViewModel.swift in Sources */,
-				0259EEFE2D097CF000FFC3DB /* PointOfSaleRootItemListViewHelper.swift in Sources */,
+				0259EEFE2D097CF000FFC3DB /* PointOfSaleRootItemListViewModel.swift in Sources */,
 				DEF3300C270444070073AE29 /* ShippingLabelSelectedRate.swift in Sources */,
 				CE2A9FBF23BFB1BE002BEC1C /* LedgerTableViewCell.swift in Sources */,
 				035DBA47292D0995003E5125 /* CardPresentPaymentPreflightController.swift in Sources */,
@@ -16492,6 +16495,7 @@
 				B649BC7E2A1C295B007AB988 /* View+HighlightModifier.swift in Sources */,
 				4572641927F1EB27004E1F95 /* AddEditCouponViewModel.swift in Sources */,
 				CE13681729FBD94300EBF43C /* QuantityRulesViewModel.swift in Sources */,
+				0282663E2D0A85FD003B2E58 /* ItemCardView.swift in Sources */,
 				DE68979F2A8F7C9C00154588 /* AccountSettingsView.swift in Sources */,
 				02ADC7CC239762E0008D4BED /* PaginatedListSelectorViewProperties.swift in Sources */,
 				03FBDAF2263EE47C00ACE257 /* CouponListViewModel.swift in Sources */,

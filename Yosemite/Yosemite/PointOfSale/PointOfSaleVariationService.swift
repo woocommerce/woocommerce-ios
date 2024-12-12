@@ -16,7 +16,7 @@ public enum PointOfSaleVariationServiceError: Error {
 ///
 
 public protocol PointOfSaleVariationServiceProtocol {
-    func providePointOfSaleItems(for: POSParentProduct, pageNumber: Int) async throws -> [POSItem]
+    func providePointOfSaleItems(for: POSParentProduct, pageNumber: Int) async throws -> [POSDisplayableItem]
 }
 
 public final class PointOfSaleVariationService: PointOfSaleVariationServiceProtocol {
@@ -38,15 +38,17 @@ public final class PointOfSaleVariationService: PointOfSaleVariationServiceProto
                   network: AlamofireNetwork(credentials: credentials))
     }
 
-    public func providePointOfSaleItems(for parentProduct: POSParentProduct, pageNumber: Int) async throws -> [POSItem] {
-        return try await variationService.fetchProductVariations(
-            for: siteID,
-            parentProductID: parentProduct.productID,
-            pageNumber: pageNumber,
-            pageSize: 25)
-        .map { variation in
-                .variation(POSVariation(variation: variation, currencyFormatter: currencyFormatter))
-        }
+    public func providePointOfSaleItems(for parentProduct: POSParentProduct, pageNumber: Int) async throws -> [POSDisplayableItem] {
+        throw PointOfSaleVariationServiceError.unknown
+        // TODO
+//        return try await variationService.fetchProductVariations(
+//            for: siteID,
+//            parentProductID: parentProduct.productID,
+//            pageNumber: pageNumber,
+//            pageSize: 25)
+//        .map { variation in
+//                .variation(POSVariation(variation: variation, currencyFormatter: currencyFormatter))
+//        }
     }
 }
 

@@ -80,7 +80,7 @@ struct PointOfSaleDashboardView: View {
                     let variationService = PointOfSaleVariationService(siteID: ServiceLocator.stores.sessionManager.defaultStoreID!,
                                                                        currencySettings: currencySettings,
                                                                        credentials: ServiceLocator.stores.sessionManager.defaultCredentials)
-                    PointOfSaleRootItemListView(viewHelper: .init(variationProvider: variationService))
+                    PointOfSaleRootItemListView(viewModel: .init(variationProvider: variationService))
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .leading))
                 }

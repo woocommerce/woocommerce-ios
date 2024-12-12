@@ -17,9 +17,8 @@ struct ItemListView: View {
                     // These cases are handled directly in the dashboard, we do not render
                     // a specific view within the ItemListView to handle them
                     EmptyView()
-                case .loading(_, _, _),
-                        .loaded(_, _, _):
-                    ItemList(rootItem: nil)
+                case .itemsList:
+                    ItemList(rootItem: nil, state: posModel.rootState)
                     .refreshable {
                         await posModel.reload()
                     }
@@ -29,6 +28,7 @@ struct ItemListView: View {
                 ItemList(rootItem: item)
                 .background(Color.posPrimaryBackground)
                 .toolbar(.hidden, for: .navigationBar)
+                .transition(.opacity)
             })
             .background(Color.posPrimaryBackground)
             .accessibilityElement(children: .contain)
@@ -52,10 +52,10 @@ extension UINavigationController {
 ///
 private extension ItemList {
     @ViewBuilder
-    func headerView(context: NavigationContext = .root) -> some View {
+    func headerView(parentItem: POSItem?) -> some View {
         VStack {
             HStack {
-                if case .child = context {
+                if parentItem != nil {
                     Spacer()
                     Button {
                         dismiss()
@@ -63,10 +63,9 @@ private extension ItemList {
                         Text("\(Image(systemName: "chevron.backward")) Back")
                             .font(.posTitleRegular)
                     }
-
                     Spacer()
                 }
-                POSHeaderTitleView(context: context)
+                POSHeaderTitleView(parentItem: parentItem)
                 if !shouldShowHeaderBanner {
                     Spacer()
                     Button(action: {
@@ -155,8 +154,7 @@ private extension ItemList {
 private extension ItemListState {
     var eligibleToShowSimpleProductsBanner: Bool {
         switch self {
-        case .loading,
-                .loaded:
+        case .itemsList:
             return true
         case .empty,
             .initialLoading,
@@ -282,7 +280,7 @@ struct ItemList: View {
 
     var rootItem: POSItem?
 
-    @State var state: ItemListViewState?
+    @State var state: ItemListViewState = .loading([], pageInfo: .init(currentPage: 1, hasMorePages: true))
 
     var body: some View {
         ScrollView {
@@ -292,12 +290,10 @@ struct ItemList: View {
                 }
 
                 switch state {
-                case .loading(let items, context: let context, pageInfo: let pageInfo),
-                        .loaded(let items, context: let context, pageInfo: let pageInfo):
-                    headerView(context: context)
+                case .loading(let items, pageInfo: let pageInfo),
+                        .loaded(let items, pageInfo: let pageInfo):
+                    headerView(parentItem: rootItem)
                     listRows(items)
-                case .none:
-                    EmptyView()
                 }
             }
             .frame(maxWidth: .infinity)
@@ -306,7 +302,7 @@ struct ItemList: View {
             .background(GeometryReader { proxy in
                 Color.clear
                     .onChange(of: proxy.frame(in: .global).maxY) { maxY in
-                        if posModel.itemListState.isLoadingAfterInitialLoad {
+                        if state.isLoading {
                             return
                         }
                         let threshold = Constants.viewHeight * Constants.scrollThresholdMultiplier
@@ -335,15 +331,19 @@ struct ItemList: View {
     @ViewBuilder
     func listRows(_ items: [POSItem]) -> some View {
         ForEach(items) { item in
-            listRow(item: item)
+            ItemListRow(item: item)
         }
         GhostItemCardView()
-            .renderedIf(state?.isLoading ?? false)
+            .renderedIf(state.isLoading)
 
     }
+}
 
-    @ViewBuilder
-    func listRow(item: POSItem) -> some View {
+struct ItemListRow : View {
+    let item: POSItem
+    @EnvironmentObject var posModel: PointOfSaleAggregateModel
+
+    var body: some View {
         switch item {
         case .product(let product):
             Button(action: {

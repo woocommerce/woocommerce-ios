@@ -13,6 +13,17 @@ public enum POSItem: Equatable, Identifiable, Hashable {
             return variation.id
         }
     }
+
+    public var name: String {
+        switch self {
+        case .product(let product):
+            return product.name
+        case .parentProduct(let parentProduct):
+            return parentProduct.name
+        case .variation(let variation):
+            return variation.name
+        }
+    }
 }
 
 /// POSDisplayableItem contains only the properties required to show an item in the Point Of Sale.

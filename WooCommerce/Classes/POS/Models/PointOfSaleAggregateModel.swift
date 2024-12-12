@@ -58,7 +58,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
     @Published private(set) var orderState: PointOfSaleOrderState = .idle
 
-    @Published private(set) var rootState: ItemListViewState = .loading([], context: .root, pageInfo: .init(currentPage: 1, hasMorePages: true))
+    @Published private(set) var rootState: ItemListViewState = .loading([], pageInfo: .init(currentPage: 1, hasMorePages: true))
 
     private let itemsController: PointOfSaleItemsControllerProtocol
 
@@ -97,16 +97,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 extension PointOfSaleAggregateModel {
     private func publishItemListState() {
         itemsController.itemListStatePublisher.assign(to: &$itemListState)
-        $itemListState.map { itemListState in
-            switch itemListState {
-            case .loading(let items, let context, let pageInfo):
-                return .loading(items, context: context, pageInfo: pageInfo)
-            case .loaded(let items, let context, let pageInfo):
-                return .loaded(items, context: context, pageInfo: pageInfo)
-            default:
-                return .loading([], context: .root, pageInfo: .init(currentPage: 1, hasMorePages: true))
-            }
-        }.assign(to: &$rootState)
+        itemsController.itemListViewStatePublisher.assign(to: &$rootState)
     }
 
     @MainActor
@@ -126,10 +117,6 @@ extension PointOfSaleAggregateModel {
 
     func childState(for parentProduct: POSParentProduct) async -> ItemListViewState {
         return await itemsController.loadChildItems(for: parentProduct)
-    }
-
-    func goBack() {
-        itemsController.goBack()
     }
 }
 

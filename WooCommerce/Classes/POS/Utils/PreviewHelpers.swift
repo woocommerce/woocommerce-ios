@@ -33,29 +33,28 @@ final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
 }
 
 final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtocol {
+    @Published var itemListViewState: ItemListViewState = .loading([], pageInfo: .init(currentPage: 1, hasMorePages: true))
+    var itemListViewStatePublisher: any Publisher<ItemListViewState, Never> { $itemListViewState }
+
     @Published var itemListState: ItemListState = .initialLoading
     var itemListStatePublisher: any Publisher<ItemListState, Never> { $itemListState }
 
     var allItems: [POSItem] = []
 
     func loadInitialItems() async {
-        itemListState = .loaded(mockItems, context: .root, pageInfo: .init(currentPage: 1, hasMorePages: true))
+        itemListState = .itemsList
     }
 
     func loadNextItems() async {
-        itemListState = .loading(mockItems, context: .root, pageInfo: .init(currentPage: 1, hasMorePages: true))
+        itemListState = .itemsList
     }
 
     func reload() async {
-        itemListState = .loaded([], context: .root, pageInfo: .init(currentPage: 1, hasMorePages: true))
+        itemListState = .itemsList
     }
 
     func loadChildItems(for parentItem: Yosemite.POSParentProduct) async -> ItemListViewState {
-        return .loaded([], context: .child(parent: parentItem, parentItem: .parentProduct(parentItem)), pageInfo: .init(currentPage: 1, hasMorePages: true))
-    }
-
-    func goBack() {
-        itemListState = .loaded([], context: .root, pageInfo: .init(currentPage: 1, hasMorePages: true))
+        return .loaded([], pageInfo: .init(currentPage: 1, hasMorePages: true))
     }
 }
 

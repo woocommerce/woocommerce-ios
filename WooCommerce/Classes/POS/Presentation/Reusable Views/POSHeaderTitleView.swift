@@ -1,12 +1,13 @@
 import SwiftUI
+import enum Yosemite.POSItem
 
 struct POSHeaderTitleView: View {
     var foregroundColor: Color = Color.posPrimaryText
 
-    let context: NavigationContext
+    let parentItem: POSItem?
 
     var body: some View {
-        Text(title(for: context))
+        Text(title(for: parentItem))
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(Constants.padding)
             .font(.posTitleEmphasized)
@@ -14,12 +15,12 @@ struct POSHeaderTitleView: View {
             .accessibilityAddTraits(.isHeader)
     }
 
-    private func title(for context: NavigationContext) -> String {
-        switch context {
-        case .root:
+    private func title(for parentItem: POSItem?) -> String {
+        switch parentItem {
+        case .none:
             return Localization.productSelectorTitle
-        case .child(let parent, _):
-            return parent.name
+        case .some(let item):
+            return item.name
         }
     }
 }
@@ -42,5 +43,5 @@ private extension POSHeaderTitleView {
 }
 
 #Preview {
-    POSHeaderTitleView(context: .root)
+    POSHeaderTitleView(parentItem: nil)
 }

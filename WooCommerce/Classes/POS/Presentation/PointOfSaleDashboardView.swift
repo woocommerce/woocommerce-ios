@@ -23,7 +23,7 @@ struct PointOfSaleDashboardView: View {
                         await posModel.loadInitialItems()
                     }
                 })
-            case .loading, .loaded:
+            case .itemsList:
                 contentView
                     .accessibilitySortPriority(2)
             }

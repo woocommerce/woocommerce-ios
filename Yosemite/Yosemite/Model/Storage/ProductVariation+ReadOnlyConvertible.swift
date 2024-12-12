@@ -83,7 +83,7 @@ extension Storage.ProductVariation: ReadOnlyConvertible {
                                 attributes: productAttributes,
                                 image: productImage,
                                 permalink: permalink,
-                                dateCreated: dateCreated ?? Date(),
+                                dateCreated: dateCreated ?? Date(timeIntervalSince1970: 0),
                                 dateModified: dateModified,
                                 dateOnSaleStart: dateOnSaleStart,
                                 dateOnSaleEnd: dateOnSaleEnd,

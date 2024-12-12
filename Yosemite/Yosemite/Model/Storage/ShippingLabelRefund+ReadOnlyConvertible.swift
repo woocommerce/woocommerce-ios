@@ -14,7 +14,7 @@ extension Storage.ShippingLabelRefund: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.ShippingLabelRefund {
-        .init(dateRequested: dateRequested ?? Date(),
+        .init(dateRequested: dateRequested ?? Date(timeIntervalSince1970: 0),
               status: .init(rawValue: status))
     }
 }

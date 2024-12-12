@@ -31,7 +31,7 @@ extension Storage.ShippingLabel: ReadOnlyConvertible {
               orderID: orderID,
               shippingLabelID: shippingLabelID,
               carrierID: carrierID,
-              dateCreated: dateCreated ?? Date(),
+              dateCreated: dateCreated ?? Date(timeIntervalSince1970: 0),
               packageName: packageName,
               rate: rate,
               currency: currency,

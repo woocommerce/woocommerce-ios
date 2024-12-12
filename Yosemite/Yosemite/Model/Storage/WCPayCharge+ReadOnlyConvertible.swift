@@ -40,7 +40,7 @@ extension Storage.WCPayCharge: ReadOnlyConvertible {
                            amountRefunded: amountRefunded,
                            authorizationCode: authorizationCode,
                            captured: captured,
-                           created: created ?? Date(),
+                           created: created ?? Date(timeIntervalSince1970: 0),
                            currency: currency,
                            paid: paid,
                            paymentIntentID: paymentIntentID,

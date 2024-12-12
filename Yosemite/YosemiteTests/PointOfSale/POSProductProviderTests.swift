@@ -14,8 +14,9 @@ final class PointOfSaleProductServiceTests: XCTestCase {
         network = MockNetwork()
         currencySettings = CurrencySettings()
         itemProvider = PointOfSaleProductService(siteID: siteID,
-                                          currencySettings: currencySettings,
-                                          network: network)
+                                                 currencySettings: currencySettings,
+                                                 network: network,
+                                                 isVariableProductsFeatureEnabled: false)
     }
 
     override func tearDown() {
@@ -107,5 +108,35 @@ final class PointOfSaleProductServiceTests: XCTestCase {
         }
         XCTAssertEqual(firstEligibleItem.name, expectedItemNames.first)
         XCTAssertEqual(secondEligibleItem.name, expectedItemNames.last)
+    }
+
+    // MARK: - Query Parameters
+
+    func test_providePointOfSaleItems_sets_types_parameters_to_simple_only() async throws {
+        // Given
+        let itemProvider = PointOfSaleProductService(siteID: siteID,
+                                                     currencySettings: currencySettings,
+                                                     network: network,
+                                                     isVariableProductsFeatureEnabled: false)
+
+        // When
+        _ = try? await itemProvider.providePointOfSaleItems()
+
+        // Then
+        XCTAssertEqual(network.queryParametersDictionary?["include_types"] as? String, "simple")
+    }
+
+    func test_providePointOfSaleItems_sets_types_parameters_correctly_when_variable_products_feature_is_enabled() async throws {
+        // Given
+        let itemProvider = PointOfSaleProductService(siteID: siteID,
+                                                     currencySettings: currencySettings,
+                                                     network: network,
+                                                     isVariableProductsFeatureEnabled: true)
+
+        // When
+        _ = try? await itemProvider.providePointOfSaleItems()
+
+        // Then
+        XCTAssertEqual(network.queryParametersDictionary?["include_types"] as? String, "simple,variable")
     }
 }

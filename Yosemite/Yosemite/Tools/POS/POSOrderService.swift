@@ -135,8 +135,16 @@ public final class POSOrderService: POSOrderServiceProtocol {
         let updatedBillingAddress = order.billingAddress?.copy(email: recipientEmail)
         let updatedOrder = order.copy(billingAddress: updatedBillingAddress)
 
-        let _ = try await ordersRemote.updatePOSOrder(siteID: siteID, order: updatedOrder, fields: [.billingAddress])
-        try await receiptsRemote.sendReceipt(siteID: siteID, orderID: order.orderID)
+        do {
+            let _ = try await ordersRemote.updatePOSOrder(siteID: siteID, order: updatedOrder, fields: [.billingAddress])
+        } catch {
+            throw POSOrderServiceError.updateOrderFailed
+        }
+        do {
+            try await receiptsRemote.sendReceipt(siteID: siteID, orderID: order.orderID)
+        } catch {
+            throw POSOrderServiceError.sendReceiptFailed
+        }
     }
 }
 
@@ -193,5 +201,7 @@ private extension POSOrderService {
 private extension POSOrderService {
     enum POSOrderServiceError: Error {
         case emailAlreadySet
+        case updateOrderFailed
+        case sendReceiptFailed
     }
 }

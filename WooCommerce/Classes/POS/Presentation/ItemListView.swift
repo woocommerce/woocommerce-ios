@@ -18,7 +18,7 @@ struct ItemListView: View {
                     // a specific view within the ItemListView to handle them
                     EmptyView()
                 case .content:
-                    ItemList(rootItem: nil, state: posModel.itemsViewState.itemsStackState.rootState)
+                    ItemList(rootItem: nil)
                     .refreshable {
                         await posModel.reload()
                     }
@@ -279,8 +279,8 @@ struct ItemList: View {
     private var isHeaderBannerDismissed: Bool = false
 
     var rootItem: POSItem?
-
-    @State var state: ItemListState = .loading([], pageInfo: .init(currentPage: 1, hasMorePages: true))
+//
+//    @State var state: ItemListState = ItemListState(loadState: .loading, items: [], pageInfo: .init(currentPage: 1, hasMorePages: true))
 
     var body: some View {
         ScrollView {
@@ -290,19 +290,11 @@ struct ItemList: View {
                 }
 
                 if let rootItem {
-                    switch posModel.childState(for: rootItem) {
-                    case .loading(let items, pageInfo: let pageInfo),
-                            .loaded(let items, pageInfo: let pageInfo):
-                        headerView(parentItem: rootItem)
-                        listRows(items)
-                    }
+                    headerView(parentItem: rootItem)
+                    listRows(posModel.childState(for: rootItem).items)
                 } else {
-                    switch posModel.itemsViewState.itemsStackState.rootState {
-                    case .loading(let items, pageInfo: let pageInfo),
-                            .loaded(let items, pageInfo: let pageInfo):
-                        headerView(parentItem: rootItem)
-                        listRows(items)
-                    }
+                    headerView(parentItem: nil)
+                    listRows(posModel.itemsViewState.itemsStackState.rootState.items)
                 }
             }
             .frame(maxWidth: .infinity)
@@ -311,7 +303,7 @@ struct ItemList: View {
             .background(GeometryReader { proxy in
                 Color.clear
                     .onChange(of: proxy.frame(in: .global).maxY) { maxY in
-                        if state.isLoading {
+                        if posModel.itemsViewState.itemsStackState.rootState.isLoading {
                             return
                         }
                         let threshold = Constants.viewHeight * Constants.scrollThresholdMultiplier
@@ -326,13 +318,6 @@ struct ItemList: View {
             .posModal(isPresented: $showSimpleProductsModal) {
                 SimpleProductsOnlyInformation(isPresented: $showSimpleProductsModal)
             }
-            .task {
-                guard let rootItem else {
-                    state = posModel.itemsViewState.itemsStackState.rootState
-                    return
-                }
-                state = await posModel.childState(for: rootItem)
-            }
         }
     }
 
@@ -342,7 +327,7 @@ struct ItemList: View {
             ItemListRow(item: item)
         }
         GhostItemCardView()
-            .renderedIf(state.isLoading)
+            .renderedIf(posModel.itemsViewState.itemsStackState.rootState.isLoading)
 
     }
 }

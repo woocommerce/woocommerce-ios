@@ -33,18 +33,12 @@ final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
 }
 
 final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtocol {
-    @Published var itemListState: ItemListState = .loading([], pageInfo: .init(currentPage: 1, hasMorePages: true))
-    var itemListStatePublisher: any Publisher<ItemListState, Never> { $itemListState }
-
     @Published var itemsViewState: ItemsViewState = ItemsViewState(
         containerState: .initialLoading,
         itemsStackState: .init(
-            rootState: .loaded([],
-                               pageInfo: .init(currentPage: 1, hasMorePages: true)),
+            rootState: ItemListState(loadState: .loading, items: [], pageInfo: .init(currentPage: 1, hasMorePages: true)),
             itemStates: [:]))
     var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { $itemsViewState }
-
-    var allItems: [POSItem] = []
 
     func loadInitialItems() async {
     }
@@ -56,7 +50,7 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
     }
 
     func childState(for parent: POSItem) -> ItemListState {
-        return .loaded([], pageInfo: .init(currentPage: 1, hasMorePages: true))
+        return ItemListState(loadState: .loading, items: [], pageInfo: .init(currentPage: 1, hasMorePages: true))
     }
 }
 

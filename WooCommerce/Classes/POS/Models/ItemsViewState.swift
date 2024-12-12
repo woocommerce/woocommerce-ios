@@ -33,30 +33,36 @@ struct ItemsStackState: Equatable {
     var itemStates: [POSItem: ItemListState]
 }
 
-enum ItemListState: Equatable {
-    case loading(_ currentItems: [POSItem], pageInfo: PageInfo)
-    case loaded(_ items: [POSItem], pageInfo: PageInfo)
+struct ItemListState: Equatable, Hashable {
+    var loadState: LoadState
+    var items: [POSItem]
+    var pageInfo: PageInfo
 
     var isLoading: Bool {
-        switch self {
+        switch loadState {
         case .loading:
             return true
         default:
             return false
         }
     }
-}
 
-extension ItemListState: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        switch self {
-        case .loading(let items, let pageInfo),
-                .loaded(let items, let pageInfo):
-            hasher.combine(items)
-            hasher.combine(pageInfo)
-        }
+    enum LoadState: Equatable, Hashable {
+        case loading
+        case loaded
     }
 }
+
+//extension ItemListState: Hashable {
+//    public func hash(into hasher: inout Hasher) {
+//        switch self {
+//        case .loading(let items, let pageInfo),
+//                .loaded(let items, let pageInfo):
+//            hasher.combine(items)
+//            hasher.combine(pageInfo)
+//        }
+//    }
+//}
 
 struct PageInfo: Equatable, Hashable {
     let currentPage: Int

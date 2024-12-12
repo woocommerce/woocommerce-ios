@@ -53,7 +53,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
     @Published private(set) var itemsViewState: ItemsViewState = .init(
         containerState: .initialLoading,
-        itemsStackState: .init(rootState: .loading([], pageInfo: .init(currentPage: 1, hasMorePages: true)),
+        itemsStackState: .init(rootState: ItemListState(loadState: .loading, items: [], pageInfo: .init(currentPage: 1, hasMorePages: true)),
                                itemStates: [:]))
 
     @Published private(set) var cart: [CartItem] = []

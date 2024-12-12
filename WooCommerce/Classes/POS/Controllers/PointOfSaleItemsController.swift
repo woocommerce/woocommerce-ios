@@ -27,18 +27,20 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
         self.rootItemProvider = rootItemProvider
         self.variationProvider = variationProvider
         itemsViewStatePublisher = itemsViewStateSubject.eraseToAnyPublisher()
-        self.itemsStackState = .init(rootState: .loading([], pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true)), itemStates: [:])
+        self.itemsStackState = .init(rootState: .init(loadState: .loading, items: [], pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true)),
+                                     itemStates: [:])
     }
 
     @MainActor
     func loadInitialItems() async {
-        itemsStackState = .init(rootState: .loading([], pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true)), itemStates: [:])
+        itemsStackState = .init(rootState: .init(loadState: .loading, items: [], pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true)),
+                                itemStates: [:])
         itemsViewStateSubject.send(ItemsViewState(containerState: .initialLoading,
                                                   itemsStackState: itemsStackState))
         do {
             try await load(pageNumber: Constants.initialPage)
         } catch {
-            itemsStackState = .init(rootState: .loaded([], pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: false)), itemStates: [:])
+            itemsStackState.rootState.loadState = .loaded
             itemsViewStateSubject.send(ItemsViewState(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
                                                       itemsStackState: itemsStackState))
         }
@@ -51,14 +53,12 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
                 return
             }
             let nextPage = itemsStackState.rootState.pageInfo.currentPage + 1
-            itemsStackState = .init(rootState: .loading(itemsStackState.rootState.items, pageInfo: .init(currentPage: itemsStackState.rootState.pageInfo.currentPage, hasMorePages: true)),
-                                    itemStates: itemsStackState.itemStates)
+            itemsStackState.rootState.loadState = .loading
             itemsViewStateSubject.send(ItemsViewState(containerState: .content, itemsStackState: itemsStackState))
 
 
             try await load(pageNumber: nextPage)
-            itemsStackState = .init(rootState: .loaded(itemsStackState.rootState.items, pageInfo: .init(currentPage: nextPage, hasMorePages: true)),
-                                    itemStates: itemsStackState.itemStates)
+            itemsStackState.rootState.pageInfo = PageInfo(currentPage: nextPage, hasMorePages: itemsStackState.rootState.pageInfo.hasMorePages)
         } catch {
             // Handle errors without incrementing currentPage.
         }
@@ -66,7 +66,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
 
     @MainActor
     func reload() async {
-        itemsStackState.rootState = .loading([], pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true))
+        itemsStackState.rootState = ItemListState(loadState: .loading, items: [], pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true))
         itemsViewStateSubject.send(ItemsViewState(containerState: .content, itemsStackState: itemsStackState))
         try? await load(pageNumber: Constants.initialPage)
     }
@@ -92,14 +92,23 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
             throw PointOfSaleItemsControllerError.cannotFetchChildrenForNonParentItem
         }
         let newItems = try await variationProvider.providePointOfSaleItems(for: parentProduct, pageNumber: pageNumber)
-        let existingItems = itemsStackState.itemStates[parent]?.items ?? []
+        let existingItemState = itemsStackState.itemStates[parent]
+        let existingItems = existingItemState?.items ?? []
 
         let uniqueNewItems = newItems.filter { newItem in
             !existingItems.contains(newItem)
         }
 
-        itemsStackState.itemStates[parent] = .loaded(existingItems + uniqueNewItems,
-                                                     pageInfo: .init(currentPage: pageNumber, hasMorePages: true))
+        if var existingItemState {
+            existingItemState.loadState = .loaded
+            existingItemState.items = existingItems + uniqueNewItems
+            itemsStackState.itemStates[parent] = existingItemState
+        } else {
+            let newItemState = ItemListState(loadState: .loaded,
+                                             items: uniqueNewItems,
+                                             pageInfo: .init(currentPage: pageNumber, hasMorePages: true))
+            itemsStackState.itemStates[parent] = newItemState
+        }
 }
 
     @MainActor
@@ -111,19 +120,22 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
             !existingItems.contains(newItem)
         }
 
-        itemsStackState.rootState = .loaded(existingItems + uniqueNewItems,
-                                            pageInfo: .init(currentPage: pageNumber, hasMorePages: true))
+        itemsStackState.rootState.loadState = .loaded
+        itemsStackState.rootState.items = existingItems + uniqueNewItems
     }
 
     private func updateItemViewStateAfterLoadAttempt(parent: POSItem? = nil, mightHaveMorePages: Bool = true) {
-        if !mightHaveMorePages {
-            if let parent {
-                if let currentState = itemsStackState.itemStates[parent] {
-                    itemsStackState.itemStates[parent] = .loaded(currentState.items, pageInfo: .init(currentPage: currentState.pageInfo.currentPage, hasMorePages: false))
-                }
-            } else {
-                itemsStackState.rootState = .loaded(itemsStackState.rootState.items, pageInfo: .init(currentPage: itemsStackState.rootState.pageInfo.currentPage, hasMorePages: false))
+        if let parent {
+            if let currentState = itemsStackState.itemStates[parent] {
+                let newState = ItemListState(loadState: currentState.loadState,
+                                             items: currentState.items,
+                                             pageInfo: PageInfo(currentPage: currentState.pageInfo.currentPage,
+                                                                hasMorePages: mightHaveMorePages))
+                itemsStackState.itemStates[parent] = newState
             }
+        } else {
+            itemsStackState.rootState.pageInfo = PageInfo(currentPage: itemsStackState.rootState.pageInfo.currentPage,
+                                                          hasMorePages: mightHaveMorePages)
         }
         if itemsStackState.rootState.items.isEmpty {
             itemsViewStateSubject.send(.init(containerState: .empty, itemsStackState: itemsStackState))
@@ -140,7 +152,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
                 try await load(pageNumber: Constants.initialPage, parent: parent)
             }
 
-            return .loading([], pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true))
+            return .init(loadState: .loading, items: [], pageInfo: .init(currentPage: Constants.initialPage, hasMorePages: true))
         }
     }
 
@@ -152,22 +164,4 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
 enum PointOfSaleItemsControllerError: Error {
     case cannotFetchChildrenForNonParentItem
     case noChildItemsFound
-}
-
-extension ItemListState {
-    var items: [POSItem] {
-        switch self {
-        case .loading(let items, _),
-                .loaded(let items, _):
-            return items
-        }
-    }
-
-    var pageInfo: PageInfo {
-        switch self {
-        case .loading(_, pageInfo: let pageInfo),
-                .loaded(_, pageInfo: let pageInfo):
-            return pageInfo
-        }
-    }
 }

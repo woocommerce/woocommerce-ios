@@ -1023,6 +1023,7 @@
     </entity>
     <entity name="WooShippingCarrierPredefinedOptions" representedClassName="WooShippingCarrierPredefinedOptions" syncable="YES" codeGenerationType="class">
         <attribute name="carrierID" attributeType="String" defaultValueString=""/>
+        <relationship name="packagesResponse" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WooShippingPackagesResponse" inverseName="allPredefinedOptions" inverseEntity="WooShippingPackagesResponse"/>
         <relationship name="predefinedOptions" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="WooShippingPredefinedOption" inverseName="carrier" inverseEntity="WooShippingPredefinedOption"/>
     </entity>
     <entity name="WooShippingCustomPackage" representedClassName="WooShippingCustomPackage" syncable="YES" codeGenerationType="class">
@@ -1031,6 +1032,13 @@
         <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
         <attribute name="rawType" attributeType="String" defaultValueString=""/>
+        <relationship name="packagesResponse" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WooShippingPackagesResponse" inverseName="customPackages" inverseEntity="WooShippingPackagesResponse"/>
+    </entity>
+    <entity name="WooShippingPackagesResponse" representedClassName="WooShippingPackagesResponse" syncable="YES" codeGenerationType="class">
+        <attribute name="siteID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="allPredefinedOptions" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="WooShippingCarrierPredefinedOptions" inverseName="packagesResponse" inverseEntity="WooShippingCarrierPredefinedOptions"/>
+        <relationship name="customPackages" toMany="YES" deletionRule="Cascade" destinationEntity="WooShippingCustomPackage" inverseName="packagesResponse" inverseEntity="WooShippingCustomPackage"/>
+        <relationship name="savedPredefinedPackages" toMany="YES" deletionRule="Cascade" destinationEntity="WooShippingSavedPredefinedPackage" inverseName="packagesResponse" inverseEntity="WooShippingSavedPredefinedPackage"/>
     </entity>
     <entity name="WooShippingPredefinedOption" representedClassName="WooShippingPredefinedOption" syncable="YES" codeGenerationType="class">
         <attribute name="providerID" attributeType="String" defaultValueString=""/>
@@ -1052,5 +1060,6 @@
         <attribute name="groupTitle" attributeType="String" defaultValueString=""/>
         <attribute name="providerID" attributeType="String" defaultValueString=""/>
         <relationship name="package" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WooShippingPredefinedPackage" inverseName="savedPredefinedPackage" inverseEntity="WooShippingPredefinedPackage"/>
+        <relationship name="packagesResponse" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WooShippingPackagesResponse" inverseName="savedPredefinedPackages" inverseEntity="WooShippingPackagesResponse"/>
     </entity>
 </model>

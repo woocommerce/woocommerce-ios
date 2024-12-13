@@ -120,6 +120,9 @@ extension Color {
         return .posGray
     }
 
+    static var posBackgroundButtonDisabled: Color {
+        return .init(red: 195.0 / 255.0, green: 196.0 / 255.0, blue: 199.0 / 255.0)
+    }
 }
 
 // MARK: - Non-adaptive colors

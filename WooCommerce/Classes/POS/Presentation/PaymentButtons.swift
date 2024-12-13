@@ -12,9 +12,9 @@ struct PaymentsActionButtons: View {
     var body: some View {
         ZStack {
             VStack {
+                newOrderButton
                 sendReceiptButton
                     .renderedIf(shouldShowSendReceiptButton)
-                newOrderButton
             }
         }
     }
@@ -56,7 +56,7 @@ private extension PaymentsActionButtons {
         })
         .padding(Constants.buttonPadding)
         .foregroundColor(Color.posPrimaryTextInverted)
-        .background(Color.posOverlayFillInverted)
+        .background(Color.posPrimaryButtonBackground)
         .cornerRadius(Constants.buttonCornerRadius)
     }
 }
@@ -71,12 +71,12 @@ private extension PaymentsActionButtons {
 
     enum Localization {
         static let newOrder = NSLocalizedString(
-            "pos.totalsView.newOrder",
+            "pos.totalsView.button.newOrder",
             value: "New order",
             comment: "Button title for new order button")
         static let sendReceipt = NSLocalizedString(
-            "pos.totalsView.sendReceipt",
-            value: "Receipt",
+            "pos.totalsView.button.sendReceipt",
+            value: "Email receipt",
             comment: "Button title for the receipt button")
     }
 }

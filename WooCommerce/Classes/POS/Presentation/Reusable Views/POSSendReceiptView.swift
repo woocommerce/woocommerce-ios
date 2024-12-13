@@ -56,7 +56,7 @@ struct POSSendReceiptView: View {
                     if isLoading {
                         ProgressView()
                             .progressViewStyle(CircularProgressViewStyle())
-                            .tint(Color.posPrimaryButtonBackground)
+                            .tint(Color.posPrimaryText)
                     } else {
                         Text(Localization.buttonTitle)
                             .font(Constants.buttonFont)

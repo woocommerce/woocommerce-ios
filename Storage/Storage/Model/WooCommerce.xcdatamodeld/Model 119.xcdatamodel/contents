@@ -1025,6 +1025,13 @@
         <attribute name="carrierID" attributeType="String" defaultValueString=""/>
         <relationship name="predefinedOptions" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="WooShippingPredefinedOption" inverseName="carrier" inverseEntity="WooShippingPredefinedOption"/>
     </entity>
+    <entity name="WooShippingCustomPackage" representedClassName="WooShippingCustomPackage" syncable="YES" codeGenerationType="class">
+        <attribute name="boxWeight" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="dimensions" attributeType="String" defaultValueString=""/>
+        <attribute name="id" attributeType="String" defaultValueString=""/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+        <attribute name="rawType" attributeType="String" defaultValueString=""/>
+    </entity>
     <entity name="WooShippingPredefinedOption" representedClassName="WooShippingPredefinedOption" syncable="YES" codeGenerationType="class">
         <attribute name="providerID" attributeType="String" defaultValueString=""/>
         <attribute name="title" attributeType="String" defaultValueString=""/>

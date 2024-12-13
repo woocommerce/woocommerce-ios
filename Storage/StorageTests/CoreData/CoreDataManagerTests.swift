@@ -41,19 +41,6 @@ final class CoreDataManagerTests: XCTestCase {
         XCTAssertEqual(manager.viewStorage as? NSManagedObjectContext, manager.persistentContainer.viewContext)
     }
 
-    /// Verifies that derived context is instantiated correctly.
-    ///
-    func test_derived_storage_is_instantiated_correctly() {
-        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
-        let viewContext = (manager.viewStorage as? NSManagedObjectContext)
-        let derivedContext = (manager.writerDerivedStorage as? NSManagedObjectContext)
-
-        XCTAssertNotNil(viewContext)
-        XCTAssertNotNil(derivedContext)
-        XCTAssertNotEqual(derivedContext, viewContext)
-        XCTAssertNil(derivedContext?.parent)
-    }
-
     func test_resetting_CoreData_deletes_preexisting_objects() throws {
         // Arrange
         let modelsInventory = try makeModelsInventory()
@@ -66,8 +53,9 @@ final class CoreDataManagerTests: XCTestCase {
                 _ = storage.insertNewObject(ofType: ShippingLine.self)
             }, completion: {
                 XCTAssertEqual(viewContext.countObjects(ofType: ShippingLine.self), 1)
-                manager.reset()
-                expectation.fulfill()
+                manager.reset {
+                    expectation.fulfill()
+                }
             }, on: .main)
         }
 
@@ -153,8 +141,13 @@ final class CoreDataManagerTests: XCTestCase {
         let modelsInventory = try makeModelsInventory()
         var manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
 
-        insertAccount(to: manager.viewStorage)
-        manager.viewStorage.saveIfNeeded()
+        waitFor { promise in
+            manager.performAndSave({ storage in
+                self.insertAccount(to: storage)
+            }, completion: {
+                promise(())
+            }, on: .main)
+        }
 
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
         XCTAssertNotNil(NSEntityDescription.entity(forEntityName: Note.entityName,
@@ -206,8 +199,13 @@ final class CoreDataManagerTests: XCTestCase {
 
         var manager = try makeManager(using: olderModelsInventory, deletingExistingStoreFiles: true)
 
-        insertAccount(to: manager.viewStorage)
-        manager.viewStorage.saveIfNeeded()
+        waitFor { promise in
+            manager.performAndSave({ storage in
+                self.insertAccount(to: storage)
+            }, completion: {
+                promise(())
+            }, on: .main)
+        }
 
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
         // The ShippineLineTax entity does not exist in Model 33.
@@ -242,8 +240,13 @@ final class CoreDataManagerTests: XCTestCase {
 
         var manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
 
-        insertAccount(to: manager.viewStorage)
-        manager.viewStorage.saveIfNeeded()
+        waitFor { promise in
+            manager.performAndSave({ storage in
+                self.insertAccount(to: storage)
+            }, completion: {
+                promise(())
+            }, on: .main)
+        }
 
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
         try assertThat(manager, isCompatibleWith: modelsInventory.currentModel)

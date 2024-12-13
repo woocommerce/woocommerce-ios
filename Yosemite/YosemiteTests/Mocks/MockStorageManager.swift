@@ -17,7 +17,7 @@ public class MockStorageManager: StorageManagerType {
         return persistentContainer.viewContext
     }
 
-    /// Returns a shared derived storage instance dedicated for write operations.
+    /// Returns a shared derived storage instance dedicated for write operations in the background.
     ///
     public lazy var writerDerivedStorage: StorageType = {
         let childManagedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
@@ -56,7 +56,7 @@ public class MockStorageManager: StorageManagerType {
 
     /// This method effectively destroys all of the stored data, and generates a blank Persistent Store from scratch.
     ///
-    public func reset() {
+    public func reset(onCompletion: (() -> Void)?) {
         let storeCoordinator = persistentContainer.persistentStoreCoordinator
         let storeDescriptor = self.storeDescription
         let viewContext = persistentContainer.viewContext
@@ -73,6 +73,7 @@ public class MockStorageManager: StorageManagerType {
 
             storeCoordinator.addPersistentStore(with: storeDescriptor) { (_, error) in
                 guard let error = error else {
+                    onCompletion?()
                     return
                 }
 
@@ -158,5 +159,12 @@ extension MockStorageManager {
         }
 
         return url
+    }
+}
+
+extension StorageType {
+    @available(*, deprecated, message: "Use `MockStorageManager`'s `performAndSave` to handle write operations instead of writing directly.")
+    func saveIfNeeded() {
+        (self as! NSManagedObjectContext).saveIfNeeded()
     }
 }

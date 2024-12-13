@@ -87,7 +87,7 @@ public final class CoreDataManager: StorageManagerType {
     ///
     public let viewStorage: StorageType
 
-    /// Returns a storage instance dedicated for write operations.
+    /// Storage instance dedicated for write operations.
     ///
     private let writerStorage: StorageType
 
@@ -148,8 +148,6 @@ public final class CoreDataManager: StorageManagerType {
 
     /// This method effectively **deletes** all of the stored data from the persistent container,
     /// and generates a blank Persistent Store from scratch.
-    /// We don't use `NSManagedObjectContext.reset` here as it does not affect the persistent container,
-    /// only reverts the changes made on a particular context.
     ///
     public func reset(onCompletion: (() -> Void)?) {
         /// Delete all objects in the background context to avoid discrepancy with the view context

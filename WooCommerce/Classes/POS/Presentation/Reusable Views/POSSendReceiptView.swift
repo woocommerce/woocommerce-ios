@@ -20,9 +20,12 @@ struct POSSendReceiptView: View {
                 Button(action: {
                     isShowingSendReceiptView = false
                 }, label: {
-                    Image(systemName: "arrow.backward")
-                        .font(.headline)
-                        .foregroundColor(.primary)
+                    HStack {
+                        Image(systemName: "arrow.backward")
+                        Text(Localization.emailReceiptNavigationText)
+                    }
+                    .font(.headline)
+                    .foregroundColor(.primary)
                 })
                 Spacer()
             }
@@ -53,7 +56,7 @@ struct POSSendReceiptView: View {
                     if isLoading {
                         ProgressView()
                             .progressViewStyle(CircularProgressViewStyle())
-                            .tint(Color.posPrimaryTextInverted)
+                            .tint(Color.posPrimaryButtonBackground)
                     } else {
                         Text(Localization.buttonTitle)
                             .font(Constants.buttonFont)
@@ -64,7 +67,7 @@ struct POSSendReceiptView: View {
             .padding(Constants.buttonPadding)
             .frame(maxWidth: .infinity)
             .foregroundColor(Color.posPrimaryTextInverted)
-            .background(Color.posOverlayFillInverted)
+            .background(isEmailValid ? Color.posPrimaryButtonBackground : Color.posBackgroundButtonDisabled)
             .cornerRadius(Constants.buttonCornerRadius)
             .contentShape(Rectangle())
             .disabled(isLoading)
@@ -109,21 +112,25 @@ private extension POSSendReceiptView {
 private extension POSSendReceiptView {
     struct Localization {
         static let buttonTitle = NSLocalizedString(
-            "pointOfSale.sendreceipt.modal.button.title",
+            "pointOfSale.sendreceipt.button.title",
             value: "Send",
             comment: "Button title for sending a receipt")
         static let textfieldPlaceholder = NSLocalizedString(
-            "pointOfSale.sendreceipt.modal.textfield.placeholder",
+            "pointOfSale.sendreceipt.textfield.placeholder",
             value: "Type email",
             comment: "Placeholder for the view where an email address should be entered when sending receipts")
         static let sendReceiptErrorText = NSLocalizedString(
-            "pointOfSale.sendreceipt.modal.sendReceiptErrorText",
+            "pointOfSale.sendreceipt.sendReceiptErrorText",
             value: "Error trying to send this email. Try again.",
             comment: "Generic error message that is displayed when there's an error emailing a receipt.")
         static let emailValidationErrorText = NSLocalizedString(
-            "pointOfSale.sendreceipt.modal.emailValidationErrorText",
+            "pointOfSale.sendreceipt.emailValidationErrorText",
             value: "Please enter a valid email.",
             comment: "Error message that is displayed when an invalid email is used when emailing a receipt.")
+        static let emailReceiptNavigationText = NSLocalizedString(
+            "pointOfSale.sendreceipt.emailReceiptNavigationText",
+            value: "Email receipt",
+            comment: "Text that shows at the top of the receipts screen along the back button.")
     }
 }
 

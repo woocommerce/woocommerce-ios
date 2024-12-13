@@ -237,6 +237,23 @@ final class HubMenuViewModel: ObservableObject {
         analytics.track(.hubMenuOptionTapped, withProperties: eventProperties)
     }
 
+    func createGoogleAdsCampaignCoordinator(with navigationController: UINavigationController) -> GoogleAdsCampaignCoordinator {
+        GoogleAdsCampaignCoordinator(
+            siteID: siteID,
+            siteAdminURL: woocommerceAdminURL.absoluteString,
+            source: .moreMenu,
+            shouldStartCampaignCreation: !hasGoogleAdsCampaigns,
+            shouldAuthenticateAdminPage: shouldAuthenticateAdminPage,
+            navigationController: navigationController,
+            onCompletion: { [weak self] createdNewCampaign in
+                guard createdNewCampaign else {
+                    return
+                }
+                self?.refreshGoogleAdsCampaignCheck()
+            }
+        )
+    }
+
     deinit {
         NotificationCenter.default.removeObserver(self, name: .setUpTapToPayViewDidAppear, object: nil)
     }

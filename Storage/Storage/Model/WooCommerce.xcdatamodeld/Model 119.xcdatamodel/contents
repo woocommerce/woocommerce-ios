@@ -1039,5 +1039,11 @@
         <attribute name="isLetter" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
         <relationship name="predefinedOption" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WooShippingPredefinedOption" inverseName="predefinedPackages" inverseEntity="WooShippingPredefinedOption"/>
+        <relationship name="savedPredefinedPackage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WooShippingSavedPredefinedPackage" inverseName="package" inverseEntity="WooShippingSavedPredefinedPackage"/>
+    </entity>
+    <entity name="WooShippingSavedPredefinedPackage" representedClassName="WooShippingSavedPredefinedPackage" syncable="YES" codeGenerationType="class">
+        <attribute name="groupTitle" attributeType="String" defaultValueString=""/>
+        <attribute name="providerID" attributeType="String" defaultValueString=""/>
+        <relationship name="package" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WooShippingPredefinedPackage" inverseName="savedPredefinedPackage" inverseEntity="WooShippingPredefinedPackage"/>
     </entity>
 </model>

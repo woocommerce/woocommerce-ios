@@ -178,7 +178,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
             _ = withAnimation(starAnimation) {
                 starredCarriersPackages.remove(packageID)
             }
-            // TODO: use delete action when it is ready
+            // TODO: use delete action when it is ready (https://github.com/woocommerce/woocommerce-ios/issues/14679)
         }
         else {
             _ = withAnimation(starAnimation) {
@@ -203,7 +203,6 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     // delete saved packages
     @MainActor
     func removeSavedPackage(_ packageToRemove: WooShippingPackageDataRepresentable) {
-        // TODO: rewrite to directly use actions
         // delete the package locally and on backend
         customSavedPackages.removeAll { package in package.id == packageToRemove.id }
         predefinedSavedPackages.removeAll { package in package.id == packageToRemove.id }
@@ -216,8 +215,8 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         let deleteAction = WooShippingAction.deletePackage(siteID: siteID, packageID: packageToRemove.id) { result in
             // TODO handle/parse te response
             switch result {
-            case .success(let packagesResult):
-                break
+            case .success(let response):
+                self.transformSavedPackages(response)
             case .failure:
                 break
             }

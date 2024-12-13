@@ -2,7 +2,7 @@
 ---
 
 agents:
-  queue: mac
+  queue: testing
   hostname: MV-MKE-ARM64-002
 
 env:

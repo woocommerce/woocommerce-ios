@@ -73,6 +73,7 @@ public class MockStorageManager: StorageManagerType {
 
             storeCoordinator.addPersistentStore(with: storeDescriptor) { (_, error) in
                 guard let error = error else {
+                    onCompletion?()
                     return
                 }
 

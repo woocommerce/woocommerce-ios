@@ -18,14 +18,23 @@ struct ItemListView: View {
                     // a specific view within the ItemListView to handle them
                     EmptyView()
                 case .content:
-                    ItemList(rootItem: nil)
-                    .refreshable {
-                        await posModel.reload()
-                    }
+                    ItemList(rootItem: nil,
+                             state: posModel.itemsViewState.itemsStackState.rootState,
+                             loadNextItems: {
+                        await posModel.loadNextItems(rootItem: nil)
+                    }, reload: {
+                        await posModel.reload(rootItem: nil)
+                    })
                 }
             }
             .navigationDestination(for: POSItem.self, destination: { item in
-                ItemList(rootItem: item)
+                ItemList(rootItem: item,
+                         state: posModel.childState(for: item),
+                         loadNextItems: {
+                    await posModel.loadNextItems(rootItem: item)
+                }, reload: {
+                    await posModel.reload(rootItem: item)
+                })
                 .background(Color.posPrimaryBackground)
                 .toolbar(.hidden, for: .navigationBar)
                 .transition(.opacity)
@@ -278,9 +287,10 @@ struct ItemList: View {
     @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
     private var isHeaderBannerDismissed: Bool = false
 
-    var rootItem: POSItem?
-//
-//    @State var state: ItemListState = ItemListState(loadState: .loading, items: [], pageInfo: .init(currentPage: 1, hasMorePages: true))
+    let rootItem: POSItem?
+    let state: ItemListState
+    let loadNextItems: () async -> Void
+    let reload: () async -> Void
 
     var body: some View {
         ScrollView {
@@ -289,13 +299,8 @@ struct ItemList: View {
                     bannerCardView
                 }
 
-                if let rootItem {
-                    headerView(parentItem: rootItem)
-                    listRows(posModel.childState(for: rootItem).items)
-                } else {
-                    headerView(parentItem: nil)
-                    listRows(posModel.itemsViewState.itemsStackState.rootState.items)
-                }
+                headerView(parentItem: rootItem)
+                listRows(state.items)
             }
             .frame(maxWidth: .infinity)
             .padding(.bottom, floatingControlAreaSize.height)
@@ -303,13 +308,13 @@ struct ItemList: View {
             .background(GeometryReader { proxy in
                 Color.clear
                     .onChange(of: proxy.frame(in: .global).maxY) { maxY in
-                        if posModel.itemsViewState.itemsStackState.rootState.isLoading {
+                        if state.isLoading == true {
                             return
                         }
                         let threshold = Constants.viewHeight * Constants.scrollThresholdMultiplier
                         if maxY < threshold && maxY < lastScrollPosition {
-                            Task {
-                                await posModel.loadNextItems()
+                            Task {                                
+                                await loadNextItems()
                             }
                         }
                         lastScrollPosition = maxY
@@ -319,6 +324,9 @@ struct ItemList: View {
                 SimpleProductsOnlyInformation(isPresented: $showSimpleProductsModal)
             }
         }
+        .refreshable {
+            await reload()
+        }
     }
 
     @ViewBuilder
@@ -327,8 +335,7 @@ struct ItemList: View {
             ItemListRow(item: item)
         }
         GhostItemCardView()
-            .renderedIf(posModel.itemsViewState.itemsStackState.rootState.isLoading)
-
+            .renderedIf(state.isLoading)
     }
 }
 

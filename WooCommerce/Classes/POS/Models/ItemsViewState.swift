@@ -39,7 +39,7 @@ struct ItemListState: Equatable, Hashable {
     var pageInfo: PageInfo
 
     var isLoading: Bool {
-        loadState == .loaded
+        loadState == .loading
     }
 
     enum LoadState: Equatable, Hashable {

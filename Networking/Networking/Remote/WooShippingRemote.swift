@@ -294,7 +294,6 @@ private extension WooShippingRemote {
         static let customs = "customs"
         static let paperSize = "paper_size"
         static let labelIDCSV = "label_id_csv"
-        static let id = "id"
     }
 }
 

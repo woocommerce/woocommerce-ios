@@ -268,9 +268,9 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
                 let zanzaInDerived = derivedStorage.loadObject(ofType: StorageAccount.self, with: zanza.objectID)!
                 zanzaInDerived.username = "Zanza Lockman"
 
-                derivedStorage.saveIfNeeded()
-
-                exp.fulfill()
+                self.storageManager.saveDerivedType(derivedStorage: derivedStorage, {
+                    exp.fulfill()
+                })
             }
         }
 

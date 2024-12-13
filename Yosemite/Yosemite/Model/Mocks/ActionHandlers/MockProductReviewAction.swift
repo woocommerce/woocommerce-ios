@@ -23,7 +23,6 @@ struct MockProductReviewActionHandler: MockActionHandler {
         // Deletes previous product reviews before saving new ones to avoid duplicate reviews after multiple runs.
         let storage = storageManager.viewStorage
         storage.deleteAllObjects(ofType: StorageProductReview.self)
-        storage.saveIfNeeded()
 
         save(mocks: reviews, as: StorageProductReview.self) { error in
             if let error = error {

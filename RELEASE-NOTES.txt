@@ -34,6 +34,7 @@
 - [Internal] Updated transformable attribute types from Swift Array to NSArray [https://github.com/woocommerce/woocommerce-ios/pull/14611]
 - [*] Order Creation: fixed layout of custom amount type selection drawer. [https://github.com/woocommerce/woocommerce-ios/pull/14619]
 - [*] Widgets: Show revenue compact amount in widgets, instead of $123,456,789 (and being truncated) we show $123,5m. [https://github.com/woocommerce/woocommerce-ios/pull/14634]
+- [*] Google Ads: Fix issue displaying campaign list for stores with existing campaigns from the hub menu entry point [https://github.com/woocommerce/woocommerce-ios/pull/14661]
 
 21.2
 -----

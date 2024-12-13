@@ -126,13 +126,13 @@ private extension POSSendReceiptView {
     }
 }
 
-//#if DEBUG
-//#Preview {
-//    let posModel = PointOfSaleAggregateModel(
-//        itemsController: PointOfSalePreviewItemsController(),
-//        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-//        orderController: PointOfSalePreviewOrderController())
-//    POSSendReceiptView(orderController: posModel.orderController, isShowingSendReceiptView: .constant(true))
-//        .environmentObject(posModel)
-//}
-//#endif
+#if DEBUG
+#Preview {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
+    POSSendReceiptView(isShowingSendReceiptView: .constant(true))
+        .environmentObject(posModel)
+}
+#endif

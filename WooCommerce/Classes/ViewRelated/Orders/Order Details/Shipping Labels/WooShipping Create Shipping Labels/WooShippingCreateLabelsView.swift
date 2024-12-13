@@ -78,7 +78,9 @@ struct WooShippingCreateLabelsView: View {
                                             .font(.subheadline)
                                             .tint(Color(.primary))
                                     }
-                                    purchaseButton
+                                    if viewModel.selectedPackage != nil {
+                                        purchaseButton
+                                    }
                                 }
                             }
                             else {

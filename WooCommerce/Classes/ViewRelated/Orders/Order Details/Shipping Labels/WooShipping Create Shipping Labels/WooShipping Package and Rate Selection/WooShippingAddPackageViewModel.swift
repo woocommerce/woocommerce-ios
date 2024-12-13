@@ -213,7 +213,6 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         }
 
         let deleteAction = WooShippingAction.deletePackage(siteID: siteID, packageID: packageToRemove.id) { result in
-            // TODO handle/parse te response
             switch result {
             case .success(let response):
                 self.transformSavedPackages(response)

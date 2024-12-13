@@ -24,11 +24,13 @@ struct POSSendReceiptView: View {
                         Image(systemName: "arrow.backward")
                         Text(Localization.emailReceiptNavigationText)
                     }
-                    .font(.headline)
+                    .font(.title)
+                    .bold()
                     .foregroundColor(.primary)
                 })
                 Spacer()
             }
+            .buttonStyle(.plain)
             .padding()
 
             TextField(Localization.textfieldPlaceholder, text: $textFieldInput)

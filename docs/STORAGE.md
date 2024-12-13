@@ -25,6 +25,8 @@ Notes:
 - For thread safety, do not send any `NSManagedObject` instance to the completion closure of `performAndSave`. There's an assertion to ensure at debug runtime this does not happen.
 - For performance reasons, please be mindful with fetch requests. Avoid making multiple fetch requests in for loops. This can be replaced by a single fetch request for a list of objects instead.
 - For attributes of type Transformable, if the transformer is `NSSecureUnarchiveFromData`, make sure to input a `class` type in the Custom Class field in the Core Data model. Using a Swift type (e.g. [Int64] or [String]) would cause an error logged in Xcode 16.
+- We have a launch argument `-enforce-core-data-write-in-background` enabled by default in the WooCommerce scheme. This will intentionally crash the app in the debug mode when one attempts to perform write operations in the main thread with the view context.
+- We also enable `-com.apple.CoreData.ConcurrencyDebug` launch argument by default to get notified when there's a concurrency issue with our Core Data stack. Please keep an eye out for errors from Core Data in the console log and report any problems when you see them.
 
 ## File storage
 The Storage module also exposes a protocol, called [`FileStorage`](../Storage/Storage/Protocols/FileStorage.swift) to abstract saving and reading data to and from local storage. 

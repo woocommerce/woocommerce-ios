@@ -356,6 +356,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             }
         } catch {
             DDLogError("⛔️ Error fetching Blaze AI suggestions: \(error)")
+            analytics.track(event: .Blaze.CreationForm.suggestionLoadingFailed(error: error))
             self.error = .failedToLoadAISuggestions
         }
 

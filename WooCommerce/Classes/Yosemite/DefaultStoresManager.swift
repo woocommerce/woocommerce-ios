@@ -250,8 +250,8 @@ class DefaultStoresManager: StoresManager {
             dispatch(resetAction)
         }
 
-        state = DeauthenticatedState()
         sessionManager.reset()
+        state = DeauthenticatedState()
 
         ServiceLocator.analytics.refreshUserData()
         ZendeskProvider.shared.reset()

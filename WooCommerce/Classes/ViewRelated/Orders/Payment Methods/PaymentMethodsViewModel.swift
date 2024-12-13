@@ -268,8 +268,8 @@ final class PaymentMethodsViewModel: ObservableObject {
                 // Update order in case its status and/or other details are updated after a failed in-person payment
                 self?.updateOrderAsynchronously()
 
-                switch error {
-                case let error as CardPaymentErrorProtocol where error.requiresFallbackPaymentMethod:
+                switch (discoveryMethod, error) {
+                case (.localMobile, let error as CardPaymentErrorProtocol) where error.requiresFallbackPaymentMethod:
                     // The flow remains on screen to choose other payment methods.
                     break
                 default:

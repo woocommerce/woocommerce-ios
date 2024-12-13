@@ -88,7 +88,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     private let storageManager: StorageManagerType
     private let stores: StoresManager
 
-    private let locationService: LocationService
+    private let locationService: LocationServiceProtocol
 
     private var state: ControllerState {
         didSet {
@@ -143,7 +143,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         configuration: CardPresentPaymentsConfiguration,
         analyticsTracker: CardReaderConnectionAnalyticsTracker,
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-        locationService: LocationService = LocationService(),
+        locationService: LocationServiceProtocol = LocationService(),
         allowTermsOfServiceAcceptance: Bool = true
     ) {
         siteID = forSiteID

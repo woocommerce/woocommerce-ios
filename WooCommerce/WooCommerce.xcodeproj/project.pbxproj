@@ -65,6 +65,7 @@
 		01BD774A2C58D29700147191 /* PointOfSaleCardPresentPaymentDisconnectedMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BD77492C58D29700147191 /* PointOfSaleCardPresentPaymentDisconnectedMessageView.swift */; };
 		01BD774C2C58D2BE00147191 /* PointOfSaleCardPresentPaymentDisconnectedMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BD774B2C58D2BE00147191 /* PointOfSaleCardPresentPaymentDisconnectedMessageViewModel.swift */; };
 		01D082402C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D0823F2C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift */; };
+		01F067ED2D0C5D59001C5805 /* MockLocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F067EC2D0C5D56001C5805 /* MockLocationService.swift */; };
 		01F42C162CE34AB8003D0A5A /* CardPresentModalBuiltInSuccessEmailSent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F42C152CE34AB3003D0A5A /* CardPresentModalBuiltInSuccessEmailSent.swift */; };
 		01F42C182CE34AD2003D0A5A /* CardPresentModalSuccessEmailSent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F42C172CE34AD1003D0A5A /* CardPresentModalSuccessEmailSent.swift */; };
 		01F579952C7DE709008BCA28 /* PointOfSaleCardPresentPaymentCaptureErrorMessageViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F579942C7DE709008BCA28 /* PointOfSaleCardPresentPaymentCaptureErrorMessageViewModelTests.swift */; };
@@ -3201,6 +3202,7 @@
 		01BD77492C58D29700147191 /* PointOfSaleCardPresentPaymentDisconnectedMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentDisconnectedMessageView.swift; sourceTree = "<group>"; };
 		01BD774B2C58D2BE00147191 /* PointOfSaleCardPresentPaymentDisconnectedMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentDisconnectedMessageViewModel.swift; sourceTree = "<group>"; };
 		01D0823F2C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSBackgroundAppearanceKey.swift; sourceTree = "<group>"; };
+		01F067EC2D0C5D56001C5805 /* MockLocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLocationService.swift; sourceTree = "<group>"; };
 		01F42C152CE34AB3003D0A5A /* CardPresentModalBuiltInSuccessEmailSent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalBuiltInSuccessEmailSent.swift; sourceTree = "<group>"; };
 		01F42C172CE34AD1003D0A5A /* CardPresentModalSuccessEmailSent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalSuccessEmailSent.swift; sourceTree = "<group>"; };
 		01F579942C7DE709008BCA28 /* PointOfSaleCardPresentPaymentCaptureErrorMessageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentCaptureErrorMessageViewModelTests.swift; sourceTree = "<group>"; };
@@ -9611,6 +9613,7 @@
 		746791642108D853007CF1DC /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
+				01F067EC2D0C5D56001C5805 /* MockLocationService.swift */,
 				0182C8BD2CE3B10E00474355 /* MockReceiptEligibilityUseCase.swift */,
 				EEA3C2202CA5440A000E82EC /* MockFavoriteProductsUseCase.swift */,
 				D85136CC231E15B700DD0539 /* MockReviews.swift */,
@@ -17105,6 +17108,7 @@
 				DEDA8DC02B19CDC50076BF0F /* ThemeSettingViewModelTests.swift in Sources */,
 				CE7CEC2D2C2EF0E50066FD53 /* GoogleAdsCampaignReportCardViewModelTests.swift in Sources */,
 				03EF250028C0E9EE006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModelTests.swift in Sources */,
+				01F067ED2D0C5D59001C5805 /* MockLocationService.swift in Sources */,
 				86B3E2572C6B249C0002420B /* HelpAndSupportViewModelTests.swift in Sources */,
 				DE2FE5832924DA2F0018040A /* JetpackSetupRequiredViewModelTests.swift in Sources */,
 				AEB4DB99290AE8F300AE4340 /* MockCookieJar.swift in Sources */,

@@ -36,6 +36,7 @@
 - [*] Order Creation: fixed layout of custom amount type selection drawer. [https://github.com/woocommerce/woocommerce-ios/pull/14619]
 - [*] Payments: Improved the Tap to Pay connection process by introducing a location permission pre-alert and earlier location request, ensuring greater clarity for users. [https://github.com/woocommerce/woocommerce-ios/pull/14660]
 - [*] Widgets: Show revenue compact amount in widgets, instead of $123,456,789 (and being truncated) we show $123,5m. [https://github.com/woocommerce/woocommerce-ios/pull/14634]
+- [*] Payments: Improved the card reader connection process by introducing a location permission pre-alert and earlier location request, ensuring greater clarity for users. [https://github.com/woocommerce/woocommerce-ios/pull/14672]
 
 21.2
 -----

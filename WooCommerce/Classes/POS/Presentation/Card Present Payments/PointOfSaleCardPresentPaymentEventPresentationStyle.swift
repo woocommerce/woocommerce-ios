@@ -242,7 +242,15 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
                 viewModel: PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel()))
 
             /// Not-yet supported types
-        case .selectSearchType, .locationRequestPreAlert, .locationRequired:
+        case .selectSearchType:
+            return nil
+            /// Immediately request location permission until POS view is created
+        case .locationRequestPreAlert(let requestPermission):
+            requestPermission()
+            return nil
+            /// Skip location required step and rely on error during the payment process until POS view is created
+        case .locationRequired(_, let skip):
+            skip()
             return nil
         }
     }

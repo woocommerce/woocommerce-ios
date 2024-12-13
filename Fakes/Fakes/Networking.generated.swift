@@ -2812,7 +2812,6 @@ extension Networking.WooShippingPackagesResponse {
     public static func fake() -> Networking.WooShippingPackagesResponse {
         .init(
             siteID: .fake(),
-            storeOptions: .fake(),
             customPackages: .fake(),
             savedPredefinedPackages: .fake(),
             allPredefinedOptions: .fake()

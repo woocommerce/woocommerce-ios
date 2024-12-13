@@ -4120,20 +4120,17 @@ extension Networking.WooShippingPackagePurchase {
 extension Networking.WooShippingPackagesResponse {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
-        storeOptions: CopiableProp<ShippingLabelStoreOptions> = .copy,
         customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
         savedPredefinedPackages: CopiableProp<[WooShippingSavedPredefinedPackage]> = .copy,
         allPredefinedOptions: CopiableProp<[WooShippingCarrierPredefinedOptions]> = .copy
     ) -> Networking.WooShippingPackagesResponse {
         let siteID = siteID ?? self.siteID
-        let storeOptions = storeOptions ?? self.storeOptions
         let customPackages = customPackages ?? self.customPackages
         let savedPredefinedPackages = savedPredefinedPackages ?? self.savedPredefinedPackages
         let allPredefinedOptions = allPredefinedOptions ?? self.allPredefinedOptions
 
         return Networking.WooShippingPackagesResponse(
             siteID: siteID,
-            storeOptions: storeOptions,
             customPackages: customPackages,
             savedPredefinedPackages: savedPredefinedPackages,
             allPredefinedOptions: allPredefinedOptions

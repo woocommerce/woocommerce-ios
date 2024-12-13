@@ -34,7 +34,7 @@ final class HubMenuViewModelTests: XCTestCase {
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores,
                                          blazeEligibilityChecker: blazeEligibilityChecker)
-        waitUntil {
+        waitUntil(timeout: 2) {
             // The first check is triggered by `updateMenuItemEligibility`
             blazeEligibilityChecker.siteEligibilityCheckCount == 1
         }
@@ -43,7 +43,7 @@ final class HubMenuViewModelTests: XCTestCase {
         viewModel.viewDidAppear()
 
         // Then
-        waitUntil {
+        waitUntil(timeout: 2) {
             blazeEligibilityChecker.siteEligibilityCheckCount == 2
         }
 
@@ -52,8 +52,19 @@ final class HubMenuViewModelTests: XCTestCase {
         viewModel.viewDidAppear()
 
         // Then
-        waitUntil {
+        waitUntil(timeout: 2) {
             blazeEligibilityChecker.siteEligibilityCheckCount == 3
+        }
+
+        // When
+        viewModel.viewDidAppear()
+
+        // Then
+        waitForExpectation(timeout: 2) { expectation in
+            expectation.isInverted = true
+            if blazeEligibilityChecker.siteEligibilityCheckCount == 4 {
+                expectation.fulfill() // This should not happen
+            }
         }
     }
 

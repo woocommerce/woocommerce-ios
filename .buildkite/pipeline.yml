@@ -3,7 +3,6 @@
 
 agents:
   queue: testing
-  hostname: MV-MKE-ARM64-002
 
 env:
   IMAGE_ID: $IMAGE_ID

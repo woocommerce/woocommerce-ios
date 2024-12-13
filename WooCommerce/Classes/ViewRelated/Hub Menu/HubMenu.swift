@@ -156,6 +156,8 @@ private extension HubMenu {
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
             case .pointOfSales:
                 if let cardPresentPaymentService = viewModel.cardPresentPaymentService,
+                   let receiptService = POSReceiptService(siteID: viewModel.siteID,
+                                                          credentials: viewModel.credentials),
                    let orderService = POSOrderService(siteID: viewModel.siteID,
                                                       credentials: viewModel.credentials) {
                     PointOfSaleEntryPointView(
@@ -164,7 +166,8 @@ private extension HubMenu {
                             viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
                         },
                         cardPresentPaymentService: cardPresentPaymentService,
-                        orderController: PointOfSaleOrderController(orderService: orderService))
+                        orderController: PointOfSaleOrderController(orderService: orderService,
+                                                                    receiptService: receiptService))
                 } else {
                     // TODO: When we have a singleton for the card payment service, this should not be required.
                     Text("Error creating card payment service")

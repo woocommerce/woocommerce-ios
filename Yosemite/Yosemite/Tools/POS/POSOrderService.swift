@@ -85,17 +85,45 @@ public protocol POSOrderServiceProtocol {
     ///   - order: Optional latest remotely synced order. Nil when syncing order for the first time.
     /// - Returns: Order from the remote sync.
     func syncOrder(cart: [POSCartItem], order: Order?) async throws -> Order
+    func updatePOSOrder(order: Order, recipientEmail: String) async throws
+}
+
+public protocol POSReceiptServiceProtocol {
     func sendReceipt(order: Order, recipientEmail: String) async throws
 }
 
-public final class POSOrderService: POSOrderServiceProtocol {
-    // MARK: - Properties
-
+public final class POSReceiptService: POSReceiptServiceProtocol {
     private let siteID: Int64
-    private let ordersRemote: POSOrdersRemoteProtocol
     private let receiptsRemote: POSReceiptsRemoteProtocol
 
-    // MARK: - Initialization
+    public convenience init?(siteID: Int64, credentials: Credentials?) {
+        guard let credentials else {
+            DDLogError("⛔️ Could not create POSReceiptService due to not finding credentials")
+            return nil
+        }
+        let network = AlamofireNetwork(credentials: credentials)
+        self.init(siteID: siteID,
+                  receiptsRemote: ReceiptRemote(network: network))
+    }
+
+    public init(siteID: Int64,
+                receiptsRemote: POSReceiptsRemoteProtocol) {
+        self.siteID = siteID
+        self.receiptsRemote = receiptsRemote
+    }
+
+    public func sendReceipt(order: Yosemite.Order, recipientEmail: String) async throws {
+        do {
+            try await receiptsRemote.sendReceipt(siteID: siteID, orderID: order.orderID)
+        } catch {
+            throw POSReceiptServiceError.sendReceiptFailed
+        }
+    }
+}
+
+public final class POSOrderService: POSOrderServiceProtocol {
+    private let siteID: Int64
+    private let ordersRemote: POSOrdersRemoteProtocol
 
     public convenience init?(siteID: Int64, credentials: Credentials?) {
         guard let credentials else {
@@ -104,14 +132,13 @@ public final class POSOrderService: POSOrderServiceProtocol {
         }
         let network = AlamofireNetwork(credentials: credentials)
         self.init(siteID: siteID,
-                  ordersRemote: OrdersRemote(network: network),
-                  receiptsRemote: ReceiptRemote(network: network))
+                  ordersRemote: OrdersRemote(network: network))
     }
 
-    public init(siteID: Int64, ordersRemote: POSOrdersRemoteProtocol, receiptsRemote: POSReceiptsRemoteProtocol) {
+    public init(siteID: Int64,
+                ordersRemote: POSOrdersRemoteProtocol) {
         self.siteID = siteID
         self.ordersRemote = ordersRemote
-        self.receiptsRemote = receiptsRemote
     }
 
     // MARK: - Protocol conformance
@@ -128,7 +155,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
         return syncedOrder
     }
 
-    public func sendReceipt(order: Order, recipientEmail: String) async throws {
+    public func updatePOSOrder(order: Order, recipientEmail: String) async throws {
         guard order.billingAddress?.email == nil || order.billingAddress?.email == "" else {
             throw POSOrderServiceError.emailAlreadySet
         }
@@ -139,11 +166,6 @@ public final class POSOrderService: POSOrderServiceProtocol {
             let _ = try await ordersRemote.updatePOSOrder(siteID: siteID, order: updatedOrder, fields: [.billingAddress])
         } catch {
             throw POSOrderServiceError.updateOrderFailed
-        }
-        do {
-            try await receiptsRemote.sendReceipt(siteID: siteID, orderID: order.orderID)
-        } catch {
-            throw POSOrderServiceError.sendReceiptFailed
         }
     }
 }
@@ -202,6 +224,11 @@ private extension POSOrderService {
     enum POSOrderServiceError: Error {
         case emailAlreadySet
         case updateOrderFailed
+    }
+}
+
+private extension POSReceiptService {
+    enum POSReceiptServiceError: Error {
         case sendReceiptFailed
     }
 }

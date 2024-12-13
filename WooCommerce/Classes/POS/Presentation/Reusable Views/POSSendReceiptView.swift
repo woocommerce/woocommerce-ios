@@ -1,27 +1,5 @@
 import SwiftUI
 import class WordPressShared.EmailFormatValidator
-import Yosemite
-
-final class ReceiptService {
-    private let orderService: POSOrderServiceProtocol
-
-    init?() {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID,
-              let credentials = ServiceLocator.stores.sessionManager.defaultCredentials,
-              let orderService = POSOrderService(siteID: siteID, credentials: credentials) else {
-            return nil
-        }
-
-        self.orderService = orderService
-    }
-
-    func sendReceipt(for order: Order?, to emailAddress: String) async throws {
-        guard let order else {
-            throw NSError(domain: "", code: 0)
-        }
-        try await orderService.sendReceipt(order: order, recipientEmail: emailAddress)
-    }
-}
 
 struct POSSendReceiptView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
@@ -31,15 +9,9 @@ struct POSSendReceiptView: View {
 
     @Binding private(set) var isShowingSendReceiptView: Bool
 
-    private let receiptService: ReceiptService? = ReceiptService()
-
     private var isEmailValid: Bool {
         EmailFormatValidator.validate(string: textFieldInput)
     }
-
-    init(isShowingSendReceiptView: Binding<Bool>) {
-            self._isShowingSendReceiptView = isShowingSendReceiptView
-        }
 
     var body: some View {
         VStack(alignment: .center, spacing: 20) {
@@ -114,7 +86,7 @@ struct POSSendReceiptView: View {
             isLoading = true
             do {
                 errorMessage = nil
-                try await receiptService?.sendReceipt(for: posModel.orderController.order, to: textFieldInput)
+                try await posModel.sendReceipt(to: textFieldInput)
                 isShowingSendReceiptView = false
             } catch {
                 errorMessage = Localization.sendReceiptErrorText

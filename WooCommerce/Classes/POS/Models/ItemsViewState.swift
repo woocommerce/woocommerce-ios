@@ -17,11 +17,11 @@ extension ContainerState: Hashable {
     public func hash(into hasher: inout Hasher) {
         switch self {
         case .empty:
-            hasher.combine(0)
+            hasher.combine("empty")
         case .initialLoading:
-            hasher.combine(1)
+            hasher.combine("initialLoading")
         case .content:
-            hasher.combine(2)
+            hasher.combine("content")
         case .error(let error):
             hasher.combine(error)
         }
@@ -39,12 +39,7 @@ struct ItemListState: Equatable, Hashable {
     var pageInfo: PageInfo
 
     var isLoading: Bool {
-        switch loadState {
-        case .loading:
-            return true
-        default:
-            return false
-        }
+        loadState == .loaded
     }
 
     enum LoadState: Equatable, Hashable {

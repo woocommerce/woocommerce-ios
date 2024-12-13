@@ -5,6 +5,8 @@ import Codegen
 ///
 public struct WooShippingPackagesResponse: Equatable, GeneratedFakeable, GeneratedCopiable {
 
+    public let siteID: Int64
+
     /// Store options
     public let storeOptions: ShippingLabelStoreOptions
 
@@ -17,10 +19,12 @@ public struct WooShippingPackagesResponse: Equatable, GeneratedFakeable, Generat
     /// All predefined options
     public let allPredefinedOptions: [WooShippingCarrierPredefinedOptions]
 
-    public init(storeOptions: ShippingLabelStoreOptions,
+    public init(siteID: Int64,
+                storeOptions: ShippingLabelStoreOptions,
                 customPackages: [WooShippingCustomPackage],
                 savedPredefinedPackages: [WooShippingSavedPredefinedPackage],
                 allPredefinedOptions: [WooShippingCarrierPredefinedOptions]) {
+        self.siteID = siteID
         self.storeOptions = storeOptions
         self.customPackages = customPackages
         self.savedPredefinedPackages = savedPredefinedPackages
@@ -31,6 +35,10 @@ public struct WooShippingPackagesResponse: Equatable, GeneratedFakeable, Generat
 // MARK: Decodable
 extension WooShippingPackagesResponse: Decodable {
     public init(from decoder: Decoder) throws {
+        guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
+            throw WooShippingPackagesDecodingError.missingSiteID
+        }
+
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let storeOptions = try container.decode(ShippingLabelStoreOptions.self, forKey: .storeOptions)
@@ -69,7 +77,8 @@ extension WooShippingPackagesResponse: Decodable {
         // since we get the carriers data as a dictionary (key is carrier id)
         allPredefinedOptions.sort { $0.carrierID < $1.carrierID }
 
-        self.init(storeOptions: storeOptions,
+        self.init(siteID: siteID,
+                  storeOptions: storeOptions,
                   customPackages: customPackages,
                   savedPredefinedPackages: allSavedPredefinedPackages,
                   allPredefinedOptions: allPredefinedOptions)
@@ -110,4 +119,11 @@ extension WooShippingPackagesResponse: Decodable {
         case predefined
         case saved
     }
+}
+
+
+// MARK: - Decoding Errors
+//
+enum WooShippingPackagesDecodingError: Error {
+    case missingSiteID
 }

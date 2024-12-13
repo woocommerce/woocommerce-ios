@@ -22,6 +22,42 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_viewDidAppear_triggers_blaze_eligibility_check_only_if_site_is_ineligible() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        // Setting site ID is required before setting `Site`.
+        stores.updateDefaultStore(storeID: sampleSiteID)
+        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
+
+        let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: false)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         stores: stores,
+                                         blazeEligibilityChecker: blazeEligibilityChecker)
+        waitUntil {
+            // The first check is triggered by `updateMenuItemEligibility`
+            blazeEligibilityChecker.siteEligibilityCheckCount == 1
+        }
+
+        // When
+        viewModel.viewDidAppear()
+
+        // Then
+        waitUntil {
+            blazeEligibilityChecker.siteEligibilityCheckCount == 2
+        }
+
+        // When
+        blazeEligibilityChecker.updateSiteEligibility(true)
+        viewModel.viewDidAppear()
+
+        // Then
+        waitUntil {
+            blazeEligibilityChecker.siteEligibilityCheckCount == 3
+        }
+    }
+
+    @MainActor
     func test_menuElements_do_not_include_inbox_when_feature_flag_is_off() {
         // Given
         let featureFlagService = MockFeatureFlagService(isInboxOn: false)
@@ -493,7 +529,7 @@ final class HubMenuViewModelTests: XCTestCase {
         let generalAppSettings = try mockGeneralAppSettingsStorage(isInAppPurchaseEnabled: true)
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let googleAdsEligibilityChecker = MockGoogleAdsEligibilityChecker(isEligible: true)
-        var inboxEligibilityChecker = MockInboxEligibilityChecker()
+        let inboxEligibilityChecker = MockInboxEligibilityChecker()
         inboxEligibilityChecker.isEligible = true
 
         let stores = MockStoresManager(sessionManager: .makeForTesting())

@@ -56,7 +56,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     private let itemsController: PointOfSaleItemsControllerProtocol
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
-    private(set) var orderController: PointOfSaleOrderControllerProtocol
+    private let orderController: PointOfSaleOrderControllerProtocol
     private let analytics: Analytics
 
     private var startPaymentOnCardReaderConnection: AnyCancellable?

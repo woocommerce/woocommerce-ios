@@ -2317,6 +2317,17 @@ extension WooAnalyticsEvent {
         static func learnMoreTapped(source: LearnMoreLinkSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .inPersonPaymentsLearnMoreTapped, properties: ["source": source.trackingValue])
         }
+
+        static func tapToPayTermsOfServiceAccepted(gatewayID: String?,
+                                                   countryCode: CountryCode,
+                                                   siteID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .tapToPayTermsOfServiceAccepted,
+                              properties: [
+                                Keys.countryCode: countryCode.rawValue,
+                                Keys.gatewayID: safeGatewayID(for: gatewayID),
+                                Keys.siteID: siteID
+                              ])
+        }
     }
 }
 

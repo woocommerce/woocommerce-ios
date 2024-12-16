@@ -147,8 +147,12 @@ final class CardReaderConnectionAnalyticsTracker {
         )
     }
 
-    func tapToPayTermsOfServicesAccepted() {
-        analytics.track(.tapToPayTermsOfServicesAccepted)
+    func tapToPayTermsOfServiceAccepted() {
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments.tapToPayTermsOfServiceAccepted(
+            gatewayID: gatewayID,
+            countryCode: configuration.countryCode,
+            siteID: siteID)
+        )
     }
 
     enum ConnectionType: String {

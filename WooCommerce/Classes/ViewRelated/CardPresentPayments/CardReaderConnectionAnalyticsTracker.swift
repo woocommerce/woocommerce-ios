@@ -150,8 +150,21 @@ final class CardReaderConnectionAnalyticsTracker {
     func tapToPayTermsOfServiceAccepted() {
         analytics.track(event: WooAnalyticsEvent.InPersonPayments.tapToPayTermsOfServiceAccepted(
             gatewayID: gatewayID,
-            countryCode: configuration.countryCode,
-            siteID: siteID)
+            countryCode: configuration.countryCode)
+        )
+    }
+
+    func cardReaderLocationPermissionPreAlertShown() {
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments.cardReaderLocationPermissionPreAlertShown(
+            gatewayID: gatewayID,
+            countryCode: configuration.countryCode)
+        )
+    }
+
+    func cardReaderLocationPermissionRequiredShown() {
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments.cardReaderLocationPermissionRequiredShown(
+            gatewayID: gatewayID,
+            countryCode: configuration.countryCode)
         )
     }
 

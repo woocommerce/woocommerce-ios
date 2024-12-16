@@ -539,6 +539,7 @@ private extension CardReaderConnectionController {
             locationService.stopObservingPermissionChanges()
             state = .connectToReader
         case .denied:
+            analyticsTracker.cardReaderLocationPermissionRequiredShown()
             alertsPresenter.present(viewModel: alertsProvider.locationRequired(
                 dismiss: { [weak self] in
                     guard let self else { return }
@@ -552,6 +553,7 @@ private extension CardReaderConnectionController {
                 }
             ))
         case .notDetermined:
+            analyticsTracker.cardReaderLocationPermissionPreAlertShown()
             alertsPresenter.present(viewModel: alertsProvider.locationRequestPreAlert { [weak self] in
                 self?.locationService.requestPermission()
             })

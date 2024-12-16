@@ -2319,13 +2319,29 @@ extension WooAnalyticsEvent {
         }
 
         static func tapToPayTermsOfServiceAccepted(gatewayID: String?,
-                                                   countryCode: CountryCode,
-                                                   siteID: Int64) -> WooAnalyticsEvent {
+                                                   countryCode: CountryCode) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .tapToPayTermsOfServiceAccepted,
                               properties: [
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: safeGatewayID(for: gatewayID),
-                                Keys.siteID: siteID
+                                Keys.gatewayID: safeGatewayID(for: gatewayID)
+                              ])
+        }
+
+        static func cardReaderLocationPermissionPreAlertShown(gatewayID: String?,
+                                                              countryCode: CountryCode) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderLocationPermissionPreAlertShown,
+                              properties: [
+                                Keys.countryCode: countryCode.rawValue,
+                                Keys.gatewayID: safeGatewayID(for: gatewayID)
+                              ])
+        }
+
+        static func cardReaderLocationPermissionRequiredShown(gatewayID: String?,
+                                                              countryCode: CountryCode) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderLocationPermissionRequiredShown,
+                              properties: [
+                                Keys.countryCode: countryCode.rawValue,
+                                Keys.gatewayID: safeGatewayID(for: gatewayID)
                               ])
         }
     }

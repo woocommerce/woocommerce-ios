@@ -356,6 +356,8 @@ enum WooAnalyticsStat: String {
     case cardReaderDisconnectTapped = "card_reader_disconnect_tapped"
     case manageCardReadersBuiltInReaderAutoDisconnect = "manage_card_readers_automatic_disconnect_built_in_reader"
     case cardReaderAutomaticDisconnect = "card_reader_automatic_disconnect"
+    case cardReaderLocationPermissionPreAlertShown = "card_reader_location_permission_pre_alert_shown"
+    case cardReaderLocationPermissionRequiredShown = "card_reader_location_permission_required_shown"
 
     // MARK: Card Reader Software Update Events
     //
@@ -386,7 +388,7 @@ enum WooAnalyticsStat: String {
     case tapToPayAutoRefundSuccess = "card_present_tap_to_pay_test_payment_refund_success"
     case tapToPayAutoRefundFailed = "card_present_tap_to_pay_test_payment_refund_failed"
     case tapToPayAwarenessShown = "tap_to_pay_awareness_shown"
-    case tapToPayTermsOfServicesAccepted = "tap_to_pay_terms_of_services_accepted"
+    case tapToPayTermsOfServiceAccepted = "tap_to_pay_terms_of_services_accepted"
 
     // MARK: Tap to Pay Education
     case tapToPayEducationShown = "tap_to_pay_education_shown"

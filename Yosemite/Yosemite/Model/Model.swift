@@ -319,6 +319,7 @@ public typealias FeatureAnnouncementCampaign = Storage.FeatureAnnouncementCampai
 public typealias FeatureAnnouncementCampaignSettings = Storage.FeatureAnnouncementCampaignSettings
 public typealias AnalyticsCard = Storage.AnalyticsCard
 public typealias DashboardCard = Storage.DashboardCard
+public typealias StorageWooShippingPackagesResponse = Storage.WooShippingPackagesResponse
 
 // MARK: - Internal ReadOnly Models
 

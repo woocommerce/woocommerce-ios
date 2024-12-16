@@ -154,6 +154,36 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(actualResponse, response)
     }
 
+    func test_loadPackages_when_successful_then_upserts_packages_into_storage() throws {
+        // Given
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "packages", filename: "wooshipping-get-packages-success")
+
+        // Confidence check
+        XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: StorageWooShippingPackagesResponse.self), 0)
+
+        // When
+        let onSuccess: Bool = waitFor { promise in
+            let action = WooShippingAction.loadPackages(siteID: self.sampleSiteID) { result in
+                promise(result.isSuccess)
+            }
+            store.onAction(action)
+        }
+
+        let storedPackages = try XCTUnwrap(storageManager.viewStorage.firstObject(ofType: StorageWooShippingPackagesResponse.self)).toReadOnly()
+
+        // Then
+        XCTAssertTrue(onSuccess)
+        XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: StorageWooShippingPackagesResponse.self), 1)
+        XCTAssertEqual(storedPackages.siteID, sampleSiteID)
+        XCTAssertEqual(storedPackages.allPredefinedOptions.count, 2)
+        XCTAssertEqual(storedPackages.allPredefinedOptions.first?.predefinedOptions.count, 1)
+        XCTAssertEqual(storedPackages.allPredefinedOptions.first?.predefinedOptions.first?.predefinedPackages.count, 2)
+        XCTAssertEqual(storedPackages.customPackages.count, 1)
+        XCTAssertEqual(storedPackages.savedPredefinedPackages.count, 2)
+        XCTAssertTrue(storedPackages.savedPredefinedPackages.contains(where: { $0.package.id == "small_flat_box" }))
+    }
+
     func test_loadPackages_returns_error_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -420,5 +450,13 @@ private extension WooShippingStoreTests {
                                  isPickupFree: false,
                                  deliveryDays: 7,
                                  deliveryDateGuaranteed: false)
+    }
+
+    func sampleCustomPackage() -> WooShippingCustomPackage {
+        WooShippingCustomPackage(id: "849225dc153",
+                                 name: "Custom name",
+                                 rawType: "box",
+                                 dimensions: "12 x 12 x 12",
+                                 boxWeight: 0.01)
     }
 }

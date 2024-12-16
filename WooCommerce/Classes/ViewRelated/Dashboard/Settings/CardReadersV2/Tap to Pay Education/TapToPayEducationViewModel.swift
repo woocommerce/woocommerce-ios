@@ -26,18 +26,21 @@ final class TapToPayEducationViewModel: ObservableObject {
     private let cardReaderSupportDeterminer: CardReaderSupportDetermining
     private let siteID: Int64
     private let configuration: CardPresentPaymentsConfiguration
+    private let analytics: Analytics
 
     init(flow: Flow = .onboarding,
          steps: [TapToPayEducationStepViewModel]? = nil,
          siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          cardReaderSupportDeterminer: CardReaderSupportDetermining? = nil,
+         analytics: Analytics = ServiceLocator.analytics,
          showingSetUpFlow: Binding<Bool> = .constant(false)) {
         self.flow = flow
         self.cardReaderSupportDeterminer = cardReaderSupportDeterminer ?? CardReaderSupportDeterminer(siteID: siteID, configuration: configuration)
         self.siteID = siteID
         self.configuration = configuration
         self.isInteractiveDismissDisabled = flow == .onboarding ? true : false
+        self.analytics = analytics
         self.steps = steps ?? TapToPayEducationStepsFactory.steps(configuration: configuration)
         self._showingSetUpFlow = showingSetUpFlow
 
@@ -63,6 +66,7 @@ final class TapToPayEducationViewModel: ObservableObject {
             if flow == .about && !hasPreviousTapToPayUsage {
                 return Action(title: Localization.setUpTapToPay) { [weak self] in
                     guard let self else { return }
+                    analytics.track(.setUpTryOutTapToPayOnIPhoneTapped)
                     dismiss = true
                     showingSetUpFlow = true
                 }

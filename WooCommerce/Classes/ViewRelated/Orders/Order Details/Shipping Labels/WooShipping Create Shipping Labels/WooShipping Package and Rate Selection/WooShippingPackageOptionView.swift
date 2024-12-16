@@ -15,6 +15,9 @@ struct WooShippingPackageOptionView: View {
     var starAction: (() -> Void)?
     var starred: Bool?
 
+    @Environment(\.shippingDimensionsUnit) private var dimensionsUnit
+    @Environment(\.shippingWeightUnit) private var weightUnit
+
     var body: some View {
         HStack(spacing: 0) {
             HStack {
@@ -32,9 +35,9 @@ struct WooShippingPackageOptionView: View {
                     Text(package.name)
                         .bodyStyle()
                     HStack {
-                        Text(package.dimensionsDescription)
+                        Text(package.dimensionsDescription(unit: dimensionsUnit))
                         Text("•")
-                        Text(package.weightDescription)
+                        Text(package.weightDescription(unit: weightUnit))
                     }
                     .font(.subheadline)
                     .foregroundStyle(Color(.text))

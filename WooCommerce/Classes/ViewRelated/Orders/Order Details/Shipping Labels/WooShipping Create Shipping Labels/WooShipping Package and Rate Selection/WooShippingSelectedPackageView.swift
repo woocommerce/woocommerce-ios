@@ -2,8 +2,9 @@ import SwiftUI
 
 struct WooShippingSelectedPackageView: View {
     let package: WooShippingPackageDataRepresentable
-    let weightUnit: String
     @Binding var totalWeight: String
+
+    @Environment(\.shippingWeightUnit) private var weightUnit
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -63,14 +64,11 @@ private extension WooShippingSelectedPackageView {
 
 #Preview {
     WooShippingSelectedPackageView(package: WooShippingPackageData(name: "Small Flat Rate Box",
-                                                        length: "12",
-                                                        width: "6",
-                                                        height: "6",
-                                                        dimensionsUnit: "in",
-                                                        weight: "4",
-                                                        weightUnit: "oz",
-                                                        source: .predefined(sourceTitle: "USPS Priority Mail Flat Rate Boxes", sourceID: "usps"),
-                                                        packageType: "box"),
-                        weightUnit: "oz",
-                        totalWeight: .constant("6"))
+                                                                   length: "12",
+                                                                   width: "6",
+                                                                   height: "6",
+                                                                   weight: "4",
+                                                                   source: .predefined(sourceTitle: "USPS Priority Mail Flat Rate Boxes", sourceID: "usps"),
+                                                                   packageType: "box"),
+                                   totalWeight: .constant("6"))
 }

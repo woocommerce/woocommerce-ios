@@ -15,6 +15,9 @@ struct WooAddCustomPackageView: View {
     @State private var isSavingPackage: Bool = false
     @State private var isAddingPackage: Bool = false
 
+    @Environment(\.shippingDimensionsUnit) private var dimensionsUnit
+    @Environment(\.shippingWeightUnit) private var weightUnit
+
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
     init(viewModel: WooShippingAddCustomPackageViewModel, addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
@@ -62,12 +65,12 @@ struct WooAddCustomPackageView: View {
                         VStack {
                             AdaptiveStack(spacing: 8) {
                                 ForEach(WooShippingPackageUnitType.dimensionUnits, id: \.self) { dimensionUnit in
-                                    unitInputView(for: dimensionUnit, unit: viewModel.dimensionsUnit)
+                                    unitInputView(for: dimensionUnit, unit: dimensionsUnit)
                                 }
                             }
                             // showing weight input only if we are saving the template
                             if viewModel.showSaveTemplate {
-                                unitInputView(for: WooShippingPackageUnitType.weight, unit: viewModel.weightUnit)
+                                unitInputView(for: WooShippingPackageUnitType.weight, unit: weightUnit)
                             }
                         }
                         .toolbar {

@@ -39,6 +39,11 @@ final class WooShippingRemoteTests: XCTestCase {
         // Then
         let packagesResponse = try XCTUnwrap(result.get())
         XCTAssertEqual(packagesResponse.customPackages.count, 5)
+        XCTAssertEqual(packagesResponse.customPackages.first?.id, "69d7052f934a7c218329de9c1abe3858")
+        XCTAssertEqual(packagesResponse.customPackages.first?.name, "WCS&T Box")
+        XCTAssertEqual(packagesResponse.customPackages.first?.dimensions, "15 x 15 x 15")
+        XCTAssertEqual(packagesResponse.customPackages.first?.type, .box)
+        XCTAssertEqual(packagesResponse.customPackages.first?.boxWeight, 0.25)
         XCTAssertEqual(packagesResponse.predefinedOptions.count, 1)
     }
 

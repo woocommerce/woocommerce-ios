@@ -207,4 +207,8 @@ public enum FeatureFlag: Int {
     /// Enables new Tap to Pay onboarding and education features
     ///
     case tapToPayEducation
+
+    /// Supports variable products in POS.
+    ///
+    case variableProductsInPointOfSale
 }

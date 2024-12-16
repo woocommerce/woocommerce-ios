@@ -1819,6 +1819,7 @@ extension WooAnalyticsEvent {
             case paymentWaitingForInput = "payment_waiting_for_input"
             case connectionError = "connection_error"
             case readerSoftwareUpdate = "reader_software_update"
+            case locationPermissionDenied = "location_permission_denied"
             case other = "unknown"
         }
 

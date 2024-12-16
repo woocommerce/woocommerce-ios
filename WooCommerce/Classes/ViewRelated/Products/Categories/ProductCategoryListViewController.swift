@@ -32,7 +32,7 @@ final class ProductCategoryListViewController: UIViewController, GhostableViewCo
         let emptyStateViewController = EmptyStateViewController(style: .list)
         let config: EmptyStateViewController.Config = .simple(
             message: .init(string: Localization.emptyStateMessage),
-            image: .emptySearchResultsImage
+            image: .magnifyingGlassNotFound
         )
         emptyStateViewController.configure(config)
         return emptyStateViewController

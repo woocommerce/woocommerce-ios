@@ -370,12 +370,6 @@ extension UIImage {
         return UIImage(named: "message")!
     }
 
-    /// An image showing a hand holding a magnifying glass over a page.
-    ///
-    static var emptySearchResultsImage: UIImage {
-        UIImage(named: "woo-empty-search-results")!
-    }
-
     static var shoppingBagsImage: UIImage {
         UIImage(named: "shopping-bags")!
     }

@@ -816,7 +816,7 @@ private extension OrderListViewController {
 
         return EmptyStateViewController.Config.withButton(
             message: message,
-            image: .emptySearchResultsImage,
+            image: .magnifyingGlassNotFound,
             details: "",
             buttonTitle: Localization.clearButton,
             onTap: { [weak self] button in

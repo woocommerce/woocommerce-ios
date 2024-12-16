@@ -27,6 +27,7 @@ Notes:
 - For attributes of type Transformable, if the transformer is `NSSecureUnarchiveFromData`, make sure to input a `class` type in the Custom Class field in the Core Data model. Using a Swift type (e.g. [Int64] or [String]) would cause an error logged in Xcode 16.
 - We have a launch argument `-enforce-core-data-write-in-background` enabled by default in the WooCommerce scheme. This will intentionally crash the app in the debug mode when one attempts to perform write operations in the main thread with the view context.
 - We also enable `-com.apple.CoreData.ConcurrencyDebug` launch argument by default to get notified when there's a concurrency issue with our Core Data stack. Please keep an eye out for errors from Core Data in the console log and report any problems when you see them.
+- When setting an attributes of type `Date`/`UUID`/`URI` as non-optional, a default value should be set or the property should be kept optional in Swift. More details [here](https://holko.pl/2017/09/18/surprising-non-optional-nsmanaged/).
 
 ## File storage
 The Storage module also exposes a protocol, called [`FileStorage`](../Storage/Storage/Protocols/FileStorage.swift) to abstract saving and reading data to and from local storage. 

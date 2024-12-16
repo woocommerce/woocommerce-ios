@@ -282,7 +282,7 @@ private extension DashboardView {
 
     var shareStoreCard: some View {
         VStack(spacing: .zero) {
-            Image(uiImage: .blazeSuccessImage)
+            Image(uiImage: .launchImage)
                 .padding(.top, Layout.imagePadding)
                 .padding(.bottom, Layout.elementPadding)
 

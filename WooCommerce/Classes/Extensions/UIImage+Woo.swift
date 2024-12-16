@@ -536,6 +536,10 @@ extension UIImage {
         return UIImage(named: "product-creation-ai-survey")!
     }
 
+    static var launchImage: UIImage {
+        UIImage(named: "launch")!
+    }
+
     /// Launch store Image
     ///
     static var launchStoreImage: UIImage {

@@ -31,10 +31,6 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.blaze)
     }
 
-    func test_blazeSuccessImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.blazeSuccessImage)
-    }
-
     func test_blazeIntroIllustration_is_not_nil() {
         XCTAssertNotNil(UIImage.blazeIntroIllustration)
     }
@@ -282,6 +278,10 @@ final class IconsTests: XCTestCase {
 
     func test_launchStoreImage_is_not_nil() {
         XCTAssertNotNil(UIImage.launchStoreImage)
+    }
+
+    func test_launchImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.launchImage)
     }
 
     func test_storeDetailsImage_is_not_nil() {

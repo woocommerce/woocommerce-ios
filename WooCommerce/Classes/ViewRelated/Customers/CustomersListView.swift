@@ -68,7 +68,7 @@ struct CustomersListView: View {
                     .frame(maxHeight: .infinity)
                 } else {
                     EmptyState(title: Localization.emptySearchTitle,
-                               image: .searchNoResultImage)
+                               image: .magnifyingGlassNotFound)
                     .frame(maxHeight: .infinity)
                 }
             }

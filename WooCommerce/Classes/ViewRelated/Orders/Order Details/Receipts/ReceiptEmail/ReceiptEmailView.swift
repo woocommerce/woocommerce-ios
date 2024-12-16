@@ -1,8 +1,10 @@
 import SwiftUI
 import Yosemite
+import WooFoundation
 
 struct ReceiptEmailView: View {
     @ObservedObject var viewModel: ReceiptEmailViewModel
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
@@ -39,9 +41,18 @@ struct ReceiptEmailView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.cancel, action: {
-                        viewModel.onDismiss(nil)
+                        viewModel.onCancel()
                     })
                 }
+            }
+            .onAppear {
+                viewModel.onAppear()
+            }
+            .onDisappear {
+                viewModel.onDisappear()
+            }
+            .onChange(of: viewModel.dismiss) { _ in
+                dismiss()
             }
         }
     }
@@ -83,34 +94,4 @@ private enum Localization {
         value: "Please enter a valid email address.",
         comment: "Notice text when the merchant enters an invalid email"
     )
-}
-
-final class ReceiptEmailViewHostingController: UIHostingController<ReceiptEmailView>, UIAdaptivePresentationControllerDelegate {
-    private var onDismiss: ((Order?) -> Void)
-
-    init(order: Order,
-         stores: StoresManager = ServiceLocator.stores,
-         systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-         onDismiss: @escaping (Order?) -> Void) {
-
-        self.onDismiss = onDismiss
-        let viewModel = ReceiptEmailViewModel(order: order, stores: stores, onDismiss: onDismiss)
-        super.init(rootView: ReceiptEmailView(viewModel: viewModel))
-
-        viewModel.onDismiss = { [weak self] order in
-            self?.dismiss(animated: true, completion: nil)
-            onDismiss(order)
-        }
-
-        presentationController?.delegate = self
-        viewModel.noticePresenter.presentingViewController = self
-    }
-
-    required dynamic init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        onDismiss(nil)
-    }
 }

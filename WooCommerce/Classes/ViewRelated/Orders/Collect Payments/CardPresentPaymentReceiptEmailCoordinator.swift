@@ -1,5 +1,6 @@
 import MessageUI
 import UIKit
+import SwiftUI
 import struct Yosemite.Order
 import WooFoundation
 
@@ -57,6 +58,25 @@ final class CardPresentPaymentReceiptEmailCoordinator: NSObject {
         }
 
         viewController.present(mail, animated: true)
+    }
+
+    /// Presents the email form after a payment is completed.
+    /// - Parameters:
+    ///  - viewController: view controller to present the email form.
+    ///  - order: order to be updated.
+    ///  - onCompleted: called when the user completes emailing the receipt.
+    func presentSendReceiptAfterPayment(from viewController: ViewControllerPresenting,
+                                        order: Order,
+                                        onCompleted: @escaping ((Order?) -> Void)) {
+        let receiptEmailViewModel = ReceiptEmailViewModel(
+            order: order,
+            countryCode: countryCode,
+            cardReaderModel: cardReaderModel) { order in
+                onCompleted(order)
+            }
+        let receiptEmailViewController = UIHostingController(rootView: ReceiptEmailView(viewModel: receiptEmailViewModel))
+        receiptEmailViewModel.noticePresenter.presentingViewController = receiptEmailViewController
+        viewController.present(receiptEmailViewController, animated: true)
     }
 }
 

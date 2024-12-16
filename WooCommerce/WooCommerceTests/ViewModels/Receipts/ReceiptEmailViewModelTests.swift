@@ -1,6 +1,8 @@
 import Testing
 import Foundation
 import Yosemite
+import WooFoundation
+import Combine
 @testable import WooCommerce
 
 @MainActor
@@ -9,6 +11,7 @@ struct ReceiptEmailViewModelTests {
     private let order: Order
     private let noticesPresenter: MockNoticePresenter
     private let sut: ReceiptEmailViewModel
+    private var cancellables = Set<AnyCancellable>()
 
     init() {
         stores = MockStoresManager(sessionManager: .testingInstance)
@@ -17,8 +20,15 @@ struct ReceiptEmailViewModelTests {
         sut = ReceiptEmailViewModel(
             order: order,
             stores: stores,
-            noticesPresenter: noticesPresenter
+            noticesPresenter: noticesPresenter,
+            countryCode: CountryCode.US,
+            cardReaderModel: "Model"
         )
+
+        sut.$dismiss.sink { [sut] _ in
+            sut.onDisappear()
+        }
+        .store(in: &cancellables)
     }
 
     @Test func sendReceipt_when_action_succeeds() async {

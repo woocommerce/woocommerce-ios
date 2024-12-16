@@ -716,17 +716,18 @@ private extension CollectOrderPaymentUseCase {
     }
 }
 
-
 // MARK: - Collect customer email and send receipt after payment presentation
 private extension CollectOrderPaymentUseCase {
     func presentSendReceiptAfterPayment(onCompleted: @escaping ((Order?) -> Void)) {
-        let receiptEmailViewController = ReceiptEmailViewHostingController(order: order) { order in
+        let coordinator = CardPresentPaymentReceiptEmailCoordinator(countryCode: configuration.countryCode,
+                                                                    cardReaderModel: analyticsTracker.connectedReaderModel)
+        receiptEmailCoordinator = coordinator
+
+        let viewController = rootViewController.presentedViewController ?? rootViewController
+        coordinator.presentSendReceiptAfterPayment(from: viewController, order: order) { [weak self] order in
+            self?.receiptEmailCoordinator = nil
             onCompleted(order)
         }
-
-        // Support opening receipt modal on top of a presented alert if needed
-        let viewController = rootViewController.presentedViewController ?? rootViewController
-        viewController.present(receiptEmailViewController, animated: true)
     }
 
     private func getReceiptStateForSuccessPayment(

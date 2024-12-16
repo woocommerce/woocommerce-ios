@@ -2289,6 +2289,7 @@ extension WooAnalyticsEvent {
         enum ReceiptSource: String {
             case local
             case backend
+            case api
         }
 
         enum LearnMoreLinkSource {

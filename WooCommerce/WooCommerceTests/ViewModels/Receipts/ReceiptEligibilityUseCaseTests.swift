@@ -108,6 +108,64 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
+    func test_isEligibleForPOSReceipts_when_WooCommerce_version_is_correct_version_then_returns_true() {
+        // Given
+        let featureFlag = MockFeatureFlagService(receiptsForPOS: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let plugin = SystemPlugin.fake().copy(name: "WooCommerce",
+                                              version: "9.6",
+                                              active: true)
+
+        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            switch action {
+            case let .fetchSystemPlugin(_, _, onCompletion):
+                onCompletion(plugin)
+            default:
+                XCTFail("Unexpected action")
+            }
+        }
+        let sut = ReceiptEligibilityUseCase(stores: stores, featureFlagService: featureFlag)
+
+        // When
+        let isEligible: Bool = waitFor { promise in
+            sut.isEligibleForPointOfSaleReceipts(onCompletion: { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(isEligible)
+    }
+
+    func test_isEligibleForPOSReceipts_when_WooCommerce_version_is_incorrect_version_then_returns_false() {
+        // Given
+        let featureFlag = MockFeatureFlagService(receiptsForPOS: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let plugin = SystemPlugin.fake().copy(name: "WooCommerce",
+                                              version: "9.5",
+                                              active: true)
+
+        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            switch action {
+            case let .fetchSystemPlugin(_, _, onCompletion):
+                onCompletion(plugin)
+            default:
+                XCTFail("Unexpected action")
+            }
+        }
+        let sut = ReceiptEligibilityUseCase(stores: stores, featureFlagService: featureFlag)
+
+        // When
+        let isEligible: Bool = waitFor { promise in
+            sut.isEligibleForPointOfSaleReceipts(onCompletion: { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
     func test_isEligibleForBackendReceipts_when_WooCommerce_version_is_equal_or_above_minimum_then_returns_true() {
         // Given
         let featureFlag = MockFeatureFlagService(isBackendReceiptsEnabled: true)

@@ -8,18 +8,20 @@ struct EmptyState: View {
     @State var buttonTitle: String?
     @State var buttonAction: (() -> Void)?
 
-    /// Override the image width, defaults to 168
-    var imageWidth: CGFloat = Constants.imageWidth
-
     var body: some View {
         VStack {
             if let image = image {
-                Image(uiImage: image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: imageWidth)
-                    .accessibility(hidden: true)
-                    .padding(.bottom, Constants.imageBottomSpacing)
+                // Downscale the bigger images to the max width
+                ViewThatFits {
+                    Image(uiImage: image)
+
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                }
+                .frame(maxWidth: Constants.maxImageWidth)
+                .accessibility(hidden: true)
+                .padding(.bottom, Constants.imageBottomSpacing)
             }
 
             Text(title)
@@ -53,7 +55,7 @@ private extension EmptyState {
         static let textSpacing: CGFloat = 4
         static let buttonTopSpacing: CGFloat = 24
         static let horizontalSpacing: CGFloat = 24
-        static let imageWidth: CGFloat = 168
+        static let maxImageWidth: CGFloat = 168
         static let buttonWidth: CGFloat = 228
     }
 }

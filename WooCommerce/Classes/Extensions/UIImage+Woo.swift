@@ -386,10 +386,10 @@ extension UIImage {
         UIImage(named: "shopping-bags")!
     }
 
-    /// An image showing a bar chart. This is used to show an empty All Orders tab.
+    /// Image showing boxes
     ///
-    static var emptyOrdersImage: UIImage {
-        UIImage(named: "woo-empty-orders")!
+    static var boxesImage: UIImage {
+        UIImage(named: "boxes")!
     }
 
     /// An image showing a magnifying glass. This is used to show a default image when searching for customers.

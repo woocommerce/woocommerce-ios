@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23507" systemVersion="23H124" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="23H124" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -1059,7 +1059,7 @@
     <entity name="WooShippingSavedPredefinedPackage" representedClassName="WooShippingSavedPredefinedPackage" syncable="YES">
         <attribute name="groupTitle" attributeType="String" defaultValueString=""/>
         <attribute name="providerID" attributeType="String" defaultValueString=""/>
-        <relationship name="package" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WooShippingPredefinedPackage" inverseName="savedPredefinedPackage" inverseEntity="WooShippingPredefinedPackage"/>
+        <relationship name="package" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="WooShippingPredefinedPackage" inverseName="savedPredefinedPackage" inverseEntity="WooShippingPredefinedPackage"/>
         <relationship name="packagesResponse" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WooShippingPackagesResponse" inverseName="savedPredefinedPackages" inverseEntity="WooShippingPackagesResponse"/>
     </entity>
 </model>

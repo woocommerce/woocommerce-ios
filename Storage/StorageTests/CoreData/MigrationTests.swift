@@ -3257,8 +3257,8 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(packagesResponse.value(forKey: "customPackages") as? NSSet, NSSet(array: [customPackage]))
         XCTAssertEqual(packagesResponse.value(forKey: "savedPredefinedPackages") as? NSSet, NSSet(array: [savedPredefinedPackage]))
         XCTAssertEqual(carrierPredefinedOptions.value(forKey: "predefinedOptions") as? NSOrderedSet, NSOrderedSet(array: [predefinedOption]))
-        XCTAssertEqual(predefinedOption.value(forKey: "carrier") as? WooShippingCarrierPredefinedOptions, carrierPredefinedOptions)
         XCTAssertEqual(predefinedOption.value(forKey: "predefinedPackages") as? NSSet, NSSet(array: [predefinedPackage]))
+        XCTAssertEqual(savedPredefinedPackage.value(forKey: "package") as? WooShippingPredefinedPackage, predefinedPackage)
     }
 }
 

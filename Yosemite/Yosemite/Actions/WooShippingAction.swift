@@ -8,7 +8,7 @@ public enum WooShippingAction: Action {
                        predefinedOption: WooShippingPredefinedSavedOption? = nil,
                        completion: (Result<WooShippingCreatePackageResponse, PackageCreationError>) -> Void)
 
-    /// Deletes package or activated a carrier package with provided package details.
+    /// Deletes a custom package or deactivates a carrier package with provided package ID.
     ///
     case deletePackage(siteID: Int64,
                        packageID: String,

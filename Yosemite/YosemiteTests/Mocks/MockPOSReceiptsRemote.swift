@@ -10,7 +10,7 @@ final class MockPOSReceiptsRemote: POSReceiptsRemoteProtocol {
         sendReceiptCalled = true
         spySiteID = siteID
         spyOrderID = orderID
-        
+
         if let shouldThrowError {
             throw shouldThrowError
         }

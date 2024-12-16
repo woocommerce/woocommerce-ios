@@ -34,7 +34,7 @@ public final class POSReceiptService: POSReceiptServiceProtocol {
     }
 }
 
-private extension POSReceiptService {
+public extension POSReceiptService {
     enum POSReceiptServiceError: Error {
         case sendReceiptFailed
     }

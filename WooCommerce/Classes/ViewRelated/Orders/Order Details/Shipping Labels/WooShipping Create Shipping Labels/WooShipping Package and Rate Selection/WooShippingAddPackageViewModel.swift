@@ -86,7 +86,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
             self.isLoadingPackages = false
         }
 
-        ServiceLocator.stores.dispatch(loadPackagesAction)
+        stores.dispatch(loadPackagesAction)
     }
 
     // transform packages
@@ -196,7 +196,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
                 }
             }
 
-            ServiceLocator.stores.dispatch(createAction)
+            stores.dispatch(createAction)
         }
     }
 
@@ -221,7 +221,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
             }
         }
 
-        ServiceLocator.stores.dispatch(deleteAction)
+        stores.dispatch(deleteAction)
     }
 }
 

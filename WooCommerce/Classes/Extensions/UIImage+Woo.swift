@@ -364,12 +364,6 @@ extension UIImage {
         return UIImage(named: "woo-empty-products")!
     }
 
-    /// Empty Products Tab Icon
-    ///
-    static var emptyProductsTabImage: UIImage {
-        return UIImage(named: "woo-empty-products-tab")!
-    }
-
     /// Empty Reviews Icon
     ///
     static var emptyReviewsImage: UIImage {
@@ -966,6 +960,12 @@ extension UIImage {
     ///
     static var productImage: UIImage {
         return UIImage.gridicon(.product)
+    }
+
+    /// A blouse Image
+    ///
+    static var productBlouseImage: UIImage {
+        return UIImage(named: "product-blouse")!
     }
 
     /// Pencil Icon

@@ -24,39 +24,58 @@ struct TotalsView: View {
         HStack {
             switch posModel.orderState {
             case .idle, .syncing, .loaded:
-                VStack(alignment: .center) {
-                    Spacer()
-                        .renderedIf(cardReaderViewLayout.topPadding == nil)
+                if posModel.paymentState == .acceptingCash {
+                    // TODO: View for accepting cash.
+                    // TODO: The prop we need to pass for navigating back, affects the payment state as we need to exit from .acceptingCash state
+                    POSSendReceiptView(isShowingSendReceiptView: .constant(true))
+                } else {
+                    VStack(alignment: .center) {
+                        Spacer()
+                            .renderedIf(cardReaderViewLayout.topPadding == nil)
+                        VStack(alignment: .center, spacing: Constants.verticalSpacing) {
+                            if isShowingCardReaderStatus {
+                                cardReaderView
+                                    .font(.title)
+                                    .padding([.leading, .trailing],
+                                             dynamicTypeSize.isAccessibilitySize ? nil :
+                                                cardReaderViewLayout.sidePadding)
+                                    .padding(.bottom,
+                                             dynamicTypeSize.isAccessibilitySize ? nil :
+                                                cardReaderViewLayout.bottomPadding)
+                                    .padding(.top, dynamicTypeSize.isAccessibilitySize ? nil : cardReaderViewLayout.topPadding)
+                                    .transition(.opacity)
+                                    .background(cardReaderViewLayout.backgroundColor)
+                                    .accessibilityShowsLargeContentViewer()
+                                    .layoutPriority(1)
+                            }
 
-                    VStack(alignment: .center, spacing: Constants.verticalSpacing) {
-                        if isShowingCardReaderStatus {
-                            cardReaderView
-                                .font(.title)
-                                .padding([.leading, .trailing],
-                                         dynamicTypeSize.isAccessibilitySize ? nil :
-                                            cardReaderViewLayout.sidePadding)
-                                .padding(.bottom,
-                                         dynamicTypeSize.isAccessibilitySize ? nil :
-                                            cardReaderViewLayout.bottomPadding)
-                                .padding(.top, dynamicTypeSize.isAccessibilitySize ? nil : cardReaderViewLayout.topPadding)
-                                .transition(.opacity)
-                                .background(cardReaderViewLayout.backgroundColor)
-                                .accessibilityShowsLargeContentViewer()
-                                .layoutPriority(1)
+                            if isShowingTotalsFields {
+                                totalsFieldsView
+                                    .transition(.opacity)
+                                    .animation(.default, value: posModel.orderState.isSyncing)
+                                    .opacity(viewHelper.shouldShowTotalsFields(for: posModel.paymentState) ? 1 : 0)
+                                    .layoutPriority(2)
+                            }
+                            Button(action: {
+                                Task { @MainActor in
+                                    Task { @MainActor in
+                                        await posModel.collectCashPayment()
+                                    }
+                                }
+                            }, label: {
+                                Text("Cash payment")
+                                    .foregroundColor(.posPrimaryText)
+                            })
+                            .buttonStyle(POSSecondaryButtonStyle())
+                            .border(.red, width: 2)
+                            .padding(.horizontal)
+                            .renderedIf(posModel.orderState != .syncing)
                         }
-
-                        if isShowingTotalsFields {
-                            totalsFieldsView
-                                .transition(.opacity)
-                                .animation(.default, value: posModel.orderState.isSyncing)
-                                .opacity(viewHelper.shouldShowTotalsFields(for: posModel.paymentState) ? 1 : 0)
-                                .layoutPriority(2)
-                        }
+                        .animation(.default, value: posModel.cardPresentPaymentInlineMessage)
+                        Spacer()
                     }
-                    .animation(.default, value: posModel.cardPresentPaymentInlineMessage)
-                    Spacer()
+                    .animation(.default, value: isShowingCardReaderStatus)
                 }
-                .animation(.default, value: isShowingCardReaderStatus)
             case .error(let viewModel):
                 PointOfSaleOrderSyncErrorMessageView(viewModel: viewModel)
                     .transition(.opacity)
@@ -275,7 +294,8 @@ private extension TotalsView {
                 .validatingOrder,
                 .preparingReader,
                 .processingPayment,
-                .cardPaymentSuccessful:
+                .cardPaymentSuccessful,
+                .acceptingCash:
             break
         }
 

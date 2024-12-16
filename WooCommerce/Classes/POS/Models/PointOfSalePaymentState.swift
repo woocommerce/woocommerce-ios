@@ -3,6 +3,7 @@ import Foundation
 enum PointOfSalePaymentState {
     case idle
     case acceptingCard
+    case acceptingCash
     case validatingOrder
     case validatingOrderError
     case preparingReader
@@ -49,7 +50,8 @@ extension PointOfSalePaymentState {
         switch self {
         case .processingPayment,
                 .paymentError,
-                .cardPaymentSuccessful:
+                .cardPaymentSuccessful,
+                .acceptingCash:
             return true
         case .idle,
                 .validatingOrder,

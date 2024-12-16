@@ -7,6 +7,7 @@ import struct Yosemite.Order
 import struct Yosemite.OrderItem
 import struct Yosemite.POSCartItem
 import enum Yosemite.SystemStatusAction
+import enum Yosemite.OrderAction
 
 protocol PointOfSaleAggregateModelProtocol {
     var orderStage: PointOfSaleOrderStage { get }
@@ -269,6 +270,22 @@ extension PointOfSaleAggregateModel {
     }
 }
 
+// MARK: - Caash payments
+
+extension PointOfSaleAggregateModel {
+    func collectCashPayment() async {
+        Task { @MainActor in
+            // TODO: We might need to cancel this payment intent
+            // Changing the payment state triggers presenting full-screen
+            paymentState = .acceptingCash
+            
+            // TODO: Reach order controller and perform validation/markOrderComplete()
+            // await markOrderComplete()
+            // orderStage = .finalizing
+        }
+    }
+}
+
 private extension PointOfSaleAggregateModel {
     func publishPaymentMessages() {
         cardPresentPaymentService.paymentEventPublisher
@@ -377,6 +394,33 @@ extension PointOfSaleAggregateModel {
 // MARK: - Receipts eligibility checks
 
 extension PointOfSaleAggregateModel {
+    // TODO: Temporary. Move this logic to order controller
+    // Needs to be main thread because of the action dispatcher
+    @MainActor
+    func markOrderComplete() async {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return
+        }
+        guard let orderID = orderController.order?.orderID else {
+            return
+        }
+        
+        await withCheckedContinuation { continuation in
+            let action = OrderAction.markOrderAsPaidLocally(siteID: siteID,
+                                                            orderID: orderID,
+                                                            datePaid: .now,
+                                                            onCompletion: { result in
+                switch result {
+                case .success:
+                    continuation.resume()
+                case .failure(let error):
+                    debugPrint(error.localizedDescription)
+                }
+            })
+            ServiceLocator.stores.dispatch(action)
+        }
+    }
+
     func checkWooCommerceVersionForPOSReceipts() {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return

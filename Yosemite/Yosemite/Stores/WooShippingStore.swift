@@ -63,6 +63,8 @@ public final class WooShippingStore: Store {
                                   completion: completion)
         case let .printLabel(siteID, labelIDs, paperSize, completion):
             printLabel(siteID: siteID, labelIDs: labelIDs, paperSize: paperSize, completion: completion)
+        case .loadOriginAddresses(let siteID, let completion):
+            loadOriginAddresses(siteID: siteID, completion: completion)
         }
     }
 }
@@ -154,6 +156,11 @@ private extension WooShippingStore {
                     paperSize: ShippingLabelPaperSize,
                     completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
         remote.printLabel(siteID: siteID, labelIDs: labelIDs, paperSize: paperSize, completion: completion)
+    }
+
+    func loadOriginAddresses(siteID: Int64,
+                             completion: @escaping (Result<[WooShippingOriginAddress], Error>) -> Void) {
+        remote.loadOriginAddresses(siteID: siteID, completion: completion)
     }
 }
 

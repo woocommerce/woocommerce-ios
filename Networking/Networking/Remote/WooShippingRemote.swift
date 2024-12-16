@@ -29,6 +29,9 @@ public protocol WooShippingRemoteProtocol {
                     labelIDs: [Int64],
                     paperSize: ShippingLabelPaperSize,
                     completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void)
+
+    func loadOriginAddresses(siteID: Int64,
+                             completion: @escaping (Result<[WooShippingOriginAddress], Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
@@ -244,6 +247,22 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Loads origin addresses.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site.
+    ///   - completion: Closure to be executed upon completion.
+    public func loadOriginAddresses(siteID: Int64, completion: @escaping (Result<[WooShippingOriginAddress], any Error>) -> Void) {
+        let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.originAddresses,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
+        let mapper = WooShippingOriginAddressesMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 // MARK: Constants
@@ -255,6 +274,7 @@ private extension WooShippingRemote {
         static let purchase = "label/purchase"
         static let status = "label/status"
         static let print = "label/print"
+        static let originAddresses = "origin-addresses"
     }
 
     enum ParameterKey {

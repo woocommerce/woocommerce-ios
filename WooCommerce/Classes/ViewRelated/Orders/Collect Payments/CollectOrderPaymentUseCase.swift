@@ -978,6 +978,7 @@ enum CardPaymentRetryApproach {
 
 protocol CardPaymentErrorProtocol: Error {
     var retryApproach: CardPaymentRetryApproach { get }
+    var requiresFallbackPaymentMethod: Bool { get }
 }
 
 extension CardReaderServiceError: CardPaymentErrorProtocol {
@@ -997,6 +998,16 @@ extension CardReaderServiceError: CardPaymentErrorProtocol {
             return .dontRetry
         default:
             return .restart
+        }
+    }
+
+    var requiresFallbackPaymentMethod: Bool {
+        switch self {
+        case .paymentCaptureWithPaymentMethod(.paymentDeclinedByPaymentProcessorAPI(declineReason: .pinRequired), _),
+                .paymentCapture(.paymentDeclinedByPaymentProcessorAPI(declineReason: .pinRequired)):
+            return true
+        default:
+            return false
         }
     }
 
@@ -1021,6 +1032,15 @@ extension CollectOrderPaymentUseCaseError: CardPaymentErrorProtocol {
             return .restart
         case .couldNotRefreshOrder:
             return .reuseIntent
+        }
+    }
+
+    var requiresFallbackPaymentMethod: Bool {
+        switch self {
+        case .alreadyRetried(let error as CardReaderServiceError):
+            return error.requiresFallbackPaymentMethod
+        default:
+            return false
         }
     }
 }

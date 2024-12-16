@@ -264,11 +264,17 @@ final class PaymentMethodsViewModel: ObservableObject {
             using: discoveryMethod,
             channel: channel,
             onFailure: { [weak self] error in
-                self?.trackFlowFailed()
-                // Update order in case its status and/or other details are updated after a failed in-person payment
-                self?.updateOrderAsynchronously()
+                guard let self else { return }
 
-                onFailure()
+                trackFlowFailed()
+                // Update order in case its status and/or other details are updated after a failed in-person payment
+                updateOrderAsynchronously()
+
+                if shouldReturnToOrderDetails(for: discoveryMethod, error: error) {
+                    onFailure()
+                    return
+                }
+
             },
             onCancel: {
                 // No tracking required because the flow remains on screen to choose other payment methods.
@@ -529,6 +535,20 @@ private extension PaymentMethodsViewModel {
         if order.currency != currencySettings.currencyCode.rawValue {
             // swiftlint:disable:next line_length
             DDLogWarn("⚠️ Order currency \(order.currency) differs from store's currency \(currencySettings.currencyCode.rawValue) which can lead to payment methods being unavailable")
+        }
+    }
+}
+
+private extension PaymentMethodsViewModel {
+    /// Determines if the flow should return to the order details screen after a failed payment attempt.
+    /// For some specific errors that require the user to select a different payment method, we should not return to the order details screen.
+    ///
+    func shouldReturnToOrderDetails(for discoveryMethod: CardReaderDiscoveryMethod, error: Error) -> Bool {
+        switch (discoveryMethod, error) {
+        case (.localMobile, let error as CardPaymentErrorProtocol) where error.requiresFallbackPaymentMethod:
+            return false
+        default:
+            return true
         }
     }
 }

@@ -8,6 +8,12 @@ struct PointOfSaleDashboardView: View {
 
     @State private var floatingSize: CGSize = .zero
 
+    private let onExit: () -> Void
+
+    init(onExit: @escaping () -> Void) {
+        self.onExit = onExit
+    }
+
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             switch posModel.itemsViewState.containerState {
@@ -58,7 +64,7 @@ struct PointOfSaleDashboardView: View {
                 .posInteractiveDismissDisabled(alertType.isDismissDisabled)
         }
         .posModal(isPresented: $showExitPOSModal) {
-            PointOfSaleExitPosAlertView(isPresented: $showExitPOSModal)
+            PointOfSaleExitPosAlertView(isPresented: $showExitPOSModal, onExit: onExit)
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         }
         .posRootModal()
@@ -163,7 +169,7 @@ private extension PointOfSaleDashboardView {
 #if DEBUG
 #Preview {
     return NavigationStack {
-        PointOfSaleDashboardView()
+        PointOfSaleDashboardView(onExit: {})
     }
 }
 #endif

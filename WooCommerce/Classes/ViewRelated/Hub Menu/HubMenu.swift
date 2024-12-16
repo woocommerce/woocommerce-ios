@@ -21,31 +21,39 @@ struct HubMenu: View {
     }
 
     var body: some View {
-        NavigationStack(path: $viewModel.navigationPath) {
-            /// TODO: switch to `navigationDestination(item:destination)`
-            /// when we drop support for iOS 16.
-            menuList
-                .navigationDestination(for: HubMenuNavigationDestination.self) { destination in
-                    detailView(destination: destination)
-                }
-                .onAppear {
-                    viewModel.setupMenuElements()
-                }
-                .fullScreenCover(isPresented: $viewModel.showsPOS) {
-                    if let cardPresentPaymentService = viewModel.cardPresentPaymentService,
-                       let orderService = POSOrderService(siteID: viewModel.siteID,
-                                                          credentials: viewModel.credentials) {
-                        PointOfSaleEntryPointView(
-                            itemsController: PointOfSaleItemsController(rootItemProvider: viewModel.posItemProvider, variationProvider: viewModel.posVariationProvider),
-                            onPointOfSaleModeActiveStateChange: { isEnabled in
-                                viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
-                            },
-                            cardPresentPaymentService: cardPresentPaymentService,
-                            orderController: PointOfSaleOrderController(orderService: orderService))
-                    } else {
-                        EmptyView()
+        ZStack {
+            NavigationStack(path: $viewModel.navigationPath) {
+                /// TODO: switch to `navigationDestination(item:destination)`
+                /// when we drop support for iOS 16.
+                menuList
+                    .navigationDestination(for: HubMenuNavigationDestination.self) { destination in
+                        detailView(destination: destination)
                     }
+                    .onAppear {
+                        viewModel.setupMenuElements()
+                    }
+            }
+
+            // Conditionally displaying custom fullscreen view
+            if viewModel.showsPOS {
+                if let cardPresentPaymentService = viewModel.cardPresentPaymentService,
+                   let orderService = POSOrderService(siteID: viewModel.siteID,
+                                                      credentials: viewModel.credentials) {
+                    PointOfSaleEntryPointView(
+                        itemsController: PointOfSaleItemsController(rootItemProvider: viewModel.posItemProvider, variationProvider: viewModel.posVariationProvider),
+                        onPointOfSaleModeActiveStateChange: { isEnabled in
+                            viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
+                        }, onExit: {
+                            withAnimation(.easeInOut(duration: 0.5)) {
+                                viewModel.showsPOS = false
+                            }
+                        },
+                        cardPresentPaymentService: cardPresentPaymentService,
+                        orderController: PointOfSaleOrderController(orderService: orderService))
+                    .transition(.move(edge: .leading).combined(with: .opacity))
+                    .zIndex(1) // Ensure it appears above other content
                 }
+            }
         }
     }
 
@@ -62,7 +70,9 @@ struct HubMenu: View {
         case HubMenuViewModel.Blaze.id:
             ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
         case HubMenuViewModel.PointOfSaleEntryPoint.id:
-            viewModel.showsPOS = true
+                withAnimation(.easeInOut(duration: 0.5)) {
+                    viewModel.showsPOS.toggle()
+                }
         default:
             break
         }

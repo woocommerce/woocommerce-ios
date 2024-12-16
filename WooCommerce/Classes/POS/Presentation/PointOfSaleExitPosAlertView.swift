@@ -1,11 +1,13 @@
 import SwiftUI
 
 struct PointOfSaleExitPosAlertView: View {
-    @Environment(\.dismiss) private var dismiss
     @Binding private var isPresented: Bool
+    private let onExit: () -> Void
 
-    init(isPresented: Binding<Bool>) {
+    init(isPresented: Binding<Bool>,
+         onExit: @escaping () -> Void) {
         self._isPresented = isPresented
+        self.onExit = onExit
     }
 
     var body: some View {
@@ -27,7 +29,7 @@ struct PointOfSaleExitPosAlertView: View {
                 .font(.posBodyRegular)
                 .padding(.bottom, Constants.bodyBottomPadding)
             Button {
-                dismiss()
+                onExit()
             } label: {
                 Text(Localization.exitButton)
             }

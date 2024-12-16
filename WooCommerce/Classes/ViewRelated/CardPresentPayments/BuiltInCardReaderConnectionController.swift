@@ -446,6 +446,8 @@ private extension BuiltInCardReaderConnectionController {
                     .sink { [weak self] in
                         guard let self, !isEducationInProgress else { return }
 
+                        analyticsTracker.tapToPayTermsOfServicesAccepted()
+
                         state = updatedState(educationInProgress: true)
                         presenter.presentMerchantEducation { [weak self] in
                             guard let self else { return }

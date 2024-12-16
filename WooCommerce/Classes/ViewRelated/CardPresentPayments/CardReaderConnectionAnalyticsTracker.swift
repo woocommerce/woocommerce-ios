@@ -147,6 +147,10 @@ final class CardReaderConnectionAnalyticsTracker {
         )
     }
 
+    func tapToPayTermsOfServicesAccepted() {
+        analytics.track(.tapToPayTermsOfServicesAccepted)
+    }
+
     enum ConnectionType: String {
         case automaticReconnection = "automatic_reconnection"
         case userInitiated = "user_initiated"

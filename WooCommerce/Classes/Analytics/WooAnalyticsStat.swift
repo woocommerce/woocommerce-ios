@@ -386,6 +386,7 @@ enum WooAnalyticsStat: String {
     case tapToPayAutoRefundSuccess = "card_present_tap_to_pay_test_payment_refund_success"
     case tapToPayAutoRefundFailed = "card_present_tap_to_pay_test_payment_refund_failed"
     case tapToPayAwarenessShown = "tap_to_pay_awareness_shown"
+    case tapToPayTermsOfServicesAccepted = "tap_to_pay_terms_of_services_accepted"
 
     // MARK: Tap to Pay Education
     case tapToPayEducationShown = "tap_to_pay_education_shown"

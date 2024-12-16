@@ -1576,6 +1576,10 @@ extension UIImage {
     static var magnifyingGlassNotFound: UIImage {
         UIImage(imageLiteralResourceName: "magnifying-glass-not-found")
     }
+
+    static var cardReaderLocationImage: UIImage {
+        UIImage(named: "card-reader-location-permission")!
+    }
 }
 
 private extension UIImage {

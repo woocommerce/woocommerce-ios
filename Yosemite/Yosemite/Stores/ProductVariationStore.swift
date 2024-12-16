@@ -8,10 +8,6 @@ public final class ProductVariationStore: Store {
     private let remote: ProductVariationsRemoteProtocol
     private let productVariationStorageManager: ProductVariationStorageManager
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = ProductVariationsRemote(network: network)
         self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)

@@ -865,6 +865,31 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         let objective = try XCTUnwrap(eventProperties["objective"] as? String)
         XCTAssertEqual(objective, "sales")
     }
+
+    @MainActor
+    func test_suggestion_request_failures_is_tracked() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsFailure(MockError())
+        mockDownloadImage(sampleImage)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           analytics: analytics,
+                                                           onCompletion: {})
+        await viewModel.downloadProductImage()
+
+        // When
+        await viewModel.loadAISuggestions()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_suggestions_loading_failed"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(eventProperties["error_code"] as? String, "1")
+    }
 }
 
 private extension BlazeCampaignCreationFormViewModelTests {

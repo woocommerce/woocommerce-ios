@@ -1374,6 +1374,10 @@ extension UIImage {
     static var magnifyingGlassNotFound: UIImage {
         UIImage(imageLiteralResourceName: "magnifying-glass-not-found")
     }
+
+    static var groupedProductsImage: UIImage {
+        UIImage(named: "grouped-products")!
+    }
 }
 
 private extension UIImage {

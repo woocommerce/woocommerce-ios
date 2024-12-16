@@ -118,7 +118,7 @@ private extension ReceiptEligibilityUseCase {
         }
 
         enum PointOfSaleReceipts {
-            static let wcPluginMinimumVersion = "9.6.0"
+            static let wcPluginMinimumVersion = "9.5.0"
         }
     }
 }

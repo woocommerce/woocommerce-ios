@@ -113,7 +113,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         let featureFlag = MockFeatureFlagService(receiptsForPOS: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let plugin = SystemPlugin.fake().copy(name: "WooCommerce",
-                                              version: "9.6",
+                                              version: "9.5",
                                               active: true)
 
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
@@ -142,7 +142,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         let featureFlag = MockFeatureFlagService(receiptsForPOS: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let plugin = SystemPlugin.fake().copy(name: "WooCommerce",
-                                              version: "9.5",
+                                              version: "9.4",
                                               active: true)
 
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in

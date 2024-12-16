@@ -38,7 +38,7 @@ private extension POSReceiptEligibilityBanner {
     enum Localization {
         static let updateWooCommerceVersionText = NSLocalizedString(
             "pos.totalsView.receipts.banner.updateWooCommerceVersionText",
-            value: "Please update WooCommerce to version 9.6.0",
+            value: "Please update WooCommerce to version 9.5.0",
             comment: "Text for the banner requiring specific WooCommerce version.")
     }
 }

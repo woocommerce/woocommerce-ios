@@ -63,6 +63,9 @@ struct TapToPayEducationView: View {
         .onChange(of: viewModel.dismiss) { _ in
             dismiss()
         }
+        .onAppear {
+            viewModel.onAppear()
+        }
         .onDisappear {
             completion()
         }

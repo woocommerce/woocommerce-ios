@@ -73,6 +73,7 @@ final class TapToPayEducationViewModel: ObservableObject {
             } else {
                 return Action(title: Localization.done) { [weak self] in
                     guard let self else { return }
+                    analytics.track(.tapToPayEducationDone)
                     dismiss = true
                 }
             }
@@ -89,6 +90,7 @@ final class TapToPayEducationViewModel: ObservableObject {
             if flow == .about, !hasPreviousTapToPayUsage {
                 return Action(title: Localization.done) { [weak self] in
                     guard let self else { return }
+                    analytics.track(.tapToPayEducationDone)
                     dismiss = true
                 }
             } else {
@@ -97,6 +99,7 @@ final class TapToPayEducationViewModel: ObservableObject {
         } else {
             return Action(title: Localization.skip) { [weak self] in
                 guard let self else { return }
+                analytics.track(.tapToPayEducationSkipped)
                 skip()
             }
         }
@@ -118,6 +121,12 @@ final class TapToPayEducationViewModel: ObservableObject {
 
     private func skip() {
         selectedStep = steps.count - 1
+    }
+
+    // MARK: - View Events
+
+    func onAppear() {
+        analytics.track(.tapToPayEducationShown)
     }
 }
 

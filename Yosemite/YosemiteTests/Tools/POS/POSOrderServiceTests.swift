@@ -13,7 +13,7 @@ struct POSOrderServiceTests {
         self.mockReceiptsRemote = mockReceiptsRemote
         self.mockOrdersRemote = mockOrdersRemote
 
-        self.sut = POSOrderService(siteID: 123, ordersRemote: mockOrdersRemote, receiptsRemote: mockReceiptsRemote)
+        self.sut = POSOrderService(siteID: 123, ordersRemote: mockOrdersRemote)
     }
 
     @Test

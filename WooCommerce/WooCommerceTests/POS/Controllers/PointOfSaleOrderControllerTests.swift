@@ -9,9 +9,10 @@ import struct Yosemite.OrderItem
 struct PointOfSaleOrderControllerTests {
     let sut: PointOfSaleOrderController
     let mockOrderService = MockPOSOrderService()
+    let mockReceiptService = MockReceiptService()
 
     init() {
-        self.sut = PointOfSaleOrderController(orderService: mockOrderService)
+        self.sut = PointOfSaleOrderController(orderService: mockOrderService, receiptService: mockReceiptService)
     }
 
     @Test func syncOrder_without_items_doesnt_call_orderService() async throws {

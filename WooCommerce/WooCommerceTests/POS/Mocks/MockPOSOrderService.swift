@@ -19,7 +19,9 @@ class MockPOSOrderService: POSOrderServiceProtocol {
         return order
     }
 
-    func sendReceipt(order: Yosemite.Order, recipientEmail: String) async throws { }
+    func updatePOSOrder(order: Order, recipientEmail: String) async throws {
+        // no-op
+    }
 }
 
 enum MockPOSOrderServiceError: Error {

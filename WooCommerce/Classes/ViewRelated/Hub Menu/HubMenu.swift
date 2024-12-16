@@ -31,6 +31,21 @@ struct HubMenu: View {
                 .onAppear {
                     viewModel.setupMenuElements()
                 }
+                .fullScreenCover(isPresented: $viewModel.showsPOS) {
+                    if let cardPresentPaymentService = viewModel.cardPresentPaymentService,
+                       let orderService = POSOrderService(siteID: viewModel.siteID,
+                                                          credentials: viewModel.credentials) {
+                        PointOfSaleEntryPointView(
+                            itemsController: PointOfSaleItemsController(itemProvider: viewModel.posItemProvider),
+                            onPointOfSaleModeActiveStateChange: { isEnabled in
+                                viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
+                            },
+                            cardPresentPaymentService: cardPresentPaymentService,
+                            orderController: PointOfSaleOrderController(orderService: orderService))
+                    } else {
+                        EmptyView()
+                    }
+                }
         }
     }
 
@@ -46,6 +61,8 @@ struct HubMenu: View {
             ServiceLocator.analytics.track(.hubMenuSettingsTapped)
         case HubMenuViewModel.Blaze.id:
             ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
+        case HubMenuViewModel.PointOfSaleEntryPoint.id:
+            viewModel.showsPOS = true
         default:
             break
         }
@@ -154,21 +171,6 @@ private extension HubMenu {
                 SubscriptionsView(viewModel: .init())
             case .customers:
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
-            case .pointOfSales:
-                if let cardPresentPaymentService = viewModel.cardPresentPaymentService,
-                   let orderService = POSOrderService(siteID: viewModel.siteID,
-                                                      credentials: viewModel.credentials) {
-                    PointOfSaleEntryPointView(
-                        itemsController: PointOfSaleItemsController(itemProvider: viewModel.posItemProvider),
-                        onPointOfSaleModeActiveStateChange: { isEnabled in
-                            viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
-                        },
-                        cardPresentPaymentService: cardPresentPaymentService,
-                        orderController: PointOfSaleOrderController(orderService: orderService))
-                } else {
-                    // TODO: When we have a singleton for the card payment service, this should not be required.
-                    Text("Error creating card payment service")
-                }
             case .reviewDetails(let parcel):
                 reviewDetailView(parcel: parcel)
             case .blazeCampaignDetails(let campaignID):

@@ -340,10 +340,10 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
-    /// Empty Coupons Icon
+    /// Coupons Image
     ///
-    static var emptyCouponsImage: UIImage {
-        return UIImage(named: "woo-empty-coupons")!
+    static var couponsImage: UIImage {
+        return UIImage(named: "coupons")!
     }
 
     /// Empty Inbox Notes Icon

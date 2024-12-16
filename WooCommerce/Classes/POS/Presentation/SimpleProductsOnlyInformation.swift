@@ -1,8 +1,6 @@
 import SwiftUI
 
 struct SimpleProductsOnlyInformation: View {
-    @Environment(\.dismissWindow) private var dismissWindow
-
     @Binding var isPresented: Bool
     let deepLinkNavigator: DeepLinkNavigator?
 
@@ -31,7 +29,6 @@ struct SimpleProductsOnlyInformation: View {
 
                     Button {
                         deepLinkNavigator?.navigate(to: OrdersDestination.createOrder)
-                        dismissWindow()
                     } label: {
                         Label(Localization.modalAction, systemImage: "plus")
                             .font(.posDetailLight)

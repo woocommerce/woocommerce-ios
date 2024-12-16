@@ -28,7 +28,6 @@ enum HubMenuNavigationDestination: Hashable {
     case inAppPurchase
     case subscriptions
     case customers
-//    case pointOfSales
     case reviewDetails(parcel: ProductReviewFromNoteParcel)
 }
 
@@ -82,6 +81,9 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published private(set) var hasGoogleAdsCampaigns = false
     @Published private var currentSite: Yosemite.Site?
+
+    /// Whether the app is in POS mode for an eligible site.
+    @Published var showsPOS: Bool = false
 
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
@@ -667,7 +669,8 @@ extension HubMenuViewModel {
         let accessibilityIdentifier: String = "menu-pointOfSale"
         let trackingOption: String = "pointOfSale"
         let iconBadge: HubMenuBadgeType? = nil
-        let navigationDestination: HubMenuNavigationDestination? = nil //.pointOfSales
+        // POS is presented with its own navigation stack as nested navigation stack is not supported.
+        let navigationDestination: HubMenuNavigationDestination? = nil
     }
 
     struct Subscriptions: HubMenuItem {

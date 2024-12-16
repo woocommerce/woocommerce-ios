@@ -7,10 +7,6 @@ import Storage
 public final class GoogleAdsStore: Store {
     private let remote: GoogleListingsAndAdsRemoteProtocol
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
          network: Network,

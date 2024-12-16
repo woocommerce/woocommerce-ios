@@ -326,7 +326,7 @@ private extension ReviewsViewController {
     func displayEmptyViewController() {
         let childController = emptyStateViewController
         let emptyStateConfig = EmptyStateViewController.Config.withLink(message: NSAttributedString(string: Localization.EmptyState.message),
-                                                                        image: .emptyReviewsImage,
+                                                                        image: .messageImage,
                                                                         details: Localization.EmptyState.detail,
                                                                         linkTitle: Localization.EmptyState.action,
                                                                         linkURL: WooConstants.URLs.productReviewInfo.asURL())

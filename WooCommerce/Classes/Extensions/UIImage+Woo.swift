@@ -364,10 +364,10 @@ extension UIImage {
         return UIImage(named: "woo-empty-products")!
     }
 
-    /// Empty Reviews Icon
+    /// Message image
     ///
-    static var emptyReviewsImage: UIImage {
-        return UIImage(named: "woo-empty-reviews")!
+    static var messageImage: UIImage {
+        return UIImage(named: "message")!
     }
 
     /// An image showing a hand holding a magnifying glass over a page.

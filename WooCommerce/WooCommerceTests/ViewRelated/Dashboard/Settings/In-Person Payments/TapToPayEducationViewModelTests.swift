@@ -4,15 +4,15 @@ import Combine
 
 struct TapToPayEducationViewModelTests {
     private let cardReaderSupportDeterminer: MockCardReaderSupportDeterminer
-    private let cardPresentPaymentsOnboardingUseCase: MockCardPresentPaymentsOnboardingUseCase
+    @Binding private var showingSetUpFlow: Bool = false
 
     init() {
         cardReaderSupportDeterminer = MockCardReaderSupportDeterminer()
-        cardPresentPaymentsOnboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed(plugin: .wcPayOnly))
     }
 
     private func create(flow: TapToPayEducationViewModel.Flow,
                         steps: [TapToPayEducationStepViewModel]? = nil) -> TapToPayEducationViewModel {
+        showingSetUpFlow = false
         let steps = steps ?? [.init(title: "1", imageName: "", description: ""),
                               .init(title: "2", imageName: "", description: ""),
                               .init(title: "3", imageName: "", description: "")]
@@ -20,7 +20,7 @@ struct TapToPayEducationViewModelTests {
                                           steps: steps,
                                           siteID: 123,
                                           cardReaderSupportDeterminer: cardReaderSupportDeterminer,
-                                          cardPresentPaymentsOnboardingUseCase: cardPresentPaymentsOnboardingUseCase)
+                                          showingSetUpFlow: $showingSetUpFlow)
     }
 
     // MARK: - Primary Action
@@ -63,8 +63,8 @@ struct TapToPayEducationViewModelTests {
         #expect(sut.selectedStep == 2)
         sut.primaryAction.action()
 
-        #expect(!sut.dismiss)
-        #expect(sut.showingSetUpFlow)
+        #expect(sut.dismiss)
+        #expect(showingSetUpFlow)
     }
 
     @Test func primaryAction_when_about_and_has_previous_tap_to_pay_usage() async throws {
@@ -97,7 +97,7 @@ struct TapToPayEducationViewModelTests {
         sut.primaryAction.action()
 
         #expect(sut.dismiss)
-        #expect(!sut.showingSetUpFlow)
+        #expect(!showingSetUpFlow)
     }
 
     // MARK: - Secondary Action

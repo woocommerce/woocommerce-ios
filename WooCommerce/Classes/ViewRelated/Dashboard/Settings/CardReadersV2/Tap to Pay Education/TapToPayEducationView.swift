@@ -60,14 +60,6 @@ struct TapToPayEducationView: View {
             }
         }
         .interactiveDismissDisabled(viewModel.isInteractiveDismissDisabled)
-        .sheet(isPresented: $viewModel.showingSetUpFlow,
-               onDismiss: viewModel.reloadHasPreviousTapToPayUsage,
-               content: {
-            TapToPaySettingsFlowPresentingView(
-                configuration: viewModel.configuration,
-                siteID: viewModel.siteID,
-                onboardingUseCase: viewModel.cardPresentPaymentsOnboardingUseCase)
-        })
         .onChange(of: viewModel.dismiss) { _ in
             dismiss()
         }

@@ -75,7 +75,8 @@ struct InPersonPaymentsMenu: View {
                                     await viewModel.onAppear()
                                 }
                             }) {
-                                TapToPayEducationView(viewModel: .init(flow: .about), completion: {
+                                TapToPayEducationView(viewModel: .init(flow: .about,
+                                                                       showingSetUpFlow: $viewModel.presentSetUpTryOutTapToPay), completion: {
                                     viewModel.presentAboutTapToPay = false
                                 })
                             }

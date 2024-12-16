@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol WooFoundation.Analytics
 
 final class TapToPayEducationViewModel: ObservableObject {
     struct Action {
@@ -16,37 +17,29 @@ final class TapToPayEducationViewModel: ObservableObject {
     @Published var steps: [TapToPayEducationStepViewModel]
     @Published private(set) var isInteractiveDismissDisabled = false
 
-    @Published var showingSetUpFlow: Bool = false
+    @Binding private var showingSetUpFlow: Bool
     @Published private(set) var hasPreviousTapToPayUsage = false
     @Published var shouldShowContactlessLimit: Bool = false
     @Published private(set) var dismiss: Bool = false
 
     private let flow: Flow
     private let cardReaderSupportDeterminer: CardReaderSupportDetermining
-
-    let configuration: CardPresentPaymentsConfiguration
-    let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
-    let siteID: Int64
+    private let siteID: Int64
+    private let configuration: CardPresentPaymentsConfiguration
 
     init(flow: Flow = .onboarding,
          steps: [TapToPayEducationStepViewModel]? = nil,
          siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          cardReaderSupportDeterminer: CardReaderSupportDetermining? = nil,
-         cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol? = nil) {
+         showingSetUpFlow: Binding<Bool> = .constant(false)) {
         self.flow = flow
         self.cardReaderSupportDeterminer = cardReaderSupportDeterminer ?? CardReaderSupportDeterminer(siteID: siteID, configuration: configuration)
         self.siteID = siteID
         self.configuration = configuration
-        if let cardPresentPaymentsOnboardingUseCase {
-            self.cardPresentPaymentsOnboardingUseCase = cardPresentPaymentsOnboardingUseCase
-        } else {
-            let onboardingUseCase = CardPresentPaymentsOnboardingUseCase()
-            self.cardPresentPaymentsOnboardingUseCase = onboardingUseCase
-            self.cardPresentPaymentsOnboardingUseCase.refresh()
-        }
         self.isInteractiveDismissDisabled = flow == .onboarding ? true : false
         self.steps = steps ?? TapToPayEducationStepsFactory.steps(configuration: configuration)
+        self._showingSetUpFlow = showingSetUpFlow
 
         reloadHasPreviousTapToPayUsage()
     }
@@ -70,6 +63,7 @@ final class TapToPayEducationViewModel: ObservableObject {
             if flow == .about && !hasPreviousTapToPayUsage {
                 return Action(title: Localization.setUpTapToPay) { [weak self] in
                     guard let self else { return }
+                    dismiss = true
                     showingSetUpFlow = true
                 }
             } else {

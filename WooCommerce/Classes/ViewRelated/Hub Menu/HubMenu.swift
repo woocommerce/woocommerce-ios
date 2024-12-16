@@ -43,7 +43,8 @@ struct HubMenu: View {
                             cardPresentPaymentService: cardPresentPaymentService,
                             orderController: PointOfSaleOrderController(orderService: orderService))
                     } else {
-                        EmptyView()
+                        // TODO: When we have a singleton for the card payment service, this should not be required.
+                        Text("Error creating card payment service")
                     }
                 }
         }

@@ -305,9 +305,7 @@ private extension WooShippingStore {
                                   _ storage: StorageType) {
         // Remove all previous predefined packages, they will be deleted as they have the `cascade` delete rule
         if let predefinedPackages = storageOption.predefinedPackages {
-            for package in predefinedPackages {
-                storageOption.removeFromPredefinedPackages(package)
-            }
+            storageOption.removeFromPredefinedPackages(NSSet(set: predefinedPackages))
         }
 
         // Creates and adds `storagePredefinedPackages` from `readOnlyOption.predefinedPackages`
@@ -316,9 +314,7 @@ private extension WooShippingStore {
             storagePackage.update(with: readOnlyPackage)
             return storagePackage
         }
-        for storagePredefinedPackage in storagePredefinedPackages {
-            storageOption.addToPredefinedPackages(storagePredefinedPackage)
-        }
+        storageOption.addToPredefinedPackages(NSSet(array: storagePredefinedPackages))
     }
 
     /// Updates, inserts, or prunes the provided Storage.WooShippingPackagesResponse's customPackages
@@ -329,9 +325,7 @@ private extension WooShippingStore {
                               _ storage: StorageType) {
         // Remove all previous custom packages, they will be deleted as they have the `cascade` delete rule
         if let customPackages = storagePackages.customPackages {
-            for customPackage in customPackages {
-                storagePackages.removeFromCustomPackages(customPackage)
-            }
+            storagePackages.removeFromCustomPackages(NSSet(set: customPackages))
         }
 
         // Creates and adds `storageCustomPackages` from `readOnlyPackages.customPackages`
@@ -340,9 +334,7 @@ private extension WooShippingStore {
             storagePackage.update(with: readOnlyPackage)
             return storagePackage
         }
-        for storageCustomPackage in storageCustomPackages {
-            storagePackages.addToCustomPackages(storageCustomPackage)
-        }
+        storagePackages.addToCustomPackages(NSSet(array: storageCustomPackages))
     }
 
     /// Updates, inserts, or prunes the provided Storage.WooShippingPackagesResponse's savedPredefinedPackages
@@ -353,9 +345,7 @@ private extension WooShippingStore {
                                        _ storage: StorageType) {
         // Remove all previous saved predefined packages, they will be deleted as they have the `cascade` delete rule
         if let savedPredefinedPackages = storagePackages.savedPredefinedPackages {
-            for savedPackage in savedPredefinedPackages {
-                storagePackages.removeFromSavedPredefinedPackages(savedPackage)
-            }
+            storagePackages.removeFromSavedPredefinedPackages(NSSet(set: savedPredefinedPackages))
         }
 
         // Creates and adds `storageSavedPredefinedPackages` from `readOnlyPackages.savedPredefinedPackages`
@@ -365,9 +355,7 @@ private extension WooShippingStore {
             handlePredefinedPackage(readOnlyPackage, storagePackage, storage)
             return storagePackage
         }
-        for storageSavedPackage in storageSavedPredefinedPackages {
-            storagePackages.addToSavedPredefinedPackages(storageSavedPackage)
-        }
+        storagePackages.addToSavedPredefinedPackages(NSSet(array: storageSavedPredefinedPackages))
     }
 
     /// Updates or inserts the provided Storage.WooShippingSavedPredefinedPackage's package
@@ -376,13 +364,9 @@ private extension WooShippingStore {
     func handlePredefinedPackage(_ readOnlySavedPackage: Networking.WooShippingSavedPredefinedPackage,
                                  _ storageSavedPackage: Storage.WooShippingSavedPredefinedPackage,
                                  _ storage: StorageType) {
-        if let existingPredefinedPackage = storageSavedPackage.package {
-            existingPredefinedPackage.update(with: readOnlySavedPackage.package)
-        } else {
-            let newStoragePredefinedPackage = storage.insertNewObject(ofType: Storage.WooShippingPredefinedPackage.self)
-            newStoragePredefinedPackage.update(with: readOnlySavedPackage.package)
-            storageSavedPackage.package = newStoragePredefinedPackage
-        }
+        let predefinedPackage = storageSavedPackage.package ?? storage.insertNewObject(ofType: Storage.WooShippingPredefinedPackage.self)
+        predefinedPackage.update(with: readOnlySavedPackage.package)
+        storageSavedPackage.package = predefinedPackage
     }
 }
 

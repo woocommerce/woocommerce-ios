@@ -45,26 +45,51 @@ struct EditStoreListView: View {
                         .disabled(viewModel.isLastSelected(item))
                     }
                 } footer: {
-                    Text("Stores that are not selected will be excluded from the store picker")
+                    Text(Localization.listFooter)
                 }
             }
             .listStyle(.grouped)
-            .navigationTitle("Visible Stores")
+            .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button(Localization.cancelButton) {
                         onDismiss()
                     }
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
+                    Button(Localization.saveButton) {
                         viewModel.didSaveChanges()
                     }
                     .disabled(viewModel.hasChanges == false)
                 }
             }
         }
+    }
+}
+
+private extension EditStoreListView {
+    enum Localization {
+        static let listFooter = NSLocalizedString(
+            "editStoreListView.listFooter",
+            value: "Stores that are not selected will be excluded from the store picker",
+            comment: "Label at the end of the Edit Store List view"
+        )
+        static let cancelButton = NSLocalizedString(
+            "editStoreListView.cancelButton",
+            value: "Cancel",
+            comment: "Button to dismiss the Edit Store List view"
+        )
+        static let saveButton = NSLocalizedString(
+            "editStoreListView.saveButton",
+            value: "Save",
+            comment: "Button to save changes in the Edit Store List view"
+        )
+        static let title = NSLocalizedString(
+            "editStoreListView.title",
+            value: "Visible Stores",
+            comment: "Title of the Edit Store List view"
+        )
     }
 }

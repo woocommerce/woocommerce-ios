@@ -6,7 +6,6 @@ struct EditStoreListViewModelTests {
     // Given
     private let site1 = Site.fake().copy(siteID: 123)
     private let site2 = Site.fake().copy(siteID: 135)
-    
 
     @Test func hasChanges_returns_correct_values() {
         // Given

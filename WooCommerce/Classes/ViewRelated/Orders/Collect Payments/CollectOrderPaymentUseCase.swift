@@ -473,7 +473,9 @@ private extension CollectOrderPaymentUseCase {
             }
         }
 
-        getReceiptStateForFailedPayment(error: error, completion: presentErrorAlert)
+        getReceiptStateForFailedPayment(error: error,
+                                        paymentGatewayID: paymentGatewayAccount.gatewayID,
+                                        completion: presentErrorAlert)
     }
 
     private func presentRetryByRestartingError(error: Error,
@@ -734,7 +736,7 @@ private extension CollectOrderPaymentUseCase {
         presentBackendReceiptAction: @escaping () -> Void,
         noReceiptAction: @escaping () -> Void,
         completion: @escaping (CardReaderTransactionAlertReceiptState) -> Void) {
-        receiptEligibilityUseCase.isEligibleSendingReceiptAfterPayment { isEligibleSendingReceiptAfterPayment in
+        receiptEligibilityUseCase.isEligibleForSuccessfulPaymentEmailReceipts { isEligibleSendingReceiptAfterPayment in
             let receiptState: CardReaderTransactionAlertReceiptState
 
             if let email = self.order.billingAddress?.email, email.isNotEmpty {
@@ -769,6 +771,7 @@ private extension CollectOrderPaymentUseCase {
     }
 
     private func getReceiptStateForFailedPayment(error: Error,
+                                                 paymentGatewayID: String,
                                                  completion: @escaping (CardReaderTransactionFailureAlertReceiptState) -> Void) {
         let isErrorEligibleForSendingFailureReceiptAfterPayment: Bool = {
             switch error {
@@ -787,7 +790,7 @@ private extension CollectOrderPaymentUseCase {
             return completion(.noEmailReceipt)
         }
 
-        receiptEligibilityUseCase.isEligibleSendingReceiptAfterPayment { [weak self] isEligible in
+        receiptEligibilityUseCase.isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: paymentGatewayID) { [weak self] isEligible in
             guard let self else { return }
 
             let receiptState: CardReaderTransactionFailureAlertReceiptState

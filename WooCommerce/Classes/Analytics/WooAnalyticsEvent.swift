@@ -2289,6 +2289,7 @@ extension WooAnalyticsEvent {
         enum ReceiptSource: String {
             case local
             case backend
+            case api
         }
 
         enum LearnMoreLinkSource {
@@ -2316,6 +2317,33 @@ extension WooAnalyticsEvent {
 
         static func learnMoreTapped(source: LearnMoreLinkSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .inPersonPaymentsLearnMoreTapped, properties: ["source": source.trackingValue])
+        }
+
+        static func tapToPayTermsOfServiceAccepted(gatewayID: String?,
+                                                   countryCode: CountryCode) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .tapToPayTermsOfServiceAccepted,
+                              properties: [
+                                Keys.countryCode: countryCode.rawValue,
+                                Keys.gatewayID: safeGatewayID(for: gatewayID)
+                              ])
+        }
+
+        static func cardReaderLocationPermissionPreAlertShown(gatewayID: String?,
+                                                              countryCode: CountryCode) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderLocationPermissionPreAlertShown,
+                              properties: [
+                                Keys.countryCode: countryCode.rawValue,
+                                Keys.gatewayID: safeGatewayID(for: gatewayID)
+                              ])
+        }
+
+        static func cardReaderLocationPermissionRequiredShown(gatewayID: String?,
+                                                              countryCode: CountryCode) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderLocationPermissionRequiredShown,
+                              properties: [
+                                Keys.countryCode: countryCode.rawValue,
+                                Keys.gatewayID: safeGatewayID(for: gatewayID)
+                              ])
         }
     }
 }

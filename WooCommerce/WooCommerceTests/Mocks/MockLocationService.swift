@@ -14,10 +14,9 @@ final class MockLocationService: LocationServiceProtocol {
         currentStatus
     }
 
-    func requestPermission(_ completion: @escaping (LocationAuthorizationStatus) -> Void) {
+    func requestPermission() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.currentStatus = self.requestPermissionStatus
-            completion(self.currentStatus)
             self.notifyObservers()
         }
     }

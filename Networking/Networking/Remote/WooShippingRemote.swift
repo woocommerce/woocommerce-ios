@@ -129,7 +129,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                                          path: path,
                                          availableAsRESTRequest: true)
 
-            let mapper = WooShippingPackagesMapper()
+            let mapper = WooShippingPackagesMapper(siteID: siteID)
             enqueue(request, mapper: mapper, completion: completion)
         }
     }

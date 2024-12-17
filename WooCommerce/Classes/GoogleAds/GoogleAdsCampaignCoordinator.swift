@@ -11,8 +11,12 @@ final class GoogleAdsCampaignCoordinator: NSObject, Coordinator {
     private let siteAdminURL: String
     private let source: WooAnalyticsEvent.GoogleAds.Source
 
-    private let shouldStartCampaignCreation: Bool
-    private let shouldAuthenticateAdminPage: Bool
+    // set internal for testability
+    let shouldStartCampaignCreation: Bool
+
+    // set internal for testability
+    let shouldAuthenticateAdminPage: Bool
+
     private var bottomSheetPresenter: BottomSheetPresenter?
 
     private let analytics: Analytics

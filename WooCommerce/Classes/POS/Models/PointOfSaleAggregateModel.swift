@@ -47,8 +47,6 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     @Published var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
     private var onOnboardingCancellation: (() -> Void)?
 
-    @Published private(set) var eligibleWooCommerceVersionForPOSReceipts: Bool = false
-
     @Published private(set) var itemListState: ItemListState = .initialLoading
 
     @Published private(set) var cart: [CartItem] = []
@@ -81,10 +79,6 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
         publishPaymentMessages()
         publishOrderState()
         setupReaderReconnectionObservation()
-
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sendReceiptsForPointOfSale) {
-           checkWooCommerceVersionForPOSReceipts()
-        }
     }
 }
 
@@ -374,30 +368,8 @@ extension PointOfSaleAggregateModel {
     }
 }
 
-// MARK: - Receipts eligibility checks
-
-extension PointOfSaleAggregateModel {
-    func checkWooCommerceVersionForPOSReceipts() {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return
-        }
-        let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID,
-                                                          systemPluginName: Constants.wooCommercePluginName) { [weak self] wcPlugin in
-            guard let wcPlugin = wcPlugin, wcPlugin.active else { return }
-
-            if VersionHelpers.isVersionSupported(version: wcPlugin.version,
-                                                 minimumRequired: Constants.minimumVersionForPOSReceipts) {
-                self?.eligibleWooCommerceVersionForPOSReceipts = true
-            }
-        }
-        ServiceLocator.stores.dispatch(action)
-    }
-}
-
 private extension PointOfSaleAggregateModel {
     enum Constants {
         static let initialPage: Int = 1
-        static let wooCommercePluginName: String = "WooCommerce"
-        static let minimumVersionForPOSReceipts: String = "9.5"
     }
 }

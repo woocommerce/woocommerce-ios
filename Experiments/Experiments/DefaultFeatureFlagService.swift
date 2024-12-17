@@ -92,11 +92,11 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .paymentsOnboardingInPointOfSale:
             return true
         case .sendReceiptAfterPayment:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .sendReceiptsForPointOfSale:
             return false
         case .tapToPayEducation:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .variableProductsInPointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

@@ -6,6 +6,8 @@ class MockPOSOrderService: POSOrderServiceProtocol {
     var orderToReturn: Order?
 
     var syncOrderWasCalled = false
+    var updateOrderWasCalled = false
+
     func syncOrder(cart: [Yosemite.POSCartItem], order: Yosemite.Order?) async throws -> Yosemite.Order {
         syncOrderWasCalled = true
 
@@ -20,7 +22,20 @@ class MockPOSOrderService: POSOrderServiceProtocol {
     }
 
     func updatePOSOrder(order: Order, recipientEmail: String) async throws {
-        // no-op
+        updateOrderWasCalled = true
+
+        let orderWithUpdatedEmail = MockOrders().sampleOrder().copy(billingAddress: .init(firstName: "",
+                                                                                 lastName: "",
+                                                                                 company: nil,
+                                                                                 address1: "",
+                                                                                 address2: nil,
+                                                                                 city: "",
+                                                                                 state: "",
+                                                                                 postcode: "",
+                                                                                 country: "",
+                                                                                 phone: nil,
+                                                                                 email: recipientEmail))
+        orderToReturn = orderWithUpdatedEmail
     }
 }
 

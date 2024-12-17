@@ -449,8 +449,10 @@ private extension StorePickerViewController {
             updateActionButtonAndTableState(animating: false, enabled: false)
             addStoreButton.isHidden = false
             secondaryActionButton.isHidden = true
+            editListButton.isHidden = true
         case .available(let sites):
             addStoreButton.isHidden = true
+            editListButton.isHidden = sites.filter { $0.isWooCommerceActive }.count <= 1
             if sites.allSatisfy({ $0.isWooCommerceActive == false }) {
                 updateActionButtonAndTableState(animating: false, enabled: false)
             }

@@ -1,12 +1,11 @@
 import Foundation
 import Codegen
 
-/// Represents store options, a list of saved Shipping Label Packages (custom and predefined) for the WooCommerce Shipping extension.
+/// Represents a list of available Shipping Label Packages (custom and predefined) for the WooCommerce Shipping extension.
 ///
 public struct WooShippingPackagesResponse: Equatable, GeneratedFakeable, GeneratedCopiable {
 
-    /// Store options
-    public let storeOptions: ShippingLabelStoreOptions
+    public let siteID: Int64
 
     /// Saved custom packages
     public let customPackages: [WooShippingCustomPackage]
@@ -17,11 +16,11 @@ public struct WooShippingPackagesResponse: Equatable, GeneratedFakeable, Generat
     /// All predefined options
     public let allPredefinedOptions: [WooShippingCarrierPredefinedOptions]
 
-    public init(storeOptions: ShippingLabelStoreOptions,
+    public init(siteID: Int64,
                 customPackages: [WooShippingCustomPackage],
                 savedPredefinedPackages: [WooShippingSavedPredefinedPackage],
                 allPredefinedOptions: [WooShippingCarrierPredefinedOptions]) {
-        self.storeOptions = storeOptions
+        self.siteID = siteID
         self.customPackages = customPackages
         self.savedPredefinedPackages = savedPredefinedPackages
         self.allPredefinedOptions = allPredefinedOptions
@@ -31,9 +30,12 @@ public struct WooShippingPackagesResponse: Equatable, GeneratedFakeable, Generat
 // MARK: Decodable
 extension WooShippingPackagesResponse: Decodable {
     public init(from decoder: Decoder) throws {
+        guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
+            throw WooShippingPackagesDecodingError.missingSiteID
+        }
+
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let storeOptions = try container.decode(ShippingLabelStoreOptions.self, forKey: .storeOptions)
         let packagesData = try container.nestedContainer(keyedBy: PackagesKeys.self, forKey: .packages)
 
         let savedPackagesData = try packagesData.nestedContainer(keyedBy: SavedPackagesKeys.self, forKey: .saved)
@@ -69,7 +71,7 @@ extension WooShippingPackagesResponse: Decodable {
         // since we get the carriers data as a dictionary (key is carrier id)
         allPredefinedOptions.sort { $0.carrierID < $1.carrierID }
 
-        self.init(storeOptions: storeOptions,
+        self.init(siteID: siteID,
                   customPackages: customPackages,
                   savedPredefinedPackages: allSavedPredefinedPackages,
                   allPredefinedOptions: allPredefinedOptions)
@@ -98,7 +100,6 @@ extension WooShippingPackagesResponse: Decodable {
     private enum CodingKeys: String, CodingKey {
         case packages
         case predefined
-        case storeOptions
     }
 
     private enum SavedPackagesKeys: String, CodingKey {
@@ -110,4 +111,11 @@ extension WooShippingPackagesResponse: Decodable {
         case predefined
         case saved
     }
+}
+
+
+// MARK: - Decoding Errors
+//
+enum WooShippingPackagesDecodingError: Error {
+    case missingSiteID
 }

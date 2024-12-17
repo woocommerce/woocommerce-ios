@@ -76,18 +76,15 @@ final class PointOfSaleProductServiceTests: XCTestCase {
         let expectedItems = try await itemProvider.providePointOfSaleItems()
 
         // Then
-        guard let item = expectedItems.first else {
+        guard let item = expectedItems.first,
+            case .simpleProduct(let simpleProduct) = item else {
             return XCTFail("No eligible products")
         }
         XCTAssertEqual(expectedItems.count, expectedNumberOfEligibleProducts)
-        XCTAssertEqual(item.name, expectedProductName)
-        XCTAssertEqual(item.formattedPrice, expectedFormattedPrice)
-
-        guard let product = item as? POSSimpleProduct else {
-            return XCTFail("Expected a POSSimpleProduct")
-        }
-        XCTAssertEqual(product.price, expectedProductPrice)
-        XCTAssertEqual(product.productID, expectedProductID)
+        XCTAssertEqual(simpleProduct.name, expectedProductName)
+        XCTAssertEqual(simpleProduct.formattedPrice, expectedFormattedPrice)
+        XCTAssertEqual(simpleProduct.price, expectedProductPrice)
+        XCTAssertEqual(simpleProduct.productID, expectedProductID)
     }
 
     func test_PointOfSaleItemServiceProtocol_when_eligibility_criteria_applies_then_returns_correct_number_of_items() async throws {
@@ -102,12 +99,12 @@ final class PointOfSaleProductServiceTests: XCTestCase {
         // Then
         XCTAssertEqual(expectedItems.count, expectedNumberOfItems)
 
-        guard let firstEligibleItem = expectedItems.first,
-              let secondEligibleItem = expectedItems.last else {
+        guard case .simpleProduct(let firstEligibleSimpleProduct) = expectedItems.first,
+              case .simpleProduct(let secondEligibleSimpleProduct) = expectedItems.last else {
             return XCTFail("Expected \(expectedNumberOfItems) eligible items. Got \(expectedItems.count) instead.")
         }
-        XCTAssertEqual(firstEligibleItem.name, expectedItemNames.first)
-        XCTAssertEqual(secondEligibleItem.name, expectedItemNames.last)
+        XCTAssertEqual(firstEligibleSimpleProduct.name, expectedItemNames.first)
+        XCTAssertEqual(secondEligibleSimpleProduct.name, expectedItemNames.last)
     }
 
     // MARK: - Query Parameters

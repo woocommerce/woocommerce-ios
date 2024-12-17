@@ -41,7 +41,7 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
     ///
     /// - pageNumber: Number of the page that should be retrieved. If none given, defaults to 1
     ///
-    public func providePointOfSaleItems(pageNumber: Int = 1) async throws -> [POSDisplayableItem] {
+    public func providePointOfSaleItems(pageNumber: Int = 1) async throws -> [POSItem] {
         let productTypes: [ProductType] = isVariableProductsFeatureEnabled ?
         [.simple, .variable] : [.simple]
         let products = try await productsRemote.loadProductsForPointOfSale(for: siteID, productTypes: productTypes, pageNumber: pageNumber)
@@ -60,21 +60,21 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
         return mapProductsToPOSItems(products: filteredProducts)
     }
 
-    // Maps result to POSSimpleProduct, and populate the output with:
+    // Maps result to POSItem, and populate the output with:
     // - Formatted price based on store's currency settings.
     // - Product thumbnail, if any.
-    private func mapProductsToPOSItems(products: [Product]) -> [POSOrderableItem] {
+    private func mapProductsToPOSItems(products: [Product]) -> [POSItem] {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         return products.map { product in
             let formattedPrice = currencyFormatter.formatAmount(product.price) ?? "-"
             let thumbnailSource = product.images.first?.src
 
-            return POSSimpleProduct(id: UUID(),
-                              name: product.name,
-                              formattedPrice: formattedPrice,
-                              productImageSource: thumbnailSource,
-                              productID: product.productID,
-                              price: product.price)
+            return .simpleProduct(POSSimpleProduct(id: UUID(),
+                                                   name: product.name,
+                                                   formattedPrice: formattedPrice,
+                                                   productImageSource: thumbnailSource,
+                                                   productID: product.productID,
+                                                   price: product.price))
         }
     }
 }

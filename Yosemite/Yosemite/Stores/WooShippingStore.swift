@@ -72,10 +72,12 @@ private extension WooShippingStore {
                        customPackage: WooShippingCustomPackage? = nil,
                        predefinedOption: WooShippingPredefinedSavedOption? = nil,
                        completion: @escaping (Result<WooShippingCreatePackageResponse, PackageCreationError>) -> Void) {
-        remote.createPackage(siteID: siteID, customPackage: customPackage, predefinedOption: predefinedOption) { result in
+        remote.createPackage(siteID: siteID, customPackage: customPackage, predefinedOption: predefinedOption) { [weak self] result in
             switch result {
             case .success(let packages):
-                completion(.success(packages))
+                self?.upsertCreatePackagesResponseInBackground(readOnlyPackages: packages, siteID: siteID, onCompletion: {
+                    completion(.success(packages))
+                })
             case .failure(let error):
                 completion(.failure(PackageCreationError(error: error)))
             }
@@ -229,7 +231,6 @@ private extension WooShippingStore {
 // MARK: - Storage
 private extension WooShippingStore {
     /// Updates (OR Inserts) the specified ReadOnly WooShippingPackagesResponse Entities *in a background thread*.
-    /// Also deletes existing packages if requested.
     /// `onCompletion` will be called on the main thread!
     ///
     func upsertPackagesResponseInBackground(readOnlyPackages: Networking.WooShippingPackagesResponse,
@@ -238,6 +239,18 @@ private extension WooShippingStore {
         storageManager.performAndSave({ [weak self] storage in
             guard let self else { return }
             upsertPackagesResponse(readOnlyPackages: readOnlyPackages, in: storage)
+        }, completion: onCompletion, on: .main)
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly WooShippingCreatePackageResponse Entities *in a background thread*.
+    /// `onCompletion` will be called on the main thread!
+    ///
+    func upsertCreatePackagesResponseInBackground(readOnlyPackages: Networking.WooShippingCreatePackageResponse,
+                                                  siteID: Int64,
+                                                  onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
+            upsertCreatePackageResponse(readOnlyPackages: readOnlyPackages, siteID: siteID, in: storage)
         }, completion: onCompletion, on: .main)
     }
 

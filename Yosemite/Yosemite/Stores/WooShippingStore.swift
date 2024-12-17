@@ -86,13 +86,13 @@ private extension WooShippingStore {
 
     func deletePackage(siteID: Int64,
                        packageID: String,
-                       completion: @escaping (Result<WooShippingCreatePackageResponse, PackageCreationError>) -> Void) {
+                       completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void) {
         remote.deletePackage(siteID: siteID, packageID: packageID) { result in
             switch result {
             case .success(let packages):
                 completion(.success(packages))
             case .failure(let error):
-                completion(.failure(PackageCreationError(error: error)))
+                completion(.failure(error))
             }
         }
     }

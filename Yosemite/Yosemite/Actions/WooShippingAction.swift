@@ -12,7 +12,7 @@ public enum WooShippingAction: Action {
     ///
     case deletePackage(siteID: Int64,
                        packageID: String,
-                       completion: (Result<WooShippingCreatePackageResponse, PackageCreationError>) -> Void)
+                       completion: (Result<WooShippingCreatePackageResponse, Error>) -> Void)
 
     /// Fetch list of shipping label rates for the order.
     ///

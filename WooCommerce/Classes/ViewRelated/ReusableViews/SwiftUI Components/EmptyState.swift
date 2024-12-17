@@ -11,17 +11,13 @@ struct EmptyState: View {
     var body: some View {
         VStack {
             if let image = image {
-                // Downscale the bigger images to the max width
-                ViewThatFits {
-                    Image(uiImage: image)
-
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFit()
-                }
-                .frame(maxWidth: Constants.maxImageWidth)
-                .accessibility(hidden: true)
-                .padding(.bottom, Constants.imageBottomSpacing)
+                Image(uiImage: image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: Constants.maxImageWidth)
+                    .fixedSize()
+                    .accessibility(hidden: true)
+                    .padding(.bottom, Constants.imageBottomSpacing)
             }
 
             Text(title)

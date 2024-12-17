@@ -253,8 +253,22 @@ private extension WooShippingStore {
 
         storagePackages.update(with: readOnlyPackages)
         handleAllPredefinedOptions(readOnlyPackages, storagePackages, storage)
-        handleCustomPackages(readOnlyPackages, storagePackages, storage)
+        handleCustomPackages(readOnlyPackages.customPackages, storagePackages, storage)
         handleSavedPredefinedPackages(readOnlyPackages, storagePackages, storage)
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly `WooShippingCreatePackageResponse` Entities into the Storage Layer.
+    ///
+    /// - Parameters:
+    ///     - readOnlyPackages: Remote `WooShippingCreatePackageResponse` to be persisted.
+    ///     - siteID: Site ID to be associated with the packages.
+    ///     - storage: Where we should save all the things!
+    ///
+    func upsertCreatePackageResponse(readOnlyPackages: Networking.WooShippingCreatePackageResponse, siteID: Int64, in storage: StorageType) {
+        let storagePackages = storage.loadPackages(siteID: siteID) ?? storage.insertNewObject(ofType: Storage.WooShippingPackagesResponse.self)
+        storagePackages.siteID = siteID
+
+        handleCustomPackages(readOnlyPackages.customPackages, storagePackages, storage)
     }
 
     /// Updates, inserts, or prunes the provided Storage.WooShippingPackagesResponse's allPredefinedOptions
@@ -318,9 +332,9 @@ private extension WooShippingStore {
     }
 
     /// Updates, inserts, or prunes the provided Storage.WooShippingPackagesResponse's customPackages
-    /// using the provided read-only WooShippingPackagesResponse's customPackages
+    /// using the provided read-only WooShippingCustomPackages
     ///
-    func handleCustomPackages(_ readOnlyPackages: Networking.WooShippingPackagesResponse,
+    func handleCustomPackages(_ readOnlyCustomPackages: [Networking.WooShippingCustomPackage],
                               _ storagePackages: Storage.WooShippingPackagesResponse,
                               _ storage: StorageType) {
         // Remove all previous custom packages, they will be deleted as they have the `cascade` delete rule
@@ -329,7 +343,7 @@ private extension WooShippingStore {
         }
 
         // Creates and adds `storageCustomPackages` from `readOnlyPackages.customPackages`
-        let storageCustomPackages = readOnlyPackages.customPackages.map { readOnlyPackage -> Storage.WooShippingCustomPackage in
+        let storageCustomPackages = readOnlyCustomPackages.map { readOnlyPackage -> Storage.WooShippingCustomPackage in
             let storagePackage = storage.insertNewObject(ofType: Storage.WooShippingCustomPackage.self)
             storagePackage.update(with: readOnlyPackage)
             return storagePackage

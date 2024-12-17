@@ -36,6 +36,7 @@ struct EditStoreListView: View {
                                           subtitle: item.url,
                                           selected: viewModel.isSelected(item),
                                           displayMode: .compact,
+                                          verticalSpacing: 0,
                                           selectionStyle: .checkcircle)
                         .listRowInsets(.zero)
                         .onTapGesture {
@@ -47,7 +48,7 @@ struct EditStoreListView: View {
                     Text("Stores that are not selected will be excluded from the store picker")
                 }
             }
-            .listStyle(.plain)
+            .listStyle(.grouped)
             .navigationTitle("Visible Stores")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

@@ -279,6 +279,9 @@ extension MockStorageManager {
             let newSavedPackage = viewStorage.insertNewObject(ofType: StorageWooShippingSavedPredefinedPackage.self)
             newSavedPackage.update(with: savedPackage)
             newPackages.addToSavedPredefinedPackages(newSavedPackage)
+            let newPackage = viewStorage.insertNewObject(ofType: StorageWooShippingPredefinedPackage.self)
+            newPackage.update(with: savedPackage.package)
+            newSavedPackage.package = newPackage
         }
         return newPackages
     }

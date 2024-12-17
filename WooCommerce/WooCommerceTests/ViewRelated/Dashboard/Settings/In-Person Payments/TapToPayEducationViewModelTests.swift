@@ -4,15 +4,14 @@ import Combine
 
 struct TapToPayEducationViewModelTests {
     private let cardReaderSupportDeterminer: MockCardReaderSupportDeterminer
-    @Binding private var showingSetUpFlow: Bool = false
 
     init() {
         cardReaderSupportDeterminer = MockCardReaderSupportDeterminer()
     }
 
     private func create(flow: TapToPayEducationViewModel.Flow,
-                        steps: [TapToPayEducationStepViewModel]? = nil) -> TapToPayEducationViewModel {
-        showingSetUpFlow = false
+                        steps: [TapToPayEducationStepViewModel]? = nil,
+                        completion: @escaping (TapToPayEducationResult) -> Void = { _ in }) -> TapToPayEducationViewModel {
         let steps = steps ?? [.init(title: "1", imageName: "", description: ""),
                               .init(title: "2", imageName: "", description: ""),
                               .init(title: "3", imageName: "", description: "")]
@@ -20,7 +19,7 @@ struct TapToPayEducationViewModelTests {
                                           steps: steps,
                                           siteID: 123,
                                           cardReaderSupportDeterminer: cardReaderSupportDeterminer,
-                                          showingSetUpFlow: $showingSetUpFlow)
+                                          completion: completion)
     }
 
     // MARK: - Primary Action
@@ -48,7 +47,10 @@ struct TapToPayEducationViewModelTests {
     @Test func primaryAction_when_about_and_no_previous_tap_to_pay_usage() {
         // Given
         cardReaderSupportDeterminer.shouldReturnHasPreviousTapToPayUsage = false
-        let sut = create(flow: .about)
+        var result: TapToPayEducationResult?
+        let sut = create(flow: .about) {
+            result = $0
+        }
 
         // When & Then
         #expect(sut.primaryAction.title == "Next")
@@ -64,13 +66,17 @@ struct TapToPayEducationViewModelTests {
         sut.primaryAction.action()
 
         #expect(sut.dismiss)
-        #expect(showingSetUpFlow)
+        sut.onDisappear()
+        #expect(result == .setUpTapToPay)
     }
 
     @Test func primaryAction_when_about_and_has_previous_tap_to_pay_usage() async throws {
         // Given
         cardReaderSupportDeterminer.shouldReturnHasPreviousTapToPayUsage = true
-        let sut = create(flow: .about)
+        var result: TapToPayEducationResult?
+        let sut = create(flow: .about) {
+            result = $0
+        }
 
         var cancellables = Set<AnyCancellable>()
         await withCheckedContinuation { continuation in
@@ -97,7 +103,8 @@ struct TapToPayEducationViewModelTests {
         sut.primaryAction.action()
 
         #expect(sut.dismiss)
-        #expect(!showingSetUpFlow)
+        sut.onDisappear()
+        #expect(result == .done)
     }
 
     // MARK: - Secondary Action

@@ -4,11 +4,9 @@ import SwiftUI
 struct TapToPayEducationView: View {
     @StateObject private var viewModel: TapToPayEducationViewModel
     @Environment(\.dismiss) private var dismiss
-    private var completion: () -> Void
 
-    init(viewModel: TapToPayEducationViewModel, completion: @escaping () -> Void = {}) {
+    init(viewModel: TapToPayEducationViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel)
-        self.completion = completion
     }
 
     var body: some View {
@@ -67,7 +65,7 @@ struct TapToPayEducationView: View {
             viewModel.onAppear()
         }
         .onDisappear {
-            completion()
+            viewModel.onDisappear()
         }
     }
 }

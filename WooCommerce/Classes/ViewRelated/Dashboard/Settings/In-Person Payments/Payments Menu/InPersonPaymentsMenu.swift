@@ -76,9 +76,14 @@ struct InPersonPaymentsMenu: View {
                                 }
                             }) {
                                 TapToPayEducationView(viewModel: .init(flow: .about,
-                                                                       showingSetUpFlow: $viewModel.presentSetUpTryOutTapToPay), completion: {
-                                    viewModel.presentAboutTapToPay = false
-                                })
+                                                                       completion: { result in
+                                    switch result {
+                                    case .setUpTapToPay:
+                                        viewModel.presentSetUpTryOutTapToPay = true
+                                    default:
+                                        break
+                                    }
+                                }))
                             }
                         } else {
                             Button {

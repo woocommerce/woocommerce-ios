@@ -2,6 +2,11 @@ import Foundation
 import Yosemite
 import protocol WooFoundation.Analytics
 
+enum TapToPayEducationResult {
+    case done
+    case setUpTapToPay
+}
+
 final class TapToPayEducationViewModel: ObservableObject {
     struct Action {
         let title: String
@@ -14,10 +19,8 @@ final class TapToPayEducationViewModel: ObservableObject {
     }
 
     @Published var selectedStep = 0
-    @Published var steps: [TapToPayEducationStepViewModel]
+    @Published private(set) var steps: [TapToPayEducationStepViewModel]
     @Published private(set) var isInteractiveDismissDisabled = false
-
-    @Binding private var showingSetUpFlow: Bool
     @Published private(set) var hasPreviousTapToPayUsage = false
     @Published var shouldShowContactlessLimit: Bool = false
     @Published private(set) var dismiss: Bool = false
@@ -27,6 +30,8 @@ final class TapToPayEducationViewModel: ObservableObject {
     private let siteID: Int64
     private let configuration: CardPresentPaymentsConfiguration
     private let analytics: Analytics
+    private let completion: (TapToPayEducationResult) -> Void
+    private var result: TapToPayEducationResult = .done
 
     init(flow: Flow = .onboarding,
          steps: [TapToPayEducationStepViewModel]? = nil,
@@ -34,7 +39,7 @@ final class TapToPayEducationViewModel: ObservableObject {
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          cardReaderSupportDeterminer: CardReaderSupportDetermining? = nil,
          analytics: Analytics = ServiceLocator.analytics,
-         showingSetUpFlow: Binding<Bool> = .constant(false)) {
+         completion: @escaping (TapToPayEducationResult) -> Void) {
         self.flow = flow
         self.cardReaderSupportDeterminer = cardReaderSupportDeterminer ?? CardReaderSupportDeterminer(siteID: siteID, configuration: configuration)
         self.siteID = siteID
@@ -42,7 +47,7 @@ final class TapToPayEducationViewModel: ObservableObject {
         self.isInteractiveDismissDisabled = flow == .onboarding ? true : false
         self.analytics = analytics
         self.steps = steps ?? TapToPayEducationStepsFactory.steps(configuration: configuration)
-        self._showingSetUpFlow = showingSetUpFlow
+        self.completion = completion
 
         reloadHasPreviousTapToPayUsage()
     }
@@ -67,8 +72,8 @@ final class TapToPayEducationViewModel: ObservableObject {
                 return Action(title: Localization.setUpTapToPay) { [weak self] in
                     guard let self else { return }
                     analytics.track(.setUpTryOutTapToPayOnIPhoneTapped)
+                    result = .setUpTapToPay
                     dismiss = true
-                    showingSetUpFlow = true
                 }
             } else {
                 return Action(title: Localization.done) { [weak self] in
@@ -127,6 +132,10 @@ final class TapToPayEducationViewModel: ObservableObject {
 
     func onAppear() {
         analytics.track(.tapToPayEducationShown)
+    }
+
+    func onDisappear() {
+        completion(result)
     }
 }
 

@@ -60,7 +60,7 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
         return mapProductsToPOSItems(products: filteredProducts)
     }
 
-    // Maps result to POSProduct, and populate the output with:
+    // Maps result to POSSimpleProduct, and populate the output with:
     // - Formatted price based on store's currency settings.
     // - Product thumbnail, if any.
     private func mapProductsToPOSItems(products: [Product]) -> [POSOrderableItem] {
@@ -69,7 +69,7 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
             let formattedPrice = currencyFormatter.formatAmount(product.price) ?? "-"
             let thumbnailSource = product.images.first?.src
 
-            return POSProduct(id: UUID(),
+            return POSSimpleProduct(id: UUID(),
                               name: product.name,
                               formattedPrice: formattedPrice,
                               productImageSource: thumbnailSource,

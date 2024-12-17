@@ -2,7 +2,7 @@ import Testing
 import Foundation
 @testable import WooCommerce
 import protocol Yosemite.POSOrderableItem
-@testable import struct Yosemite.POSProduct
+@testable import struct Yosemite.POSSimpleProduct
 import struct Yosemite.Order
 import Combine
 

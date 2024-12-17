@@ -1,7 +1,7 @@
 import Foundation
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import protocol Yosemite.POSDisplayableItem
-@testable import struct Yosemite.POSProduct
+@testable import struct Yosemite.POSSimpleProduct
 
 final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
     var items: [POSDisplayableItem] = []

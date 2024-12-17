@@ -83,8 +83,8 @@ final class PointOfSaleProductServiceTests: XCTestCase {
         XCTAssertEqual(item.name, expectedProductName)
         XCTAssertEqual(item.formattedPrice, expectedFormattedPrice)
 
-        guard let product = item as? POSProduct else {
-            return XCTFail("Expected a POSProduct")
+        guard let product = item as? POSSimpleProduct else {
+            return XCTFail("Expected a POSSimpleProduct")
         }
         XCTAssertEqual(product.price, expectedProductPrice)
         XCTAssertEqual(product.productID, expectedProductID)

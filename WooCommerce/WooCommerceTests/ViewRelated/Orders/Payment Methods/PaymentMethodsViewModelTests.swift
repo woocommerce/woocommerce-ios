@@ -1015,6 +1015,101 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertEqual(siteID, order.siteID)
         XCTAssertEqual(orderID, order.orderID)
     }
+
+    func test_collectPayment_when_ttp_payment_error_then_onFailure_called() {
+        // Given
+        storage.insertSampleOrder(readOnlyOrder: .fake())
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .selectedPaymentGatewayAccount(onCompletion) = action {
+                onCompletion(PaymentGatewayAccount.fake())
+            }
+        }
+
+        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .failure(NSError(domain: "Error", code: 0, userInfo: nil)))
+        let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
+        let dependencies = Dependencies(
+            cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
+            stores: stores,
+            storage: storage)
+        let viewModel = PaymentMethodsViewModel(total: "12",
+                                                formattedTotal: "$12.00",
+                                                flow: .simplePayment,
+                                                channel: .storeManagement,
+                                                dependencies: dependencies)
+
+        // When
+        var onFailureCalled: Bool = false
+        viewModel.collectPayment(using: .localMobile, on: UIViewController(), useCase: useCase, onSuccess: {}, onFailure: {
+            onFailureCalled = true
+        })
+
+        // Then
+        XCTAssertTrue(onFailureCalled)
+    }
+
+    func test_collectPayment_when_ttp_payment_error_requiresFallbackPaymentMethod_then_onFailure_not_called() {
+        // Given
+        storage.insertSampleOrder(readOnlyOrder: .fake())
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .selectedPaymentGatewayAccount(onCompletion) = action {
+                onCompletion(PaymentGatewayAccount.fake())
+            }
+        }
+
+        let error: CardReaderServiceError = .paymentCapture(underlyingError: .paymentDeclinedByPaymentProcessorAPI(declineReason: .pinRequired))
+        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .failure(error))
+        let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
+        let dependencies = Dependencies(
+            cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
+            stores: stores,
+            storage: storage)
+        let viewModel = PaymentMethodsViewModel(total: "12",
+                                                formattedTotal: "$12.00",
+                                                flow: .simplePayment,
+                                                channel: .storeManagement,
+                                                dependencies: dependencies)
+
+        // When
+        var onFailureCalled: Bool = false
+        viewModel.collectPayment(using: .localMobile, on: UIViewController(), useCase: useCase, onSuccess: {}, onFailure: {
+            onFailureCalled = true
+        })
+
+        // Then
+        XCTAssertFalse(onFailureCalled)
+    }
+
+    func test_collectPayment_when_card_reader_payment_error_requiresFallbackPaymentMethod_then_onFailure_called() {
+        // Given
+        storage.insertSampleOrder(readOnlyOrder: .fake())
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .selectedPaymentGatewayAccount(onCompletion) = action {
+                onCompletion(PaymentGatewayAccount.fake())
+            }
+        }
+
+        let error: CardReaderServiceError = .paymentCapture(underlyingError: .paymentDeclinedByPaymentProcessorAPI(declineReason: .pinRequired))
+        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .failure(error))
+        let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
+        let dependencies = Dependencies(
+            cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
+            stores: stores,
+            storage: storage)
+        let viewModel = PaymentMethodsViewModel(total: "12",
+                                                formattedTotal: "$12.00",
+                                                flow: .simplePayment,
+                                                channel: .storeManagement,
+                                                dependencies: dependencies)
+
+        // When
+        var onFailureCalled: Bool = false
+        viewModel.collectPayment(using: .bluetoothScan, on: UIViewController(), useCase: useCase, onSuccess: {}, onFailure: {
+            onFailureCalled = true
+        })
+
+        // Then
+        XCTAssertTrue(onFailureCalled)
+    }
 }
 
 private extension PaymentMethodsViewModelTests {

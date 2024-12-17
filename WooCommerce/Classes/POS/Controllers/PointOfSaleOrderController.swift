@@ -4,6 +4,8 @@ import protocol Yosemite.POSOrderServiceProtocol
 import struct Yosemite.Order
 import struct Yosemite.POSCartItem
 import class WooFoundation.CurrencyFormatter
+import enum Yosemite.OrderAction
+import Yosemite
 
 protocol PointOfSaleOrderControllerProtocol {
     var orderStatePublisher: AnyPublisher<PointOfSaleInternalOrderState, Never> { get }
@@ -14,6 +16,7 @@ protocol PointOfSaleOrderControllerProtocol {
     func syncOrder(for cartProducts: [CartItem], retryHandler: @escaping () async -> Void) async
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
+    func markCashOrderAsPaid() async throws
 }
 
 final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
@@ -75,6 +78,29 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
             return
         }
         try await orderService.sendReceipt(order: order, recipientEmail: recipientEmail)
+    }
+    @MainActor
+    func markCashOrderAsPaid() async throws {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            throw NSError(domain: "site id error", code: 0)
+        }
+
+        guard let order = order else {
+            throw NSError(domain: "order error", code: 0)
+        }
+        
+        let _ = try await withCheckedThrowingContinuation { continuation in
+            let modifiedOrder = order.copy(status: .completed,
+                                           paymentMethodID: "cash")
+            let fieldsToUpdate: [OrderUpdateField] = [.status, .paymentMethodID]
+            ServiceLocator.stores.dispatch(OrderAction.updateOrder(siteID: siteID,
+                                                                   order: order,
+                                                                   giftCard: nil,
+                                                                   fields: fieldsToUpdate,
+                                                                   onCompletion: { result in
+                continuation.resume(with: result)
+            }))
+        }
     }
 
     func clearOrder() {

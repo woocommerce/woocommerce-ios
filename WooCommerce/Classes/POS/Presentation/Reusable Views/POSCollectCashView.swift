@@ -35,7 +35,9 @@ struct POSCollectCashView: View {
                 .focused()
                 .padding()
                 .onSubmit {
-                    markComplete()
+                    Task { @MainActor in
+                        await markComplete()
+                    }
                 }
 
             if let errorMessage = errorMessage {
@@ -45,7 +47,9 @@ struct POSCollectCashView: View {
             }
 
             Button(action: {
-                markComplete()
+                Task { @MainActor in
+                    await markComplete()
+                }
             }, label: {
                 HStack(spacing: Constants.buttonSpacing) {
                     if isLoading {
@@ -73,12 +77,16 @@ struct POSCollectCashView: View {
         .animation(.easeInOut, value: errorMessage)
         .onChange(of: textFieldAmountInput) { amount in
             debugPrint("🍍 \(amount)")
+            // TODO:
+            // Need to do amount validation for showing currency and decimal input
             errorMessage = nil
         }
     }
 
-    private func markComplete() {
-        // no-op
+    private func markComplete() async {
+        Task { @MainActor in
+            try await posModel.markCashOrderAsPaid()
+        }
     }
 }
 

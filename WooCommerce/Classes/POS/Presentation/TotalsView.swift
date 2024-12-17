@@ -13,6 +13,8 @@ struct TotalsView: View {
     // The source of truth for whether totals _are_ showing; separate from whether they
     // _should be_ showing, so that we can animate the change.
     @State private var isShowingTotalsFields: Bool = false
+    @State private var isShowingCollectCashView: Bool = false
+
     private var shouldShowTotalsFields: Bool {
         viewHelper.shouldShowTotalsFields(for: posModel.paymentState)
     }
@@ -27,7 +29,7 @@ struct TotalsView: View {
                 if posModel.paymentState == .acceptingCash {
                     // TODO: View for accepting cash.
                     // TODO: The prop we need to pass for navigating back, affects the payment state as we need to exit from .acceptingCash state
-                    POSCollectCashView(isShowingCollectCashView: .constant(true))
+                    POSCollectCashView(isShowingCollectCashView: $isShowingCollectCashView)
                 } else {
                     VStack(alignment: .center) {
                         Spacer()
@@ -57,11 +59,7 @@ struct TotalsView: View {
                                     .layoutPriority(2)
                             }
                             Button(action: {
-                                Task { @MainActor in
-                                    Task { @MainActor in
-                                        await posModel.collectCashPayment()
-                                    }
-                                }
+                                posModel.collectCashPaymentTapped()
                             }, label: {
                                 Text("Cash payment")
                                     .foregroundColor(.posPrimaryText)

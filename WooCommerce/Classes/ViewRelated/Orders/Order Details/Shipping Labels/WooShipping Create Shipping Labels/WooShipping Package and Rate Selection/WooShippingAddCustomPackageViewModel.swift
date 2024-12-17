@@ -22,18 +22,17 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
         self.siteID = siteID
-        fieldValues = [
-            .length: selectedPackage?.length ?? "",
-            .width: selectedPackage?.width ?? "",
-            .height: selectedPackage?.height ?? ""
-        ]
-        packageType = {
-            guard let rawPackageType = selectedPackage?.packageType, let packageType = WooShippingPackageType(rawValue: rawPackageType) else {
-                return .box
-            }
-            return packageType
-        }()
-
+        if let selectedPackage {
+            fieldValues = [
+                .length: selectedPackage.length,
+                .width: selectedPackage.width,
+                .height: selectedPackage.height
+            ]
+            packageType = WooShippingPackageType(rawValue: selectedPackage.packageType) ?? .box
+        } else {
+            fieldValues = [:]
+            packageType = .box
+        }
     }
 
     // Field values are invalid if one of them is empty

@@ -5,6 +5,8 @@ struct PaymentsActionButtons: View {
     @Binding var isShowingSendReceiptView: Bool
     @Binding private(set) var isShowingReceiptNotEligibleBanner: Bool
 
+    private let receiptEligibilityUseCase = ReceiptEligibilityUseCase()
+
     private var shouldShowSendReceiptButton: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sendReceiptsForPointOfSale)
     }
@@ -23,10 +25,8 @@ struct PaymentsActionButtons: View {
 private extension PaymentsActionButtons {
     var sendReceiptButton: some View {
         Button(action: {
-            if posModel.eligibleWooCommerceVersionForPOSReceipts {
-                isShowingSendReceiptView = true
-            } else {
-                isShowingReceiptNotEligibleBanner = true
+            Task { @MainActor in
+                await handleSendReceiptAction()
             }
         }, label: {
             HStack(spacing: Constants.buttonSpacing) {
@@ -58,6 +58,25 @@ private extension PaymentsActionButtons {
         .foregroundColor(Color.posPrimaryTextInverted)
         .background(Color.posOverlayFillInverted)
         .cornerRadius(Constants.buttonCornerRadius)
+    }
+}
+
+private extension PaymentsActionButtons {
+    func handleSendReceiptAction() async {
+        let isEligible = await checkReceiptEligibility()
+        if isEligible {
+            isShowingSendReceiptView = true
+        } else {
+            isShowingReceiptNotEligibleBanner = true
+        }
+    }
+
+    func checkReceiptEligibility() async -> Bool {
+        await withCheckedContinuation { continuation in
+            receiptEligibilityUseCase.isEligibleForPointOfSaleReceipts { isEligible in
+                continuation.resume(returning: isEligible)
+            }
+        }
     }
 }
 

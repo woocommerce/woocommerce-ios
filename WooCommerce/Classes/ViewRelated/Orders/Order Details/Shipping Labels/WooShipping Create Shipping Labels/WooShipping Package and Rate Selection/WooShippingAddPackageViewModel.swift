@@ -13,6 +13,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.stores = stores
+        configureResultsController()
     }
 
     @Published private(set) var isLoadingPackages: Bool = false
@@ -69,6 +70,28 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         return nil
     }
 
+    // MARK: - Storage
+
+    /// Packages
+    ///
+    private lazy var packagesResultsController: ResultsController<StorageWooShippingPackagesResponse> = {
+        let storageManager = ServiceLocator.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        return ResultsController<StorageWooShippingPackagesResponse>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
+    func configureResultsController() {
+        packagesResultsController.onDidChangeContent = transformLoadedPackages
+        packagesResultsController.onDidResetContent = transformLoadedPackages
+
+        do {
+            try packagesResultsController.performFetch()
+            transformLoadedPackages()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
     // MARK: - loading
 
     func loadPackages() {
@@ -76,28 +99,28 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
         isLoadingPackages = true
 
-        let loadPackagesAction = WooShippingAction.loadPackages(siteID: siteID) { result in
-            switch result {
-            case .success(let packagesResult):
-                self.transformLoadedPackages(packagesResult)
-            case .failure:
-                break
+        let loadPackagesAction = WooShippingAction.loadPackages(siteID: siteID) { [weak self] result in
+            guard let self else { return }
+            if case .failure(let error) = result {
+                DDLogError("⛔️ Error loading packages for Woo Shipping labels: \(error)")
             }
-            self.isLoadingPackages = false
+            isLoadingPackages = false
         }
-
-        ServiceLocator.stores.dispatch(loadPackagesAction)
+        stores.dispatch(loadPackagesAction)
     }
 
     // transform packages
-    private func transformLoadedPackages(_ packagesResult: WooShippingPackagesResponse) {
-        let customSavedPackages = packagesResult.customPackages.map {
+    private func transformLoadedPackages() {
+        guard let packages = packagesResultsController.fetchedObjects.first else {
+            return
+        }
+        let customSavedPackages = packages.customPackages.map {
             return $0.toPackageData()
         }
-        let predefinedSavedPackages = packagesResult.savedPredefinedPackages.map {
+        let predefinedSavedPackages = packages.savedPredefinedPackages.map {
             return $0.toPackageData()
         }
-        var carrierPackages: [WooShippingCarrierPackages] = packagesResult.allPredefinedOptions.compactMap {
+        var carrierPackages: [WooShippingCarrierPackages] = packages.allPredefinedOptions.compactMap {
             return $0.toCarrierPackages()
         }
         if self.carrierPackages.isNotEmpty {
@@ -126,48 +149,12 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         self.carrierPackages = carrierPackages
         self.carrierTabs = carrierTabs
 
-        self.allPredefinedOptions = packagesResult.allPredefinedOptions
+        self.allPredefinedOptions = packages.allPredefinedOptions
 
         starredCarriersPackages = Set(predefinedSavedPackages.map { $0.id })
 
         if selectedCarriersTabIndex == nil {
             self.selectedCarriersTabIndex = carrierPackages.isEmpty ? nil : 0
-        }
-    }
-
-    private func transformSavedPackages(_ response: WooShippingCreatePackageResponse) {
-        // helper function for creating jointIDs for easier checking if package should be used or not
-        func jointID(carrierID: String, packageID: String) -> String {
-            return "\(carrierID)-\(packageID)"
-        }
-
-        var jointIDs: [String] = []
-        for option in response.predefinedOptions {
-            for packageID in option.predefinedPackageIDs {
-                jointIDs.append(jointID(carrierID: option.id, packageID: packageID))
-            }
-        }
-
-        var allPredefinedSaved: [any WooShippingPackageDataRepresentable] = []
-
-        // use predefined saved packages from list of all packages
-        // since the response gives us IDs we need to get them manually from the list
-        for carrier in self.allPredefinedOptions {
-            let carrierID = carrier.carrierID
-            for option in carrier.predefinedOptions {
-                for package in option.predefinedPackages {
-                    if jointIDs.contains(jointID(carrierID: carrierID, packageID: package.id)) {
-                        allPredefinedSaved.append(package.toPackageData(groupTitle: option.title,
-                                                                        sourceID: option.providerID))
-                    }
-                }
-            }
-        }
-
-        self.predefinedSavedPackages = allPredefinedSaved
-
-        self.customSavedPackages = response.customPackages.map {
-            return $0.toPackageData()
         }
     }
 
@@ -186,17 +173,13 @@ final class WooShippingAddPackageViewModel: ObservableObject {
             }
 
             let predefined = WooShippingPredefinedSavedOption(id: carrierID, predefinedPackageIDs: [packageID])
-            let createAction = WooShippingAction.createPackage(siteID: siteID, customPackage: nil, predefinedOption: predefined) { result in
-                switch result {
-                case .success(let response):
-                    self.transformSavedPackages(response)
-                case .failure:
-                    // TODO: should we undo the starring of the package if request fails?
-                    self.starredCarriersPackages.remove(packageID)
+            let createAction = WooShippingAction.createPackage(siteID: siteID, customPackage: nil, predefinedOption: predefined) { [weak self] result in
+                if case .failure(let error) = result {
+                    DDLogError("⛔️ Error saving Woo Shipping package: \(error)")
+                    self?.starredCarriersPackages.remove(packageID)
                 }
             }
-
-            ServiceLocator.stores.dispatch(createAction)
+            stores.dispatch(createAction)
         }
     }
 

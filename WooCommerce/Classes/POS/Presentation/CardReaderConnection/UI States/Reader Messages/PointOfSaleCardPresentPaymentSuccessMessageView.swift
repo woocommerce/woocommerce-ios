@@ -72,7 +72,7 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
     }
 
     private var checkmarkColor: Color {
-        Color.posSecondaryBackground
+        Color.primary
     }
 }
 

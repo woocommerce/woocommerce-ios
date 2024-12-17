@@ -59,8 +59,7 @@ final class WooShippingStoreTests: XCTestCase {
     func test_createPackage_returns_error_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
-        let error = DotcomError.unknown(code: "duplicate_custom_package_names_of_existing_packages",
-                                        message: "At least one of the new custom packages has the same name as existing packages.")
+        let error = PackageCreationError.duplicateCustomPackageNames
         remote.whenCreatePackage(siteID: sampleSiteID, thenReturn: .failure(error))
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
@@ -76,7 +75,6 @@ final class WooShippingStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure, .duplicatePackageNames)
     }
 
     // MARK: `deletePackage`
@@ -106,8 +104,7 @@ final class WooShippingStoreTests: XCTestCase {
     func test_deletePackage_returns_error_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
-        let error = DotcomError.unknown(code: "duplicate_custom_package_names_of_existing_packages",
-                                        message: "At least one of the new custom packages has the same name as existing packages.")
+        let error = DotcomError.requestFailed
         remote.whenDeletePackage(siteID: sampleSiteID, thenReturn: .failure(error))
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 

@@ -2,17 +2,21 @@ import Foundation
 import SwiftUI
 import Combine
 import Yosemite
+import protocol Storage.StorageManagerType
 
 final class WooShippingAddPackageViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
+    private let storage: StorageManagerType
 
     private let starAnimation: Animation = .spring(duration: 0.2)
 
     init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         storage: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.stores = stores
+        self.storage = storage
         configureResultsController()
     }
 
@@ -75,9 +79,8 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     /// Packages
     ///
     private lazy var packagesResultsController: ResultsController<StorageWooShippingPackagesResponse> = {
-        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        return ResultsController<StorageWooShippingPackagesResponse>(storageManager: storageManager, matching: predicate, sortedBy: [])
+        return ResultsController<StorageWooShippingPackagesResponse>(storageManager: storage, matching: predicate, sortedBy: [])
     }()
 
     func configureResultsController() {

@@ -110,7 +110,7 @@ final class WooShippingRemoteTests: XCTestCase {
         // Given
         let remote = WooShippingRemote(network: network)
         let package = WooShippingCustomPackage.fake()
-        network.simulateResponse(requestUrlSuffix: "packages/\(package.id)", filename: "wooshipping-delete-package-error")
+        network.simulateResponse(requestUrlSuffix: "packages/\(package.id)", filename: "generic_error")
 
         // When
         let result: Result<WooShippingCreatePackageResponse, Error> = waitFor { promise in
@@ -121,9 +121,7 @@ final class WooShippingRemoteTests: XCTestCase {
         }
 
         // Then
-        let expectedError = DotcomError
-            .unknown(code: "failure_code",
-                     message: "Failure message")
+        let expectedError = DotcomError.unauthorized
         XCTAssertEqual(result.failure as? DotcomError, expectedError)
     }
 

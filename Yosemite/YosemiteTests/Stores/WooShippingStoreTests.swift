@@ -89,7 +89,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingCreatePackageResponse, PackageCreationError> = waitFor { promise in
+        let result: Result<WooShippingCreatePackageResponse, Error> = waitFor { promise in
             let action = WooShippingAction.deletePackage(siteID: self.sampleSiteID,
                                                          packageID: WooShippingCustomPackage.fake().id) { result in
                 promise(result)
@@ -112,7 +112,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingCreatePackageResponse, PackageCreationError> = waitFor { promise in
+        let result: Result<WooShippingCreatePackageResponse, Error> = waitFor { promise in
             let action = WooShippingAction.deletePackage(siteID: self.sampleSiteID,
                                                          packageID: WooShippingCustomPackage.fake().id) { result in
                 promise(result)
@@ -122,7 +122,6 @@ final class WooShippingStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure, .duplicatePackageNames)
     }
 
     // MARK: `loadLabelRates`

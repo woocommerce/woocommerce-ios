@@ -85,11 +85,15 @@ struct WooShippingCreateLabelsView: View {
                             }
                             else {
                                 HStack(spacing: Layout.bottomSheetSpacing) {
-                                    Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
-                                        .font(.subheadline)
-                                        .tint(Color(.primary))
-                                        .fixedSize(horizontal: false, vertical: true)
-                                    purchaseButton
+                                    if viewModel.selectedPackage != nil || isShipmentDetailsExpanded {
+                                        Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
+                                            .font(.subheadline)
+                                            .tint(Color(.primary))
+                                            .fixedSize(horizontal: false, vertical: true)
+                                    }
+                                    if viewModel.selectedPackage != nil {
+                                        purchaseButton
+                                    }
                                 }
                             }
                         }

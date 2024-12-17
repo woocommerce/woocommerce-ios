@@ -4,34 +4,29 @@ import Yosemite
 import WooFoundation
 import Combine
 
+enum ReceiptEmailResult {
+    case success(Order)
+    case failure(Error)
+    case canceled
+}
+
 final class ReceiptEmailViewModel: ObservableObject {
     @Published var email: String = ""
-    @Published var state: PrimaryLoadingButtonStyle.State = .idle
-    @Published private(set) var dismiss: Bool = false
+    @Published private(set) var state: PrimaryLoadingButtonStyle.State = .idle
 
     private var order: Order
     private let stores: StoresManager
-    private let analytics: Analytics
-    private let countryCode: CountryCode
-    private let cardReaderModel: String?
-    var onDismiss: (Order?) -> Void
-    var noticePresenter: NoticePresenter
-    var emailValidator: (String) -> Bool = EmailFormatValidator.validate
+    private var emailValidator: (String) -> Bool
+    private var onResult: (ReceiptEmailResult) -> Void
 
     init(order: Order,
          stores: StoresManager = ServiceLocator.stores,
-         noticesPresenter: NoticePresenter = DefaultNoticePresenter(),
-         analytics: Analytics = ServiceLocator.analytics,
-         countryCode: CountryCode,
-         cardReaderModel: String?,
-         onDismiss: @escaping (Order?) -> Void = { _ in }) {
+         emailValidator: @escaping (String) -> Bool = EmailFormatValidator.validate,
+         onResult: @escaping (ReceiptEmailResult) -> Void) {
         self.order = order
         self.stores = stores
-        self.noticePresenter = noticesPresenter
-        self.analytics = analytics
-        self.countryCode = countryCode
-        self.cardReaderModel = cardReaderModel
-        self.onDismiss = onDismiss
+        self.emailValidator = emailValidator
+        self.onResult = onResult
     }
 
     var isEmailValid: Bool {
@@ -46,64 +41,25 @@ final class ReceiptEmailViewModel: ObservableObject {
                 self.state = .idle
                 switch result {
                 case let .success(order):
-                    self.analytics.track(event: .InPersonPayments.receiptEmailSuccess(
-                        countryCode: self.countryCode,
-                        cardReaderModel: self.cardReaderModel,
-                        source: .api)
-                    )
                     self.order = order
                     self.state = .success
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                        self.dismiss = true
-                    }
                 case let .failure(error):
                     DDLogError("Sending email receipt failed: \(error.localizedDescription)")
-                    self.analytics.track(event: .InPersonPayments.receiptEmailFailed(
-                        error: error,
-                        countryCode: self.countryCode,
-                        cardReaderModel: self.cardReaderModel,
-                        source: .api)
-                    )
-                    self.noticePresenter.enqueue(notice: Notice(title: Localization.errorNotice, feedbackType: .error))
+                    self.onResult(.failure(error))
                 }
             }
         }
 
-        self.state = .loading
+        state = .loading
         stores.dispatch(action)
     }
 
-    func onAppear() {
-        analytics.track(event: .InPersonPayments.receiptEmailTapped(
-            countryCode: countryCode,
-            cardReaderModel: cardReaderModel,
-            source: .api)
-        )
-    }
-
     func onDisappear() {
-        if state != .success {
-            analytics.track(event: .InPersonPayments.receiptEmailCanceled(
-                countryCode: countryCode,
-                cardReaderModel: cardReaderModel,
-                source: .api)
-            )
+        switch state {
+        case .success:
+            onResult(.success(order))
+        default:
+            onResult(.canceled)
         }
-
-        self.noticePresenter.presentingViewController = nil
-        onDismiss(order)
     }
-
-    func onCancel() {
-        self.dismiss = true
-    }
-}
-
-private enum Localization {
-    static let errorNotice = NSLocalizedString(
-        "order.receiptEmailView.errorNotice",
-        value: "Error sending the email receipt. Please try again.",
-        comment: "An error that is shown when sending email receipt fails."
-    )
-
 }

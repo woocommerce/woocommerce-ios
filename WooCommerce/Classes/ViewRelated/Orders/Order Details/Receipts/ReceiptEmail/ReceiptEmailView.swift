@@ -41,18 +41,19 @@ struct ReceiptEmailView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.cancel, action: {
-                        viewModel.onCancel()
+                        dismiss()
                     })
                 }
             }
-            .onAppear {
-                viewModel.onAppear()
+            .onChange(of: viewModel.state) { state in
+                if state == .success {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                        dismiss()
+                    }
+                }
             }
             .onDisappear {
                 viewModel.onDisappear()
-            }
-            .onChange(of: viewModel.dismiss) { _ in
-                dismiss()
             }
         }
     }

@@ -3,30 +3,34 @@ import Foundation
 import Yosemite
 import WooFoundation
 import Combine
+import WordPressShared
 @testable import WooCommerce
 
 @MainActor
 struct ReceiptEmailViewModelTests {
     private let stores: MockStoresManager
     private let order: Order
-    private let noticesPresenter: MockNoticePresenter
+    private let mocks: ReceiptEmailMocks
     private let sut: ReceiptEmailViewModel
     private var subscriptions = Set<AnyCancellable>()
 
     init() {
         stores = MockStoresManager(sessionManager: .testingInstance)
         order = Order.fake()
-        noticesPresenter = MockNoticePresenter()
+        mocks = ReceiptEmailMocks()
         sut = ReceiptEmailViewModel(
             order: order,
             stores: stores,
-            noticesPresenter: noticesPresenter,
-            countryCode: CountryCode.US,
-            cardReaderModel: "Model"
+            emailValidator: mocks.validateEmail,
+            onResult: mocks.result
         )
 
-        sut.$dismiss.sink { [sut] _ in
-            sut.onDisappear()
+        // Simulate UI behavior to dismiss the view on success state
+        sut.$state
+            .receive(on: DispatchQueue.main)
+            .filter { $0 == .success }
+            .sink { [sut] _ in
+                sut.onDisappear()
         }
         .store(in: &subscriptions)
     }
@@ -45,25 +49,25 @@ struct ReceiptEmailViewModelTests {
 
         // When
         let completionResult = await withCheckedContinuation { continuation in
-            sut.onDismiss = {
+            mocks.onResult = {
                 continuation.resume(returning: $0)
             }
             sut.sendReceipt()
         }
 
         // Then
-        #expect(completionResult != nil)
+        #expect(completionResult == .success(order))
     }
 
     @Test func sendReceipt_when_action_fails() async {
         // Given send receipt action fails
+        struct FakeError: Error {
+            var localizedDescription: String { "Test error" }
+        }
         sut.email = "test@test.com"
         stores.whenReceivingAction(ofType: ReceiptAction.self) { action in
             switch action {
             case let .sendReceipt(_, _, onCompletion):
-                struct FakeError: Error {
-                    var localizedDescription: String { "Test error" }
-                }
                 onCompletion(.failure(FakeError()))
             default:
                 #expect(Bool(false), "Unexpected action: \(action)")
@@ -72,14 +76,27 @@ struct ReceiptEmailViewModelTests {
 
         // When
         let completionResult = await withCheckedContinuation { continuation in
-            noticesPresenter.onNoticeQueued = {
+            mocks.onResult = {
                 continuation.resume(returning: $0)
             }
             sut.sendReceipt()
         }
 
         // Then
-        #expect(completionResult.title != nil)
+        #expect(completionResult == .failure(FakeError()))
+    }
+
+    @Test func onDisappear_when_no_action() async {
+        // When
+        let completionResult = await withCheckedContinuation { continuation in
+            mocks.onResult = {
+                continuation.resume(returning: $0)
+            }
+            sut.onDisappear()
+        }
+
+        // Then
+        #expect(completionResult == .canceled)
     }
 
     @Test(arguments: [true, false])
@@ -87,7 +104,7 @@ struct ReceiptEmailViewModelTests {
         // Given
         sut.email = "test@test.com"
         var validatedEmail = ""
-        sut.emailValidator = { email in
+        mocks.emailValidator = { email in
             validatedEmail = email
             return validatorResult
         }
@@ -95,5 +112,37 @@ struct ReceiptEmailViewModelTests {
         // Then
         #expect(sut.isEmailValid == validatorResult)
         #expect(sut.email == validatedEmail)
+    }
+}
+
+// MARK: - Helpers
+
+private extension ReceiptEmailViewModelTests {
+    private class ReceiptEmailMocks {
+        var emailValidator: ((String) -> Bool) = { _ in true }
+        var onResult: ((ReceiptEmailResult) -> Void) = { _ in }
+
+        func result(_ result: ReceiptEmailResult) {
+            onResult(result)
+        }
+
+        func validateEmail(_ email: String) -> Bool {
+            emailValidator(email)
+        }
+    }
+}
+
+extension ReceiptEmailResult {
+    static func ==(lhs: ReceiptEmailResult, rhs: ReceiptEmailResult) -> Bool {
+        switch (lhs, rhs) {
+        case (.success, .success):
+            return true
+        case (.failure, .failure):
+            return true
+        case (.canceled, .canceled):
+            return true
+        default:
+            return false
+        }
     }
 }

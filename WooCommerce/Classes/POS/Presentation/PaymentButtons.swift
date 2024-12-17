@@ -5,6 +5,8 @@ struct PaymentsActionButtons: View {
     @Binding var isShowingSendReceiptView: Bool
     @Binding private(set) var isShowingReceiptNotEligibleBanner: Bool
 
+    private let receiptEligibilityUseCase = ReceiptEligibilityUseCase()
+
     private var shouldShowSendReceiptButton: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sendReceiptsForPointOfSale)
     }
@@ -12,9 +14,9 @@ struct PaymentsActionButtons: View {
     var body: some View {
         ZStack {
             VStack {
+                newOrderButton
                 sendReceiptButton
                     .renderedIf(shouldShowSendReceiptButton)
-                newOrderButton
             }
         }
     }
@@ -23,10 +25,8 @@ struct PaymentsActionButtons: View {
 private extension PaymentsActionButtons {
     var sendReceiptButton: some View {
         Button(action: {
-            if posModel.eligibleWooCommerceVersionForPOSReceipts {
-                isShowingSendReceiptView = true
-            } else {
-                isShowingReceiptNotEligibleBanner = true
+            Task { @MainActor in
+                await handleSendReceiptAction()
             }
         }, label: {
             HStack(spacing: Constants.buttonSpacing) {
@@ -56,8 +56,27 @@ private extension PaymentsActionButtons {
         })
         .padding(Constants.buttonPadding)
         .foregroundColor(Color.posPrimaryTextInverted)
-        .background(Color.posOverlayFillInverted)
+        .background(Color.posPrimaryButtonBackground)
         .cornerRadius(Constants.buttonCornerRadius)
+    }
+}
+
+private extension PaymentsActionButtons {
+    func handleSendReceiptAction() async {
+        let isEligible = await checkReceiptEligibility()
+        if isEligible {
+            isShowingSendReceiptView = true
+        } else {
+            isShowingReceiptNotEligibleBanner = true
+        }
+    }
+
+    func checkReceiptEligibility() async -> Bool {
+        await withCheckedContinuation { continuation in
+            receiptEligibilityUseCase.isEligibleForPointOfSaleReceipts { isEligible in
+                continuation.resume(returning: isEligible)
+            }
+        }
     }
 }
 
@@ -71,12 +90,12 @@ private extension PaymentsActionButtons {
 
     enum Localization {
         static let newOrder = NSLocalizedString(
-            "pos.totalsView.newOrder",
+            "pos.totalsView.button.newOrder",
             value: "New order",
             comment: "Button title for new order button")
         static let sendReceipt = NSLocalizedString(
-            "pos.totalsView.sendReceipt",
-            value: "Receipt",
+            "pos.totalsView.button.sendReceipt",
+            value: "Email receipt",
             comment: "Button title for the receipt button")
     }
 }

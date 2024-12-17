@@ -71,7 +71,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
     // MARK: - loading
 
-    func loadPackages() {
+    func loadPackages(completion: (() -> (Void))? = nil) {
         guard !isLoadingPackages else { return }
 
         isLoadingPackages = true
@@ -84,6 +84,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
                 break
             }
             self.isLoadingPackages = false
+            completion?()
         }
 
         ServiceLocator.stores.dispatch(loadPackagesAction)

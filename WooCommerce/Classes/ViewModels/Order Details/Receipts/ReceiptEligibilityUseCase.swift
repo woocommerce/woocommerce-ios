@@ -44,6 +44,20 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
         stores.dispatch(action)
     }
 
+    func isEligibleForPointOfSaleReceipts(onCompletion: @escaping (Bool) -> Void) {
+        guard featureFlagService.isFeatureFlagEnabled(.sendReceiptsForPointOfSale) else {
+            onCompletion(false)
+            return
+        }
+
+        Task { @MainActor in
+            async let isWooCommerceSupported = isPluginSupported(Constants.wcPluginName,
+                                                                 minimumVersion: Constants.PointOfSaleReceipts.wcPluginMinimumVersion)
+            let wooCommerceResult = await isWooCommerceSupported
+            onCompletion(wooCommerceResult)
+        }
+    }
+
     func isEligibleSendingReceiptAfterPayment(onCompletion: @escaping (Bool) -> Void) {
         guard featureFlagService.isFeatureFlagEnabled(.sendReceiptAfterPayment) else {
             return onCompletion(false)
@@ -103,5 +117,8 @@ private extension ReceiptEligibilityUseCase {
             static let wcPayPluginMinimumVersion = "8.6.0"
         }
 
+        enum PointOfSaleReceipts {
+            static let wcPluginMinimumVersion = "9.5.0"
+        }
     }
 }

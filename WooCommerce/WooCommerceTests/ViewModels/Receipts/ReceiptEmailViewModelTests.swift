@@ -11,7 +11,7 @@ struct ReceiptEmailViewModelTests {
     private let order: Order
     private let noticesPresenter: MockNoticePresenter
     private let sut: ReceiptEmailViewModel
-    private var cancellables = Set<AnyCancellable>()
+    private var subscriptions = Set<AnyCancellable>()
 
     init() {
         stores = MockStoresManager(sessionManager: .testingInstance)
@@ -28,7 +28,7 @@ struct ReceiptEmailViewModelTests {
         sut.$dismiss.sink { [sut] _ in
             sut.onDisappear()
         }
-        .store(in: &cancellables)
+        .store(in: &subscriptions)
     }
 
     @Test func sendReceipt_when_action_succeeds() async {

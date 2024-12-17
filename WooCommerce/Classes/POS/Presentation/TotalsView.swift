@@ -27,7 +27,7 @@ struct TotalsView: View {
                 if posModel.paymentState == .acceptingCash {
                     // TODO: View for accepting cash.
                     // TODO: The prop we need to pass for navigating back, affects the payment state as we need to exit from .acceptingCash state
-                    POSSendReceiptView(isShowingSendReceiptView: .constant(true))
+                    POSCollectCashView(isShowingCollectCashView: .constant(true))
                 } else {
                     VStack(alignment: .center) {
                         Spacer()

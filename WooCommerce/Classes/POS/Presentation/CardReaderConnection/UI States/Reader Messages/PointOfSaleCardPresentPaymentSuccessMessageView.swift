@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
+
     let viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
     @Environment(\.colorScheme) var colorScheme

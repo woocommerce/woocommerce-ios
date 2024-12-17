@@ -26,6 +26,7 @@ final class MockFeatureFlagService: FeatureFlagService {
     var isProductGlobalUniqueIdentifierSupported: Bool
     var isSendReceiptAfterPaymentEnabled: Bool
     var tapToPayEducation: Bool
+    var receiptsForPOS: Bool
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
@@ -50,7 +51,8 @@ final class MockFeatureFlagService: FeatureFlagService {
          paymentsOnboardingInPointOfSale: Bool = false,
          isProductGlobalUniqueIdentifierSupported: Bool = false,
          isSendReceiptAfterPaymentEnabled: Bool = false,
-         tapToPayEducation: Bool = false) {
+         tapToPayEducation: Bool = false,
+         receiptsForPOS: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -75,6 +77,7 @@ final class MockFeatureFlagService: FeatureFlagService {
         self.isProductGlobalUniqueIdentifierSupported = isProductGlobalUniqueIdentifierSupported
         self.isSendReceiptAfterPaymentEnabled = isSendReceiptAfterPaymentEnabled
         self.tapToPayEducation = tapToPayEducation
+        self.receiptsForPOS = receiptsForPOS
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -127,6 +130,8 @@ final class MockFeatureFlagService: FeatureFlagService {
             return isSendReceiptAfterPaymentEnabled
         case .tapToPayEducation:
             return tapToPayEducation
+        case .sendReceiptsForPointOfSale:
+            return receiptsForPOS
         default:
             return false
         }

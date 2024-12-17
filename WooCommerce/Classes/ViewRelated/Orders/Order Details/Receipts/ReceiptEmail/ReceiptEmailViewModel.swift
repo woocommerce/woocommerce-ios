@@ -16,8 +16,8 @@ final class ReceiptEmailViewModel: ObservableObject {
 
     private var order: Order
     private let stores: StoresManager
-    private var emailValidator: (String) -> Bool
-    private var onResult: (ReceiptEmailResult) -> Void
+    private let emailValidator: (String) -> Bool
+    private let onResult: (ReceiptEmailResult) -> Void
 
     init(order: Order,
          stores: StoresManager = ServiceLocator.stores,

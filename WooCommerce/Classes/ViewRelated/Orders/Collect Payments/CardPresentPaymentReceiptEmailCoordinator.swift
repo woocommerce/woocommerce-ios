@@ -89,8 +89,8 @@ final class CardPresentPaymentReceiptEmailCoordinator: NSObject {
             case .failure(let error):
                 analytics.track(event: .InPersonPayments.receiptEmailFailed(
                     error: error,
-                    countryCode: self.countryCode,
-                    cardReaderModel: self.cardReaderModel,
+                    countryCode: countryCode,
+                    cardReaderModel: cardReaderModel,
                     source: .api)
                 )
                 noticePresenter.enqueue(notice: Notice(title: Localization.errorNotice, feedbackType: .error))

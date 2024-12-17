@@ -79,6 +79,40 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(result.failure, .duplicatePackageNames)
     }
 
+    func test_createPackage_when_successful_then_upserts_packages_into_storage() throws {
+        // Given
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "packages", filename: "wooshipping-create-package-success")
+        storageManager.insertSamplePackages(readOnlyPackages: .init(siteID: sampleSiteID,
+                                                                    customPackages: [],
+                                                                    savedPredefinedPackages: [],
+                                                                    allPredefinedOptions: [sampleCarrierPredefinedOptions()]))
+
+        // Confidence check
+        XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: StorageWooShippingCustomPackage.self), 0)
+        XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: StorageWooShippingSavedPredefinedPackage.self), 0)
+
+        // When
+        let onSuccess: Bool = waitFor { promise in
+            let action = WooShippingAction.createPackage(siteID: self.sampleSiteID,
+                                                         customPackage: .fake(),
+                                                         predefinedOption: .fake()) { result in
+                promise(result.isSuccess)
+            }
+            store.onAction(action)
+        }
+
+        let storedPackages = try XCTUnwrap(storageManager.viewStorage.firstObject(ofType: StorageWooShippingPackagesResponse.self)).toReadOnly()
+
+        // Then
+        XCTAssertTrue(onSuccess)
+        XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: StorageWooShippingCustomPackage.self), 5)
+        XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: StorageWooShippingSavedPredefinedPackage.self), 2)
+        XCTAssertEqual(storedPackages.siteID, sampleSiteID)
+        XCTAssertEqual(storedPackages.customPackages.count, 5)
+        XCTAssertEqual(storedPackages.savedPredefinedPackages.count, 2)
+    }
+
     // MARK: `loadLabelRates`
 
     func test_loadLabelRates_returns_success_response_with_rates() throws {
@@ -458,5 +492,33 @@ private extension WooShippingStoreTests {
                                  rawType: "box",
                                  dimensions: "12 x 12 x 12",
                                  boxWeight: 0.01)
+    }
+
+    func sampleCarrierPredefinedOptions() -> WooShippingCarrierPredefinedOptions {
+        WooShippingCarrierPredefinedOptions(carrierID: "usps",
+                                            predefinedOptions: [.init(title: "pri_flat_boxes",
+                                                                      providerID: "usps",
+                                                                      predefinedPackages: [.init(id: "small_flat_box",
+                                                                                                 name: "",
+                                                                                                 isLetter: false,
+                                                                                                 dimensions: "",
+                                                                                                 boxWeight: "",
+                                                                                                 groupId: "")]),
+                                                                .init(title: "pri_flat_envelopes",
+                                                                      providerID: "usps",
+                                                                      predefinedPackages: [.init(id: "flat_envelope",
+                                                                                                 name: "",
+                                                                                                 isLetter: true,
+                                                                                                 dimensions: "",
+                                                                                                 boxWeight: "",
+                                                                                                 groupId: "")]),
+                                                                .init(title: "pri_flat_boxes",
+                                                                      providerID: "usps",
+                                                                      predefinedPackages: [.init(id: "medium_flat_box_top",
+                                                                                                 name: "",
+                                                                                                 isLetter: false,
+                                                                                                 dimensions: "",
+                                                                                                 boxWeight: "",
+                                                                                                 groupId: "")])])
     }
 }

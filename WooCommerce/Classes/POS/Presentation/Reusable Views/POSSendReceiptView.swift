@@ -32,6 +32,7 @@ struct POSSendReceiptView: View {
             }
             .buttonStyle(.plain)
             .padding()
+            .disabled(isLoading)
 
             TextField(Localization.textfieldPlaceholder, text: $textFieldInput)
                 .keyboardType(.emailAddress)

@@ -157,6 +157,13 @@ final class StorePickerViewController: UIViewController {
         self?.restartAuthentication()
     }
 
+    private lazy var editListButton: UIBarButtonItem = {
+        UIBarButtonItem(title: Localization.editListButton,
+                        style: .plain,
+                        target: self,
+                        action: #selector(editList))
+    }()
+
     private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
@@ -266,6 +273,9 @@ private extension StorePickerViewController {
                                                            style: .plain,
                                                            target: self,
                                                            action: #selector(dismissStorePicker))
+        if featureFlagService.isFeatureFlagEnabled(.hideSitesInStorePicker) {
+            navigationItem.rightBarButtonItem = editListButton
+        }
     }
 
     func setupNavigationForListOfConnectedStores() {
@@ -647,6 +657,10 @@ private extension StorePickerViewController {
     @IBAction func secondaryActionWasPressed() {
         restartAuthentication()
     }
+
+    @objc func editList() {
+        // TODO
+    }
 }
 
 
@@ -816,6 +830,12 @@ private extension StorePickerViewController {
         static let addStoreButton = NSLocalizedString("storePickerViewController.addStoreButton",
                                                       value: "Connect existing store",
                                                       comment: "Button title on the store picker for store connection")
+        static let editListButton = NSLocalizedString(
+            "storePicker.editList",
+            value: "Edit",
+            comment: "Button to edit the items to be displayed on the store picker"
+        )
+
         enum ActionMenu {
             static let logOut = NSLocalizedString("Log out",
                                                   comment: "Button to log out from the current account from the store picker")

@@ -209,7 +209,8 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
         }
     }
 
-    func loadOriginAddresses(siteID: Int64, completion: @escaping (Result<[Networking.WooShippingOriginAddress], any Error>) -> Void) {
+    func loadOriginAddresses(siteID: Int64,
+                             completion: @escaping (Result<[Networking.WooShippingOriginAddress], any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
 

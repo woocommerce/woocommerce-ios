@@ -2773,6 +2773,7 @@
 		DEE183ED292BD900008818AB /* JetpackSetupViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE183EC292BD900008818AB /* JetpackSetupViewModelTests.swift */; };
 		DEE183F1292E0ED0008818AB /* JetpackSetupInterruptedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE183F0292E0ED0008818AB /* JetpackSetupInterruptedView.swift */; };
 		DEE2152D2D113EF1004A11F3 /* EditStoreListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE2152C2D113EF1004A11F3 /* EditStoreListView.swift */; };
+		DEE215302D113F89004A11F3 /* EditStoreListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE2152F2D113F84004A11F3 /* EditStoreListViewModel.swift */; };
 		DEE6437626D87C4100888A75 /* PrintCustomsFormsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6437526D87C4100888A75 /* PrintCustomsFormsView.swift */; };
 		DEE6437826D8DAD900888A75 /* InProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6437726D8DAD900888A75 /* InProgressView.swift */; };
 		DEEDA239298A11FB0088256B /* SiteCredentialLoginUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEDA238298A11FB0088256B /* SiteCredentialLoginUseCase.swift */; };
@@ -5888,6 +5889,7 @@
 		DEE183EC292BD900008818AB /* JetpackSetupViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupViewModelTests.swift; sourceTree = "<group>"; };
 		DEE183F0292E0ED0008818AB /* JetpackSetupInterruptedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupInterruptedView.swift; sourceTree = "<group>"; };
 		DEE2152C2D113EF1004A11F3 /* EditStoreListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditStoreListView.swift; sourceTree = "<group>"; };
+		DEE2152F2D113F84004A11F3 /* EditStoreListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditStoreListViewModel.swift; sourceTree = "<group>"; };
 		DEE6437526D87C4100888A75 /* PrintCustomsFormsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintCustomsFormsView.swift; sourceTree = "<group>"; };
 		DEE6437726D8DAD900888A75 /* InProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InProgressView.swift; sourceTree = "<group>"; };
 		DEEDA238298A11FB0088256B /* SiteCredentialLoginUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCredentialLoginUseCase.swift; sourceTree = "<group>"; };
@@ -13188,6 +13190,7 @@
 		DEE2152E2D113F61004A11F3 /* EditStoreList */ = {
 			isa = PBXGroup;
 			children = (
+				DEE2152F2D113F84004A11F3 /* EditStoreListViewModel.swift */,
 				DEE2152C2D113EF1004A11F3 /* EditStoreListView.swift */,
 			);
 			path = EditStoreList;
@@ -15082,6 +15085,7 @@
 				CC13C0CB278E021300C0B5B5 /* ProductVariationSelectorViewModel.swift in Sources */,
 				020732042988AB7B000A53C2 /* DomainContactInfoForm.swift in Sources */,
 				026826AD2BF59DF70036F959 /* PointOfSaleDashboardView.swift in Sources */,
+				DEE215302D113F89004A11F3 /* EditStoreListViewModel.swift in Sources */,
 				DE2FE595292737330018040A /* JetpackSetupView.swift in Sources */,
 				B59D1EEA2190AE96009D1978 /* StorageNote+Woo.swift in Sources */,
 				CE7F778B2C074D2500C89F4E /* EditableOrderShippingLineViewModel.swift in Sources */,

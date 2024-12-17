@@ -9,9 +9,10 @@ import struct Yosemite.OrderItem
 struct PointOfSaleOrderControllerTests {
     let sut: PointOfSaleOrderController
     let mockOrderService = MockPOSOrderService()
+    let mockReceiptService = MockReceiptService()
 
     init() {
-        self.sut = PointOfSaleOrderController(orderService: mockOrderService)
+        self.sut = PointOfSaleOrderController(orderService: mockOrderService, receiptService: mockReceiptService)
     }
 
     @Test func syncOrder_without_items_doesnt_call_orderService() async throws {
@@ -141,6 +142,36 @@ struct PointOfSaleOrderControllerTests {
                 message: MockPOSOrderServiceError.noOrderToReturn.localizedDescription,
                 handler: {}))
         ])
+    }
+
+    @Test func sendReceipt_when_there_is_no_order_then_will_not_trigger() async throws {
+        // Given
+        let email = "test@example.com"
+
+        // When
+        try await sut.sendReceipt(recipientEmail: email)
+
+        // Then
+        #expect(!mockOrderService.updateOrderWasCalled)
+        #expect(!mockReceiptService.sendReceiptWasCalled)
+    }
+
+    @Test func sendReceipt_calls_both_updateOrder_and_sendReceipt() async throws {
+        // Given
+        let order = Order.fake()
+        let recipientEmail = "test@fake.com"
+        mockOrderService.orderToReturn = order
+
+        // We need an existing order before we can update its email, and send a receipt:
+        await sut.syncOrder(for: [makeItem()], retryHandler: { })
+
+        // When
+        try await sut.sendReceipt(recipientEmail: recipientEmail)
+
+        // Then
+        #expect(mockOrderService.updateOrderWasCalled)
+        #expect(mockOrderService.orderToReturn?.billingAddress?.email == recipientEmail)
+        #expect(mockReceiptService.sendReceiptWasCalled)
     }
 }
 

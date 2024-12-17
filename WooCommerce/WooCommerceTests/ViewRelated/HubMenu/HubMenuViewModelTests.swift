@@ -604,14 +604,15 @@ final class HubMenuViewModelTests: XCTestCase {
             .coupons: HubMenuViewModel.Coupons(),
             .reviews: HubMenuViewModel.Reviews(),
             .inbox: HubMenuViewModel.Inbox(),
-            .customers: HubMenuViewModel.Customers(),
-            .pointOfSales: HubMenuViewModel.PointOfSaleEntryPoint()
+            .customers: HubMenuViewModel.Customers()
         ]
 
         /// Counting the cases to ensure new cases are tested.
+        /// POS row/element does not use the push/pop navigation destination like other elements.
+        let nonNavigationDestinationElementsCount = 1
         viewModel.setupMenuElements()
         waitUntil {
-            expectedMenusAndDestinations.count == viewModel.settingsElements.count + viewModel.generalElements.count
+            expectedMenusAndDestinations.count == viewModel.settingsElements.count + viewModel.generalElements.count - nonNavigationDestinationElementsCount
         }
 
         for (expected, menuItem) in expectedMenusAndDestinations {

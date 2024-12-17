@@ -28,7 +28,6 @@ enum HubMenuNavigationDestination: Hashable {
     case inAppPurchase
     case subscriptions
     case customers
-    case pointOfSales
     case reviewDetails(parcel: ProductReviewFromNoteParcel)
 }
 
@@ -82,6 +81,9 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published private(set) var hasGoogleAdsCampaigns = false
     @Published private var currentSite: Yosemite.Site?
+
+    /// Whether the app is in POS mode for an eligible site.
+    @Published var showsPOS: Bool = false
 
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
@@ -222,7 +224,6 @@ final class HubMenuViewModel: ObservableObject {
     }
 
     func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {
-        updateTabBarVisibility(isPointOfSaleActive)
         updateInAppNotifications(isPointOfSaleActive)
     }
 
@@ -262,38 +263,6 @@ final class HubMenuViewModel: ObservableObject {
 // MARK: - Helper method for WooCommerce POS
 //
 private extension HubMenuViewModel {
-    // Hides the app's tab bars when Point of Sale is active
-    //
-    func updateTabBarVisibility(_ isPointOfSaleActive: Bool) {
-        guard let mainTabBarController = AppDelegate.shared.tabBarController else {
-            return
-        }
-        /*
-         When hidding the app's tab bar on POS initialization, we've observed a recurring issue with the UI not being updated appropiately,
-         leaving additional padding in the bottom rather than re-positioning components taking all the available space.
-         In order to address this issue we have to explicitely call for an update to the safeAreaInsets in order to trigger the layout update we need,
-         so that the view controller's view can occupy the space left by the hidden tab bar.
-         Updating the bottom UIEdgeInset to a non-zero value seems to be enough to trigger the UI layout refresh we need.
-         Ref: gh-13785
-         */
-        if isPointOfSaleActive {
-            UIView.animate(withDuration: 0.5) {
-                mainTabBarController.tabBar.alpha = 0
-            } completion: { _ in
-                mainTabBarController.tabBar.isHidden = isPointOfSaleActive
-                let bottomInset = CGFloat.leastNonzeroMagnitude
-                mainTabBarController.additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
-            }
-        } else {
-            mainTabBarController.tabBar.isHidden = isPointOfSaleActive
-            mainTabBarController.additionalSafeAreaInsets = .zero
-            mainTabBarController.tabBar.alpha = 0
-            UIView.animate(withDuration: 0.5) {
-                mainTabBarController.tabBar.alpha = 1
-            }
-        }
-    }
-
     // Disables foreground in-app notifications when Point of Sale is active
     //
     func updateInAppNotifications(_ isPointOfSaleActive: Bool) {
@@ -677,7 +646,8 @@ extension HubMenuViewModel {
         let accessibilityIdentifier: String = "menu-pointOfSale"
         let trackingOption: String = "pointOfSale"
         let iconBadge: HubMenuBadgeType? = nil
-        let navigationDestination: HubMenuNavigationDestination? = .pointOfSales
+        // POS is presented with its own navigation stack as nested navigation stack is not supported.
+        let navigationDestination: HubMenuNavigationDestination? = nil
     }
 
     struct Subscriptions: HubMenuItem {

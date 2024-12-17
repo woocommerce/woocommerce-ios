@@ -140,10 +140,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     ///
     private var selectedOrderID: Int64?
 
-    /// Tracks if the swipe actions have been glanced to the user.
-    ///
-    private var swipeActionsGlanced = false
-
     /// Banner variation that will be shown as In-Person Payments feedback banner. If any.
     ///
     private var inPersonPaymentsSurveyVariation: SurveyViewController.Source?
@@ -414,16 +410,6 @@ extension OrderListViewController {
         /// Fires fulfillment action, observes its result and enqueue the appropriate notices.
         let presenter = OrderFulfillmentNoticePresenter(noticeConfiguration: noticeConfiguration)
         presenter.present(process: fulfillmentProcess)
-    }
-
-    /// Slightly reveal swipe actions of the first visible cell that contains at least one swipe action.
-    /// This action is performed only once, using `swipeActionsGlanced` as a control variable.
-    ///
-    private func glanceTrailingActionsIfNeeded() {
-        if !swipeActionsGlanced {
-            swipeActionsGlanced = true
-            tableView.glanceTrailingSwipeActions()
-        }
     }
 }
 
@@ -928,7 +914,7 @@ private extension OrderListViewController {
         case .syncing:
             ensureFooterSpinnerIsStarted()
         case .results:
-            glanceTrailingActionsIfNeeded()
+            break
         }
     }
 

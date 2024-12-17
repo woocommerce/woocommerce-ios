@@ -23,7 +23,7 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
 
     let image: UIImage
 
-    let primaryButtonTitle: String? = Localization.dismiss
+    let primaryButtonTitle: String?
 
     let secondaryButtonTitle: String? = CardPresentModalError.Localization.emailReceipt
 
@@ -44,11 +44,13 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
     init(amount: String,
          errorDescription: String?,
          image: UIImage = .paymentErrorImage,
+        requiresFallbackPaymentMethod: Bool = false,
          onDismiss: @escaping () -> Void,
          emailReceiptAction: @escaping () -> Void) {
         self.amount = amount
         self.bottomTitle = errorDescription
         self.image = image
+        self.primaryButtonTitle = Localization.dismiss(requiresFallbackPaymentMethod: requiresFallbackPaymentMethod)
         self.onDismiss = onDismiss
         self.emailReceiptAction = emailReceiptAction
     }
@@ -86,9 +88,12 @@ extension CardPresentModalNonRetryableError {
             comment: "Error message. Presented to users after collecting a payment fails"
         )
 
-        static let dismiss = NSLocalizedString(
-            "Dismiss",
-            comment: "Button to dismiss. Presented to users after collecting a payment fails"
-        )
+        static func dismiss(requiresFallbackPaymentMethod: Bool) -> String {
+            if requiresFallbackPaymentMethod {
+                return CardPresentModalError.Localization.tryAnotherPaymentMethod
+            } else {
+                return CardPresentModalError.Localization.dismiss
+            }
+        }
     }
 }

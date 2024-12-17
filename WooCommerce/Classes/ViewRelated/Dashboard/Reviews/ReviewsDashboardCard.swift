@@ -232,7 +232,7 @@ private extension ReviewsDashboardCard {
 
     func emptyView(message: String) -> some View {
         VStack(alignment: .center, spacing: Layout.padding) {
-            Image(uiImage: .emptyReviewsImage)
+            Image(uiImage: .messageImage)
             Text(message)
                 .subheadlineStyle()
         }

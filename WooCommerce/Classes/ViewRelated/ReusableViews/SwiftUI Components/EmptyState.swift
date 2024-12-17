@@ -9,22 +9,26 @@ struct EmptyState: View {
     @State var buttonAction: (() -> Void)?
 
     var body: some View {
-        VStack(spacing: Constants.verticalSpacing) {
-            Text(title)
-                .multilineTextAlignment(.center)
-                .headlineStyle()
+        VStack {
             if let image = image {
                 Image(uiImage: image)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: Constants.width)
+                    .frame(maxWidth: Constants.maxImageWidth)
+                    .fixedSize()
                     .accessibility(hidden: true)
+                    .padding(.bottom, Constants.imageBottomSpacing)
             }
+
+            Text(title)
+                .multilineTextAlignment(.center)
+                .headlineStyle()
             if let description = description {
                 Text(description)
                     .multilineTextAlignment(.center)
                     .bodyStyle()
                     .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, Constants.textSpacing)
             }
 
             if let buttonTitle {
@@ -32,7 +36,7 @@ struct EmptyState: View {
                     buttonAction?()
                 }
                 .buttonStyle(PrimaryButtonStyle())
-                .padding(.top, Constants.verticalSpacing)
+                .padding(.top, Constants.buttonTopSpacing)
                 .frame(maxWidth: Constants.buttonWidth)
             }
         }
@@ -43,9 +47,11 @@ struct EmptyState: View {
 
 private extension EmptyState {
     enum Constants {
-        static let verticalSpacing: CGFloat = 16
+        static let imageBottomSpacing: CGFloat = 48
+        static let textSpacing: CGFloat = 4
+        static let buttonTopSpacing: CGFloat = 24
         static let horizontalSpacing: CGFloat = 24
-        static let width: CGFloat = 168
+        static let maxImageWidth: CGFloat = 168
         static let buttonWidth: CGFloat = 228
     }
 }
@@ -54,7 +60,8 @@ struct EmptyState_Previews: PreviewProvider {
     static var previews: some View {
         EmptyState(title: "Something goes wrong",
                    description: "Please, double check your data or try using a different name in your request.",
-                   image: .productErrorImage)
+                   image: .productErrorImage,
+                   buttonTitle: "Retry")
             .background(Color(UIColor.basicBackground))
             .environment(\.colorScheme, .light)
 

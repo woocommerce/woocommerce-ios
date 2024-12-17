@@ -150,7 +150,7 @@ private extension GoogleAdsCampaignCoordinator {
             title: Localization.successTitle,
             subtitle: Localization.successSubtitle,
             closeButtonTitle: Localization.successCTA,
-            image: .blazeSuccessImage,
+            image: .launchImage,
             onTappingDone: { [weak self] in
             self?.bottomSheetPresenter?.dismiss()
             self?.bottomSheetPresenter = nil

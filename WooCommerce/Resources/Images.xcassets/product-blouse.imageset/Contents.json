@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "blaze-success.pdf",
+      "filename" : "product-blouse-light.pdf",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "blaze-success-dark.pdf",
+      "filename" : "product-blouse-dark.pdf",
       "idiom" : "universal"
     }
   ],

@@ -20,7 +20,7 @@ final class BlazeTargetLocationPickerViewModel: ObservableObject {
         if searchQuery.count < Constants.minimumQueryLength {
             .searchImage
         } else {
-            .searchNoResultImage
+            .magnifyingGlassNotFound
         }
     }
 

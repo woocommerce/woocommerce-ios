@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "woo-empty-coupons.pdf",
+      "filename" : "boxes-light.pdf",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "img-coupons-dark.pdf",
+      "filename" : "boxes-dark.pdf",
       "idiom" : "universal"
     }
   ],

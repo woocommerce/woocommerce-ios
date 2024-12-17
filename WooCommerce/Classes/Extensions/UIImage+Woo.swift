@@ -340,10 +340,10 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
-    /// Empty Coupons Icon
+    /// Coupons Image
     ///
-    static var emptyCouponsImage: UIImage {
-        return UIImage(named: "woo-empty-coupons")!
+    static var couponsImage: UIImage {
+        return UIImage(named: "coupons")!
     }
 
     /// Empty Inbox Notes Icon
@@ -364,32 +364,20 @@ extension UIImage {
         return UIImage(named: "woo-empty-products")!
     }
 
-    /// Empty Products Tab Icon
+    /// Message image
     ///
-    static var emptyProductsTabImage: UIImage {
-        return UIImage(named: "woo-empty-products-tab")!
-    }
-
-    /// Empty Reviews Icon
-    ///
-    static var emptyReviewsImage: UIImage {
-        return UIImage(named: "woo-empty-reviews")!
-    }
-
-    /// An image showing a hand holding a magnifying glass over a page.
-    ///
-    static var emptySearchResultsImage: UIImage {
-        UIImage(named: "woo-empty-search-results")!
+    static var messageImage: UIImage {
+        return UIImage(named: "message")!
     }
 
     static var shoppingBagsImage: UIImage {
         UIImage(named: "shopping-bags")!
     }
 
-    /// An image showing a bar chart. This is used to show an empty All Orders tab.
+    /// Image showing boxes
     ///
-    static var emptyOrdersImage: UIImage {
-        UIImage(named: "woo-empty-orders")!
+    static var boxesImage: UIImage {
+        UIImage(named: "boxes")!
     }
 
     /// An image showing a magnifying glass. This is used to show a default image when searching for customers.
@@ -534,6 +522,10 @@ extension UIImage {
     ///
     static var productCreationAISurveyImage: UIImage {
         return UIImage(named: "product-creation-ai-survey")!
+    }
+
+    static var launchImage: UIImage {
+        UIImage(named: "launch")!
     }
 
     /// Launch store Image
@@ -964,6 +956,12 @@ extension UIImage {
         return UIImage.gridicon(.product)
     }
 
+    /// A blouse Image
+    ///
+    static var productBlouseImage: UIImage {
+        return UIImage(named: "product-blouse")!
+    }
+
     /// Pencil Icon
     ///
     static var pencilImage: UIImage {
@@ -1069,12 +1067,6 @@ extension UIImage {
     ///
     static var searchImage: UIImage {
         UIImage(named: "search")!
-    }
-
-    /// Search No Result Image
-    ///
-    static var searchNoResultImage: UIImage {
-        UIImage(named: "search-no-result")!
     }
 
     /// Returns a star icon with the given size
@@ -1375,6 +1367,10 @@ extension UIImage {
 
     static var magnifyingGlassNotFound: UIImage {
         UIImage(imageLiteralResourceName: "magnifying-glass-not-found")
+    }
+
+    static var groupedProductsImage: UIImage {
+        UIImage(named: "grouped-products")!
     }
 }
 

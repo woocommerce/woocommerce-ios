@@ -178,10 +178,10 @@ private extension ProductReviewsViewController {
     func displayEmptyViewController() {
         let childController = emptyStateViewController
         let emptyStateConfig = EmptyStateViewController.Config.withLink(message: NSAttributedString(string: Localization.emptyStateMessage),
-                                                              image: .emptyReviewsImage,
-                                                              details: Localization.emptyStateDetail,
-                                                              linkTitle: Localization.emptyStateAction,
-                                                              linkURL: WooConstants.URLs.productReviewInfo.asURL())
+                                                                        image: .messageImage,
+                                                                        details: Localization.emptyStateDetail,
+                                                                        linkTitle: Localization.emptyStateAction,
+                                                                        linkURL: WooConstants.URLs.productReviewInfo.asURL())
 
         // Abort if we are already displaying this childController
         guard childController.parent == nil,

@@ -300,7 +300,7 @@ private extension CouponListViewController {
 
         let configuration = EmptyStateViewController.Config.withButton(
             message: .init(string: Localization.couponCreationSuggestionMessage),
-            image: .emptyCouponsImage,
+            image: .couponsImage,
             details: Localization.emptyStateDetails,
             buttonTitle: emptyStateActionTitle
         ) { [weak self] _ in
@@ -317,7 +317,7 @@ private extension CouponListViewController {
     func displayCouponsDisabledOverlay() {
         let emptyStateViewController = EmptyStateViewController(style: .list)
         let config: EmptyStateViewController.Config = .withButton(message: .init(string: Localization.couponsDisabledMessage),
-                                                                  image: .emptyCouponsImage,
+                                                                  image: .couponsImage,
                                                                   details: Localization.couponsDisabledDetail,
                                                                   buttonTitle: Localization.couponsDisabledAction) { [weak self] _ in
             self?.viewModel.enableCoupons()

@@ -48,7 +48,7 @@ final class ProductListMultiSelectorSearchUICommand: NSObject, SearchUICommand {
         let message = NSMutableAttributedString(string: Strings.emptySearchResultsFormat)
         message.replaceFirstOccurrence(of: "%@", with: boldSearchKeyword)
 
-        viewController.configure(.simple(message: message, image: .emptySearchResultsImage))
+        viewController.configure(.simple(message: message, image: .magnifyingGlassNotFound))
     }
 
     func configureActionButton(_ button: UIButton, onDismiss: @escaping () -> Void) {

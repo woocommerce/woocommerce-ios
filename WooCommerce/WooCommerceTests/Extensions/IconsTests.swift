@@ -31,10 +31,6 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.blaze)
     }
 
-    func test_blazeSuccessImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.blazeSuccessImage)
-    }
-
     func test_blazeIntroIllustration_is_not_nil() {
         XCTAssertNotNil(UIImage.blazeIntroIllustration)
     }
@@ -188,8 +184,8 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.ellipsisImage)
     }
 
-    func test_empty_coupon_image_icon_is_not_nil() {
-        XCTAssertNotNil(UIImage.emptyCouponsImage)
+    func test_couponsImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.couponsImage)
     }
 
     func test_empty_inbox_notes_image_icon_is_not_nil() {
@@ -200,20 +196,16 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.emptyProductsImage)
     }
 
-    func test_emptyProductsTabImage_icon_is_not_nil() {
-        XCTAssertNotNil(UIImage.emptyProductsTabImage)
+    func test_productBlouseImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.productBlouseImage)
     }
 
-    func testEmptyReviewsImageIconIsNotNil() {
-        XCTAssertNotNil(UIImage.emptyReviewsImage)
+    func testMessageImageIsNotNil() {
+        XCTAssertNotNil(UIImage.messageImage)
     }
 
-    func testEmptySearchResultsImageIconIsNotNil() {
-        XCTAssertNotNil(UIImage.emptySearchResultsImage)
-    }
-
-    func testEmptyOrdersImageIsNotNil() {
-        XCTAssertNotNil(UIImage.emptyOrdersImage)
+    func testBoxesImageIsNotNil() {
+        XCTAssertNotNil(UIImage.boxesImage)
     }
 
     func testErrorStateImageIconIsNotNil() {
@@ -282,6 +274,10 @@ final class IconsTests: XCTestCase {
 
     func test_launchStoreImage_is_not_nil() {
         XCTAssertNotNil(UIImage.launchStoreImage)
+    }
+
+    func test_launchImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.launchImage)
     }
 
     func test_storeDetailsImage_is_not_nil() {
@@ -559,10 +555,6 @@ final class IconsTests: XCTestCase {
 
     func test_search_image_is_not_nil() {
         XCTAssertNotNil(UIImage.searchImage)
-    }
-
-    func test_searchNoResult_image_is_not_nil() {
-        XCTAssertNotNil(UIImage.searchNoResultImage)
     }
 
     func testTrashImageIconIsNotNil() {

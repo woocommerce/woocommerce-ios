@@ -364,22 +364,13 @@ private extension BuiltInCardReaderConnectionController {
     /// Handle location permission status and request
     ///
     func onRequestLocationPermission() {
-        // Refresh the view if the location permission state changes
-        locationService.observePermissionChanges { [weak self] permission in
-            guard let self else { return }
-            locationService.stopObservingPermissionChanges()
-            if case .requestLocationPermission = state {
-                onRequestLocationPermission()
-            }
-        }
-
         let status = locationService.authorizationStatus
         switch status {
         case .authorized:
-            locationService.stopObservingPermissionChanges()
             state = .connectToReader
         case .denied:
             analyticsTracker.cardReaderLocationPermissionRequiredShown()
+            observePermissionChanges()
             alertsPresenter.present(viewModel: alertsProvider.locationRequired(
                 dismiss: { [weak self] in
                     guard let self else { return }
@@ -394,9 +385,20 @@ private extension BuiltInCardReaderConnectionController {
             ))
         case .notDetermined:
             analyticsTracker.cardReaderLocationPermissionPreAlertShown()
+            observePermissionChanges()
             alertsPresenter.present(viewModel: alertsProvider.locationRequestPreAlert { [weak self] in
                 self?.locationService.requestPermission()
             })
+        }
+    }
+
+    func observePermissionChanges() {
+        locationService.observePermissionChanges { [weak self] permission in
+            guard let self else { return }
+            locationService.stopObservingPermissionChanges()
+            if case .requestLocationPermission = state {
+                onRequestLocationPermission()
+            }
         }
     }
 

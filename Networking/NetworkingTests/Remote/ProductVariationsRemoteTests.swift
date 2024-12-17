@@ -152,6 +152,106 @@ final class ProductVariationsRemoteTests: XCTestCase {
         XCTAssertFalse(queryParametersDictionary.contains(where: { $0.key == "include" }))
     }
 
+    // MARK: - Load all POS product variations tests
+
+    func test_loadVariationsForPointOfSale_returns_parsed_variation() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+
+        // When
+        let variations = try await remote.loadVariationsForPointOfSale(for: sampleSiteID, parentProductID: sampleProductID)
+
+        // Then
+        XCTAssertEqual(variations.count, 8)
+
+        guard let firstVariation = variations.first else {
+            XCTFail("The first product variation should exist.")
+            return
+        }
+        XCTAssertEqual(firstVariation.productVariationID, 1275)
+        XCTAssertEqual(firstVariation.description, "<p>Nutty chocolate marble, 99% and organic.</p>\n")
+        XCTAssertEqual(firstVariation.sku, "99%-nuts-marble")
+        XCTAssertEqual(firstVariation.globalUniqueID, "12345")
+        XCTAssertEqual(firstVariation.permalink, "https://chocolate.com/marble")
+
+        XCTAssertEqual(firstVariation.dateCreated, DateFormatter.dateFromString(with: "2019-11-14T12:40:55"))
+        XCTAssertEqual(firstVariation.dateModified, DateFormatter.dateFromString(with: "2019-11-14T13:06:42"))
+        XCTAssertEqual(firstVariation.dateOnSaleStart, DateFormatter.dateFromString(with: "2019-10-15T21:30:00"))
+        XCTAssertEqual(firstVariation.dateOnSaleEnd, DateFormatter.dateFromString(with: "2019-10-27T21:29:59"))
+
+        let expectedPrice = 12
+        XCTAssertEqual(firstVariation.price, "\(expectedPrice)")
+        XCTAssertEqual(firstVariation.regularPrice, "\(expectedPrice)")
+        XCTAssertEqual(firstVariation.salePrice, "8")
+
+        XCTAssertEqual(firstVariation.status, .published)
+        XCTAssertEqual(firstVariation.stockStatus, .inStock)
+
+        let expectedAttributes: [ProductVariationAttribute] = [
+            ProductVariationAttribute(id: 0, name: "Darkness", option: "99%"),
+            ProductVariationAttribute(id: 0, name: "Flavor", option: "nuts"),
+            ProductVariationAttribute(id: 0, name: "Shape", option: "marble")
+        ]
+        XCTAssertEqual(firstVariation.attributes, expectedAttributes)
+
+        XCTAssertEqual(firstVariation.image?.imageID, 1063)
+
+        XCTAssertFalse(firstVariation.onSale)
+        XCTAssertTrue(firstVariation.purchasable)
+        XCTAssertFalse(firstVariation.virtual)
+        XCTAssertTrue(firstVariation.downloadable)
+
+        XCTAssertTrue(firstVariation.manageStock)
+        XCTAssertEqual(firstVariation.stockQuantity, 16.5)
+        XCTAssertEqual(firstVariation.backordersKey, "notify")
+        XCTAssertTrue(firstVariation.backordersAllowed)
+        XCTAssertFalse(firstVariation.backordered)
+
+        XCTAssertEqual(firstVariation.downloads.count, 0)
+        XCTAssertEqual(firstVariation.downloadLimit, -1)
+        XCTAssertEqual(firstVariation.downloadExpiry, 0)
+
+        XCTAssertEqual(firstVariation.taxStatusKey, "taxable")
+        XCTAssertEqual(firstVariation.taxClass, "")
+
+        XCTAssertEqual(firstVariation.weight, "2.5")
+        XCTAssertEqual(firstVariation.dimensions, ProductDimensions(length: "10", width: "2.5", height: ""))
+
+        XCTAssertEqual(firstVariation.shippingClass, "")
+        XCTAssertEqual(firstVariation.shippingClassID, 0)
+
+        XCTAssertEqual(firstVariation.menuOrder, 8)
+    }
+
+    func test_loadVariationsForPointOfSale_properly_relays_networking_error() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+
+        // When
+        do {
+            _ = try await remote.loadVariationsForPointOfSale(for: sampleSiteID, parentProductID: sampleProductID)
+        } catch let error as NetworkError {
+            // Then
+            XCTAssertEqual(error, .notFound(response: nil), "Expected a notFound error, but got \(error) instead.")
+        } catch {
+            XCTFail("Expected NetworkError.notFound, but got different error: \(error)")
+        }
+    }
+
+
+    func test_loadVariationsForPointOfSale_does_not_add_include_parameter() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+
+        // When
+        _ = try? await remote.loadVariationsForPointOfSale(for: sampleSiteID, parentProductID: sampleProductID)
+
+        // Then
+        let queryParametersDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        XCTAssertFalse(queryParametersDictionary.contains(where: { $0.key == "include" }))
+    }
+
     // MARK: - Load single product variation tests
 
     /// Verifies that loadProductVariation properly parses the `product-variation` sample response.

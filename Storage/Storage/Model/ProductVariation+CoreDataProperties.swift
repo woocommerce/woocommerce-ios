@@ -9,7 +9,7 @@ extension ProductVariation {
     }
 
     @NSManaged public var dateModified: Date?
-    @NSManaged public var dateCreated: Date
+    @NSManaged public var dateCreated: Date?
     @NSManaged public var fullDescription: String?
     @NSManaged public var permalink: String
     @NSManaged public var productVariationID: Int64

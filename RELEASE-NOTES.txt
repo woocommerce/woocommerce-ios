@@ -30,6 +30,7 @@
 - [Internal] Updated storage usage in SitePluginStore [https://github.com/woocommerce/woocommerce-ios/pull/14560]
 - [Internal] Updated storage usage in ShippingLabelStore [https://github.com/woocommerce/woocommerce-ios/pull/14566]
 - [Internal] Updated storage usage in MetaDataStore [https://github.com/woocommerce/woocommerce-ios/pull/14642]
+- [Internal] Prevent potential crashes for converting non-optional dates of deleted objects [https://github.com/woocommerce/woocommerce-ios/pull/14664]
 - [*] Fixed: Improved the error message displayed when Bluetooth permission is denied during the card reader connection process. [https://github.com/woocommerce/woocommerce-ios/pull/14561]
 - [*] Payments: error details are now displayed for more Stripe errors, instead of a generic error message. [https://github.com/woocommerce/woocommerce-ios/pull/14583]
 - [Internal] Updated transformable attribute types from Swift Array to NSArray [https://github.com/woocommerce/woocommerce-ios/pull/14611]

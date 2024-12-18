@@ -2,7 +2,7 @@ import Testing
 import Foundation
 @testable import WooCommerce
 import protocol Yosemite.POSOrderableItem
-@testable import struct Yosemite.POSProduct
+@testable import struct Yosemite.POSSimpleProduct
 import struct Yosemite.Order
 import Combine
 
@@ -480,7 +480,7 @@ struct PointOfSaleAggregateModelTests {
 }
 
 private func makeItem(name: String = "") -> POSOrderableItem {
-    return MockPOSItem(name: name, formattedPrice: "")
+    return MockPOSOrderableItem(name: name, formattedPrice: "")
 }
 
 private func makeLoadedOrderState(cartTotal: String = "",

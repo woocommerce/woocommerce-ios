@@ -1,4 +1,5 @@
 import Foundation
+import Experiments
 import Yosemite
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
@@ -9,6 +10,8 @@ final class StorePickerViewModel {
     /// Represents the internal StorePicker State
     ///
     @Published private(set) var state: StorePickerState = .empty
+
+    @Published private(set) var shouldEnableHidingStores = false
 
     var allFetchedSites: [Site] {
         resultsController.fetchedObjects
@@ -34,16 +37,19 @@ final class StorePickerViewModel {
     private let userDefaults: UserDefaults
     private let analytics: Analytics
     private let roleEligibilityUseCase: RoleEligibilityUseCase
+    private let featureFlagService: FeatureFlagService
 
     init(configuration: StorePickerConfiguration,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          userDefaults: UserDefaults = .standard,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics) {
         self.configuration = configuration
         self.stores = stores
         self.storageManager = storageManager
         self.userDefaults = userDefaults
+        self.featureFlagService = featureFlagService
         self.analytics = analytics
         self.roleEligibilityUseCase = RoleEligibilityUseCase(stores: stores)
     }
@@ -103,9 +109,20 @@ private extension StorePickerViewModel {
             try resultsController.performFetch()
             updateDisplayedStores()
             state = StorePickerState(sites: allFetchedSites)
+            updateEditButton()
         } catch {
             DDLogError("⛔️ Unable to re-fetch sites and update state: \(error)")
         }
+    }
+
+    func updateEditButton() {
+        shouldEnableHidingStores = {
+            guard featureFlagService.isFeatureFlagEnabled(.hideSitesInStorePicker),
+                  configuration == .switchingStores else {
+                return false
+            }
+            return allFetchedSites.filter { $0.isWooCommerceActive }.count > 1
+        }()
     }
 
     func synchronizeSites(selectedSiteID: Int64?, onCompletion: @escaping (Result<Void, Error>) -> Void) {

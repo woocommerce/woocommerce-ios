@@ -68,7 +68,7 @@ final class StorePickerViewController: UIViewController {
     ///
     private let viewModel: StorePickerViewModel
 
-    private var stateSubscription: AnyCancellable?
+    private var subscriptions: Set<AnyCancellable> = []
 
     private lazy var requirementsChecker = RequirementsChecker()
 
@@ -157,12 +157,7 @@ final class StorePickerViewController: UIViewController {
         self?.restartAuthentication()
     }
 
-    private lazy var editListButton: UIBarButtonItem = {
-        UIBarButtonItem(title: Localization.editListButton,
-                        style: .plain,
-                        target: self,
-                        action: #selector(editList))
-    }()
+    private var editListButton: UIBarButtonItem?
 
     private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
     private let stores: StoresManager
@@ -273,9 +268,6 @@ private extension StorePickerViewController {
                                                            style: .plain,
                                                            target: self,
                                                            action: #selector(dismissStorePicker))
-        if featureFlagService.isFeatureFlagEnabled(.hideSitesInStorePicker) {
-            navigationItem.rightBarButtonItem = editListButton
-        }
     }
 
     func setupNavigationForListOfConnectedStores() {
@@ -303,12 +295,20 @@ private extension StorePickerViewController {
     }
 
     func observeStateChange() {
-        stateSubscription = viewModel.$state.sink { [weak self] _ in
+        viewModel.$state.sink { [weak self] _ in
             guard let self = self else { return }
             self.preselectStoreIfPossible()
             self.reloadInterface()
             self.updateFooterViewIfNeeded()
-        }
+        }.store(in: &subscriptions)
+
+        viewModel.$shouldEnableHidingStores.sink { [weak self] shouldEnable in
+            guard let self else { return }
+            navigationItem.rightBarButtonItem = !shouldEnable ? nil : UIBarButtonItem(title: Localization.editListButton,
+                                                                                      style: .plain,
+                                                                                      target: self,
+                                                                                      action: #selector(editList))
+        }.store(in: &subscriptions)
     }
 
     func backgroundColor() -> UIColor {
@@ -449,10 +449,8 @@ private extension StorePickerViewController {
             updateActionButtonAndTableState(animating: false, enabled: false)
             addStoreButton.isHidden = false
             secondaryActionButton.isHidden = true
-            editListButton.isHidden = true
         case .available(let sites):
             addStoreButton.isHidden = true
-            editListButton.isHidden = sites.filter { $0.isWooCommerceActive }.count <= 1
             if sites.allSatisfy({ $0.isWooCommerceActive == false }) {
                 updateActionButtonAndTableState(animating: false, enabled: false)
             }

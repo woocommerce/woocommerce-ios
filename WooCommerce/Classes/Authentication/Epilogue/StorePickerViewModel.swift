@@ -10,6 +10,12 @@ final class StorePickerViewModel {
     ///
     @Published private(set) var state: StorePickerState = .empty
 
+    var allFetchedSites: [Site] {
+        resultsController.fetchedObjects
+    }
+
+    private(set) var displayedStores: [Site] = []
+
     /// ResultsController: Loads Sites from the Storage Layer.
     ///
     private lazy var resultsController: ResultsController<StorageSite> = {
@@ -25,16 +31,19 @@ final class StorePickerViewModel {
 
     private let storageManager: StorageManagerType
     private let stores: StoresManager
+    private let userDefaults: UserDefaults
     private let analytics: Analytics
     private let roleEligibilityUseCase: RoleEligibilityUseCase
 
     init(configuration: StorePickerConfiguration,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
+         userDefaults: UserDefaults = .standard,
          analytics: Analytics = ServiceLocator.analytics) {
         self.configuration = configuration
         self.stores = stores
         self.storageManager = storageManager
+        self.userDefaults = userDefaults
         self.analytics = analytics
         self.roleEligibilityUseCase = RoleEligibilityUseCase(stores: stores)
     }
@@ -77,14 +86,23 @@ final class StorePickerViewModel {
     func checkEligibility(for storeID: Int64, completion: @escaping (Result<Void, RoleEligibilityError>) -> Void) {
         roleEligibilityUseCase.checkEligibility(for: storeID, completion: completion)
     }
+
+    func updateDisplayedStores() {
+        let hiddenStoreIDs = userDefaults.hiddenStoreIDs
+        displayedStores = allFetchedSites
+            .filter { $0.isWooCommerceActive }
+            .filter { hiddenStoreIDs.contains($0.siteID) == false }
+    }
 }
 
 // MARK: - Private helpers
 private extension StorePickerViewModel {
+
     func refetchSitesAndUpdateState() {
         do {
             try resultsController.performFetch()
-            state = StorePickerState(sites: resultsController.fetchedObjects)
+            updateDisplayedStores()
+            state = StorePickerState(sites: allFetchedSites)
         } catch {
             DDLogError("⛔️ Unable to re-fetch sites and update state: \(error)")
         }
@@ -163,6 +181,9 @@ extension StorePickerViewModel {
         guard resultsController.numberOfObjects > 0 else {
             return 1
         }
+        if configuration == .switchingStores {
+            return displayedStores.count
+        }
         return resultsController.sections[safe: sectionIndex]?.objects.count ?? 0
     }
 
@@ -171,6 +192,9 @@ extension StorePickerViewModel {
     func site(at indexPath: IndexPath) -> Site? {
         guard resultsController.numberOfObjects > 0 else {
             return nil
+        }
+        if configuration == .switchingStores {
+            return displayedStores[safe: indexPath.row]
         }
         return resultsController.safeObject(at: indexPath)
     }

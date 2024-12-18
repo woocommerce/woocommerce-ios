@@ -661,17 +661,17 @@ private extension StorePickerViewController {
     }
 
     @objc func editList() {
-        if case let .available(sites) = viewModel.state {
-            let editViewModel = EditStoreListViewModel(availableSites: sites,
-                                                       displayedSites: sites,
-                                                       currentlySelectedSite: currentlySelectedSite,
-                                                       onCompletion: { [weak self] in
-                // TODO
-                self?.presentedViewController?.dismiss(animated: true)
-            })
-            let viewController = EditStoreListViewController(viewModel: editViewModel)
-            present(viewController, animated: true)
-        }
+        let editViewModel = EditStoreListViewModel(availableSites: viewModel.allFetchedSites,
+                                                   displayedSites: viewModel.displayedStores,
+                                                   currentlySelectedSite: currentlySelectedSite,
+                                                   onCompletion: { [weak self] in
+            guard let self else { return }
+            viewModel.updateDisplayedStores()
+            tableView.reloadData()
+            presentedViewController?.dismiss(animated: true)
+        })
+        let viewController = EditStoreListViewController(viewModel: editViewModel)
+        present(viewController, animated: true)
     }
 }
 

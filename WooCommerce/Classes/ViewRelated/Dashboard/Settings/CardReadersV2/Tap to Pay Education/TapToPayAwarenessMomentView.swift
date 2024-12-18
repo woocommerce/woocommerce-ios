@@ -7,11 +7,14 @@ struct TapToPayAwarenessMomentView: View {
     @Environment(\.dismiss) private var dismiss
     private let imageName: String
 
+    private let analytics: Analytics
     private let deepLinkNavigator: DeepLinkNavigator?
     @State private var destination: (any DeepLinkDestinationProtocol)?
 
     init(deepLinkNavigator: DeepLinkNavigator? = AppDelegate.shared.tabBarController,
-         countryCode: CountryCode = CardPresentConfigurationLoader().configuration.countryCode) {
+         countryCode: CountryCode = CardPresentConfigurationLoader().configuration.countryCode,
+         analytics: Analytics = ServiceLocator.analytics) {
+        self.analytics = analytics
         self.deepLinkNavigator = deepLinkNavigator
         switch countryCode {
         case .GB:
@@ -37,12 +40,14 @@ struct TapToPayAwarenessMomentView: View {
                 Spacer()
 
                 Button(Localization.enable, action: {
+                    analytics.track(.setUpTryOutTapToPayOnIPhoneTapped)
                     destination = PaymentsMenuDestination.tapToPay
                     dismiss()
                 })
                 .buttonStyle(PrimaryButtonStyle())
 
                 Button(Localization.learnMore, action: {
+                    analytics.track(.aboutTapToPayOnIPhoneTapped)
                     destination = PaymentsMenuDestination.aboutTapToPay
                     dismiss()
                 })
@@ -59,6 +64,9 @@ struct TapToPayAwarenessMomentView: View {
                         dismiss()
                     })
                 }
+            }
+            .onAppear {
+                analytics.track(.tapToPayAwarenessShown)
             }
             .onDisappear {
                 if let destination {

@@ -14,7 +14,9 @@ final class BuiltInCardReaderMerchantEducationPresenter: BuiltInCardReaderMercha
     }
 
     func presentMerchantEducation(completion: @escaping () -> Void) {
-        let viewController = UIHostingController(rootView: TapToPayEducationView(viewModel: .init(), completion: completion))
+        let viewController = UIHostingController(rootView: TapToPayEducationView(viewModel: .init(completion: { _ in
+            completion()
+        })))
         let topViewController = rootViewController?.presentedViewController
         topViewController?.present(viewController, animated: true)
     }

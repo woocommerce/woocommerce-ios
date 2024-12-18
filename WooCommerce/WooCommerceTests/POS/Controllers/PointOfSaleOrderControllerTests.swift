@@ -180,8 +180,8 @@ private func makeItem(name: String = "",
                       quantity: Int = 1,
                       orderItemsToMatch: [OrderItem] = []) -> CartItem {
     return CartItem(id: UUID(),
-                    item: MockPOSItem(name: name,
-                                      formattedPrice: formattedPrice,
-                                      orderItemsToMatch: orderItemsToMatch),
+                    item: MockPOSOrderableItem(name: name,
+                                               formattedPrice: formattedPrice,
+                                               orderItemsToMatch: orderItemsToMatch),
                     quantity: quantity)
 }

@@ -5,6 +5,9 @@ public protocol WooShippingRemoteProtocol {
                        customPackage: WooShippingCustomPackage?,
                        predefinedOption: WooShippingPredefinedSavedOption?,
                        completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void)
+    func deletePackage(siteID: Int64,
+                       packageID: String,
+                       completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void)
     func loadLabelRates(siteID: Int64,
                         orderID: Int64,
                         originAddress: ShippingLabelAddress,
@@ -81,6 +84,27 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
         }
     }
 
+    public func deletePackage(siteID: Int64,
+                              packageID: String,
+                              completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void) {
+        do {
+            let path = "\(Path.packages)/\(packageID)"
+
+            let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                         method: .delete,
+                                         siteID: siteID,
+                                         path: path,
+                                         parameters: nil,
+                                         availableAsRESTRequest: true)
+
+            let mapper = WooShippingCreatePackageMapper()
+
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
+
     /// Loads shipping rates for a given order.
     /// - Parameters:
     ///   - siteID: Remote ID of the site.
@@ -132,7 +156,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                                          path: path,
                                          availableAsRESTRequest: true)
 
-            let mapper = WooShippingPackagesMapper()
+            let mapper = WooShippingPackagesMapper(siteID: siteID)
             enqueue(request, mapper: mapper, completion: completion)
         }
     }

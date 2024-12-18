@@ -84,5 +84,5 @@ struct CartViewHelperTests {
 }
 
 private func makeItem() -> CartItem {
-    CartItem(id: UUID(), item: MockPOSItem(name: "Item", formattedPrice: "$1.00"), quantity: 1)
+    CartItem(id: UUID(), item: MockPOSOrderableItem(name: "Item", formattedPrice: "$1.00"), quantity: 1)
 }

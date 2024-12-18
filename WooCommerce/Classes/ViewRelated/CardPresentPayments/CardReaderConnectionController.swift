@@ -529,15 +529,8 @@ private extension CardReaderConnectionController {
         case .authorized:
             state = .connectToReader
         case .denied:
-            // Refresh the view if the location permission state changes
-            locationService.observePermissionChanges { [weak self] _ in
-                guard let self else { return }
-                locationService.stopObservingPermissionChanges()
-                if case .requestLocationPermission = state {
-                    onRequestLocationPermission()
-                }
-            }
-
+            analyticsTracker.cardReaderLocationPermissionRequiredShown()
+            observePermissionChanges()
             alertsPresenter.present(viewModel: alertsProvider.locationRequired(
                 dismiss: { [weak self] in
                     guard let self else { return }
@@ -551,11 +544,21 @@ private extension CardReaderConnectionController {
                 }
             ))
         case .notDetermined:
+            analyticsTracker.cardReaderLocationPermissionPreAlertShown()
+            observePermissionChanges()
             alertsPresenter.present(viewModel: alertsProvider.locationRequestPreAlert { [weak self] in
-                self?.locationService.requestPermission { [weak self] _ in
-                    self?.onRequestLocationPermission()
-                }
+                self?.locationService.requestPermission()
             })
+        }
+    }
+
+    func observePermissionChanges() {
+        locationService.observePermissionChanges { [weak self] permission in
+            guard let self else { return }
+            locationService.stopObservingPermissionChanges()
+            if case .requestLocationPermission = state {
+                onRequestLocationPermission()
+            }
         }
     }
 

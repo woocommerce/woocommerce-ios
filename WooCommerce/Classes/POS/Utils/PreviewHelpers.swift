@@ -2,7 +2,8 @@
 
 import Foundation
 import protocol Yosemite.PointOfSaleItemServiceProtocol
-import protocol Yosemite.POSDisplayableItem
+import enum Yosemite.POSItem
+import struct Yosemite.POSSimpleProduct
 import protocol Yosemite.POSOrderableItem
 import protocol Yosemite.OrderSyncProductTypeProtocol
 import struct Yosemite.OrderSyncProductInput
@@ -36,11 +37,11 @@ struct POSProductPreview: POSOrderableItem, Equatable {
 }
 
 final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
-    func providePointOfSaleItems(pageNumber: Int) async throws -> [POSDisplayableItem] {
+    func providePointOfSaleItems(pageNumber: Int) async throws -> [POSItem] {
         []
     }
 
-    func providePointOfSaleItems() -> [POSDisplayableItem] {
+    func providePointOfSaleItems() -> [POSItem] {
         return mockItems
     }
 
@@ -55,7 +56,7 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
     @Published var itemListState: ItemListState = .initialLoading
     var itemListStatePublisher: any Publisher<ItemListState, Never> { $itemListState }
 
-    var allItems: [POSDisplayableItem] = []
+    var allItems: [POSItem] = []
 
     func loadInitialItems() async {
         itemListState = .loaded(mockItems)
@@ -70,12 +71,12 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
     }
 }
 
-private var mockItems: [POSDisplayableItem] {
+private var mockItems: [POSItem] {
     return [
-        POSProductPreview(id: UUID(), name: "Product 1", formattedPrice: "$1.00"),
-        POSProductPreview(id: UUID(), name: "Product 2", formattedPrice: "$2.00"),
-        POSProductPreview(id: UUID(), name: "Product 3", formattedPrice: "$3.00"),
-        POSProductPreview(id: UUID(), name: "Product 4", formattedPrice: "$4.00")
+        .simpleProduct(POSSimpleProduct(id: UUID(), name: "Product 1", formattedPrice: "$1.00", productID: 1, price: "1.00")),
+        .simpleProduct(POSSimpleProduct(id: UUID(), name: "Product 2", formattedPrice: "$2.00", productID: 2, price: "2.00")),
+        .simpleProduct(POSSimpleProduct(id: UUID(), name: "Product 3", formattedPrice: "$3.00", productID: 3, price: "3.00")),
+        .simpleProduct(POSSimpleProduct(id: UUID(), name: "Product 4", formattedPrice: "$4.00", productID: 4, price: "4.00"))
     ]
 }
 

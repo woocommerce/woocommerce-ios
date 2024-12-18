@@ -51,7 +51,7 @@ struct WooShippingOriginAddressListView: View {
         .fixedSize(horizontal: false, vertical: true)
         .padding()
         .if(address.id == selectedAddressID) {
-            $0.background(Color(.wooCommercePurple(.shade0)))
+            $0.background(Color(.wooCommercePurple(.shade0)), ignoresSafeAreaEdges: .vertical)
         }
         .roundedBorder(cornerRadius: 8,
                        lineColor: Color(address.id == selectedAddressID ? .wooCommercePurple(.shade60) : .separator),

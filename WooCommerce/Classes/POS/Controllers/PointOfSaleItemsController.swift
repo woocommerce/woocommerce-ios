@@ -15,6 +15,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     private(set) var itemListStatePublisher: any Publisher<ItemListState, Never>
     private var itemListStateSubject: PassthroughSubject<ItemListState, Never> = .init()
     private var allItems: [POSItem] = []
+    private var isInitialLoading: Bool = true
     private let paginationTracker: PaginationTracker
     private let itemProvider: PointOfSaleItemServiceProtocol
 
@@ -28,7 +29,6 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
 
     @MainActor
     func loadInitialItems() async {
-        itemListStateSubject.send(.initialLoading)
         paginationTracker.syncFirstPage()
     }
 
@@ -40,24 +40,9 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     @MainActor
     func reload() async {
         allItems.removeAll()
-        itemListStateSubject.send(.loading(allItems))
         paginationTracker.resync()
     }
 
-    @MainActor
-    private func load(pageNumber: Int) async throws {
-        do {
-            try await fetchItems(pageNumber: pageNumber)
-            updateItemListStateAfterLoadAttempt()
-        } catch PointOfSaleProductServiceError.pageOutOfRange {
-            updateItemListStateAfterLoadAttempt()
-            throw PointOfSaleProductServiceError.pageOutOfRange
-        } catch {
-            itemListStateSubject.send(.error(PointOfSaleErrorState.errorOnLoadingProducts()))
-            throw error
-        }
-    }
-    
     /// <#Description#>
     /// - Parameter pageNumber: <#pageNumber description#>
     /// - Returns: A boolean that indicates whether there is next page for the paginated items.
@@ -86,7 +71,12 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
 
 extension PointOfSaleItemsController: PaginationTrackerDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
-        itemListStateSubject.send(.loading(allItems))
+        if isInitialLoading {
+            isInitialLoading = false
+            itemListStateSubject.send(.initialLoading)
+        } else {
+            itemListStateSubject.send(.loading(allItems))
+        }
         Task { @MainActor in
             do {
                 let hasNextPage = try await fetchItems(pageNumber: pageNumber)
@@ -99,7 +89,6 @@ extension PointOfSaleItemsController: PaginationTrackerDelegate {
                 itemListStateSubject.send(.error(PointOfSaleErrorState.errorOnLoadingProducts()))
                 onCompletion?(.failure(error))
             }
-            itemListStateSubject.send(.loaded(allItems))
         }
     }
 }

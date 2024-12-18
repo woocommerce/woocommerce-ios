@@ -87,6 +87,10 @@ extension WooShippingPackageDataRepresentable {
         }
         return "\(weight) \(unit)"
     }
+
+    var displayName: String {
+        name.isNotEmpty ? name : source.userFriendlyDescription
+    }
 }
 
 struct WooSavedPackagesSelectionView: View {

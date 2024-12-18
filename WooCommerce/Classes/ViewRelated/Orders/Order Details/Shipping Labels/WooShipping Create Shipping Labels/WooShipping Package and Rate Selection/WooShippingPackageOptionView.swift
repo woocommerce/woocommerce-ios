@@ -32,7 +32,7 @@ struct WooShippingPackageOptionView: View {
                             .font(.caption)
                             .foregroundStyle(Color(.secondaryLabel))
                     }
-                    Text(package.name)
+                    Text(package.displayName)
                         .bodyStyle()
                     HStack {
                         Text(package.dimensionsDescription(unit: dimensionsUnit))

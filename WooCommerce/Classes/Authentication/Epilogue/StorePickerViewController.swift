@@ -157,8 +157,6 @@ final class StorePickerViewController: UIViewController {
         self?.restartAuthentication()
     }
 
-    private var editListButton: UIBarButtonItem?
-
     private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService

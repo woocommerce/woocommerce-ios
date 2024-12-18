@@ -1,4 +1,5 @@
 import Foundation
+import Experiments
 import Yosemite
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
@@ -9,6 +10,8 @@ final class StorePickerViewModel {
     /// Represents the internal StorePicker State
     ///
     @Published private(set) var state: StorePickerState = .empty
+
+    @Published private(set) var shouldEnableHidingStores = false
 
     /// ResultsController: Loads Sites from the Storage Layer.
     ///
@@ -27,14 +30,17 @@ final class StorePickerViewModel {
     private let stores: StoresManager
     private let analytics: Analytics
     private let roleEligibilityUseCase: RoleEligibilityUseCase
+    private let featureFlagService: FeatureFlagService
 
     init(configuration: StorePickerConfiguration,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics) {
         self.configuration = configuration
         self.stores = stores
         self.storageManager = storageManager
+        self.featureFlagService = featureFlagService
         self.analytics = analytics
         self.roleEligibilityUseCase = RoleEligibilityUseCase(stores: stores)
     }
@@ -85,9 +91,20 @@ private extension StorePickerViewModel {
         do {
             try resultsController.performFetch()
             state = StorePickerState(sites: resultsController.fetchedObjects)
+            updateEditButton()
         } catch {
             DDLogError("⛔️ Unable to re-fetch sites and update state: \(error)")
         }
+    }
+
+    func updateEditButton() {
+        shouldEnableHidingStores = {
+            guard featureFlagService.isFeatureFlagEnabled(.hideSitesInStorePicker),
+                  configuration == .switchingStores else {
+                return false
+            }
+            return resultsController.fetchedObjects.filter { $0.isWooCommerceActive }.count > 1
+        }()
     }
 
     func synchronizeSites(selectedSiteID: Int64?, onCompletion: @escaping (Result<Void, Error>) -> Void) {

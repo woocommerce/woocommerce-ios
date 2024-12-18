@@ -32,20 +32,32 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     @MainActor
     func loadInitialItems() async {
         itemsViewState = ItemsViewState(containerState: .loading, itemsStack: [:])
-        paginationTracker.syncFirstPage()
+        await withCheckedContinuation { continuation in
+            paginationTracker.syncFirstPage {
+                continuation.resume()
+            }
+        }
     }
 
     @MainActor
     func loadNextItems() async {
         let currentItems = itemsViewState.itemsStack[.root]?.items ?? []
         itemsViewState = ItemsViewState(containerState: .content, itemsStack: [.root: .loading(currentItems)])
-        paginationTracker.ensureNextPageIsSynced()
+        await withCheckedContinuation { continuation in
+            paginationTracker.ensureNextPageIsSynced {
+                continuation.resume()
+            }
+        }
     }
 
     @MainActor
     func reload() async {
         itemsViewState = ItemsViewState(containerState: .content, itemsStack: [.root: .loading([])])
-        paginationTracker.resync()
+        await withCheckedContinuation { continuation in
+            paginationTracker.resync {
+                continuation.resume()
+            }
+        }
     }
 
     @MainActor

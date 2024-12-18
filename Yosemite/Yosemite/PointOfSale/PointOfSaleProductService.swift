@@ -41,10 +41,10 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
     ///
     /// - pageNumber: Number of the page that should be retrieved. If none given, defaults to 1
     ///
-    public func providePointOfSaleItems(pageNumber: Int = 1) async throws -> [POSItem] {
+    public func providePointOfSaleItems(pageNumber: Int = 1) async throws -> (items: [POSItem], hasNextPage: Bool) {
         let productTypes: [ProductType] = isVariableProductsFeatureEnabled ?
         [.simple, .variable] : [.simple]
-        let products = try await productsRemote.loadProductsForPointOfSale(for: siteID, productTypes: productTypes, pageNumber: pageNumber)
+        let (products, totalPagesCount) = try await productsRemote.loadProductsForPointOfSale(for: siteID, productTypes: productTypes, pageNumber: pageNumber)
 
         if pageNumber != 1 && products.count == 0 {
             throw PointOfSaleProductServiceError.pageOutOfRange
@@ -57,7 +57,8 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
         ]
         let filteredProducts = filterProducts(products: products, using: eligibilityCriteria)
 
-        return mapProductsToPOSItems(products: filteredProducts)
+        let hasNextPage = totalPagesCount.map { pageNumber < $0 } ?? true
+        return (items: mapProductsToPOSItems(products: filteredProducts), hasNextPage: hasNextPage)
     }
 
     // Maps result to POSItem, and populate the output with:

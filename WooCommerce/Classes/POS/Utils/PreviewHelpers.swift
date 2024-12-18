@@ -37,8 +37,8 @@ struct POSProductPreview: POSOrderableItem, Equatable {
 }
 
 final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
-    func providePointOfSaleItems(pageNumber: Int) async throws -> [POSItem] {
-        []
+    func providePointOfSaleItems(pageNumber: Int) async throws -> (items: [POSItem], hasNextPage: Bool) {
+        (items: [], hasNextPage: true)
     }
 
     func providePointOfSaleItems() -> [POSItem] {

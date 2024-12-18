@@ -84,6 +84,24 @@ public class AlamofireNetwork: Network {
             }
     }
 
+    public func responseDataAndHeaders(for request: URLRequestConvertible,
+                                       completion: @escaping (Swift.Result<(Data, ResponseHeaders), Error>) -> Void) {
+        let request = requestConverter.convert(request)
+        alamofireSession.request(request)
+            .validateIfRestRequest(for: request)
+            .responseData { response in
+                if let error = response.networkingError {
+                    completion(.failure(error))
+                } else if let data = response.data, let headers = response.response?.headers {
+                    completion(.success((data, headers.dictionary)))
+                } else {
+//                    completion(response.result.mapError { $0 })
+                    // TODO
+                    completion(.failure(NetworkError.unacceptableStatusCode(statusCode: response.response?.statusCode ?? 0, response: response.data)))
+                }
+            }
+    }
+
     /// Executes the specified Network Request. Upon completion, the payload or error will be emitted to the publisher.
     /// Only one value will be emitted and the request cannot be retried.
     ///

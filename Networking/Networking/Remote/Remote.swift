@@ -258,6 +258,31 @@ public class Remote: NSObject {
             }
         }
     }
+
+    func enqueueWithResponseHeaders<M: Mapper>(_ request: Request, mapper: M) async throws -> (data: M.Output, headers: [String: String]) {
+        try await withCheckedThrowingContinuation { continuation in
+            network.responseDataAndHeaders(for: request) { [weak self] (result: Swift.Result<(Data, Network.ResponseHeaders), Error>) in
+                guard let self else { return }
+
+                switch result {
+                case .success(let (data, headers)):
+                    do {
+                        let validator = request.responseDataValidator()
+                        try validator.validate(data: data)
+                        let parsed = try mapper.map(response: data)
+                        continuation.resume(returning: (parsed, headers))
+                    } catch {
+                        DDLogError("<> Mapping Error: \(error)")
+                        self.handleResponseError(error: error, for: request)
+                        self.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
+                        continuation.resume(throwing: error)
+                    }
+                case .failure(let error):
+                    continuation.resume(throwing: self.mapNetworkError(error: error, for: request))
+                }
+            }
+        }
+    }
 }
 
 
@@ -347,6 +372,10 @@ public extension Remote {
 
     enum Default {
         public static let firstPageNumber: Int = 1
+    }
+
+    enum PaginationHeaderKey {
+        static let totalPagesCount = "x-wp-totalpages"
     }
 
     enum JSONParsingErrorUserInfoKey {

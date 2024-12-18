@@ -104,6 +104,10 @@ public final class WordPressOrgNetwork: Network {
             }
     }
 
+    public func responseDataAndHeaders(for request: URLRequestConvertible, completion: @escaping (Result<(Data, ResponseHeaders), any Error>) -> Void) {
+        // TODO
+    }
+
     /// Executes the specified Network Request. Upon completion, the payload or error will be emitted to the publisher.
     /// Only one value will be emitted and the request cannot be retried.
     ///

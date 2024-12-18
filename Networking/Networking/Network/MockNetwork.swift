@@ -78,6 +78,10 @@ class MockNetwork: Network {
         completion(.success(data))
     }
 
+    func responseDataAndHeaders(for request: any URLRequestConvertible, completion: @escaping (Result<(Data, ResponseHeaders), any Error>) -> Void) {
+        
+    }
+
     func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
         requestsForResponseData.append(request)
 

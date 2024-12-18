@@ -45,7 +45,7 @@ public extension Sequence where Element == POSOrderableItem {
 }
 
 public protocol PointOfSaleItemServiceProtocol {
-    func providePointOfSaleItems(pageNumber: Int) async throws -> [POSItem]
+    func providePointOfSaleItems(pageNumber: Int) async throws -> (items: [POSItem], hasNextPage: Bool)
 }
 
 // Default implementation for convenience, so we do not need to pass the first page explicitly

@@ -14,16 +14,18 @@ struct WooShippingOriginAddressListView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading) {
-            Text(Localization.shipFrom)
-                .font(.footnote)
-                .foregroundStyle(.secondary)
+        ScrollView {
+            VStack(alignment: .leading) {
+                Text(Localization.shipFrom)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
 
-            ForEach(originAddresses) { address in
-                addressView(address)
-                    .onTapGesture {
-                        selectedAddressID = address.id
-                    }
+                ForEach(originAddresses) { address in
+                    addressView(address)
+                        .onTapGesture {
+                            selectedAddressID = address.id
+                        }
+                }
             }
         }
     }
@@ -31,7 +33,7 @@ struct WooShippingOriginAddressListView: View {
     @ViewBuilder
     private func addressView(_ address: WooShippingOriginAddress) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack {
+            AdaptiveStack(horizontalAlignment: .leading) {
                 Text(address.name)
                     .bold()
                 if address.isDefault {
@@ -46,6 +48,7 @@ struct WooShippingOriginAddressListView: View {
             }
             Text(address.address)
         }
+        .fixedSize(horizontal: false, vertical: true)
         .padding()
         .if(address.id == selectedAddressID) {
             $0.background(Color(.wooCommercePurple(.shade0)))

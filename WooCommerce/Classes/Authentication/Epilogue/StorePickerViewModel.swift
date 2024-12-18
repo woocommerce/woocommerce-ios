@@ -108,14 +108,14 @@ private extension StorePickerViewModel {
         do {
             try resultsController.performFetch()
             updateDisplayedStores()
+            checkIfHidingStoresShouldBeEnabled()
             state = StorePickerState(sites: allFetchedSites)
-            updateEditButton()
         } catch {
             DDLogError("⛔️ Unable to re-fetch sites and update state: \(error)")
         }
     }
 
-    func updateEditButton() {
+    func checkIfHidingStoresShouldBeEnabled() {
         shouldEnableHidingStores = {
             guard featureFlagService.isFeatureFlagEnabled(.hideSitesInStorePicker),
                   configuration == .switchingStores else {

@@ -39,6 +39,7 @@
 - [*] Widgets: Show revenue compact amount in widgets, instead of $123,456,789 (and being truncated) we show $123,5m. [https://github.com/woocommerce/woocommerce-ios/pull/14634]
 - [*] Google Ads: Fix issue displaying campaign list for stores with existing campaigns from the hub menu entry point [https://github.com/woocommerce/woocommerce-ios/pull/14661]
 - [*] Payments: Improved the card reader connection process by introducing a location permission pre-alert and earlier location request, ensuring greater clarity for users. [https://github.com/woocommerce/woocommerce-ios/pull/14672]
+- [*] Payments: Tap to Pay is now the first payment method for eligible merchants. [https://github.com/woocommerce/woocommerce-ios/pull/14717]
 
 21.2
 -----

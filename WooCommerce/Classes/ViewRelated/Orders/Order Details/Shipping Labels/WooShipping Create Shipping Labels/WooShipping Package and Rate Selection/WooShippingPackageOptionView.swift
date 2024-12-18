@@ -36,8 +36,10 @@ struct WooShippingPackageOptionView: View {
                         .bodyStyle()
                     HStack {
                         Text(package.dimensionsDescription(unit: dimensionsUnit))
-                        Text("•")
-                        Text(package.weightDescription(unit: weightUnit))
+                        if let weight = package.weightDescription(unit: weightUnit) {
+                            Text("•")
+                            Text(weight)
+                        }
                     }
                     .font(.subheadline)
                     .foregroundStyle(Color(.text))

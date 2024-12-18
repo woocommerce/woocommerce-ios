@@ -26,11 +26,6 @@ struct TotalsView: View {
         HStack {
             switch posModel.orderState {
             case .idle, .syncing, .loaded:
-                if posModel.paymentState == .acceptingCash {
-                    // TODO: View for accepting cash.
-                    // TODO: The prop we need to pass for navigating back, affects the payment state as we need to exit from .acceptingCash state
-                    POSCollectCashView(isShowingCollectCashView: $isShowingCollectCashView)
-                } else {
                     VStack(alignment: .center) {
                         Spacer()
                             .renderedIf(cardReaderViewLayout.topPadding == nil)
@@ -73,7 +68,6 @@ struct TotalsView: View {
                         Spacer()
                     }
                     .animation(.default, value: isShowingCardReaderStatus)
-                }
             case .error(let viewModel):
                 PointOfSaleOrderSyncErrorMessageView(viewModel: viewModel)
                     .transition(.opacity)
@@ -215,6 +209,13 @@ private extension TotalsView {
 private extension TotalsView {
 
     @ViewBuilder private var cardReaderView: some View {
+        if posModel.paymentState == .cashPaymentSuccessful {
+            HStack(alignment: .center) {
+                Spacer()
+                PointOfSaleCardPresentPaymentInLineMessage(messageType: .paymentSuccess(viewModel: .init(formattedOrderTotal: nil)))
+                Spacer()
+            }
+        }
         switch posModel.cardReaderConnectionStatus {
         case .connected, .disconnecting, .cancellingConnection:
             if let inlinePaymentMessage = posModel.cardPresentPaymentInlineMessage {
@@ -293,7 +294,8 @@ private extension TotalsView {
                 .preparingReader,
                 .processingPayment,
                 .cardPaymentSuccessful,
-                .acceptingCash:
+                .acceptingCash,
+                .cashPaymentSuccessful:
             break
         }
 

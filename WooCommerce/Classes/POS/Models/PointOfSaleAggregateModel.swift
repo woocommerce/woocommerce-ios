@@ -284,10 +284,14 @@ extension PointOfSaleAggregateModel {
             await orderController.syncOrder(for: cart, retryHandler: { })
             // TODO:
             // We need a new state, or generalize this one as paymentSuccessful:
-            paymentState = .cardPaymentSuccessful
+            paymentState = .cashPaymentSuccessful
         } catch {
             debugPrint(error)
         }
+    }
+    
+    func cancelCashPayment() {
+        paymentState = .acceptingCard
     }
 }
 

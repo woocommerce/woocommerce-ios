@@ -7,13 +7,11 @@ struct POSCollectCashView: View {
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
 
-    @Binding private(set) var isShowingCollectCashView: Bool
-
     var body: some View {
         VStack(alignment: .center, spacing: 20) {
             HStack {
                 Button(action: {
-                    isShowingCollectCashView = false
+                    posModel.cancelCashPayment()
                 }, label: {
                     HStack {
                         Image(systemName: "arrow.backward")
@@ -104,6 +102,6 @@ private extension POSCollectCashView {
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
-    POSCollectCashView(isShowingCollectCashView: .constant(true))
+    POSCollectCashView()
         .environmentObject(posModel)
 }

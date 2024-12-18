@@ -32,7 +32,7 @@ private extension PointOfSalePaymentState {
                 .validatingOrder,
                 .preparingReader:
             return false
-        case .idle, .validatingOrderError, .acceptingCard, .acceptingCash:
+        case .idle, .validatingOrderError, .acceptingCard, .acceptingCash, .cashPaymentSuccessful:
             return true
         }
     }

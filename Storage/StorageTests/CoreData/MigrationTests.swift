@@ -3146,6 +3146,120 @@ final class MigrationTests: XCTestCase {
 		let savedGlobalUniqueID = try XCTUnwrap(migratedProductVariation.value(forKey: "globalUniqueID") as? String)
 		XCTAssertEqual(savedGlobalUniqueID, globalUniqueID)
 	}
+
+    func test_migrating_from_118_to_119_adds_woo_shipping_entities() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 118")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. These entities should not exist in Model 118
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "WooShippingPackagesResponse", in: sourceContext))
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "WooShippingCarrierPredefinedOptions", in: sourceContext))
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "WooShippingCustomPackage", in: sourceContext))
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "WooShippingPredefinedOption", in: sourceContext))
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "WooShippingPredefinedPackage", in: sourceContext))
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "WooShippingSavedPredefinedPackage", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 119")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // These entities should exist in Model 119
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "WooShippingPackagesResponse", in: targetContext))
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "WooShippingCarrierPredefinedOptions", in: targetContext))
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "WooShippingCustomPackage", in: targetContext))
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "WooShippingPredefinedOption", in: targetContext))
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "WooShippingPredefinedPackage", in: targetContext))
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "WooShippingSavedPredefinedPackage", in: targetContext))
+
+        XCTAssertEqual(try targetContext.count(entityName: "WooShippingPackagesResponse"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "WooShippingCarrierPredefinedOptions"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "WooShippingCustomPackage"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "WooShippingPredefinedOption"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "WooShippingPredefinedPackage"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "WooShippingSavedPredefinedPackage"), 0)
+
+        // Insert a new WooShippingCarrierPackagesResponse
+        let packagesResponse = insertWooShippingPackagesResponse(to: targetContext)
+        XCTAssertEqual(try targetContext.count(entityName: "WooShippingPackagesResponse"), 1)
+
+        // Check all attributes and relationships
+        XCTAssertNotNil(packagesResponse.entity.attributesByName["siteID"])
+        XCTAssertNotNil(packagesResponse.entity.relationshipsByName["allPredefinedOptions"])
+        XCTAssertNotNil(packagesResponse.entity.relationshipsByName["customPackages"])
+        XCTAssertNotNil(packagesResponse.entity.relationshipsByName["savedPredefinedPackages"])
+
+        // Insert a new WooShippingCarrierPredefinedOptions
+        let carrierPredefinedOptions = insertWooShippingCarrierPredefinedOptions(to: targetContext)
+        XCTAssertEqual(try targetContext.count(entityName: "WooShippingCarrierPredefinedOptions"), 1)
+
+        // Check all attributes and relationships
+        XCTAssertNotNil(carrierPredefinedOptions.entity.attributesByName["carrierID"])
+        XCTAssertNotNil(carrierPredefinedOptions.entity.relationshipsByName["predefinedOptions"])
+
+        // Insert a new WooShippingPredefinedOption
+        let predefinedOption = insertWooShippingPredefinedOption(to: targetContext)
+        XCTAssertEqual(try targetContext.count(entityName: "WooShippingPredefinedOption"), 1)
+
+        // Check all attributes and relationships
+        XCTAssertNotNil(predefinedOption.entity.attributesByName["providerID"])
+        XCTAssertNotNil(predefinedOption.entity.attributesByName["title"])
+        XCTAssertNotNil(predefinedOption.entity.relationshipsByName["carrier"])
+        XCTAssertNotNil(predefinedOption.entity.relationshipsByName["predefinedPackages"])
+
+        // Insert a new WooShippingPredefinedPackage
+        let predefinedPackage = insertWooShippingPredefinedPackage(to: targetContext)
+        XCTAssertEqual(try targetContext.count(entityName: "WooShippingPredefinedPackage"), 1)
+
+        // Check all attributes and relationships
+        XCTAssertNotNil(predefinedPackage.entity.attributesByName["id"])
+        XCTAssertNotNil(predefinedPackage.entity.attributesByName["groupID"])
+        XCTAssertNotNil(predefinedPackage.entity.attributesByName["name"])
+        XCTAssertNotNil(predefinedPackage.entity.attributesByName["dimensions"])
+        XCTAssertNotNil(predefinedPackage.entity.attributesByName["isLetter"])
+        XCTAssertNotNil(predefinedPackage.entity.attributesByName["boxWeight"])
+        XCTAssertNotNil(predefinedPackage.entity.relationshipsByName["predefinedOption"])
+        XCTAssertNotNil(predefinedPackage.entity.relationshipsByName["savedPredefinedPackage"])
+
+        // Insert a new WooShippingSavedPredefinedPackage
+        let savedPredefinedPackage = insertWooShippingSavedPredefinedPackage(to: targetContext)
+        XCTAssertEqual(try targetContext.count(entityName: "WooShippingSavedPredefinedPackage"), 1)
+
+        // Check all attributes and relationships
+        XCTAssertNotNil(savedPredefinedPackage.entity.attributesByName["providerID"])
+        XCTAssertNotNil(savedPredefinedPackage.entity.attributesByName["groupTitle"])
+        XCTAssertNotNil(savedPredefinedPackage.entity.relationshipsByName["package"])
+
+        // Insert a new WooShippingCustomPackage
+        let customPackage = insertWooShippingCustomPackage(to: targetContext)
+        XCTAssertEqual(try targetContext.count(entityName: "WooShippingCustomPackage"), 1)
+
+        // Check all attributes
+        XCTAssertNotNil(customPackage.entity.attributesByName["id"])
+        XCTAssertNotNil(customPackage.entity.attributesByName["name"])
+        XCTAssertNotNil(customPackage.entity.attributesByName["dimensions"])
+        XCTAssertNotNil(customPackage.entity.attributesByName["rawType"])
+        XCTAssertNotNil(customPackage.entity.attributesByName["boxWeight"])
+
+        // Check all relationships
+        packagesResponse.setValue(NSOrderedSet(array: [carrierPredefinedOptions]), forKey: "allPredefinedOptions")
+        packagesResponse.setValue(NSSet(array: [customPackage]), forKey: "customPackages")
+        packagesResponse.setValue(NSSet(array: [savedPredefinedPackage]), forKey: "savedPredefinedPackages")
+        carrierPredefinedOptions.setValue(NSOrderedSet(array: [predefinedOption]), forKey: "predefinedOptions")
+        predefinedOption.setValue(NSSet(array: [predefinedPackage]), forKey: "predefinedPackages")
+        savedPredefinedPackage.setValue(predefinedPackage, forKey: "package")
+        try targetContext.save()
+        XCTAssertEqual(packagesResponse.value(forKey: "allPredefinedOptions") as? NSOrderedSet, NSOrderedSet(array: [carrierPredefinedOptions]))
+        XCTAssertEqual(packagesResponse.value(forKey: "customPackages") as? NSSet, NSSet(array: [customPackage]))
+        XCTAssertEqual(packagesResponse.value(forKey: "savedPredefinedPackages") as? NSSet, NSSet(array: [savedPredefinedPackage]))
+        XCTAssertEqual(carrierPredefinedOptions.value(forKey: "predefinedOptions") as? NSOrderedSet, NSOrderedSet(array: [predefinedOption]))
+        XCTAssertEqual(predefinedOption.value(forKey: "predefinedPackages") as? NSSet, NSSet(array: [predefinedPackage]))
+        XCTAssertEqual(savedPredefinedPackage.value(forKey: "package") as? WooShippingPredefinedPackage, predefinedPackage)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -3990,6 +4104,59 @@ private extension MigrationTests {
             "metadataID": 18149,
             "key": "New Metadata Key",
             "value": "New Metadata Value"
+        ])
+    }
+
+    @discardableResult
+    func insertWooShippingPackagesResponse(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "WooShippingPackagesResponse", properties: [
+            "siteID": 1,
+        ])
+    }
+
+    @discardableResult
+    func insertWooShippingCarrierPredefinedOptions(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "WooShippingCarrierPredefinedOptions", properties: [
+            "carrierID": "usps",
+        ])
+    }
+
+    @discardableResult
+    func insertWooShippingCustomPackage(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "WooShippingCustomPackage", properties: [
+            "id": "abc123",
+            "name": "Custom Box",
+            "dimensions": "12.0 x 12.0 x 12.0",
+            "rawType": "box",
+            "boxWeight": 1.0,
+        ])
+    }
+
+    @discardableResult
+    func insertWooShippingPredefinedOption(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "WooShippingPredefinedOption", properties: [
+            "providerID": "usps",
+            "title": "USPS Priority Mail Boxes"
+        ])
+    }
+
+    @discardableResult
+    func insertWooShippingPredefinedPackage(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "WooShippingPredefinedPackage", properties: [
+            "id": "usps",
+            "groupID": "pri_flat_boxes",
+            "name": "Small Flat Rate Box",
+            "dimensions": "8.63 x 5.38 x 1.63",
+            "isLetter": false,
+            "boxWeight": "0",
+        ])
+    }
+
+    @discardableResult
+    func insertWooShippingSavedPredefinedPackage(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "WooShippingSavedPredefinedPackage", properties: [
+            "providerID": "usps",
+            "groupTitle": "USPS Priority Mail Flat Rate Boxes",
         ])
     }
 }

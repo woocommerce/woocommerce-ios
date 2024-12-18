@@ -16,6 +16,10 @@ struct TotalsView: View {
     private var shouldShowTotalsFields: Bool {
         viewHelper.shouldShowTotalsFields(for: posModel.paymentState)
     }
+    
+    private var shouldShowCollectCashPaymentButton: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.acceptCashForPointOfSale)
+    }
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
@@ -52,6 +56,17 @@ struct TotalsView: View {
                                 .opacity(viewHelper.shouldShowTotalsFields(for: posModel.paymentState) ? 1 : 0)
                                 .layoutPriority(2)
                         }
+                        
+                        Button(action: {
+                            posModel.collectCashPayment()
+                        }, label: {
+                            Text("Cash payment")
+                                .foregroundColor(.posPrimaryText)
+                        })
+                        .buttonStyle(SecondaryButtonStyle())
+                        .padding(.horizontal)
+                        .renderedIf(posModel.orderState != .syncing)
+                        .renderedIf(shouldShowCollectCashPaymentButton)
                     }
                     .animation(.default, value: posModel.cardPresentPaymentInlineMessage)
                     Spacer()
@@ -275,7 +290,9 @@ private extension TotalsView {
                 .validatingOrder,
                 .preparingReader,
                 .processingPayment,
-                .cardPaymentSuccessful:
+                .cardPaymentSuccessful,
+                .acceptingCash,
+                .cashPaymentSuccessful:
             break
         }
 

@@ -87,9 +87,14 @@ struct PointOfSaleDashboardView: View {
                 }
 
                 if posModel.orderStage == .finalizing {
-                    TotalsView()
-                        .accessibilitySortPriority(2)
-                        .transition(.move(edge: .trailing))
+                    switch posModel.paymentState {
+                    case .acceptingCash:
+                        PointOfSaleCollectCashView()
+                    default:
+                        TotalsView()
+                            .accessibilitySortPriority(2)
+                            .transition(.move(edge: .trailing))
+                    }
                 }
             }
             .animation(.default, value: posModel.orderStage)

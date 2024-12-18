@@ -61,6 +61,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
+    private var latestPaymentState: PointOfSalePaymentState? = nil
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -260,6 +261,23 @@ extension PointOfSaleAggregateModel {
     /// Tracks when the onboarding UI is shown.
     func trackCardPaymentsOnboardingShown() {
         analytics.track(event: .PointOfSale.paymentsOnboardingShown())
+    }
+}
+
+// MARK: - Card payments
+//
+extension PointOfSaleAggregateModel {
+    func collectCashPayment() {
+        // Capture the latest payment state before switching to cash collection
+        // so we can return if the collection is cancelled
+        latestPaymentState = paymentState
+        paymentState = .acceptingCash
+    }
+
+    func cancelCashPayment() {
+        if let latestPaymentState = latestPaymentState {
+            paymentState = latestPaymentState
+        }
     }
 }
 

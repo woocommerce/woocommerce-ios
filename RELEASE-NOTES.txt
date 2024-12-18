@@ -7,6 +7,7 @@
 - [*] Product Tags: Improved the tag list screen by displaying the cached items on first load and fixed issue clearing all tags [https://github.com/woocommerce/woocommerce-ios/pull/14511]
 - [**] Media Library: On sites logged in with application password, when picking image from WordPress Media Library, all images will now load correctly. [https://github.com/woocommerce/woocommerce-ios/pull/14444]
 - [*] Payments onboarding: the custom background color of the "Choose your Payment Provider" UI when both WooPayments and Stripe Extension are available was removed to enable use cases with different container background colors. [https://github.com/woocommerce/woocommerce-ios/pull/14546]
+- [*] Reviews: Fix issue removing highlight from read reviews [https://github.com/woocommerce/woocommerce-ios/pull/14675]
 - [**] Products: Media upload will work for sites without XML-RPC. [https://github.com/woocommerce/woocommerce-ios/pull/14537]
 - [**] Products: Media library can now be loaded for sites without XML-RPC [https://github.com/woocommerce/woocommerce-ios/pull/14595]
 - [**] Products: Saving product images now works for sites without XML-RPC [https://github.com/woocommerce/woocommerce-ios/pull/14595]

@@ -940,7 +940,7 @@ final class ProductsRemoteTests: XCTestCase {
         // When
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-type-simple")
 
-        let products = try await remote.loadProductsForPointOfSale(for: sampleSiteID)
+        let (products, _) = try await remote.loadProductsForPointOfSale(for: sampleSiteID)
 
         // Then
         XCTAssertEqual(products.count, expectedProductsFromResponse)
@@ -970,7 +970,7 @@ final class ProductsRemoteTests: XCTestCase {
         // When
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-type-simple")
 
-        let products = try await remote.loadProductsForPointOfSale(for: sampleSiteID, pageNumber: initialPageNumber)
+        let (products, _) = try await remote.loadProductsForPointOfSale(for: sampleSiteID, pageNumber: initialPageNumber)
 
         // Then
         XCTAssertEqual(products.count, expectedProductsFromResponse)
@@ -988,7 +988,7 @@ final class ProductsRemoteTests: XCTestCase {
         // When
         network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
 
-        let products = try await remote.loadProductsForPointOfSale(for: sampleSiteID, pageNumber: pageNumber)
+        let (products, _) = try await remote.loadProductsForPointOfSale(for: sampleSiteID, pageNumber: pageNumber)
 
         // Then
         XCTAssertEqual(products.count, expectedProductsFromResponse)

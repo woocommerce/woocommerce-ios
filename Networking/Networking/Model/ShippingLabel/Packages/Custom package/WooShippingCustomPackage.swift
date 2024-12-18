@@ -74,6 +74,13 @@ extension WooShippingCustomPackage: Codable {
                 let boxWeightDouble = Double(boxWeightString) {
             boxWeight = boxWeightDouble
         }
+        else if let boxWeightDouble = try? container.decodeIfPresent(Double.self, forKey: .boxWeightAlternate) {
+            boxWeight = boxWeightDouble
+        }
+        else if let boxWeightString = try? container.decodeIfPresent(String.self, forKey: .boxWeightAlternate),
+                let boxWeightDouble = Double(boxWeightString) {
+            boxWeight = boxWeightDouble
+        }
 
         self.init(id: id, name: name, rawType: type, dimensions: dimensions, boxWeight: boxWeight)
     }
@@ -92,6 +99,7 @@ extension WooShippingCustomPackage: Codable {
         case name
         case type
         case dimensions
-        case boxWeight = "box_weight"
+        case boxWeight
+        case boxWeightAlternate = "box_weight"
     }
 }

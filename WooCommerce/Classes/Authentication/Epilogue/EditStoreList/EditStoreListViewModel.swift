@@ -8,6 +8,8 @@ final class EditStoreListViewModel: ObservableObject {
     /// All available sites to be displayed on the store picker
     let availableSites: [Site]
 
+    let currentlySelectedSite: Site?
+
     /// Sites selected to be displayed on the store picker
     @Published var selectedSites: Set<Site>
 
@@ -17,21 +19,23 @@ final class EditStoreListViewModel: ObservableObject {
 
     private let originalSelectedSites: [Site]
     private let analytics: Analytics
-    private let onCompletion: (_ selectedSites: Set<Site>) -> Void
+    private let onCompletion: () -> Void
 
     init(availableSites: [Site],
-         selectedSites: [Site],
+         displayedSites: [Site],
+         currentlySelectedSite: Site?,
          analytics: Analytics = ServiceLocator.analytics,
-         onCompletion: @escaping (_ selectedSites: Set<Site>) -> Void) {
-        self.availableSites = availableSites
-        self.originalSelectedSites = selectedSites
-        self.selectedSites = Set(selectedSites)
+         onCompletion: @escaping () -> Void) {
+        self.availableSites = availableSites.filter { $0.siteID != currentlySelectedSite?.siteID }
+        self.currentlySelectedSite = currentlySelectedSite
+        self.originalSelectedSites = displayedSites
+        self.selectedSites = Set(displayedSites)
         self.analytics = analytics
         self.onCompletion = onCompletion
     }
 
     func didSaveChanges() {
-        onCompletion(selectedSites)
+        onCompletion()
     }
 }
 

@@ -1,4 +1,4 @@
-public enum POSItem: Equatable, Identifiable {
+public enum POSItem: Equatable, Identifiable, Hashable {
     case simpleProduct(POSSimpleProduct)
 
     public var id: UUID {

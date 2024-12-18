@@ -10,8 +10,8 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            switch posModel.itemListState {
-            case .initialLoading:
+            switch posModel.itemsViewState.containerState {
+            case .loading:
                 PointOfSaleLoadingView()
                     .transition(.opacity)
                     .ignoresSafeArea()
@@ -23,7 +23,7 @@ struct PointOfSaleDashboardView: View {
                         await posModel.loadInitialItems()
                     }
                 })
-            case .loading, .loaded:
+            case .content:
                 contentView
                     .accessibilitySortPriority(2)
             }
@@ -34,7 +34,7 @@ struct PointOfSaleDashboardView: View {
                 .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
                 .trackSize(size: $floatingSize)
                 .accessibilitySortPriority(1)
-                .renderedIf(posModel.itemListState != .initialLoading)
+                .renderedIf(posModel.itemsViewState.containerState != .loading)
 
             POSConnectivityView()
         }
@@ -42,7 +42,7 @@ struct PointOfSaleDashboardView: View {
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .environment(\.posBackgroundAppearance, posModel.paymentState != .processingPayment ? .primary : .secondary)
-        .animation(.easeInOut, value: posModel.itemListState == .initialLoading)
+        .animation(.easeInOut, value: posModel.itemsViewState.containerState == .loading)
         .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
         .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
@@ -74,7 +74,7 @@ struct PointOfSaleDashboardView: View {
         GeometryReader { geometry in
             HStack {
                 if posModel.orderStage == .building {
-                    ItemListView()
+                    ItemListView(itemListState: posModel.itemsViewState.itemsStack[.root] ?? .loading([]))
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .leading))
                 }

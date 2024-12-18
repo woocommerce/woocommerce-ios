@@ -5,88 +5,85 @@ import protocol Yosemite.PointOfSaleItemServiceProtocol
 import enum Yosemite.PointOfSaleProductServiceError
 
 protocol PointOfSaleItemsControllerProtocol {
-    var itemListStatePublisher: any Publisher<ItemListState, Never> { get }
+    var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { get }
     func loadInitialItems() async
     func loadNextItems() async
     func reload() async
 }
 
 class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
-    private(set) var itemListStatePublisher: any Publisher<ItemListState, Never>
-    private var itemListStateSubject: PassthroughSubject<ItemListState, Never> = .init()
-    private var allItems: [POSItem] = []
-    private var isInitialLoading: Bool = true
-    private let paginationTracker: PaginationTracker
+    private(set) var itemsViewStatePublisher: any Publisher<ItemsViewState, Never>
+    private var itemsViewStateSubject: PassthroughSubject<ItemsViewState, Never> = .init()
+    private var itemsViewState: ItemsViewState = .init(containerState: .loading, itemsStack: [:]) {
+        didSet {
+            itemsViewStateSubject.send(itemsViewState)
+        }
+    }
+    private let paginationTracker: PaginationTracker = PaginationTracker()
     private let itemProvider: PointOfSaleItemServiceProtocol
 
     init(itemProvider: PointOfSaleItemServiceProtocol) {
         self.itemProvider = itemProvider
-        self.paginationTracker = .init(pageFirstIndex: Constants.initialPage)
-        itemListStatePublisher = itemListStateSubject.eraseToAnyPublisher()
+        itemsViewStatePublisher = itemsViewStateSubject.eraseToAnyPublisher()
 
         paginationTracker.delegate = self
     }
 
     @MainActor
     func loadInitialItems() async {
+        itemsViewState = ItemsViewState(containerState: .loading, itemsStack: [:])
         paginationTracker.syncFirstPage()
     }
 
     @MainActor
     func loadNextItems() async {
+        let currentItems = itemsViewState.itemsStack[.root]?.items ?? []
+        itemsViewState = ItemsViewState(containerState: .content, itemsStack: [.root: .loading(currentItems)])
         paginationTracker.ensureNextPageIsSynced()
     }
 
     @MainActor
     func reload() async {
-        allItems.removeAll()
+        itemsViewState = ItemsViewState(containerState: .content, itemsStack: [.root: .loading([])])
         paginationTracker.resync()
     }
 
-    /// <#Description#>
-    /// - Parameter pageNumber: <#pageNumber description#>
-    /// - Returns: A boolean that indicates whether there is next page for the paginated items.
     @MainActor
     private func fetchItems(pageNumber: Int) async throws -> Bool {
         let (newItems, hasNextPage) = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
+        var allItems = itemsViewState.itemsStack[.root]?.items ?? []
         let uniqueNewItems = newItems.filter { newItem in
+            // Note that this uniquing won't currently work, as POSItem has a UUID.
             !allItems.contains(newItem)
         }
         allItems.append(contentsOf: uniqueNewItems)
+        itemsViewState = ItemsViewState(containerState: .content,
+                                        itemsStack: [.root: .loaded(allItems)])
         return hasNextPage
     }
+}
 
-    private func updateItemListStateAfterLoadAttempt() {
-        if allItems.isEmpty {
-            itemListStateSubject.send(.empty)
-        } else {
-            itemListStateSubject.send(.loaded(allItems))
+private extension ItemListState {
+    var items: [POSItem] {
+        switch self {
+        case .loading(let items),
+                .loaded(let items):
+            return items
+        case .error:
+            return []
         }
-    }
-
-    private enum Constants {
-        static let initialPage: Int = 1
     }
 }
 
 extension PointOfSaleItemsController: PaginationTrackerDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
-        if isInitialLoading {
-            isInitialLoading = false
-            itemListStateSubject.send(.initialLoading)
-        } else {
-            itemListStateSubject.send(.loading(allItems))
-        }
         Task { @MainActor in
             do {
                 let hasNextPage = try await fetchItems(pageNumber: pageNumber)
-                updateItemListStateAfterLoadAttempt()
                 onCompletion?(.success(hasNextPage))
-            } catch PointOfSaleProductServiceError.pageOutOfRange {
-                updateItemListStateAfterLoadAttempt()
-                onCompletion?(.failure(PointOfSaleProductServiceError.pageOutOfRange))
             } catch {
-                itemListStateSubject.send(.error(PointOfSaleErrorState.errorOnLoadingProducts()))
+                itemsViewStateSubject.send(ItemsViewState(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
+                                                          itemsStack: [:]))
                 onCompletion?(.failure(error))
             }
         }

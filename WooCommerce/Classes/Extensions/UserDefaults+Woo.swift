@@ -49,10 +49,6 @@ extension UserDefaults {
         // Theme installation
         case themesPendingInstall
 
-        // Store Creation
-        case siteIDPendingStoreSwitch
-        case expectedStoreNamePendingStoreSwitch
-
         // Watch
         case watchDependencies
 

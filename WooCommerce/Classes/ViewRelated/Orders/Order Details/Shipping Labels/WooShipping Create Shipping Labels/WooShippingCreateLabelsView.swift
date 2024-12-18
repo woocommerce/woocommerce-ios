@@ -90,8 +90,6 @@ struct WooShippingCreateLabelsView: View {
                                             .font(.subheadline)
                                             .tint(Color(.primary))
                                             .fixedSize(horizontal: false, vertical: true)
-                                    }
-                                    if viewModel.selectedPackage != nil {
                                         purchaseButton
                                     }
                                 }

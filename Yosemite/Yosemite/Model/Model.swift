@@ -320,6 +320,11 @@ public typealias FeatureAnnouncementCampaignSettings = Storage.FeatureAnnounceme
 public typealias AnalyticsCard = Storage.AnalyticsCard
 public typealias DashboardCard = Storage.DashboardCard
 public typealias StorageWooShippingPackagesResponse = Storage.WooShippingPackagesResponse
+public typealias StorageWooShippingCarrierPredefinedOptions = Storage.WooShippingCarrierPredefinedOptions
+public typealias StorageWooShippingPredefinedOption = Storage.WooShippingPredefinedOption
+public typealias StorageWooShippingPredefinedPackage = Storage.WooShippingPredefinedPackage
+public typealias StorageWooShippingCustomPackage = Storage.WooShippingCustomPackage
+public typealias StorageWooShippingSavedPredefinedPackage = Storage.WooShippingSavedPredefinedPackage
 
 // MARK: - Internal ReadOnly Models
 

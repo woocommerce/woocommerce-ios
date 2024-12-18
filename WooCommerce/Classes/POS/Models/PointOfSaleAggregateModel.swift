@@ -65,6 +65,9 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     private var cardReaderDisconnection: AnyCancellable?
 
     private var cancellables: Set<AnyCancellable> = []
+    
+    private var capturePaymentStateSpy: [PointOfSalePaymentState] = []
+    private var latestPaymentStateSpy: PointOfSalePaymentState? = nil
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
@@ -76,6 +79,14 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
         self.orderController = orderController
         self.analytics = analytics
         self.paymentState = paymentState
+        
+        $paymentState
+            .sink { [weak self] state in
+                debugPrint("🍍 Payment state changed to \(state)")
+                self?.capturePaymentStateSpy.append(state)
+            }
+            .store(in: &cancellables)
+        
         publishItemListState()
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
@@ -274,6 +285,8 @@ extension PointOfSaleAggregateModel {
 extension PointOfSaleAggregateModel {
     func collectCashPaymentTapped() {
         // Switch payment state, which will trigger the full-width view in TotalsView:
+        // Save latest state in memory in case we need to cancel cash collection
+        latestPaymentStateSpy = paymentState
         paymentState = .acceptingCash
     }
 
@@ -291,7 +304,10 @@ extension PointOfSaleAggregateModel {
     }
     
     func cancelCashPayment() {
-        paymentState = .acceptingCard
+        // Ideally we go back to last state captured before switching to .cash
+        if let latestPaymentStateSpy = latestPaymentStateSpy {
+            paymentState = latestPaymentStateSpy
+        }
     }
 }
 

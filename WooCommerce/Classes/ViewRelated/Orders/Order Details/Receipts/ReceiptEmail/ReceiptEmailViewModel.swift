@@ -1,25 +1,32 @@
 import Foundation
 import class WordPressShared.EmailFormatValidator
 import Yosemite
+import WooFoundation
+import Combine
+
+enum ReceiptEmailResult {
+    case success(Order)
+    case failure(Error)
+    case canceled
+}
 
 final class ReceiptEmailViewModel: ObservableObject {
     @Published var email: String = ""
-    @Published var state: PrimaryLoadingButtonStyle.State = .idle
+    @Published private(set) var state: PrimaryLoadingButtonStyle.State = .idle
 
-    private let order: Order
+    private var order: Order
     private let stores: StoresManager
-    var noticePresenter: NoticePresenter
-    var emailValidator: (String) -> Bool = EmailFormatValidator.validate
-    var onDismiss: (Order?) -> Void
+    private let emailValidator: (String) -> Bool
+    private let onResult: (ReceiptEmailResult) -> Void
 
     init(order: Order,
-         stores: StoresManager,
-         noticesPresenter: NoticePresenter = DefaultNoticePresenter(),
-         onDismiss: @escaping (Order?) -> Void = { _ in }) {
+         stores: StoresManager = ServiceLocator.stores,
+         emailValidator: @escaping (String) -> Bool = EmailFormatValidator.validate,
+         onResult: @escaping (ReceiptEmailResult) -> Void) {
         self.order = order
         self.stores = stores
-        self.noticePresenter = noticesPresenter
-        self.onDismiss = onDismiss
+        self.emailValidator = emailValidator
+        self.onResult = onResult
     }
 
     var isEmailValid: Bool {
@@ -34,27 +41,25 @@ final class ReceiptEmailViewModel: ObservableObject {
                 self.state = .idle
                 switch result {
                 case let .success(order):
+                    self.order = order
                     self.state = .success
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                        self.onDismiss(order)
-                    }
                 case let .failure(error):
                     DDLogError("Sending email receipt failed: \(error.localizedDescription)")
-                    self.noticePresenter.enqueue(notice: Notice(title: Localization.errorNotice, feedbackType: .error))
-                 }
+                    self.onResult(.failure(error))
+                }
             }
         }
 
-        self.state = .loading
+        state = .loading
         stores.dispatch(action)
     }
-}
 
-private enum Localization {
-    static let errorNotice = NSLocalizedString(
-        "order.receiptEmailView.errorNotice",
-        value: "Error sending the email receipt. Please try again.",
-        comment: "An error that is shown when sending email receipt fails."
-    )
-
+    func onDisappear() {
+        switch state {
+        case .success:
+            onResult(.success(order))
+        default:
+            onResult(.canceled)
+        }
+    }
 }

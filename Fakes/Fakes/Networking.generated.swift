@@ -2761,6 +2761,16 @@ extension Networking.WooShippingAccountSettings {
         )
     }
 }
+extension Networking.WooShippingCarrierPredefinedOptions {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingCarrierPredefinedOptions {
+        .init(
+            carrierID: .fake(),
+            predefinedOptions: .fake()
+        )
+    }
+}
 extension Networking.WooShippingCreatePackageResponse {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -2801,7 +2811,7 @@ extension Networking.WooShippingPackagesResponse {
     ///
     public static func fake() -> Networking.WooShippingPackagesResponse {
         .init(
-            storeOptions: .fake(),
+            siteID: .fake(),
             customPackages: .fake(),
             savedPredefinedPackages: .fake(),
             allPredefinedOptions: .fake()

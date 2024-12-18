@@ -97,21 +97,39 @@ struct WooSavedPackagesSelectionView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Divider()
-            if viewModel.isLoadingPackages {
-                ProgressView()
-                    .progressViewStyle(.circular)
+            if !viewModel.hasSavedPackages {
+                // Show extra loading indicator in case there are no packages
+                if viewModel.isLoadingPackages {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                        .padding()
+                }
+                else {
+                    Button {
+                        viewModel.loadPackages()
+                    } label: {
+                        Image(systemName: "arrow.trianglehead.counterclockwise")
+                    }
                     .padding()
+                }
             }
-            List {
-                packagesSection(for: viewModel.customSavedPackages)
-                packagesSection(for: viewModel.predefinedSavedPackages)
+            else {
+                Divider()
+                List {
+                    packagesSection(for: viewModel.customSavedPackages)
+                    packagesSection(for: viewModel.predefinedSavedPackages)
+                }
+                .listStyle(.plain)
+                .refreshable {
+                    await withCheckedContinuation { continuation in
+                        viewModel.loadPackages {
+                            continuation.resume()
+                        }
+                    }
+                }
+                Divider()
             }
-            .listStyle(.plain)
-            .refreshable {
-                viewModel.loadPackages()
-            }
-            Divider()
+            Spacer()
             Button(WooShippingAddPackageView.Localization.addPackage) {
                 addPackageButtonTapped()
             }
@@ -151,10 +169,7 @@ struct WooSavedPackagesSelectionView: View {
             .swipeActions {
                 Button {
                     withAnimation {
-                        _ = Task {
-                            return await viewModel.removeSavedPackage(package)
-                        }
-                        // TODO: handle error
+                        viewModel.removeSavedPackage(package)
                     }
                 } label: {
                     Image(systemName: "trash")

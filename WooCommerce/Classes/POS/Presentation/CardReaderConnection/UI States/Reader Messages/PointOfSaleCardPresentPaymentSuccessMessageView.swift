@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
+
     let viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
     @Environment(\.colorScheme) var colorScheme
@@ -71,7 +72,7 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
     }
 
     private var checkmarkColor: Color {
-        Color.posSecondaryBackground
+        Color.primary
     }
 }
 

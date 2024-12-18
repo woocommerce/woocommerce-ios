@@ -75,9 +75,15 @@ struct InPersonPaymentsMenu: View {
                                     await viewModel.onAppear()
                                 }
                             }) {
-                                TapToPayEducationView(viewModel: .init(flow: .about), completion: {
-                                    viewModel.presentAboutTapToPay = false
-                                })
+                                TapToPayEducationView(viewModel: .init(flow: .about,
+                                                                       completion: { result in
+                                    switch result {
+                                    case .setUpTapToPay:
+                                        viewModel.presentSetUpTryOutTapToPay = true
+                                    default:
+                                        break
+                                    }
+                                }))
                             }
                         } else {
                             Button {
@@ -365,7 +371,7 @@ private extension InPersonPaymentsMenu {
             value: "About Tap to Pay",
             comment: "Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits " +
             "of Tap to Pay on iPhone, relevant to the store territory."
-        ).localizedCapitalized
+        )
 
         static let done = NSLocalizedString(
             "menu.payments.wooPaymentsPayouts.navigation.done.button.title",

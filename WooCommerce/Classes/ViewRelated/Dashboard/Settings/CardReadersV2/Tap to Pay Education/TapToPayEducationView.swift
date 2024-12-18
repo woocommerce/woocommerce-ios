@@ -4,11 +4,9 @@ import SwiftUI
 struct TapToPayEducationView: View {
     @StateObject private var viewModel: TapToPayEducationViewModel
     @Environment(\.dismiss) private var dismiss
-    private var completion: () -> Void
 
-    init(viewModel: TapToPayEducationViewModel, completion: @escaping () -> Void = {}) {
+    init(viewModel: TapToPayEducationViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel)
-        self.completion = completion
     }
 
     var body: some View {
@@ -60,19 +58,14 @@ struct TapToPayEducationView: View {
             }
         }
         .interactiveDismissDisabled(viewModel.isInteractiveDismissDisabled)
-        .sheet(isPresented: $viewModel.showingSetUpFlow,
-               onDismiss: viewModel.reloadHasPreviousTapToPayUsage,
-               content: {
-            TapToPaySettingsFlowPresentingView(
-                configuration: viewModel.configuration,
-                siteID: viewModel.siteID,
-                onboardingUseCase: viewModel.cardPresentPaymentsOnboardingUseCase)
-        })
         .onChange(of: viewModel.dismiss) { _ in
             dismiss()
         }
+        .onAppear {
+            viewModel.onAppear()
+        }
         .onDisappear {
-            completion()
+            viewModel.onDisappear()
         }
     }
 }

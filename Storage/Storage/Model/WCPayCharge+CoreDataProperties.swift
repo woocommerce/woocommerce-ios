@@ -15,7 +15,7 @@ extension WCPayCharge {
     @NSManaged public var amountRefunded: Int64
     @NSManaged public var authorizationCode: String?
     @NSManaged public var captured: Bool
-    @NSManaged public var created: Date
+    @NSManaged public var created: Date?
     @NSManaged public var currency: String
     @NSManaged public var paid: Bool
     @NSManaged public var paymentIntentID: String?

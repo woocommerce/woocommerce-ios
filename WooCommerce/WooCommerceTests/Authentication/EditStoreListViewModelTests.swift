@@ -11,8 +11,9 @@ struct EditStoreListViewModelTests {
         // Given
         let availableSites = [site1, site2]
         let viewModel = EditStoreListViewModel(availableSites: [site1, site2],
-                                               selectedSites: [site1, site2],
-                                               onCompletion: { _ in })
+                                               displayedSites: [site1, site2],
+                                               currentlySelectedSite: nil,
+                                               onCompletion: {})
 
         // Then
         #expect(viewModel.hasChanges == false)
@@ -27,8 +28,9 @@ struct EditStoreListViewModelTests {
     @Test func isSelected_returns_correct_values() {
         // Given
         let viewModel = EditStoreListViewModel(availableSites: [site1, site2],
-                                               selectedSites: [site1, site2],
-                                               onCompletion: { _ in })
+                                               displayedSites: [site1, site2],
+                                               currentlySelectedSite: nil,
+                                               onCompletion: {})
 
         // Then
         #expect(viewModel.isSelected(site1) == true)
@@ -45,8 +47,9 @@ struct EditStoreListViewModelTests {
     @Test func isLastSelected_returns_correct_values() {
         // Given
         let viewModel = EditStoreListViewModel(availableSites: [site1, site2],
-                                               selectedSites: [site1, site2],
-                                               onCompletion: { _ in })
+                                               displayedSites: [site1, site2],
+                                               currentlySelectedSite: nil,
+                                               onCompletion: {})
 
         // Then
         #expect(viewModel.isLastSelected(site1) == false)
@@ -61,8 +64,9 @@ struct EditStoreListViewModelTests {
     @Test func toggleSelection_works_correctly() {
         // Given
         let viewModel = EditStoreListViewModel(availableSites: [site1, site2],
-                                               selectedSites: [site1, site2],
-                                               onCompletion: { _ in })
+                                               displayedSites: [site1, site2],
+                                               currentlySelectedSite: nil,
+                                               onCompletion: {})
 
         // When
         viewModel.toggleSelection(site1)

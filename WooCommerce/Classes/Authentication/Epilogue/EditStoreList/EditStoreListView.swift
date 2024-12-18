@@ -30,6 +30,22 @@ struct EditStoreListView: View {
     var body: some View {
         NavigationStack {
             List {
+                if let site = viewModel.currentlySelectedSite {
+                    Section {
+                        VStack(alignment: .leading) {
+                            Text(site.name)
+                                .bodyStyle()
+                            Text(site.url)
+                                .footnoteStyle()
+                        }
+                        .multilineTextAlignment(.leading)
+                    } header: {
+                        Text(Localization.currentStoreHeader)
+                    } footer: {
+                        Text(Localization.currentStoreFooter)
+                    }
+                }
+
                 Section {
                     ForEach(viewModel.availableSites, id: \.siteID) { item in
                         SelectableItemRow(title: item.name,
@@ -44,8 +60,10 @@ struct EditStoreListView: View {
                         }
                         .disabled(viewModel.isLastSelected(item))
                     }
+                } header: {
+                    Text(Localization.otherStoresHeader)
                 } footer: {
-                    Text(Localization.listFooter)
+                    Text(Localization.otherStoresFooter)
                 }
             }
             .listStyle(.grouped)
@@ -71,11 +89,6 @@ struct EditStoreListView: View {
 
 private extension EditStoreListView {
     enum Localization {
-        static let listFooter = NSLocalizedString(
-            "editStoreListView.listFooter",
-            value: "Stores that are not selected will be excluded from the store picker",
-            comment: "Label at the end of the Edit Store List view"
-        )
         static let cancelButton = NSLocalizedString(
             "editStoreListView.cancelButton",
             value: "Cancel",
@@ -90,6 +103,26 @@ private extension EditStoreListView {
             "editStoreListView.title",
             value: "Visible Stores",
             comment: "Title of the Edit Store List view"
+        )
+        static let currentStoreHeader = NSLocalizedString(
+            "editStoreListView.currentStoreHeader",
+            value: "Current store",
+            comment: "Header of the Current Store section of the the Edit Store List view"
+        )
+        static let currentStoreFooter = NSLocalizedString(
+            "editStoreListView.currentStoreFooter",
+            value: "Please switch to another store before hiding this store",
+            comment: "Footer of the Current Store section of the the Edit Store List view"
+        )
+        static let otherStoresHeader = NSLocalizedString(
+            "editStoreListView.otherStoresHeader",
+            value: "Other stores",
+            comment: "Header of the Other Stores section on the Edit Store List view"
+        )
+        static let otherStoresFooter = NSLocalizedString(
+            "editStoreListView.otherStoresFooter",
+            value: "Stores that are not selected will be excluded from the store picker",
+            comment: "Footer of the Other Stores section on the Edit Store List view"
         )
     }
 }

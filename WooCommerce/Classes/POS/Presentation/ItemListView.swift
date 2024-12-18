@@ -10,7 +10,9 @@ struct ItemListView: View {
 
     @State private var lastScrollPosition: CGFloat = 0
     @State private var showSimpleProductsModal: Bool = false
-    let itemListState: ItemListState
+    var itemListState: ItemListState {
+        posModel.itemsViewState.itemsStack.root
+    }
 
     @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
     private var isHeaderBannerDismissed: Bool = false
@@ -22,7 +24,7 @@ struct ItemListView: View {
             case .loading(let items),
                     .loaded(let items):
                 listView(items)
-            case .error(_):
+            case .error:
                 // Currently unused, but this will show errors that are displayed inline with previously
                 // loaded items, e.g. when loading a new page or refreshing.
                 EmptyView()
@@ -287,14 +289,7 @@ private extension ItemListView {
 }
 
 #if DEBUG
-import struct Yosemite.POSSimpleProduct
-
 #Preview {
-    let simpleProduct = POSSimpleProduct(id: UUID(),
-                                         name: "A simple product",
-                                         formattedPrice: "$5.00",
-                                         productID: 2,
-                                         price: "5.00")
-    ItemListView(itemListState: ItemListState.loaded([.simpleProduct(simpleProduct)]))
+    ItemListView()
 }
 #endif

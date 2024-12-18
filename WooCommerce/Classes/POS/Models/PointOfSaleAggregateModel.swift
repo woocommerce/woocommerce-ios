@@ -48,7 +48,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     private var onOnboardingCancellation: (() -> Void)?
 
     @Published private(set) var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
-                                                                                itemsStack: [:])
+                                                                                itemsStack: ItemsStackState(root: .loading([])))
 
     @Published private(set) var cart: [CartItem] = []
 

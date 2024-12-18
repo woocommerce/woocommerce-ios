@@ -6,7 +6,7 @@ final class PointOfSaleItemsControllerTests {
     private let itemProvider: MockPointOfSaleItemService
     private let sut: PointOfSaleItemsController
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
-                                                                   itemsStack: [:])
+                                                                   itemsStack: ItemsStackState(root: .loading([])))
 
     init() {
         itemProvider = MockPointOfSaleItemService()
@@ -35,7 +35,7 @@ final class PointOfSaleItemsControllerTests {
 
         // Then
         #expect(itemsViewState == ItemsViewState(containerState: .content,
-                                                 itemsStack: [.root: .loaded(expectedItems)]))
+                                                 itemsStack: ItemsStackState(root: .loaded(expectedItems))))
     }
 
     @Test func loadInitialItems_when_called_multiple_times_then_items_are_not_duplicated() async throws {
@@ -49,7 +49,7 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadInitialItems()
 
         // Then
-        guard case .loaded(let items) = itemsViewState.itemsStack[.root] else {
+            guard case .loaded(let items) = itemsViewState.itemsStack.root else {
             Issue.record("Expected loaded ItemList state, but got \(itemsViewState)")
             return
         }
@@ -65,7 +65,7 @@ final class PointOfSaleItemsControllerTests {
         await sut.reload()
 
         // Then
-        guard case .loaded(let items) = itemsViewState.itemsStack[.root] else {
+        guard case .loaded(let items) = itemsViewState.itemsStack.root else {
             Issue.record("Expected loaded ItemList state, but got \(itemsViewState)")
             return
         }
@@ -83,7 +83,7 @@ final class PointOfSaleItemsControllerTests {
         await sut.reload()
 
         // Then
-        guard case .loaded(let items) = itemsViewState.itemsStack[.root] else {
+        guard case .loaded(let items) = itemsViewState.itemsStack.root else {
             Issue.record("Expected loaded ItemList state, but got \(itemsViewState)")
             return
         }
@@ -120,7 +120,7 @@ final class PointOfSaleItemsControllerTests {
 
         // Then
         #expect(itemsViewState == ItemsViewState(containerState: .content,
-                                                 itemsStack: [.root: .loaded(initialItems)]))
+                                                 itemsStack: ItemsStackState(root: .loaded(initialItems))))
     }
 
     @Test func loadItems_when_simulateFetchNextPage_then_state_is_loaded_with_expected_items() async throws {
@@ -133,7 +133,7 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadNextItems()
 
         // Then
-        guard case .loaded(let items) = itemsViewState.itemsStack[.root] else {
+        guard case .loaded(let items) = itemsViewState.itemsStack.root else {
             Issue.record("Expected loaded ItemList state, but got \(itemsViewState)")
             return
         }
@@ -218,7 +218,7 @@ final class PointOfSaleItemsControllerTests {
 
         // Then
         #expect(itemsViewState == ItemsViewState(containerState: .content,
-                                                 itemsStack: [.root: .loaded(expectedItems)]))
+                                                 itemsStack: ItemsStackState(root: .loaded(expectedItems))))
     }
 
     @Test func reload_requests_first_page() async throws {

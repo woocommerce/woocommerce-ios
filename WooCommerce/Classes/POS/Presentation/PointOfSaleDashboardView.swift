@@ -74,7 +74,7 @@ struct PointOfSaleDashboardView: View {
         GeometryReader { geometry in
             HStack {
                 if posModel.orderStage == .building {
-                    ItemListView(itemListState: posModel.itemsViewState.itemsStack[.root] ?? .loading([]))
+                    ItemListView()
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .leading))
                 }

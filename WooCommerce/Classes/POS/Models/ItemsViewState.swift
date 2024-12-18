@@ -3,7 +3,7 @@ import Codegen
 
 struct ItemsViewState {
     let containerState: ItemsContainerState
-    let itemsStack: [ItemsNavigationNode: ItemListState]
+    let itemsStack: ItemsStackState
 }
 
 extension ItemsViewState: GeneratedCopiable, Equatable {}

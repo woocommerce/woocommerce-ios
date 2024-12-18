@@ -14,7 +14,8 @@ protocol PointOfSaleItemsControllerProtocol {
 class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     private(set) var itemsViewStatePublisher: any Publisher<ItemsViewState, Never>
     private var itemsViewStateSubject: PassthroughSubject<ItemsViewState, Never> = .init()
-    private var itemsViewState: ItemsViewState = .init(containerState: .loading, itemsStack: [:]) {
+    private var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
+                                                                itemsStack: ItemsStackState(root: .loading([]))) {
         didSet {
             itemsViewStateSubject.send(itemsViewState)
         }
@@ -31,7 +32,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
 
     @MainActor
     func loadInitialItems() async {
-        itemsViewState = ItemsViewState(containerState: .loading, itemsStack: [:])
+        itemsViewState = ItemsViewState(containerState: .loading, itemsStack: ItemsStackState(root: .loading([])))
         await withCheckedContinuation { continuation in
             paginationTracker.syncFirstPage {
                 continuation.resume()
@@ -41,20 +42,20 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
 
     @MainActor
     func loadNextItems() async {
-        let currentItems = itemsViewState.itemsStack[.root]?.items ?? []
-        itemsViewState = ItemsViewState(containerState: .content, itemsStack: [.root: .loading(currentItems)])
+        let currentItems = itemsViewState.itemsStack.root.items
+        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loading(currentItems)))
         await withCheckedContinuation { continuation in
             paginationTracker.ensureNextPageIsSynced {
                 continuation.resume()
             }
         }
-        let updatedItems = itemsViewState.itemsStack[.root]?.items ?? []
-        itemsViewState = ItemsViewState(containerState: .content, itemsStack: [.root: .loaded(updatedItems)])
+        let updatedItems = itemsViewState.itemsStack.root.items
+        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded(updatedItems)))
     }
 
     @MainActor
     func reload() async {
-        itemsViewState = ItemsViewState(containerState: .content, itemsStack: [.root: .loading([])])
+        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loading([])))
         await withCheckedContinuation { continuation in
             paginationTracker.resync {
                 continuation.resume()
@@ -65,14 +66,14 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     @MainActor
     private func fetchItems(pageNumber: Int) async throws -> Bool {
         let (newItems, hasNextPage) = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
-        var allItems = itemsViewState.itemsStack[.root]?.items ?? []
+        var allItems = itemsViewState.itemsStack.root.items
         let uniqueNewItems = newItems.filter { newItem in
             // Note that this uniquing won't currently work, as POSItem has a UUID.
             !allItems.contains(newItem)
         }
         allItems.append(contentsOf: uniqueNewItems)
         itemsViewState = ItemsViewState(containerState: .content,
-                                        itemsStack: [.root: .loaded(allItems)])
+                                        itemsStack: ItemsStackState(root: .loaded(allItems)))
         return hasNextPage
     }
 }
@@ -97,7 +98,7 @@ extension PointOfSaleItemsController: PaginationTrackerDelegate {
                 onCompletion?(.success(hasNextPage))
             } catch {
                 itemsViewState = ItemsViewState(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
-                                                itemsStack: [:])
+                                                itemsStack: ItemsStackState(root: .loading([])))
                 onCompletion?(.failure(error))
             }
         }

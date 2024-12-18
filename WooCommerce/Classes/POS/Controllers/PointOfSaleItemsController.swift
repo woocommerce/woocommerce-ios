@@ -48,6 +48,8 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
                 continuation.resume()
             }
         }
+        let updatedItems = itemsViewState.itemsStack[.root]?.items ?? []
+        itemsViewState = ItemsViewState(containerState: .content, itemsStack: [.root: .loaded(updatedItems)])
     }
 
     @MainActor
@@ -94,8 +96,8 @@ extension PointOfSaleItemsController: PaginationTrackerDelegate {
                 let hasNextPage = try await fetchItems(pageNumber: pageNumber)
                 onCompletion?(.success(hasNextPage))
             } catch {
-                itemsViewStateSubject.send(ItemsViewState(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
-                                                          itemsStack: [:]))
+                itemsViewState = ItemsViewState(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
+                                                itemsStack: [:])
                 onCompletion?(.failure(error))
             }
         }

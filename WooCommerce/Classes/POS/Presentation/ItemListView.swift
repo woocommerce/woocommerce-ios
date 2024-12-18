@@ -22,7 +22,7 @@ struct ItemListView: View {
             case .loading(let items),
                     .loaded(let items):
                 listView(items)
-            case .error(let pointOfSaleErrorState):
+            case .error(_):
                 // Currently unused, but this will show errors that are displayed inline with previously
                 // loaded items, e.g. when loading a new page or refreshing.
                 EmptyView()

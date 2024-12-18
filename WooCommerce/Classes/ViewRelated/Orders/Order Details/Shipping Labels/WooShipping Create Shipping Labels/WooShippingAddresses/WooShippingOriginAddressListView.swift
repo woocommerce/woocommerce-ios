@@ -21,9 +21,9 @@ struct WooShippingOriginAddressListView: View {
 
             ForEach(originAddresses) { address in
                 addressView(address)
-            }
-            .onTapGesture {
-                // TODO: Select origin address
+                    .onTapGesture {
+                        selectedAddressID = address.id
+                    }
             }
         }
     }

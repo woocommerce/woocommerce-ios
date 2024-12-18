@@ -62,7 +62,7 @@ private extension WooShippingSelectedPackageView {
     }
 }
 
-#Preview {
+#Preview("Carrier package") {
     WooShippingSelectedPackageView(package: WooShippingPackageData(name: "Small Flat Rate Box",
                                                                    length: "12",
                                                                    width: "6",
@@ -71,4 +71,19 @@ private extension WooShippingSelectedPackageView {
                                                                    source: .predefined(sourceTitle: "USPS Priority Mail Flat Rate Boxes", sourceID: "usps"),
                                                                    packageType: "box"),
                                    totalWeight: .constant("6"))
+    .shippingDimensionsUnit("in")
+    .shippingWeightUnit("lb")
+}
+
+#Preview("Unsaved custom package") {
+    WooShippingSelectedPackageView(package: WooShippingPackageData(name: "",
+                                                                   length: "12",
+                                                                   width: "6",
+                                                                   height: "6",
+                                                                   weight: "",
+                                                                   source: .custom,
+                                                                   packageType: "box"),
+                                   totalWeight: .constant("6"))
+    .shippingDimensionsUnit("in")
+    .shippingWeightUnit("lb")
 }

@@ -198,7 +198,7 @@ extension StorePickerViewModel {
         guard resultsController.numberOfObjects > 0 else {
             return 1
         }
-        if configuration == .switchingStores {
+        if shouldEnableHidingStores {
             return displayedStores.count
         }
         return resultsController.sections[safe: sectionIndex]?.objects.count ?? 0
@@ -210,7 +210,7 @@ extension StorePickerViewModel {
         guard resultsController.numberOfObjects > 0 else {
             return nil
         }
-        if configuration == .switchingStores {
+        if shouldEnableHidingStores {
             return displayedStores[safe: indexPath.row]
         }
         return resultsController.safeObject(at: indexPath)

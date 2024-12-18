@@ -209,6 +209,7 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.numberOfTimesProductCreationAISurveySuggested] = nil
         defaults[.didStartProductCreationAISurvey] = nil
         defaults[.themesPendingInstall] = nil
+        defaults[.hiddenStoreIDs] = nil
         defaults[.blazeNoCampaignReminderOpened] = nil
         defaults[.blazeAbandonedCampaignCreationReminderOpened] = nil
         defaults[.blazeSelectedCampaignObjective] = nil

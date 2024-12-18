@@ -340,6 +340,27 @@ final class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[.themesPendingInstall])
     }
 
+    /// Verifies that `hiddenStoreIDs` is set to `nil` upon reset
+    ///
+    func test_hiddenStoreIDs_is_set_to_nil_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[.hiddenStoreIDs] = [Int64]([123, 666])
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(defaults[.hiddenStoreIDs] as? [Int64]), [123, 666])
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[.hiddenStoreIDs])
+    }
+
     /// Verifies that `blazeNoCampaignReminderOpened` is set to `nil` upon reset
     ///
     func test_blazeNoCampaignReminderOpened_is_set_to_nil_upon_reset() throws {

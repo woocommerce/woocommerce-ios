@@ -79,7 +79,7 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
                                                                      predefinedPackages: [predefinedPackage])]
                 let allPredefinedOptions = [WooShippingCarrierPredefinedOptions(carrierID: "usps",
                                                                                 predefinedOptions: predefinedOptions)]
-                completion(.success(WooShippingPackagesResponse(storeOptions: ShippingLabelStoreOptions.fake(),
+                completion(.success(WooShippingPackagesResponse(siteID: siteID,
                                                                 customPackages: [customPackage],
                                                                 savedPredefinedPackages: [predefinedSavedPackage],
                                                                 allPredefinedOptions: allPredefinedOptions)))

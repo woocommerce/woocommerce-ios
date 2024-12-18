@@ -67,6 +67,7 @@ extension WooShippingCustomPackage: Codable {
 
         var boxWeight: Double = 0.0
         // Looks like some endpoints have boxWeight as String and some as Double
+        // and some endpoints have it as box_weight and some as boxWeight
         if let boxWeightDouble = try? container.decodeIfPresent(Double.self, forKey: .boxWeight) {
             boxWeight = boxWeightDouble
         }

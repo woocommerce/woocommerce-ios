@@ -227,7 +227,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
 
         // Extracts the total number of pages from the response headers.
         // Response header names are case insensitive.
-        let totalPages = responseHeaders.first(where: { $0.key.lowercased() == Remote.PaginationHeaderKey.totalPagesCount.lowercased() })
+        let totalPages = responseHeaders?.first(where: { $0.key.lowercased() == Remote.PaginationHeaderKey.totalPagesCount.lowercased() })
             .flatMap { Int($0.value) }
 
         return (products: products, totalPagesCount: totalPages)

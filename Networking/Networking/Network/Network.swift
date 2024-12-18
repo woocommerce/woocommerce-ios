@@ -40,8 +40,7 @@ public protocol Network {
     func responseData(for request: URLRequestConvertible,
                       completion: @escaping (Swift.Result<Data, Error>) -> Void)
 
-    func responseDataAndHeaders(for request: URLRequestConvertible,
-                                completion: @escaping (Swift.Result<(Data, ResponseHeaders), Error>) -> Void)
+    func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?)
 
     /// Executes the specified Network Request. Upon completion, the payload or error will be emitted to the publisher.
     ///

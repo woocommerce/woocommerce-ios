@@ -104,8 +104,20 @@ public final class WordPressOrgNetwork: Network {
             }
     }
 
-    public func responseDataAndHeaders(for request: URLRequestConvertible, completion: @escaping (Result<(Data, ResponseHeaders), any Error>) -> Void) {
-        // TODO
+    public func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
+        let sessionRequest = alamofireSession.request(request).validate()
+        let response = await sessionRequest.serializingData().response
+        do {
+            try validateResponse(response.data)
+            switch response.result {
+                case .success(let data):
+                    return (data, response.response?.headers.dictionary)
+                case .failure(let error):
+                    throw error
+            }
+        } catch {
+            throw error
+        }
     }
 
     /// Executes the specified Network Request. Upon completion, the payload or error will be emitted to the publisher.

@@ -19,8 +19,8 @@ public final class NullNetwork: Network {
 
     }
 
-    public func responseDataAndHeaders(for request: any URLRequestConvertible, completion: @escaping (Result<(Data, ResponseHeaders), any Error>) -> Void) {
-        
+    public func responseDataAndHeaders(for request: any URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
+        throw NetworkError.notFound()
     }
 
     public func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {

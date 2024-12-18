@@ -259,32 +259,32 @@ public class Remote: NSObject {
         }
     }
 
-    func enqueueWithResponseHeaders<M: Mapper>(_ request: Request, mapper: M) async throws -> (data: M.Output, headers: [String: String]) {
-        try await withCheckedThrowingContinuation { continuation in
-            network.responseDataAndHeaders(for: request) { [weak self] (result: Swift.Result<(Data, Network.ResponseHeaders), Error>) in
-                guard let self else { return }
-
-                switch result {
-                case .success(let (data, headers)):
-                    do {
-                        let validator = request.responseDataValidator()
-                        try validator.validate(data: data)
-                        let parsed = try mapper.map(response: data)
-                        continuation.resume(returning: (parsed, headers))
-                    } catch {
-                        DDLogError("<> Mapping Error: \(error)")
-                        self.handleResponseError(error: error, for: request)
-                        self.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
-                        continuation.resume(throwing: error)
-                    }
-                case .failure(let error):
-                    continuation.resume(throwing: self.mapNetworkError(error: error, for: request))
-                }
-            }
+    func enqueueWithResponseHeaders<M: Mapper>(_ request: Request, mapper: M) async throws -> (data: M.Output, headers: [String: String]?) {
+        do {
+            let (data, headers) = try await network.responseDataAndHeaders(for: request)
+            let validator = request.responseDataValidator()
+            let parsedData = try validateAndParseData(data, request: request, validator: validator, mapper: mapper)
+            return (data: parsedData, headers: headers)
+        } catch {
+            handleResponseError(error: error, for: request)
+            throw mapNetworkError(error: error, for: request)
         }
     }
 }
 
+private extension Remote {
+    // Validation and parsing of the response data is separated so that the decoding error can be handled separately from network error.
+    func validateAndParseData<M: Mapper>(_ data: Data, request: Request, validator: ResponseDataValidator, mapper: M) throws -> M.Output {
+        do {
+            try validator.validate(data: data)
+            return try mapper.map(response: data)
+        } catch {
+            DDLogError("<> Mapping Error: \(error)")
+            handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
+            throw error
+        }
+    }
+}
 
 // MARK: - Private Methods
 //

@@ -69,6 +69,9 @@ extension UserDefaults {
         // Tap to Pay awareness moment
         case tapToPayAwarenessMomentPresented
         case tapToPayAwarenessMomentFirstLaunchCompleted
+
+        // Hide stores from store picker
+        case hiddenStoreIDs
     }
 }
 

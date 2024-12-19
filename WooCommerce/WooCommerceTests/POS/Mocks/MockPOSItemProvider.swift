@@ -3,6 +3,7 @@ import protocol Yosemite.PointOfSaleItemServiceProtocol
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 @testable import struct Yosemite.POSSimpleProduct
+import struct Yosemite.PagedItems
 
 final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
     var items: [POSItem] = []
@@ -11,19 +12,19 @@ final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
     var shouldSimulateTwoPages = false
 
     var spyLastRequestedPageNumber: Int?
-    func providePointOfSaleItems(pageNumber: Int) async throws -> (items: [POSItem], hasNextPage: Bool) {
+    func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem> {
         spyLastRequestedPageNumber = pageNumber
         if shouldThrowError {
             throw MockError.requestFailed
         }
         if shouldReturnZeroItems {
-            return ([], false)
+            return .init(items: [], hasMorePages: false)
         }
         if shouldSimulateTwoPages,
             pageNumber > 1 {
-            return (MockPointOfSaleItemService.makeSecondPageItems(), false)
+            return .init(items: MockPointOfSaleItemService.makeSecondPageItems(), hasMorePages: false)
         }
-        return (MockPointOfSaleItemService.makeInitialItems(), shouldSimulateTwoPages)
+        return .init(items: MockPointOfSaleItemService.makeInitialItems(), hasMorePages: shouldSimulateTwoPages)
     }
 }
 

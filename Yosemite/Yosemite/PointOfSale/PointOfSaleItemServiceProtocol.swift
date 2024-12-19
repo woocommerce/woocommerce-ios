@@ -1,3 +1,5 @@
+import struct Networking.PagedItems
+
 public enum POSItem: Equatable, Identifiable {
     case simpleProduct(POSSimpleProduct)
 

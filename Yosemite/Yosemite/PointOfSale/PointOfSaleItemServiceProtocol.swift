@@ -51,7 +51,7 @@ public protocol PointOfSaleItemServiceProtocol {
 // Default implementation for convenience, so we do not need to pass the first page explicitly
 // if no pageNumber is given.
 extension PointOfSaleItemServiceProtocol {
-    func providePointOfSaleItems(pageNumber: Int = 1) async throws -> [POSItem] {
+    func providePointOfSaleItems(pageNumber: Int = 1) async throws -> (items: [POSItem], hasNextPage: Bool) {
         try await providePointOfSaleItems(pageNumber: pageNumber)
     }
 }

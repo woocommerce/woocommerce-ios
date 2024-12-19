@@ -7,7 +7,6 @@ import class WooFoundation.CurrencySettings
 
 public enum PointOfSaleProductServiceError: Error {
     case requestFailed
-    case pageOutOfRange
     case unknown
 }
 
@@ -47,7 +46,7 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
         let (products, totalPagesCount) = try await productsRemote.loadProductsForPointOfSale(for: siteID, productTypes: productTypes, pageNumber: pageNumber)
 
         if pageNumber != 1 && products.count == 0 {
-            throw PointOfSaleProductServiceError.pageOutOfRange
+            return ([], false)
         }
 
         let eligibilityCriteria: [(Product) -> Bool] = [

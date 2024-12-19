@@ -54,7 +54,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
             }
         } catch {
             // TODO: 14694 - Handle error from loading the next page, like showing an error UI at the end or as an overlay.
-            updateItemListStateAfterLoadAttempt()
+            itemListStateSubject.send(.error(PointOfSaleErrorState.errorOnLoadingProducts()))
         }
     }
 
@@ -70,6 +70,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
             updateItemListStateAfterLoadAttempt()
         } catch {
             // TODO: 14694 - Handle error from pull-to-refresh, like showing an error UI at the beginning or as an overlay.
+            itemListStateSubject.send(.error(PointOfSaleErrorState.errorOnLoadingProducts()))
         }
     }
 

@@ -57,8 +57,12 @@ final class AsyncPaginationTracker {
         guard !isPageBeingSynced(pageNumber: nextPage) else {
             return .syncing
         }
-        try await sync(pageNumber: nextPage, syncFunction: syncFunction)
-        return .synced
+        do {
+            try await sync(pageNumber: nextPage, syncFunction: syncFunction)
+            return .synced
+        } catch {
+            throw error
+        }
     }
 
     /// Resets internal states and resyncs the first page of results.
@@ -83,14 +87,15 @@ private extension AsyncPaginationTracker {
         markAsBeingSynced(pageNumber: pageNumber)
 
         do {
+            defer {
+                unmarkAsBeingSynced(pageNumber: pageNumber)
+            }
             let hasNextPage = try await syncFunction(pageNumber)
             self.hasNextPage = hasNextPage
             markAsSynced(pageNumber: pageNumber)
         } catch {
             throw error
         }
-
-        unmarkAsBeingSynced(pageNumber: pageNumber)
     }
 }
 

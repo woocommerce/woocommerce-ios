@@ -7,17 +7,30 @@ struct PointOfSaleCollectCashView: View {
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
 
+    private var orderTotal: String? {
+        if case .loaded(let totals) = posModel.orderState {
+            return totals.orderTotal
+        }
+        return nil
+    }
+
     var body: some View {
         VStack(alignment: .center, spacing: 20) {
             HStack {
                 Button(action: {
                     posModel.cancelCashPayment()
                 }, label: {
-                    HStack {
-                        Image(systemName: "arrow.backward")
-                            .font(.headline)
-                            .foregroundColor(.primary)
-                        Text("Cash payment")
+                    VStack {
+                        HStack {
+                            Image(systemName: "arrow.backward")
+                                .font(.headline)
+                                .foregroundColor(.primary)
+                            Text("Cash payment")
+                        }
+                        if let orderTotal = orderTotal {
+                            Text(orderTotal)
+                                .font(.caption)
+                        }
                     }
                 })
                 Spacer()

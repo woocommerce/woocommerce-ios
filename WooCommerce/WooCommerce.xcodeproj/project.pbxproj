@@ -1979,6 +1979,7 @@
 		B90C65D129AD02CC004CAB9E /* CardPresentPaymentsOnboardingIPPUsersRefresherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90C65D029AD02CC004CAB9E /* CardPresentPaymentsOnboardingIPPUsersRefresherTests.swift */; };
 		B90DACC02A30AEF000365897 /* BarcodeScannerItemFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90DACBF2A30AEF000365897 /* BarcodeScannerItemFinder.swift */; };
 		B90DACC22A31BBC800365897 /* BarcodeScannerProductFinderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90DACC12A31BBC800365897 /* BarcodeScannerProductFinderTests.swift */; };
+		B90DD08E2D12FAA400EFC06A /* WooShippingCustoms.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90DD08D2D12FA9900EFC06A /* WooShippingCustoms.swift */; };
 		B90DDF7C2A9E21DF009CFDA2 /* NewTaxRateSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90DDF7B2A9E21DF009CFDA2 /* NewTaxRateSelectorView.swift */; };
 		B910686027F1F28F00AD0575 /* GhostableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B910685F27F1F28F00AD0575 /* GhostableViewController.swift */; };
 		B9151B3F2840EB330036180F /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9151B3E2840EB330036180F /* WooFoundation.framework */; };
@@ -5089,6 +5090,7 @@
 		B90C65D029AD02CC004CAB9E /* CardPresentPaymentsOnboardingIPPUsersRefresherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsOnboardingIPPUsersRefresherTests.swift; sourceTree = "<group>"; };
 		B90DACBF2A30AEF000365897 /* BarcodeScannerItemFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerItemFinder.swift; sourceTree = "<group>"; };
 		B90DACC12A31BBC800365897 /* BarcodeScannerProductFinderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerProductFinderTests.swift; sourceTree = "<group>"; };
+		B90DD08D2D12FA9900EFC06A /* WooShippingCustoms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingCustoms.swift; sourceTree = "<group>"; };
 		B90DDF7B2A9E21DF009CFDA2 /* NewTaxRateSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaxRateSelectorView.swift; sourceTree = "<group>"; };
 		B910685F27F1F28F00AD0575 /* GhostableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostableViewController.swift; sourceTree = "<group>"; };
 		B9151B3E2840EB330036180F /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -10842,6 +10844,14 @@
 			path = Cash;
 			sourceTree = "<group>";
 		};
+		B90DD08C2D12FA6600EFC06A /* WooShipping Customs */ = {
+			isa = PBXGroup;
+			children = (
+				B90DD08D2D12FA9900EFC06A /* WooShippingCustoms.swift */,
+			);
+			path = "WooShipping Customs";
+			sourceTree = "<group>";
+		};
 		B912603F2940B2C400CACD4B /* JustInTimeMessages */ = {
 			isa = PBXGroup;
 			children = (
@@ -12078,6 +12088,7 @@
 		CEAB739A2C81E3A000A7EB39 /* WooShipping Create Shipping Labels */ = {
 			isa = PBXGroup;
 			children = (
+				B90DD08C2D12FA6600EFC06A /* WooShipping Customs */,
 				CE6E11092C91DA3D00563DD4 /* WooShipping Items Section */,
 				CE7B4A592CA1BF7800F764EB /* WooShipping Hazmat Section */,
 				CECEFA6B2CA2CE990071C7DB /* WooShipping Package and Rate Selection */,
@@ -15124,6 +15135,7 @@
 				CE583A0B2107937F00D73C1C /* TextViewTableViewCell.swift in Sources */,
 				45AE150224A23F03005AA948 /* ProductParentCategoriesViewController.swift in Sources */,
 				CE6302412BAAFB5E00E3325C /* CustomersListViewModel.swift in Sources */,
+				B90DD08E2D12FAA400EFC06A /* WooShippingCustoms.swift in Sources */,
 				B557652B20F681E800185843 /* StoreTableViewCell.swift in Sources */,
 				029700EC24FE38C900D242F8 /* ScrollWatcher.swift in Sources */,
 				D8C11A4E22DD235F00D4A88D /* OrderDetailsResultsControllers.swift in Sources */,

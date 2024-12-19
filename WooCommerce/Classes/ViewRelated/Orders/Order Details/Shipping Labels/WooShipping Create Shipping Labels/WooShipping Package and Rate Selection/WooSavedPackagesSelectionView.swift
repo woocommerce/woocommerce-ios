@@ -23,8 +23,6 @@ protocol WooShippingPackageDataRepresentable {
     var height: String { get }
     var weight: String { get }
     // local
-    var weightDescription: String { get }
-    var dimensionsDescription: String { get }
     var source: WooShippingPackageSource { get } // custom, predefined
     var packageType: String { get } // box, envelope
 }
@@ -38,8 +36,6 @@ struct WooShippingPackageData: WooShippingPackageDataRepresentable {
     let height: String
     let weight: String
     // local
-    let weightDescription: String
-    let dimensionsDescription: String
     let source: WooShippingPackageSource
     let packageType: String
 
@@ -48,9 +44,7 @@ struct WooShippingPackageData: WooShippingPackageDataRepresentable {
          length: String,
          width: String,
          height: String,
-         dimensionsUnit: String,
          weight: String,
-         weightUnit: String,
          source: WooShippingPackageSource,
          packageType: String) {
         self.id = id
@@ -62,18 +56,13 @@ struct WooShippingPackageData: WooShippingPackageDataRepresentable {
 
         self.source = source
         self.packageType = packageType
-
-        self.dimensionsDescription = WooShippingPackageData.createDimensionsDescription(length: length, width: width, height: height, unit: dimensionsUnit)
-        self.weightDescription = WooShippingPackageData.createWeightsDescription(weight: weight, unit: weightUnit)
     }
 
     init(name: String,
          length: String,
          width: String,
          height: String,
-         dimensionsUnit: String,
          weight: String,
-         weightUnit: String,
          source: WooShippingPackageSource,
          packageType: String) {
         self.init(id: name,
@@ -81,21 +70,26 @@ struct WooShippingPackageData: WooShippingPackageDataRepresentable {
                   length: length,
                   width: width,
                   height: height,
-                  dimensionsUnit: dimensionsUnit,
                   weight: weight,
-                  weightUnit: weightUnit,
                   source: source,
                   packageType: packageType)
     }
 }
 
 extension WooShippingPackageDataRepresentable {
-    static func createDimensionsDescription(length: String, width: String, height: String, unit: String) -> String {
+    func dimensionsDescription(unit: String) -> String {
         return "\(length) x \(width) x \(height) \( unit)"
     }
 
-    static func createWeightsDescription(weight: String, unit: String) -> String {
+    func weightDescription(unit: String) -> String? {
+        guard weight.isNotEmpty else {
+            return nil
+        }
         return "\(weight) \(unit)"
+    }
+
+    var displayName: String {
+        name.isNotEmpty ? name : source.userFriendlyDescription
     }
 }
 
@@ -110,21 +104,39 @@ struct WooSavedPackagesSelectionView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Divider()
-            if viewModel.isLoadingPackages {
-                ProgressView()
-                    .progressViewStyle(.circular)
+            if !viewModel.hasSavedPackages {
+                // Show extra loading indicator in case there are no packages
+                if viewModel.isLoadingPackages {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                        .padding()
+                }
+                else {
+                    Button {
+                        viewModel.loadPackages()
+                    } label: {
+                        Image(systemName: "arrow.trianglehead.counterclockwise")
+                    }
                     .padding()
+                }
             }
-            List {
-                packagesSection(for: viewModel.customSavedPackages)
-                packagesSection(for: viewModel.predefinedSavedPackages)
+            else {
+                Divider()
+                List {
+                    packagesSection(for: viewModel.customSavedPackages)
+                    packagesSection(for: viewModel.predefinedSavedPackages)
+                }
+                .listStyle(.plain)
+                .refreshable {
+                    await withCheckedContinuation { continuation in
+                        viewModel.loadPackages {
+                            continuation.resume()
+                        }
+                    }
+                }
+                Divider()
             }
-            .listStyle(.plain)
-            .refreshable {
-                viewModel.loadPackages()
-            }
-            Divider()
+            Spacer()
             Button(WooShippingAddPackageView.Localization.addPackage) {
                 addPackageButtonTapped()
             }
@@ -149,7 +161,7 @@ struct WooSavedPackagesSelectionView: View {
 
     private func packagesRows(for packages: [any WooShippingPackageDataRepresentable]) -> some View {
         ForEach(packages, id: \.id) { package in
-            PackageOptionView(
+            WooShippingPackageOptionView(
                 isSelected: viewModel.selectedSavedPackageId == package.id,
                 package: package,
                 showTopDivider: false,
@@ -164,10 +176,7 @@ struct WooSavedPackagesSelectionView: View {
             .swipeActions {
                 Button {
                     withAnimation {
-                        _ = Task {
-                            return await viewModel.removeSavedPackage(package)
-                        }
-                        // TODO: handle error
+                        viewModel.removeSavedPackage(package)
                     }
                 } label: {
                     Image(systemName: "trash")

@@ -32,6 +32,8 @@ public final class WooShippingStore: Store {
         switch action {
         case .createPackage(let siteID, let customPackage, let predefinedOption, let completion):
             createPackage(siteID: siteID, customPackage: customPackage, predefinedOption: predefinedOption, completion: completion)
+        case .deletePackage(let siteID, let packageID, let completion):
+            deletePackage(siteID: siteID, packageID: packageID, completion: completion)
         case .loadLabelRates(let siteID, let orderID, let originAddress, let destinationAddress, let packages, let completion):
             loadLabelRates(siteID: siteID,
                            orderID: orderID,
@@ -72,14 +74,22 @@ private extension WooShippingStore {
                        customPackage: WooShippingCustomPackage? = nil,
                        predefinedOption: WooShippingPredefinedSavedOption? = nil,
                        completion: @escaping (Result<WooShippingCreatePackageResponse, PackageCreationError>) -> Void) {
-        remote.createPackage(siteID: siteID, customPackage: customPackage, predefinedOption: predefinedOption) { result in
+        remote.createPackage(siteID: siteID, customPackage: customPackage, predefinedOption: predefinedOption) { [weak self] result in
             switch result {
             case .success(let packages):
-                completion(.success(packages))
+                self?.upsertCreatePackagesResponseInBackground(readOnlyPackages: packages, siteID: siteID, onCompletion: {
+                    completion(.success(packages))
+                })
             case .failure(let error):
                 completion(.failure(PackageCreationError(error: error)))
             }
         }
+    }
+
+    func deletePackage(siteID: Int64,
+                       packageID: String,
+                       completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void) {
+        remote.deletePackage(siteID: siteID, packageID: packageID, completion: completion)
     }
 
     func loadLabelRates(siteID: Int64,
@@ -98,7 +108,16 @@ private extension WooShippingStore {
 
     func loadPackages(siteID: Int64,
                       completion: @escaping (Result<WooShippingPackagesResponse, Error>) -> Void) {
-        remote.loadPackages(siteID: siteID, completion: completion)
+        remote.loadPackages(siteID: siteID) { [weak self] result in
+            switch result {
+            case .success(let packages):
+                self?.upsertPackagesResponseInBackground(readOnlyPackages: packages, siteID: siteID) {
+                    completion(.success(packages))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 
     func loadAccountSettings(siteID: Int64,
@@ -214,6 +233,224 @@ private extension WooShippingStore {
                 }
             }
         }
+    }
+}
+
+// MARK: - Storage
+private extension WooShippingStore {
+    /// Updates (OR Inserts) the specified ReadOnly WooShippingPackagesResponse Entities *in a background thread*.
+    /// `onCompletion` will be called on the main thread!
+    ///
+    func upsertPackagesResponseInBackground(readOnlyPackages: Networking.WooShippingPackagesResponse,
+                                            siteID: Int64,
+                                            onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
+            upsertPackagesResponse(readOnlyPackages: readOnlyPackages, in: storage)
+        }, completion: onCompletion, on: .main)
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly WooShippingCreatePackageResponse Entities *in a background thread*.
+    /// `onCompletion` will be called on the main thread!
+    ///
+    func upsertCreatePackagesResponseInBackground(readOnlyPackages: Networking.WooShippingCreatePackageResponse,
+                                                  siteID: Int64,
+                                                  onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
+            upsertCreatePackageResponse(readOnlyPackages: readOnlyPackages, siteID: siteID, in: storage)
+        }, completion: onCompletion, on: .main)
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly `WooShippingPackagesResponse` Entities into the Storage Layer.
+    ///
+    /// - Parameters:
+    ///     - readOnlyPackages: Remote `WooShippingPackagesResponse` to be persisted.
+    ///     - storage: Where we should save all the things!
+    ///
+    func upsertPackagesResponse(readOnlyPackages: Networking.WooShippingPackagesResponse, in storage: StorageType) {
+        let storagePackages = storage.loadPackages(siteID: readOnlyPackages.siteID) ??
+        storage.insertNewObject(ofType: Storage.WooShippingPackagesResponse.self)
+
+        storagePackages.update(with: readOnlyPackages)
+        handleAllPredefinedOptions(readOnlyPackages, storagePackages, storage)
+        handleCustomPackages(readOnlyPackages.customPackages, storagePackages, storage)
+        handleSavedPredefinedPackages(readOnlyPackages.savedPredefinedPackages, storagePackages, storage)
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly `WooShippingCreatePackageResponse` Entities into the Storage Layer.
+    ///
+    /// - Parameters:
+    ///     - readOnlyPackages: Remote `WooShippingCreatePackageResponse` to be persisted.
+    ///     - siteID: Site ID to be associated with the packages.
+    ///     - storage: Where we should save all the things!
+    ///
+    func upsertCreatePackageResponse(readOnlyPackages: Networking.WooShippingCreatePackageResponse, siteID: Int64, in storage: StorageType) {
+        let storagePackages = storage.loadPackages(siteID: siteID) ?? storage.insertNewObject(ofType: Storage.WooShippingPackagesResponse.self)
+        storagePackages.siteID = siteID
+
+        handleCustomPackages(readOnlyPackages.customPackages, storagePackages, storage)
+        handleSavedPredefinedOptions(readOnlyPackages.predefinedOptions, storagePackages, storage)
+    }
+
+    /// Updates, inserts, or prunes the provided Storage.WooShippingPackagesResponse's allPredefinedOptions
+    /// using the provided read-only WooShippingPackagesResponse's allPredefinedOptions
+    ///
+    func handleAllPredefinedOptions(_ readOnlyPackages: Networking.WooShippingPackagesResponse,
+                                    _ storagePackages: Storage.WooShippingPackagesResponse,
+                                    _ storage: StorageType) {
+        // Remove all previous predefined options, they will be deleted as they have the `cascade` delete rule
+        if let allPredefinedOptions = storagePackages.allPredefinedOptions {
+            storagePackages.removeFromAllPredefinedOptions(allPredefinedOptions)
+        }
+
+        // Creates and adds `storageAllPredefinedOptions` from `readOnlyPackages.allPredefinedOptions`
+        let storageAllPredefinedOptions = readOnlyPackages.allPredefinedOptions.map { readOnlyCarrierOptions -> Storage.WooShippingCarrierPredefinedOptions in
+            let storageCarrierOptions = storage.insertNewObject(ofType: Storage.WooShippingCarrierPredefinedOptions.self)
+            storageCarrierOptions.update(with: readOnlyCarrierOptions)
+            handlePredefinedOptions(readOnlyCarrierOptions, storageCarrierOptions, storage)
+            return storageCarrierOptions
+        }
+        storagePackages.addToAllPredefinedOptions(NSOrderedSet(array: storageAllPredefinedOptions))
+    }
+
+    /// Updates, inserts, or prunes the provided Storage.WooShippingCarrierPredefinedOptions's predefinedOptions
+    /// using the provided read-only WooShippingCarrierPredefinedOptions's predefinedOptions
+    func handlePredefinedOptions(_ readOnlyCarrierOptions: Networking.WooShippingCarrierPredefinedOptions,
+                                 _ storageCarrierOptions: Storage.WooShippingCarrierPredefinedOptions,
+                                 _ storage: StorageType) {
+        // Remove all previous predefined options, they will be deleted as they have the `cascade` delete rule
+        if let predefinedOptions = storageCarrierOptions.predefinedOptions {
+            storageCarrierOptions.removeFromPredefinedOptions(predefinedOptions)
+        }
+
+        // Creates and adds `storagePredefinedOptions` from `readOnlyCarriers.predefinedOptions`
+        let storagePredefinedOptions = readOnlyCarrierOptions.predefinedOptions.map { readOnlyOption -> Storage.WooShippingPredefinedOption in
+            let storageOption = storage.insertNewObject(ofType: Storage.WooShippingPredefinedOption.self)
+            storageOption.update(with: readOnlyOption)
+            handlePredefinedPackages(readOnlyOption, storageOption, storage)
+            return storageOption
+        }
+        storageCarrierOptions.addToPredefinedOptions(NSOrderedSet(array: storagePredefinedOptions))
+    }
+
+    /// Updates, inserts, or prunes the provided Storage.WooShippingPredefinedOption's predefinedPackages
+    /// using the provided read-only WooShippingPredefinedOption's predefinedPackages
+    func handlePredefinedPackages(_ readOnlyOption: Networking.WooShippingPredefinedOption,
+                                  _ storageOption: Storage.WooShippingPredefinedOption,
+                                  _ storage: StorageType) {
+        // Remove all previous predefined packages, they will be deleted as they have the `cascade` delete rule
+        if let predefinedPackages = storageOption.predefinedPackages {
+            storageOption.removeFromPredefinedPackages(NSSet(set: predefinedPackages))
+        }
+
+        // Creates and adds `storagePredefinedPackages` from `readOnlyOption.predefinedPackages`
+        let storagePredefinedPackages = readOnlyOption.predefinedPackages.map { readOnlyPackage -> Storage.WooShippingPredefinedPackage in
+            let storagePackage = storage.insertNewObject(ofType: Storage.WooShippingPredefinedPackage.self)
+            storagePackage.update(with: readOnlyPackage)
+            return storagePackage
+        }
+        storageOption.addToPredefinedPackages(NSSet(array: storagePredefinedPackages))
+    }
+
+    /// Updates, inserts, or prunes the provided Storage.WooShippingPackagesResponse's customPackages
+    /// using the provided read-only WooShippingCustomPackages
+    ///
+    func handleCustomPackages(_ readOnlyCustomPackages: [Networking.WooShippingCustomPackage],
+                              _ storagePackages: Storage.WooShippingPackagesResponse,
+                              _ storage: StorageType) {
+        // Remove all previous custom packages, they will be deleted as they have the `cascade` delete rule
+        if let customPackages = storagePackages.customPackages {
+            storagePackages.removeFromCustomPackages(NSSet(set: customPackages))
+        }
+
+        // Creates and adds `storageCustomPackages` from `readOnlyPackages.customPackages`
+        let storageCustomPackages = readOnlyCustomPackages.map { readOnlyPackage -> Storage.WooShippingCustomPackage in
+            let storagePackage = storage.insertNewObject(ofType: Storage.WooShippingCustomPackage.self)
+            storagePackage.update(with: readOnlyPackage)
+            return storagePackage
+        }
+        storagePackages.addToCustomPackages(NSSet(array: storageCustomPackages))
+    }
+
+    /// Updates, inserts, or prunes the provided Storage.WooShippingPackagesResponse's savedPredefinedPackages
+    /// using the provided read-only WooShippingPackagesResponse's savedPredefinedPackages
+    ///
+    func handleSavedPredefinedPackages(_ readOnlySavedPackages: [Networking.WooShippingSavedPredefinedPackage],
+                                       _ storagePackages: Storage.WooShippingPackagesResponse,
+                                       _ storage: StorageType) {
+        // Remove all previous saved predefined packages, they will be deleted as they have the `cascade` delete rule
+        if let savedPredefinedPackages = storagePackages.savedPredefinedPackages {
+            storagePackages.removeFromSavedPredefinedPackages(NSSet(set: savedPredefinedPackages))
+        }
+
+        // Creates and adds `storageSavedPredefinedPackages` from `readOnlyPackages.savedPredefinedPackages`
+        let storageSavedPredefinedPackages = readOnlySavedPackages.map { readOnlyPackage -> Storage.WooShippingSavedPredefinedPackage in
+            let storagePackage = storage.insertNewObject(ofType: Storage.WooShippingSavedPredefinedPackage.self)
+            storagePackage.update(with: readOnlyPackage)
+            handlePredefinedPackage(readOnlyPackage, storagePackage, storage)
+            return storagePackage
+        }
+        storagePackages.addToSavedPredefinedPackages(NSSet(array: storageSavedPredefinedPackages))
+    }
+
+    /// Updates, inserts, or prunes the provided Storage.WooShippingPackagesResponse's savedPredefinedPackages
+    /// using the provided read-only WooShippingPredefinedSavedOptions
+    ///
+    func handleSavedPredefinedOptions(_ readOnlySavedOptions: [WooShippingPredefinedSavedOption],
+                                      _ storagePackages: Storage.WooShippingPackagesResponse,
+                                      _ storage: StorageType) {
+        guard let storagePredefinedOptions: [StorageWooShippingCarrierPredefinedOptions] = storagePackages.allPredefinedOptions?.toArray() else {
+            return
+        }
+        let readOnlyPredefinedOptions = storagePredefinedOptions.map({ $0.toReadOnly() })
+        let savedPackages = transformSavedPredefinedOptions(readOnlySavedOptions, allPredefinedOptions: readOnlyPredefinedOptions)
+        handleSavedPredefinedPackages(savedPackages, storagePackages, storage)
+    }
+
+    /// Transforms the provided `WooShippingPredefinedSavedOption`s into `WooShippingSavedPredefinedPackage`s to save in storage.
+    ///
+    func transformSavedPredefinedOptions(_ options: [WooShippingPredefinedSavedOption],
+                                         allPredefinedOptions: [WooShippingCarrierPredefinedOptions]) -> [WooShippingSavedPredefinedPackage] {
+        // helper function for creating jointIDs for easier checking if package should be used or not
+        func jointID(carrierID: String, packageID: String) -> String {
+            return "\(carrierID)-\(packageID)"
+        }
+
+        var jointIDs: [String] = []
+        for option in options {
+            for packageID in option.predefinedPackageIDs {
+                jointIDs.append(jointID(carrierID: option.id, packageID: packageID))
+            }
+        }
+
+        var allSavedOptions: [WooShippingSavedPredefinedPackage] = []
+
+        // use predefined saved packages from list of all packages
+        // since the response gives us IDs we need to get them manually from the list
+        for carrier in allPredefinedOptions {
+            let carrierID = carrier.carrierID
+            for option in carrier.predefinedOptions {
+                for package in option.predefinedPackages {
+                    if jointIDs.contains(jointID(carrierID: carrierID, packageID: package.id)) {
+                        allSavedOptions.append(WooShippingSavedPredefinedPackage(groupTitle: option.title, providerID: option.providerID, package: package))
+                    }
+                }
+            }
+        }
+
+        return allSavedOptions
+    }
+
+    /// Updates or inserts the provided Storage.WooShippingSavedPredefinedPackage's package
+    /// using the provided read-only WooShippingSavedPredefinedPackage's package
+    ///
+    func handlePredefinedPackage(_ readOnlySavedPackage: Networking.WooShippingSavedPredefinedPackage,
+                                 _ storageSavedPackage: Storage.WooShippingSavedPredefinedPackage,
+                                 _ storage: StorageType) {
+        let predefinedPackage = storageSavedPackage.package ?? storage.insertNewObject(ofType: Storage.WooShippingPredefinedPackage.self)
+        predefinedPackage.update(with: readOnlySavedPackage.package)
+        storageSavedPackage.package = predefinedPackage
     }
 }
 

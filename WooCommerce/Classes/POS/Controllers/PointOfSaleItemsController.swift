@@ -1,6 +1,6 @@
 import Foundation
 import Combine
-import protocol Yosemite.POSDisplayableItem
+import enum Yosemite.POSItem
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import enum Yosemite.PointOfSaleProductServiceError
 
@@ -14,7 +14,7 @@ protocol PointOfSaleItemsControllerProtocol {
 class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     private(set) var itemListStatePublisher: any Publisher<ItemListState, Never>
     private var itemListStateSubject: PassthroughSubject<ItemListState, Never> = .init()
-    private var allItems: [POSDisplayableItem] = []
+    private var allItems: [POSItem] = []
     private var currentPage: Int = Constants.initialPage
     private var mightHaveMorePages: Bool = true
     private let itemProvider: PointOfSaleItemServiceProtocol
@@ -76,7 +76,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     private func fetchItems(pageNumber: Int) async throws {
         let newItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
         let uniqueNewItems = newItems.filter { newItem in
-            !allItems.contains(where: { $0.isEqual(to: newItem) })
+            !allItems.contains(newItem)
         }
         allItems.append(contentsOf: uniqueNewItems)
     }

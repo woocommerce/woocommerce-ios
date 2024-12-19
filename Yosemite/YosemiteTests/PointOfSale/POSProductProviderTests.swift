@@ -14,8 +14,9 @@ final class PointOfSaleProductServiceTests: XCTestCase {
         network = MockNetwork()
         currencySettings = CurrencySettings()
         itemProvider = PointOfSaleProductService(siteID: siteID,
-                                          currencySettings: currencySettings,
-                                          network: network)
+                                                 currencySettings: currencySettings,
+                                                 network: network,
+                                                 isVariableProductsFeatureEnabled: false)
     }
 
     override func tearDown() {
@@ -75,18 +76,15 @@ final class PointOfSaleProductServiceTests: XCTestCase {
         let expectedItems = try await itemProvider.providePointOfSaleItems()
 
         // Then
-        guard let item = expectedItems.first else {
+        guard let item = expectedItems.first,
+            case .simpleProduct(let simpleProduct) = item else {
             return XCTFail("No eligible products")
         }
         XCTAssertEqual(expectedItems.count, expectedNumberOfEligibleProducts)
-        XCTAssertEqual(item.name, expectedProductName)
-        XCTAssertEqual(item.formattedPrice, expectedFormattedPrice)
-
-        guard let product = item as? POSProduct else {
-            return XCTFail("Expected a POSProduct")
-        }
-        XCTAssertEqual(product.price, expectedProductPrice)
-        XCTAssertEqual(product.productID, expectedProductID)
+        XCTAssertEqual(simpleProduct.name, expectedProductName)
+        XCTAssertEqual(simpleProduct.formattedPrice, expectedFormattedPrice)
+        XCTAssertEqual(simpleProduct.price, expectedProductPrice)
+        XCTAssertEqual(simpleProduct.productID, expectedProductID)
     }
 
     func test_PointOfSaleItemServiceProtocol_when_eligibility_criteria_applies_then_returns_correct_number_of_items() async throws {
@@ -101,11 +99,41 @@ final class PointOfSaleProductServiceTests: XCTestCase {
         // Then
         XCTAssertEqual(expectedItems.count, expectedNumberOfItems)
 
-        guard let firstEligibleItem = expectedItems.first,
-              let secondEligibleItem = expectedItems.last else {
+        guard case .simpleProduct(let firstEligibleSimpleProduct) = expectedItems.first,
+              case .simpleProduct(let secondEligibleSimpleProduct) = expectedItems.last else {
             return XCTFail("Expected \(expectedNumberOfItems) eligible items. Got \(expectedItems.count) instead.")
         }
-        XCTAssertEqual(firstEligibleItem.name, expectedItemNames.first)
-        XCTAssertEqual(secondEligibleItem.name, expectedItemNames.last)
+        XCTAssertEqual(firstEligibleSimpleProduct.name, expectedItemNames.first)
+        XCTAssertEqual(secondEligibleSimpleProduct.name, expectedItemNames.last)
+    }
+
+    // MARK: - Query Parameters
+
+    func test_providePointOfSaleItems_sets_types_parameters_to_simple_only() async throws {
+        // Given
+        let itemProvider = PointOfSaleProductService(siteID: siteID,
+                                                     currencySettings: currencySettings,
+                                                     network: network,
+                                                     isVariableProductsFeatureEnabled: false)
+
+        // When
+        _ = try? await itemProvider.providePointOfSaleItems()
+
+        // Then
+        XCTAssertEqual(network.queryParametersDictionary?["include_types"] as? String, "simple")
+    }
+
+    func test_providePointOfSaleItems_sets_types_parameters_correctly_when_variable_products_feature_is_enabled() async throws {
+        // Given
+        let itemProvider = PointOfSaleProductService(siteID: siteID,
+                                                     currencySettings: currencySettings,
+                                                     network: network,
+                                                     isVariableProductsFeatureEnabled: true)
+
+        // When
+        _ = try? await itemProvider.providePointOfSaleItems()
+
+        // Then
+        XCTAssertEqual(network.queryParametersDictionary?["include_types"] as? String, "simple,variable")
     }
 }

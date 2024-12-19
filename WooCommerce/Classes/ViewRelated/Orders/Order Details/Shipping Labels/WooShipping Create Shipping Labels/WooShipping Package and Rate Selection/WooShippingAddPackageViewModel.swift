@@ -16,7 +16,6 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     }
 
     @Published private(set) var isLoadingPackages: Bool = false
-    @Published private(set) var storeOptions: ShippingLabelStoreOptions?
 
     // MARK: - saved
 
@@ -72,7 +71,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
     // MARK: - loading
 
-    func loadPackages() {
+    func loadPackages(completion: (() -> (Void))? = nil) {
         guard !isLoadingPackages else { return }
 
         isLoadingPackages = true
@@ -85,21 +84,22 @@ final class WooShippingAddPackageViewModel: ObservableObject {
                 break
             }
             self.isLoadingPackages = false
+            completion?()
         }
 
-        ServiceLocator.stores.dispatch(loadPackagesAction)
+        stores.dispatch(loadPackagesAction)
     }
 
     // transform packages
     private func transformLoadedPackages(_ packagesResult: WooShippingPackagesResponse) {
         let customSavedPackages = packagesResult.customPackages.map {
-            return $0.toPackageData(storeOptions: packagesResult.storeOptions)
+            return $0.toPackageData()
         }
         let predefinedSavedPackages = packagesResult.savedPredefinedPackages.map {
-            return $0.toPackageData(storeOptions: packagesResult.storeOptions)
+            return $0.toPackageData()
         }
         var carrierPackages: [WooShippingCarrierPackages] = packagesResult.allPredefinedOptions.compactMap {
-            return $0.toCarrierPackages(storeOptions: packagesResult.storeOptions)
+            return $0.toCarrierPackages()
         }
         if self.carrierPackages.isNotEmpty {
             // sort new packages so they stay in similar order
@@ -126,7 +126,6 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         self.predefinedSavedPackages = predefinedSavedPackages
         self.carrierPackages = carrierPackages
         self.carrierTabs = carrierTabs
-        self.storeOptions = packagesResult.storeOptions
 
         self.allPredefinedOptions = packagesResult.allPredefinedOptions
 
@@ -138,10 +137,6 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     }
 
     private func transformSavedPackages(_ response: WooShippingCreatePackageResponse) {
-        guard let storeOptions = self.storeOptions else {
-            return
-        }
-
         // helper function for creating jointIDs for easier checking if package should be used or not
         func jointID(carrierID: String, packageID: String) -> String {
             return "\(carrierID)-\(packageID)"
@@ -163,8 +158,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
             for option in carrier.predefinedOptions {
                 for package in option.predefinedPackages {
                     if jointIDs.contains(jointID(carrierID: carrierID, packageID: package.id)) {
-                        allPredefinedSaved.append(package.toPackageData(storeOptions: storeOptions,
-                                                                        groupTitle: option.title,
+                        allPredefinedSaved.append(package.toPackageData(groupTitle: option.title,
                                                                         sourceID: option.providerID))
                     }
                 }
@@ -174,7 +168,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         self.predefinedSavedPackages = allPredefinedSaved
 
         self.customSavedPackages = response.customPackages.map {
-            return $0.toPackageData(storeOptions: storeOptions)
+            return $0.toPackageData()
         }
     }
 
@@ -185,7 +179,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
             _ = withAnimation(starAnimation) {
                 starredCarriersPackages.remove(packageID)
             }
-            // TODO: use delete action when it is ready
+            // TODO: use delete action when it is ready (https://github.com/woocommerce/woocommerce-ios/issues/14679)
         }
         else {
             _ = withAnimation(starAnimation) {
@@ -203,78 +197,104 @@ final class WooShippingAddPackageViewModel: ObservableObject {
                 }
             }
 
-            ServiceLocator.stores.dispatch(createAction)
+            stores.dispatch(createAction)
         }
     }
 
     // delete saved packages
-    func removeSavedPackage(_ packageToRemove: WooShippingPackageDataRepresentable) async -> Error? {
-        // TODO: rewrite to directly use actions
+    @MainActor
+    func removeSavedPackage(_ packageToRemove: WooShippingPackageDataRepresentable) {
         // delete the package locally and on backend
-        customSavedPackages.removeAll { package in package.id == packageToRemove.id }
-        predefinedSavedPackages.removeAll { package in package.id == packageToRemove.id }
-        starredCarriersPackages.remove(packageToRemove.id)
+
+        // delete locally
+        let customPackagesIndex = customSavedPackages.firstIndex(where: { $0.id == packageToRemove.id })
+        let predefinedPackagesIndex = predefinedSavedPackages.firstIndex(where: { $0.id == packageToRemove.id })
+
+        if let customPackagesIndex {
+            customSavedPackages.remove(at: customPackagesIndex)
+        }
+        if let predefinedPackagesIndex {
+            predefinedSavedPackages.remove(at: predefinedPackagesIndex)
+        }
+
+        let removedStarredCarrierID = starredCarriersPackages.remove(packageToRemove.id)
 
         if self.selectedSavedPackageId == packageToRemove.id {
             self.selectedSavedPackageId = nil
         }
 
-        return nil
+        // delete on backend
+        let deleteAction = WooShippingAction.deletePackage(siteID: siteID, packageID: packageToRemove.id) { result in
+            switch result {
+            case .success(let response):
+                self.transformSavedPackages(response)
+            case .failure:
+                // undo removing of the package
+                // first: undo starring
+                if let carrierID = removedStarredCarrierID {
+                    self.starredCarriersPackages.insert(carrierID)
+                }
+                // second: undo removing from custom saved
+                if let customPackagesIndex {
+                    self.customSavedPackages.insert(packageToRemove, at: customPackagesIndex)
+                }
+                // third: undo removing from predefined saved
+                if let predefinedPackagesIndex {
+                    self.predefinedSavedPackages.insert(packageToRemove, at: predefinedPackagesIndex)
+                }
+            }
+        }
+
+        stores.dispatch(deleteAction)
     }
 }
 
 extension WooShippingCustomPackage {
-    func toPackageData(storeOptions: ShippingLabelStoreOptions) -> WooShippingPackageData {
+    func toPackageData() -> WooShippingPackageData {
         return WooShippingPackageData(id: id,
                                       name: name,
                                       length: String(getLength()),
                                       width: String(getWidth()),
                                       height: String(getHeight()),
-                                      dimensionsUnit: storeOptions.dimensionUnit,
                                       weight: String(boxWeight),
-                                      weightUnit: storeOptions.weightUnit,
                                       source: .custom,
                                       packageType: rawType)
     }
 }
 
 extension WooShippingPredefinedPackage {
-    func toPackageData(storeOptions: ShippingLabelStoreOptions, groupTitle: String, sourceID: String) -> WooShippingPackageData {
+    func toPackageData(groupTitle: String, sourceID: String) -> WooShippingPackageData {
         return WooShippingPackageData(id: id,
                                       name: name,
                                       length: String(getLength()),
                                       width: String(getWidth()),
                                       height: String(getHeight()),
-                                      dimensionsUnit: storeOptions.dimensionUnit,
                                       weight: String(boxWeight),
-                                      weightUnit: storeOptions.weightUnit,
                                       source: .predefined(sourceTitle: groupTitle, sourceID: sourceID),
                                       packageType: isLetter ? "envelope" : "box")
     }
 }
 
 extension WooShippingSavedPredefinedPackage {
-    func toPackageData(storeOptions: ShippingLabelStoreOptions) -> WooShippingPackageData {
+    func toPackageData() -> WooShippingPackageData {
         return WooShippingPackageData(id: id,
                                       name: self.package.name,
                                       length: String(self.package.getLength()),
                                       width: String(self.package.getWidth()),
                                       height: String(self.package.getHeight()),
-                                      dimensionsUnit: storeOptions.dimensionUnit,
                                       weight: self.package.boxWeight,
-                                      weightUnit: storeOptions.weightUnit,
                                       source: .predefined(sourceTitle: groupTitle, sourceID: providerID),
                                       packageType: self.package.isLetter ? "envelope" : "box")
     }
 }
 
 extension WooShippingCarrierPredefinedOptions {
-    func toCarrierPackages(storeOptions: ShippingLabelStoreOptions) -> WooShippingCarrierPackages? {
+    func toCarrierPackages() -> WooShippingCarrierPackages? {
         guard let shippingCarrier = WooShippingCarrier(rawValue: carrierID) else { return nil }
 
         let packageGroups = predefinedOptions.compactMap { predefinedOption in
             let packages = predefinedOption.predefinedPackages.map { package in
-                return package.toPackageData(storeOptions: storeOptions, groupTitle: predefinedOption.title, sourceID: predefinedOption.providerID)
+                return package.toPackageData(groupTitle: predefinedOption.title, sourceID: predefinedOption.providerID)
             }
             let group = WooPackageGroup(name: predefinedOption.title, packages: packages)
             return group

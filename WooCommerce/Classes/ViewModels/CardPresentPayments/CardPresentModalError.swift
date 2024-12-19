@@ -40,6 +40,7 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
     init(errorDescription: String?,
          transactionType: CardPresentTransactionType,
          image: UIImage = .paymentErrorImage,
+         requiresFallbackPaymentMethod: Bool = false,
          tryAgainAction: @escaping () -> Void,
          emailReceiptAction: @escaping () -> Void,
          dismissCompletion: @escaping () -> Void) {
@@ -47,7 +48,8 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
         self.bottomTitle = errorDescription
         self.image = image
         self.primaryButtonTitle = Localization.tryAgain(transactionType: transactionType)
-        self.auxiliaryButtonTitle = Localization.noThanks(transactionType: transactionType)
+        self.auxiliaryButtonTitle = Localization.dismiss(transactionType: transactionType,
+                                                         requiresFallbackPaymentMethod: requiresFallbackPaymentMethod)
         self.tryAgainAction = tryAgainAction
         self.emailReceiptAction = emailReceiptAction
         self.dismissCompletion = dismissCompletion
@@ -100,20 +102,42 @@ extension CardPresentModalError {
             }
         }
 
-        static func noThanks(transactionType: CardPresentTransactionType) -> String {
+        static func dismiss(transactionType: CardPresentTransactionType, requiresFallbackPaymentMethod: Bool) -> String {
             switch transactionType {
             case .collectPayment:
-                return NSLocalizedString(
-                    "Back to Order",
-                    comment: "Button to dismiss modal overlay. Presented to users after collecting a payment fails"
-                )
+                if requiresFallbackPaymentMethod {
+                    return Localization.tryAnotherPaymentMethod
+                } else {
+                   return Localization.backToOrder
+                }
             case .refund:
-                return NSLocalizedString(
-                    "Close",
-                    comment: "Button to dismiss modal overlay. Presented to users after refunding a payment fails"
-                )
+                return Localization.close
             }
         }
+
+        static let tryAnotherPaymentMethod = NSLocalizedString(
+            "cardPresentPaymentsModal.error.tryAnotherPaymentMethod",
+            value: "Try Another Payment Method",
+            comment: "Button to dismiss modal overlay and try another payment method. Presented to users after collecting a payment fails"
+        )
+
+        static let backToOrder = NSLocalizedString(
+            "cardPresentPaymentsModal.error.backToOrder",
+            value: "Back to Order",
+            comment: "Button to dismiss modal overlay. Presented to users after collecting a payment fails"
+        )
+
+        static let dismiss = NSLocalizedString(
+            "cardPresentPaymentsModal.error.dismiss",
+            value: "Dismiss",
+            comment: "Button to dismiss. Presented to users after collecting a payment fails"
+        )
+
+        static let close = NSLocalizedString(
+            "cardPresentPaymentsModal.error.close",
+            value: "Close",
+            comment: "Button to dismiss modal overlay. Presented to users after refunding a payment fails"
+        )
 
         static let receiptMessage = NSLocalizedString(
             "cardPresentPaymentsModal.error.receiptMessage",

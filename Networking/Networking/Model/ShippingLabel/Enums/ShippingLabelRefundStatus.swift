@@ -4,6 +4,7 @@ import Codegen
 /// The status of shipping label refund.
 public enum ShippingLabelRefundStatus: GeneratedFakeable {
     case pending
+    case unknown
 }
 
 /// RawRepresentable Conformance
@@ -15,8 +16,8 @@ extension ShippingLabelRefundStatus: RawRepresentable {
         case Keys.pending:
             self = .pending
         default:
-            assertionFailure("Unexpected value for `ShippingLabelRefundStatus`: \(rawValue)")
-            self = .pending
+            DDLogError("⛔️ Unexpected value for `ShippingLabelRefundStatus`: \(rawValue)")
+            self = .unknown
         }
     }
 
@@ -26,6 +27,8 @@ extension ShippingLabelRefundStatus: RawRepresentable {
         switch self {
         case .pending:
             return Keys.pending
+        case .unknown:
+            return ""
         }
     }
 }

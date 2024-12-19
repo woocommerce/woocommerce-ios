@@ -23,14 +23,14 @@ struct WooCarrierPackagesView: View {
     @Binding var starredPackages: Set<String>
     let tapAction: (String) -> Void
     let starAction: (String) -> Void
-    let onRefresh: () -> Void
+    let onRefresh: () async -> Void
 
     var body: some View {
         List {
             ForEach(carrierTab.packageGroups, id: \.id) { packageGroup in
                 Section {
                     ForEach(packageGroup.packages, id: \.id) { package in
-                        PackageOptionView(
+                        WooShippingPackageOptionView(
                             isSelected: selectedPackageId == package.id,
                             package: package,
                             showTopDivider: false,
@@ -64,7 +64,7 @@ struct WooCarrierPackagesView: View {
         }
         .listStyle(.plain)
         .refreshable {
-            onRefresh()
+            await onRefresh()
         }
     }
 }
@@ -101,10 +101,19 @@ struct WooCarrierPackagesSelectionView: View {
                            tabItemContentHorizontalPadding: Constants.tabItemContentHorizontalPadding,
                            tabItemContentVerticalPadding: Constants.tabItemContentVerticalPadding)
             }
-            if viewModel.isLoadingPackages {
+            // Show extra loading indicator in case there are no packages
+            else if viewModel.isLoadingPackages {
                 ProgressView()
                     .progressViewStyle(.circular)
                     .padding()
+            }
+            else {
+                Button {
+                    viewModel.loadPackages()
+                } label: {
+                    Image(systemName: "arrow.trianglehead.counterclockwise")
+                }
+                .padding()
             }
             if let selectedCarrierTab = viewModel.selectedCarrierTab {
                 WooCarrierPackagesView(carrierTab: selectedCarrierTab,
@@ -115,7 +124,11 @@ struct WooCarrierPackagesSelectionView: View {
                 }, starAction: { packageID in
                     viewModel.starUnstarPackage(packageID, carrierID: selectedCarrierTab.carrier.rawValue)
                 }, onRefresh: {
-                    viewModel.loadPackages()
+                    await withCheckedContinuation { continuation in
+                        viewModel.loadPackages {
+                            continuation.resume()
+                        }
+                    }
                 })
             }
             Spacer()

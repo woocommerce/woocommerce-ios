@@ -1371,6 +1371,10 @@ extension UIImage {
 
     static var groupedProductsImage: UIImage {
         UIImage(named: "grouped-products")!
+	}
+
+    static var cardReaderLocationImage: UIImage {
+        UIImage(named: "card-reader-location-permission")!
     }
 }
 

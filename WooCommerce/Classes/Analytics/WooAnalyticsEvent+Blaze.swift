@@ -101,6 +101,11 @@ extension WooAnalyticsEvent {
                 return WooAnalyticsEvent(statName: .blazeCreationConfirmDetailsTapped,
                                          properties: properties)
             }
+
+            /// Tracked when the /suggestions request fails.
+            static func suggestionLoadingFailed(error: Error) -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeSuggestionsLoadingFailed, properties: [:], error: error)
+            }
         }
 
         enum EditAd {

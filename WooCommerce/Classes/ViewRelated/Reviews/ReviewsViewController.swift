@@ -100,6 +100,8 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
     ///
     private var topBannerView: TopBannerView?
 
+    private var lastSelectedItemIndexPath: IndexPath?
+
     // MARK: - Initializers
     //
     convenience init(siteID: Int64) {
@@ -158,6 +160,12 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
             // show make sure it's displayed again
             self.removeGhostContent()
             self.displayGhostContent()
+        }
+
+        // Reload last selected row to update highlight state
+        if let lastSelectedItemIndexPath {
+            tableView.reloadRows(at: [lastSelectedItemIndexPath], with: .none)
+            self.lastSelectedItemIndexPath = nil
         }
     }
 
@@ -298,6 +306,7 @@ extension ReviewsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        lastSelectedItemIndexPath = indexPath
         viewModel.delegate.didSelectItem(at: indexPath, in: self)
     }
 

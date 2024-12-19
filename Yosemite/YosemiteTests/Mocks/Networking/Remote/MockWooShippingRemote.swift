@@ -15,6 +15,9 @@ final class MockWooShippingRemote {
     /// The results to return based on the given arguments in `createPackage`
     private var createPackageResults = [ResultKey: Result<WooShippingCreatePackageResponse, Error>]()
 
+    /// The results to return based on the given arguments in `deletePackage`
+    private var deletePackageResults = [ResultKey: Result<WooShippingCreatePackageResponse, Error>]()
+
     /// The results to return based on the given arguments in `loadLabelRates`
     private var loadLabelRatesResults = [ResultKey: Result<[ShippingLabelCarriersAndRates], Error>]()
 
@@ -38,6 +41,13 @@ final class MockWooShippingRemote {
                            thenReturn result: Result<WooShippingCreatePackageResponse, Error>) {
         let key = ResultKey(siteID: siteID)
         createPackageResults[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `deletePackage` is called.
+    func whenDeletePackage(siteID: Int64,
+                           thenReturn result: Result<WooShippingCreatePackageResponse, Error>) {
+        let key = ResultKey(siteID: siteID)
+        deletePackageResults[key] = result
     }
 
     /// Set the value passed to the `completion` block if `loadLabelRates` is called.
@@ -94,6 +104,19 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
             let key = ResultKey(siteID: siteID)
             if let result = self.createPackageResults[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func deletePackage(siteID: Int64, packageID: String, completion: @escaping (Result<Networking.WooShippingCreatePackageResponse, any Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = ResultKey(siteID: siteID)
+            if let result = self.deletePackageResults[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

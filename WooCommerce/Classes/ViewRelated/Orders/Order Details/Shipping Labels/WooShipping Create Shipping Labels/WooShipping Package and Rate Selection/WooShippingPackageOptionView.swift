@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct PackageOptionView: View {
+struct WooShippingPackageOptionView: View {
     enum Constants {
         static let verticalSpacing: CGFloat = 4.0
         static let textContentLeadingPadding: CGFloat = 4.0
@@ -14,6 +14,9 @@ struct PackageOptionView: View {
     var tapAction: () -> Void
     var starAction: (() -> Void)?
     var starred: Bool?
+
+    @Environment(\.shippingDimensionsUnit) private var dimensionsUnit
+    @Environment(\.shippingWeightUnit) private var weightUnit
 
     var body: some View {
         HStack(spacing: 0) {
@@ -29,12 +32,14 @@ struct PackageOptionView: View {
                             .font(.caption)
                             .foregroundStyle(Color(.secondaryLabel))
                     }
-                    Text(package.name)
+                    Text(package.displayName)
                         .bodyStyle()
                     HStack {
-                        Text(package.dimensionsDescription)
-                        Text("•")
-                        Text(package.weightDescription)
+                        Text(package.dimensionsDescription(unit: dimensionsUnit))
+                        if let weight = package.weightDescription(unit: weightUnit) {
+                            Text("•")
+                            Text(weight)
+                        }
                     }
                     .font(.subheadline)
                     .foregroundStyle(Color(.text))

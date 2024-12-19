@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import protocol Yosemite.POSOrderServiceProtocol
+import protocol Yosemite.POSReceiptServiceProtocol
 import struct Yosemite.Order
 import struct Yosemite.POSCartItem
 import class WooFoundation.CurrencyFormatter
@@ -12,14 +13,16 @@ protocol PointOfSaleOrderControllerProtocol {
     var order: Order? { get }
 
     func syncOrder(for cartProducts: [CartItem], retryHandler: @escaping () async -> Void) async
-    func sendReceipt(recipientEmail: String) async
+    func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
 }
 
 final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     init(orderService: POSOrderServiceProtocol,
+         receiptService: POSReceiptServiceProtocol,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.orderService = orderService
+        self.receiptService = receiptService
         self.currencyFormatter = currencyFormatter
     }
 
@@ -28,6 +31,7 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     }
 
     private let orderService: POSOrderServiceProtocol
+    private let receiptService: POSReceiptServiceProtocol
 
     private let currencyFormatter: CurrencyFormatter
 
@@ -70,16 +74,12 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         }))
     }
 
-    func sendReceipt(recipientEmail: String) async {
+    func sendReceipt(recipientEmail: String) async throws {
         guard let order = order else {
             return
         }
-        do {
-            try await orderService.sendReceipt(order: order, recipientEmail: recipientEmail)
-        } catch {
-            // TODO:
-            // https://github.com/woocommerce/woocommerce-ios/issues/14464
-        }
+        try await orderService.updatePOSOrder(order: order, recipientEmail: recipientEmail)
+        try await receiptService.sendReceipt(order: order, recipientEmail: recipientEmail)
     }
 
     func clearOrder() {

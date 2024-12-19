@@ -6,6 +6,7 @@ import protocol WooFoundation.Analytics
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
 import struct Yosemite.POSCartItem
+import enum Yosemite.SystemStatusAction
 
 protocol PointOfSaleAggregateModelProtocol {
     var orderStage: PointOfSaleOrderStage { get }
@@ -197,8 +198,8 @@ extension PointOfSaleAggregateModel {
     }
 
     @MainActor
-    func sendReceipt(to emailAddress: String) async {
-        await orderController.sendReceipt(recipientEmail: emailAddress)
+    func sendReceipt(to emailAddress: String) async throws {
+        try await orderController.sendReceipt(recipientEmail: emailAddress)
     }
 
     @MainActor

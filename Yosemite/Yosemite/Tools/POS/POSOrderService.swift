@@ -85,17 +85,12 @@ public protocol POSOrderServiceProtocol {
     ///   - order: Optional latest remotely synced order. Nil when syncing order for the first time.
     /// - Returns: Order from the remote sync.
     func syncOrder(cart: [POSCartItem], order: Order?) async throws -> Order
-    func sendReceipt(order: Order, recipientEmail: String) async throws
+    func updatePOSOrder(order: Order, recipientEmail: String) async throws
 }
 
 public final class POSOrderService: POSOrderServiceProtocol {
-    // MARK: - Properties
-
     private let siteID: Int64
     private let ordersRemote: POSOrdersRemoteProtocol
-    private let receiptsRemote: POSReceiptsRemoteProtocol
-
-    // MARK: - Initialization
 
     public convenience init?(siteID: Int64, credentials: Credentials?) {
         guard let credentials else {
@@ -104,14 +99,13 @@ public final class POSOrderService: POSOrderServiceProtocol {
         }
         let network = AlamofireNetwork(credentials: credentials)
         self.init(siteID: siteID,
-                  ordersRemote: OrdersRemote(network: network),
-                  receiptsRemote: ReceiptRemote(network: network))
+                  ordersRemote: OrdersRemote(network: network))
     }
 
-    public init(siteID: Int64, ordersRemote: POSOrdersRemoteProtocol, receiptsRemote: POSReceiptsRemoteProtocol) {
+    public init(siteID: Int64,
+                ordersRemote: POSOrdersRemoteProtocol) {
         self.siteID = siteID
         self.ordersRemote = ordersRemote
-        self.receiptsRemote = receiptsRemote
     }
 
     // MARK: - Protocol conformance
@@ -128,15 +122,18 @@ public final class POSOrderService: POSOrderServiceProtocol {
         return syncedOrder
     }
 
-    public func sendReceipt(order: Order, recipientEmail: String) async throws {
+    public func updatePOSOrder(order: Order, recipientEmail: String) async throws {
         guard order.billingAddress?.email == nil || order.billingAddress?.email == "" else {
             throw POSOrderServiceError.emailAlreadySet
         }
         let updatedBillingAddress = order.billingAddress?.copy(email: recipientEmail)
         let updatedOrder = order.copy(billingAddress: updatedBillingAddress)
 
-        let _ = try await ordersRemote.updatePOSOrder(siteID: siteID, order: updatedOrder, fields: [.billingAddress])
-        try await receiptsRemote.sendReceipt(siteID: siteID, orderID: order.orderID)
+        do {
+            let _ = try await ordersRemote.updatePOSOrder(siteID: siteID, order: updatedOrder, fields: [.billingAddress])
+        } catch {
+            throw POSOrderServiceError.updateOrderFailed
+        }
     }
 }
 
@@ -193,5 +190,6 @@ private extension POSOrderService {
 private extension POSOrderService {
     enum POSOrderServiceError: Error {
         case emailAlreadySet
+        case updateOrderFailed
     }
 }

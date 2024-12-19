@@ -62,6 +62,6 @@ private extension WooShippingCustoms {
                                                          comment: "Badge wording when the customs information is missing")
         static let editButtonAccessibilityLabel = NSLocalizedString("shippingLabels.customs.editButtonAccessibiliy",
                                                                       value: "Edit Shipping Labels Customs Info",
-                                                                      comment: "Accessibility label for the button to edit order status on the New Order screen")
+                                                                      comment: "Accessibility label for the button to edit the shipping labels customs")
     }
 }

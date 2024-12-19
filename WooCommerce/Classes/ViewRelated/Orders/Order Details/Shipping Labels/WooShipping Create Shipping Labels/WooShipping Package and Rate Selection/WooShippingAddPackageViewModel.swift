@@ -72,11 +72,10 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     // MARK: - loading
 
     @discardableResult
-    func loadPackages() async -> Result<WooShippingPackagesResponse, Error> {
+    func loadPackages() async -> Result<WooShippingPackagesResponse, WooShippingLoadPackagesError> {
         await withCheckedContinuation { continuation in
             guard !isLoadingPackages else {
-                // TODO should we return error or return current packages response?
-//                continuation.resume(returning: .failure(someError))
+                continuation.resume(returning: .failure(WooShippingLoadPackagesError.loadingInProgress))
                 return
             }
             isLoadingPackages = true
@@ -86,7 +85,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
                     self.transformLoadedPackages(packagesResult)
                     continuation.resume(returning: .success(packagesResult))
                 case .failure(let error):
-                    continuation.resume(returning: .failure(error))
+                    continuation.resume(returning: .failure(WooShippingLoadPackagesError.loadingFailed(error: error)))
                 }
                 self.isLoadingPackages = false
             }
@@ -307,4 +306,9 @@ extension WooShippingCarrierPredefinedOptions {
         let carrierPackages = WooShippingCarrierPackages(carrier: shippingCarrier, packageGroups: packageGroups)
         return carrierPackages
     }
+}
+
+public enum WooShippingLoadPackagesError: Error {
+    case loadingInProgress
+    case loadingFailed(error: Error)
 }

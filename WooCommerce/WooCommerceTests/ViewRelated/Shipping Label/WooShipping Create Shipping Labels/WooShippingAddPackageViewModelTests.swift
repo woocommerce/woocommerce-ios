@@ -54,7 +54,7 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_load_and_remove_saved_package() {
+    func test_load_and_remove_saved_package() async {
         // Given
         let siteID: Int64 = 1234
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
@@ -100,7 +100,7 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.loadPackages()
+        await viewModel.loadPackages()
 
         // Then
         XCTAssertEqual(viewModel.customSavedPackages.count, 1)

@@ -20,7 +20,7 @@ struct JetpackInstallHeaderView: View {
 
             if let image = UIImage.wooLogoImage(tintColor: .white), isError == false {
                 Circle()
-                    .foregroundColor(Color(.withColorStudio(.wooCommercePurple, shade: .shade60)))
+                    .foregroundColor(Color(uiColor: .accent))
                     .frame(width: Constants.logoSize * scale, height: Constants.logoSize * scale)
                     .overlay(
                         Image(uiImage: image)
@@ -43,7 +43,7 @@ struct JetpackInstallHeaderView: View {
 private extension JetpackInstallHeaderView {
     enum Constants {
         static let logoSize: CGFloat = 40
-        static let wooIconSize: CGSize = .init(width: 30, height: 18)
+        static let wooIconSize: CGSize = .init(width: 30, height: 8)
         static let connectionIconSize: CGFloat = 10
         static let headerContentSpacing: CGFloat = 8
     }

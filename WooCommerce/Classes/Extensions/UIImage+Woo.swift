@@ -1377,7 +1377,7 @@ extension UIImage {
 private extension UIImage {
 
     enum Metrics {
-        static let defaultWooLogoSize = CGSize(width: 30, height: 18)
+        static let defaultWooLogoSize = CGSize(width: 30, height: 8)
     }
 
     enum Configurations {

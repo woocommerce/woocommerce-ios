@@ -62,9 +62,6 @@ struct WooShippingAddPackageView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
         .navigationViewStyle(.stack)
-        .task {
-            packagesViewModel.loadPackages()
-        }
     }
 
     // MARK: UI components

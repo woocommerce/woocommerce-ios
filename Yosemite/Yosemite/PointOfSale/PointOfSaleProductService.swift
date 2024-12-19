@@ -43,7 +43,8 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
     public func providePointOfSaleItems(pageNumber: Int = 1) async throws -> (items: [POSItem], hasNextPage: Bool) {
         let productTypes: [ProductType] = isVariableProductsFeatureEnabled ?
         [.simple, .variable] : [.simple]
-        let (products, totalPagesCount) = try await productsRemote.loadProductsForPointOfSale(for: siteID, productTypes: productTypes, pageNumber: pageNumber)
+        let pagedProducts = try await productsRemote.loadProductsForPointOfSale(for: siteID, productTypes: productTypes, pageNumber: pageNumber)
+        let products = pagedProducts.items
 
         if pageNumber != 1 && products.count == 0 {
             return ([], false)
@@ -56,8 +57,7 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
         ]
         let filteredProducts = filterProducts(products: products, using: eligibilityCriteria)
 
-        let hasNextPage = totalPagesCount.map { pageNumber < $0 } ?? true
-        return (items: mapProductsToPOSItems(products: filteredProducts), hasNextPage: hasNextPage)
+        return (items: mapProductsToPOSItems(products: filteredProducts), hasNextPage: pagedProducts.hasMorePages)
     }
 
     // Maps result to POSItem, and populate the output with:

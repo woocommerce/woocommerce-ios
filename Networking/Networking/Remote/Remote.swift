@@ -366,6 +366,12 @@ private extension Remote {
     }
 }
 
+/// Contains the result of a paginated request.
+public struct PagedItems<T> {
+    public let items: [T]
+    public let hasMorePages: Bool
+}
+
 // MARK: - Constants!
 //
 public extension Remote {

@@ -206,7 +206,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///
     public func loadProductsForPointOfSale(for siteID: Int64,
                                            productTypes: [ProductType] = [.simple],
-                                           pageNumber: Int = 1) async throws -> (products: [Product], totalPagesCount: Int?) {
+                                           pageNumber: Int = 1) async throws -> PagedItems<Product> {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: POSConstants.productsPerPage,
@@ -231,8 +231,9 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         // Response header names are case insensitive.
         let totalPages = responseHeaders?.first(where: { $0.key.lowercased() == Remote.PaginationHeaderKey.totalPagesCount.lowercased() })
             .flatMap { Int($0.value) }
+        let hasMorePages = totalPages.map { pageNumber < $0 } ?? true
 
-        return (products: products, totalPagesCount: totalPages)
+        return .init(items: products, hasMorePages: hasMorePages)
     }
 
     /// Retrieves a specific list of `Product`s by `productID`.

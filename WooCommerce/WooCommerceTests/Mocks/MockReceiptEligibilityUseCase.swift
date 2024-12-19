@@ -2,13 +2,18 @@
 
 final class MockReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
     var isEligibleForBackendReceipts: Bool = true
-    var isEligibleSendingReceiptAfterPayment: Bool = false
+    var isEligibleForSuccessfulPaymentEmailReceipts: Bool = false
+    var isEligibleForFailedPaymentEmailReceipts: Bool = false
 
     func isEligibleForBackendReceipts(onCompletion: @escaping (Bool) -> Void) {
         onCompletion(isEligibleForBackendReceipts)
     }
 
-    func isEligibleSendingReceiptAfterPayment(onCompletion: @escaping (Bool) -> Void) {
-        onCompletion(isEligibleSendingReceiptAfterPayment)
+    func isEligibleForSuccessfulPaymentEmailReceipts(onCompletion: @escaping (Bool) -> Void) {
+        onCompletion(isEligibleForSuccessfulPaymentEmailReceipts)
+    }
+
+    func isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: String, onCompletion: @escaping (Bool) -> Void) {
+        onCompletion(isEligibleForFailedPaymentEmailReceipts)
     }
 }

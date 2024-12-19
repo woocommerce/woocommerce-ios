@@ -1,9 +1,11 @@
 import SwiftUI
 import WooFoundation
 
-struct WooShippingCustoms: View {
+struct WooShippingCustomsRow: View {
     let informationIsCompleted: Bool
     @ScaledMetric private var scale: CGFloat = 1.0
+
+    @State private var showCustomsForm: Bool = false
 
     var body: some View {
         HStack {
@@ -27,6 +29,7 @@ struct WooShippingCustoms: View {
                 .padding(.horizontal, 10)
 
             Button {
+                showCustomsForm.toggle()
             } label: {
                 Image(systemName: "pencil")
                     .resizable()
@@ -37,10 +40,14 @@ struct WooShippingCustoms: View {
         }
         .padding(Layout.borderPadding)
         .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderWidth)
+        .sheet(isPresented: $showCustomsForm) {
+            WooShippingCustomsForm()
+
+        }
     }
 }
 
-private extension WooShippingCustoms {
+private extension WooShippingCustomsRow {
     enum Layout {
         static let borderCornerRadius: CGFloat = 8
         static let borderWidth: CGFloat = 0.5
@@ -54,7 +61,7 @@ private extension WooShippingCustoms {
     }
 }
 
-private extension WooShippingCustoms {
+private extension WooShippingCustomsRow {
     enum Localization {
         static let customsTitle = NSLocalizedString("shippingLabels.customs.customsTitle",
                                                     value: "Customs",

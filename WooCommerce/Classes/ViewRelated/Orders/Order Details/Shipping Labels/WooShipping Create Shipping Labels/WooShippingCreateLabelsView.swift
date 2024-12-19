@@ -46,7 +46,7 @@ struct WooShippingCreateLabelsView: View {
 
                     WooShippingHazmat(enabled: !viewModel.canViewLabel)
 
-                    WooShippingCustoms(informationIsCompleted: viewModel.customsInformationIsCompleted)
+                    WooShippingCustomsRow(informationIsCompleted: viewModel.customsInformationIsCompleted)
                         .padding(.bottom, 16)
 
                     if viewModel.canViewLabel {

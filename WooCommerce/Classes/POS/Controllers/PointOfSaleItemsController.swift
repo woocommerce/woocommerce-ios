@@ -79,12 +79,13 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     /// - Returns: A boolean that indicates whether there is next page for the paginated items.
     @MainActor
     private func fetchItems(pageNumber: Int) async throws -> Bool {
-        let (newItems, hasNextPage) = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
+        let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
+        let newItems = pagedItems.items
         let uniqueNewItems = newItems.filter { newItem in
             !allItems.contains(newItem)
         }
         allItems.append(contentsOf: uniqueNewItems)
-        return hasNextPage
+        return pagedItems.hasMorePages
     }
 
     private func updateItemListStateAfterLoadAttempt() {

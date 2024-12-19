@@ -370,6 +370,11 @@ private extension Remote {
 public struct PagedItems<T> {
     public let items: [T]
     public let hasMorePages: Bool
+
+    public init(items: [T], hasMorePages: Bool) {
+        self.items = items
+        self.hasMorePages = hasMorePages
+    }
 }
 
 // MARK: - Constants!

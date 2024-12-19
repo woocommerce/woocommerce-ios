@@ -45,20 +45,20 @@ final class PointOfSaleProductServiceTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
 
         // When
-        let (items, hasNextPage) = try await itemProvider.providePointOfSaleItems(pageNumber: 2)
+        let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: 2)
 
         // Then
-        XCTAssertTrue(items.isEmpty)
-        XCTAssertFalse(hasNextPage)
+        XCTAssertTrue(pagedItems.items.isEmpty)
+        XCTAssertFalse(pagedItems.hasMorePages)
     }
 
     func test_PointOfSaleItemServiceProtocol_provides_no_items_when_store_has_no_products() async throws {
         // Given/When
         network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
-        let (expectedItems, _) = try await itemProvider.providePointOfSaleItems()
+        let pagedItems = try await itemProvider.providePointOfSaleItems()
 
         // Then
-        XCTAssertTrue(expectedItems.isEmpty)
+        XCTAssertTrue(pagedItems.items.isEmpty)
     }
 
     func test_PointOfSaleItemServiceProtocol_provides_items_when_store_has_eligible_products() async throws {
@@ -71,9 +71,10 @@ final class PointOfSaleProductServiceTests: XCTestCase {
 
         // When
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-type-simple")
-        let (expectedItems, _) = try await itemProvider.providePointOfSaleItems()
+        let pagedItems = try await itemProvider.providePointOfSaleItems()
 
         // Then
+        let expectedItems = pagedItems.items
         guard let item = expectedItems.first,
             case .simpleProduct(let simpleProduct) = item else {
             return XCTFail("No eligible products")
@@ -92,9 +93,10 @@ final class PointOfSaleProductServiceTests: XCTestCase {
 
         // When
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-for-eligibility-criteria")
-        let (expectedItems, _) = try await itemProvider.providePointOfSaleItems()
+        let pagedItems = try await itemProvider.providePointOfSaleItems()
 
         // Then
+        let expectedItems = pagedItems.items
         XCTAssertEqual(expectedItems.count, expectedNumberOfItems)
 
         guard case .simpleProduct(let firstEligibleSimpleProduct) = expectedItems.first,

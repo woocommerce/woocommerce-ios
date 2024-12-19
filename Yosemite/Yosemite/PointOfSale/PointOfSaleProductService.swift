@@ -40,14 +40,14 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
     ///
     /// - pageNumber: Number of the page that should be retrieved. If none given, defaults to 1
     ///
-    public func providePointOfSaleItems(pageNumber: Int = 1) async throws -> (items: [POSItem], hasNextPage: Bool) {
+    public func providePointOfSaleItems(pageNumber: Int = 1) async throws -> PagedItems<POSItem> {
         let productTypes: [ProductType] = isVariableProductsFeatureEnabled ?
         [.simple, .variable] : [.simple]
         let pagedProducts = try await productsRemote.loadProductsForPointOfSale(for: siteID, productTypes: productTypes, pageNumber: pageNumber)
         let products = pagedProducts.items
 
         if pageNumber != 1 && products.count == 0 {
-            return ([], false)
+            return .init(items: [], hasMorePages: false)
         }
 
         let eligibilityCriteria: [(Product) -> Bool] = [
@@ -57,7 +57,7 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
         ]
         let filteredProducts = filterProducts(products: products, using: eligibilityCriteria)
 
-        return (items: mapProductsToPOSItems(products: filteredProducts), hasNextPage: pagedProducts.hasMorePages)
+        return .init(items: mapProductsToPOSItems(products: filteredProducts), hasMorePages: pagedProducts.hasMorePages)
     }
 
     // Maps result to POSItem, and populate the output with:

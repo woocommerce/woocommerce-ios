@@ -1,5 +1,4 @@
 import Foundation
-import enum Yosemite.POSItem
 import Codegen
 
 struct ItemsStackState {

@@ -258,8 +258,33 @@ public class Remote: NSObject {
             }
         }
     }
+
+    func enqueueWithResponseHeaders<M: Mapper>(_ request: Request, mapper: M) async throws -> (data: M.Output, headers: [String: String]?) {
+        do {
+            let (data, headers) = try await network.responseDataAndHeaders(for: request)
+            let validator = request.responseDataValidator()
+            let parsedData = try validateAndParseData(data, request: request, validator: validator, mapper: mapper)
+            return (data: parsedData, headers: headers)
+        } catch {
+            handleResponseError(error: error, for: request)
+            throw mapNetworkError(error: error, for: request)
+        }
+    }
 }
 
+private extension Remote {
+    // Validation and parsing of the response data is separated so that the decoding error can be handled separately from network error.
+    func validateAndParseData<M: Mapper>(_ data: Data, request: Request, validator: ResponseDataValidator, mapper: M) throws -> M.Output {
+        do {
+            try validator.validate(data: data)
+            return try mapper.map(response: data)
+        } catch {
+            DDLogError("<> Mapping Error: \(error)")
+            handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
+            throw error
+        }
+    }
+}
 
 // MARK: - Private Methods
 //
@@ -341,12 +366,27 @@ private extension Remote {
     }
 }
 
+/// Contains the result of a paginated request.
+public struct PagedItems<T> {
+    public let items: [T]
+    public let hasMorePages: Bool
+
+    public init(items: [T], hasMorePages: Bool) {
+        self.items = items
+        self.hasMorePages = hasMorePages
+    }
+}
+
 // MARK: - Constants!
 //
 public extension Remote {
 
     enum Default {
         public static let firstPageNumber: Int = 1
+    }
+
+    enum PaginationHeaderKey {
+        static let totalPagesCount = "x-wp-totalpages"
     }
 
     enum JSONParsingErrorUserInfoKey {

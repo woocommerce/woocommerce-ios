@@ -84,6 +84,22 @@ public class AlamofireNetwork: Network {
             }
     }
 
+    public func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
+        let request = requestConverter.convert(request)
+        let sessionRequest = alamofireSession.request(request)
+            .validateIfRestRequest(for: request)
+        let response = await sessionRequest.serializingData().response
+        if let error = response.networkingError {
+            throw error
+        }
+        switch response.result {
+            case .success(let data):
+                return (data, response.response?.headers.dictionary)
+            case .failure(let error):
+                throw error
+        }
+    }
+
     /// Executes the specified Network Request. Upon completion, the payload or error will be emitted to the publisher.
     /// Only one value will be emitted and the request cannot be retried.
     ///

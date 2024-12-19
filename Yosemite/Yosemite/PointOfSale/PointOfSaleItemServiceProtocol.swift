@@ -1,3 +1,5 @@
+import struct Networking.PagedItems
+
 public enum POSItem: Equatable, Identifiable {
     case simpleProduct(POSSimpleProduct)
 
@@ -45,13 +47,13 @@ public extension Sequence where Element == POSOrderableItem {
 }
 
 public protocol PointOfSaleItemServiceProtocol {
-    func providePointOfSaleItems(pageNumber: Int) async throws -> [POSItem]
+    func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem>
 }
 
 // Default implementation for convenience, so we do not need to pass the first page explicitly
 // if no pageNumber is given.
 extension PointOfSaleItemServiceProtocol {
-    func providePointOfSaleItems(pageNumber: Int = 1) async throws -> [POSItem] {
+    func providePointOfSaleItems(pageNumber: Int = 1) async throws -> PagedItems<POSItem> {
         try await providePointOfSaleItems(pageNumber: pageNumber)
     }
 }

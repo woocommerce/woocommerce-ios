@@ -191,6 +191,7 @@
 		0230B4D62C33454900F2F660 /* PointOfSaleCardPresentPaymentCaptureErrorMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0230B4D52C33454900F2F660 /* PointOfSaleCardPresentPaymentCaptureErrorMessageView.swift */; };
 		0230B4D82C3345DF00F2F660 /* PointOfSaleCardPresentPaymentCaptureFailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0230B4D72C3345DF00F2F660 /* PointOfSaleCardPresentPaymentCaptureFailedView.swift */; };
 		02312797277D4F650060E180 /* StoreStatsPeriodViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02312796277D4F640060E180 /* StoreStatsPeriodViewModel.swift */; };
+		02335E492D13BA42000B6ECE /* AsyncPaginationTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02335E482D13BA42000B6ECE /* AsyncPaginationTracker.swift */; };
 		023453F22579DA1A00A6BB20 /* ShippingLabelPrintingInstructionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023453F12579DA1A00A6BB20 /* ShippingLabelPrintingInstructionsViewController.swift */; };
 		0234680A282CEA5F00CFC503 /* LegacyReceiptViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02346809282CEA5F00CFC503 /* LegacyReceiptViewModelTests.swift */; };
 		0235354E2999D17A00BF77D3 /* DomainSettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235354D2999D17A00BF77D3 /* DomainSettingsViewModelTests.swift */; };
@@ -3333,6 +3334,7 @@
 		0230B4D52C33454900F2F660 /* PointOfSaleCardPresentPaymentCaptureErrorMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentCaptureErrorMessageView.swift; sourceTree = "<group>"; };
 		0230B4D72C3345DF00F2F660 /* PointOfSaleCardPresentPaymentCaptureFailedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentCaptureFailedView.swift; sourceTree = "<group>"; };
 		02312796277D4F640060E180 /* StoreStatsPeriodViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsPeriodViewModel.swift; sourceTree = "<group>"; };
+		02335E482D13BA42000B6ECE /* AsyncPaginationTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncPaginationTracker.swift; sourceTree = "<group>"; };
 		023453F12579DA1A00A6BB20 /* ShippingLabelPrintingInstructionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPrintingInstructionsViewController.swift; sourceTree = "<group>"; };
 		02346809282CEA5F00CFC503 /* LegacyReceiptViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyReceiptViewModelTests.swift; sourceTree = "<group>"; };
 		0235354D2999D17A00BF77D3 /* DomainSettingsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainSettingsViewModelTests.swift; sourceTree = "<group>"; };
@@ -7256,6 +7258,7 @@
 			children = (
 				02ECD1DE24FF48D000735BE5 /* PaginationTracker.swift */,
 				029700EB24FE38C900D242F8 /* ScrollWatcher.swift */,
+				02335E482D13BA42000B6ECE /* AsyncPaginationTracker.swift */,
 			);
 			path = InfiniteScroll;
 			sourceTree = "<group>";
@@ -15811,6 +15814,7 @@
 				268D7C9C2984752A00D38709 /* SupportForm.swift in Sources */,
 				02A275BA23FE50AA005C560F /* ProductUIImageLoader.swift in Sources */,
 				02305353237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift in Sources */,
+				02335E492D13BA42000B6ECE /* AsyncPaginationTracker.swift in Sources */,
 				B5D6DC54214802740003E48A /* SyncCoordinator.swift in Sources */,
 				205B7EBD2C19FB6600D14A36 /* PointOfSaleCardPresentPaymentFoundReaderAlertViewModel.swift in Sources */,
 				018D5C7E2CA6B4A60085EBEE /* CurrencySettings+Sanitized.swift in Sources */,

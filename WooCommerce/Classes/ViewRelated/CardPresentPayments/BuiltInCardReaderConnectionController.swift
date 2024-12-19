@@ -88,7 +88,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     private let storageManager: StorageManagerType
     private let stores: StoresManager
 
-    private let locationService: LocationService
+    private let locationService: LocationServiceProtocol
 
     private var state: ControllerState {
         didSet {
@@ -143,7 +143,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         configuration: CardPresentPaymentsConfiguration,
         analyticsTracker: CardReaderConnectionAnalyticsTracker,
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-        locationService: LocationService = LocationService(),
+        locationService: LocationServiceProtocol = LocationService(),
         allowTermsOfServiceAcceptance: Bool = true
     ) {
         siteID = forSiteID
@@ -369,15 +369,8 @@ private extension BuiltInCardReaderConnectionController {
         case .authorized:
             state = .connectToReader
         case .denied:
-            // Refresh the view if the location permission state changes
-            locationService.observePermissionChanges { [weak self] _ in
-                guard let self else { return }
-                locationService.stopObservingPermissionChanges()
-                if case .requestLocationPermission = state {
-                    onRequestLocationPermission()
-                }
-            }
-
+            analyticsTracker.cardReaderLocationPermissionRequiredShown()
+            observePermissionChanges()
             alertsPresenter.present(viewModel: alertsProvider.locationRequired(
                 dismiss: { [weak self] in
                     guard let self else { return }
@@ -391,11 +384,21 @@ private extension BuiltInCardReaderConnectionController {
                 }
             ))
         case .notDetermined:
+            analyticsTracker.cardReaderLocationPermissionPreAlertShown()
+            observePermissionChanges()
             alertsPresenter.present(viewModel: alertsProvider.locationRequestPreAlert { [weak self] in
-                self?.locationService.requestPermission { [weak self] _ in
-                    self?.onRequestLocationPermission()
-                }
+                self?.locationService.requestPermission()
             })
+        }
+    }
+
+    func observePermissionChanges() {
+        locationService.observePermissionChanges { [weak self] permission in
+            guard let self else { return }
+            locationService.stopObservingPermissionChanges()
+            if case .requestLocationPermission = state {
+                onRequestLocationPermission()
+            }
         }
     }
 
@@ -445,6 +448,8 @@ private extension BuiltInCardReaderConnectionController {
                     .subscribe(on: DispatchQueue.main)
                     .sink { [weak self] in
                         guard let self, !isEducationInProgress else { return }
+
+                        analyticsTracker.tapToPayTermsOfServiceAccepted()
 
                         state = updatedState(educationInProgress: true)
                         presenter.presentMerchantEducation { [weak self] in

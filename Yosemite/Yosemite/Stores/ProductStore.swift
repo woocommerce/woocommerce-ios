@@ -422,11 +422,10 @@ private extension ProductStore {
             return onCompletion(.failure(ProductLoadError.emptyIdentifier))
         }
 
-        searchProductsByIdentifier(siteID: siteID,
-                                   keyword: identifier,
-                                   completion: { result in
-            switch result {
-            case let .success((products, source)):
+        Task {
+            do {
+                let (products, source) = try await searchProductsByIdentifier(for: siteID, keyword: identifier)
+
                 let matchedProducts = products.filter { $0.sku == identifier || $0.globalUniqueID == identifier }
 
                 guard !matchedProducts.isEmpty else {
@@ -449,10 +448,10 @@ private extension ProductStore {
                         onCompletion(.success((.product(product), source)))
                     })
                 }
-            case let .failure(error):
+            } catch {
                 onCompletion(.failure(error))
             }
-        })
+        }
     }
 
     /// Adds a product.
@@ -1279,37 +1278,59 @@ private extension ProductStore {
 }
 
 private extension ProductStore {
-    func searchProductsByIdentifier(siteID: Int64, keyword: String, completion: @escaping (Result<([Product], ItemIdentifierSearchResultSource), Error>) -> Void) {
-        remote.searchProductsBySKU(for: siteID,
-                                   keyword: keyword,
-                                   pageNumber: Remote.Default.firstPageNumber,
-                                   pageSize: ProductsRemote.Default.pageSize,
-                                   completion: { [weak self] result in
-            var returningResults: [Product] = []
-            switch result {
-            case let .success(products):
-                returningResults = products
-            case .failure:
-                break
-            }
+    func searchProductsByIdentifier(for siteID: Int64, keyword: String) async throws -> ([Product], ItemIdentifierSearchResultSource) {
+        async let skuProducts = searchProductsBySKU(for: siteID, keyword: keyword)
+        async let globalUniqueIdentifierProducts = searchProductsByGlobalUniqueIdentifier(for: siteID, keyword: keyword)
 
-            if returningResults.isEmpty {
-                self?.remote.searchProductsByGlobalUniqueIdentifier(for: siteID,
-                                                              keyword: keyword,
-                                                              pageNumber: Remote.Default.firstPageNumber,
-                                                              pageSize: ProductsRemote.Default.pageSize,
-                                                              completion: { result in
-                    switch result {
-                    case let .success(products):
-                        completion(.success((products, .globalUniqueIdentifier)))
-                    case .failure(let error):
-                        completion(.failure(error))
-                    }
-                })
+        do {
+            let globalUniqueIdentifierResult = try await globalUniqueIdentifierProducts
+
+            if !(try await globalUniqueIdentifierProducts.isEmpty) {
+                return (globalUniqueIdentifierResult, .globalUniqueIdentifier)
             } else {
-                completion(.success((returningResults, .SKU)))
+                let skuResult = try await skuProducts
+
+                if !(try await skuProducts.isEmpty) {
+                    return (skuResult, .SKU)
+                } else {
+                    throw ProductLoadError.notFound
+                }
             }
-        })
+        } catch {
+            throw(error)
+        }
+    }
+
+    func searchProductsBySKU(for siteID: Int64, keyword: String) async throws -> [Product] {
+        try await withCheckedThrowingContinuation { continuation in
+            remote.searchProductsBySKU(for: siteID,
+                                       keyword: keyword,
+                                       pageNumber: Remote.Default.firstPageNumber,
+                                       pageSize: ProductsRemote.Default.pageSize) { result in
+                switch result {
+                case let .success(products):
+                    continuation.resume(returning: products)
+                case let .failure(error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+
+    func searchProductsByGlobalUniqueIdentifier(for siteID: Int64, keyword: String) async throws -> [Product] {
+        try await withCheckedThrowingContinuation { continuation in
+            remote.searchProductsByGlobalUniqueIdentifier(for: siteID,
+                                                          keyword: keyword,
+                                                          pageNumber: Remote.Default.firstPageNumber,
+                                                          pageSize: ProductsRemote.Default.pageSize) { result in
+                switch result {
+                case let .success(products):
+                    continuation.resume(returning: products)
+                case let .failure(error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
     }
 }
 

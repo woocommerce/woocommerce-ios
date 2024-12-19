@@ -204,6 +204,10 @@ public enum FeatureFlag: Int {
     ///
     case sendReceiptsForPointOfSale
 
+    /// Adds support for  accepting cash as payment for POS
+    ///
+    case acceptCashForPointOfSale
+
     /// Enables new Tap to Pay onboarding and education features
     ///
     case tapToPayEducation
@@ -211,4 +215,8 @@ public enum FeatureFlag: Int {
     /// Supports variable products in POS.
     ///
     case variableProductsInPointOfSale
+
+    /// Supports hiding sites from the store picker
+    ///
+    case hideSitesInStorePicker
 }

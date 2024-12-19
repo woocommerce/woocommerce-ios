@@ -16,13 +16,9 @@ struct LocationServiceTests {
         locationManager.authorizationStatusToReturn = .authorizedWhenInUse
 
         // When
-        var status: LocationAuthorizationStatus?
-        sut.requestPermission {
-            status = $0
-        }
+        sut.requestPermission()
 
         // Then
-        #expect(status == .authorized)
         #expect(!locationManager.requestWhenInUseAuthorizationCalled)
     }
 
@@ -31,13 +27,9 @@ struct LocationServiceTests {
         locationManager.authorizationStatusToReturn = .denied
 
         // When
-        var status: LocationAuthorizationStatus?
-        sut.requestPermission {
-            status = $0
-        }
+        sut.requestPermission()
 
         // Then
-        #expect(status == .denied)
         #expect(!locationManager.requestWhenInUseAuthorizationCalled)
     }
 
@@ -46,20 +38,10 @@ struct LocationServiceTests {
         locationManager.authorizationStatusToReturn = .notDetermined
 
         // When
-        var status: LocationAuthorizationStatus?
-        sut.requestPermission {
-            status = $0
-        }
+        sut.requestPermission()
 
         // Then
-        #expect(status == nil)
         #expect(locationManager.requestWhenInUseAuthorizationCalled)
-
-        // When
-        locationManager.changeAuthorizationStatus(to: .authorizedWhenInUse)
-
-        // Then
-        #expect(status == .authorized)
     }
 
     @Test func observePermissionChanges() {

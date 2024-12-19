@@ -20,7 +20,7 @@ final class CardPresentModalNonRetryableErrorEmailSent: CardPresentPaymentsModal
 
     let image: UIImage
 
-    let primaryButtonTitle: String? = CardPresentModalNonRetryableError.Localization.dismiss
+    let primaryButtonTitle: String?
 
     let secondaryButtonTitle: String? = nil
 
@@ -45,10 +45,12 @@ final class CardPresentModalNonRetryableErrorEmailSent: CardPresentPaymentsModal
          errorDescription: String?,
          image: UIImage = .paymentErrorImage,
          email: String,
+         requiresFallbackPaymentMethod: Bool = false,
          onDismiss: @escaping () -> Void) {
         self.amount = amount
         self.bottomTitle = errorDescription
         self.image = image
+        self.primaryButtonTitle = CardPresentModalNonRetryableError.Localization.dismiss(requiresFallbackPaymentMethod: requiresFallbackPaymentMethod)
         self.onDismiss = onDismiss
 
         let formattedMessage = String(format: CardPresentModalError.Localization.receiptMessage, email)

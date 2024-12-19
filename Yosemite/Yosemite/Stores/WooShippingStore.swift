@@ -32,6 +32,8 @@ public final class WooShippingStore: Store {
         switch action {
         case .createPackage(let siteID, let customPackage, let predefinedOption, let completion):
             createPackage(siteID: siteID, customPackage: customPackage, predefinedOption: predefinedOption, completion: completion)
+        case .deletePackage(let siteID, let packageID, let completion):
+            deletePackage(siteID: siteID, packageID: packageID, completion: completion)
         case .loadLabelRates(let siteID, let orderID, let originAddress, let destinationAddress, let packages, let completion):
             loadLabelRates(siteID: siteID,
                            orderID: orderID,
@@ -82,6 +84,12 @@ private extension WooShippingStore {
                 completion(.failure(PackageCreationError(error: error)))
             }
         }
+    }
+
+    func deletePackage(siteID: Int64,
+                       packageID: String,
+                       completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void) {
+        remote.deletePackage(siteID: siteID, packageID: packageID, completion: completion)
     }
 
     func loadLabelRates(siteID: Int64,

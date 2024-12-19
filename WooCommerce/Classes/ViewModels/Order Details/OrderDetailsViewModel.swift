@@ -936,20 +936,14 @@ extension OrderDetailsViewModel {
     /// We need to set it back to pending order when collecting payment to trigger all the related notifications when payment turns to failed again.
     ///
     func markOrderPaymentPending() {
-        guard order.status != .pending else {
+        guard order.status != .pending, featureFlagService.isFeatureFlagEnabled(.sendReceiptAfterPayment) else {
             return
         }
 
-        receiptEligibilityUseCase.isEligibleSendingReceiptAfterPayment { [weak self] isEligible in
-            guard isEligible, let self else {
-                return
-            }
-
-            let action = OrderAction.updateOrderStatus(siteID: order.siteID,
-                                                       orderID: order.orderID,
-                                                       status: .pending, onCompletion: { _ in })
-            stores.dispatch(action)
-        }
+        let action = OrderAction.updateOrderStatus(siteID: order.siteID,
+                                                   orderID: order.orderID,
+                                                   status: .pending, onCompletion: { _ in })
+        stores.dispatch(action)
     }
 }
 

@@ -4,19 +4,18 @@ import WooFoundation
 struct WooShippingCustomsRow: View {
     let informationIsCompleted: Bool
     @ScaledMetric private var scale: CGFloat = 1.0
-
     @State private var showCustomsForm: Bool = false
 
     var body: some View {
-        HStack {
+        AdaptiveStack {
             Text(Localization.customsTitle)
-                .font(.system(size: Layout.customsTitleFontSize, weight: .medium))
+                .headlineStyle()
                 .foregroundColor(.primary)
 
             Spacer()
 
             Text(informationIsCompleted ? Localization.completedStatus : Localization.missingInfoStatus)
-                .font(.system(size: Layout.statusBadgeFontSize, weight: .medium))
+                .captionStyle()
                 .foregroundColor(.black)
                 .padding(.horizontal, Layout.statusBadgeHorizontalPadding)
                 .padding(.vertical, Layout.statusBadgeVerticalPadding)
@@ -28,15 +27,10 @@ struct WooShippingCustomsRow: View {
                 )
                 .padding(.horizontal, 10)
 
-            Button {
+            PencilEditButton {
                 showCustomsForm.toggle()
-            } label: {
-                Image(systemName: "pencil")
-                    .resizable()
-                    .frame(width: Layout.pencilButtonSizeDimensions * scale,
-                           height: Layout.pencilButtonSizeDimensions * scale)
             }
-            .tint(Color(.primary))
+            .accessibilityLabel(Text(Localization.editButtonAccessibilityLabel))
         }
         .padding(Layout.borderPadding)
         .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderWidth)
@@ -44,6 +38,7 @@ struct WooShippingCustomsRow: View {
             WooShippingCustomsForm()
 
         }
+
     }
 }
 
@@ -72,5 +67,8 @@ private extension WooShippingCustomsRow {
         static let missingInfoStatus = NSLocalizedString("shippingLabels.customs.missingInfo",
                                                          value: "Missing info",
                                                          comment: "Badge wording when the customs information is missing")
+        static let editButtonAccessibilityLabel = NSLocalizedString("shippingLabels.customs.editButtonAccessibiliy",
+                                                                      value: "Edit Shipping Labels Customs Info",
+                                                                      comment: "Accessibility label for the button to edit the shipping labels customs")
     }
 }

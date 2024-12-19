@@ -50,6 +50,7 @@ struct WooShippingServiceView: View {
             .redacted(reason: viewModel.loadingState == .loading ? .placeholder : [])
             .shimmering(active: viewModel.loadingState == .loading)
         }
+        .padding(.vertical)
     }
 }
 

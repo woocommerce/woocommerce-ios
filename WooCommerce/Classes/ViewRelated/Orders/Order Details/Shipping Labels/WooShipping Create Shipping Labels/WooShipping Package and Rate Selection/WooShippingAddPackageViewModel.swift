@@ -71,23 +71,28 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
     // MARK: - loading
 
-    func loadPackages(completion: (() -> (Void))? = nil) {
-        guard !isLoadingPackages else { return }
-
-        isLoadingPackages = true
-
-        let loadPackagesAction = WooShippingAction.loadPackages(siteID: siteID) { result in
-            switch result {
-            case .success(let packagesResult):
-                self.transformLoadedPackages(packagesResult)
-            case .failure:
-                break
+    @discardableResult
+    func loadPackages() async -> Result<WooShippingPackagesResponse, Error> {
+        await withCheckedContinuation { continuation in
+            guard !isLoadingPackages else {
+                // TODO should we return error or return current packages response?
+//                continuation.resume(returning: .failure(someError))
+                return
             }
-            self.isLoadingPackages = false
-            completion?()
-        }
+            isLoadingPackages = true
+            let loadPackagesAction = WooShippingAction.loadPackages(siteID: siteID) { result in
+                switch result {
+                case .success(let packagesResult):
+                    self.transformLoadedPackages(packagesResult)
+                    continuation.resume(returning: .success(packagesResult))
+                case .failure(let error):
+                    continuation.resume(returning: .failure(error))
+                }
+                self.isLoadingPackages = false
+            }
+            stores.dispatch(loadPackagesAction)
 
-        stores.dispatch(loadPackagesAction)
+        }
     }
 
     // transform packages

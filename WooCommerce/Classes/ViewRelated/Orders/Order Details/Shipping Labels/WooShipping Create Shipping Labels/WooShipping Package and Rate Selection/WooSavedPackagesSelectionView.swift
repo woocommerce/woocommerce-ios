@@ -113,7 +113,9 @@ struct WooSavedPackagesSelectionView: View {
                 }
                 else {
                     Button {
-                        viewModel.loadPackages()
+                        Task {
+                            await viewModel.loadPackages()
+                        }
                     } label: {
                         Image(systemName: "arrow.trianglehead.counterclockwise")
                     }
@@ -128,11 +130,7 @@ struct WooSavedPackagesSelectionView: View {
                 }
                 .listStyle(.plain)
                 .refreshable {
-                    await withCheckedContinuation { continuation in
-                        viewModel.loadPackages {
-                            continuation.resume()
-                        }
-                    }
+                    await viewModel.loadPackages()
                 }
                 Divider()
             }

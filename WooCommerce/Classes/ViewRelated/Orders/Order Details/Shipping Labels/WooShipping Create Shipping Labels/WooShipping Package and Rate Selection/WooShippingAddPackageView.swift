@@ -63,7 +63,7 @@ struct WooShippingAddPackageView: View {
         }
         .navigationViewStyle(.stack)
         .task {
-            packagesViewModel.loadPackages()
+            await packagesViewModel.loadPackages()
         }
     }
 

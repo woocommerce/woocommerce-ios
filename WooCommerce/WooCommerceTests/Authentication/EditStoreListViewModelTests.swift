@@ -1,3 +1,4 @@
+import Foundation
 import Testing
 import struct Yosemite.Site
 @testable import WooCommerce
@@ -79,5 +80,24 @@ struct EditStoreListViewModelTests {
 
         // Then
         #expect(viewModel.selectedSites.contains(site1) == true)
+    }
+
+    @Test func didSaveChanges_saves_hidden_store_ids_to_user_defaults_and_triggers_completion() {
+        // Given
+        let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
+        var completionTriggered = false
+        let viewModel = EditStoreListViewModel(availableSites: [site1, site2],
+                                               displayedSites: [site1, site2],
+                                               currentlySelectedSite: nil,
+                                               userDefaults: userDefaults,
+                                               onCompletion: { completionTriggered = true })
+
+        // When
+        viewModel.toggleSelection(site1)
+        viewModel.didSaveChanges()
+
+        // Then
+        #expect(userDefaults.hiddenStoreIDs == [site1.siteID])
+        #expect(completionTriggered == true)
     }
 }

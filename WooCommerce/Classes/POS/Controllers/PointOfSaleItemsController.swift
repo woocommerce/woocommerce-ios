@@ -20,7 +20,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
 
     init(itemProvider: PointOfSaleItemServiceProtocol) {
         self.itemProvider = itemProvider
-        self.paginationTracker = .init(pageFirstIndex: Constants.initialPage)
+        self.paginationTracker = .init()
         itemListStatePublisher = itemListStateSubject.eraseToAnyPublisher()
     }
 
@@ -94,9 +94,5 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
         } else {
             itemListStateSubject.send(.loaded(allItems))
         }
-    }
-
-    private enum Constants {
-        static let initialPage: Int = 1
     }
 }

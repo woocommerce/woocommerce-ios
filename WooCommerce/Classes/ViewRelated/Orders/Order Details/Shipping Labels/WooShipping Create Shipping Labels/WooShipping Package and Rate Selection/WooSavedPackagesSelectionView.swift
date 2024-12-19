@@ -81,8 +81,15 @@ extension WooShippingPackageDataRepresentable {
         return "\(length) x \(width) x \(height) \( unit)"
     }
 
-    func weightDescription(unit: String) -> String {
+    func weightDescription(unit: String) -> String? {
+        guard weight.isNotEmpty else {
+            return nil
+        }
         return "\(weight) \(unit)"
+    }
+
+    var displayName: String {
+        name.isNotEmpty ? name : source.userFriendlyDescription
     }
 }
 

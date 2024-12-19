@@ -54,13 +54,13 @@ final class PointOfSaleItemsControllerTests {
         #expect(items.count == expectedItems.count)
     }
 
-    @Test func reload_results_in_loaded_state() async throws {
+    @Test func resyncItems_results_in_loaded_state() async throws {
         // Given
         try #require(itemListState == .initialLoading)
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()
 
         // When
-        await sut.reload()
+        await sut.resyncItems()
 
         // Then
         guard case .loaded(let items) = itemListState else {
@@ -70,15 +70,15 @@ final class PointOfSaleItemsControllerTests {
         #expect(items.count == expectedItems.count)
     }
 
-    @Test func reload_when_called_multiple_times_then_items_are_not_duplicated() async throws {
+    @Test func resyncItems_when_called_multiple_times_then_items_are_not_duplicated() async throws {
         // Given
         try #require(itemListState == .initialLoading)
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()
 
         // When
-        await sut.reload()
-        await sut.reload()
-        await sut.reload()
+        await sut.resyncItems()
+        await sut.resyncItems()
+        await sut.resyncItems()
 
         // Then
         guard case .loaded(let items) = itemListState else {
@@ -215,19 +215,19 @@ final class PointOfSaleItemsControllerTests {
         #expect(itemProvider.spyLastRequestedPageNumber == 2)
     }
 
-    @Test func reload_results_in_state_loaded_with_expected_items() async throws {
+    @Test func resyncItems_results_in_state_loaded_with_expected_items() async throws {
         // Given
         try #require(itemListState == .initialLoading)
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()
 
         // When
-        await sut.reload()
+        await sut.resyncItems()
 
         // Then
         #expect(itemListState == .loaded(expectedItems))
     }
 
-    @Test func reload_requests_first_page() async throws {
+    @Test func resyncItems_requests_first_page() async throws {
         // Given
         itemProvider.shouldSimulateTwoPages = true
         await sut.loadInitialItems()
@@ -236,7 +236,7 @@ final class PointOfSaleItemsControllerTests {
         try #require(itemProvider.spyLastRequestedPageNumber == 2)
 
         // When
-        await sut.reload()
+        await sut.resyncItems()
 
         // Then
         #expect(itemProvider.spyLastRequestedPageNumber == 1)
@@ -268,7 +268,7 @@ final class PointOfSaleItemsControllerTests {
         try #require(itemProvider.spyLastRequestedPageNumber == 1)
     }
 
-    @Test func reload_when_itemProvider_throws_error_then_state_is_error() async throws {
+    @Test func resyncItems_when_itemProvider_throws_error_then_state_is_error() async throws {
         // Given
         itemProvider.shouldThrowError = true
         let expectedError = PointOfSaleErrorState(title: "Error loading products",
@@ -278,7 +278,7 @@ final class PointOfSaleItemsControllerTests {
         try #require(itemListState == .initialLoading)
 
         // When
-        await sut.reload()
+        await sut.resyncItems()
 
         // Then
         #expect(itemListState == .error(expectedError))

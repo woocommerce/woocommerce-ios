@@ -68,19 +68,23 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
         // control is released. Using a separate task ensures the reload async task is not canceled when the refresh control is released.
         reloadTask?.cancel()
         reloadTask = Task { @MainActor [weak self] in
-            guard let self else { return }
-            allItems.removeAll()
-            itemListStateSubject.send(.loading(allItems))
-            do {
-                try await paginationTracker.resync { [weak self] pageNumber in
-                    guard let self else { return true }
-                    return try await fetchItems(pageNumber: pageNumber)
-                }
-                updateItemListStateAfterLoadAttempt()
-            } catch {
-                // TODO: 14694 - Handle error from pull-to-refresh, like showing an error UI at the beginning or as an overlay.
-                itemListStateSubject.send(.error(PointOfSaleErrorState.errorOnLoadingProducts()))
+            await self?.resyncItems()
+        }
+    }
+
+    @MainActor
+    func resyncItems() async {
+        allItems.removeAll()
+        itemListStateSubject.send(.loading(allItems))
+        do {
+            try await paginationTracker.resync { [weak self] pageNumber in
+                guard let self else { return true }
+                return try await fetchItems(pageNumber: pageNumber)
             }
+            updateItemListStateAfterLoadAttempt()
+        } catch {
+            // TODO: 14694 - Handle error from pull-to-refresh, like showing an error UI at the beginning or as an overlay.
+            itemListStateSubject.send(.error(PointOfSaleErrorState.errorOnLoadingProducts()))
         }
     }
 

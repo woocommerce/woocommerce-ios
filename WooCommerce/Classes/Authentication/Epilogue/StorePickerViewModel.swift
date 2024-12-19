@@ -95,9 +95,7 @@ final class StorePickerViewModel {
 
     func updateDisplayedStores() {
         let hiddenStoreIDs = userDefaults.hiddenStoreIDs
-        displayedStores = allFetchedSites
-            .filter { $0.isWooCommerceActive }
-            .filter { hiddenStoreIDs.contains($0.siteID) == false }
+        displayedStores = allFetchedSites.filter { hiddenStoreIDs.contains($0.siteID) == false }
     }
 }
 

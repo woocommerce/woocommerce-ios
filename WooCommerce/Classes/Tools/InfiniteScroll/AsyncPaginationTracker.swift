@@ -1,5 +1,6 @@
 import Yosemite
 
+/// Async/await version of `PaginationTracker`, consider renaming `PaginationTracker` as deprecated and this class to `PaginationTracker`.
 /// Keeps track of the pagination for API syncing to support infinite scroll and pull-to-refresh.
 final class AsyncPaginationTracker {
     typealias SyncFunction = (_ pageNumber: Int) async throws -> Bool

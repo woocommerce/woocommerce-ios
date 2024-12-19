@@ -993,6 +993,20 @@ final class ProductsRemoteTests: XCTestCase {
         // Then
         XCTAssertEqual(products.count, expectedProductsFromResponse)
     }
+
+    func test_loadProductsForPointOfSale_returns_total_pages_count_from_headers_case_insensitive_name() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        network.responseHeaders = ["X-WP-TotalPages": "17"]
+        network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
+
+        let (_, totalPagesCount) = try await remote.loadProductsForPointOfSale(for: sampleSiteID, pageNumber: 2)
+
+        // Then
+        XCTAssertEqual(totalPagesCount, 17)
+    }
 }
 
 // MARK: - Private Helpers

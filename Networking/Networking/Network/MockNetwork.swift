@@ -27,6 +27,9 @@ class MockNetwork: Network {
     ///
     var requestsForResponseData = [URLRequestConvertible]()
 
+    /// Response headers to be returned with the response data.
+    var responseHeaders: [String: String]?
+
     /// Number of notification objects in notifications-load-all.json file.
     ///
     static let notificationLoadAllJSONCount = 46
@@ -89,7 +92,7 @@ class MockNetwork: Network {
             throw NetworkError.notFound()
         }
 
-        return (data, nil)
+        return (data, responseHeaders)
     }
 
     func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {

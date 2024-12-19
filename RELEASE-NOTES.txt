@@ -42,6 +42,7 @@
 - [*] Payments: Improved the card reader connection process by introducing a location permission pre-alert and earlier location request, ensuring greater clarity for users. [https://github.com/woocommerce/woocommerce-ios/pull/14672]
 - [*] Payments: Tap to Pay is now the first payment method for eligible merchants. [https://github.com/woocommerce/woocommerce-ios/pull/14717]
 - [**] Payments: Tap to Pay onboarding now includes detailed guidelines for accepting payments with Tap to Pay on iPhone and educating customers on using contactless payments. [https://github.com/woocommerce/woocommerce-ios/pull/14731]
+- [**] Receipts: Email receipts can now be sent to customers after both successful and failed payments. This feature is available for merchants using WooCommerce version 9.5+ and WooPayments 8.6+. [https://github.com/woocommerce/woocommerce-ios/pull/14731].
 
 21.2
 -----

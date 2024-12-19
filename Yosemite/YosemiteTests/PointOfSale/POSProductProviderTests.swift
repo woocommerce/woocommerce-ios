@@ -41,10 +41,11 @@ final class PointOfSaleProductServiceTests: XCTestCase {
     }
 
     func test_PointOfSaleItemServiceProtocol_when_empty_data_for_non_first_page_then_returns_empty_items_and_no_next_page() async throws {
+        // Given
         network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
 
         // When
-        let (items, hasNextPage) = try await itemProvider.providePointOfSaleItems()
+        let (items, hasNextPage) = try await itemProvider.providePointOfSaleItems(pageNumber: 2)
 
         // Then
         XCTAssertTrue(items.isEmpty)

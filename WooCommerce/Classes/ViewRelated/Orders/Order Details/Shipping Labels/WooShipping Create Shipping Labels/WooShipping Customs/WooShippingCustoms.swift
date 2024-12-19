@@ -7,7 +7,6 @@ struct WooShippingCustoms: View {
 
     var body: some View {
         HStack {
-            // Title
             Text(Localization.customsTitle)
                 .font(.system(size: Layout.customsTitleFontSize, weight: .medium))
                 .foregroundColor(.primary)

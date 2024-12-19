@@ -15,70 +15,79 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     private(set) var itemListStatePublisher: any Publisher<ItemListState, Never>
     private var itemListStateSubject: PassthroughSubject<ItemListState, Never> = .init()
     private var allItems: [POSItem] = []
-    private var currentPage: Int = Constants.initialPage
-    private var mightHaveMorePages: Bool = true
+    private let paginationTracker: AsyncPaginationTracker
     private let itemProvider: PointOfSaleItemServiceProtocol
 
     init(itemProvider: PointOfSaleItemServiceProtocol) {
         self.itemProvider = itemProvider
+        self.paginationTracker = .init()
         itemListStatePublisher = itemListStateSubject.eraseToAnyPublisher()
     }
 
     @MainActor
     func loadInitialItems() async {
-        mightHaveMorePages = true
         itemListStateSubject.send(.initialLoading)
-        try? await load(pageNumber: Constants.initialPage)
+        do {
+            try await paginationTracker.syncFirstPage { [weak self] pageNumber in
+                guard let self else { return true }
+                return try await fetchItems(pageNumber: pageNumber)
+            }
+            updateItemListStateAfterLoadAttempt()
+        } catch {
+            itemListStateSubject.send(.error(PointOfSaleErrorState.errorOnLoadingProducts()))
+        }
     }
 
     @MainActor
     func loadNextItems() async {
+        guard paginationTracker.hasNextPage else {
+            return
+        }
+        itemListStateSubject.send(.loading(allItems))
         do {
-            guard mightHaveMorePages else {
-                return
+            let nextPageState = try await paginationTracker.ensureNextPageIsSynced { [weak self] pageNumber in
+                guard let self else { return true }
+                return try await fetchItems(pageNumber: pageNumber)
             }
-            itemListStateSubject.send(.loading(allItems))
-
-            let nextPage = currentPage + 1
-            try await load(pageNumber: nextPage)
-            currentPage = nextPage
+            switch nextPageState {
+                case .noNextPage, .synced:
+                    updateItemListStateAfterLoadAttempt()
+                case .syncing:
+                    break
+            }
         } catch {
-            // Handle errors without incrementing currentPage.
+            // TODO: 14694 - Handle error from loading the next page, like showing an error UI at the end or as an overlay.
+            itemListStateSubject.send(.error(PointOfSaleErrorState.errorOnLoadingProducts()))
         }
     }
 
     @MainActor
     func reload() async {
         allItems.removeAll()
-        currentPage = Constants.initialPage
-        mightHaveMorePages = true
-        itemListStateSubject.send(.loading(allItems))
-        try? await load(pageNumber: currentPage)
-    }
-
-    @MainActor
-    private func load(pageNumber: Int) async throws {
         do {
-            try await fetchItems(pageNumber: pageNumber)
-            mightHaveMorePages = true
+            try await paginationTracker.resync { [weak self] pageNumber in
+                guard let self else { return true }
+                return try await fetchItems(pageNumber: pageNumber)
+            }
             updateItemListStateAfterLoadAttempt()
-        } catch PointOfSaleProductServiceError.pageOutOfRange {
-            mightHaveMorePages = false
-            updateItemListStateAfterLoadAttempt()
-            throw PointOfSaleProductServiceError.pageOutOfRange
         } catch {
+            // TODO: 14694 - Handle error from pull-to-refresh, like showing an error UI at the beginning or as an overlay.
             itemListStateSubject.send(.error(PointOfSaleErrorState.errorOnLoadingProducts()))
-            throw error
         }
     }
 
+    /// Fetches items given a page number and appends new unique items to the `allItems` array.
+    /// - Parameter pageNumber: Page number to fetch items from.
+    /// - Returns: A boolean that indicates whether there is next page for the paginated items.
     @MainActor
-    private func fetchItems(pageNumber: Int) async throws {
-        let newItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
+    private func fetchItems(pageNumber: Int) async throws -> Bool {
+        let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
+        let newItems = pagedItems.items
         let uniqueNewItems = newItems.filter { newItem in
             !allItems.contains(newItem)
         }
         allItems.append(contentsOf: uniqueNewItems)
+        return pagedItems.hasMorePages
     }
 
     private func updateItemListStateAfterLoadAttempt() {
@@ -87,9 +96,5 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
         } else {
             itemListStateSubject.send(.loaded(allItems))
         }
-    }
-
-    private enum Constants {
-        static let initialPage: Int = 1
     }
 }

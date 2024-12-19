@@ -8,6 +8,7 @@ import protocol Yosemite.POSOrderableItem
 import protocol Yosemite.OrderSyncProductTypeProtocol
 import struct Yosemite.OrderSyncProductInput
 import enum Yosemite.ProductType
+import struct Yosemite.PagedItems
 import struct Yosemite.ProductBundleItem
 import struct Yosemite.OrderItem
 import Combine
@@ -37,8 +38,8 @@ struct POSProductPreview: POSOrderableItem, Equatable {
 }
 
 final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
-    func providePointOfSaleItems(pageNumber: Int) async throws -> [POSItem] {
-        []
+    func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem> {
+        .init(items: [], hasMorePages: true)
     }
 
     func providePointOfSaleItems() -> [POSItem] {

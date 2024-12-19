@@ -3,40 +3,28 @@ import protocol Yosemite.PointOfSaleItemServiceProtocol
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 @testable import struct Yosemite.POSSimpleProduct
+import struct Yosemite.PagedItems
 
 final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
     var items: [POSItem] = []
     var shouldThrowError = false
     var shouldReturnZeroItems = false
     var shouldSimulateTwoPages = false
-    private var isPageOutOfRange = false
 
     var spyLastRequestedPageNumber: Int?
-    func providePointOfSaleItems(pageNumber: Int) async throws -> [POSItem] {
-        if isPageOutOfRange {
-            throw MockError.pageOutOfRange
-        }
+    func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem> {
         spyLastRequestedPageNumber = pageNumber
         if shouldThrowError {
             throw MockError.requestFailed
         }
         if shouldReturnZeroItems {
-            return []
+            return .init(items: [], hasMorePages: false)
         }
         if shouldSimulateTwoPages,
             pageNumber > 1 {
-            simulateFetchNextPage()
-            return items
+            return .init(items: MockPointOfSaleItemService.makeSecondPageItems(), hasMorePages: false)
         }
-        return MockPointOfSaleItemService.makeInitialItems()
-    }
-
-    func simulateFetchNextPage() {
-        items.append(contentsOf: MockPointOfSaleItemService.makeSecondPageItems())
-    }
-
-    func simulateNextPageIsOutOfRange() {
-        isPageOutOfRange = true
+        return .init(items: MockPointOfSaleItemService.makeInitialItems(), hasMorePages: shouldSimulateTwoPages)
     }
 }
 
@@ -79,6 +67,5 @@ extension MockPointOfSaleItemService {
 
     enum MockError: Error {
         case requestFailed
-        case pageOutOfRange
     }
 }

@@ -157,6 +157,7 @@ public typealias ShippingMethod = Networking.ShippingMethod
 public typealias Site = Networking.Site
 public typealias SiteVisibility = Networking.SiteVisibility
 public typealias SiteAPI = Networking.SiteAPI
+public typealias PagedItems = Networking.PagedItems
 public typealias Post = Networking.Post
 public typealias SitePlugin = Networking.SitePlugin
 public typealias SitePluginStatusEnum = Networking.SitePluginStatusEnum

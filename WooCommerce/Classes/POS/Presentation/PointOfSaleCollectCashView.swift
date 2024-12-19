@@ -25,7 +25,7 @@ struct PointOfSaleCollectCashView: View {
                             Image(systemName: "arrow.backward")
                                 .font(.headline)
                                 .foregroundColor(.primary)
-                            Text("Cash payment")
+                            Text(Localization.backNavigationTitle)
                         }
                         if let orderTotal = orderTotal {
                             Text(orderTotal)
@@ -68,7 +68,7 @@ struct PointOfSaleCollectCashView: View {
                             .progressViewStyle(CircularProgressViewStyle())
                             .tint(Color.posPrimaryTextInverted)
                     } else {
-                        Text("Mark payment as complete")
+                        Text(Localization.markPaymentCompletedButtonTitle)
                             .font(Constants.buttonFont)
                     }
                 }
@@ -92,7 +92,8 @@ struct PointOfSaleCollectCashView: View {
     }
 
     private func markComplete() async {
-        // no-op
+        // TODO:
+        // https://github.com/woocommerce/woocommerce-ios/issues/14602
     }
 }
 
@@ -102,6 +103,19 @@ private extension PointOfSaleCollectCashView {
         static let buttonPadding: CGFloat = 32
         static let buttonFont: POSFontStyle = .posBodyEmphasized
         static let buttonCornerRadius: CGFloat = 8
+    }
+
+    enum Localization {
+        static let backNavigationTitle = NSLocalizedString(
+            "pointOfSale.cashview.back.navigation.title",
+            value: "Cash payment",
+            comment: "Title of the cash payment navigation back button"
+        )
+        static let markPaymentCompletedButtonTitle = NSLocalizedString(
+            "pointOfSale.cashview.back.navigation.title",
+            value: "Mark payment as complete",
+            comment: "Button to mark a cash payment as completed"
+        )
     }
 }
 

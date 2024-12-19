@@ -16,7 +16,7 @@ struct TotalsView: View {
     private var shouldShowTotalsFields: Bool {
         viewHelper.shouldShowTotalsFields(for: posModel.paymentState)
     }
-    
+
     private var shouldShowCollectCashPaymentButton: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.acceptCashForPointOfSale)
     }
@@ -56,15 +56,14 @@ struct TotalsView: View {
                                 .opacity(viewHelper.shouldShowTotalsFields(for: posModel.paymentState) ? 1 : 0)
                                 .layoutPriority(2)
                         }
-                        
                         Button(action: {
                             posModel.collectCashPayment()
                         }, label: {
-                            Text("Cash payment")
+                            Text(Localization.cashPaymentButtonTitle)
                                 .foregroundColor(.posPrimaryText)
                         })
                         .buttonStyle(SecondaryButtonStyle())
-                        .padding(.horizontal)
+                        .padding()
                         .renderedIf(posModel.orderState != .syncing)
                         .renderedIf(shouldShowCollectCashPaymentButton)
                     }
@@ -345,6 +344,10 @@ private extension TotalsView {
             "pos.totalsView.taxes",
             value: "Taxes",
             comment: "Title for taxes amount field")
+        static let cashPaymentButtonTitle = NSLocalizedString(
+            "pos.totalsView.cash.button.title",
+            value: "Cash payment",
+            comment: "Title for the cash payment button title")
     }
 }
 

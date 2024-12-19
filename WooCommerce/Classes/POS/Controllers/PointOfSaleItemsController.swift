@@ -41,6 +41,9 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
 
     @MainActor
     func loadNextItems() async {
+        guard paginationTracker.hasNextPage else {
+            return
+        }
         itemListStateSubject.send(.loading(allItems))
         do {
             let nextPageState = try await paginationTracker.ensureNextPageIsSynced { [weak self] pageNumber in

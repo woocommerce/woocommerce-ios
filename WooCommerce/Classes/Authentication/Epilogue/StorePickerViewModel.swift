@@ -183,9 +183,16 @@ extension StorePickerViewModel {
         // The value is returned as either 0 or 1 in String,
         // so the trick is to convert it to NSString and get the `boolValue`.
         let isWooCommerceActive = (rawStatus as NSString).boolValue
-        if isWooCommerceActive {
-            return multipleStoresAvailable ? Localization.pickStore : Localization.connectedStore
-        } else {
+        switch (isWooCommerceActive, multipleStoresAvailable) {
+        case (true, true):
+            let hiddenStoreCount = userDefaults.hiddenStoreIDs.count
+            if hiddenStoreCount > 0, shouldEnableHidingStores {
+                return String(format: Localization.pickStoreWithHiddenStoreCount, hiddenStoreCount)
+            }
+            return Localization.pickStore
+        case (true, false):
+            return Localization.connectedStore
+        case (false, _):
             return Localization.otherSites
         }
     }
@@ -250,6 +257,13 @@ private extension StorePickerViewModel {
         static let otherSites = NSLocalizedString(
             "Other Sites",
             comment: "Store Picker's Section Title: Displayed when there are sites without WooCommerce"
+        )
+        static let pickStoreWithHiddenStoreCount = NSLocalizedString(
+            "storePickerViewModel.pickStoreWithHiddenStoreCount",
+            value: "Pick Store to Connect (%1$d hidden)",
+            comment: "Store Picker's Section Title: Displayed whenever there are multiple Stores. " +
+            "The content inside the bracket indicates the number of stores hidden from the store picker. " +
+            "The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)'"
         )
     }
 }

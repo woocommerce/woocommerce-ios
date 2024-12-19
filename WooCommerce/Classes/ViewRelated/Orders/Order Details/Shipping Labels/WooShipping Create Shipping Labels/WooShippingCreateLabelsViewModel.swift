@@ -23,8 +23,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         shippingLabel != nil
     }
 
-    /// Whether the custom information is completed or not
+    /// Whether the custom information is completed or not.
     var customsInformationIsCompleted: Bool {
+        // To be synced with real data
         true
     }
 

@@ -8,13 +8,13 @@ struct WooShippingCustoms: View {
     var body: some View {
         AdaptiveStack {
             Text(Localization.customsTitle)
-                .font(.system(size: Layout.customsTitleFontSize, weight: .medium))
+                .headlineStyle()
                 .foregroundColor(.primary)
 
             Spacer()
 
             Text(informationIsCompleted ? Localization.completedStatus : Localization.missingInfoStatus)
-                .font(.system(size: Layout.statusBadgeFontSize, weight: .medium))
+                .captionStyle()
                 .foregroundColor(.black)
                 .padding(.horizontal, Layout.statusBadgeHorizontalPadding)
                 .padding(.vertical, Layout.statusBadgeVerticalPadding)

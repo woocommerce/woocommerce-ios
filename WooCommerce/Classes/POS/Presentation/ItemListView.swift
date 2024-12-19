@@ -1,5 +1,5 @@
 import SwiftUI
-import protocol Yosemite.POSDisplayableItem
+import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 
 struct ItemListView: View {
@@ -124,13 +124,13 @@ private extension ItemListView {
     }
 
     @ViewBuilder
-    func listView(_ items: [POSDisplayableItem]) -> some View {
+    func listView(_ items: [POSItem]) -> some View {
         ScrollView {
             VStack {
                 if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                     bannerCardView
                 }
-                ForEach(items, id: \.id) { item in
+                ForEach(items) { item in
                     listRow(item: item)
                 }
                 GhostItemCardView()
@@ -158,15 +158,14 @@ private extension ItemListView {
     }
 
     @ViewBuilder
-    func listRow(item: POSDisplayableItem) -> some View {
-        if let item = item as? POSOrderableItem {
-            Button(action: {
-                posModel.addToCart(item)
-            }, label: {
-                ItemCardView(item: item)
-            })
-        } else {
-            ItemCardView(item: item)
+    func listRow(item: POSItem) -> some View {
+        switch item {
+        case .simpleProduct(let simpleProduct):
+            Button {
+                posModel.addToCart(simpleProduct)
+            } label: {
+                SimpleProductCardView(product: simpleProduct)
+            }
         }
     }
 }

@@ -5,6 +5,9 @@ public protocol WooShippingRemoteProtocol {
                        customPackage: WooShippingCustomPackage?,
                        predefinedOption: WooShippingPredefinedSavedOption?,
                        completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void)
+    func deletePackage(siteID: Int64,
+                       packageID: String,
+                       completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void)
     func loadLabelRates(siteID: Int64,
                         orderID: Int64,
                         originAddress: ShippingLabelAddress,
@@ -68,6 +71,27 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                                          siteID: siteID,
                                          path: path,
                                          parameters: parameters,
+                                         availableAsRESTRequest: true)
+
+            let mapper = WooShippingCreatePackageMapper()
+
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
+
+    public func deletePackage(siteID: Int64,
+                              packageID: String,
+                              completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void) {
+        do {
+            let path = "\(Path.packages)/\(packageID)"
+
+            let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                         method: .delete,
+                                         siteID: siteID,
+                                         path: path,
+                                         parameters: nil,
                                          availableAsRESTRequest: true)
 
             let mapper = WooShippingCreatePackageMapper()

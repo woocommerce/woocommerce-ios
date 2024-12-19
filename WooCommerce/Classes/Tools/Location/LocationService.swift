@@ -2,7 +2,7 @@ import Foundation
 import CoreLocation
 
 protocol LocationServiceProtocol {
-    func requestPermission(_ completion: @escaping (LocationAuthorizationStatus) -> Void)
+    func requestPermission()
     func observePermissionChanges(_ onChange: @escaping (LocationAuthorizationStatus) -> Void)
     func stopObservingPermissionChanges()
     var authorizationStatus: LocationAuthorizationStatus { get }
@@ -16,7 +16,6 @@ enum LocationAuthorizationStatus {
 
 final class LocationService: NSObject, LocationServiceProtocol {
     private let locationManager: CLLocationManager
-    private var permissionCompletion: ((LocationAuthorizationStatus) -> Void)?
     private var onStatusChange: ((LocationAuthorizationStatus) -> Void)?
 
     init(locationManager: CLLocationManager = CLLocationManager()) {
@@ -25,13 +24,11 @@ final class LocationService: NSObject, LocationServiceProtocol {
         locationManager.delegate = self
     }
 
-    func requestPermission(_ completion: @escaping (LocationAuthorizationStatus) -> Void) {
-        permissionCompletion = completion
-
+    func requestPermission() {
         let status = locationManager.authorizationStatus
 
         guard status == .notDetermined else {
-            return completion(authorizationStatus(from: status))
+            return
         }
 
         locationManager.requestWhenInUseAuthorization()
@@ -53,14 +50,7 @@ final class LocationService: NSObject, LocationServiceProtocol {
 
 extension LocationService: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        if let completion = permissionCompletion {
-            completion(authorizationStatus(from: manager.authorizationStatus))
-            permissionCompletion = nil
-        }
-
-        if let onChange = onStatusChange {
-            onChange(authorizationStatus(from: manager.authorizationStatus))
-        }
+        onStatusChange?(authorizationStatus(from: manager.authorizationStatus))
     }
 }
 

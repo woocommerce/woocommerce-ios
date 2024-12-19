@@ -347,15 +347,14 @@ enum WooAnalyticsStat: String {
     case cardReaderSelectTypeShown = "card_present_select_reader_type_shown"
     case cardReaderSelectTypeBuiltInTapped = "card_present_select_reader_type_built_in_tapped"
     case cardReaderSelectTypeBluetoothTapped = "card_present_select_reader_type_bluetooth_tapped"
-    case cardReaderDiscoveryTapped = "card_reader_discovery_tapped"
     case cardReaderDiscoveryFailed = "card_reader_discovery_failed"
-    case cardReaderDiscoveredReader = "card_reader_discovery_reader_discovered"
-    case cardReaderConnectionTapped = "card_reader_connection_tapped"
     case cardReaderConnectionFailed = "card_reader_connection_failed"
     case cardReaderConnectionSuccess = "card_reader_connection_success"
     case cardReaderDisconnectTapped = "card_reader_disconnect_tapped"
     case manageCardReadersBuiltInReaderAutoDisconnect = "manage_card_readers_automatic_disconnect_built_in_reader"
     case cardReaderAutomaticDisconnect = "card_reader_automatic_disconnect"
+    case cardReaderLocationPermissionPreAlertShown = "card_reader_location_permission_pre_alert_shown"
+    case cardReaderLocationPermissionRequiredShown = "card_reader_location_permission_required_shown"
 
     // MARK: Card Reader Software Update Events
     //
@@ -385,6 +384,13 @@ enum WooAnalyticsStat: String {
     case aboutTapToPayOrderCardReaderTapped = "about_tap_to_pay_order_card_reader_tapped"
     case tapToPayAutoRefundSuccess = "card_present_tap_to_pay_test_payment_refund_success"
     case tapToPayAutoRefundFailed = "card_present_tap_to_pay_test_payment_refund_failed"
+    case tapToPayAwarenessShown = "tap_to_pay_awareness_shown"
+    case tapToPayTermsOfServiceAccepted = "tap_to_pay_terms_of_service_accepted"
+
+    // MARK: Tap to Pay Education
+    case tapToPayEducationShown = "tap_to_pay_education_shown"
+    case tapToPayEducationDone = "tap_to_pay_education_done"
+    case tapToPayEducationSkipped = "tap_to_pay_education_skipped"
 
     // MARK: Cash on Delivery Enable events
     case enableCashOnDeliverySuccess = "enable_cash_on_delivery_success"

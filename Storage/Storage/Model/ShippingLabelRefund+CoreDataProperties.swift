@@ -8,7 +8,7 @@ extension ShippingLabelRefund {
         return NSFetchRequest<ShippingLabelRefund>(entityName: "ShippingLabelRefund")
     }
 
-    @NSManaged public var dateRequested: Date
+    @NSManaged public var dateRequested: Date?
     @NSManaged public var status: String
     @NSManaged public var shippingLabel: ShippingLabel?
 

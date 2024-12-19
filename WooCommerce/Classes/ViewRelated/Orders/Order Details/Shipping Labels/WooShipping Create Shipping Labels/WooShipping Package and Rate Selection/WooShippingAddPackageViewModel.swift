@@ -117,7 +117,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
     // MARK: - loading
 
-    func loadPackages() {
+    func loadPackages(completion: (() -> (Void))? = nil) {
         guard !isLoadingPackages else { return }
 
         isLoadingPackages = true
@@ -128,6 +128,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
                 DDLogError("⛔️ Error loading packages for Woo Shipping labels: \(error)")
             }
             isLoadingPackages = false
+            completion?()
         }
         stores.dispatch(loadPackagesAction)
     }
@@ -205,7 +206,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
             _ = withAnimation(starAnimation) {
                 starredCarriersPackages.remove(packageID)
             }
-            // TODO: use delete action when it is ready
+            // TODO: use delete action when it is ready (https://github.com/woocommerce/woocommerce-ios/issues/14679)
         }
         else {
             _ = withAnimation(starAnimation) {
@@ -224,18 +225,49 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     }
 
     // delete saved packages
-    func removeSavedPackage(_ packageToRemove: WooShippingPackageDataRepresentable) async -> Error? {
-        // TODO: rewrite to directly use actions
+    @MainActor
+    func removeSavedPackage(_ packageToRemove: WooShippingPackageDataRepresentable) {
         // delete the package locally and on backend
-        customSavedPackages.removeAll { package in package.id == packageToRemove.id }
-        predefinedSavedPackages.removeAll { package in package.id == packageToRemove.id }
-        starredCarriersPackages.remove(packageToRemove.id)
+
+        // delete locally
+        let customPackagesIndex = customSavedPackages.firstIndex(where: { $0.id == packageToRemove.id })
+        let predefinedPackagesIndex = predefinedSavedPackages.firstIndex(where: { $0.id == packageToRemove.id })
+
+        if let customPackagesIndex {
+            customSavedPackages.remove(at: customPackagesIndex)
+        }
+        if let predefinedPackagesIndex {
+            predefinedSavedPackages.remove(at: predefinedPackagesIndex)
+        }
+
+        let removedStarredCarrierID = starredCarriersPackages.remove(packageToRemove.id)
 
         if self.selectedSavedPackageId == packageToRemove.id {
             self.selectedSavedPackageId = nil
         }
 
-        return nil
+        // delete on backend
+        let deleteAction = WooShippingAction.deletePackage(siteID: siteID, packageID: packageToRemove.id) { result in
+            if case .failure(let error) = result {
+                DDLogError("⛔️ Error removing saved Woo Shipping package: \(error)")
+
+                // undo removing of the package
+                // first: undo starring
+                if let carrierID = removedStarredCarrierID {
+                    self.starredCarriersPackages.insert(carrierID)
+                }
+                // second: undo removing from custom saved
+                if let customPackagesIndex {
+                    self.customSavedPackages.insert(packageToRemove, at: customPackagesIndex)
+                }
+                // third: undo removing from predefined saved
+                if let predefinedPackagesIndex {
+                    self.predefinedSavedPackages.insert(packageToRemove, at: predefinedPackagesIndex)
+                }
+            }
+        }
+
+        stores.dispatch(deleteAction)
     }
 }
 

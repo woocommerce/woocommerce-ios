@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import protocol Yosemite.POSOrderServiceProtocol
+import protocol Yosemite.POSReceiptServiceProtocol
 import struct Yosemite.Order
 import struct Yosemite.POSCartItem
 import class WooFoundation.CurrencyFormatter
@@ -18,8 +19,10 @@ protocol PointOfSaleOrderControllerProtocol {
 
 final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     init(orderService: POSOrderServiceProtocol,
+         receiptService: POSReceiptServiceProtocol,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.orderService = orderService
+        self.receiptService = receiptService
         self.currencyFormatter = currencyFormatter
     }
 
@@ -28,6 +31,7 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     }
 
     private let orderService: POSOrderServiceProtocol
+    private let receiptService: POSReceiptServiceProtocol
 
     private let currencyFormatter: CurrencyFormatter
 
@@ -74,7 +78,8 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         guard let order = order else {
             return
         }
-        try await orderService.sendReceipt(order: order, recipientEmail: recipientEmail)
+        try await orderService.updatePOSOrder(order: order, recipientEmail: recipientEmail)
+        try await receiptService.sendReceipt(order: order, recipientEmail: recipientEmail)
     }
 
     func clearOrder() {

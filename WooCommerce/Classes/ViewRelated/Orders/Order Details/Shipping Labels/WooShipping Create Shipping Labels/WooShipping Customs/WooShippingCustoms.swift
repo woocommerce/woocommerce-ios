@@ -26,14 +26,9 @@ struct WooShippingCustoms: View {
                 )
                 .padding(.horizontal, 10)
 
-            Button {
-            } label: {
-                Image(systemName: "pencil")
-                    .resizable()
-                    .frame(width: Layout.pencilButtonSizeDimensions * scale,
-                           height: Layout.pencilButtonSizeDimensions * scale)
+            PencilEditButton {
             }
-            .tint(Color(.primary))
+            .accessibilityLabel(Text(Localization.editButtonAccessibilityLabel))
         }
         .padding(Layout.borderPadding)
         .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderWidth)
@@ -65,5 +60,8 @@ private extension WooShippingCustoms {
         static let missingInfoStatus = NSLocalizedString("shippingLabels.customs.missingInfo",
                                                          value: "Missing info",
                                                          comment: "Badge wording when the customs information is missing")
+        static let editButtonAccessibilityLabel = NSLocalizedString("shippingLabels.customs.editButtonAccessibiliy",
+                                                                      value: "Edit Shipping Labels Customs Info",
+                                                                      comment: "Accessibility label for the button to edit order status on the New Order screen")
     }
 }

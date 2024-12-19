@@ -1053,6 +1053,7 @@
 		DE78DE4A2B2AEC7F002E58DE /* wp-page-list-success.json in Resources */ = {isa = PBXBuildFile; fileRef = DE78DE492B2AEC7F002E58DE /* wp-page-list-success.json */; };
 		DE78DE4C2B2AED4C002E58DE /* WordPressPageMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE78DE4B2B2AED4C002E58DE /* WordPressPageMapperTests.swift */; };
 		DE78DE4E2B2BF0EA002E58DE /* product-subscription-alternative-types.json in Resources */ = {isa = PBXBuildFile; fileRef = DE78DE4D2B2BF0EA002E58DE /* product-subscription-alternative-types.json */; };
+		DE8BEF0B2D141DD9008B3A3F /* NotificationSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8BEF0A2D141DD9008B3A3F /* NotificationSettings.swift */; };
 		DE970D842C23E3F60019EF42 /* product-report-string-stock-quantity.json in Resources */ = {isa = PBXBuildFile; fileRef = DE970D832C23E3F60019EF42 /* product-report-string-stock-quantity.json */; };
 		DE97C3922861B8E20042E973 /* CouponEncoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE97C3912861B8E20042E973 /* CouponEncoderTests.swift */; };
 		DE9D6BCC270D769C00BA6562 /* shipping-label-address-without-name-validation-success.json in Resources */ = {isa = PBXBuildFile; fileRef = DE9D6BCB270D769B00BA6562 /* shipping-label-address-without-name-validation-success.json */; };
@@ -2239,6 +2240,7 @@
 		DE78DE492B2AEC7F002E58DE /* wp-page-list-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wp-page-list-success.json"; sourceTree = "<group>"; };
 		DE78DE4B2B2AED4C002E58DE /* WordPressPageMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressPageMapperTests.swift; sourceTree = "<group>"; };
 		DE78DE4D2B2BF0EA002E58DE /* product-subscription-alternative-types.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-subscription-alternative-types.json"; sourceTree = "<group>"; };
+		DE8BEF0A2D141DD9008B3A3F /* NotificationSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettings.swift; sourceTree = "<group>"; };
 		DE970D832C23E3F60019EF42 /* product-report-string-stock-quantity.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-report-string-stock-quantity.json"; sourceTree = "<group>"; };
 		DE97C3912861B8E20042E973 /* CouponEncoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponEncoderTests.swift; sourceTree = "<group>"; };
 		DE9D6BCB270D769B00BA6562 /* shipping-label-address-without-name-validation-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-address-without-name-validation-success.json"; sourceTree = "<group>"; };
@@ -3005,6 +3007,7 @@
 				B59325CF217E4206000B0E8E /* NoteMedia.swift */,
 				B59325D1217E4206000B0E8E /* NoteRange.swift */,
 				B554FA902180BCFC00C54DFF /* NoteHash.swift */,
+				DE8BEF0A2D141DD9008B3A3F /* NotificationSettings.swift */,
 				B557DA1C20979E7D005962F4 /* Order.swift */,
 				741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */,
 				D88E228F25AC990A0023F3B1 /* OrderFeeLine.swift */,
@@ -5324,6 +5327,7 @@
 				B5C6FCD420A373BB00A4F8E4 /* OrderMapper.swift in Sources */,
 				CE606D912BE396D7001CB424 /* ShippingMethodsRemote.swift in Sources */,
 				EE1CB90B2B4BC8C500AD24D5 /* BlazeImpressionsMapper.swift in Sources */,
+				DE8BEF0B2D141DD9008B3A3F /* NotificationSettings.swift in Sources */,
 				D88D5A49230BC8C7007B6E01 /* ProductReviewStatus.swift in Sources */,
 				036563DB2906938600D84BFD /* JustInTimeMessage.swift in Sources */,
 				CCA1D60429437B2C00B40560 /* SiteSummaryStats.swift in Sources */,

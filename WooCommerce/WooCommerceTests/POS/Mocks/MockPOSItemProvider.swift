@@ -12,7 +12,7 @@ final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
     private var isPageOutOfRange = false
 
     var spyLastRequestedPageNumber: Int?
-    func providePointOfSaleItems(pageNumber: Int) async throws -> [POSItem] {
+    func providePointOfSaleItems(pageNumber: Int) async throws -> (items: [POSItem], hasNextPage: Bool) {
         if isPageOutOfRange {
             throw MockError.pageOutOfRange
         }
@@ -21,14 +21,14 @@ final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
             throw MockError.requestFailed
         }
         if shouldReturnZeroItems {
-            return []
+            return ([], false)
         }
         if shouldSimulateTwoPages,
             pageNumber > 1 {
             simulateFetchNextPage()
-            return items
+            return (items, true)
         }
-        return MockPointOfSaleItemService.makeInitialItems()
+        return (MockPointOfSaleItemService.makeInitialItems(), false)
     }
 
     func simulateFetchNextPage() {

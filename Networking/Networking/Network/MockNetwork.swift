@@ -79,8 +79,17 @@ class MockNetwork: Network {
     }
 
     func responseDataAndHeaders(for request: any URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
-        // TODO
-        throw NetworkError.notFound()
+        requestsForResponseData.append(request)
+
+        if let error = error(for: request) {
+            throw error
+        }
+
+        guard let name = filename(for: request), let data = Loader.contentsOf(name) else {
+            throw NetworkError.notFound()
+        }
+
+        return (data, nil)
     }
 
     func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {

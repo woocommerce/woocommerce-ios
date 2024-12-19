@@ -211,10 +211,9 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
         // delete on backend
         let deleteAction = WooShippingAction.deletePackage(siteID: siteID, packageID: packageToRemove.id) { result in
-            switch result {
-            case .success:
-                self.transformLoadedPackages()
-            case .failure:
+            if case .failure(let error) = result {
+                DDLogError("⛔️ Error removing saved Woo Shipping package: \(error)")
+
                 // undo removing of the package
                 // first: undo starring
                 if let carrierID = removedStarredCarrierID {

@@ -61,6 +61,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
+    private var reloadTask: Task<Void, Never>?
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -100,7 +101,10 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     func reload() async {
-        await itemsController.reload()
+        reloadTask?.cancel()
+        reloadTask = Task { @MainActor in
+            await itemsController.reload()
+        }
     }
 }
 

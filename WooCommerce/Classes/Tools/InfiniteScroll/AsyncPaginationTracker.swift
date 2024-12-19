@@ -1,6 +1,6 @@
 import Yosemite
 
-/// Keeps track of the pagination for API syncing to support infinite scroll.
+/// Keeps track of the pagination for API syncing to support infinite scroll and pull-to-refresh.
 final class AsyncPaginationTracker {
     typealias SyncFunction = (_ pageNumber: Int) async throws -> Bool
 
@@ -25,7 +25,7 @@ final class AsyncPaginationTracker {
     /// Indexes of the pages being currently synced.
     private var pagesBeingSynced = IndexSet()
 
-    /// Whether there might be more pages to fetch from the API, set by the sync completion.
+    /// Whether there might be more pages to fetch from the API, set by the sync function.
     private var hasNextPage: Bool = true
 
     /// Returns the highest page number that has been successfully synced, if any.
@@ -45,9 +45,9 @@ final class AsyncPaginationTracker {
 
     /// Should be called whenever a scroll position is approaching the end of the list for infinite scroll support.
     /// This method will:
-    ///     1.  Proceed only if a given element is the last one in its page
-    ///     2.  Verify if the next page isn't currently being synced
-    ///     3.  Proceed syncing the next page, if possible / needed
+    ///     1.  Proceed only if there is next page to sync.
+    ///     2.  Verify if the next page isn't currently being synced.
+    ///     3.  Proceed syncing the next page.
     func ensureNextPageIsSynced(syncFunction: @escaping SyncFunction) async throws -> NextPageSyncState {
         guard hasNextPage else {
             return .noNextPage

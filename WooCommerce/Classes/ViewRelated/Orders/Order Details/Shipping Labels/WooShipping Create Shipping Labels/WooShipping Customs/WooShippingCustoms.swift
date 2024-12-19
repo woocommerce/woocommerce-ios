@@ -6,7 +6,7 @@ struct WooShippingCustoms: View {
     @ScaledMetric private var scale: CGFloat = 1.0
 
     var body: some View {
-        HStack {
+        AdaptiveStack {
             Text(Localization.customsTitle)
                 .font(.system(size: Layout.customsTitleFontSize, weight: .medium))
                 .foregroundColor(.primary)

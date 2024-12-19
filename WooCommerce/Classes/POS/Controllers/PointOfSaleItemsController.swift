@@ -20,61 +20,84 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
             itemsViewStateSubject.send(itemsViewState)
         }
     }
-    private let paginationTracker: PaginationTracker = PaginationTracker()
+    private let paginationTracker: AsyncPaginationTracker
     private let itemProvider: PointOfSaleItemServiceProtocol
 
     init(itemProvider: PointOfSaleItemServiceProtocol) {
         self.itemProvider = itemProvider
+        self.paginationTracker = .init()
         itemsViewStatePublisher = itemsViewStateSubject.eraseToAnyPublisher()
-
-        paginationTracker.delegate = self
     }
 
     @MainActor
     func loadInitialItems() async {
         itemsViewState = ItemsViewState(containerState: .loading, itemsStack: ItemsStackState(root: .loading([])))
-        await withCheckedContinuation { continuation in
-            paginationTracker.syncFirstPage {
-                continuation.resume()
+        do {
+            try await paginationTracker.syncFirstPage { [weak self] pageNumber in
+                guard let self else { return true }
+                return try await fetchItems(pageNumber: pageNumber)
             }
+        } catch {
+            itemsViewState = ItemsViewState(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
+                                            itemsStack: ItemsStackState(root: .loaded([])))
         }
     }
 
     @MainActor
     func loadNextItems() async {
+        guard paginationTracker.hasNextPage else {
+            return
+        }
         let currentItems = itemsViewState.itemsStack.root.items
         itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loading(currentItems)))
-        await withCheckedContinuation { continuation in
-            paginationTracker.ensureNextPageIsSynced {
-                continuation.resume()
+        do {
+            _ = try await paginationTracker.ensureNextPageIsSynced { [weak self] pageNumber in
+                guard let self else { return true }
+                return try await fetchItems(pageNumber: pageNumber)
             }
+        } catch {
+            // TODO: 14694 - Handle error from loading the next page, like showing an error UI at the end or as an overlay.
+            itemsViewState = ItemsViewState(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
+                                            itemsStack: ItemsStackState(root: .loaded(currentItems)))
         }
-        let updatedItems = itemsViewState.itemsStack.root.items
-        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded(updatedItems)))
     }
 
     @MainActor
     func reload() async {
-        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loading([])))
-        await withCheckedContinuation { continuation in
-            paginationTracker.resync {
-                continuation.resume()
+        do {
+            try await paginationTracker.resync { [weak self] pageNumber in
+                guard let self else { return true }
+                return try await fetchItems(pageNumber: pageNumber, appendToExistingItems: false)
             }
+        } catch {
+            // TODO: 14694 - Handle error from pull-to-refresh, like showing an error UI at the beginning or as an overlay.
+            itemsViewState = ItemsViewState(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
+                                            itemsStack: ItemsStackState(root: .loaded([])))
         }
     }
 
+    /// Fetches items given a page number and appends new unique items to the `allItems` array.
+    /// - Parameter pageNumber: Page number to fetch items from.
+    /// - Parameter appendToExistingItems: Default true – set this to false when refreshing to make the new page the only page.
+    /// - Returns: A boolean that indicates whether there is next page for the paginated items.
     @MainActor
-    private func fetchItems(pageNumber: Int) async throws -> Bool {
-        let (newItems, hasNextPage) = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
-        var allItems = itemsViewState.itemsStack.root.items
+    private func fetchItems(pageNumber: Int, appendToExistingItems: Bool = true) async throws -> Bool {
+        let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
+        let newItems = pagedItems.items
+        var allItems = appendToExistingItems ? itemsViewState.itemsStack.root.items : []
         let uniqueNewItems = newItems.filter { newItem in
             // Note that this uniquing won't currently work, as POSItem has a UUID.
             !allItems.contains(newItem)
         }
         allItems.append(contentsOf: uniqueNewItems)
-        itemsViewState = ItemsViewState(containerState: .content,
-                                        itemsStack: ItemsStackState(root: .loaded(allItems)))
-        return hasNextPage
+        if allItems.isEmpty {
+            itemsViewState = ItemsViewState(containerState: .empty,
+                                            itemsStack: ItemsStackState(root: .loaded([])))
+        } else {
+            itemsViewState = ItemsViewState(containerState: .content,
+                                            itemsStack: ItemsStackState(root: .loaded(allItems)))
+        }
+        return pagedItems.hasMorePages
     }
 }
 
@@ -86,21 +109,6 @@ private extension ItemListState {
             return items
         case .error:
             return []
-        }
-    }
-}
-
-extension PointOfSaleItemsController: PaginationTrackerDelegate {
-    func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
-        Task { @MainActor in
-            do {
-                let hasNextPage = try await fetchItems(pageNumber: pageNumber)
-                onCompletion?(.success(hasNextPage))
-            } catch {
-                itemsViewState = ItemsViewState(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
-                                                itemsStack: ItemsStackState(root: .loading([])))
-                onCompletion?(.failure(error))
-            }
         }
     }
 }

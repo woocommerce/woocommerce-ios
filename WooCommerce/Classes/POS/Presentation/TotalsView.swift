@@ -18,7 +18,9 @@ struct TotalsView: View {
     }
 
     private var shouldShowCollectCashPaymentButton: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.acceptCashForPointOfSale)
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.acceptCashForPointOfSale) &&
+        posModel.orderState != .syncing &&
+        posModel.paymentState == .idle
     }
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
@@ -68,7 +70,6 @@ struct TotalsView: View {
                         })
                         .buttonStyle(SecondaryButtonStyle())
                         .padding(.horizontal, Constants.buttonHorizontalPadding)
-                        .renderedIf(posModel.orderState != .syncing)
                         .renderedIf(shouldShowCollectCashPaymentButton)
                     }
                     .animation(.default, value: posModel.cardPresentPaymentInlineMessage)

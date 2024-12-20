@@ -35,7 +35,8 @@ struct WooShippingCustomsRow: View {
         .padding(Layout.borderPadding)
         .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderWidth)
         .sheet(isPresented: $showCustomsForm) {
-            WooShippingCustomsForm()
+            WooShippingCustomsForm(viewModel: WooShippingCustomsFormViewModel(internationalTransactionNumber: "123",
+                                                                              returnToSenderIfNotDelivered: true))
 
         }
 

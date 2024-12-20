@@ -140,10 +140,10 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         }
         let customSavedPackages = packages.customPackages.map {
             return $0.toPackageData()
-        }
+        }.sorted(by: { $0.id < $1.id })
         let predefinedSavedPackages = packages.savedPredefinedPackages.map {
             return $0.toPackageData()
-        }
+        }.sorted(by: { $0.id < $1.id })
         var carrierPackages: [WooShippingCarrierPackages] = packages.allPredefinedOptions.compactMap {
             return $0.toCarrierPackages()
         }

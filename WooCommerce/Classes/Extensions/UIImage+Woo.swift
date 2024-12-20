@@ -1160,7 +1160,7 @@ extension UIImage {
     /// No connection image
     ///
     static var noConnectionImage: UIImage {
-        UIImage(imageLiteralResourceName: "connection-icon")
+        UIImage(imageLiteralResourceName: "connection")
     }
 
     /// Megaphone Icon

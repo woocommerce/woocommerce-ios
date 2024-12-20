@@ -7,7 +7,7 @@ public struct NotificationSettings: Equatable, Encodable {
     /// Settings for different blogs connected to the user.
     public let blogs: [Blog]
 
-    /// Helper method to create notification settings for a given device ID.
+    /// Convenience init to create notification settings for a given device ID.
     ///
     public init(deviceID: Int64, enabledSites: [Int64], disabledSites: [Int64]) {
         let enabledSiteSettings = enabledSites.map { siteID in

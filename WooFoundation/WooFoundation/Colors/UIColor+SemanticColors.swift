@@ -126,10 +126,7 @@ public extension UIColor {
 
     /// Text.
     ///
-    static var textBrand: UIColor {
-        return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
-        dark: .withColorStudio(.wooCommercePurple, shade: .shade30))
-    }
+    static var textBrand: UIColor = .accent
 
     /// Text Warning.
     ///

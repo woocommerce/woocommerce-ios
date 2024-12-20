@@ -21,7 +21,7 @@ protocol PointOfSaleAggregateModelProtocol {
     func cancelCardPaymentsOnboarding()
     func trackCardPaymentsOnboardingShown()
 
-    var itemListState: ItemListState { get }
+    var itemsViewState: ItemsViewState { get }
     func loadInitialItems() async
     func loadNextItems() async
     func reload() async
@@ -47,7 +47,8 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     @Published var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
     private var onOnboardingCancellation: (() -> Void)?
 
-    @Published private(set) var itemListState: ItemListState = .initialLoading
+    @Published private(set) var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
+                                                                                itemsStack: ItemsStackState(root: .loading([])))
 
     @Published private(set) var cart: [CartItem] = []
 
@@ -74,7 +75,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
         self.orderController = orderController
         self.analytics = analytics
         self.paymentState = paymentState
-        publishItemListState()
+        publishItemsViewState()
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
         publishOrderState()
@@ -84,8 +85,8 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
 // MARK: - ItemList
 extension PointOfSaleAggregateModel {
-    private func publishItemListState() {
-        itemsController.itemListStatePublisher.assign(to: &$itemListState)
+    private func publishItemsViewState() {
+        itemsController.itemsViewStatePublisher.assign(to: &$itemsViewState)
     }
 
     @MainActor

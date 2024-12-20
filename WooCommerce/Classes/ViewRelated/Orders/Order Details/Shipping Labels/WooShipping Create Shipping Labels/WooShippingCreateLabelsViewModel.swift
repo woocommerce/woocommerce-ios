@@ -23,8 +23,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         shippingLabel != nil
     }
 
-    /// Whether the custom information is completed or not
+    /// Whether the custom information is completed or not.
     var customsInformationIsCompleted: Bool {
+        // To be synced with real data
         true
     }
 
@@ -152,6 +153,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         observeSelectedPackage()
         observeForLabelRates()
         loadStoreOptions()
+        loadPackages()
     }
 
     /// Initialize the view model from an existing shipping label.
@@ -221,6 +223,20 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                 dimensionsUnit = settings.storeOptions.dimensionUnit
             case .failure(let error):
                 DDLogError("⛔️ Error loading account settings: \(error)")
+            }
+        }
+        stores.dispatch(action)
+    }
+}
+
+// MARK: Remote
+private extension WooShippingCreateLabelsViewModel {
+    /// Syncs packages to use for shipping label from remote.
+    ///
+    func loadPackages() {
+        let action = WooShippingAction.loadPackages(siteID: order.siteID) { result in
+            if case .failure(let error) = result {
+                DDLogError("⛔️ Error loading packages for Woo Shipping labels: \(error)")
             }
         }
         stores.dispatch(action)

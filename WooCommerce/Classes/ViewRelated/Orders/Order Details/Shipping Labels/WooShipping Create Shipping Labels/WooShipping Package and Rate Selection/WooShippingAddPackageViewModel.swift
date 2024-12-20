@@ -2,20 +2,45 @@ import Foundation
 import SwiftUI
 import Combine
 import Yosemite
+import protocol Storage.StorageManagerType
 
 final class WooShippingAddPackageViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
+    private let storage: StorageManagerType
 
     private let starAnimation: Animation = .spring(duration: 0.2)
 
-    init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
-         stores: StoresManager = ServiceLocator.stores) {
+    // Holds type of selected package, it can be `custom`, `carrier` or `saved`
+    @Published var selectedPackageType: WooShippingAddPackageView.PackageProviderType
+
+    init(selectedPackage: WooShippingPackageDataRepresentable? = nil,
+         siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
+         stores: StoresManager = ServiceLocator.stores,
+         storage: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.stores = stores
+        self.storage = storage
+        selectedPackageType = .custom
+        previousSelectedPackage = selectedPackage
+        // Optimistically set the selected package ID.
+        // We will select the correct package type (custom, carrier or saved) after loading the packages.
+        switch selectedPackage?.source {
+        case .custom:
+            selectedSavedPackageId = selectedPackage?.id
+        case .predefined:
+            selectedCarriersPackageId = selectedPackage?.id
+            selectedSavedPackageId = selectedPackage?.id
+        case nil:
+            break
+        }
+        configureResultsController()
     }
 
     @Published private(set) var isLoadingPackages: Bool = false
+
+    /// Holds the previously selected package data, which can be transformed e.g. to select the correct tabs in the view.
+    private let previousSelectedPackage: WooShippingPackageDataRepresentable?
 
     // MARK: - saved
 
@@ -69,6 +94,27 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         return nil
     }
 
+    // MARK: - Storage
+
+    /// Packages
+    ///
+    private lazy var packagesResultsController: ResultsController<StorageWooShippingPackagesResponse> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        return ResultsController<StorageWooShippingPackagesResponse>(storageManager: storage, matching: predicate, sortedBy: [])
+    }()
+
+    func configureResultsController() {
+        packagesResultsController.onDidChangeContent = transformLoadedPackages
+        packagesResultsController.onDidResetContent = transformLoadedPackages
+
+        do {
+            try packagesResultsController.performFetch()
+            transformLoadedPackages()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
     // MARK: - loading
 
     func loadPackages(completion: (() -> (Void))? = nil) {
@@ -76,29 +122,29 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
         isLoadingPackages = true
 
-        let loadPackagesAction = WooShippingAction.loadPackages(siteID: siteID) { result in
-            switch result {
-            case .success(let packagesResult):
-                self.transformLoadedPackages(packagesResult)
-            case .failure:
-                break
+        let loadPackagesAction = WooShippingAction.loadPackages(siteID: siteID) { [weak self] result in
+            guard let self else { return }
+            if case .failure(let error) = result {
+                DDLogError("⛔️ Error loading packages for Woo Shipping labels: \(error)")
             }
-            self.isLoadingPackages = false
+            isLoadingPackages = false
             completion?()
         }
-
         stores.dispatch(loadPackagesAction)
     }
 
     // transform packages
-    private func transformLoadedPackages(_ packagesResult: WooShippingPackagesResponse) {
-        let customSavedPackages = packagesResult.customPackages.map {
+    private func transformLoadedPackages() {
+        guard let packages = packagesResultsController.fetchedObjects.first else {
+            return
+        }
+        let customSavedPackages = packages.customPackages.map {
             return $0.toPackageData()
         }
-        let predefinedSavedPackages = packagesResult.savedPredefinedPackages.map {
+        let predefinedSavedPackages = packages.savedPredefinedPackages.map {
             return $0.toPackageData()
         }
-        var carrierPackages: [WooShippingCarrierPackages] = packagesResult.allPredefinedOptions.compactMap {
+        var carrierPackages: [WooShippingCarrierPackages] = packages.allPredefinedOptions.compactMap {
             return $0.toCarrierPackages()
         }
         if self.carrierPackages.isNotEmpty {
@@ -127,48 +173,29 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         self.carrierPackages = carrierPackages
         self.carrierTabs = carrierTabs
 
-        self.allPredefinedOptions = packagesResult.allPredefinedOptions
+        self.allPredefinedOptions = packages.allPredefinedOptions
 
         starredCarriersPackages = Set(predefinedSavedPackages.map { $0.id })
 
+        // Select package type matching the previous selected package, if it is the currently selected package
+        if let previousSelectedPackage, previousSelectedPackage.id == selectedSavedPackageId || previousSelectedPackage.id == selectedCarriersPackageId {
+            switch previousSelectedPackage.source {
+            case .predefined:
+                selectedPackageType = predefinedSavedPackages.contains(where: { $0.id == previousSelectedPackage.id }) ? .saved : .carrier
+            case .custom:
+                selectedPackageType = customSavedPackages.contains(where: { $0.id == previousSelectedPackage.id }) ? .saved : .custom
+            }
+        }
+
         if selectedCarriersTabIndex == nil {
-            self.selectedCarriersTabIndex = carrierPackages.isEmpty ? nil : 0
-        }
-    }
-
-    private func transformSavedPackages(_ response: WooShippingCreatePackageResponse) {
-        // helper function for creating jointIDs for easier checking if package should be used or not
-        func jointID(carrierID: String, packageID: String) -> String {
-            return "\(carrierID)-\(packageID)"
-        }
-
-        var jointIDs: [String] = []
-        for option in response.predefinedOptions {
-            for packageID in option.predefinedPackageIDs {
-                jointIDs.append(jointID(carrierID: option.id, packageID: packageID))
-            }
-        }
-
-        var allPredefinedSaved: [any WooShippingPackageDataRepresentable] = []
-
-        // use predefined saved packages from list of all packages
-        // since the response gives us IDs we need to get them manually from the list
-        for carrier in self.allPredefinedOptions {
-            let carrierID = carrier.carrierID
-            for option in carrier.predefinedOptions {
-                for package in option.predefinedPackages {
-                    if jointIDs.contains(jointID(carrierID: carrierID, packageID: package.id)) {
-                        allPredefinedSaved.append(package.toPackageData(groupTitle: option.title,
-                                                                        sourceID: option.providerID))
-                    }
+            // Select the carriers tab matching the previous selected carriers package, if it is the currently selected package
+            if let previousSelectedPackage, selectedCarriersPackageId == previousSelectedPackage.id {
+                selectedCarriersTabIndex = carrierPackages.firstIndex { carrierTab in
+                    return carrierTab.carrier.rawValue == previousSelectedPackage.source.sourceID
                 }
+            } else {
+                selectedCarriersTabIndex = carrierPackages.isEmpty ? nil : 0
             }
-        }
-
-        self.predefinedSavedPackages = allPredefinedSaved
-
-        self.customSavedPackages = response.customPackages.map {
-            return $0.toPackageData()
         }
     }
 
@@ -187,16 +214,12 @@ final class WooShippingAddPackageViewModel: ObservableObject {
             }
 
             let predefined = WooShippingPredefinedSavedOption(id: carrierID, predefinedPackageIDs: [packageID])
-            let createAction = WooShippingAction.createPackage(siteID: siteID, customPackage: nil, predefinedOption: predefined) { result in
-                switch result {
-                case .success(let response):
-                    self.transformSavedPackages(response)
-                case .failure:
-                    // TODO: should we undo the starring of the package if request fails?
-                    self.starredCarriersPackages.remove(packageID)
+            let createAction = WooShippingAction.createPackage(siteID: siteID, customPackage: nil, predefinedOption: predefined) { [weak self] result in
+                if case .failure(let error) = result {
+                    DDLogError("⛔️ Error saving Woo Shipping package: \(error)")
+                    self?.starredCarriersPackages.remove(packageID)
                 }
             }
-
             stores.dispatch(createAction)
         }
     }
@@ -225,10 +248,9 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
         // delete on backend
         let deleteAction = WooShippingAction.deletePackage(siteID: siteID, packageID: packageToRemove.id) { result in
-            switch result {
-            case .success(let response):
-                self.transformSavedPackages(response)
-            case .failure:
+            if case .failure(let error) = result {
+                DDLogError("⛔️ Error removing saved Woo Shipping package: \(error)")
+
                 // undo removing of the package
                 // first: undo starring
                 if let carrierID = removedStarredCarrierID {

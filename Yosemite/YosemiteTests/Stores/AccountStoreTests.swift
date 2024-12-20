@@ -899,7 +899,7 @@ final class AccountStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let notificationSettings = NotificationSettings.createSettings(deviceID: 132, enabledSites: [23], disabledSites: [44, 66])
+            let notificationSettings = NotificationSettings(deviceID: 132, enabledSites: [23], disabledSites: [44, 66])
             let action = AccountAction.updateNotificationSettings(notificationSettings: notificationSettings) { result in
                 promise(result)
             }
@@ -923,7 +923,7 @@ final class AccountStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let notificationSettings = NotificationSettings.createSettings(deviceID: 132, enabledSites: [23], disabledSites: [44, 66])
+            let notificationSettings = NotificationSettings(deviceID: 132, enabledSites: [23], disabledSites: [44, 66])
             let action = AccountAction.updateNotificationSettings(notificationSettings: notificationSettings) { result in
                 promise(result)
             }

@@ -9,7 +9,7 @@ public struct NotificationSettings: Equatable, Encodable {
 
     /// Helper method to create notification settings for a given device ID.
     ///
-    public static func createSettings(deviceID: Int64, enabledSites: [Int64], disabledSites: [Int64]) -> NotificationSettings {
+    public init(deviceID: Int64, enabledSites: [Int64], disabledSites: [Int64]) {
         let enabledSiteSettings = enabledSites.map { siteID in
             Blog(blogID: siteID, devices: [
                 Device(deviceID: deviceID,
@@ -26,9 +26,12 @@ public struct NotificationSettings: Equatable, Encodable {
             ])
         }
 
-        return NotificationSettings(blogs: enabledSiteSettings + disabledSiteSettings)
+        self.init(blogs: (enabledSiteSettings + disabledSiteSettings))
     }
 
+    public init(blogs: [Blog]) {
+        self.blogs = blogs
+    }
 }
 
 public extension NotificationSettings {

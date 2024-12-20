@@ -14,19 +14,20 @@ struct WooShippingOriginAddressListView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                Text(Localization.shipFrom)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .padding(.bottom, Constants.verticalSpacing)
-                ForEach(originAddresses) { address in
-                    addressView(address)
-                        .onTapGesture {
-                            selectedAddressID = address.id
-                        }
-                }
+        VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+            Text(Localization.shipFrom)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .padding(.bottom, Constants.verticalSpacing)
+            List(originAddresses) { address in
+                addressView(address)
+                    .onTapGesture {
+                        selectedAddressID = address.id
+                    }
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: Constants.verticalSpacing, trailing: 0))
             }
+            .listStyle(.plain)
         }
         .padding()
     }

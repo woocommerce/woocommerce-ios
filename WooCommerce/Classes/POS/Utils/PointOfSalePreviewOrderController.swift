@@ -21,5 +21,7 @@ class PointOfSalePreviewOrderController: PointOfSaleOrderControllerProtocol {
     func sendReceipt(recipientEmail: String) async throws { }
 
     func clearOrder() { }
+
+    func collectCashPayment() async throws {}
 }
 #endif

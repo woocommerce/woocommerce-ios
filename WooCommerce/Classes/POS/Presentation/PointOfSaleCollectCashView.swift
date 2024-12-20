@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PointOfSaleCollectCashView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @FocusState private var isTextFieldFocused: Bool
 
     @State private var textFieldAmountInput: String = ""
     @State private var isLoading: Bool = false
@@ -39,16 +40,23 @@ struct PointOfSaleCollectCashView: View {
             .padding()
 
             TextField("$0.00", text: $textFieldAmountInput)
-                .keyboardType(.numbersAndPunctuation)
+                .keyboardType(.decimalPad)
                 .textInputAutocapitalization(.none)
                 .autocorrectionDisabled()
                 .multilineTextAlignment(.center)
                 .font(POSFontStyle.posTitleRegular)
-                .focused()
+                .focused($isTextFieldFocused)
                 .padding()
+                .onChange(of: textFieldAmountInput) { newValue in
+                    textFieldAmountInput = newValue
+                }
                 .onSubmit {
                     Task { @MainActor in
-                        await markComplete()
+                        do {
+                            try await markComplete()
+                        } catch {
+                            debugPrint(error)
+                        }
                     }
                 }
 
@@ -60,7 +68,11 @@ struct PointOfSaleCollectCashView: View {
 
             Button(action: {
                 Task { @MainActor in
-                    await markComplete()
+                    do {
+                        try await markComplete()
+                    } catch {
+                        debugPrint(error)
+                    }
                 }
             }, label: {
                 HStack(spacing: Constants.buttonSpacing) {
@@ -87,14 +99,17 @@ struct PointOfSaleCollectCashView: View {
         }
         .padding()
         .animation(.easeInOut, value: errorMessage)
-        .onChange(of: textFieldAmountInput) { amount in
+        .onChange(of: textFieldAmountInput) { _ in
             errorMessage = nil
         }
     }
 
-    private func markComplete() async {
-        // TODO:
-        // https://github.com/woocommerce/woocommerce-ios/issues/14602
+    private func markComplete() async throws {
+        do {
+            try await posModel.collectCashPayment()
+        } catch {
+            debugPrint(error)
+        }
     }
 }
 

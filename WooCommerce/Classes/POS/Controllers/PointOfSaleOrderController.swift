@@ -4,6 +4,8 @@ import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
 import struct Yosemite.Order
 import struct Yosemite.POSCartItem
+import enum Yosemite.OrderAction
+import enum Yosemite.OrderUpdateField
 import class WooFoundation.CurrencyFormatter
 
 protocol PointOfSaleOrderControllerProtocol {
@@ -15,6 +17,7 @@ protocol PointOfSaleOrderControllerProtocol {
     func syncOrder(for cartProducts: [CartItem], retryHandler: @escaping () async -> Void) async
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
+    func collectCashPayment() async throws
 }
 
 final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
@@ -85,6 +88,35 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     func clearOrder() {
         order = nil
         orderState = .idle
+    }
+
+    @MainActor
+    func collectCashPayment() async throws {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            throw NSError(domain: "", code: 0)
+        }
+        guard let order = order else {
+            throw NSError(domain: "", code: 0)
+        }
+
+        let fieldsToUpdate: [OrderUpdateField] = [
+            .status,
+            .paymentMethodID,
+            .paymentMethodTitle]
+        let updatedOrder = order.copy(status: .completed,
+                                      paymentMethodID: "cash",
+                                      paymentMethodTitle: "Cash (Point of Sale)")
+
+        let _ = try await withCheckedThrowingContinuation { continuation in
+            let action = OrderAction.updateOrder(siteID: siteID,
+                                                 order: updatedOrder,
+                                                 giftCard: nil,
+                                                 fields: fieldsToUpdate,
+                                                 onCompletion: { result in
+                continuation.resume(with: result)
+            })
+            ServiceLocator.stores.dispatch(action)
+        }
     }
 }
 

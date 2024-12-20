@@ -732,8 +732,8 @@ extension UIImage {
 
     /// Shopping cart Purple
     ///
-    static var shoppingCartPurpleIcon: UIImage {
-        return UIImage(named: "icon-shopping-cart-purple")!
+    static var shoppingCartPurpleFilled: UIImage {
+        return UIImage(named: "icon-shopping-cart-filled")!
     }
 
     /// Bordered Custom Amount

@@ -8,12 +8,10 @@ struct PointOfSaleCollectCashView: View {
     @State private var errorMessage: String?
 
     @Binding var isVisible: Bool
+    let orderTotal: String
 
-    private var orderTotal: String? {
-        if case .loaded(let totals) = posModel.orderState {
-            return totals.orderTotal
-        }
-        return nil
+    private var formattedOrderTotal: String {
+        String.localizedStringWithFormat(Localization.backNavigationSubtitle, orderTotal)
     }
 
     var body: some View {
@@ -24,15 +22,16 @@ struct PointOfSaleCollectCashView: View {
                 }, label: {
                     VStack {
                         HStack {
-                            Image(systemName: "arrow.backward")
-                                .font(.headline)
-                                .foregroundColor(.primary)
+                            Image(systemName: "chevron.left")
                             Text(Localization.backNavigationTitle)
                         }
-                        if let orderTotal = orderTotal {
-                            Text(orderTotal)
-                                .font(.caption)
-                        }
+                        .font(.posTitleRegular)
+                        .bold()
+                        .foregroundColor(.primary)
+
+                        Text(formattedOrderTotal)
+                            .font(.posBodyRegular)
+                            .foregroundColor(.primary)
                     }
                 })
                 Spacer()
@@ -111,10 +110,16 @@ private extension PointOfSaleCollectCashView {
         static let backNavigationTitle = NSLocalizedString(
             "pointOfSale.cashview.back.navigation.title",
             value: "Cash payment",
-            comment: "Title of the cash payment navigation back button"
+            comment: "Title for the cash payment view navigation back button"
+        )
+        static let backNavigationSubtitle = NSLocalizedString(
+            "pointOfSale.cashview.back.navigation.subtitle",
+            value: "Total: %1$@",
+            comment: "Subtitle for the cash payment view navigation back button" +
+            "Reads as 'Total: $1.23'"
         )
         static let markPaymentCompletedButtonTitle = NSLocalizedString(
-            "pointOfSale.cashview.back.navigation.title",
+            "pointOfSale.cashview.button.markpaymentcompleted.title",
             value: "Mark payment as complete",
             comment: "Button to mark a cash payment as completed"
         )
@@ -126,6 +131,7 @@ private extension PointOfSaleCollectCashView {
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
-    PointOfSaleCollectCashView(isVisible: .constant(true))
+    PointOfSaleCollectCashView(isVisible: .constant(true),
+                               orderTotal: "$1.23")
         .environmentObject(posModel)
 }

@@ -89,7 +89,10 @@ struct TotalsView: View {
         .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
         .geometryGroupIfSupported()
         .fullScreenCover(isPresented: $shouldShowCollectCashPayment) {
-            PointOfSaleCollectCashView(isVisible: $shouldShowCollectCashPayment)
+            if case .loaded(let total) = posModel.orderState {
+                PointOfSaleCollectCashView(isVisible: $shouldShowCollectCashPayment,
+                                           orderTotal: total.orderTotal)
+            }
         }
     }
 

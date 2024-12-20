@@ -40,7 +40,6 @@ struct WooCarrierPackagesView: View {
                             },
                             starAction: {
                                 starAction(package.id)
-                                // Just temporary, will be replaced with proper logic
                             },
                             starred: starredPackages.contains(package.id)
                         )

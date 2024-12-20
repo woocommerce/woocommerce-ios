@@ -16,6 +16,37 @@ public struct WooShippingOriginAddress: Equatable, GeneratedFakeable, GeneratedC
     public let email: String
     public let defaultAddress: Bool
     public let isVerified: Bool
+
+    public init(id: String,
+                company: String,
+                address1: String,
+                address2: String,
+                city: String,
+                state: String,
+                postcode: String,
+                country: String,
+                phone: String,
+                firstName: String,
+                lastName: String,
+                email: String,
+                defaultAddress:
+                Bool,
+                isVerified: Bool) {
+        self.id = id
+        self.company = company
+        self.address1 = address1
+        self.address2 = address2
+        self.city = city
+        self.state = state
+        self.postcode = postcode
+        self.country = country
+        self.phone = phone
+        self.firstName = firstName
+        self.lastName = lastName
+        self.email = email
+        self.defaultAddress = defaultAddress
+        self.isVerified = isVerified
+    }
 }
 
 // MARK: Decodable

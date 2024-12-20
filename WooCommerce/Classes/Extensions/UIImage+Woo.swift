@@ -1379,7 +1379,7 @@ extension UIImage {
 	}
 
     static var cardReaderLocationImage: UIImage {
-        UIImage(named: "card-reader-location-permission")!
+        UIImage(named: "location")!
     }
 }
 

@@ -3,11 +3,11 @@ import Codegen
 
 public struct WooShippingOriginAddress: Equatable, GeneratedFakeable, GeneratedCopiable {
     public let id: String
-    public let company: String?
+    public let company: String
     public let address1: String
-    public let address2: String?
+    public let address2: String
     public let city: String
-    public let state: String?
+    public let state: String
     public let postcode: String
     public let country: String
     public let phone: String
@@ -24,14 +24,14 @@ extension WooShippingOriginAddress: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let id = try container.decode(String.self, forKey: CodingKeys.id)
-        let company = try container.decodeIfPresent(String.self, forKey: CodingKeys.company)
+        let company = try container.decodeIfPresent(String.self, forKey: CodingKeys.company) ?? ""
         let address1 = try container.decodeIfPresent(String.self, forKey: CodingKeys.address1) ?? ""
-        let address2 = try container.decodeIfPresent(String.self, forKey: CodingKeys.address2)
-        let city = try container.decode(String.self, forKey: CodingKeys.city)
-        let state = try container.decodeIfPresent(String.self, forKey: CodingKeys.state)
-        let postcode = try container.decode(String.self, forKey: CodingKeys.postcode)
-        let country = try container.decode(String.self, forKey: CodingKeys.country)
-        let phone = try container.decode(String.self, forKey: CodingKeys.phone)
+        let address2 = try container.decodeIfPresent(String.self, forKey: CodingKeys.address2) ?? ""
+        let city = try container.decodeIfPresent(String.self, forKey: CodingKeys.city) ?? ""
+        let state = try container.decodeIfPresent(String.self, forKey: CodingKeys.state) ?? ""
+        let postcode = try container.decodeIfPresent(String.self, forKey: CodingKeys.postcode) ?? ""
+        let country = try container.decodeIfPresent(String.self, forKey: CodingKeys.country) ?? ""
+        let phone = try container.decodeIfPresent(String.self, forKey: CodingKeys.phone) ?? ""
         let firstName = try container.decodeIfPresent(String.self, forKey: CodingKeys.firstName) ?? ""
         let lastName = try container.decodeIfPresent(String.self, forKey: CodingKeys.lastName) ?? ""
         let email = try container.decodeIfPresent(String.self, forKey: CodingKeys.email) ?? ""

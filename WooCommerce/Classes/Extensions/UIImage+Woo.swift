@@ -476,10 +476,10 @@ extension UIImage {
         return UIImage(systemName: "hourglass", withConfiguration: config)!
     }
 
-    /// Hourglass Image from Woo design
+    /// Timer (hour glass) Image from Woo design
     ///
-    static var wooHourglass: UIImage {
-        UIImage(named: "woo-hourglass")!
+    static var timerImage: UIImage {
+        UIImage(named: "timer")!
     }
 
     /// House Outlined Image

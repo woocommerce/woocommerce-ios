@@ -6,7 +6,7 @@ struct BlazeCampaignCreationLoadingView: View {
             Spacer()
 
             VStack(alignment: .center, spacing: Layout.vSpacing) {
-                Image(uiImage: .wooHourglass)
+                Image(uiImage: .timerImage)
 
                 Text(Localization.title)
                     .secondaryTitleStyle()

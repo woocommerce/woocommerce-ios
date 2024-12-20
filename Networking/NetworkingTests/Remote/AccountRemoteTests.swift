@@ -272,4 +272,43 @@ final class AccountRemoteTests: XCTestCase {
         // Then
         XCTAssertEqual(expectedError, errorCaught as? NetworkError)
     }
+
+    // MARK: - Notification settings
+    
+    func test_updateNotificationSettings_succeeds_on_request_success() async {
+        // Given
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "me/notifications/settings", filename: "notification-settings")
+
+        // When
+        var errorCaught: Error?
+        do {
+            let notificationSettings = NotificationSettings.createSettings(siteID: 194373765, deviceID: 58089781, notificationsEnabled: false)
+            try await remote.updateNotificationSettings(with: notificationSettings)
+        } catch {
+            errorCaught = error
+        }
+
+        // Then
+        XCTAssertNil(errorCaught)
+    }
+
+    func test_updateNotificationSettings_relays_error_on_request_failure() async {
+        // Given
+        let remote = AccountRemote(network: network)
+        let expectedError = NetworkError.timeout()
+        network.simulateError(requestUrlSuffix: "me/notifications/settings", error: expectedError)
+
+        // When
+        var errorCaught: Error?
+        do {
+            let notificationSettings = NotificationSettings.createSettings(siteID: 194373765, deviceID: 58089781, notificationsEnabled: false)
+            try await remote.updateNotificationSettings(with: notificationSettings)
+        } catch {
+            errorCaught = error
+        }
+
+        // Then
+        XCTAssertEqual(expectedError, errorCaught as? NetworkError)
+    }
 }

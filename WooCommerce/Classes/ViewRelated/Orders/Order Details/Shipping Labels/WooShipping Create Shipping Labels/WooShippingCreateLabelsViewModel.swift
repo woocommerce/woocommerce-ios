@@ -23,6 +23,12 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         shippingLabel != nil
     }
 
+    /// Whether the custom information is completed or not.
+    var customsInformationIsCompleted: Bool {
+        // To be synced with real data
+        true
+    }
+
     /// View model for the section displayed after a shipping label is purchased.
     @Published private(set) var postPurchase: WooShippingPostPurchaseViewModel?
 

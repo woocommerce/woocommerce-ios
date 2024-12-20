@@ -10,7 +10,7 @@ struct ItemListView: View {
 
     @State private var lastScrollPosition: CGFloat = 0
     @State private var showSimpleProductsModal: Bool = false
-    var itemListState: ItemListState {
+    private var itemListState: ItemListState {
         posModel.itemsViewState.itemsStack.root
     }
 

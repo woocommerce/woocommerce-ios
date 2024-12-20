@@ -67,7 +67,7 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
     }
 
     func reload() async {
-        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loading([])))
+        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded([])))
     }
 }
 

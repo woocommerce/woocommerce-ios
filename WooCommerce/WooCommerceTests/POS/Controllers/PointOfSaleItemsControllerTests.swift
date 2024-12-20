@@ -49,7 +49,7 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadInitialItems()
 
         // Then
-            guard case .loaded(let items) = itemsViewState.itemsStack.root else {
+        guard case .loaded(let items) = itemsViewState.itemsStack.root else {
             Issue.record("Expected loaded ItemList state, but got \(itemsViewState)")
             return
         }

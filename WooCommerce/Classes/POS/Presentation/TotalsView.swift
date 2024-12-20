@@ -299,9 +299,7 @@ private extension TotalsView {
                 .validatingOrder,
                 .preparingReader,
                 .processingPayment,
-                .cardPaymentSuccessful,
-                .acceptingCash,
-                .cashPaymentSuccessful:
+                .cardPaymentSuccessful:
             break
         }
 

@@ -46,6 +46,9 @@ struct WooShippingCreateLabelsView: View {
 
                     WooShippingHazmat(enabled: !viewModel.canViewLabel)
 
+                    WooShippingCustoms(informationIsCompleted: viewModel.customsInformationIsCompleted)
+                        .padding(.bottom, 16)
+
                     if viewModel.canViewLabel {
                         EmptyView()
                     } else if let package = viewModel.selectedPackage,

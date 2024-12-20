@@ -471,7 +471,11 @@ public enum WooShippingLabelPurchaseError: Error {
     case purchaseMissingLabels
 }
 
-public enum WooShippingLoadPackagesError: Error {
+public enum WooShippingLoadPackagesError: Error, Equatable {
     case loadingInProgress
     case loadingFailed(error: Error)
+
+    public static func ==(lhs: WooShippingLoadPackagesError, rhs: WooShippingLoadPackagesError) -> Bool {
+        return lhs.localizedDescription == rhs.localizedDescription
+    }
 }

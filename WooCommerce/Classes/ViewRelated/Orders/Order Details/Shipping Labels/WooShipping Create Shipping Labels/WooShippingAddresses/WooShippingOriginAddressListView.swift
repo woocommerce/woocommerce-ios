@@ -15,11 +15,11 @@ struct WooShippingOriginAddressListView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                 Text(Localization.shipFrom)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
-
+                    .padding(.bottom, Constants.verticalSpacing)
                 ForEach(originAddresses) { address in
                     addressView(address)
                         .onTapGesture {
@@ -28,48 +28,57 @@ struct WooShippingOriginAddressListView: View {
                 }
             }
         }
+        .padding()
     }
 
     @ViewBuilder
     private func addressView(_ address: WooShippingOriginAddress) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            AdaptiveStack(horizontalAlignment: .leading) {
-                Text(address.name)
-                    .bold()
-                if address.isDefault {
-                    Text(Localization.defaultAddress)
+        HStack(alignment: .firstTextBaseline) {
+            VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                AdaptiveStack(horizontalAlignment: .leading) {
+                    Text(address.name)
                         .bold()
+                    if address.isDefault {
+                        Text(Localization.defaultAddress)
+                            .bold()
+                    }
                 }
-                Spacer()
-                PencilEditButton {
-                    // TODO: Edit origin address
-                }
-                .buttonStyle(TextButtonStyle())
+                Text(address.address)
             }
-            Text(address.address)
+            Spacer()
+            PencilEditButton {
+                // TODO: Edit origin address
+            }
+            .buttonStyle(TextButtonStyle())
         }
-        .fixedSize(horizontal: false, vertical: true)
         .padding()
         .if(address.id == selectedAddressID) {
             $0.background(Color(.wooCommercePurple(.shade0)), ignoresSafeAreaEdges: .vertical)
         }
-        .roundedBorder(cornerRadius: 8,
+        .roundedBorder(cornerRadius: Constants.cornerRadius,
                        lineColor: Color(address.id == selectedAddressID ? .wooCommercePurple(.shade60) : .separator),
-                       lineWidth: 2)
+                       lineWidth: address.id == selectedAddressID ? 2 : 0.5)
+    }
+
+    struct WooShippingOriginAddress: Identifiable, Hashable {
+        let id: String
+
+        /// Merchant or company name
+        let name: String
+
+        /// Full address
+        let address: String
+
+        /// If the address is the default one
+        let isDefault: Bool
     }
 }
 
-struct WooShippingOriginAddress: Identifiable, Hashable {
-    let id: String
-
-    /// Merchant or company name
-    let name: String
-
-    /// Full address
-    let address: String
-
-    /// If the address is the default one
-    let isDefault: Bool
+private extension WooShippingOriginAddressListView {
+    enum Constants {
+        static let verticalSpacing: CGFloat = 8
+        static let cornerRadius: CGFloat = 8
+    }
 }
 
 private extension WooShippingOriginAddressListView {
@@ -94,5 +103,21 @@ private extension WooShippingOriginAddressListView {
                                                              address: "15 ALGONKIN ST, TICONDEROGA, NY 12883-1487, US",
                                                              isDefault: false)],
                                      selectedAddressID: "address_1")
+}
 
+#Preview("Bottom sheet presentation") {
+    Text("Background view")
+        .sheet(isPresented: .constant(true)) {
+            WooShippingOriginAddressListView(originAddresses: [.init(id: "address_1",
+                                                                     name: "HEADQUARTERS",
+                                                                     address: "417 MONTGOMERY ST, SAN FRANCISCO, CA 94104-1129, US",
+                                                                     isDefault: true),
+                                                               .init(id: "address_2",
+                                                                     name: "WAREHOUSE",
+                                                                     address: "15 ALGONKIN ST, TICONDEROGA, NY 12883-1487, US",
+                                                                     isDefault: false)],
+                                             selectedAddressID: "address_1")
+            .presentationDetents([.medium])
+            .presentationDragIndicator(.visible)
+        }
 }

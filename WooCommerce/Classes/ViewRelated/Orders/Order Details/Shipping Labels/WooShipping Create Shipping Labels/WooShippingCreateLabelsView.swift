@@ -51,11 +51,12 @@ struct WooShippingCreateLabelsView: View {
                     } else if let package = viewModel.selectedPackage,
                               let shippingService = viewModel.shippingService {
                         WooShippingSelectedPackageView(package: package,
-                                                       totalWeight: $viewModel.shipmentWeight)
+                                                       totalWeight: $viewModel.shipmentWeight,
+                                                       updateSelectedPackage: viewModel.selectPackage)
                         WooShippingServiceView(viewModel: shippingService)
                             .padding(.horizontal, -16)
                     } else {
-                        WooShippingPackageAndRatePlaceholder(onSelectPackage: viewModel.selectPackage, viewModel: viewModel)
+                        WooShippingPackageAndRatePlaceholder(onSelectPackage: viewModel.selectPackage)
                     }
                 }
                 .padding(16)
@@ -64,25 +65,39 @@ struct WooShippingCreateLabelsView: View {
                 ExpandableBottomSheet(onChangeOfExpansion: { isExpanded in
                     isShipmentDetailsExpanded = isExpanded
                 }) {
-                    if isShipmentDetailsExpanded && !viewModel.canViewLabel {
-                        CollapsibleHStack(spacing: Layout.bottomSheetSpacing) {
-                            Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
-                                .font(.subheadline)
-                                .tint(Color(.primary))
-                            purchaseButton
-                        }
-                        .padding(.horizontal, Layout.bottomSheetPadding)
-                    } else {
-                        VStack {
+                    VStack {
+                        if !isShipmentDetailsExpanded {
                             Text(Localization.BottomSheet.shipmentDetails)
                                 .foregroundStyle(Color(.primary))
                                 .bold()
-                            if viewModel.selectedPackage != nil && !viewModel.canViewLabel {
-                                purchaseButton
+                        }
+                        if !viewModel.canViewLabel {
+                            if isiPhonePortrait {
+                                VStack(spacing: Layout.bottomSheetSpacing) {
+                                    if isShipmentDetailsExpanded {
+                                        Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
+                                            .font(.subheadline)
+                                            .tint(Color(.primary))
+                                    }
+                                    if isShipmentDetailsExpanded || viewModel.selectedPackage != nil {
+                                        purchaseButton
+                                    }
+                                }
+                            }
+                            else {
+                                HStack(spacing: Layout.bottomSheetSpacing) {
+                                    if viewModel.selectedPackage != nil || isShipmentDetailsExpanded {
+                                        Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
+                                            .font(.subheadline)
+                                            .tint(Color(.primary))
+                                            .fixedSize(horizontal: false, vertical: true)
+                                        purchaseButton
+                                    }
+                                }
                             }
                         }
-                        .padding(.horizontal, Layout.bottomSheetPadding)
                     }
+                    .padding(.horizontal, Layout.bottomSheetPadding)
                 } expandableContent: {
                     VStack(alignment: .leading, spacing: Layout.bottomSheetSpacing) {
                         if isiPhonePortrait {
@@ -296,8 +311,8 @@ private extension WooShippingCreateLabelsView {
             static let total = NSLocalizedString("wooShipping.createLabels.bottomSheet.total",
                                                         value: "Total",
                                                         comment: "Label for row showing the total for shipment costs on the shipping label creation screen")
-            static let markComplete = NSLocalizedString("wooShipping.createLabels.bottomSheet.markComplete",
-                                                        value: "Mark this order complete and notify the customer",
+            static let markComplete = NSLocalizedString("wooShipping.createLabels.bottomSheet.afterPurchaseMarkComplete",
+                                                        value: "After purchasing a label, mark this order as complete and notify the customer",
                                                         comment: "Label for the toggle to mark the order as complete on the shipping label creation screen")
             static let paperSize = NSLocalizedString("wooShipping.createLabels.bottomSheet.paperSize",
                                                      value: "Choose label paper size",

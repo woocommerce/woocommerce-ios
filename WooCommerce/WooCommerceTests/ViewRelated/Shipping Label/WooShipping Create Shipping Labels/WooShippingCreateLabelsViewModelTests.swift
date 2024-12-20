@@ -82,6 +82,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             switch action {
             case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, completion):
                 completion(.success(ShippingLabel.fake()))
+            case .loadPackages:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -111,6 +113,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             switch action {
             case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, completion):
                 completion(.success(ShippingLabel.fake()))
+            case .loadPackages:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -202,6 +206,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             switch action {
             case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, completion):
                 completion(.success(expectedShippingLabel))
+            case .loadPackages:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }

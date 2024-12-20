@@ -204,7 +204,9 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     /// - productTypes: A list of product types to be included in the results.
     /// - pageNumber: Number of page that should be retrieved.
     ///
-    public func loadProductsForPointOfSale(for siteID: Int64, productTypes: [ProductType] = [.simple], pageNumber: Int = 1) async throws -> [Product] {
+    public func loadProductsForPointOfSale(for siteID: Int64,
+                                           productTypes: [ProductType] = [.simple],
+                                           pageNumber: Int = 1) async throws -> PagedItems<Product> {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: POSConstants.productsPerPage,
@@ -222,7 +224,16 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
         let mapper = ProductListMapper(siteID: siteID)
-        return try await enqueue(request, mapper: mapper)
+
+        let (products, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+
+        // Extracts the total number of pages from the response headers.
+        // Response header names are case insensitive.
+        let totalPages = responseHeaders?.first(where: { $0.key.lowercased() == Remote.PaginationHeaderKey.totalPagesCount.lowercased() })
+            .flatMap { Int($0.value) }
+        let hasMorePages = totalPages.map { pageNumber < $0 } ?? true
+
+        return .init(items: products, hasMorePages: hasMorePages)
     }
 
     /// Retrieves a specific list of `Product`s by `productID`.

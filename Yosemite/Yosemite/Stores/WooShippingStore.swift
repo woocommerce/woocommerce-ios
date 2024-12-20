@@ -89,7 +89,16 @@ private extension WooShippingStore {
     func deletePackage(siteID: Int64,
                        packageID: String,
                        completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void) {
-        remote.deletePackage(siteID: siteID, packageID: packageID, completion: completion)
+        remote.deletePackage(siteID: siteID, packageID: packageID) { [weak self] result in
+            switch result {
+            case .success(let packages):
+                self?.upsertCreatePackagesResponseInBackground(readOnlyPackages: packages, siteID: siteID, onCompletion: {
+                    completion(.success(packages))
+                })
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 
     func loadLabelRates(siteID: Int64,

@@ -1,6 +1,8 @@
 import WooFoundation
+import Codegen
+import Networking
 
-public struct POSSimpleProduct: POSOrderableItem, OrderSyncProductTypeProtocol, Equatable {
+public struct POSSimpleProduct: POSOrderableItem, OrderSyncProductTypeProtocol {
     // POSOrderableItem
     public let id: UUID
     public let name: String
@@ -13,7 +15,14 @@ public struct POSSimpleProduct: POSOrderableItem, OrderSyncProductTypeProtocol, 
     public let productType: ProductType = .simple
     public let bundledItems: [ProductBundleItem] = []
 
-    public init(id: UUID, name: String, formattedPrice: String, productImageSource: String? = nil, productID: Int64, price: String) {
+    public init(id: UUID,
+                name: String,
+                formattedPrice: String,
+                productImageSource: String? = nil,
+                productID: Int64,
+                price: String,
+                productType: ProductType = .simple,
+                bundledItems: [ProductBundleItem] = []) {
         self.id = id
         self.name = name
         self.formattedPrice = formattedPrice
@@ -23,7 +32,7 @@ public struct POSSimpleProduct: POSOrderableItem, OrderSyncProductTypeProtocol, 
     }
 }
 
-extension POSSimpleProduct: Hashable {
+extension POSSimpleProduct {
     public func toOrderSyncProductInput(quantity: Decimal) -> OrderSyncProductInput {
         OrderSyncProductInput(product: .product(self), quantity: quantity)
     }
@@ -36,3 +45,5 @@ extension POSSimpleProduct: Hashable {
         return productID == orderItem.productID
     }
 }
+
+extension POSSimpleProduct: GeneratedFakeable, GeneratedCopiable, Hashable, Equatable {}

@@ -24,6 +24,8 @@ struct TotalsView: View {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
 
+    @State private var shouldShowCollectCashPayment: Bool = false
+
     var body: some View {
         HStack {
             switch posModel.orderState {
@@ -57,7 +59,7 @@ struct TotalsView: View {
                                 .layoutPriority(2)
                         }
                         Button(action: {
-                            posModel.collectCashPayment()
+                            shouldShowCollectCashPayment = true
                         }, label: {
                             Text(Localization.cashPaymentButtonTitle)
                                 .font(POSFontStyle.posBodyEmphasized)
@@ -86,6 +88,9 @@ struct TotalsView: View {
         }
         .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
         .geometryGroupIfSupported()
+        .fullScreenCover(isPresented: $shouldShowCollectCashPayment) {
+            PointOfSaleCollectCashView(isVisible: $shouldShowCollectCashPayment)
+        }
     }
 
     private var backgroundColor: Color {

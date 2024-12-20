@@ -7,6 +7,8 @@ struct PointOfSaleCollectCashView: View {
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
 
+    @Binding var isVisible: Bool
+
     private var orderTotal: String? {
         if case .loaded(let totals) = posModel.orderState {
             return totals.orderTotal
@@ -18,7 +20,7 @@ struct PointOfSaleCollectCashView: View {
         VStack(alignment: .center, spacing: 20) {
             HStack {
                 Button(action: {
-                    posModel.cancelCashPayment()
+                    isVisible = false
                 }, label: {
                     VStack {
                         HStack {
@@ -124,6 +126,6 @@ private extension PointOfSaleCollectCashView {
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
-    PointOfSaleCollectCashView()
+    PointOfSaleCollectCashView(isVisible: .constant(true))
         .environmentObject(posModel)
 }

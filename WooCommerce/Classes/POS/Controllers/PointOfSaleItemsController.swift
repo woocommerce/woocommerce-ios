@@ -12,14 +12,10 @@ protocol PointOfSaleItemsControllerProtocol {
 }
 
 class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
-    private(set) var itemsViewStatePublisher: any Publisher<ItemsViewState, Never>
-    private var itemsViewStateSubject: PassthroughSubject<ItemsViewState, Never> = .init()
-    private var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
-                                                                itemsStack: ItemsStackState(root: .loading([]))) {
-        didSet {
-            itemsViewStateSubject.send(itemsViewState)
-        }
-    }
+    let itemsViewStatePublisher: any Publisher<ItemsViewState, Never>
+    private let itemsViewStateSubject: CurrentValueSubject<ItemsViewState, Never> =
+        .init(ItemsViewState(containerState: .loading,
+                             itemsStack: ItemsStackState(root: .loading([]))) )
     private let paginationTracker: AsyncPaginationTracker
     private let itemProvider: PointOfSaleItemServiceProtocol
 
@@ -31,15 +27,15 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
 
     @MainActor
     func loadInitialItems() async {
-        itemsViewState = ItemsViewState(containerState: .loading, itemsStack: ItemsStackState(root: .loading([])))
+        itemsViewStateSubject.send(ItemsViewState(containerState: .loading, itemsStack: ItemsStackState(root: .loading([]))))
         do {
             try await paginationTracker.syncFirstPage { [weak self] pageNumber in
                 guard let self else { return true }
                 return try await fetchItems(pageNumber: pageNumber)
             }
         } catch {
-            itemsViewState = ItemsViewState(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
-                                            itemsStack: ItemsStackState(root: .loaded([])))
+            itemsViewStateSubject.send(ItemsViewState(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
+                                                      itemsStack: ItemsStackState(root: .loaded([]))))
         }
     }
 
@@ -48,8 +44,8 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
         guard paginationTracker.hasNextPage else {
             return
         }
-        let currentItems = itemsViewState.itemsStack.root.items
-        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loading(currentItems)))
+        let currentItems = itemsViewStateSubject.value.itemsStack.root.items
+        itemsViewStateSubject.send(ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loading(currentItems))))
         do {
             _ = try await paginationTracker.ensureNextPageIsSynced { [weak self] pageNumber in
                 guard let self else { return true }
@@ -57,8 +53,8 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
             }
         } catch {
             // TODO: 14694 - Handle error from loading the next page, like showing an error UI at the end or as an overlay.
-            itemsViewState = ItemsViewState(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
-                                            itemsStack: ItemsStackState(root: .loaded(currentItems)))
+            itemsViewStateSubject.send(ItemsViewState(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
+                                                      itemsStack: ItemsStackState(root: .loaded(currentItems))))
         }
     }
 
@@ -71,8 +67,8 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
             }
         } catch {
             // TODO: 14694 - Handle error from pull-to-refresh, like showing an error UI at the beginning or as an overlay.
-            itemsViewState = ItemsViewState(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
-                                            itemsStack: ItemsStackState(root: .loaded([])))
+            itemsViewStateSubject.send(ItemsViewState(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
+                                                      itemsStack: ItemsStackState(root: .loaded([]))))
         }
     }
 
@@ -84,18 +80,18 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     private func fetchItems(pageNumber: Int, appendToExistingItems: Bool = true) async throws -> Bool {
         let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
         let newItems = pagedItems.items
-        var allItems = appendToExistingItems ? itemsViewState.itemsStack.root.items : []
+        var allItems = appendToExistingItems ? itemsViewStateSubject.value.itemsStack.root.items : []
         let uniqueNewItems = newItems.filter { newItem in
             // Note that this uniquing won't currently work, as POSItem has a UUID.
             !allItems.contains(newItem)
         }
         allItems.append(contentsOf: uniqueNewItems)
         if allItems.isEmpty {
-            itemsViewState = ItemsViewState(containerState: .empty,
-                                            itemsStack: ItemsStackState(root: .loaded([])))
+            itemsViewStateSubject.send(ItemsViewState(containerState: .empty,
+                                                      itemsStack: ItemsStackState(root: .loaded([]))))
         } else {
-            itemsViewState = ItemsViewState(containerState: .content,
-                                            itemsStack: ItemsStackState(root: .loaded(allItems)))
+            itemsViewStateSubject.send(ItemsViewState(containerState: .content,
+                                                      itemsStack: ItemsStackState(root: .loaded(allItems))))
         }
         return pagedItems.hasMorePages
     }

@@ -930,23 +930,6 @@ private extension OrderDetailsViewModel {
     }
 }
 
-extension OrderDetailsViewModel {
-    /// Marks the order as pending if the WooCommerce version is eligible to send a receipt after payment.
-    /// Orders can be set to failed when payment fails.
-    /// We need to set it back to pending order when collecting payment to trigger all the related notifications when payment turns to failed again.
-    ///
-    func markOrderPaymentPending() {
-        guard order.status != .pending, featureFlagService.isFeatureFlagEnabled(.sendReceiptAfterPayment) else {
-            return
-        }
-
-        let action = OrderAction.updateOrderStatus(siteID: order.siteID,
-                                                   orderID: order.orderID,
-                                                   status: .pending, onCompletion: { _ in })
-        stores.dispatch(action)
-    }
-}
-
 // MARK: - Notices
 extension OrderDetailsViewModel {
     private func displayReceiptRetrievalErrorNotice(for order: Order,

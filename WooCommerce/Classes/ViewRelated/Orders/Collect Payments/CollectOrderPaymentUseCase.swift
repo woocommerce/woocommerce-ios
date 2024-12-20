@@ -292,6 +292,7 @@ private extension CollectOrderPaymentUseCase {
                         paymentGatewayAccount: PaymentGatewayAccount,
                         channel: PaymentChannel,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
+        markFailedOrderPending()
         checkOrderIsStillEligibleForPayment(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -833,6 +834,22 @@ private extension CollectOrderPaymentUseCase {
         default:
             return
         }
+    }
+}
+
+private extension CollectOrderPaymentUseCase {
+    /// Marks failed order as pending.
+    /// Orders are set to failed when payment fails from WooPayments 8.6.
+    /// We need to set it back to pending order when collecting payment to trigger all the related notifications when payment turns to failed again.
+    func markFailedOrderPending() {
+        guard order.status == .failed else {
+            return
+        }
+
+        let action = OrderAction.updateOrderStatus(siteID: order.siteID,
+                                                   orderID: order.orderID,
+                                                   status: .pending, onCompletion: { _ in })
+        stores.dispatch(action)
     }
 }
 

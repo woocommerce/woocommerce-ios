@@ -361,6 +361,75 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         // Then
         XCTAssertEqual(mockPaymentOrchestrator.spyChannel, .pos)
     }
+
+    func test_collectPayment_when_order_failed_then_marked_as_pending() async throws {
+        // Given we have a failed order
+        let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, status: .failed, total: "1.5")
+        setUpUseCase(order: order)
+        let interacPaymentMethod = PaymentMethod.interacPresent(details: .fake())
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: interacPaymentMethod)])
+        mockSuccessfulCardPresentPaymentActions(intent: intent,
+                                                capturedPaymentData: CardPresentCapturedPaymentData(paymentMethod: interacPaymentMethod,
+                                                                                                    receiptParameters: .fake()))
+
+        var orderStatus: OrderStatusEnum?
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrderStatus(_, _, status, _):
+                orderStatus = status
+            case .retrieveOrderRemotely(_, _, let completion):
+                completion(.success(order))
+            default:
+                break
+            }
+        }
+
+        // When we make a successful payment
+        waitFor { promise in
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+                promise(())
+            }, onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then the order status should be updated to pending
+        XCTAssertEqual(orderStatus, .pending)
+    }
+
+    func test_collectPayment_when_order_pending_then_not_marked_as_pending() async throws {
+        // Given we have a pending order
+        let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, status: .pending, total: "1.5")
+
+        setUpUseCase(order: order)
+        let interacPaymentMethod = PaymentMethod.interacPresent(details: .fake())
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: interacPaymentMethod)])
+        mockSuccessfulCardPresentPaymentActions(intent: intent,
+                                                capturedPaymentData: CardPresentCapturedPaymentData(paymentMethod: interacPaymentMethod,
+                                                                                                    receiptParameters: .fake()))
+
+        var orderStatus: OrderStatusEnum?
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrderStatus(_, _, status, _):
+                orderStatus = status
+            case .retrieveOrderRemotely(_, _, let completion):
+                completion(.success(order))
+            default:
+                break
+            }
+        }
+
+        // When we make a successful payment
+        waitFor { promise in
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+                promise(())
+            }, onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then the order status should not be updated
+        XCTAssertEqual(orderStatus, nil)
+    }
 }
 
 private extension CollectOrderPaymentUseCaseTests {

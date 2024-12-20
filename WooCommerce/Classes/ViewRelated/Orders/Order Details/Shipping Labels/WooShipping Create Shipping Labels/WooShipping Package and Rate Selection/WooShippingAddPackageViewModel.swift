@@ -326,7 +326,7 @@ extension WooShippingCarrierPredefinedOptions {
         let packageGroups = predefinedOptions.compactMap { predefinedOption in
             let packages = predefinedOption.predefinedPackages.map { package in
                 return package.toPackageData(groupTitle: predefinedOption.title, sourceID: predefinedOption.providerID)
-            }
+            }.sorted { $0.id < $1.id }
             let group = WooPackageGroup(name: predefinedOption.title, packages: packages)
             return group
         }

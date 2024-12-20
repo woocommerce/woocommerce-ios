@@ -55,6 +55,11 @@ final class MockAccountRemote {
     func whenCreatingAccount(thenReturn result: Result<CreateAccountResult, CreateAccountError>) {
         createAccountResult = result
     }
+
+    /// Returns  the value when `updateNotificationSettings` is called.
+    func whenUpdatingNotificationSettings(thenReturn result: Result<Void, Error>) {
+        updateNotificationSettingsResult = result
+    }
 }
 
 extension MockAccountRemote {

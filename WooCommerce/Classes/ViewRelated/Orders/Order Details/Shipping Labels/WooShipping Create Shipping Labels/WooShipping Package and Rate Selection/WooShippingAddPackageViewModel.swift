@@ -132,15 +132,14 @@ final class WooShippingAddPackageViewModel: ObservableObject {
                 case .success(let packagesResult):
                     continuation.resume(returning: .success(packagesResult))
                 case .failure(let error):
-                    DDLogError("⛔️ Error loading packages for Woo Shipping labels: \(error)")
                     continuation.resume(returning: .failure(WooShippingLoadPackagesError.loadingFailed(error: error)))
                 }
             }
             stores.dispatch(loadPackagesAction)
         }
 
-        if case let .success(packagesResult) = result {
-            self.transformLoadedPackages(packagesResult)
+        if case .failure(let error) = result {
+            DDLogError("⛔️ Error loading packages for Woo Shipping labels: \(error)")
         }
 
         isLoadingPackages = false

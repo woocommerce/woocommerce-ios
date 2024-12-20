@@ -77,11 +77,9 @@ public extension UIColor {
 
 // MARK: - Text Colors.
 public extension UIColor {
-    /// Text link. Purple-50
+    /// Text link. resolves to accent, WooCommercePurple-40 (Light mode) and WooCommercePurple-30 (Dark mode)
     ///
-    static var textLink: UIColor {
-        return .accent
-    }
+    static var textLink: UIColor = .accent
 
     /// Text.
     ///

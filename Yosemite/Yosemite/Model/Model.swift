@@ -63,6 +63,7 @@ public typealias Note = Networking.Note
 public typealias NoteBlock = Networking.NoteBlock
 public typealias NoteMedia = Networking.NoteMedia
 public typealias NoteRange = Networking.NoteRange
+public typealias NotificationSettings = Networking.NotificationSettings
 public typealias Order = Networking.Order
 public typealias OrderItem = Networking.OrderItem
 public typealias OrderItemAttribute = Networking.OrderItemAttribute

@@ -128,12 +128,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
         let result: Result<WooShippingPackagesResponse, WooShippingLoadPackagesError> = await withCheckedContinuation { continuation in
             let loadPackagesAction = WooShippingAction.loadPackages(siteID: siteID) { result in
-                switch result {
-                case .success(let packagesResult):
-                    continuation.resume(returning: .success(packagesResult))
-                case .failure(let error):
-                    continuation.resume(returning: .failure(WooShippingLoadPackagesError.loadingFailed(error: error)))
-                }
+                continuation.resume(returning: result)
             }
             stores.dispatch(loadPackagesAction)
         }
@@ -338,9 +333,4 @@ extension WooShippingCarrierPredefinedOptions {
         let carrierPackages = WooShippingCarrierPackages(carrier: shippingCarrier, packageGroups: packageGroups)
         return carrierPackages
     }
-}
-
-public enum WooShippingLoadPackagesError: Error {
-    case loadingInProgress
-    case loadingFailed(error: Error)
 }

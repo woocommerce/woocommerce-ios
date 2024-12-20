@@ -413,6 +413,22 @@ final class WooShippingRemoteTests: XCTestCase {
         XCTAssertEqual(addresses.first?.defaultAddress, true)
         XCTAssertEqual(addresses.first?.isVerified, true)
     }
+
+    func test_loadOriginAddresses_returns_error_on_failure() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "origin-addresses", filename: "generic_error")
+
+        // When
+        let result: Result<[WooShippingOriginAddress], Error> = waitFor { promise in
+            remote.loadOriginAddresses(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
 }
 
 private extension WooShippingRemoteTests {

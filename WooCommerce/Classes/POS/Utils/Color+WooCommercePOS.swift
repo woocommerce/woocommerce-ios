@@ -90,18 +90,13 @@ extension Color {
     // MARK: - Buttons
 
     static var posPrimaryButtonBackground: Color {
-        return Color(
-            UIColor(
-                light: .withColorStudio(.wooCommercePurple, shade: .shade50),
-                dark: .withColorStudio(.wooCommercePurple, shade: .shade30)
-            )
-        )
+        return Color(.withColorStudio(.wooCommercePurple, shade: .shade40))
     }
 
     static var posTextButtonForeground: Color {
         return Color(
             UIColor(
-                light: .withColorStudio(.wooCommercePurple, shade: .shade50),
+                light: .withColorStudio(.wooCommercePurple, shade: .shade40),
                 dark: .withColorStudio(.wooCommercePurple, shade: .shade30)
             )
         )

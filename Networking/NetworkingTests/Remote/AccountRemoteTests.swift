@@ -274,7 +274,7 @@ final class AccountRemoteTests: XCTestCase {
     }
 
     // MARK: - Notification settings
-    
+
     func test_updateNotificationSettings_succeeds_on_request_success() async {
         // Given
         let remote = AccountRemote(network: network)
@@ -283,7 +283,13 @@ final class AccountRemoteTests: XCTestCase {
         // When
         var errorCaught: Error?
         do {
-            let notificationSettings = NotificationSettings.createSettings(siteID: 194373765, deviceID: 58089781, notificationsEnabled: false)
+            let notificationSettings = NotificationSettings(blogs: [
+                NotificationSettings.Blog(blogID: 194373765, devices: [
+                    NotificationSettings.Device(deviceID: 58089781,
+                           newComment: false,
+                           storeOrder: false)
+                ])
+            ])
             try await remote.updateNotificationSettings(with: notificationSettings)
         } catch {
             errorCaught = error
@@ -302,7 +308,7 @@ final class AccountRemoteTests: XCTestCase {
         // When
         var errorCaught: Error?
         do {
-            let notificationSettings = NotificationSettings.createSettings(siteID: 194373765, deviceID: 58089781, notificationsEnabled: false)
+            let notificationSettings = NotificationSettings.createSettings(deviceID: 58089781, enabledSites: [194373765], disabledSites: [])
             try await remote.updateNotificationSettings(with: notificationSettings)
         } catch {
             errorCaught = error

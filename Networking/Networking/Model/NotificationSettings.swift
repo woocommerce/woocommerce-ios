@@ -7,16 +7,26 @@ public struct NotificationSettings: Equatable, Encodable {
     /// Settings for different blogs connected to the user.
     public let blogs: [Blog]
 
-    /// Helper method to create notification settings for a given site ID and device ID.
+    /// Helper method to create notification settings for a given device ID.
     ///
-    public static func createSettings(siteID: Int64, deviceID: Int64, notificationsEnabled: Bool) -> NotificationSettings {
-        NotificationSettings(blogs: [
+    public static func createSettings(deviceID: Int64, enabledSites: [Int64], disabledSites: [Int64]) -> NotificationSettings {
+        let enabledSiteSettings = enabledSites.map { siteID in
             Blog(blogID: siteID, devices: [
                 Device(deviceID: deviceID,
-                       newComment: notificationsEnabled,
-                       storeOrder: notificationsEnabled)
+                       newComment: true,
+                       storeOrder: true)
             ])
-        ])
+        }
+
+        let disabledSiteSettings = disabledSites.map { siteID in
+            Blog(blogID: siteID, devices: [
+                Device(deviceID: deviceID,
+                       newComment: false,
+                       storeOrder: false)
+            ])
+        }
+
+        return NotificationSettings(blogs: enabledSiteSettings + disabledSiteSettings)
     }
 
 }

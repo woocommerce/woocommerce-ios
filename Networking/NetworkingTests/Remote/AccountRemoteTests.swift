@@ -281,13 +281,7 @@ final class AccountRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "me/notifications/settings", filename: "notification-settings")
 
         // When
-        let notificationSettings = NotificationSettings(blogs: [
-            NotificationSettings.Blog(blogID: 194373765, devices: [
-                NotificationSettings.Device(deviceID: 58089781,
-                       newComment: false,
-                       storeOrder: false)
-            ])
-        ])
+        let notificationSettings = NotificationSettings.createSettings(deviceID: 58089781, enabledSites: [], disabledSites: [194373765])
         _ = try await remote.updateNotificationSettings(with: notificationSettings)
 
         // Then
@@ -311,13 +305,7 @@ final class AccountRemoteTests: XCTestCase {
         // When
         var errorCaught: Error?
         do {
-            let notificationSettings = NotificationSettings(blogs: [
-                NotificationSettings.Blog(blogID: 194373765, devices: [
-                    NotificationSettings.Device(deviceID: 58089781,
-                           newComment: false,
-                           storeOrder: false)
-                ])
-            ])
+            let notificationSettings = NotificationSettings.createSettings(deviceID: 58089781, enabledSites: [194373765], disabledSites: [])
             try await remote.updateNotificationSettings(with: notificationSettings)
         } catch {
             errorCaught = error

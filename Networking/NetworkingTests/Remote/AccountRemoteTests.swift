@@ -275,6 +275,34 @@ final class AccountRemoteTests: XCTestCase {
 
     // MARK: - Notification settings
 
+    func test_updateNotificationSettings_sends_correct_parameters() async throws {
+        // Given
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "me/notifications/settings", filename: "notification-settings")
+
+        // When
+        let notificationSettings = NotificationSettings(blogs: [
+            NotificationSettings.Blog(blogID: 194373765, devices: [
+                NotificationSettings.Device(deviceID: 58089781,
+                       newComment: false,
+                       storeOrder: false)
+            ])
+        ])
+        _ = try await remote.updateNotificationSettings(with: notificationSettings)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
+
+        let actualParam = try XCTUnwrap(request.parameters?["blogs"] as? [[String: Any]])
+        XCTAssertEqual(actualParam.count, 1)
+        XCTAssertEqual(actualParam.first?["blog_id"] as? Int64, 194373765)
+
+        let deviceSettings = try XCTUnwrap(actualParam.first?["devices"] as? [[String: Any]])
+        XCTAssertEqual(deviceSettings.first?["device_id"] as? Int64, 58089781)
+        XCTAssertEqual(deviceSettings.first?["new_comment"] as? Bool, false)
+        XCTAssertEqual(deviceSettings.first?["store_order"] as? Bool, false)
+    }
+
     func test_updateNotificationSettings_succeeds_on_request_success() async {
         // Given
         let remote = AccountRemote(network: network)

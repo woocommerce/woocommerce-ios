@@ -1218,8 +1218,8 @@ extension UIImage {
         return UIImage(named: "woo-waiting-customers")!
     }
 
-    static var puzzleExtensionsImage: UIImage {
-        return UIImage(named: "woo-puzzle-extensions")!
+    static var puzzleImage: UIImage {
+        return UIImage(named: "puzzle")!
     }
 
     /// Install WCShip banner Image

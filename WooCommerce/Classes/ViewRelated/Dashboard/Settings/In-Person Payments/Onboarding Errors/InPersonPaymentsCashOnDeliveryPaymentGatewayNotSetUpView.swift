@@ -13,7 +13,7 @@ struct InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView: View {
                 message: Localization.message,
                 secondaryMessage: Localization.secondaryMessage,
                 image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo(
-                    image: .puzzleExtensionsImage,
+                    image: .puzzleImage,
                     height: Constants.imageHeight
                 ),
                 supportLink: true

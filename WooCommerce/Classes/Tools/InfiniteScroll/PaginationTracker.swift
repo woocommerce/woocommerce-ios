@@ -61,18 +61,16 @@ final class PaginationTracker {
     ///     1.  Proceed only if a given element is the last one in it's page
     ///     2.  Verify if the nextpage isn't currently being synced
     ///     3.  Proceed syncing the next page, if possible / needed
-    func ensureNextPageIsSynced(onCompletion: (() -> Void)? = nil) {
+    func ensureNextPageIsSynced() {
         guard hasNextPage else {
-            onCompletion?()
             return
         }
 
         let nextPage = (highestPageSynced ?? pageFirstIndex - 1) + 1
         guard !isPageBeingSynced(pageNumber: nextPage) else {
-            onCompletion?()
             return
         }
-        sync(pageNumber: nextPage, onCompletion: onCompletion)
+        sync(pageNumber: nextPage)
     }
 
     /// Resets internal states and resyncs the first page of results.

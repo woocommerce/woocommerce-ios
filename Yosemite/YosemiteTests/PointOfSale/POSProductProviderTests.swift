@@ -40,27 +40,25 @@ final class PointOfSaleProductServiceTests: XCTestCase {
         }
     }
 
-    func test_PointOfSaleItemServiceProtocol_when_fails_request_with_pageOutOfRange_then_throws_error() async throws {
-        let expectedError = PointOfSaleProductServiceError.pageOutOfRange
-        network.simulateError(requestUrlSuffix: "products", error: expectedError)
+    func test_PointOfSaleItemServiceProtocol_when_empty_data_for_non_first_page_then_returns_empty_items_and_no_next_page() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
 
         // When
-        do {
-            _ = try await itemProvider.providePointOfSaleItems()
-            XCTFail("Expected an error, but got success.")
-        } catch {
-            // Then
-            XCTAssertEqual(error as? PointOfSaleProductServiceError, expectedError)
-        }
+        let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: 2)
+
+        // Then
+        XCTAssertTrue(pagedItems.items.isEmpty)
+        XCTAssertFalse(pagedItems.hasMorePages)
     }
 
     func test_PointOfSaleItemServiceProtocol_provides_no_items_when_store_has_no_products() async throws {
         // Given/When
         network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
-        let expectedItems = try await itemProvider.providePointOfSaleItems()
+        let pagedItems = try await itemProvider.providePointOfSaleItems()
 
         // Then
-        XCTAssertTrue(expectedItems.isEmpty)
+        XCTAssertTrue(pagedItems.items.isEmpty)
     }
 
     func test_PointOfSaleItemServiceProtocol_provides_items_when_store_has_eligible_products() async throws {
@@ -73,9 +71,10 @@ final class PointOfSaleProductServiceTests: XCTestCase {
 
         // When
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-type-simple")
-        let expectedItems = try await itemProvider.providePointOfSaleItems()
+        let pagedItems = try await itemProvider.providePointOfSaleItems()
 
         // Then
+        let expectedItems = pagedItems.items
         guard let item = expectedItems.first,
             case .simpleProduct(let simpleProduct) = item else {
             return XCTFail("No eligible products")
@@ -94,9 +93,10 @@ final class PointOfSaleProductServiceTests: XCTestCase {
 
         // When
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-for-eligibility-criteria")
-        let expectedItems = try await itemProvider.providePointOfSaleItems()
+        let pagedItems = try await itemProvider.providePointOfSaleItems()
 
         // Then
+        let expectedItems = pagedItems.items
         XCTAssertEqual(expectedItems.count, expectedNumberOfItems)
 
         guard case .simpleProduct(let firstEligibleSimpleProduct) = expectedItems.first,

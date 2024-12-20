@@ -3,20 +3,24 @@ import Experiments
 
 protocol ReceiptEligibilityUseCaseProtocol {
     func isEligibleForBackendReceipts(onCompletion: @escaping (Bool) -> Void)
-    func isEligibleSendingReceiptAfterPayment(onCompletion: @escaping (Bool) -> Void)
+    func isEligibleForSuccessfulPaymentEmailReceipts(onCompletion: @escaping (Bool) -> Void)
+    func isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: String, onCompletion: @escaping (Bool) -> Void)
 }
 
 final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
+    private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
 
     private var siteID: Int64 {
         stores.sessionManager.defaultStoreID ?? 0
     }
 
     init(stores: StoresManager = ServiceLocator.stores,
+         cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.stores = stores
+        self.cardPresentPaymentsOnboarding = cardPresentPaymentsOnboarding
         self.featureFlagService = featureFlagService
     }
 
@@ -44,6 +48,9 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
         stores.dispatch(action)
     }
 
+    /// Returns true if Point of Sale allows sending successful payment email receipts via the API.
+    /// WooCommerce 9.5 allows to attach a customer email after payment is made and send email receipt via the API.
+    ///
     func isEligibleForPointOfSaleReceipts(onCompletion: @escaping (Bool) -> Void) {
         guard featureFlagService.isFeatureFlagEnabled(.sendReceiptsForPointOfSale) else {
             onCompletion(false)
@@ -51,16 +58,41 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
         }
 
         Task { @MainActor in
-            async let isWooCommerceSupported = isPluginSupported(Constants.wcPluginName,
+            let isWooCommerceSupported = await isPluginSupported(Constants.wcPluginName,
                                                                  minimumVersion: Constants.PointOfSaleReceipts.wcPluginMinimumVersion)
-            let wooCommerceResult = await isWooCommerceSupported
-            onCompletion(wooCommerceResult)
+            onCompletion(isWooCommerceSupported)
         }
     }
 
-    func isEligibleSendingReceiptAfterPayment(onCompletion: @escaping (Bool) -> Void) {
+    /// Returns true if In Person Payments allows sending successful payment email receipts via the API.
+    /// WooCommerce 9.5 allows to attach a customer email after payment is made and send email receipt via the API.
+    ///
+    func isEligibleForSuccessfulPaymentEmailReceipts(onCompletion: @escaping (Bool) -> Void) {
         guard featureFlagService.isFeatureFlagEnabled(.sendReceiptAfterPayment) else {
             return onCompletion(false)
+        }
+
+        Task { @MainActor in
+            let isWooCommerceSupported = await isPluginSupported(Constants.wcPluginName,
+                                                                 minimumVersion: Constants.PointOfSaleReceipts.wcPluginMinimumVersion)
+            onCompletion(isWooCommerceSupported)
+        }
+    }
+
+    /// Returns true if In Person Payments allows sending failed payment email receipts via the API.
+    /// WooCommerce 9.5 allows to attach a customer email after payment is made and send email receipt via the API.
+    /// WooCommerc 9.5 automatically sends failure receipt after the order fails if the customer email is attached to the order.
+    /// WooPayments 8.6 aligns the app with the web and automatically sets the order as failed when the payment processing fails.
+    /// Stripe Gateway doesn't automatically set the order to failed therefore the functionality is not supported.
+    ///
+    func isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: String, onCompletion: @escaping (Bool) -> Void) {
+        guard featureFlagService.isFeatureFlagEnabled(.sendReceiptAfterPayment) else {
+            return onCompletion(false)
+        }
+
+        guard paymentGatewayID == Constants.ReceiptAfterPayment.woocommercePaymentsGatewayID else {
+            onCompletion(false)
+            return
         }
 
         Task { @MainActor in
@@ -115,6 +147,7 @@ private extension ReceiptEligibilityUseCase {
         enum ReceiptAfterPayment {
             static let wcPluginMinimumVersion = "9.5.0"
             static let wcPayPluginMinimumVersion = "8.6.0"
+            static let woocommercePaymentsGatewayID = "woocommerce-payments"
         }
 
         enum PointOfSaleReceipts {

@@ -12,6 +12,13 @@ enum WooShippingPackageSource {
             return sourceTitle
         }
     }
+
+    var sourceID: String? {
+        guard case .predefined(_, let sourceID) = self else {
+            return nil
+        }
+        return sourceID
+    }
 }
 
 protocol WooShippingPackageDataRepresentable {
@@ -81,8 +88,15 @@ extension WooShippingPackageDataRepresentable {
         return "\(length) x \(width) x \(height) \( unit)"
     }
 
-    func weightDescription(unit: String) -> String {
+    func weightDescription(unit: String) -> String? {
+        guard weight.isNotEmpty else {
+            return nil
+        }
         return "\(weight) \(unit)"
+    }
+
+    var displayName: String {
+        name.isNotEmpty ? name : source.userFriendlyDescription
     }
 }
 
@@ -115,16 +129,21 @@ struct WooSavedPackagesSelectionView: View {
             }
             else {
                 Divider()
-                List {
-                    packagesSection(for: viewModel.customSavedPackages)
-                    packagesSection(for: viewModel.predefinedSavedPackages)
-                }
-                .listStyle(.plain)
-                .refreshable {
-                    await withCheckedContinuation { continuation in
-                        viewModel.loadPackages {
-                            continuation.resume()
+                ScrollViewReader { scroll in
+                    List {
+                        packagesSection(for: viewModel.customSavedPackages)
+                        packagesSection(for: viewModel.predefinedSavedPackages)
+                    }
+                    .listStyle(.plain)
+                    .refreshable {
+                        await withCheckedContinuation { continuation in
+                            viewModel.loadPackages {
+                                continuation.resume()
+                            }
                         }
+                    }
+                    .task {
+                        scroll.scrollTo(viewModel.selectedSavedPackageId)
                     }
                 }
                 Divider()
@@ -163,6 +182,7 @@ struct WooSavedPackagesSelectionView: View {
                     viewModel.selectedSavedPackageId = viewModel.selectedSavedPackageId == package.id ? nil : package.id
                 }
             )
+            .id(package.id)
             .alignmentGuide(.listRowSeparatorLeading) { _ in
                 return 16
             }

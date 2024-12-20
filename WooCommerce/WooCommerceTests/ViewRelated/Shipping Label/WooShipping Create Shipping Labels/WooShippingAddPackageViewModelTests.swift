@@ -243,6 +243,84 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedPackageType, .saved)
         XCTAssertNotNil(viewModel.selectedSavedPackage)
     }
+
+    @MainActor
+    func test_it_keeps_order_after_reloads() async {
+        // Given
+        let siteID: Int64 = 1
+        let customPackages: [WooShippingCustomPackage] = [
+            .fake().copy(id: "Custom1"),
+            .fake().copy(id: "Custom2"),
+            .fake().copy(id: "Custom3"),
+           ]
+        let allPredefinedOptions = [sampleCarrierPredefinedOptions()]
+        let savedPredefinedPackages: [WooShippingSavedPredefinedPackage] = [
+            .init(groupTitle: "pri_flat_boxes",
+                  providerID: "usps",
+                  package: .init(id: "small_flat_box",
+                                 name: "Small Flat Rate Box",
+                                 isLetter: false,
+                                 dimensions: "",
+                                 boxWeight: "",
+                                 groupId: "pri_flat_boxes")),
+            .init(groupTitle: "pri_flat_boxes",
+                  providerID: "usps",
+                  package: .init(id: "large_flat_box",
+                                 name: "Large Flat Rate Box",
+                                 isLetter: false,
+                                 dimensions: "",
+                                 boxWeight: "",
+                                 groupId: "pri_flat_boxes")),
+            .init(groupTitle: "pri_flat_boxes",
+                  providerID: "usps",
+                  package: .init(id: "medium_flat_box_top",
+                                 name: "Medium Flat Rate Box",
+                                 isLetter: false,
+                                 dimensions: "",
+                                 boxWeight: "",
+                                 groupId: "pri_flat_boxes"))
+        ]
+        let packages = WooShippingPackagesResponse(siteID: siteID,
+                                                   customPackages: customPackages,
+                                                   savedPredefinedPackages: savedPredefinedPackages,
+                                                   allPredefinedOptions: allPredefinedOptions)
+        let storageManager = MockStorageManager()
+
+        storageManager.insertSamplePackages(readOnlyPackages: packages)
+
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        mockStores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .loadPackages(receivedSiteID, completion):
+                XCTAssertEqual(receivedSiteID, siteID)
+                completion(.success(packages))
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
+
+        let viewModel = WooShippingAddPackageViewModel(selectedPackage: nil, siteID: siteID, stores: mockStores, storage: storageManager)
+
+        // Do first load to get it sorted once
+        await viewModel.loadPackages()
+        let sortedPredefinedSavedPackages = viewModel.predefinedSavedPackages
+        let sortedCustomSavedPackages = viewModel.customSavedPackages
+
+        for _ in 0..<5 {
+            // When
+            await viewModel.loadPackages()
+            // Then
+            // check order
+            XCTAssertEqual(sortedPredefinedSavedPackages.count, viewModel.predefinedSavedPackages.count)
+            for (index, package) in sortedPredefinedSavedPackages.enumerated() {
+                XCTAssertEqual(package.id, viewModel.predefinedSavedPackages[index].id)
+            }
+            XCTAssertEqual(sortedCustomSavedPackages.count, viewModel.customSavedPackages.count)
+            for (index, package) in sortedCustomSavedPackages.enumerated() {
+                XCTAssertEqual(package.id, viewModel.customSavedPackages[index].id)
+            }
+        }
+    }
 }
 
 private extension WooShippingAddPackageViewModelTests {

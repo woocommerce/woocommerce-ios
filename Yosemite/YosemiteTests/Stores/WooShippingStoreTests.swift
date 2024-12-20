@@ -259,7 +259,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingPackagesResponse, Error> = waitFor { promise in
+        let result: Result<WooShippingPackagesResponse, WooShippingLoadPackagesError> = waitFor { promise in
             let action = WooShippingAction.loadPackages(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -310,7 +310,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingPackagesResponse, Error> = waitFor { promise in
+        let result: Result<WooShippingPackagesResponse, WooShippingLoadPackagesError> = waitFor { promise in
             let action = WooShippingAction.loadPackages(siteID: self.sampleSiteID) { result in
                 promise(result)
             }

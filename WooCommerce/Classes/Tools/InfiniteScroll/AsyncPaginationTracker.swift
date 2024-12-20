@@ -70,7 +70,7 @@ final class AsyncPaginationTracker {
     ///
     func resync(syncFunction: @escaping SyncFunction) async throws {
         resetInternalState()
-        try await syncFirstPage( syncFunction: syncFunction)
+        try await syncFirstPage(syncFunction: syncFunction)
     }
 
     /// Syncs the first page of results.

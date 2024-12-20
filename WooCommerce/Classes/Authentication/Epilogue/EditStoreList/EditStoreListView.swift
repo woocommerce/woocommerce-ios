@@ -77,10 +77,17 @@ struct EditStoreListView: View {
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.saveButton) {
-                        viewModel.didSaveChanges()
+                    if viewModel.isUpdatingNotificationSettings {
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                    } else {
+                        Button(Localization.saveButton) {
+                            Task {
+                                await viewModel.saveChanges()
+                            }
+                        }
+                        .disabled(viewModel.hasChanges == false)
                     }
-                    .disabled(viewModel.hasChanges == false)
                 }
             }
         }

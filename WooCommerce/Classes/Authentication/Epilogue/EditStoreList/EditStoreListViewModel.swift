@@ -15,6 +15,8 @@ final class EditStoreListViewModel: ObservableObject {
 
     @Published private(set) var isUpdatingNotificationSettings = false
 
+    @Published private(set) var notificationSettingsError: Error?
+
     var hasChanges: Bool {
         selectedSites != Set(originalSelectedSites)
     }
@@ -46,7 +48,7 @@ final class EditStoreListViewModel: ObservableObject {
     }
 
     @MainActor
-    func didSaveChanges() async {
+    func saveChanges() async {
         let hiddenSites = Set(availableSites).subtracting(selectedSites)
         let hiddenSiteIDs = Array(hiddenSites).map { $0.siteID }
         let displayedSiteIDs = Array(selectedSites).map { $0.siteID }
@@ -57,7 +59,7 @@ final class EditStoreListViewModel: ObservableObject {
             userDefaults.saveHiddenStoreIDs(hiddenSiteIDs)
             onCompletion()
         } catch {
-            // TODO: handle error
+            notificationSettingsError = error
         }
         isUpdatingNotificationSettings = false
     }
@@ -115,5 +117,4 @@ private extension EditStoreListViewModel {
         case deviceIDNotFound
         case malformedDeviceID
     }
-    
 }

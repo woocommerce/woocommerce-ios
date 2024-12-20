@@ -55,7 +55,7 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_load_packages_dispatches_loadPackages_action() {
+    func test_load_packages_dispatches_loadPackages_action() async {
         // Given
         let siteID: Int64 = 1234
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
@@ -73,7 +73,7 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.loadPackages()
+        await viewModel.loadPackages()
 
         // Then
         XCTAssertEqual(mockStores.receivedActions.count, 1)

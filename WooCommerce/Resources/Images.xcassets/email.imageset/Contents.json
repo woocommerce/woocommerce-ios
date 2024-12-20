@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "email.pdf",
+      "filename" : "mail-light.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "mail-dark.pdf",
       "idiom" : "universal"
     }
   ],

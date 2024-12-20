@@ -18,6 +18,7 @@ final class EditStoreListViewModel: ObservableObject {
     }
 
     private let originalSelectedSites: [Site]
+    private let pushNotificationManager: PushNotesManager
     private let userDefaults: UserDefaults
     private let analytics: Analytics
     private let onCompletion: () -> Void
@@ -25,6 +26,7 @@ final class EditStoreListViewModel: ObservableObject {
     init(availableSites: [Site],
          displayedSites: [Site],
          currentlySelectedSite: Site?,
+         pushNotificationManager: PushNotesManager = ServiceLocator.pushNotesManager,
          userDefaults: UserDefaults = .standard,
          analytics: Analytics = ServiceLocator.analytics,
          onCompletion: @escaping () -> Void) {
@@ -32,6 +34,7 @@ final class EditStoreListViewModel: ObservableObject {
         self.currentlySelectedSite = currentlySelectedSite
         self.originalSelectedSites = displayedSites
         self.selectedSites = Set(displayedSites)
+        self.pushNotificationManager = pushNotificationManager
         self.userDefaults = userDefaults
         self.analytics = analytics
         self.onCompletion = onCompletion

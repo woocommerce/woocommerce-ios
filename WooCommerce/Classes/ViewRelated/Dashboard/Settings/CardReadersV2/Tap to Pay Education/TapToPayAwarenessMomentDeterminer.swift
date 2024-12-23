@@ -42,7 +42,10 @@ struct TapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining {
             return false
         }
 
-        guard case .completed = cardPresentPaymentsOnboarding.state else {
+        switch cardPresentPaymentsOnboarding.state {
+        case .completed, .codPaymentGatewayNotSetUp:
+            break
+        default:
             return false
         }
 

@@ -44,7 +44,7 @@ struct PointOfSaleCollectCashView: View {
             }
             .padding()
 
-            FormattableAmountTextField(viewModel: textFieldViewModel)
+            FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
                 .onChange(of: textFieldViewModel.amount) { newValue in
                     textFieldAmountInput = newValue
                 }

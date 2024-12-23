@@ -19,6 +19,7 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
     let configuration: CardPresentPaymentsConfiguration
     let connectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker
     let connectivityObserver: ConnectivityObserver
+    private let tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining
 
     private let onboardingStatePublisher: Published<CardPresentPaymentOnboardingState>.Publisher
     private let analytics: Analytics = ServiceLocator.analytics
@@ -40,7 +41,8 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
          onboardingStatePublisher: Published<CardPresentPaymentOnboardingState>.Publisher,
          connectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker,
          connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining = TapToPayAwarenessMomentDeterminer()) {
         self.siteID = siteID
         self.configuration = configuration
         self.didChangeShouldShow = didChangeShouldShow
@@ -49,6 +51,7 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
         self.connectivityObserver = connectivityObserver
         self.onboardingStatePublisher = onboardingStatePublisher
         self.learnMoreURL = Self.learnMoreURL(for: .wcPay) // this will be updated when the onboarding state is known
+        self.tapToPayAwarenessMomentDeterminer = tapToPayAwarenessMomentDeterminer
 
         beginOnboardingStateObservation()
         beginConnectedReaderObservation()
@@ -132,6 +135,7 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
 
     func viewDidAppear() {
         NotificationCenter.default.post(name: .setUpTapToPayViewDidAppear, object: nil)
+        tapToPayAwarenessMomentDeterminer.setPresented()
     }
 
     /// Updates whether the view this viewModel is associated with should be shown or not

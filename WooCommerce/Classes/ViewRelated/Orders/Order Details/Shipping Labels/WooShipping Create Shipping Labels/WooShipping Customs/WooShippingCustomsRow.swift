@@ -37,9 +37,7 @@ struct WooShippingCustomsRow: View {
         .sheet(isPresented: $showCustomsForm) {
             WooShippingCustomsForm(viewModel: WooShippingCustomsFormViewModel(internationalTransactionNumber: "123",
                                                                               returnToSenderIfNotDelivered: true))
-
         }
-
     }
 }
 

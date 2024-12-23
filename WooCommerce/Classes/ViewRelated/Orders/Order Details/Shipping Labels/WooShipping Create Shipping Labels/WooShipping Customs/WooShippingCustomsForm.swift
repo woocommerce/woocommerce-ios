@@ -28,7 +28,7 @@ struct WooShippingCustomsForm: View {
             }
             .padding()
         }
-        .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
+        .roundedBorder(cornerRadius: Constants.borderCornerRadius, lineColor: Color(.separator), lineWidth: Constants.borderWidth)
     }
 
     private var restrictionTypeSelectionView: some View {
@@ -53,7 +53,7 @@ struct WooShippingCustomsForm: View {
             }
             .padding()
         }
-        .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
+        .roundedBorder(cornerRadius: Constants.borderCornerRadius, lineColor: Color(.separator), lineWidth: Constants.borderWidth)
     }
 
     var body: some View {

@@ -20,7 +20,7 @@ struct TotalsView: View {
     private var shouldShowCollectCashPaymentButton: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.acceptCashForPointOfSale) &&
         posModel.orderState != .syncing &&
-        posModel.paymentState == .idle
+        (posModel.paymentState == .idle || posModel.paymentState == .acceptingCard)
     }
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize

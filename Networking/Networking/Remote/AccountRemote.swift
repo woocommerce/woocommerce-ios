@@ -1,4 +1,5 @@
 import Combine
+import Alamofire
 import Foundation
 
 /// Protocol for `AccountRemote` mainly used for mocking.
@@ -149,7 +150,7 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
     public func updateNotificationSettings(with settings: NotificationSettings) async throws {
         let path = Path.notificationSettings
         let parameters = try settings.toDictionary()
-        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters, encoding: JSONEncoding.default)
         return try await enqueue(request)
     }
 

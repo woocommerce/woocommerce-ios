@@ -93,10 +93,10 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     @MainActor
     func collectCashPayment() async throws {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            throw NSError(domain: "", code: 0)
+            throw PointOfSaleOrderControllerError.noSiteID
         }
         guard let order = order else {
-            throw NSError(domain: "", code: 0)
+            throw PointOfSaleOrderControllerError.noOrder
         }
 
         let fieldsToUpdate: [OrderUpdateField] = [
@@ -104,8 +104,8 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
             .paymentMethodID,
             .paymentMethodTitle]
         let updatedOrder = order.copy(status: .completed,
-                                      paymentMethodID: "cash",
-                                      paymentMethodTitle: "Cash (Point of Sale)")
+                                      paymentMethodID: Constants.cashPaymentMethodID,
+                                      paymentMethodTitle: Constants.cashPaymentMethodTitle)
 
         let _ = try await withCheckedThrowingContinuation { continuation in
             let action = OrderAction.updateOrder(siteID: siteID,
@@ -187,5 +187,16 @@ extension PointOfSaleInternalOrderState: Equatable {
         default:
             return false
         }
+    }
+}
+
+extension PointOfSaleOrderController {
+    enum Constants {
+        static let cashPaymentMethodID: String = "cash"
+        static let cashPaymentMethodTitle: String = "Cash (Point of Sale)"
+    }
+    enum PointOfSaleOrderControllerError: Error {
+        case noSiteID
+        case noOrder
     }
 }

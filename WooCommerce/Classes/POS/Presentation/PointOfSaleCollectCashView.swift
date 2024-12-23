@@ -15,6 +15,11 @@ struct PointOfSaleCollectCashView: View {
         String.localizedStringWithFormat(Localization.backNavigationSubtitle, orderTotal)
     }
 
+    @StateObject private var textFieldViewModel = FormattableAmountTextFieldViewModel(size: .extraLarge,
+                                                                                      locale: Locale.autoupdatingCurrent,
+                                                                                      storeCurrencySettings: ServiceLocator.currencySettings,
+                                                                                      allowNegativeNumber: false)
+
     var body: some View {
         VStack(alignment: .center, spacing: 20) {
             HStack {
@@ -39,25 +44,9 @@ struct PointOfSaleCollectCashView: View {
             }
             .padding()
 
-            TextField("$0.00", text: $textFieldAmountInput)
-                .keyboardType(.decimalPad)
-                .textInputAutocapitalization(.none)
-                .autocorrectionDisabled()
-                .multilineTextAlignment(.center)
-                .font(POSFontStyle.posTitleRegular)
-                .focused($isTextFieldFocused)
-                .padding()
-                .onChange(of: textFieldAmountInput) { newValue in
+            FormattableAmountTextField(viewModel: textFieldViewModel)
+                .onChange(of: textFieldViewModel.amount) { newValue in
                     textFieldAmountInput = newValue
-                }
-                .onSubmit {
-                    Task { @MainActor in
-                        do {
-                            try await markComplete()
-                        } catch {
-                            debugPrint(error)
-                        }
-                    }
                 }
 
             if let errorMessage = errorMessage {

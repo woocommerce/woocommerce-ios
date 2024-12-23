@@ -90,7 +90,7 @@ struct EditStoreListView: View {
                     }
                 }
             }
-            .alert(viewModel.errorMessage, isPresented: $viewModel.shouldShowErrorAlert, actions: {
+            .alert(Localization.errorUpdatingNotificationSettings, isPresented: $viewModel.shouldShowErrorAlert, actions: {
                 Button(Localization.cancelButton) {}
                 Button(Localization.retryButton) {
                     Task {
@@ -143,6 +143,11 @@ private extension EditStoreListView {
             "editStoreListView.retryButton",
             value: "Retry",
             comment: "Button to retry saving changes in the Edit Store List view"
+        )
+        static let errorUpdatingNotificationSettings = NSLocalizedString(
+            "editStoreListView.errorUpdatingNotificationSettings",
+            value: "There was an error when updating notification settings. Please try again.",
+            comment: "Error message when updating notification settings fails when saving the store list for the store picker"
         )
     }
 }

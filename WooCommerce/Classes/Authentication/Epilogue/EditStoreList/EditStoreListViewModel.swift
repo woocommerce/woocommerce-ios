@@ -15,8 +15,6 @@ final class EditStoreListViewModel: ObservableObject {
 
     @Published private(set) var isUpdatingNotificationSettings = false
 
-    @Published private(set) var errorMessage = ""
-
     @Published var shouldShowErrorAlert = false
 
     var hasChanges: Bool {
@@ -55,7 +53,6 @@ final class EditStoreListViewModel: ObservableObject {
         let hiddenSiteIDs = Array(hiddenSites).map { $0.siteID }
         let displayedSiteIDs = Array(selectedSites).map { $0.siteID }
 
-        errorMessage = ""
         shouldShowErrorAlert = false
         isUpdatingNotificationSettings = true
         do {
@@ -63,7 +60,6 @@ final class EditStoreListViewModel: ObservableObject {
             userDefaults.saveHiddenStoreIDs(hiddenSiteIDs)
             onCompletion()
         } catch {
-            errorMessage = Localization.errorUpdatingNotificationSettings
             shouldShowErrorAlert = true
         }
         isUpdatingNotificationSettings = false
@@ -112,15 +108,5 @@ private extension EditStoreListViewModel {
                 continuation.resume(with: result)
             }))
         }
-    }
-}
-
-private extension EditStoreListViewModel {
-    enum Localization {
-        static let errorUpdatingNotificationSettings = NSLocalizedString(
-            "editStoreListViewModel.errorUpdatingNotificationSettings",
-            value: "There was an error when updating notification settings. Please try again.",
-            comment: "Error message when updating notification settings fails when saving the store list for the store picker"
-        )
     }
 }

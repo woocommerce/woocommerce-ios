@@ -68,7 +68,7 @@ final class StorePickerViewController: UIViewController {
     ///
     private let viewModel: StorePickerViewModel
 
-    private var stateSubscription: AnyCancellable?
+    private var subscriptions: Set<AnyCancellable> = []
 
     private lazy var requirementsChecker = RequirementsChecker()
 
@@ -293,12 +293,20 @@ private extension StorePickerViewController {
     }
 
     func observeStateChange() {
-        stateSubscription = viewModel.$state.sink { [weak self] _ in
+        viewModel.$state.sink { [weak self] _ in
             guard let self = self else { return }
             self.preselectStoreIfPossible()
             self.reloadInterface()
             self.updateFooterViewIfNeeded()
-        }
+        }.store(in: &subscriptions)
+
+        viewModel.$shouldEnableHidingStores.sink { [weak self] shouldEnable in
+            guard let self else { return }
+            navigationItem.rightBarButtonItem = !shouldEnable ? nil : UIBarButtonItem(title: Localization.editListButton,
+                                                                                      style: .plain,
+                                                                                      target: self,
+                                                                                      action: #selector(editList))
+        }.store(in: &subscriptions)
     }
 
     func backgroundColor() -> UIColor {
@@ -647,6 +655,20 @@ private extension StorePickerViewController {
     @IBAction func secondaryActionWasPressed() {
         restartAuthentication()
     }
+
+    @objc func editList() {
+        if case let .available(sites) = viewModel.state {
+            let viewModel = EditStoreListViewModel(availableSites: sites,
+                                                   displayedSites: sites,
+                                                   currentlySelectedSite: currentlySelectedSite,
+                                                   onCompletion: { [weak self] in
+                // TODO
+                self?.presentedViewController?.dismiss(animated: true)
+            })
+            let viewController = EditStoreListViewController(viewModel: viewModel)
+            present(viewController, animated: true)
+        }
+    }
 }
 
 
@@ -816,6 +838,12 @@ private extension StorePickerViewController {
         static let addStoreButton = NSLocalizedString("storePickerViewController.addStoreButton",
                                                       value: "Connect existing store",
                                                       comment: "Button title on the store picker for store connection")
+        static let editListButton = NSLocalizedString(
+            "storePicker.editList",
+            value: "Edit",
+            comment: "Button to edit the items to be displayed on the store picker"
+        )
+
         enum ActionMenu {
             static let logOut = NSLocalizedString("Log out",
                                                   comment: "Button to log out from the current account from the store picker")

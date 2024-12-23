@@ -50,6 +50,33 @@ extension WooCommerce.AggregateOrderItem {
     }
 }
 
+extension WooCommerce.ItemsStackState {
+    func copy(
+        root: CopiableProp<ItemListState> = .copy
+    ) -> WooCommerce.ItemsStackState {
+        let root = root ?? self.root
+
+        return WooCommerce.ItemsStackState(
+            root: root
+        )
+    }
+}
+
+extension WooCommerce.ItemsViewState {
+    func copy(
+        containerState: CopiableProp<ItemsContainerState> = .copy,
+        itemsStack: CopiableProp<ItemsStackState> = .copy
+    ) -> WooCommerce.ItemsViewState {
+        let containerState = containerState ?? self.containerState
+        let itemsStack = itemsStack ?? self.itemsStack
+
+        return WooCommerce.ItemsViewState(
+            containerState: containerState,
+            itemsStack: itemsStack
+        )
+    }
+}
+
 extension WooCommerce.ShippingLabelSelectedRate {
     func copy(
         packageID: CopiableProp<String> = .copy,

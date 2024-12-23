@@ -33,6 +33,22 @@ extension Yosemite.JustInTimeMessageTemplate {
         .banner
     }
 }
+extension Yosemite.POSSimpleProduct {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Yosemite.POSSimpleProduct {
+        .init(
+            id: .fake(),
+            name: .fake(),
+            formattedPrice: .fake(),
+            productImageSource: .fake(),
+            productID: .fake(),
+            price: .fake(),
+            productType: .fake(),
+            bundledItems: .fake()
+        )
+    }
+}
 extension Yosemite.ProductReviewFromNoteParcel {
     /// Returns a "ready to use" type filled with fake values.
     ///

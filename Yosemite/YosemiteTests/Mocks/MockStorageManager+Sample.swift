@@ -248,4 +248,41 @@ extension MockStorageManager {
 
         return newNote
     }
+
+    /// Inserts a new sample Woo Shipping packages response into the specified content.
+    ///
+    @discardableResult
+    func insertSamplePackages(readOnlyPackages: WooShippingPackagesResponse) -> StorageWooShippingPackagesResponse {
+        let newPackages = viewStorage.insertNewObject(ofType: StorageWooShippingPackagesResponse.self)
+        newPackages.update(with: readOnlyPackages)
+        readOnlyPackages.allPredefinedOptions.forEach { carrierOption in
+            let newCarrierOption = viewStorage.insertNewObject(ofType: StorageWooShippingCarrierPredefinedOptions.self)
+            newCarrierOption.update(with: carrierOption)
+            newPackages.addToAllPredefinedOptions(newCarrierOption)
+            carrierOption.predefinedOptions.forEach { predefinedOption in
+                let newPredefinedOption = viewStorage.insertNewObject(ofType: StorageWooShippingPredefinedOption.self)
+                newPredefinedOption.update(with: predefinedOption)
+                newCarrierOption.addToPredefinedOptions(newPredefinedOption)
+                predefinedOption.predefinedPackages.forEach { package in
+                    let newPackage = viewStorage.insertNewObject(ofType: StorageWooShippingPredefinedPackage.self)
+                    newPackage.update(with: package)
+                    newPredefinedOption.addToPredefinedPackages(newPackage)
+                }
+            }
+        }
+        readOnlyPackages.customPackages.forEach { customPackage in
+            let newCustomPackage = viewStorage.insertNewObject(ofType: StorageWooShippingCustomPackage.self)
+            newCustomPackage.update(with: customPackage)
+            newPackages.addToCustomPackages(newCustomPackage)
+        }
+        readOnlyPackages.savedPredefinedPackages.forEach { savedPackage in
+            let newSavedPackage = viewStorage.insertNewObject(ofType: StorageWooShippingSavedPredefinedPackage.self)
+            newSavedPackage.update(with: savedPackage)
+            newPackages.addToSavedPredefinedPackages(newSavedPackage)
+            let newPackage = viewStorage.insertNewObject(ofType: StorageWooShippingPredefinedPackage.self)
+            newPackage.update(with: savedPackage.package)
+            newSavedPackage.package = newPackage
+        }
+        return newPackages
+    }
 }

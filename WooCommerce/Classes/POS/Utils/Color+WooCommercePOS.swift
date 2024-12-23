@@ -2,6 +2,15 @@ import SwiftUI
 
 extension Color {
 
+    static var accent: Color {
+        return Color(
+            UIColor(
+                light: .withColorStudio(.wooCommercePurple, shade: .shade40),
+                dark: .withColorStudio(.wooCommercePurple, shade: .shade30)
+            )
+        )
+    }
+
     // MARK: - Background
 
     /* POS Background colors are defined in a similar philosophy as system background colors:
@@ -89,18 +98,11 @@ extension Color {
 
     // MARK: - Buttons
 
-    static var posPrimaryButtonBackground: Color {
-        return Color(.withColorStudio(.wooCommercePurple, shade: .shade40))
-    }
+    static var posPrimaryButtonBackground: Color = .accent
 
-    static var posTextButtonForeground: Color {
-        return Color(
-            UIColor(
-                light: .withColorStudio(.wooCommercePurple, shade: .shade40),
-                dark: .withColorStudio(.wooCommercePurple, shade: .shade30)
-            )
-        )
-    }
+    static var posSecondaryButtonForeground: Color = .accent
+
+    static var posTextButtonForeground: Color = .accent
 
     static var posTextButtonForegroundPressed: Color {
         return Color(

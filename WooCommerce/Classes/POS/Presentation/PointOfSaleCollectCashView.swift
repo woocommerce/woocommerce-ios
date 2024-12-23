@@ -57,11 +57,13 @@ struct PointOfSaleCollectCashView: View {
 
             Button(action: {
                 Task { @MainActor in
+                    isLoading = true
                     do {
                         try await markComplete()
                     } catch {
                         debugPrint(error)
                     }
+                    isLoading = false
                 }
             }, label: {
                 HStack(spacing: Constants.buttonSpacing) {

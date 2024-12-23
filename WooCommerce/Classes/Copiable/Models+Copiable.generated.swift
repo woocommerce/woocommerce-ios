@@ -52,12 +52,15 @@ extension WooCommerce.AggregateOrderItem {
 
 extension WooCommerce.ItemsStackState {
     func copy(
-        root: CopiableProp<ItemListState> = .copy
+        root: CopiableProp<ItemListState> = .copy,
+        itemStates: CopiableProp<[POSItem: ItemListState]> = .copy
     ) -> WooCommerce.ItemsStackState {
         let root = root ?? self.root
+        let itemStates = itemStates ?? self.itemStates
 
         return WooCommerce.ItemsStackState(
-            root: root
+            root: root,
+            itemStates: itemStates
         )
     }
 }

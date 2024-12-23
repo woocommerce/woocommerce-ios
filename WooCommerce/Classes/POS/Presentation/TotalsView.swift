@@ -88,13 +88,14 @@ struct TotalsView: View {
             isShowingTotalsFields = shouldShowTotalsFields
         }
         .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
-        .geometryGroupIfSupported()
         .fullScreenCover(isPresented: $shouldShowCollectCashPayment) {
             if case .loaded(let total) = posModel.orderState {
-                PointOfSaleCollectCashView(isVisible: $shouldShowCollectCashPayment,
-                                           orderTotal: total.orderTotal)
+                PointOfSaleCollectCashView(orderTotal: total.orderTotal)
+                    .matchedGeometryEffect(id: Constants.matchedGeometryCashId,
+                                           in: totalsFieldAnimation)
             }
         }
+        .geometryGroupIfSupported()
     }
 
     private var backgroundColor: Color {
@@ -338,6 +339,7 @@ private extension TotalsView {
         static let matchedGeometrySubtotalId: String = "pos_totals_view_subtotal_matched_geometry_id"
         static let matchedGeometryTaxId: String = "pos_totals_view_tax_matched_geometry_id"
         static let matchedGeometryTotalId: String = "pos_totals_view_total_matched_geometry_id"
+        static let matchedGeometryCashId: String = "pos_totals_view_cash_matched_geometry_id"
 
         static let totalsFieldsHideAnimationDelay: CGFloat = 0.3
     }

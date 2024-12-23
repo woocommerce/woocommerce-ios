@@ -473,12 +473,14 @@ final class ProductSelectorViewModel: ObservableObject {
     func completeMultipleSelection() {
         tracker.trackConfirmButtonTapped(with: selectedItemsIDs.count)
         onMultipleSelectionCompleted?(selectedItemsIDs)
+        resetFiltersUsingLocalProductsSettings()
     }
 
     /// Triggers completion closure when the close button is tapped
     ///
     func closeButtonTapped() {
         onCloseButtonTapped?()
+        resetFiltersUsingLocalProductsSettings()
     }
 
     /// Unselect all items.
@@ -870,6 +872,30 @@ private extension ProductSelectorViewModel {
                                        featureFlagService: featureFlagService,
                                        configure: configure)
         }
+    }
+}
+
+// MARK: - Reset filters
+private extension ProductSelectorViewModel {
+    func resetFiltersUsingLocalProductsSettings() {
+        let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] (result) in
+            guard let self else { return }
+            
+            switch result {
+            case .success(let settings):
+                let promotableProductType = settings.productTypeFilter.map { PromotableProductType(productType: $0, isAvailable: true, promoteUrl: nil) }
+                let filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
+                                                                 productStatus: settings.productStatusFilter,
+                                                                 promotableProductType: promotableProductType,
+                                                                 productCategory: settings.productCategoryFilter,
+                                                                 favoriteProduct: settings.favoriteProduct ? FavoriteProductsFilter() : nil,
+                                                                 numberOfActiveFilters: settings.numberOfActiveFilters())
+                self.updateFilters(filters)
+            case let .failure(error):
+                DDLogError("⛔️ Error loading product settings: \(error)")
+            }
+        }
+        stores.dispatch(action)
     }
 }
 

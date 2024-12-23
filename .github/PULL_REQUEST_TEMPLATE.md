@@ -1,6 +1,6 @@
 <!-- Remember about a good descriptive title. -->
 
-Closes: #
+Closes/Part of: #
 <!-- Id number of the GitHub issue this PR addresses. -->
 
 ## Description

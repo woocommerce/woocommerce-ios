@@ -5,7 +5,7 @@ import UIKit
 import Yosemite
 
 final class MockPushNotificationsManager: PushNotesManager {
-    
+
     func disableInAppNotifications() {
 
     }

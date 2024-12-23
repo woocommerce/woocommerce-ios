@@ -248,16 +248,19 @@ private extension CollectOrderPaymentUseCase {
         order.datePaid == nil
     }
 
-    func checkOrderIsStillEligibleForPayment(alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
-                                             onPaymentCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> (),
-                                             onCheckCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func setOrderPendingAndCheckPaymentEligibility(alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
+                                                   onPaymentCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> (),
+                                                   onCheckCompletion: @escaping (Result<Void, Error>) -> Void) {
         alertsPresenter.present(viewModel: paymentAlerts.validatingOrder(onCancel: { [weak self] in
             self?.cancelPayment(from: .paymentValidatingOrder) {
                 onPaymentCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
             }
         }))
 
-        let action = OrderAction.retrieveOrderRemotely(siteID: order.siteID, orderID: order.orderID) { [weak self] result in
+        /// Retrieves order information to check payment availaibility and sets the order to pending.
+        /// We need to set  order order to pending when collecting payment to trigger all the related failure notifications when payment turns to failed.
+        ///
+        let action = OrderAction.updateOrder(siteID: siteID, order: order.copy(status: .pending), giftCard: nil, fields: [.status]) { [weak self] result in
             guard let self = self else { return }
 
             switch result {
@@ -292,8 +295,7 @@ private extension CollectOrderPaymentUseCase {
                         paymentGatewayAccount: PaymentGatewayAccount,
                         channel: PaymentChannel,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        markFailedOrderPending()
-        checkOrderIsStillEligibleForPayment(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { [weak self] result in
+        setOrderPendingAndCheckPaymentEligibility(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .failure(let error):
@@ -527,7 +529,7 @@ private extension CollectOrderPaymentUseCase {
                 receiptState: receiptState,
                 tryAgain: { [weak self] in
                     guard let self = self else { return }
-                    self.checkOrderIsStillEligibleForPayment(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { result in
+                    self.setOrderPendingAndCheckPaymentEligibility(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { result in
                         switch result {
                         case .failure(let error):
                             return self.checkThenHandlePaymentFailureAndRetryPayment(error,

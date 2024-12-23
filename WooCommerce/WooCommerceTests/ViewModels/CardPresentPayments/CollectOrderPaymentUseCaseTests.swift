@@ -37,7 +37,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     private func setUpUseCase(order: Order) {
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .retrieveOrderRemotely(_, _, let completion):
+            case .updateOrder(_, _, _, _, let completion):
                 completion(.success(order))
             default:
                 break
@@ -145,7 +145,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .retrieveOrderRemotely(_, _, let completion):
+            case .updateOrder(_, _, _, _, let completion):
                 completion(.success(order))
             default:
                 break
@@ -189,7 +189,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         var markOrderAsPaidLocallyAction: (siteID: Int64, orderID: Int64)?
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .retrieveOrderRemotely(_, _, let completion):
+            case .updateOrder(_, _, _, _, let completion):
                 completion(.success(Order.fake().copy(siteID: self.defaultSiteID, orderID: self.defaultOrderID, total: "1.5")))
             case .markOrderAsPaidLocally(let siteID, let orderID, _, _):
                 markOrderAsPaidLocallyAction = (siteID: siteID, orderID: orderID)
@@ -222,7 +222,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         var markOrderAsPaidLocallyAction: (siteID: Int64, orderID: Int64)?
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .retrieveOrderRemotely(_, _, let completion):
+            case .updateOrder(_, _, _, _, let completion):
                 completion(.success(Order.fake().copy(siteID: self.defaultSiteID, orderID: self.defaultOrderID, total: "1.5")))
             case .markOrderAsPaidLocally(let siteID, let orderID, _, _):
                 markOrderAsPaidLocallyAction = (siteID: siteID, orderID: orderID)
@@ -375,9 +375,8 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         var orderStatus: OrderStatusEnum?
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrderStatus(_, _, status, _):
-                orderStatus = status
-            case .retrieveOrderRemotely(_, _, let completion):
+            case .updateOrder(_, let order, _, _, let completion):
+                orderStatus = order.status
                 completion(.success(order))
             default:
                 break
@@ -412,7 +411,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
             switch action {
             case let .updateOrderStatus(_, _, status, _):
                 orderStatus = status
-            case .retrieveOrderRemotely(_, _, let completion):
+            case .updateOrder(_, _, _, _, let completion):
                 completion(.success(order))
             default:
                 break

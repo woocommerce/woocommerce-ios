@@ -82,7 +82,8 @@ struct EditStoreListViewModelTests {
         #expect(viewModel.selectedSites.contains(site1) == true)
     }
 
-    @Test func didSaveChanges_saves_hidden_store_ids_to_user_defaults_and_triggers_completion() {
+    @MainActor
+    @Test func didSaveChanges_saves_hidden_store_ids_to_user_defaults_and_triggers_completion() async {
         // Given
         let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
         var completionTriggered = false
@@ -94,7 +95,7 @@ struct EditStoreListViewModelTests {
 
         // When
         viewModel.toggleSelection(site1)
-        viewModel.didSaveChanges()
+        await viewModel.saveChanges()
 
         // Then
         #expect(userDefaults.hiddenStoreIDs == [site1.siteID])

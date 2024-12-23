@@ -90,6 +90,14 @@ struct EditStoreListView: View {
                     }
                 }
             }
+            .alert(viewModel.errorMessage, isPresented: $viewModel.shouldShowErrorAlert, actions: {
+                Button(Localization.cancelButton) {}
+                Button(Localization.retryButton) {
+                    Task {
+                        await viewModel.saveChanges()
+                    }
+                }
+            })
         }
     }
 }
@@ -130,6 +138,11 @@ private extension EditStoreListView {
             "editStoreListView.otherStoresFooter",
             value: "Stores that are not selected will be excluded from the store picker",
             comment: "Footer of the Other Stores section on the Edit Store List view"
+        )
+        static let retryButton = NSLocalizedString(
+            "editStoreListView.retryButton",
+            value: "Retry",
+            comment: "Button to retry saving changes in the Edit Store List view"
         )
     }
 }

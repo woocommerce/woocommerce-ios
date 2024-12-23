@@ -15,7 +15,9 @@ final class EditStoreListViewModel: ObservableObject {
 
     @Published private(set) var isUpdatingNotificationSettings = false
 
-    @Published private(set) var notificationSettingsError: Error?
+    @Published private(set) var errorMessage = ""
+
+    @Published var shouldShowErrorAlert = false
 
     var hasChanges: Bool {
         selectedSites != Set(originalSelectedSites)
@@ -53,13 +55,16 @@ final class EditStoreListViewModel: ObservableObject {
         let hiddenSiteIDs = Array(hiddenSites).map { $0.siteID }
         let displayedSiteIDs = Array(selectedSites).map { $0.siteID }
 
+        errorMessage = ""
+        shouldShowErrorAlert = false
+        isUpdatingNotificationSettings = true
         do {
-            isUpdatingNotificationSettings = true
             try await updateNotificationSettings(displayedSiteIDs: displayedSiteIDs, hiddenSiteIDs: hiddenSiteIDs)
             userDefaults.saveHiddenStoreIDs(hiddenSiteIDs)
             onCompletion()
         } catch {
-            notificationSettingsError = error
+            errorMessage = Localization.errorUpdatingNotificationSettings
+            shouldShowErrorAlert = true
         }
         isUpdatingNotificationSettings = false
     }
@@ -93,12 +98,10 @@ private extension EditStoreListViewModel {
     @MainActor
     func updateNotificationSettings(displayedSiteIDs: [Int64],
                                     hiddenSiteIDs: [Int64]) async throws {
-        guard let deviceID = pushNotificationManager.deviceID else {
-            throw NotificationSettingsError.deviceIDNotFound
-        }
-
-        guard let intDeviceID = Int64(deviceID) else {
-            throw NotificationSettingsError.malformedDeviceID
+        guard let deviceID = pushNotificationManager.deviceID,
+            let intDeviceID = Int64(deviceID) else {
+            /// skip updating notification settings if no device ID is found
+            return
         }
 
         let settings = NotificationSettings(deviceID: intDeviceID,
@@ -113,8 +116,11 @@ private extension EditStoreListViewModel {
 }
 
 private extension EditStoreListViewModel {
-    enum NotificationSettingsError: Error {
-        case deviceIDNotFound
-        case malformedDeviceID
+    enum Localization {
+        static let errorUpdatingNotificationSettings = NSLocalizedString(
+            "editStoreListViewModel.errorUpdatingNotificationSettings",
+            value: "There was an error when updating notification settings. Please try again.",
+            comment: "Error message when updating notification settings fails when saving the store list for the store picker"
+        )
     }
 }

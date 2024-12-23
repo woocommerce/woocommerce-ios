@@ -8,6 +8,7 @@ import protocol Yosemite.POSOrderableItem
 import protocol Yosemite.OrderSyncProductTypeProtocol
 import struct Yosemite.OrderSyncProductInput
 import enum Yosemite.ProductType
+import struct Yosemite.PagedItems
 import struct Yosemite.ProductBundleItem
 import struct Yosemite.OrderItem
 import Combine
@@ -37,8 +38,8 @@ struct POSProductPreview: POSOrderableItem, Equatable {
 }
 
 final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
-    func providePointOfSaleItems(pageNumber: Int) async throws -> [POSItem] {
-        []
+    func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem> {
+        .init(items: [], hasMorePages: true)
     }
 
     func providePointOfSaleItems() -> [POSItem] {
@@ -53,21 +54,20 @@ final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
 }
 
 final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtocol {
-    @Published var itemListState: ItemListState = .initialLoading
-    var itemListStatePublisher: any Publisher<ItemListState, Never> { $itemListState }
-
-    var allItems: [POSItem] = []
+    @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
+                                                                   itemsStack: ItemsStackState(root: .loading([])))
+    var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { $itemsViewState }
 
     func loadInitialItems() async {
-        itemListState = .loaded(mockItems)
+        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded(mockItems)))
     }
 
     func loadNextItems() async {
-        itemListState = .loading(mockItems)
+        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loading(mockItems)))
     }
 
     func reload() async {
-        itemListState = .loaded([])
+        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded([])))
     }
 }
 

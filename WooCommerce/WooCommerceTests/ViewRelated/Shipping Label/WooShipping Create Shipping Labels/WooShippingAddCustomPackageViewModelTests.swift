@@ -217,6 +217,26 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
             XCTFail(failure.localizedDescription)
         }
     }
+
+    func test_it_handles_selected_package_data() {
+        // Given
+        let selectedPackage = WooShippingPackageData(name: "",
+                                                     length: "31.75",
+                                                     width: "24.13",
+                                                     height: "1.27",
+                                                     weight: "",
+                                                     source: .custom,
+                                                     packageType: "envelope")
+
+        // When
+        let viewModel = WooShippingAddCustomPackageViewModel(selectedPackage: selectedPackage)
+
+        // Then
+        XCTAssertEqual(viewModel.fieldValues[.length], "31.75")
+        XCTAssertEqual(viewModel.fieldValues[.width], "24.13")
+        XCTAssertEqual(viewModel.fieldValues[.height], "1.27")
+        XCTAssertEqual(viewModel.packageType, .envelope)
+    }
 }
 
 extension WooShippingAddCustomPackageViewModel {

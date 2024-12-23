@@ -10,6 +10,9 @@ struct ItemListView: View {
 
     @State private var lastScrollPosition: CGFloat = 0
     @State private var showSimpleProductsModal: Bool = false
+    private var itemListState: ItemListState {
+        posModel.itemsViewState.itemsStack.root
+    }
 
     @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
     private var isHeaderBannerDismissed: Bool = false
@@ -17,13 +20,14 @@ struct ItemListView: View {
     var body: some View {
         VStack {
             headerView
-            switch posModel.itemListState {
-            case .initialLoading, .empty, .error:
-                // These cases are handled directly in the dashboard, we do not render
-                // a specific view within the ItemListView to handle them
-                EmptyView()
-            case .loading(let items), .loaded(let items):
+            switch itemListState {
+            case .loading(let items),
+                    .loaded(let items):
                 listView(items)
+            case .error:
+                // Currently unused, but this will show errors that are displayed inline with previously
+                // loaded items, e.g. when loading a new page or refreshing.
+                EmptyView()
             }
         }
         .refreshable {
@@ -134,7 +138,7 @@ private extension ItemListView {
                     listRow(item: item)
                 }
                 GhostItemCardView()
-                    .renderedIf(posModel.itemListState.isLoadingAfterInitialLoad)
+                    .renderedIf(itemListState.isLoading)
             }
             .frame(maxWidth: .infinity)
             .padding(.bottom, floatingControlAreaSize.height)
@@ -142,7 +146,7 @@ private extension ItemListView {
             .background(GeometryReader { proxy in
                 Color.clear
                     .onChange(of: proxy.frame(in: .global).maxY) { maxY in
-                        if posModel.itemListState.isLoadingAfterInitialLoad {
+                        if itemListState.isLoading {
                             return
                         }
                         let threshold = Constants.viewHeight * Constants.scrollThresholdMultiplier
@@ -172,7 +176,7 @@ private extension ItemListView {
 
 private extension ItemListView {
     var shouldShowHeaderBanner: Bool {
-        posModel.itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
+        itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
     }
 }
 
@@ -182,9 +186,7 @@ private extension ItemListState {
         case .loading,
                 .loaded:
             return true
-        case .empty,
-            .initialLoading,
-            .error:
+        case .error:
             return false
         }
     }

@@ -101,6 +101,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .variableProductsInPointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .hideSitesInStorePicker:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

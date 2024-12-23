@@ -8,19 +8,31 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     // Holds values for all dimension input fields.
     // Using a dictionary so we can easily add/remove new types
     // if needed just by adding new case in enum
-    @Published var fieldValues: [WooShippingPackageUnitType: String] = [:]
+    @Published var fieldValues: [WooShippingPackageUnitType: String]
     // Holds selected package type when custom package is selected, it can be `box` or `envelope`
-    @Published var packageType: WooShippingPackageType = .box
+    @Published var packageType: WooShippingPackageType
     // Holds value for toggle that determines if we are showing button for saving the template
     @Published var showSaveTemplate: Bool = false
     @Published var packageTemplateName: String = ""
 
     // MARK: Initialization
 
-    init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
+    init(selectedPackage: WooShippingPackageDataRepresentable? = nil,
+         siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
         self.siteID = siteID
+        if let selectedPackage {
+            fieldValues = [
+                .length: selectedPackage.length,
+                .width: selectedPackage.width,
+                .height: selectedPackage.height
+            ]
+            packageType = WooShippingPackageType(rawValue: selectedPackage.packageType) ?? .box
+        } else {
+            fieldValues = [:]
+            packageType = .box
+        }
     }
 
     // Field values are invalid if one of them is empty

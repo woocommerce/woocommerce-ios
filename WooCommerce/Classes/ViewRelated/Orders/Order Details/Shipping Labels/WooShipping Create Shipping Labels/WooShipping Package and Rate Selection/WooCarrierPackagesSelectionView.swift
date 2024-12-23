@@ -114,7 +114,9 @@ struct WooCarrierPackagesSelectionView: View {
             }
             else {
                 Button {
-                    viewModel.loadPackages()
+                    Task {
+                        await viewModel.loadPackages()
+                    }
                 } label: {
                     Image(systemName: "arrow.trianglehead.counterclockwise")
                 }
@@ -129,11 +131,7 @@ struct WooCarrierPackagesSelectionView: View {
                 }, starAction: { packageID in
                     viewModel.starUnstarPackage(packageID, carrierID: selectedCarrierTab.carrier.rawValue)
                 }, onRefresh: {
-                    await withCheckedContinuation { continuation in
-                        viewModel.loadPackages {
-                            continuation.resume()
-                        }
-                    }
+                    await viewModel.loadPackages()
                 })
             }
             Spacer()

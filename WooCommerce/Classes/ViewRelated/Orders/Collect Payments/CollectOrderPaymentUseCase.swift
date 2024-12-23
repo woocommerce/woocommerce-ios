@@ -839,22 +839,6 @@ private extension CollectOrderPaymentUseCase {
     }
 }
 
-private extension CollectOrderPaymentUseCase {
-    /// Marks failed order as pending.
-    /// Orders are set to failed when payment fails from WooPayments 8.6.
-    /// We need to set it back to pending order when collecting payment to trigger all the related notifications when payment turns to failed again.
-    func markFailedOrderPending() {
-        guard order.status == .failed else {
-            return
-        }
-
-        let action = OrderAction.updateOrderStatus(siteID: order.siteID,
-                                                   orderID: order.orderID,
-                                                   status: .pending, onCompletion: { _ in })
-        stores.dispatch(action)
-    }
-}
-
 // MARK: Definitions
 private enum CollectOrderPaymentUseCaseDefinitions {
     /// Mailing a receipt failed but the SDK didn't return a more specific error

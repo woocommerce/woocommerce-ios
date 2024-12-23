@@ -15,6 +15,13 @@ struct PointOfSaleCollectCashView: View {
         String.localizedStringWithFormat(Localization.backNavigationSubtitle, orderTotal)
     }
 
+    private func validateAmount() -> Bool {
+        // TODO:
+        // Validate amount entered vs order total
+        // https://github.com/woocommerce/woocommerce-ios/issues/14749
+        return true
+    }
+
     @StateObject private var textFieldViewModel = FormattableAmountTextFieldViewModel(size: .extraLarge,
                                                                                       locale: Locale.autoupdatingCurrent,
                                                                                       storeCurrencySettings: ServiceLocator.currencySettings,
@@ -57,9 +64,15 @@ struct PointOfSaleCollectCashView: View {
 
             Button(action: {
                 Task { @MainActor in
+                    guard validateAmount() else {
+                        return
+                    }
                     isLoading = true
                     do {
                         try await markComplete()
+                        // TODO:
+                        // Redirect to success view on completion
+                        // https://github.com/woocommerce/woocommerce-ios/issues/14602
                     } catch {
                         debugPrint(error)
                     }

@@ -1,17 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "card-reader-found.pdf",
-      "idiom" : "universal"
-    },
-    {
-      "appearances" : [
-        {
-          "appearance" : "luminosity",
-          "value" : "dark"
-        }
-      ],
-      "filename" : "card-reader-found-dark.pdf",
+      "filename" : "card-reader-found-light.pdf",
       "idiom" : "universal"
     }
   ],

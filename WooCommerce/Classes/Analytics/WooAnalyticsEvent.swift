@@ -2535,7 +2535,7 @@ extension WooAnalyticsEvent {
 
         /// Tracks when the user taps the Save button on the edit store list screen
         ///
-        static func listEditSaveTapped(hiddenSiteCount: Int) -> WooAnalyticsEvent {
+        static func listSaveButtonTapped(hiddenSiteCount: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .sitePickerListSaveButtonTapped,
                               properties: [Key.hiddenSiteCount.rawValue: hiddenSiteCount])
         }

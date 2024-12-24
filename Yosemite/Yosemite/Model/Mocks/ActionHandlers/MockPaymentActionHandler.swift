@@ -16,7 +16,7 @@ struct MockPaymentActionHandler: MockActionHandler {
 
     func handle(action: PaymentAction) {
         switch action {
-        case .loadSiteCurrentPlan(siteID: let siteID, completion: let completion):
+        case .loadSiteCurrentPlan(siteID: _, completion: let completion):
             let mockPlan = WPComSitePlan(
                 id: "mock_plan_id",
                 hasDomainCredit: true,

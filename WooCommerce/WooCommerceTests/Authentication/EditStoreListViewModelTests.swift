@@ -11,8 +11,9 @@ struct EditStoreListViewModelTests {
     @Test func hasChanges_returns_correct_values() {
         // Given
         let availableSites = [site1, site2]
-        let viewModel = EditStoreListViewModel(availableSites: [site1, site2],
-                                               displayedSites: [site1, site2],
+        let displayedSites = [site1, site2]
+        let viewModel = EditStoreListViewModel(availableSites: availableSites,
+                                               displayedSites: displayedSites,
                                                currentlySelectedSite: nil,
                                                onCompletion: {})
 

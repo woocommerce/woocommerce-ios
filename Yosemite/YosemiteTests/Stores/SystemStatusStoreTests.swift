@@ -61,7 +61,7 @@ final class SystemStatusStoreTests: XCTestCase {
         let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result = waitFor { promise in
+        _ = waitFor { promise in
             store.onAction(SystemStatusAction.synchronizeSystemInformation(siteID: self.sampleSiteID) { result in
                 promise(result)
             })

@@ -346,9 +346,9 @@ final class ProductListViewModelTests: XCTestCase {
     func test_it_loads_favorite_products_on_init() {
         // Given
         let favoriteProductsUseCase = MockFavoriteProductsUseCase()
-        _ = ProductListViewModel(siteID: sampleSiteID,
-                                 stores: storesManager,
-                                 favoriteProductsUseCase: favoriteProductsUseCase)
+        let viewModel = ProductListViewModel(siteID: sampleSiteID,
+                                             stores: storesManager,
+                                             favoriteProductsUseCase: favoriteProductsUseCase)
 
         // Then
         waitUntil {

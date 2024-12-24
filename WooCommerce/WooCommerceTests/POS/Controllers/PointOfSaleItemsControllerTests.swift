@@ -6,7 +6,8 @@ final class PointOfSaleItemsControllerTests {
     private let itemProvider: MockPointOfSaleItemService
     private let sut: PointOfSaleItemsController
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
-                                                                   itemsStack: ItemsStackState(root: .loading([])))
+                                                                   itemsStack: ItemsStackState(root: .loading([]),
+                                                                                               itemStates: [:]))
 
     init() {
         itemProvider = MockPointOfSaleItemService()
@@ -35,7 +36,8 @@ final class PointOfSaleItemsControllerTests {
 
         // Then
         #expect(itemsViewState == ItemsViewState(containerState: .content,
-                                                 itemsStack: ItemsStackState(root: .loaded(expectedItems))))
+                                                 itemsStack: ItemsStackState(root: .loaded(expectedItems),
+                                                                             itemStates: [:])))
     }
 
     @Test func loadInitialItems_when_called_multiple_times_then_items_are_not_duplicated() async throws {
@@ -120,7 +122,8 @@ final class PointOfSaleItemsControllerTests {
 
         // Then
         #expect(itemsViewState == ItemsViewState(containerState: .content,
-                                                 itemsStack: ItemsStackState(root: .loaded(initialItems))))
+                                                 itemsStack: ItemsStackState(root: .loaded(initialItems),
+                                                                             itemStates: [:])))
     }
 
     @Test func loadItems_when_simulateFetchNextPage_then_state_is_loaded_with_expected_items() async throws {
@@ -228,7 +231,8 @@ final class PointOfSaleItemsControllerTests {
 
         // Then
         #expect(itemsViewState == ItemsViewState(containerState: .content,
-                                                 itemsStack: ItemsStackState(root: .loaded(expectedItems))))
+                                                 itemsStack: ItemsStackState(root: .loaded(expectedItems),
+                                                                             itemStates: [:])))
     }
 
     @Test func reload_requests_first_page() async throws {
@@ -257,7 +261,8 @@ final class PointOfSaleItemsControllerTests {
 
         // Then
         #expect(itemsViewState == ItemsViewState(containerState: .content,
-                                                 itemsStack: ItemsStackState(root: .loaded(MockPointOfSaleItemService.makeInitialItems()))))
+                                                 itemsStack: ItemsStackState(root: .loaded(MockPointOfSaleItemService.makeInitialItems()),
+                                                                             itemStates: [:])))
     }
 
     @Test func loadNextItems_when_next_page_is_empty_then_the_same_page_is_requested_next() async throws {

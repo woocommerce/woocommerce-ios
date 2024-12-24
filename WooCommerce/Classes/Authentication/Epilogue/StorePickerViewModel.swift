@@ -13,6 +13,12 @@ final class StorePickerViewModel {
 
     @Published private(set) var shouldEnableHidingStores = false
 
+    var allFetchedSites: [Site] {
+        resultsController.fetchedObjects
+    }
+
+    private(set) var displayedStores: [Site] = []
+
     /// ResultsController: Loads Sites from the Storage Layer.
     ///
     private lazy var resultsController: ResultsController<StorageSite> = {
@@ -28,6 +34,7 @@ final class StorePickerViewModel {
 
     private let storageManager: StorageManagerType
     private let stores: StoresManager
+    private let userDefaults: UserDefaults
     private let analytics: Analytics
     private let roleEligibilityUseCase: RoleEligibilityUseCase
     private let featureFlagService: FeatureFlagService
@@ -35,11 +42,13 @@ final class StorePickerViewModel {
     init(configuration: StorePickerConfiguration,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
+         userDefaults: UserDefaults = .standard,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics) {
         self.configuration = configuration
         self.stores = stores
         self.storageManager = storageManager
+        self.userDefaults = userDefaults
         self.featureFlagService = featureFlagService
         self.analytics = analytics
         self.roleEligibilityUseCase = RoleEligibilityUseCase(stores: stores)
@@ -83,15 +92,22 @@ final class StorePickerViewModel {
     func checkEligibility(for storeID: Int64, completion: @escaping (Result<Void, RoleEligibilityError>) -> Void) {
         roleEligibilityUseCase.checkEligibility(for: storeID, completion: completion)
     }
+
+    func updateDisplayedStores() {
+        let hiddenStoreIDs = userDefaults.hiddenStoreIDs
+        displayedStores = allFetchedSites.filter { hiddenStoreIDs.contains($0.siteID) == false }
+    }
 }
 
 // MARK: - Private helpers
 private extension StorePickerViewModel {
+
     func refetchSitesAndUpdateState() {
         do {
             try resultsController.performFetch()
+            updateDisplayedStores()
             checkIfHidingStoresShouldBeEnabled()
-            state = StorePickerState(sites: resultsController.fetchedObjects)
+            state = StorePickerState(sites: allFetchedSites)
         } catch {
             DDLogError("⛔️ Unable to re-fetch sites and update state: \(error)")
         }
@@ -103,7 +119,7 @@ private extension StorePickerViewModel {
                   configuration == .switchingStores else {
                 return false
             }
-            return resultsController.fetchedObjects.filter { $0.isWooCommerceActive }.count > 1
+            return allFetchedSites.filter { $0.isWooCommerceActive }.count > 1
         }()
     }
 
@@ -167,9 +183,16 @@ extension StorePickerViewModel {
         // The value is returned as either 0 or 1 in String,
         // so the trick is to convert it to NSString and get the `boolValue`.
         let isWooCommerceActive = (rawStatus as NSString).boolValue
-        if isWooCommerceActive {
-            return multipleStoresAvailable ? Localization.pickStore : Localization.connectedStore
-        } else {
+        switch (isWooCommerceActive, multipleStoresAvailable) {
+        case (true, true):
+            let hiddenStoreCount = userDefaults.hiddenStoreIDs.count
+            if hiddenStoreCount > 0, shouldEnableHidingStores {
+                return String(format: Localization.pickStoreWithHiddenStoreCount, hiddenStoreCount)
+            }
+            return Localization.pickStore
+        case (true, false):
+            return Localization.connectedStore
+        case (false, _):
             return Localization.otherSites
         }
     }
@@ -180,6 +203,9 @@ extension StorePickerViewModel {
         guard resultsController.numberOfObjects > 0 else {
             return 1
         }
+        if shouldEnableHidingStores {
+            return displayedStores.count
+        }
         return resultsController.sections[safe: sectionIndex]?.objects.count ?? 0
     }
 
@@ -188,6 +214,9 @@ extension StorePickerViewModel {
     func site(at indexPath: IndexPath) -> Site? {
         guard resultsController.numberOfObjects > 0 else {
             return nil
+        }
+        if shouldEnableHidingStores {
+            return displayedStores[safe: indexPath.row]
         }
         return resultsController.safeObject(at: indexPath)
     }
@@ -228,6 +257,13 @@ private extension StorePickerViewModel {
         static let otherSites = NSLocalizedString(
             "Other Sites",
             comment: "Store Picker's Section Title: Displayed when there are sites without WooCommerce"
+        )
+        static let pickStoreWithHiddenStoreCount = NSLocalizedString(
+            "storePickerViewModel.pickStoreWithHiddenStoreCount",
+            value: "Pick Store to Connect (%1$d hidden)",
+            comment: "Store Picker's Section Title: Displayed whenever there are multiple Stores. " +
+            "The content inside the bracket indicates the number of stores hidden from the store picker. " +
+            "The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)'"
         )
     }
 }

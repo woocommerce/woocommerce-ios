@@ -1053,6 +1053,8 @@
 		DE78DE4A2B2AEC7F002E58DE /* wp-page-list-success.json in Resources */ = {isa = PBXBuildFile; fileRef = DE78DE492B2AEC7F002E58DE /* wp-page-list-success.json */; };
 		DE78DE4C2B2AED4C002E58DE /* WordPressPageMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE78DE4B2B2AED4C002E58DE /* WordPressPageMapperTests.swift */; };
 		DE78DE4E2B2BF0EA002E58DE /* product-subscription-alternative-types.json in Resources */ = {isa = PBXBuildFile; fileRef = DE78DE4D2B2BF0EA002E58DE /* product-subscription-alternative-types.json */; };
+		DE8BEF0B2D141DD9008B3A3F /* NotificationSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8BEF0A2D141DD9008B3A3F /* NotificationSettings.swift */; };
+		DE8BEF0D2D151396008B3A3F /* notification-settings.json in Resources */ = {isa = PBXBuildFile; fileRef = DE8BEF0C2D151396008B3A3F /* notification-settings.json */; };
 		DE970D842C23E3F60019EF42 /* product-report-string-stock-quantity.json in Resources */ = {isa = PBXBuildFile; fileRef = DE970D832C23E3F60019EF42 /* product-report-string-stock-quantity.json */; };
 		DE97C3922861B8E20042E973 /* CouponEncoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE97C3912861B8E20042E973 /* CouponEncoderTests.swift */; };
 		DE9D6BCC270D769C00BA6562 /* shipping-label-address-without-name-validation-success.json in Resources */ = {isa = PBXBuildFile; fileRef = DE9D6BCB270D769B00BA6562 /* shipping-label-address-without-name-validation-success.json */; };
@@ -2239,6 +2241,8 @@
 		DE78DE492B2AEC7F002E58DE /* wp-page-list-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wp-page-list-success.json"; sourceTree = "<group>"; };
 		DE78DE4B2B2AED4C002E58DE /* WordPressPageMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressPageMapperTests.swift; sourceTree = "<group>"; };
 		DE78DE4D2B2BF0EA002E58DE /* product-subscription-alternative-types.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-subscription-alternative-types.json"; sourceTree = "<group>"; };
+		DE8BEF0A2D141DD9008B3A3F /* NotificationSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettings.swift; sourceTree = "<group>"; };
+		DE8BEF0C2D151396008B3A3F /* notification-settings.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "notification-settings.json"; sourceTree = "<group>"; };
 		DE970D832C23E3F60019EF42 /* product-report-string-stock-quantity.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-report-string-stock-quantity.json"; sourceTree = "<group>"; };
 		DE97C3912861B8E20042E973 /* CouponEncoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponEncoderTests.swift; sourceTree = "<group>"; };
 		DE9D6BCB270D769B00BA6562 /* shipping-label-address-without-name-validation-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-address-without-name-validation-success.json"; sourceTree = "<group>"; };
@@ -3005,6 +3009,7 @@
 				B59325CF217E4206000B0E8E /* NoteMedia.swift */,
 				B59325D1217E4206000B0E8E /* NoteRange.swift */,
 				B554FA902180BCFC00C54DFF /* NoteHash.swift */,
+				DE8BEF0A2D141DD9008B3A3F /* NotificationSettings.swift */,
 				B557DA1C20979E7D005962F4 /* Order.swift */,
 				741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */,
 				D88E228F25AC990A0023F3B1 /* OrderFeeLine.swift */,
@@ -3082,6 +3087,7 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				DE8BEF0C2D151396008B3A3F /* notification-settings.json */,
 				EED25B1C2CF74B9800503657 /* media-upload.json */,
 				EE6C6B6F2C6A190500632BDA /* systemStatus-inconsistent-page-id-data-type.json */,
 				DEB3878E2C2D71A10025256E /* gla-campaign-list-with-data-envelope.json */,
@@ -4410,6 +4416,7 @@
 				743E84F422172D0A00FAC9D7 /* shipment_tracking_multiple.json in Resources */,
 				DEA493722B3997ED00EED015 /* blaze-target-languages.json in Resources */,
 				02698CF624C17FC1005337C4 /* product-alternative-types.json in Resources */,
+				DE8BEF0D2D151396008B3A3F /* notification-settings.json in Resources */,
 				03EB99962907F03000F06A39 /* empty-data-array.json in Resources */,
 				CE070A342BBC52B200017578 /* gift-card-stats-without-data.json in Resources */,
 				57BE08D82409B63800F6DCED /* reviews-missing-avatar-urls.json in Resources */,
@@ -5324,6 +5331,7 @@
 				B5C6FCD420A373BB00A4F8E4 /* OrderMapper.swift in Sources */,
 				CE606D912BE396D7001CB424 /* ShippingMethodsRemote.swift in Sources */,
 				EE1CB90B2B4BC8C500AD24D5 /* BlazeImpressionsMapper.swift in Sources */,
+				DE8BEF0B2D141DD9008B3A3F /* NotificationSettings.swift in Sources */,
 				D88D5A49230BC8C7007B6E01 /* ProductReviewStatus.swift in Sources */,
 				036563DB2906938600D84BFD /* JustInTimeMessage.swift in Sources */,
 				CCA1D60429437B2C00B40560 /* SiteSummaryStats.swift in Sources */,

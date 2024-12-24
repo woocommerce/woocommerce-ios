@@ -116,7 +116,7 @@ private extension WooShippingStore {
     }
 
     func loadPackages(siteID: Int64,
-                      completion: @escaping (Result<WooShippingPackagesResponse, Error>) -> Void) {
+                      completion: @escaping (Result<WooShippingPackagesResponse, WooShippingLoadPackagesError>) -> Void) {
         remote.loadPackages(siteID: siteID) { [weak self] result in
             switch result {
             case .success(let packages):
@@ -124,7 +124,7 @@ private extension WooShippingStore {
                     completion(.success(packages))
                 }
             case .failure(let error):
-                completion(.failure(error))
+                completion(.failure(WooShippingLoadPackagesError.loadingFailed(error: error)))
             }
         }
     }
@@ -469,4 +469,13 @@ public enum WooShippingLabelPurchaseError: Error {
     case purchaseErrorStatus
     /// No labels are returned by initial purchase request
     case purchaseMissingLabels
+}
+
+public enum WooShippingLoadPackagesError: Error, Equatable {
+    case loadingInProgress
+    case loadingFailed(error: Error)
+
+    public static func ==(lhs: WooShippingLoadPackagesError, rhs: WooShippingLoadPackagesError) -> Bool {
+        return lhs.localizedDescription == rhs.localizedDescription
+    }
 }

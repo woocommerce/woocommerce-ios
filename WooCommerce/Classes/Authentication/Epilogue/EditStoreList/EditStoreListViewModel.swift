@@ -18,23 +18,29 @@ final class EditStoreListViewModel: ObservableObject {
     }
 
     private let originalSelectedSites: [Site]
+    private let userDefaults: UserDefaults
     private let analytics: Analytics
     private let onCompletion: () -> Void
 
     init(availableSites: [Site],
          displayedSites: [Site],
          currentlySelectedSite: Site?,
+         userDefaults: UserDefaults = .standard,
          analytics: Analytics = ServiceLocator.analytics,
          onCompletion: @escaping () -> Void) {
         self.availableSites = availableSites.filter { $0.siteID != currentlySelectedSite?.siteID }
         self.currentlySelectedSite = currentlySelectedSite
         self.originalSelectedSites = displayedSites
         self.selectedSites = Set(displayedSites)
+        self.userDefaults = userDefaults
         self.analytics = analytics
         self.onCompletion = onCompletion
     }
 
     func didSaveChanges() {
+        let hiddenSites = Set(availableSites).subtracting(selectedSites)
+        let hiddenSiteIDs = Array(hiddenSites).map { $0.siteID }
+        userDefaults.saveHiddenStoreIDs(hiddenSiteIDs)
         onCompletion()
     }
 }

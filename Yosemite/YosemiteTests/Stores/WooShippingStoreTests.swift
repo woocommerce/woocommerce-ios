@@ -259,7 +259,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingPackagesResponse, Error> = waitFor { promise in
+        let result: Result<WooShippingPackagesResponse, WooShippingLoadPackagesError> = waitFor { promise in
             let action = WooShippingAction.loadPackages(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -306,11 +306,11 @@ final class WooShippingStoreTests: XCTestCase {
         // Given
         let remote = MockWooShippingRemote()
         let expectedError = NetworkError.notFound()
-        remote.whenLoadPackages(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        remote.whenLoadPackages(siteID: sampleSiteID, thenReturn: .failure(WooShippingLoadPackagesError.loadingFailed(error: expectedError)))
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingPackagesResponse, Error> = waitFor { promise in
+        let result: Result<WooShippingPackagesResponse, WooShippingLoadPackagesError> = waitFor { promise in
             let action = WooShippingAction.loadPackages(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -320,7 +320,7 @@ final class WooShippingStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? NetworkError, expectedError)
+        XCTAssertEqual(error, WooShippingLoadPackagesError.loadingFailed(error: expectedError))
     }
 
     // MARK: `purchaseShippingLabel`

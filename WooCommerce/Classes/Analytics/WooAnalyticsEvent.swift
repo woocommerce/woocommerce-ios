@@ -2521,29 +2521,35 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .sitePickerNewToWooTapped, properties: [:])
         }
 
+        /// Tracks when the Edit button is shown on the top right.
+        ///
+        static func editButtonShown() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .sitePickerEditButtonShown, properties: [:])
+        }
+
         /// Tracks when the user taps the Edit button on the top right.
         ///
-        static func listEditTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .sitePickerListEditTapped, properties: [:])
+        static func editButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .sitePickerEditButtonTapped, properties: [:])
         }
 
         /// Tracks when the user taps the Save button on the edit store list screen
         ///
         static func listEditSaveTapped(hiddenSiteCount: Int) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .sitePickerListEditSaveTapped,
+            WooAnalyticsEvent(statName: .sitePickerListSaveButtonTapped,
                               properties: [Key.hiddenSiteCount.rawValue: hiddenSiteCount])
         }
 
         /// Tracks when saving is successful
         ///
         static func listEditSavingSuccess() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .sitePickerListEditSavingSuccess, properties: [:])
+            WooAnalyticsEvent(statName: .sitePickerListSavingSuccess, properties: [:])
         }
 
         /// Tracks when saving fails
         ///
         static func listEditSavingFailure(error: Error) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .sitePickerListEditSavingFailure, properties: [:], error: error)
+            WooAnalyticsEvent(statName: .sitePickerListSavingFailure, properties: [:], error: error)
         }
     }
 }

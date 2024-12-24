@@ -1,5 +1,6 @@
 import SwiftUI
 import WooFoundation
+import Yosemite
 
 struct WooShippingCustomsForm: View {
     @Environment(\.presentationMode) var presentationMode
@@ -104,6 +105,19 @@ struct WooShippingCustomsForm: View {
                                     .font(.subheadline)
                             }
                             .tint(Color.accentColor)
+                            .padding(.bottom, 24)
+
+                            Text("Product Details")
+                                .tertiaryTitleStyle()
+
+                            WooShippingCustomsItem(viewModel: WooShippingCustomsItemViewModel(
+                                description: "Coffee Beans",
+                                hsTariffNumber: "1234",
+                                valuePerUnit: "",
+                                weightPerUnit: "",
+                                originCountry: Country(code: "VN", name: "Vietnam", states: []),
+                                allCountries: [])
+                            )
                         }
                         .padding()
                         .toolbar {

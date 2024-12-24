@@ -2,10 +2,11 @@ import UIKit
 
 // MARK: - Base colors.
 public extension UIColor {
-    /// Accent. WooCommercePurple-40
+    /// Accent. WooCommercePurple-40 (Light mode) and WooCommercePurple-30 (Dark mode)
     ///
     static var accent: UIColor {
-        return .withColorStudio(.wooCommercePurple, shade: .shade40)
+        return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade40),
+                       dark: .withColorStudio(.wooCommercePurple, shade: .shade30))
     }
 
     /// Accent Dark. Purple-70 (Light Mode) and Purple-50 (Dark Mode)
@@ -26,11 +27,9 @@ public extension UIColor {
                         dark: withColorStudio(.red, shade: .shade30))
     }
 
-    /// Primary. WooCommercePurple-40
+    /// Primary. resolves to accent, WooCommercePurple-40 (Light mode) and WooCommercePurple-30 (Dark mode)
     ///
-    static var primary: UIColor {
-        return .withColorStudio(.wooCommercePurple, shade: .shade40)
-    }
+    static var primary: UIColor = .accent
 
     /// Warning. Orange-30 (< iOS 13 and Light Mode) and Orange-50 (Dark Mode)
     ///
@@ -78,11 +77,9 @@ public extension UIColor {
 
 // MARK: - Text Colors.
 public extension UIColor {
-    /// Text link. Purple-50
+    /// Text link. resolves to accent, WooCommercePurple-40 (Light mode) and WooCommercePurple-30 (Dark mode)
     ///
-    static var textLink: UIColor {
-        return .accent
-    }
+    static var textLink: UIColor = .accent
 
     /// Text.
     ///
@@ -129,10 +126,7 @@ public extension UIColor {
 
     /// Text.
     ///
-    static var textBrand: UIColor {
-        return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
-        dark: .withColorStudio(.wooCommercePurple, shade: .shade30))
-    }
+    static var textBrand: UIColor = .accent
 
     /// Text Warning.
     ///

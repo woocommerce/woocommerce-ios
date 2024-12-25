@@ -85,6 +85,10 @@ struct DefaultImageService: ImageService {
             }
         }
     }
+
+    func clearMemoryCache() {
+        imageCache.clearMemoryCache()
+    }
 }
 
 extension ImageCache {

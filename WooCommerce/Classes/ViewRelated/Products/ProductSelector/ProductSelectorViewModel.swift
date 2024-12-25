@@ -877,6 +877,9 @@ private extension ProductSelectorViewModel {
 
 // MARK: - Reset filters
 private extension ProductSelectorViewModel {
+    /// The filters applied in product selector will fire the storage closure callback in the main product list screen.
+    /// Resetting filters from local products settings helps to show the correct products in the main product list screen.
+    ///
     func resetFiltersUsingLocalProductsSettings() {
         let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] (result) in
             guard let self else { return }

@@ -1634,6 +1634,82 @@ final class ProductSelectorViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.favoriteProductIDs, sampleProductIDs)
     }
+
+    // MARK: - Resetting filters
+
+    func test_it_resets_filters_when_tapping_close_button() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores)
+
+        let filters = FilterProductListViewModel.Filters(
+            stockStatus: .outOfStock,
+            productStatus: .draft,
+            promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
+            productCategory: nil,
+            favoriteProduct: FavoriteProductsFilter(),
+            numberOfActiveFilters: 4)
+
+        viewModel.searchTerm = "shirt"
+        viewModel.updateFilters(filters)
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadProductsSettings(siteID, onCompletion):
+                onCompletion(.success(.fake().copy(siteID: siteID, stockStatusFilter: .inStock)))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // Confidence check
+        XCTAssertEqual(viewModel.filterListViewModel.criteria.stockStatus, .outOfStock)
+
+        // When
+        viewModel.closeButtonTapped()
+
+        // Then
+        XCTAssertEqual(viewModel.filterListViewModel.criteria.stockStatus, .inStock)
+    }
+
+    func test_it_resets_filters_when_completing_selection() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores)
+
+        let filters = FilterProductListViewModel.Filters(
+            stockStatus: .outOfStock,
+            productStatus: .draft,
+            promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
+            productCategory: nil,
+            favoriteProduct: FavoriteProductsFilter(),
+            numberOfActiveFilters: 4)
+
+        viewModel.searchTerm = "shirt"
+        viewModel.updateFilters(filters)
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadProductsSettings(siteID, onCompletion):
+                onCompletion(.success(.fake().copy(siteID: siteID, stockStatusFilter: .inStock)))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // Confidence check
+        XCTAssertEqual(viewModel.filterListViewModel.criteria.stockStatus, .outOfStock)
+
+        // When
+        viewModel.completeMultipleSelection()
+
+        // Then
+        XCTAssertEqual(viewModel.filterListViewModel.criteria.stockStatus, .inStock)
+    }
 }
 
 // MARK: - Utils

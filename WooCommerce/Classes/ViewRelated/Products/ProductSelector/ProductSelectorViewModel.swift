@@ -880,7 +880,7 @@ private extension ProductSelectorViewModel {
     func resetFiltersUsingLocalProductsSettings() {
         let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] (result) in
             guard let self else { return }
-            
+
             switch result {
             case .success(let settings):
                 let promotableProductType = settings.productTypeFilter.map { PromotableProductType(productType: $0, isAvailable: true, promoteUrl: nil) }

@@ -5,6 +5,7 @@ import UIKit
 import Yosemite
 
 final class MockPushNotificationsManager: PushNotesManager {
+
     func disableInAppNotifications() {
 
     }
@@ -41,6 +42,12 @@ final class MockPushNotificationsManager: PushNotesManager {
         localNotificationResponsesSubject.eraseToAnyPublisher()
     }
 
+    private let mockedDeviceID: String?
+
+    var deviceID: String? {
+        mockedDeviceID
+    }
+
     private let localNotificationResponsesSubject = PassthroughSubject<UNNotificationResponse, Never>()
 
     private(set) var requestedLocalNotifications: [LocalNotification] = []
@@ -49,6 +56,10 @@ final class MockPushNotificationsManager: PushNotesManager {
     private(set) var triggersForRequestedLocalNotificationsIfNeeded: [UNNotificationTrigger] = []
     private(set) var canceledLocalNotificationScenarios: [[LocalNotification.Scenario]] = []
     private(set) var resetBadgeCountKinds: [Note.Kind] = []
+
+    init(mockedDeviceID: String? = nil) {
+        self.mockedDeviceID = mockedDeviceID
+    }
 
     func resetBadgeCount(type: Note.Kind) {
         resetBadgeCountKinds.append(type)

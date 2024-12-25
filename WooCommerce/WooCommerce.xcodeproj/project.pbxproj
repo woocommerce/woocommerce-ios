@@ -374,6 +374,7 @@
 		0279F0E4252DC9670098D7DE /* ProductVariationLoadUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0279F0E3252DC9670098D7DE /* ProductVariationLoadUseCase.swift */; };
 		027A2E142513124E00DA6ACB /* Keychain+Entries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027A2E132513124E00DA6ACB /* Keychain+Entries.swift */; };
 		027A2E162513356100DA6ACB /* AppleIDCredentialChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027A2E152513356100DA6ACB /* AppleIDCredentialChecker.swift */; };
+		027ADB6E2D1BF5E3009608DB /* ParentProductCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027ADB6D2D1BF5E3009608DB /* ParentProductCardView.swift */; };
 		027B8BB823FE0CB30040944E /* DefaultProductUIImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027B8BB723FE0CB30040944E /* DefaultProductUIImageLoader.swift */; };
 		027B8BBD23FE0DE10040944E /* ProductImageActionHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027B8BBC23FE0DE10040944E /* ProductImageActionHandlerTests.swift */; };
 		027B8BBF23FE0F850040944E /* MockMediaStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027B8BBE23FE0F850040944E /* MockMediaStoresManager.swift */; };
@@ -3526,6 +3527,7 @@
 		0279F0E3252DC9670098D7DE /* ProductVariationLoadUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationLoadUseCase.swift; sourceTree = "<group>"; };
 		027A2E132513124E00DA6ACB /* Keychain+Entries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keychain+Entries.swift"; sourceTree = "<group>"; };
 		027A2E152513356100DA6ACB /* AppleIDCredentialChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleIDCredentialChecker.swift; sourceTree = "<group>"; };
+		027ADB6D2D1BF5E3009608DB /* ParentProductCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentProductCardView.swift; sourceTree = "<group>"; };
 		027B8BB723FE0CB30040944E /* DefaultProductUIImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultProductUIImageLoader.swift; sourceTree = "<group>"; };
 		027B8BBC23FE0DE10040944E /* ProductImageActionHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageActionHandlerTests.swift; sourceTree = "<group>"; };
 		027B8BBE23FE0F850040944E /* MockMediaStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMediaStoresManager.swift; sourceTree = "<group>"; };
@@ -6989,6 +6991,7 @@
 				68D8FBD02BFEF9C700477C42 /* TotalsView.swift */,
 				68AF3C3A2D01481A006F1ED2 /* POSReceiptEligibilityBanner.swift */,
 				DA1D68C12C36F0980097859A /* PointOfSaleAssets.swift */,
+				027ADB6D2D1BF5E3009608DB /* ParentProductCardView.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -14988,6 +14991,7 @@
 				B509FED121C041DF000076A9 /* Locale+Woo.swift in Sources */,
 				B5DB01B52114AB2D00A4F797 /* WooCrashLoggingStack.swift in Sources */,
 				205B7EBF2C19FBCA00D14A36 /* PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel.swift in Sources */,
+				027ADB6E2D1BF5E3009608DB /* ParentProductCardView.swift in Sources */,
 				26ED9660274328BC00FA00A1 /* SimplePaymentsSummaryViewModel.swift in Sources */,
 				024DF31E23743045006658FE /* TextList+AztecFormatting.swift in Sources */,
 				CEEF742E2B9A0BAA00B03948 /* SessionsReportCardViewModel.swift in Sources */,

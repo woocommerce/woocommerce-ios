@@ -3502,6 +3502,36 @@ extension Networking.SiteVisitStatsItem {
     }
 }
 
+extension Networking.StoredProductSettings.Setting {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        sort: NullableCopiableProp<String> = .copy,
+        stockStatusFilter: NullableCopiableProp<ProductStockStatus> = .copy,
+        productStatusFilter: NullableCopiableProp<ProductStatus> = .copy,
+        productTypeFilter: NullableCopiableProp<ProductType> = .copy,
+        productCategoryFilter: NullableCopiableProp<ProductCategory> = .copy,
+        favoriteProduct: CopiableProp<Bool> = .copy
+    ) -> Networking.StoredProductSettings.Setting {
+        let siteID = siteID ?? self.siteID
+        let sort = sort ?? self.sort
+        let stockStatusFilter = stockStatusFilter ?? self.stockStatusFilter
+        let productStatusFilter = productStatusFilter ?? self.productStatusFilter
+        let productTypeFilter = productTypeFilter ?? self.productTypeFilter
+        let productCategoryFilter = productCategoryFilter ?? self.productCategoryFilter
+        let favoriteProduct = favoriteProduct ?? self.favoriteProduct
+
+        return Networking.StoredProductSettings.Setting(
+            siteID: siteID,
+            sort: sort,
+            stockStatusFilter: stockStatusFilter,
+            productStatusFilter: productStatusFilter,
+            productTypeFilter: productTypeFilter,
+            productCategoryFilter: productCategoryFilter,
+            favoriteProduct: favoriteProduct
+        )
+    }
+}
+
 extension Networking.Subscription {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

@@ -6,7 +6,7 @@ import Codegen
 ///
 public struct StoredProductSettings: Codable, Equatable, GeneratedFakeable {
 
-    public struct Setting: Codable, Equatable {
+    public struct Setting: Codable, Equatable, GeneratedFakeable, GeneratedCopiable {
         public let siteID: Int64
         public let sort: String?
         public let stockStatusFilter: ProductStockStatus?

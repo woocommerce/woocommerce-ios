@@ -32,7 +32,7 @@ struct DefaultImageService: ImageService {
         return options
     }
 
-    init(imageCache: ImageCache = ImageCache.default,
+    init(imageCache: ImageCache = ImageCache.optimizedCache,
          imageDownloader: ImageDownloader = Kingfisher.ImageDownloader.default) {
         self.imageCache = imageCache
         self.imageDownloader = imageDownloader
@@ -84,5 +84,16 @@ struct DefaultImageService: ImageService {
                 completion?(nil, .other(error: error))
             }
         }
+    }
+}
+
+extension ImageCache {
+    /// Cache with stricter limit to optimize memory usage.
+    ///
+    static var optimizedCache: ImageCache {
+        let cache = ImageCache.default
+        cache.memoryStorage.config.totalCostLimit = 50 * 1024 * 1024 // 50MB
+        cache.memoryStorage.config.countLimit = 25
+        return cache
     }
 }

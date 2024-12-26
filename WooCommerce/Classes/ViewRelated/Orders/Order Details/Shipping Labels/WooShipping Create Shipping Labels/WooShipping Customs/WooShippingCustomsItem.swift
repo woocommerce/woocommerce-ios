@@ -185,7 +185,7 @@ extension WooShippingCustomsItem {
     enum Layout {
         static let collapsibleViewTopPadding: CGFloat = 4.0
         static let collapsibleViewBottomContentTrailingPadding: CGFloat = -30.0
-        static let collapsibleViewVerticalSpacing: CGFloat = 8.0
+        static let collapsibleViewVerticalSpacing: CGFloat = 16
         static let collapsibleViewBottomLabelVerticalSpacing: CGFloat = 4.0
         static let descriptionTopPadding: CGFloat = 4.0
         static let borderCornerRadius: CGFloat = 8.0

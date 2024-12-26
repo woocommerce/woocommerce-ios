@@ -13,9 +13,9 @@ struct WooShippingCustomsItem: View {
                         shouldShowDividers: false,
                         backgroundColor: .clear,
                         label: {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: Layout.collapsibleViewVerticalSpacing) {
                 HStack {
-                    Text("Little Nap Brazil 250g")
+                    Text(viewModel.title)
                         .headlineStyle()
                     Spacer()
                     Image(systemName: "exclamationmark.circle")
@@ -23,49 +23,53 @@ struct WooShippingCustomsItem: View {
                         .renderedIf(viewModel.informationIsMissing)
                 }
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: Layout.collapsibleViewBottomLabelVerticalSpacing) {
                     HStack {
-                        Text("Coffee beans")
+                        Text(viewModel.description)
                         Spacer()
-                        Text("HS 14-1")
+                        Text(viewModel.hsTariffNumber)
                     }
 
                     HStack {
-                        Text("Japan")
+                        Text(viewModel.originCountry.name)
                         Spacer()
-                        Text("0.3kg")
+                        Text(viewModel.weightPerUnit)
                         Text("•")
-                        Text("$20.00")
+                        Text(viewModel.valuePerUnit)
                     }
                 }.renderedIf(isCollapsed)
                     .foregroundColor(.primary)
                     .subheadlineStyle()
-                    .padding(.trailing, -30)
+                    .padding(.trailing, Layout.collapsibleViewBottomContentTrailingPadding)
             }
-            .padding(.top, 4)
+            .padding(.top, Layout.collapsibleViewTopPadding)
         }, content: {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: Layout.collapsibleViewVerticalSpacing) {
                 Divider()
-
-                Text("Description")
-                    .foregroundColor(.primary)
-                    .subheadlineStyle()
+                HStack {
+                    Text(Localization.descriptionTitle)
+                        .foregroundColor(.primary)
+                        .subheadlineStyle()
+                    Spacer()
+                    Image(systemName: "info.circle")
+                        .foregroundColor(Color(.wooCommercePurple(.shade60)))
+                }
                     .padding(.top, 4)
                 TextField("", text: $viewModel.description)
-                    .padding(16)
-                    .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
-                Text("HS tarriff number")
+                    .padding(Layout.extraPadding)
+                    .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderLineWidth)
+                Text(Localization.HSTarriffNumber)
                     .foregroundColor(.primary)
                     .subheadlineStyle()
-                TextField("Optional", text: $viewModel.hsTariffNumber)
-                    .padding(16)
-                    .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
+                TextField(Localization.HSTarriffNumberPlaceholder, text: $viewModel.hsTariffNumber)
+                    .padding(Layout.extraPadding)
+                    .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderLineWidth)
                 Button {
                     isShowingHSTarrifInfoWebView = true
                 } label: {
-                    HStack(alignment: .top, spacing: 8) {
+                    HStack(alignment: .top, spacing: Layout.hsTarriffNumberMoreInfoVerticalSpacing) {
                         Image(systemName: "info.circle")
-                        Text("More info about HS tarriff")
+                        Text(Localization.HSTarriffNumberMoreInfo)
                     }
                     .foregroundColor(Color(.wooCommercePurple(.shade60)))
                     .footnoteStyle()
@@ -73,44 +77,49 @@ struct WooShippingCustomsItem: View {
 
                 HStack {
                     VStack(alignment: .leading) {
-                        Text("Value per unit")
+                        Text(Localization.valuePerUnitTitle)
                             .foregroundColor(.primary)
                             .subheadlineStyle()
                         TextField("$ 0", text: $viewModel.valuePerUnit)
-                            .padding(16)
-                            .roundedBorder(cornerRadius: 8,
+                            .padding(Layout.extraPadding)
+                            .roundedBorder(cornerRadius: Layout.borderCornerRadius,
                                            lineColor: viewModel.valuePerUnit.isEmpty ? .withColorStudio(name: .red, shade: .shade60) : Color(.separator),
-                                           lineWidth: 1)
-                        Text("Value required")
+                                           lineWidth: Layout.borderLineWidth)
+                        Text(Localization.valueRequiredWarningText)
                             .foregroundColor(.withColorStudio(name: .red, shade: .shade60))
                             .footnoteStyle()
                             .renderedIf(viewModel.valuePerUnit.isEmpty)
                     }
 
                     VStack(alignment: .leading) {
-                        Text("Weight per unit")
+                        Text(Localization.weightPerUnitTitle)
                             .foregroundColor(.primary)
                             .subheadlineStyle()
                         HStack {
                             TextField("0", text: $viewModel.weightPerUnit)
-                                .padding(16)
+                                .padding(Layout.extraPadding)
                             Text("kg")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
-                                .padding(.trailing, 8)
+                                .padding(.trailing, Layout.unitsHorizontalSpacing)
                         }
-                        .roundedBorder(cornerRadius: 8,
+                        .roundedBorder(cornerRadius: Layout.borderCornerRadius,
                                        lineColor: viewModel.weightPerUnit.isEmpty ? .withColorStudio(name: .red, shade: .shade60) : Color(.separator),
-                                       lineWidth: 1)
-                        Text("Value required")
+                                       lineWidth: Layout.borderLineWidth)
+                        Text(Localization.valueRequiredWarningText)
                             .foregroundColor(.withColorStudio(name: .red, shade: .shade60))
                             .footnoteStyle()
                             .renderedIf(viewModel.weightPerUnit.isEmpty)
                     }
                 }
 
-                Text("Origin Country")
-                    .foregroundColor(.primary)
+                HStack {
+                    Text(Localization.originCountryTitle)
+                        .foregroundColor(.primary)
+                    Spacer()
+                    Image(systemName: "info.circle")
+                        .foregroundColor(Color(.wooCommercePurple(.shade60)))
+                }
                     .subheadlineStyle()
 
                 Button {
@@ -125,22 +134,64 @@ struct WooShippingCustomsItem: View {
                     }
                     .padding()
                 }
-                .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
+                .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderLineWidth)
             }
-            .padding(.leading, 16)
-            .padding(.trailing, 16)
-            .padding(.bottom, 16)
+            .padding(.leading, Layout.extraPadding)
+            .padding(.trailing, Layout.extraPadding)
+            .padding(.bottom, Layout.extraPadding)
         })
-        .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
+        .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderLineWidth)
         .safariSheet(isPresented: $isShowingHSTarrifInfoWebView, url: viewModel.hsTariffURL)
         .sheet(isPresented: $isShowingCountries, content: {
             NavigationStack {
-                SingleSelectionList(title: "Origin Country",
+                SingleSelectionList(title: Localization.originCountryTitle,
                                     items: viewModel.allCountries,
                                     contentKeyPath: \.name,
                                     selected: $viewModel.originCountry)
             }
             .wooNavigationBarStyle()
         })
+    }
+}
+
+extension WooShippingCustomsItem {
+    enum Localization {
+        static let descriptionTitle = NSLocalizedString("wooShipping.customsItems.description",
+                                              value: "Description",
+                                              comment: "Title for the customs items description text field for customs items")
+        static let HSTarriffNumber = NSLocalizedString("wooShipping.customsItems.hsTarriffNumber",
+                                                       value: "HSTarriffNumber",
+                                                       comment: "Title for the HS Tarriff Number text field for customs items")
+        static let HSTarriffNumberPlaceholder = NSLocalizedString("wooShipping.customsItems.hsTarriffNumber.placeholder",
+                                                       value: "Optional",
+                                                       comment: "Placeholder for the HS Tarriff Number text field for customs items")
+        static let HSTarriffNumberMoreInfo = NSLocalizedString("wooShipping.customsItems.hsTarriffNumber.moreInfoText",
+                                                       value: "More info about HS tarriff",
+                                                       comment: "Information text about the HS Tarriff")
+        static let valuePerUnitTitle = NSLocalizedString("wooShipping.customsItems.valuePerUnit",
+                                              value: "Value per unit",
+                                              comment: "Title for the customs items value per unit text field for customs items")
+        static let weightPerUnitTitle = NSLocalizedString("wooShipping.customsItems.weightPerUnit",
+                                              value: "Weight per unit",
+                                              comment: "Title for the customs items weight per unit text field for customs items")
+        static let valueRequiredWarningText = NSLocalizedString("wooShipping.customsItems.valueRequired",
+                                              value: "Value required",
+                                              comment: "Warning text when some required value is missing")
+        static let originCountryTitle = NSLocalizedString("wooShipping.customsItems.originCountry",
+                                              value: "Origin Country",
+                                              comment: "Title for the origin country text field")
+    }
+
+    enum Layout {
+        static let collapsibleViewTopPadding: CGFloat = 4.0
+        static let collapsibleViewBottomContentTrailingPadding: CGFloat = -30.0
+        static let collapsibleViewVerticalSpacing: CGFloat = 8.0
+        static let collapsibleViewBottomLabelVerticalSpacing: CGFloat = 4.0
+        static let descriptionTopPadding: CGFloat = 4.0
+        static let borderCornerRadius: CGFloat = 8.0
+        static let borderLineWidth: CGFloat = 1.0
+        static let extraPadding: CGFloat = 16.0
+        static let hsTarriffNumberMoreInfoVerticalSpacing: CGFloat = 8.0
+        static let unitsHorizontalSpacing: CGFloat = 8.0
     }
 }

@@ -2,6 +2,7 @@ import Yosemite
 import SwiftUI
 
 final class WooShippingCustomsItemViewModel: ObservableObject {
+    @Published var title: String
     @Published var description: String
     @Published var hsTariffNumber: String
     @Published var valuePerUnit: String
@@ -14,7 +15,8 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
 
     let hsTariffURL: URL? = .init(string: "https://woocommerce.com/document/woocommerce-shipping-and-tax/woocommerce-shipping/#section-29")
 
-    init(description: String, hsTariffNumber: String, valuePerUnit: String, weightPerUnit: String, originCountry: Country, allCountries: [Country]) {
+    init(title: String, description: String, hsTariffNumber: String, valuePerUnit: String, weightPerUnit: String, originCountry: Country, allCountries: [Country]) {
+        self.title = title
         self.description = description
         self.hsTariffNumber = hsTariffNumber
         self.valuePerUnit = valuePerUnit

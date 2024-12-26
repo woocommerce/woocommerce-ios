@@ -112,11 +112,12 @@ struct WooShippingCustomsForm: View {
                                     .tertiaryTitleStyle()
 
                                 WooShippingCustomsItem(viewModel: WooShippingCustomsItemViewModel(
+                                    title: "Little Nap Brazil 250g",
                                     description: "Coffee Beans",
-                                    hsTariffNumber: "1234",
-                                    valuePerUnit: "",
-                                    weightPerUnit: "",
-                                    originCountry: Country(code: "VN", name: "Vietnam", states: []),
+                                    hsTariffNumber: "HS 14-1",
+                                    valuePerUnit: "$20.00",
+                                    weightPerUnit: "0.3kg",
+                                    originCountry: Country(code: "US", name: "United States", states: []),
                                     allCountries: [])
                                 )
                             }

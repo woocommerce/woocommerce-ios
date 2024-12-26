@@ -29,6 +29,7 @@ class WooCommerceScreenshots: XCTestCase {
         app.launchArguments.append("-mocks-push-notification")
         app.launchArguments.append(contentsOf: ["-mocks-port", "\(server.listenAddress.port)"])
 
+        app.launchTimeout = 120
         app.launch()
 
         addUIInterruptionMonitor(withDescription: "System Dialog") { alert in

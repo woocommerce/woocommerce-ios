@@ -8,6 +8,7 @@ final class ProductsTests: XCTestCase {
 
         let app = XCUIApplication()
         app.launchArguments = ["logout-at-launch", "disable-animations", "mocked-wpcom-api", "-ui_testing"]
+        app.launchTimeout = 120
         app.launch()
         try LoginFlow.login()
     }

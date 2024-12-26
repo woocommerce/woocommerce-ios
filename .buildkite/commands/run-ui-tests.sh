@@ -29,6 +29,7 @@ defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool true
 echo "--- 🚀 Booting Simulator"
 xcrun simctl list >> /dev/null
 xcrun simctl boot "$DEVICE"
+xcrun simctl ui "$DEVICE" enableAccessibility
 
 # Wait for the simulator to be fully booted
 echo "⏳ Waiting for Simulator to be Ready"

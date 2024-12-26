@@ -59,85 +59,102 @@ struct WooShippingCustomsForm: View {
 
     var body: some View {
         NavigationView {
-        GeometryReader { geometry in
-            ScrollViewReader { proxy in
-                ScrollView {
-                        VStack(alignment: .leading, spacing: Constants.defaultVerticalSpacing) {
-                            HStack {
-                                Text(Localization.contentType)
-                                    .font(.subheadline)
-                                Spacer()
-                            }
-
-                            contentTypeSelectionView
-
-                            HStack {
-                                Text(Localization.restrictionType)
-                                    .font(.subheadline)
-                                Spacer()
-                            }
-
-                            restrictionTypeSelectionView
-
-                            HStack {
-                                Text(Localization.internationalTransactionNumber)
-                                    .font(.subheadline)
-                                Spacer()
-                            }
-
-                            TextField("", text: $viewModel.internationalTransactionNumber)
-                                .padding(Constants.borderPadding)
-                                .roundedBorder(cornerRadius: Constants.borderCornerRadius, lineColor: Color(.separator), lineWidth: Constants.borderWidth)
-
-                            Button {
-                                isShowingITNInfoWebView = true
-                            } label: {
-                                HStack(alignment: .top, spacing: Constants.intoButtonHorizontalSpacing) {
-                                    Image(systemName: "info.circle")
-                                    Text(Localization.infoText)
+            GeometryReader { geometry in
+                VStack {
+                    ScrollViewReader { proxy in
+                        ScrollView {
+                            VStack(alignment: .leading, spacing: Constants.defaultVerticalSpacing) {
+                                HStack {
+                                    Text(Localization.contentType)
+                                        .font(.subheadline)
+                                    Spacer()
                                 }
-                                .foregroundColor(Color(.wooCommercePurple(.shade60)))
-                                .footnoteStyle()
+
+                                contentTypeSelectionView
+
+                                HStack {
+                                    Text(Localization.restrictionType)
+                                        .font(.subheadline)
+                                    Spacer()
+                                }
+
+                                restrictionTypeSelectionView
+
+                                HStack {
+                                    Text(Localization.internationalTransactionNumber)
+                                        .font(.subheadline)
+                                    Spacer()
+                                }
+
+                                TextField("", text: $viewModel.internationalTransactionNumber)
+                                    .padding(Constants.borderPadding)
+                                    .roundedBorder(cornerRadius: Constants.borderCornerRadius, lineColor: Color(.separator), lineWidth: Constants.borderWidth)
+
+                                Button {
+                                    isShowingITNInfoWebView = true
+                                } label: {
+                                    HStack(alignment: .top, spacing: Constants.intoButtonHorizontalSpacing) {
+                                        Image(systemName: "info.circle")
+                                        Text(Localization.infoText)
+                                    }
+                                    .foregroundColor(Color(.wooCommercePurple(.shade60)))
+                                    .footnoteStyle()
+                                }
+
+                                Toggle(isOn: $viewModel.returnToSenderIfNotDelivered) {
+                                    Text(Localization.returnToSenderMessage)
+                                        .font(.subheadline)
+                                }
+                                .tint(Color.accentColor)
+                                .padding(.bottom, 24)
+
+                                Text("Product Details")
+                                    .tertiaryTitleStyle()
+
+                                WooShippingCustomsItem(viewModel: WooShippingCustomsItemViewModel(
+                                    description: "Coffee Beans",
+                                    hsTariffNumber: "1234",
+                                    valuePerUnit: "",
+                                    weightPerUnit: "",
+                                    originCountry: Country(code: "VN", name: "Vietnam", states: []),
+                                    allCountries: [])
+                                )
                             }
-
-                            Toggle(isOn: $viewModel.returnToSenderIfNotDelivered) {
-                                Text(Localization.returnToSenderMessage)
-                                    .font(.subheadline)
+                            .padding()
+                            .toolbar {
+                                ToolbarItem(placement: .cancellationAction) {
+                                    Button(action: {
+                                        presentationMode.wrappedValue.dismiss()
+                                    }, label: {
+                                        Text(Localization.cancel)
+                                    })
+                                }
                             }
-                            .tint(Color.accentColor)
-                            .padding(.bottom, 24)
+                            .navigationTitle(Localization.customs)
+                            .navigationBarTitleDisplayMode(.inline)
 
-                            Text("Product Details")
-                                .tertiaryTitleStyle()
-
-                            WooShippingCustomsItem(viewModel: WooShippingCustomsItemViewModel(
-                                description: "Coffee Beans",
-                                hsTariffNumber: "1234",
-                                valuePerUnit: "",
-                                weightPerUnit: "",
-                                originCountry: Country(code: "VN", name: "Vietnam", states: []),
-                                allCountries: [])
-                            )
+                            Spacer()
                         }
-                        .padding()
-                        .toolbar {
-                            ToolbarItem(placement: .cancellationAction) {
-                                Button(action: {
-                                    presentationMode.wrappedValue.dismiss()
-                                }, label: {
-                                    Text(Localization.cancel)
-                                })
-                            }
-                        }
-                        .navigationTitle(Localization.customs)
-                        .navigationBarTitleDisplayMode(.inline)
-
-                        Spacer()
+                        .navigationViewStyle(.stack)
+                        .safariSheet(isPresented: $isShowingITNInfoWebView, url: viewModel.itnInfoURL)
                     }
-                    .navigationViewStyle(.stack)
-                    .safariSheet(isPresented: $isShowingITNInfoWebView, url: viewModel.itnInfoURL)
+
+                    Spacer()
+
+                    Divider()
+
+                    Button {
+                        // TODO: Save values
+                        presentationMode.wrappedValue.dismiss()
+                    } label: {
+                        Text(viewModel.informationIsMissing ? Localization.addMissingInformationButtonTitle : Localization.saveCustomsDetailsButtonTitle)
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                    .disabled(viewModel.informationIsMissing)
+                    .padding(Constants.bottomButtonPadding)
                 }
             }
+
         }
     }
 }
@@ -165,6 +182,12 @@ extension WooShippingCustomsForm {
         static let returnToSenderMessage = NSLocalizedString("wooShipping.customs.returnToSenderMessage",
                                                               value: "Return to sender if package is not able to be delivered",
                                                               comment: "Info label for a toggle to return the package to a sender if necessary toggle")
+        static let addMissingInformationButtonTitle = NSLocalizedString("wooShipping.customs.addMissingInformationButtonTitle",
+                                                              value: "Add Missing Information",
+                                                              comment: "Customs button title when it's disabled and there's still info to add")
+        static let saveCustomsDetailsButtonTitle = NSLocalizedString("wooShipping.customs.saveCustomsDetails",
+                                                              value: "Save Customs Details",
+                                                              comment: "Customs button title when it's enabled and there's no info to add")
     }
 
 }
@@ -176,5 +199,6 @@ extension WooShippingCustomsForm {
         static let borderWidth: CGFloat = 1
         static let borderPadding: CGFloat = 16
         static let intoButtonHorizontalSpacing: CGFloat = 8
+        static let bottomButtonPadding: CGFloat = 16.0
     }
 }

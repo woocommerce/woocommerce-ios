@@ -37,6 +37,7 @@ steps:
   - label: ":microscope: Unit Tests"
     command: .buildkite/commands/run-unit-tests.sh
     depends_on: build
+    if: build.branch == 'trunk' # for testing - remove this later!
     plugins: [$CI_TOOLKIT]
     artifact_paths:
       - fastlane/test_output/*
@@ -95,7 +96,8 @@ steps:
     command: .buildkite/commands/run-ui-tests.sh UITests 'iPhone 16'
     depends_on: build
     # Only run on `trunk` and `release/*` -- See p91TBi-cBM-p2#comment-13736
-    if: build.branch == 'trunk' || build.branch =~ /^release\//
+    # if: build.branch == 'trunk' || build.branch =~ /^release\//
+    if: build.branch == 'jostnes/testing-ui-tests-in-ci'
     plugins: [$CI_TOOLKIT]
     artifact_paths:
       - fastlane/test_output/*
@@ -107,7 +109,8 @@ steps:
     command: .buildkite/commands/run-ui-tests.sh UITests "iPad (10th generation)"
     depends_on: build
     # Only run on `trunk` and `release/*` -- See p91TBi-cBM-p2#comment-13736
-    if: build.branch == 'trunk' || build.branch =~ /^release\//
+    # if: build.branch == 'trunk' || build.branch =~ /^release\//
+    if: build.branch == 'jostnes/testing-ui-tests-in-ci'
     plugins: [$CI_TOOLKIT]
     artifact_paths:
       - fastlane/test_output/*

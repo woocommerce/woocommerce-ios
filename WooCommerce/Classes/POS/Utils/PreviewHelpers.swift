@@ -55,19 +55,23 @@ final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
 
 final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtocol {
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
-                                                                   itemsStack: ItemsStackState(root: .loading([])))
+                                                                   itemsStack: ItemsStackState(root: .loading([]),
+                                                                                               itemStates: [:]))
     var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { $itemsViewState }
 
     func loadInitialItems() async {
-        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded(mockItems)))
+        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded(mockItems),
+                                                                                              itemStates: [:]))
     }
 
     func loadNextItems() async {
-        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loading(mockItems)))
+        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loading(mockItems),
+                                                                                              itemStates: [:]))
     }
 
     func reload() async {
-        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded([])))
+        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded([]),
+                                                                                              itemStates: [:]))
     }
 }
 

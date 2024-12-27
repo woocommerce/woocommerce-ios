@@ -56,6 +56,8 @@ public class AccountStore: Store {
             synchronizeSitePlan(siteID: siteID, onCompletion: onCompletion)
         case .updateAccountSettings(let userID, let tracksOptOut, let onCompletion):
             updateAccountSettings(userID: userID, tracksOptOut: tracksOptOut, onCompletion: onCompletion)
+        case .updateNotificationSettings(let notificationSettings, let onCompletion):
+            updateNotificationSettings(notificationSettings: notificationSettings, onCompletion: onCompletion)
         case .closeAccount(let onCompletion):
             closeAccount(onCompletion: onCompletion)
         }
@@ -218,6 +220,17 @@ private extension AccountStore {
             case .success:
                 onCompletion(.success(()))
             case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    func updateNotificationSettings(notificationSettings: NotificationSettings, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        Task {
+            do {
+                try await remote.updateNotificationSettings(with: notificationSettings)
+                onCompletion(.success(()))
+            } catch {
                 onCompletion(.failure(error))
             }
         }

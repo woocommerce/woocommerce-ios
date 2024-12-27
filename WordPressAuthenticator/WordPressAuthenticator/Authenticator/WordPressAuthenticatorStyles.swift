@@ -107,6 +107,12 @@ public struct WordPressAuthenticatorStyle {
     ///
     public let prologueSecondaryButtonStyle: NUXButtonStyle?
 
+    /// Style: tertiary button on the prologue view
+    /// When `nil` it will use the default link style
+    /// Defaults to `nil`
+    ///
+    public let prologueTertiaryButtonStyle: NUXButtonStyle?
+
     /// Style: prologue top container child view controller
     /// When nil, `LoginProloguePageViewController` is displayed in the top container
     ///
@@ -163,6 +169,7 @@ public struct WordPressAuthenticatorStyle {
                 prologueButtonsBlurEffect: UIBlurEffect? = nil,
                 prologuePrimaryButtonStyle: NUXButtonStyle? = nil,
                 prologueSecondaryButtonStyle: NUXButtonStyle? = nil,
+                prologueTertiaryButtonStyle: NUXButtonStyle? = nil,
                 prologueTopContainerChildViewController: @autoclosure @escaping () -> UIViewController? = nil,
                 statusBarStyle: UIStatusBarStyle = .lightContent,
                 orDividerSeparatorColor: UIColor = .tertiaryLabel,
@@ -200,6 +207,7 @@ public struct WordPressAuthenticatorStyle {
         self.prologueButtonsBlurEffect = prologueButtonsBlurEffect
         self.prologuePrimaryButtonStyle = prologuePrimaryButtonStyle
         self.prologueSecondaryButtonStyle = prologueSecondaryButtonStyle
+        self.prologueTertiaryButtonStyle = prologueTertiaryButtonStyle
         self.prologueTopContainerChildViewController = prologueTopContainerChildViewController
         self.statusBarStyle = statusBarStyle
         self.orDividerSeparatorColor = orDividerSeparatorColor

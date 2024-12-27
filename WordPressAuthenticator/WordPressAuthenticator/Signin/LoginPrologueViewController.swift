@@ -259,6 +259,7 @@ class LoginPrologueViewController: LoginViewController {
 
         let primaryButtonStyle = WordPressAuthenticator.shared.style.prologuePrimaryButtonStyle
         let secondaryButtonStyle = WordPressAuthenticator.shared.style.prologueSecondaryButtonStyle
+        let tertiaryButtonStyle = WordPressAuthenticator.shared.style.prologueTertiaryButtonStyle ?? NUXButtonStyle.linkButtonStyle
 
         setButtonViewMargins(forWidth: view.frame.width)
         let displayStrings = WordPressAuthenticator.shared.displayStrings
@@ -317,7 +318,7 @@ class LoginPrologueViewController: LoginViewController {
                                  isPrimary: false,
                                  configureBodyFontForTitle: true,
                                  accessibilityIdentifier: "Prologue Site Creation Guide button",
-                                 style: NUXButtonStyle.linkButtonStyle,
+                                 style: tertiaryButtonStyle,
                                  onTap: siteCreationGuideCallback())
         }()
 

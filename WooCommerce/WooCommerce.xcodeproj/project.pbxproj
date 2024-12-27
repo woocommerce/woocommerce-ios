@@ -1985,6 +1985,8 @@
 		B90D21782D15B72900ED60ED /* WooShippingCustomsFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90D21772D15B72700ED60ED /* WooShippingCustomsFormViewModel.swift */; };
 		B90D217A2D1B06D000ED60ED /* WooShippingCustomsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90D21792D1B06CE00ED60ED /* WooShippingCustomsItem.swift */; };
 		B90D217C2D1B06F700ED60ED /* WooShippingCustomsItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90D217B2D1B06F600ED60ED /* WooShippingCustomsItemViewModel.swift */; };
+		B90D217E2D1ECA3100ED60ED /* WooShippingCustomsItemDescriptionInfoDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90D217D2D1ECA1F00ED60ED /* WooShippingCustomsItemDescriptionInfoDialog.swift */; };
+		B90D21802D1ED1F300ED60ED /* WooShippingCustomsItemOriginCountryInfoDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90D217F2D1ED1DE00ED60ED /* WooShippingCustomsItemOriginCountryInfoDialog.swift */; };
 		B90DACC02A30AEF000365897 /* BarcodeScannerItemFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90DACBF2A30AEF000365897 /* BarcodeScannerItemFinder.swift */; };
 		B90DACC22A31BBC800365897 /* BarcodeScannerProductFinderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90DACC12A31BBC800365897 /* BarcodeScannerProductFinderTests.swift */; };
 		B90DD08E2D12FAA400EFC06A /* WooShippingCustomsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90DD08D2D12FA9900EFC06A /* WooShippingCustomsRow.swift */; };
@@ -5108,6 +5110,8 @@
 		B90D21772D15B72700ED60ED /* WooShippingCustomsFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingCustomsFormViewModel.swift; sourceTree = "<group>"; };
 		B90D21792D1B06CE00ED60ED /* WooShippingCustomsItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingCustomsItem.swift; sourceTree = "<group>"; };
 		B90D217B2D1B06F600ED60ED /* WooShippingCustomsItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingCustomsItemViewModel.swift; sourceTree = "<group>"; };
+		B90D217D2D1ECA1F00ED60ED /* WooShippingCustomsItemDescriptionInfoDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingCustomsItemDescriptionInfoDialog.swift; sourceTree = "<group>"; };
+		B90D217F2D1ED1DE00ED60ED /* WooShippingCustomsItemOriginCountryInfoDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingCustomsItemOriginCountryInfoDialog.swift; sourceTree = "<group>"; };
 		B90DACBF2A30AEF000365897 /* BarcodeScannerItemFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerItemFinder.swift; sourceTree = "<group>"; };
 		B90DACC12A31BBC800365897 /* BarcodeScannerProductFinderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerProductFinderTests.swift; sourceTree = "<group>"; };
 		B90DD08D2D12FA9900EFC06A /* WooShippingCustomsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingCustomsRow.swift; sourceTree = "<group>"; };
@@ -10877,6 +10881,8 @@
 		B90DD08C2D12FA6600EFC06A /* WooShipping Customs */ = {
 			isa = PBXGroup;
 			children = (
+				B90D217F2D1ED1DE00ED60ED /* WooShippingCustomsItemOriginCountryInfoDialog.swift */,
+				B90D217D2D1ECA1F00ED60ED /* WooShippingCustomsItemDescriptionInfoDialog.swift */,
 				B90D217B2D1B06F600ED60ED /* WooShippingCustomsItemViewModel.swift */,
 				B90D21792D1B06CE00ED60ED /* WooShippingCustomsItem.swift */,
 				B90D21772D15B72700ED60ED /* WooShippingCustomsFormViewModel.swift */,
@@ -15093,6 +15099,7 @@
 				029F29FC24D94106004751CA /* EditableProductVariationModel.swift in Sources */,
 				0218B4EC242E06F00083A847 /* MediaType+WPMediaType.swift in Sources */,
 				D85A3C5026C153A500C0E026 /* InPersonPaymentsPluginNotActivatedView.swift in Sources */,
+				B90D217E2D1ECA3100ED60ED /* WooShippingCustomsItemDescriptionInfoDialog.swift in Sources */,
 				D8815AE726383FD600EDAD62 /* CardPresentPaymentsModalViewModel.swift in Sources */,
 				DAB4099F2CA5A329008EE1F2 /* WooShippingAddPackageView.swift in Sources */,
 				02B21C5729C9EEF900C5623B /* WooAnalyticsEvent+StoreOnboarding.swift in Sources */,
@@ -16150,6 +16157,7 @@
 				261AA30C2753119E009530FE /* PaymentMethodsViewModel.swift in Sources */,
 				68E674AD2A4DAC010034BA1E /* CurrentPlanDetailsView.swift in Sources */,
 				DE68B81F26F86B1700C86CFB /* OfflineBannerView.swift in Sources */,
+				B90D21802D1ED1F300ED60ED /* WooShippingCustomsItemOriginCountryInfoDialog.swift in Sources */,
 				D8610BCC256F284700A5DF27 /* ULErrorViewModel.swift in Sources */,
 				CCFC50552743BC0D001E505F /* OrderForm.swift in Sources */,
 				262418332B8D3630009A3834 /* ApplicationPasswordTutorial.swift in Sources */,

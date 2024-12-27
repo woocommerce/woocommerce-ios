@@ -7,6 +7,9 @@ struct WooShippingCustomsItem: View {
     @ObservedObject var viewModel: WooShippingCustomsItemViewModel
     @State private var isShowingHSTarrifInfoWebView = false
     @State private var isShowingCountries = false
+    @State private var isShowingDescriptionInfoDialog = false
+    @State private var isShowingOriginCountryInfoDialog = false
+
 
     var body: some View {
         CollapsibleView(isCollapsed: $isCollapsed,
@@ -50,8 +53,13 @@ struct WooShippingCustomsItem: View {
                         .foregroundColor(.primary)
                         .subheadlineStyle()
                     Spacer()
-                    Image(systemName: "info.circle")
-                        .foregroundColor(Color(.wooCommercePurple(.shade60)))
+                    Button {
+                        isShowingDescriptionInfoDialog = true
+                    } label: {
+                        Image(systemName: "info.circle")
+                            .foregroundColor(Color(.wooCommercePurple(.shade60)))
+
+                    }
                 }
                 .padding(.top, Layout.descriptionTopPadding)
                 TextField("", text: $viewModel.description)
@@ -118,7 +126,7 @@ struct WooShippingCustomsItem: View {
                         .foregroundColor(.primary)
                     Spacer()
                     Button {
-                        // TODO: Add information
+                        isShowingOriginCountryInfoDialog = true
                     } label: {
                         Image(systemName: "info.circle")
                             .foregroundColor(Color(.wooCommercePurple(.shade60)))
@@ -155,6 +163,14 @@ struct WooShippingCustomsItem: View {
             }
             .wooNavigationBarStyle()
         })
+        .fullScreenCover(isPresented: $isShowingDescriptionInfoDialog) {
+            WooShippingCustomsItemDescriptionInfoDialog()
+                .background(FullScreenCoverClearBackgroundView())
+        }
+        .fullScreenCover(isPresented: $isShowingOriginCountryInfoDialog) {
+            WooShippingCustomsItemOriginCountryInfoDialog()
+                .background(FullScreenCoverClearBackgroundView())
+        }
     }
 }
 

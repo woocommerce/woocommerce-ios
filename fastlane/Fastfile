@@ -1277,7 +1277,6 @@ lane :test_without_building do |options|
     device: options[:device],
     ensure_devices_found: true,
     force_quit_simulator: true,
-    # reset_simulator: true,
     parallel_testing: parallel_testing_value,
     concurrent_workers: CONCURRENT_SIMULATORS,
     max_concurrent_simulators: CONCURRENT_SIMULATORS,

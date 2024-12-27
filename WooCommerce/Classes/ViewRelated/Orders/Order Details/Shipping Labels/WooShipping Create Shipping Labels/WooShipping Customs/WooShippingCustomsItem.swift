@@ -157,7 +157,7 @@ struct WooShippingCustomsItem: View {
         .sheet(isPresented: $isShowingCountries, content: {
             NavigationStack {
                 SingleSelectionList(title: Localization.originCountryTitle,
-                                    items: viewModel.allCountries,
+                                    items: viewModel.countries,
                                     contentKeyPath: \.name,
                                     selected: $viewModel.originCountry)
             }

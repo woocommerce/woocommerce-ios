@@ -118,8 +118,7 @@ struct WooShippingCustomsForm: View {
                                     hsTariffNumber: "HS 14-1",
                                     valuePerUnit: "$20.00",
                                     weightPerUnit: "0.3kg",
-                                    originCountry: Country(code: "US", name: "United States", states: []),
-                                    allCountries: [])
+                                    originCountry: Country(code: "US", name: "United States", states: []))
                                 )
                             }
                             .padding()

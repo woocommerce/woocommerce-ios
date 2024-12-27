@@ -29,7 +29,6 @@ struct WooShippingCustomsItem: View {
                         Spacer()
                         Text(viewModel.hsTariffNumber)
                     }
-
                     HStack {
                         Text(viewModel.originCountry.name)
                         Spacer()

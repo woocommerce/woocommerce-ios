@@ -54,7 +54,7 @@ struct WooShippingCustomsItem: View {
                     Image(systemName: "info.circle")
                         .foregroundColor(Color(.wooCommercePurple(.shade60)))
                 }
-                    .padding(.top, 4)
+                .padding(.top, Layout.descriptionTopPadding)
                 TextField("", text: $viewModel.description)
                     .padding(Layout.extraPadding)
                     .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderLineWidth)
@@ -98,6 +98,7 @@ struct WooShippingCustomsItem: View {
                         HStack {
                             TextField("0", text: $viewModel.weightPerUnit)
                                 .padding(Layout.extraPadding)
+                            // TODO: Add right unit
                             Text("kg")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
@@ -117,14 +118,18 @@ struct WooShippingCustomsItem: View {
                     Text(Localization.originCountryTitle)
                         .foregroundColor(.primary)
                     Spacer()
-                    Image(systemName: "info.circle")
-                        .foregroundColor(Color(.wooCommercePurple(.shade60)))
+                    Button {
+                        // TODO: Add information
+                    } label: {
+                        Image(systemName: "info.circle")
+                            .foregroundColor(Color(.wooCommercePurple(.shade60)))
+
+                    }
                 }
                     .subheadlineStyle()
 
                 Button {
                     isShowingCountries = true
-
                 } label: {
                     HStack {
                         Text(viewModel.originCountry.name)

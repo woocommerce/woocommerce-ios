@@ -106,11 +106,12 @@ struct WooShippingCustomsForm: View {
                                         .font(.subheadline)
                                 }
                                 .tint(Color.accentColor)
-                                .padding(.bottom, 24)
+                                .padding(.bottom, Constants.returnToSenderRowBottomPadding)
 
                                 Text("Product Details")
                                     .tertiaryTitleStyle()
 
+                                // Dummy data
                                 WooShippingCustomsItem(viewModel: WooShippingCustomsItemViewModel(
                                     title: "Little Nap Brazil 250g",
                                     description: "Coffee Beans",
@@ -201,5 +202,6 @@ extension WooShippingCustomsForm {
         static let borderPadding: CGFloat = 16
         static let intoButtonHorizontalSpacing: CGFloat = 8
         static let bottomButtonPadding: CGFloat = 16.0
+        static let returnToSenderRowBottomPadding: CGFloat = 24.0
     }
 }

@@ -2786,6 +2786,7 @@
 		DEE2152D2D113EF1004A11F3 /* EditStoreListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE2152C2D113EF1004A11F3 /* EditStoreListView.swift */; };
 		DEE215302D113F89004A11F3 /* EditStoreListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE2152F2D113F84004A11F3 /* EditStoreListViewModel.swift */; };
 		DEE215322D116FBB004A11F3 /* EditStoreListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE215312D116FBB004A11F3 /* EditStoreListViewModelTests.swift */; };
+		DEE215342D1297CD004A11F3 /* UserDefaults+EditStoreList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE215332D1297CD004A11F3 /* UserDefaults+EditStoreList.swift */; };
 		DEE6437626D87C4100888A75 /* PrintCustomsFormsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6437526D87C4100888A75 /* PrintCustomsFormsView.swift */; };
 		DEE6437826D8DAD900888A75 /* InProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6437726D8DAD900888A75 /* InProgressView.swift */; };
 		DEEDA239298A11FB0088256B /* SiteCredentialLoginUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEDA238298A11FB0088256B /* SiteCredentialLoginUseCase.swift */; };
@@ -5914,6 +5915,7 @@
 		DEE2152C2D113EF1004A11F3 /* EditStoreListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditStoreListView.swift; sourceTree = "<group>"; };
 		DEE2152F2D113F84004A11F3 /* EditStoreListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditStoreListViewModel.swift; sourceTree = "<group>"; };
 		DEE215312D116FBB004A11F3 /* EditStoreListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditStoreListViewModelTests.swift; sourceTree = "<group>"; };
+		DEE215332D1297CD004A11F3 /* UserDefaults+EditStoreList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+EditStoreList.swift"; sourceTree = "<group>"; };
 		DEE6437526D87C4100888A75 /* PrintCustomsFormsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintCustomsFormsView.swift; sourceTree = "<group>"; };
 		DEE6437726D8DAD900888A75 /* InProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InProgressView.swift; sourceTree = "<group>"; };
 		DEEDA238298A11FB0088256B /* SiteCredentialLoginUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCredentialLoginUseCase.swift; sourceTree = "<group>"; };
@@ -13234,6 +13236,7 @@
 		DEE2152E2D113F61004A11F3 /* EditStoreList */ = {
 			isa = PBXGroup;
 			children = (
+				DEE215332D1297CD004A11F3 /* UserDefaults+EditStoreList.swift */,
 				DEE2152F2D113F84004A11F3 /* EditStoreListViewModel.swift */,
 				DEE2152C2D113EF1004A11F3 /* EditStoreListView.swift */,
 			);
@@ -16055,6 +16058,7 @@
 				DEC2962726C17AD8005A056B /* ShippingLabelCustomsForm+Localization.swift in Sources */,
 				26A630FE253F63C300CBC3B1 /* RefundableOrderItem.swift in Sources */,
 				CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */,
+				DEE215342D1297CD004A11F3 /* UserDefaults+EditStoreList.swift in Sources */,
 				CE63024E2BAC664900E3325C /* EmailView.swift in Sources */,
 				DE4B3B5826A7041800EEF2D8 /* EdgeInsets+Woo.swift in Sources */,
 				02CE4304276993DA0006EAEF /* CaptureDevicePermissionChecker.swift in Sources */,

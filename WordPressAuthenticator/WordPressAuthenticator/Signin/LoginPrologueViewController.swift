@@ -13,11 +13,6 @@ class LoginPrologueViewController: LoginViewController {
     var showCancel = false
 
     @IBOutlet private weak var buttonContainerView: UIView!
-    /// Blur effect on button container view
-    ///
-    private var blurEffect: UIBlurEffect.Style {
-        return .systemChromeMaterial
-    }
 
     /// Constraints on the button view container.
     /// Used to adjust the button width in unified views.
@@ -390,8 +385,12 @@ class LoginPrologueViewController: LoginViewController {
         }
 
         if let backgroundImage = WordPressAuthenticator.shared.unifiedStyle?.prologueBackgroundImage {
-            view.layer.contents = backgroundImage.cgImage
-        }
+            let backgroundImageView = UIImageView(image: backgroundImage)
+            backgroundImageView.contentMode = WordPressAuthenticator.shared.unifiedStyle?.prologueBackgroundScaleMode ?? .scaleAspectFill
+            backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
+            view.insertSubview(backgroundImageView, at: 0)
+            view.pinSubviewToAllEdges(backgroundImageView)
+		}
     }
 
     private func setButtonViewControllerBackground() {

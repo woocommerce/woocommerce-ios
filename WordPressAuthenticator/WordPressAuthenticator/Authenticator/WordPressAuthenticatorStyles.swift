@@ -250,6 +250,10 @@ public struct WordPressAuthenticatorUnifiedStyle {
     /// Style: optional auth Prologue view background image
     public let prologueBackgroundImage: UIImage?
 
+    /// Style: optional resizing policy for the prologue background image
+    ///
+    public let prologueBackgroundScaleMode: UIView.ContentMode
+
     /// Style: optional blur effect for the buttons view
     public let prologueButtonsBlurEffect: UIBlurEffect?
 
@@ -279,6 +283,7 @@ public struct WordPressAuthenticatorUnifiedStyle {
                 prologueButtonsBackgroundColor: UIColor = .clear,
                 prologueViewBackgroundColor: UIColor? = nil,
                 prologueBackgroundImage: UIImage? = nil,
+                prologueBackgroundScaleMode: UIView.ContentMode = .scaleToFill,
                 prologueButtonsBlurEffect: UIBlurEffect? = nil,
                 statusBarStyle: UIStatusBarStyle = .default,
                 navBarBackgroundColor: UIColor,
@@ -295,6 +300,7 @@ public struct WordPressAuthenticatorUnifiedStyle {
         self.prologueButtonsBackgroundColor = prologueButtonsBackgroundColor
         self.prologueViewBackgroundColor = prologueViewBackgroundColor ?? viewControllerBackgroundColor
         self.prologueBackgroundImage = prologueBackgroundImage
+        self.prologueBackgroundScaleMode = prologueBackgroundScaleMode
         self.prologueButtonsBlurEffect = prologueButtonsBlurEffect
         self.statusBarStyle = statusBarStyle
         self.navBarBackgroundColor = navBarBackgroundColor

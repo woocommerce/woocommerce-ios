@@ -151,7 +151,8 @@ private struct NotLoggedInView: View {
             VStack {
                 Image(uiImage: .wooLogo)
                     .resizable()
-                    .frame(width: Layout.logoSize.width, height: Layout.logoSize.height)
+                    .scaledToFit()
+                    .frame(width: Layout.logoWidth)
 
                 Spacer()
 
@@ -165,7 +166,7 @@ private struct NotLoggedInView: View {
             }
             .padding(.vertical, Layout.cardVerticalPadding)
         }
-        .widgetBackground(backgroundView: Color(.clear))
+        .widgetBackground(backgroundView: Color(.brand))
     }
 }
 
@@ -178,7 +179,8 @@ private struct UnableToFetchView: View {
             VStack {
                 Image(uiImage: .wooLogo)
                     .resizable()
-                    .frame(width: Layout.logoSize.width, height: Layout.logoSize.height)
+                    .scaledToFit()
+                    .frame(width: Layout.logoWidth)
 
                 Spacer()
 
@@ -256,7 +258,7 @@ private extension NotLoggedInView {
 
     enum Layout {
         static let cardVerticalPadding = 22.0
-        static let logoSize = CGSize(width: 24, height: 16)
+        static let logoWidth = 32.0
     }
 }
 
@@ -273,7 +275,7 @@ private extension UnableToFetchView {
 
     enum Layout {
         static let cardVerticalPadding = 22.0
-        static let logoSize = CGSize(width: 24, height: 16)
+        static let logoWidth = 32.0
     }
 }
 

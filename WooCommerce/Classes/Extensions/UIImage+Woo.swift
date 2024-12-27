@@ -558,6 +558,11 @@ extension UIImage {
         return UIImage(named: "prologue-curved-rectangle")!
     }
 
+    static func prologueBackgroundBubbles(tint: UIColor) -> UIImage {
+        let image = UIImage(named: "login-prologue-background-bubbles")!
+        return image.imageWithTintColor(tint)!
+    }
+
     /// Login prologue analytics image
     ///
     static var prologueAnalyticsImage: UIImage {

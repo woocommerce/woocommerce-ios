@@ -19,15 +19,18 @@ struct SimpleProductCardView: View {
             .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
                    height: Constants.productCardSize * scale)
 
-            VStack(alignment: .leading, spacing: Constants.textSpacing) {
+            DynamicHStack(spacing: Constants.textSpacing) {
+                Spacer().renderedIf(dynamicTypeSize.isAccessibilitySize)
                 Text(product.name)
                     .lineLimit(2)
                     .foregroundStyle(Color.posPrimaryText)
                     .multilineTextAlignment(.leading)
                     .font(Constants.itemNameFont)
+                Spacer()
                 Text(product.formattedPrice)
                     .foregroundStyle(Color.posPrimaryText)
                     .font(Constants.itemPriceFont)
+                Spacer().renderedIf(dynamicTypeSize.isAccessibilitySize)
             }
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
             .padding(.vertical, Constants.verticalTextPadding * (1 / scale))

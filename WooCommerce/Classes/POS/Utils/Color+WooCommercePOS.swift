@@ -87,6 +87,17 @@ extension Color {
         )
     }
 
+    // MARK: - POS Items
+
+    static var posItemSecondaryText: Color {
+        Color(
+            UIColor(
+                light: .withColorStudio(.gray, shade: .shade60),
+                dark: .withColorStudio(.gray, shade: .shade30)
+            )
+        )
+    }
+
     // MARK: - Buttons
 
     static var posPrimaryButtonBackground: Color {

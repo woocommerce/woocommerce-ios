@@ -36,7 +36,7 @@ struct LoginPrologueView: View {
     var body: some View {
         GeometryReader { geometry in
             ScrollView(.vertical) {
-                content(geometry: geometry)
+                content
                     .frame(minHeight: geometry.size.height)
             }
         }
@@ -44,7 +44,7 @@ struct LoginPrologueView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    func content(geometry: GeometryProxy) -> some View {
+    var content: some View {
         VStack(alignment: .center) {
             Image(uiImage: .wooLogoImage(withSize: Layout.wooLogoSize)!)
                 .padding(.top, Layout.topPadding)
@@ -55,7 +55,7 @@ struct LoginPrologueView: View {
                 Image(uiImage: .prologueWooMobileImage)
                     .resizable()
                     .scaledToFit()
-                    .frame(height: geometry.size.height * 0.35)
+                    .fixedSize()
                     .padding(.bottom, 4 * Layout.stackSpacing)
 
                 Text(Localization.title)

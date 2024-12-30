@@ -29,6 +29,10 @@ protocol PushNotesManager {
     ///
     var localNotificationUserResponses: AnyPublisher<UNNotificationResponse, Never> { get }
 
+    /// WordPress.com Device Identifier
+    ///
+    var deviceID: String? { get }
+
     /// Resets the Badge Count.
     ///
     func resetBadgeCount(type: Note.Kind)

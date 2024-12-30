@@ -1,6 +1,7 @@
 import SwiftUI
 import struct Yosemite.POSParentProduct
 
+/// Displays a card for a parent product in POS.
 struct ParentProductCardView: View {
     private let parentProduct: POSParentProduct
 
@@ -74,7 +75,7 @@ private extension ParentProductCardView {
 
 #if DEBUG
 #Preview {
-    let parentProduct = POSParentProduct(id: UUID(), name: "Parent product 1", productImageSource: nil, productID: 42, type: .variable)
+    let parentProduct = POSParentProduct(id: UUID(), name: "Parent variable product", productImageSource: nil, productID: 42, type: .variable)
     ParentProductCardView(parentProduct: parentProduct)
 }
 #endif

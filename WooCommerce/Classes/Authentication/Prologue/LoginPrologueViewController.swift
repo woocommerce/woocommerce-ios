@@ -17,9 +17,9 @@ final class LoginPrologueViewController: UIHostingController<LoginPrologueView> 
     }
 
     override func viewWillAppear(_ animated: Bool) {
-            super.viewWillAppear(animated)
-            navigationController?.setNavigationBarHidden(true, animated: animated)
-        }
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
 }
 
 extension LoginPrologueViewController {
@@ -34,15 +34,18 @@ extension LoginPrologueViewController {
 
 struct LoginPrologueView: View {
     var body: some View {
-        ScrollView(.vertical) {
-            content
+        GeometryReader { geometry in
+            ScrollView(.vertical) {
+                content(geometry: geometry)
+                    .frame(minHeight: geometry.size.height)
+            }
         }
         .scrollBounceBasedOnSize()
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    var content: some View {
-        VStack {
+    func content(geometry: GeometryProxy) -> some View {
+        VStack(alignment: .center) {
             Image(uiImage: .wooLogoImage(withSize: Layout.wooLogoSize)!)
                 .padding(.top, Layout.topPadding)
 

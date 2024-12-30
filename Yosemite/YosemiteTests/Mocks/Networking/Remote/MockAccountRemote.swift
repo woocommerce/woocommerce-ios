@@ -22,6 +22,9 @@ final class MockAccountRemote {
     /// The results to return based on the given site ID in `loadUsernameSuggestions`.
     private var loadUsernameSuggestionsResult: Result<[String], Error>?
 
+    /// Returns the value when `updateNotificationSettings` is called.
+    private var updateNotificationSettingsResult: Result<Void, Error> = .success(())
+
     /// The results to return based on the given site ID in `createAccount`.
     private var createAccountResult: Result<CreateAccountResult, CreateAccountError>?
 
@@ -51,6 +54,11 @@ final class MockAccountRemote {
     /// Returns the value when `createAccount` is called.
     func whenCreatingAccount(thenReturn result: Result<CreateAccountResult, CreateAccountError>) {
         createAccountResult = result
+    }
+
+    /// Returns  the value when `updateNotificationSettings` is called.
+    func whenUpdatingNotificationSettings(thenReturn result: Result<Void, Error>) {
+        updateNotificationSettingsResult = result
     }
 }
 
@@ -113,6 +121,15 @@ extension MockAccountRemote: AccountRemoteProtocol {
         }
 
         return try result.get()
+    }
+
+    func updateNotificationSettings(with settings: NotificationSettings) async throws {
+        switch updateNotificationSettingsResult {
+        case .success:
+            break
+        case .failure(let error):
+            throw error
+        }
     }
 
     func createAccount(email: String,

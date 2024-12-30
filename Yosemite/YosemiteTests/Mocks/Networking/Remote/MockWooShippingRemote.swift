@@ -36,6 +36,9 @@ final class MockWooShippingRemote {
     /// The results to return based on the given arguments in `printLabel`
     private var printLabel = [ResultKey: Result<ShippingLabelPrintData, Error>]()
 
+    /// The results to return based on the given arguments in `loadOriginAddresses`
+    private var loadOriginAddresses = [ResultKey: Result<[WooShippingOriginAddress], Error>]()
+
     /// Set the value passed to the `completion` block if `createPackage` is called.
     func whenCreatePackage(siteID: Int64,
                            thenReturn result: Result<WooShippingCreatePackageResponse, Error>) {
@@ -90,6 +93,13 @@ final class MockWooShippingRemote {
                         thenReturn result: Result<ShippingLabelPrintData, Error>) {
         let key = ResultKey(siteID: siteID)
         printLabel[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `loadOriginAddresses` is called.
+    func whenOriginAddresses(siteID: Int64,
+                             thenReturn result: Result<[WooShippingOriginAddress], Error>) {
+        let key = ResultKey(siteID: siteID)
+        loadOriginAddresses[key] = result
     }
 }
 
@@ -215,6 +225,20 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
             let key = ResultKey(siteID: siteID)
             if let result = self.printLabel[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func loadOriginAddresses(siteID: Int64,
+                             completion: @escaping (Result<[Networking.WooShippingOriginAddress], any Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = ResultKey(siteID: siteID)
+            if let result = self.loadOriginAddresses[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

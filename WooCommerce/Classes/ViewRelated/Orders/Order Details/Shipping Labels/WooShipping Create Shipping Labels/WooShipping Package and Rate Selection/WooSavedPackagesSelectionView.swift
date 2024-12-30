@@ -120,7 +120,9 @@ struct WooSavedPackagesSelectionView: View {
                 }
                 else {
                     Button {
-                        viewModel.loadPackages()
+                        Task {
+                            await viewModel.loadPackages()
+                        }
                     } label: {
                         Image(systemName: "arrow.trianglehead.counterclockwise")
                     }
@@ -129,16 +131,17 @@ struct WooSavedPackagesSelectionView: View {
             }
             else {
                 Divider()
-                List {
-                    packagesSection(for: viewModel.customSavedPackages)
-                    packagesSection(for: viewModel.predefinedSavedPackages)
-                }
-                .listStyle(.plain)
-                .refreshable {
-                    await withCheckedContinuation { continuation in
-                        viewModel.loadPackages {
-                            continuation.resume()
-                        }
+                ScrollViewReader { scroll in
+                    List {
+                        packagesSection(for: viewModel.customSavedPackages)
+                        packagesSection(for: viewModel.predefinedSavedPackages)
+                    }
+                    .listStyle(.plain)
+                    .refreshable {
+                        await viewModel.loadPackages()
+                    }
+                    .task {
+                        scroll.scrollTo(viewModel.selectedSavedPackageId)
                     }
                 }
                 Divider()
@@ -177,6 +180,7 @@ struct WooSavedPackagesSelectionView: View {
                     viewModel.selectedSavedPackageId = viewModel.selectedSavedPackageId == package.id ? nil : package.id
                 }
             )
+            .id(package.id)
             .alignmentGuide(.listRowSeparatorLeading) { _ in
                 return 16
             }

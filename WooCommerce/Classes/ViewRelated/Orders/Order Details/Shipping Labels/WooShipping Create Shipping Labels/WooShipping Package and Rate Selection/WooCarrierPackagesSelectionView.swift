@@ -26,40 +26,45 @@ struct WooCarrierPackagesView: View {
     let onRefresh: () async -> Void
 
     var body: some View {
-        List {
-            ForEach(carrierTab.packageGroups, id: \.id) { packageGroup in
-                Section {
-                    ForEach(packageGroup.packages, id: \.id) { package in
-                        WooShippingPackageOptionView(
-                            isSelected: selectedPackageId == package.id,
-                            package: package,
-                            showTopDivider: false,
-                            showSource: false,
-                            tapAction: {
-                                tapAction(package.id)
-                            },
-                            starAction: {
-                                starAction(package.id)
-                                // Just temporary, will be replaced with proper logic
-                            },
-                            starred: starredPackages.contains(package.id)
-                        )
-                        .alignmentGuide(.listRowSeparatorLeading) { _ in
-                            return 16
+        ScrollViewReader { scroll in
+            List {
+                ForEach(carrierTab.packageGroups, id: \.id) { packageGroup in
+                    Section {
+                        ForEach(packageGroup.packages, id: \.id) { package in
+                            WooShippingPackageOptionView(
+                                isSelected: selectedPackageId == package.id,
+                                package: package,
+                                showTopDivider: false,
+                                showSource: false,
+                                tapAction: {
+                                    tapAction(package.id)
+                                },
+                                starAction: {
+                                    starAction(package.id)
+                                },
+                                starred: starredPackages.contains(package.id)
+                            )
+                            .alignmentGuide(.listRowSeparatorLeading) { _ in
+                                return 16
+                            }
+                            .id(package.id)
                         }
+                    } header: {
+                        HStack {
+                            Text(packageGroup.name.uppercased())
+                                .foregroundColor(.secondary)
+                                .captionStyle()
+                                .multilineTextAlignment(.leading)
+                            Spacer()
+                        }
+                        .padding(.horizontal)
+                        .background(Color.clear)
                     }
-                } header: {
-                    HStack {
-                        Text(packageGroup.name.uppercased())
-                            .foregroundColor(.secondary)
-                            .captionStyle()
-                            .multilineTextAlignment(.leading)
-                        Spacer()
-                    }
-                    .padding(.horizontal)
-                    .background(Color.clear)
+                    .listRowInsets(.zero)
                 }
-                .listRowInsets(.zero)
+            }
+            .task {
+                scroll.scrollTo(selectedPackageId)
             }
         }
         .listStyle(.plain)
@@ -109,7 +114,9 @@ struct WooCarrierPackagesSelectionView: View {
             }
             else {
                 Button {
-                    viewModel.loadPackages()
+                    Task {
+                        await viewModel.loadPackages()
+                    }
                 } label: {
                     Image(systemName: "arrow.trianglehead.counterclockwise")
                 }
@@ -124,11 +131,7 @@ struct WooCarrierPackagesSelectionView: View {
                 }, starAction: { packageID in
                     viewModel.starUnstarPackage(packageID, carrierID: selectedCarrierTab.carrier.rawValue)
                 }, onRefresh: {
-                    await withCheckedContinuation { continuation in
-                        viewModel.loadPackages {
-                            continuation.resume()
-                        }
-                    }
+                    await viewModel.loadPackages()
                 })
             }
             Spacer()

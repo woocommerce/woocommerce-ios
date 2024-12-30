@@ -117,20 +117,29 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
     // MARK: - loading
 
-    func loadPackages(completion: (() -> (Void))? = nil) {
-        guard !isLoadingPackages else { return }
+    @MainActor
+    @discardableResult
+    func loadPackages() async -> Result<WooShippingPackagesResponse, WooShippingLoadPackagesError> {
+        guard !isLoadingPackages else {
+            return .failure(WooShippingLoadPackagesError.loadingInProgress)
+        }
 
         isLoadingPackages = true
 
-        let loadPackagesAction = WooShippingAction.loadPackages(siteID: siteID) { [weak self] result in
-            guard let self else { return }
-            if case .failure(let error) = result {
-                DDLogError("⛔️ Error loading packages for Woo Shipping labels: \(error)")
+        let result: Result<WooShippingPackagesResponse, WooShippingLoadPackagesError> = await withCheckedContinuation { continuation in
+            let loadPackagesAction = WooShippingAction.loadPackages(siteID: siteID) { result in
+                continuation.resume(returning: result)
             }
-            isLoadingPackages = false
-            completion?()
+            stores.dispatch(loadPackagesAction)
         }
-        stores.dispatch(loadPackagesAction)
+
+        if case .failure(let error) = result {
+            DDLogError("⛔️ Error loading packages for Woo Shipping labels: \(error)")
+        }
+
+        isLoadingPackages = false
+
+        return result
     }
 
     // transform packages
@@ -140,10 +149,10 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         }
         let customSavedPackages = packages.customPackages.map {
             return $0.toPackageData()
-        }
+        }.sorted { $0.id < $1.id }
         let predefinedSavedPackages = packages.savedPredefinedPackages.map {
             return $0.toPackageData()
-        }
+        }.sorted { $0.id < $1.id }
         var carrierPackages: [WooShippingCarrierPackages] = packages.allPredefinedOptions.compactMap {
             return $0.toCarrierPackages()
         }
@@ -317,7 +326,7 @@ extension WooShippingCarrierPredefinedOptions {
         let packageGroups = predefinedOptions.compactMap { predefinedOption in
             let packages = predefinedOption.predefinedPackages.map { package in
                 return package.toPackageData(groupTitle: predefinedOption.title, sourceID: predefinedOption.providerID)
-            }
+            }.sorted { $0.id < $1.id }
             let group = WooPackageGroup(name: predefinedOption.title, packages: packages)
             return group
         }

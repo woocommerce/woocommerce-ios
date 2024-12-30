@@ -53,6 +53,9 @@ struct LoginPrologueView: View {
                 Spacer(minLength: 2 * Layout.stackSpacing)
 
                 Image(uiImage: .prologueWooMobileImage)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: geometry.size.height * 0.35)
                     .padding(.bottom, 4 * Layout.stackSpacing)
 
                 Text(Localization.title)

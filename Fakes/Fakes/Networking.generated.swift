@@ -2864,6 +2864,26 @@ extension Networking.WooShippingSavedPredefinedPackage {
         )
     }
 }
+extension Networking.WooShippingOriginAddress {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingOriginAddress {
+        .init(id: .fake(),
+              company: .fake(),
+              address1: .fake(),
+              address2: .fake(),
+              city: .fake(),
+              state: .fake(),
+              postcode: .fake(),
+              country: .fake(),
+              phone: .fake(),
+              firstName: .fake(),
+              lastName: .fake(),
+              email: .fake(),
+              defaultAddress: .fake(),
+              isVerified: .fake())
+    }
+}
 extension Networking.WordPressMedia {
     /// Returns a "ready to use" type filled with fake values.
     ///

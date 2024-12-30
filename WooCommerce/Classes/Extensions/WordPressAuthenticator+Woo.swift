@@ -111,11 +111,8 @@ extension WordPressAuthenticator {
                                                               textButtonHighlightColor: .accentDark,
                                                               viewControllerBackgroundColor: .basicBackground,
                                                               prologueButtonsBackgroundColor: .clear,
-                                                              prologueViewBackgroundColor: .wooCommercePurple(.shade70),
-                                                              prologueBackgroundImage: .prologueBackgroundBubbles(
-                                                                tint: UIColor(light: .wooCommercePurple(.shade40),
-                                                                              dark: .gray(.shade80))
-                                                              ),
+                                                              prologueViewBackgroundColor: LoginPrologueViewController.backgroundColor,
+                                                              prologueBackgroundImage: LoginPrologueViewController.backgroundImage,
                                                               prologueBackgroundScaleMode: .center,
                                                               navBarBackgroundColor: .basicBackground,
                                                               navButtonTextColor: .accent,

@@ -74,7 +74,7 @@ struct LoginPrologueView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .padding(16)
+        .padding(Layout.mainContentPadding)
     }
 }
 
@@ -84,6 +84,7 @@ private extension LoginPrologueView {
         static let topPadding: CGFloat = 54
         static let stackSpacing: CGFloat = 8
         static let textMaxWidth: CGFloat = 333
+        static let mainContentPadding: CGFloat = 16
     }
 
     enum Localization {

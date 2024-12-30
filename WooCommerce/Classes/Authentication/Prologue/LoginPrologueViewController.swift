@@ -37,6 +37,7 @@ struct LoginPrologueView: View {
         ScrollView(.vertical) {
             content
         }
+        .scrollBounceBasedOnSize()
         .frame(maxWidth: .infinity)
     }
 
@@ -88,6 +89,16 @@ private extension LoginPrologueView {
                                                 value: "From your first sale to millions in revenue, Woo is with you. " +
                                                 "See why merchants trust us to power 3.9 million stores.",
                                                 comment: "Subtitle displayed in the prologue screen")
+    }
+}
+
+private extension View {
+    func scrollBounceBasedOnSize() -> some View {
+        if #available(iOS 16.4, *) {
+            return self.scrollBounceBehavior(.basedOnSize)
+        } else {
+            return self
+        }
     }
 }
 

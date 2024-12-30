@@ -560,7 +560,7 @@ extension UIImage {
 
     static func prologueBackgroundBubbles(tint: UIColor) -> UIImage {
         let image = UIImage(named: "login-prologue-background-bubbles")!
-        return image.imageWithTintColor(tint)!
+        return image.withTintColor(tint)
     }
 
     /// Login prologue analytics image

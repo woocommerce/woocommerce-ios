@@ -1904,7 +1904,6 @@
 		B5A8532220BDBFAF00FAAB4D /* CircularImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8532120BDBFAE00FAAB4D /* CircularImageView.swift */; };
 		B5A8F8A920B84D3F00D211DE /* ApiCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8F8A720B84D3F00D211DE /* ApiCredentials.swift */; };
 		B5A8F8AD20B88D9900D211DE /* LoginPrologueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8F8AC20B88D9900D211DE /* LoginPrologueViewController.swift */; };
-		B5A8F8AF20B88DCC00D211DE /* LoginPrologueViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5A8F8AE20B88DCC00D211DE /* LoginPrologueViewController.xib */; };
 		B5AA7B3D20ED5D15004DA14F /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5AA7B3C20ED5D15004DA14F /* SessionManager.swift */; };
 		B5AA7B3F20ED81C2004DA14F /* UserDefaults+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5AA7B3E20ED81C2004DA14F /* UserDefaults+Woo.swift */; };
 		B5BBD6DE21B1703700E3207E /* PushNotificationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BBD6DD21B1703600E3207E /* PushNotificationsManager.swift */; };
@@ -5021,7 +5020,6 @@
 		B5A8F8A720B84D3F00D211DE /* ApiCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ApiCredentials.swift; path = DerivedSources/ApiCredentials.swift; sourceTree = SOURCE_ROOT; };
 		B5A8F8A820B84D3F00D211DE /* InfoPlist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InfoPlist.h; path = DerivedSources/InfoPlist.h; sourceTree = SOURCE_ROOT; };
 		B5A8F8AC20B88D9900D211DE /* LoginPrologueViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPrologueViewController.swift; sourceTree = "<group>"; };
-		B5A8F8AE20B88DCC00D211DE /* LoginPrologueViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoginPrologueViewController.xib; sourceTree = "<group>"; };
 		B5AA7B3C20ED5D15004DA14F /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
 		B5AA7B3E20ED81C2004DA14F /* UserDefaults+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Woo.swift"; sourceTree = "<group>"; };
 		B5BBD6DD21B1703600E3207E /* PushNotificationsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotificationsManager.swift; sourceTree = "<group>"; };
@@ -10666,7 +10664,6 @@
 			isa = PBXGroup;
 			children = (
 				B5A8F8AC20B88D9900D211DE /* LoginPrologueViewController.swift */,
-				B5A8F8AE20B88DCC00D211DE /* LoginPrologueViewController.xib */,
 				CC6923AB26010D8D002FB669 /* LoginProloguePageViewController.swift */,
 				CC69236126010946002FB669 /* LoginProloguePages.swift */,
 				02FE1B9E287F51F400EC03B3 /* LoginOnboardingViewController.swift */,
@@ -14263,7 +14260,6 @@
 				B560D68A2195BD100027BB7E /* NoteDetailsCommentTableViewCell.xib in Resources */,
 				B9FBEF9B2A7BCCF100AC609B /* UnderlineableTitleAndSubtitleAndDetailTableViewCell.xib in Resources */,
 				CE0F17D022A8105800964A63 /* ReadMoreTableViewCell.xib in Resources */,
-				B5A8F8AF20B88DCC00D211DE /* LoginPrologueViewController.xib in Resources */,
 				0262DA5923A23AC80029AF30 /* ProductShippingSettingsViewController.xib in Resources */,
 				B5F571B021BF149D0010D1B8 /* o.caf in Resources */,
 				0212275E2449728A0042161F /* BottomSheetListSelectorSectionHeaderView.xib in Resources */,

@@ -148,8 +148,8 @@ extension WordPressAuthenticator {
     }
 
     static var prologueSiteCreationGuideButtonStyle: NUXButtonStyle {
-        let buttonTitleColor = UIColor(light: .white, dark: .textLink)
-        let buttonHighlightColor = UIColor(light: .gray(.shade20), dark: .accentDark)
+        let buttonTitleColor = UIColor.white
+        let buttonHighlightColor = UIColor.gray(.shade20)
 
         return NUXButtonStyle(normal: .init(backgroundColor: .clear,
                                              borderColor: .clear,

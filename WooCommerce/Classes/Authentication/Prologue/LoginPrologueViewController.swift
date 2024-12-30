@@ -28,7 +28,7 @@ extension LoginPrologueViewController {
 
     static var backgroundImage: UIImage {
         .prologueBackgroundBubbles(tint: UIColor(light: .wooCommercePurple(.shade40),
-                                                 dark: .init(fromHex: 0x2c2c2E)))
+                                                 dark: .gray(.shade80)))
     }
 }
 

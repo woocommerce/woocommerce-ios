@@ -13,9 +13,8 @@ extension WooShippingOriginAddress {
     var fullNameWithCompany: String {
         var output: [String] = []
 
-        let name = firstName + " " + lastName
-        if name.isNotEmpty {
-            output.append(name)
+        if let fullName {
+            output.append(fullName)
         }
         if company.isNotEmpty {
             output.append(company)
@@ -32,6 +31,21 @@ extension WooShippingOriginAddress {
 }
 
 private extension WooShippingOriginAddress {
+
+    /// Returns the first and last name combined (if there are, effectively, two names).
+    /// If only one name is present, that name is returned.
+    var fullName: String? {
+        switch (firstName.isNotEmpty, lastName.isNotEmpty) {
+        case (true, true):
+            return "\(firstName) \(lastName)"
+        case (true, false):
+            return firstName
+        case (false, true):
+            return lastName
+        case (false, false):
+            return nil
+        }
+    }
 
     /// Returns the two Address Lines combined (if there are, effectively, two lines).
     /// Per US Post Office standardized rules for address lines. Ref. https://pe.usps.com/text/pub28/28c2_001.htm

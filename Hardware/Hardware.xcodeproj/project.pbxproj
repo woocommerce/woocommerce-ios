@@ -183,6 +183,7 @@
 		317975C1274EBC1F004357B1 /* DeclineReason+Stripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeclineReason+Stripe.swift"; sourceTree = "<group>"; };
 		317975C3274ED591004357B1 /* DeclineReasonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeclineReasonTests.swift; sourceTree = "<group>"; };
 		3CF9348BADD5E0518080A61A /* Pods-Hardware.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hardware.debug.xcconfig"; path = "Target Support Files/Pods-Hardware/Pods-Hardware.debug.xcconfig"; sourceTree = "<group>"; };
+		3F096E4B2D23F70100D8ACCE /* Workspace-Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Workspace-Shared.xcconfig"; sourceTree = "<group>"; };
 		47BDD50287B7B0CF8D769BFC /* Pods-PrinterPlayground.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PrinterPlayground.release-alpha.xcconfig"; path = "Target Support Files/Pods-PrinterPlayground/Pods-PrinterPlayground.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		55CD4BB3273E617C007686D3 /* ReceiptRendererTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptRendererTest.swift; sourceTree = "<group>"; };
 		9726331F55A9621F2F887E13 /* Pods-Hardware.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hardware.release.xcconfig"; path = "Target Support Files/Pods-Hardware/Pods-Hardware.release.xcconfig"; sourceTree = "<group>"; };
@@ -403,6 +404,7 @@
 				D88FDB0025DD216B00CB0DBD /* Products */,
 				ADED522B787D093F499BD540 /* Pods */,
 				EF9EE401B2930AC16BD86FE2 /* Frameworks */,
+				3F096E4B2D23F70100D8ACCE /* Workspace-Shared.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -967,6 +969,7 @@
 /* Begin XCBuildConfiguration section */
 		D88FDB1125DD216B00CB0DBD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3F096E4B2D23F70100D8ACCE /* Workspace-Shared.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1017,7 +1020,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -1032,6 +1034,7 @@
 		};
 		D88FDB1225DD216B00CB0DBD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3F096E4B2D23F70100D8ACCE /* Workspace-Shared.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1076,7 +1079,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -1103,7 +1105,6 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Hardware/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1133,7 +1134,6 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Hardware/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1158,7 +1158,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = HardwareTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1182,7 +1181,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = HardwareTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1197,6 +1195,7 @@
 		};
 		D88FDBDD25DD248C00CB0DBD /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3F096E4B2D23F70100D8ACCE /* Workspace-Shared.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1241,7 +1240,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -1268,7 +1266,6 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Hardware/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1294,7 +1291,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = HardwareTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1316,7 +1312,6 @@
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SampleReceiptPrinter/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1337,7 +1332,6 @@
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SampleReceiptPrinter/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1358,7 +1352,6 @@
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SampleReceiptPrinter/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

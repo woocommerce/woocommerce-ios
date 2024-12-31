@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "img-prologue-orders-light.pdf",
+      "filename" : "prologue-carousel-orders-light.pdf",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "img-prologue-orders-dark.pdf",
+      "filename" : "prologue-carousel-orders-dark.pdf",
       "idiom" : "universal"
     }
   ],

@@ -56,12 +56,14 @@ struct WooShippingCustomsItem: View {
                 TextField("", text: $viewModel.description)
                     .padding(Layout.extraPadding)
                     .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderLineWidth)
+                    .padding(.bottom, Layout.collapsibleViewVerticalSpacing)
                 Text(Localization.HSTarriffNumber)
                     .foregroundColor(.primary)
                     .subheadlineStyle()
                 TextField(Localization.HSTarriffNumberPlaceholder, text: $viewModel.hsTariffNumber)
                     .padding(Layout.extraPadding)
                     .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderLineWidth)
+
                 Button {
                     isShowingHSTarrifInfoWebView = true
                 } label: {
@@ -71,6 +73,7 @@ struct WooShippingCustomsItem: View {
                     }
                     .foregroundColor(Color(.wooCommercePurple(.shade60)))
                     .footnoteStyle()
+                    .padding(.bottom, Layout.collapsibleViewVerticalSpacing)
                 }
 
                 HStack {
@@ -111,6 +114,7 @@ struct WooShippingCustomsItem: View {
                             .renderedIf(viewModel.weightPerUnit.isEmpty)
                     }
                 }
+                .padding(.bottom, Layout.collapsibleViewVerticalSpacing)
 
                 HStack {
                     Text(Localization.originCountryTitle)
@@ -188,7 +192,7 @@ extension WooShippingCustomsItem {
     enum Layout {
         static let collapsibleViewTopPadding: CGFloat = 4.0
         static let collapsibleViewBottomContentTrailingPadding: CGFloat = -30.0
-        static let collapsibleViewVerticalSpacing: CGFloat = 16
+        static let collapsibleViewVerticalSpacing: CGFloat = 8.0
         static let collapsibleViewBottomLabelVerticalSpacing: CGFloat = 4.0
         static let descriptionTopPadding: CGFloat = 4.0
         static let borderCornerRadius: CGFloat = 8.0

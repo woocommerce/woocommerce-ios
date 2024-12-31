@@ -4,7 +4,7 @@ import UIKit
 
 /// Details for each page of the login prologue carousel.
 ///
-enum LoginProloguePageType: CaseIterable {
+enum LoginOnboardingPageType: CaseIterable {
     case stats
     case orderManagement
     case products
@@ -61,16 +61,16 @@ enum LoginProloguePageType: CaseIterable {
 
 /// Simple container for each page of the login prologue carousel.
 ///
-final class LoginProloguePageTypeViewController: UIViewController {
+final class LoginOnboardingPageTypeViewController: UIViewController {
     private let stackView = UIStackView()
     private let titleLabel = UILabel()
     private let subtitleLabel = UILabel()
     private let imageView = UIImageView()
 
-    private let pageType: LoginProloguePageType
+    private let pageType: LoginOnboardingPageType
     private let showsSubtitle: Bool
 
-    init(pageType: LoginProloguePageType, showsSubtitle: Bool) {
+    init(pageType: LoginOnboardingPageType, showsSubtitle: Bool) {
         self.pageType = pageType
         self.showsSubtitle = showsSubtitle
 
@@ -96,7 +96,7 @@ final class LoginProloguePageTypeViewController: UIViewController {
     }
 }
 
-private extension LoginProloguePageTypeViewController {
+private extension LoginOnboardingPageTypeViewController {
     func configureStackView() {
         // Scroll view to contain all contents
         let scrollView = UIScrollView()
@@ -181,7 +181,7 @@ private extension LoginProloguePageTypeViewController {
     }
 }
 
-private extension LoginProloguePageTypeViewController {
+private extension LoginOnboardingPageTypeViewController {
     enum Constants {
         static let stackBottomMargin: CGFloat = -24 // Minimum margin between stack view and login buttons, including space required for UIPageControl
         static let labelLeadingMargin: CGFloat = 48

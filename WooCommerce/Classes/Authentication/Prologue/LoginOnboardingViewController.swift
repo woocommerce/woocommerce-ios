@@ -12,7 +12,7 @@ final class LoginOnboardingViewController: UIViewController {
     }
 
     private let stackView: UIStackView = .init()
-    private lazy var pageViewController = LoginProloguePageViewController(pageTypes: [.products, .orderManagement, .stats],
+    private lazy var pageViewController = LoginOnboardingPageViewController(pageTypes: [.products, .orderManagement, .stats],
                                                                           showsSubtitle: true)
     private lazy var buttonStackView: UIStackView = .init()
     private lazy var nextButton: UIButton = createNextButton()

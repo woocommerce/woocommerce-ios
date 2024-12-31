@@ -1,15 +1,15 @@
 import UIKit
 
-/// Displays the Login Prologue carousel, populated with `LoginProloguePageTypeViewController` pages.
+/// Displays the Login Prologue carousel, populated with `LoginOnboardingPageTypeViewController` pages.
 ///
-final class LoginProloguePageViewController: UIPageViewController {
+final class LoginOnboardingPageViewController: UIPageViewController {
 
     private let pages: [UIViewController]
 
     private let pageControl = UIPageControl()
 
-    init(pageTypes: [LoginProloguePageType] = LoginProloguePageType.allCases, showsSubtitle: Bool = false) {
-        self.pages = pageTypes.map { LoginProloguePageTypeViewController(pageType: $0, showsSubtitle: showsSubtitle) }
+    init(pageTypes: [LoginOnboardingPageType] = LoginOnboardingPageType.allCases, showsSubtitle: Bool = false) {
+        self.pages = pageTypes.map { LoginOnboardingPageTypeViewController(pageType: $0, showsSubtitle: showsSubtitle) }
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal)
     }
 
@@ -42,7 +42,7 @@ final class LoginProloguePageViewController: UIPageViewController {
     }
 }
 
-private extension LoginProloguePageViewController {
+private extension LoginOnboardingPageViewController {
     func configureUIBasedOnPageCount() {
         if pages.count > 1 {
             addPageControl()
@@ -84,7 +84,7 @@ private extension LoginProloguePageViewController {
 
 // MARK: - UIPageViewControllerDataSource Conformance
 //
-extension LoginProloguePageViewController: UIPageViewControllerDataSource {
+extension LoginOnboardingPageViewController: UIPageViewControllerDataSource {
 
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         guard let index = pages.firstIndex(of: viewController),
@@ -107,7 +107,7 @@ extension LoginProloguePageViewController: UIPageViewControllerDataSource {
 
 // MARK: - UIPageViewControllerDelegate Conformance
 //
-extension LoginProloguePageViewController: UIPageViewControllerDelegate {
+extension LoginOnboardingPageViewController: UIPageViewControllerDelegate {
     func pageViewController(_ pageViewController: UIPageViewController,
                             didFinishAnimating finished: Bool,
                             previousViewControllers: [UIViewController],
@@ -131,7 +131,7 @@ extension LoginProloguePageViewController: UIPageViewControllerDelegate {
 }
 
 // MARK: - Constants
-private extension LoginProloguePageViewController {
+private extension LoginOnboardingPageViewController {
     enum Constants {
         static let pageControlBottomMargin: CGFloat = -10
         static let pageControlScale: CGFloat = 0.8 // Scales page control according to design

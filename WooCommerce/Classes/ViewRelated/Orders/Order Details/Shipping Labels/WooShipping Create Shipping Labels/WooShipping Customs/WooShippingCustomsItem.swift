@@ -81,7 +81,7 @@ struct WooShippingCustomsItem: View {
                     .padding(.bottom, Layout.collapsibleViewVerticalSpacing)
                 }
 
-                HStack {
+                HStack(alignment: .top) {
                     VStack(alignment: .leading) {
                         Text(Localization.valuePerUnitTitle)
                             .foregroundColor(.primary)

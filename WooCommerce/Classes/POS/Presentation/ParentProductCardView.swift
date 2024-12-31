@@ -45,7 +45,7 @@ private extension ParentProductCardView {
         switch parentProduct.type {
             case .variable:
                 Text(Localization.variationsAvailable)
-                    .foregroundStyle(Color.posItemSecondaryText)
+                    .foregroundStyle(Color.posSecondaryText)
                     .font(.posBodyRegular)
         }
     }

@@ -59,7 +59,7 @@ struct LoginPrologueView: View {
                     .padding(.bottom, 4 * Layout.stackSpacing)
 
                 Text(Localization.title)
-                    .font(.title3.weight(.semibold))
+                    .font(.title.bold())
                     .multilineTextAlignment(.center)
                     .foregroundColor(.white)
                     .frame(maxWidth: Layout.textMaxWidth)

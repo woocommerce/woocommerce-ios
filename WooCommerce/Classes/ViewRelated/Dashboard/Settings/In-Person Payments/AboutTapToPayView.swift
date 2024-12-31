@@ -185,7 +185,8 @@ private extension AboutTapToPayContactlessLimitView {
             comment: "Heading for the details pane showing the contactless limit on About Tap to Pay")
 
         static let overLimitSuggestion = NSLocalizedString(
-            "To accept payments above this limit, consider purchasing a card reader.",
+            "tapToPay.aboutTapToPay.overLimitSuggestion",
+            value: "To accept all payments above this limit, consider purchasing a card reader.",
             comment: "A suggestion to buy a hardware card reader to handle transactions above the contactless limit, " +
             "shown on the About Tap to Pay screen")
 

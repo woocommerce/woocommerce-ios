@@ -115,9 +115,9 @@ private extension LoginOnboardingPageTypeViewController {
         // Set constraints
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.heightAnchor).isActive = true
-        scrollView.pinSubviewToAllEdges(stackView)
+        scrollView.pinSubviewToAllEdges(stackView, insets: .init(top: 0, left: Constants.stackViewPadding, bottom: 0, right: Constants.stackViewPadding))
         NSLayoutConstraint.activate([
-            stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
+            stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -Constants.stackViewPadding * 2),
         ])
     }
 
@@ -129,7 +129,6 @@ private extension LoginOnboardingPageTypeViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             imageView.widthAnchor.constraint(equalTo: stackView.widthAnchor),
-            imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: Constants.imageHeightMultiplier)
         ])
 
         // Image contents
@@ -144,7 +143,7 @@ private extension LoginOnboardingPageTypeViewController {
         // Label style & layout
         titleLabel.font = {
             if showsSubtitle {
-                return .font(forStyle: .title2, weight: .semibold)
+                return .font(forStyle: .title1, weight: .bold)
             } else {
                 return .body
             }
@@ -157,7 +156,7 @@ private extension LoginOnboardingPageTypeViewController {
         titleLabel.setContentHuggingPriority(.required, for: .vertical)
         titleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Constants.labelLeadingMargin)
+            titleLabel.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.labelMaxWidth),
         ])
 
         // Label contents
@@ -171,14 +170,13 @@ private extension LoginOnboardingPageTypeViewController {
         // Label style & layout
         subtitleLabel.font = .body
         subtitleLabel.adjustsFontForContentSizeCategory = true
-        subtitleLabel.textColor = Constants.subtitleColor
+        subtitleLabel.textColor = .text
         subtitleLabel.textAlignment = .center
         subtitleLabel.numberOfLines = 0
         subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
         subtitleLabel.setContentHuggingPriority(.required, for: .vertical)
-        subtitleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         NSLayoutConstraint.activate([
-            subtitleLabel.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Constants.labelLeadingMargin)
+            subtitleLabel.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.labelMaxWidth),
         ])
 
         subtitleLabel.text = pageType.subtitle
@@ -203,9 +201,8 @@ private extension LoginOnboardingPageTypeViewController {
 private extension LoginOnboardingPageTypeViewController {
     enum Constants {
         static let stackBottomMargin: CGFloat = -24 // Minimum margin between stack view and login buttons, including space required for UIPageControl
-        static let labelLeadingMargin: CGFloat = 48
-        static let imageHeightMultiplier: CGFloat = 0.35
+        static let labelMaxWidth: CGFloat = 333
         static let stackSpacing: CGFloat = 8 // Space between image and text
-        static let subtitleColor: UIColor = .textSubtle
+        static let stackViewPadding: CGFloat = 16
     }
 }

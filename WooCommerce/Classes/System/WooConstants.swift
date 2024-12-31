@@ -360,6 +360,7 @@ extension WooConstants {
 
         case customFieldsProductLearnMore = "https://woocommerce.com/document/custom-product-fields/"
         case customFieldsOrderLearnMore = "https://woocommerce.com/document/managing-orders/view-edit-or-add-an-order/#custom-fields"
+        case hsTariffURL = "https://woocommerce.com/document/woocommerce-shipping-and-tax/woocommerce-shipping/#section-29"
 
         /// Returns the URL version of the receiver
         ///

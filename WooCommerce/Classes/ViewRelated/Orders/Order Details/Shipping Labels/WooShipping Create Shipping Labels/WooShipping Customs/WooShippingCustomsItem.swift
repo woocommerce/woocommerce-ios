@@ -153,7 +153,7 @@ struct WooShippingCustomsItem: View {
             .padding(.trailing, Layout.extraPadding)
             .padding(.bottom, Layout.extraPadding)
         })
-        .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderLineWidth)
+        .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: productCardBorderColor(), lineWidth: Layout.borderLineWidth)
         .safariSheet(isPresented: $isShowingHSTarrifInfoWebView, url: viewModel.hsTariffURL)
         .sheet(isPresented: $isShowingCountries, content: {
             NavigationStack {
@@ -164,6 +164,20 @@ struct WooShippingCustomsItem: View {
             }
             .wooNavigationBarStyle()
         })
+    }
+}
+
+extension WooShippingCustomsItem {
+    func productCardBorderColor() -> Color {
+        if isCollapsed {
+            if viewModel.informationIsMissing {
+                return .withColorStudio(name: .red, shade: .shade60)
+            } else {
+                return Color(.separator)
+            }
+        } else {
+            return .withColorStudio(name: .purple, shade: .shade60)
+        }
     }
 }
 

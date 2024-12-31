@@ -16,7 +16,8 @@ final class LoginOnboardingViewController: UIViewController {
                                                                           showsSubtitle: true)
     private lazy var buttonStackView: UIStackView = .init()
     private lazy var nextButton: UIButton = createNextButton()
-    private lazy var imageView = UIImageView(image: .wooLogoImage(tintColor: .init(light: .accent, dark: .white)))
+    private lazy var imageView = UIImageView(image: .wooLogoImage(withSize: Constants.wooLogoSize,
+                                                                  tintColor: .init(light: .accent, dark: .white)))
 
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService

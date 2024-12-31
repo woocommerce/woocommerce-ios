@@ -38,7 +38,6 @@ struct WooShippingCustomsItem: View {
                     }
                 }.renderedIf(isCollapsed)
                     .foregroundColor(.primary)
-                    .subheadlineStyle()
                     .padding(.trailing, Layout.collapsibleViewBottomContentTrailingPadding)
             }
             .padding(.top, Layout.collapsibleViewTopPadding)

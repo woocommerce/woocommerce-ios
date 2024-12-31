@@ -1,6 +1,6 @@
 import AuthenticationServices
 import Foundation
-import enum WordPressKit.WordPressComOAuthError
+import WordPressKit
 import WordPressAuthenticator
 import class Networking.UserAgent
 

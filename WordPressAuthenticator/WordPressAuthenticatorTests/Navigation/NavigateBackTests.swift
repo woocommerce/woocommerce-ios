@@ -6,7 +6,8 @@ final class NavigateBackTests: XCTestCase {
     func testNavigationCommandNavigatesToExpectedDestination() {
         let origin = UIViewController()
         let navigationController = MockNavigationController(rootViewController: origin)
-        navigationController.pushViewController(origin, animated: false)
+        // UINavigationController automatically pushes the given rootViewController
+        //navigationController.pushViewController(origin, animated: false)
 
         let command = NavigateBack()
         command.execute(from: origin)

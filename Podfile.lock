@@ -7,16 +7,19 @@ PODS:
   - CocoaLumberjack/Core (3.8.5)
   - CocoaLumberjack/Swift (3.8.5):
     - CocoaLumberjack/Core
+  - Expecta (1.0.6)
   - Gridicons (1.2.0)
   - KeychainAccess (4.2.2)
   - Kingfisher (7.6.2)
   - NSObject-SafeExpectations (0.0.6)
   - "NSURL+IDN (0.4)"
+  - OCMock (3.9.4)
   - Sentry (8.36.0):
     - Sentry/Core (= 8.36.0)
   - Sentry/Core (8.36.0)
   - Sodium (0.9.1)
   - Sourcery (1.0.3)
+  - Specta (1.0.7)
   - StripeTerminal (3.9.1)
   - SVProgressHUD (2.2.5)
   - SwiftLint (0.54.0)
@@ -59,16 +62,22 @@ DEPENDENCIES:
   - Alamofire (~> 5.0)
   - Automattic-Tracks-iOS (~> 3.4.1)
   - CocoaLumberjack/Swift (~> 3.8.5)
+  - Expecta (= 1.0.6)
   - Gridicons (~> 1.2.0)
   - KeychainAccess (~> 4.2.2)
   - Kingfisher (~> 7.6.2)
+  - "NSURL+IDN (= 0.4)"
+  - OCMock (~> 3.4)
   - Sentry (~> 8.36.0)
   - Sourcery (~> 1.0.3)
+  - Specta (= 1.0.7)
   - StripeTerminal (~> 3.9.1)
+  - SVProgressHUD (= 2.2.5)
   - SwiftLint (= 0.54.0)
   - WordPress-Editor-iOS (~> 1.19)
   - WordPressAuthenticator (~> 9.10.1)
-  - WordPressShared (~> 2.1)
+  - WordPressKit (~> 17.3)
+  - WordPressShared (~> 2.1-beta)
   - WordPressUI (~> 1.15)
   - Wormholy (~> 1.6.6)
   - WPMediaPicker (~> 1.8)
@@ -81,14 +90,17 @@ SPEC REPOS:
     - Alamofire
     - Automattic-Tracks-iOS
     - CocoaLumberjack
+    - Expecta
     - Gridicons
     - KeychainAccess
     - Kingfisher
     - NSObject-SafeExpectations
     - "NSURL+IDN"
+    - OCMock
     - Sentry
     - Sodium
     - Sourcery
+    - Specta
     - StripeTerminal
     - SVProgressHUD
     - SwiftLint
@@ -113,14 +125,17 @@ SPEC CHECKSUMS:
   Alamofire: 3ca42e259043ee0dc5c0cdd76c4bc568b8e42af7
   Automattic-Tracks-iOS: 2d4bee68ff9db4d51f2f6c9fc85857dc69a008a4
   CocoaLumberjack: 6a459bc897d6d80bd1b8c78482ec7ad05dffc3f0
+  Expecta: 3b6bd90a64b9a1dcb0b70aa0e10a7f8f631667d5
   Gridicons: 4455b9f366960121430e45997e32112ae49ffe1d
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   Kingfisher: 6c5449c6450c5239166510ba04afe374a98afc4f
   NSObject-SafeExpectations: c01c8881cbd97efad6f668286b913cd0b7d62ab5
   "NSURL+IDN": afc873e639c18138a1589697c3add197fe8679ca
+  OCMock: 589f2c84dacb1f5aaf6e4cec1f292551fe748e74
   Sentry: f8374b5415bc38dfb5645941b3ae31230fbeae57
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
   Sourcery: 70a6048014bd4f37ea80e6bd4354d47bf3b760e1
+  Specta: 3e1bd89c3517421982dc4d1c992503e48bd5fe66
   StripeTerminal: f7f5e176979224ed76edb3724f41138fbb28053c
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
@@ -142,6 +157,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 281acf2bb731d2a67f913cfe653ed0da9f5b2f42
   ZendeskSupportSDK: b512cfc74b6bf8490e589f02cf52e27ed4f2bebe
 
-PODFILE CHECKSUM: 9b0e747f08251a1b347a70debab470e5e105f89a
+PODFILE CHECKSUM: 09e7478b87ff2f5c7cf18c0fca67a36be0161e98
 
 COCOAPODS: 1.16.2

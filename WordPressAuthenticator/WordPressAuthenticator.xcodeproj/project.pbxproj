@@ -40,7 +40,18 @@
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
 		3F096C4D2D23F17E00D8ACCE /* Exceptions for "WordPressAuthenticator" folder in "WordPressAuthenticator" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			privateHeaders = (
+				"Private/WPAuthenticator-Swift.h",
+			);
 			publicHeaders = (
+				Logging/WPAuthenticatorLogging.h,
+				NUX/WPNUXMainButton.h,
+				NUX/WPNUXPrimaryButton.h,
+				NUX/WPNUXSecondaryButton.h,
+				NUX/WPWalkthroughOverlayView.h,
+				NUX/WPWalkthroughTextField.h,
+				Services/LoginFacade.h,
+				Services/WordPressXMLRPCAPIFacade.h,
 				WordPressAuthenticator.h,
 			);
 			target = 3F096C3C2D23F17E00D8ACCE /* WordPressAuthenticator */;

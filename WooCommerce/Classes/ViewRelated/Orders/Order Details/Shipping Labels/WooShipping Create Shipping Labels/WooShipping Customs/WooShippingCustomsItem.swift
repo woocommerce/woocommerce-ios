@@ -172,7 +172,7 @@ extension WooShippingCustomsItem {
                                               value: "Description",
                                               comment: "Title for the customs items description text field for customs items")
         static let HSTarriffNumber = NSLocalizedString("wooShipping.customsItems.hsTarriffNumber",
-                                                       value: "HSTarriffNumber",
+                                                       value: "HS tarriff number",
                                                        comment: "Title for the HS Tarriff Number text field for customs items")
         static let HSTarriffNumberPlaceholder = NSLocalizedString("wooShipping.customsItems.hsTarriffNumber.placeholder",
                                                        value: "Optional",

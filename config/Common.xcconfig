@@ -1,4 +1,4 @@
-IPHONEOS_DEPLOYMENT_TARGET = 15.0
+#include "Workspace-Shared.xcconfig"
 
 // This is App Store account id.
 // Build configurations that need the Enterprise account should override in their dedicated xcconfig.

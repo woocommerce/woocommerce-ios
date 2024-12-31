@@ -45,6 +45,7 @@
 		26EEDC8C26FE1C1C00D5BA0E /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		26EEDC8E26FE1C7B00D5BA0E /* Networking.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Networking.generated.swift; sourceTree = "<group>"; };
 		26EEDC8F26FE1C7B00D5BA0E /* Yosemite.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Yosemite.generated.swift; sourceTree = "<group>"; };
+		3F096E4D2D23F76C00D8ACCE /* Workspace-Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Workspace-Shared.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +76,7 @@
 				26CA6D2325F6C87800B01F48 /* Fakes */,
 				26CA6D2225F6C87800B01F48 /* Products */,
 				26CA6D3225F6C92100B01F48 /* Frameworks */,
+				3F096E4D2D23F76C00D8ACCE /* Workspace-Shared.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -208,6 +210,7 @@
 /* Begin XCBuildConfiguration section */
 		26CA6D2725F6C87800B01F48 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3F096E4D2D23F76C00D8ACCE /* Workspace-Shared.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -258,7 +261,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -272,6 +274,7 @@
 		};
 		26CA6D2825F6C87800B01F48 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3F096E4D2D23F76C00D8ACCE /* Workspace-Shared.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -316,7 +319,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

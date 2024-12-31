@@ -55,8 +55,8 @@ private extension LoginOnboardingPageViewController {
     // MARK: Page Control Setup
     //
     func addPageControl() {
-        pageControl.currentPageIndicatorTintColor = .gray(.shade5)
-        pageControl.pageIndicatorTintColor = .wooCommercePurple(.shade50)
+        pageControl.currentPageIndicatorTintColor = .accent
+        pageControl.pageIndicatorTintColor = .gray(.shade10)
         pageControl.transform = CGAffineTransform(scaleX: Constants.pageControlScale, y: Constants.pageControlScale)
 
         pageControl.translatesAutoresizingMaskIntoConstraints = false

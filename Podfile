@@ -37,7 +37,7 @@ def tracks
 end
 
 def wordpress_shared
-  pod 'WordPressShared', '~> 2.1'
+  pod 'WordPressShared', '~> 2.1-beta'
 end
 
 def keychain
@@ -76,6 +76,16 @@ def networking_watch_os_pods
   keychain
 end
 
+def gridicons
+  pod 'Gridicons', '~> 1.2.0'
+end
+
+def wordpress_ui
+  pod 'WordPressUI', '~> 1.15'
+  # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
+  # pod 'WordPressUI', git: 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', commit: ''
+end
+
 # Main Target!
 # ============
 #
@@ -88,7 +98,7 @@ target 'WooCommerce' do
 
   tracks
 
-  pod 'Gridicons', '~> 1.2.0'
+  gridicons
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
   pod 'WordPressAuthenticator', '~> 9.10.1'
@@ -97,10 +107,7 @@ target 'WooCommerce' do
   # pod 'WordPressAuthenticator', path: '../WordPressAuthenticator-iOS'
 
   wordpress_shared
-
-  pod 'WordPressUI', '~> 1.15'
-  # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
-  # pod 'WordPressUI', git: 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', commit: ''
+  wordpress_ui
 
   aztec
 
@@ -322,6 +329,32 @@ end
 target 'ExperimentsTests' do
   project 'Experiments/Experiments.xcodeproj'
   experiments_pods
+end
+
+# WordPressAuthenticator
+# ==========
+#
+def wordpress_authenticator_pods
+  pod 'NSURL+IDN', '0.4'
+  pod 'SVProgressHUD', '2.2.5'
+  gridicons
+  wordpress_ui
+  pod 'WordPressKit', '~> 17.3'
+  wordpress_shared
+end
+
+target 'WordPressAuthenticator' do
+  project 'WordPressAuthenticator/WordPressAuthenticator.xcodeproj'
+  wordpress_authenticator_pods
+end
+
+target 'WordPressAuthenticatorTests' do
+  project 'WordPressAuthenticator/WordPressAuthenticator.xcodeproj'
+  wordpress_authenticator_pods
+
+  pod 'OCMock', '~> 3.4'
+  pod 'Expecta', '1.0.6'
+  pod 'Specta', '1.0.7'
 end
 
 # Tools

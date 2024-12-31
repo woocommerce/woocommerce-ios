@@ -16,7 +16,7 @@ final class LoginOnboardingViewController: UIViewController {
                                                                           showsSubtitle: true)
     private lazy var buttonStackView: UIStackView = .init()
     private lazy var nextButton: UIButton = createNextButton()
-    private lazy var imageView = UIImageView(image: .wooLogoPrologueImage)
+    private lazy var imageView = UIImageView(image: .wooLogoImage(tintColor: .init(light: .accent, dark: .white)))
 
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
@@ -39,7 +39,7 @@ final class LoginOnboardingViewController: UIViewController {
         super.viewDidLoad()
 
         configureMainView()
-        configureCurvedImageView()
+        configureBubblesImageView()
         configureWooLogo()
         configureStackView()
     }
@@ -54,7 +54,7 @@ private extension LoginOnboardingViewController {
         view.backgroundColor = .basicBackground
 
         let bottomView = UIView(frame: .zero)
-        bottomView.backgroundColor = .authPrologueBottomBackgroundColor
+        bottomView.backgroundColor = .clear
         bottomView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(bottomView)
         NSLayoutConstraint.activate([
@@ -65,17 +65,12 @@ private extension LoginOnboardingViewController {
         ])
     }
 
-    func configureCurvedImageView() {
-        let imageView = UIImageView(image: .curvedRectangle.withRenderingMode(.alwaysTemplate))
-        imageView.tintColor = .authPrologueBottomBackgroundColor
+    func configureBubblesImageView() {
+        let imageView = UIImageView(image: .prologueBackgroundBubbles(tint: .init(light: .gray(.shade0), dark: .gray(.shade80))))
+        imageView.contentMode = .scaleAspectFill
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
-        NSLayoutConstraint.activate([
-            imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            imageView.topAnchor.constraint(equalTo: view.safeTopAnchor, constant: 52),
-            imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.7)
-        ])
+        view.pinSubviewToAllEdges(imageView)
     }
 
     func configureWooLogo() {
@@ -83,9 +78,9 @@ private extension LoginOnboardingViewController {
         view.addSubview(imageView)
         NSLayoutConstraint.activate([
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            imageView.widthAnchor.constraint(equalToConstant: 176),
-            imageView.heightAnchor.constraint(equalToConstant: 36),
-            imageView.topAnchor.constraint(equalTo: view.safeTopAnchor, constant: 28)
+            imageView.widthAnchor.constraint(equalToConstant: Constants.wooLogoSize.width),
+            imageView.heightAnchor.constraint(equalToConstant: Constants.wooLogoSize.height),
+            imageView.topAnchor.constraint(equalTo: view.safeTopAnchor, constant: Constants.topPadding)
         ])
     }
 
@@ -157,6 +152,8 @@ private extension LoginOnboardingViewController {
     }
 
     enum Constants {
+        static let topPadding: CGFloat = 54
+        static let wooLogoSize = CGSize(width: 100, height: 26)
         static let stackViewInsets: UIEdgeInsets = .init(top: 52, left: 16, bottom: 20, right: 16)
         static let stackViewSpacing: CGFloat = 30
         static let buttonStackViewSpacing: CGFloat = 16

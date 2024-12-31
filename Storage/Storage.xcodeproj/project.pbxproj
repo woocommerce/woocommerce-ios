@@ -359,6 +359,7 @@
 		26EA01D424EC44B300176A57 /* GeneralAppSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettingsTests.swift; sourceTree = "<group>"; };
 		31D9C8C626684AEC000AC134 /* PaymentGatewayAccount+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "PaymentGatewayAccount+CoreDataClass.swift"; path = "../../../PaymentGatewayAccount+CoreDataClass.swift"; sourceTree = "<group>"; };
 		31D9C8C726684AEC000AC134 /* PaymentGatewayAccount+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "PaymentGatewayAccount+CoreDataProperties.swift"; path = "../../../PaymentGatewayAccount+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		3F096E482D23F5E500D8ACCE /* Workspace-Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Workspace-Shared.xcconfig"; sourceTree = "<group>"; };
 		450106882399AC7400E24722 /* TaxClass+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxClass+CoreDataClass.swift"; sourceTree = "<group>"; };
 		4501068A2399AC9B00E24722 /* TaxClass+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxClass+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		45260E412823E7990080C548 /* Model 68.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 68.xcdatamodel"; sourceTree = "<group>"; };
@@ -893,6 +894,7 @@
 				B54CA59A20A4BBA500F38CD1 /* Products */,
 				B54CA5B320A4BC0200F38CD1 /* Frameworks */,
 				4DD3D0BDDE216A90FC1335D7 /* Pods */,
+				3F096E482D23F5E500D8ACCE /* Workspace-Shared.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1671,6 +1673,7 @@
 /* Begin XCBuildConfiguration section */
 		1A96903B2359D9AF0061E383 /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3F096E482D23F5E500D8ACCE /* Workspace-Shared.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1716,7 +1719,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -1785,6 +1787,7 @@
 		};
 		B54CA5AB20A4BBA600F38CD1 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3F096E482D23F5E500D8ACCE /* Workspace-Shared.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1836,7 +1839,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1850,6 +1852,7 @@
 		};
 		B54CA5AC20A4BBA600F38CD1 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3F096E482D23F5E500D8ACCE /* Workspace-Shared.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1895,7 +1898,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;

@@ -46,6 +46,7 @@
 		2B7FCE683D4058A7A16F7946 /* Pods-Experiments.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Experiments.debug.xcconfig"; path = "Target Support Files/Pods-Experiments/Pods-Experiments.debug.xcconfig"; sourceTree = "<group>"; };
 		3022E2766134CE2735C73FC6 /* Pods-ExperimentsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExperimentsTests.debug.xcconfig"; path = "Target Support Files/Pods-ExperimentsTests/Pods-ExperimentsTests.debug.xcconfig"; sourceTree = "<group>"; };
 		33CEC0C5283FD4C9EF8C6A3C /* Pods_Experiments.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Experiments.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3F096E4A2D23F6CF00D8ACCE /* Workspace-Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Workspace-Shared.xcconfig"; sourceTree = "<group>"; };
 		3F9DB5FBFF7A42EFBCB746F3 /* Pods-ExperimentsTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExperimentsTests.release-alpha.xcconfig"; path = "Target Support Files/Pods-ExperimentsTests/Pods-ExperimentsTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		7C831644164B49828A485590 /* Pods-ExperimentsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExperimentsTests.release.xcconfig"; path = "Target Support Files/Pods-ExperimentsTests/Pods-ExperimentsTests.release.xcconfig"; sourceTree = "<group>"; };
 		8CB554DFAAD3EF41D17099C4 /* Pods-Experiments.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Experiments.release-alpha.xcconfig"; path = "Target Support Files/Pods-Experiments/Pods-Experiments.release-alpha.xcconfig"; sourceTree = "<group>"; };
@@ -88,6 +89,7 @@
 				0270C08227069A8900FC799F /* Products */,
 				4E1989AAB68578443A38332F /* Pods */,
 				6F0EE5A69BC4E0719C6AE8AC /* Frameworks */,
+				3F096E4A2D23F6CF00D8ACCE /* Workspace-Shared.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -361,6 +363,7 @@
 /* Begin XCBuildConfiguration section */
 		0270C09327069A8900FC799F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3F096E4A2D23F6CF00D8ACCE /* Workspace-Shared.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -411,7 +414,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -425,6 +427,7 @@
 		};
 		0270C09427069A8900FC799F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3F096E4A2D23F6CF00D8ACCE /* Workspace-Shared.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -469,7 +472,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -585,6 +587,7 @@
 		};
 		02AB82F02706A9EA008D7334 /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3F096E4A2D23F6CF00D8ACCE /* Workspace-Shared.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -629,7 +632,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

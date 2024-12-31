@@ -134,6 +134,8 @@ private extension LoginOnboardingPageTypeViewController {
 
         // Image contents
         imageView.image = pageType.image
+
+        stackView.setCustomSpacing(4 * Constants.stackSpacing, after: imageView)
     }
 
     func configureTitle() {
@@ -203,7 +205,7 @@ private extension LoginOnboardingPageTypeViewController {
         static let stackBottomMargin: CGFloat = -24 // Minimum margin between stack view and login buttons, including space required for UIPageControl
         static let labelLeadingMargin: CGFloat = 48
         static let imageHeightMultiplier: CGFloat = 0.35
-        static let stackSpacing: CGFloat = 16 // Space between image and text
+        static let stackSpacing: CGFloat = 8 // Space between image and text
         static let subtitleColor: UIColor = .textSubtle
     }
 }

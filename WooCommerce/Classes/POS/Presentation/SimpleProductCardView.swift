@@ -18,6 +18,7 @@ struct SimpleProductCardView: View {
                              scale: scale)
             .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
                    height: Constants.productCardSize * scale)
+            .clipped()
 
             DynamicHStack(spacing: Constants.textSpacing) {
                 Spacer().renderedIf(dynamicTypeSize.isAccessibilitySize)

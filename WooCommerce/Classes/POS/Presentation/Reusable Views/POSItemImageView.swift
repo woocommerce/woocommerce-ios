@@ -13,7 +13,6 @@ struct POSItemImageView: View {
                                   scale: scale,
                                   foregroundColor: .clear,
                                   cachesOriginalImage: true)
-            .clipped()
         } else {
             Rectangle()
                 .foregroundColor(Color(.secondarySystemFill))

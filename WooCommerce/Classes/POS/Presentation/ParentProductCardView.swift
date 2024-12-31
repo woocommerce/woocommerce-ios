@@ -19,6 +19,7 @@ struct ParentProductCardView: View {
                              scale: scale)
             .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
                    height: Constants.productCardSize * scale)
+            .clipped()
 
             VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 Text(parentProduct.name)

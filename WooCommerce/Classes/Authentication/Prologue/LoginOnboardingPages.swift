@@ -103,7 +103,7 @@ private extension LoginOnboardingPageTypeViewController {
         let scrollView = UIScrollView()
         view.addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToAllEdges(scrollView, insets: .init(top: 0, left: 0, bottom: -Constants.stackBottomMargin, right: 0))
+        view.pinSubviewToAllEdges(scrollView)
         scrollView.addSubview(stackView)
 
         // Stack view layout
@@ -200,7 +200,6 @@ private extension LoginOnboardingPageTypeViewController {
 
 private extension LoginOnboardingPageTypeViewController {
     enum Constants {
-        static let stackBottomMargin: CGFloat = -24 // Minimum margin between stack view and login buttons, including space required for UIPageControl
         static let labelMaxWidth: CGFloat = 333
         static let stackSpacing: CGFloat = 8 // Space between image and text
         static let stackViewPadding: CGFloat = 16

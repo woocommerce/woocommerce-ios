@@ -6,8 +6,6 @@ final class LoginOnboardingPageViewController: UIPageViewController {
 
     private let pages: [UIViewController]
 
-    private let pageControl = UIPageControl()
-
     init(pageTypes: [LoginOnboardingPageType] = LoginOnboardingPageType.allCases, showsSubtitle: Bool = false) {
         self.pages = pageTypes.map { LoginOnboardingPageTypeViewController(pageType: $0, showsSubtitle: showsSubtitle) }
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal)
@@ -19,66 +17,38 @@ final class LoginOnboardingPageViewController: UIPageViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        dataSource = self
-        delegate = self
+        dataSource = pages.count > 1 ? self : nil
 
         if let firstPage = pages.first {
             setViewControllers([firstPage], direction: .forward, animated: false)
         }
+    }
 
-        configureUIBasedOnPageCount()
+    override func viewDidLayoutSubviews() {
+        if let pageControl = view.subviews.first(where: { $0 is UIPageControl }) as? UIPageControl {
+            configurePageControllerAppearance(pageControl: pageControl)
+        }
     }
 
     /// Shows the next page of content if it is not on the last page.
     /// - Returns: Whether it can go to the next page, if it has not reached the last page.
     func goToNextPageIfPossible() -> Bool {
-        let currentPage = pageControl.currentPage
+        let currentPage = dataSource?.presentationIndex?(for: self) ?? 0
         guard currentPage < pages.count - 1 else {
             return false
         }
-        pageControl.currentPage = currentPage + 1
-        setViewControllers([pages[pageControl.currentPage]], direction: .forward, animated: true)
+        setViewControllers([pages[currentPage + 1]], direction: .forward, animated: true)
         return true
     }
 }
 
 private extension LoginOnboardingPageViewController {
-    func configureUIBasedOnPageCount() {
-        if pages.count > 1 {
-            addPageControl()
-        } else {
-            // Sets data source to `nil` to disable scrolling.
-            dataSource = nil
-        }
-    }
-
     // MARK: Page Control Setup
     //
-    func addPageControl() {
+    func configurePageControllerAppearance(pageControl: UIPageControl) {
         pageControl.currentPageIndicatorTintColor = .accent
         pageControl.pageIndicatorTintColor = .gray(.shade10)
         pageControl.transform = CGAffineTransform(scaleX: Constants.pageControlScale, y: Constants.pageControlScale)
-
-        pageControl.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(pageControl)
-
-        NSLayoutConstraint.activate([
-            pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            pageControl.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: Constants.pageControlBottomMargin)
-        ])
-
-        pageControl.numberOfPages = pages.count
-        pageControl.addTarget(self, action: #selector(handlePageControlValueChanged(sender:)), for: .valueChanged)
-    }
-
-    @objc func handlePageControlValueChanged(sender: UIPageControl) {
-        guard let currentPage = viewControllers?.first,
-              let currentIndex = pages.firstIndex(of: currentPage) else {
-            return
-        }
-
-        let direction: UIPageViewController.NavigationDirection = sender.currentPage > currentIndex ? .forward : .reverse
-        setViewControllers([pages[sender.currentPage]], direction: direction, animated: true)
     }
 }
 
@@ -103,37 +73,26 @@ extension LoginOnboardingPageViewController: UIPageViewControllerDataSource {
 
         return pages[index + 1]
     }
-}
 
-// MARK: - UIPageViewControllerDelegate Conformance
-//
-extension LoginOnboardingPageViewController: UIPageViewControllerDelegate {
-    func pageViewController(_ pageViewController: UIPageViewController,
-                            didFinishAnimating finished: Bool,
-                            previousViewControllers: [UIViewController],
-                            transitionCompleted completed: Bool) {
-        guard let toVC = previousViewControllers.first,
-              let index = pages.firstIndex(of: toVC) else {
-            return
-        }
-        if !completed {
-            pageControl.currentPage = index
-        }
+    func presentationCount(for pageViewController: UIPageViewController) -> Int {
+        pages.count
     }
 
-    func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
-        guard let toVC = pendingViewControllers.first,
-              let index = pages.firstIndex(of: toVC) else {
-            return
+    func presentationIndex(for pageViewController: UIPageViewController) -> Int {
+        guard let currentPage = viewControllers?.first,
+              let currentIndex = pages.firstIndex(of: currentPage) else {
+            return 0
         }
-        pageControl.currentPage = index
+
+        return currentIndex
     }
 }
+
 
 // MARK: - Constants
 private extension LoginOnboardingPageViewController {
     enum Constants {
-        static let pageControlBottomMargin: CGFloat = -10
+        static let pageControlBottomMargin: CGFloat = 0
         static let pageControlScale: CGFloat = 0.8 // Scales page control according to design
     }
 }

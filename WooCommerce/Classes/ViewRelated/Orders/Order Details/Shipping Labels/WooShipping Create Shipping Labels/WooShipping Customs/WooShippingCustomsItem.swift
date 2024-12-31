@@ -62,19 +62,19 @@ struct WooShippingCustomsItem: View {
                     .padding(Layout.extraPadding)
                     .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderLineWidth)
                     .padding(.bottom, Layout.collapsibleViewVerticalSpacing)
-                Text(Localization.HSTarriffNumber)
+                Text(Localization.HSTariffNumber)
                     .foregroundColor(.primary)
                     .subheadlineStyle()
-                TextField(Localization.HSTarriffNumberPlaceholder, text: $viewModel.hsTariffNumber)
+                TextField(Localization.HSTariffNumberPlaceholder, text: $viewModel.hsTariffNumber)
                     .padding(Layout.extraPadding)
                     .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderLineWidth)
 
                 Button {
                     isShowingHSTarrifInfoWebView = true
                 } label: {
-                    HStack(alignment: .top, spacing: Layout.hsTarriffNumberMoreInfoVerticalSpacing) {
+                    HStack(alignment: .top, spacing: Layout.hsTariffNumberMoreInfoVerticalSpacing) {
                         Image(systemName: "info.circle")
-                        Text(Localization.HSTarriffNumberMoreInfo)
+                        Text(Localization.HSTariffNumberMoreInfo)
                     }
                     .foregroundColor(Color(.wooCommercePurple(.shade60)))
                     .footnoteStyle()
@@ -171,15 +171,15 @@ extension WooShippingCustomsItem {
         static let descriptionTitle = NSLocalizedString("wooShipping.customsItems.description",
                                               value: "Description",
                                               comment: "Title for the customs items description text field for customs items")
-        static let HSTarriffNumber = NSLocalizedString("wooShipping.customsItems.hsTarriffNumber",
-                                                       value: "HS tarriff number",
-                                                       comment: "Title for the HS Tarriff Number text field for customs items")
-        static let HSTarriffNumberPlaceholder = NSLocalizedString("wooShipping.customsItems.hsTarriffNumber.placeholder",
+        static let HSTariffNumber = NSLocalizedString("wooShipping.customsItems.hsTariffNumber",
+                                                       value: "HS tariff number",
+                                                       comment: "Title for the HS Tariff Number text field for customs items")
+        static let HSTariffNumberPlaceholder = NSLocalizedString("wooShipping.customsItems.hsTariffNumber.placeholder",
                                                        value: "Optional",
-                                                       comment: "Placeholder for the HS Tarriff Number text field for customs items")
-        static let HSTarriffNumberMoreInfo = NSLocalizedString("wooShipping.customsItems.hsTarriffNumber.moreInfoText",
-                                                       value: "More info about HS tarriff",
-                                                       comment: "Information text about the HS Tarriff")
+                                                       comment: "Placeholder for the HS Tariff Number text field for customs items")
+        static let HSTariffNumberMoreInfo = NSLocalizedString("wooShipping.customsItems.hsTariffNumber.moreInfoText",
+                                                       value: "More info about HS tariff",
+                                                       comment: "Information text about the HS Tariff")
         static let valuePerUnitTitle = NSLocalizedString("wooShipping.customsItems.valuePerUnit",
                                               value: "Value per unit",
                                               comment: "Title for the customs items value per unit text field for customs items")
@@ -203,7 +203,7 @@ extension WooShippingCustomsItem {
         static let borderCornerRadius: CGFloat = 8.0
         static let borderLineWidth: CGFloat = 1.0
         static let extraPadding: CGFloat = 16.0
-        static let hsTarriffNumberMoreInfoVerticalSpacing: CGFloat = 8.0
+        static let hsTariffNumberMoreInfoVerticalSpacing: CGFloat = 8.0
         static let unitsHorizontalSpacing: CGFloat = 8.0
     }
 }

@@ -8,6 +8,8 @@ struct WooShippingCustomsItem: View {
     @State private var isShowingHSTarrifInfoWebView = false
     @State private var isShowingCountries = false
 
+    @Environment(\.shippingWeightUnit) var weightUnit: String
+
     var body: some View {
         CollapsibleView(isCollapsed: $isCollapsed,
                         shouldShowDividers: false,
@@ -104,8 +106,7 @@ struct WooShippingCustomsItem: View {
                         HStack {
                             TextField("0", text: $viewModel.weightPerUnit)
                                 .padding(Layout.extraPadding)
-                            // TODO: Add right unit
-                            Text("kg")
+                            Text(weightUnit)
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                                 .padding(.trailing, Layout.unitsHorizontalSpacing)

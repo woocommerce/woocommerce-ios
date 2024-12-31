@@ -170,6 +170,12 @@ private extension ItemListView {
             } label: {
                 SimpleProductCardView(product: simpleProduct)
             }
+        case .parentProduct(let parentProduct):
+            Button {
+                print("tapped parent product")
+            } label: {
+                ParentProductCardView(parentProduct: parentProduct)
+            }
         }
     }
 }

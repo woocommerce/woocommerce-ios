@@ -2,13 +2,18 @@ import Yosemite
 import SwiftUI
 import protocol Storage.StorageManagerType
 
+struct SimplifiedCountry: Hashable {
+    let code: String
+    let name: String
+}
+
 final class WooShippingCustomsItemViewModel: ObservableObject {
     @Published var title: String
     @Published var description: String
     @Published var hsTariffNumber: String
     @Published var valuePerUnit: String
     @Published var weightPerUnit: String
-    @Published var originCountry: Country
+    @Published var originCountry: SimplifiedCountry
 
     var informationIsMissing: Bool = true
 
@@ -21,8 +26,13 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
         return ResultsController(storageManager: storageManager, matching: nil, sortedBy: [descriptor])
     }()
 
-    var countries: [Country] {
-        resultsController.fetchedObjects
+    var countries: [SimplifiedCountry] {
+        let countries = resultsController.fetchedObjects
+
+        // This removes the states property because:
+        // - It's not necessary to display the list
+        // - As we retrieve a different order on the states array property from the ResultsController, it might the Equality comparison
+        return countries.map { SimplifiedCountry(code: $0.code, name: $0.name) }
     }
 
     let hsTariffURL: URL? = .init(string: "https://woocommerce.com/document/woocommerce-shipping-and-tax/woocommerce-shipping/#section-29")
@@ -32,7 +42,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
          hsTariffNumber: String,
          valuePerUnit: String,
          weightPerUnit: String,
-         originCountry: Country,
+         originCountry: SimplifiedCountry,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores) {
         self.title = title

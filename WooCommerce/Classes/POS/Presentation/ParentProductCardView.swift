@@ -1,37 +1,34 @@
-import struct Yosemite.POSSimpleProduct
 import SwiftUI
+import struct Yosemite.POSParentProduct
 
-struct SimpleProductCardView: View {
-    private let product: POSSimpleProduct
+/// Displays a card for a parent product in POS.
+struct ParentProductCardView: View {
+    private let parentProduct: POSParentProduct
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
-    init(product: POSSimpleProduct) {
-        self.product = product
+    init(parentProduct: POSParentProduct) {
+        self.parentProduct = parentProduct
     }
 
     var body: some View {
         HStack(spacing: Constants.cardSpacing) {
-            POSItemImageView(imageSource: product.productImageSource,
+            POSItemImageView(imageSource: parentProduct.productImageSource,
                              imageSize: Constants.productCardSize * scale,
                              scale: scale)
             .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
                    height: Constants.productCardSize * scale)
             .clipped()
 
-            DynamicHStack(spacing: Constants.textSpacing) {
-                Spacer().renderedIf(dynamicTypeSize.isAccessibilitySize)
-                Text(product.name)
+            VStack(alignment: .leading, spacing: Constants.textSpacing) {
+                Text(parentProduct.name)
                     .lineLimit(2)
                     .foregroundStyle(Color.posPrimaryText)
                     .multilineTextAlignment(.leading)
                     .font(Constants.itemNameFont)
-                Spacer()
-                Text(product.formattedPrice)
-                    .foregroundStyle(Color.posPrimaryText)
-                    .font(Constants.itemPriceFont)
-                Spacer().renderedIf(dynamicTypeSize.isAccessibilitySize)
+
+                detailView()
             }
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
             .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
@@ -43,7 +40,29 @@ struct SimpleProductCardView: View {
     }
 }
 
-private extension SimpleProductCardView {
+private extension ParentProductCardView {
+    @ViewBuilder
+    func detailView() -> some View {
+        switch parentProduct.type {
+            case .variable:
+                Text(Localization.variationsAvailable)
+                    .foregroundStyle(Color.posSecondaryText)
+                    .font(.posBodyRegular)
+        }
+    }
+}
+
+private extension ParentProductCardView {
+    enum Localization {
+        static let variationsAvailable = NSLocalizedString(
+            "pos.parentProductCard.optionsAvailable",
+            value: "Options available",
+            comment: "Text indicating that there are options available for a parent product"
+        )
+    }
+}
+
+private extension ParentProductCardView {
     enum Constants {
         static let productCardSize: CGFloat = 112
         static let maximumProductCardSize: CGFloat = Constants.productCardSize * 2
@@ -52,16 +71,12 @@ private extension SimpleProductCardView {
         static let horizontalTextPadding: CGFloat = 32
         static let verticalTextPadding: CGFloat = 8
         static let itemNameFont: POSFontStyle = .posBodyEmphasized
-        static let itemPriceFont: POSFontStyle = .posBodyRegular
     }
 }
 
 #if DEBUG
 #Preview {
-    SimpleProductCardView(product: POSSimpleProduct(id: UUID(),
-                                                    name: "Product name",
-                                                    formattedPrice: "$3.00",
-                                                    productID: 123,
-                                                    price: "3.00"))
+    let parentProduct = POSParentProduct(id: UUID(), name: "Parent variable product", productImageSource: nil, productID: 42, type: .variable)
+    ParentProductCardView(parentProduct: parentProduct)
 }
 #endif

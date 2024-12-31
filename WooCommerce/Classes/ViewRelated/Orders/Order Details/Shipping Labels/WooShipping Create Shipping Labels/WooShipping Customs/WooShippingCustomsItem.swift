@@ -49,8 +49,13 @@ struct WooShippingCustomsItem: View {
                         .foregroundColor(.primary)
                         .subheadlineStyle()
                     Spacer()
-                    Image(systemName: "info.circle")
-                        .foregroundColor(Color(.wooCommercePurple(.shade60)))
+                    Button {
+                        // TODO: Add information
+                    } label: {
+                        Image(systemName: "info.circle")
+                            .foregroundColor(Color(.wooCommercePurple(.shade60)))
+
+                    }
                 }
                 .padding(.top, Layout.descriptionTopPadding)
                 TextField("", text: $viewModel.description)

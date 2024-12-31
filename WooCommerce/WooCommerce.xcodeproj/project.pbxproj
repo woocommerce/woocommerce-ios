@@ -4346,6 +4346,8 @@
 		31FE28C125E6D338003519F2 /* LearnMoreTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnMoreTableViewCell.swift; sourceTree = "<group>"; };
 		31FE28C725E6D384003519F2 /* LearnMoreTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LearnMoreTableViewCell.xib; sourceTree = "<group>"; };
 		33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
+		3F096E452D23F4B000D8ACCE /* Workspace-Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Workspace-Shared.xcconfig"; sourceTree = "<group>"; };
+		3F096E462D23F50800D8ACCE /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
 		3F1FA84028B60125009E246C /* StoreWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = StoreWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F1FA84128B60125009E246C /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		3F1FA84528B60125009E246C /* StoreWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreWidgets.swift; sourceTree = "<group>"; };
@@ -10073,10 +10075,12 @@
 		8CA4F6DC220B24EB00A47B5D /* config */ = {
 			isa = PBXGroup;
 			children = (
+				3F096E462D23F50800D8ACCE /* Common.xcconfig */,
 				8CA4F6E1220B259100A47B5D /* Version.Public.xcconfig */,
 				8CA4F6DD220B257000A47B5D /* WooCommerce.debug.xcconfig */,
 				3F64F76C2C06A3A50085DEEF /* WooCommerce.release-alpha.xcconfig */,
 				8CA4F6DE220B257000A47B5D /* WooCommerce.release.xcconfig */,
+				3F096E452D23F4B000D8ACCE /* Workspace-Shared.xcconfig */,
 			);
 			name = config;
 			path = ../config;
@@ -17657,7 +17661,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = ALPHA;
@@ -17745,7 +17748,6 @@
 				INFOPLIST_FILE = NotificationExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NotificationExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 Automattic. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -17775,7 +17777,6 @@
 				INFOPLIST_FILE = NotificationExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NotificationExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 Automattic. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -17804,7 +17805,6 @@
 				INFOPLIST_FILE = NotificationExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NotificationExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 Automattic. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -18328,7 +18328,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
@@ -18390,7 +18389,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;

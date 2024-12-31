@@ -93,6 +93,7 @@ final class LoginOnboardingPageTypeViewController: UIViewController {
         if showsSubtitle {
             configureSubtitle()
         }
+        configureSpacers()
     }
 }
 
@@ -113,6 +114,7 @@ private extension LoginOnboardingPageTypeViewController {
 
         // Set constraints
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.heightAnchor).isActive = true
         scrollView.pinSubviewToAllEdges(stackView)
         NSLayoutConstraint.activate([
             stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
@@ -178,6 +180,21 @@ private extension LoginOnboardingPageTypeViewController {
         ])
 
         subtitleLabel.text = pageType.subtitle
+    }
+
+    /// Add spacers to the top and bottom of the stack view to ensure the contents are centered in the scroll view when content fits on screen.
+    func configureSpacers() {
+        let spacer = UIView()
+        spacer.translatesAutoresizingMaskIntoConstraints = false
+        spacer.setContentHuggingPriority(.defaultLow, for: .vertical)
+        stackView.insertArrangedSubview(spacer, at: 0)
+
+        let bottomSpacer = UIView()
+        bottomSpacer.translatesAutoresizingMaskIntoConstraints = false
+        bottomSpacer.setContentHuggingPriority(.defaultLow, for: .vertical)
+        stackView.addArrangedSubview(bottomSpacer)
+
+        spacer.heightAnchor.constraint(equalTo: bottomSpacer.heightAnchor).isActive = true
     }
 }
 

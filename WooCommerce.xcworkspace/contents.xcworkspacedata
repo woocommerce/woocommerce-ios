@@ -35,6 +35,9 @@
       location = "group:Pods/Pods.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:WordPressAuthenticator/WordPressAuthenticator.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Workspace-Shared.xcconfig">
    </FileRef>
 </Workspace>

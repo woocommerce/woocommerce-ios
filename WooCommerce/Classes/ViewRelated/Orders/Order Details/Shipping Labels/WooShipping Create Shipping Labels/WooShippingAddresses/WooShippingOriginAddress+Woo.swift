@@ -72,4 +72,3 @@ private extension WooShippingOriginAddress {
         return address
     }
 }
-

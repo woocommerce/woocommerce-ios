@@ -13,7 +13,7 @@ struct WooShippingOriginAddressListView: View {
             List(viewModel.addresses) { address in
                 HStack(alignment: .firstTextBaseline) {
                     VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                        AdaptiveStack(horizontalAlignment: .leading) {
+                        AdaptiveStack(horizontalAlignment: .leading, verticalAlignment: .firstTextBaseline) {
                             Text(address.fullNameWithCompany)
                                 .bold()
                             if address.defaultAddress {

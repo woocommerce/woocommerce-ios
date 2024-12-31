@@ -1,17 +1,8 @@
 import SwiftUI
-import struct Yosemite.ShippingLabelAddress
 
 /// View to display a list of origin addresses for the Woo Shipping extension.
 struct WooShippingOriginAddressListView: View {
-    private var originAddresses: [WooShippingOriginAddress]
-
-    @State private var selectedAddressID: String
-
-    init(originAddresses: [WooShippingOriginAddress],
-         selectedAddressID: String) {
-        self.originAddresses = originAddresses
-        self._selectedAddressID = State(initialValue: selectedAddressID)
-    }
+    @ObservedObject var viewModel: WooShippingOriginAddressListViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
@@ -19,10 +10,36 @@ struct WooShippingOriginAddressListView: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
                 .padding(.bottom, Constants.verticalSpacing)
-            List(originAddresses) { address in
-                addressView(address)
+            List(viewModel.addresses) { address in
+                HStack(alignment: .firstTextBaseline) {
+                    VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                        AdaptiveStack(horizontalAlignment: .leading) {
+                            Text(address.fullNameWithCompany)
+                                .bold()
+                            if address.defaultAddress {
+                                Text(Localization.defaultAddress)
+                                    .bold()
+                            }
+                        }
+                        if let formattedAddress = address.formattedPostalAddress {
+                            Text(formattedAddress)
+                        }
+                    }
+                    Spacer()
+                    PencilEditButton {
+                        // TODO: Edit origin address
+                    }
+                    .buttonStyle(TextButtonStyle())
+                }
+                .padding()
+                .if(viewModel.isSelected(address)) {
+                    $0.background(Color(.wooCommercePurple(.shade0)), ignoresSafeAreaEdges: .vertical)
+                }
+                .roundedBorder(cornerRadius: Constants.cornerRadius,
+                               lineColor: Color(viewModel.isSelected(address) ? .wooCommercePurple(.shade60) : .separator),
+                               lineWidth: viewModel.isSelected(address) ? 2 : 0.5)
                     .onTapGesture {
-                        selectedAddressID = address.id
+                        viewModel.select(address)
                     }
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: Constants.verticalSpacing, trailing: 0))
@@ -30,48 +47,6 @@ struct WooShippingOriginAddressListView: View {
             .listStyle(.plain)
         }
         .padding()
-    }
-
-    @ViewBuilder
-    private func addressView(_ address: WooShippingOriginAddress) -> some View {
-        HStack(alignment: .firstTextBaseline) {
-            VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                AdaptiveStack(horizontalAlignment: .leading) {
-                    Text(address.name)
-                        .bold()
-                    if address.isDefault {
-                        Text(Localization.defaultAddress)
-                            .bold()
-                    }
-                }
-                Text(address.address)
-            }
-            Spacer()
-            PencilEditButton {
-                // TODO: Edit origin address
-            }
-            .buttonStyle(TextButtonStyle())
-        }
-        .padding()
-        .if(address.id == selectedAddressID) {
-            $0.background(Color(.wooCommercePurple(.shade0)), ignoresSafeAreaEdges: .vertical)
-        }
-        .roundedBorder(cornerRadius: Constants.cornerRadius,
-                       lineColor: Color(address.id == selectedAddressID ? .wooCommercePurple(.shade60) : .separator),
-                       lineWidth: address.id == selectedAddressID ? 2 : 0.5)
-    }
-
-    struct WooShippingOriginAddress: Identifiable, Hashable {
-        let id: String
-
-        /// Merchant or company name
-        let name: String
-
-        /// Full address
-        let address: String
-
-        /// If the address is the default one
-        let isDefault: Bool
     }
 }
 
@@ -95,29 +70,15 @@ private extension WooShippingOriginAddressListView {
 }
 
 #Preview {
-    WooShippingOriginAddressListView(originAddresses: [.init(id: "address_1",
-                                                             name: "HEADQUARTERS",
-                                                             address: "417 MONTGOMERY ST, SAN FRANCISCO, CA 94104-1129, US",
-                                                             isDefault: true),
-                                                       .init(id: "address_2",
-                                                             name: "WAREHOUSE",
-                                                             address: "15 ALGONKIN ST, TICONDEROGA, NY 12883-1487, US",
-                                                             isDefault: false)],
-                                     selectedAddressID: "address_1")
+    WooShippingOriginAddressListView(viewModel: .init(addresses: WooShippingOriginAddressListView.sampleAddresses(),
+                                                      selectedAddressID: "1"))
 }
 
 #Preview("Bottom sheet presentation") {
     Text("Background view")
         .sheet(isPresented: .constant(true)) {
-            WooShippingOriginAddressListView(originAddresses: [.init(id: "address_1",
-                                                                     name: "HEADQUARTERS",
-                                                                     address: "417 MONTGOMERY ST, SAN FRANCISCO, CA 94104-1129, US",
-                                                                     isDefault: true),
-                                                               .init(id: "address_2",
-                                                                     name: "WAREHOUSE",
-                                                                     address: "15 ALGONKIN ST, TICONDEROGA, NY 12883-1487, US",
-                                                                     isDefault: false)],
-                                             selectedAddressID: "address_1")
+            WooShippingOriginAddressListView(viewModel: .init(addresses: WooShippingOriginAddressListView.sampleAddresses(),
+                                                              selectedAddressID: "1"))
             .presentationDetents([.medium])
             .presentationDragIndicator(.visible)
         }

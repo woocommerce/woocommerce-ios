@@ -34,4 +34,4 @@ struct SystemStatusReportEnvelope: Decodable {
     private enum CodingKeys: String, CodingKey {
         case systemStatusReport = "data"
     }
-} 
+}

@@ -150,13 +150,18 @@ private extension NUXStackedButtonsViewController {
         buttons = []
         topStackView?.arrangedSubviews.forEach({ $0.removeFromSuperview() })
         bottomStackView?.arrangedSubviews.forEach({ $0.removeFromSuperview() })
+        topStackView?.isHidden = true
+        bottomStackView?.isHidden = true
+
         for config in buttonConfigs {
             let button = NUXButton()
             switch config.stackView {
             case .top:
                 topStackView?.addArrangedSubview(button)
+                topStackView?.isHidden = false
             case .bottom:
                 bottomStackView?.addArrangedSubview(button)
+                bottomStackView?.isHidden = false
             }
             button.configure(withConfig: config.config, and: config.style)
             buttons.append(button)

@@ -26,7 +26,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		3F09EC312D267B3600D8ACCE /* Exceptions for "WordPressKit" folder in "WordPressKit" target */ = {
+		3F09EC312D267B3600D8ACCE /* Exceptions for "Sources" folder in "WordPressKit" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			publicHeaders = (
 				WordPressKit.h,
@@ -36,17 +36,17 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		3F09EC232D267B3600D8ACCE /* WordPressKit */ = {
+		3F09EC232D267B3600D8ACCE /* Sources */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				3F09EC312D267B3600D8ACCE /* Exceptions for "WordPressKit" folder in "WordPressKit" target */,
+				3F09EC312D267B3600D8ACCE /* Exceptions for "Sources" folder in "WordPressKit" target */,
 			);
-			path = WordPressKit;
+			path = Sources;
 			sourceTree = "<group>";
 		};
-		3F09EC2D2D267B3600D8ACCE /* WordPressKitTests */ = {
+		3F09EC2D2D267B3600D8ACCE /* Tests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = WordPressKitTests;
+			path = Tests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -73,8 +73,8 @@
 		3F09EC172D267B3600D8ACCE = {
 			isa = PBXGroup;
 			children = (
-				3F09EC232D267B3600D8ACCE /* WordPressKit */,
-				3F09EC2D2D267B3600D8ACCE /* WordPressKitTests */,
+				3F09EC232D267B3600D8ACCE /* Sources */,
+				3F09EC2D2D267B3600D8ACCE /* Tests */,
 				3F09EC222D267B3600D8ACCE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -115,7 +115,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				3F09EC232D267B3600D8ACCE /* WordPressKit */,
+				3F09EC232D267B3600D8ACCE /* Sources */,
 			);
 			name = WordPressKit;
 			packageProductDependencies = (
@@ -138,7 +138,7 @@
 				3F09EC2C2D267B3600D8ACCE /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				3F09EC2D2D267B3600D8ACCE /* WordPressKitTests */,
+				3F09EC2D2D267B3600D8ACCE /* Tests */,
 			);
 			name = WordPressKitTests;
 			packageProductDependencies = (

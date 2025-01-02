@@ -78,6 +78,8 @@
 		028FA474257E110700F88A48 /* shipping-label-refund-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 028FA472257E110700F88A48 /* shipping-label-refund-success.json */; };
 		0291496E2D2634F800F7B3B3 /* SystemStatusReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0291496D2D2634F800F7B3B3 /* SystemStatusReport.swift */; };
 		029149702D263AE700F7B3B3 /* SystemStatusReportMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0291496F2D263AE700F7B3B3 /* SystemStatusReportMapper.swift */; };
+		029149722D2641DD00F7B3B3 /* SystemStatusReportMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029149712D2641DD00F7B3B3 /* SystemStatusReportMapperTests.swift */; };
+		029149742D26430E00F7B3B3 /* systemStatus-inconsistent-environment-max-upload-size-data-type.json in Resources */ = {isa = PBXBuildFile; fileRef = 029149732D26430E00F7B3B3 /* systemStatus-inconsistent-environment-max-upload-size-data-type.json */; };
 		02935AEE29DFFA74001B793E /* site-enable-trial-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 02935AEC29DFFA74001B793E /* site-enable-trial-success.json */; };
 		02935AEF29DFFA74001B793E /* site-enable-trial-error-already-upgraded.json in Resources */ = {isa = PBXBuildFile; fileRef = 02935AED29DFFA74001B793E /* site-enable-trial-error-already-upgraded.json */; };
 		029B86902A6FBBE000E944D1 /* wcpay-account-null-isLive.json in Resources */ = {isa = PBXBuildFile; fileRef = 029B868F2A6FBBE000E944D1 /* wcpay-account-null-isLive.json */; };
@@ -1370,6 +1372,8 @@
 		028FA472257E110700F88A48 /* shipping-label-refund-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-refund-success.json"; sourceTree = "<group>"; };
 		0291496D2D2634F800F7B3B3 /* SystemStatusReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusReport.swift; sourceTree = "<group>"; };
 		0291496F2D263AE700F7B3B3 /* SystemStatusReportMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusReportMapper.swift; sourceTree = "<group>"; };
+		029149712D2641DD00F7B3B3 /* SystemStatusReportMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusReportMapperTests.swift; sourceTree = "<group>"; };
+		029149732D26430E00F7B3B3 /* systemStatus-inconsistent-environment-max-upload-size-data-type.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "systemStatus-inconsistent-environment-max-upload-size-data-type.json"; sourceTree = "<group>"; };
 		02935AEC29DFFA74001B793E /* site-enable-trial-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-enable-trial-success.json"; sourceTree = "<group>"; };
 		02935AED29DFFA74001B793E /* site-enable-trial-error-already-upgraded.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-enable-trial-error-already-upgraded.json"; sourceTree = "<group>"; };
 		029B868F2A6FBBE000E944D1 /* wcpay-account-null-isLive.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wcpay-account-null-isLive.json"; sourceTree = "<group>"; };
@@ -3102,6 +3106,7 @@
 				DE8BEF0C2D151396008B3A3F /* notification-settings.json */,
 				EED25B1C2CF74B9800503657 /* media-upload.json */,
 				EE6C6B6F2C6A190500632BDA /* systemStatus-inconsistent-page-id-data-type.json */,
+				029149732D26430E00F7B3B3 /* systemStatus-inconsistent-environment-max-upload-size-data-type.json */,
 				DEB3878E2C2D71A10025256E /* gla-campaign-list-with-data-envelope.json */,
 				DEB3878D2C2D71A10025256E /* gla-campaign-list-without-data-envelope.json */,
 				DEB387772C2A9ADC0025256E /* gla-connection-with-data-envelope.json */,
@@ -3775,6 +3780,7 @@
 				9387A6EF226E3F15001B53D7 /* AccountSettingsMapperTests.swift */,
 				077F39DB26A58F4800ABEADC /* SystemPluginMapperTests.swift */,
 				DEC51AFA2769C66B009F3DF4 /* SystemStatusMapperTests.swift */,
+				029149712D2641DD00F7B3B3 /* SystemStatusReportMapperTests.swift */,
 				2685C0D9263B551300D9EE97 /* AddOnGroupMapperTests.swift */,
 				74AB0AC921948CE4008220CD /* CommentResultMapperTests.swift */,
 				03DCB7432624AD9A00C8953D /* CouponListMapperTests.swift */,
@@ -4572,6 +4578,7 @@
 				EE1CB9162B4BCFA800AD24D5 /* blaze-ai-suggestions.json in Resources */,
 				DE66C5672977CEB800DAA978 /* shipping-label-status-success-without-data.json in Resources */,
 				D8FBFF2922D52AFB006E3336 /* order-stats-v4-year.json in Resources */,
+				029149742D26430E00F7B3B3 /* systemStatus-inconsistent-environment-max-upload-size-data-type.json in Resources */,
 				D865CE65278CA202002C8520 /* stripe-payment-intent-canceled.json in Resources */,
 				DE20046A2BF74B1E00660A72 /* product-stock-string-quantity.json in Resources */,
 				DE42F9672967F61D00D514C2 /* refunds-all-without-data.json in Resources */,
@@ -5514,6 +5521,7 @@
 				DE2E8EAB2954170D002E4B14 /* WordPressSiteMapperTests.swift in Sources */,
 				D88D5A4F230BD276007B6E01 /* ProductReviewListMapperTests.swift in Sources */,
 				B567AF3120A0FB8F00AB6C62 /* JetpackRequestTests.swift in Sources */,
+				029149722D2641DD00F7B3B3 /* SystemStatusReportMapperTests.swift in Sources */,
 				7412A8F221B6E47A005D182A /* ReportRemoteTests.swift in Sources */,
 				DE78DE4C2B2AED4C002E58DE /* WordPressPageMapperTests.swift in Sources */,
 				4513382627A96DB700AE5E78 /* InboxNoteMapperTests.swift in Sources */,

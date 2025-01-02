@@ -1346,10 +1346,6 @@ extension UIImage {
         return UIImage(named: "built-in-reader-set-up")!
     }
 
-    static var iconBolt: UIImage {
-        UIImage(imageLiteralResourceName: "icon-bolt")
-    }
-
     static var shippingIcon: UIImage {
         UIImage(imageLiteralResourceName: "icon-shipping")
     }

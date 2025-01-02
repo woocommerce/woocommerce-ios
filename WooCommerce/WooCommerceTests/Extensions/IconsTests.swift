@@ -785,10 +785,6 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.blankProductImage)
     }
 
-    func test_icon_bolt_is_not_nil() {
-        XCTAssertNotNil(UIImage.iconBolt)
-    }
-
     func test_subscriptionProductImage_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.subscriptionProductImage)
     }

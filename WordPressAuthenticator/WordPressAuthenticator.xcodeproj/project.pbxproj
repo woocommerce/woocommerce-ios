@@ -42,6 +42,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			publicHeaders = (
 				Logging/WPAuthenticatorLogging.h,
+				"NSURL+IDN/NSURL+IDN.h",
 				NUX/WPNUXMainButton.h,
 				NUX/WPNUXPrimaryButton.h,
 				NUX/WPNUXSecondaryButton.h,

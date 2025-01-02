@@ -44,7 +44,7 @@ private extension SystemStatusReportViewModel {
     /// Format system status to match with Core's report.
     /// Not localizing content and keep English by default.
     ///
-    func formatReport(with systemStatus: SystemStatus) -> String {
+    func formatReport(with systemStatus: SystemStatusReport) -> String {
         var lines = ["### System Status Report generated via the WooCommerce iOS app ###"]
 
         // Environment

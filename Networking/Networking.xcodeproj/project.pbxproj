@@ -77,6 +77,7 @@
 		028FA473257E110700F88A48 /* shipping-label-refund-error.json in Resources */ = {isa = PBXBuildFile; fileRef = 028FA471257E110700F88A48 /* shipping-label-refund-error.json */; };
 		028FA474257E110700F88A48 /* shipping-label-refund-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 028FA472257E110700F88A48 /* shipping-label-refund-success.json */; };
 		0291496E2D2634F800F7B3B3 /* SystemStatusReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0291496D2D2634F800F7B3B3 /* SystemStatusReport.swift */; };
+		029149702D263AE700F7B3B3 /* SystemStatusReportMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0291496F2D263AE700F7B3B3 /* SystemStatusReportMapper.swift */; };
 		02935AEE29DFFA74001B793E /* site-enable-trial-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 02935AEC29DFFA74001B793E /* site-enable-trial-success.json */; };
 		02935AEF29DFFA74001B793E /* site-enable-trial-error-already-upgraded.json in Resources */ = {isa = PBXBuildFile; fileRef = 02935AED29DFFA74001B793E /* site-enable-trial-error-already-upgraded.json */; };
 		029B86902A6FBBE000E944D1 /* wcpay-account-null-isLive.json in Resources */ = {isa = PBXBuildFile; fileRef = 029B868F2A6FBBE000E944D1 /* wcpay-account-null-isLive.json */; };
@@ -1368,6 +1369,7 @@
 		028FA471257E110700F88A48 /* shipping-label-refund-error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-refund-error.json"; sourceTree = "<group>"; };
 		028FA472257E110700F88A48 /* shipping-label-refund-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-refund-success.json"; sourceTree = "<group>"; };
 		0291496D2D2634F800F7B3B3 /* SystemStatusReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusReport.swift; sourceTree = "<group>"; };
+		0291496F2D263AE700F7B3B3 /* SystemStatusReportMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusReportMapper.swift; sourceTree = "<group>"; };
 		02935AEC29DFFA74001B793E /* site-enable-trial-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-enable-trial-success.json"; sourceTree = "<group>"; };
 		02935AED29DFFA74001B793E /* site-enable-trial-error-already-upgraded.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-enable-trial-error-already-upgraded.json"; sourceTree = "<group>"; };
 		029B868F2A6FBBE000E944D1 /* wcpay-account-null-isLive.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wcpay-account-null-isLive.json"; sourceTree = "<group>"; };
@@ -3060,6 +3062,7 @@
 				CC75108A29EFF1A90035FBA4 /* SubscriptionStatus.swift */,
 				077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */,
 				3148976F27232982007A86BD /* SystemStatus.swift */,
+				0291496D2D2634F800F7B3B3 /* SystemStatusReport.swift */,
 				DEC51AE527684717009F3DF4 /* SystemStatusDetails */,
 				450106842399A7CB00E24722 /* TaxClass.swift */,
 				31799AF7270508C600D78179 /* RemoteReaderLocation.swift */,
@@ -3089,7 +3092,6 @@
 				EE078D8E2AD2E65400C1199E /* JWToken.swift */,
 				DEDA8DA02B182E850076BF0F /* WordPressTheme.swift */,
 				DE78DE452B2AE880002E58DE /* WordPressPage.swift */,
-				0291496D2D2634F800F7B3B3 /* SystemStatusReport.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -3668,6 +3670,7 @@
 				CE606D8E2BE39426001CB424 /* ShippingMethodMapper.swift */,
 				FE28F6E326842848004465C7 /* UserMapper.swift */,
 				077F39D326A58DE700ABEADC /* SystemStatusMapper.swift */,
+				0291496F2D263AE700F7B3B3 /* SystemStatusReportMapper.swift */,
 				DEC51AE827687AAF009F3DF4 /* SystemPluginMapper.swift */,
 				02C11275274285FF00F4F0B4 /* WooCommerceAvailabilityMapper.swift */,
 				02BE0A7A274B695F001176D2 /* WordPressMediaMapper.swift */,
@@ -5068,6 +5071,7 @@
 				0359EA0F27AAC6410048DE2D /* WCPayPaymentMethodDetails.swift in Sources */,
 				7426CA1121AF30BD004E9FFC /* SiteAPIMapper.swift in Sources */,
 				57E8FED3246616AC0057CD68 /* Result+Extensions.swift in Sources */,
+				029149702D263AE700F7B3B3 /* SystemStatusReportMapper.swift in Sources */,
 				020D07BC23D856BF00FD9580 /* MediaRemote.swift in Sources */,
 				CE71E2312A4C3DDA00DB5376 /* ProductsReportMapper.swift in Sources */,
 				0286981429ED2D6400853B88 /* GenerativeContentRemote.swift in Sources */,

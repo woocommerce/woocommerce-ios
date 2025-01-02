@@ -1,5 +1,4 @@
 import AuthenticationServices
-import NSURL_IDN
 import UIKit
 import WordPressShared
 import WordPressUI

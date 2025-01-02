@@ -44,10 +44,6 @@ def wordpress_shared
   pod 'WordPressShared', '~> 2.1-beta'
 end
 
-def nsurl_idn
-  pod 'NSURL+IDN', '0.4'
-end
-
 def svprogresshud
   pod 'SVProgressHUD', '2.2.5'
 end
@@ -115,7 +111,6 @@ target 'WooCommerce' do
   wordpress_shared
   wordpress_ui
   # TODO: remove once WordPressAuthenticator fold completed
-  nsurl_idn
   svprogresshud
   wordpress_kit
 
@@ -345,7 +340,6 @@ end
 # ==========
 #
 def wordpress_authenticator_pods
-  nsurl_idn
   svprogresshud
   gridicons
   wordpress_ui

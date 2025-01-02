@@ -1,6 +1,5 @@
 import UIKit
 import WordPressShared
-import WordPressKit
 import WordPressUI
 
 class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder {

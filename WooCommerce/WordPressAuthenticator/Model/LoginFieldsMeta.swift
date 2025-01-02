@@ -1,5 +1,3 @@
-import WordPressKit
-
 class LoginFieldsMeta {
 
     /// Indicates where the Magic Link Email was sent from.

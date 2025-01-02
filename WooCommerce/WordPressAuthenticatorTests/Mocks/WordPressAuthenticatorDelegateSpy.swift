@@ -1,5 +1,4 @@
 @testable import WordPressAuthenticator
-import WordPressKit
 
 class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     var dismissActionEnabled: Bool = true

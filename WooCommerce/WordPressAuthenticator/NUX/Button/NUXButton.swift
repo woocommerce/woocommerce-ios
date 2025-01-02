@@ -1,7 +1,6 @@
 import UIKit
 import WordPressShared
 import WordPressUI
-import WordPressKit
 
 public struct NUXButtonStyle {
     public let normal: ButtonStyle

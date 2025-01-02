@@ -48,6 +48,10 @@ def nsurl_idn
   pod 'NSURL+IDN', '0.4'
 end
 
+def svprogresshud
+  pod 'SVProgressHUD', '2.2.5'
+end
+
 def keychain
   pod 'KeychainAccess', '~> 4.2.2'
 end
@@ -112,6 +116,7 @@ target 'WooCommerce' do
   wordpress_ui
   # TODO: remove once WordPressAuthenticator fold completed
   nsurl_idn
+  svprogresshud
   wordpress_kit
 
   aztec
@@ -341,7 +346,7 @@ end
 #
 def wordpress_authenticator_pods
   nsurl_idn
-  pod 'SVProgressHUD', '2.2.5'
+  svprogresshud
   gridicons
   wordpress_ui
   wordpress_kit

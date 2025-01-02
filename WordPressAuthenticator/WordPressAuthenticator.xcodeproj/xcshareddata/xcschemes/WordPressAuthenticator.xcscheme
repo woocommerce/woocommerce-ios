@@ -30,7 +30,7 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:WordPressAuthenticatorTests/UnitTests.xctestplan"
+            reference = "container:Tests/UnitTests.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>

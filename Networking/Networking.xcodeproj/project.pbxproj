@@ -76,6 +76,7 @@
 		028F3F942B0DF9A800F8E227 /* OrderEncoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028F3F932B0DF9A800F8E227 /* OrderEncoderTests.swift */; };
 		028FA473257E110700F88A48 /* shipping-label-refund-error.json in Resources */ = {isa = PBXBuildFile; fileRef = 028FA471257E110700F88A48 /* shipping-label-refund-error.json */; };
 		028FA474257E110700F88A48 /* shipping-label-refund-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 028FA472257E110700F88A48 /* shipping-label-refund-success.json */; };
+		0291496E2D2634F800F7B3B3 /* SystemStatusReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0291496D2D2634F800F7B3B3 /* SystemStatusReport.swift */; };
 		02935AEE29DFFA74001B793E /* site-enable-trial-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 02935AEC29DFFA74001B793E /* site-enable-trial-success.json */; };
 		02935AEF29DFFA74001B793E /* site-enable-trial-error-already-upgraded.json in Resources */ = {isa = PBXBuildFile; fileRef = 02935AED29DFFA74001B793E /* site-enable-trial-error-already-upgraded.json */; };
 		029B86902A6FBBE000E944D1 /* wcpay-account-null-isLive.json in Resources */ = {isa = PBXBuildFile; fileRef = 029B868F2A6FBBE000E944D1 /* wcpay-account-null-isLive.json */; };
@@ -1366,6 +1367,7 @@
 		028F3F932B0DF9A800F8E227 /* OrderEncoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderEncoderTests.swift; sourceTree = "<group>"; };
 		028FA471257E110700F88A48 /* shipping-label-refund-error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-refund-error.json"; sourceTree = "<group>"; };
 		028FA472257E110700F88A48 /* shipping-label-refund-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-refund-success.json"; sourceTree = "<group>"; };
+		0291496D2D2634F800F7B3B3 /* SystemStatusReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusReport.swift; sourceTree = "<group>"; };
 		02935AEC29DFFA74001B793E /* site-enable-trial-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-enable-trial-success.json"; sourceTree = "<group>"; };
 		02935AED29DFFA74001B793E /* site-enable-trial-error-already-upgraded.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-enable-trial-error-already-upgraded.json"; sourceTree = "<group>"; };
 		029B868F2A6FBBE000E944D1 /* wcpay-account-null-isLive.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wcpay-account-null-isLive.json"; sourceTree = "<group>"; };
@@ -3087,6 +3089,7 @@
 				EE078D8E2AD2E65400C1199E /* JWToken.swift */,
 				DEDA8DA02B182E850076BF0F /* WordPressTheme.swift */,
 				DE78DE452B2AE880002E58DE /* WordPressPage.swift */,
+				0291496D2D2634F800F7B3B3 /* SystemStatusReport.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -5005,6 +5008,7 @@
 				CE21FB182C2AC97200303832 /* GoogleAdsCampaignStatsTotals.swift in Sources */,
 				B5BB1D0C20A2050300112D92 /* DateFormatter+Woo.swift in Sources */,
 				743E84EE2217244C00FAC9D7 /* ShipmentTrackingListMapper.swift in Sources */,
+				0291496E2D2634F800F7B3B3 /* SystemStatusReport.swift in Sources */,
 				DEFBA7542949CE6600C35BA9 /* RequestProcessor.swift in Sources */,
 				451A97E5260B631E0059D135 /* ShippingLabelPredefinedPackage.swift in Sources */,
 				BAB373722795A1FB00837B4A /* OrderTaxLine.swift in Sources */,

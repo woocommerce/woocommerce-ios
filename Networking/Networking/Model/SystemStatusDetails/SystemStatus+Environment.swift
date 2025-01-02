@@ -1,6 +1,6 @@
 import Foundation
 
-public extension SystemStatus {
+public extension SystemStatusReport {
     /// Subtype for details about environment in system status.
     ///
     struct Environment: Decodable {
@@ -36,7 +36,7 @@ public extension SystemStatus {
     }
 }
 
-private extension SystemStatus.Environment {
+private extension SystemStatusReport.Environment {
     enum CodingKeys: String, CodingKey {
         case homeURL = "home_url"
         case siteURL = "site_url"

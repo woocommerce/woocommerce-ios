@@ -686,8 +686,8 @@ platform :ios do
   end
 
   desc 'Builds for distribution to the App Store'
-  lane :build_for_app_store_connect do
-    appstore_code_signing
+  lane :build_for_app_store_connect do |fetch_code_signing: true|
+    appstore_code_signing if fetch_code_signing
 
     gym(
       scheme: 'WooCommerce',
@@ -754,8 +754,8 @@ platform :ios do
   end
 
   desc 'Builds a prototype build (Enterprise build)'
-  lane :build_for_prototype_build do
-    alpha_code_signing
+  lane :build_for_prototype_build do |fetch_code_signing: true|
+    alpha_code_signing if fetch_code_signing
 
     # Get the current build version, and update it if needed
     versions = Xcodeproj::Config.new(File.new(PUBLIC_CONFIG_FILE)).to_hash

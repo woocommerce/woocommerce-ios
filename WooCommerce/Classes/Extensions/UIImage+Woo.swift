@@ -552,12 +552,6 @@ extension UIImage {
         return UIImage.gridicon(.cog)
     }
 
-    /// Login prologue curved rectangle
-    ///
-    static var curvedRectangle: UIImage {
-        return UIImage(named: "prologue-curved-rectangle")!
-    }
-
     static func prologueBackgroundBubbles(tint: UIColor) -> UIImage {
         let image = UIImage(named: "login-prologue-background-bubbles")!
         return image.withTintColor(tint)

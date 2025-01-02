@@ -669,10 +669,6 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.emptyBoxImage)
     }
 
-    func test_curvedRectangle_is_not_nil() {
-        XCTAssertNotNil(UIImage.curvedRectangle)
-    }
-
     func test_prologueAnalyticsImage_is_not_nil() {
         XCTAssertNotNil(UIImage.prologueAnalyticsImage)
     }

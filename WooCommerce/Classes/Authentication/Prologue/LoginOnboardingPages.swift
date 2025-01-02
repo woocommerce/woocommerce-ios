@@ -8,7 +8,6 @@ enum LoginOnboardingPageType: CaseIterable {
     case stats
     case orderManagement
     case products
-    case reviews
 
     var title: String {
         switch self {
@@ -20,9 +19,6 @@ enum LoginOnboardingPageType: CaseIterable {
                                      comment: "Caption displayed in promotional screens shown during the login flow.")
         case .products:
             return NSLocalizedString("Edit and add new products from anywhere",
-                                     comment: "Caption displayed in promotional screens shown during the login flow.")
-        case .reviews:
-            return NSLocalizedString("Monitor and approve your product reviews",
                                      comment: "Caption displayed in promotional screens shown during the login flow.")
         }
     }
@@ -38,23 +34,19 @@ enum LoginOnboardingPageType: CaseIterable {
         case .products:
             return NSLocalizedString("We enable you to process them effortlessly.",
                                      comment: "Subtitle displayed in promotional screens shown during the login flow.")
-        default:
-            return nil
         }
     }
 
-        var image: UIImage {
-            switch self {
-            case .stats:
-                return UIImage.prologueAnalyticsImage
-            case .orderManagement:
-                return UIImage.prologueOrdersImage
-            case .products:
-                return UIImage.prologueProductsImage
-            case .reviews:
-                return UIImage.prologueReviewsImage
-            }
+    var image: UIImage {
+        switch self {
+        case .stats:
+            return UIImage.prologueAnalyticsImage
+        case .orderManagement:
+            return UIImage.prologueOrdersImage
+        case .products:
+            return UIImage.prologueProductsImage
         }
+    }
 }
 
 // MARK: - View Controller

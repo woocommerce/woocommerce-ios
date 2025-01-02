@@ -578,13 +578,6 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
-    /// Login prologue reviews image
-    ///
-    static var prologueReviewsImage: UIImage {
-        return UIImage(named: "login-prologue-reviews")!
-            .imageFlippedForRightToLeftLayoutDirection()
-    }
-
     /// Login prologue Woo Mobile
     ///
     static var prologueWooMobileImage: UIImage {

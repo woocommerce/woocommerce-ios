@@ -59,6 +59,9 @@ private extension VariationCardView {
 }
 
 #Preview("Variation with image") {
-    let variation = POSVariation(id: .init(), name: "500ml, double shot", formattedPrice: "$5.00", productImageSource: "https://pd.w.org/2024/12/986762d0d4d4cf17.82435881-scaled.jpeg")
+    let variation = POSVariation(id: .init(),
+                                 name: "500ml, double shot",
+                                 formattedPrice: "$5.00",
+                                 productImageSource: "https://pd.w.org/2024/12/986762d0d4d4cf17.82435881-scaled.jpeg")
     VariationCardView(variation: variation)
 }

@@ -38,7 +38,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		3F096C4D2D23F17E00D8ACCE /* Exceptions for "WordPressAuthenticator" folder in "WordPressAuthenticator" target */ = {
+		3F096C4D2D23F17E00D8ACCE /* Exceptions for "Sources" folder in "WordPressAuthenticator" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			publicHeaders = (
 				Logging/WPAuthenticatorLogging.h,
@@ -56,17 +56,17 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		3F096C3F2D23F17E00D8ACCE /* WordPressAuthenticator */ = {
+		3F096C3F2D23F17E00D8ACCE /* Sources */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				3F096C4D2D23F17E00D8ACCE /* Exceptions for "WordPressAuthenticator" folder in "WordPressAuthenticator" target */,
+				3F096C4D2D23F17E00D8ACCE /* Exceptions for "Sources" folder in "WordPressAuthenticator" target */,
 			);
-			path = WordPressAuthenticator;
+			path = Sources;
 			sourceTree = "<group>";
 		};
-		3F096C492D23F17E00D8ACCE /* WordPressAuthenticatorTests */ = {
+		3F096C492D23F17E00D8ACCE /* Tests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = WordPressAuthenticatorTests;
+			path = Tests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -96,8 +96,8 @@
 		3F096C332D23F17E00D8ACCE = {
 			isa = PBXGroup;
 			children = (
-				3F096C3F2D23F17E00D8ACCE /* WordPressAuthenticator */,
-				3F096C492D23F17E00D8ACCE /* WordPressAuthenticatorTests */,
+				3F096C3F2D23F17E00D8ACCE /* Sources */,
+				3F096C492D23F17E00D8ACCE /* Tests */,
 				3F096E412D23F26A00D8ACCE /* Frameworks */,
 				3F096C3E2D23F17E00D8ACCE /* Products */,
 				3F0972242D242A3500D8ACCE /* Workspace-Shared.xcconfig */,
@@ -164,7 +164,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				3F096C3F2D23F17E00D8ACCE /* WordPressAuthenticator */,
+				3F096C3F2D23F17E00D8ACCE /* Sources */,
 			);
 			name = WordPressAuthenticator;
 			productName = WordPressAuthenticator;
@@ -187,7 +187,7 @@
 				3F096C482D23F17E00D8ACCE /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				3F096C492D23F17E00D8ACCE /* WordPressAuthenticatorTests */,
+				3F096C492D23F17E00D8ACCE /* Tests */,
 			);
 			name = WordPressAuthenticatorTests;
 			productName = WordPressAuthenticatorTests;

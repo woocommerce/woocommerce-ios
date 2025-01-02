@@ -102,7 +102,7 @@ extension WPStyleGuide {
     class func formattedGoogleString(forHyperlink: Bool = false) -> NSAttributedString {
 
         let googleAttachment = NSTextAttachment()
-        let googleIcon = UIImage.googleIcon
+        let googleIcon = UIImage.authenticatorGoogleIcon
         googleAttachment.image = googleIcon
 
         if forHyperlink {

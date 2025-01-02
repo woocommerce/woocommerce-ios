@@ -43,6 +43,17 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "3F0904072D26A40800D8ACCE"
+               BuildableName = "WordPressAuthenticatorTests.xctest"
+               BlueprintName = "WordPressAuthenticatorTests"
+               ReferencedContainer = "container:WooCommerce.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

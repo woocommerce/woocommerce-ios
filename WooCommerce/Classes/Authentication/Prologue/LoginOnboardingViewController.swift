@@ -68,7 +68,7 @@ private extension LoginOnboardingViewController {
 
     func configureBubblesImageView() {
         let imageView = UIImageView(image: .prologueBackgroundBubbles(tint: .init(light: .gray(.shade0), dark: .gray(.shade80))))
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = .center
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
         view.pinSubviewToAllEdges(imageView)

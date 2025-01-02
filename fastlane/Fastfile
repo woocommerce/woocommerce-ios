@@ -689,12 +689,14 @@ platform :ios do
   lane :build_for_app_store_connect do |fetch_code_signing: true|
     appstore_code_signing if fetch_code_signing
 
+    export_method = 'app-store'
     gym(
       scheme: 'WooCommerce',
       workspace: WORKSPACE_PATH,
       clean: true,
       export_team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
-      export_options: { **COMMON_EXPORT_OPTIONS, method: 'app-store' }
+      export_method: export_method,
+      export_options: { **COMMON_EXPORT_OPTIONS, method: export_method }
     )
   end
 
@@ -765,16 +767,17 @@ platform :ios do
     new_config = Xcodeproj::Config.new(versions)
     new_config.save_as(Pathname.new(PUBLIC_CONFIG_FILE))
 
+    export_method = 'enterprise'
     gym(
       scheme: 'WooCommerce Alpha',
       workspace: WORKSPACE_PATH,
-      export_method: 'enterprise',
       clean: true,
       output_directory: 'build',
       export_team_id: get_required_env('INT_EXPORT_TEAM_ID'),
+      export_method: export_method,
       export_options: {
         **COMMON_EXPORT_OPTIONS,
-        method: 'enterprise',
+        method: export_method,
         iCloudContainerEnvironment: 'Production'
       }
     )

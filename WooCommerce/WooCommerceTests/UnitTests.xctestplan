@@ -30,22 +30,8 @@
   "testTargets" : [
     {
       "target" : {
-        "containerPath" : "container:..\/Hardware\/Hardware.xcodeproj",
-        "identifier" : "D88FDB0725DD216B00CB0DBD",
-        "name" : "HardwareTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:..\/Experiments\/Experiments.xcodeproj",
-        "identifier" : "0270C08927069A8900FC799F",
-        "name" : "ExperimentsTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:..\/WordPressAuthenticator\/WordPressAuthenticator.xcodeproj",
-        "identifier" : "3F096C442D23F17E00D8ACCE",
+        "containerPath" : "container:WooCommerce.xcodeproj",
+        "identifier" : "3F0904072D26A40800D8ACCE",
         "name" : "WordPressAuthenticatorTests"
       }
     },
@@ -73,6 +59,13 @@
       }
     },
     {
+      "target" : {
+        "containerPath" : "container:..\/Yosemite\/Yosemite.xcodeproj",
+        "identifier" : "B5C9DDFD2087FEC0006B910A",
+        "name" : "YosemiteTests"
+      }
+    },
+    {
       "skippedTests" : [
         "InAppPurchasesOrderResultMapperTests",
         "InAppPurchasesOrderResultMapperTests\/test_iap_order_creation_is_decoded_from_json_response()",
@@ -97,6 +90,13 @@
     },
     {
       "target" : {
+        "containerPath" : "container:..\/WooFoundation\/WooFoundation.xcodeproj",
+        "identifier" : "B9C9C63D283E703C001B879F",
+        "name" : "WooFoundationTests"
+      }
+    },
+    {
+      "target" : {
         "containerPath" : "container:..\/Storage\/Storage.xcodeproj",
         "identifier" : "B54CA5A120A4BBA600F38CD1",
         "name" : "StorageTests"
@@ -104,16 +104,16 @@
     },
     {
       "target" : {
-        "containerPath" : "container:..\/Yosemite\/Yosemite.xcodeproj",
-        "identifier" : "B5C9DDFD2087FEC0006B910A",
-        "name" : "YosemiteTests"
+        "containerPath" : "container:..\/Hardware\/Hardware.xcodeproj",
+        "identifier" : "D88FDB0725DD216B00CB0DBD",
+        "name" : "HardwareTests"
       }
     },
     {
       "target" : {
-        "containerPath" : "container:..\/WooFoundation\/WooFoundation.xcodeproj",
-        "identifier" : "B9C9C63D283E703C001B879F",
-        "name" : "WooFoundationTests"
+        "containerPath" : "container:..\/Experiments\/Experiments.xcodeproj",
+        "identifier" : "0270C08927069A8900FC799F",
+        "name" : "ExperimentsTests"
       }
     }
   ],

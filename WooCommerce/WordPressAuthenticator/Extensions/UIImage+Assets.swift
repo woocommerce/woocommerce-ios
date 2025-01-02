@@ -25,21 +25,21 @@ extension UIImage {
     /// Returns the Link Image.
     ///
     @objc
-    public static var googleIcon: UIImage {
+    public static var authenticatorGoogleIcon: UIImage {
         return UIImage(named: "google", in: bundle, compatibleWith: nil) ?? UIImage()
     }
 
     /// Returns the Phone Icon.
     ///
     @objc
-    public static var phoneIcon: UIImage {
+    public static var authenticatorPhoneIcon: UIImage {
         return UIImage(named: "phone-icon", in: bundle, compatibleWith: nil)?.withRenderingMode(.alwaysTemplate) ?? UIImage()
     }
 
     /// Returns the Key Icon.
     ///
     @objc
-    public static var keyIcon: UIImage {
+    public static var authenticatorKeyIcon: UIImage {
         return UIImage(named: "key-icon", in: bundle, compatibleWith: nil)?.withRenderingMode(.alwaysTemplate) ?? UIImage()
     }
 

@@ -15,10 +15,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3F096C3C2D23F17E00D8ACCE"
+               BlueprintIdentifier = "3F0904002D26A40700D8ACCE"
                BuildableName = "WordPressAuthenticator.framework"
                BlueprintName = "WordPressAuthenticator"
-               ReferencedContainer = "container:WordPressAuthenticator.xcodeproj">
+               ReferencedContainer = "container:WooCommerce.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -30,23 +30,10 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:Tests/UnitTests.xctestplan"
+            reference = "container:WordPressAuthenticatorTests/UnitTests.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>
-      <Testables>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3F096C442D23F17E00D8ACCE"
-               BuildableName = "WordPressAuthenticatorTests.xctest"
-               BlueprintName = "WordPressAuthenticatorTests"
-               ReferencedContainer = "container:WordPressAuthenticator.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -68,10 +55,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3F096C3C2D23F17E00D8ACCE"
+            BlueprintIdentifier = "3F0904002D26A40700D8ACCE"
             BuildableName = "WordPressAuthenticator.framework"
             BlueprintName = "WordPressAuthenticator"
-            ReferencedContainer = "container:WordPressAuthenticator.xcodeproj">
+            ReferencedContainer = "container:WooCommerce.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

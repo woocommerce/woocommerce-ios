@@ -1,5 +1,4 @@
 import Foundation
-import WordPressKit
 
 struct SiteAddressViewModel {
     private let isSiteDiscovery: Bool

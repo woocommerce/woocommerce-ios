@@ -1,5 +1,4 @@
 import UIKit
-import WordPressKit
 
 @objc public protocol NUXButtonViewControllerDelegate {
     func primaryButtonPressed()

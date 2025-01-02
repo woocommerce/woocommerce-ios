@@ -1,6 +1,5 @@
 import AuthenticationServices
 import Foundation
-import WordPressKit
 import WordPressAuthenticator
 import class Networking.UserAgent
 

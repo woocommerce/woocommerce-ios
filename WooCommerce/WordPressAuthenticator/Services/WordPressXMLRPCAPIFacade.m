@@ -2,8 +2,6 @@
 #import <WPXMLRPC/WPXMLRPC.h>
 #import "WordPressAuthenticator-Swift.h"
 
-@import WordPressKit;
-
 @interface WordPressXMLRPCAPIFacade ()
 
 @property (nonatomic, strong) NSString *userAgent;

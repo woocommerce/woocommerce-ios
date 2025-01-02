@@ -1,7 +1,6 @@
 import UIKit
 import WordPressShared
 import WordPressUI
-import WordPressKit
 
 class LoginPrologueViewController: LoginViewController {
 

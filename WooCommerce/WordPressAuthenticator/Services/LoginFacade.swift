@@ -1,5 +1,4 @@
 import Foundation
-import WordPressKit
 
 /// Extension for handling 2FA authentication.
 ///

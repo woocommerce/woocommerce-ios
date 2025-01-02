@@ -72,6 +72,8 @@ extension WordPressAuthenticator {
                                                 navBarImage: StyleManager.navBarImage,
                                                 navBarBadgeColor: .primary,
                                                 navBarBackgroundColor: .appBar,
+                                                prologueSecondaryButtonStyle: prologueSigninButtonStyle,
+                                                prologueTertiaryButtonStyle: prologueSiteCreationGuideButtonStyle,
                                                 prologueTopContainerChildViewController:
                                                     LoginPrologueViewController(),
                                                 statusBarStyle: .default)
@@ -108,8 +110,10 @@ extension WordPressAuthenticator {
                                                               textButtonColor: .accent,
                                                               textButtonHighlightColor: .accentDark,
                                                               viewControllerBackgroundColor: .basicBackground,
-                                                              prologueButtonsBackgroundColor: .systemBackground,
-                                                              prologueViewBackgroundColor: .systemBackground,
+                                                              prologueButtonsBackgroundColor: .clear,
+                                                              prologueViewBackgroundColor: LoginPrologueViewController.backgroundColor,
+                                                              prologueBackgroundImage: LoginPrologueViewController.backgroundImage,
+                                                              prologueBackgroundScaleMode: .center,
                                                               navBarBackgroundColor: .basicBackground,
                                                               navButtonTextColor: .accent,
                                                               navTitleTextColor: .text,
@@ -125,5 +129,36 @@ extension WordPressAuthenticator {
                                           unifiedStyle: unifiedStyle,
                                           displayImages: displayImages,
                                           displayStrings: displayStrings)
+    }
+
+    static var prologueSigninButtonStyle: NUXButtonStyle {
+        let titleColor = UIColor(light: .black, dark: .primaryButtonTitle)
+        let backgroundColor = UIColor(light: .white, dark: .primaryButtonBackground)
+        let highlightedBackgroundColor = UIColor(light: .gray(.shade20), dark: .primaryButtonDownBackground)
+
+        return NUXButtonStyle(normal: .init(backgroundColor: backgroundColor,
+                                            borderColor: .clear,
+                                            titleColor: titleColor),
+                              highlighted: .init(backgroundColor: highlightedBackgroundColor,
+                                                 borderColor: .clear,
+                                                 titleColor: titleColor),
+                              disabled: .init(backgroundColor: .buttonDisabledBackground,
+                                              borderColor: .clear,
+                                              titleColor: .textSubtle))
+    }
+
+    static var prologueSiteCreationGuideButtonStyle: NUXButtonStyle {
+        let buttonTitleColor = UIColor.white
+        let buttonHighlightColor = UIColor.gray(.shade20)
+
+        return NUXButtonStyle(normal: .init(backgroundColor: .clear,
+                                             borderColor: .clear,
+                                             titleColor: buttonTitleColor),
+                              highlighted: .init(backgroundColor: .clear,
+                                                 borderColor: .clear,
+                                                 titleColor: buttonHighlightColor),
+                              disabled: .init(backgroundColor: .clear,
+                                              borderColor: .clear,
+                                              titleColor: buttonTitleColor.withAlphaComponent(0.5)))
     }
 }

@@ -9,7 +9,6 @@ enum LoginProloguePageType: CaseIterable {
     case orderManagement
     case products
     case reviews
-    case getStarted
 
     var title: String {
         switch self {
@@ -25,9 +24,6 @@ enum LoginProloguePageType: CaseIterable {
         case .reviews:
             return NSLocalizedString("Monitor and approve your product reviews",
                                      comment: "Caption displayed in promotional screens shown during the login flow.")
-        case .getStarted:
-            return NSLocalizedString("The ecommerce platform that grows with you",
-                                     comment: "Caption displayed in the simplified prologue screen")
         }
     }
 
@@ -42,58 +38,23 @@ enum LoginProloguePageType: CaseIterable {
         case .products:
             return NSLocalizedString("We enable you to process them effortlessly.",
                                      comment: "Subtitle displayed in promotional screens shown during the login flow.")
-        case .getStarted:
-            return NSLocalizedString("loginProloguePageType.getStartedText",
-                                     value: "From your first sale to millions in revenue, Woo is with you. "
-                                     + "See why merchants trust us to power 3.9 million online stores.",
-                                     comment: "Subtitle displayed in the simplified prologue screen")
         default:
             return nil
         }
     }
 
-    var subtitleColor: UIColor {
-        switch self {
-        case .stats, .orderManagement, .products, .reviews:
-            return .textSubtle
-        case .getStarted:
-            return .text
+        var image: UIImage {
+            switch self {
+            case .stats:
+                return UIImage.prologueAnalyticsImage
+            case .orderManagement:
+                return UIImage.prologueOrdersImage
+            case .products:
+                return UIImage.prologueProductsImage
+            case .reviews:
+                return UIImage.prologueReviewsImage
+            }
         }
-    }
-
-    var image: UIImage {
-        switch self {
-        case .stats:
-            return UIImage.prologueAnalyticsImage
-        case .orderManagement:
-            return UIImage.prologueOrdersImage
-        case .products:
-            return UIImage.prologueProductsImage
-        case .reviews:
-            return UIImage.prologueReviewsImage
-        case .getStarted:
-            return UIImage.prologueWooMobileImage
-        }
-    }
-
-    var imageHeightMultiplier: CGFloat {
-        switch self {
-        case .stats, .orderManagement, .products, .reviews:
-            return 0.35
-        case .getStarted:
-            return 0.6
-        }
-    }
-
-    // Space between image and text
-    var stackSpacing: CGFloat {
-        switch self {
-        case .stats, .orderManagement, .products, .reviews:
-            return 16
-        case .getStarted:
-            return 8
-        }
-    }
 }
 
 // MARK: - View Controller
@@ -147,7 +108,7 @@ private extension LoginProloguePageTypeViewController {
         // Stack view layout
         stackView.axis = .vertical
         stackView.alignment = .center
-        stackView.spacing = pageType.stackSpacing
+        stackView.spacing = Constants.stackSpacing
 
 
         // Set constraints
@@ -166,7 +127,7 @@ private extension LoginProloguePageTypeViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             imageView.widthAnchor.constraint(equalTo: stackView.widthAnchor),
-            imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: pageType.imageHeightMultiplier)
+            imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: Constants.imageHeightMultiplier)
         ])
 
         // Image contents
@@ -178,9 +139,7 @@ private extension LoginProloguePageTypeViewController {
 
         // Label style & layout
         titleLabel.font = {
-            if pageType == .getStarted {
-                return .title3SemiBold
-            } else if showsSubtitle {
+            if showsSubtitle {
                 return .font(forStyle: .title2, weight: .semibold)
             } else {
                 return .body
@@ -208,7 +167,7 @@ private extension LoginProloguePageTypeViewController {
         // Label style & layout
         subtitleLabel.font = .body
         subtitleLabel.adjustsFontForContentSizeCategory = true
-        subtitleLabel.textColor = pageType.subtitleColor
+        subtitleLabel.textColor = Constants.subtitleColor
         subtitleLabel.textAlignment = .center
         subtitleLabel.numberOfLines = 0
         subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -226,5 +185,8 @@ private extension LoginProloguePageTypeViewController {
     enum Constants {
         static let stackBottomMargin: CGFloat = -24 // Minimum margin between stack view and login buttons, including space required for UIPageControl
         static let labelLeadingMargin: CGFloat = 48
+        static let imageHeightMultiplier: CGFloat = 0.35
+        static let stackSpacing: CGFloat = 16 // Space between image and text
+        static let subtitleColor: UIColor = .textSubtle
     }
 }

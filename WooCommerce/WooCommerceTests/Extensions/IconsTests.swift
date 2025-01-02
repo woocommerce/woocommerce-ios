@@ -583,10 +583,6 @@ final class IconsTests: XCTestCase {
         XCTAssertEqual(size, image!.size)
     }
 
-    func test_wooLogoPrologueImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.wooLogoPrologueImage)
-    }
-
     func testWaitingForCustomersImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.waitingForCustomersImage)
     }

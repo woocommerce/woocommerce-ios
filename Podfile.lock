@@ -12,7 +12,6 @@ PODS:
   - KeychainAccess (4.2.2)
   - Kingfisher (7.6.2)
   - NSObject-SafeExpectations (0.0.6)
-  - "NSURL+IDN (0.4)"
   - OCMock (3.9.4)
   - Sentry (8.36.0):
     - Sentry/Core (= 8.36.0)
@@ -59,7 +58,6 @@ DEPENDENCIES:
   - Gridicons (~> 1.2.0)
   - KeychainAccess (~> 4.2.2)
   - Kingfisher (~> 7.6.2)
-  - "NSURL+IDN (= 0.4)"
   - OCMock (~> 3.4)
   - Sentry (~> 8.36.0)
   - Sourcery (~> 1.0.3)
@@ -85,7 +83,6 @@ SPEC REPOS:
     - KeychainAccess
     - Kingfisher
     - NSObject-SafeExpectations
-    - "NSURL+IDN"
     - OCMock
     - Sentry
     - Sodium
@@ -120,7 +117,6 @@ SPEC CHECKSUMS:
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   Kingfisher: 6c5449c6450c5239166510ba04afe374a98afc4f
   NSObject-SafeExpectations: c01c8881cbd97efad6f668286b913cd0b7d62ab5
-  "NSURL+IDN": afc873e639c18138a1589697c3add197fe8679ca
   OCMock: 589f2c84dacb1f5aaf6e4cec1f292551fe748e74
   Sentry: f8374b5415bc38dfb5645941b3ae31230fbeae57
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
@@ -146,6 +142,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 281acf2bb731d2a67f913cfe653ed0da9f5b2f42
   ZendeskSupportSDK: b512cfc74b6bf8490e589f02cf52e27ed4f2bebe
 
-PODFILE CHECKSUM: 71f28f06b6133298876bea102a68af37fe16f044
+PODFILE CHECKSUM: 4aa3a5db8678a241f65a06633ce4686cfe1e84c3
 
 COCOAPODS: 1.16.2

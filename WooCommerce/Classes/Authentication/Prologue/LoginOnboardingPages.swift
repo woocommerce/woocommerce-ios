@@ -4,7 +4,7 @@ import UIKit
 
 /// Details for each page of the login prologue carousel.
 ///
-enum LoginProloguePageType: CaseIterable {
+enum LoginOnboardingPageType: CaseIterable {
     case stats
     case orderManagement
     case products
@@ -61,16 +61,16 @@ enum LoginProloguePageType: CaseIterable {
 
 /// Simple container for each page of the login prologue carousel.
 ///
-final class LoginProloguePageTypeViewController: UIViewController {
+final class LoginOnboardingPageTypeViewController: UIViewController {
     private let stackView = UIStackView()
     private let titleLabel = UILabel()
     private let subtitleLabel = UILabel()
     private let imageView = UIImageView()
 
-    private let pageType: LoginProloguePageType
+    private let pageType: LoginOnboardingPageType
     private let showsSubtitle: Bool
 
-    init(pageType: LoginProloguePageType, showsSubtitle: Bool) {
+    init(pageType: LoginOnboardingPageType, showsSubtitle: Bool) {
         self.pageType = pageType
         self.showsSubtitle = showsSubtitle
 
@@ -93,16 +93,17 @@ final class LoginProloguePageTypeViewController: UIViewController {
         if showsSubtitle {
             configureSubtitle()
         }
+        configureSpacers()
     }
 }
 
-private extension LoginProloguePageTypeViewController {
+private extension LoginOnboardingPageTypeViewController {
     func configureStackView() {
         // Scroll view to contain all contents
         let scrollView = UIScrollView()
         view.addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToAllEdges(scrollView, insets: .init(top: 0, left: 0, bottom: -Constants.stackBottomMargin, right: 0))
+        view.pinSubviewToAllEdges(scrollView)
         scrollView.addSubview(stackView)
 
         // Stack view layout
@@ -113,9 +114,10 @@ private extension LoginProloguePageTypeViewController {
 
         // Set constraints
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.pinSubviewToAllEdges(stackView)
+        stackView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.heightAnchor).isActive = true
+        scrollView.pinSubviewToAllEdges(stackView, insets: .init(top: 0, left: Constants.stackViewPadding, bottom: 0, right: Constants.stackViewPadding))
         NSLayoutConstraint.activate([
-            stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
+            stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -Constants.stackViewPadding * 2),
         ])
     }
 
@@ -127,11 +129,12 @@ private extension LoginProloguePageTypeViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             imageView.widthAnchor.constraint(equalTo: stackView.widthAnchor),
-            imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: Constants.imageHeightMultiplier)
         ])
 
         // Image contents
         imageView.image = pageType.image
+
+        stackView.setCustomSpacing(4 * Constants.stackSpacing, after: imageView)
     }
 
     func configureTitle() {
@@ -140,7 +143,7 @@ private extension LoginProloguePageTypeViewController {
         // Label style & layout
         titleLabel.font = {
             if showsSubtitle {
-                return .font(forStyle: .title2, weight: .semibold)
+                return .font(forStyle: .title1, weight: .bold)
             } else {
                 return .body
             }
@@ -153,7 +156,7 @@ private extension LoginProloguePageTypeViewController {
         titleLabel.setContentHuggingPriority(.required, for: .vertical)
         titleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Constants.labelLeadingMargin)
+            titleLabel.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.labelMaxWidth),
         ])
 
         // Label contents
@@ -167,26 +170,38 @@ private extension LoginProloguePageTypeViewController {
         // Label style & layout
         subtitleLabel.font = .body
         subtitleLabel.adjustsFontForContentSizeCategory = true
-        subtitleLabel.textColor = Constants.subtitleColor
+        subtitleLabel.textColor = .text
         subtitleLabel.textAlignment = .center
         subtitleLabel.numberOfLines = 0
         subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
         subtitleLabel.setContentHuggingPriority(.required, for: .vertical)
-        subtitleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         NSLayoutConstraint.activate([
-            subtitleLabel.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: Constants.labelLeadingMargin)
+            subtitleLabel.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.labelMaxWidth),
         ])
 
         subtitleLabel.text = pageType.subtitle
     }
+
+    /// Add spacers to the top and bottom of the stack view to ensure the contents are centered in the scroll view when content fits on screen.
+    func configureSpacers() {
+        let spacer = UIView()
+        spacer.translatesAutoresizingMaskIntoConstraints = false
+        spacer.setContentHuggingPriority(.defaultLow, for: .vertical)
+        stackView.insertArrangedSubview(spacer, at: 0)
+
+        let bottomSpacer = UIView()
+        bottomSpacer.translatesAutoresizingMaskIntoConstraints = false
+        bottomSpacer.setContentHuggingPriority(.defaultLow, for: .vertical)
+        stackView.addArrangedSubview(bottomSpacer)
+
+        spacer.heightAnchor.constraint(equalTo: bottomSpacer.heightAnchor).isActive = true
+    }
 }
 
-private extension LoginProloguePageTypeViewController {
+private extension LoginOnboardingPageTypeViewController {
     enum Constants {
-        static let stackBottomMargin: CGFloat = -24 // Minimum margin between stack view and login buttons, including space required for UIPageControl
-        static let labelLeadingMargin: CGFloat = 48
-        static let imageHeightMultiplier: CGFloat = 0.35
-        static let stackSpacing: CGFloat = 16 // Space between image and text
-        static let subtitleColor: UIColor = .textSubtle
+        static let labelMaxWidth: CGFloat = 333
+        static let stackSpacing: CGFloat = 8 // Space between image and text
+        static let stackViewPadding: CGFloat = 16
     }
 }

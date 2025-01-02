@@ -1208,7 +1208,7 @@ extension UIImage {
             vectorImage.draw(in: rect)
         }
 
-        return im2.imageWithTintColor(tintColor)
+        return im2.withTintColor(tintColor)
     }
 
     /// Woo logo that is displayed on the login prologue.

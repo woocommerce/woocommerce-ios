@@ -1,6 +1,5 @@
 import UIKit
 import WordPressShared
-import WordPressKit
 
 /// This is the first screen following the log in prologue screen if the user chooses to log in.
 ///

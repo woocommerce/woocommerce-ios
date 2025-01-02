@@ -1,5 +1,4 @@
 import UIKit
-import WordPressKit
 
 /// PasswordViewController: view to enter WP account password.
 ///

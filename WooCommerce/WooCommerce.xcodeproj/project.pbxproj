@@ -6242,6 +6242,18 @@
 				Services/LoginFacade.h,
 				Services/WordPressXMLRPCAPIFacade.h,
 				WordPressAuthenticator.h,
+				WordPressKit/APIInterface/include/FilePart.h,
+				WordPressKit/APIInterface/include/WordPressComRestApiErrorDomain.h,
+				WordPressKit/APIInterface/include/WordPressComRESTAPIVersionedPathBuilder.h,
+				WordPressKit/Logging/WPKitLogging.h,
+				WordPressKit/Models/RemotePost.h,
+				WordPressKit/Models/RemoteReaderPost.h,
+				WordPressKit/Services/AccountServiceRemoteREST.h,
+				WordPressKit/Services/PostServiceRemote.h,
+				WordPressKit/Services/PostServiceRemoteREST.h,
+				WordPressKit/Services/PostServiceRemoteXMLRPC.h,
+				WordPressKit/Services/WordPressComServiceRemote.h,
+				"WordPressKit/Utility/NSString+MD5.h",
 			);
 			target = 3F0904002D26A40700D8ACCE /* WordPressAuthenticator */;
 		};

@@ -1,5 +1,4 @@
 import Foundation
-import WordPressKit
 
 // MARK: - WordPressComAccountService
 //

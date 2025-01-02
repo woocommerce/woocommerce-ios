@@ -655,7 +655,7 @@ extension HubMenuViewModel {
 
         let title: String = Localization.subscriptions
         let description: String = Localization.subscriptionsDescription
-        let icon: UIImage = .shoppingCartPurpleFilled
+        let icon: UIImage = .shoppingCartFilled
         let iconColor: UIColor = .primary
         let accessibilityIdentifier: String = "menu-subscriptions"
         let trackingOption: String = "upgrades"

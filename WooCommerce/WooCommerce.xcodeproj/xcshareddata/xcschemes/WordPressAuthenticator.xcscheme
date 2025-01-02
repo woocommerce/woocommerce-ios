@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B5ED78F3207E976500A8FD8C"
+               BlueprintIdentifier = "3F0904002D26A40700D8ACCE"
                BuildableName = "WordPressAuthenticator.framework"
                BlueprintName = "WordPressAuthenticator"
-               ReferencedContainer = "container:WordPressAuthenticator.xcodeproj">
+               ReferencedContainer = "container:WooCommerce.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -28,33 +28,12 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
       codeCoverageEnabled = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B5ED78F3207E976500A8FD8C"
-            BuildableName = "WordPressAuthenticator.framework"
-            BlueprintName = "WordPressAuthenticator"
-            ReferencedContainer = "container:WordPressAuthenticator.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <TestPlans>
          <TestPlanReference
-            reference = "container:Tests/UnitTests.xctestplan"
+            reference = "container:WordPressAuthenticatorTests/UnitTests.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>
-      <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B5ED78FC207E976500A8FD8C"
-               BuildableName = "WordPressAuthenticatorTests.xctest"
-               BlueprintName = "WordPressAuthenticatorTests"
-               ReferencedContainer = "container:WordPressAuthenticator.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -66,15 +45,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B5ED78F3207E976500A8FD8C"
-            BuildableName = "WordPressAuthenticator.framework"
-            BlueprintName = "WordPressAuthenticator"
-            ReferencedContainer = "container:WordPressAuthenticator.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -85,10 +55,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B5ED78F3207E976500A8FD8C"
+            BlueprintIdentifier = "3F0904002D26A40700D8ACCE"
             BuildableName = "WordPressAuthenticator.framework"
             BlueprintName = "WordPressAuthenticator"
-            ReferencedContainer = "container:WordPressAuthenticator.xcodeproj">
+            ReferencedContainer = "container:WooCommerce.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

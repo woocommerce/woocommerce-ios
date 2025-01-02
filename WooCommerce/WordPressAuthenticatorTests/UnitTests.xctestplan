@@ -22,8 +22,8 @@
   "testTargets" : [
     {
       "target" : {
-        "containerPath" : "container:WordPressAuthenticator.xcodeproj",
-        "identifier" : "3F096C442D23F17E00D8ACCE",
+        "containerPath" : "container:WooCommerce.xcodeproj",
+        "identifier" : "3F0904072D26A40800D8ACCE",
         "name" : "WordPressAuthenticatorTests"
       }
     }

@@ -348,12 +348,12 @@ def wordpress_authenticator_pods
 end
 
 target 'WordPressAuthenticator' do
-  project 'WordPressAuthenticator/WordPressAuthenticator.xcodeproj'
+  project 'WooCommerce/WooCommerce.xcodeproj'
   wordpress_authenticator_pods
 end
 
 target 'WordPressAuthenticatorTests' do
-  project 'WordPressAuthenticator/WordPressAuthenticator.xcodeproj'
+  project 'WooCommerce/WooCommerce.xcodeproj'
   wordpress_authenticator_pods
 
   pod 'OCMock', '~> 3.4'

@@ -554,7 +554,7 @@ private extension TwoFAViewController {
     /// Configure the link cell.
     ///
     func configureTextLinkButton(_ cell: TextLinkButtonTableViewCell) {
-        cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.textCodeButtonTitle, icon: .phoneIcon)
+        cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.textCodeButtonTitle, icon: .authenticatorPhoneIcon)
 
         cell.actionHandler = { [weak self] in
             guard let self = self else { return }
@@ -568,7 +568,7 @@ private extension TwoFAViewController {
     ///
     func configureEnterSecurityKeyLinkButton(_ cell: TextLinkButtonTableViewCell) {
         cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.securityKeyButtonTitle,
-                             icon: .keyIcon,
+                             icon: .authenticatorKeyIcon,
                              accessibilityIdentifier: TextLinkButtonTableViewCell.Constants.passkeysID)
 
         cell.actionHandler = { [weak self] in

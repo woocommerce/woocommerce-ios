@@ -63,7 +63,7 @@ private extension SystemStatusStore {
         }
     }
 
-    func fetchSystemStatusReport(siteID: Int64, completionHandler: @escaping (Result<SystemStatus, Error>) -> Void) {
+    func fetchSystemStatusReport(siteID: Int64, completionHandler: @escaping (Result<SystemStatusReport, Error>) -> Void) {
         remote.fetchSystemStatusReport(for: siteID, completion: completionHandler)
     }
 }

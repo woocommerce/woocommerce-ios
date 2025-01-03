@@ -1,6 +1,6 @@
 import Foundation
 
-public extension SystemStatus {
+public extension SystemStatusReport {
     /// Details about a store's theme in its system status report.
     ///
     struct Theme: Decodable {

@@ -33,15 +33,12 @@ class ActivityServiceRemoteTests: RemoteTestCase, RESTTestable {
     var restoreEndpoint: String { return "activity-log/\(siteID)/rewind/to/\(rewindID)" }
     var rewindStatusEndpoint: String { return "sites/\(siteID)/rewind" }
 
-    var remoteV1: ActivityServiceRemote_ApiVersion1_0!
     var remote: ActivityServiceRemote!
 
     // MARK: - Overridden Methods
 
     override func setUp() {
         super.setUp()
-
-        remoteV1 = ActivityServiceRemote_ApiVersion1_0(wordPressComRestApi: getRestApi())
 
         let v2RestApi = WordPressComRestApi(localeKey: WordPressComRestApi.LocaleKeyV2)
         remote = ActivityServiceRemote(wordPressComRestApi: v2RestApi)
@@ -259,50 +256,6 @@ class ActivityServiceRemoteTests: RemoteTestCase, RESTTestable {
                                       expect.fulfill()
                                  })
 
-        waitForExpectations(timeout: timeout, handler: nil)
-    }
-
-    func testRestoreSucceeds() {
-        let expect = expectation(description: "Trigger restore success")
-
-        stubRemoteResponse(restoreEndpoint, filename: restoreSuccessMockFilename, contentType: .ApplicationJSON)
-
-        remoteV1.restoreSite(siteID,
-                             rewindID: rewindID,
-                             success: { (restoreID, jobID) in
-                                XCTAssertEqual(restoreID, self.restoreID)
-                                XCTAssertEqual(jobID, self.jobID)
-                                expect.fulfill()
-                             }, failure: { _ in
-                                XCTFail("This callback shouldn't get called")
-                                expect.fulfill()
-                             })
-        waitForExpectations(timeout: timeout, handler: nil)
-    }
-
-    func testRestoreSucceedsWithParameters() {
-        let expect = expectation(description: "Trigger restore success")
-
-        stubRemoteResponse(restoreEndpoint, filename: restoreSuccessMockFilename, contentType: .ApplicationJSON)
-
-        let restoreTypes = JetpackRestoreTypes(themes: true,
-                                               plugins: true,
-                                               uploads: true,
-                                               sqls: true,
-                                               roots: true,
-                                               contents: true)
-
-        remoteV1.restoreSite(siteID,
-                             rewindID: rewindID,
-                             types: restoreTypes,
-                             success: { (restoreID, jobID) in
-                                XCTAssertEqual(restoreID, self.restoreID)
-                                XCTAssertEqual(jobID, self.jobID)
-                                expect.fulfill()
-                             }, failure: { _ in
-                                XCTFail("This callback shouldn't get called")
-                                expect.fulfill()
-                             })
         waitForExpectations(timeout: timeout, handler: nil)
     }
 

@@ -552,12 +552,6 @@ extension UIImage {
         return UIImage.gridicon(.cog)
     }
 
-    /// Login prologue curved rectangle
-    ///
-    static var curvedRectangle: UIImage {
-        return UIImage(named: "prologue-curved-rectangle")!
-    }
-
     static func prologueBackgroundBubbles(tint: UIColor) -> UIImage {
         let image = UIImage(named: "login-prologue-background-bubbles")!
         return image.withTintColor(tint)
@@ -581,13 +575,6 @@ extension UIImage {
     ///
     static var prologueProductsImage: UIImage {
         return UIImage(named: "login-prologue-products")!
-            .imageFlippedForRightToLeftLayoutDirection()
-    }
-
-    /// Login prologue reviews image
-    ///
-    static var prologueReviewsImage: UIImage {
-        return UIImage(named: "login-prologue-reviews")!
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
@@ -1209,12 +1196,6 @@ extension UIImage {
         }
 
         return im2.withTintColor(tintColor)
-    }
-
-    /// Woo logo that is displayed on the login prologue.
-    ///
-    static var wooLogoPrologueImage: UIImage {
-        UIImage(named: "prologue-logo")!
     }
 
     /// Waiting for Customers Image

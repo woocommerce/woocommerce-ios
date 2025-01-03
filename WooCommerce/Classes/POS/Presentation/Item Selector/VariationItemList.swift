@@ -3,8 +3,8 @@ import Yosemite
 
 /// Displays a scrollable list of variation items in POS.
 struct VariationItemList: View {
-    let parentItem: POSItem
-    let parentProduct: POSParentProduct
+    private let parentItem: POSItem
+    private let parentProduct: POSParentProduct
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @Environment(\.dismiss) private var dismiss
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize

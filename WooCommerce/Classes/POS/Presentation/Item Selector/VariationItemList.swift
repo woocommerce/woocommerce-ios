@@ -26,13 +26,14 @@ struct VariationItemList: View {
                 Button {
                     dismiss()
                 } label: {
-                    Label(Localization.back, systemImage: "chevron.backward")
-                        .font(.posTitleRegular)
+                    Image(systemName: "chevron.backward")
+                        .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
+                        .foregroundColor(.primary)
                 }
-                Spacer()
                 POSHeaderTitleView(title: parentProduct.name)
                 Spacer()
             }
+            .padding(.horizontal, Constants.itemListPadding)
             ScrollView {
                 VStack {
                     ItemList(state: state)

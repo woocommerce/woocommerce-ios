@@ -65,20 +65,21 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
     }
 
     public func providePointOfSaleVariationItems(for parentProduct: POSParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
-        let pagedVariations = try await variationRemote
+        let variations = try await variationRemote
             .loadVariationsForPointOfSale(for: siteID,
                                           parentProductID: parentProduct.productID,
                                           pageNumber: pageNumber)
         return .init(
-            items: pagedVariations.items.compactMap({ variation in
+            items: variations.compactMap({ variation in
                 POSItem
                     .variation(.init(id: UUID(),
-                                     // TODO: variation name with ProductVariationFormatter().generateName(for: variation, from: allAttributes)
+                                     // TODO-14702: variation name with ProductVariationFormatter
                                      name: "Variation \(variation.productVariationID)",
                                      formattedPrice: currencyFormatter.formatAmount(variation.price) ?? "-",
                                      productImageSource: variation.image?.src))
             }),
-            hasMorePages: pagedVariations.hasMorePages
+            // TODO-14696: pagination support for variations lists
+            hasMorePages: false
         )
     }
 

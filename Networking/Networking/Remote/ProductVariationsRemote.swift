@@ -14,7 +14,7 @@ public protocol ProductVariationsRemoteProtocol {
                                   completion: @escaping ([ProductVariation]?, Error?) -> Void)
     func loadVariationsForPointOfSale(for siteID: Int64,
                                       parentProductID: Int64,
-                                      pageNumber: Int) async throws -> PagedItems<ProductVariation>
+                                      pageNumber: Int) async throws -> [ProductVariation]
     func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func createProductVariation(for siteID: Int64,
                                 productID: Int64,
@@ -75,11 +75,10 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
     ///   - siteID: Site for which we'll fetch remote product variations.
     ///   - parentProductID: Product for which we'll fetch remote product variations.
     ///   - pageNumber: Number of page that should be retrieved.
-    ///   - pageSize: Number of product variations to be retrieved per page.
     /// - Returns: Variations for the provided parent product.
     public func loadVariationsForPointOfSale(for siteID: Int64,
                                              parentProductID: Int64,
-                                             pageNumber: Int = Default.pageNumber) async throws -> PagedItems<ProductVariation> {
+                                             pageNumber: Int = Default.pageNumber) async throws -> [ProductVariation] {
         let request = productVariationsRequest(for: siteID,
                                                productID: parentProductID,
                                                variationIDs: [],
@@ -87,16 +86,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                                pageNumber: pageNumber,
                                                pageSize: POSConstants.variationsPerPage)
         let mapper = ProductVariationListMapper(siteID: siteID, productID: parentProductID)
-
-        let (variations, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
-
-        // Extracts the total number of pages from the response headers.
-        // Response header names are case insensitive.
-        let totalPages = responseHeaders?.first(where: { $0.key.lowercased() == Remote.PaginationHeaderKey.totalPagesCount.lowercased() })
-            .flatMap { Int($0.value) }
-        let hasMorePages = totalPages.map { pageNumber < $0 } ?? true
-
-        return .init(items: variations, hasMorePages: hasMorePages)
+        return try await enqueue(request, mapper: mapper)
     }
 
     private func productVariationsRequest(for siteID: Int64,

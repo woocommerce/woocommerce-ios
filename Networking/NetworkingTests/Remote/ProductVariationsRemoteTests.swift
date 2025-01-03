@@ -160,8 +160,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
 
         // When
-        let pagedVariations = try await remote.loadVariationsForPointOfSale(for: sampleSiteID, parentProductID: sampleProductID)
-        let variations = pagedVariations.items
+        let variations = try await remote.loadVariationsForPointOfSale(for: sampleSiteID, parentProductID: sampleProductID)
 
         // Then
         XCTAssertEqual(variations.count, 8)

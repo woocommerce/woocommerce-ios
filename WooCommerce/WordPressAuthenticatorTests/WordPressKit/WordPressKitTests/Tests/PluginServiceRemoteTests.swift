@@ -16,7 +16,6 @@ class PluginServiceRemoteTests: RemoteTestCase, RESTTestable {
     let postPluginInstallAlreadyInstalled = "plugin-install-already-installed.json"
     let postPluginInstallGenericError = "plugin-install-generic-error.json"
     let postPluginModifyMalformed = "plugin-modify-malformed-response.json"
-    let getPluginDirectoryNew = "plugin-directory-new.json"
 
     let remoteFeaturedPluginsEndpoint = "wpcom/v2/plugins/featured"
     var sitePluginsEndpoint: String {

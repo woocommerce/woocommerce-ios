@@ -3,7 +3,7 @@
 21.4
 -----
 - [**] Store Picker: Sites can now be hidden from the list for a more focused experience for agencies. [https://github.com/woocommerce/woocommerce-ios/pull/14780]
-
+- [*] Fetching plugins info in the app (e.g. payments onboarding) is more resilient to unexpected types in unrelated fields in the system status response. This used to result in a decoding error. [https://github.com/woocommerce/woocommerce-ios/pull/14781]
 
 21.3
 -----

@@ -29,10 +29,6 @@ def aztec
   # pod 'WordPress-Aztec-iOS', git: 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', commit: ''
 end
 
-def wordpress_kit
-  pod 'WordPressKit', '~> 17.3'
-end
-
 def tracks
   pod 'Automattic-Tracks-iOS', '~> 3.4.1'
   # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'trunk'
@@ -112,7 +108,6 @@ target 'WooCommerce' do
   wordpress_ui
   # TODO: remove once WordPressAuthenticator fold completed
   svprogresshud
-  wordpress_kit
 
   aztec
 
@@ -343,7 +338,6 @@ def wordpress_authenticator_pods
   svprogresshud
   gridicons
   wordpress_ui
-  # wordpress_kit
   wordpress_shared
   pod 'NSObject-SafeExpectations', '~> 0.0.4'
   pod 'wpxmlrpc', '~> 0.10'

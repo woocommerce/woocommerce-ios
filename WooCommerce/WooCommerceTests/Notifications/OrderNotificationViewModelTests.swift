@@ -33,7 +33,6 @@ final class OrderNotificationViewModelTests: XCTestCase {
 
 extension OrderNotificationViewModelTests {
     func sampleNote() -> Note {
-        let storeTitle = "My Test Store"
         let range = NoteRange.fake().copy(range: .init(location: 23, length: 13))
         let block = NoteBlock.fake().copy(ranges: [range], text: "You have a new Order - My Test Store")
         return Note.fake().copy(subject: [block])

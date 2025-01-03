@@ -35,10 +35,10 @@ final class LocallyStoredStateNameRetrieverTests: XCTestCase {
         // Given
         let stateCode = "TS"
         let address = Address.fake().copy(state: stateCode, country: "A different country")
-        let stateOfACountry = StateOfACountry(code: stateCode, name: "Test State")
-        storageManager.insertSampleCountries(readOnlyCountries: [Country(code: "US",
-                                                                         name: "United States",
-                                                                         states: [StateOfACountry(code: stateCode, name: "Testland")])])
+        let stateOfACountry = StateOfACountry(code: stateCode, name: "Testland")
+        storageManager.insertSampleCountries(readOnlyCountries: [
+            Country(code: "US", name: "United States", states: [stateOfACountry])
+        ])
 
         // When/Then
         XCTAssertNil(sut.retrieveLocallyStoredStateName(of: address))

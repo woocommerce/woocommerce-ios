@@ -4,6 +4,7 @@ import enum Yosemite.POSItem
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import enum Yosemite.PointOfSaleProductServiceError
 import struct Yosemite.POSParentProduct
+import class Yosemite.Store
 
 protocol PointOfSaleItemsControllerProtocol {
     var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { get }
@@ -85,10 +86,14 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
         guard case let .parentProduct(parentProduct) = parent else {
             return
         }
+
+        itemsViewStateSubject.send(itemsViewStateSubject.value.copy(itemsStack: itemsViewStateSubject.value.itemsStack.copy(itemStates: [parent: .loading([])])))
+
         switch parentProduct.type {
         case .variable:
             do {
-                try await fetchVariationItems(parentProduct: parentProduct, parentItem: parent, pageNumber: 1)
+                // TODO-14696: pagination support for variations lists
+                try await fetchVariationItems(parentProduct: parentProduct, parentItem: parent, pageNumber: Store.Default.firstPageNumber)
             } catch {
                 // TODO: 14694 - Handle error from loading initial variations.
             }

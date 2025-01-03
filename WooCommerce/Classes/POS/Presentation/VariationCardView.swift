@@ -1,0 +1,67 @@
+import struct Yosemite.POSVariation
+import SwiftUI
+
+struct VariationCardView: View {
+    private let variation: POSVariation
+
+    @ScaledMetric private var scale: CGFloat = 1.0
+
+    init(variation: POSVariation) {
+        self.variation = variation
+    }
+
+    var body: some View {
+        HStack(spacing: Constants.cardSpacing) {
+            POSItemImageView(imageSource: variation.productImageSource,
+                             imageSize: Constants.productCardSize * scale,
+                             scale: scale)
+            .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
+                   height: Constants.productCardSize * scale)
+            .clipped()
+
+            VStack(alignment: .leading, spacing: Constants.textSpacing) {
+                Text(variation.name)
+                    .lineLimit(2)
+                    .foregroundStyle(Color.posPrimaryText)
+                    .multilineTextAlignment(.leading)
+                    .font(Constants.itemNameFont)
+
+                Text(variation.formattedPrice)
+                    .foregroundStyle(Color.posPrimaryText)
+                    .font(Constants.itemPriceFont)
+            }
+            .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
+            .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
+        .background(Color.posSecondaryBackground)
+        .posItemCardBorderStyles()
+    }
+}
+
+private extension VariationCardView {
+    enum Constants {
+        static let productCardSize: CGFloat = 112
+        static let maximumProductCardSize: CGFloat = Constants.productCardSize * 2
+        static let cardSpacing: CGFloat = 0
+        static let textSpacing: CGFloat = 8
+        static let horizontalTextPadding: CGFloat = 32
+        static let verticalTextPadding: CGFloat = 8
+        static let itemNameFont: POSFontStyle = .posBodyEmphasized
+        static let itemPriceFont: POSFontStyle = .posBodyRegular
+    }
+}
+
+#Preview("Variation without image") {
+    let variation = POSVariation(id: .init(), name: "500ml, double shot", formattedPrice: "$5.00")
+    VariationCardView(variation: variation)
+}
+
+#Preview("Variation with image") {
+    let variation = POSVariation(id: .init(),
+                                 name: "500ml, double shot",
+                                 formattedPrice: "$5.00",
+                                 productImageSource: "https://pd.w.org/2024/12/986762d0d4d4cf17.82435881-scaled.jpeg")
+    VariationCardView(variation: variation)
+}

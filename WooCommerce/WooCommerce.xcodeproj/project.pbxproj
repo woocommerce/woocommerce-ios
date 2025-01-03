@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -429,6 +429,7 @@
 		029106C22BE34A8600C2248B /* CollapsibleCustomerCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029106C12BE34A8600C2248B /* CollapsibleCustomerCard.swift */; };
 		029106C42BE34AA900C2248B /* CollapsibleCustomerCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029106C32BE34AA900C2248B /* CollapsibleCustomerCardViewModel.swift */; };
 		02913E9523A774C500707A0C /* UnitInputFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02913E9423A774C500707A0C /* UnitInputFormatter.swift */; };
+		029149782D26658A00F7B3B3 /* VariationCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029149772D26658A00F7B3B3 /* VariationCardView.swift */; };
 		0294F8AB25E8A12C005B537A /* WooTabNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0294F8AA25E8A12C005B537A /* WooTabNavigationController.swift */; };
 		02952B5127808B08008E9BA3 /* StoreStatsPeriodViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02952B5027808B08008E9BA3 /* StoreStatsPeriodViewModelTests.swift */; };
 		0295355B245ADF8100BDC42B /* FilterType+Products.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0295355A245ADF8100BDC42B /* FilterType+Products.swift */; };
@@ -3585,6 +3586,7 @@
 		029106C12BE34A8600C2248B /* CollapsibleCustomerCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleCustomerCard.swift; sourceTree = "<group>"; };
 		029106C32BE34AA900C2248B /* CollapsibleCustomerCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleCustomerCardViewModel.swift; sourceTree = "<group>"; };
 		02913E9423A774C500707A0C /* UnitInputFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitInputFormatter.swift; sourceTree = "<group>"; };
+		029149772D26658A00F7B3B3 /* VariationCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariationCardView.swift; sourceTree = "<group>"; };
 		0294F8AA25E8A12C005B537A /* WooTabNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooTabNavigationController.swift; sourceTree = "<group>"; };
 		02952B5027808B08008E9BA3 /* StoreStatsPeriodViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsPeriodViewModelTests.swift; sourceTree = "<group>"; };
 		0295355A245ADF8100BDC42B /* FilterType+Products.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FilterType+Products.swift"; sourceTree = "<group>"; };
@@ -6165,10 +6167,6 @@
 		FEED57F92686544D00E47FD9 /* RoleErrorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleErrorViewModelTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		027ADB6F2D2180FB009608DB /* Product Card Components */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Product Card Components"; sourceTree = "<group>"; };
-/* End PBXFileSystemSynchronizedRootGroup section */
-
 /* Begin PBXFrameworksBuildPhase section */
 		260837042AA66E4A0004A12B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -6983,7 +6981,6 @@
 		026826A12BF59DED0036F959 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
-				027ADB6F2D2180FB009608DB /* Product Card Components */,
 				01620C4C2C5394A400D3EA2F /* Reusable Views */,
 				02E71DB42C118C470036C2FD /* Card Present Payments */,
 				026826B02BF59E170036F959 /* CardReaderConnection */,
@@ -7003,6 +7000,7 @@
 				68AF3C3A2D01481A006F1ED2 /* POSReceiptEligibilityBanner.swift */,
 				DA1D68C12C36F0980097859A /* PointOfSaleAssets.swift */,
 				027ADB6D2D1BF5E3009608DB /* ParentProductCardView.swift */,
+				029149772D26658A00F7B3B3 /* VariationCardView.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -14037,9 +14035,6 @@
 				260837142AA66E4B0004A12B /* PBXTargetDependency */,
 				26F81B212BE433A3009EC58E /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				027ADB6F2D2180FB009608DB /* Product Card Components */,
-			);
 			name = WooCommerce;
 			packageProductDependencies = (
 				263E37E02641AD8300260D3B /* Codegen */,
@@ -16537,6 +16532,7 @@
 				0313651728ACE9F400EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel.swift in Sources */,
 				571CDD5A250ACC470076B8CC /* UITableViewDiffableDataSource+Helpers.swift in Sources */,
 				DE7E5E7D2B4BB617002E28D2 /* BlazeTargetLanguagePickerView.swift in Sources */,
+				029149782D26658A00F7B3B3 /* VariationCardView.swift in Sources */,
 				EE09DE082C2C0CA100A32680 /* ProductCreationAIStartingInfoViewModel.swift in Sources */,
 				02B1AA6529A4705A00D54FCB /* TabbedViewController.swift in Sources */,
 				4580BA7423F192D400B5F764 /* ProductSettingsViewController.swift in Sources */,

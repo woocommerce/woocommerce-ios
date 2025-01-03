@@ -1,6 +1,8 @@
 import Foundation
 import protocol Networking.Network
+import protocol Networking.ProductVariationsRemoteProtocol
 import class Networking.ProductsRemote
+import class Networking.ProductVariationsRemote
 import class Networking.AlamofireNetwork
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
@@ -14,14 +16,16 @@ public enum PointOfSaleProductServiceError: Error {
 ///
 public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
     private var siteID: Int64
-    private var currencySettings: CurrencySettings
+    private let currencyFormatter: CurrencyFormatter
     private let productsRemote: ProductsRemote
+    private let variationRemote: ProductVariationsRemoteProtocol
     private let isVariableProductsFeatureEnabled: Bool
 
     public init(siteID: Int64, currencySettings: CurrencySettings, network: Network, isVariableProductsFeatureEnabled: Bool) {
         self.siteID = siteID
-        self.currencySettings = currencySettings
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.productsRemote = ProductsRemote(network: network)
+        self.variationRemote = ProductVariationsRemote(network: network)
         self.isVariableProductsFeatureEnabled = isVariableProductsFeatureEnabled
     }
 
@@ -60,11 +64,28 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
         return .init(items: mapProductsToPOSItems(products: filteredProducts), hasMorePages: pagedProducts.hasMorePages)
     }
 
+    public func providePointOfSaleVariationItems(for parentProduct: POSParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
+        let pagedVariations = try await variationRemote
+            .loadVariationsForPointOfSale(for: siteID,
+                                          parentProductID: parentProduct.productID,
+                                          pageNumber: pageNumber)
+        return .init(
+            items: pagedVariations.items.compactMap({ variation in
+                POSItem
+                    .variation(.init(id: UUID(),
+                                     // TODO: variation name with ProductVariationFormatter().generateName(for: variation, from: allAttributes)
+                                     name: "Variation \(variation.productVariationID)",
+                                     formattedPrice: currencyFormatter.formatAmount(variation.price) ?? "-",
+                                     productImageSource: variation.image?.src))
+            }),
+            hasMorePages: pagedVariations.hasMorePages
+        )
+    }
+
     // Maps result to POSItem, and populate the output with:
     // - Formatted price based on store's currency settings.
     // - Product thumbnail, if any.
     private func mapProductsToPOSItems(products: [Product]) -> [POSItem] {
-        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         return products.compactMap { product in
             let formattedPrice = currencyFormatter.formatAmount(product.price) ?? "-"
             let thumbnailSource = product.images.first?.src

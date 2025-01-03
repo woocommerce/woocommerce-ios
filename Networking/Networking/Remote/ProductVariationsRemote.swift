@@ -14,8 +14,7 @@ public protocol ProductVariationsRemoteProtocol {
                                   completion: @escaping ([ProductVariation]?, Error?) -> Void)
     func loadVariationsForPointOfSale(for siteID: Int64,
                                       parentProductID: Int64,
-                                      pageNumber: Int,
-                                      pageSize: Int) async throws -> PagedItems<ProductVariation>
+                                      pageNumber: Int) async throws -> PagedItems<ProductVariation>
     func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func createProductVariation(for siteID: Int64,
                                 productID: Int64,
@@ -80,14 +79,13 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
     /// - Returns: Variations for the provided parent product.
     public func loadVariationsForPointOfSale(for siteID: Int64,
                                              parentProductID: Int64,
-                                             pageNumber: Int = Default.pageNumber,
-                                             pageSize: Int = Default.pageSize) async throws -> PagedItems<ProductVariation> {
+                                             pageNumber: Int = Default.pageNumber) async throws -> PagedItems<ProductVariation> {
         let request = productVariationsRequest(for: siteID,
                                                productID: parentProductID,
                                                variationIDs: [],
                                                context: nil,
                                                pageNumber: pageNumber,
-                                               pageSize: pageSize)
+                                               pageSize: POSConstants.variationsPerPage)
         let mapper = ProductVariationListMapper(siteID: siteID, productID: parentProductID)
 
         let (variations, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
@@ -335,5 +333,11 @@ public extension ProductVariationsRemote {
         static let contextKey: String = "context"
         static let image: String = "image"
         static let include: String    = "include"
+    }
+}
+
+private extension ProductVariationsRemote {
+    enum POSConstants {
+        static let variationsPerPage: Int = 100
     }
 }

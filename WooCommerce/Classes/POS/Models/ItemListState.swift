@@ -16,4 +16,16 @@ enum ItemListState {
     }
 }
 
+extension ItemListState {
+    var items: [POSItem] {
+        switch self {
+        case .loading(let items),
+                .loaded(let items):
+            return items
+        case .error:
+            return []
+        }
+    }
+}
+
 extension ItemListState: Equatable, GeneratedCopiable {}

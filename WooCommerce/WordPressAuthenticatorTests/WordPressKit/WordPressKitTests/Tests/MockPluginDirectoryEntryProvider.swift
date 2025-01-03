@@ -1,5 +1,5 @@
 import Foundation
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 struct MockPluginDirectoryProvider {
     static func getPluginDirectoryEntry() -> PluginDirectoryEntry {

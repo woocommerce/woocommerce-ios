@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
 
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 class PostServiceRemoteRESTAutosaveTests: RemoteTestCase, RESTTestable {
     private let performPostsAutosaveSuccessFilename = "post-autosave-mapping-success.json"

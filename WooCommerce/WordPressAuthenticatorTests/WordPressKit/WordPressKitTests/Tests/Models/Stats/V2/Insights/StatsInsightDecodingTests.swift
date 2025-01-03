@@ -1,5 +1,5 @@
 import XCTest
-import WordPressKit
+import WordPressAuthenticator
 
 final class StatsInsightDecodingTests: XCTestCase {
     private struct StatsInsightEntity {

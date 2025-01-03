@@ -1,6 +1,6 @@
 import Foundation
 import XCTest
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 class StatsRemoteV2Tests: RemoteTestCase, RESTTestable {
 

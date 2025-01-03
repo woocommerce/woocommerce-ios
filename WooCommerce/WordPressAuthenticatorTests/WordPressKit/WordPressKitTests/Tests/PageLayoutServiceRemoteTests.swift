@@ -1,5 +1,5 @@
 import XCTest
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 class PageLayoutServiceRemoteTests: RemoteTestCase, RESTTestable {
     let blogID: Int = 1234

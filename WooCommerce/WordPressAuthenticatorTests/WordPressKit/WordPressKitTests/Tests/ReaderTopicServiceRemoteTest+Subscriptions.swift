@@ -1,5 +1,5 @@
 import XCTest
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 class ReaderTopicServiceRemoteTestSubscriptions: XCTestCase {
     let mockRemoteApi = MockWordPressComRestApi()

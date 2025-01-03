@@ -1,4 +1,4 @@
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 struct MockPluginStateProvider: DynamicMockProvider {
 

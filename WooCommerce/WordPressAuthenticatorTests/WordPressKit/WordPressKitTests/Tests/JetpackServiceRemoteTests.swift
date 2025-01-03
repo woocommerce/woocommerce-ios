@@ -1,6 +1,6 @@
 import Foundation
 import XCTest
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 class JetpackServiceRemoteTests: RemoteTestCase, RESTTestable {
     let url = "http://www.wordpress.com"

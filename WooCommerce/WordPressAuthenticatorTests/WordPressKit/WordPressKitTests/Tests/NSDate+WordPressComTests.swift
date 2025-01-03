@@ -1,4 +1,4 @@
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 import XCTest
 
 class NSDateWordPressComTests: XCTestCase {

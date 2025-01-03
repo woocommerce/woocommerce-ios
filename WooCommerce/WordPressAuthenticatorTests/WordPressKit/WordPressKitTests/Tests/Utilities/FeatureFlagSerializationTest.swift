@@ -1,5 +1,5 @@
 import XCTest
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 class FeatureFlagSerializationTest: XCTestCase {
     /// The `FeatureFlagList` typealias can't have its `encode` method overridden, so instead we ensure that it's serializing its messages properly.

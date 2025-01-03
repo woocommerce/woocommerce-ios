@@ -1,4 +1,4 @@
-import WordPressKit
+import WordPressAuthenticator
 import wpxmlrpc
 import XCTest
 

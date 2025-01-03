@@ -1,5 +1,5 @@
 import Foundation
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 class MockWordPressComRestApi: WordPressComRestApi {
     @objc var getMethodCalled = false

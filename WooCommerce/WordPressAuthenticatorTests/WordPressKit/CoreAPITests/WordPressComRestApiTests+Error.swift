@@ -1,10 +1,5 @@
 import XCTest
-#if SWIFT_PACKAGE
-import APIInterface
-@testable import CoreAPI
-#else
-@testable import WordPressKit
-#endif
+@testable import WordPressAuthenticator
 
 class WordPressComRestApiErrorTests: XCTestCase {
 

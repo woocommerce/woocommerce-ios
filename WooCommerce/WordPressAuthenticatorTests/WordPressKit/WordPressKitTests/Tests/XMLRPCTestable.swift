@@ -1,4 +1,4 @@
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 enum XMLRPCTestableConstants {
     static let xmlRpcUrl        = "http://test.com/xmlrpc.php"

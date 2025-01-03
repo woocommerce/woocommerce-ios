@@ -1,5 +1,5 @@
 import XCTest
-import WordPressKit
+import WordPressAuthenticator
 
 class TimeZoneServiceRemoteTests: RemoteTestCase, RESTTestable {
     func testOffsetTimeZone() {

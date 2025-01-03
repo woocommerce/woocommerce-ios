@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
 
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 final class CommentServiceRemoteRESTTests: RemoteTestCase, RESTTestable {
     private let fetchCommentsSuccessFilename = "site-comments-success.json"

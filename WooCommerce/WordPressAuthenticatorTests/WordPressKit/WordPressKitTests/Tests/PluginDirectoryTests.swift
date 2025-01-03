@@ -1,6 +1,6 @@
 import XCTest
 import OHHTTPStubs
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 class PluginDirectoryTests: XCTestCase {
 

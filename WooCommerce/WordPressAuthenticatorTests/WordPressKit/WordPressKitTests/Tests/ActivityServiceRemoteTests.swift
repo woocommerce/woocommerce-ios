@@ -1,7 +1,7 @@
 import Foundation
 import OHHTTPStubs
 import XCTest
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 class ActivityServiceRemoteTests: RemoteTestCase, RESTTestable {
 

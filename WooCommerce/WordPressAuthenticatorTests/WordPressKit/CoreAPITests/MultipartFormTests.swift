@@ -2,11 +2,7 @@ import Foundation
 import Alamofire
 import XCTest
 import CryptoKit
-#if SWIFT_PACKAGE
-@testable import CoreAPI
-#else
-@testable import WordPressKit
-#endif
+@testable import WordPressAuthenticator
 
 class MutliparFormDataTests: XCTestCase {
     struct Form: Codable {

@@ -1,6 +1,6 @@
 import Foundation
 import XCTest
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 class JetpackSocialServiceRemoteTests: RemoteTestCase, RESTTestable {
     let siteID = 1001

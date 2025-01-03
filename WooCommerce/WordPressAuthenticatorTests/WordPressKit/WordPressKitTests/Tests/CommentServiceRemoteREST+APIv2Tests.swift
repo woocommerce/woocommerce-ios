@@ -2,7 +2,7 @@ import Foundation
 import XCTest
 import OHHTTPStubs
 
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 final class CommentServiceRemoteREST_APIv2Tests: RemoteTestCase, RESTTestable {
     private let successFilename = "comments-v2-view-context-success.json"

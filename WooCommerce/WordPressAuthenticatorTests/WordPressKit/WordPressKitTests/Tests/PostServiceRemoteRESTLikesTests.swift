@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
 
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 final class PostServiceRemoteRESTLikesTests: RemoteTestCase, RESTTestable {
     private let fetchPostLikesSuccessFilename = "post-likes-success.json"

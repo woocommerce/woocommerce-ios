@@ -1,6 +1,6 @@
 import XCTest
 import WordPressShared
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 class TransactionsServiceRemoteTests: RemoteTestCase, RESTTestable {
 

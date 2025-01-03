@@ -1,6 +1,6 @@
 import XCTest
 
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 class JetpackCapabilitiesServiceRemoteTests: RemoteTestCase, RESTTestable {
     let mockRemoteApi = MockWordPressComRestApi()

@@ -1,12 +1,12 @@
 import Foundation
 import XCTest
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 class WordPressAPIErrorTests: XCTestCase {
 
     func testLocalizedMessage() {
 
-        let error = WordPressAPIError.endpointError(TestError())
+        let error = WordPressAPIError.endpointError(HTTPTestError())
         XCTAssertEqual(error.errorDescription, "this is a test error")
         XCTAssertEqual((error as NSError).localizedDescription, "this is a test error")
     }
@@ -22,7 +22,7 @@ class WordPressAPIErrorTests: XCTestCase {
     }
 
     func testGettingHTTPResponse() {
-        typealias APIError = WordPressAPIError<TestError>
+        typealias APIError = WordPressAPIError<HTTPTestError>
 
         let response = HTTPURLResponse(url: URL(string: "https//w.org")!, statusCode: 200, httpVersion: "2", headerFields: nil)!
 
@@ -36,7 +36,7 @@ class WordPressAPIErrorTests: XCTestCase {
 
 }
 
-private struct TestError: LocalizedError, HTTPURLResponseProviding {
+private struct HTTPTestError: LocalizedError, HTTPURLResponseProviding {
     var errorDescription: String? = "this is a test error"
 
     var httpResponse: HTTPURLResponse?

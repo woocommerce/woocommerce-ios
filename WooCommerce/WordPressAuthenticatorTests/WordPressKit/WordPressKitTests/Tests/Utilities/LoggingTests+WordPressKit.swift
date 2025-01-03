@@ -1,6 +1,6 @@
 import XCTest
 
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 private class CaptureLogs: NSObject, WordPressLoggingDelegate {
     private(set) var verboseLogs = [String]()
@@ -31,7 +31,7 @@ private class CaptureLogs: NSObject, WordPressLoggingDelegate {
 
 }
 
-class LoggingTest: XCTestCase {
+class LoggingTest_WordPressKit: XCTestCase {
 
     private let logger = CaptureLogs()
 

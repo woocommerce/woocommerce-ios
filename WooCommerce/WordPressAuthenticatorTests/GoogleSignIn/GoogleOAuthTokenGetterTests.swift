@@ -44,7 +44,3 @@ class GoogleOAuthTokenGetterTests: XCTestCase {
         XCTAssertEqual(response, expectedResponse)
     }
 }
-
-struct TestError: Equatable, Error {
-    let id: Int
-}

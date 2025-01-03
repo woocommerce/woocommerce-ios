@@ -3,7 +3,7 @@ import CryptoKit
 import XCTest
 import OHHTTPStubs
 
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 class URLSessionHelperTests: XCTestCase {
 
@@ -388,7 +388,20 @@ private class TestBackgroundURLSessionDelegate: BackgroundURLSessionDelegate {
     }
 }
 
-private enum TestError: LocalizedError, Equatable {
+enum TestError: LocalizedError, Equatable {
     case postNotFound
     case serverFailure
+    case id(Int)
+
+    init(id: Int) {
+        self = .id(id)
+    }
+
+    var id: Int {
+        switch self {
+        case .id(let id): return id
+        default: return -1
+        }
+    }
+
 }

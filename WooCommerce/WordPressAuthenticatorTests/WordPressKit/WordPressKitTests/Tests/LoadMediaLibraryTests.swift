@@ -1,7 +1,6 @@
 import Foundation
 import XCTest
-
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 private enum Kind {
     case wpcom

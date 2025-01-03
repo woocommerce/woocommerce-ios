@@ -1,6 +1,3 @@
-#if SWIFT_PACKAGE
-import APIInterface
-#endif
 import Foundation
 import WordPressShared
 

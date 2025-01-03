@@ -1,6 +1,6 @@
 import XCTest
 
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 class RemoteReaderPostTestsV2: RemoteTestCase, RESTTestable {
     let mockRemoteApi = MockWordPressComRestApi()

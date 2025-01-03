@@ -1,8 +1,4 @@
-#if SWIFT_PACKAGE
-@testable import CoreAPI
-#else
-@testable import WordPressKit
-#endif
+@testable import WordPressAuthenticator
 
 class FakeInfoDictionaryObjectProvider: InfoDictionaryObjectProvider {
     private let appTransportSecurity: [String: Any]?

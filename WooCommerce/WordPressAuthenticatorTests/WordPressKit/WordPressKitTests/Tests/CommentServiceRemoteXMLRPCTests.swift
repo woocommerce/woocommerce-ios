@@ -1,7 +1,7 @@
 import XCTest
 import wpxmlrpc
 
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 class CommentServiceRemoteXMLRPCTests: RemoteTestCase, XMLRPCTestable {
     private var remote: Any?

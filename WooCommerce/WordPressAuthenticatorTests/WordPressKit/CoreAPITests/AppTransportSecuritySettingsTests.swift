@@ -1,9 +1,5 @@
 import XCTest
-#if SWIFT_PACKAGE
-@testable import CoreAPI
-#else
-@testable import WordPressKit
-#endif
+@testable import WordPressAuthenticator
 
 final class AppTransportSecuritySettingsTests: XCTestCase {
 

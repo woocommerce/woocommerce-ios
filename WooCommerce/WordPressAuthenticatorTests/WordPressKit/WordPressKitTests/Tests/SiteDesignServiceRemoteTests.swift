@@ -1,5 +1,5 @@
 import XCTest
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 class SiteDesignServiceRemoteTests: RemoteTestCase, RESTTestable {
     let successMockFilename = "common-starter-site-designs-success.json"

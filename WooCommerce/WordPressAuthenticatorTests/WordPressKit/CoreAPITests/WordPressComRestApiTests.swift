@@ -1,13 +1,7 @@
 import XCTest
 import OHHTTPStubs
 import WordPressShared
-#if SWIFT_PACKAGE
-import APIInterface
-@testable import CoreAPI
-import OHHTTPStubsSwift
-#else
-@testable import WordPressKit
-#endif
+@testable import WordPressAuthenticator
 
 class WordPressComRestApiTests: XCTestCase {
 

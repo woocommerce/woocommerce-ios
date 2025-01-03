@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
 
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 class PostServiceRemoteRESTRevisionsTest: RemoteTestCase, RESTTestable {
     private let performRevisionsSuccessFilename = "post-revisions-success.json"

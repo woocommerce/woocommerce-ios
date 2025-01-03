@@ -1,12 +1,7 @@
 import XCTest
 import OHHTTPStubs
 import wpxmlrpc
-#if SWIFT_PACKAGE
-@testable import CoreAPI
-import OHHTTPStubsSwift
-#else
-@testable import WordPressKit
-#endif
+@testable import WordPressAuthenticator
 
 class WordPressOrgXMLRPCApiTests: XCTestCase {
 
@@ -63,12 +58,6 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
             },
             failure: { (error, _) in
                 expect.fulfill()
-                // When building for SPM, the compiler doesn't generate the domain constant.
-#if SWIFT_PACKAGE
-                XCTAssertEqual(error.domain, "CoreAPI.WordPressOrgXMLRPCApiError")
-#else
-                XCTAssertEqual(error.domain, WordPressOrgXMLRPCApiErrorDomain)
-#endif
                 XCTAssertEqual(error.code, WordPressOrgXMLRPCApiError.httpErrorStatusCode.rawValue)
                 XCTAssertEqual(error.localizedFailureReason, "An HTTP error code 404 was returned.")
                 XCTAssertNotNil(error.userInfo[WordPressOrgXMLRPCApi.WordPressOrgXMLRPCApiErrorKeyData as String])
@@ -96,12 +85,6 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
                 expect.fulfill()
 
                 XCTAssertFalse(error is WordPressOrgXMLRPCApiError)
-                // When building for SPM, the compiler doesn't generate the domain constant.
-#if SWIFT_PACKAGE
-                XCTAssertEqual(error.domain, "CoreAPI.WordPressOrgXMLRPCApiError")
-#else
-                XCTAssertEqual(error.domain, WordPressOrgXMLRPCApiErrorDomain)
-#endif
                 XCTAssertEqual(error.code, 403)
                 XCTAssertEqual(error.localizedFailureReason, "An HTTP error code 403 was returned.")
                 XCTAssertNotNil(error.userInfo[WordPressOrgXMLRPCApi.WordPressOrgXMLRPCApiErrorKeyData as String])
@@ -129,12 +112,6 @@ class WordPressOrgXMLRPCApiTests: XCTestCase {
                 expect.fulfill()
 
                 XCTAssertTrue(error is WordPressOrgXMLRPCApiError)
-                // When building for SPM, the compiler doesn't generate the domain constant.
-#if SWIFT_PACKAGE
-                XCTAssertEqual(error.domain, "CoreAPI.WordPressOrgXMLRPCApiError")
-#else
-                XCTAssertEqual(error.domain, WordPressOrgXMLRPCApiErrorDomain)
-#endif
                 XCTAssertEqual(error.code, WordPressOrgXMLRPCApiError.unknown.rawValue)
                 XCTAssertEqual(error.localizedFailureReason, WordPressOrgXMLRPCApiError.unknown.failureReason)
                 XCTAssertNotNil(error.userInfo[WordPressOrgXMLRPCApi.WordPressOrgXMLRPCApiErrorKeyData as String])

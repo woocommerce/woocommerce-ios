@@ -1,6 +1,5 @@
 import XCTest
-
-@testable import WordPressKit
+@testable import WordPressAuthenticator
 
 class DecodableDictionaryTests: XCTestCase {
     // Decode a JSON into a Dictionary using Decodable

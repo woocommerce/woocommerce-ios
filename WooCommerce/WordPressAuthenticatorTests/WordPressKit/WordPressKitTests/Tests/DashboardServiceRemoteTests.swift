@@ -89,7 +89,10 @@ class DashboardServiceRemoteTests: RemoteTestCase, RESTTestable {
             expect.fulfill()
         }
 
-        XCTExpectFailure("We know this test fails but don't know why yet. Given it's likely we'll remote the production code, we're not attempting a fix just yet. https://github.com/woocommerce/woocommerce-ios/issues/14329.")
+        XCTExpectFailure(
+            "We know this test may fail but don't know why yet. Given it's likely we'll remote the production code, we're not attempting a fix just yet. https://github.com/woocommerce/woocommerce-ios/issues/14329.",
+            options: .nonStrict()
+        )
 
         waitForExpectations(timeout: timeout, handler: nil)
     }
@@ -110,7 +113,10 @@ class DashboardServiceRemoteTests: RemoteTestCase, RESTTestable {
             expect.fulfill()
         }
 
-        XCTExpectFailure("We know this test fails but don't know why yet. Given it's likely we'll remote the production code, we're not attempting a fix just yet. See https://github.com/woocommerce/woocommerce-ios/issues/14329.")
+        XCTExpectFailure(
+            "We know this test may fail but don't know why yet. Given it's likely we'll remote the production code, we're not attempting a fix just yet. https://github.com/woocommerce/woocommerce-ios/issues/14329.",
+            options: .nonStrict()
+        )
 
         waitForExpectations(timeout: timeout, handler: nil)
     }
@@ -131,7 +137,10 @@ class DashboardServiceRemoteTests: RemoteTestCase, RESTTestable {
             expect.fulfill()
         }
 
-        XCTExpectFailure("We know this test fails but don't know why yet. Given it's likely we'll remote the production code, we're not attempting a fix just yet. See https://github.com/woocommerce/woocommerce-ios/issues/14329.")
+        XCTExpectFailure(
+            "We know this test may fail but don't know why yet. Given it's likely we'll remote the production code, we're not attempting a fix just yet. https://github.com/woocommerce/woocommerce-ios/issues/14329.",
+            options: .nonStrict()
+        )
 
         waitForExpectations(timeout: timeout, handler: nil)
     }

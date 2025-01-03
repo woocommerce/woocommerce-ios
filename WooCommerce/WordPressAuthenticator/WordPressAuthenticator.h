@@ -20,21 +20,91 @@ FOUNDATION_EXPORT const unsigned char WordPressAuthenticatorVersionString[];
 #import <WordPressAuthenticator/WPWalkthroughOverlayView.h>
 #import <WordPressAuthenticator/WPWalkthroughTextField.h>
 
-// From what was once WordPressKit
+// From what was once WordPressAuthenticator
+#import <WordPressAuthenticator/AccountServiceRemote.h>
 #import <WordPressAuthenticator/AccountServiceRemoteREST.h>
+#import <WordPressAuthenticator/BlogServiceRemote.h>
 #import <WordPressAuthenticator/BlogServiceRemoteREST.h>
+#import <WordPressAuthenticator/CommentServiceRemote.h>
 #import <WordPressAuthenticator/CommentServiceRemoteREST.h>
 #import <WordPressAuthenticator/FilePart.h>
 #import <WordPressAuthenticator/NSString+MD5.h>
 #import <WordPressAuthenticator/PostServiceRemote.h>
+#import <WordPressAuthenticator/PostServiceRemoteOptions.h>
 #import <WordPressAuthenticator/PostServiceRemoteREST.h>
 #import <WordPressAuthenticator/PostServiceRemoteXMLRPC.h>
 #import <WordPressAuthenticator/ReaderPostServiceRemote.h>
 #import <WordPressAuthenticator/ReaderTopicServiceRemote.h>
+#import <WordPressAuthenticator/RemoteComment.h>
+#import <WordPressAuthenticator/RemoteMedia.h>
 #import <WordPressAuthenticator/RemotePost.h>
 #import <WordPressAuthenticator/RemotePostCategory.h>
 #import <WordPressAuthenticator/RemoteReaderPost.h>
+#import <WordPressAuthenticator/RemoteUser.h>
+#import <WordPressAuthenticator/ServiceRemoteWordPressComREST.h>
+#import <WordPressAuthenticator/ServiceRemoteWordPressXMLRPC.h>
+#import <WordPressAuthenticator/SiteServiceRemoteWordPressComREST.h>
 #import <WordPressAuthenticator/WPKitLogging.h>
 #import <WordPressAuthenticator/WordPressComServiceRemote.h>
 #import <WordPressAuthenticator/WordPressComRestApiErrorDomain.h>
+#import <WordPressAuthenticator/WordPressComRESTAPIInterfacing.h>
+#import <WordPressAuthenticator/WordPressComRESTAPIVersion.h>
 #import <WordPressAuthenticator/WordPressComRESTAPIVersionedPathBuilder.h>
+// Used in the tests
+#import <WordPressAuthenticator/CommentServiceRemoteXMLRPC.h>
+#import <WordPressAuthenticator/MediaServiceRemote.h>
+#import <WordPressAuthenticator/MediaServiceRemoteREST.h>
+#import <WordPressAuthenticator/MediaServiceRemoteXMLRPC.h>
+#import <WordPressAuthenticator/ReaderSiteServiceRemote.h>
+#import <WordPressAuthenticator/TaxonomyServiceRemote.h>
+
+// --- //
+#import <WordPressAuthenticator/FilePart.h>
+#import <WordPressAuthenticator/WordPressComRESTAPIInterfacing.h>
+#import <WordPressAuthenticator/WordPressComRESTAPIVersion.h>
+#import <WordPressAuthenticator/WordPressComRESTAPIVersionedPathBuilder.h>
+#import <WordPressAuthenticator/WordPressComRestApiErrorDomain.h>
+
+#import <WordPressAuthenticator/ServiceRemoteWordPressComREST.h>
+#import <WordPressAuthenticator/ServiceRemoteWordPressXMLRPC.h>
+#import <WordPressAuthenticator/SiteServiceRemoteWordPressComREST.h>
+
+#import <WordPressAuthenticator/AccountServiceRemoteREST.h>
+#import <WordPressAuthenticator/BlogServiceRemote.h>
+#import <WordPressAuthenticator/BlogServiceRemoteREST.h>
+#import <WordPressAuthenticator/BlogServiceRemoteXMLRPC.h>
+#import <WordPressAuthenticator/CommentServiceRemote.h>
+#import <WordPressAuthenticator/CommentServiceRemoteREST.h>
+#import <WordPressAuthenticator/CommentServiceRemoteXMLRPC.h>
+#import <WordPressAuthenticator/MediaServiceRemote.h>
+#import <WordPressAuthenticator/MediaServiceRemoteREST.h>
+#import <WordPressAuthenticator/MediaServiceRemoteXMLRPC.h>
+#import <WordPressAuthenticator/MenusServiceRemote.h>
+#import <WordPressAuthenticator/PostServiceRemote.h>
+#import <WordPressAuthenticator/PostServiceRemoteOptions.h>
+#import <WordPressAuthenticator/PostServiceRemoteREST.h>
+#import <WordPressAuthenticator/PostServiceRemoteXMLRPC.h>
+#import <WordPressAuthenticator/ReaderPostServiceRemote.h>
+#import <WordPressAuthenticator/ReaderSiteServiceRemote.h>
+#import <WordPressAuthenticator/ReaderTopicServiceRemote.h>
+#import <WordPressAuthenticator/TaxonomyServiceRemote.h>
+#import <WordPressAuthenticator/TaxonomyServiceRemoteREST.h>
+#import <WordPressAuthenticator/TaxonomyServiceRemoteXMLRPC.h>
+#import <WordPressAuthenticator/ThemeServiceRemote.h>
+#import <WordPressAuthenticator/WordPressComServiceRemote.h>
+
+//#import <WordPressAuthenticator/RemoteComment.h>
+//#import <WordPressAuthenticator/RemoteMedia.h>
+//#import <WordPressAuthenticator/RemotePost.h>
+//#import <WordPressAuthenticator/RemotePostCategory.h>
+//#import <WordPressAuthenticator/RemotePostTag.h>
+//#import <WordPressAuthenticator/RemotePostType.h>
+//#import <WordPressAuthenticator/RemoteReaderPost.h>
+//#import <WordPressAuthenticator/RemoteSourcePostAttribution.h>
+//#import <WordPressAuthenticator/RemoteTaxonomyPaging.h>
+//#import <WordPressAuthenticator/RemoteTheme.h>
+//#import <WordPressAuthenticator/RemoteUser.h>
+
+//#import <WordPressAuthenticator/NSString+MD5.h>
+
+//#import <WordPressAuthenticator/WPKitLogging.h>

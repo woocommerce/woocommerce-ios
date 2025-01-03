@@ -3069,13 +3069,6 @@
 			remoteGlobalIDString = 3F0904002D26A40700D8ACCE;
 			remoteInfo = WordPressAuthenticator;
 		};
-		3F09040C2D26A40800D8ACCE /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B56DB3BE2049BFAA00D4AA8E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B56DB3C52049BFAA00D4AA8E;
-			remoteInfo = WooCommerce;
-		};
 		3F0904122D26A40800D8ACCE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B56DB3BE2049BFAA00D4AA8E /* Project object */;
@@ -6266,24 +6259,62 @@
 				WordPressAuthenticator.h,
 				WordPressKit/APIInterface/include/FilePart.h,
 				WordPressKit/APIInterface/include/WordPressComRestApiErrorDomain.h,
+				WordPressKit/APIInterface/include/WordPressComRESTAPIInterfacing.h,
+				WordPressKit/APIInterface/include/WordPressComRESTAPIVersion.h,
 				WordPressKit/APIInterface/include/WordPressComRESTAPIVersionedPathBuilder.h,
+				WordPressKit/BasicBlogAPIObjc/ServiceRemoteWordPressComREST.h,
 				WordPressKit/Logging/WPKitLogging.h,
+				WordPressKit/Models/RemoteComment.h,
+				WordPressKit/Models/RemoteMedia.h,
 				WordPressKit/Models/RemotePost.h,
+				WordPressKit/Models/RemotePostCategory.h,
 				WordPressKit/Models/RemoteReaderPost.h,
+				WordPressKit/Models/RemoteUser.h,
+				WordPressKit/Services/AccountServiceRemote.h,
 				WordPressKit/Services/AccountServiceRemoteREST.h,
+				WordPressKit/Services/BlogServiceRemote.h,
+				WordPressKit/Services/BlogServiceRemoteREST.h,
+				WordPressKit/Services/BlogServiceRemoteXMLRPC.h,
+				WordPressKit/Services/CommentServiceRemote.h,
+				WordPressKit/Services/CommentServiceRemoteREST.h,
+				WordPressKit/Services/CommentServiceRemoteXMLRPC.h,
+				WordPressKit/Services/MediaServiceRemote.h,
+				WordPressKit/Services/MediaServiceRemoteREST.h,
+				WordPressKit/Services/MediaServiceRemoteXMLRPC.h,
+				WordPressKit/Services/MenusServiceRemote.h,
 				WordPressKit/Services/PostServiceRemote.h,
+				WordPressKit/Services/PostServiceRemoteOptions.h,
 				WordPressKit/Services/PostServiceRemoteREST.h,
 				WordPressKit/Services/PostServiceRemoteXMLRPC.h,
+				WordPressKit/Services/ReaderPostServiceRemote.h,
+				WordPressKit/Services/ReaderSiteServiceRemote.h,
+				WordPressKit/Services/ReaderTopicServiceRemote.h,
+				WordPressKit/Services/ServiceRemoteWordPressXMLRPC.h,
+				WordPressKit/Services/SiteServiceRemoteWordPressComREST.h,
+				WordPressKit/Services/TaxonomyServiceRemote.h,
+				WordPressKit/Services/TaxonomyServiceRemoteREST.h,
+				WordPressKit/Services/TaxonomyServiceRemoteXMLRPC.h,
+				WordPressKit/Services/ThemeServiceRemote.h,
 				WordPressKit/Services/WordPressComServiceRemote.h,
 				"WordPressKit/Utility/NSString+MD5.h",
 			);
 			target = 3F0904002D26A40700D8ACCE /* WordPressAuthenticator */;
 		};
+		3FD28D5E2D271391002EBB3D /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				.swiftlint.yml,
+				UnitTests.xctestplan,
+				WordPressKit/WordPressKitTests/Info.plist,
+				WordPressKit/WordPressKitTests/UnitTests.xctestplan,
+			);
+			target = 3F0904072D26A40800D8ACCE /* WordPressAuthenticatorTests */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		3F0904022D26A40800D8ACCE /* WordPressAuthenticator */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F09041C2D26A40800D8ACCE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WordPressAuthenticator; sourceTree = "<group>"; };
-		3F09040E2D26A40800D8ACCE /* WordPressAuthenticatorTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WordPressAuthenticatorTests; sourceTree = "<group>"; };
+		3F09040E2D26A40800D8ACCE /* WordPressAuthenticatorTests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FD28D5E2D271391002EBB3D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WordPressAuthenticatorTests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -14227,7 +14258,6 @@
 			);
 			dependencies = (
 				3F09040B2D26A40800D8ACCE /* PBXTargetDependency */,
-				3F09040D2D26A40800D8ACCE /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				3F09040E2D26A40800D8ACCE /* WordPressAuthenticatorTests */,
@@ -17902,11 +17932,6 @@
 			target = 3F0904002D26A40700D8ACCE /* WordPressAuthenticator */;
 			targetProxy = 3F09040A2D26A40800D8ACCE /* PBXContainerItemProxy */;
 		};
-		3F09040D2D26A40800D8ACCE /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B56DB3C52049BFAA00D4AA8E /* WooCommerce */;
-			targetProxy = 3F09040C2D26A40800D8ACCE /* PBXContainerItemProxy */;
-		};
 		3F0904132D26A40800D8ACCE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 3F0904002D26A40700D8ACCE /* WordPressAuthenticator */;
@@ -18593,8 +18618,9 @@
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
@@ -18604,6 +18630,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.WordPressAuthenticatorTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
@@ -18618,8 +18645,9 @@
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
@@ -18628,6 +18656,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.WordPressAuthenticatorTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -18641,8 +18670,9 @@
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
@@ -18651,6 +18681,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.WordPressAuthenticatorTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

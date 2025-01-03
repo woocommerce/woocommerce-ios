@@ -8,26 +8,6 @@ public class PluginServiceRemote: ServiceRemoteWordPressComREST {
         case unknownError
     }
 
-    public func getFeaturedPlugins(success: @escaping ([PluginDirectoryEntry]) -> Void, failure: @escaping (Error) -> Void) {
-        let endpoint = "wpcom/v2/plugins/featured"
-
-        wordPressComRESTAPI.get(endpoint, parameters: nil, success: { (responseObject, _) in
-            guard let response = responseObject as? [[String: AnyObject]] else {
-                failure(ResponseError.decodingFailure)
-                return
-            }
-            do {
-                let pluginEntries = try response.map { try PluginDirectoryEntry(responseObject: $0) }
-                success(pluginEntries)
-            } catch {
-                failure(ResponseError.decodingFailure)
-            }
-        }, failure: { (error, _) in
-            WPKitLogError("[PluginServiceRemoteError] Error fetching featured plugins: \(error)")
-            failure(error)
-        })
-    }
-
     public func getPlugins(siteID: Int, success: @escaping (SitePlugins) -> Void, failure: @escaping (Error) -> Void) {
         let endpoint = "sites/\(siteID)/plugins"
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_2)

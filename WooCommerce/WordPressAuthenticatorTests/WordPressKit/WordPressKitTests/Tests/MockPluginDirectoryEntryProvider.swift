@@ -2,23 +2,6 @@ import Foundation
 @testable import WordPressAuthenticator
 
 struct MockPluginDirectoryProvider {
-    static func getPluginDirectoryEntry() -> PluginDirectoryEntry {
-        let plugin = PluginDirectoryEntry(name: "Jetpack by WordPress.com",
-                                          slug: "jetpack",
-                                          version: "5.5.1",
-                                          lastUpdated: nil,
-                                          icon: URL(string: "https://ps.w.org/jetpack/assets/icon-256x256.png?rev=969908"),
-                                          banner: URL(string: "https://ps.w.org//jetpack//assets//banner-1544x500.png?rev=1791404"),
-                                          author: "Automattic",
-                                          authorURL: URL(string: "https://profiles.wordpress.org/automattic"),
-                                          descriptionHTML: self.getJetpackDescriptionHTML(),
-                                          installationHTML: self.getJetpackInstallationHTML(),
-                                          faqHTML: self.getJetpackFAQHTML(),
-                                          changelogHTML: self.getJetpackChangeLogHTML(),
-                                          rating: 82)
-        return plugin
-    }
-
     static func getJetpackDescriptionHTML() -> String? {
         let loader = JSONLoader()
         let pluginDirectoryJson = loader.loadFile("plugin-directory-jetpack", type: "json")!

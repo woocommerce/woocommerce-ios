@@ -7,9 +7,6 @@ class PluginServiceRemoteTests: RemoteTestCase, RESTTestable {
     let getPluginsSuccessMockFilename = "site-plugins-success.json"
     let getPluginsErrorMockFilename = "site-plugins-error.json"
     let getPluginsMalformedMockFile = "site-plugins-malformed.json"
-    let getFeaturedPluginsMockFile = "plugin-service-remote-featured.json"
-    let getFeaturedPluginsMalformedMockFile = "plugin-service-remote-featured-malformed.json"
-    let getFeaturedPluginsInvalidResponse = "plugin-service-remote-featured-plugins-invalid.json"
     let postRemotePluginUpdateJetpack = "plugin-update-jetpack-already-updated.json"
     let postRemotePluginUpdateGutenberg = "plugin-update-gutenberg-needs-update.json"
     let postRemotePluginUpdateAuthFailure = "plugin-service-remote-auth-failure.json"
@@ -97,89 +94,6 @@ class PluginServiceRemoteTests: RemoteTestCase, RESTTestable {
             XCTAssertEqual(error.code, WordPressComRestApiErrorCode.responseSerializationFailed.rawValue)
             expect.fulfill()
         })
-
-        waitForExpectations(timeout: timeout, handler: nil)
-    }
-
-    func testGetFeaturedPluginSucceeds() {
-        let expect = expectation(description: "Get Featured Plugins Succeeds")
-
-        stubRemoteResponse(remoteFeaturedPluginsEndpoint,
-                           filename: getFeaturedPluginsMockFile,
-                           contentType: .ApplicationJSON)
-
-        remote.getFeaturedPlugins(success: { (featuredPlugins) in
-            XCTAssertEqual(featuredPlugins.count, 6)
-            XCTAssertEqual(featuredPlugins[1].name, "Yoast SEO")
-            XCTAssertEqual(featuredPlugins[3].slug, "tinymce-advanced")
-            expect.fulfill()
-        }) { (_) in
-            XCTFail("This callback shouldn't get called")
-            expect.fulfill()
-        }
-
-        waitForExpectations(timeout: timeout, handler: nil)
-    }
-
-    func testGetFeaturedPluginFailsMalformedJSON() {
-        let expect = expectation(description: "Get Featured Plugins Fails")
-
-        stubRemoteResponse(remoteFeaturedPluginsEndpoint,
-                           filename: getFeaturedPluginsMalformedMockFile,
-                           contentType: .ApplicationJSON)
-
-        remote.getFeaturedPlugins(success: { (_) in
-            XCTFail("Callback should not get called")
-            expect.fulfill()
-        }) { (error) in
-            let error = error as NSError
-            XCTAssertEqual(error.domain, "WordPressKit.WordPressComRestApiError")
-            XCTAssertEqual(error.code, WordPressComRestApiErrorCode.responseSerializationFailed.rawValue)
-
-            expect.fulfill()
-        }
-
-        waitForExpectations(timeout: timeout, handler: nil)
-    }
-
-    func testGetFeaturedPluginFailsInvalidResponse() {
-        let expect = expectation(description: "Get Featured Plugins Fails")
-
-        stubRemoteResponse(remoteFeaturedPluginsEndpoint,
-                           filename: getFeaturedPluginsInvalidResponse,
-                           contentType: .ApplicationJSON)
-
-        remote.getFeaturedPlugins(success: { (_) in
-            XCTFail("Callback should not get called")
-            expect.fulfill()
-        }) { (error) in
-            let error = error as NSError
-            let expected = PluginServiceRemote.ResponseError.decodingFailure as NSError
-            XCTAssertEqual(error, expected)
-
-            expect.fulfill()
-        }
-
-        waitForExpectations(timeout: timeout, handler: nil)
-    }
-
-    func testGetFeaturedPluginFailsIncorrectResponse() {
-        let expect = expectation(description: "Get Featured Plugins Fails")
-
-        stubRemoteResponse(remoteFeaturedPluginsEndpoint,
-                           filename: getPluginsErrorMockFilename,
-                           contentType: .ApplicationJSON)
-
-        remote.getFeaturedPlugins(success: { (_) in
-            XCTFail("Callback should not get called")
-            expect.fulfill()
-        }) { (error) in
-            let error = error as NSError
-            let expected = PluginServiceRemote.ResponseError.decodingFailure as NSError
-            XCTAssertEqual(error, expected)
-
-            expect.fulfill()
-        }
 
         waitForExpectations(timeout: timeout, handler: nil)
     }

@@ -138,5 +138,11 @@ extension WooShippingAddPackageView {
         static let saved = NSLocalizedString("wooShipping.createLabel.addPackage.saved",
                                              value: "Saved",
                                              comment: "Info label for saved package option")
+        static let selectPackage = NSLocalizedString("wooShipping.createLabel.addPackage.selectPackage",
+                                                     value: "Select Package",
+                                                     comment: "Title for the Add Package screen Select Package button")
+        static let addPackageDetails = NSLocalizedString("wooShipping.createLabel.addPackage.addPackageDetails",
+                                                         value: "Add Package Details",
+                                                         comment: "Title for the Add Package screen Add Package Details button")
     }
 }

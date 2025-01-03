@@ -15,7 +15,7 @@ public protocol ProductVariationsRemoteProtocol {
     func loadVariationsForPointOfSale(for siteID: Int64,
                                       parentProductID: Int64,
                                       pageNumber: Int,
-                                      pageSize: Int) async throws -> [ProductVariation]
+                                      pageSize: Int) async throws -> PagedItems<ProductVariation>
     func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func createProductVariation(for siteID: Int64,
                                 productID: Int64,
@@ -81,7 +81,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
     public func loadVariationsForPointOfSale(for siteID: Int64,
                                              parentProductID: Int64,
                                              pageNumber: Int = Default.pageNumber,
-                                             pageSize: Int = Default.pageSize) async throws -> [ProductVariation] {
+                                             pageSize: Int = Default.pageSize) async throws -> PagedItems<ProductVariation> {
         let request = productVariationsRequest(for: siteID,
                                                productID: parentProductID,
                                                variationIDs: [],
@@ -89,7 +89,16 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                                pageNumber: pageNumber,
                                                pageSize: pageSize)
         let mapper = ProductVariationListMapper(siteID: siteID, productID: parentProductID)
-        return try await enqueue(request, mapper: mapper)
+
+        let (variations, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+
+        // Extracts the total number of pages from the response headers.
+        // Response header names are case insensitive.
+        let totalPages = responseHeaders?.first(where: { $0.key.lowercased() == Remote.PaginationHeaderKey.totalPagesCount.lowercased() })
+            .flatMap { Int($0.value) }
+        let hasMorePages = totalPages.map { pageNumber < $0 } ?? true
+
+        return .init(items: variations, hasMorePages: hasMorePages)
     }
 
     private func productVariationsRequest(for siteID: Int64,

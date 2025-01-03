@@ -121,46 +121,9 @@ final class POSEligibilityCheckerTests: XCTestCase {
         }
     }
 
-    func test_is_eligible_when_non_us_site_then_returns_false_with_onboarding_feature_enabled() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true, paymentsOnboardingInPointOfSale: true)
-        [Country.ca, Country.es, Country.gb].forEach { country in
-            // When
-            setupCountry(country: country)
-            accountWhitelistedInBackend(true)
-            let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
-                                                cardPresentPaymentsOnboarding: onboardingUseCase,
-                                                siteSettings: siteSettings,
-                                                currencySettings: Fixtures.usdCurrencySettings,
-                                                stores: stores,
-                                                featureFlagService: featureFlagService)
-            checker.isEligible.assign(to: &$isEligible)
-
-            // Then
-            XCTAssertFalse(isEligible)
-        }
-    }
-
     func test_when_non_usd_currency_then_isEligible_returns_false() {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
-        setupCountry(country: .us)
-        accountWhitelistedInBackend(true)
-        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
-                                            cardPresentPaymentsOnboarding: onboardingUseCase,
-                                            siteSettings: siteSettings,
-                                            currencySettings: Fixtures.nonUSDCurrencySettings,
-                                            stores: stores,
-                                            featureFlagService: featureFlagService)
-        checker.isEligible.assign(to: &$isEligible)
-
-        // Then
-        XCTAssertFalse(isEligible)
-    }
-
-    func test_when_non_usd_currency_then_isEligible_returns_false_with_onboarding_feature_enabled() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true, paymentsOnboardingInPointOfSale: true)
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
         let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
@@ -191,49 +154,9 @@ final class POSEligibilityCheckerTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
-    func test_is_eligible_when_onboarding_state_is_not_completed_wcpay_then_returns_false() throws {
+    func test_is_eligible_when_onboarding_state_is_not_completed_then_returns_true() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
-        setupCountry(country: .us)
-        accountWhitelistedInBackend(true)
-        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
-                                            cardPresentPaymentsOnboarding: onboardingUseCase,
-                                            siteSettings: siteSettings,
-                                            currencySettings: Fixtures.usdCurrencySettings,
-                                            stores: stores,
-                                            featureFlagService: featureFlagService)
-        checker.isEligible.assign(to: &$isEligible)
-        XCTAssertTrue(isEligible)
-
-        // When onboarding state is loading
-        onboardingUseCase.state = .loading
-        // Then
-        XCTAssertFalse(isEligible)
-
-        // When onboarding state is stripeOnly
-        onboardingUseCase.state = .completed(plugin: .stripeOnly)
-        // Then
-        XCTAssertFalse(isEligible)
-
-        // When onboarding state is wcPayOnly
-        onboardingUseCase.state = .completed(plugin: .wcPayOnly)
-        // Then
-        XCTAssertTrue(isEligible)
-
-        // When onboarding state is stripePreferred
-        onboardingUseCase.state = .completed(plugin: .stripePreferred)
-        // Then
-        XCTAssertFalse(isEligible)
-
-        // When onboarding state is pluginNotInstalled
-        onboardingUseCase.state = .pluginNotInstalled
-        // Then
-        XCTAssertFalse(isEligible)
-    }
-
-    func test_is_eligible_when_onboarding_state_is_not_completed_and_onboarding_feature_enabled_then_returns_true() throws {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true, paymentsOnboardingInPointOfSale: true)
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
         let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,

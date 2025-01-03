@@ -24,11 +24,6 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
                 .eraseToAnyPublisher()
         }
 
-        guard featureFlagService.isFeatureFlagEnabled(.paymentsOnboardingInPointOfSale) else {
-            return Publishers.CombineLatest3(isOnboardingComplete, isWooCommerceVersionSupported, isPointOfSaleFeatureFlagEnabled)
-                .map { $0 && $1 && $2 }
-                .eraseToAnyPublisher()
-        }
         return Publishers.CombineLatest(isWooCommerceVersionSupported, isPointOfSaleFeatureFlagEnabled)
             .filter { [weak self] _ in
                 self?.isEligibleFromSiteChecks ?? false
@@ -60,18 +55,6 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
 }
 
 private extension POSEligibilityChecker {
-    var isOnboardingComplete: AnyPublisher<Bool, Never> {
-        return cardPresentPaymentsOnboarding.statePublisher
-            .filter { [weak self] _ in
-                self?.isEligibleFromSiteChecks ?? false
-            }
-            .map { onboardingState in
-                // Woo Payments plugin enabled and user setup complete
-                onboardingState == .completed(plugin: .wcPayOnly) || onboardingState == .completed(plugin: .wcPayPreferred)
-            }
-            .eraseToAnyPublisher()
-    }
-
     var isWooCommerceVersionSupported: AnyPublisher<Bool, Never> {
         Future<Bool, Never> { [weak self] promise in
             guard let self else {

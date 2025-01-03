@@ -340,48 +340,25 @@ final class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[.themesPendingInstall])
     }
 
-    /// Verifies that `siteIDPendingStoreSwitch` is set to `nil` upon reset
+    /// Verifies that `hiddenStoreIDs` is set to `nil` upon reset
     ///
-    func test_siteIDPendingStoreSwitch_is_set_to_nil_upon_reset() throws {
+    func test_hiddenStoreIDs_is_set_to_nil_upon_reset() throws {
         // Given
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
-        let siteID: Int64 = 123
 
         // When
-        defaults[.siteIDPendingStoreSwitch] = siteID
+        defaults[.hiddenStoreIDs] = [Int64]([123, 666])
 
         // Then
-        XCTAssertEqual(try XCTUnwrap(defaults[.siteIDPendingStoreSwitch] as? Int64), siteID)
+        XCTAssertEqual(try XCTUnwrap(defaults[.hiddenStoreIDs] as? [Int64]), [123, 666])
 
         // When
         sut.reset()
 
         // Then
-        XCTAssertNil(defaults[.siteIDPendingStoreSwitch])
-    }
-
-    /// Verifies that `expectedStoreNamePendingStoreSwitch` is set to `nil` upon reset
-    ///
-    func test_expectedStoreNamePendingStoreSwitch_is_set_to_nil_upon_reset() throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
-        let storeName = "My Woo Store"
-
-        // When
-        defaults[.expectedStoreNamePendingStoreSwitch] = storeName
-
-        // Then
-        XCTAssertEqual(try XCTUnwrap(defaults[.expectedStoreNamePendingStoreSwitch] as? String), storeName)
-
-        // When
-        sut.reset()
-
-        // Then
-        XCTAssertNil(defaults[.expectedStoreNamePendingStoreSwitch])
+        XCTAssertNil(defaults[.hiddenStoreIDs])
     }
 
     /// Verifies that `blazeNoCampaignReminderOpened` is set to `nil` upon reset

@@ -93,7 +93,7 @@ final class PushNotificationsManager: PushNotesManager {
 
     /// WordPress.com Device Identifier
     ///
-    private var deviceID: String? {
+    private(set) var deviceID: String? {
         get {
             return configuration.defaults.object(forKey: .deviceID)
         }

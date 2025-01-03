@@ -2,11 +2,17 @@ import struct Networking.PagedItems
 
 public enum POSItem: Equatable, Identifiable, Hashable {
     case simpleProduct(POSSimpleProduct)
+    case parentProduct(POSParentProduct)
+    case variation(POSVariation)
 
     public var id: UUID {
         switch self {
         case .simpleProduct(let product):
             return product.id
+        case .parentProduct(let parentProduct):
+            return parentProduct.id
+        case .variation(let variation):
+            return variation.id
         }
     }
 }

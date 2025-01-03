@@ -760,10 +760,6 @@ private extension CollectOrderPaymentUseCase {
                     }
                 },
                                                          noReceiptAction: noReceiptAction)
-            } else if MFMailComposeViewController.canSendMail() {
-                receiptState = .promptToSendEmailReceipt(printReceiptAction: presentBackendReceiptAction,
-                                                         emailReceiptAction: presentBackendReceiptAction,
-                                                         noReceiptAction: noReceiptAction)
             } else {
                 receiptState = .emailSendingNotSupported(printReceiptAction: presentBackendReceiptAction,
                                                          noReceiptAction: noReceiptAction)

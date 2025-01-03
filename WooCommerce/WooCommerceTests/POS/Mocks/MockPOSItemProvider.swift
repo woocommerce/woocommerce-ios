@@ -28,7 +28,7 @@ final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
         return .init(items: MockPointOfSaleItemService.makeInitialItems(), hasMorePages: shouldSimulateTwoPages)
     }
 
-    func providePointOfSaleVariationItems(for parentProduct: POSParentProduct, pageNumber: Int) async throws -> PagedItems<Yosemite.POSItem> {
+    func providePointOfSaleVariationItems(for parentProduct: POSParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
         .init(items: [], hasMorePages: false)
     }
 }

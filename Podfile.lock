@@ -13,6 +13,21 @@ PODS:
   - Kingfisher (7.6.2)
   - NSObject-SafeExpectations (0.0.6)
   - OCMock (3.9.4)
+  - OHHTTPStubs (9.1.0):
+    - OHHTTPStubs/Default (= 9.1.0)
+  - OHHTTPStubs/Core (9.1.0)
+  - OHHTTPStubs/Default (9.1.0):
+    - OHHTTPStubs/Core
+    - OHHTTPStubs/JSON
+    - OHHTTPStubs/NSURLSession
+    - OHHTTPStubs/OHPathHelpers
+  - OHHTTPStubs/JSON (9.1.0):
+    - OHHTTPStubs/Core
+  - OHHTTPStubs/NSURLSession (9.1.0):
+    - OHHTTPStubs/Core
+  - OHHTTPStubs/OHPathHelpers (9.1.0)
+  - OHHTTPStubs/Swift (9.1.0):
+    - OHHTTPStubs/Default
   - Sentry (8.36.0):
     - Sentry/Core (= 8.36.0)
   - Sentry/Core (8.36.0)
@@ -60,6 +75,8 @@ DEPENDENCIES:
   - Kingfisher (~> 7.6.2)
   - NSObject-SafeExpectations (~> 0.0.4)
   - OCMock (~> 3.4)
+  - OHHTTPStubs (~> 9.0)
+  - OHHTTPStubs/Swift (~> 9.0)
   - Sentry (~> 8.36.0)
   - Sourcery (~> 1.0.3)
   - Specta (= 1.0.7)
@@ -87,6 +104,7 @@ SPEC REPOS:
     - Kingfisher
     - NSObject-SafeExpectations
     - OCMock
+    - OHHTTPStubs
     - Sentry
     - Sodium
     - Sourcery
@@ -121,6 +139,7 @@ SPEC CHECKSUMS:
   Kingfisher: 6c5449c6450c5239166510ba04afe374a98afc4f
   NSObject-SafeExpectations: c01c8881cbd97efad6f668286b913cd0b7d62ab5
   OCMock: 589f2c84dacb1f5aaf6e4cec1f292551fe748e74
+  OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
   Sentry: f8374b5415bc38dfb5645941b3ae31230fbeae57
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
   Sourcery: 70a6048014bd4f37ea80e6bd4354d47bf3b760e1
@@ -145,6 +164,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 281acf2bb731d2a67f913cfe653ed0da9f5b2f42
   ZendeskSupportSDK: b512cfc74b6bf8490e589f02cf52e27ed4f2bebe
 
-PODFILE CHECKSUM: 64e0c7dcbd01deaa549dc6d2302bcb8f3af5e2bc
+PODFILE CHECKSUM: cd28c41ec5986b862b93cdba90d26d9d462ca330
 
 COCOAPODS: 1.16.2

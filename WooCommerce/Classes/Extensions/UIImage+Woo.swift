@@ -476,10 +476,10 @@ extension UIImage {
         return UIImage(systemName: "hourglass", withConfiguration: config)!
     }
 
-    /// Hourglass Image from Woo design
+    /// Timer (hour glass) Image from Woo design
     ///
-    static var wooHourglass: UIImage {
-        UIImage(named: "woo-hourglass")!
+    static var timerImage: UIImage {
+        UIImage(named: "timer")!
     }
 
     /// House Outlined Image
@@ -719,8 +719,8 @@ extension UIImage {
 
     /// Shopping cart Purple
     ///
-    static var shoppingCartPurpleIcon: UIImage {
-        return UIImage(named: "icon-shopping-cart-purple")!
+    static var shoppingCartFilled: UIImage {
+        return UIImage(named: "icon-shopping-cart-filled")!
     }
 
     /// Bordered Custom Amount
@@ -1147,7 +1147,7 @@ extension UIImage {
     /// No connection image
     ///
     static var noConnectionImage: UIImage {
-        UIImage(imageLiteralResourceName: "connection-icon")
+        UIImage(imageLiteralResourceName: "connection")
     }
 
     /// Megaphone Icon
@@ -1327,10 +1327,6 @@ extension UIImage {
         return UIImage(named: "built-in-reader-set-up")!
     }
 
-    static var iconBolt: UIImage {
-        UIImage(imageLiteralResourceName: "icon-bolt")
-    }
-
     static var shippingIcon: UIImage {
         UIImage(imageLiteralResourceName: "icon-shipping")
     }
@@ -1360,7 +1356,7 @@ extension UIImage {
 	}
 
     static var cardReaderLocationImage: UIImage {
-        UIImage(named: "card-reader-location-permission")!
+        UIImage(named: "location")!
     }
 }
 

@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "cash-register-light.pdf",
+      "filename" : "timer-light.pdf",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "cash-register-dark.pdf",
+      "filename" : "timer-dark.pdf",
       "idiom" : "universal"
     }
   ],

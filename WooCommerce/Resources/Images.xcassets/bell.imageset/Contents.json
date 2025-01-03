@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "bell.pdf",
+      "filename" : "bell-light.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "bell-dark.pdf",
       "idiom" : "universal"
     }
   ],

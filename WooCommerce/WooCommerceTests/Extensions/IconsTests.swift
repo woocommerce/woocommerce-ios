@@ -244,8 +244,8 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.helpOutlineImage)
     }
 
-    func test_wooHourglass_is_not_nil() {
-        XCTAssertNotNil(UIImage.wooHourglass)
+    func test_timerImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.timerImage)
     }
 
     func testHouseOutlinedImageIconIsNotNil() {
@@ -771,10 +771,6 @@ final class IconsTests: XCTestCase {
 
     func test_blankProductImage_is_not_nil() {
         XCTAssertNotNil(UIImage.blankProductImage)
-    }
-
-    func test_icon_bolt_is_not_nil() {
-        XCTAssertNotNil(UIImage.iconBolt)
     }
 
     func test_subscriptionProductImage_icon_is_not_nil() {

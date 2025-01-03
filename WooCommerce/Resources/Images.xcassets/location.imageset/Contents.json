@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "woo-hourglass-light.pdf",
+      "filename" : "location-light.pdf",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "woo-hourglass-dark.pdf",
+      "filename" : "location-dark.pdf",
       "idiom" : "universal"
     }
   ],

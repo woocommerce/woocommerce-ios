@@ -17,19 +17,6 @@ final class WooShippingOriginAddressListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedAddressID, selectedAddressID)
     }
 
-    func test_it_defaults_to_selecting_default_address() {
-        // Given
-        let defaultAddress = WooShippingOriginAddress.fake().copy(defaultAddress: true)
-        let addresses = [defaultAddress, WooShippingOriginAddress.fake()]
-
-        // When
-        let viewModel = WooShippingOriginAddressListViewModel(addresses: addresses, selectedAddressID: nil)
-
-        // Then
-        XCTAssertEqual(viewModel.addresses, addresses)
-        XCTAssertEqual(viewModel.selectedAddressID, defaultAddress.id)
-    }
-
     func test_isSelected_returns_expected_value_for_selected_address() {
         // Given
         let selectedAddress = WooShippingOriginAddress.fake().copy(id: "1")

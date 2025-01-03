@@ -3,12 +3,12 @@ import Yosemite
 
 final class WooShippingOriginAddressListViewModel: ObservableObject {
     let addresses: [WooShippingOriginAddress]
-    @Published private(set) var selectedAddressID: String
+    @Published private(set) var selectedAddressID: String?
 
     init(addresses: [WooShippingOriginAddress],
          selectedAddressID: String? = nil) {
         self.addresses = addresses
-        self.selectedAddressID = selectedAddressID ?? addresses.first(where: { $0.defaultAddress })?.id ?? ""
+        self.selectedAddressID = selectedAddressID
     }
 
     /// Whether the provided address is selected.

@@ -18,9 +18,9 @@ import WordPressShared
                 do {
                     try success(PlanServiceRemote_ApiVersion1_3.mapPlansResponse(response))
                 } catch {
-                    WPKitLogError("Error parsing plans response for site \(siteID)")
-                    WPKitLogError("\(error)")
-                    WPKitLogDebug("Full response: \(response)")
+                    WPAuthenticatorLoggingError("Error parsing plans response for site \(siteID)")
+                    WPAuthenticatorLoggingError("\(error)")
+                    WPAuthenticatorLoggingDebug("Full response: \(response)")
                     failure(error)
                 }
             },
@@ -50,7 +50,7 @@ import WordPressShared
                     currentlyActivePlan = decodedResult
                 }
             } catch let error {
-                WPKitLogError("Error parsing plans response for site \(error)")
+                WPAuthenticatorLoggingError("Error parsing plans response for site \(error)")
             }
         }
 

@@ -84,7 +84,7 @@ static NSString * const RemotePostTypePublicKey = @"public";
                          return [self remotePostTypeFromXMLRPCDictionary:json];
                      }];
                      if (!postTypes.count) {
-                         WPKitLogError(@"Response to wp.getPostTypes did not include post types for site.");
+                         WPAuthenticatorLogError(@"Response to wp.getPostTypes did not include post types for site.");
                          failure(nil);
                          return;
                      }
@@ -92,7 +92,7 @@ static NSString * const RemotePostTypePublicKey = @"public";
                          success(postTypes);
                      }
                  } failure:^(NSError *error, NSHTTPURLResponse *response) {
-                     WPKitLogError(@"Error syncing post types (%@): %@", response.URL, error);
+                     WPAuthenticatorLogError(@"Error syncing post types (%@): %@", response.URL, error);
                      
                      if (failure) {
                          failure(error);
@@ -137,7 +137,7 @@ static NSString * const RemotePostTypePublicKey = @"public";
                          success(respDict);
                      }
                  } failure:^(NSError *error, NSHTTPURLResponse *response) {
-                     WPKitLogError(@"Error syncing post formats (%@): %@", response.URL, error);
+                     WPAuthenticatorLogError(@"Error syncing post formats (%@): %@", response.URL, error);
                      
                      if (failure) {
                          failure(error);
@@ -158,7 +158,7 @@ static NSString * const RemotePostTypePublicKey = @"public";
                          success(responseObject);
                      }
                  } failure:^(NSError *error, NSHTTPURLResponse *response) {
-                     WPKitLogError(@"Error syncing blog options: %@", error);
+                     WPAuthenticatorLogError(@"Error syncing blog options: %@", error);
 
                      if (failure) {
                          failure(error);
@@ -180,7 +180,7 @@ static NSString * const RemotePostTypePublicKey = @"public";
             success();
         }
     } failure:^(NSError *error, NSHTTPURLResponse *response) {
-        WPKitLogError(@"Error updating blog options: %@", error);
+        WPAuthenticatorLogError(@"Error updating blog options: %@", error);
         if (failure) {
             failure(error);
         }

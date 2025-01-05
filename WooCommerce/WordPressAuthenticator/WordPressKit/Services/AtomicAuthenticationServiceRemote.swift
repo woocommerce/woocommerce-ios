@@ -40,13 +40,13 @@ public class AtomicAuthenticationServiceRemote: ServiceRemoteWordPressComREST {
     private func cookie(from responseObject: Any) throws -> HTTPCookie {
         guard let response = responseObject as? [String: AnyObject] else {
             let error = ResponseError.responseIsNotADictionary(response: responseObject)
-            WPKitLogError("❗️Error: \(error)")
+            WPAuthenticatorLogError("❗️Error: \(error)")
             throw error
         }
 
         guard let cookies = response["cookies"] as? [[String: Any]] else {
             let error = ResponseError.decodingFailure(response: response)
-            WPKitLogError("❗️Error: \(error)")
+            WPAuthenticatorLogError("❗️Error: \(error)")
             throw error
         }
 
@@ -59,7 +59,7 @@ public class AtomicAuthenticationServiceRemote: ServiceRemoteWordPressComREST {
             let expires = cookieDictionary["expires"] as? Int else {
 
                 let error = ResponseError.decodingFailure(response: response)
-                WPKitLogError("❗️Error: \(error)")
+                WPAuthenticatorLogError("❗️Error: \(error)")
                 throw error
         }
 
@@ -73,7 +73,7 @@ public class AtomicAuthenticationServiceRemote: ServiceRemoteWordPressComREST {
             .expires: expirationDate
         ]) else {
             let error = ResponseError.couldNotInstantiateCookie(name: name, value: value, domain: domain, path: path, expires: expirationDate)
-            WPKitLogError("❗️Error: \(error)")
+            WPAuthenticatorLogError("❗️Error: \(error)")
             throw error
         }
 

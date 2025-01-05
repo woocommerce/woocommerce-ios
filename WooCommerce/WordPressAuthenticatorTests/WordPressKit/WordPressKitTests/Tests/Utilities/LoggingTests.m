@@ -51,24 +51,24 @@
 //
 //- (void)testLogging
 //{
-//    WPKitLogInfo(@"This is an info log");
-//    WPKitLogInfo(@"This is an info log %@", @"with an argument");
+//    WPAuthenticatorLoggingInfo(@"This is an info log");
+//    WPAuthenticatorLoggingInfo(@"This is an info log %@", @"with an argument");
 //    XCTAssertEqualObjects(self.logger.infoLogs, (@[@"This is an info log", @"This is an info log with an argument"]));
 //
-//    WPKitLogError(@"This is an error log");
-//    WPKitLogError(@"This is an error log %@", @"with an argument");
+//    WPAuthenticatorLoggingError(@"This is an error log");
+//    WPAuthenticatorLoggingError(@"This is an error log %@", @"with an argument");
 //    XCTAssertEqualObjects(self.logger.errorLogs, (@[@"This is an error log", @"This is an error log with an argument"]));
 //}
 //
 //- (void)testUnimplementedLoggingMethod
 //{
-//    XCTAssertNoThrow(WPKitLogVerbose(@"verbose logging is not implemented"));
+//    XCTAssertNoThrow(WPAuthenticatorLoggingVerbose(@"verbose logging is not implemented"));
 //}
 //
 //- (void)testNoLogging
 //{
 //    WPKitSetLoggingDelegate(nil);
-//    XCTAssertNoThrow(WPKitLogInfo(@"this log should not be printed"));
+//    XCTAssertNoThrow(WPAuthenticatorLoggingInfo(@"this log should not be printed"));
 //    XCTAssertEqual(self.logger.infoLogs.count, 0);
 //}
 //

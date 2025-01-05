@@ -35,7 +35,7 @@ public final class AtomicSiteServiceRemote: ServiceRemoteWordPressComREST {
                 let response = try JSONDecoder.apiDecoder.decode(AtomicErrorLogsResponse.self, from: data)
                 success(response)
             } catch {
-                WPKitLogError("Error parsing campaigns response: \(error), \(responseObject)")
+                WPAuthenticatorLogError("Error parsing campaigns response: \(error), \(responseObject)")
                 failure(error)
             }
         } failure: { error, _ in
@@ -79,7 +79,7 @@ public final class AtomicSiteServiceRemote: ServiceRemoteWordPressComREST {
                 let response = try JSONDecoder.apiDecoder.decode(AtomicWebServerLogsResponse.self, from: data)
                 success(response)
             } catch {
-                WPKitLogError("Error parsing campaigns response: \(error), \(responseObject)")
+                WPAuthenticatorLogError("Error parsing campaigns response: \(error), \(responseObject)")
                 failure(error)
             }
         } failure: { error, _ in

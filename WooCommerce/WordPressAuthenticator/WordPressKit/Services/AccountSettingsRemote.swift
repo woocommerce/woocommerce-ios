@@ -174,7 +174,7 @@ public class AccountSettingsRemote: ServiceRemoteWordPressComREST {
             let blockEmailNotifications = response["subscription_delivery_email_blocked"] as? Bool,
             let twoStepEnabled = response["two_step_enabled"] as? Bool
         else {
-            WPKitLogError("Error decoding me/settings response: \(responseObject)")
+            WPAuthenticatorLogError("Error decoding me/settings response: \(responseObject)")
             throw ResponseError.decodingFailure
         }
 

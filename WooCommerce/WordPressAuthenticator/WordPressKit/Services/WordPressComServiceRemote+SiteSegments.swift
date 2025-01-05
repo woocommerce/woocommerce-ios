@@ -97,7 +97,7 @@ public extension WordPressComServiceRemote {
             remotePath,
             parameters: nil,
             success: { [weak self] responseObject, httpResponse in
-                WPKitLogInfo("\(responseObject) | \(String(describing: httpResponse))")
+                WPAuthenticatorLogInfo("\(responseObject) | \(String(describing: httpResponse))")
 
                 guard let self = self else {
                     return
@@ -108,12 +108,12 @@ public extension WordPressComServiceRemote {
                     let validContent = self.validSegments(response)
                     completion(.success(validContent))
                 } catch {
-                    WPKitLogError("Failed to decode \([SiteVertical].self) : \(error.localizedDescription)")
+                    WPAuthenticatorLogError("Failed to decode \([SiteVertical].self) : \(error.localizedDescription)")
                     completion(.failure(SiteSegmentsError.responseDecodingFailure))
                 }
             },
             failure: { error, httpResponse in
-                WPKitLogError("\(error) | \(String(describing: httpResponse))")
+                WPAuthenticatorLogError("\(error) | \(String(describing: httpResponse))")
                 completion(.failure(SiteSegmentsError.serviceFailure))
         })
     }

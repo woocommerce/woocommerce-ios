@@ -28,7 +28,7 @@ open class DashboardServiceRemote: ServiceRemoteWordPressComREST {
             success(cards)
         }, failure: { error, _ in
             failure(error)
-            WPKitLogError("Error fetching dashboard cards: \(error)")
+            WPAuthenticatorLogError("Error fetching dashboard cards: \(error)")
         })
     }
 

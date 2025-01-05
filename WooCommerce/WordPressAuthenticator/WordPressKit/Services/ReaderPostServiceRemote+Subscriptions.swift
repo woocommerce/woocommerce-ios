@@ -40,7 +40,7 @@ extension ReaderPostServiceRemote {
                 failure(error)
             }
         }) { error, _ in
-            WPKitLogError("Error fetching subscription status: \(error)")
+            WPAuthenticatorLogError("Error fetching subscription status: \(error)")
             failure(error)
         }
     }
@@ -70,7 +70,7 @@ extension ReaderPostServiceRemote {
                 failure(error)
             }
         }) { error, _ in
-            WPKitLogError("Error subscribing to comments in the post: \(error)")
+            WPAuthenticatorLogError("Error subscribing to comments in the post: \(error)")
             failure(error)
         }
     }
@@ -100,7 +100,7 @@ extension ReaderPostServiceRemote {
                 failure(error)
             }
         }) { error, _ in
-            WPKitLogError("Error unsubscribing from comments in the post: \(error)")
+            WPAuthenticatorLogError("Error unsubscribing from comments in the post: \(error)")
             failure(error)
         }
     }
@@ -138,7 +138,7 @@ extension ReaderPostServiceRemote {
             success()
 
         }, failure: { error, _ in
-            WPKitLogError("Error updating post subscription: \(error)")
+            WPAuthenticatorLogError("Error updating post subscription: \(error)")
             failure(error)
         })
     }

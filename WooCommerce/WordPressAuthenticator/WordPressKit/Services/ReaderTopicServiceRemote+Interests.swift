@@ -19,11 +19,11 @@ extension ReaderTopicServiceRemote {
 
                                         success(envelope.interests)
                                     } catch {
-                                        WPKitLogError("Error parsing the reader interests response: \(error)")
+                                        WPAuthenticatorLogError("Error parsing the reader interests response: \(error)")
                                         failure(error)
                                     }
         }, failure: { error, _ in
-            WPKitLogError("Error fetching reader interests: \(error)")
+            WPAuthenticatorLogError("Error fetching reader interests: \(error)")
 
             failure(error)
         })
@@ -39,7 +39,7 @@ extension ReaderTopicServiceRemote {
         wordPressComRESTAPI.post(path, parameters: parameters, success: { _, _ in
             success()
         }) { error, _ in
-            WPKitLogError("Error fetching reader interests: \(error)")
+            WPAuthenticatorLogError("Error fetching reader interests: \(error)")
 
             failure(error)
         }

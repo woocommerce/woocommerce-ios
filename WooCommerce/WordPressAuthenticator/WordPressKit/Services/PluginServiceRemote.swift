@@ -26,7 +26,7 @@ public class PluginServiceRemote: ServiceRemoteWordPressComREST {
                 failure(self.errorFromResponse(response))
             }
         }, failure: { (error, _) in
-            WPKitLogError("[PluginServiceRemoteError] Error fetching site plugins: \(error)")
+            WPAuthenticatorLogError("[PluginServiceRemoteError] Error fetching site plugins: \(error)")
             failure(error)
         })
     }
@@ -55,7 +55,7 @@ public class PluginServiceRemote: ServiceRemoteWordPressComREST {
                 }
         },
             failure: { (error, _) in
-                WPKitLogError("[PluginServiceRemoteError] Error updating plugin: \(error)")
+                WPAuthenticatorLogError("[PluginServiceRemoteError] Error updating plugin: \(error)")
                 failure(error)
         })
     }
@@ -115,7 +115,7 @@ public class PluginServiceRemote: ServiceRemoteWordPressComREST {
                     failure(self.errorFromResponse(response))
                 }
             }, failure: { (error, _) in
-                WPKitLogError("[PluginServiceRemoteError] Error installing plugin: \(error)")
+                WPAuthenticatorLogError("[PluginServiceRemoteError] Error installing plugin: \(error)")
                 failure(error)
             }
         )
@@ -134,7 +134,7 @@ public class PluginServiceRemote: ServiceRemoteWordPressComREST {
             success: { _, _  in
                 success()
             }, failure: { (error, _) in
-                WPKitLogError("[PluginServiceRemoteError] Error removing plugin: \(error)")
+                WPAuthenticatorLogError("[PluginServiceRemoteError] Error removing plugin: \(error)")
                 failure(error)
             }
         )
@@ -154,7 +154,7 @@ public class PluginServiceRemote: ServiceRemoteWordPressComREST {
                 success()
             },
             failure: { (error, _) in
-                WPKitLogError("[PluginServiceRemoteError] Error modifying plugin: \(error)")
+                WPAuthenticatorLogError("[PluginServiceRemoteError] Error modifying plugin: \(error)")
                 failure(error)
             })
     }

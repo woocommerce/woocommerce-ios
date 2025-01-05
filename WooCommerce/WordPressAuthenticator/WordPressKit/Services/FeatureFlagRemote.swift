@@ -44,11 +44,11 @@ open class FeatureFlagRemote: ServiceRemoteWordPressComREST {
                                     }
 
                                 }, failure: { error, response in
-                                    WPKitLogError("Error retrieving remote feature flags")
-                                    WPKitLogError("\(error)")
+                                    WPAuthenticatorLogError("Error retrieving remote feature flags")
+                                    WPAuthenticatorLogError("\(error)")
 
                                     if let response = response {
-                                        WPKitLogDebug("Response Code: \(response.statusCode)")
+                                        WPAuthenticatorLogDebug("Response Code: \(response.statusCode)")
                                     }
 
                                     callback(.failure(error))

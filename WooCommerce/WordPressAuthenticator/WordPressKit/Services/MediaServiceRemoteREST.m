@@ -172,7 +172,7 @@ const NSInteger WPRestErrorCodeMediaNew = 10;
                                     }
                                 }
                             } failure:^(NSError *error, NSHTTPURLResponse *httpResponse) {
-                                WPKitLogDebug(@"Error uploading multiple media files: %@", [error localizedDescription]);
+                                WPAuthenticatorLogDebug(@"Error uploading multiple media files: %@", [error localizedDescription]);
                                 if (failure) {
                                     failure(error);
                                 }
@@ -225,7 +225,7 @@ const NSInteger WPRestErrorCodeMediaNew = 10;
                                                                             }
 
                                                                         } failure:^(NSError *error, NSHTTPURLResponse *httpResponse) {
-                                                                            WPKitLogDebug(@"Error uploading file: %@", [error localizedDescription]);
+                                                                            WPAuthenticatorLogDebug(@"Error uploading file: %@", [error localizedDescription]);
                                                                             if (failure) {
                                                                                 failure(error);
                                                                             }
@@ -235,7 +235,7 @@ const NSInteger WPRestErrorCodeMediaNew = 10;
 }
 
 - (NSError *)processMediaUploadErrors:(NSArray *)errorList {
-    WPKitLogDebug(@"Error uploading file: %@", errorList);
+    WPAuthenticatorLogDebug(@"Error uploading file: %@", errorList);
     NSError * error = nil;
     if (errorList.count > 0) {
         NSString *errorMessage = [errorList.firstObject description];

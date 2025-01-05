@@ -35,12 +35,12 @@ extension ReaderPostServiceRemote {
 
                     success(envelope.posts)
                 } catch {
-                    WPKitLogError("Error parsing the reader related posts response: \(error)")
+                    WPAuthenticatorLogError("Error parsing the reader related posts response: \(error)")
                     failure(error)
                 }
             },
             failure: { (error, _) in
-                WPKitLogError("Error fetching reader related posts: \(error)")
+                WPAuthenticatorLogError("Error fetching reader related posts: \(error)")
                 failure(error)
             }
         )

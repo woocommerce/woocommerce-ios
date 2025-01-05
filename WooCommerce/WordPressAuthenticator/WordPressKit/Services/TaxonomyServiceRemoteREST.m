@@ -344,7 +344,7 @@ static NSUInteger const TaxonomyRESTNumberMaxValue = 1000;
                                    url:(NSString *)urlStr
                                failure:(nullable void(^)(NSError *error))failure
 {
-    WPKitLogError(@"%@ - URL: %@", message, urlStr);
+    WPAuthenticatorLogError(@"%@ - URL: %@", message, urlStr);
     NSError *error = [NSError errorWithDomain:NSURLErrorDomain
                                          code:NSURLErrorBadServerResponse
                                      userInfo:@{NSLocalizedDescriptionKey: message}];

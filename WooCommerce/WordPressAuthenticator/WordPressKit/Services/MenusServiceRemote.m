@@ -408,7 +408,7 @@ NSString * const MenusRemoteKeyClasses = @"classes";
 
 - (void)handleResponseErrorWithMessage:(NSString *)message url:(NSString *)urlStr failure:(nullable MenusServiceRemoteFailureBlock)failure
 {
-    WPKitLogError(@"%@ - URL: %@", message, urlStr);
+    WPAuthenticatorLogError(@"%@ - URL: %@", message, urlStr);
     NSError *error = [NSError errorWithDomain:NSURLErrorDomain
                                          code:NSURLErrorBadServerResponse
                                      userInfo:@{NSLocalizedDescriptionKey: message}];

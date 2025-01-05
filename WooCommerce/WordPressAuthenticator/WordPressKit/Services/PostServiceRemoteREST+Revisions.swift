@@ -23,7 +23,7 @@ public extension PostServiceRemoteREST {
                                         failure(error)
                                     }
         }, failure: { error, _ in
-            WPKitLogError("\(error)")
+            WPAuthenticatorLogError("\(error)")
             failure(error)
         })
     }
@@ -49,7 +49,7 @@ public extension PostServiceRemoteREST {
                 success(latestRevision)
             },
             failure: { error, _ in
-                WPKitLogError("\(error)")
+                WPAuthenticatorLogError("\(error)")
                 failure(error)
             }
         )
@@ -79,7 +79,7 @@ private extension PostServiceRemoteREST {
             }
             completion(revisions, nil)
         } catch {
-            WPKitLogError("\(error)")
+            WPAuthenticatorLogError("\(error)")
             completion(nil, error)
         }
     }

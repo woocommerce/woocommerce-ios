@@ -24,7 +24,7 @@ extension ReaderPostServiceRemote {
                                     let posts = postsDictionary?.compactMap { RemoteReaderPost(dictionary: $0) } ?? []
                                     success(posts, nextPageHandle)
         }, failure: { error, _ in
-            WPKitLogError("Error fetching reader posts: \(error)")
+            WPAuthenticatorLogError("Error fetching reader posts: \(error)")
             failure(error)
         })
     }

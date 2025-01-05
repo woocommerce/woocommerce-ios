@@ -44,7 +44,6 @@ FOUNDATION_EXPORT const unsigned char WordPressAuthenticatorVersionString[];
 #import <WordPressAuthenticator/ServiceRemoteWordPressComREST.h>
 #import <WordPressAuthenticator/ServiceRemoteWordPressXMLRPC.h>
 #import <WordPressAuthenticator/SiteServiceRemoteWordPressComREST.h>
-#import <WordPressAuthenticator/WPKitLogging.h>
 #import <WordPressAuthenticator/WordPressComServiceRemote.h>
 #import <WordPressAuthenticator/WordPressComRestApiErrorDomain.h>
 #import <WordPressAuthenticator/WordPressComRESTAPIInterfacing.h>

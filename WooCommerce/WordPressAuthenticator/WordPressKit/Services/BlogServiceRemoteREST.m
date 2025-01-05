@@ -147,7 +147,7 @@ static NSInteger const RemoteBlogUncategorizedCategory                      = 1;
                   return [self remotePostTypeWithDictionary:json];
               }];
               if (!postTypes.count) {
-                  WPKitLogError(@"Response to %@ did not include post types for site.", requestUrl);
+                  WPAuthenticatorLogError(@"Response to %@ did not include post types for site.", requestUrl);
                   failure(nil);
                   return;
               }

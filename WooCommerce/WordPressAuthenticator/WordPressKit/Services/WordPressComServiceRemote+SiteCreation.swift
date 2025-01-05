@@ -195,7 +195,7 @@ public extension WordPressComServiceRemote {
         do {
             requestParameters = try encodeRequestParameters(request: request)
         } catch {
-            WPKitLogError("Failed to encode \(SiteCreationRequest.self) : \(error)")
+            WPAuthenticatorLogError("Failed to encode \(SiteCreationRequest.self) : \(error)")
 
             completion(.failure(SiteCreationError.requestEncodingFailure))
             return
@@ -205,7 +205,7 @@ public extension WordPressComServiceRemote {
             path,
             parameters: requestParameters,
             success: { [weak self] responseObject, httpResponse in
-                WPKitLogInfo("\(responseObject) | \(String(describing: httpResponse))")
+                WPAuthenticatorLogInfo("\(responseObject) | \(String(describing: httpResponse))")
 
                 guard let self = self else {
                     return
@@ -215,12 +215,12 @@ public extension WordPressComServiceRemote {
                     let response = try self.decodeResponse(responseObject: responseObject)
                     completion(.success(response))
                 } catch {
-                    WPKitLogError("Failed to decode \(SiteCreationResponse.self) : \(error.localizedDescription)")
+                    WPAuthenticatorLogError("Failed to decode \(SiteCreationResponse.self) : \(error.localizedDescription)")
                     completion(.failure(SiteCreationError.responseDecodingFailure))
                 }
         },
             failure: { error, httpResponse in
-                WPKitLogError("\(error) | \(String(describing: httpResponse))")
+                WPAuthenticatorLogError("\(error) | \(String(describing: httpResponse))")
                 completion(.failure(SiteCreationError.serviceFailure))
         })
     }

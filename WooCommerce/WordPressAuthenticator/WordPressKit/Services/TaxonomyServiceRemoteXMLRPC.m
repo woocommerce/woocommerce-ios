@@ -343,7 +343,7 @@ static NSString * const TaxonomyXMLRPCOffsetParameter = @"offset";
                                 method:(NSString *)methodStr
                                failure:(nullable void(^)(NSError *error))failure
 {
-    WPKitLogError(@"%@ - method: %@", message, methodStr);
+    WPAuthenticatorLogError(@"%@ - method: %@", message, methodStr);
     NSError *error = [NSError errorWithDomain:NSURLErrorDomain
                                          code:NSURLErrorBadServerResponse
                                      userInfo:@{NSLocalizedDescriptionKey: message}];

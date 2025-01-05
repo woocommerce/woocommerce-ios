@@ -85,7 +85,7 @@ NSString * const ReaderSiteServiceRemoteErrorDomain = @"ReaderSiteServiceRemoteE
         BOOL subscribed = [[dict numberForKey:@"subscribed"] boolValue];
         if (!subscribed) {
             if (failure) {
-                WPKitLogError(@"Error following site at url: %@", siteURL);
+                WPAuthenticatorLogError(@"Error following site at url: %@", siteURL);
                 NSError *error = [self errorForUnsuccessfulFollowSite];
                 failure(error);
             }
@@ -114,7 +114,7 @@ NSString * const ReaderSiteServiceRemoteErrorDomain = @"ReaderSiteServiceRemoteE
         BOOL subscribed = [[dict numberForKey:@"subscribed"] boolValue];
         if (subscribed) {
             if (failure) {
-                WPKitLogError(@"Error unfollowing site at url: %@", siteURL);
+                WPAuthenticatorLogError(@"Error unfollowing site at url: %@", siteURL);
                 NSError *error = [self errorForUnsuccessfulFollowSite];
                 failure(error);
             }

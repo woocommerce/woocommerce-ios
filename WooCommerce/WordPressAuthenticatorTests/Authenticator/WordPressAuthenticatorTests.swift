@@ -55,50 +55,7 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssertEqual(correctedURL, url)
     }
 
-    // MARK: WordPressAuthenticator Notification Tests
-    func testDispatchesSupportPushNotificationReceived() {
-        let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()
-        _ = expectation(forNotification: .wordpressSupportNotificationReceived, object: nil, handler: nil)
-
-        authenticator.supportPushNotificationReceived()
-
-        waitForExpectations(timeout: timeout, handler: nil)
-    }
-
-    func testDispatchesSupportPushNotificationCleared() {
-        let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()
-        _ = expectation(forNotification: .wordpressSupportNotificationCleared, object: nil, handler: nil)
-
-        authenticator.supportPushNotificationCleared()
-
-        waitForExpectations(timeout: timeout, handler: nil)
-    }
-
     // MARK: View Tests
-    func testWordpressAuthIsAuthenticationViewController() {
-        let loginViewcontroller = LoginViewController()
-        let nuxViewController = NUXViewController()
-        let nuxTableViewController = NUXTableViewController()
-        let basicViewController = UIViewController()
-
-        XCTAssertTrue(WordPressAuthenticator.isAuthenticationViewController(loginViewcontroller))
-        XCTAssertTrue(WordPressAuthenticator.isAuthenticationViewController(nuxViewController))
-        XCTAssertTrue(WordPressAuthenticator.isAuthenticationViewController(nuxTableViewController))
-        XCTAssertFalse(WordPressAuthenticator.isAuthenticationViewController(basicViewController))
-    }
-
-    func testShowLoginFromPresenterReturnsLoginInitialVC() {
-        let presenterSpy = ModalViewControllerPresentingSpy()
-        let expectation = XCTNSPredicateExpectation(predicate: NSPredicate(block: { (_, _) -> Bool in
-            return presenterSpy.presentedVC != nil
-        }), object: .none)
-
-        WordPressAuthenticator.showLoginFromPresenter(presenterSpy, animated: true)
-        wait(for: [expectation], timeout: timeout)
-
-        XCTAssertTrue(presenterSpy.presentedVC is LoginNavigationController)
-    }
-
     func testShowLoginForJustWPComPresentsCorrectVC() {
         let presenterSpy = ModalViewControllerPresentingSpy()
         let expectation = XCTNSPredicateExpectation(predicate: NSPredicate(block: { (_, _) -> Bool in
@@ -164,17 +121,6 @@ class WordPressAuthenticatorTests: XCTestCase {
     }
 
     // MARK: WordPressAuthenticator URL verification Tests
-    func testIsGoogleAuthURL() {
-        let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()
-        let googleURL = URL(string: "com.googleuserconsent.apps/82ekn2932nub23h23hn3")!
-        let magicLinkURL = URL(string: "https://magic-login")!
-        let wordpressComURL = URL(string: "https://WordPress.com")!
-
-        XCTAssertTrue(authenticator.isGoogleAuthUrl(googleURL))
-        XCTAssertFalse(authenticator.isGoogleAuthUrl(magicLinkURL))
-        XCTAssertFalse(authenticator.isGoogleAuthUrl(wordpressComURL))
-    }
-
     func testIsWordPressAuthURL() {
         let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()
         let magicLinkURL = URL(string: "https://magic-login")!

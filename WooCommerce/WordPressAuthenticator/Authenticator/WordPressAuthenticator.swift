@@ -99,26 +99,6 @@ import WordPressUI
 
     // MARK: - Public Methods
 
-    public func supportPushNotificationReceived() {
-        NotificationCenter.default.post(name: .wordpressSupportNotificationReceived, object: nil)
-    }
-
-    public func supportPushNotificationCleared() {
-        NotificationCenter.default.post(name: .wordpressSupportNotificationCleared, object: nil)
-    }
-
-    /// Indicates if the specified ViewController belongs to the Authentication Flow, or not.
-    ///
-    public class func isAuthenticationViewController(_ viewController: UIViewController) -> Bool {
-        return viewController is NUXViewControllerBase
-    }
-
-    /// Indicates if the received URL is a Google Authentication Callback.
-    ///
-    @objc public func isGoogleAuthUrl(_ url: URL) -> Bool {
-        return url.absoluteString.hasPrefix(configuration.googleLoginScheme)
-    }
-
     /// Indicates if the received URL is a WordPress.com Authentication Callback.
     ///
     @objc public func isWordPressAuthUrl(_ url: URL) -> Bool {
@@ -133,11 +113,6 @@ import WordPressUI
     }
 
     // MARK: - Helpers for presenting the login flow
-
-    /// Used to present the new login flow from the app delegate
-    @objc public class func showLoginFromPresenter(_ presenter: UIViewController, animated: Bool) {
-        showLogin(from: presenter, animated: animated)
-    }
 
     /// Shows login UI from the given presenter view controller.
     ///

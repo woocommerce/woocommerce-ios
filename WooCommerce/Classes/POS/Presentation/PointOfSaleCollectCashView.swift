@@ -12,7 +12,7 @@ struct PointOfSaleCollectCashView: View {
 
     let orderTotal: String
 
-    let onCashPaymentComplete: (Result<Void, Error>) -> Void
+    let onCashPaymentSuccess: () -> Void
 
     private var formattedOrderTotal: String {
         String.localizedStringWithFormat(Localization.backNavigationSubtitle, orderTotal)
@@ -73,10 +73,10 @@ struct PointOfSaleCollectCashView: View {
                     isLoading = true
                     do {
                         try await markComplete()
-                        onCashPaymentComplete(.success(()))
+                        onCashPaymentSuccess()
                         dismiss()
                     } catch {
-                        onCashPaymentComplete(.failure((error)))
+                        errorMessage = Localization.failedToCollectCashPayment
                     }
                     isLoading = false
                 }
@@ -150,6 +150,12 @@ private extension PointOfSaleCollectCashView {
             value: "Mark payment as complete",
             comment: "Button to mark a cash payment as completed"
         )
+        static let failedToCollectCashPayment = NSLocalizedString(
+            "pointOfSale.cashview.failedToCollectCashPayment",
+            value: "Error trying to process payment. Try again.",
+            comment: "Error message when the system fails to collect a cash payment."
+        )
+        
     }
 }
 
@@ -159,7 +165,7 @@ private extension PointOfSaleCollectCashView {
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
-    PointOfSaleCollectCashView(orderTotal: "$1.23", onCashPaymentComplete: { _ in })
+    PointOfSaleCollectCashView(orderTotal: "$1.23", onCashPaymentSuccess: { })
         .environmentObject(posModel)
 }
 #endif

@@ -99,14 +99,8 @@ struct TotalsView: View {
         }
         .fullScreenCover(isPresented: $shouldShowCollectCashPayment) {
             if case .loaded(let total) = posModel.orderState {
-                PointOfSaleCollectCashView(orderTotal: total.orderTotal, onCashPaymentComplete: { cashPaymentResult in
-                    switch cashPaymentResult {
-                    case .success:
-                        shouldShowPaymentSuccessView = true
-                    case .failure:
-                        // TODO: Present error
-                        shouldShowCollectCashPayment = false
-                    }
+                PointOfSaleCollectCashView(orderTotal: total.orderTotal, onCashPaymentSuccess: {
+                    shouldShowPaymentSuccessView = true
                 })
                 .matchedGeometryEffect(id: Constants.matchedGeometryCashId,
                                        in: totalsFieldAnimation)

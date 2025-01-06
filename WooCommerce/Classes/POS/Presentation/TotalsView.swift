@@ -27,6 +27,7 @@ struct TotalsView: View {
     @Environment(\.colorScheme) var colorScheme
 
     @State private var shouldShowCollectCashPayment: Bool = false
+    @State private var shouldShowPaymentSuccessView: Bool = false
 
     var body: some View {
         HStack {
@@ -88,11 +89,27 @@ struct TotalsView: View {
             isShowingTotalsFields = shouldShowTotalsFields
         }
         .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
-        .fullScreenCover(isPresented: $shouldShowCollectCashPayment) {
+        .fullScreenCover(isPresented: $shouldShowPaymentSuccessView) {
             if case .loaded(let total) = posModel.orderState {
-                PointOfSaleCollectCashView(orderTotal: total.orderTotal)
+                let viewModel = PointOfSaleCardPresentPaymentSuccessMessageViewModel(formattedOrderTotal: total.orderTotal)
+                PointOfSaleCardPresentPaymentInLineMessage(messageType: .paymentSuccess(viewModel: viewModel))
                     .matchedGeometryEffect(id: Constants.matchedGeometryCashId,
                                            in: totalsFieldAnimation)
+            }
+        }
+        .fullScreenCover(isPresented: $shouldShowCollectCashPayment) {
+            if case .loaded(let total) = posModel.orderState {
+                PointOfSaleCollectCashView(orderTotal: total.orderTotal, onCashPaymentComplete: { cashPaymentResult in
+                    switch cashPaymentResult {
+                    case .success:
+                        shouldShowPaymentSuccessView = true
+                    case .failure:
+                        // TODO: Present error
+                        shouldShowCollectCashPayment = false
+                    }
+                })
+                .matchedGeometryEffect(id: Constants.matchedGeometryCashId,
+                                       in: totalsFieldAnimation)
             }
         }
         .geometryGroupIfSupported()

@@ -12,6 +12,8 @@ struct PointOfSaleCollectCashView: View {
 
     let orderTotal: String
 
+    let onCashPaymentComplete: (Result<Void, Error>) -> Void
+
     private var formattedOrderTotal: String {
         String.localizedStringWithFormat(Localization.backNavigationSubtitle, orderTotal)
     }
@@ -71,11 +73,10 @@ struct PointOfSaleCollectCashView: View {
                     isLoading = true
                     do {
                         try await markComplete()
-                        // TODO:
-                        // Redirect to success view on completion
-                        // https://github.com/woocommerce/woocommerce-ios/issues/14602
+                        onCashPaymentComplete(.success(()))
+                        dismiss()
                     } catch {
-                        debugPrint(error)
+                        onCashPaymentComplete(.failure((error)))
                     }
                     isLoading = false
                 }
@@ -111,11 +112,7 @@ struct PointOfSaleCollectCashView: View {
     }
 
     private func markComplete() async throws {
-        do {
-            try await posModel.collectCashPayment()
-        } catch {
-            debugPrint(error)
-        }
+        try await posModel.collectCashPayment()
     }
 }
 
@@ -162,7 +159,7 @@ private extension PointOfSaleCollectCashView {
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
-    PointOfSaleCollectCashView(orderTotal: "$1.23")
+    PointOfSaleCollectCashView(orderTotal: "$1.23", onCashPaymentComplete: { _ in })
         .environmentObject(posModel)
 }
 #endif

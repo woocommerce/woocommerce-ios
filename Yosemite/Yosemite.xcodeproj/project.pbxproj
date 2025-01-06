@@ -754,7 +754,6 @@
 		31799AF927050D9C00D78179 /* WCPayReaderLocation+ReaderLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayReaderLocation+ReaderLocation.swift"; sourceTree = "<group>"; };
 		31A89EE5278CC38F002A588E /* StripeAccount+PaymentGatewayAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StripeAccount+PaymentGatewayAccount.swift"; sourceTree = "<group>"; };
 		35381AA86D039850A916E336 /* Pods-YosemiteTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
-		3F096E472D23F5DB00D8ACCE /* Workspace-Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Workspace-Shared.xcconfig"; sourceTree = "<group>"; };
 		450106862399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxClass+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		45010692239A6C9F00E24722 /* TaxStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxStore.swift; sourceTree = "<group>"; };
 		45010694239A6CDE00E24722 /* TaxAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxAction.swift; sourceTree = "<group>"; };
@@ -1885,7 +1884,6 @@
 				B5C9DDF62087FEC0006B910A /* Products */,
 				B5C4EB7720D17329002AC0AF /* Frameworks */,
 				E35A5B190486BCE158B0320B /* Pods */,
-				3F096E472D23F5DB00D8ACCE /* Workspace-Shared.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -2856,7 +2854,6 @@
 /* Begin XCBuildConfiguration section */
 		1A9690382359D99E0061E383 /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3F096E472D23F5DB00D8ACCE /* Workspace-Shared.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -2967,7 +2964,6 @@
 		};
 		B5C9DE072087FEC0006B910A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3F096E472D23F5DB00D8ACCE /* Workspace-Shared.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3033,7 +3029,6 @@
 		};
 		B5C9DE082087FEC0006B910A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3F096E472D23F5DB00D8ACCE /* Workspace-Shared.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;

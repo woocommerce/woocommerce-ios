@@ -2,7 +2,9 @@ import SwiftUI
 
 struct PointOfSaleCollectCashView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @FocusState private var isTextFieldFocused: Bool
 
     @State private var textFieldAmountInput: String = ""
     @State private var isLoading: Bool = false
@@ -13,6 +15,18 @@ struct PointOfSaleCollectCashView: View {
     private var formattedOrderTotal: String {
         String.localizedStringWithFormat(Localization.backNavigationSubtitle, orderTotal)
     }
+
+    private func validateAmount() -> Bool {
+        // TODO:
+        // Validate amount entered vs order total
+        // https://github.com/woocommerce/woocommerce-ios/issues/14749
+        return true
+    }
+
+    @StateObject private var textFieldViewModel = FormattableAmountTextFieldViewModel(size: .extraLarge,
+                                                                                      locale: Locale.autoupdatingCurrent,
+                                                                                      storeCurrencySettings: ServiceLocator.currencySettings,
+                                                                                      allowNegativeNumber: false)
 
     var body: some View {
         VStack(alignment: .center, spacing: 20) {
@@ -38,18 +52,9 @@ struct PointOfSaleCollectCashView: View {
             }
             .padding()
 
-            TextField("$0.00", text: $textFieldAmountInput)
-                .keyboardType(.numbersAndPunctuation)
-                .textInputAutocapitalization(.none)
-                .autocorrectionDisabled()
-                .multilineTextAlignment(.center)
-                .font(POSFontStyle.posTitleRegular)
-                .focused()
-                .padding()
-                .onSubmit {
-                    Task { @MainActor in
-                        await markComplete()
-                    }
+            FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
+                .onChange(of: textFieldViewModel.amount) { newValue in
+                    textFieldAmountInput = newValue
                 }
 
             if let errorMessage = errorMessage {
@@ -60,7 +65,19 @@ struct PointOfSaleCollectCashView: View {
 
             Button(action: {
                 Task { @MainActor in
-                    await markComplete()
+                    guard validateAmount() else {
+                        return
+                    }
+                    isLoading = true
+                    do {
+                        try await markComplete()
+                        // TODO:
+                        // Redirect to success view on completion
+                        // https://github.com/woocommerce/woocommerce-ios/issues/14602
+                    } catch {
+                        debugPrint(error)
+                    }
+                    isLoading = false
                 }
             }, label: {
                 HStack(spacing: Constants.buttonSpacing) {
@@ -85,16 +102,20 @@ struct PointOfSaleCollectCashView: View {
 
             Spacer()
         }
+        .background(backgroundColor)
         .padding()
         .animation(.easeInOut, value: errorMessage)
-        .onChange(of: textFieldAmountInput) { amount in
+        .onChange(of: textFieldAmountInput) { _ in
             errorMessage = nil
         }
     }
 
-    private func markComplete() async {
-        // TODO:
-        // https://github.com/woocommerce/woocommerce-ios/issues/14602
+    private func markComplete() async throws {
+        do {
+            try await posModel.collectCashPayment()
+        } catch {
+            debugPrint(error)
+        }
     }
 }
 
@@ -104,6 +125,15 @@ private extension PointOfSaleCollectCashView {
         static let buttonPadding: CGFloat = 32
         static let buttonFont: POSFontStyle = .posBodyEmphasized
         static let buttonCornerRadius: CGFloat = 8
+    }
+
+    private var backgroundColor: Color {
+        switch colorScheme {
+        case .dark:
+            return Color.posSecondaryBackground
+        default:
+            return .clear
+        }
     }
 
     enum Localization {

@@ -337,6 +337,60 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
     }
 
+    func test_doneButtonType_when_custom_amount_using_onRecalculateButtonTap_sync_approach() throws {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               featureFlagService: MockFeatureFlagService(sideBySideViewForOrderForm: true))
+        viewModel.toggleProductSelectorVisibility()
+
+        viewModel.selectionSyncApproach = .onRecalculateButtonTap
+
+        // When
+        let addCustomAmountViewModel = viewModel.addCustomAmountViewModel(with: .fixedAmount)
+        addCustomAmountViewModel.name = "Test"
+        addCustomAmountViewModel.doneButtonPressed()
+
+        // Then
+        switch viewModel.doneButtonType {
+        case .create:
+            // Success – we just don't care about the `loading` parameter
+            break
+        default:
+            XCTFail("Unexpected doneButtonType")
+        }
+    }
+
+    func test_doneButtonType_when_toggled_product_selection_and_custom_amount_using_onRecalculateButtonTap_sync_approach() throws {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               featureFlagService: MockFeatureFlagService(sideBySideViewForOrderForm: true))
+        viewModel.toggleProductSelectorVisibility()
+
+        viewModel.selectionSyncApproach = .onRecalculateButtonTap
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
+
+        // When we add custom amount
+        let addCustomAmountViewModel = viewModel.addCustomAmountViewModel(with: .fixedAmount)
+        addCustomAmountViewModel.name = "Test"
+        addCustomAmountViewModel.doneButtonPressed()
+        // and toggle product selection
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: false)
+
+        // Then
+        switch viewModel.doneButtonType {
+        case .create:
+            // Success – we just don't care about the `loading` parameter
+            break
+        default:
+            XCTFail("Unexpected doneButtonType")
+        }
+    }
+
     func test_view_model_is_updated_when_product_is_added_to_order_using_buttonTap_sync_approach_then_changes_to_immediate() throws {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)

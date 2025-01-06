@@ -786,12 +786,21 @@ private extension AppSettingsStore {
         }
     }
 
-    /// Clears all the order filter history
+    /// Clears all the order filter history for a given site ID
     func resetOrderFilterHistory(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
+        var existingHistory: [Int64: [StoredOrderSettings.Setting]] = [:]
+        if let storedHistory: OrderFilterHistory = try? fileStorage.data(for: orderFilterHistoryURL) {
+            existingHistory = storedHistory.history
+        }
+
+        existingHistory[siteID]?.removeAll()
+
+        let newStoredHistory = OrderFilterHistory(history: existingHistory)
         do {
-            try fileStorage.deleteFile(at: orderFilterHistoryURL)
+            try fileStorage.write(newStoredHistory, to: orderFilterHistoryURL)
+            onCompletion(nil)
         } catch {
-            DDLogError("⛔️ Deleting the orders settings files failed. Error: \(error)")
+            onCompletion(AppSettingsStoreErrors.writeOrderFilterHistory)
         }
     }
 }

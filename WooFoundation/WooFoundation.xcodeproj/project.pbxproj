@@ -54,6 +54,11 @@
 		689D11D32891B7D800F6A83F /* MockCrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689D11D22891B7D800F6A83F /* MockCrashLogger.swift */; };
 		68FBC5B328926B2C00A05461 /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68FBC5B228926B2C00A05461 /* Collection+Extensions.swift */; };
 		7A8A7FB1C1B872009917940A /* Pods_WooFoundationWatchOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A72956724B0AE377A044EDF4 /* Pods_WooFoundationWatchOS.framework */; };
+		9502369C2D2C1A9F00E2F796 /* ColorPalette.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 265C99D728B93F04005E6117 /* ColorPalette.xcassets */; };
+		9502369E2D2C1AB600E2F796 /* ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F5028B8362800937BA9 /* ColorStudio.swift */; };
+		950236A12D2C1BCF00E2F796 /* Color+ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0331A75A2A3B553A001D2C2C /* Color+ColorStudio.swift */; };
+		950236A42D2C1C0A00E2F796 /* WooFoundationBundleClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950236A32D2C1C0A00E2F796 /* WooFoundationBundleClass.swift */; };
+		950236A52D2C1C0A00E2F796 /* WooFoundationBundleClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950236A32D2C1C0A00E2F796 /* WooFoundationBundleClass.swift */; };
 		9FA5113235035AC9A6079B0D /* Pods_WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1733C61561AE3A1AD3C16B7 /* Pods_WooFoundation.framework */; };
 		AE948D0A28CF67CF009F3246 /* Date+StartAndEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE948D0928CF67CE009F3246 /* Date+StartAndEnd.swift */; };
 		AE948D0D28CF6D50009F3246 /* DateStartAndEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE948D0C28CF6D50009F3246 /* DateStartAndEndTests.swift */; };
@@ -145,6 +150,7 @@
 		73D31B9496B7C29667554A6E /* Pods-WooFoundationWatchOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationWatchOS.release.xcconfig"; path = "Target Support Files/Pods-WooFoundationWatchOS/Pods-WooFoundationWatchOS.release.xcconfig"; sourceTree = "<group>"; };
 		81B8569CD52D20EAE64EE737 /* Pods-WooFoundation.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundation.release-alpha.xcconfig"; path = "Target Support Files/Pods-WooFoundation/Pods-WooFoundation.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		8E30B666ED4157ED247C4485 /* Pods-WooFoundationWatchOS.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationWatchOS.release-alpha.xcconfig"; path = "Target Support Files/Pods-WooFoundationWatchOS/Pods-WooFoundationWatchOS.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		950236A32D2C1C0A00E2F796 /* WooFoundationBundleClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooFoundationBundleClass.swift; sourceTree = "<group>"; };
 		99861FECBD0975C25DA03D80 /* Pods-WooFoundation.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundation.debug.xcconfig"; path = "Target Support Files/Pods-WooFoundation/Pods-WooFoundation.debug.xcconfig"; sourceTree = "<group>"; };
 		A21D73D352B4162AB096E276 /* Pods-WooFoundationTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationTests.release-alpha.xcconfig"; path = "Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		A72956724B0AE377A044EDF4 /* Pods_WooFoundationWatchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooFoundationWatchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -244,6 +250,7 @@
 		26AF1F4E28B8362800937BA9 /* Colors */ = {
 			isa = PBXGroup;
 			children = (
+				950236A32D2C1C0A00E2F796 /* WooFoundationBundleClass.swift */,
 				26AF1F4F28B8362800937BA9 /* UIColor+SemanticColors.swift */,
 				0331A75A2A3B553A001D2C2C /* Color+ColorStudio.swift */,
 				20A3AFE82B14BAB20033AF2D /* Color+Adaptivity.swift */,
@@ -567,6 +574,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9502369C2D2C1A9F00E2F796 /* ColorPalette.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -678,6 +686,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				950236A52D2C1C0A00E2F796 /* WooFoundationBundleClass.swift in Sources */,
+				950236A12D2C1BCF00E2F796 /* Color+ColorStudio.swift in Sources */,
+				9502369E2D2C1AB600E2F796 /* ColorStudio.swift in Sources */,
 				26A0B2D02BF9A550002E9620 /* NSDecimalNumber+Helpers.swift in Sources */,
 				264E9EA32BF403E1009C48FD /* Date+StartAndEnd.swift in Sources */,
 				26A0B2CF2BF9A51E002E9620 /* CurrencyFormatter.swift in Sources */,
@@ -694,6 +705,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				950236A42D2C1C0A00E2F796 /* WooFoundationBundleClass.swift in Sources */,
 				03B8C3892914083F002235B1 /* Bundle+Woo.swift in Sources */,
 				B99BC2122A1FAE5100E6008A /* CIImage+ImageCombination.swift in Sources */,
 				B9C9C659283E7195001B879F /* NSDecimalNumber+Helpers.swift in Sources */,

@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import protocol Yosemite.StoresManager
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
 import struct Yosemite.Order
@@ -24,9 +25,11 @@ protocol PointOfSaleOrderControllerProtocol {
 final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     init(orderService: POSOrderServiceProtocol,
          receiptService: POSReceiptServiceProtocol,
+         stores: StoresManager = ServiceLocator.stores,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.orderService = orderService
         self.receiptService = receiptService
+        self.stores = stores
         self.currencyFormatter = currencyFormatter
     }
 
@@ -38,6 +41,7 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     private let receiptService: POSReceiptServiceProtocol
 
     private let currencyFormatter: CurrencyFormatter
+    private let stores: StoresManager
 
     @Published private var orderState: PointOfSaleInternalOrderState = .idle
     private(set) var order: Order? = nil
@@ -93,7 +97,7 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
 
     @MainActor
     func collectCashPayment() async throws {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+        guard let siteID = stores.sessionManager.defaultStoreID else {
             throw PointOfSaleOrderControllerError.noSiteID
         }
         guard let order = order else {
@@ -116,7 +120,7 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
                                                  onCompletion: { result in
                 continuation.resume(with: result)
             })
-            ServiceLocator.stores.dispatch(action)
+            stores.dispatch(action)
         }
     }
 }

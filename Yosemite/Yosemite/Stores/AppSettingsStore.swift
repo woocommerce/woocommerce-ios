@@ -53,6 +53,12 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.ordersSettings)
     }()
 
+    /// URL to the plist file containing the persisted order filter history
+    private lazy var orderFilterHistoryURL: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.orderFilterHistory)
+    }()
+
     /// URL to the plist file that we use to determine the settings applied in Products
     ///
     private lazy var productsSettingsURL: URL = {
@@ -721,7 +727,26 @@ private extension AppSettingsStore {
     /// Inserts or update the order filter history
     func upsertOrderFilterHistory(filter: StoredOrderSettings.Setting,
                                   onCompletion: @escaping (Error?) -> Void) {
-        // TODO
+        var existingHistory: [Int64: [StoredOrderSettings.Setting]] = [:]
+        if let storedHistory: OrderFilterHistory = try? fileStorage.data(for: orderFilterHistoryURL) {
+            existingHistory = storedHistory.history
+        }
+
+        var siteHistory = existingHistory[filter.siteID] ?? []
+        if siteHistory.contains(filter) {
+            siteHistory = [filter] + siteHistory.filter { $0 != filter } // move the filter to the top
+        } else {
+            siteHistory.append(filter)
+        }
+        existingHistory[filter.siteID] = siteHistory
+
+        let newStoredHistory = OrderFilterHistory(history: existingHistory)
+        do {
+            try fileStorage.write(newStoredHistory, to: orderFilterHistoryURL)
+            onCompletion(nil)
+        } catch {
+            onCompletion(AppSettingsStoreErrors.writeOrdersSettings)
+        }
     }
 
     /// Retrieves all persisted order filters
@@ -1150,4 +1175,5 @@ private enum Constants {
     static let generalStoreSettingsFileName = "general-store-settings.plist"
     static let ordersSettings = "orders-settings.plist"
     static let productsSettings = "products-settings.plist"
+    static let orderFilterHistory = "order-filter-history.plist"
 }

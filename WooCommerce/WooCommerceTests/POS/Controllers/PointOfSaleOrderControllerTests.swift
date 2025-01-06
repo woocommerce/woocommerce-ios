@@ -173,6 +173,16 @@ struct PointOfSaleOrderControllerTests {
         #expect(mockOrderService.orderToReturn?.billingAddress?.email == recipientEmail)
         #expect(mockReceiptService.sendReceiptWasCalled)
     }
+
+    @Test func collectCashPayment_when_no_order_then_fails_with_noOrder_error() async throws {
+        do {
+            // Given/When
+            try await sut.collectCashPayment()
+        } catch let error as PointOfSaleOrderController.PointOfSaleOrderControllerError {
+            // Then
+            #expect(error == .noOrder)
+        }
+    }
 }
 
 private func makeItem(name: String = "",

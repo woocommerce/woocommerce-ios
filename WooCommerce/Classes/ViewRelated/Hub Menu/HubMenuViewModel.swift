@@ -159,8 +159,7 @@ final class HubMenuViewModel: ObservableObject {
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.googleAdsEligibilityChecker = googleAdsEligibilityChecker
         self.cardPresentPaymentsOnboarding = CardPresentPaymentsOnboardingUseCase()
-        self.posEligibilityChecker = POSEligibilityChecker(cardPresentPaymentsOnboarding: cardPresentPaymentsOnboarding,
-                                                           siteSettings: ServiceLocator.selectedSiteSettings,
+        self.posEligibilityChecker = POSEligibilityChecker(siteSettings: ServiceLocator.selectedSiteSettings,
                                                            currencySettings: ServiceLocator.currencySettings,
                                                            featureFlagService: featureFlagService)
         self.analytics = analytics
@@ -284,7 +283,6 @@ private extension HubMenuViewModel {
     }
 
     func setupPOSElement() {
-        cardPresentPaymentsOnboarding.refreshIfNecessary()
         posEligibilityChecker.isEligible.map { isEligibleForPOS in
             if isEligibleForPOS {
                 return PointOfSaleEntryPoint()

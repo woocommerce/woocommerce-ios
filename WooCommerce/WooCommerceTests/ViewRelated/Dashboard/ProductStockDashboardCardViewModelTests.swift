@@ -82,7 +82,6 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
 
         let variation = ProductStock.fake().copy(siteID: siteID, productID: 44, parentID: 40)
 
-        let thumbnailURL = "https://example.com/image.jpg"
         let variationReport = ProductReport.fake().copy(productID: 0, // missing product ID happens to some stores
                                                         variationID: variation.productID,
                                                         name: "Pizza - Large, Seafood, Spicy",

@@ -2,7 +2,9 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 21.4
 -----
+- [**] Store Picker: Sites can now be hidden from the list for a more focused experience for agencies. [https://github.com/woocommerce/woocommerce-ios/pull/14780]
 - [*] Fetching plugins info in the app (e.g. payments onboarding) is more resilient to unexpected types in unrelated fields in the system status response. This used to result in a decoding error. [https://github.com/woocommerce/woocommerce-ios/pull/14781]
+- [*] Fixed an issue on iPad where creating an order with a custom amount type failed after selecting and deselecting a product. [https://github.com/woocommerce/woocommerce-ios/pull/14789]
 
 21.3
 -----

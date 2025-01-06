@@ -157,7 +157,6 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 
     func test_orderFormShippingLines_shouldBeVisible_is_true_if_feedback_status_is_pending() throws {
         // Given
-        let lastFeedbackDate = try date(from: "2020-11-06T00:00:00Z")
         let currentDate = try date(from: "2020-11-12T23:59:59Z")
 
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
@@ -174,7 +173,6 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 
     func test_orderFormShippingLines_shouldBeVisible_is_false_if_feedback_status_is_dismissed() throws {
         // Given
-        let lastFeedbackDate = try date(from: "2020-11-06T00:00:00Z")
         let currentDate = try date(from: "2020-11-12T23:59:59Z")
 
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])

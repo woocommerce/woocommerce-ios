@@ -1,6 +1,6 @@
 import Foundation
 
-public extension SystemStatus {
+public extension SystemStatusReport {
     /// Details about security of a store in its system status report.
     ///
     struct Security: Codable {

@@ -259,7 +259,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingPackagesResponse, Error> = waitFor { promise in
+        let result: Result<WooShippingPackagesResponse, WooShippingLoadPackagesError> = waitFor { promise in
             let action = WooShippingAction.loadPackages(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -306,11 +306,11 @@ final class WooShippingStoreTests: XCTestCase {
         // Given
         let remote = MockWooShippingRemote()
         let expectedError = NetworkError.notFound()
-        remote.whenLoadPackages(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        remote.whenLoadPackages(siteID: sampleSiteID, thenReturn: .failure(WooShippingLoadPackagesError.loadingFailed(error: expectedError)))
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingPackagesResponse, Error> = waitFor { promise in
+        let result: Result<WooShippingPackagesResponse, WooShippingLoadPackagesError> = waitFor { promise in
             let action = WooShippingAction.loadPackages(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -320,7 +320,7 @@ final class WooShippingStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? NetworkError, expectedError)
+        XCTAssertEqual(error, WooShippingLoadPackagesError.loadingFailed(error: expectedError))
     }
 
     // MARK: `purchaseShippingLabel`
@@ -532,6 +532,52 @@ final class WooShippingStoreTests: XCTestCase {
             let action = WooShippingAction.printLabel(siteID: self.sampleSiteID,
                                                       labelIDs: [123],
                                                       paperSize: .letter) { result in
+                guard let printData = result.failure else {
+                    XCTFail("Unexpected result when printing shipping label: \(result)")
+                    return
+                }
+                promise(printData)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
+
+    func test_loadOriginAddresses_returns_addresses_on_success() {
+        // Given
+        let expectedAddresses: [WooShippingOriginAddress] = [WooShippingOriginAddress.fake()]
+        let remote = MockWooShippingRemote()
+        remote.whenOriginAddresses(siteID: sampleSiteID, thenReturn: .success(expectedAddresses))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let addresses: [WooShippingOriginAddress] = waitFor { promise in
+            let action = WooShippingAction.loadOriginAddresses(siteID: self.sampleSiteID) { result in
+                guard let printData = try? result.get() else {
+                    XCTFail("Error loading origin addresses for shipping label: \(String(describing: result.failure))")
+                    return
+                }
+                promise(printData)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(addresses, expectedAddresses)
+    }
+
+    func test_loadOriginAddresses_returns_error_failure() {
+        // Given
+        let expectedError = NetworkError.timeout()
+        let remote = MockWooShippingRemote()
+        remote.whenOriginAddresses(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let error: Error = waitFor { promise in
+            let action = WooShippingAction.loadOriginAddresses(siteID: self.sampleSiteID) { result in
                 guard let printData = result.failure else {
                     XCTFail("Unexpected result when printing shipping label: \(result)")
                     return

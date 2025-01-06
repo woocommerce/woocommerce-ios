@@ -43,4 +43,8 @@ extension MockImageService: ImageService {
                                            completion: ImageDownloadCompletion?) {
         // no-op
     }
+
+    func clearMemoryCache() {
+        // no-op
+    }
 }

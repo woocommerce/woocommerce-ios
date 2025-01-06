@@ -1,6 +1,6 @@
 import Foundation
 
-public extension SystemStatus {
+public extension SystemStatusReport {
     /// Subtype for details about a site's pages in system status.
     ///
     struct Page: Decodable {

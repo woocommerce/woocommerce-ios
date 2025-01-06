@@ -15,7 +15,8 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     let itemsViewStatePublisher: any Publisher<ItemsViewState, Never>
     private let itemsViewStateSubject: CurrentValueSubject<ItemsViewState, Never> =
         .init(ItemsViewState(containerState: .loading,
-                             itemsStack: ItemsStackState(root: .loading([]))) )
+                             itemsStack: ItemsStackState(root: .loading([]),
+                                                         itemStates: [:])) )
     private let paginationTracker: AsyncPaginationTracker
     private let itemProvider: PointOfSaleItemServiceProtocol
 
@@ -27,7 +28,8 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
 
     @MainActor
     func loadInitialItems() async {
-        itemsViewStateSubject.send(ItemsViewState(containerState: .loading, itemsStack: ItemsStackState(root: .loading([]))))
+        itemsViewStateSubject.send(ItemsViewState(containerState: .loading, itemsStack: ItemsStackState(root: .loading([]),
+                                                                                                        itemStates: [:])))
         do {
             try await paginationTracker.syncFirstPage { [weak self] pageNumber in
                 guard let self else { return true }
@@ -35,7 +37,8 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
             }
         } catch {
             itemsViewStateSubject.send(ItemsViewState(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
-                                                      itemsStack: ItemsStackState(root: .loaded([]))))
+                                                      itemsStack: ItemsStackState(root: .loaded([]),
+                                                                                  itemStates: [:])))
         }
     }
 
@@ -45,7 +48,9 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
             return
         }
         let currentItems = itemsViewStateSubject.value.itemsStack.root.items
-        itemsViewStateSubject.send(ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loading(currentItems))))
+        let currentItemStates = itemsViewStateSubject.value.itemsStack.itemStates
+        itemsViewStateSubject.send(ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loading(currentItems),
+                                                                                                        itemStates: currentItemStates)))
         do {
             _ = try await paginationTracker.ensureNextPageIsSynced { [weak self] pageNumber in
                 guard let self else { return true }
@@ -54,7 +59,8 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
         } catch {
             // TODO: 14694 - Handle error from loading the next page, like showing an error UI at the end or as an overlay.
             itemsViewStateSubject.send(ItemsViewState(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
-                                                      itemsStack: ItemsStackState(root: .loaded(currentItems))))
+                                                      itemsStack: ItemsStackState(root: .loaded(currentItems),
+                                                                                  itemStates: currentItemStates)))
         }
     }
 
@@ -68,7 +74,8 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
         } catch {
             // TODO: 14694 - Handle error from pull-to-refresh, like showing an error UI at the beginning or as an overlay.
             itemsViewStateSubject.send(ItemsViewState(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
-                                                      itemsStack: ItemsStackState(root: .loaded([]))))
+                                                      itemsStack: ItemsStackState(root: .loaded([]),
+                                                                                  itemStates: [:])))
         }
     }
 
@@ -88,10 +95,14 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
         allItems.append(contentsOf: uniqueNewItems)
         if allItems.isEmpty {
             itemsViewStateSubject.send(ItemsViewState(containerState: .empty,
-                                                      itemsStack: ItemsStackState(root: .loaded([]))))
+                                                      itemsStack: ItemsStackState(root: .loaded([]),
+                                                                                  itemStates: [:])))
         } else {
+            let itemStates = itemsViewStateSubject.value.itemsStack.itemStates
+                .filter { allItems.contains($0.key) }
             itemsViewStateSubject.send(ItemsViewState(containerState: .content,
-                                                      itemsStack: ItemsStackState(root: .loaded(allItems))))
+                                                      itemsStack: ItemsStackState(root: .loaded(allItems),
+                                                                                  itemStates: itemStates)))
         }
         return pagedItems.hasMorePages
     }

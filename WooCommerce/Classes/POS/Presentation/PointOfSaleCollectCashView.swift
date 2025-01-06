@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleCollectCashView: View {
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @FocusState private var isTextFieldFocused: Bool
 
@@ -8,7 +9,6 @@ struct PointOfSaleCollectCashView: View {
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
 
-    @Binding var isVisible: Bool
     let orderTotal: String
 
     private var formattedOrderTotal: String {
@@ -31,7 +31,7 @@ struct PointOfSaleCollectCashView: View {
         VStack(alignment: .center, spacing: 20) {
             HStack {
                 Button(action: {
-                    isVisible = false
+                    dismiss()
                 }, label: {
                     VStack {
                         HStack {
@@ -145,12 +145,13 @@ private extension PointOfSaleCollectCashView {
     }
 }
 
+#if DEBUG
 #Preview {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
-    PointOfSaleCollectCashView(isVisible: .constant(true),
-                               orderTotal: "$1.23")
+    PointOfSaleCollectCashView(orderTotal: "$1.23")
         .environmentObject(posModel)
 }
+#endif

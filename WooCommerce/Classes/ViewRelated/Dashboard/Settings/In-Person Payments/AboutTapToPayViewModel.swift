@@ -142,8 +142,12 @@ private extension CardPresentPaymentsConfiguration {
             "translated, however this string is only used when there's a problem decoding the limit, so it's acceptable.")
 
         static let contactlessLimitWithAmountGB = NSLocalizedString(
-            "In the United Kingdom, cards may only be used with Tap to Pay for transactions up to %1$@.",
+            "tapToPay.aboutTapToPay.contactlessLimit.gb",
+            value: "In the United Kingdom, you can accept card payments with Tap to Pay for transactions up to %1$@. " +
+            "For payments over %1$@, some cards allow customers to enter their PIN directly on the phone, " +
+            "while others require a card reader to complete the payment.",
             comment: "A description of the contactless limit, shown on the About Tap to Pay screen. This string is for " +
-            "the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale.")
+            "the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale."
+        )
     }
 }

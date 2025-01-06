@@ -1,5 +1,6 @@
 
 import XCTest
+import Nimble
 
 extension XCTestCase {
     /// Creates an XCTestExpectation and waits for `block` to call `fulfill()`.
@@ -24,7 +25,7 @@ extension XCTestCase {
         wait(for: [exp], timeout: timeout)
     }
 
-    /// Creates an `XCTestExpectation` and waits until `condition` returns `true`.
+    /// Waits until `condition` returns `true`.
     ///
     /// Example usage:
     ///
@@ -40,19 +41,7 @@ extension XCTestCase {
                           line: UInt = #line,
                           timeout: TimeInterval = 5.0,
                           condition: @escaping (() -> Bool)) {
-        let predicate = NSPredicate { _, _ -> Bool in
-            return condition()
-        }
-
-        let exp = expectation(for: predicate, evaluatedWith: nil)
-
-        let result = XCTWaiter.wait(for: [exp], timeout: timeout)
-        switch result {
-        case .timedOut:
-            XCTFail("Timed out waiting for condition to return `true`.", file: file, line: line)
-        default:
-            break
-        }
+        expect(condition()).toEventually(beTrue(), timeout: .seconds(Int(timeout)))
     }
 
     /// Waits until a value is provided by a promise (block) and returns that value.

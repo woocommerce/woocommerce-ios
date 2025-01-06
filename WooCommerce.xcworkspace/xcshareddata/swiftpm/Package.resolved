@@ -29,6 +29,24 @@
         }
       },
       {
+        "package": "CwlCatchException",
+        "repositoryURL": "https://github.com/mattgallagher/CwlCatchException.git",
+        "state": {
+          "branch": null,
+          "revision": "07b2ba21d361c223e25e3c1e924288742923f08c",
+          "version": "2.2.1"
+        }
+      },
+      {
+        "package": "CwlPreconditionTesting",
+        "repositoryURL": "https://github.com/mattgallagher/CwlPreconditionTesting.git",
+        "state": {
+          "branch": null,
+          "revision": "0139c665ebb45e6a9fbdb68aabfd7c39f3fe0071",
+          "version": "2.2.2"
+        }
+      },
+      {
         "package": "Difference",
         "repositoryURL": "https://github.com/krzysztofzablocki/Difference.git",
         "state": {
@@ -53,6 +71,15 @@
           "branch": null,
           "revision": "c0ed5f5de62475e286a3b7c676cec99fa34533ce",
           "version": "1.1.1"
+        }
+      },
+      {
+        "package": "Nimble",
+        "repositoryURL": "https://github.com/Quick/Nimble.git",
+        "state": {
+          "branch": null,
+          "revision": "7795df4fff1a9cd231fe4867ae54f4dc5f5734f9",
+          "version": "13.7.1"
         }
       },
       {

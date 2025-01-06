@@ -3,6 +3,7 @@ import Combine
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
 import struct Yosemite.Order
+import struct Yosemite.PaymentGateway
 import struct Yosemite.POSCartItem
 import enum Yosemite.OrderAction
 import enum Yosemite.OrderUpdateField
@@ -104,8 +105,8 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
             .paymentMethodID,
             .paymentMethodTitle]
         let updatedOrder = order.copy(status: .completed,
-                                      paymentMethodID: Constants.cashPaymentMethodID,
-                                      paymentMethodTitle: Constants.cashPaymentMethodTitle)
+                                      paymentMethodID: PaymentGateway.Constants.cashOnDeliveryGatewayID,
+                                      paymentMethodTitle: Localization.cashPaymentMethodTitle)
 
         let _ = try await withCheckedThrowingContinuation { continuation in
             let action = OrderAction.updateOrder(siteID: siteID,
@@ -191,9 +192,11 @@ extension PointOfSaleInternalOrderState: Equatable {
 }
 
 extension PointOfSaleOrderController {
-    enum Constants {
-        static let cashPaymentMethodID: String = "cash"
-        static let cashPaymentMethodTitle: String = "Cash (Point of Sale)"
+    enum Localization {
+        static let cashPaymentMethodTitle = NSLocalizedString(
+            "pointOfSaleOrderController.collectCashPayment.paymentMethodTitle",
+            value: "Pay in Person",
+            comment: "Title for the payment method used when collecting cash payment in Point of Sale.")
     }
     enum PointOfSaleOrderControllerError: Error {
         case noSiteID

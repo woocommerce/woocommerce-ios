@@ -745,7 +745,7 @@ private extension AppSettingsStore {
             try fileStorage.write(newStoredHistory, to: orderFilterHistoryURL)
             onCompletion(nil)
         } catch {
-            onCompletion(AppSettingsStoreErrors.writeOrdersSettings)
+            onCompletion(AppSettingsStoreErrors.writeOrderFilterHistory)
         }
     }
 
@@ -765,12 +765,34 @@ private extension AppSettingsStore {
     /// Removes a filter from the persisted history
     func removeFromOrderFilterHistory(filter: StoredOrderSettings.Setting,
                                       onCompletion: @escaping (Error?) -> Void) {
-        // TODO
+        var existingHistory: [Int64: [StoredOrderSettings.Setting]] = [:]
+        if let storedHistory: OrderFilterHistory = try? fileStorage.data(for: orderFilterHistoryURL) {
+            existingHistory = storedHistory.history
+        }
+
+        guard let siteHistory = existingHistory[filter.siteID] else {
+            onCompletion(nil)
+            return
+        }
+
+        existingHistory[filter.siteID] = siteHistory.filter { $0 != filter }
+
+        let newStoredHistory = OrderFilterHistory(history: existingHistory)
+        do {
+            try fileStorage.write(newStoredHistory, to: orderFilterHistoryURL)
+            onCompletion(nil)
+        } catch {
+            onCompletion(AppSettingsStoreErrors.writeOrderFilterHistory)
+        }
     }
 
     /// Clears all the order filter history
     func resetOrderFilterHistory(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        // TODO
+        do {
+            try fileStorage.deleteFile(at: orderFilterHistoryURL)
+        } catch {
+            DDLogError("⛔️ Deleting the orders settings files failed. Error: \(error)")
+        }
     }
 }
 
@@ -1166,6 +1188,7 @@ enum AppSettingsStoreErrors: Error {
     case noProductsSettings
     case noOrderFilterHistory
     case writeOrdersSettings
+    case writeOrderFilterHistory
     case writeProductsSettings
     case noEligibilityErrorInfo
 }

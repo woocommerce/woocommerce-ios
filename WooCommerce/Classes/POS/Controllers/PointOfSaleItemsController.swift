@@ -82,6 +82,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
         }
     }
 
+    @MainActor
     func loadInitialChildItems(for parent: POSItem) async {
         guard case let .parentProduct(parentProduct) = parent else {
             return

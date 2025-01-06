@@ -5,7 +5,6 @@ import Yosemite
 @testable import WooCommerce
 
 final class POSEligibilityCheckerTests: XCTestCase {
-    private var onboardingUseCase: MockCardPresentPaymentsOnboardingUseCase!
     private var stores: MockStoresManager!
     private var storageManager: MockStorageManager!
     private var siteSettings: SelectedSiteSettings!
@@ -15,7 +14,6 @@ final class POSEligibilityCheckerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed(plugin: .wcPayPreferred))
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.updateDefaultStore(storeID: siteID)
         setupWooCommerceVersion()
@@ -27,7 +25,6 @@ final class POSEligibilityCheckerTests: XCTestCase {
         siteSettings = nil
         storageManager = nil
         stores = nil
-        onboardingUseCase = nil
         super.tearDown()
     }
 
@@ -37,7 +34,6 @@ final class POSEligibilityCheckerTests: XCTestCase {
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
         let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
-                                            cardPresentPaymentsOnboarding: onboardingUseCase,
                                             siteSettings: siteSettings,
                                             currencySettings: Fixtures.usdCurrencySettings,
                                             stores: stores,
@@ -54,7 +50,6 @@ final class POSEligibilityCheckerTests: XCTestCase {
         setupCountry(country: .us)
         accountWhitelistedInBackend(false)
         let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
-                                            cardPresentPaymentsOnboarding: onboardingUseCase,
                                             siteSettings: siteSettings,
                                             currencySettings: Fixtures.usdCurrencySettings,
                                             stores: stores,
@@ -71,7 +66,6 @@ final class POSEligibilityCheckerTests: XCTestCase {
         setupCountry(country: .us)
         accountWhitelistedInBackend(false)
         let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
-                                            cardPresentPaymentsOnboarding: onboardingUseCase,
                                             siteSettings: siteSettings,
                                             currencySettings: Fixtures.usdCurrencySettings,
                                             stores: stores,
@@ -89,7 +83,6 @@ final class POSEligibilityCheckerTests: XCTestCase {
         [UIUserInterfaceIdiom.phone, UIUserInterfaceIdiom.mac, UIUserInterfaceIdiom.tv, UIUserInterfaceIdiom.carPlay]
             .forEach { userInterfaceIdiom in
                 let checker = POSEligibilityChecker(userInterfaceIdiom: userInterfaceIdiom,
-                                                    cardPresentPaymentsOnboarding: onboardingUseCase,
                                                     siteSettings: siteSettings,
                                                     currencySettings: Fixtures.usdCurrencySettings,
                                                     stores: stores,
@@ -109,7 +102,6 @@ final class POSEligibilityCheckerTests: XCTestCase {
             setupCountry(country: country)
             accountWhitelistedInBackend(true)
             let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
-                                                cardPresentPaymentsOnboarding: onboardingUseCase,
                                                 siteSettings: siteSettings,
                                                 currencySettings: Fixtures.usdCurrencySettings,
                                                 stores: stores,
@@ -127,7 +119,6 @@ final class POSEligibilityCheckerTests: XCTestCase {
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
         let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
-                                            cardPresentPaymentsOnboarding: onboardingUseCase,
                                             siteSettings: siteSettings,
                                             currencySettings: Fixtures.nonUSDCurrencySettings,
                                             stores: stores,
@@ -143,7 +134,6 @@ final class POSEligibilityCheckerTests: XCTestCase {
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: false)
         setupCountry(country: .us)
         let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
-                                            cardPresentPaymentsOnboarding: onboardingUseCase,
                                             siteSettings: siteSettings,
                                             currencySettings: Fixtures.usdCurrencySettings,
                                             stores: stores,
@@ -152,26 +142,6 @@ final class POSEligibilityCheckerTests: XCTestCase {
 
         // Then
         XCTAssertFalse(isEligible)
-    }
-
-    func test_is_eligible_when_onboarding_state_is_not_completed_then_returns_true() throws {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
-        setupCountry(country: .us)
-        accountWhitelistedInBackend(true)
-        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
-                                            cardPresentPaymentsOnboarding: onboardingUseCase,
-                                            siteSettings: siteSettings,
-                                            currencySettings: Fixtures.usdCurrencySettings,
-                                            stores: stores,
-                                            featureFlagService: featureFlagService)
-        checker.isEligible.assign(to: &$isEligible)
-
-        // When
-        onboardingUseCase.state = .pluginNotInstalled
-
-        // Then
-        XCTAssertTrue(isEligible)
     }
 
     func test_is_eligible_when_WooCommerce_version_is_below_6_6_then_returns_false() throws {
@@ -184,7 +154,6 @@ final class POSEligibilityCheckerTests: XCTestCase {
 
         // When
         let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
-                                            cardPresentPaymentsOnboarding: onboardingUseCase,
                                             siteSettings: siteSettings,
                                             currencySettings: Fixtures.usdCurrencySettings,
                                             stores: stores,
@@ -206,7 +175,6 @@ final class POSEligibilityCheckerTests: XCTestCase {
 
         // When
         let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
-                                            cardPresentPaymentsOnboarding: onboardingUseCase,
                                             siteSettings: siteSettings,
                                             currencySettings: Fixtures.usdCurrencySettings,
                                             stores: stores,

@@ -33,14 +33,12 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
     }
 
     private let userInterfaceIdiom: UIUserInterfaceIdiom
-    private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
     private let siteSettings: SelectedSiteSettings
     private let currencySettings: CurrencySettings
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
 
     init(userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
-         cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
          siteSettings: SelectedSiteSettings = ServiceLocator.selectedSiteSettings,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          stores: StoresManager = ServiceLocator.stores,
@@ -48,7 +46,6 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
         self.currencySettings = currencySettings
-        self.cardPresentPaymentsOnboarding = cardPresentPaymentsOnboarding
         self.stores = stores
         self.featureFlagService = featureFlagService
     }

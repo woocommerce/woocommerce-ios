@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PointOfSaleCollectCashView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @FocusState private var isTextFieldFocused: Bool
 
@@ -101,6 +102,7 @@ struct PointOfSaleCollectCashView: View {
 
             Spacer()
         }
+        .background(backgroundColor)
         .padding()
         .animation(.easeInOut, value: errorMessage)
         .onChange(of: textFieldAmountInput) { _ in
@@ -123,6 +125,15 @@ private extension PointOfSaleCollectCashView {
         static let buttonPadding: CGFloat = 32
         static let buttonFont: POSFontStyle = .posBodyEmphasized
         static let buttonCornerRadius: CGFloat = 8
+    }
+
+    private var backgroundColor: Color {
+        switch colorScheme {
+        case .dark:
+            return Color.posSecondaryBackground
+        default:
+            return .clear
+        }
     }
 
     enum Localization {

@@ -5,7 +5,7 @@ import SwiftUI
 struct TopPerformersEmptyView: View {
     var body: some View {
         VStack(alignment: .center, spacing: Layout.defaultSpacing) {
-            Image(uiImage: .noStoreImage)
+            Image(uiImage: .magnifyingGlassNotFoundGrey)
             Text(Localization.text)
                 .subheadlineStyle()
         }

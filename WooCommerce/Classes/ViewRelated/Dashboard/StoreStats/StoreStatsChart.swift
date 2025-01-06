@@ -140,7 +140,7 @@ private extension StoreStatsChart {
             Spacer()
         }
         .overlay {
-            Image(.magnifyingGlassNotFound)
+            Image(.magnifyingGlassNotFoundGrey)
                 .opacity(Constants.EmptyChartOverlay.opacity)
                 .padding(.bottom, Constants.EmptyChartOverlay.bottomPadding)
         }

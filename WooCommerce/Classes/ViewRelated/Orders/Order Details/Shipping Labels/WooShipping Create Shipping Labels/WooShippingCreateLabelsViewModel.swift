@@ -9,6 +9,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private let currencyFormatter: CurrencyFormatter
     private let order: Order
     private let itemsDataSource: WooShippingItemsDataSource
+    private var originAddresses: [WooShippingOriginAddress] = []
     private let originSiteAddress: ShippingLabelAddress?
     private let destinationAddress: ShippingLabelAddress?
     private let stores: StoresManager
@@ -52,10 +53,13 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Selected shipping rate when creating a shipping label.
     @Published private var selectedRate: WooShippingSelectedRate?
 
+    /// Address to ship from (store address).
+    private var selectedOriginAddress: WooShippingOriginAddress?
+
     /// Address to ship from (store address), formatted for display.
-    private(set) lazy var originAddress: String = {
-        originSiteAddress?.formattedPostalAddress?.replacingOccurrences(of: "\n", with: ", ") ?? ""
-    }()
+    var originAddress: String {
+        selectedOriginAddress?.formattedPostalAddress ?? ""
+    }
 
     /// Address to ship to (customer address), formatted for display and split into separate lines to allow additional formatting.
     private(set) lazy var destinationAddressLines: [String] = {
@@ -154,6 +158,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         observeForLabelRates()
         loadStoreOptions()
         loadPackages()
+        loadOriginAddresses()
     }
 
     /// Initialize the view model from an existing shipping label.
@@ -237,6 +242,22 @@ private extension WooShippingCreateLabelsViewModel {
         let action = WooShippingAction.loadPackages(siteID: order.siteID) { result in
             if case .failure(let error) = result {
                 DDLogError("⛔️ Error loading packages for Woo Shipping labels: \(error)")
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    /// Syncs origin addresses to use for shipping label from remote.
+    ///
+    func loadOriginAddresses() {
+        let action = WooShippingAction.loadOriginAddresses(siteID: order.siteID) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let addresses):
+                originAddresses = addresses
+                selectedOriginAddress = addresses.first(where: \.defaultAddress)
+            case .failure(let error):
+                DDLogError("⛔️ Error loading origin addresses for Woo Shipping labels: \(error)")
             }
         }
         stores.dispatch(action)

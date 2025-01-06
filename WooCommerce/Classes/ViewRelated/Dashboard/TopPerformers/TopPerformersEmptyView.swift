@@ -4,7 +4,7 @@ import SwiftUI
 /// Contains a placeholder image and text.
 struct TopPerformersEmptyView: View {
     var body: some View {
-        VStack(alignment: .center, spacing: Layout.defaultSpacing) {
+        VStack(alignment: .center, spacing: Layout.spacing) {
             Image(uiImage: .magnifyingGlassNotFoundGrey)
             Text(Localization.text)
                 .subheadlineStyle()
@@ -22,8 +22,8 @@ private extension TopPerformersEmptyView {
     }
 
     enum Layout {
-        static let defaultSpacing: CGFloat = 10
-        static let padding: EdgeInsets = .init(top: 0, leading: defaultSpacing, bottom: defaultSpacing, trailing: defaultSpacing)
+        static let spacing: CGFloat = 24
+        static let padding: EdgeInsets = .init(top: 0, leading: 10, bottom: 10, trailing: 10)
     }
 }
 

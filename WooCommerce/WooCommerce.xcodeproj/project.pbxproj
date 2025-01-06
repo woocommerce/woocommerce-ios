@@ -6221,7 +6221,6 @@
 				WordPressKit/APIInterface/include/WordPressComRESTAPIVersion.h,
 				WordPressKit/APIInterface/include/WordPressComRESTAPIVersionedPathBuilder.h,
 				WordPressKit/BasicBlogAPIObjc/ServiceRemoteWordPressComREST.h,
-				WordPressKit/Logging/WPKitLogging.h,
 				WordPressKit/Models/RemoteComment.h,
 				WordPressKit/Models/RemoteMedia.h,
 				WordPressKit/Models/RemotePost.h,

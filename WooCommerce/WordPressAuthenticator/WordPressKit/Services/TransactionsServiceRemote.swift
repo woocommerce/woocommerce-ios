@@ -28,7 +28,7 @@ import WordPressShared
                                         let decodedResult = try JSONDecoder.apiDecoder.decode([WPCountry].self, from: data)
                                         success(decodedResult)
                                     } catch {
-                                        WPKitLogError("Error parsing Supported Countries (\(error)): \(response)")
+                                        WPAuthenticatorLogError("Error parsing Supported Countries (\(error)): \(response)")
                                         failure(error)
                                     }
         }, failure: { error, _ in

@@ -103,7 +103,7 @@ open class BloggingPromptsServiceRemote: ServiceRemoteWordPressComREST {
         // The parameter shouldn't be empty at this point.
         // If by some chance it is, let's abort and return early. There could be something wrong with the parsing process.
         guard !parameters.isEmpty else {
-            WPKitLogError("Error encoding RemoteBloggingPromptsSettings object: \(settings)")
+            WPAuthenticatorLogError("Error encoding RemoteBloggingPromptsSettings object: \(settings)")
             completion(.failure(RequestError.encodingFailure))
             return
         }

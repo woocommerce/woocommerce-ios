@@ -65,7 +65,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         return nil
     }
 
-    var previousSelectedSelectedSavedPackageAreSame: Bool {
+    var previousSelectedAndSelectedSavedPackageAreSame: Bool {
         guard let previousSelectedPackage else {
             return false
         }
@@ -100,7 +100,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
         return nil
     }
-    var previousSelectedSelectedCarriersPackageAreSame: Bool {
+    var previousSelectedAndSelectedCarriersPackageAreSame: Bool {
         guard let previousSelectedPackage else {
             return false
         }

@@ -140,10 +140,10 @@ struct WooCarrierPackagesSelectionView: View {
                 addPackageButtonTapped()
             }
             .disabled(selectionButtonDisabled)
-            .if(viewModel.previousSelectedSelectedCarriersPackageAreSame) {
+            .if(viewModel.previousSelectedAndSelectedCarriersPackageAreSame) {
                 $0.buttonStyle(SecondaryButtonStyle())
             }
-            .if(!viewModel.previousSelectedSelectedCarriersPackageAreSame) {
+            .if(!viewModel.previousSelectedAndSelectedCarriersPackageAreSame) {
                 $0.buttonStyle(PrimaryButtonStyle())
             }
             .padding()

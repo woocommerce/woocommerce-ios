@@ -126,6 +126,7 @@ private extension PointOfSaleCollectCashView {
     }
 }
 
+#if DEBUG
 #Preview {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
@@ -134,3 +135,4 @@ private extension PointOfSaleCollectCashView {
     PointOfSaleCollectCashView(orderTotal: "$1.23")
         .environmentObject(posModel)
 }
+#endif

@@ -76,7 +76,10 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
                                      // TODO-14702: variation name with ProductVariationFormatter
                                      name: "Variation \(variation.productVariationID)",
                                      formattedPrice: currencyFormatter.formatAmount(variation.price) ?? "-",
-                                     productImageSource: variation.image?.src))
+                                     price: variation.price,
+                                     productImageSource: variation.image?.src,
+                                     productID: variation.productID,
+                                     variationID: variation.productVariationID))
             }),
             // TODO-14696: pagination support for variations lists
             hasMorePages: false

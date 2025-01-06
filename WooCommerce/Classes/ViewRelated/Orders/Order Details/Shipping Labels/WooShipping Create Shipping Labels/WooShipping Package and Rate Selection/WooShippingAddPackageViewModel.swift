@@ -40,7 +40,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     @Published private(set) var isLoadingPackages: Bool = false
 
     /// Holds the previously selected package data, which can be transformed e.g. to select the correct tabs in the view.
-    private let previousSelectedPackage: WooShippingPackageDataRepresentable?
+    let previousSelectedPackage: WooShippingPackageDataRepresentable?
 
     // MARK: - saved
 
@@ -63,6 +63,13 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         }
 
         return nil
+    }
+
+    var previousSelectedSelectedSavedPackageAreSame: Bool {
+        guard let previousSelectedPackage else {
+            return false
+        }
+        return previousSelectedPackage.id == selectedSavedPackageId
     }
 
     // MARK: - carrier
@@ -92,6 +99,12 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         }
 
         return nil
+    }
+    var previousSelectedSelectedCarriersPackageAreSame: Bool {
+        guard let previousSelectedPackage else {
+            return false
+        }
+        return previousSelectedPackage.id == selectedCarriersPackageId
     }
 
     // MARK: - Storage

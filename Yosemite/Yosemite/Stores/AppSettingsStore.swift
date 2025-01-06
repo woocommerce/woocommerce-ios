@@ -752,7 +752,14 @@ private extension AppSettingsStore {
     /// Retrieves all persisted order filters
     func loadOrderFilterHistory(siteID: Int64,
                                 onCompletion: @escaping (Result<[StoredOrderSettings.Setting], Error>) -> Void) {
-        // TODO
+        guard let allHistory: OrderFilterHistory = try? fileStorage.data(for: orderFilterHistoryURL),
+                let siteHistory = allHistory.history[siteID] else {
+            let error = AppSettingsStoreErrors.noOrderFilterHistory
+            onCompletion(.failure(error))
+            return
+        }
+
+        onCompletion(.success(siteHistory))
     }
 
     /// Removes a filter from the persisted history
@@ -1157,6 +1164,7 @@ enum AppSettingsStoreErrors: Error {
     case writePListToFileStorage
     case noOrdersSettings
     case noProductsSettings
+    case noOrderFilterHistory
     case writeOrdersSettings
     case writeProductsSettings
     case noEligibilityErrorInfo

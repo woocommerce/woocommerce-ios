@@ -14,7 +14,7 @@ public enum PointOfSaleProductServiceError: Error {
 
 /// Product provider for the Point of Sale feature
 ///
-public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
+public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     private var siteID: Int64
     private let currencyFormatter: CurrencyFormatter
     private let productsRemote: ProductsRemote
@@ -112,7 +112,7 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
     }
 }
 
-private extension PointOfSaleProductService {
+private extension PointOfSaleItemService {
     func filterProducts(products: [Product], using criteria: [(Product) -> Bool]) -> [Product] {
         return products.filter { product in
             criteria.allSatisfy { $0(product) }

@@ -118,6 +118,14 @@ public class AppSettingsStore: Store {
                                  onCompletion: onCompletion)
         case .resetOrdersSettings:
             resetOrdersSettings()
+        case let .upsertOrderFilterHistory(filter, onCompletion):
+            break // TODO
+        case let .loadOrderFilterHistory(siteID, onCompletion):
+            break // TODO
+        case let .removeFromOrderFilterHistory(filter, onCompletion):
+            break // TODO
+        case let .resetOrderFilterHistory(siteID, onCompletion):
+            break // TODO
         case .loadProductsSettings(let siteID, let onCompletion):
             loadProductsSettings(siteID: siteID, onCompletion: onCompletion)
         case .upsertProductsSettings(let siteID,

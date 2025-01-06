@@ -1,6 +1,6 @@
 import Foundation
 
-public extension SystemStatus {
+public extension SystemStatusReport {
     /// Subtype for details about database in system status.
     ///
     struct Database: Decodable {

@@ -74,7 +74,7 @@ final class SystemStatusRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "system_status", filename: "systemStatus")
 
         // When
-        let result: Result<SystemStatus, Error> = waitFor { promise in
+        let result: Result<SystemStatusReport, Error> = waitFor { promise in
             remote.fetchSystemStatusReport(for: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -101,7 +101,7 @@ final class SystemStatusRemoteTests: XCTestCase {
         let remote = SystemStatusRemote(network: network)
 
         // When
-        let result: Result<SystemStatus, Error> = waitFor { promise in
+        let result: Result<SystemStatusReport, Error> = waitFor { promise in
             remote.fetchSystemStatusReport(for: self.sampleSiteID) { result in
                 promise(result)
             }

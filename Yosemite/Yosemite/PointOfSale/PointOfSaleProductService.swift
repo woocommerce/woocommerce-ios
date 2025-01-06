@@ -65,16 +65,27 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
     // - Product thumbnail, if any.
     private func mapProductsToPOSItems(products: [Product]) -> [POSItem] {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        return products.map { product in
+        return products.compactMap { product in
             let formattedPrice = currencyFormatter.formatAmount(product.price) ?? "-"
             let thumbnailSource = product.images.first?.src
 
-            return .simpleProduct(POSSimpleProduct(id: UUID(),
-                                                   name: product.name,
-                                                   formattedPrice: formattedPrice,
-                                                   productImageSource: thumbnailSource,
-                                                   productID: product.productID,
-                                                   price: product.price))
+            switch product.productType {
+                case .simple:
+                    return .simpleProduct(POSSimpleProduct(id: UUID(),
+                                                           name: product.name,
+                                                           formattedPrice: formattedPrice,
+                                                           productImageSource: thumbnailSource,
+                                                           productID: product.productID,
+                                                           price: product.price))
+                case .variable:
+                    return .parentProduct(POSParentProduct(id: UUID(),
+                                                           name: product.name,
+                                                           productImageSource: thumbnailSource,
+                                                           productID: product.productID,
+                                                           type: .variable))
+                default:
+                    return nil
+            }
         }
     }
 }

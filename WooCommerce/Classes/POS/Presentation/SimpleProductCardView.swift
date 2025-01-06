@@ -13,21 +13,12 @@ struct SimpleProductCardView: View {
 
     var body: some View {
         HStack(spacing: Constants.cardSpacing) {
-            if let imageSource = product.productImageSource {
-                ProductImageThumbnail(productImageURL: URL(string: imageSource),
-                                      productImageSize: Constants.productCardSize * scale,
-                                      scale: scale,
-                                      foregroundColor: .clear,
-                                      cachesOriginalImage: true)
-                .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
-                       height: Constants.productCardSize * scale)
-                .clipped()
-            } else {
-                Rectangle()
-                    .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
-                           height: Constants.productCardSize * scale)
-                    .foregroundColor(Color(.secondarySystemFill))
-            }
+            POSItemImageView(imageSource: product.productImageSource,
+                             imageSize: Constants.productCardSize * scale,
+                             scale: scale)
+            .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
+                   height: Constants.productCardSize * scale)
+            .clipped()
 
             DynamicHStack(spacing: Constants.textSpacing) {
                 Spacer().renderedIf(dynamicTypeSize.isAccessibilitySize)
@@ -48,12 +39,7 @@ struct SimpleProductCardView: View {
         }
         .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
         .background(Color.posSecondaryBackground)
-        .overlay {
-            RoundedRectangle(cornerRadius: Constants.productCardCornerRadius)
-                .stroke(Color.black, lineWidth: Constants.nilOutline)
-        }
-        .clipShape(RoundedRectangle(cornerRadius: Constants.productCardCornerRadius))
-        .shadow(color: Color.black.opacity(0.08), radius: 4, y: 2)
+        .posItemCardBorderStyles()
     }
 }
 
@@ -61,10 +47,6 @@ private extension SimpleProductCardView {
     enum Constants {
         static let productCardSize: CGFloat = 112
         static let maximumProductCardSize: CGFloat = Constants.productCardSize * 2
-        static let productCardCornerRadius: CGFloat = 8
-        // The use of stroke means the shape is rendered as an outline (border) rather than a filled shape,
-        // since we still have to give it a value, we use 0 so it renders no border but it's shaped as one.
-        static let nilOutline: CGFloat = 0
         static let cardSpacing: CGFloat = 0
         static let textSpacing: CGFloat = 8
         static let horizontalTextPadding: CGFloat = 32

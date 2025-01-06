@@ -139,6 +139,23 @@ struct TapToPayAwarenessMomentDeterminerTests {
         #expect(shouldPresent)
     }
 
+    @Test func shouldPresent_when_noPreviousPresentation_secondAttempt_codPaymentGatewayNotSetUp_supportsTTP() async {
+        // Given
+        featureFlagService.tapToPayEducation = true
+        userDefaults.hasPreviousPresentation = false
+        userDefaults.hasFirstAttempt = true
+        cardPresentPaymentsOnboardingUseCase.state = .codPaymentGatewayNotSetUp(plugin: .wcPay)
+        cardReaderSupportDeterminer.shouldReturnDeviceSupportsLocalMobileReader = true
+        cardReaderSupportDeterminer.shouldReturnSiteSupportsLocalMobileReader = true
+        cardReaderSupportDeterminer.shouldReturnHasPreviousTapToPayUsage = false
+
+        // When
+        let shouldPresent = await sut.shouldPresent()
+
+        // Then
+        #expect(shouldPresent)
+    }
+
     // MARK: - Attempt
 
     @Test func hasFirstAttempt_when_shouldPresent() async {
@@ -148,7 +165,7 @@ struct TapToPayAwarenessMomentDeterminerTests {
         userDefaults.hasFirstAttempt = false
 
         // When shouldPresent called
-        let shouldPresent = await sut.shouldPresent()
+        _ = await sut.shouldPresent()
 
         // Then
         #expect(userDefaults.hasFirstAttempt)

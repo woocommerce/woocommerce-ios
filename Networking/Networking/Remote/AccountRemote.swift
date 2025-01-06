@@ -1,4 +1,5 @@
 import Combine
+import Alamofire
 import Foundation
 
 /// Protocol for `AccountRemote` mainly used for mocking.
@@ -14,6 +15,8 @@ public protocol AccountRemoteProtocol {
     func fetchWordPressSiteSettings(for siteID: Int64) -> AnyPublisher<Result<WordPressSiteSettings, Error>, Never>
     func loadSitePlan(for siteID: Int64, completion: @escaping (Result<SitePlan, Error>) -> Void)
     func loadUsernameSuggestions(from text: String) async throws -> [String]
+
+    func updateNotificationSettings(with settings: NotificationSettings) async throws
 
     /// Creates a WPCOM account with the given email and password.
     /// - Parameters:
@@ -144,6 +147,13 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
         return suggestions
     }
 
+    public func updateNotificationSettings(with settings: NotificationSettings) async throws {
+        let path = Path.notificationSettings
+        let parameters = try settings.toDictionary()
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters, encoding: JSONEncoding.default)
+        return try await enqueue(request)
+    }
+
     public func createAccount(email: String,
                               username: String,
                               password: String,
@@ -201,6 +211,7 @@ private extension AccountRemote {
         static let usernameSuggestions = "users/username/suggestions"
         static let accountCreation = "users/new"
         static let closeAccount = "me/account/close"
+        static let notificationSettings = "me/notifications/settings"
     }
 }
 

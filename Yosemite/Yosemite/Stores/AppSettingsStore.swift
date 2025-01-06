@@ -749,7 +749,7 @@ private extension AppSettingsStore {
         }
     }
 
-    /// Retrieves all persisted order filters
+    /// Retrieves all persisted order filters for a given site
     func loadOrderFilterHistory(siteID: Int64,
                                 onCompletion: @escaping (Result<[StoredOrderSettings.Setting], Error>) -> Void) {
         guard let allHistory: OrderFilterHistory = try? fileStorage.data(for: orderFilterHistoryURL),
@@ -786,7 +786,7 @@ private extension AppSettingsStore {
         }
     }
 
-    /// Clears all the order filter history for a given site ID
+    /// Clears all the order filter history for a given site
     func resetOrderFilterHistory(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
         var existingHistory: [Int64: [StoredOrderSettings.Setting]] = [:]
         if let storedHistory: OrderFilterHistory = try? fileStorage.data(for: orderFilterHistoryURL) {

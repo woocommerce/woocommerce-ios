@@ -119,13 +119,13 @@ public class AppSettingsStore: Store {
         case .resetOrdersSettings:
             resetOrdersSettings()
         case let .upsertOrderFilterHistory(filter, onCompletion):
-            break // TODO
+            upsertOrderFilterHistory(filter: filter, onCompletion: onCompletion)
         case let .loadOrderFilterHistory(siteID, onCompletion):
-            break // TODO
+            loadOrderFilterHistory(siteID: siteID, onCompletion: onCompletion)
         case let .removeFromOrderFilterHistory(filter, onCompletion):
-            break // TODO
+            removeFromOrderFilterHistory(filter: filter, onCompletion: onCompletion)
         case let .resetOrderFilterHistory(siteID, onCompletion):
-            break // TODO
+            resetOrderFilterHistory(siteID: siteID, onCompletion: onCompletion)
         case .loadProductsSettings(let siteID, let onCompletion):
             loadProductsSettings(siteID: siteID, onCompletion: onCompletion)
         case .upsertProductsSettings(let siteID,
@@ -713,6 +713,32 @@ private extension AppSettingsStore {
         } catch {
             DDLogError("⛔️ Deleting the orders settings files failed. Error: \(error)")
         }
+    }
+}
+
+// MARK: - Order filter history
+private extension AppSettingsStore {
+    /// Inserts or update the order filter history
+    func upsertOrderFilterHistory(filter: StoredOrderSettings.Setting,
+                                  onCompletion: @escaping (Error?) -> Void) {
+        // TODO
+    }
+
+    /// Retrieves all persisted order filters
+    func loadOrderFilterHistory(siteID: Int64,
+                                onCompletion: @escaping (Result<[StoredOrderSettings.Setting], Error>) -> Void) {
+        // TODO
+    }
+
+    /// Removes a filter from the persisted history
+    func removeFromOrderFilterHistory(filter: StoredOrderSettings.Setting,
+                                      onCompletion: @escaping (Error?) -> Void) {
+        // TODO
+    }
+
+    /// Clears all the order filter history
+    func resetOrderFilterHistory(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
+        // TODO
     }
 }
 

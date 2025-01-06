@@ -478,6 +478,7 @@
 		DE423F3A2D0AD08600116F1B /* ReadOnlyConvertibleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE423F392D0AD07C00116F1B /* ReadOnlyConvertibleTests.swift */; };
 		DE50296728C7114800551736 /* JetpackConnectionStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50296628C7114800551736 /* JetpackConnectionStoreTests.swift */; };
 		DE6831DD26445B2B00E88B9E /* SitePluginStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6831DC26445B2B00E88B9E /* SitePluginStoreTests.swift */; };
+		DE87F4042D2BC93100869522 /* OrderFilterHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE87F4032D2BC92600869522 /* OrderFilterHistory.swift */; };
 		DEA493922B3BD49700EED015 /* BlazeTargetDevice+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA493912B3BD49700EED015 /* BlazeTargetDevice+ReadOnlyConvertible.swift */; };
 		DEA493942B3D588500EED015 /* BlazeTargetLanguage+ReadonlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA493932B3D588500EED015 /* BlazeTargetLanguage+ReadonlyConvertible.swift */; };
 		DEA493962B3D608B00EED015 /* BlazeTargetTopic+ReadonlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA493952B3D608B00EED015 /* BlazeTargetTopic+ReadonlyConvertible.swift */; };
@@ -1020,6 +1021,7 @@
 		DE423F392D0AD07C00116F1B /* ReadOnlyConvertibleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadOnlyConvertibleTests.swift; sourceTree = "<group>"; };
 		DE50296628C7114800551736 /* JetpackConnectionStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectionStoreTests.swift; sourceTree = "<group>"; };
 		DE6831DC26445B2B00E88B9E /* SitePluginStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginStoreTests.swift; sourceTree = "<group>"; };
+		DE87F4032D2BC92600869522 /* OrderFilterHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderFilterHistory.swift; sourceTree = "<group>"; };
 		DEA493912B3BD49700EED015 /* BlazeTargetDevice+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlazeTargetDevice+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		DEA493932B3D588500EED015 /* BlazeTargetLanguage+ReadonlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlazeTargetLanguage+ReadonlyConvertible.swift"; sourceTree = "<group>"; };
 		DEA493952B3D608B00EED015 /* BlazeTargetTopic+ReadonlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlazeTargetTopic+ReadonlyConvertible.swift"; sourceTree = "<group>"; };
@@ -1380,6 +1382,7 @@
 			children = (
 				4591A6AF274BB23000F51DCD /* OrderDateRangeFilter.swift */,
 				4591A6B3274BB29000F51DCD /* StoredOrderSettings.swift */,
+				DE87F4032D2BC92600869522 /* OrderFilterHistory.swift */,
 				EE9D030D2B88550F0077CED1 /* FilterOrdersByProduct.swift */,
 				86BB4C952B89FCF30096E92D /* CustomerFilter.swift */,
 				016EFCAD2C4155650016BDAA /* OrderItem+BasePrice.swift */,
@@ -2500,6 +2503,7 @@
 				CC24A4F129ED4CEB0009D6DA /* ProductSubscription+ReadOnlyConvertible.swift in Sources */,
 				03101F0129DD7D9D00769CF3 /* CardReaderType+ReadOnlyConvertible.swift in Sources */,
 				CE4FD4502350F27C00A16B31 /* OrderItemTax+ReadOnlyConvertible.swift in Sources */,
+				DE87F4042D2BC93100869522 /* OrderFilterHistory.swift in Sources */,
 				02FF055123D983F30058E6E7 /* MediaAssetExporter.swift in Sources */,
 				073AF84427DB10270074EDF0 /* CardPresentPaymentGatewayExtension.swift in Sources */,
 				B9AECD3C2850F3C600E78584 /* OrderCardPresentPaymentEligibilityStore.swift in Sources */,

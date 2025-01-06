@@ -155,7 +155,6 @@ private extension PointOfSaleCollectCashView {
             value: "Error trying to process payment. Try again.",
             comment: "Error message when the system fails to collect a cash payment."
         )
-        
     }
 }
 

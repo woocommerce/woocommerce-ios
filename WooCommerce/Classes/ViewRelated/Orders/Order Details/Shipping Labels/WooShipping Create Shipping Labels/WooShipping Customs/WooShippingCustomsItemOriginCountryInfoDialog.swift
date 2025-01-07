@@ -42,10 +42,14 @@ struct WooShippingCustomsItemOriginCountryInfoDialog: View {
 }
 extension WooShippingCustomsItemOriginCountryInfoDialog {
     enum Localization {
-        static let title = NSLocalizedString("Origin Country", comment: "Title for the custom origin country educational dialog")
-        static let bodyParagraph = NSLocalizedString("Country where the product was manufactured or assembled.",
-                                                          comment: "Body for the custom items origin country educational dialog")
-        static let doneButtonTitle = NSLocalizedString("Done",
+        static let title = NSLocalizedString("shipping.customs.originCountryInfoDialogTitle",
+                                             value: "Origin Country",
+                                             comment: "Title for the custom origin country educational dialog")
+        static let bodyParagraph = NSLocalizedString("shipping.customs.originCountryInfoDialogBody",
+                                                     value: "Country where the product was manufactured or assembled.",
+                                                     comment: "Body for the custom items origin country educational dialog")
+        static let doneButtonTitle = NSLocalizedString("shipping.customs.originCountryInfoDialogDoneButton",
+                                                       value: "Done",
                                                        comment: "Button title for the done button in the customs description educational dialog")
     }
     enum Layout {

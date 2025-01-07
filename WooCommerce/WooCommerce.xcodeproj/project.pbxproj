@@ -6258,7 +6258,6 @@
 				WordPressKit/Services/MediaServiceRemote.h,
 				WordPressKit/Services/MediaServiceRemoteREST.h,
 				WordPressKit/Services/MediaServiceRemoteXMLRPC.h,
-				WordPressKit/Services/MenusServiceRemote.h,
 				WordPressKit/Services/PostServiceRemote.h,
 				WordPressKit/Services/PostServiceRemoteOptions.h,
 				WordPressKit/Services/PostServiceRemoteREST.h,

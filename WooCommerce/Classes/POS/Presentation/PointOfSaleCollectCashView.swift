@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct PointOfSaleCollectCashView: View {
-    @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @FocusState private var isTextFieldFocused: Bool
@@ -32,7 +31,7 @@ struct PointOfSaleCollectCashView: View {
         VStack(alignment: .center, spacing: 20) {
             HStack {
                 Button(action: {
-                    dismiss()
+                    posModel.addMoreToCart()
                 }, label: {
                     VStack {
                         HStack {

@@ -4,6 +4,7 @@ import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 @testable import struct Yosemite.POSSimpleProduct
 import struct Yosemite.PagedItems
+import struct Yosemite.POSParentProduct
 
 final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
     var items: [POSItem] = []
@@ -25,6 +26,10 @@ final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
             return .init(items: MockPointOfSaleItemService.makeSecondPageItems(), hasMorePages: false)
         }
         return .init(items: MockPointOfSaleItemService.makeInitialItems(), hasMorePages: shouldSimulateTwoPages)
+    }
+
+    func providePointOfSaleVariationItems(for parentProduct: POSParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
+        .init(items: [], hasMorePages: false)
     }
 }
 

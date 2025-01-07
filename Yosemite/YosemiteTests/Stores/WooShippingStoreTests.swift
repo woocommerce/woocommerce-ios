@@ -104,7 +104,9 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertTrue(onSuccess)
         let storedPackages = try XCTUnwrap(storageManager.viewStorage.firstObject(ofType: StorageWooShippingPackagesResponse.self)).toReadOnly()
         XCTAssertEqual(storedPackages.siteID, sampleSiteID)
-        XCTAssertEqual(storedPackages.customPackages.count, 5)
+        XCTAssertEqual(storedPackages.customPackages.count, 2)
+        XCTAssertEqual(storedPackages.customPackages.first?.boxWeight, 0.25)
+        XCTAssertEqual(storedPackages.customPackages.last?.boxWeight, 0.25)
         XCTAssertEqual(storedPackages.savedPredefinedPackages.count, 2)
     }
 
@@ -298,6 +300,11 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(storedPackages.allPredefinedOptions.first?.predefinedOptions.count, 1)
         XCTAssertEqual(storedPackages.allPredefinedOptions.first?.predefinedOptions.first?.predefinedPackages.count, 2)
         XCTAssertEqual(storedPackages.customPackages.count, 1)
+        XCTAssertEqual(storedPackages.customPackages.first?.name, "Custom name")
+        XCTAssertEqual(storedPackages.customPackages.first?.boxWeight, 0.01)
+        XCTAssertEqual(storedPackages.customPackages.first?.id, "849225dc153")
+        XCTAssertEqual(storedPackages.customPackages.first?.type, .box)
+        XCTAssertEqual(storedPackages.customPackages.first?.dimensions, "12 x 12 x 12")
         XCTAssertEqual(storedPackages.savedPredefinedPackages.count, 2)
         XCTAssertTrue(storedPackages.savedPredefinedPackages.contains(where: { $0.package.id == "small_flat_box" }))
     }

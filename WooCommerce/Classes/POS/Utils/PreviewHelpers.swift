@@ -101,7 +101,7 @@ private var mockItems: [POSItem] {
                 name: "Variable product 1",
                 productImageSource: nil,
                 productID: 5,
-                type: .variable
+                type: .variable(allAttributes: [])
             )
         ),
         .simpleProduct(POSSimpleProduct(id: UUID(), name: "Product 4", formattedPrice: "$4.00", productID: 4, price: "4.00"))

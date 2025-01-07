@@ -27,7 +27,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
 
     func test_PointOfSaleItemServiceProtocol_when_fails_request_with_requestFailed_then_throws_error() async throws {
         // Given
-        let expectedError = PointOfSaleProductServiceError.requestFailed
+        let expectedError = PointOfSaleItemServiceError.requestFailed
         network.simulateError(requestUrlSuffix: "products", error: expectedError)
 
         // When
@@ -36,7 +36,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
             XCTFail("Expected an error, but got success.")
         } catch {
             // Then
-            XCTAssertEqual(error as? PointOfSaleProductServiceError, expectedError)
+            XCTAssertEqual(error as? PointOfSaleItemServiceError, expectedError)
         }
     }
 
@@ -153,7 +153,37 @@ final class PointOfSaleItemServiceTests: XCTestCase {
                 name: "Tea",
                 productImageSource: nil,
                 productID: parentProductID,
-                type: .variable
+                type: .variable(
+                    allAttributes: [
+                        .init(
+                            siteID: siteID,
+                            attributeID: 0,
+                            name: "Shape",
+                            position: 1,
+                            visible: true,
+                            variation: true,
+                            options: ["Marble", "Heart"]
+                        ),
+                        .init(
+                            siteID: siteID,
+                            attributeID: 0,
+                            name: "Flavor",
+                            position: 2,
+                            visible: true,
+                            variation: true,
+                            options: ["fruity", "nuts"]
+                        ),
+                        .init(
+                            siteID: siteID,
+                            attributeID: 0,
+                            name: "Darkness",
+                            position: 3,
+                            visible: true,
+                            variation: true,
+                            options: ["99%", "87%"]
+                        )
+                    ]
+                )
             ),
             pageNumber: 1
         )
@@ -166,7 +196,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         guard case let .variation(firstVariation) = firstVariation else {
             return XCTFail("Variation is expected.")
         }
-        XCTAssertEqual(firstVariation.name, "Variation 1275")
+        XCTAssertEqual(firstVariation.name, "marble - nuts - 99%")
         XCTAssertEqual(firstVariation.formattedPrice, "$12.00")
     }
 
@@ -177,7 +207,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
                                             network: network,
                                             isVariableProductsFeatureEnabled: true)
         let parentProductID: Int64 = 123
-        let expectedError = PointOfSaleProductServiceError.requestFailed
+        let expectedError = PointOfSaleItemServiceError.requestFailed
 
         // When
         network.simulateError(requestUrlSuffix: "products/\(parentProductID)/variations", error: expectedError)
@@ -190,13 +220,13 @@ final class PointOfSaleItemServiceTests: XCTestCase {
                     name: "Tea",
                     productImageSource: nil,
                     productID: parentProductID,
-                    type: .variable
+                    type: .variable(allAttributes: [])
                 ),
                 pageNumber: 1
             )
             XCTFail("An error is expected.")
         } catch {
-            XCTAssertEqual(error as? PointOfSaleProductServiceError, expectedError)
+            XCTAssertEqual(error as? PointOfSaleItemServiceError, expectedError)
         }
     }
 }

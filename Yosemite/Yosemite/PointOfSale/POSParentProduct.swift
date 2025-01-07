@@ -1,7 +1,7 @@
 import Foundation
 
-public enum POSParentProductType {
-    case variable
+public enum POSParentProductType: Equatable, Hashable {
+    case variable(allAttributes: [ProductAttribute])
 }
 
 public struct POSParentProduct: Equatable, Hashable, Identifiable {

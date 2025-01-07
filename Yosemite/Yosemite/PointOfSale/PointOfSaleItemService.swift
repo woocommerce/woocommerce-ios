@@ -7,8 +7,9 @@ import class Networking.AlamofireNetwork
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
-public enum PointOfSaleProductServiceError: Error {
+public enum PointOfSaleItemServiceError: Error, Equatable {
     case requestFailed
+    case invalidParentProduct(POSParentProduct)
     case unknown
 }
 
@@ -65,16 +66,25 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     }
 
     public func providePointOfSaleVariationItems(for parentProduct: POSParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
+        guard case let .variable(allAttributes) = parentProduct.type else {
+            assertionFailure(
+                "Unexpected parent product when loading variations: \(parentProduct)"
+            )
+            throw PointOfSaleItemServiceError.invalidParentProduct(parentProduct)
+        }
         let variations = try await variationRemote
             .loadVariationsForPointOfSale(for: siteID,
                                           parentProductID: parentProduct.productID,
                                           pageNumber: pageNumber)
         return .init(
             items: variations.compactMap({ variation in
-                POSItem
+                let variationName = ProductVariationFormatter().generateName(
+                    for: variation,
+                    from: allAttributes
+                )
+                return POSItem
                     .variation(.init(id: UUID(),
-                                     // TODO-14702: variation name with ProductVariationFormatter
-                                     name: "Variation \(variation.productVariationID)",
+                                     name: variationName,
                                      formattedPrice: currencyFormatter.formatAmount(variation.price) ?? "-",
                                      productImageSource: variation.image?.src))
             }),
@@ -104,7 +114,7 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                                                            name: product.name,
                                                            productImageSource: thumbnailSource,
                                                            productID: product.productID,
-                                                           type: .variable))
+                                                           type: .variable(allAttributes: product.attributesForVariations)))
                 default:
                     return nil
             }

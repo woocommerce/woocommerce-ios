@@ -76,7 +76,13 @@ private extension ParentProductCardView {
 
 #if DEBUG
 #Preview {
-    let parentProduct = POSParentProduct(id: UUID(), name: "Parent variable product", productImageSource: nil, productID: 42, type: .variable)
+    let parentProduct = POSParentProduct(
+        id: UUID(),
+        name: "Parent variable product",
+        productImageSource: nil,
+        productID: 42,
+        type: .variable(allAttributes: [])
+    )
     ParentProductCardView(parentProduct: parentProduct)
 }
 #endif

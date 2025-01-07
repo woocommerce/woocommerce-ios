@@ -146,44 +146,6 @@ static NSString * const RemoteOptionValueOrderByPostID = @"ID";
            }];
 }
 
-- (void)createPost:(RemotePost *)post
-         withMedia:(RemoteMedia *)media
-   requestEnqueued:(void (^)(NSNumber *taskID))requestEnqueued
-           success:(void (^)(RemotePost *))success
-           failure:(void (^)(NSError *))failure
-{
-    NSParameterAssert([post isKindOfClass:[RemotePost class]]);
-
-    NSString *type = media.mimeType;
-    NSString *filename = media.file;
-    NSString *path = [NSString stringWithFormat:@"sites/%@/posts/new", self.siteID];
-    NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:WordPressComRESTAPIVersion_1_2];
-
-    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:@{}];
-    parameters[@"content"] = post.content;
-    parameters[@"title"] = post.title;
-    parameters[@"status"] = post.status;
-    FilePart *filePart = [[FilePart alloc] initWithParameterName:@"media[]" url:media.localURL fileName:filename mimeType:type];
-    [self.wordPressComRESTAPI multipartPOST:requestUrl
-                                 parameters:parameters
-                                  fileParts:@[filePart]
-                            requestEnqueued:^(NSNumber *taskID) {
-                                if (requestEnqueued) {
-                                    requestEnqueued(taskID);
-                                }
-    } success:^(id  _Nonnull responseObject, NSHTTPURLResponse * _Nullable httpResponse) {
-        RemotePost *post = [self remotePostFromJSONDictionary:responseObject];
-        if (success) {
-            success(post);
-        }
-    } failure:^(NSError *error, NSHTTPURLResponse *httpResponse) {
-        if (failure) {
-            failure(error);
-        }
-    }];
-}
-
 - (void)updatePost:(RemotePost *)post
            success:(void (^)(RemotePost *))success
            failure:(void (^)(NSError *))failure

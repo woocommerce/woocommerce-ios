@@ -431,7 +431,7 @@
 		02913E9523A774C500707A0C /* UnitInputFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02913E9423A774C500707A0C /* UnitInputFormatter.swift */; };
 		029149782D26658A00F7B3B3 /* VariationCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029149772D26658A00F7B3B3 /* VariationCardView.swift */; };
 		0291497B2D2682FF00F7B3B3 /* ItemList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0291497A2D2682FF00F7B3B3 /* ItemList.swift */; };
-		0291497D2D26CB2500F7B3B3 /* VariationItemList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0291497C2D26CB2500F7B3B3 /* VariationItemList.swift */; };
+		0291497D2D26CB2500F7B3B3 /* ChildItemList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0291497C2D26CB2500F7B3B3 /* ChildItemList.swift */; };
 		0294F8AB25E8A12C005B537A /* WooTabNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0294F8AA25E8A12C005B537A /* WooTabNavigationController.swift */; };
 		02952B5127808B08008E9BA3 /* StoreStatsPeriodViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02952B5027808B08008E9BA3 /* StoreStatsPeriodViewModelTests.swift */; };
 		0295355B245ADF8100BDC42B /* FilterType+Products.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0295355A245ADF8100BDC42B /* FilterType+Products.swift */; };
@@ -3595,7 +3595,7 @@
 		02913E9423A774C500707A0C /* UnitInputFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitInputFormatter.swift; sourceTree = "<group>"; };
 		029149772D26658A00F7B3B3 /* VariationCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariationCardView.swift; sourceTree = "<group>"; };
 		0291497A2D2682FF00F7B3B3 /* ItemList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemList.swift; sourceTree = "<group>"; };
-		0291497C2D26CB2500F7B3B3 /* VariationItemList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariationItemList.swift; sourceTree = "<group>"; };
+		0291497C2D26CB2500F7B3B3 /* ChildItemList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildItemList.swift; sourceTree = "<group>"; };
 		0294F8AA25E8A12C005B537A /* WooTabNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooTabNavigationController.swift; sourceTree = "<group>"; };
 		02952B5027808B08008E9BA3 /* StoreStatsPeriodViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsPeriodViewModelTests.swift; sourceTree = "<group>"; };
 		0295355A245ADF8100BDC42B /* FilterType+Products.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FilterType+Products.swift"; sourceTree = "<group>"; };
@@ -7286,7 +7286,7 @@
 			isa = PBXGroup;
 			children = (
 				0291497A2D2682FF00F7B3B3 /* ItemList.swift */,
-				0291497C2D26CB2500F7B3B3 /* VariationItemList.swift */,
+				0291497C2D26CB2500F7B3B3 /* ChildItemList.swift */,
 			);
 			path = "Item Selector";
 			sourceTree = "<group>";
@@ -15220,7 +15220,7 @@
 				20ADE9412C6A02B700C91265 /* POSErrorXMark.swift in Sources */,
 				DE63115B2AF1E13200587641 /* WPComLoginCoordinator.swift in Sources */,
 				EE3B17B62AA03837004D3E0C /* CelebrationView.swift in Sources */,
-				0291497D2D26CB2500F7B3B3 /* VariationItemList.swift in Sources */,
+				0291497D2D26CB2500F7B3B3 /* ChildItemList.swift in Sources */,
 				D85A3C5226C15DE200C0E026 /* InPersonPaymentsPluginNotSupportedVersionView.swift in Sources */,
 				EE57C11D297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift in Sources */,
 				DE5746312B43F6180034B10D /* BlazeCampaignCreationFormViewModel.swift in Sources */,

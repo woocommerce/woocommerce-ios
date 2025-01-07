@@ -1,8 +1,8 @@
 import SwiftUI
 import Yosemite
 
-/// Displays a scrollable list of variation items in POS.
-struct VariationItemList: View {
+/// Displays a scrollable list of child items in POS.
+struct ChildItemList: View {
     private let parentItem: POSItem
     private let parentProduct: POSParentProduct
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
@@ -55,12 +55,12 @@ struct VariationItemList: View {
     }
 }
 
-private extension VariationItemList {
+private extension ChildItemList {
     enum Localization {
         static let back = NSLocalizedString(
-            "pos.variationItemList.back",
+            "pos.childItemList.back",
             value: "Back",
-            comment: "Back button title in the variation item list screen."
+            comment: "Back button title in the child item list screen."
         )
     }
 
@@ -71,7 +71,7 @@ private extension VariationItemList {
 
 #if DEBUG
 
-#Preview("Loaded with all product types") {
+#Preview("Variable product child items") {
     let parentProduct = POSParentProduct(
         id: .init(),
         name: "Variable latte",
@@ -106,7 +106,7 @@ private extension VariationItemList {
         itemsController: itemsController,
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
-    return VariationItemList(parentItem: parentItem, parentProduct: parentProduct)
+    return ChildItemList(parentItem: parentItem, parentProduct: parentProduct)
         .environmentObject(posModel)
 }
 

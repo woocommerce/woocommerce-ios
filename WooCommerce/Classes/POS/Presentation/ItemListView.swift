@@ -162,14 +162,13 @@ private extension ItemListView {
         }
     }
 
+    @ViewBuilder
     func childListView(parentItem: POSItem) -> some View {
-        guard case let .parentProduct(parentProduct) = parentItem else {
-            assertionFailure("Unexpected child view for parent item: \(parentItem)")
-            return AnyView(EmptyView())
-        }
-        switch parentProduct.type {
-        case .variable:
-            return AnyView(VariationItemList(parentItem: parentItem, parentProduct: parentProduct))
+        switch parentItem {
+        case let .parentProduct(parentProduct):
+            ChildItemList(parentItem: parentItem, parentProduct: parentProduct)
+        default:
+            EmptyView()
         }
     }
 }

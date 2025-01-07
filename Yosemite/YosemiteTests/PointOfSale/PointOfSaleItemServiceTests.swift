@@ -181,6 +181,15 @@ final class PointOfSaleItemServiceTests: XCTestCase {
                             visible: true,
                             variation: true,
                             options: ["99%", "87%"]
+                        ),
+                        .init(
+                            siteID: siteID,
+                            attributeID: 0,
+                            name: "Size",
+                            position: 4,
+                            visible: true,
+                            variation: true,
+                            options: ["6 piece"]
                         )
                     ]
                 )
@@ -196,7 +205,10 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         guard case let .variation(firstVariation) = firstVariation else {
             return XCTFail("Variation is expected.")
         }
-        XCTAssertEqual(firstVariation.name, "marble - nuts - 99%")
+        XCTAssertEqual(
+            firstVariation.name,
+            "marble - nuts - 99% - \(String.localizedStringWithFormat(VariationAttributeViewModel.Localization.anyAttributeFormat, "Size"))"
+        )
         XCTAssertEqual(firstVariation.formattedPrice, "$12.00")
     }
 

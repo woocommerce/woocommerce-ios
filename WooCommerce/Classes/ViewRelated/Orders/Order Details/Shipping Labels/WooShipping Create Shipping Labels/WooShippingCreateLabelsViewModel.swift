@@ -98,7 +98,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// If the purchase button should be enabled.
     var isPurchaseButtonEnabled: Bool {
-        selectedRate != nil && shippingLabel == nil
+        // Don't allow purchasing if a label is already purchased
+        shippingLabel == nil
+        // or if any required fields are missing
+        && selectedOriginAddress != nil && destinationAddress != nil && selectedPackage != nil && selectedRate != nil
     }
 
     /// If the label purchase is in progress.

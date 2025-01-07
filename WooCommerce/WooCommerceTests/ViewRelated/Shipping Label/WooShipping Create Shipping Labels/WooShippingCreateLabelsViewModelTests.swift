@@ -153,9 +153,10 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertTrue(markOrderComplete)
     }
 
-    func test_canPurchaseLabel_true_when_shipping_rate_is_selected() throws {
+    func test_isPurchaseButtonEnabled_true_when_required_fields_are_set() throws {
         // Given
         let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
+                                                         selectedOriginAddress: WooShippingOriginAddress.fake(),
                                                          selectedPackage: samplePackageData(),
                                                          selectedRate: sampleSelectedRate())
 

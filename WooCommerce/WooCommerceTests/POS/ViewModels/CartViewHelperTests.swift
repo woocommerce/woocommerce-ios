@@ -10,7 +10,7 @@ struct CartViewHelperTests {
 
         // When, Then
         #expect(sut.shouldPreventCartEditing(orderState: .syncing,
-                                             paymentState: .idle) == true)
+                                             paymentState: .card(.idle)) == true)
     }
 
     @Test func shouldPreventCartEditing_when_paymentState_cardPaymentSuccessful() async throws {
@@ -22,7 +22,7 @@ struct CartViewHelperTests {
 
         // When, Then
         #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
-                                             paymentState: .cardPaymentSuccessful) == true)
+                                             paymentState: .card(.cardPaymentSuccessful)) == true)
     }
 
     @Test func shouldPreventCartEditing_when_paymentState_processingPayment() async throws {
@@ -34,7 +34,7 @@ struct CartViewHelperTests {
 
         // When, Then
         #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
-                                             paymentState: .processingPayment) == true)
+                                             paymentState: .card(.processingPayment)) == true)
     }
 
     @Test func shouldPreventCartEditing_false_when_paymentState_acceptingCard() async throws {
@@ -46,7 +46,7 @@ struct CartViewHelperTests {
 
         // When, Then
         #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
-                                             paymentState: .acceptingCard) == false)
+                                             paymentState: .card(.acceptingCard)) == false)
     }
 
     @Test func shouldPreventCartEditing_false_when_paymentState_validatingOrderError() async throws {
@@ -58,7 +58,7 @@ struct CartViewHelperTests {
 
         // When, Then
         #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
-                                             paymentState: .validatingOrderError) == false)
+                                             paymentState: .card(.validatingOrderError)) == false)
     }
 
     @Test(arguments: zip([0, 1, 2, 3], [nil, "1 item", "2 items", "3 items"]))

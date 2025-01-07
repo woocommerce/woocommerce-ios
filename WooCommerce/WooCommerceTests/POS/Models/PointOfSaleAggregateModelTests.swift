@@ -238,7 +238,7 @@ struct PointOfSaleAggregateModelTests {
                 orderController: orderController)
 
             // Then
-            #expect(sut.paymentState == .idle)
+            #expect(sut.paymentState == .card(.idle))
         }
 
         @Test func startNewCart_sets_payment_state_to_idle() async throws {
@@ -247,13 +247,13 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                paymentState: .cardPaymentSuccessful)
+                paymentState: .card(.cardPaymentSuccessful))
 
             // When
             sut.startNewCart()
 
             // Then
-            #expect(sut.paymentState == .idle)
+            #expect(sut.paymentState == .card(.idle))
         }
 
         @Test func startNewCart_sets_payment_message_to_nil() async throws {
@@ -274,13 +274,13 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                paymentState: .cardPaymentSuccessful)
+                paymentState: .card(.cardPaymentSuccessful))
 
             // When
             sut.addMoreToCart()
 
             // Then
-            #expect(sut.paymentState == .idle)
+            #expect(sut.paymentState == .card(.idle))
         }
 
         @Test func addMoreToCart_sets_payment_message_to_nil() async throws {

@@ -10,8 +10,6 @@ struct ItemList: View {
         ForEach(state.items) { item in
             ItemListRow(item: item)
         }
-        GhostItemCardView()
-            .renderedIf(state.isLoading)
     }
 }
 

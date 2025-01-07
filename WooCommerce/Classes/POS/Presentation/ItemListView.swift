@@ -8,7 +8,7 @@ struct ItemListView: View {
 
     @EnvironmentObject var posModel: PointOfSaleAggregateModel
 
-    @State private var lastScrollPosition: CGFloat = 0
+    @StateObject private var infiniteScrollTriggerDeterminer = InfiniteScrollTriggerDeterminer()
     @State private var showSimpleProductsModal: Bool = false
     private var itemListState: ItemListState {
         posModel.itemsViewState.itemsStack.root
@@ -134,32 +134,25 @@ private extension ItemListView {
 
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
-        ScrollView {
-            VStack {
-                if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
-                    bannerCardView
-                }
-                ItemList(state: itemListState)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.bottom, floatingControlAreaSize.height)
-            .padding(.horizontal, Constants.itemListPadding)
-            .background(GeometryReader { proxy in
-                Color.clear
-                    .onChange(of: proxy.frame(in: .global).maxY) { maxY in
-                        if itemListState.isLoading {
-                            return
-                        }
-                        let threshold = Constants.viewHeight * Constants.scrollThresholdMultiplier
-                        if maxY < threshold && maxY < lastScrollPosition {
-                            Task {
-                                await posModel.loadNextItems()
-                            }
-                        }
-                        lastScrollPosition = maxY
+        InfiniteScrollView(
+            triggerDeterminer: infiniteScrollTriggerDeterminer,
+            loadMore: {
+                try await posModel.loadNextItems()
+            }, content: {
+                VStack {
+                    if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
+                        bannerCardView
                     }
+                    ItemList(state: itemListState)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, Constants.itemListPadding)
+            }, loadingView: {
+                GhostItemCardView()
+                    .renderedIf(itemListState.isLoading)
+                    .padding(.horizontal, Constants.itemListPadding)
             })
-        }
+        .padding(.bottom, floatingControlAreaSize.height)
     }
 
     @ViewBuilder

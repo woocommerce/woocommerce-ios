@@ -58,7 +58,6 @@ FOUNDATION_EXPORT const unsigned char WordPressAuthenticatorVersionString[];
 #import <WordPressAuthenticator/TaxonomyServiceRemote.h>
 // Used _somewhere_ which I haven't followed up yet
 #import <WordPressAuthenticator/BlogServiceRemoteXMLRPC.h>
-#import <WordPressAuthenticator/MenusServiceRemote.h>
 #import <WordPressAuthenticator/TaxonomyServiceRemoteREST.h>
 #import <WordPressAuthenticator/TaxonomyServiceRemoteXMLRPC.h>
 #import <WordPressAuthenticator/ThemeServiceRemote.h>

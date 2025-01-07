@@ -105,6 +105,7 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
     }()
 
     private var clearAllBarButtonItem: UIBarButtonItem?
+    private var historyBarButtonItem: UIBarButtonItem?
 
     private var selectedFilterTypeSubscription: AnyCancellable?
     private var selectedFilterValueSubscription: AnyCancellable?
@@ -185,6 +186,10 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
         listSelector.reloadData()
         onClearAction()
     }
+
+    @objc private func showFilterHistory() {
+        // TODO-14791: show history view
+    }
 }
 
 // MARK: - View Configuration
@@ -199,6 +204,15 @@ private extension FilterListViewController {
 
         let clearAllButtonTitle = NSLocalizedString("Clear all", comment: "Button title for clearing all filters for the list.")
         clearAllBarButtonItem = UIBarButtonItem(title: clearAllButtonTitle, style: .plain, target: self, action: #selector(clearAllButtonTapped))
+
+        if viewModel.shouldShowHistory {
+            historyBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "clock"), style: .plain, target: self, action: #selector(showFilterHistory))
+            historyBarButtonItem?.accessibilityHint = NSLocalizedString(
+                "filterListViewController.historyBarButtonItem.accessibilityHint",
+                value: "Filter history",
+                comment: "Accessibility hint for the filter history button on the filter list screen"
+            )
+        }
     }
 
     func configureMainView() {
@@ -350,7 +364,14 @@ private extension FilterListViewController {
     }
 
     func updateClearAllActionVisibility(numberOfActiveFilters: Int) {
-        listSelector.navigationItem.rightBarButtonItem = numberOfActiveFilters > 0 ? clearAllBarButtonItem: nil
+        let buttonItems: [UIBarButtonItem] = {
+            var contents = [historyBarButtonItem].compactMap { $0 }
+            if numberOfActiveFilters > 0, let clearAllBarButtonItem {
+                contents.append(clearAllBarButtonItem)
+            }
+            return contents
+        }()
+        listSelector.navigationItem.rightBarButtonItems = buttonItems
     }
 }
 

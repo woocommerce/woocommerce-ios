@@ -33,12 +33,9 @@ FOUNDATION_EXPORT const unsigned char WordPressAuthenticatorVersionString[];
 #import <WordPressAuthenticator/PostServiceRemoteOptions.h>
 #import <WordPressAuthenticator/PostServiceRemoteREST.h>
 #import <WordPressAuthenticator/PostServiceRemoteXMLRPC.h>
-#import <WordPressAuthenticator/ReaderPostServiceRemote.h>
-#import <WordPressAuthenticator/ReaderTopicServiceRemote.h>
 #import <WordPressAuthenticator/RemoteComment.h>
 #import <WordPressAuthenticator/RemotePost.h>
 #import <WordPressAuthenticator/RemotePostCategory.h>
-#import <WordPressAuthenticator/RemoteReaderPost.h>
 #import <WordPressAuthenticator/RemoteUser.h>
 #import <WordPressAuthenticator/ServiceRemoteWordPressComREST.h>
 #import <WordPressAuthenticator/ServiceRemoteWordPressXMLRPC.h>
@@ -50,7 +47,6 @@ FOUNDATION_EXPORT const unsigned char WordPressAuthenticatorVersionString[];
 #import <WordPressAuthenticator/WordPressComRESTAPIVersionedPathBuilder.h>
 // Used in the tests
 #import <WordPressAuthenticator/CommentServiceRemoteXMLRPC.h>
-#import <WordPressAuthenticator/ReaderSiteServiceRemote.h>
 #import <WordPressAuthenticator/TaxonomyServiceRemote.h>
 // Used _somewhere_ which I haven't followed up yet
 #import <WordPressAuthenticator/BlogServiceRemoteXMLRPC.h>

@@ -235,8 +235,21 @@ private extension TotalsView {
                 }
             }
         case .cash(let cashPaymentState):
-            if case .loaded(let total) = posModel.orderState {
-                PointOfSaleCollectCashView(orderTotal: total.orderTotal, onCashPaymentSuccess: { })
+            switch cashPaymentState {
+            case .collectingCash:
+                if case .loaded(let total) = posModel.orderState {
+                    PointOfSaleCollectCashView(orderTotal: total.orderTotal)
+                }
+            case .paymentSuccess:
+                if case .loaded(let total) = posModel.orderState {
+                    HStack(alignment: .center) {
+                        Spacer()
+                        PointOfSaleCardPresentPaymentInLineMessage(messageType: .paymentSuccess(viewModel: .init(formattedOrderTotal: total.orderTotal)))
+                        Spacer()
+                    }
+                }
+            default:
+                EmptyView()
             }
         }
     }

@@ -204,6 +204,10 @@ extension PointOfSaleAggregateModel {
         // perhaps here we can also cancel the card payment intent and do any state setup/reset as needed?
         paymentState = .cash(.collectingCash)
     }
+    
+    func cashPaymentSuccess() {
+        paymentState = .cash(.paymentSuccess)
+    }
 
     @MainActor
     func collectCashPayment() async throws {

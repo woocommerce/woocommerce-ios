@@ -70,14 +70,29 @@ struct WooShippingCustomsItem: View {
                 .padding(.top, Layout.descriptionTopPadding)
                 TextField("", text: $viewModel.description)
                     .padding(Layout.extraPadding)
-                    .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderLineWidth)
-                    .padding(.bottom, Layout.collapsibleViewVerticalSpacing)
+                    .roundedBorder(cornerRadius: Layout.borderCornerRadius,
+                                   lineColor: viewModel.description.isEmpty ? .withColorStudio(name: .red, shade: .shade60) : Color(.separator),
+                                   lineWidth: Layout.borderLineWidth)
+
+
+                Text(Localization.valueRequiredWarningText)
+                    .foregroundColor(.withColorStudio(name: .red, shade: .shade60))
+                    .footnoteStyle()
+                    .renderedIf(viewModel.description.isEmpty)
+
                 Text(Localization.HSTariffNumber)
                     .foregroundColor(.primary)
                     .subheadlineStyle()
+                    .padding(.top, Layout.collapsibleViewVerticalSpacing)
+            
                 TextField(Localization.HSTariffNumberPlaceholder, text: $viewModel.hsTariffNumber)
                     .padding(Layout.extraPadding)
                     .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderLineWidth)
+
+                Text(Localization.tariffNumberRulesWarningText)
+                    .foregroundColor(.withColorStudio(name: .red, shade: .shade60))
+                    .footnoteStyle()
+                    .renderedIf(!viewModel.isValidTariffNumber)
 
                 Button {
                     isShowingHSTarrifInfoWebView = true
@@ -226,6 +241,9 @@ extension WooShippingCustomsItem {
         static let valueRequiredWarningText = NSLocalizedString("wooShipping.customsItems.valueRequired",
                                               value: "Value required",
                                               comment: "Warning text when some required value is missing")
+        static let tariffNumberRulesWarningText = NSLocalizedString("wooShipping.customsItems.tariffNumberRulesWarning",
+                                              value: "The tariff number must be between 6 and 12 digits long",
+                                              comment: "Warning text when the shipping customs tariff number is not valid")
         static let originCountryTitle = NSLocalizedString("wooShipping.customsItems.originCountry",
                                               value: "Origin Country",
                                               comment: "Title for the origin country text field")

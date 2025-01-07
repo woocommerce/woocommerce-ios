@@ -57,6 +57,20 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
 
         fetchCountries()
     }
+
+    var isValidTariffNumber: Bool {
+        guard hsTariffNumber.isNotEmpty else {
+            return true
+        }
+
+        // Check if the string contains only digits
+        let digitsOnly = CharacterSet.decimalDigits.isSuperset(of: CharacterSet(charactersIn: hsTariffNumber))
+        guard digitsOnly else { return false }
+
+        // Check the length of the string
+        let length = hsTariffNumber.count
+        return length >= 6 && length <= 12
+    }
 }
 
 extension WooShippingCustomsItemViewModel {

@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/automattic/AutomatticAbout-swift",
         "state": {
           "branch": null,
-          "revision": "31045d654bcc1f2b56c85dd658f160fad5b50a29",
-          "version": "1.1.4"
+          "revision": "606384a7492faa1139d489080dd961b0b57f9fd9",
+          "version": "1.1.5"
         }
       },
       {
@@ -84,7 +84,7 @@
       },
       {
         "package": "swift-numerics",
-        "repositoryURL": "https://github.com/apple/swift-numerics.git",
+        "repositoryURL": "https://github.com/apple/swift-numerics",
         "state": {
           "branch": null,
           "revision": "0a5bc04095a675662cf24757cc0640aa2204253b",

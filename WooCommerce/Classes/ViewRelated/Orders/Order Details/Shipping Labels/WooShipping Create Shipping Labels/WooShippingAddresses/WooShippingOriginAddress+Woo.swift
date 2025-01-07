@@ -23,15 +23,6 @@ extension WooShippingOriginAddress {
         return output.joined(separator: "\n")
     }
 
-    /// Returns the Postal Address, formated and ready for display.
-    ///
-    var formattedPostalAddress: String? {
-        return postalAddress.formatted(as: .mailingAddress)?.replacingOccurrences(of: "\n", with: ", ")
-    }
-}
-
-private extension WooShippingOriginAddress {
-
     /// Returns the first and last name combined (if there are, effectively, two names).
     /// If only one name is present, that name is returned.
     var fullName: String? {
@@ -46,6 +37,15 @@ private extension WooShippingOriginAddress {
             return nil
         }
     }
+
+    /// Returns the Postal Address, formatted and ready for display.
+    ///
+    var formattedPostalAddress: String? {
+        return postalAddress.formatted(as: .mailingAddress)?.replacingOccurrences(of: "\n", with: ", ")
+    }
+}
+
+private extension WooShippingOriginAddress {
 
     /// Returns the two Address Lines combined (if there are, effectively, two lines).
     /// Per US Post Office standardized rules for address lines. Ref. https://pe.usps.com/text/pub28/28c2_001.htm

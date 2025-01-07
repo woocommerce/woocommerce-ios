@@ -37,11 +37,37 @@ extension XCTestCase {
     /// }
     /// ```
     ///
-    public func waitUntil(file: StaticString = #file,
+    @available(*, noasync, message: "Use await until(expression:) instead!")
+    public func waitUntil(fileID: String = #fileID,
+                          file: FileString = #filePath,
                           line: UInt = #line,
+                          column: UInt = #column,
                           timeout: TimeInterval = 5.0,
-                          condition: @escaping (() -> Bool)) {
-        expect(condition()).toEventually(beTrue(), timeout: .seconds(Int(timeout)))
+                          _ expression: @escaping () throws -> Bool) {
+        _ = expect(fileID: fileID, file: file, line: line, column: column, expression)
+            .toEventually(beTrue(), timeout: .seconds(Int(timeout)))
+    }
+
+    /// Waits until `condition` returns `true` in async conext.
+    ///
+    /// Example usage:
+    ///
+    /// ```
+    /// var valueThatIsUpdatedAsynchronously: Int = 0
+    ///
+    /// await until {
+    ///     valueThatIsUpdatedAsynchronously > 5
+    /// }
+    /// ```
+    ///
+    public func until(fileID: String = #fileID,
+                      file: FileString = #filePath,
+                      line: UInt = #line,
+                      column: UInt = #column,
+                      timeout: TimeInterval = 5.0,
+                      _ expression: @escaping () throws -> Bool) async {
+        _ = await expect(fileID: fileID, file: file, line: line, column: column, expression)
+            .toEventually(beTrue(), timeout: .seconds(Int(timeout)))
     }
 
     /// Waits until a value is provided by a promise (block) and returns that value.

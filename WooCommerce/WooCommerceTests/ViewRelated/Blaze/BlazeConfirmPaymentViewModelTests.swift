@@ -431,7 +431,7 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         viewModel.addPaymentWebViewModel?.didAddNewPaymentMethod()
 
         // Then
-        waitUntil {
+        await until {
             didTriggerFetchPaymentInfo == true
         }
     }
@@ -455,7 +455,7 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         viewModel.paymentMethodsViewModel?.didSelectPaymentMethod(withID: "payment-method-1")
 
         // Then
-        waitUntil {
+        await until {
             viewModel.showAddPaymentSheet == false
         }
     }
@@ -487,7 +487,7 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         viewModel.paymentMethodsViewModel?.didSelectPaymentMethod(withID: "new-payment-method")
 
         // Then
-        waitUntil {
+        await until {
             didTriggerFetchPaymentInfo == true
         }
     }

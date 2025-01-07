@@ -229,7 +229,7 @@ struct PointOfSaleAggregateModelTests {
                 orderController: orderController)
         }
 
-        @Test func init_sets_paymentState_to_idle() async throws {
+        @Test func init_sets_card_paymentState_to_idle() async throws {
             // Given that we don't specify a payment state
             // When we init
             let sut = PointOfSaleAggregateModel(
@@ -238,22 +238,22 @@ struct PointOfSaleAggregateModelTests {
                 orderController: orderController)
 
             // Then
-            #expect(sut.paymentState == .idle)
+            #expect(sut.paymentState == .card(.idle))
         }
 
-        @Test func startNewCart_sets_payment_state_to_idle() async throws {
+        @Test func startNewCart_sets_card_payment_state_to_idle() async throws {
             // Given
             let sut = PointOfSaleAggregateModel(
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                paymentState: .cardPaymentSuccessful)
+                paymentState: .card(.cardPaymentSuccessful))
 
             // When
             sut.startNewCart()
 
             // Then
-            #expect(sut.paymentState == .idle)
+            #expect(sut.paymentState == .card(.idle))
         }
 
         @Test func startNewCart_sets_payment_message_to_nil() async throws {
@@ -268,19 +268,19 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.cardPresentPaymentInlineMessage == nil)
         }
 
-        @Test func addMoreToCart_sets_payment_state_to_idle() async throws {
+        @Test func addMoreToCart_sets_card_payment_state_to_idle() async throws {
             // Given
             let sut = PointOfSaleAggregateModel(
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                paymentState: .cardPaymentSuccessful)
+                paymentState: .card(.cardPaymentSuccessful))
 
             // When
             sut.addMoreToCart()
 
             // Then
-            #expect(sut.paymentState == .idle)
+            #expect(sut.paymentState == .card(.idle))
         }
 
         @Test func addMoreToCart_sets_payment_message_to_nil() async throws {

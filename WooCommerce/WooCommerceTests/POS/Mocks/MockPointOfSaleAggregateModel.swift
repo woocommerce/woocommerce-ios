@@ -33,7 +33,7 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
                                                                                                                itemStates: [:])),
          orderStage: PointOfSaleOrderStage = .building,
          orderState: PointOfSaleOrderState = .idle,
-         paymentState: PointOfSalePaymentState = .idle) {
+         paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.cardReaderConnectionStatus = cardReaderConnectionStatus
         self.itemsViewState = itemsViewState
         self.orderStage = orderStage

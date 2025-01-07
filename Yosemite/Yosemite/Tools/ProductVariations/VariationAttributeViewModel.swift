@@ -1,7 +1,6 @@
 import Foundation
 
-// MARK: - View Model for a Variation Attribute
-//
+/// View Model for a Variation Attribute.
 public struct VariationAttributeViewModel: Equatable {
 
     /// Attribute name

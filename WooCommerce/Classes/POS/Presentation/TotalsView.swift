@@ -26,9 +26,6 @@ struct TotalsView: View {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
 
-    @State private var shouldShowCollectCashPayment: Bool = false
-    @State private var shouldShowPaymentSuccessView: Bool = false
-
     var body: some View {
         HStack {
             switch posModel.orderState {
@@ -39,7 +36,7 @@ struct TotalsView: View {
 
                     VStack(alignment: .center, spacing: Constants.verticalSpacing) {
                         if isShowingCardReaderStatus {
-                            cardReaderView
+                            paymentView
                                 .font(.title)
                                 .padding([.leading, .trailing],
                                          dynamicTypeSize.isAccessibilitySize ? nil :
@@ -62,7 +59,7 @@ struct TotalsView: View {
                                 .layoutPriority(2)
                         }
                         Button(action: {
-                            shouldShowCollectCashPayment = true
+                            posModel.startCashPayment()
                         }, label: {
                             Text(Localization.cashPaymentButtonTitle)
                                 .font(POSFontStyle.posBodyEmphasized)
@@ -89,23 +86,6 @@ struct TotalsView: View {
             isShowingTotalsFields = shouldShowTotalsFields
         }
         .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
-        .fullScreenCover(isPresented: $shouldShowPaymentSuccessView) {
-            if case .loaded(let total) = posModel.orderState {
-                let viewModel = PointOfSaleCardPresentPaymentSuccessMessageViewModel(formattedOrderTotal: total.orderTotal)
-                PointOfSaleCardPresentPaymentInLineMessage(messageType: .paymentSuccess(viewModel: viewModel))
-                    .matchedGeometryEffect(id: Constants.matchedGeometryCashId,
-                                           in: totalsFieldAnimation)
-            }
-        }
-        .fullScreenCover(isPresented: $shouldShowCollectCashPayment) {
-            if case .loaded(let total) = posModel.orderState {
-                PointOfSaleCollectCashView(orderTotal: total.orderTotal, onCashPaymentSuccess: {
-                    shouldShowPaymentSuccessView = true
-                })
-                .matchedGeometryEffect(id: Constants.matchedGeometryCashId,
-                                       in: totalsFieldAnimation)
-            }
-        }
         .geometryGroupIfSupported()
     }
 
@@ -234,21 +214,29 @@ private extension TotalsView {
 
 private extension TotalsView {
 
-    @ViewBuilder private var cardReaderView: some View {
-        switch posModel.cardReaderConnectionStatus {
-        case .connected, .disconnecting, .cancellingConnection:
-            if let inlinePaymentMessage = posModel.cardPresentPaymentInlineMessage {
-                HStack(alignment: .center) {
-                    Spacer()
-                    PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
-                    Spacer()
+    @ViewBuilder private var paymentView: some View {
+        switch posModel.paymentState {
+        case .card(let cardPaymentState):
+            // TODO: Move all this to a CardPaymentView
+            switch posModel.cardReaderConnectionStatus {
+            case .connected, .disconnecting, .cancellingConnection:
+                if let inlinePaymentMessage = posModel.cardPresentPaymentInlineMessage {
+                    HStack(alignment: .center) {
+                        Spacer()
+                        PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
+                        Spacer()
+                    }
+                } else {
+                    EmptyView()
                 }
-            } else {
-                EmptyView()
+            case .disconnected:
+                PointOfSaleCardPresentPaymentReaderDisconnectedMessageView {
+                    posModel.connectCardReader()
+                }
             }
-        case .disconnected:
-            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView {
-                posModel.connectCardReader()
+        case .cash(let cashPaymentState):
+            if case .loaded(let total) = posModel.orderState {
+                PointOfSaleCollectCashView(orderTotal: total.orderTotal, onCashPaymentSuccess: { })
             }
         }
     }

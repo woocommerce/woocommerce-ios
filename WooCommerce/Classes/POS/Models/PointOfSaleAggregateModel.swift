@@ -199,6 +199,12 @@ extension PointOfSaleAggregateModel {
         }
     }
 
+    func startCashPayment() {
+        // We have to update the payment state to accept cash at some point,
+        // perhaps here we can also cancel the card payment intent and do any state setup/reset as needed?
+        paymentState = .cash(.collectingCash)
+    }
+
     @MainActor
     func collectCashPayment() async throws {
         try await orderController.collectCashPayment()

@@ -135,7 +135,7 @@ private extension PointOfSaleCollectCashView {
 
         if inputDecimal.compare(orderDecimal) == .orderedDescending {
             let changeDue = inputDecimal.subtracting(orderDecimal)
-            changeDueMessage = "Change due: \(formatAsCurrency(changeDue))"
+            changeDueMessage = String.localizedStringWithFormat(Localization.changeDueMessage, formatAsCurrency(changeDue))
         } else {
             changeDueMessage = nil
         }
@@ -144,12 +144,12 @@ private extension PointOfSaleCollectCashView {
     private func validateAmountOnSubmit() -> Bool {
             guard let orderDecimal = parseCurrency(orderTotal),
                   let inputDecimal = parseCurrency(textFieldAmountInput) else {
-                errorMessage = "Invalid amount. Please try again."
+                errorMessage = Localization.failedToCollectCashPayment
                 return false
             }
 
             if inputDecimal.compare(orderDecimal) == .orderedAscending {
-                errorMessage = "Amount must be more or equal to total"
+                errorMessage = Localization.cashPaymentAmountNotEnough
                 return false
             }
             errorMessage = nil
@@ -192,9 +192,20 @@ private extension PointOfSaleCollectCashView {
             comment: "Button to mark a cash payment as completed"
         )
         static let failedToCollectCashPayment = NSLocalizedString(
-            "pointOfSale.cashview.failedToCollectCashPayment.draft",
+            "pointOfSale.cashview.failedtocollectcashpayment.errormessage",
             value: "Error trying to process payment. Try again.",
             comment: "Error message when the system fails to collect a cash payment."
+        )
+        static let cashPaymentAmountNotEnough = NSLocalizedString(
+            "pointOfSale.cashview.cashpaymentamountnotenough.errormessage",
+            value: "Amount must be more or equal to total.",
+            comment: "Error message when the cash amount entered is less than the order total."
+        )
+        static let changeDueMessage = NSLocalizedString(
+            "pointOfSale.cashview.changedue",
+            value: "Change due: %1$@",
+            comment: "Change due when the cash amount entered exceeds the order total." +
+            "Reads as 'Change due: $1.23'"
         )
     }
 }

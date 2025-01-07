@@ -11,4 +11,6 @@ final class MockPointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     func loadNextItems() async { }
 
     func reload() async { }
+
+    func loadInitialChildItems(for parent: Yosemite.POSItem) async { }
 }

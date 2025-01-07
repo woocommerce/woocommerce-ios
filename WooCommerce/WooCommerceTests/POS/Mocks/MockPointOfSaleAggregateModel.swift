@@ -1,5 +1,6 @@
 import Foundation
 @testable import WooCommerce
+import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 
 final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
@@ -46,6 +47,8 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     func loadNextItems() async { }
 
     func reload() async { }
+
+    func loadInitialChildItems(for parent: POSItem) async { }
 
     var cart: [CartItem] = []
 

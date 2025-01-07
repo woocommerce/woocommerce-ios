@@ -298,6 +298,22 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.cardPresentPaymentInlineMessage == nil)
         }
 
+        @Test func startCashPayment_sets_payment_state_to_collectingCash() {
+            // When
+            sut.startCashPayment()
+
+            // Then
+            #expect(sut.paymentState == .cash(.collectingCash))
+        }
+
+        @Test func cashPaymentSuccess_sets_payment_state_to_paymentSuccess() {
+            // When
+            sut.cashPaymentSuccess()
+
+            // Then
+            #expect(sut.paymentState == .cash(.paymentSuccess))
+        }
+
         @Test func cardPresentPaymentInlineMessage_when_paymentSuccess_then_total_set() async throws {
             // Given order totals:
             // Note that orderTotal is used, but the Order values are given for test robustness.

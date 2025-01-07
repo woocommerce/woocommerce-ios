@@ -22,6 +22,9 @@ protocol FilterListViewModel {
     /// The final value returned to the caller of `FilterListViewController`.
     var criteria: Criteria { get }
 
+    /// Whether to display the entry point to the filter history
+    var shouldShowHistory: Bool { get }
+
     // Navigation & Actions
 
     /// Resets the filter criteria.

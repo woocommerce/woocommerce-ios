@@ -298,7 +298,7 @@ private extension WooShippingRemote {
         static let purchase = "label/purchase"
         static let status = "label/status"
         static let print = "label/print"
-        static let originAddresses = "origin-addresses"
+        static let originAddresses = "address/origins"
     }
 
     enum ParameterKey {

@@ -31,19 +31,24 @@ struct WooShippingCustomsItem: View {
                 VStack(alignment: .leading, spacing: Layout.collapsibleViewBottomLabelVerticalSpacing) {
                     HStack {
                         Text(viewModel.description)
+                            .renderedIf(viewModel.description.isNotEmpty)
+                        emptyValuePlaceholder
+                            .renderedIf(viewModel.description.isEmpty)
                         Spacer()
                         Text(viewModel.hsTariffNumber)
+                            .renderedIf(viewModel.hsTariffNumber.isNotEmpty)
                     }
                     HStack(spacing: Layout.collapsedUnitsHorizontalSpacing) {
                         Text(viewModel.originCountry.name)
                         Spacer()
-                        Text(viewModel.weightPerUnit).renderedIf(viewModel.weightPerUnit.isNotEmpty)
-                        emptyUnitsPlaceholder
+                        Text(viewModel.weightPerUnit)
+                            .renderedIf(viewModel.weightPerUnit.isNotEmpty)
+                        emptyValuePlaceholder
                             .renderedIf(viewModel.weightPerUnit.isEmpty)
                         Text("•")
                             .renderedIf(viewModel.weightPerUnit.isNotEmpty || viewModel.valuePerUnit.isNotEmpty)
                         Text(viewModel.valuePerUnit)
-                        emptyUnitsPlaceholder
+                        emptyValuePlaceholder
                             .renderedIf(viewModel.valuePerUnit.isEmpty)
                     }
                 }.renderedIf(isCollapsed)
@@ -197,10 +202,10 @@ struct WooShippingCustomsItem: View {
         }
     }
 
-    var emptyUnitsPlaceholder: some View {
-        RoundedRectangle(cornerRadius: Layout.emptyUnitsPlaceholderCornerRadius)
+    var emptyValuePlaceholder: some View {
+        RoundedRectangle(cornerRadius: Layout.emptyValuePlaceholderCornerRadius)
                             .fill(Color.withColorStudio(name: .red, shade: .shade0))
-                            .frame(width: Layout.emptyUnitsPlaceholderWidth, height: Layout.emptyUnitsPlaceholderHeight)
+                            .frame(width: Layout.emptyValuePlaceholderWidth, height: Layout.emptyValuePlaceholderHeight)
     }
 }
 
@@ -261,9 +266,9 @@ extension WooShippingCustomsItem {
         static let extraPadding: CGFloat = 16.0
         static let hsTariffNumberMoreInfoVerticalSpacing: CGFloat = 8.0
         static let unitsHorizontalSpacing: CGFloat = 8.0
-        static let emptyUnitsPlaceholderCornerRadius: CGFloat = 2.0
-        static let emptyUnitsPlaceholderWidth: CGFloat = 48.0
-        static let emptyUnitsPlaceholderHeight: CGFloat = 16.0
+        static let emptyValuePlaceholderCornerRadius: CGFloat = 2.0
+        static let emptyValuePlaceholderWidth: CGFloat = 48.0
+        static let emptyValuePlaceholderHeight: CGFloat = 16.0
 
     }
 }

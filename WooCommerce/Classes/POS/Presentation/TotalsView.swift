@@ -20,7 +20,7 @@ struct TotalsView: View {
     private var shouldShowCollectCashPaymentButton: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.acceptCashForPointOfSale) &&
         posModel.orderState != .syncing &&
-        (posModel.paymentState == .idle || posModel.paymentState == .acceptingCard)
+        (posModel.paymentState == .card(.idle) || posModel.paymentState == .card(.acceptingCard))
     }
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
@@ -111,9 +111,9 @@ struct TotalsView: View {
 
     private var backgroundColor: Color {
         switch posModel.paymentState {
-        case .cardPaymentSuccessful:
+        case .card(.cardPaymentSuccessful):
             .posSecondaryBackground
-        case .processingPayment:
+        case .card(.processingPayment):
             colorScheme == .light ? Color(.wooCommercePurple(.shade70)) : Color(.wooCommercePurple(.shade10))
         default:
             .clear
@@ -221,7 +221,7 @@ private extension TotalsView {
     /// Hide totals fields with animation after a delay when starting to processing a payment
     /// - Parameter isShowing
     private func hideTotalsFieldsWithDelay(_ isShowing: Bool) {
-        guard !isShowing && posModel.paymentState == .processingPayment else {
+        guard !isShowing && posModel.paymentState == .card(.processingPayment) else {
             self.isShowingTotalsFields = isShowing
             return
         }
@@ -303,16 +303,21 @@ private extension TotalsView {
         }
 
         switch posModel.paymentState {
-        case .validatingOrderError:
-            return .outlined
-        case .paymentError:
-            return .topAligned
-        case .idle,
-                .acceptingCard,
-                .validatingOrder,
-                .preparingReader,
-                .processingPayment,
-                .cardPaymentSuccessful:
+        case .card(let cardState):
+            switch cardState {
+            case .validatingOrderError:
+                return .outlined
+            case .paymentError:
+                return .topAligned
+            case .idle,
+                    .acceptingCard,
+                    .validatingOrder,
+                    .preparingReader,
+                    .processingPayment,
+                    .cardPaymentSuccessful:
+                break
+            }
+        case .cash:
             break
         }
 

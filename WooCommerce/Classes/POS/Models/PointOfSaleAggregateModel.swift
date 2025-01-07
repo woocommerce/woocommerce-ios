@@ -70,7 +70,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
-         paymentState: PointOfSalePaymentState = .idle) {
+         paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.itemsController = itemsController
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderController = orderController
@@ -136,7 +136,7 @@ extension PointOfSaleAggregateModel {
 
     private func setStateForEditing() {
         orderStage = .building
-        paymentState = .idle
+        paymentState = .card(.idle)
         cardPresentPaymentInlineMessage = nil
     }
 }

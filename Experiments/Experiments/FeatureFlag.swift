@@ -215,4 +215,8 @@ public enum FeatureFlag: Int {
     /// Supports hiding sites from the store picker
     ///
     case hideSitesInStorePicker
+
+    /// Supports managing filer history on order and product lists
+    ///
+    case filterHistoryOnOrderAndProductLists
 }

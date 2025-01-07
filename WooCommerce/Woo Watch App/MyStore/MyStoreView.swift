@@ -47,10 +47,12 @@ struct MyStoreView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle {
             Text(dependencies.storeName)
-                .foregroundStyle(Colors.wooPurple5)
+                .foregroundStyle(Color.withColorStudio(name: .wooCommercePurple, shade: .shade5))
         }
         .background(
-            LinearGradient(gradient: Gradient(colors: [Colors.wooPurpleBackground, .black]), startPoint: .top, endPoint: .bottom)
+            LinearGradient(gradient: Gradient(colors: [Color.withColorStudio(name: .wooCommercePurple, shade: .shade70), .black]),
+                           startPoint: .top,
+                           endPoint: .bottom)
         )
         .onAppear() {
             Task {
@@ -93,7 +95,7 @@ struct MyStoreView: View {
             VStack {
                 Text(Localization.revenue)
                     .font(.caption2)
-                    .foregroundStyle(Colors.wooPurple5)
+                    .foregroundStyle(Color.withColorStudio(name: .wooCommercePurple, shade: .shade5))
                     .padding(.bottom, Layout.revenueTitlePadding)
 
                 Text(revenue)
@@ -121,7 +123,7 @@ struct MyStoreView: View {
                         HStack {
                             Images.document
                                 .renderingMode(.original)
-                                .foregroundStyle(Colors.wooPurple10)
+                                .foregroundStyle(Color.withColorStudio(name: .wooCommercePurple, shade: .shade10))
 
                             Text(orders)
                                 .font(.caption)
@@ -130,7 +132,7 @@ struct MyStoreView: View {
                         .padding(Layout.orderButtonPadding)
                     }
                     .buttonStyle(.plain)
-                    .background(Colors.wooPurple80)
+                    .background(Color.withColorStudio(name: .wooCommercePurple, shade: .shade80))
                     .cornerRadius(Layout.orderButtonCornerRadius)
 
                     Spacer()
@@ -146,7 +148,7 @@ struct MyStoreView: View {
                                 .renderingMode(.original)
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: Layout.iconWidth, height: Layout.iconWidth)
-                                .foregroundStyle(Colors.wooPurple10)
+                                .foregroundStyle(Color.withColorStudio(name: .wooCommercePurple, shade: .shade10))
                         }
                         .bold()
 
@@ -160,7 +162,7 @@ struct MyStoreView: View {
                                 .renderingMode(.original)
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: Layout.iconWidth, height: Layout.iconWidth)
-                                .foregroundStyle(Colors.wooPurple10)
+                                .foregroundStyle(Color.withColorStudio(name: .wooCommercePurple, shade: .shade10))
                         }
                         .bold()
                     }
@@ -173,15 +175,6 @@ struct MyStoreView: View {
 /// Constants
 ///
 fileprivate extension MyStoreView {
-    // TODO: Move this to a shared resource
-    enum Colors {
-        static let wooPurple5 = Color(red: 223/255.0, green: 209/255.0, blue: 251/255.0)
-        static let wooPurple80 = Color(red: 60/255.0, green: 40/255.0, blue: 97/255.0)
-        static let wooPurple10 = Color(red: 207/255.0, green: 185/255.0, blue: 246/255.0)
-        static let wooPurpleBackground = Color(red: 79/255.0, green: 54/255.0, blue: 125/255.0)
-        static let secondaryColor = Color(red: 79/255.0, green: 54/255.0, blue: 125/255.0)
-    }
-
     enum Layout {
         static let revenueTitlePadding = 1.0
         static let revenueValuePadding = 4.0

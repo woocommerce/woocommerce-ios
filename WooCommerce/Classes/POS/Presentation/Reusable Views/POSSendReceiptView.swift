@@ -20,7 +20,7 @@ struct POSSendReceiptView: View {
                     isShowingSendReceiptView = false
                 }, label: {
                     HStack {
-                        Image(systemName: "arrow.backward")
+                        Image(systemName: "chevron.left")
                         Text(Localization.emailReceiptNavigationText)
                     }
                     .font(.title)

@@ -17,8 +17,16 @@ struct TotalsView: View {
         viewHelper.shouldShowTotalsFields(for: posModel.paymentState)
     }
 
+    private var shouldShowCollectCashPaymentButton: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.acceptCashForPointOfSale) &&
+        posModel.orderState != .syncing &&
+        (posModel.paymentState == .idle || posModel.paymentState == .acceptingCard)
+    }
+
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
+
+    @State private var shouldShowCollectCashPayment: Bool = false
 
     var body: some View {
         HStack {
@@ -52,6 +60,17 @@ struct TotalsView: View {
                                 .opacity(viewHelper.shouldShowTotalsFields(for: posModel.paymentState) ? 1 : 0)
                                 .layoutPriority(2)
                         }
+                        Button(action: {
+                            shouldShowCollectCashPayment = true
+                        }, label: {
+                            Text(Localization.cashPaymentButtonTitle)
+                                .font(POSFontStyle.posBodyEmphasized)
+                                .foregroundColor(.posPrimaryText)
+                                .frame(height: Constants.buttonHeight)
+                        })
+                        .buttonStyle(SecondaryButtonStyle())
+                        .padding(.horizontal, Constants.buttonHorizontalPadding)
+                        .renderedIf(shouldShowCollectCashPaymentButton)
                     }
                     .animation(.default, value: posModel.cardPresentPaymentInlineMessage)
                     Spacer()
@@ -69,6 +88,13 @@ struct TotalsView: View {
             isShowingTotalsFields = shouldShowTotalsFields
         }
         .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
+        .fullScreenCover(isPresented: $shouldShowCollectCashPayment) {
+            if case .loaded(let total) = posModel.orderState {
+                PointOfSaleCollectCashView(orderTotal: total.orderTotal)
+                    .matchedGeometryEffect(id: Constants.matchedGeometryCashId,
+                                           in: totalsFieldAnimation)
+            }
+        }
         .geometryGroupIfSupported()
     }
 
@@ -291,6 +317,8 @@ private extension TotalsView {
     enum Constants {
         static let pricesIdealWidth: CGFloat = 382
         static let verticalSpacing: CGFloat = 56
+        static let buttonHeight: CGFloat = 56
+        static let buttonHorizontalPadding: CGFloat = 48
 
         static let totalsLineViewPadding: EdgeInsets = .init(top: 20, leading: 24, bottom: 20, trailing: 24)
         static let subtotalsVerticalSpacing: CGFloat = 8
@@ -311,6 +339,7 @@ private extension TotalsView {
         static let matchedGeometrySubtotalId: String = "pos_totals_view_subtotal_matched_geometry_id"
         static let matchedGeometryTaxId: String = "pos_totals_view_tax_matched_geometry_id"
         static let matchedGeometryTotalId: String = "pos_totals_view_total_matched_geometry_id"
+        static let matchedGeometryCashId: String = "pos_totals_view_cash_matched_geometry_id"
 
         static let totalsFieldsHideAnimationDelay: CGFloat = 0.3
     }
@@ -328,6 +357,10 @@ private extension TotalsView {
             "pos.totalsView.taxes",
             value: "Taxes",
             comment: "Title for taxes amount field")
+        static let cashPaymentButtonTitle = NSLocalizedString(
+            "pos.totalsView.cash.button.title",
+            value: "Cash payment",
+            comment: "Title for the cash payment button title")
     }
 }
 

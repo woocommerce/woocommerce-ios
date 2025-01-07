@@ -34,7 +34,7 @@
                   {
                     "inner_dimensions": "8.63 x 5.38 x 1.63",
                     "outer_dimensions": "8.63 x 5.38 x 1.63",
-                    "box_weight": 0,
+                    "boxWeight": 0,
                     "is_flat_rate": true,
                     "id": "small_flat_box",
                     "name": "Small Flat Rate Box",
@@ -47,7 +47,7 @@
                   {
                     "inner_dimensions": "11 x 8.5 x 5.5",
                     "outer_dimensions": "11.25 x 8.75 x 6",
-                    "box_weight": 0,
+                    "boxWeight": 0,
                     "is_flat_rate": true,
                     "id": "medium_flat_box_top",
                     "name": "Medium Flat Rate Box 1, Top Loading",

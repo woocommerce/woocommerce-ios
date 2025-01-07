@@ -120,8 +120,8 @@ struct WooShippingCustomsForm: View {
                                     title: "Little Nap Brazil 250g",
                                     description: "Coffee Beans",
                                     hsTariffNumber: "HS 14-1",
-                                    valuePerUnit: "$20.00",
-                                    weightPerUnit: "0.3kg",
+                                    valuePerUnit: "",
+                                    weightPerUnit: "",
                                     originCountry: WooShippingCustomsCountry(code: "US", name: "United States"))
                                 )
                             }

@@ -34,12 +34,17 @@ struct WooShippingCustomsItem: View {
                         Spacer()
                         Text(viewModel.hsTariffNumber)
                     }
-                    HStack {
+                    HStack(spacing: Layout.collapsedUnitsHorizontalSpacing) {
                         Text(viewModel.originCountry.name)
                         Spacer()
-                        Text(viewModel.weightPerUnit)
+                        Text(viewModel.weightPerUnit).renderedIf(viewModel.weightPerUnit.isNotEmpty)
+                        emptyUnitsPlaceholder
+                            .renderedIf(viewModel.weightPerUnit.isEmpty)
                         Text("•")
+                            .renderedIf(viewModel.weightPerUnit.isNotEmpty || viewModel.valuePerUnit.isNotEmpty)
                         Text(viewModel.valuePerUnit)
+                        emptyUnitsPlaceholder
+                            .renderedIf(viewModel.valuePerUnit.isEmpty)
                     }
                 }.renderedIf(isCollapsed)
                     .foregroundColor(.primary)
@@ -176,6 +181,12 @@ struct WooShippingCustomsItem: View {
                 .background(FullScreenCoverClearBackgroundView())
         }
     }
+
+    var emptyUnitsPlaceholder: some View {
+        RoundedRectangle(cornerRadius: Layout.emptyUnitsPlaceholderCornerRadius)
+                            .fill(Color.withColorStudio(name: .red, shade: .shade0))
+                            .frame(width: Layout.emptyUnitsPlaceholderWidth, height: Layout.emptyUnitsPlaceholderHeight)
+    }
 }
 
 extension WooShippingCustomsItem {
@@ -222,6 +233,7 @@ extension WooShippingCustomsItem {
 
     enum Layout {
         static let collapsibleViewTopPadding: CGFloat = 4.0
+        static let collapsedUnitsHorizontalSpacing: CGFloat = 4.0
         static let collapsibleViewBottomContentTrailingPadding: CGFloat = -30.0
         static let collapsibleViewVerticalSpacing: CGFloat = 8.0
         static let collapsibleViewBottomLabelVerticalSpacing: CGFloat = 4.0
@@ -231,5 +243,9 @@ extension WooShippingCustomsItem {
         static let extraPadding: CGFloat = 16.0
         static let hsTariffNumberMoreInfoVerticalSpacing: CGFloat = 8.0
         static let unitsHorizontalSpacing: CGFloat = 8.0
+        static let emptyUnitsPlaceholderCornerRadius: CGFloat = 2.0
+        static let emptyUnitsPlaceholderWidth: CGFloat = 48.0
+        static let emptyUnitsPlaceholderHeight: CGFloat = 16.0
+
     }
 }

@@ -148,7 +148,7 @@ private extension PointOfSaleCollectCashView {
             comment: "Button to mark a cash payment as completed"
         )
         static let failedToCollectCashPayment = NSLocalizedString(
-            "pointOfSale.cashview.failedToCollectCashPayment",
+            "pointOfSale.cashview.failedToCollectCashPayment.draft",
             value: "Error trying to process payment. Try again.",
             comment: "Error message when the system fails to collect a cash payment."
         )

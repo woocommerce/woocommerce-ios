@@ -14,7 +14,6 @@ final class StatsInsightDecodingTests: XCTestCase {
         .init(type: StatsAllTimesInsight.self, fileName: "stats"),
         .init(type: StatsAllAnnualInsight.self, fileName: "stats-insight"),
         .init(type: StatsAnnualAndMostPopularTimeInsight.self, fileName: "stats-insight"),
-        .init(type: StatsPublicizeInsight.self, fileName: "stats-insight-publicize"),
         .init(type: StatsTodayInsight.self, fileName: "stats-insight-summary"),
         .init(type: StatsCommentsInsight.self, fileName: "stats-insight-comments"),
         .init(type: StatsTagsAndCategoriesInsight.self, fileName: "stats-insight-tag-and-category"),

@@ -1,4 +1,5 @@
 import SwiftUI
+import class WooFoundation.CurrencyFormatter
 
 struct PointOfSaleCollectCashView: View {
     @Environment(\.colorScheme) var colorScheme
@@ -9,6 +10,8 @@ struct PointOfSaleCollectCashView: View {
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
 
+    private let currencyFormatter: CurrencyFormatter = WooFoundation.CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+
     let orderTotal: String
 
     private var formattedOrderTotal: String {
@@ -16,10 +19,26 @@ struct PointOfSaleCollectCashView: View {
     }
 
     private func validateAmount() -> Bool {
-        // TODO:
-        // Validate amount entered vs order total
-        // https://github.com/woocommerce/woocommerce-ios/issues/14749
-        return true
+        guard let orderDecimal = parseCurrency(orderTotal),
+              let inputDecimal = parseCurrency(textFieldAmountInput) else {
+            errorMessage = "Invalid amount. Please try again."
+            return false
+        }
+        switch inputDecimal.compare(orderDecimal) {
+            case .orderedAscending:
+                // inputDecimal < orderDecimal
+                errorMessage = "Not enough cash to cover the order."
+                return false
+            case .orderedDescending:
+                // inputDecimal > orderDecimal
+                let changeDue = inputDecimal.subtracting(orderDecimal)
+                errorMessage = "Change due: \(formatAsCurrency(changeDue))"
+                return true
+            case .orderedSame:
+                // inputDecimal == orderDecimal
+                errorMessage = nil
+                return true
+            }
     }
 
     @StateObject private var textFieldViewModel = FormattableAmountTextFieldViewModel(size: .extraLarge,
@@ -109,6 +128,16 @@ struct PointOfSaleCollectCashView: View {
 
     private func markComplete() async throws {
         try await posModel.collectCashPayment()
+    }
+}
+
+private extension PointOfSaleCollectCashView {
+    func parseCurrency(_ amountString: String) -> NSDecimalNumber? {
+        currencyFormatter.convertToDecimal(amountString, locale: .current)
+    }
+
+    private func formatAsCurrency(_ amount: NSDecimalNumber) -> String {
+        currencyFormatter.formatAmount(amount) ?? "$0.00"
     }
 }
 

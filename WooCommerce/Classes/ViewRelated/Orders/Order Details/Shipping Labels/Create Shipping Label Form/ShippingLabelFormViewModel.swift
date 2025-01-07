@@ -43,7 +43,7 @@ final class ShippingLabelFormViewModel {
 
     /// Customs forms
     ///
-    private (set) var customsForms: [ShippingLabelCustomsForm] = []
+    private(set) var customsForms: [ShippingLabelCustomsForm] = []
 
     /// Carrier and Rates
     ///

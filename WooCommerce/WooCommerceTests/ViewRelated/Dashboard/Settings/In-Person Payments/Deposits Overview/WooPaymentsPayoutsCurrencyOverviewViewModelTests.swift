@@ -58,11 +58,6 @@ final class WooPaymentsPayoutsCurrencyOverviewViewModelTests: XCTestCase {
 
     func test_when_currency_matches_site_settings_amounts_formatted_using_woo_currency_formatter() {
         // Given
-        let currencySettings = CurrencySettings(currencyCode: .USD,
-                                                currencyPosition: .left,
-                                                thousandSeparator: ",",
-                                                decimalSeparator: ".",
-                                                numberOfDecimals: 2)
         let overview = WooPaymentsPayoutsOverviewByCurrency.fake().copy(currency: .USD, availableBalance: .init(string: "12.35"))
 
         // When
@@ -74,11 +69,6 @@ final class WooPaymentsPayoutsCurrencyOverviewViewModelTests: XCTestCase {
 
     func test_when_currency_doesnt_match_site_settings_amounts_formatted_using_system_locale_currency_formatter() {
         // Given
-        let currencySettings = CurrencySettings(currencyCode: .USD,
-                                                currencyPosition: .left,
-                                                thousandSeparator: ",",
-                                                decimalSeparator: ".",
-                                                numberOfDecimals: 2)
         let overview = WooPaymentsPayoutsOverviewByCurrency.fake().copy(currency: .CAD, availableBalance: .init(string: "12.35"))
 
         // When

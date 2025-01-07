@@ -14,8 +14,7 @@ public protocol ProductVariationsRemoteProtocol {
                                   completion: @escaping ([ProductVariation]?, Error?) -> Void)
     func loadVariationsForPointOfSale(for siteID: Int64,
                                       parentProductID: Int64,
-                                      pageNumber: Int,
-                                      pageSize: Int) async throws -> [ProductVariation]
+                                      pageNumber: Int) async throws -> [ProductVariation]
     func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func createProductVariation(for siteID: Int64,
                                 productID: Int64,
@@ -76,18 +75,16 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
     ///   - siteID: Site for which we'll fetch remote product variations.
     ///   - parentProductID: Product for which we'll fetch remote product variations.
     ///   - pageNumber: Number of page that should be retrieved.
-    ///   - pageSize: Number of product variations to be retrieved per page.
     /// - Returns: Variations for the provided parent product.
     public func loadVariationsForPointOfSale(for siteID: Int64,
                                              parentProductID: Int64,
-                                             pageNumber: Int = Default.pageNumber,
-                                             pageSize: Int = Default.pageSize) async throws -> [ProductVariation] {
+                                             pageNumber: Int = Default.pageNumber) async throws -> [ProductVariation] {
         let request = productVariationsRequest(for: siteID,
                                                productID: parentProductID,
                                                variationIDs: [],
                                                context: nil,
                                                pageNumber: pageNumber,
-                                               pageSize: pageSize)
+                                               pageSize: POSConstants.variationsPerPage)
         let mapper = ProductVariationListMapper(siteID: siteID, productID: parentProductID)
         return try await enqueue(request, mapper: mapper)
     }
@@ -326,5 +323,11 @@ public extension ProductVariationsRemote {
         static let contextKey: String = "context"
         static let image: String = "image"
         static let include: String    = "include"
+    }
+}
+
+private extension ProductVariationsRemote {
+    enum POSConstants {
+        static let variationsPerPage: Int = 100
     }
 }

@@ -5,6 +5,10 @@ import Combine
 import struct Yosemite.Order
 
 final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
+    func collectCashPayment() async throws {
+        // no-op
+    }
+
     var orderStatePublisher: AnyPublisher<PointOfSaleInternalOrderState, Never> {
         $orderState.eraseToAnyPublisher()
     }

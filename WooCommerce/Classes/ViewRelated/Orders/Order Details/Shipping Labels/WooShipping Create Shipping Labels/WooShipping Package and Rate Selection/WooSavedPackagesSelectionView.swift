@@ -147,13 +147,24 @@ struct WooSavedPackagesSelectionView: View {
                 Divider()
             }
             Spacer()
-            Button(WooShippingAddPackageView.Localization.addPackage) {
+            Button(selectionButtonText) {
                 addPackageButtonTapped()
             }
-            .disabled(viewModel.selectedSavedPackageId == nil || !viewModel.hasSavedPackages)
+            .disabled(selectionButtonDisabled)
             .buttonStyle(PrimaryButtonStyle())
             .padding()
         }
+    }
+
+    private var selectionButtonDisabled: Bool {
+        viewModel.selectedSavedPackageId == nil || !viewModel.hasSavedPackages
+    }
+
+    private var selectionButtonText: String {
+        if selectionButtonDisabled {
+            return WooShippingAddPackageView.Localization.selectPackage
+        }
+        return WooShippingAddPackageView.Localization.addPackage
     }
 
     @ViewBuilder

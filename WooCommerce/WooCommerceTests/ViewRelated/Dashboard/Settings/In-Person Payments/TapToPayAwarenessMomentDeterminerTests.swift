@@ -165,7 +165,7 @@ struct TapToPayAwarenessMomentDeterminerTests {
         userDefaults.hasFirstAttempt = false
 
         // When shouldPresent called
-        let shouldPresent = await sut.shouldPresent()
+        _ = await sut.shouldPresent()
 
         // Then
         #expect(userDefaults.hasFirstAttempt)

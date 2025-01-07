@@ -1,6 +1,6 @@
 import Foundation
 
-public extension SystemStatus {
+public extension SystemStatusReport {
     /// Subtype for details about post types and count in system status.
     ///
     struct PostTypeCount: Decodable {

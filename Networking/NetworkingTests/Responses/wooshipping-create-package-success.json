@@ -11,7 +11,7 @@
                 "id": "69d7052f934a7c218329de9c1abe3858",
                 "name": "WCS&T Box",
                 "dimensions": "15 x 15 x 15",
-                "box_weight": 0.25,
+                "boxWeight": 0.25,
                 "max_weight": 0,
                 "type": "box",
                 "is_user_defined": true
@@ -20,34 +20,7 @@
                 "id": "517116d2f2d929115f6e081ba780b84e",
                 "name": "WCS&T Envelope",
                 "dimensions": "30 x 10 x 1",
-                "box_weight": 0.1,
-                "max_weight": 0,
-                "type": "envelope",
-                "is_user_defined": true
-            },
-            {
-                "id": "a344e7fa99e8bb88b15feb13141bf62c",
-                "name": "WCShip Envelope",
-                "dimensions": "100 x 10 x 1",
                 "box_weight": 0.25,
-                "max_weight": 0,
-                "type": "envelope",
-                "is_user_defined": true
-            },
-            {
-                "id": "22025742fbfaf4d7e73da11caaff9a2a",
-                "name": "WCShip Box",
-                "dimensions": "10 x 10 x 10",
-                "box_weight": 1,
-                "max_weight": 0,
-                "type": "box",
-                "is_user_defined": true
-            },
-            {
-                "id": "dd58dcd5dc044b6c56540c557c231c4f",
-                "name": "WCShip Envelope 2",
-                "dimensions": "10 x 10 x 1",
-                "box_weight": 1,
                 "max_weight": 0,
                 "type": "envelope",
                 "is_user_defined": true

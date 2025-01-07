@@ -51,4 +51,9 @@ public enum WooShippingAction: Action {
                     labelIDs: [Int64],
                     paperSize: ShippingLabelPaperSize,
                     completion: (Result<ShippingLabelPrintData, Error>) -> Void)
+
+    /// Fetch list of origin addresses.
+    ///
+    case loadOriginAddresses(siteID: Int64,
+                             completion: (Result<[WooShippingOriginAddress], Error>) -> Void)
 }

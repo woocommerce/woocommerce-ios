@@ -35,7 +35,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
         return countries.map { WooShippingCustomsCountry(code: $0.code, name: $0.name) }
     }
 
-    let hsTariffURL: URL? = .init(string: "https://woocommerce.com/document/woocommerce-shipping-and-tax/woocommerce-shipping/#section-29")
+    let hsTariffURL = WooConstants.URLs.hsTariffURL.asURL()
 
     init(title: String,
          description: String,

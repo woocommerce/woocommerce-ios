@@ -259,6 +259,11 @@ enum WooAnalyticsStat: String {
     case sitePickerNewToWooTapped = "site_picker_new_to_woo_tapped"
     case sitePickerAddStoreTapped = "site_picker_add_a_store_tapped"
     case sitePickerConnectExistingStoreTapped = "site_picker_connect_existing_store_tapped"
+    case sitePickerEditButtonShown = "site_picker_edit_button_shown"
+    case sitePickerEditButtonTapped = "site_picker_edit_button_tapped"
+    case sitePickerListSaveButtonTapped = "site_picker_list_save_button_tapped"
+    case sitePickerListSavingSuccess = "site_picker_list_saving_success"
+    case sitePickerListSavingFailure = "site_picker_list_saving_failure"
 
     // MARK: Site creation
     //

@@ -6,6 +6,7 @@ import protocol WooFoundation.Analytics
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
 import struct Yosemite.POSCartItem
+import enum Yosemite.POSItem
 import enum Yosemite.SystemStatusAction
 
 protocol PointOfSaleAggregateModelProtocol {
@@ -25,6 +26,7 @@ protocol PointOfSaleAggregateModelProtocol {
     func loadInitialItems() async
     func loadNextItems() async
     func reload() async
+    func loadInitialChildItems(for parent: POSItem) async
 
     var cart: [CartItem] { get }
     func addToCart(_ item: POSOrderableItem)
@@ -103,6 +105,11 @@ extension PointOfSaleAggregateModel {
     @MainActor
     func reload() async {
         await itemsController.reload()
+    }
+
+    @MainActor
+    func loadInitialChildItems(for parent: POSItem) async {
+        await itemsController.loadInitialChildItems(for: parent)
     }
 }
 
@@ -196,6 +203,15 @@ extension PointOfSaleAggregateModel {
             try await collectPayment(for: order)
         } catch {
             DDLogError("Error taking payment: \(error)")
+        }
+    }
+
+    @MainActor
+    func collectCashPayment() async throws {
+        do {
+            try await orderController.collectCashPayment()
+        } catch {
+            debugPrint(error)
         }
     }
 

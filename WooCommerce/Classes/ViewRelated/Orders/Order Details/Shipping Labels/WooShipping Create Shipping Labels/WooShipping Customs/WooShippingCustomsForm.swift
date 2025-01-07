@@ -71,6 +71,7 @@ struct WooShippingCustomsForm: View {
                                 }
 
                                 contentTypeSelectionView
+                                    .padding(.bottom, Constants.defaultVerticalSpacing)
 
                                 HStack {
                                     Text(Localization.restrictionType)
@@ -79,6 +80,7 @@ struct WooShippingCustomsForm: View {
                                 }
 
                                 restrictionTypeSelectionView
+                                    .padding(.bottom, Constants.defaultVerticalSpacing)
 
                                 HStack {
                                     Text(Localization.internationalTransactionNumber)
@@ -99,6 +101,7 @@ struct WooShippingCustomsForm: View {
                                     }
                                     .foregroundColor(Color(.wooCommercePurple(.shade60)))
                                     .footnoteStyle()
+                                    .padding(.bottom, Constants.bottomButtonPadding)
                                 }
 
                                 Toggle(isOn: $viewModel.returnToSenderIfNotDelivered) {
@@ -108,8 +111,9 @@ struct WooShippingCustomsForm: View {
                                 .tint(Color.accentColor)
                                 .padding(.bottom, Constants.returnToSenderRowBottomPadding)
 
-                                Text("Product Details")
+                                Text(Localization.productDetailsTitle)
                                     .tertiaryTitleStyle()
+                                    .padding(.bottom, Constants.defaultVerticalSpacing)
 
                                 // Dummy data
                                 WooShippingCustomsItem(viewModel: WooShippingCustomsItemViewModel(
@@ -189,18 +193,21 @@ extension WooShippingCustomsForm {
         static let saveCustomsDetailsButtonTitle = NSLocalizedString("wooShipping.customs.saveCustomsDetails",
                                                               value: "Save Customs Details",
                                                               comment: "Customs button title when it's enabled and there's no info to add")
+        static let productDetailsTitle = NSLocalizedString("wooShipping.customs.productDetails",
+                                                           value: "Product Details",
+                                                           comment: "Product Details Section title")
     }
 
 }
 
 extension WooShippingCustomsForm {
     enum Constants {
-        static let defaultVerticalSpacing: CGFloat = 16.0
+        static let defaultVerticalSpacing: CGFloat = 8.0
         static let borderCornerRadius: CGFloat = 8
         static let borderWidth: CGFloat = 1
         static let borderPadding: CGFloat = 16
         static let intoButtonHorizontalSpacing: CGFloat = 8
         static let bottomButtonPadding: CGFloat = 16.0
-        static let returnToSenderRowBottomPadding: CGFloat = 24.0
+        static let returnToSenderRowBottomPadding: CGFloat = 32.0
     }
 }

@@ -160,50 +160,58 @@ private extension StorePerformanceView {
         }
     }
 
+    @ViewBuilder
     var statsView: some View {
-        VStack(spacing: Layout.padding) {
-            VStack(spacing: Layout.contentVerticalSpacing) {
-                if let selectedDateText = viewModel.selectedDateText {
-                    Text(selectedDateText)
+        if viewModel.hasRevenue {
+            VStack(spacing: Layout.padding) {
+                VStack(spacing: Layout.contentVerticalSpacing) {
+                    if let selectedDateText = viewModel.selectedDateText {
+                        Text(selectedDateText)
+                            .font(Font(StyleManager.statsTitleFont))
+                    }
+
+                    Text(viewModel.revenueStatsText)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(statsValueColor)
+                        .largeTitleStyle()
+                        .accessibilityIdentifier("revenue-value")
+
+                    Text(Localization.revenue)
+                        .if(!viewModel.hasRevenue) { $0.foregroundStyle(Color(.textSubtle)) }
                         .font(Font(StyleManager.statsTitleFont))
                 }
 
-                Text(viewModel.revenueStatsText)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(statsValueColor)
-                    .largeTitleStyle()
-                    .accessibilityIdentifier("revenue-value")
-
-                Text(Localization.revenue)
-                    .if(!viewModel.hasRevenue) { $0.foregroundStyle(Color(.textSubtle)) }
-                    .font(Font(StyleManager.statsTitleFont))
-            }
-
-            HStack(alignment: .bottom) {
-                Group {
-                    statsItemView(title: Localization.orders,
-                                  value: viewModel.orderStatsText,
-                                  redactMode: .none)
+                HStack(alignment: .bottom) {
+                    Group {
+                        statsItemView(title: Localization.orders,
+                                      value: viewModel.orderStatsText,
+                                      redactMode: .none)
                         .frame(maxWidth: .infinity)
 
-                    statsItemView(title: Localization.visitors,
-                                  value: viewModel.visitorStatsText,
-                                  redactMode: .withIcon)
+                        statsItemView(title: Localization.visitors,
+                                      value: viewModel.visitorStatsText,
+                                      redactMode: .withIcon)
                         .frame(maxWidth: .infinity)
 
-                    statsItemView(title: Localization.conversion,
-                                  value: viewModel.conversionStatsText,
-                                  redactMode: .withoutIcon)
+                        statsItemView(title: Localization.conversion,
+                                      value: viewModel.conversionStatsText,
+                                      redactMode: .withoutIcon)
                         .frame(maxWidth: .infinity)
-
+                    }
                 }
-                .renderedIf(viewModel.hasRevenue)
-
-                Text(Localization.noRevenueText)
-                    .subheadlineStyle()
-                    .frame(maxWidth: .infinity)
-                    .renderedIf(!viewModel.hasRevenue)
             }
+        } else {
+            emptyStatsView
+        }
+    }
+
+    var emptyStatsView: some View {
+        VStack(spacing: Layout.emptyViewSpacing) {
+            Image(.magnifyingGlassNotFoundGrey)
+
+            Text(Localization.noRevenueText)
+                .subheadlineStyle()
+                .frame(maxWidth: .infinity)
         }
     }
 
@@ -262,7 +270,8 @@ private extension StorePerformanceView {
 
     @ViewBuilder
     var chartView: some View {
-        if let chartViewModel = viewModel.chartViewModel {
+        if let chartViewModel = viewModel.chartViewModel,
+           chartViewModel.hasRevenue {
             VStack {
                 StoreStatsChart(viewModel: chartViewModel) { selectedIndex in
                     viewModel.trackInteraction()
@@ -325,6 +334,7 @@ private extension StorePerformanceView {
         static let redactedViewIconSize: CGFloat = 14
         static let redactedViewIconOffset = CGSize(width: 16, height: 0)
         static let hideIconVerticalPadding: CGFloat = 8
+        static let emptyViewSpacing: CGFloat = 24
     }
 
     enum Localization {

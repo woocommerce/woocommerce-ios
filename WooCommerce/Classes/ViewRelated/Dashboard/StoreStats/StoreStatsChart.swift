@@ -93,7 +93,6 @@ struct StoreStatsChart: View {
             }
         }
         .padding(Constants.chartPadding)
-        .if(!viewModel.hasRevenue) { $0.overlay { emptyChartOverlay } }
     }
 
     private func updateSelectedDate(at location: CGPoint, proxy: ChartProxy, geometry: GeometryProxy) {
@@ -125,26 +124,6 @@ struct StoreStatsChart: View {
                 onIntervalSelected(index)
             }
         }
-    }
-}
-
-private extension StoreStatsChart {
-    var emptyChartOverlay: some View {
-        // Simulate an empty chart
-        VStack {
-            Divider()
-            Spacer()
-            Divider()
-            Spacer()
-            Divider()
-            Spacer()
-        }
-        .overlay {
-            Image(.magnifyingGlassNotFound)
-                .opacity(Constants.EmptyChartOverlay.opacity)
-                .padding(.bottom, Constants.EmptyChartOverlay.bottomPadding)
-        }
-        .renderedIf(!viewModel.hasRevenue)
     }
 }
 
@@ -190,11 +169,6 @@ private extension StoreStatsChart {
         )
         static let chartGradientBottomColor = Color.clear
         static let chartPadding: CGFloat = 8
-
-        enum EmptyChartOverlay {
-            static let opacity: CGFloat = 0.5
-            static let bottomPadding: CGFloat = 32
-        }
     }
 }
 

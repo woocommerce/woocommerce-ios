@@ -171,7 +171,7 @@ private extension ProductStockDashboardCard {
 
     var emptyView: some View {
         VStack(alignment: .center, spacing: Layout.padding) {
-            Image(uiImage: .noStoreImage)
+            Image(uiImage: .productBlouseImage)
             Text(String(format: Localization.emptyStateTitle,
                         viewModel.selectedStockType.displayedName))
                 .subheadlineStyle()

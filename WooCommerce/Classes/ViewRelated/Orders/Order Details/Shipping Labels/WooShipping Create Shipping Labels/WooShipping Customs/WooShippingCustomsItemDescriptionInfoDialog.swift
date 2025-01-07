@@ -9,10 +9,6 @@ struct WooShippingCustomsItemDescriptionInfoDialog: View {
     /// Whether the learn more webview is being shown.
     @State private var showLearnMoreWebView: Bool = false
 
-    /// Learn more URL. I preferred to add it here instead of creating a view model just for this.
-    let learnMoreURL = URL(string: "https://pe.usps.com/text/imm/immc5_010.htm")
-
-
     var body: some View {
         ZStack {
             Color.black.opacity(Layout.backgroundOpacity).edgesIgnoringSafeArea(.all)
@@ -41,7 +37,7 @@ struct WooShippingCustomsItemDescriptionInfoDialog: View {
                                     }
                                 }
                                 .buttonStyle(PrimaryButtonStyle())
-                                .safariSheet(isPresented: $showLearnMoreWebView, url: learnMoreURL)
+                                .safariSheet(isPresented: $showLearnMoreWebView, url: WooConstants.URLs.shippingCustomsInstructionsForEUCountries.asURL())
 
                                 Button {
                                     dismiss()

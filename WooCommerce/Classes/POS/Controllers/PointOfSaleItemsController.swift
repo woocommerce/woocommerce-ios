@@ -88,7 +88,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
             return
         }
 
-        itemsViewStateSubject.send(itemsViewStateSubject.value.copy(itemsStack: itemsViewStateSubject.value.itemsStack.copy(itemStates: [parent: .loading([])])))
+        updateState(for: parent, to: .loading([]))
 
         switch parentProduct.type {
         case .variable:
@@ -151,10 +151,18 @@ private extension PointOfSaleItemsController {
         }
         allItems.append(contentsOf: uniqueNewItems)
 
+        updateState(for: parentItem, to: .loaded(allItems))
+    }
+}
+
+// MARK: - ItemsViewState Updates
+
+private extension PointOfSaleItemsController {
+    func updateState(for parent: POSItem, to state: ItemListState) {
         let itemsViewState = itemsViewStateSubject.value
         let itemStates: [POSItem: ItemListState] = {
             var states = itemsViewState.itemsStack.itemStates
-            states[parentItem] = .loaded(allItems)
+            states[parent] = state
             return states
         }()
         itemsViewStateSubject.send(itemsViewStateSubject.value.copy(itemsStack: itemsViewState.itemsStack.copy(itemStates: itemStates)))

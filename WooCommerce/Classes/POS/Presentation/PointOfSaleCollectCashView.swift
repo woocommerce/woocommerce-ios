@@ -9,6 +9,7 @@ struct PointOfSaleCollectCashView: View {
     @State private var textFieldAmountInput: String = ""
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
+    @State private var changeDueMessage: String?
 
     private let currencyFormatter: CurrencyFormatter = WooFoundation.CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
@@ -16,29 +17,6 @@ struct PointOfSaleCollectCashView: View {
 
     private var formattedOrderTotal: String {
         String.localizedStringWithFormat(Localization.backNavigationSubtitle, orderTotal)
-    }
-
-    private func validateAmount() -> Bool {
-        guard let orderDecimal = parseCurrency(orderTotal),
-              let inputDecimal = parseCurrency(textFieldAmountInput) else {
-            errorMessage = "Invalid amount. Please try again."
-            return false
-        }
-        switch inputDecimal.compare(orderDecimal) {
-            case .orderedAscending:
-                // inputDecimal < orderDecimal
-                errorMessage = "Not enough cash to cover the order."
-                return false
-            case .orderedDescending:
-                // inputDecimal > orderDecimal
-                let changeDue = inputDecimal.subtracting(orderDecimal)
-                errorMessage = "Change due: \(formatAsCurrency(changeDue))"
-                return true
-            case .orderedSame:
-                // inputDecimal == orderDecimal
-                errorMessage = nil
-                return true
-            }
     }
 
     @StateObject private var textFieldViewModel = FormattableAmountTextFieldViewModel(size: .extraLarge,
@@ -73,7 +51,14 @@ struct PointOfSaleCollectCashView: View {
             FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
                 .onChange(of: textFieldViewModel.amount) { newValue in
                     textFieldAmountInput = newValue
+                    updateChangeDueMessage()
                 }
+
+            if let changeDue = changeDueMessage {
+                Text(changeDue)
+                    .font(.posBodyRegular)
+                    .foregroundColor(.green)
+            }
 
             if let errorMessage = errorMessage {
                 Text(errorMessage)
@@ -83,7 +68,7 @@ struct PointOfSaleCollectCashView: View {
 
             Button(action: {
                 Task { @MainActor in
-                    guard validateAmount() else {
+                    guard validateAmountOnSubmit() else {
                         return
                     }
                     isLoading = true
@@ -121,6 +106,7 @@ struct PointOfSaleCollectCashView: View {
         .background(backgroundColor)
         .padding()
         .animation(.easeInOut, value: errorMessage)
+        .animation(.easeInOut, value: changeDueMessage)
         .onChange(of: textFieldAmountInput) { _ in
             errorMessage = nil
         }
@@ -139,6 +125,36 @@ private extension PointOfSaleCollectCashView {
     private func formatAsCurrency(_ amount: NSDecimalNumber) -> String {
         currencyFormatter.formatAmount(amount) ?? "$0.00"
     }
+
+    private func updateChangeDueMessage() {
+        guard let orderDecimal = parseCurrency(orderTotal),
+              let inputDecimal = parseCurrency(textFieldAmountInput) else {
+            changeDueMessage = nil
+            return
+        }
+
+        if inputDecimal.compare(orderDecimal) == .orderedDescending {
+            let changeDue = inputDecimal.subtracting(orderDecimal)
+            changeDueMessage = "Change due: \(formatAsCurrency(changeDue))"
+        } else {
+            changeDueMessage = nil
+        }
+    }
+
+    private func validateAmountOnSubmit() -> Bool {
+            guard let orderDecimal = parseCurrency(orderTotal),
+                  let inputDecimal = parseCurrency(textFieldAmountInput) else {
+                errorMessage = "Invalid amount. Please try again."
+                return false
+            }
+
+            if inputDecimal.compare(orderDecimal) == .orderedAscending {
+                errorMessage = "Amount must be more or equal to total"
+                return false
+            }
+            errorMessage = nil
+            return true
+        }
 }
 
 private extension PointOfSaleCollectCashView {

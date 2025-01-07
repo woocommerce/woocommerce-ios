@@ -2,7 +2,7 @@ import Yosemite
 import SwiftUI
 import protocol Storage.StorageManagerType
 
-struct SimplifiedCountry: Hashable {
+struct WooShippingCustomsCountry: Hashable {
     let code: String
     let name: String
 }
@@ -13,7 +13,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
     @Published var hsTariffNumber: String
     @Published var valuePerUnit: String
     @Published var weightPerUnit: String
-    @Published var originCountry: SimplifiedCountry
+    @Published var originCountry: WooShippingCustomsCountry
 
     var informationIsMissing: Bool = true
 
@@ -26,13 +26,13 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
         return ResultsController(storageManager: storageManager, matching: nil, sortedBy: [descriptor])
     }()
 
-    var countries: [SimplifiedCountry] {
+    var countries: [WooShippingCustomsCountry] {
         let countries = resultsController.fetchedObjects
 
         // This removes the states property because:
         // - It's not necessary to display the list
-        // - As we retrieve a different order on the states array property from the ResultsController, it might the Equality comparison
-        return countries.map { SimplifiedCountry(code: $0.code, name: $0.name) }
+        // - As we retrieve a different order on the states array property from the ResultsController, it might mess the Equality comparison
+        return countries.map { WooShippingCustomsCountry(code: $0.code, name: $0.name) }
     }
 
     let hsTariffURL: URL? = .init(string: "https://woocommerce.com/document/woocommerce-shipping-and-tax/woocommerce-shipping/#section-29")
@@ -42,7 +42,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
          hsTariffNumber: String,
          valuePerUnit: String,
          weightPerUnit: String,
-         originCountry: SimplifiedCountry,
+         originCountry: WooShippingCustomsCountry,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores) {
         self.title = title

@@ -207,6 +207,7 @@ extension PointOfSaleAggregateModel {
 
     func cancelCashPayment() async throws {
         isCashPaymentInProgress = false
+        paymentState = .card(.idle)
         await startPaymentWhenCardReaderConnected()
     }
 

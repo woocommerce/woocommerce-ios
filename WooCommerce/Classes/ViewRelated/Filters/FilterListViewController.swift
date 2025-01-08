@@ -34,6 +34,9 @@ protocol FilterListViewModel {
     /// Retrieves past filters
     func retrieveFilterHistory() async throws -> [Criteria]
 
+    /// Applies a filter in the history
+    func applyPastFilter(_ filter: Criteria)
+
     /// Resets the filter criteria.
     func clearAll()
 }
@@ -195,8 +198,12 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
     }
 
     @objc private func showFilterHistory() {
-        let controller = FilterHistoryViewHostingController(viewModel: viewModel, onSelection: { selectedCriteria in
-            // TODO
+        let controller = FilterHistoryViewHostingController(viewModel: viewModel, onSelection: { [weak self] selectedCriteria in
+            guard let self else { return }
+            viewModel.applyPastFilter(selectedCriteria)
+            listSelectorCommand.data = viewModel.filterTypeViewModels
+            updateUI(numberOfActiveFilters: viewModel.filterTypeViewModels.numberOfActiveFilters)
+            listSelector.reloadData()
         })
         present(controller, animated: true)
     }

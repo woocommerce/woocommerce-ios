@@ -64,19 +64,27 @@ final class FilterOrderListViewModel: FilterListViewModel {
     private let productFilterViewModel: FilterTypeViewModel
     private let customerFilterViewModel: FilterTypeViewModel
 
+    private let siteID: Int64
+    private let stores: StoresManager
+
     /// - Parameters:
     ///   - filters: the filters to be applied initially.
     ///   - allowedStatuses: the statuses that will be shown in the filter list.
     ///   - siteID: current selected site ID
     ///   - featureFlagService: feature flag service
+    ///   - stores: stores manager
     init(filters: Filters,
          allowedStatuses: [OrderStatus],
          siteID: Int64,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         stores: StoresManager = ServiceLocator.stores) {
         orderStatusFilterViewModel = OrderListFilter.orderStatus.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
         dateRangeFilterViewModel = OrderListFilter.dateRange.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
         productFilterViewModel = OrderListFilter.product(siteID: siteID).createViewModel(filters: filters, allowedStatuses: allowedStatuses)
         customerFilterViewModel = OrderListFilter.customer(siteID: siteID).createViewModel(filters: filters, allowedStatuses: allowedStatuses)
+
+        self.siteID = siteID
+        self.stores = stores
 
         shouldShowHistory = featureFlagService.isFeatureFlagEnabled(.filterHistoryOnOrderAndProductLists)
         filterTypeViewModels = [orderStatusFilterViewModel, dateRangeFilterViewModel, customerFilterViewModel, productFilterViewModel]
@@ -95,9 +103,33 @@ final class FilterOrderListViewModel: FilterListViewModel {
                        numberOfActiveFilters: numberOfActiveFilters)
     }
 
+    @MainActor
     func retrieveFilterHistory() async throws -> [Filters] {
-        // TODO
-        return []
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(AppSettingsAction.loadOrderFilterHistory(siteID: siteID, onCompletion: { result in
+                switch result {
+                case .success(let history):
+                    let filters = history.map { item in
+                        Filters(orderStatus: item.orderStatusesFilter,
+                                dateRange: item.dateRangeFilter,
+                                product: item.productFilter,
+                                customer: item.customerFilter,
+                                numberOfActiveFilters: item.numberOfActiveFilters())
+                    }
+                    continuation.resume(returning: filters)
+                case .failure(let error):
+                    DDLogError("⛔️ Error loading filter history for orders: \(error)")
+                    continuation.resume(throwing: error)
+                }
+            }))
+        }
+    }
+
+    func applyPastFilter(_ filter: Filters) {
+        orderStatusFilterViewModel.selectedValue = filter.orderStatus
+        dateRangeFilterViewModel.selectedValue = filter.dateRange
+        productFilterViewModel.selectedValue = filter.product
+        customerFilterViewModel.selectedValue = filter.customer
     }
 
     func clearAll() {

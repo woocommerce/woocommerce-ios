@@ -117,6 +117,10 @@ final class FilterProductListViewModel: FilterListViewModel {
                        numberOfActiveFilters: numberOfActiveFilters)
     }
 
+    func applyPastFilter(_ filter: Filters) {
+        // TODO
+    }
+
     func retrieveFilterHistory() async throws -> [Filters] {
         // TODO
         return []

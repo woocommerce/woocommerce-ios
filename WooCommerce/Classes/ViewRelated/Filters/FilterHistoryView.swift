@@ -39,6 +39,18 @@ struct FilterHistoryView<ViewModel: FilterListViewModel>: View {
         comment: "Cancel button on the Filter History view"
     )
 
+    private let apply = NSLocalizedString(
+        "filterHistoryView.apply",
+        value: "Apply",
+        comment: "Apply button on the Filter History view"
+    )
+
+    private let emptyState = NSLocalizedString(
+        "filterHistoryView.emptyState",
+        value: "No past filters found",
+        comment: "Label on the empty state of the Filter History view"
+    )
+
     init(viewModel: ViewModel, onSelection: @escaping (ViewModel.Criteria) -> Void) {
         self.viewModel = viewModel
         self.onSelection = onSelection
@@ -52,7 +64,7 @@ struct FilterHistoryView<ViewModel: FilterListViewModel>: View {
                         .foregroundColor(.secondary)
                         .font(.largeTitle)
                         .padding(.bottom)
-                    Text("No past filter in the history")
+                    Text(emptyState)
                         .secondaryBodyStyle()
                 } else {
                     filterListView
@@ -65,6 +77,14 @@ struct FilterHistoryView<ViewModel: FilterListViewModel>: View {
                     Button(cancel) {
                         onDismiss()
                     }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(apply) {
+                        guard let selectedFilter else { return }
+                        onSelection(selectedFilter)
+                        onDismiss()
+                    }
+                    .disabled(selectedFilter == nil)
                 }
             }
         }

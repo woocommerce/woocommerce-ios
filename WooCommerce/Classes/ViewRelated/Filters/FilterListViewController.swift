@@ -188,7 +188,8 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
     }
 
     @objc private func showFilterHistory() {
-        // TODO-14791: show history view
+        let controller = FilterHistoryViewHostingController(viewModel: viewModel)
+        present(controller, animated: true)
     }
 }
 

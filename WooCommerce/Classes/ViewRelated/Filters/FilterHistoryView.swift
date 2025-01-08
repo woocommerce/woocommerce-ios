@@ -26,6 +26,7 @@ struct FilterHistoryView<ViewModel: FilterListViewModel>: View {
     @State private var selectedFilter: ViewModel.Criteria?
     @State private var savedFilters: [ViewModel.Criteria] = []
     @State private var error: Error?
+    @State private var shouldConfirmClearingHistory = false
 
     private let title = NSLocalizedString(
         "filterHistoryView.title",
@@ -55,6 +56,18 @@ struct FilterHistoryView<ViewModel: FilterListViewModel>: View {
         "filterHistoryView.recent",
         value: "Recent",
         comment: "Header label of the Filter History view"
+    )
+
+    private let clearHistory = NSLocalizedString(
+        "filterHistoryView.clearHistory",
+        value: "Clear History",
+        comment: "Button to clear all history on the Filter History view"
+    )
+
+    private let clearHistoryConfirmation = NSLocalizedString(
+        "filterHistoryView.clearHistoryConfirmation",
+        value: "Are you sure you want to clear all the filter history?",
+        comment: "Message to confirm clearing all history on the Filter History view"
     )
 
     init(viewModel: ViewModel, onSelection: @escaping (ViewModel.Criteria) -> Void) {
@@ -96,6 +109,14 @@ struct FilterHistoryView<ViewModel: FilterListViewModel>: View {
                 self.error = error
             }
         }
+        .alert(clearHistoryConfirmation, isPresented: $shouldConfirmClearingHistory) {
+            Button(cancel, role: .cancel) {}
+            Button(clearHistory, role: .destructive) {
+                viewModel.clearAllFilterHistory()
+                savedFilters = []
+                selectedFilter = nil
+            }
+        }
     }
 }
 
@@ -106,7 +127,8 @@ private extension FilterHistoryView {
                 ForEach(savedFilters, id: \.readableString) { filter in
                     SelectableItemRow(title: filter.readableString,
                                       selected: selectedFilter == filter,
-                                      displayMode: .compact)
+                                      displayMode: .compact,
+                                      alignment: .trailing)
                     .onTapGesture {
                         selectedFilter = filter
                     }
@@ -123,6 +145,17 @@ private extension FilterHistoryView {
                 }
             } header: {
                 Text(recent)
+            }
+
+            Section {
+                Button(action: {
+                    shouldConfirmClearingHistory = true
+                }, label: {
+                    Text(clearHistory)
+                        .errorStyle()
+                })
+                .buttonStyle(.plain)
+                .frame(maxWidth: .infinity, alignment: .center)
             }
         }
         .listStyle(.grouped)

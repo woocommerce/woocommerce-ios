@@ -43,6 +43,9 @@ protocol FilterListViewModel {
     /// Removes a filter from the history
     func removeFilterFromHistory(_ filter: Criteria)
 
+    /// Removes all saved filters from the history
+    func clearAllFilterHistory()
+
     /// Resets the filter criteria.
     func clearAll()
 }

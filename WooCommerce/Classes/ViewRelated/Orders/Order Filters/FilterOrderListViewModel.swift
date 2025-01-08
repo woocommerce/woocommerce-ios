@@ -153,7 +153,15 @@ final class FilterOrderListViewModel: FilterListViewModel {
                                                    customerFilter: filter.customer)
         stores.dispatch(AppSettingsAction.removeFromOrderFilterHistory(filter: settings, onCompletion: { error in
             if let error {
-                DDLogError("⛔️ Error saving filter history: \(error)")
+                DDLogError("⛔️ Error removing from filter history: \(error)")
+            }
+        }))
+    }
+
+    func clearAllFilterHistory() {
+        stores.dispatch(AppSettingsAction.resetOrderFilterHistory(siteID: siteID, onCompletion: { error in
+            if let error {
+                DDLogError("⛔️ Error clearing all filter history: \(error)")
             }
         }))
     }

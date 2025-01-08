@@ -133,6 +133,10 @@ final class FilterProductListViewModel: FilterListViewModel {
         fatalError("Filter history is not yet implemented for product list")
     }
 
+    func clearAllFilterHistory() {
+        fatalError("Filter history is not yet implemented for product list")
+    }
+
     func clearAll() {
         let clearedStockStatus: ProductStockStatus? = nil
         stockStatusFilterViewModel.selectedValue = clearedStockStatus

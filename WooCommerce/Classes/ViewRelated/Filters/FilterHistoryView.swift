@@ -48,7 +48,12 @@ struct FilterHistoryView<ViewModel: FilterListViewModel>: View {
         NavigationStack {
             VStack {
                 if error != nil {
+                    Image(systemName: "clock")
+                        .foregroundColor(.secondary)
+                        .font(.largeTitle)
+                        .padding(.bottom)
                     Text("No past filter in the history")
+                        .secondaryBodyStyle()
                 } else {
                     filterListView
                 }

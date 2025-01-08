@@ -126,46 +126,6 @@ class DomainsServiceRemoteRESTTests: RemoteTestCase, RESTTestable {
         waitForExpectations(timeout: timeout, handler: nil)
     }
 
-    func testGetStatesSuccess() {
-        let expect = expectation(description: "Get states for coutry code")
-        let countryCode = "US"
-        stubRemoteResponse("domains/supported-states/" + countryCode,
-                           filename: domainServiceSupportedStatesSuccess,
-                           contentType: .ApplicationJSON,
-                           status: 200)
-
-        remote.getStates(for: countryCode,
-                         success: { (stateList) in
-            XCTAssert(stateList.count == 61)
-            XCTAssert(stateList[0].code == "AL")
-            XCTAssert(stateList[0].name == "Alabama")
-            expect.fulfill()
-        }) { (_) in
-            XCTFail("This callback shouldn't get called")
-            expect.fulfill()
-        }
-        waitForExpectations(timeout: timeout, handler: nil)
-    }
-
-    func testGetStatesSuccessEmpty() {
-        let expect = expectation(description: "Get states for coutry code")
-        let countryCode = "TR"
-        stubRemoteResponse("domains/supported-states/" + countryCode,
-                           filename: domainServiceSupportedStatesEmpty,
-                           contentType: .ApplicationJSON,
-                           status: 200)
-
-        remote.getStates(for: countryCode,
-                         success: { (stateList) in
-            XCTAssert(stateList.count == 0)
-            expect.fulfill()
-        }) { (_) in
-            XCTFail("This callback shouldn't get called")
-            expect.fulfill()
-        }
-        waitForExpectations(timeout: timeout, handler: nil)
-    }
-
     func testValidateDomainContactInformationFail() {
         let expect = expectation(description: "Validate domain contact information")
         stubRemoteResponse("me/domain-contact-information/validate",

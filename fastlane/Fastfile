@@ -26,12 +26,10 @@ FASTLANE_METADATA_FOLDER = File.join(FASTLANE_DIR, 'metadata')
 WORKSPACE_PATH = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce.xcworkspace')
 BUILDKITE_RELEASE_PIPELINE = 'release-builds.yml'
 IOS_LOCALES = %w[ar-SA de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
-SIMULATOR_VERSION = '16.0' # For screenshots
+SIMULATOR_VERSION = '18.1' # For screenshots
 SCREENSHOTS_SCHEME = 'WooCommerceScreenshots'
 SCREENSHOT_DEVICES = [
   'iPhone 11 Pro Max',
-  'iPhone 8 Plus',
-  'iPad Pro (12.9-inch) (2nd generation)',
   'iPad Pro (12.9-inch) (3rd generation)'
 ].freeze
 

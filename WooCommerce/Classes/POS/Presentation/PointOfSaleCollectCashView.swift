@@ -70,7 +70,6 @@ struct PointOfSaleCollectCashView: View {
                     isLoading = true
                     do {
                         try await markComplete()
-                        posModel.cashPaymentSuccess()
                     } catch {
                         errorMessage = Localization.failedToCollectCashPayment
                     }

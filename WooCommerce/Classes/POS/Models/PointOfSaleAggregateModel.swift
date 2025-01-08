@@ -203,13 +203,14 @@ extension PointOfSaleAggregateModel {
         paymentState = .cash(.collectingCash)
     }
 
-    func cashPaymentSuccess() {
+    private func cashPaymentSuccess() {
         paymentState = .cash(.paymentSuccess)
     }
 
     @MainActor
     func collectCashPayment() async throws {
         try await orderController.collectCashPayment()
+        cashPaymentSuccess()
     }
 
     @MainActor

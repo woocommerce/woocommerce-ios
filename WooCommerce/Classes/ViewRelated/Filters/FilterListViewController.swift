@@ -178,7 +178,9 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
                 return
             }
             let criteria = self.viewModel.criteria
-            viewModel.saveSelectedFilterToHistory(criteria)
+            if viewModel.filterTypeViewModels.numberOfActiveFilters > 0 {
+                viewModel.saveSelectedFilterToHistory(criteria)
+            }
             self.onFilterAction(criteria)
         }
     }

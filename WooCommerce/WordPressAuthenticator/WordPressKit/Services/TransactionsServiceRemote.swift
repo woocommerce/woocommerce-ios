@@ -29,11 +29,6 @@ import WordPressShared
 
         for product in products {
             switch product {
-            case .domain(let domainSuggestion, let privacyProtectionEnabled):
-                productsDictionary.append(["product_id": domainSuggestion.productID as AnyObject,
-                                           "meta": domainSuggestion.domainName as AnyObject,
-                                           "extra": ["privacy": privacyProtectionEnabled] as AnyObject])
-
             case .plan(let productId):
                 productsDictionary.append(["product_id": productId as AnyObject])
             case .other(let productDict):
@@ -85,41 +80,12 @@ import WordPressShared
             failure(error)
         }
     }
-
-    /// Creates a temporary shopping cart for a domain purchase
-    @available(*, deprecated, message: "Use createShoppingCart(_:) and pass an array of specific products instead")
-    public func createTemporaryDomainShoppingCart(siteID: Int,
-                                                  domainSuggestion: DomainSuggestion,
-                                                  privacyProtectionEnabled: Bool,
-                                                  success: @escaping (CartResponse) -> Void,
-                                                  failure: @escaping (Error) -> Void) {
-        createShoppingCart(siteID: siteID,
-                           products: [.domain(domainSuggestion, privacyProtectionEnabled)],
-                           temporary: true,
-                           success: success,
-                           failure: failure)
-    }
-
-    /// Creates a persistent shopping  cart for a domain purchase
-    @available(*, deprecated, message: "Use createShoppingCart(_:) and pass an array of specific products instead")
-    public func createPersistentDomainShoppingCart(siteID: Int,
-                                                   domainSuggestion: DomainSuggestion,
-                                                   privacyProtectionEnabled: Bool,
-                                                   success: @escaping (CartResponse) -> Void,
-                                                   failure: @escaping (Error) -> Void) {
-        createShoppingCart(siteID: siteID,
-                           products: [.domain(domainSuggestion, privacyProtectionEnabled)],
-                           temporary: false,
-                           success: success,
-                           failure: failure)
-    }
 }
 
 public enum TransactionsServiceProduct {
     public typealias ProductId = Int
     public typealias PrivacyProtection = Bool
 
-    case domain(DomainSuggestion, PrivacyProtection)
     case plan(ProductId)
     case other([String: AnyObject])
 }

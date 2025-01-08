@@ -2,36 +2,19 @@ import SwiftUI
 
 /// View for editing an address in the Woo Shipping label creation flow.
 struct WooShippingEditAddressView: View {
-    @State private var name: String
-    @State private var company: String
-    @State private var country: String
-    @State private var address: String
-    @State private var city: String
-    @State private var state: String
-    @State private var postalCode: String
+    @State var name: String
+    @State var company: String
+    @State var country: String
+    @State var address: String
+    @State var city: String
+    @State var state: String
+    @State var postalCode: String
 
-    /// Whether to show the company text field.
-    @State private var showCompanyField: Bool
+    /// Whether to show the company field by default.
+    @State var showCompanyField: Bool
 
     /// Tracks the focused address field.
     @FocusState private var focusedField: AddressField?
-
-    init(name: String,
-         company: String,
-         country: String,
-         address: String,
-         city: String,
-         state: String,
-         postalCode: String) {
-        _name = State(initialValue: name)
-        _company = State(initialValue: company)
-        _country = State(initialValue: country)
-        _address = State(initialValue: address)
-        _city = State(initialValue: city)
-        _state = State(initialValue: state)
-        _postalCode = State(initialValue: postalCode)
-        _showCompanyField = State(initialValue: !company.isEmpty)
-    }
 
     var body: some View {
         ScrollView {
@@ -167,7 +150,8 @@ private extension WooShippingEditAddressView {
                                address: "15 ALGONKIN ST",
                                city: "TICONDEROGA",
                                state: "NY",
-                               postalCode: "12883-1487")
+                               postalCode: "12883-1487",
+                               showCompanyField: false)
 }
 
 #Preview("With Company") {
@@ -177,5 +161,6 @@ private extension WooShippingEditAddressView {
                                address: "15 ALGONKIN ST",
                                city: "TICONDEROGA",
                                state: "NY",
-                               postalCode: "12883-1487")
+                               postalCode: "12883-1487",
+                               showCompanyField: true)
 }

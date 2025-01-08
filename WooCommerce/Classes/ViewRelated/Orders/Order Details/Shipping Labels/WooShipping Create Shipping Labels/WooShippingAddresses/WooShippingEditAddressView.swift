@@ -9,6 +9,8 @@ struct WooShippingEditAddressView: View {
     @State var city: String
     @State var state: String
     @State var postalCode: String
+    @State var email: String
+    @State var phone: String
 
     /// Whether to show the company field by default.
     @State var showCompanyField: Bool
@@ -40,6 +42,9 @@ struct WooShippingEditAddressView: View {
                     AddressTextField(field: .state, text: $state, focused: $focusedField)
                     AddressTextField(field: .postalCode, text: $postalCode, focused: $focusedField)
                 }
+                .padding(.bottom, Constants.extraPadding)
+                AddressTextField(field: .email, text: $email, focused: $focusedField)
+                AddressTextField(field: .phone, text: $phone, focused: $focusedField)
             }
             .padding()
         }
@@ -84,7 +89,15 @@ struct WooShippingEditAddressView: View {
 
 private extension WooShippingEditAddressView {
     enum AddressField {
-        case name, company, country, address, city, state, postalCode
+        case name
+        case company
+        case country
+        case address
+        case city
+        case state
+        case postalCode
+        case email
+        case phone
 
         var title: String {
             switch self {
@@ -95,11 +108,18 @@ private extension WooShippingEditAddressView {
             case .city: return Localization.city
             case .state: return Localization.state
             case .postalCode: return Localization.postalCode
+            case .email: return Localization.email
+            case .phone: return Localization.phone
             }
         }
 
         var required: Bool {
-            self != .company
+            switch self {
+            case .name, .country, .address, .city, .state, .postalCode, .email, .phone:
+                return true
+            case .company:
+                return false
+            }
         }
     }
 }
@@ -137,6 +157,12 @@ private extension WooShippingEditAddressView {
         static let postalCode = NSLocalizedString("wooShipping.createLabels.editAddress.postalCode",
                                                     value: "Postal code",
                                                     comment: "Label for the postal code field when editing an address in the Woo Shipping label creation flow")
+        static let email = NSLocalizedString("wooShipping.createLabels.editAddress.email",
+                                                    value: "Email Address",
+                                                    comment: "Label for the email field when editing an address in the Woo Shipping label creation flow")
+        static let phone = NSLocalizedString("wooShipping.createLabels.editAddress.phone",
+                                                    value: "Phone",
+                                                    comment: "Label for the phone field when editing an address in the Woo Shipping label creation flow")
         static let optional = NSLocalizedString("wooShipping.createLabels.editAddress.optional",
                                                     value: "Optional",
                                                     comment: "Text indicating that a field is optional")
@@ -151,6 +177,8 @@ private extension WooShippingEditAddressView {
                                city: "TICONDEROGA",
                                state: "NY",
                                postalCode: "12883-1487",
+                               email: "",
+                               phone: "",
                                showCompanyField: false)
 }
 
@@ -162,5 +190,7 @@ private extension WooShippingEditAddressView {
                                city: "TICONDEROGA",
                                state: "NY",
                                postalCode: "12883-1487",
+                               email: "",
+                               phone: "",
                                showCompanyField: true)
 }

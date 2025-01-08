@@ -1,21 +1,20 @@
 {
 	"version": 0.1,
 	"shadow_offset": 0,
-	"background_color": "#FFFFFF",
 	"stylesheet": "appstoreres/assets/styles/style.css",
 	"devices": [
 		{
-			"name": "iPhone 11 Pro Max",
-			"canvas_size": [1242,2688],
+			"name": "iPhone 16 Plus",
+			"canvas_size": [1290,2796],
 			"text_size": [1042, 563],
 			"text_offset": [100, 0],
 			"font_size": "100px",
-			"screenshot_size": [851, 1846],
-			"screenshot_offset": [195, 628],
-			"screenshot_mask": "appstoreres/assets/iphone-x-mask.png",
-			"device_frame": "appstoreres/assets/iphone-x.png",
-			"device_frame_size": [966, 1954],
-			"device_frame_offset": [138, 571]
+			"screenshot_size": [878, 1903],
+			"screenshot_offset": [206, 631],
+			"screenshot_mask": "appstoreres/assets/iphone-16-plus-mask.png",
+			"device_frame": "appstoreres/assets/iphone-16-plus.png",
+			"device_frame_size": [967, 1976],
+			"device_frame_offset": [161, 595]
 		},
 		{
 			"name": "iPad Pro 12.9 (3rd Generation)",
@@ -32,47 +31,48 @@
 		}
 	],
 	"entries": [
-		// iPhone 11 Pro Max
+		// iPhone 16 Plus
 		// Track sales and bestselling products
 		{
-			"device": "iPhone 11 Pro Max",
-			"filename": "iPhone 11 Pro Max-01.png",
-			"background": "#873EFF",
-			"screenshot": "iPhone 11 Pro Max-1-dark-order-dashboard.png",
+			"device": "iPhone 16 Plus",
+			"filename": "iPhone 16 Plus-01.png",
+			"background": "appstoreres/assets/iphone-background-1.png",
+			"screenshot": "iPhone 16 Plus-1-dark-order-dashboard.png",
 			"text": "metadata/{locale}/app_store_screenshot_1.txt"
 		},
 		// Create orders on the fly
 		{
-			"device": "iPhone 11 Pro Max",
-			"filename": "iPhone 11 Pro Max-02.png",
-			"background": "#3C087E",
-			"screenshot": "iPhone 11 Pro Max-2-light-order-creation.png",
+			"device": "iPhone 16 Plus",
+			"filename": "iPhone 16 Plus-02.png",
+			"background": "appstoreres/assets/iphone-background-2.png",
+			"screenshot": "iPhone 16 Plus-2-light-order-creation.png",
 			"text": "metadata/{locale}/app_store_screenshot_2.txt"
 		},
 		// Take payments in person
 		{
-			"device": "iPhone 11 Pro Max",
-			"filename": "iPhone 11 Pro Max-03.png",
-			"background": "#873EFF",
-			"screenshot": "iPhone 11 Pro Max-3-dark-order-payment.png",
+			"device": "iPhone 16 Plus",
+			"filename": "iPhone 16 Plus-03.png",
+			"background": "appstoreres/assets/iphone-background-1.png",
+			"screenshot": "iPhone 16 Plus-3-dark-order-payment.png",
 			"text": "metadata/{locale}/app_store_screenshot_3.txt"
 		},
 		// Add and edit products with a touch
 		{
-			"device": "iPhone 11 Pro Max",
-			"filename": "iPhone 11 Pro Max-04.png",
-			"background": "#3C087E",
-			"screenshot": "iPhone 11 Pro Max-4-light-product-add.png",
+			"device": "iPhone 16 Plus",
+			"filename": "iPhone 16 Plus-04.png",
+			"background": "appstoreres/assets/iphone-background-2.png",
+			"screenshot": "iPhone 16 Plus-4-light-product-add.png",
 			"text": "metadata/{locale}/app_store_screenshot_4.txt"
 		},
 		// Get notified of every sale
 		{
-			"device": "iPhone 11 Pro Max",
-			"filename": "iPhone 11 Pro Max-05.png",
-			"background": "#873EFF",
-			"screenshot": "iPhone 11 Pro Max-5-dark-order-notification.png",
+			"device": "iPhone 16 Plus",
+			"filename": "iPhone 16 Plus-05.png",
+			"background": "appstoreres/assets/iphone-background-1.png",
+			"screenshot": "iPhone 16 Plus-5-dark-order-notification.png",
 			"text": "metadata/{locale}/app_store_screenshot_5.txt"
 		},
+
 
 		/// iPad Pro 12.9 (3rd Generation)
 		// Track sales and bestselling products

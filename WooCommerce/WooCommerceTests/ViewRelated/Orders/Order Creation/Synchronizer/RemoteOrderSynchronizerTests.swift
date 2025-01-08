@@ -35,7 +35,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
     func test_sending_status_input_updates_local_order() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         synchronizer.setStatus.send(.completed)
@@ -48,7 +48,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         let input = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1, discount: 0)
@@ -65,7 +65,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
         let productInput = OrderSyncProductInput(
             id: sampleInputID,
             product: .product(product),
@@ -91,7 +91,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
     func test_setProducts_sends_multiple_product_input_then_updates_order_successfully() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
         let product = Product.fake().copy(productID: sampleProductID)
         let anotherProduct = Product.fake().copy(productID: 12345)
         let productInput = OrderSyncProductInput(
@@ -130,7 +130,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
         let initialInput = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1, discount: 0)
         synchronizer.setProduct.send(initialInput)
 
@@ -149,7 +149,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
         let initialInput = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1, discount: 0)
         synchronizer.setProduct.send(initialInput)
 
@@ -166,7 +166,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let address = Address.fake().copy(firstName: "Woo", lastName: "Customer")
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         let input = OrderSyncAddressesInput(billing: address, shipping: address)
@@ -181,7 +181,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let address = Address.fake().copy(firstName: "Woo", lastName: "Customer")
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         let input = OrderSyncAddressesInput(billing: address, shipping: address)
@@ -198,7 +198,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let shippingLine = ShippingLine.fake().copy(shippingID: sampleShippingID, methodID: "free_shipping")
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         synchronizer.setShipping.send(shippingLine)
@@ -211,7 +211,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let shippingLine = ShippingLine.fake().copy(shippingID: sampleShippingID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         synchronizer.setShipping.send(shippingLine)
@@ -226,7 +226,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         let orderCreationInvoked: Bool = waitFor { promise in
@@ -251,7 +251,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "20.0")
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         let submittedItems: [OrderItem] = waitFor { promise in
@@ -280,7 +280,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "20.0")
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         let submittedItems: [OrderItem] = waitFor { promise in
@@ -308,7 +308,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "20.0")
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         let submittedItems: [OrderItem] = waitFor { promise in
@@ -342,7 +342,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let address = Address.fake().copy(firstName: "Woo", lastName: "Customer")
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         let orderCreationInvoked: Bool = waitFor { promise in
@@ -367,7 +367,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let shippingLine = ShippingLine.fake().copy(shippingID: sampleShippingID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         let orderCreationInvoked: Bool = waitFor { promise in
@@ -391,7 +391,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let fee = OrderFeeLine.fake().copy()
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         let orderCreationInvoked: Bool = waitFor { promise in
@@ -416,7 +416,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let fee = OrderFeeLine.fake().copy()
         let order = Order.fake().copy(orderID: sampleOrderID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, debounceDuration: 0.0)
 
         // When
         let orderUpdateInvoked: Bool = waitFor { promise in
@@ -442,7 +442,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let feeLine = OrderFeeLine.fake().copy(feeID: sampleFeeID, name: "test-fee")
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         synchronizer.addFee.send(feeLine)
@@ -456,7 +456,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let feeLine = OrderFeeLine.fake().copy(feeID: sampleFeeID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         synchronizer.addFee.send(feeLine)
@@ -469,7 +469,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
     func test_sending_coupon_input_triggers_order_creation() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         let orderCreationInvoked: Bool = waitFor { promise in
@@ -493,7 +493,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let order = Order.fake().copy(orderID: sampleOrderID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, debounceDuration: 0.0)
 
         // When
         let orderUpdateInvoked: Bool = waitFor { promise in
@@ -519,7 +519,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let couponCode = "code"
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         synchronizer.addCoupon.send(couponCode)
@@ -532,7 +532,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
     func test_sending_customer_note_input_updates_local_order() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
         let expectedNotes = "Test customer note"
 
         // When
@@ -545,7 +545,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
     func test_creating_customer_note_input_updates_local_order() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
         let randomNote = "Unexpected customer note"
         let expectedNote = "Second customer note"
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -572,7 +572,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
     func test_updating_customer_note_input_updates_local_order() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
         let product = Product.fake().copy(productID: sampleProductID)
         let firstNote = "First customer note"
         let expectedNote = "Second customer note"
@@ -610,7 +610,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let order = Order.fake().copy(orderID: sampleOrderID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, debounceDuration: 0.0)
         let expectedNote = "Test customer note"
 
         // When
@@ -635,7 +635,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
     func test_sending_customer_id_input_does_not_trigger_sync_in_creation_flow() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -649,7 +649,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let order = Order.fake().copy(orderID: sampleOrderID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, debounceDuration: 0.0)
 
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -662,7 +662,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
     func test_sending_customer_id_then_addresses_input_triggers_sync_in_creation_flow() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         let orderToCreate = waitFor { promise in
@@ -687,7 +687,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let order = Order.fake().copy(orderID: sampleOrderID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, debounceDuration: 0.0)
 
         // When
         let update: (order: Order, fields: [OrderUpdateField]) = waitFor { promise in
@@ -713,7 +713,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let order = Order.fake().copy(orderID: sampleOrderID, customerID: 16)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, debounceDuration: 0.0)
 
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -729,7 +729,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
     func test_removing_customer_id_does_not_trigger_sync_in_creation_flow() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -743,7 +743,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let order = Order.fake().copy(orderID: sampleOrderID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, debounceDuration: 0.0)
 
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -757,7 +757,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case .createOrder(_, _, _, let completion):
@@ -789,7 +789,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case .createOrder(_, _, _, let completion):
@@ -828,7 +828,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let product = Product.fake().copy(productID: sampleProductID)
         let order = Order.fake().copy(orderID: sampleOrderID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, debounceDuration: 0.0)
 
         let states: [OrderSyncState] = waitFor { promise in
             synchronizer.statePublisher
@@ -854,7 +854,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
@@ -893,7 +893,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
         synchronizer.updateBlockingBehavior(.allUpdates)
 
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -934,7 +934,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let product = Product.fake().copy(productID: sampleProductID)
         let error = NSError(domain: "", code: 0, userInfo: nil)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         let receivedError: Bool = waitFor { promise in
@@ -976,7 +976,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let product = Product.fake().copy(productID: sampleProductID)
         let error = NSError(domain: "", code: 0, userInfo: nil)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case .createOrder(_, _, _, let completion):
@@ -1009,7 +1009,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let product = Product.fake().copy(productID: sampleProductID)
         let error = NSError(domain: "", code: 0, userInfo: nil)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case .createOrder(_, _, _, let completion):
@@ -1047,7 +1047,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         let exp = expectation(description: #function)
@@ -1077,10 +1077,10 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
-        waitForExpectation { exp in
+        waitForExpectation(timeout: 0.2) { exp in
             exp.isInverted = true
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
@@ -1089,13 +1089,11 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                     let input2 = OrderSyncProductInput(product: .product(product), quantity: 2, discount: 0)
                     synchronizer.setProduct.send(input2)
 
-                    // Complete order creation
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         completion(.success(.fake().copy(orderID: self.sampleOrderID)))
                     }
                 case .updateOrder:
                     exp.fulfill() // Update should not happen
-
                 default:
                     XCTFail("Unexpected action: \(action)")
                 }
@@ -1118,7 +1116,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 XCTFail("Unexpected action received: \(action)")
             }
         }
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
         XCTAssertEqual(synchronizer.order.status, .pending) // initial status
 
         // When
@@ -1145,7 +1143,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let order = Order.fake().copy(orderID: sampleOrderID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, debounceDuration: 0.0)
 
         // When
         let submittedStatus: OrderStatusEnum = waitFor { promise in
@@ -1171,7 +1169,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         let updateFields: [OrderUpdateField] = waitFor { promise in
@@ -1209,7 +1207,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let product = Product.fake().copy(productID: sampleProductID)
         let order = Order.fake().copy(orderID: sampleOrderID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, debounceDuration: 0.0)
 
         // When
         let updateFields: [OrderUpdateField] = waitFor { promise in
@@ -1236,7 +1234,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let product = Product.fake().copy(productID: sampleProductID)
         let error = NSError(domain: "", code: 0, userInfo: nil)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         let orderCreationFailed: Bool = waitFor { promise in
@@ -1279,7 +1277,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let product = Product.fake().copy(productID: sampleProductID)
         let error = NSError(domain: "", code: 0, userInfo: nil)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
 
         // When
         let orderUpdateFailed: Bool = waitFor { promise in
@@ -1327,7 +1325,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
     func test_commit_changes_creates_order_if_order_has_not_been_created() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case .createOrder(_, let order, _, let completion):
@@ -1351,7 +1349,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
     func test_commit_changes_relays_error() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case .createOrder(_, _, _, let completion):
@@ -1376,7 +1374,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
     func test_commit_changes_updates_order_if_order_has_been_created() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case .createOrder(_, let order, _, let completion):
@@ -1405,7 +1403,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
     func test_commitAllChanges_relays_usesGiftCard_on_success() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
                 case .createOrder(_, _, _, let completion):
@@ -1430,7 +1428,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
     func test_commitAllChanges_relays_usesGiftCard_on_failure() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
                 case .createOrder(_, _, _, let completion):
@@ -1457,7 +1455,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 1.0)
 
         // When
         let exp = expectation(description: #function)

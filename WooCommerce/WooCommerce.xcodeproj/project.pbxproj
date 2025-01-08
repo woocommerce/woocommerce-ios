@@ -2333,6 +2333,7 @@
 		CE7F778B2C074D2500C89F4E /* EditableOrderShippingLineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7F778A2C074D2500C89F4E /* EditableOrderShippingLineViewModel.swift */; };
 		CE7F778D2C0770FF00C89F4E /* EditableOrderShippingLineViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7F778C2C0770FF00C89F4E /* EditableOrderShippingLineViewModelTests.swift */; };
 		CE7FE6942D1324BD000F9475 /* WooShippingOriginAddressListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7FE6932D1324BD000F9475 /* WooShippingOriginAddressListView.swift */; };
+		CE852E1F2D2EDC5400C7DBB6 /* WooShippingEditAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE852E1E2D2EDC4C00C7DBB6 /* WooShippingEditAddressView.swift */; };
 		CE85535D209B5BB700938BDC /* OrderDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */; };
 		CE855365209BA6A700938BDC /* CustomerInfoTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE855361209BA6A700938BDC /* CustomerInfoTableViewCell.xib */; };
 		CE855366209BA6A700938BDC /* CustomerInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE855362209BA6A700938BDC /* CustomerInfoTableViewCell.swift */; };
@@ -5474,6 +5475,7 @@
 		CE7F778A2C074D2500C89F4E /* EditableOrderShippingLineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableOrderShippingLineViewModel.swift; sourceTree = "<group>"; };
 		CE7F778C2C0770FF00C89F4E /* EditableOrderShippingLineViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableOrderShippingLineViewModelTests.swift; sourceTree = "<group>"; };
 		CE7FE6932D1324BD000F9475 /* WooShippingOriginAddressListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingOriginAddressListView.swift; sourceTree = "<group>"; };
+		CE852E1E2D2EDC4C00C7DBB6 /* WooShippingEditAddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingEditAddressView.swift; sourceTree = "<group>"; };
 		CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsViewModel.swift; sourceTree = "<group>"; };
 		CE855361209BA6A700938BDC /* CustomerInfoTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomerInfoTableViewCell.xib; sourceTree = "<group>"; };
 		CE855362209BA6A700938BDC /* CustomerInfoTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerInfoTableViewCell.swift; sourceTree = "<group>"; };
@@ -12076,6 +12078,7 @@
 				CECAE7102D23168D000AE10B /* WooShippingOriginAddress+Woo.swift */,
 				CE7FE6932D1324BD000F9475 /* WooShippingOriginAddressListView.swift */,
 				CECAE70B2D22EF9B000AE10B /* WooShippingOriginAddressListViewModel.swift */,
+				CE852E1E2D2EDC4C00C7DBB6 /* WooShippingEditAddressView.swift */,
 			);
 			path = WooShippingAddresses;
 			sourceTree = "<group>";
@@ -15340,6 +15343,7 @@
 				02C7EE8C2B22B21D008B7DF8 /* CollapsibleProductRowCardViewModel.swift in Sources */,
 				0245465F24EE9106004F531C /* ProductVariationFormEventLogger.swift in Sources */,
 				269A2F47295CC683000828A8 /* GenerateVariationsSelectorCommand.swift in Sources */,
+				CE852E1F2D2EDC5400C7DBB6 /* WooShippingEditAddressView.swift in Sources */,
 				DE19BB1826C3B5C300AB70D9 /* ShippingLabelCustomsFormItemDetails.swift in Sources */,
 				DE1B0310268EB2FB00804330 /* ReviewOrderViewModel.swift in Sources */,
 				02DC2ED2242061BF002F9676 /* ProductPriceSettingsViewModel.swift in Sources */,

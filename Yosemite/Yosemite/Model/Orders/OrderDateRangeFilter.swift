@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents all of the possible Order Date Ranges in enum form + start and end date in case of custom dates
 ///
-public struct OrderDateRangeFilter: Codable, Equatable {
+public struct OrderDateRangeFilter: Codable, Equatable, Hashable {
     public var filter: OrderDateRangeFilterEnum
     public var startDate: Date?
     public var endDate: Date?

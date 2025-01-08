@@ -32,7 +32,7 @@ private struct ItemListRow: View {
             }
         case let .variation(variation):
             Button(action: {
-                print("Tapped variation \(variation.name)")
+                posModel.addToCart(variation)
             }, label: {
                 VariationCardView(variation: variation)
             })

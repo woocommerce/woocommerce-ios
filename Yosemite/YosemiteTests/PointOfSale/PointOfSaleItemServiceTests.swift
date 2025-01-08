@@ -168,6 +168,11 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         }
         XCTAssertEqual(firstVariation.name, "Variation 1275")
         XCTAssertEqual(firstVariation.formattedPrice, "$12.00")
+        XCTAssertEqual(firstVariation.price, "12")
+        XCTAssertEqual(firstVariation.productImageSource,
+                       "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/11/img_0002-1.jpeg?fit=4288%2C2848&ssl=1")
+        XCTAssertEqual(firstVariation.productID, parentProductID)
+        XCTAssertEqual(firstVariation.productVariationID, 1275)
     }
 
     func test_providePointOfSaleVariationItems_throws_error_when_variations_load_fails() async throws {

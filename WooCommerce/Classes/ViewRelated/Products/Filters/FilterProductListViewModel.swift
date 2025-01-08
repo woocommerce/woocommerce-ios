@@ -9,7 +9,7 @@ final class FilterProductListViewModel: FilterListViewModel {
     typealias Criteria = Filters
 
     /// Aggregates the filter values that can be updated in the Filter Products UI.
-    struct Filters: Equatable, Hashable, HumanReadable {
+    struct Filters: Equatable, HumanReadable {
         let stockStatus: ProductStockStatus?
         let productStatus: ProductStatus?
         let promotableProductType: PromotableProductType?

@@ -3,7 +3,7 @@ import Yosemite
 
 /// ProductType promotable on filter lists.
 ///
-struct PromotableProductType: Equatable, Hashable {
+struct PromotableProductType: Equatable {
     /// Product Type
     ///
     let productType: ProductType

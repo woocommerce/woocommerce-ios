@@ -14,7 +14,7 @@ protocol FavoriteProductsUseCase {
 
 /// Used to filter favorite products
 ///
-struct FavoriteProductsFilter: Equatable, FilterType, Hashable {
+struct FavoriteProductsFilter: Equatable, FilterType {
     let description = Localization.favoriteProducts
 
     let isActive = true

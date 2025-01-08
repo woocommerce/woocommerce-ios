@@ -7,7 +7,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
     typealias Criteria = Filters
 
     /// Aggregates the filter values that can be updated in the Filter Order UI.
-    struct Filters: Equatable, Hashable, HumanReadable {
+    struct Filters: Equatable, HumanReadable {
         let orderStatus: [OrderStatusEnum]?
         let dateRange: OrderDateRangeFilter?
         let product: FilterOrdersByProduct?

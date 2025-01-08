@@ -81,7 +81,7 @@ private extension ParentProductCardView {
         name: "Parent variable product",
         productImageSource: nil,
         productID: 42,
-        type: .variable(allAttributes: [])
+        type: .variable(.init())
     )
     ParentProductCardView(parentProduct: parentProduct)
 }

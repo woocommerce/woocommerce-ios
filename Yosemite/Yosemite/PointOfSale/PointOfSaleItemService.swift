@@ -66,7 +66,7 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     }
 
     public func providePointOfSaleVariationItems(for parentProduct: POSParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
-        guard case let .variable(allAttributes) = parentProduct.type else {
+        guard case let .variable(variableProduct) = parentProduct.type else {
             assertionFailure(
                 "Unexpected parent product when loading variations: \(parentProduct)"
             )
@@ -80,7 +80,7 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
             items: variations.compactMap({ variation in
                 let variationName = ProductVariationFormatter().generateName(
                     for: variation,
-                    from: allAttributes
+                    from: variableProduct.allAttributes
                 )
                 return POSItem
                     .variation(.init(id: UUID(),
@@ -114,7 +114,7 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                                                            name: product.name,
                                                            productImageSource: thumbnailSource,
                                                            productID: product.productID,
-                                                           type: .variable(allAttributes: product.attributesForVariations)))
+                                                           type: .variable(.init(allAttributes: product.attributesForVariations))))
                 default:
                     return nil
             }

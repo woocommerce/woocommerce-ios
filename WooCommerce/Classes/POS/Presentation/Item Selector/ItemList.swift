@@ -4,14 +4,22 @@ import struct Yosemite.POSVariableParentProduct
 
 /// Displays a list of POS items or placeholder card based on the given state.
 struct ItemList<HeaderView: View>: View {
+    enum BaseItem {
+        case root
+        case parent(POSItem)
+    }
+
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @EnvironmentObject var posModel: PointOfSaleAggregateModel
     let state: ItemListState
+    private let node: BaseItem
     private let headerView: HeaderView
 
     init(state: ItemListState,
+         node: BaseItem = .root,
          @ViewBuilder headerView: () -> HeaderView = { EmptyView() }) {
         self.state = state
+        self.node = node
         self.headerView = headerView()
     }
 
@@ -28,6 +36,7 @@ struct ItemList<HeaderView: View>: View {
                 case .loading, .loaded(_, hasMoreItems: true):
                     GhostItemCardView()
                         .onAppear {
+                            guard case .root = node else { return }
                             Task { await posModel.loadNextItems() }
                         }
                 default:

@@ -33,7 +33,8 @@ struct ChildItemList: View {
                 Spacer()
             }
             .padding(.horizontal, Constants.itemListPadding)
-            ItemList(state: state)
+            ItemList(state: state,
+                     node: .parent(parentItem))
                 .background(Color.posPrimaryBackground)
                 .toolbar(.hidden, for: .navigationBar)
                 .transition(.opacity)

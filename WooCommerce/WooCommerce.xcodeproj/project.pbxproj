@@ -6284,7 +6284,6 @@
 				WordPressKit/Services/TaxonomyServiceRemote.h,
 				WordPressKit/Services/TaxonomyServiceRemoteREST.h,
 				WordPressKit/Services/TaxonomyServiceRemoteXMLRPC.h,
-				WordPressKit/Services/ThemeServiceRemote.h,
 				WordPressKit/Services/WordPressComServiceRemote.h,
 				"WordPressKit/Utility/NSString+MD5.h",
 			);

@@ -100,10 +100,16 @@ struct FilterHistoryView<ViewModel: FilterListViewModel>: View {
 
 private extension FilterHistoryView {
     var filterListView: some View {
-        List(selection: $selectedFilter) {
+        List {
             ForEach(savedFilters, id: \.readableString) { filter in
-                SelectableItemRow(title: filter.readableString, selected: selectedFilter == filter)
+                SelectableItemRow(title: filter.readableString,
+                                  selected: selectedFilter == filter,
+                                  displayMode: .compact)
+                    .onTapGesture {
+                        selectedFilter = filter
+                    }
             }
         }
+        .listStyle(.grouped)
     }
 }

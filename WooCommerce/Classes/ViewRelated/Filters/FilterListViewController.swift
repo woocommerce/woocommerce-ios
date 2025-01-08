@@ -10,7 +10,7 @@ protocol HumanReadable {
 ///
 protocol FilterListViewModel {
     /// The type of the final value returned to the caller of `FilterListViewController`.
-    associatedtype Criteria: Equatable & Hashable, HumanReadable
+    associatedtype Criteria: Equatable, HumanReadable
 
     // Filter Action UI configuration
 
@@ -36,6 +36,9 @@ protocol FilterListViewModel {
 
     /// Applies a filter in the history
     func applyPastFilter(_ filter: Criteria)
+
+    /// Saves a selected filter to the history
+    func saveSelectedFilterToHistory(_ filter: Criteria)
 
     /// Resets the filter criteria.
     func clearAll()
@@ -172,6 +175,7 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
                 return
             }
             let criteria = self.viewModel.criteria
+            viewModel.saveSelectedFilterToHistory(criteria)
             self.onFilterAction(criteria)
         }
     }

@@ -126,6 +126,10 @@ final class FilterProductListViewModel: FilterListViewModel {
         return []
     }
 
+    func saveSelectedFilterToHistory(_ filter: Criteria) {
+        // TODO
+    }
+
     func clearAll() {
         let clearedStockStatus: ProductStockStatus? = nil
         stockStatusFilterViewModel.selectedValue = clearedStockStatus

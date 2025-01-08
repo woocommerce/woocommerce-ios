@@ -132,6 +132,19 @@ final class FilterOrderListViewModel: FilterListViewModel {
         customerFilterViewModel.selectedValue = filter.customer
     }
 
+    func saveSelectedFilterToHistory(_ filter: Criteria) {
+        let settings = StoredOrderSettings.Setting(siteID: siteID,
+                                                   orderStatusesFilter: filter.orderStatus,
+                                                   dateRangeFilter: filter.dateRange,
+                                                   productFilter: filter.product,
+                                                   customerFilter: filter.customer)
+        stores.dispatch(AppSettingsAction.upsertOrderFilterHistory(filter: settings, onCompletion: { error in
+            if let error {
+                DDLogError("⛔️ Error saving filter history: \(error)")
+            }
+        }))
+    }
+
     func clearAll() {
         let clearedOrderStatus: OrderStatusEnum? = nil
         orderStatusFilterViewModel.selectedValue = clearedOrderStatus

@@ -9,7 +9,7 @@ final class FilterProductListViewModel: FilterListViewModel {
     typealias Criteria = Filters
 
     /// Aggregates the filter values that can be updated in the Filter Products UI.
-    struct Filters: Equatable {
+    struct Filters: Equatable, Hashable, HumanReadable {
         let stockStatus: ProductStockStatus?
         let productStatus: ProductStatus?
         let promotableProductType: PromotableProductType?
@@ -39,6 +39,11 @@ final class FilterProductListViewModel: FilterListViewModel {
             self.productCategory = productCategory
             self.favoriteProduct = favoriteProduct
             self.numberOfActiveFilters = numberOfActiveFilters
+        }
+
+        var readableString: String {
+            let elements: [String?] = [stockStatus?.rawValue, productStatus?.rawValue, promotableProductType?.productType.rawValue, productCategory?.slug]
+            return elements.compactMap { $0 }.joined(separator: ", ")
         }
 
         // Generate a string based on populated filters, like "instock,publish,simple,clothes"
@@ -110,6 +115,11 @@ final class FilterProductListViewModel: FilterListViewModel {
                        productCategory: productCategory,
                        favoriteProduct: favoriteProduct,
                        numberOfActiveFilters: numberOfActiveFilters)
+    }
+
+    func retrieveFilterHistory() async throws -> [Filters] {
+        // TODO
+        return []
     }
 
     func clearAll() {

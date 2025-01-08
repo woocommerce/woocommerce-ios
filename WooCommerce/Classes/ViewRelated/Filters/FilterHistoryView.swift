@@ -1,9 +1,9 @@
 import SwiftUI
 
 /// Hosting controller for `FilterHistoryView`
-final class FilterHistoryViewHostingController: UIHostingController<FilterHistoryView> {
-    init(viewModel: any FilterListViewModel) {
-        super.init(rootView: FilterHistoryView(viewModel: viewModel))
+final class FilterHistoryViewHostingController<ViewModel: FilterListViewModel>: UIHostingController<FilterHistoryView<ViewModel>> {
+    init(viewModel: ViewModel, onSelection: @escaping (ViewModel.Criteria) -> Void) {
+        super.init(rootView: FilterHistoryView(viewModel: viewModel, onSelection: onSelection))
         rootView.onDismiss = { [weak self] in
             self?.dismiss(animated: true)
         }
@@ -15,50 +15,70 @@ final class FilterHistoryViewHostingController: UIHostingController<FilterHistor
 }
 
 /// View to list all saved filter history
-struct FilterHistoryView: View {
+struct FilterHistoryView<ViewModel: FilterListViewModel>: View {
 
     /// to be set externally on the hosting controller
     var onDismiss: () -> Void = {}
 
-    private let viewModel: any FilterListViewModel
+    private let viewModel: ViewModel
+    private let onSelection: (ViewModel.Criteria) -> Void
 
-    init(viewModel: any FilterListViewModel) {
+    @State private var selectedFilter: ViewModel.Criteria?
+    @State private var savedFilters: [ViewModel.Criteria] = []
+    @State private var error: Error?
+
+    private let title = NSLocalizedString(
+        "filterHistoryView.title",
+        value: "Filter History",
+        comment: "Title of the Filter History view"
+    )
+
+    private let cancel = NSLocalizedString(
+        "filterHistoryView.cancel",
+        value: "Cancel",
+        comment: "Cancel button on the Filter History view"
+    )
+
+    init(viewModel: ViewModel, onSelection: @escaping (ViewModel.Criteria) -> Void) {
         self.viewModel = viewModel
+        self.onSelection = onSelection
     }
 
     var body: some View {
         NavigationStack {
-            Text("Hello, World!")
-                .navigationTitle(Localization.title)
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button(Localization.cancel) {
-                            onDismiss()
-                        }
+            VStack {
+                if error != nil {
+                    Text("No past filter in the history")
+                } else {
+                    filterListView
+                }
+            }
+            .navigationTitle(title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(cancel) {
+                        onDismiss()
                     }
                 }
+            }
+        }
+        .task {
+            do {
+                savedFilters = try await viewModel.retrieveFilterHistory()
+            } catch {
+                self.error = error
+            }
         }
     }
 }
 
 private extension FilterHistoryView {
-    enum Localization {
-        static let title = NSLocalizedString(
-            "filterHistoryView.title",
-            value: "Filter History",
-            comment: "Title of the Filter History view"
-        )
-        static let cancel = NSLocalizedString(
-            "filterHistoryView.cancel",
-            value: "Cancel",
-            comment: "Cancel button on the Filter History view"
-        )
+    var filterListView: some View {
+        List(selection: $selectedFilter) {
+            ForEach(savedFilters, id: \.readableString) { filter in
+                SelectableItemRow(title: filter.readableString, selected: selectedFilter == filter)
+            }
+        }
     }
-}
-
-#Preview {
-    FilterHistoryView(viewModel: FilterOrderListViewModel(filters: FilterOrderListViewModel.Filters(),
-                                                          allowedStatuses: [],
-                                                          siteID: 123))
 }

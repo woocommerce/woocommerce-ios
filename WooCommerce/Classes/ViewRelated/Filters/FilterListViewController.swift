@@ -2,11 +2,15 @@ import Combine
 import UIKit
 import Yosemite
 
+protocol HumanReadable {
+    var readableString: String { get }
+}
+
 /// The view model protocol for filtering a list of models with generic filters.
 ///
 protocol FilterListViewModel {
     /// The type of the final value returned to the caller of `FilterListViewController`.
-    associatedtype Criteria: Equatable
+    associatedtype Criteria: Equatable & Hashable, HumanReadable
 
     // Filter Action UI configuration
 
@@ -26,6 +30,9 @@ protocol FilterListViewModel {
     var shouldShowHistory: Bool { get }
 
     // Navigation & Actions
+
+    /// Retrieves past filters
+    func retrieveFilterHistory() async throws -> [Criteria]
 
     /// Resets the filter criteria.
     func clearAll()
@@ -188,7 +195,9 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
     }
 
     @objc private func showFilterHistory() {
-        let controller = FilterHistoryViewHostingController(viewModel: viewModel)
+        let controller = FilterHistoryViewHostingController(viewModel: viewModel, onSelection: { selectedCriteria in
+            // TODO
+        })
         present(controller, animated: true)
     }
 }

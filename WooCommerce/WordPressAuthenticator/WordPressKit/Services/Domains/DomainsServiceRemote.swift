@@ -143,33 +143,6 @@ public class DomainsServiceRemote: ServiceRemoteWordPressComREST {
         })
     }
 
-    @objc public func getStates(for countryCode: String,
-                                success: @escaping ([WPState]) -> Void,
-                                failure: @escaping (Error) -> Void) {
-        let endPoint = "domains/supported-states/\(countryCode)"
-        let servicePath = path(forEndpoint: endPoint, withVersion: ._1_1)
-
-        wordPressComRESTAPI.get(
-            servicePath,
-            parameters: nil,
-            success: {
-                response, _ in
-                do {
-                    guard let json = response as? [AnyObject] else {
-                        throw ResponseError.decodingFailed
-                    }
-                    let data = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
-                    let decodedResult = try JSONDecoder.apiDecoder.decode([WPState].self, from: data)
-                    success(decodedResult)
-                } catch {
-                    WPAuthenticatorLogError("Error parsing State list for country code (\(error)): \(response)")
-                    failure(error)
-                }
-        }, failure: { error, _ in
-            failure(error)
-        })
-    }
-
     public func getDomainContactInformation(success: @escaping (DomainContactInformation) -> Void,
                                             failure: @escaping (Error) -> Void) {
         let endPoint = "me/domain-contact-information"

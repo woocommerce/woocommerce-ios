@@ -79,7 +79,7 @@
 		{
 			"device": "iPad Pro 12.9 (3rd Generation)",
 			"filename": "iPad Pro (12.9-inch) (3rd generation)-01.png",
-			"background": "#873EFF",
+			"background": "appstoreres/assets/ipad-background-1.png",
 			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-1-dark-order-dashboard.png",
 			"text": "metadata/{locale}/app_store_screenshot_1.txt"
 		},
@@ -87,7 +87,7 @@
 		{
 			"device": "iPad Pro 12.9 (3rd Generation)",
 			"filename": "iPad Pro (12.9-inch) (3rd generation)-02.png",
-			"background": "#3C087E",
+			"background": "appstoreres/assets/ipad-background-2.png",
 			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-2-light-order-creation.png",
 			"text": "metadata/{locale}/app_store_screenshot_2.txt"
 		},
@@ -95,7 +95,7 @@
 		{
 			"device": "iPad Pro 12.9 (3rd Generation)",
 			"filename": "iPad Pro (12.9-inch) (3rd generation)-03.png",
-			"background": "#873EFF",
+			"background": "appstoreres/assets/ipad-background-1.png",
 			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-3-dark-order-payment.png",
 			"text": "metadata/{locale}/app_store_screenshot_3.txt"
 		},
@@ -103,7 +103,7 @@
 		{
 			"device": "iPad Pro 12.9 (3rd Generation)",
 			"filename": "iPad Pro (12.9-inch) (3rd generation)-04.png",
-			"background": "#3C087E",
+			"background": "appstoreres/assets/ipad-background-2.png",
 			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-4-light-product-add.png",
 			"text": "metadata/{locale}/app_store_screenshot_4.txt"
 		},
@@ -111,7 +111,7 @@
 		{
 			"device": "iPad Pro 12.9 (3rd Generation)",
 			"filename": "iPad Pro (12.9-inch) (3rd generation)-05.png",
-			"background": "#873EFF",
+			"background": "appstoreres/assets/ipad-background-1.png",
 			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-5-dark-order-notification.png",
 			"text": "metadata/{locale}/app_store_screenshot_5.txt"
 		}

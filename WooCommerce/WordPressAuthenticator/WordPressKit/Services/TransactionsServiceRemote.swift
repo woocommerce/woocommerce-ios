@@ -11,31 +11,6 @@ import WordPressShared
         static let freeDomainPaymentMethod = "WPCOM_Billing_WPCOM"
     }
 
-    @objc public func getSupportedCountries(success: @escaping ([WPCountry]) -> Void,
-                                            failure: @escaping (Error) -> Void) {
-        let endPoint = "me/transactions/supported-countries/"
-        let servicePath = path(forEndpoint: endPoint, withVersion: ._1_1)
-
-        wordPressComRESTAPI.get(servicePath,
-                                parameters: nil,
-                                success: {
-                                    response, _ in
-                                    do {
-                                        guard let json = response as? [AnyObject] else {
-                                            throw ResponseError.decodingFailure
-                                        }
-                                        let data = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
-                                        let decodedResult = try JSONDecoder.apiDecoder.decode([WPCountry].self, from: data)
-                                        success(decodedResult)
-                                    } catch {
-                                        WPAuthenticatorLogError("Error parsing Supported Countries (\(error)): \(response)")
-                                        failure(error)
-                                    }
-        }, failure: { error, _ in
-            failure(error)
-        })
-    }
-
     /// Creates a shopping cart with products
     /// - Parameters:
     ///   - siteID: id of the current site

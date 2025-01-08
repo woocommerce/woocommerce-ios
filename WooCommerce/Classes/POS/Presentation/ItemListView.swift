@@ -134,16 +134,12 @@ private extension ItemListView {
 
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
-        ScrollView {
-            VStack {
-                if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
-                    bannerCardView
-                }
-                ItemList(state: itemListState)
+        ScrollableItemList(state: itemListState,
+                           headerView: {
+            if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
+                bannerCardView
             }
-            .frame(maxWidth: .infinity)
-            .padding(.bottom, floatingControlAreaSize.height)
-            .padding(.horizontal, Constants.itemListPadding)
+        })
             .background(GeometryReader { proxy in
                 Color.clear
                     .onChange(of: proxy.frame(in: .global).maxY) { maxY in
@@ -159,7 +155,6 @@ private extension ItemListView {
                         lastScrollPosition = maxY
                     }
             })
-        }
     }
 
     @ViewBuilder
@@ -243,7 +238,6 @@ private extension ItemListView {
         static let infoIconPadding: CGFloat = 16
         static let bannerInfoIconSize: CGFloat = 44
         static let iconPadding: CGFloat = 26
-        static let itemListPadding: CGFloat = 16
         static let bannerCardPadding: CGFloat = 16
         static let viewHeight: CGFloat = UIScreen.main.bounds.height
         static let scrollThresholdMultiplier: CGFloat = 1.7

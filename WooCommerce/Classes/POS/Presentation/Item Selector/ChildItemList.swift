@@ -7,7 +7,6 @@ struct ChildItemList: View {
     private let parentProduct: POSParentProduct
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
 
     private var state: ItemListState {
         posModel.itemsViewState.itemsStack
@@ -34,17 +33,7 @@ struct ChildItemList: View {
                 Spacer()
             }
             .padding(.horizontal, Constants.itemListPadding)
-            ScrollView {
-                VStack {
-                    ItemList(state: state)
-                        .background(Color.posPrimaryBackground)
-                        .toolbar(.hidden, for: .navigationBar)
-                        .transition(.opacity)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.bottom, floatingControlAreaSize.height)
-                .padding(.horizontal, Constants.itemListPadding)
-            }
+            ScrollableItemList(state: state, headerView: {})
         }
         .task {
             guard state.items.isEmpty else {

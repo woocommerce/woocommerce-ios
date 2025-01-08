@@ -77,7 +77,7 @@ private extension ChildItemList {
         name: "Variable latte",
         productImageSource: nil,
         productID: 1,
-        type: .variable
+        type: .variable(.init())
     )
     let parentItem = POSItem.parentProduct(parentProduct)
     let itemsController = PointOfSalePreviewItemsController()

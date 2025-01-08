@@ -62,7 +62,7 @@ private struct ItemListRow: View {
                                 name: "Variable mocha",
                                 productImageSource: "https://pd.w.org/2024/12/986762d0d4d4cf17.82435881-scaled.jpeg",
                                 productID: 16,
-                                type: .variable
+                                type: .variable(.init())
                             )
                         )
                     ]

@@ -1,7 +1,22 @@
 import Foundation
 
-public enum POSParentProductType {
-    case variable
+public enum POSParentProductType: Equatable, Hashable {
+    case variable(POSVariableParentProduct)
+}
+
+public struct POSVariableParentProduct: Equatable, Hashable {
+    let allAttributes: [ProductAttribute]
+
+    init(allAttributes: [ProductAttribute]) {
+        self.allAttributes = allAttributes
+    }
+
+#if DEBUG
+    /// Initializer for SwiftUI previews.
+    public init() {
+        allAttributes = []
+    }
+#endif
 }
 
 public struct POSParentProduct: Equatable, Hashable, Identifiable {

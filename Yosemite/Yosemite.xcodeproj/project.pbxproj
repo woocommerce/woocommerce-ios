@@ -81,6 +81,8 @@
 		02C254FA2563B66600A04423 /* ShippingLabelRefund+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C254F92563B66600A04423 /* ShippingLabelRefund+ReadOnlyConvertible.swift */; };
 		02C254FE2563C6E500A04423 /* ShippingLabelSettings+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C254FD2563C6E500A04423 /* ShippingLabelSettings+ReadOnlyConvertible.swift */; };
 		02C255022563C76A00A04423 /* ShippingLabel+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C255012563C76A00A04423 /* ShippingLabel+ReadOnlyConvertible.swift */; };
+		02CC7C2C2D2CE5CB00907B83 /* ProductVariationFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CC7C2B2D2CE5CB00907B83 /* ProductVariationFormatter.swift */; };
+		02CC7C2E2D2CE5F600907B83 /* VariationAttributeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CC7C2D2D2CE5F600907B83 /* VariationAttributeViewModel.swift */; };
 		02DAE7F8291A9F11009342B7 /* DomainStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DAE7F7291A9F11009342B7 /* DomainStoreTests.swift */; };
 		02DAE7FA291A9F36009342B7 /* MockDomainRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DAE7F9291A9F36009342B7 /* MockDomainRemote.swift */; };
 		02DF98092A136BFB0009E2EA /* MockSitePluginsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DF98082A136BFB0009E2EA /* MockSitePluginsRemote.swift */; };
@@ -618,6 +620,8 @@
 		02C254F92563B66600A04423 /* ShippingLabelRefund+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelRefund+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		02C254FD2563C6E500A04423 /* ShippingLabelSettings+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelSettings+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		02C255012563C76A00A04423 /* ShippingLabel+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabel+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		02CC7C2B2D2CE5CB00907B83 /* ProductVariationFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationFormatter.swift; sourceTree = "<group>"; };
+		02CC7C2D2D2CE5F600907B83 /* VariationAttributeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariationAttributeViewModel.swift; sourceTree = "<group>"; };
 		02DAE7F7291A9F11009342B7 /* DomainStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainStoreTests.swift; sourceTree = "<group>"; };
 		02DAE7F9291A9F36009342B7 /* MockDomainRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDomainRemote.swift; sourceTree = "<group>"; };
 		02DF98082A136BFB0009E2EA /* MockSitePluginsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSitePluginsRemote.swift; sourceTree = "<group>"; };
@@ -2065,6 +2069,8 @@
 			isa = PBXGroup;
 			children = (
 				B9C0C1072A3C666A00DF84EA /* ProductVariationStorageManager.swift */,
+				02CC7C2B2D2CE5CB00907B83 /* ProductVariationFormatter.swift */,
+				02CC7C2D2D2CE5F600907B83 /* VariationAttributeViewModel.swift */,
 			);
 			path = ProductVariations;
 			sourceTree = "<group>";
@@ -2383,6 +2389,7 @@
 				CE0FBB252D0C65EB008B7789 /* WooShippingCustomPackage+ReadOnlyConvertible.swift in Sources */,
 				CE3B7AD72225ECA90050FE4B /* OrderStatusStore.swift in Sources */,
 				B5631ECD2114DF8C008D3535 /* EntityListener.swift in Sources */,
+				02CC7C2E2D2CE5F600907B83 /* VariationAttributeViewModel.swift in Sources */,
 				D80F758A223F72AA002F4A3B /* ShipmentTrackingProviderGroup+ReadOnlyConvertible.swift in Sources */,
 				B9AECD442851D95600E78584 /* TotalRefundedCalculationUseCase.swift in Sources */,
 				86DAA7982CD9E31E002AE55E /* MockPaymentActionHandler.swift in Sources */,
@@ -2600,6 +2607,7 @@
 				0232372922F7DA6E00715FAB /* StatsTimeRangeV4.swift in Sources */,
 				247CE85C25832A5000F9D9D1 /* MockProductVariationActionHandler.swift in Sources */,
 				CEC7D5992CDE360E00111B79 /* WooShippingStore.swift in Sources */,
+				02CC7C2C2D2CE5CB00907B83 /* ProductVariationFormatter.swift in Sources */,
 				B5F2AE9720EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift in Sources */,
 				247CE7C02582DC7200F9D9D1 /* ProductImage+Mocks.swift in Sources */,
 				7492FADF217FB11D00ED2C69 /* SettingAction.swift in Sources */,

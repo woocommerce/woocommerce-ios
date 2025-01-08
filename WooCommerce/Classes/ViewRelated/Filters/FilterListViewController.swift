@@ -40,6 +40,9 @@ protocol FilterListViewModel {
     /// Saves a selected filter to the history
     func saveSelectedFilterToHistory(_ filter: Criteria)
 
+    /// Removes a filter from the history
+    func removeFilterFromHistory(_ filter: Criteria)
+
     /// Resets the filter criteria.
     func clearAll()
 }

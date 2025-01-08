@@ -118,16 +118,19 @@ final class FilterProductListViewModel: FilterListViewModel {
     }
 
     func applyPastFilter(_ filter: Filters) {
-        // TODO
+        fatalError("Filter history is not yet implemented for product list")
     }
 
     func retrieveFilterHistory() async throws -> [Filters] {
-        // TODO
-        return []
+        fatalError("Filter history is not yet implemented for product list")
     }
 
     func saveSelectedFilterToHistory(_ filter: Criteria) {
-        // TODO
+        fatalError("Filter history is not yet implemented for product list")
+    }
+
+    func removeFilterFromHistory(_ filter: Criteria) {
+        fatalError("Filter history is not yet implemented for product list")
     }
 
     func clearAll() {

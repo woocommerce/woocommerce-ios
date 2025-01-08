@@ -59,7 +59,7 @@ struct FilterHistoryView<ViewModel: FilterListViewModel>: View {
     var body: some View {
         NavigationStack {
             VStack {
-                if error != nil {
+                if error != nil || savedFilters.isEmpty {
                     emptyStateView
                 } else {
                     filterListView
@@ -103,6 +103,16 @@ private extension FilterHistoryView {
                     .onTapGesture {
                         selectedFilter = filter
                     }
+            }
+            .onDelete { offsets in
+                offsets.forEach { index in
+                    viewModel.removeFilterFromHistory(savedFilters[index])
+                }
+                savedFilters.remove(atOffsets: offsets)
+
+                if let selectedFilter, !savedFilters.contains(selectedFilter) {
+                    self.selectedFilter = nil
+                }
             }
         }
         .listStyle(.grouped)

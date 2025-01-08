@@ -173,7 +173,10 @@ final class OrderListViewModelTests: XCTestCase {
     func test_it_requests_a_resynchronization_when_the_app_is_activated() {
         // Arrange
         let notificationCenter = NotificationCenter()
-        let viewModel = OrderListViewModel(siteID: siteID, notificationCenter: notificationCenter, filters: nil)
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           storageManager: storageManager,
+                                           notificationCenter: notificationCenter,
+                                           filters: nil)
 
         var resynchronizeRequested = false
         viewModel.onShouldResynchronizeIfViewIsVisible = {
@@ -193,7 +196,10 @@ final class OrderListViewModelTests: XCTestCase {
     func test_given_no_previous_deactivation_it_does_not_request_a_resynchronization_when_the_app_is_activated() {
         // Arrange
         let notificationCenter = NotificationCenter()
-        let viewModel = OrderListViewModel(siteID: siteID, notificationCenter: notificationCenter, filters: nil)
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           storageManager: storageManager,
+                                           notificationCenter: notificationCenter,
+                                           filters: nil)
 
         var resynchronizeRequested = false
         viewModel.onShouldResynchronizeIfViewIsVisible = {
@@ -214,7 +220,10 @@ final class OrderListViewModelTests: XCTestCase {
     func test_given_a_new_order_notification_it_requests_a_resynchronization() {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
-        let viewModel = OrderListViewModel(siteID: siteID, pushNotificationsManager: pushNotificationsManager, filters: nil)
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           storageManager: storageManager,
+                                           pushNotificationsManager: pushNotificationsManager,
+                                           filters: nil)
 
         var resynchronizeRequested = false
         viewModel.onShouldResynchronizeIfViewIsVisible = {
@@ -234,7 +243,10 @@ final class OrderListViewModelTests: XCTestCase {
     func test_given_a_non_order_notification_it_does_not_request_a_resynchronization() {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
-        let viewModel = OrderListViewModel(siteID: siteID, pushNotificationsManager: pushNotificationsManager, filters: nil)
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           storageManager: storageManager,
+                                           pushNotificationsManager: pushNotificationsManager,
+                                           filters: nil)
 
         var resynchronizeRequested = false
         viewModel.onShouldResynchronizeIfViewIsVisible = {
@@ -255,7 +267,10 @@ final class OrderListViewModelTests: XCTestCase {
 
     func test_banner_should_not_be_shown_when_there_is_no_error() async {
         // Given
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .loadFeedbackVisibility(_, onCompletion):
@@ -275,7 +290,9 @@ final class OrderListViewModelTests: XCTestCase {
     func test_storing_error_shows_error_banner() async {
         // Given
         let expectedError = MockError()
-        let viewModel = OrderListViewModel(siteID: siteID, filters: nil)
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           storageManager: storageManager,
+                                           filters: nil)
 
         // When
         viewModel.activate()
@@ -288,7 +305,10 @@ final class OrderListViewModelTests: XCTestCase {
     func test_it_requests_a_resynchronization_when_the_new_filters_are_applied() {
         // Arrange
         let notificationCenter = NotificationCenter()
-        let viewModel = OrderListViewModel(siteID: siteID, notificationCenter: notificationCenter, filters: nil)
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           storageManager: storageManager,
+                                           notificationCenter: notificationCenter,
+                                           filters: nil)
 
         var resynchronizeRequested = false
         viewModel.onShouldResynchronizeIfNewFiltersAreApplied = {
@@ -316,7 +336,10 @@ final class OrderListViewModelTests: XCTestCase {
                                                        customer: nil,
                                                        numberOfActiveFilters: 0)
         let notificationCenter = NotificationCenter()
-        let viewModel = OrderListViewModel(siteID: siteID, notificationCenter: notificationCenter, filters: filters)
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           storageManager: storageManager,
+                                           notificationCenter: notificationCenter,
+                                           filters: filters)
 
         var resynchronizeRequested = false
         viewModel.onShouldResynchronizeIfNewFiltersAreApplied = {

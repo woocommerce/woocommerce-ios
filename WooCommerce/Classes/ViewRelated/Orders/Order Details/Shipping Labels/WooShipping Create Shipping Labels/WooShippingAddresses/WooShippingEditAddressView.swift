@@ -11,6 +11,7 @@ struct WooShippingEditAddressView: View {
     @State var postalCode: String
     @State var email: String
     @State var phone: String
+    @State var saveAsDefault: Bool
 
     /// Whether to show the company field by default.
     @State var showCompanyField: Bool
@@ -45,6 +46,10 @@ struct WooShippingEditAddressView: View {
                 .padding(.bottom, Constants.extraPadding)
                 AddressTextField(field: .email, text: $email, focused: $focusedField)
                 AddressTextField(field: .phone, text: $phone, focused: $focusedField)
+                    .padding(.bottom, Constants.extraPadding)
+                Toggle(Localization.defaultAddress, isOn: $saveAsDefault)
+                    .font(.subheadline)
+                    .tint(Color(.accent))
             }
             .padding()
         }
@@ -166,6 +171,9 @@ private extension WooShippingEditAddressView {
         static let optional = NSLocalizedString("wooShipping.createLabels.editAddress.optional",
                                                     value: "Optional",
                                                     comment: "Text indicating that a field is optional")
+        static let defaultAddress = NSLocalizedString("wooShipping.createLabels.editAddress.defaultAddress",
+                                                    value: "Save as default origin address",
+                                                    comment: "Label for the default address toggle in the Woo Shipping label creation flow")
     }
 }
 
@@ -179,6 +187,7 @@ private extension WooShippingEditAddressView {
                                postalCode: "12883-1487",
                                email: "",
                                phone: "",
+                               saveAsDefault: true,
                                showCompanyField: false)
 }
 
@@ -192,5 +201,6 @@ private extension WooShippingEditAddressView {
                                postalCode: "12883-1487",
                                email: "",
                                phone: "",
+                               saveAsDefault: false,
                                showCompanyField: true)
 }

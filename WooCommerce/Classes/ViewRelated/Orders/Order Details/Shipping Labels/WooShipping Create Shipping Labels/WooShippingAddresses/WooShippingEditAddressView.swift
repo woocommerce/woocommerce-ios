@@ -13,6 +13,9 @@ struct WooShippingEditAddressView: View {
     /// Whether to show the company text field.
     @State private var showCompanyField: Bool
 
+    /// Tracks the focused address field.
+    @FocusState private var focusedField: AddressField?
+
     init(name: String,
          company: String,
          country: String,
@@ -33,9 +36,9 @@ struct WooShippingEditAddressView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: Constants.verticalSpacing) {
-                AddressTextField(field: .name, text: $name)
+                AddressTextField(field: .name, text: $name, focused: $focusedField)
                 if showCompanyField {
-                    AddressTextField(field: .company, text: $company)
+                    AddressTextField(field: .company, text: $company, focused: $focusedField)
                 } else {
                     Button {
                         showCompanyField = true
@@ -46,13 +49,13 @@ struct WooShippingEditAddressView: View {
                     .font(.subheadline)
                     .bold()
                 }
-                AddressTextField(field: .country, text: $country)
+                AddressTextField(field: .country, text: $country, focused: $focusedField)
                     .padding(.top, Constants.extraPadding)
-                AddressTextField(field: .address, text: $address)
-                AddressTextField(field: .city, text: $city)
+                AddressTextField(field: .address, text: $address, focused: $focusedField)
+                AddressTextField(field: .city, text: $city, focused: $focusedField)
                 AdaptiveStack(horizontalAlignment: .leading, verticalAlignment: .top, spacing: Constants.innerSpacing) {
-                    AddressTextField(field: .state, text: $state)
-                    AddressTextField(field: .postalCode, text: $postalCode)
+                    AddressTextField(field: .state, text: $state, focused: $focusedField)
+                    AddressTextField(field: .postalCode, text: $postalCode, focused: $focusedField)
                 }
             }
             .padding()
@@ -60,8 +63,19 @@ struct WooShippingEditAddressView: View {
     }
 
     private struct AddressTextField: View {
+        /// Which address field to display.
         let field: AddressField
+
+        /// The text to display in the text field.
         @Binding var text: String
+
+        /// The focused state of the field.
+        var focused: FocusState<AddressField?>.Binding
+
+        /// Whether the field is focused.
+        private var isFocused: Bool {
+            focused.wrappedValue == field
+        }
 
         var body: some View {
             VStack(spacing: Constants.innerSpacing) {
@@ -75,8 +89,11 @@ struct WooShippingEditAddressView: View {
                 .font(.subheadline)
                 .foregroundStyle(Color(.text))
                 TextField(field.title, text: $text, prompt: Text(field.required ? "" : Localization.optional))
+                    .focused(focused, equals: field)
                     .padding()
-                    .roundedBorder(cornerRadius: Constants.cornerRadius, lineColor: Constants.borderColor, lineWidth: Constants.borderWidth)
+                    .roundedBorder(cornerRadius: Constants.cornerRadius,
+                                   lineColor: isFocused ? Color(.accent) : Color(.separator),
+                                   lineWidth: isFocused ? 2 : 1)
             }
         }
     }
@@ -110,8 +127,6 @@ private extension WooShippingEditAddressView {
         static let innerSpacing: CGFloat = 8
         static let extraPadding: CGFloat = 24
         static let cornerRadius: CGFloat = 8
-        static let borderWidth: CGFloat = 1
-        static let borderColor: Color = Color(.separator)
     }
 
     enum Localization {

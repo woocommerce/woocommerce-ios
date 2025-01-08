@@ -60,12 +60,7 @@ struct FilterHistoryView<ViewModel: FilterListViewModel>: View {
         NavigationStack {
             VStack {
                 if error != nil {
-                    Image(systemName: "clock")
-                        .foregroundColor(.secondary)
-                        .font(.largeTitle)
-                        .padding(.bottom)
-                    Text(emptyState)
-                        .secondaryBodyStyle()
+                    emptyStateView
                 } else {
                     filterListView
                 }
@@ -111,5 +106,15 @@ private extension FilterHistoryView {
             }
         }
         .listStyle(.grouped)
+    }
+
+    @ViewBuilder
+    var emptyStateView: some View {
+        Image(systemName: "clock")
+            .foregroundColor(.secondary)
+            .font(.largeTitle)
+            .padding(.bottom)
+        Text(emptyState)
+            .secondaryBodyStyle()
     }
 }

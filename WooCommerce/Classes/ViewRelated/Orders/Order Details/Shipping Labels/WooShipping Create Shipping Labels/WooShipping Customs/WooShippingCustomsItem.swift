@@ -89,7 +89,7 @@ struct WooShippingCustomsItem: View {
                     .foregroundColor(.primary)
                     .subheadlineStyle()
                     .padding(.top, Layout.collapsibleViewVerticalSpacing)
-            
+                
                 TextField(Localization.HSTariffNumberPlaceholder, text: $viewModel.hsTariffNumber)
                     .padding(Layout.extraPadding)
                     .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderLineWidth)

@@ -127,7 +127,12 @@ private extension ItemListRow {
 }
 
 #Preview("Loading") {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
     ItemList(state: .loading([]))
+        .environmentObject(posModel)
 }
 
 #endif

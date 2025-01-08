@@ -31,7 +31,9 @@ struct PointOfSaleCollectCashView: View {
         VStack(alignment: .center, spacing: 20) {
             HStack {
                 Button(action: {
-                    posModel.cancelCashPayment()
+                    Task { @MainActor in
+                        try await posModel.cancelCashPayment()
+                    }
                 }, label: {
                     VStack {
                         HStack {

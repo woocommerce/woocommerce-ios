@@ -61,6 +61,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     private let orderController: PointOfSaleOrderControllerProtocol
     private let analytics: Analytics
 
+    private var isCashPaymentInProgress: Bool = false
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
 
@@ -200,15 +201,18 @@ extension PointOfSaleAggregateModel {
     }
 
     func startCashPayment() {
+        isCashPaymentInProgress = true
         paymentState = .cash(.collectingCash)
     }
 
-    func cancelCashPayment() {
-        paymentState = .card(.idle)
+    func cancelCashPayment() async throws {
+        isCashPaymentInProgress = false
+        await startPaymentWhenCardReaderConnected()
     }
 
     private func cashPaymentSuccess() {
         paymentState = .cash(.paymentSuccess)
+        isCashPaymentInProgress = false
     }
 
     @MainActor
@@ -304,10 +308,17 @@ private extension PointOfSaleAggregateModel {
             .assign(to: &$cardPresentPaymentInlineMessage)
 
         cardPresentPaymentService.paymentEventPublisher
-            .compactMap { [weak self] paymentEvent in
-                guard let self else { return .none }
-                return PointOfSalePaymentState(from: paymentEvent,
-                                               using: presentationStyleDeterminerDependencies)
+            .compactMap { [weak self] paymentEvent -> PointOfSalePaymentState? in
+                guard let self else { return nil }
+
+                let newPaymentState = PointOfSalePaymentState(from: paymentEvent,
+                                                              using: presentationStyleDeterminerDependencies)
+
+                if self.isCashPaymentInProgress, case .card = newPaymentState {
+                    cardPresentPaymentService.cancelPayment()
+                    return .cash(.collectingCash)
+                }
+                return newPaymentState
             }
             .assign(to: &$paymentState)
 

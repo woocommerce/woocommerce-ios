@@ -51,6 +51,12 @@ struct FilterHistoryView<ViewModel: FilterListViewModel>: View {
         comment: "Label on the empty state of the Filter History view"
     )
 
+    private let recent = NSLocalizedString(
+        "filterHistoryView.recent",
+        value: "Recent",
+        comment: "Header label of the Filter History view"
+    )
+
     init(viewModel: ViewModel, onSelection: @escaping (ViewModel.Criteria) -> Void) {
         self.viewModel = viewModel
         self.onSelection = onSelection
@@ -96,23 +102,27 @@ struct FilterHistoryView<ViewModel: FilterListViewModel>: View {
 private extension FilterHistoryView {
     var filterListView: some View {
         List {
-            ForEach(savedFilters, id: \.readableString) { filter in
-                SelectableItemRow(title: filter.readableString,
-                                  selected: selectedFilter == filter,
-                                  displayMode: .compact)
+            Section {
+                ForEach(savedFilters, id: \.readableString) { filter in
+                    SelectableItemRow(title: filter.readableString,
+                                      selected: selectedFilter == filter,
+                                      displayMode: .compact)
                     .onTapGesture {
                         selectedFilter = filter
                     }
-            }
-            .onDelete { offsets in
-                offsets.forEach { index in
-                    viewModel.removeFilterFromHistory(savedFilters[index])
                 }
-                savedFilters.remove(atOffsets: offsets)
+                .onDelete { offsets in
+                    offsets.forEach { index in
+                        viewModel.removeFilterFromHistory(savedFilters[index])
+                    }
+                    savedFilters.remove(atOffsets: offsets)
 
-                if let selectedFilter, !savedFilters.contains(selectedFilter) {
-                    self.selectedFilter = nil
+                    if let selectedFilter, !savedFilters.contains(selectedFilter) {
+                        self.selectedFilter = nil
+                    }
                 }
+            } header: {
+                Text(recent)
             }
         }
         .listStyle(.grouped)

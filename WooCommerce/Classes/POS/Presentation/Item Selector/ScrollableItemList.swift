@@ -7,13 +7,10 @@ struct ScrollableItemList<HeaderView: View>: View {
 
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
 
-    init(
-        state: ItemListState,
-        @ViewBuilder headerView: () -> HeaderView
-    ) {
+    init(state: ItemListState,
+         @ViewBuilder headerView: () -> HeaderView) {
         self.state = state
         self.headerView = headerView()
-
     }
 
     var body: some View {

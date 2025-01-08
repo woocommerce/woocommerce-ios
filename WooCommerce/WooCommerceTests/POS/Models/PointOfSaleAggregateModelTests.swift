@@ -306,13 +306,13 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.paymentState == .cash(.collectingCash))
         }
 
-        @Test func cancelCashPayment_resets_payment_state_to_idle() async throws {
+        @Test func cancelCashPayment_resets_payment_state_to_idle() {
             // Given
             sut.startCashPayment()
             #expect(sut.paymentState == .cash(.collectingCash))
 
             // When
-            try await sut.cancelCashPayment()
+            sut.cancelCashPayment()
 
             // Then
             #expect(sut.paymentState == .card(.idle))
@@ -329,7 +329,7 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.paymentState == .cash(.collectingCash))
 
             // When
-            try await sut.cancelCashPayment()
+            sut.cancelCashPayment()
 
             // Then
             #expect(sut.orderStage == .finalizing)

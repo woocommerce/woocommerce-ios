@@ -3,7 +3,7 @@ import WooFoundation
 @testable import Networking
 @testable import Yosemite
 
-final class PointOfSaleProductServiceTests: XCTestCase {
+final class PointOfSaleItemServiceTests: XCTestCase {
     private var currencySettings: CurrencySettings!
     private var itemProvider: PointOfSaleItemServiceProtocol!
     private var network: MockNetwork!
@@ -13,7 +13,7 @@ final class PointOfSaleProductServiceTests: XCTestCase {
         super.setUp()
         network = MockNetwork()
         currencySettings = CurrencySettings()
-        itemProvider = PointOfSaleProductService(siteID: siteID,
+        itemProvider = PointOfSaleItemService(siteID: siteID,
                                                  currencySettings: currencySettings,
                                                  network: network,
                                                  isVariableProductsFeatureEnabled: false)
@@ -27,7 +27,7 @@ final class PointOfSaleProductServiceTests: XCTestCase {
 
     func test_PointOfSaleItemServiceProtocol_when_fails_request_with_requestFailed_then_throws_error() async throws {
         // Given
-        let expectedError = PointOfSaleProductServiceError.requestFailed
+        let expectedError = PointOfSaleItemServiceError.requestFailed
         network.simulateError(requestUrlSuffix: "products", error: expectedError)
 
         // When
@@ -36,7 +36,7 @@ final class PointOfSaleProductServiceTests: XCTestCase {
             XCTFail("Expected an error, but got success.")
         } catch {
             // Then
-            XCTAssertEqual(error as? PointOfSaleProductServiceError, expectedError)
+            XCTAssertEqual(error as? PointOfSaleItemServiceError, expectedError)
         }
     }
 
@@ -111,7 +111,7 @@ final class PointOfSaleProductServiceTests: XCTestCase {
 
     func test_providePointOfSaleItems_sets_types_parameters_to_simple_only() async throws {
         // Given
-        let itemProvider = PointOfSaleProductService(siteID: siteID,
+        let itemProvider = PointOfSaleItemService(siteID: siteID,
                                                      currencySettings: currencySettings,
                                                      network: network,
                                                      isVariableProductsFeatureEnabled: false)
@@ -125,7 +125,7 @@ final class PointOfSaleProductServiceTests: XCTestCase {
 
     func test_providePointOfSaleItems_sets_types_parameters_correctly_when_variable_products_feature_is_enabled() async throws {
         // Given
-        let itemProvider = PointOfSaleProductService(siteID: siteID,
+        let itemProvider = PointOfSaleItemService(siteID: siteID,
                                                      currencySettings: currencySettings,
                                                      network: network,
                                                      isVariableProductsFeatureEnabled: true)
@@ -135,5 +135,115 @@ final class PointOfSaleProductServiceTests: XCTestCase {
 
         // Then
         XCTAssertEqual(network.queryParametersDictionary?["include_types"] as? String, "simple,variable")
+    }
+
+    func test_providePointOfSaleVariationItems_returns_variations_when_load_succeeds() async throws {
+        // Given
+        let itemProvider = PointOfSaleItemService(siteID: siteID,
+                                                  currencySettings: currencySettings,
+                                                  network: network,
+                                                  isVariableProductsFeatureEnabled: true)
+        let parentProductID: Int64 = 123
+
+        // When
+        network.simulateResponse(requestUrlSuffix: "products/\(parentProductID)/variations", filename: "product-variations-load-all")
+        let pagedVariations = try await itemProvider.providePointOfSaleVariationItems(
+            for: .init(
+                id: .init(),
+                name: "Tea",
+                productImageSource: nil,
+                productID: parentProductID,
+                type: .variable(
+                    .init(allAttributes: [
+                        .init(
+                            siteID: siteID,
+                            attributeID: 0,
+                            name: "Shape",
+                            position: 1,
+                            visible: true,
+                            variation: true,
+                            options: ["Marble", "Heart"]
+                        ),
+                        .init(
+                            siteID: siteID,
+                            attributeID: 0,
+                            name: "Flavor",
+                            position: 2,
+                            visible: true,
+                            variation: true,
+                            options: ["fruity", "nuts"]
+                        ),
+                        .init(
+                            siteID: siteID,
+                            attributeID: 0,
+                            name: "Darkness",
+                            position: 3,
+                            visible: true,
+                            variation: true,
+                            options: ["99%", "87%"]
+                        ),
+                        .init(
+                            siteID: siteID,
+                            attributeID: 0,
+                            name: "Size",
+                            position: 4,
+                            visible: true,
+                            variation: true,
+                            options: ["6 piece"]
+                        )
+                    ]
+                ))
+            ),
+            pageNumber: 1
+        )
+
+        // Then
+        let variations = pagedVariations.items
+
+        XCTAssertFalse(variations.isEmpty)
+        let firstVariation = try XCTUnwrap(variations.first)
+        guard case let .variation(firstVariation) = firstVariation else {
+            return XCTFail("Variation is expected.")
+        }
+        XCTAssertEqual(
+            firstVariation.name,
+            "marble - nuts - 99% - \(String.localizedStringWithFormat(VariationAttributeViewModel.Localization.anyAttributeFormat, "Size"))"
+        )
+        XCTAssertEqual(firstVariation.formattedPrice, "$12.00")
+        XCTAssertEqual(firstVariation.price, "12")
+        XCTAssertEqual(firstVariation.productImageSource,
+                       "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/11/img_0002-1.jpeg?fit=4288%2C2848&ssl=1")
+        XCTAssertEqual(firstVariation.productID, parentProductID)
+        XCTAssertEqual(firstVariation.productVariationID, 1275)
+    }
+
+    func test_providePointOfSaleVariationItems_throws_error_when_variations_load_fails() async throws {
+        // Given
+        let itemProvider = PointOfSaleItemService(siteID: siteID,
+                                            currencySettings: currencySettings,
+                                            network: network,
+                                            isVariableProductsFeatureEnabled: true)
+        let parentProductID: Int64 = 123
+        let expectedError = PointOfSaleItemServiceError.requestFailed
+
+        // When
+        network.simulateError(requestUrlSuffix: "products/\(parentProductID)/variations", error: expectedError)
+
+        // Then
+        do {
+            _ = try await itemProvider.providePointOfSaleVariationItems(
+                for: .init(
+                    id: .init(),
+                    name: "Tea",
+                    productImageSource: nil,
+                    productID: parentProductID,
+                    type: .variable(.init(allAttributes: []))
+                ),
+                pageNumber: 1
+            )
+            XCTFail("An error is expected.")
+        } catch {
+            XCTAssertEqual(error as? PointOfSaleItemServiceError, expectedError)
+        }
     }
 }

@@ -101,7 +101,7 @@ private var mockItems: [POSItem] {
                 name: "Variable product 1",
                 productImageSource: nil,
                 productID: 5,
-                type: .variable
+                type: .variable(.init())
             )
         ),
         .simpleProduct(POSSimpleProduct(id: UUID(), name: "Product 4", formattedPrice: "$4.00", productID: 4, price: "4.00"))
@@ -110,8 +110,18 @@ private var mockItems: [POSItem] {
 
 private var mockVariationItems: [POSItem] {
     [
-        .variation(.init(id: UUID(), name: "Variation 1", formattedPrice: "$1.00", productImageSource: nil)),
-        .variation(.init(id: UUID(), name: "Variation 2", formattedPrice: "$2.00", productImageSource: nil)),
+        .variation(.init(id: UUID(),
+                         name: "Variation 1",
+                         formattedPrice: "$1.00",
+                         price: "1.00",
+                         productID: 134,
+                         variationID: 256)),
+        .variation(.init(id: UUID(),
+                         name: "Variation 2",
+                         formattedPrice: "$2.00",
+                         price: "2.00",
+                         productID: 134,
+                         variationID: 256)),
     ]
 }
 

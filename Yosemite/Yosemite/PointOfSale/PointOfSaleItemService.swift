@@ -7,14 +7,15 @@ import class Networking.AlamofireNetwork
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
-public enum PointOfSaleProductServiceError: Error {
+public enum PointOfSaleItemServiceError: Error, Equatable {
     case requestFailed
+    case invalidParentProduct(POSParentProduct)
     case unknown
 }
 
 /// Product provider for the Point of Sale feature
 ///
-public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
+public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     private var siteID: Int64
     private let currencyFormatter: CurrencyFormatter
     private let productsRemote: ProductsRemote
@@ -65,18 +66,30 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
     }
 
     public func providePointOfSaleVariationItems(for parentProduct: POSParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
+        guard case let .variable(variableProduct) = parentProduct.type else {
+            assertionFailure(
+                "Unexpected parent product when loading variations: \(parentProduct)"
+            )
+            throw PointOfSaleItemServiceError.invalidParentProduct(parentProduct)
+        }
         let variations = try await variationRemote
             .loadVariationsForPointOfSale(for: siteID,
                                           parentProductID: parentProduct.productID,
                                           pageNumber: pageNumber)
         return .init(
             items: variations.compactMap({ variation in
-                POSItem
+                let variationName = ProductVariationFormatter().generateName(
+                    for: variation,
+                    from: variableProduct.allAttributes
+                )
+                return POSItem
                     .variation(.init(id: UUID(),
-                                     // TODO-14702: variation name with ProductVariationFormatter
-                                     name: "Variation \(variation.productVariationID)",
+                                     name: variationName,
                                      formattedPrice: currencyFormatter.formatAmount(variation.price) ?? "-",
-                                     productImageSource: variation.image?.src))
+                                     price: variation.price,
+                                     productImageSource: variation.image?.src,
+                                     productID: variation.productID,
+                                     variationID: variation.productVariationID))
             }),
             // TODO-14696: pagination support for variations lists
             hasMorePages: false
@@ -104,7 +117,7 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
                                                            name: product.name,
                                                            productImageSource: thumbnailSource,
                                                            productID: product.productID,
-                                                           type: .variable))
+                                                           type: .variable(.init(allAttributes: product.attributesForVariations))))
                 default:
                     return nil
             }
@@ -112,7 +125,7 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
     }
 }
 
-private extension PointOfSaleProductService {
+private extension PointOfSaleItemService {
     func filterProducts(products: [Product], using criteria: [(Product) -> Bool]) -> [Product] {
         return products.filter { product in
             criteria.allSatisfy { $0(product) }

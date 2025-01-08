@@ -18,6 +18,23 @@ public extension OrderSyncProductTypeProtocol where Self: Equatable {
     }
 }
 
+public protocol OrderSyncProductVariationTypeProtocol: Hashable {
+    var price: String { get }
+    var productVariationID: Int64 { get }
+    var productID: Int64 { get }
+
+    func isEqual(to: any OrderSyncProductVariationTypeProtocol) -> Bool
+}
+
+extension ProductVariation: OrderSyncProductVariationTypeProtocol {}
+
+public extension OrderSyncProductVariationTypeProtocol where Self: Equatable {
+    func isEqual(to other: any OrderSyncProductVariationTypeProtocol) -> Bool {
+        guard let other = other as? Self else { return false }
+        return self == other
+    }
+}
+
 /// Product input for an `OrderSynchronizer` type.
 ///
 public struct OrderSyncProductInput {
@@ -39,7 +56,7 @@ public struct OrderSyncProductInput {
     ///
     public enum ProductType: Hashable {
         case product(any OrderSyncProductTypeProtocol)
-        case variation(ProductVariation)
+        case variation(any OrderSyncProductVariationTypeProtocol)
 
         public func hash(into hasher: inout Hasher) {
             switch self {
@@ -57,7 +74,7 @@ public struct OrderSyncProductInput {
             case (.product(let lhsProduct), .product(let rhsProduct)):
                 return lhsProduct.isEqual(to: rhsProduct)
             case (.variation(let lhsVariation), .variation(let rhsVariation)):
-                return lhsVariation == rhsVariation
+                return lhsVariation.isEqual(to: rhsVariation)
             default:
                 return false
             }

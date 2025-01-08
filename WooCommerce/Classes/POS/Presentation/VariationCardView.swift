@@ -54,7 +54,12 @@ private extension VariationCardView {
 }
 
 #Preview("Variation without image") {
-    let variation = POSVariation(id: .init(), name: "500ml, double shot", formattedPrice: "$5.00")
+    let variation = POSVariation(id: .init(),
+                                 name: "500ml, double shot",
+                                 formattedPrice: "$5.00",
+                                 price: "5.00",
+                                 productID: 134,
+                                 variationID: 256)
     VariationCardView(variation: variation)
 }
 
@@ -62,6 +67,9 @@ private extension VariationCardView {
     let variation = POSVariation(id: .init(),
                                  name: "500ml, double shot",
                                  formattedPrice: "$5.00",
-                                 productImageSource: "https://pd.w.org/2024/12/986762d0d4d4cf17.82435881-scaled.jpeg")
+                                 price: "5.00",
+                                 productImageSource: "https://pd.w.org/2024/12/986762d0d4d4cf17.82435881-scaled.jpeg",
+                                 productID: 134,
+                                 variationID: 256)
     VariationCardView(variation: variation)
 }

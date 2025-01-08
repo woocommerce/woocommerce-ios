@@ -61,6 +61,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     private let orderController: PointOfSaleOrderControllerProtocol
     private let analytics: Analytics
 
+    private var isCashPaymentInProgress: Bool = false
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
 
@@ -129,6 +130,7 @@ extension PointOfSaleAggregateModel {
     }
 
     func startNewCart() {
+        isCashPaymentInProgress = false
         removeAllItemsFromCart()
         orderController.clearOrder()
         setStateForEditing()
@@ -200,10 +202,12 @@ extension PointOfSaleAggregateModel {
     }
 
     func startCashPayment() {
+        isCashPaymentInProgress = true
         paymentState = .cash(.collectingCash)
     }
 
     func cancelCashPayment() {
+        isCashPaymentInProgress = false
         paymentState = .card(.idle)
     }
 
@@ -304,10 +308,17 @@ private extension PointOfSaleAggregateModel {
             .assign(to: &$cardPresentPaymentInlineMessage)
 
         cardPresentPaymentService.paymentEventPublisher
-            .compactMap { [weak self] paymentEvent in
-                guard let self else { return .none }
-                return PointOfSalePaymentState(from: paymentEvent,
-                                               using: presentationStyleDeterminerDependencies)
+            .compactMap { [weak self] paymentEvent -> PointOfSalePaymentState? in
+                guard let self else { return nil }
+
+                let newPaymentState = PointOfSalePaymentState(from: paymentEvent,
+                                                              using: presentationStyleDeterminerDependencies)
+
+                if self.isCashPaymentInProgress, case .card = newPaymentState {
+                    cardPresentPaymentService.cancelPayment()
+                    return .cash(.paymentSuccess)
+                }
+                return newPaymentState
             }
             .assign(to: &$paymentState)
 

@@ -31,7 +31,7 @@ struct PointOfSaleCollectCashView: View {
         VStack(alignment: .center, spacing: 20) {
             HStack {
                 Button(action: {
-                    posModel.addMoreToCart()
+                    posModel.cancelCashPayment()
                 }, label: {
                     VStack {
                         HStack {

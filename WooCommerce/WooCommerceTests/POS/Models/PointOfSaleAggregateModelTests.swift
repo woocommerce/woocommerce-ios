@@ -306,6 +306,35 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.paymentState == .cash(.collectingCash))
         }
 
+        @Test func cancelCashPayment_resets_payment_state_to_idle() {
+            // Given
+            sut.startCashPayment()
+            #expect(sut.paymentState == .cash(.collectingCash))
+
+            // When
+            sut.cancelCashPayment()
+
+            // Then
+            #expect(sut.paymentState == .card(.idle))
+        }
+
+        @Test func cancelCashPayment_maintains_order_stage_as_finalizing() async throws {
+            // Given
+            #expect(sut.orderStage == .building)
+
+            await sut.checkOut()
+            #expect(sut.orderStage == .finalizing)
+
+            sut.startCashPayment()
+            #expect(sut.paymentState == .cash(.collectingCash))
+
+            // When
+            sut.cancelCashPayment()
+
+            // Then
+            #expect(sut.orderStage == .finalizing)
+        }
+
         @Test func cardPresentPaymentInlineMessage_when_paymentSuccess_then_total_set() async throws {
             // Given order totals:
             // Note that orderTotal is used, but the Order values are given for test robustness.

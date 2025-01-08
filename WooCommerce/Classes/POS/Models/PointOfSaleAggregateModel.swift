@@ -203,6 +203,10 @@ extension PointOfSaleAggregateModel {
         paymentState = .cash(.collectingCash)
     }
 
+    func cancelCashPayment() {
+        paymentState = .card(.idle)
+    }
+
     private func cashPaymentSuccess() {
         paymentState = .cash(.paymentSuccess)
     }

@@ -8,7 +8,6 @@ struct ItemListView: View {
 
     @EnvironmentObject var posModel: PointOfSaleAggregateModel
 
-    @State private var lastScrollPosition: CGFloat = 0
     @State private var showSimpleProductsModal: Bool = false
     private var itemListState: ItemListState {
         posModel.itemsViewState.itemsStack.root
@@ -23,7 +22,7 @@ struct ItemListView: View {
                 headerView
                 switch itemListState {
                 case .loading(let items),
-                        .loaded(let items):
+                        .loaded(let items, _):
                     listView(items)
                 case .error:
                     // Currently unused, but this will show errors that are displayed inline with previously
@@ -135,7 +134,7 @@ private extension ItemListView {
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
         ScrollView {
-            VStack {
+            LazyVStack {
                 if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                     bannerCardView
                 }
@@ -144,21 +143,6 @@ private extension ItemListView {
             .frame(maxWidth: .infinity)
             .padding(.bottom, floatingControlAreaSize.height)
             .padding(.horizontal, Constants.itemListPadding)
-            .background(GeometryReader { proxy in
-                Color.clear
-                    .onChange(of: proxy.frame(in: .global).maxY) { maxY in
-                        if itemListState.isLoading {
-                            return
-                        }
-                        let threshold = Constants.viewHeight * Constants.scrollThresholdMultiplier
-                        if maxY < threshold && maxY < lastScrollPosition {
-                            Task {
-                                await posModel.loadNextItems()
-                            }
-                        }
-                        lastScrollPosition = maxY
-                    }
-            })
         }
     }
 
@@ -245,8 +229,6 @@ private extension ItemListView {
         static let iconPadding: CGFloat = 26
         static let itemListPadding: CGFloat = 16
         static let bannerCardPadding: CGFloat = 16
-        static let viewHeight: CGFloat = UIScreen.main.bounds.height
-        static let scrollThresholdMultiplier: CGFloat = 1.7
     }
 
     enum BannerState {

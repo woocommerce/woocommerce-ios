@@ -65,7 +65,7 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
     var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { $itemsViewState }
 
     func loadInitialItems() async {
-        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded(mockItems),
+        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded(mockItems, hasMoreItems: true),
                                                                                               itemStates: [:]))
     }
 
@@ -75,7 +75,7 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
     }
 
     func reload() async {
-        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded([]),
+        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded([], hasMoreItems: false),
                                                                                               itemStates: [:]))
     }
 
@@ -84,7 +84,7 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
             containerState: .content,
             itemsStack: ItemsStackState(
                 root: .loading(mockItems),
-                itemStates: [parent: .loaded(mockVariationItems)]
+                itemStates: [parent: .loaded(mockVariationItems, hasMoreItems: true)]
             )
         )
     }

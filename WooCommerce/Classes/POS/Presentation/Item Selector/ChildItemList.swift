@@ -35,7 +35,7 @@ struct ChildItemList: View {
             }
             .padding(.horizontal, Constants.itemListPadding)
             ScrollView {
-                VStack {
+                LazyVStack {
                     ItemList(state: state)
                         .background(Color.posPrimaryBackground)
                         .toolbar(.hidden, for: .navigationBar)
@@ -100,7 +100,7 @@ private extension ChildItemList {
                                                                 formattedPrice: "$6.5"
                                                             )
                                                         )
-                                                    ])]))
+                                                    ], hasMoreItems: false)]))
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
         cardPresentPaymentService: CardPresentPaymentPreviewService(),

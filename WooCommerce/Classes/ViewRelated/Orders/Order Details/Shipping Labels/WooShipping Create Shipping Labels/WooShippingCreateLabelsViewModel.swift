@@ -245,7 +245,11 @@ private extension WooShippingCreateLabelsViewModel {
             switch result {
             case .success(let addresses):
                 selectedOriginAddress = addresses.first(where: \.defaultAddress)
-                originAddresses = WooShippingOriginAddressListViewModel(addresses: addresses, selectedAddressID: selectedOriginAddress?.id)
+                originAddresses = WooShippingOriginAddressListViewModel(addresses: addresses,
+                                                                        selectedAddressID: selectedOriginAddress?.id)
+                originAddresses.onSelect = { [weak self] selectedAddress in
+                    self?.selectedOriginAddress = selectedAddress
+                }
             case .failure(let error):
                 DDLogError("⛔️ Error loading origin addresses for Woo Shipping labels: \(error)")
             }

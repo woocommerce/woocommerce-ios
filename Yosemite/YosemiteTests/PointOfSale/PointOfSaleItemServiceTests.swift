@@ -153,8 +153,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
                 name: "Tea",
                 productImageSource: nil,
                 productID: parentProductID,
-                type: .variable(
-                    .init(allAttributes: [
+                allAttributes: [
                         .init(
                             siteID: siteID,
                             attributeID: 0,
@@ -192,7 +191,6 @@ final class PointOfSaleItemServiceTests: XCTestCase {
                             options: ["6 piece"]
                         )
                     ]
-                ))
             ),
             pageNumber: 1
         )
@@ -232,7 +230,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
                     name: "Tea",
                     productImageSource: nil,
                     productID: parentProductID,
-                    type: .variable(.init(allAttributes: []))
+                    allAttributes: []
                 ),
                 pageNumber: 1
             )

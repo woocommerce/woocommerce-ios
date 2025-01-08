@@ -3,24 +3,46 @@ import enum Yosemite.POSItem
 import struct Yosemite.POSVariableParentProduct
 
 /// Displays a list of POS items or placeholder card based on the given state.
-struct ItemList: View {
+struct ItemList<HeaderView: View>: View {
+    @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @EnvironmentObject var posModel: PointOfSaleAggregateModel
     let state: ItemListState
+    private let headerView: HeaderView
+
+    init(state: ItemListState,
+         @ViewBuilder headerView: () -> HeaderView = { EmptyView() }) {
+        self.state = state
+        self.headerView = headerView()
+    }
 
     var body: some View {
-        ForEach(state.items) { item in
-            ItemListRow(item: item)
-        }
-        switch state {
-        case .loading, .loaded(_, hasMoreItems: true):
-            GhostItemCardView()
-                .onAppear {
-                    Task { await posModel.loadNextItems() }
+        ScrollView {
+            LazyVStack {
+                headerView
+
+                ForEach(state.items) { item in
+                    ItemListRow(item: item)
                 }
-        default:
-            EmptyView()
+
+                switch state {
+                case .loading, .loaded(_, hasMoreItems: true):
+                    GhostItemCardView()
+                        .onAppear {
+                            Task { await posModel.loadNextItems() }
+                        }
+                default:
+                    EmptyView()
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.bottom, floatingControlAreaSize.height)
+            .padding(.horizontal, Constants.itemListPadding)
         }
     }
+}
+
+private enum Constants {
+    static let itemListPadding: CGFloat = 16
 }
 
 private struct ItemListRow: View {

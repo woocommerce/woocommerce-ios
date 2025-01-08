@@ -3,7 +3,6 @@ import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 
 struct ItemListView: View {
-    @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     @EnvironmentObject var posModel: PointOfSaleAggregateModel
@@ -133,16 +132,10 @@ private extension ItemListView {
 
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
-        ScrollView {
-            LazyVStack {
-                if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
-                    bannerCardView
-                }
-                ItemList(state: itemListState)
+        ItemList(state: itemListState) {
+            if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
+                bannerCardView
             }
-            .frame(maxWidth: .infinity)
-            .padding(.bottom, floatingControlAreaSize.height)
-            .padding(.horizontal, Constants.itemListPadding)
         }
     }
 

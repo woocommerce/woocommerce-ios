@@ -33,9 +33,9 @@ struct WooShippingEditAddressView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: Constants.verticalSpacing) {
-                LabelAndTextField(title: Localization.name, text: $name)
+                AddressTextField(field: .name, text: $name)
                 if showCompanyField {
-                    LabelAndTextField(title: Localization.company, text: $company, required: false)
+                    AddressTextField(field: .company, text: $company)
                 } else {
                     Button {
                         showCompanyField = true
@@ -46,39 +46,60 @@ struct WooShippingEditAddressView: View {
                     .font(.subheadline)
                     .bold()
                 }
-                LabelAndTextField(title: Localization.country, text: $country)
+                AddressTextField(field: .country, text: $country)
                     .padding(.top, Constants.extraPadding)
-                LabelAndTextField(title: Localization.address, text: $address)
-                LabelAndTextField(title: Localization.city, text: $city)
+                AddressTextField(field: .address, text: $address)
+                AddressTextField(field: .city, text: $city)
                 AdaptiveStack(horizontalAlignment: .leading, verticalAlignment: .top, spacing: Constants.innerSpacing) {
-                    LabelAndTextField(title: Localization.state, text: $state)
-                    LabelAndTextField(title: Localization.postalCode, text: $postalCode)
+                    AddressTextField(field: .state, text: $state)
+                    AddressTextField(field: .postalCode, text: $postalCode)
                 }
             }
             .padding()
         }
     }
 
-    private struct LabelAndTextField: View {
-        let title: String
+    private struct AddressTextField: View {
+        let field: AddressField
         @Binding var text: String
-        var required: Bool = true
 
         var body: some View {
             VStack(spacing: Constants.innerSpacing) {
                 HStack {
-                    Text(title)
-                    if required {
+                    Text(field.title)
+                    if field.required {
                         Text("*")
                     }
                     Spacer()
                 }
                 .font(.subheadline)
                 .foregroundStyle(Color(.text))
-                TextField(title, text: $text, prompt: Text(required ? "" : Localization.optional))
+                TextField(field.title, text: $text, prompt: Text(field.required ? "" : Localization.optional))
                     .padding()
                     .roundedBorder(cornerRadius: Constants.cornerRadius, lineColor: Constants.borderColor, lineWidth: Constants.borderWidth)
             }
+        }
+    }
+}
+
+private extension WooShippingEditAddressView {
+    enum AddressField {
+        case name, company, country, address, city, state, postalCode
+
+        var title: String {
+            switch self {
+            case .name: return Localization.name
+            case .company: return Localization.company
+            case .country: return Localization.country
+            case .address: return Localization.address
+            case .city: return Localization.city
+            case .state: return Localization.state
+            case .postalCode: return Localization.postalCode
+            }
+        }
+
+        var required: Bool {
+            self != .company
         }
     }
 }

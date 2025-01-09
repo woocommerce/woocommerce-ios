@@ -921,7 +921,25 @@ private extension AppSettingsStore {
     /// Removes a product filter from the persisted history
     func removeFromProductFilterHistory(filter: StoredProductSettings.Setting,
                                         onCompletion: @escaping (Error?) -> Void) {
-        // TODO
+        var existingHistory: [Int64: [StoredProductSettings.Setting]] = [:]
+        if let storedHistory: ProductFilterHistory = try? fileStorage.data(for: productFilterHistoryURL) {
+            existingHistory = storedHistory.history
+        }
+
+        guard let siteHistory = existingHistory[filter.siteID] else {
+            onCompletion(nil)
+            return
+        }
+
+        existingHistory[filter.siteID] = siteHistory.filter { $0 != filter }
+
+        let newStoredHistory = ProductFilterHistory(history: existingHistory)
+        do {
+            try fileStorage.write(newStoredHistory, to: productFilterHistoryURL)
+            onCompletion(nil)
+        } catch {
+            onCompletion(AppSettingsStoreErrors.writeProductFilterHistory)
+        }
     }
 
     /// Clears all the product filter history for a given site

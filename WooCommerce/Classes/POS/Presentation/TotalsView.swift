@@ -91,7 +91,7 @@ struct TotalsView: View {
 
     private var backgroundColor: Color {
         switch posModel.paymentState {
-        case .card(.cardPaymentSuccessful):
+        case .card(.cardPaymentSuccessful), .cash(.paymentSuccess):
             .posSecondaryBackground
         case .card(.processingPayment):
             colorScheme == .light ? Color(.wooCommercePurple(.shade70)) : Color(.wooCommercePurple(.shade10))

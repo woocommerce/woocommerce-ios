@@ -138,7 +138,9 @@ private extension ItemListView {
             triggerDeterminer: infiniteScrollTriggerDeterminer,
             loadMore: {
                 try await posModel.loadNextItems()
-            }, content: {
+            },
+            contentBottomPadding: floatingControlAreaSize.height,
+            content: {
                 VStack {
                     if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                         bannerCardView
@@ -147,12 +149,13 @@ private extension ItemListView {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, Constants.itemListPadding)
-            }, loadingView: {
+            },
+            loadingView: {
                 GhostItemCardView()
                     .renderedIf(itemListState.isLoading)
                     .padding(.horizontal, Constants.itemListPadding)
-            })
-        .padding(.bottom, floatingControlAreaSize.height)
+            }
+        )
     }
 
     @ViewBuilder

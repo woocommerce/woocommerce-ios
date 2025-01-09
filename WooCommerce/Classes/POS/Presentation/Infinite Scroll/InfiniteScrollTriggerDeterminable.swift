@@ -19,7 +19,7 @@ final class ThresholdInfiniteScrollTriggerDeterminer: InfiniteScrollTriggerDeter
     private var lastTriggeredContentHeight: CGFloat?
     private let scrollTriggerThreshold: CGFloat
 
-    /// Initializes a threshold-based infinite scroll trigger determiner
+    /// Initializes a threshold-based infinite scroll trigger determiner.
     /// - Parameter scrollTriggerThreshold: The scroll position threshold (0.0-1.0) at which infinite scroll should trigger.
     ///   Default is 0.7, meaning infinite scroll triggers when user scrolls 70% through the content.
     init(scrollTriggerThreshold: CGFloat = 0.7) {

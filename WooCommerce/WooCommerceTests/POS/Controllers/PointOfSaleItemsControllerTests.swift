@@ -36,7 +36,7 @@ final class PointOfSaleItemsControllerTests {
 
         // Then
         #expect(itemsViewState == ItemsViewState(containerState: .content,
-                                                 itemsStack: ItemsStackState(root: .loaded(expectedItems),
+                                                 itemsStack: ItemsStackState(root: .loaded(expectedItems, hasMoreItems: false),
                                                                              itemStates: [:])))
     }
 
@@ -51,7 +51,7 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadInitialItems()
 
         // Then
-        guard case .loaded(let items) = itemsViewState.itemsStack.root else {
+        guard case .loaded(let items, _) = itemsViewState.itemsStack.root else {
             Issue.record("Expected loaded ItemList state, but got \(itemsViewState)")
             return
         }
@@ -67,7 +67,7 @@ final class PointOfSaleItemsControllerTests {
         await sut.reload()
 
         // Then
-        guard case .loaded(let items) = itemsViewState.itemsStack.root else {
+        guard case .loaded(let items, _) = itemsViewState.itemsStack.root else {
             Issue.record("Expected loaded ItemList state, but got \(itemsViewState)")
             return
         }
@@ -85,7 +85,7 @@ final class PointOfSaleItemsControllerTests {
         await sut.reload()
 
         // Then
-        guard case .loaded(let items) = itemsViewState.itemsStack.root else {
+        guard case .loaded(let items, _) = itemsViewState.itemsStack.root else {
             Issue.record("Expected loaded ItemList state, but got \(itemsViewState)")
             return
         }
@@ -122,7 +122,7 @@ final class PointOfSaleItemsControllerTests {
 
         // Then
         #expect(itemsViewState == ItemsViewState(containerState: .content,
-                                                 itemsStack: ItemsStackState(root: .loaded(initialItems),
+                                                 itemsStack: ItemsStackState(root: .loaded(initialItems, hasMoreItems: false),
                                                                              itemStates: [:])))
     }
 
@@ -137,7 +137,7 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadNextItems()
 
         // Then
-        guard case .loaded(let items) = itemsViewState.itemsStack.root else {
+        guard case .loaded(let items, _) = itemsViewState.itemsStack.root else {
             Issue.record("Expected loaded ItemList state, but got \(itemsViewState)")
             return
         }
@@ -231,7 +231,7 @@ final class PointOfSaleItemsControllerTests {
 
         // Then
         #expect(itemsViewState == ItemsViewState(containerState: .content,
-                                                 itemsStack: ItemsStackState(root: .loaded(expectedItems),
+                                                 itemsStack: ItemsStackState(root: .loaded(expectedItems, hasMoreItems: false),
                                                                              itemStates: [:])))
     }
 
@@ -261,7 +261,8 @@ final class PointOfSaleItemsControllerTests {
 
         // Then
         #expect(itemsViewState == ItemsViewState(containerState: .content,
-                                                 itemsStack: ItemsStackState(root: .loaded(MockPointOfSaleItemService.makeInitialItems()),
+                                                 itemsStack: ItemsStackState(root: .loaded(MockPointOfSaleItemService.makeInitialItems(),
+                                                                                           hasMoreItems: false),
                                                                              itemStates: [:])))
     }
 

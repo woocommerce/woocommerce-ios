@@ -1,5 +1,6 @@
 import SwiftUI
 import enum Yosemite.POSItem
+import struct Yosemite.POSVariableParentProduct
 
 /// Displays a list of POS items or placeholder card based on the given state.
 struct ItemList: View {
@@ -26,17 +27,33 @@ private struct ItemListRow: View {
             }, label: {
                 SimpleProductCardView(product: product)
             })
-        case let .parentProduct(parentProduct):
+        case let .variableParentProduct(parentProduct):
             NavigationLink(value: item) {
-                ParentProductCardView(parentProduct: parentProduct)
+                ParentProductCardView(name: parentProduct.name,
+                                      imageSource: parentProduct.productImageSource,
+                                      detailView: {
+                    Text(Localization.variationsAvailable)
+                        .foregroundStyle(Color.posSecondaryText)
+                        .font(.posBodyRegular)
+                })
             }
         case let .variation(variation):
             Button(action: {
-                print("Tapped variation \(variation.name)")
+                posModel.addToCart(variation)
             }, label: {
                 VariationCardView(variation: variation)
             })
         }
+    }
+}
+
+private extension ItemListRow {
+    enum Localization {
+        static let variationsAvailable = NSLocalizedString(
+            "pos.parentProductCard.optionsAvailable",
+            value: "Options available",
+            comment: "Text indicating that there are options available for a parent product"
+        )
     }
 }
 
@@ -56,13 +73,12 @@ private struct ItemListRow: View {
                                 price: "4.00"
                             )
                         ),
-                        .parentProduct(
+                        .variableParentProduct(
                             .init(
                                 id: .init(),
                                 name: "Variable mocha",
                                 productImageSource: "https://pd.w.org/2024/12/986762d0d4d4cf17.82435881-scaled.jpeg",
-                                productID: 16,
-                                type: .variable
+                                productID: 16
                             )
                         )
                     ]

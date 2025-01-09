@@ -53,6 +53,12 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.ordersSettings)
     }()
 
+    /// URL to the plist file containing the persisted order filter history
+    private lazy var orderFilterHistoryURL: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.orderFilterHistory)
+    }()
+
     /// URL to the plist file that we use to determine the settings applied in Products
     ///
     private lazy var productsSettingsURL: URL = {
@@ -118,6 +124,14 @@ public class AppSettingsStore: Store {
                                  onCompletion: onCompletion)
         case .resetOrdersSettings:
             resetOrdersSettings()
+        case let .upsertOrderFilterHistory(filter, onCompletion):
+            upsertOrderFilterHistory(filter: filter, onCompletion: onCompletion)
+        case let .loadOrderFilterHistory(siteID, onCompletion):
+            loadOrderFilterHistory(siteID: siteID, onCompletion: onCompletion)
+        case let .removeFromOrderFilterHistory(filter, onCompletion):
+            removeFromOrderFilterHistory(filter: filter, onCompletion: onCompletion)
+        case let .resetOrderFilterHistory(siteID, onCompletion):
+            resetOrderFilterHistory(siteID: siteID, onCompletion: onCompletion)
         case .loadProductsSettings(let siteID, let onCompletion):
             loadProductsSettings(siteID: siteID, onCompletion: onCompletion)
         case .upsertProductsSettings(let siteID,
@@ -708,6 +722,89 @@ private extension AppSettingsStore {
     }
 }
 
+// MARK: - Order filter history
+private extension AppSettingsStore {
+    /// Inserts or update the order filter history
+    func upsertOrderFilterHistory(filter: StoredOrderSettings.Setting,
+                                  onCompletion: @escaping (Error?) -> Void) {
+        var existingHistory: [Int64: [StoredOrderSettings.Setting]] = [:]
+        if let storedHistory: OrderFilterHistory = try? fileStorage.data(for: orderFilterHistoryURL) {
+            existingHistory = storedHistory.history
+        }
+
+        var siteHistory = existingHistory[filter.siteID] ?? []
+        if siteHistory.contains(filter) {
+            siteHistory = [filter] + siteHistory.filter { $0 != filter } // move the filter to the top
+        } else {
+            siteHistory.append(filter)
+        }
+        existingHistory[filter.siteID] = siteHistory
+
+        let newStoredHistory = OrderFilterHistory(history: existingHistory)
+        do {
+            try fileStorage.write(newStoredHistory, to: orderFilterHistoryURL)
+            onCompletion(nil)
+        } catch {
+            onCompletion(AppSettingsStoreErrors.writeOrderFilterHistory)
+        }
+    }
+
+    /// Retrieves all persisted order filters for a given site
+    func loadOrderFilterHistory(siteID: Int64,
+                                onCompletion: @escaping (Result<[StoredOrderSettings.Setting], Error>) -> Void) {
+        guard let allHistory: OrderFilterHistory = try? fileStorage.data(for: orderFilterHistoryURL),
+                let siteHistory = allHistory.history[siteID] else {
+            let error = AppSettingsStoreErrors.noOrderFilterHistory
+            onCompletion(.failure(error))
+            return
+        }
+
+        onCompletion(.success(siteHistory))
+    }
+
+    /// Removes a filter from the persisted history
+    func removeFromOrderFilterHistory(filter: StoredOrderSettings.Setting,
+                                      onCompletion: @escaping (Error?) -> Void) {
+        var existingHistory: [Int64: [StoredOrderSettings.Setting]] = [:]
+        if let storedHistory: OrderFilterHistory = try? fileStorage.data(for: orderFilterHistoryURL) {
+            existingHistory = storedHistory.history
+        }
+
+        guard let siteHistory = existingHistory[filter.siteID] else {
+            onCompletion(nil)
+            return
+        }
+
+        existingHistory[filter.siteID] = siteHistory.filter { $0 != filter }
+
+        let newStoredHistory = OrderFilterHistory(history: existingHistory)
+        do {
+            try fileStorage.write(newStoredHistory, to: orderFilterHistoryURL)
+            onCompletion(nil)
+        } catch {
+            onCompletion(AppSettingsStoreErrors.writeOrderFilterHistory)
+        }
+    }
+
+    /// Clears all the order filter history for a given site
+    func resetOrderFilterHistory(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
+        var existingHistory: [Int64: [StoredOrderSettings.Setting]] = [:]
+        if let storedHistory: OrderFilterHistory = try? fileStorage.data(for: orderFilterHistoryURL) {
+            existingHistory = storedHistory.history
+        }
+
+        existingHistory[siteID]?.removeAll()
+
+        let newStoredHistory = OrderFilterHistory(history: existingHistory)
+        do {
+            try fileStorage.write(newStoredHistory, to: orderFilterHistoryURL)
+            onCompletion(nil)
+        } catch {
+            onCompletion(AppSettingsStoreErrors.writeOrderFilterHistory)
+        }
+    }
+}
+
 // MARK: - Products Settings
 //
 private extension AppSettingsStore {
@@ -1098,7 +1195,9 @@ enum AppSettingsStoreErrors: Error {
     case writePListToFileStorage
     case noOrdersSettings
     case noProductsSettings
+    case noOrderFilterHistory
     case writeOrdersSettings
+    case writeOrderFilterHistory
     case writeProductsSettings
     case noEligibilityErrorInfo
 }
@@ -1116,4 +1215,5 @@ private enum Constants {
     static let generalStoreSettingsFileName = "general-store-settings.plist"
     static let ordersSettings = "orders-settings.plist"
     static let productsSettings = "products-settings.plist"
+    static let orderFilterHistory = "order-filter-history.plist"
 }

@@ -9,7 +9,7 @@ import protocol Yosemite.OrderSyncProductTypeProtocol
 import struct Yosemite.OrderSyncProductInput
 import enum Yosemite.ProductType
 import struct Yosemite.PagedItems
-import struct Yosemite.POSParentProduct
+import struct Yosemite.POSVariableParentProduct
 import struct Yosemite.ProductBundleItem
 import struct Yosemite.OrderItem
 import Combine
@@ -43,7 +43,7 @@ final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
         .init(items: [], hasMorePages: true)
     }
 
-    func providePointOfSaleVariationItems(for parentProduct: POSParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
+    func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
         .init(items: mockVariationItems, hasMorePages: true)
     }
 
@@ -95,13 +95,12 @@ private var mockItems: [POSItem] {
         .simpleProduct(POSSimpleProduct(id: UUID(), name: "Product 1", formattedPrice: "$1.00", productID: 1, price: "1.00")),
         .simpleProduct(POSSimpleProduct(id: UUID(), name: "Product 2", formattedPrice: "$2.00", productID: 2, price: "2.00")),
         .simpleProduct(POSSimpleProduct(id: UUID(), name: "Product 3", formattedPrice: "$3.00", productID: 3, price: "3.00")),
-        .parentProduct(
+        .variableParentProduct(
             .init(
                 id: .init(),
                 name: "Variable product 1",
                 productImageSource: nil,
-                productID: 5,
-                type: .variable
+                productID: 5
             )
         ),
         .simpleProduct(POSSimpleProduct(id: UUID(), name: "Product 4", formattedPrice: "$4.00", productID: 4, price: "4.00"))
@@ -110,8 +109,18 @@ private var mockItems: [POSItem] {
 
 private var mockVariationItems: [POSItem] {
     [
-        .variation(.init(id: UUID(), name: "Variation 1", formattedPrice: "$1.00", productImageSource: nil)),
-        .variation(.init(id: UUID(), name: "Variation 2", formattedPrice: "$2.00", productImageSource: nil)),
+        .variation(.init(id: UUID(),
+                         name: "Variation 1",
+                         formattedPrice: "$1.00",
+                         price: "1.00",
+                         productID: 134,
+                         variationID: 256)),
+        .variation(.init(id: UUID(),
+                         name: "Variation 2",
+                         formattedPrice: "$2.00",
+                         price: "2.00",
+                         productID: 134,
+                         variationID: 256)),
     ]
 }
 

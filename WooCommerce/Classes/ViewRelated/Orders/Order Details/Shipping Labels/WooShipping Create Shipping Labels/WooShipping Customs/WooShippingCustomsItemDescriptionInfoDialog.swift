@@ -62,16 +62,21 @@ struct WooShippingCustomsItemDescriptionInfoDialog: View {
 }
 extension WooShippingCustomsItemDescriptionInfoDialog {
     enum Localization {
-        static let title = NSLocalizedString("Description", comment: "Title for the custom description educational dialog")
-        static let bodyParagraph = NSLocalizedString("When shipping to countries that follow European Union (EU) customs rules, " +
+        static let title = NSLocalizedString("shipping.customs.descriptionInfoDialogTitle",
+                                             value: "Description",
+                                             comment: "Title for the custom description educational dialog")
+        static let bodyParagraph = NSLocalizedString("shipping.customs.descriptionInfoDialogBody",
+                                                     value: "When shipping to countries that follow European Union (EU) customs rules, " +
                                                      "you must provide a clear, specific description on every item. " +
                                                      "For example, if you are sending clothing, you must indicate what type of clothing" +
                                                      " (e.g. men's shirts, girl's vest, boy's jacket) for the description to be acceptable." +
                                                      " Otherwise, shipments may be delayed or interrupted at customs.",
-                                                          comment: "Body for the custom items description educational dialog")
-        static let learnMoreButtonTitle = NSLocalizedString("Learn more",
-                                                                      comment: "Button title for the learn more action in the custom descriptions info dialog")
-        static let doneButtonTitle = NSLocalizedString("Done",
+                                                     comment: "Body for the custom items description educational dialog")
+        static let learnMoreButtonTitle = NSLocalizedString("shipping.customs.descriptionInfoDialogLearnMore",
+                                                            value: "Learn more",
+                                                            comment: "Button title for the learn more action in the custom descriptions info dialog")
+        static let doneButtonTitle = NSLocalizedString("shipping.customs.descriptionInfoDialogDone",
+                                                       value: "Done",
                                                        comment: "Button title for the done button in the customs description educational dialog")
     }
     enum Layout {

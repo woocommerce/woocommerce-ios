@@ -51,6 +51,22 @@ public enum AppSettingsAction: Action {
     ///
     case resetOrdersSettings
 
+    // MARK: - Order filter history
+
+    /// Inserts or updates the order filter history
+    case upsertOrderFilterHistory(filter: StoredOrderSettings.Setting,
+                                  onCompletion: (Error?) -> Void)
+
+    /// Retrieves all persisted order filters for a given site
+    case loadOrderFilterHistory(siteID: Int64, onCompletion: (Result<[StoredOrderSettings.Setting], Error>) -> Void)
+
+    /// Removes a filter from the persisted history
+    case removeFromOrderFilterHistory(filter: StoredOrderSettings.Setting,
+                                      onCompletion: (Error?) -> Void)
+
+    /// Clears all the order filter history for a given site
+    case resetOrderFilterHistory(siteID: Int64, onCompletion: (Error?) -> Void)
+
     // MARK: - Products Settings
 
     /// Loads the products settings

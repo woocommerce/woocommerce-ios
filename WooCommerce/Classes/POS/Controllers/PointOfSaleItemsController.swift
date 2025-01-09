@@ -2,8 +2,7 @@ import Foundation
 import Combine
 import enum Yosemite.POSItem
 import protocol Yosemite.PointOfSaleItemServiceProtocol
-import enum Yosemite.PointOfSaleProductServiceError
-import struct Yosemite.POSParentProduct
+import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
 
 protocol PointOfSaleItemsControllerProtocol {
@@ -85,20 +84,18 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
 
     @MainActor
     func loadInitialChildItems(for parent: POSItem) async {
-        guard case let .parentProduct(parentProduct) = parent else {
-            return
-        }
-
-        updateState(for: parent, to: .loading([]))
-
-        switch parentProduct.type {
-        case .variable:
+        switch parent {
+        case let .variableParentProduct(parentProduct):
+            updateState(for: parent, to: .loading([]))
             do {
                 // TODO-14696: pagination support for variations lists
                 try await fetchVariationItems(parentProduct: parentProduct, parentItem: parent, pageNumber: Store.Default.firstPageNumber)
             } catch {
                 // TODO: 14694 - Handle error from loading initial variations.
             }
+        default:
+            assertionFailure("Unsupported parent type for loading child items: \(parent)")
+            return
         }
     }
 }
@@ -136,7 +133,7 @@ private extension PointOfSaleItemsController {
     /// - Parameter pageNumber: Page number to fetch items from.
     /// - Parameter appendToExistingItems: Default true – set this to false when refreshing to make the new page the only page.
     @MainActor
-    private func fetchVariationItems(parentProduct: POSParentProduct,
+    private func fetchVariationItems(parentProduct: POSVariableParentProduct,
                                      parentItem: POSItem,
                                      pageNumber: Int,
                                      appendToExistingItems: Bool = true) async throws {

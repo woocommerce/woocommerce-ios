@@ -7,14 +7,14 @@ import class Networking.AlamofireNetwork
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
-public enum PointOfSaleProductServiceError: Error {
+public enum PointOfSaleItemServiceError: Error, Equatable {
     case requestFailed
     case unknown
 }
 
 /// Product provider for the Point of Sale feature
 ///
-public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
+public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     private var siteID: Int64
     private let currencyFormatter: CurrencyFormatter
     private let productsRemote: ProductsRemote
@@ -64,19 +64,25 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
         return .init(items: mapProductsToPOSItems(products: filteredProducts), hasMorePages: pagedProducts.hasMorePages)
     }
 
-    public func providePointOfSaleVariationItems(for parentProduct: POSParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
+    public func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
         let variations = try await variationRemote
             .loadVariationsForPointOfSale(for: siteID,
                                           parentProductID: parentProduct.productID,
                                           pageNumber: pageNumber)
         return .init(
             items: variations.compactMap({ variation in
-                POSItem
+                let variationName = ProductVariationFormatter().generateName(
+                    for: variation,
+                    from: parentProduct.allAttributes
+                )
+                return POSItem
                     .variation(.init(id: UUID(),
-                                     // TODO-14702: variation name with ProductVariationFormatter
-                                     name: "Variation \(variation.productVariationID)",
+                                     name: variationName,
                                      formattedPrice: currencyFormatter.formatAmount(variation.price) ?? "-",
-                                     productImageSource: variation.image?.src))
+                                     price: variation.price,
+                                     productImageSource: variation.image?.src,
+                                     productID: variation.productID,
+                                     variationID: variation.productVariationID))
             }),
             // TODO-14696: pagination support for variations lists
             hasMorePages: false
@@ -100,11 +106,13 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
                                                            productID: product.productID,
                                                            price: product.price))
                 case .variable:
-                    return .parentProduct(POSParentProduct(id: UUID(),
-                                                           name: product.name,
-                                                           productImageSource: thumbnailSource,
-                                                           productID: product.productID,
-                                                           type: .variable))
+                    return .variableParentProduct(POSVariableParentProduct(
+                        id: UUID(),
+                        name: product.name,
+                        productImageSource: thumbnailSource,
+                        productID: product.productID,
+                        allAttributes: product.attributesForVariations
+                    ))
                 default:
                     return nil
             }
@@ -112,7 +120,7 @@ public final class PointOfSaleProductService: PointOfSaleItemServiceProtocol {
     }
 }
 
-private extension PointOfSaleProductService {
+private extension PointOfSaleItemService {
     func filterProducts(products: [Product], using criteria: [(Product) -> Bool]) -> [Product] {
         return products.filter { product in
             criteria.allSatisfy { $0(product) }

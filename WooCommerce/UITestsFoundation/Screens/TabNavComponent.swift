@@ -31,8 +31,7 @@ public final class TabNavComponent: ScreenObject {
                 ordersTabButtonGetter,
                 productsTabButtonGetter
             ],
-            app: app,
-            waitTimeout: 35
+            app: app
         )
     }
 

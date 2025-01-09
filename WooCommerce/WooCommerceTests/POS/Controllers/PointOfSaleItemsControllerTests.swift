@@ -198,10 +198,12 @@ final class PointOfSaleItemsControllerTests {
                                                   buttonText: "Retry")
 
         // When
-        try? await sut.loadNextItems()
-
-        // Then
-        #expect(itemsViewState.containerState == .error(expectedError))
+        do {
+            try await sut.loadNextItems()
+        } catch {
+            // Then
+            #expect(itemsViewState.containerState == .error(expectedError))
+        }
     }
 
     @Test func loadNextItems_after_itemProvider_throws_error_then_the_same_page_is_requested_next() async throws {

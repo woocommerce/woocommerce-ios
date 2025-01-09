@@ -65,6 +65,8 @@ final class FilterProductListViewModel: FilterListViewModel {
     private let productCategoryFilterViewModel: FilterTypeViewModel
     private let productFavoriteFilterViewModel: FilterTypeViewModel
 
+    private let siteID: Int64
+    private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
 
     /// - Parameters:
@@ -73,6 +75,7 @@ final class FilterProductListViewModel: FilterListViewModel {
     ///   - featureFlagService: Feature flag service
     init(filters: Filters,
          siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.featureFlagService = featureFlagService
         self.stockStatusFilterViewModel = ProductListFilter.stockStatus.createViewModel(filters: filters)
@@ -81,6 +84,8 @@ final class FilterProductListViewModel: FilterListViewModel {
         self.productCategoryFilterViewModel = ProductListFilter.productCategory(siteID: siteID).createViewModel(filters: filters)
         self.productFavoriteFilterViewModel = ProductListFilter.favoriteProducts.createViewModel(filters: filters)
         self.shouldShowHistory = false
+        self.stores = stores
+        self.siteID = siteID
 
         if featureFlagService.isFeatureFlagEnabled(.favoriteProducts) {
             self.filterTypeViewModels = [
@@ -118,23 +123,72 @@ final class FilterProductListViewModel: FilterListViewModel {
     }
 
     func applyPastFilter(_ filter: Filters) {
-        fatalError("Filter history is not yet implemented for product list")
+        stockStatusFilterViewModel.selectedValue = filter.stockStatus
+        productStatusFilterViewModel.selectedValue = filter.productStatus
+        productTypeFilterViewModel.selectedValue = filter.promotableProductType
+        productCategoryFilterViewModel.selectedValue = filter.productCategory
+        productFavoriteFilterViewModel.selectedValue = filter.favoriteProduct
     }
 
+    @MainActor
     func retrieveFilterHistory() async throws -> [Filters] {
-        fatalError("Filter history is not yet implemented for product list")
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(AppSettingsAction.loadProductFilterHistory(siteID: siteID, onCompletion: { result in
+                switch result {
+                case .success(let history):
+                    let filters = history.map { settings in
+                        let promotableProductType = settings.productTypeFilter.map { PromotableProductType(productType: $0, isAvailable: true, promoteUrl: nil) }
+                        return FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
+                                                                  productStatus: settings.productStatusFilter,
+                                                                  promotableProductType: promotableProductType,
+                                                                  productCategory: settings.productCategoryFilter,
+                                                                  favoriteProduct: settings.favoriteProduct ? FavoriteProductsFilter() : nil,
+                                                                  numberOfActiveFilters: settings.numberOfActiveFilters())
+                    }
+                    continuation.resume(returning: filters)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }))
+        }
     }
 
-    func saveSelectedFilterToHistory(_ filter: Criteria) {
-        fatalError("Filter history is not yet implemented for product list")
+    func saveSelectedFilterToHistory(_ filter: Filters) {
+        let productSettings = StoredProductSettings.Setting(siteID: siteID,
+                                                            sort: nil, // This will be ignored in product filter anyway
+                                                            stockStatusFilter: filter.stockStatus,
+                                                            productStatusFilter: filter.productStatus,
+                                                            productTypeFilter: filter.promotableProductType?.productType,
+                                                            productCategoryFilter: filter.productCategory,
+                                                            favoriteProduct: filter.favoriteProduct?.isActive ?? false)
+        stores.dispatch(AppSettingsAction.upsertProductFilterHistory(filter: productSettings, onCompletion: { error in
+            if let error {
+                DDLogError("⛔️ Error saving product filter to history: \(error)")
+            }
+        }))
     }
 
-    func removeFilterFromHistory(_ filter: Criteria) {
-        fatalError("Filter history is not yet implemented for product list")
+    func removeFilterFromHistory(_ filter: Filters) {
+        let productSettings = StoredProductSettings.Setting(siteID: siteID,
+                                                            sort: nil, // This will be ignored in product filter anyway
+                                                            stockStatusFilter: filter.stockStatus,
+                                                            productStatusFilter: filter.productStatus,
+                                                            productTypeFilter: filter.promotableProductType?.productType,
+                                                            productCategoryFilter: filter.productCategory,
+                                                            favoriteProduct: filter.favoriteProduct?.isActive ?? false)
+        stores.dispatch(AppSettingsAction.removeFromProductFilterHistory(filter: productSettings, onCompletion: { error in
+            if let error {
+                DDLogError("⛔️ Error removing product filter from history: \(error)")
+            }
+        }))
     }
 
     func clearAllFilterHistory() {
-        fatalError("Filter history is not yet implemented for product list")
+        stores.dispatch(AppSettingsAction.resetProductFilterHistory(siteID: siteID, onCompletion: { error in
+            if let error {
+                DDLogError("⛔️ Error resetting product filter history: \(error)")
+            }
+        }))
     }
 
     func clearAll() {

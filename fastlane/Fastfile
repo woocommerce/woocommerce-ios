@@ -667,7 +667,8 @@ platform :ios do
       version: version,
       release_notes_file_path: RELEASE_NOTES_PATH,
       release_assets: archive_zip_path.to_s,
-      prerelease: options[:beta_release]
+      prerelease: options[:beta_release], # Beta = Prerelease, Final = normal Release
+      is_draft: !options[:beta_release] # Beta = publish immediately, Final = Draft (only publish manually after Apple approval)
     )
     sh("rm #{archive_zip_path}")
 
@@ -1274,7 +1275,8 @@ lane :test_without_building do |options|
     workspace: WORKSPACE_PATH,
     scheme: TEST_SCHEME,
     device: options[:device],
-    reset_simulator: true,
+    ensure_devices_found: true,
+    force_quit_simulator: true,
     parallel_testing: parallel_testing_value,
     concurrent_workers: CONCURRENT_SIMULATORS,
     max_concurrent_simulators: CONCURRENT_SIMULATORS,

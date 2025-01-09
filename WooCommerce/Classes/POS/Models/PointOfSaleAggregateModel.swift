@@ -6,6 +6,8 @@ import protocol WooFoundation.Analytics
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
 import struct Yosemite.POSCartItem
+import enum Yosemite.POSItem
+import enum Yosemite.SystemStatusAction
 
 protocol PointOfSaleAggregateModelProtocol {
     var orderStage: PointOfSaleOrderStage { get }
@@ -20,10 +22,11 @@ protocol PointOfSaleAggregateModelProtocol {
     func cancelCardPaymentsOnboarding()
     func trackCardPaymentsOnboardingShown()
 
-    var itemListState: ItemListState { get }
+    var itemsViewState: ItemsViewState { get }
     func loadInitialItems() async
     func loadNextItems() async
     func reload() async
+    func loadInitialChildItems(for parent: POSItem) async
 
     var cart: [CartItem] { get }
     func addToCart(_ item: POSOrderableItem)
@@ -46,7 +49,9 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     @Published var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
     private var onOnboardingCancellation: (() -> Void)?
 
-    @Published private(set) var itemListState: ItemListState = .initialLoading
+    @Published private(set) var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
+                                                                                itemsStack: ItemsStackState(root: .loading([]),
+                                                                                                            itemStates: [:]))
 
     @Published private(set) var cart: [CartItem] = []
 
@@ -73,7 +78,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
         self.orderController = orderController
         self.analytics = analytics
         self.paymentState = paymentState
-        publishItemListState()
+        publishItemsViewState()
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
         publishOrderState()
@@ -83,8 +88,8 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 
 // MARK: - ItemList
 extension PointOfSaleAggregateModel {
-    private func publishItemListState() {
-        itemsController.itemListStatePublisher.assign(to: &$itemListState)
+    private func publishItemsViewState() {
+        itemsController.itemsViewStatePublisher.assign(to: &$itemsViewState)
     }
 
     @MainActor
@@ -100,6 +105,11 @@ extension PointOfSaleAggregateModel {
     @MainActor
     func reload() async {
         await itemsController.reload()
+    }
+
+    @MainActor
+    func loadInitialChildItems(for parent: POSItem) async {
+        await itemsController.loadInitialChildItems(for: parent)
     }
 }
 
@@ -197,8 +207,17 @@ extension PointOfSaleAggregateModel {
     }
 
     @MainActor
-    func sendReceipt(to emailAddress: String) async {
-        await orderController.sendReceipt(recipientEmail: emailAddress)
+    func collectCashPayment() async throws {
+        do {
+            try await orderController.collectCashPayment()
+        } catch {
+            debugPrint(error)
+        }
+    }
+
+    @MainActor
+    func sendReceipt(to emailAddress: String) async throws {
+        try await orderController.sendReceipt(recipientEmail: emailAddress)
     }
 
     @MainActor

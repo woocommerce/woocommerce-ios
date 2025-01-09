@@ -57,11 +57,12 @@ final class FilterOrderListViewModel: FilterListViewModel {
 
     let filterTypeViewModels: [FilterTypeViewModel]
 
+    let shouldShowHistory: Bool
+
     private let orderStatusFilterViewModel: FilterTypeViewModel
     private let dateRangeFilterViewModel: FilterTypeViewModel
     private let productFilterViewModel: FilterTypeViewModel
     private let customerFilterViewModel: FilterTypeViewModel
-    private let featureFlagService: FeatureFlagService
 
     /// - Parameters:
     ///   - filters: the filters to be applied initially.
@@ -77,7 +78,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
         productFilterViewModel = OrderListFilter.product(siteID: siteID).createViewModel(filters: filters, allowedStatuses: allowedStatuses)
         customerFilterViewModel = OrderListFilter.customer(siteID: siteID).createViewModel(filters: filters, allowedStatuses: allowedStatuses)
 
-        self.featureFlagService = featureFlagService
+        shouldShowHistory = featureFlagService.isFeatureFlagEnabled(.filterHistoryOnOrderAndProductLists)
         filterTypeViewModels = [orderStatusFilterViewModel, dateRangeFilterViewModel, customerFilterViewModel, productFilterViewModel]
     }
 

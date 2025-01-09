@@ -15,10 +15,12 @@ final class CardReaderConnectionControllerTests: XCTestCase {
     private var storageManager: MockStorageManager!
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
+    private var locationService: MockLocationService!
 
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
+        locationService = MockLocationService(status: .authorized)
 
         let paymentGateway = storageManager.viewStorage.insertNewObject(ofType: StoragePaymentGatewayAccount.self)
         paymentGateway.update(with: .fake().copy(siteID: sampleSiteID, gatewayID: "woocommerce-payments", isCardPresentEligible: true))
@@ -61,7 +63,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
                                     siteID: sampleSiteID,
                                     connectionType: .userInitiated,
                                     stores: mockStoresManager,
-                                    analytics: analytics)
+                                    analytics: analytics),
+            locationService: locationService
         )
 
         // When
@@ -104,7 +107,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
                                     siteID: sampleSiteID,
                                     connectionType: .userInitiated,
                                     stores: mockStoresManager,
-                                    analytics: analytics)
+                                    analytics: analytics),
+            locationService: locationService
         )
 
         // When
@@ -150,7 +154,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
                                     siteID: sampleSiteID,
                                     connectionType: .userInitiated,
                                     stores: mockStoresManager,
-                                    analytics: analytics)
+                                    analytics: analytics),
+            locationService: locationService
         )
 
         // When
@@ -195,7 +200,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
                                     siteID: sampleSiteID,
                                     connectionType: .userInitiated,
                                     stores: mockStoresManager,
-                                    analytics: analytics)
+                                    analytics: analytics),
+            locationService: locationService
         )
 
         // When
@@ -233,7 +239,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
                                     siteID: sampleSiteID,
                                     connectionType: .userInitiated,
                                     stores: mockStoresManager,
-                                    analytics: analytics)
+                                    analytics: analytics),
+            locationService: locationService
         )
 
         // When
@@ -279,7 +286,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
                                     siteID: sampleSiteID,
                                     connectionType: .userInitiated,
                                     stores: mockStoresManager,
-                                    analytics: analytics)
+                                    analytics: analytics),
+            locationService: locationService
         )
 
         // When
@@ -326,7 +334,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
                                     siteID: sampleSiteID,
                                     connectionType: .userInitiated,
                                     stores: mockStoresManager,
-                                    analytics: analytics)
+                                    analytics: analytics),
+            locationService: locationService
         )
 
         // When
@@ -370,7 +379,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
                                     siteID: sampleSiteID,
                                     connectionType: .userInitiated,
                                     stores: mockStoresManager,
-                                    analytics: analytics)
+                                    analytics: analytics),
+            locationService: locationService
         )
 
         // When
@@ -416,7 +426,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
                                     siteID: sampleSiteID,
                                     connectionType: .userInitiated,
                                     stores: mockStoresManager,
-                                    analytics: analytics)
+                                    analytics: analytics),
+            locationService: locationService
         )
 
         // When
@@ -462,7 +473,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
                                     siteID: sampleSiteID,
                                     connectionType: .userInitiated,
                                     stores: mockStoresManager,
-                                    analytics: analytics)
+                                    analytics: analytics),
+            locationService: locationService
         )
 
         // When
@@ -504,7 +516,8 @@ final class CardReaderConnectionControllerTests: XCTestCase {
                                     siteID: sampleSiteID,
                                     connectionType: .userInitiated,
                                     stores: mockStoresManager,
-                                    analytics: analytics)
+                                    analytics: analytics),
+            locationService: locationService
         )
 
         // When
@@ -521,6 +534,156 @@ final class CardReaderConnectionControllerTests: XCTestCase {
             return XCTFail("Expected connection to be canceled")
         }
         assertEqual(.foundReader, source)
+    }
+
+    func test_seachAndConnect_when_locationDenied_and_skipped_to_connect() {
+        // Given
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [],
+            discoveredReaders: [MockCardReader.bbposChipper2XBT()],
+            sessionManager: SessionManager.testingInstance,
+            storageManager: storageManager
+        )
+
+        let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
+        let mockAlerts = MockCardReaderSettingsAlerts(mode: .connectFoundReader)
+        let mockLocationService = MockLocationService(status: .denied)
+        mockAlerts.onLocationRequired = { _, skip in
+            skip()
+        }
+
+        let controller = CardReaderConnectionController(
+            forSiteID: sampleSiteID,
+            storageManager: storageManager,
+            stores: mockStoresManager,
+            knownReaderProvider: mockKnownReaderProvider,
+            alertsPresenter: MockCardPresentPaymentAlertsPresenter(),
+            alertsProvider: mockAlerts,
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
+                                    connectionType: .userInitiated,
+                                    stores: mockStoresManager,
+                                    analytics: analytics),
+            locationService: mockLocationService
+        )
+
+        // When
+        let connectionResult: CardReaderConnectionResult = waitFor { promise in
+            controller.searchAndConnect() { result in
+                if case .success(let connectionResult) = result {
+                    promise(connectionResult)
+                }
+            }
+        }
+
+        // Then
+        guard case .connected(let reader) = connectionResult else {
+            return XCTFail("Expected reader to be connected")
+        }
+        assertEqual(MockCardReader.bbposChipper2XBT(), reader)
+    }
+
+    func test_seachAndConnect_when_locationNotDetermined_and_later_authorized() {
+        // Given
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [],
+            discoveredReaders: [MockCardReader.bbposChipper2XBT()],
+            sessionManager: SessionManager.testingInstance,
+            storageManager: storageManager
+        )
+
+        let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
+        let mockAlerts = MockCardReaderSettingsAlerts(mode: .connectFoundReader)
+        let mockLocationService = MockLocationService(status: .notDetermined)
+        mockAlerts.onLocationRequestPreAlert = { requestPermission in
+            mockLocationService.requestPermissionStatus = .authorized
+            requestPermission()
+        }
+
+        let controller = CardReaderConnectionController(
+            forSiteID: sampleSiteID,
+            storageManager: storageManager,
+            stores: mockStoresManager,
+            knownReaderProvider: mockKnownReaderProvider,
+            alertsPresenter: MockCardPresentPaymentAlertsPresenter(),
+            alertsProvider: mockAlerts,
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
+                                    connectionType: .userInitiated,
+                                    stores: mockStoresManager,
+                                    analytics: analytics),
+            locationService: mockLocationService
+        )
+
+        // When
+        let connectionResult: CardReaderConnectionResult = waitFor { promise in
+            controller.searchAndConnect() { result in
+                if case .success(let connectionResult) = result {
+                    promise(connectionResult)
+                }
+            }
+        }
+
+        // Then
+        guard case .connected(let reader) = connectionResult else {
+            return XCTFail("Expected reader to be connected")
+        }
+        assertEqual(MockCardReader.bbposChipper2XBT(), reader)
+    }
+
+    func test_seachAndConnect_when_locationNotDetermined_and_later_denied() {
+        // Given
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [],
+            discoveredReaders: [MockCardReader.bbposChipper2XBT()],
+            sessionManager: SessionManager.testingInstance,
+            storageManager: storageManager
+        )
+
+        let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
+        let mockAlerts = MockCardReaderSettingsAlerts(mode: .connectFoundReader)
+        let mockLocationService = MockLocationService(status: .notDetermined)
+        mockAlerts.onLocationRequestPreAlert = { requestPermission in
+            mockLocationService.requestPermissionStatus = .denied
+            requestPermission()
+        }
+
+        mockAlerts.onLocationRequired = { dismiss, _ in
+            dismiss()
+        }
+
+        let controller = CardReaderConnectionController(
+            forSiteID: sampleSiteID,
+            storageManager: storageManager,
+            stores: mockStoresManager,
+            knownReaderProvider: mockKnownReaderProvider,
+            alertsPresenter: MockCardPresentPaymentAlertsPresenter(),
+            alertsProvider: mockAlerts,
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
+                                    connectionType: .userInitiated,
+                                    stores: mockStoresManager,
+                                    analytics: analytics),
+            locationService: mockLocationService
+        )
+
+        // When
+        let connectionResult: CardReaderConnectionResult = waitFor(timeout: 6.0) { promise in
+            controller.searchAndConnect() { result in
+                if case .success(let connectionResult) = result {
+                    promise(connectionResult)
+                }
+            }
+        }
+
+        // Then
+        guard case .canceled(let source) = connectionResult else {
+            return XCTFail("Expected connection to be canceled")
+        }
+        assertEqual(.locationPermissionDenied, source)
     }
 }
 

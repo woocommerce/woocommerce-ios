@@ -256,7 +256,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         )
         mockFailedCardPresentPaymentActions(intent: intent,
                                             error: error)
-        receiptEligibilityUseCase.isEligibleSendingReceiptAfterPayment = true
+        receiptEligibilityUseCase.isEligibleForFailedPaymentEmailReceipts = true
 
         // When we make a payment thar results in payment processor error
         waitFor { promise in
@@ -290,7 +290,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         let error = CardReaderServiceError.disconnection(underlyingError: .bluetoothDisconnected)
         mockFailedCardPresentPaymentActions(intent: intent,
                                             error: error)
-        receiptEligibilityUseCase.isEligibleSendingReceiptAfterPayment = true
+        receiptEligibilityUseCase.isEligibleForFailedPaymentEmailReceipts = true
 
         // When we make a payment that results in card reader disconnection
         waitFor { promise in
@@ -325,7 +325,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         )
         mockFailedCardPresentPaymentActions(intent: intent,
                                             error: error)
-        receiptEligibilityUseCase.isEligibleSendingReceiptAfterPayment = true
+        receiptEligibilityUseCase.isEligibleForFailedPaymentEmailReceipts = true
 
         // When we make a payment thar results in card reader disconnection
         waitFor { promise in

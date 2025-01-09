@@ -80,82 +80,18 @@ final class MediaRemoteTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, .notFound())
     }
-
-    // MARK: - Load Media From Media Library `loadMediaLibrary`
-
-    func test_loadMediaLibrary_sends_mime_type_filter_if_imagesOnly_is_true() throws {
-        // Given
-        let remote = MediaRemote(network: network)
-
-        // When
-        remote.loadMediaLibrary(for: self.sampleSiteID, imagesOnly: true, completion: { _ in })
-
-        // Then
-        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
-        let mimeTypeValue = try XCTUnwrap(request.parameters?["mime_type"] as? String)
-        XCTAssertEqual(mimeTypeValue, "image")
-    }
-
-    func test_loadMediaLibrary_does_not_send_mime_type_filter_if_imagesOnly_is_false() throws {
-        // Given
-        let remote = MediaRemote(network: network)
-
-        // When
-        remote.loadMediaLibrary(for: self.sampleSiteID, imagesOnly: false, completion: { _ in })
-
-        // Then
-        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
-        XCTAssertNil(request.parameters?["mime_type"])
-    }
+    // MARK: - Load Media From Media Library `loadMediaLibrary` via WordPress Site API
 
     /// Verifies that `loadMediaLibrary` properly parses the `media-library` sample response.
     ///
-    func test_loadMediaLibrary_properly_returns_parsed_media() throws {
+    func test_loadMediaLibrary_properly_returns_parsed_media_list() throws {
         // Given
         let remote = MediaRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "media", filename: "media-library")
 
         // When
         let result = waitFor { promise in
-            remote.loadMediaLibrary(for: self.sampleSiteID, imagesOnly: true) { result in
-                promise(result)
-            }
-        }
-
-        // Then
-        let mediaItems = try XCTUnwrap(result.get())
-        XCTAssertEqual(mediaItems.count, 5)
-    }
-
-    /// Verifies that `loadMediaLibrary` properly relays Networking Layer errors.
-    ///
-    func test_loadMediaLibrary_properly_relays_networking_errors() {
-        // Given
-        let remote = MediaRemote(network: network)
-
-        // When
-        let result = waitFor { promise in
-            remote.loadMediaLibrary(for: self.sampleSiteID, imagesOnly: true) { result in
-                promise(result)
-            }
-        }
-
-        // Then
-        XCTAssertTrue(result.isFailure)
-    }
-
-    // MARK: - Load Media From Media Library `loadMediaLibrary` via WordPress Site API
-
-    /// Verifies that `loadMediaLibraryFromWordPressSite` properly parses the `media-library-from-wordpress-site` sample response.
-    ///
-    func test_loadMediaLibraryFromWordPressSite_properly_returns_parsed_media_list() throws {
-        // Given
-        let remote = MediaRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "media", filename: "media-library-from-wordpress-site")
-
-        // When
-        let result = waitFor { promise in
-            remote.loadMediaLibraryFromWordPressSite(siteID: self.sampleSiteID, imagesOnly: true) { result in
+            remote.loadMediaLibrary(siteID: self.sampleSiteID, imagesOnly: true) { result in
                 promise(result)
             }
         }
@@ -163,14 +99,14 @@ final class MediaRemoteTests: XCTestCase {
         // Then
         let mediaItems = try XCTUnwrap(result.get())
         XCTAssertEqual(mediaItems.count, 3)
-        let textMedia = mediaItems[0]
+        let textMedia = mediaItems[2]
         XCTAssertEqual(textMedia.mediaID, 28)
         XCTAssertEqual(textMedia.slug, "xanh-3")
         XCTAssertEqual(textMedia.mimeType, "text/plain")
         XCTAssertEqual(textMedia.title?.rendered, "Xanh-3")
         XCTAssertEqual(textMedia.src, "https://ninja.media/wp-content/uploads/2023/12/Xanh-3.txt")
 
-        let imageMedia = mediaItems[1]
+        let imageMedia = mediaItems[0]
         XCTAssertEqual(imageMedia.mediaID, 22)
         XCTAssertEqual(imageMedia.date, Date(timeIntervalSince1970: 1637546157))
         XCTAssertEqual(imageMedia.slug, "img_0111-2")
@@ -188,15 +124,15 @@ final class MediaRemoteTests: XCTestCase {
                              height: 150))
     }
 
-    /// Verifies that `loadMediaLibraryFromWordPressSite` properly relays Networking Layer errors.
+    /// Verifies that `loadMediaLibrary` properly relays Networking Layer errors.
     ///
-    func test_loadMediaLibraryFromWordPressSite_properly_relays_networking_errors() throws {
+    func test_loadMediaLibrary_properly_relays_networking_errors() throws {
         // Given
         let remote = MediaRemote(network: network)
 
         // When
         let result = waitFor { promise in
-            remote.loadMediaLibraryFromWordPressSite(siteID: self.sampleSiteID, imagesOnly: true) { result in
+            remote.loadMediaLibrary(siteID: self.sampleSiteID, imagesOnly: true) { result in
                 promise(result)
             }
         }
@@ -276,13 +212,13 @@ final class MediaRemoteTests: XCTestCase {
 
     // MARK: - updateProductID
 
-    /// Verifies that `updateProductID` properly parses the `media-update-product-id` sample response.
+    /// Verifies that `updateProductID` properly parses the `media-update-product-id-in-wordpress-site` sample response.
     ///
     func test_updateProductID_properly_returns_parsed_media() throws {
         // Given
         let remote = MediaRemote(network: network)
         let path = "sites/\(sampleSiteID)/media/\(sampleMediaID)"
-        network.simulateResponse(requestUrlSuffix: path, filename: "media-update-product-id")
+        network.simulateResponse(requestUrlSuffix: path, filename: "media-update-product-id-in-wordpress-site")
 
         // When
         let result = waitFor { promise in
@@ -317,90 +253,17 @@ final class MediaRemoteTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
-    // MARK: - updateProductIDToWordPressSite
-
-    /// Verifies that `updateProductIDToWordPressSite` properly parses the `media-update-product-id-in-wordpress-site` sample response.
-    ///
-    func test_updateProductIDToWordPressSite_properly_returns_parsed_media() throws {
-        // Given
-        let remote = MediaRemote(network: network)
-        let path = "sites/\(sampleSiteID)/media/\(sampleMediaID)"
-        network.simulateResponse(requestUrlSuffix: path, filename: "media-update-product-id-in-wordpress-site")
-
-        // When
-        let result = waitFor { promise in
-            remote.updateProductIDToWordPressSite(siteID: self.sampleSiteID,
-                                   productID: self.sampleProductID,
-                                   mediaID: self.sampleMediaID) { result in
-                promise(result)
-            }
-        }
-
-        // Then
-        let media = try XCTUnwrap(result.get())
-        XCTAssertEqual(media.mediaID, sampleMediaID)
-    }
-
-    /// Verifies that `updateProductIDToWordPressSite` properly relays Networking Layer errors.
-    ///
-    func test_updateProductIDToWordPressSite_properly_relays_networking_errors() {
-        // Given
-        let remote = MediaRemote(network: network)
-
-        // When
-        let result = waitFor { promise in
-            remote.updateProductIDToWordPressSite(siteID: self.sampleSiteID,
-                                   productID: self.sampleProductID,
-                                   mediaID: self.sampleMediaID) { result in
-                promise(result)
-            }
-        }
-
-        // Then
-        XCTAssertTrue(result.isFailure)
-    }
-
     // MARK: - Loading media for specific product ID
 
-    func test_loadMediaLibrary_sends_postID_filter_if_productID_is_not_nil() throws {
+    func test_loadMediaLibrary_sends_parent_filter_if_productID_is_not_nil() throws {
         // Given
         let remote = MediaRemote(network: network)
 
         // When
-        remote.loadMediaLibrary(for: self.sampleSiteID,
+        remote.loadMediaLibrary(siteID: self.sampleSiteID,
                                 productID: 32,
                                 imagesOnly: true,
                                 completion: { _ in })
-
-        // Then
-        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
-        let postIDValue = try XCTUnwrap(request.parameters?["post_ID"] as? Int64)
-        XCTAssertEqual(postIDValue, 32)
-    }
-
-    func test_loadMediaLibrary_does_not_send_postID_filter_if_productID_is_nil() throws {
-        // Given
-        let remote = MediaRemote(network: network)
-
-        // When
-        remote.loadMediaLibrary(for: self.sampleSiteID,
-                                imagesOnly: true,
-                                completion: { _ in })
-
-        // Then
-        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
-        XCTAssertNil(request.parameters?["post_ID"])
-    }
-
-    func test_loadMediaLibraryFromWordPressSite_sends_parent_filter_if_productID_is_not_nil() throws {
-        // Given
-        let remote = MediaRemote(network: network)
-
-        // When
-        remote.loadMediaLibraryFromWordPressSite(siteID: self.sampleSiteID,
-                                                 productID: 32,
-                                                 imagesOnly: true,
-                                                 completion: { _ in })
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
@@ -408,14 +271,14 @@ final class MediaRemoteTests: XCTestCase {
         XCTAssertEqual(postIDValue, 32)
     }
 
-    func test_loadMediaLibraryFromWordPressSite_does_not_send_parent_filter_if_productID_is_nil() throws {
+    func test_loadMediaLibrary_does_not_send_parent_filter_if_productID_is_nil() throws {
         // Given
         let remote = MediaRemote(network: network)
 
         // When
-        remote.loadMediaLibraryFromWordPressSite(siteID: self.sampleSiteID,
-                                                 imagesOnly: true,
-                                                 completion: { _ in })
+        remote.loadMediaLibrary(siteID: self.sampleSiteID,
+                                imagesOnly: true,
+                                completion: { _ in })
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)

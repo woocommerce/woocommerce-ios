@@ -16,6 +16,7 @@ struct StatsTimeRangePicker: View {
                 } label: {
                     SelectableItemRow(title: range.tabTitle, selected: isTimeRangeSelected(range))
                 }
+                .accessibilityIdentifier(range.menuAccessibilityIdentifier)
             }
         } label: {
             Image(systemName: "calendar")
@@ -33,4 +34,21 @@ struct StatsTimeRangePicker: View {
 
 #Preview {
     StatsTimeRangePicker(currentTimeRange: .today, onSelect: { _ in })
+}
+
+private extension StatsTimeRangeV4 {
+    var menuAccessibilityIdentifier: String {
+        switch self {
+        case .today:
+            "time-range-today"
+        case .thisWeek:
+            "time-range-this-week"
+        case .thisMonth:
+            "time-range-this-month"
+        case .thisYear:
+            "time-range-this-year"
+        case .custom:
+            "time-range-custom"
+        }
+    }
 }

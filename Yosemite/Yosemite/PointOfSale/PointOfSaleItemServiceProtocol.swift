@@ -1,23 +1,45 @@
-/// POSDisplayableItem contains only the properties required to show an item in the Point Of Sale.
-/// The item may only be visible, not neccesarily something you can add to the cart.
-/// This protocol will become less specific in future; e.g. not all items in the POS necessarily have a price.
-public protocol POSDisplayableItem {
-    var id: UUID { get }
-    var name: String { get }
-    var formattedPrice: String { get }
-    var productImageSource: String? { get }
+import struct Networking.PagedItems
 
-    func isEqual(to other: POSDisplayableItem) -> Bool
+public enum POSItem: Equatable, Identifiable, Hashable {
+    case simpleProduct(POSSimpleProduct)
+    case variableParentProduct(POSVariableParentProduct)
+    case variation(POSVariation)
+
+    public var id: UUID {
+        switch self {
+        case .simpleProduct(let product):
+            return product.id
+        case .variableParentProduct(let parentProduct):
+            return parentProduct.id
+        case .variation(let variation):
+            return variation.id
+        }
+    }
 }
 
-public extension POSDisplayableItem where Self: Equatable {
-    func isEqual(to other: POSDisplayableItem) -> Bool {
+/// POSOrderableItem extends a displayable item with the functions required for using it in an order.
+/// This currently includes adding it, and checking whether it's already in an order.
+/// This may need to become less specific in future, e.g. we currently convert it to a product input, but
+/// other order items might be added as fees or similar. at that point, we will need a different function requirement here.
+public protocol POSOrderableItem {
+    var id: UUID { get }
+    var name: String { get }
+    var productImageSource: String? { get }
+    var formattedPrice: String { get }
+
+    func toOrderSyncProductInput(quantity: Decimal) -> OrderSyncProductInput
+    func matches(orderItem: OrderItem) -> Bool
+    func isEqual(to other: POSOrderableItem) -> Bool
+}
+
+public extension POSOrderableItem where Self: Equatable {
+    func isEqual(to other: POSOrderableItem) -> Bool {
         guard let other = other as? Self else { return false }
         return self == other
     }
 }
 
-public extension Sequence where Element == POSDisplayableItem {
+public extension Sequence where Element == POSOrderableItem {
     func isEqual(to other: any Sequence<Element>) -> Bool {
         let lhsArray = Array(self)
         let rhsArray = Array(other)
@@ -30,25 +52,15 @@ public extension Sequence where Element == POSDisplayableItem {
     }
 }
 
-/// POSOrderableItem extends a displayable item with the functions required for using it in an order.
-/// This currently includes adding it, and checking whether it's already in an order.
-/// This may need to become less specific in future, e.g. we currently convert it to a product input, but
-/// other order items might be added as fees or similar. at that point, we will need a different function requirement here.
-public protocol POSOrderableItem: POSDisplayableItem & PointOfSaleItemOrderItemConvertable {}
-
-public protocol PointOfSaleItemOrderItemConvertable {
-    func toOrderSyncProductInput(quantity: Decimal) -> OrderSyncProductInput
-    func matches(orderItem: OrderItem) -> Bool
-}
-
 public protocol PointOfSaleItemServiceProtocol {
-    func providePointOfSaleItems(pageNumber: Int) async throws -> [POSDisplayableItem]
+    func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem>
+    func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem>
 }
 
 // Default implementation for convenience, so we do not need to pass the first page explicitly
 // if no pageNumber is given.
 extension PointOfSaleItemServiceProtocol {
-    func providePointOfSaleItems(pageNumber: Int = 1) async throws -> [POSDisplayableItem] {
+    func providePointOfSaleItems(pageNumber: Int = 1) async throws -> PagedItems<POSItem> {
         try await providePointOfSaleItems(pageNumber: pageNumber)
     }
 }

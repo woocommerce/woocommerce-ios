@@ -35,16 +35,50 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shippingRates.count, 1)
     }
 
-    func test_site_address_converted_to_formatted_originAddress() {
+    func test_origin_addresses_fetched_and_converted_to_originAddresses_view_model() {
         // Given
-        let siteSettings = mapLoadGeneralSiteSettingsResponse()
-        let siteAddress = SiteAddress(siteSettings: siteSettings)
+        let originAddress = WooShippingOriginAddress.fake().copy(id: "default", defaultAddress: true)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            if case let .loadOriginAddresses(_, completion) = action {
+                completion(.success([originAddress]))
+            }
+        }
 
         // When
-        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(), originAddress: siteAddress)
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(), stores: stores)
 
         // Then
-        XCTAssertEqual("60 29th Street #343, Auburn NY 13021, US", viewModel.originAddress)
+        XCTAssertEqual(viewModel.originAddresses.addresses.count, 1)
+        XCTAssertEqual(viewModel.originAddresses.selectedAddressID, originAddress.id)
+    }
+
+    func test_default_origin_address_fetched_and_converted_to_formatted_originAddress() {
+        // Given
+        let originAddresses = [WooShippingOriginAddress.fake(),
+                               WooShippingOriginAddress.fake().copy(address1: "123 Main Street",
+                                                                    city: "San Francisco",
+                                                                    state: "CA",
+                                                                    postcode: "12345",
+                                                                    country: "US",
+                                                                    defaultAddress: true)]
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadOriginAddresses(_, let completion):
+                completion(.success(originAddresses))
+            case .loadPackages:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(), stores: stores)
+
+        // Then
+        XCTAssertEqual("123 Main Street, San Francisco CA 12345, US", viewModel.originAddress)
     }
 
     func test_order_shipping_address_converted_to_formatted_desinationAddressLines() {
@@ -82,6 +116,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             switch action {
             case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, completion):
                 completion(.success(ShippingLabel.fake()))
+            case .loadPackages, .loadOriginAddresses:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -90,8 +126,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // When
         let markOrderComplete: Bool = waitFor { promise in
             let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
-                                                             originAddress: SiteAddress(siteSettings: self.mapLoadGeneralSiteSettingsResponse()),
-                                                             selectedPackage: ShippingLabelPackageSelected.fake(),
+                                                             selectedOriginAddress: WooShippingOriginAddress.fake(),
+                                                             selectedPackage: self.samplePackageData(),
                                                              selectedRate: self.sampleSelectedRate(),
                                                              stores: stores) { complete in
                 promise(complete)
@@ -111,6 +147,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             switch action {
             case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, completion):
                 completion(.success(ShippingLabel.fake()))
+            case .loadPackages, .loadOriginAddresses:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -119,8 +157,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // When
         let markOrderComplete: Bool = waitFor { promise in
             let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
-                                                             originAddress: SiteAddress(siteSettings: self.mapLoadGeneralSiteSettingsResponse()),
-                                                             selectedPackage: ShippingLabelPackageSelected.fake(),
+                                                             selectedOriginAddress: WooShippingOriginAddress.fake(),
+                                                             selectedPackage: self.samplePackageData(),
                                                              selectedRate: self.sampleSelectedRate(),
                                                              stores: stores) { complete in
                 promise(complete)
@@ -133,11 +171,11 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertTrue(markOrderComplete)
     }
 
-    func test_canPurchaseLabel_true_when_shipping_rate_is_selected() throws {
+    func test_isPurchaseButtonEnabled_true_when_required_fields_are_set() throws {
         // Given
         let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
-                                                         originAddress: SiteAddress(siteSettings: mapLoadGeneralSiteSettingsResponse()),
-                                                         selectedPackage: ShippingLabelPackageSelected.fake(),
+                                                         selectedOriginAddress: WooShippingOriginAddress.fake(),
+                                                         selectedPackage: samplePackageData(),
                                                          selectedRate: sampleSelectedRate())
 
         // Then
@@ -198,6 +236,11 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // Given
         let expectedShippingLabel = ShippingLabel.fake().copy(carrierID: "usps", trackingNumber: "1234567890")
         let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
+                                                         selectedOriginAddress: WooShippingOriginAddress.fake(),
+                                                         selectedPackage: samplePackageData(),
+                                                         selectedRate: sampleSelectedRate(),
+                                                         stores: stores)
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
             case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, completion):
@@ -206,11 +249,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 XCTFail("Unexpected action: \(action)")
             }
         }
-        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
-                                                         originAddress: SiteAddress(siteSettings: mapLoadGeneralSiteSettingsResponse()),
-                                                         selectedPackage: ShippingLabelPackageSelected.fake(),
-                                                         selectedRate: sampleSelectedRate(),
-                                                         stores: stores)
 
         // When
         viewModel.purchaseLabel()
@@ -226,8 +264,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         var isPurchasingLabelDuringPurchase = false
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
-                                                         originAddress: SiteAddress(siteSettings: mapLoadGeneralSiteSettingsResponse()),
-                                                         selectedPackage: ShippingLabelPackageSelected.fake(),
+                                                         selectedOriginAddress: WooShippingOriginAddress.fake(),
+                                                         selectedPackage: samplePackageData(),
                                                          selectedRate: sampleSelectedRate(),
                                                          stores: stores)
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
@@ -235,6 +273,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, completion):
                 isPurchasingLabelDuringPurchase = viewModel.isPurchasingLabel
                 completion(.success(ShippingLabel.fake()))
+            case let .loadLabelRates(_, _, _, _, _, completion):
+                completion(.success([]))
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -253,30 +293,55 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
     func test_selectPackage_sets_selectedPackage_with_package_data() {
         // Given
-        let packageData = WooShippingPackageData(id: "small_flat_box",
-                                                 name: "Small Flat Rate Box",
-                                                 length: "21.91",
-                                                 width: "13.65",
-                                                 height: "4.13",
-                                                 dimensionsUnit: "cm",
-                                                 weight: "0",
-                                                 weightUnit: "kg",
-                                                 source: .predefined("usps"),
-                                                 packageType: "box")
         let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake())
 
         // When
-        viewModel.selectPackage(packageData)
+        viewModel.selectPackage(samplePackageData())
 
         // Then
         XCTAssertNotNil(viewModel.selectedPackage)
-        XCTAssertEqual(viewModel.selectedPackage?.id, "shipment_0")
-        XCTAssertEqual(viewModel.selectedPackage?.boxID, "small_flat_box")
-        XCTAssertEqual(viewModel.selectedPackage?.length, 21.91)
-        XCTAssertEqual(viewModel.selectedPackage?.width, 13.65)
-        XCTAssertEqual(viewModel.selectedPackage?.height, 4.13)
-        XCTAssertEqual(viewModel.selectedPackage?.weight, 0)
-        XCTAssertEqual(viewModel.selectedPackage?.isLetter, false)
+        XCTAssertEqual(viewModel.selectedPackage?.id, samplePackageData().id)
+    }
+
+    func test_selectPackage_sets_shipmentWeight_with_items_and_package_weight() {
+        // Given
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(), itemsDataSource: MockItemsDataSource())
+
+        // When
+        viewModel.selectPackage(samplePackageData())
+
+        // Then
+        XCTAssertEqual(viewModel.shipmentWeight, "1.25")
+    }
+
+    func test_changing_shipmentWeight_loads_new_label_rates_with_updated_weight() {
+        // Given
+        let expectedWeight = 2.5
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
+                                                         selectedOriginAddress: WooShippingOriginAddress.fake(),
+                                                         selectedPackage: samplePackageData(),
+                                                         stores: stores,
+                                                         itemsDataSource: MockItemsDataSource(),
+                                                         debounceDuration: 0)
+
+
+        // When
+        let packageWeightForLabelRates: Double? = waitFor { promise in
+            stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+                switch action {
+                case let .loadLabelRates(_, _, _, _, packages, _):
+                    promise(packages.first?.weight)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+
+            viewModel.shipmentWeight = expectedWeight.description
+        }
+
+        // Then
+        XCTAssertEqual(packageWeightForLabelRates, expectedWeight)
     }
 }
 
@@ -340,4 +405,27 @@ private extension WooShippingCreateLabelsViewModelTests {
                                                              deliveryDays: 2,
                                                              deliveryDateGuaranteed: false) : nil)
     }
+
+    func samplePackageData() -> WooShippingPackageDataRepresentable {
+        WooShippingPackageData(id: "small_flat_box",
+                               name: "Small Flat Rate Box",
+                               length: "21.91",
+                               width: "13.65",
+                               height: "4.13",
+                               weight: ".25",
+                               source: .predefined(sourceTitle: "usps", sourceID: "usps"),
+                               packageType: "box")
+    }
+}
+
+private final class MockItemsDataSource: WooShippingItemsDataSource {
+    var items = [ShippingLabelPackageItem(productOrVariationID: 1,
+                                          name: "Shirt",
+                                          weight: 0.5,
+                                          quantity: 2,
+                                          value: 9.99,
+                                          dimensions: ProductDimensions.fake(),
+                                          attributes: [],
+                                          imageURL: nil)]
+    var currency = "GBP"
 }

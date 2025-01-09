@@ -12,6 +12,9 @@ public protocol ProductVariationsRemoteProtocol {
                                   pageNumber: Int,
                                   pageSize: Int,
                                   completion: @escaping ([ProductVariation]?, Error?) -> Void)
+    func loadVariationsForPointOfSale(for siteID: Int64,
+                                      parentProductID: Int64,
+                                      pageNumber: Int) async throws -> [ProductVariation]
     func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func createProductVariation(for siteID: Int64,
                                 productID: Int64,
@@ -57,6 +60,41 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                          pageNumber: Int = Default.pageNumber,
                                          pageSize: Int = Default.pageSize,
                                          completion: @escaping ([ProductVariation]?, Error?) -> Void) {
+        let request = productVariationsRequest(for: siteID,
+                                               productID: productID,
+                                               variationIDs: variationIDs,
+                                               context: context,
+                                               pageNumber: pageNumber,
+                                               pageSize: pageSize)
+        let mapper = ProductVariationListMapper(siteID: siteID, productID: productID)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Retrieves all of the `ProductVariation`s available in POS.
+    /// - Parameters:
+    ///   - siteID: Site for which we'll fetch remote product variations.
+    ///   - parentProductID: Product for which we'll fetch remote product variations.
+    ///   - pageNumber: Number of page that should be retrieved.
+    /// - Returns: Variations for the provided parent product.
+    public func loadVariationsForPointOfSale(for siteID: Int64,
+                                             parentProductID: Int64,
+                                             pageNumber: Int = Default.pageNumber) async throws -> [ProductVariation] {
+        let request = productVariationsRequest(for: siteID,
+                                               productID: parentProductID,
+                                               variationIDs: [],
+                                               context: nil,
+                                               pageNumber: pageNumber,
+                                               pageSize: POSConstants.variationsPerPage)
+        let mapper = ProductVariationListMapper(siteID: siteID, productID: parentProductID)
+        return try await enqueue(request, mapper: mapper)
+    }
+
+    private func productVariationsRequest(for siteID: Int64,
+                                          productID: Int64,
+                                          variationIDs: [Int64],
+                                          context: String?,
+                                          pageNumber: Int,
+                                          pageSize: Int) -> JetpackRequest {
         let stringOfVariationIDs = variationIDs.map { String($0) }
             .joined(separator: ",")
         let parameters = [
@@ -74,8 +112,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                      path: path,
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
-        let mapper = ProductVariationListMapper(siteID: siteID, productID: productID)
-        enqueue(request, mapper: mapper, completion: completion)
+        return request
     }
 
     /// Retrieves a specific `ProductVariation`.
@@ -286,5 +323,11 @@ public extension ProductVariationsRemote {
         static let contextKey: String = "context"
         static let image: String = "image"
         static let include: String    = "include"
+    }
+}
+
+private extension ProductVariationsRemote {
+    enum POSConstants {
+        static let variationsPerPage: Int = 100
     }
 }

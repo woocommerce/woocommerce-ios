@@ -58,6 +58,8 @@ final class DashboardViewModel: ObservableObject {
 
     @Published var showingInAppFeedbackSurvey = false
 
+    @Published var showingTapToPayAwarenessMoment = false
+
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
 
     @Published private(set) var isSiteEligibleToInstallJetpack = true
@@ -82,6 +84,7 @@ final class DashboardViewModel: ObservableObject {
     private let inboxEligibilityChecker: InboxEligibilityChecker
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private let blazeLocalNotificationScheduler: BlazeLocalNotificationScheduler
+    private let tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -114,7 +117,8 @@ final class DashboardViewModel: ObservableObject {
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
-         localNotificationScheduler: BlazeLocalNotificationScheduler? = nil) {
+         localNotificationScheduler: BlazeLocalNotificationScheduler? = nil,
+         tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining = TapToPayAwarenessMomentDeterminer()) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
@@ -150,6 +154,9 @@ final class DashboardViewModel: ObservableObject {
                                                                                                                userDefaults: userDefaults,
                                                                                                                blazeEligibilityChecker: blazeEligibilityChecker)
         self.blazeLocalNotificationScheduler.observeNotificationUserResponse()
+
+        self.tapToPayAwarenessMomentDeterminer = tapToPayAwarenessMomentDeterminer
+        configureTapToPayAwarnessMomentPresentation()
 
         self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
             self?.showingInAppFeedbackSurvey = feedback == .didntLike
@@ -525,6 +532,13 @@ private extension DashboardViewModel {
 
     func configureOrdersResultController() {
         func refreshHasOrders() {
+            /// Upon logging out, `CoreDataManager` clears the storage triggering data change.
+            /// Checking the authentication state helps avoiding reloading data
+            /// in the unauthenticated state.
+            guard stores.isAuthenticated else {
+                return
+            }
+
             guard ordersResultsController.fetchedObjects.isEmpty else {
                 hasOrders = true
                 return
@@ -538,13 +552,7 @@ private extension DashboardViewModel {
         ordersResultsController.onDidChangeContent = {
             refreshHasOrders()
         }
-        ordersResultsController.onDidResetContent = { [weak self] in
-            /// Upon logging out, `CoreDataManager` resets the storage and triggers the reset notification
-            /// causing refetching data. Checking the authentication state helps avoiding reloading data
-            /// in the unauthenticated state.
-            guard let self, stores.isAuthenticated else {
-                return
-            }
+        ordersResultsController.onDidResetContent = {
             refreshHasOrders()
         }
 
@@ -779,6 +787,21 @@ private extension DashboardViewModel {
         isInAppFeedbackCardVisible = newValue
         if trackEvent {
             analytics.track(event: .appFeedbackPrompt(action: .shown))
+        }
+    }
+}
+
+// MARK: - Tap to Pay awareness moment presentation
+
+private extension DashboardViewModel {
+    func configureTapToPayAwarnessMomentPresentation() {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+
+            if await tapToPayAwarenessMomentDeterminer.shouldPresent() {
+                showingTapToPayAwarenessMoment = true
+                tapToPayAwarenessMomentDeterminer.setPresented()
+            }
         }
     }
 }

@@ -33,6 +33,9 @@ protocol ImageService {
                                            placeholder: UIImage?,
                                            progressBlock: ImageDownloadProgressBlock?,
                                            completion: ImageDownloadCompletion?)
+
+    /// Clears memory cache to reduce memory usage.
+    func clearMemoryCache()
 }
 
 // MARK: - Errors

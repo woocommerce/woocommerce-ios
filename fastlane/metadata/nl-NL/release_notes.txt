@@ -1,1 +1,3 @@
-Profiteer van een soepelere WooCommerce-ervaring! We hebben de Watch-app verbeterd zodat je bestelgegevens vlekkeloos worden weergeven. Bovendien hebben we duidelijkere foutmeldingen toegevoegd voor verbindingen met betalingslezers. Een nog beter inzicht in je bedrijf, direct om je pols en in je zak.
+In slechts twee weken hebben we deze release volgepropt. Hij bevat ondersteuning voor wereldwijde GTIN-productidentificatie en je kan de call-to-action in Blaze-campagnes bewerken.
+
+De winkelconfiguratie voor fysieke betalingen is sneller, bevestigingen van verzonden betalingsbewijzen zijn duidelijker en Tap to Pay testen op iPhone gaat soepeler. Daarnaast hebben we de dashboardstatistieken verbeterd en wat bugs verholpen.

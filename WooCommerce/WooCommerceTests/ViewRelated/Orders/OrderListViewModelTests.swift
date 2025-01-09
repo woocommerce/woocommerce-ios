@@ -21,7 +21,7 @@ final class OrderListViewModelTests: XCTestCase {
         storageManager.viewStorage
     }
 
-    private var cancellables = Set<AnyCancellable>()
+    private var subscriptions = Set<AnyCancellable>()
 
     override func setUp() {
         super.setUp()
@@ -34,10 +34,10 @@ final class OrderListViewModelTests: XCTestCase {
     }
 
     override func tearDown() {
-        cancellables.forEach {
+        subscriptions.forEach {
             $0.cancel()
         }
-        cancellables.removeAll()
+        subscriptions.removeAll()
 
         super.tearDown()
     }
@@ -253,7 +253,7 @@ final class OrderListViewModelTests: XCTestCase {
 
     // MARK: - Banner visibility
 
-    func test_banner_should_not_be_shown_when_there_is_no_error() {
+    func test_banner_should_not_be_shown_when_there_is_no_error() async {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
@@ -269,24 +269,19 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.activate()
 
         // Then
-        waitUntil {
-            viewModel.topBanner == .none
-        }
+        XCTAssert(viewModel.topBanner == .none)
     }
 
-    func test_storing_error_shows_error_banner() {
+    func test_storing_error_shows_error_banner() async {
         // Given
         let expectedError = MockError()
         let viewModel = OrderListViewModel(siteID: siteID, filters: nil)
 
         // When
-        viewModel.dataLoadingError = expectedError
         viewModel.activate()
+        viewModel.dataLoadingError = expectedError
 
-        // Then
-        waitUntil {
-            viewModel.topBanner == .error(expectedError)
-        }
+        XCTAssert(viewModel.topBanner == .error(expectedError))
     }
 
     // MARK: - Filters Applied
@@ -466,7 +461,7 @@ private extension OrderListViewModelTests {
             // The first snapshot is dropped because it's just the default empty one.
             viewModel.snapshot.dropFirst().sink { snapshot in
                 promise(snapshot)
-            }.store(in: &self.cancellables)
+            }.store(in: &self.subscriptions)
 
             viewModel.activate()
         }

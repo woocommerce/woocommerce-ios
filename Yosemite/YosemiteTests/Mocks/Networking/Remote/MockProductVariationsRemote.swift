@@ -91,6 +91,10 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
         // no-op
     }
 
+    func loadVariationsForPointOfSale(for siteID: Int64, parentProductID: Int64, pageNumber: Int) async throws -> [ProductVariation] {
+        []
+    }
+
     func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else {

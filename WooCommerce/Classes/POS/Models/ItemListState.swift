@@ -1,14 +1,12 @@
-import protocol Yosemite.POSDisplayableItem
-import protocol Yosemite.POSOrderableItem
+import enum Yosemite.POSItem
+import Codegen
 
-enum ItemListState: Equatable {
-    case empty
-    case initialLoading
-    case loading(_ currentItems: [POSDisplayableItem])
-    case loaded(_ items: [POSDisplayableItem])
+enum ItemListState {
+    case loading(_ currentItems: [POSItem])
+    case loaded(_ items: [POSItem])
     case error(PointOfSaleErrorState)
 
-    var isLoadingAfterInitialLoad: Bool {
+    var isLoading: Bool {
         switch self {
         case .loading:
             return true
@@ -16,19 +14,18 @@ enum ItemListState: Equatable {
             return false
         }
     }
+}
 
-    static func == (lhs: ItemListState, rhs: ItemListState) -> Bool {
-        switch (lhs, rhs) {
-        case (.empty, .empty),
-            (.initialLoading, .initialLoading):
-            return true
-        case (.loading(let lhsItems), .loading(let rhsItems)),
-            (.loaded(let lhsItems), .loaded(let rhsItems)):
-            return lhsItems.isEqual(to: rhsItems)
-        case (.error(let lhsError), .error(let rhsError)):
-            return lhsError == rhsError
-        default:
-            return false
+extension ItemListState {
+    var items: [POSItem] {
+        switch self {
+        case .loading(let items),
+                .loaded(let items):
+            return items
+        case .error:
+            return []
         }
     }
 }
+
+extension ItemListState: Equatable, GeneratedCopiable {}

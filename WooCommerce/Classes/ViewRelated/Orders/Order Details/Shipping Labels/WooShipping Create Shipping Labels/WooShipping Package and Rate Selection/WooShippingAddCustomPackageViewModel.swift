@@ -8,27 +8,31 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     // Holds values for all dimension input fields.
     // Using a dictionary so we can easily add/remove new types
     // if needed just by adding new case in enum
-    @Published var fieldValues: [WooShippingPackageUnitType: String] = [:]
+    @Published var fieldValues: [WooShippingPackageUnitType: String]
     // Holds selected package type when custom package is selected, it can be `box` or `envelope`
-    @Published var packageType: WooShippingPackageType = .box
+    @Published var packageType: WooShippingPackageType
     // Holds value for toggle that determines if we are showing button for saving the template
     @Published var showSaveTemplate: Bool = false
     @Published var packageTemplateName: String = ""
-    // The dimension unit used in the store (e.g. "in")
-    let dimensionsUnit: String
-    // The weight unit used in the store (e.g. "kg")
-    let weightUnit: String
 
     // MARK: Initialization
 
-    init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
-         dimensionsUnit: String,
-         weightUnit: String,
+    init(selectedPackage: WooShippingPackageDataRepresentable? = nil,
+         siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
         self.siteID = siteID
-        self.dimensionsUnit = dimensionsUnit
-        self.weightUnit = weightUnit
+        if let selectedPackage {
+            fieldValues = [
+                .length: selectedPackage.length,
+                .width: selectedPackage.width,
+                .height: selectedPackage.height
+            ]
+            packageType = WooShippingPackageType(rawValue: selectedPackage.packageType) ?? .box
+        } else {
+            fieldValues = [:]
+            packageType = .box
+        }
     }
 
     // Field values are invalid if one of them is empty
@@ -55,9 +59,7 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
                                       length: fieldValues[.length] ?? "",
                                       width: fieldValues[.width] ?? "",
                                       height: fieldValues[.height] ?? "",
-                                      dimensionsUnit: dimensionsUnit,
                                       weight: fieldValues[.weight] ?? "",
-                                      weightUnit: weightUnit,
                                       source: .custom,
                                       packageType: packageType.rawValue)
     }
@@ -113,9 +115,7 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
                                                              length: savedPackage.getLength().description,
                                                              width: savedPackage.getWidth().description,
                                                              height: savedPackage.getHeight().description,
-                                                             dimensionsUnit: dimensionsUnit,
                                                              weight: savedPackage.boxWeight.description,
-                                                             weightUnit: weightUnit,
                                                              source: .custom,
                                                              packageType: savedPackage.rawType)
                     continuation.resume(returning: .success(packageData))

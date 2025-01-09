@@ -1819,6 +1819,7 @@ extension WooAnalyticsEvent {
             case paymentWaitingForInput = "payment_waiting_for_input"
             case connectionError = "connection_error"
             case readerSoftwareUpdate = "reader_software_update"
+            case locationPermissionDenied = "location_permission_denied"
             case other = "unknown"
         }
 
@@ -2288,6 +2289,7 @@ extension WooAnalyticsEvent {
         enum ReceiptSource: String {
             case local
             case backend
+            case api
         }
 
         enum LearnMoreLinkSource {
@@ -2315,6 +2317,33 @@ extension WooAnalyticsEvent {
 
         static func learnMoreTapped(source: LearnMoreLinkSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .inPersonPaymentsLearnMoreTapped, properties: ["source": source.trackingValue])
+        }
+
+        static func tapToPayTermsOfServiceAccepted(gatewayID: String?,
+                                                   countryCode: CountryCode) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .tapToPayTermsOfServiceAccepted,
+                              properties: [
+                                Keys.countryCode: countryCode.rawValue,
+                                Keys.gatewayID: safeGatewayID(for: gatewayID)
+                              ])
+        }
+
+        static func cardReaderLocationPermissionPreAlertShown(gatewayID: String?,
+                                                              countryCode: CountryCode) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderLocationPermissionPreAlertShown,
+                              properties: [
+                                Keys.countryCode: countryCode.rawValue,
+                                Keys.gatewayID: safeGatewayID(for: gatewayID)
+                              ])
+        }
+
+        static func cardReaderLocationPermissionRequiredShown(gatewayID: String?,
+                                                              countryCode: CountryCode) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderLocationPermissionRequiredShown,
+                              properties: [
+                                Keys.countryCode: countryCode.rawValue,
+                                Keys.gatewayID: safeGatewayID(for: gatewayID)
+                              ])
         }
     }
 }
@@ -2498,6 +2527,7 @@ extension WooAnalyticsEvent {
             case isJetpackInstalled = "is_jetpack_installed"
             case isJetpackActive = "is_jetpack_active"
             case isJetpackConnected = "is_jetpack_connected"
+            case hiddenSiteCount = "hidden_site_count"
         }
 
         /// Tracks when the result for site discovery is returned
@@ -2517,6 +2547,37 @@ extension WooAnalyticsEvent {
         ///
         static func newToWooTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .sitePickerNewToWooTapped, properties: [:])
+        }
+
+        /// Tracks when the Edit button is shown on the top right.
+        ///
+        static func editButtonShown() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .sitePickerEditButtonShown, properties: [:])
+        }
+
+        /// Tracks when the user taps the Edit button on the top right.
+        ///
+        static func editButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .sitePickerEditButtonTapped, properties: [:])
+        }
+
+        /// Tracks when the user taps the Save button on the edit store list screen
+        ///
+        static func listSaveButtonTapped(hiddenSiteCount: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .sitePickerListSaveButtonTapped,
+                              properties: [Key.hiddenSiteCount.rawValue: hiddenSiteCount])
+        }
+
+        /// Tracks when saving is successful
+        ///
+        static func listEditSavingSuccess() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .sitePickerListSavingSuccess, properties: [:])
+        }
+
+        /// Tracks when saving fails
+        ///
+        static func listEditSavingFailure(error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .sitePickerListSavingFailure, properties: [:], error: error)
         }
     }
 }

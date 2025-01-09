@@ -1,5 +1,6 @@
 import Foundation
 @testable import WooCommerce
+import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 
 final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
@@ -25,16 +26,17 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     var orderState: WooCommerce.PointOfSaleOrderState
 
-    var itemListState: ItemListState
+    var itemsViewState: ItemsViewState
     var blockReturnToItemSelection: Bool = false
 
     init(cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected,
-         itemListState: ItemListState = .initialLoading,
+         itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading, itemsStack: ItemsStackState(root: .loading([]),
+                                                                                                               itemStates: [:])),
          orderStage: PointOfSaleOrderStage = .building,
          orderState: PointOfSaleOrderState = .idle,
          paymentState: PointOfSalePaymentState = .idle) {
         self.cardReaderConnectionStatus = cardReaderConnectionStatus
-        self.itemListState = itemListState
+        self.itemsViewState = itemsViewState
         self.orderStage = orderStage
         self.orderState = orderState
         self.paymentState = paymentState
@@ -45,6 +47,8 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     func loadNextItems() async { }
 
     func reload() async { }
+
+    func loadInitialChildItems(for parent: POSItem) async { }
 
     var cart: [CartItem] = []
 

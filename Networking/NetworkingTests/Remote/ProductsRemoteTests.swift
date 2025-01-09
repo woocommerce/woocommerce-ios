@@ -932,7 +932,7 @@ final class ProductsRemoteTests: XCTestCase {
         })
     }
 
-    func test_loadSimpleProductsForPointOfSale_loads_simple_products() async throws {
+    func test_loadProductsForPointOfSale_loads_simple_products() async throws {
         // Given
         let remote = ProductsRemote(network: network)
         let expectedProductsFromResponse = 6
@@ -940,28 +940,29 @@ final class ProductsRemoteTests: XCTestCase {
         // When
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-type-simple")
 
-        let products = try await remote.loadSimpleProductsForPointOfSale(for: sampleSiteID)
+        let pagedProducts = try await remote.loadProductsForPointOfSale(for: sampleSiteID)
 
         // Then
+        let products = pagedProducts.items
         XCTAssertEqual(products.count, expectedProductsFromResponse)
         for product in products {
             XCTAssertEqual(try XCTUnwrap(product).productType, .simple)
         }
     }
 
-    func test_loadSimpleProductsForPointOfSale_relays_networking_error() async throws {
+    func test_loadProductsForPointOfSale_relays_networking_error() async throws {
         // Given
         let remote = ProductsRemote(network: network)
 
         // When/Then
         await assertThrowsError({
-            let _ = try await remote.loadSimpleProductsForPointOfSale(for: sampleSiteID)
+            let _ = try await remote.loadProductsForPointOfSale(for: sampleSiteID)
         }, errorAssert: {
             $0 as? NetworkError == .notFound()
         })
     }
 
-    func test_loadSimpleProductsForPointOfSale_when_page_has_products_then_loads_expected_products() async throws {
+    func test_loadProductsForPointOfSale_when_page_has_products_then_loads_expected_products() async throws {
         // Given
         let remote = ProductsRemote(network: network)
         let initialPageNumber = 1
@@ -970,16 +971,17 @@ final class ProductsRemoteTests: XCTestCase {
         // When
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-type-simple")
 
-        let products = try await remote.loadSimpleProductsForPointOfSale(for: sampleSiteID, pageNumber: initialPageNumber)
+        let pagedProducts = try await remote.loadProductsForPointOfSale(for: sampleSiteID, pageNumber: initialPageNumber)
 
         // Then
+        let products = pagedProducts.items
         XCTAssertEqual(products.count, expectedProductsFromResponse)
         for product in products {
             XCTAssertEqual(try XCTUnwrap(product).productType, .simple)
         }
     }
 
-    func test_loadSimpleProductsForPointOfSale_when_page_has_no_products_then_loads_expected_products() async throws {
+    func test_loadProductsForPointOfSale_when_page_has_no_products_then_loads_expected_products() async throws {
         // Given
         let remote = ProductsRemote(network: network)
         let pageNumber = 2
@@ -988,10 +990,46 @@ final class ProductsRemoteTests: XCTestCase {
         // When
         network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
 
-        let products = try await remote.loadSimpleProductsForPointOfSale(for: sampleSiteID, pageNumber: pageNumber)
+        let pagedProducts = try await remote.loadProductsForPointOfSale(for: sampleSiteID, pageNumber: pageNumber)
 
         // Then
-        XCTAssertEqual(products.count, expectedProductsFromResponse)
+        XCTAssertEqual(pagedProducts.items.count, expectedProductsFromResponse)
+    }
+
+    func test_loadProductsForPointOfSale_returns_hasMorePages_based_on_header_with_case_insensitive_name() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.responseHeaders = ["X-WP-TotalPages": "5"]
+        network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
+
+        // When loading page 1 to 4
+        for pageNumber in 1...4 {
+            let pagedProducts = try await remote.loadProductsForPointOfSale(for: sampleSiteID, pageNumber: pageNumber)
+
+            // Then
+            XCTAssertTrue(pagedProducts.hasMorePages)
+        }
+
+        // When loading page 17
+        let pagedProducts = try await remote.loadProductsForPointOfSale(for: sampleSiteID, pageNumber: 5)
+
+        // Then
+        XCTAssertFalse(pagedProducts.hasMorePages)
+    }
+
+    func test_loadProductsForPointOfSale_returns_hasMorePages_true_when_header_is_not_set() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.responseHeaders = nil
+        network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
+
+        // When loading the first 5 pages
+        for pageNumber in 1...5 {
+            let pagedProducts = try await remote.loadProductsForPointOfSale(for: sampleSiteID, pageNumber: pageNumber)
+
+            // Then
+            XCTAssertTrue(pagedProducts.hasMorePages)
+        }
     }
 }
 

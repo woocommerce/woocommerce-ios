@@ -1,1 +1,3 @@
-Daha kolay bir WooCommerce deneyimine dalın! Sipariş ayrıntılarınızı kusursuz bir şekilde görüntüleyebilmeniz için Watch uygulamasında ince ayar yaptık. Ayrıca ödeme okuyucu bağlantıları için daha net hata mesajları ekledik. İşlerin nabzınızı bileğinizde ve cebinizde daha iyi şekilde hissetmek için güncelleyin.
+Yalnızca iki hafta içinde bu sürümü tamamen doldurduk. GTIN küresel ürün tanımlama desteği sunulur ve Blaze kampanyalarında eylem çağrılarını düzenleyebilirsiniz.
+
+Şahsen ödeme için mağazada kurulum daha hızlı, fatura gönderilme onayları daha net ve iPhone'da Tap To Pay'in test edilmesi daha kolay. Ayrıca pano istatistikleri iyileştirildi ve bazı hatalar düzeltildi.

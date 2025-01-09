@@ -1,16 +1,16 @@
 import Foundation
 import Combine
 @testable import WooCommerce
-import protocol Yosemite.POSDisplayableItem
+import enum Yosemite.POSItem
 
 final class MockPointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
-    var itemListStatePublisher: any Publisher<WooCommerce.ItemListState, Never> = Empty()
-
-    var allItems: [POSDisplayableItem] = []
+    var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> = Empty()
 
     func loadInitialItems() async { }
 
     func loadNextItems() async { }
 
     func reload() async { }
+
+    func loadInitialChildItems(for parent: Yosemite.POSItem) async { }
 }

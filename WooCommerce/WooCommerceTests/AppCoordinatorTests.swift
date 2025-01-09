@@ -415,9 +415,9 @@ final class AppCoordinatorTests: XCTestCase {
         // Then
         XCTAssertEqual(window.rootViewController, loginNavigationController)
         waitUntil {
-            loginNavigationController.viewControllers.count == 2
+            loginNavigationController.viewControllers.count == 2 &&
+            loginNavigationController.presentedViewController == nil
         }
-        XCTAssertNil(loginNavigationController.presentedViewController)
     }
 
     func test_appCoordinator_start_resets_default_store_and_proceeds_to_login_when_isAuthenticated_and_needsDefaultStore_are_false() {
@@ -437,6 +437,51 @@ final class AppCoordinatorTests: XCTestCase {
             self.window.rootViewController is LoginNavigationController
         }
         XCTAssertTrue(stores.needsDefaultStore)
+    }
+
+    func test_local_notification_dismissal_is_tracked() throws {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager()
+        let analytics = MockAnalyticsProvider()
+        let appCoordinator = makeCoordinator(window: window,
+                                             analytics: WooAnalytics(analyticsProvider: analytics),
+                                             pushNotesManager: pushNotesManager)
+
+        // When
+        appCoordinator.start()
+        let response = try XCTUnwrap(MockNotificationResponse(
+            actionIdentifier: UNNotificationDismissActionIdentifier,
+            requestIdentifier: LocalNotification.Scenario.blazeNoCampaignReminder.identifier)
+        )
+        pushNotesManager.sendLocalNotificationResponse(response)
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.localNotificationDismissed.rawValue }))
+        let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
+        assertEqual(LocalNotification.Scenario.blazeNoCampaignReminder.identifier, eventProperties["type"] as? String)
+    }
+
+    func test_local_notification_tap_is_tracked() throws {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager()
+        let analytics = MockAnalyticsProvider()
+        let appCoordinator = makeCoordinator(window: window,
+                                             analytics: WooAnalytics(analyticsProvider: analytics),
+                                             pushNotesManager: pushNotesManager)
+
+        // When
+        appCoordinator.start()
+        let response = try XCTUnwrap(MockNotificationResponse(
+            actionIdentifier: UNNotificationDefaultActionIdentifier,
+            requestIdentifier: LocalNotification.Scenario.blazeNoCampaignReminder.identifier,
+            notificationUserInfo: [LocalNotification.UserInfoKey.isIAPAvailable: true])
+        )
+        pushNotesManager.sendLocalNotificationResponse(response)
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.localNotificationTapped.rawValue }))
+        let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
+        assertEqual(LocalNotification.Scenario.blazeNoCampaignReminder.identifier, eventProperties["type"] as? String)
     }
 }
 

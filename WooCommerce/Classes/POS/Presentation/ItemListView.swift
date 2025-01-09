@@ -1,5 +1,5 @@
 import SwiftUI
-import protocol Yosemite.POSDisplayableItem
+import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 
 struct ItemListView: View {
@@ -10,21 +10,30 @@ struct ItemListView: View {
 
     @State private var lastScrollPosition: CGFloat = 0
     @State private var showSimpleProductsModal: Bool = false
+    private var itemListState: ItemListState {
+        posModel.itemsViewState.itemsStack.root
+    }
 
     @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
     private var isHeaderBannerDismissed: Bool = false
 
     var body: some View {
-        VStack {
-            headerView
-            switch posModel.itemListState {
-            case .initialLoading, .empty, .error:
-                // These cases are handled directly in the dashboard, we do not render
-                // a specific view within the ItemListView to handle them
-                EmptyView()
-            case .loading(let items), .loaded(let items):
-                listView(items)
+        NavigationStack {
+            VStack {
+                headerView
+                switch itemListState {
+                case .loading(let items),
+                        .loaded(let items):
+                    listView(items)
+                case .error:
+                    // Currently unused, but this will show errors that are displayed inline with previously
+                    // loaded items, e.g. when loading a new page or refreshing.
+                    EmptyView()
+                }
             }
+            .navigationDestination(for: POSItem.self, destination: { item in
+                childListView(parentItem: item)
+            })
         }
         .refreshable {
             await posModel.reload()
@@ -44,7 +53,7 @@ private extension ItemListView {
     var headerView: some View {
         VStack {
             HStack {
-                POSHeaderTitleView()
+                POSHeaderTitleView(title: Localization.title)
                 if !shouldShowHeaderBanner {
                     Spacer()
                     Button(action: {
@@ -124,17 +133,13 @@ private extension ItemListView {
     }
 
     @ViewBuilder
-    func listView(_ items: [POSDisplayableItem]) -> some View {
+    func listView(_ items: [POSItem]) -> some View {
         ScrollView {
             VStack {
                 if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                     bannerCardView
                 }
-                ForEach(items, id: \.id) { item in
-                    listRow(item: item)
-                }
-                GhostItemCardView()
-                    .renderedIf(posModel.itemListState.isLoadingAfterInitialLoad)
+                ItemList(state: itemListState)
             }
             .frame(maxWidth: .infinity)
             .padding(.bottom, floatingControlAreaSize.height)
@@ -142,7 +147,7 @@ private extension ItemListView {
             .background(GeometryReader { proxy in
                 Color.clear
                     .onChange(of: proxy.frame(in: .global).maxY) { maxY in
-                        if posModel.itemListState.isLoadingAfterInitialLoad {
+                        if itemListState.isLoading {
                             return
                         }
                         let threshold = Constants.viewHeight * Constants.scrollThresholdMultiplier
@@ -158,22 +163,19 @@ private extension ItemListView {
     }
 
     @ViewBuilder
-    func listRow(item: POSDisplayableItem) -> some View {
-        if let item = item as? POSOrderableItem {
-            Button(action: {
-                posModel.addToCart(item)
-            }, label: {
-                ItemCardView(item: item)
-            })
-        } else {
-            ItemCardView(item: item)
+    func childListView(parentItem: POSItem) -> some View {
+        switch parentItem {
+        case let .variableParentProduct(parentProduct):
+            ChildItemList(parentItem: parentItem, title: parentProduct.name)
+        default:
+            EmptyView()
         }
     }
 }
 
 private extension ItemListView {
     var shouldShowHeaderBanner: Bool {
-        posModel.itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
+        itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
     }
 }
 
@@ -183,9 +185,7 @@ private extension ItemListState {
         case .loading,
                 .loaded:
             return true
-        case .empty,
-            .initialLoading,
-            .error:
+        case .error:
             return false
         }
     }
@@ -254,6 +254,12 @@ private extension ItemListView {
     }
 
     enum Localization {
+        static let title = NSLocalizedString(
+            "pos.itemlistview.title",
+            value: "Products",
+            comment: "Title at the top of the Point of Sale product selector screen."
+        )
+
         static let headerBannerTitle = NSLocalizedString(
             "pos.itemlistview.headerBanner.title",
             value: "Showing simple products only",
@@ -288,7 +294,27 @@ private extension ItemListView {
 }
 
 #if DEBUG
-#Preview {
-    ItemListView()
+
+#Preview("Loaded with all product types") {
+    let itemsController = PointOfSalePreviewItemsController()
+    Task { @MainActor in
+        await itemsController.loadInitialItems()
+    }
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: itemsController,
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
+    return ItemListView()
+        .environmentObject(posModel)
 }
+
+#Preview("Loading") {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
+    return ItemListView()
+        .environmentObject(posModel)
+}
+
 #endif

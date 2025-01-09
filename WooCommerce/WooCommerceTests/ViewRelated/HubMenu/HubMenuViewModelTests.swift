@@ -22,6 +22,87 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_viewDidAppear_triggers_blaze_eligibility_check_only_if_site_is_ineligible() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        // Setting site ID is required before setting `Site`.
+        stores.updateDefaultStore(storeID: sampleSiteID)
+        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
+
+        let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: false)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         stores: stores,
+                                         blazeEligibilityChecker: blazeEligibilityChecker)
+        waitUntil {
+            // The first check is triggered by `updateMenuItemEligibility`
+            blazeEligibilityChecker.siteEligibilityCheckCount == 1
+        }
+
+        // When
+        viewModel.viewDidAppear()
+
+        // Then
+        waitUntil {
+            blazeEligibilityChecker.siteEligibilityCheckCount == 2
+        }
+
+        // When
+        blazeEligibilityChecker.updateSiteEligibility(true)
+        viewModel.viewDidAppear()
+
+        // Then
+        waitUntil {
+            blazeEligibilityChecker.siteEligibilityCheckCount == 3
+        }
+
+        // When
+        viewModel.viewDidAppear()
+
+        // Then
+        waitForExpectation(timeout: 2) { expectation in
+            expectation.isInverted = true
+            if blazeEligibilityChecker.siteEligibilityCheckCount == 4 {
+                expectation.fulfill() // This should not happen
+            }
+        }
+    }
+
+    @MainActor
+    func test_createGoogleAdsCampaignCoordinator_sets_correct_value_for_shouldStartCampaignCreation() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        // Setting site ID is required before setting `Site`.
+        stores.updateDefaultStore(storeID: sampleSiteID)
+        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
+
+        let checker = MockGoogleAdsEligibilityChecker(isEligible: true)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         stores: stores,
+                                         googleAdsEligibilityChecker: checker)
+
+        // When
+        let navigationController = UINavigationController()
+        let coordinator = viewModel.createGoogleAdsCampaignCoordinator(with: navigationController)
+
+        // Then
+        XCTAssertFalse(coordinator.shouldAuthenticateAdminPage)
+        XCTAssertTrue(coordinator.shouldStartCampaignCreation)
+
+        // When
+        mockGoogleAdsCampaignFetch(with: .success([GoogleAdsCampaign.fake()]), for: stores)
+        viewModel.refreshGoogleAdsCampaignCheck()
+
+        // Then
+        waitUntil {
+            viewModel.hasGoogleAdsCampaigns == true
+        }
+        let updatedCoordinator = viewModel.createGoogleAdsCampaignCoordinator(with: navigationController)
+        XCTAssertFalse(updatedCoordinator.shouldStartCampaignCreation)
+    }
+
+    @MainActor
     func test_menuElements_do_not_include_inbox_when_feature_flag_is_off() {
         // Given
         let featureFlagService = MockFeatureFlagService(isInboxOn: false)
@@ -493,7 +574,7 @@ final class HubMenuViewModelTests: XCTestCase {
         let generalAppSettings = try mockGeneralAppSettingsStorage(isInAppPurchaseEnabled: true)
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let googleAdsEligibilityChecker = MockGoogleAdsEligibilityChecker(isEligible: true)
-        var inboxEligibilityChecker = MockInboxEligibilityChecker()
+        let inboxEligibilityChecker = MockInboxEligibilityChecker()
         inboxEligibilityChecker.isEligible = true
 
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -523,14 +604,15 @@ final class HubMenuViewModelTests: XCTestCase {
             .coupons: HubMenuViewModel.Coupons(),
             .reviews: HubMenuViewModel.Reviews(),
             .inbox: HubMenuViewModel.Inbox(),
-            .customers: HubMenuViewModel.Customers(),
-            .pointOfSales: HubMenuViewModel.PointOfSaleEntryPoint()
+            .customers: HubMenuViewModel.Customers()
         ]
 
         /// Counting the cases to ensure new cases are tested.
+        /// POS row/element does not use the push/pop navigation destination like other elements.
+        let nonNavigationDestinationElementsCount = 1
         viewModel.setupMenuElements()
         waitUntil {
-            expectedMenusAndDestinations.count == viewModel.settingsElements.count + viewModel.generalElements.count
+            expectedMenusAndDestinations.count == viewModel.settingsElements.count + viewModel.generalElements.count - nonNavigationDestinationElementsCount
         }
 
         for (expected, menuItem) in expectedMenusAndDestinations {
@@ -707,5 +789,16 @@ private extension HubMenuViewModelTests {
         settings.isInAppPurchasesSwitchEnabled = isInAppPurchaseEnabled
         try storage.saveSettings(settings)
         return storage
+    }
+
+    func mockGoogleAdsCampaignFetch(with result: Result<[GoogleAdsCampaign], Error>, for stores: MockStoresManager) {
+        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
+            switch action {
+            case .fetchAdsCampaigns(_, let onCompletion):
+                onCompletion(result)
+            default:
+                break
+            }
+        }
     }
 }

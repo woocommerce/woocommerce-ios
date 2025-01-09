@@ -4,6 +4,7 @@ import UIKit
 import Storage
 import SwiftUI
 import Yosemite
+import Experiments
 
 /// Facilitates connecting to a card reader
 ///
@@ -37,20 +38,31 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         ///
         case searching
 
+        /// Requests location permission during the connection process
+        ///
+        case requestLocationPermission
+
         /// Attempting to connect to a card reader. The completion passed to `searchAndConnect`
         /// will be called with a `success` `Bool` `True` result if successful, after which the view controller
         /// passed to `searchAndConnect` will be dereferenced and the state set to `idle`
         ///
         case connectToReader
 
+        /// Connection to a card reader is in progress.
+        /// `educationInProgress` is `true` if the merchant education is in progress.
+        ///
+        case connecting(educationInProgress: Bool)
+
         /// A failure occurred while connecting. The search may continue or be canceled. At this time we
         /// do not present the detailed error from the service.
+        /// `educationInProgress` is `true` if the merchant education is in progress.
         ///
-        case connectingFailed(Error)
+        case connectingFailed(error: Error, educationInProgress: Bool)
 
         /// A mandatory update is being installed
+        /// `educationInProgress` is `true` if the merchant education is in progress
         ///
-        case updating(progress: Float)
+        case updating(progress: Float, educationInProgress: Bool)
 
         /// User chose to retry the connection to the card reader. Starts the search again, by dismissing modals and initializing from scratch
         ///
@@ -67,10 +79,16 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         /// dereferenced and the state set to `idle`
         ///
         case discoveryFailed(Error)
+
+        /// Waiting for other blocking events such as merchant education to complete to finish the connection process
+        ///
+        case waitingToComplete(CardReaderConnectionResult)
     }
 
     private let storageManager: StorageManagerType
     private let stores: StoresManager
+
+    private let locationService: LocationServiceProtocol
 
     private var state: ControllerState {
         didSet {
@@ -80,9 +98,12 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
 
     private let siteID: Int64
     private let alertsPresenter: AlertPresenter
+    private let merchantEducationPresenter: BuiltInCardReaderMerchantEducationPresenting?
     private let configuration: CardPresentPaymentsConfiguration
 
     private let alertsProvider: AlertProvider
+
+    private let featureFlagService: FeatureFlagService
 
     /// The reader we want the user to consider connecting to
     ///
@@ -118,8 +139,11 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         stores: StoresManager = ServiceLocator.stores,
         alertsPresenter: AlertPresenter,
         alertsProvider: AlertProvider,
+        merchantEducationPresenter: BuiltInCardReaderMerchantEducationPresenting? = nil,
         configuration: CardPresentPaymentsConfiguration,
         analyticsTracker: CardReaderConnectionAnalyticsTracker,
+        featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+        locationService: LocationServiceProtocol = LocationService(),
         allowTermsOfServiceAcceptance: Bool = true
     ) {
         siteID = forSiteID
@@ -128,8 +152,11 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         state = .idle
         self.alertsPresenter = alertsPresenter
         self.alertsProvider = alertsProvider
+        self.merchantEducationPresenter = merchantEducationPresenter
         self.configuration = configuration
         self.analyticsTracker = analyticsTracker
+        self.featureFlagService = featureFlagService
+        self.locationService = locationService
         self.allowTermsOfServiceAcceptance = allowTermsOfServiceAcceptance
 
         configureResultsControllers()
@@ -176,14 +203,18 @@ private extension BuiltInCardReaderConnectionController {
             onRetry()
         case .cancel(let cancellationSource):
             onCancel(from: cancellationSource)
+        case .requestLocationPermission:
+            onRequestLocationPermission()
         case .connectToReader:
             onConnectToReader()
-        case .connectingFailed(let error):
+        case .connectingFailed(let error, _):
             onConnectingFailed(error: error)
         case .discoveryFailed(let error):
             onDiscoveryFailed(error: error)
-        case .updating(progress: let progress):
+        case .updating(progress: let progress, _):
             onUpdateProgress(progress: progress)
+        case .waitingToComplete, .connecting:
+            break
         }
     }
 
@@ -253,7 +284,7 @@ private extension BuiltInCardReaderConnectionController {
                 ///
                 if cardReaders.isNotEmpty {
                     self.candidateReader = cardReaders.first
-                    self.state = .connectToReader
+                    self.state = .requestLocationPermission
                     return
                 }
             },
@@ -275,7 +306,7 @@ private extension BuiltInCardReaderConnectionController {
         /// like to connect to it
         ///
         if candidateReader != nil {
-            self.state = .connectToReader
+            self.state = .requestLocationPermission
             return
         }
 
@@ -330,6 +361,47 @@ private extension BuiltInCardReaderConnectionController {
         stores.dispatch(action)
     }
 
+    /// Handle location permission status and request
+    ///
+    func onRequestLocationPermission() {
+        let status = locationService.authorizationStatus
+        switch status {
+        case .authorized:
+            state = .connectToReader
+        case .denied:
+            analyticsTracker.cardReaderLocationPermissionRequiredShown()
+            observePermissionChanges()
+            alertsPresenter.present(viewModel: alertsProvider.locationRequired(
+                dismiss: { [weak self] in
+                    guard let self else { return }
+                    locationService.stopObservingPermissionChanges()
+                    state = .cancel(.locationPermissionDenied)
+                },
+                skip: { [weak self] in
+                    guard let self else { return }
+                    locationService.stopObservingPermissionChanges()
+                    state = .connectToReader
+                }
+            ))
+        case .notDetermined:
+            analyticsTracker.cardReaderLocationPermissionPreAlertShown()
+            observePermissionChanges()
+            alertsPresenter.present(viewModel: alertsProvider.locationRequestPreAlert { [weak self] in
+                self?.locationService.requestPermission()
+            })
+        }
+    }
+
+    func observePermissionChanges() {
+        locationService.observePermissionChanges { [weak self] permission in
+            guard let self else { return }
+            locationService.stopObservingPermissionChanges()
+            if case .requestLocationPermission = state {
+                onRequestLocationPermission()
+            }
+        }
+    }
+
     /// Connect to the candidate card reader
     ///
     func onConnectToReader() {
@@ -350,15 +422,15 @@ private extension BuiltInCardReaderConnectionController {
                 switch event {
                 case .started(cancelable: let cancelable):
                     self.softwareUpdateCancelable = cancelable
-                    self.state = .updating(progress: 0)
+                    self.state = .updating(progress: 0, educationInProgress: isEducationInProgress)
                 case .installing(progress: let progress):
                     if progress >= 0.995 {
                         self.softwareUpdateCancelable = nil
                     }
-                    self.state = .updating(progress: progress)
+                    self.state = .updating(progress: progress, educationInProgress: isEducationInProgress)
                 case .completed:
                     self.softwareUpdateCancelable = nil
-                    self.state = .updating(progress: 1)
+                    self.state = .updating(progress: 1, educationInProgress: isEducationInProgress)
                 default:
                     break
                 }
@@ -366,6 +438,34 @@ private extension BuiltInCardReaderConnectionController {
             .store(in: &self.subscriptions)
         }
         stores.dispatch(softwareUpdateAction)
+
+
+        if featureFlagService.isFeatureFlagEnabled(.tapToPayEducation), let presenter = merchantEducationPresenter {
+            let onboardingAction = CardPresentPaymentAction.observeBuiltInCardReaderAcceptToS { [weak self] events in
+                guard let self else { return }
+
+                events
+                    .subscribe(on: DispatchQueue.main)
+                    .sink { [weak self] in
+                        guard let self, !isEducationInProgress else { return }
+
+                        analyticsTracker.tapToPayTermsOfServiceAccepted()
+
+                        state = updatedState(educationInProgress: true)
+                        presenter.presentMerchantEducation { [weak self] in
+                            guard let self else { return }
+                            state = updatedState(educationInProgress: false)
+                            if case .waitingToComplete(let result) = state {
+                                returnSuccess(result: result)
+                            }
+                        }
+                    }
+                    .store(in: &subscriptions)
+            }
+            stores.dispatch(onboardingAction)
+        }
+
+
         let options = CardReaderConnectionOptions(
             builtInOptions: BuiltInCardReaderConnectionOptions(termsOfServiceAcceptancePermitted: allowTermsOfServiceAcceptance))
 
@@ -378,14 +478,25 @@ private extension BuiltInCardReaderConnectionController {
             case .success(let reader):
                 self.analyticsTracker.connectionSuccess(batteryLevel: reader.batteryLevel,
                                                         cardReaderModel: reader.readerType.model)
-                // If we were installing a software update, introduce a small delay so the user can
-                // actually see a success message showing the installation was complete
-                if case .updating(progress: 1) = self.state {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+
+                let success = { [weak self] in
+                    guard let self else { return }
+
+                    if isEducationInProgress {
+                        self.state = .waitingToComplete(.connected(reader))
+                    } else {
                         self.returnSuccess(result: .connected(reader))
                     }
+                }
+
+                // If we were installing a software update, introduce a small delay so the user can
+                // actually see a success message showing the installation was complete
+                if case .updating(progress: 1, _) = self.state {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                        success()
+                    }
                 } else {
-                    self.returnSuccess(result: .connected(reader))
+                    success()
                 }
             case .failure(let error):
                 // The TOS acceptance flow happens during connection, not discovery, and cancelations from Apple's
@@ -396,12 +507,13 @@ private extension BuiltInCardReaderConnectionController {
                     self.analyticsTracker.connectionFailed(error: error,
                                                            cardReaderModel: candidateReader.readerType.model)
 
-                    self.state = .connectingFailed(error)
+                    self.state = .connectingFailed(error: error, educationInProgress: isEducationInProgress)
                 }
             }
         }
         stores.dispatch(action)
 
+        state = .connecting(educationInProgress: isEducationInProgress)
         alertsPresenter.present(viewModel: alertsProvider.connectingToReader())
     }
 
@@ -561,6 +673,34 @@ private extension CardReaderServiceUnderlyingError {
             return false
         default:
             return true
+        }
+    }
+}
+
+// MARK: - Merchant Education
+
+private extension BuiltInCardReaderConnectionController {
+    private var isEducationInProgress: Bool {
+        switch state {
+        case .connecting(let educationInProgress),
+                .connectingFailed(_, let educationInProgress),
+                .updating(_, let educationInProgress):
+            return educationInProgress
+        default:
+            return false
+        }
+    }
+
+    private func updatedState(educationInProgress: Bool) -> ControllerState {
+        switch state {
+        case .connecting:
+            return .connecting(educationInProgress: educationInProgress)
+        case .updating(progress: let progress, educationInProgress: _):
+            return .updating(progress: progress, educationInProgress: educationInProgress)
+        case .connectingFailed(let error, _):
+            return .connectingFailed(error: error, educationInProgress: educationInProgress)
+        default:
+            return state
         }
     }
 }

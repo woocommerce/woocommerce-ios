@@ -5,6 +5,9 @@ public protocol WooShippingRemoteProtocol {
                        customPackage: WooShippingCustomPackage?,
                        predefinedOption: WooShippingPredefinedSavedOption?,
                        completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void)
+    func deletePackage(siteID: Int64,
+                       packageID: String,
+                       completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void)
     func loadLabelRates(siteID: Int64,
                         orderID: Int64,
                         originAddress: ShippingLabelAddress,
@@ -29,6 +32,9 @@ public protocol WooShippingRemoteProtocol {
                     labelIDs: [Int64],
                     paperSize: ShippingLabelPaperSize,
                     completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void)
+
+    func loadOriginAddresses(siteID: Int64,
+                             completion: @escaping (Result<[WooShippingOriginAddress], Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
@@ -68,6 +74,27 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                                          siteID: siteID,
                                          path: path,
                                          parameters: parameters,
+                                         availableAsRESTRequest: true)
+
+            let mapper = WooShippingCreatePackageMapper()
+
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
+
+    public func deletePackage(siteID: Int64,
+                              packageID: String,
+                              completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void) {
+        do {
+            let path = "\(Path.packages)/\(packageID)"
+
+            let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                         method: .delete,
+                                         siteID: siteID,
+                                         path: path,
+                                         parameters: nil,
                                          availableAsRESTRequest: true)
 
             let mapper = WooShippingCreatePackageMapper()
@@ -129,7 +156,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                                          path: path,
                                          availableAsRESTRequest: true)
 
-            let mapper = WooShippingPackagesMapper()
+            let mapper = WooShippingPackagesMapper(siteID: siteID)
             enqueue(request, mapper: mapper, completion: completion)
         }
     }
@@ -244,6 +271,22 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Loads origin addresses.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site.
+    ///   - completion: Closure to be executed upon completion.
+    public func loadOriginAddresses(siteID: Int64, completion: @escaping (Result<[WooShippingOriginAddress], any Error>) -> Void) {
+        let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.originAddresses,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
+        let mapper = WooShippingOriginAddressesMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 // MARK: Constants
@@ -255,6 +298,7 @@ private extension WooShippingRemote {
         static let purchase = "label/purchase"
         static let status = "label/status"
         static let print = "label/print"
+        static let originAddresses = "address/origins"
     }
 
     enum ParameterKey {

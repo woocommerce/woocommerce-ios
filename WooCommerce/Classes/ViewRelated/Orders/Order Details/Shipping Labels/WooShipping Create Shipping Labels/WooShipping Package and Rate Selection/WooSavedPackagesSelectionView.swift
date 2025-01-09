@@ -2,15 +2,22 @@ import SwiftUI
 
 enum WooShippingPackageSource {
     case custom
-    case predefined(String)
+    case predefined(sourceTitle: String, sourceID: String)
 
     var userFriendlyDescription: String {
         switch self {
         case .custom:
             return NSLocalizedString("Custom Package", comment: "Label used to mark a custom package in list of saved packages")
-        case .predefined(let source):
-            return source
+        case .predefined(let sourceTitle, _):
+            return sourceTitle
         }
+    }
+
+    var sourceID: String? {
+        guard case .predefined(_, let sourceID) = self else {
+            return nil
+        }
+        return sourceID
     }
 }
 
@@ -23,8 +30,6 @@ protocol WooShippingPackageDataRepresentable {
     var height: String { get }
     var weight: String { get }
     // local
-    var weightDescription: String { get }
-    var dimensionsDescription: String { get }
     var source: WooShippingPackageSource { get } // custom, predefined
     var packageType: String { get } // box, envelope
 }
@@ -38,8 +43,6 @@ struct WooShippingPackageData: WooShippingPackageDataRepresentable {
     let height: String
     let weight: String
     // local
-    let weightDescription: String
-    let dimensionsDescription: String
     let source: WooShippingPackageSource
     let packageType: String
 
@@ -48,9 +51,7 @@ struct WooShippingPackageData: WooShippingPackageDataRepresentable {
          length: String,
          width: String,
          height: String,
-         dimensionsUnit: String,
          weight: String,
-         weightUnit: String,
          source: WooShippingPackageSource,
          packageType: String) {
         self.id = id
@@ -62,18 +63,13 @@ struct WooShippingPackageData: WooShippingPackageDataRepresentable {
 
         self.source = source
         self.packageType = packageType
-
-        self.dimensionsDescription = WooShippingPackageData.createDimensionsDescription(length: length, width: width, height: height, unit: dimensionsUnit)
-        self.weightDescription = WooShippingPackageData.createWeightsDescription(weight: weight, unit: weightUnit)
     }
 
     init(name: String,
          length: String,
          width: String,
          height: String,
-         dimensionsUnit: String,
          weight: String,
-         weightUnit: String,
          source: WooShippingPackageSource,
          packageType: String) {
         self.init(id: name,
@@ -81,21 +77,26 @@ struct WooShippingPackageData: WooShippingPackageDataRepresentable {
                   length: length,
                   width: width,
                   height: height,
-                  dimensionsUnit: dimensionsUnit,
                   weight: weight,
-                  weightUnit: weightUnit,
                   source: source,
                   packageType: packageType)
     }
 }
 
 extension WooShippingPackageDataRepresentable {
-    static func createDimensionsDescription(length: String, width: String, height: String, unit: String) -> String {
+    func dimensionsDescription(unit: String) -> String {
         return "\(length) x \(width) x \(height) \( unit)"
     }
 
-    static func createWeightsDescription(weight: String, unit: String) -> String {
+    func weightDescription(unit: String) -> String? {
+        guard weight.isNotEmpty else {
+            return nil
+        }
         return "\(weight) \(unit)"
+    }
+
+    var displayName: String {
+        name.isNotEmpty ? name : source.userFriendlyDescription
     }
 }
 
@@ -110,28 +111,71 @@ struct WooSavedPackagesSelectionView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Divider()
-            if viewModel.isLoadingPackages {
-                ProgressView()
-                    .progressViewStyle(.circular)
+            if !viewModel.hasSavedPackages {
+                // Show extra loading indicator in case there are no packages
+                if viewModel.isLoadingPackages {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                        .padding()
+                }
+                else {
+                    Button {
+                        Task {
+                            await viewModel.loadPackages()
+                        }
+                    } label: {
+                        Image(systemName: "arrow.trianglehead.counterclockwise")
+                    }
                     .padding()
+                }
             }
-            List {
-                packagesSection(for: viewModel.customSavedPackages)
-                packagesSection(for: viewModel.predefinedSavedPackages)
+            else {
+                Divider()
+                ScrollViewReader { scroll in
+                    List {
+                        packagesSection(for: viewModel.customSavedPackages)
+                        packagesSection(for: viewModel.predefinedSavedPackages)
+                    }
+                    .listStyle(.plain)
+                    .refreshable {
+                        await viewModel.loadPackages()
+                    }
+                    .task {
+                        scroll.scrollTo(viewModel.selectedSavedPackageId)
+                    }
+                }
+                Divider()
             }
-            .listStyle(.plain)
-            .refreshable {
-                viewModel.loadPackages()
-            }
-            Divider()
-            Button(WooShippingAddPackageView.Localization.addPackage) {
+            Spacer()
+            Button(selectionButtonText) {
                 addPackageButtonTapped()
             }
-            .disabled(viewModel.selectedSavedPackageId == nil || !viewModel.hasSavedPackages)
-            .buttonStyle(PrimaryButtonStyle())
+            .disabled(selectionButtonDisabled)
+            .if(viewModel.previousSelectedAndSelectedSavedPackageAreSame) {
+                $0.buttonStyle(SecondaryButtonStyle())
+            }
+            .if(!viewModel.previousSelectedAndSelectedSavedPackageAreSame) {
+                $0.buttonStyle(PrimaryButtonStyle())
+            }
             .padding()
         }
+    }
+
+    private var selectionButtonDisabled: Bool {
+        viewModel.selectedSavedPackageId == nil || !viewModel.hasSavedPackages
+    }
+
+    private var selectionButtonText: String {
+        if selectionButtonDisabled {
+            return WooShippingAddPackageView.Localization.selectPackage
+        }
+        if let previousSelectedPackage = viewModel.previousSelectedPackage {
+            if previousSelectedPackage.id == viewModel.selectedSavedPackageId {
+                return WooShippingAddPackageView.Localization.done
+            }
+            return WooShippingAddPackageView.Localization.useSelectedPackage
+        }
+        return WooShippingAddPackageView.Localization.addPackage
     }
 
     @ViewBuilder
@@ -149,7 +193,7 @@ struct WooSavedPackagesSelectionView: View {
 
     private func packagesRows(for packages: [any WooShippingPackageDataRepresentable]) -> some View {
         ForEach(packages, id: \.id) { package in
-            PackageOptionView(
+            WooShippingPackageOptionView(
                 isSelected: viewModel.selectedSavedPackageId == package.id,
                 package: package,
                 showTopDivider: false,
@@ -158,16 +202,14 @@ struct WooSavedPackagesSelectionView: View {
                     viewModel.selectedSavedPackageId = viewModel.selectedSavedPackageId == package.id ? nil : package.id
                 }
             )
+            .id(package.id)
             .alignmentGuide(.listRowSeparatorLeading) { _ in
                 return 16
             }
             .swipeActions {
                 Button {
                     withAnimation {
-                        _ = Task {
-                            return await viewModel.removeSavedPackage(package)
-                        }
-                        // TODO: handle error
+                        viewModel.removeSavedPackage(package)
                     }
                 } label: {
                     Image(systemName: "trash")

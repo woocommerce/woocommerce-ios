@@ -27,7 +27,7 @@ final class JetpackConnectionWebViewModelTests: XCTestCase {
         let adminPolicy = await viewModel.decidePolicy(for: adminURL)
         let finalUrl = try XCTUnwrap(URL(string: "woocommerce://jetpack-connected"))
         let completionPolicy = await viewModel.decidePolicy(for: finalUrl)
-        waitUntil {
+        await until {
             completionTriggered == true
         }
 
@@ -52,7 +52,7 @@ final class JetpackConnectionWebViewModelTests: XCTestCase {
         let authorizePolicy = await viewModel.decidePolicy(for: authorizeURL)
         let finalUrl = try XCTUnwrap(URL(string: "https://wordpress.com/jetpack/connect/plans"))
         let completionPolicy = await viewModel.decidePolicy(for: finalUrl)
-        waitUntil {
+        await until {
             completionTriggered == true
         }
 
@@ -175,7 +175,7 @@ final class JetpackConnectionWebViewModelTests: XCTestCase {
         // When
         let finalUrl = try XCTUnwrap(URL(string: "woocommerce://jetpack-connected"))
         _ = await viewModel.decidePolicy(for: finalUrl)
-        waitUntil {
+        await until {
             completionTriggered == true
         }
 
@@ -205,7 +205,7 @@ final class JetpackConnectionWebViewModelTests: XCTestCase {
         // When
         let finalUrl = try XCTUnwrap(URL(string: "woocommerce://jetpack-connected"))
         _ = await viewModel.decidePolicy(for: finalUrl)
-        waitUntil {
+        await until {
             completionTriggered == true
         }
 

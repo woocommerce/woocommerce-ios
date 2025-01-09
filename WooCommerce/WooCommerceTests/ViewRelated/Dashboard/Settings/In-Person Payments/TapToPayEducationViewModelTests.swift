@@ -4,16 +4,14 @@ import Combine
 
 struct TapToPayEducationViewModelTests {
     private let cardReaderSupportDeterminer: MockCardReaderSupportDeterminer
-    private let cardPresentPaymentsOnboardingUseCase: MockCardPresentPaymentsOnboardingUseCase
 
     init() {
         cardReaderSupportDeterminer = MockCardReaderSupportDeterminer()
-        cardPresentPaymentsOnboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed(plugin: .wcPayOnly))
     }
 
     private func create(flow: TapToPayEducationViewModel.Flow,
                         steps: [TapToPayEducationStepViewModel]? = nil,
-                        onDismiss: @escaping () -> Void = {}) -> TapToPayEducationViewModel {
+                        completion: @escaping (TapToPayEducationResult) -> Void = { _ in }) -> TapToPayEducationViewModel {
         let steps = steps ?? [.init(title: "1", imageName: "", description: ""),
                               .init(title: "2", imageName: "", description: ""),
                               .init(title: "3", imageName: "", description: "")]
@@ -21,18 +19,14 @@ struct TapToPayEducationViewModelTests {
                                           steps: steps,
                                           siteID: 123,
                                           cardReaderSupportDeterminer: cardReaderSupportDeterminer,
-                                          cardPresentPaymentsOnboardingUseCase: cardPresentPaymentsOnboardingUseCase,
-                                          onDismiss: onDismiss)
+                                          completion: completion)
     }
 
     // MARK: - Primary Action
 
     @Test func primaryAction_when_onboarding() {
         // Given
-        var isDismissed = false
-        let sut = create(flow: .onboarding, onDismiss: {
-            isDismissed = true
-        })
+        let sut = create(flow: .onboarding)
 
         // When & Then
         #expect(sut.primaryAction.title == "Next")
@@ -47,16 +41,16 @@ struct TapToPayEducationViewModelTests {
         #expect(sut.selectedStep == 2)
         sut.primaryAction.action()
 
-        #expect(isDismissed)
+        #expect(sut.dismiss)
     }
 
     @Test func primaryAction_when_about_and_no_previous_tap_to_pay_usage() {
         // Given
         cardReaderSupportDeterminer.shouldReturnHasPreviousTapToPayUsage = false
-        var isDismissed = false
-        let sut = create(flow: .about, onDismiss: {
-            isDismissed = true
-        })
+        var result: TapToPayEducationResult?
+        let sut = create(flow: .about) {
+            result = $0
+        }
 
         // When & Then
         #expect(sut.primaryAction.title == "Next")
@@ -71,17 +65,18 @@ struct TapToPayEducationViewModelTests {
         #expect(sut.selectedStep == 2)
         sut.primaryAction.action()
 
-        #expect(!isDismissed)
-        #expect(sut.showingSetUpFlow)
+        #expect(sut.dismiss)
+        sut.onDisappear()
+        #expect(result == .setUpTapToPay)
     }
 
     @Test func primaryAction_when_about_and_has_previous_tap_to_pay_usage() async throws {
         // Given
         cardReaderSupportDeterminer.shouldReturnHasPreviousTapToPayUsage = true
-        var isDismissed = false
-        let sut = create(flow: .about, onDismiss: {
-            isDismissed = true
-        })
+        var result: TapToPayEducationResult?
+        let sut = create(flow: .about) {
+            result = $0
+        }
 
         var cancellables = Set<AnyCancellable>()
         await withCheckedContinuation { continuation in
@@ -107,8 +102,9 @@ struct TapToPayEducationViewModelTests {
         #expect(sut.selectedStep == 2)
         sut.primaryAction.action()
 
-        #expect(isDismissed)
-        #expect(!sut.showingSetUpFlow)
+        #expect(sut.dismiss)
+        sut.onDisappear()
+        #expect(result == .done)
     }
 
     // MARK: - Secondary Action

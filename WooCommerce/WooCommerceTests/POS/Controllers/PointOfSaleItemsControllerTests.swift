@@ -5,17 +5,19 @@ import Combine
 final class PointOfSaleItemsControllerTests {
     private let itemProvider: MockPointOfSaleItemService
     private let sut: PointOfSaleItemsController
-    @Published var itemListState: ItemListState = .initialLoading
+    @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
+                                                                   itemsStack: ItemsStackState(root: .loading([]),
+                                                                                               itemStates: [:]))
 
     init() {
         itemProvider = MockPointOfSaleItemService()
         sut = PointOfSaleItemsController(itemProvider: itemProvider)
-        sut.itemListStatePublisher.assign(to: &$itemListState)
+        sut.itemsViewStatePublisher.assign(to: &$itemsViewState)
     }
 
     @Test func loadInitialItems_requests_first_page() async throws {
         // Given
-        try #require(itemListState == .initialLoading)
+        try #require(itemsViewState.containerState == .loading)
 
         // When
         await sut.loadInitialItems()
@@ -27,18 +29,20 @@ final class PointOfSaleItemsControllerTests {
     @Test func loadInitialItems_results_in_loaded_state() async throws {
         // Given
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()
-        try #require(itemListState == .initialLoading)
+        try #require(itemsViewState.containerState == .loading)
 
         // When
         await sut.loadInitialItems()
 
         // Then
-        #expect(itemListState == .loaded(expectedItems))
+        #expect(itemsViewState == ItemsViewState(containerState: .content,
+                                                 itemsStack: ItemsStackState(root: .loaded(expectedItems),
+                                                                             itemStates: [:])))
     }
 
     @Test func loadInitialItems_when_called_multiple_times_then_items_are_not_duplicated() async throws {
         // Given
-        try #require(itemListState == .initialLoading)
+        try #require(itemsViewState.containerState == .loading)
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()
 
         // When
@@ -47,8 +51,8 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadInitialItems()
 
         // Then
-        guard case .loaded(let items) = itemListState else {
-            Issue.record("Expected loaded ItemList state, but got \(itemListState)")
+        guard case .loaded(let items) = itemsViewState.itemsStack.root else {
+            Issue.record("Expected loaded ItemList state, but got \(itemsViewState)")
             return
         }
         #expect(items.count == expectedItems.count)
@@ -56,15 +60,15 @@ final class PointOfSaleItemsControllerTests {
 
     @Test func reload_results_in_loaded_state() async throws {
         // Given
-        try #require(itemListState == .initialLoading)
+        try #require(itemsViewState.containerState == .loading)
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()
 
         // When
         await sut.reload()
 
         // Then
-        guard case .loaded(let items) = itemListState else {
-            Issue.record("Expected loaded ItemList state, but got \(itemListState)")
+        guard case .loaded(let items) = itemsViewState.itemsStack.root else {
+            Issue.record("Expected loaded ItemList state, but got \(itemsViewState)")
             return
         }
         #expect(items.count == expectedItems.count)
@@ -72,7 +76,7 @@ final class PointOfSaleItemsControllerTests {
 
     @Test func reload_when_called_multiple_times_then_items_are_not_duplicated() async throws {
         // Given
-        try #require(itemListState == .initialLoading)
+        try #require(itemsViewState.containerState == .loading)
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()
 
         // When
@@ -81,29 +85,29 @@ final class PointOfSaleItemsControllerTests {
         await sut.reload()
 
         // Then
-        guard case .loaded(let items) = itemListState else {
-            Issue.record("Expected loaded ItemList state, but got \(itemListState)")
+        guard case .loaded(let items) = itemsViewState.itemsStack.root else {
+            Issue.record("Expected loaded ItemList state, but got \(itemsViewState)")
             return
         }
         #expect(items.count == expectedItems.count)
     }
 
-    @Test func state_starts_as_initialLoading() {
+    @Test func container_state_starts_as_loading() {
         // Given/When/Then
-        #expect(itemListState == .initialLoading)
+        #expect(itemsViewState.containerState == .loading)
     }
 
-    @Test func loadItems_when_initial_items_empty_then_state_is_empty() async throws {
+    @Test func loadItems_when_initial_items_empty_then_container_state_is_empty() async throws {
         // Given
         itemProvider.shouldReturnZeroItems = true
 
-        try #require(itemListState == .initialLoading)
+        try #require(itemsViewState.containerState == .loading)
 
         // When
         await sut.loadNextItems()
 
         // Then
-        #expect(itemListState == .empty)
+        #expect(itemsViewState.containerState == .empty)
     }
 
     @Test func loadItems_when_initial_items_has_items_then_state_is_loaded_with_initial_items() async throws {
@@ -111,13 +115,15 @@ final class PointOfSaleItemsControllerTests {
         let initialItems = MockPointOfSaleItemService.makeInitialItems()
         itemProvider.items = initialItems
 
-        try #require(itemListState == .initialLoading)
+        try #require(itemsViewState.containerState == .loading)
 
         // When
         await sut.loadNextItems()
 
         // Then
-        #expect(itemListState == .loaded(initialItems))
+        #expect(itemsViewState == ItemsViewState(containerState: .content,
+                                                 itemsStack: ItemsStackState(root: .loaded(initialItems),
+                                                                             itemStates: [:])))
     }
 
     @Test func loadItems_when_simulateFetchNextPage_then_state_is_loaded_with_expected_items() async throws {
@@ -125,13 +131,14 @@ final class PointOfSaleItemsControllerTests {
         let initialItems = MockPointOfSaleItemService.makeInitialItems()
         itemProvider.items = initialItems
         itemProvider.shouldSimulateTwoPages = true
+        await sut.loadInitialItems()
 
         // When
         await sut.loadNextItems()
 
         // Then
-        guard case .loaded(let items) = itemListState else {
-            Issue.record("Expected loaded ItemList state, but got \(itemListState)")
+        guard case .loaded(let items) = itemsViewState.itemsStack.root else {
+            Issue.record("Expected loaded ItemList state, but got \(itemsViewState)")
             return
         }
         #expect(items.count == 4)
@@ -139,7 +146,9 @@ final class PointOfSaleItemsControllerTests {
 
     @Test func loadNextItems_requests_second_page() async throws {
         // Given
-        try #require(itemListState == .initialLoading)
+        try #require(itemsViewState.containerState == .loading)
+        itemProvider.shouldSimulateTwoPages = true
+        await sut.loadInitialItems()
 
         // When
         await sut.loadNextItems()
@@ -152,13 +161,13 @@ final class PointOfSaleItemsControllerTests {
         // Given
         itemProvider.shouldReturnZeroItems = true
 
-        try #require(itemListState == .initialLoading)
+        try #require(itemsViewState.containerState == .loading)
 
         // When
         await sut.loadInitialItems()
 
         // Then
-        #expect(itemListState == .empty)
+        #expect(itemsViewState.containerState == .empty)
     }
 
     @Test func loadInitialItems_when_itemProvider_throws_error_then_state_is_error() async throws {
@@ -167,32 +176,39 @@ final class PointOfSaleItemsControllerTests {
         let expectedError = PointOfSaleErrorState(title: "Error loading products",
                                                   subtitle: "Give it another go?",
                                                   buttonText: "Retry")
-        try #require(itemListState == .initialLoading)
+        try #require(itemsViewState.containerState == .loading)
 
         // When
         await sut.loadInitialItems()
 
         // Then
-        #expect(itemListState == .error(expectedError))
+        #expect(itemsViewState.containerState == .error(expectedError))
     }
 
     @Test func loadNextItems_when_itemProvider_throws_error_then_state_is_error() async throws {
         // Given
+        try #require(itemsViewState.containerState == .loading)
+
+        itemProvider.shouldSimulateTwoPages = true
+        await sut.loadInitialItems()
+
         itemProvider.shouldThrowError = true
         let expectedError = PointOfSaleErrorState(title: "Error loading products",
                                                   subtitle: "Give it another go?",
                                                   buttonText: "Retry")
-        try #require(itemListState == .initialLoading)
 
         // When
         await sut.loadNextItems()
 
         // Then
-        #expect(itemListState == .error(expectedError))
+        #expect(itemsViewState.containerState == .error(expectedError))
     }
 
     @Test func loadNextItems_after_itemProvider_throws_error_then_the_same_page_is_requested_next() async throws {
         // Given
+        itemProvider.shouldSimulateTwoPages = true
+        await sut.loadInitialItems()
+
         itemProvider.shouldThrowError = true
         await sut.loadNextItems()
         try #require(itemProvider.spyLastRequestedPageNumber == 2)
@@ -207,18 +223,23 @@ final class PointOfSaleItemsControllerTests {
 
     @Test func reload_results_in_state_loaded_with_expected_items() async throws {
         // Given
-        try #require(itemListState == .initialLoading)
+        try #require(itemsViewState.containerState == .loading)
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()
 
         // When
         await sut.reload()
 
         // Then
-        #expect(itemListState == .loaded(expectedItems))
+        #expect(itemsViewState == ItemsViewState(containerState: .content,
+                                                 itemsStack: ItemsStackState(root: .loaded(expectedItems),
+                                                                             itemStates: [:])))
     }
 
     @Test func reload_requests_first_page() async throws {
         // Given
+        itemProvider.shouldSimulateTwoPages = true
+        await sut.loadInitialItems()
+
         await sut.loadNextItems()
         try #require(itemProvider.spyLastRequestedPageNumber == 2)
 
@@ -229,33 +250,28 @@ final class PointOfSaleItemsControllerTests {
         #expect(itemProvider.spyLastRequestedPageNumber == 1)
     }
 
-    @Test func loadNextItems_when_next_page_is_out_of_range_then_receives_error() async throws {
+    @Test func loadNextItems_when_next_page_is_empty_then_state_is_loaded() async throws {
         // Given
         await sut.loadInitialItems()
         try #require(itemProvider.spyLastRequestedPageNumber == 1)
-        let expectedError = PointOfSaleErrorState(title: "Error loading products",
-                                                  subtitle: "Give it another go?",
-                                                  buttonText: "Retry")
 
         // When
-        itemProvider.simulateNextPageIsOutOfRange()
+        itemProvider.shouldReturnZeroItems = true
         await sut.loadNextItems()
 
         // Then
-        guard case .error = itemListState else {
-            Issue.record("Expected error state, but got \(itemListState)")
-            return
-        }
-        #expect(itemListState == .error(expectedError))
+        #expect(itemsViewState == ItemsViewState(containerState: .content,
+                                                 itemsStack: ItemsStackState(root: .loaded(MockPointOfSaleItemService.makeInitialItems()),
+                                                                             itemStates: [:])))
     }
 
-    @Test func loadNextItems_when_next_page_is_out_of_range_then_the_same_page_is_requested_next() async throws {
+    @Test func loadNextItems_when_next_page_is_empty_then_the_same_page_is_requested_next() async throws {
         // Given
         await sut.loadInitialItems()
         try #require(itemProvider.spyLastRequestedPageNumber == 1)
 
         // When
-        itemProvider.simulateNextPageIsOutOfRange()
+        itemProvider.shouldReturnZeroItems = true
         await sut.loadNextItems()
 
         // Then
@@ -269,12 +285,12 @@ final class PointOfSaleItemsControllerTests {
                                                   subtitle: "Give it another go?",
                                                   buttonText: "Retry")
 
-        try #require(itemListState == .initialLoading)
+        try #require(itemsViewState.containerState == .loading)
 
         // When
         await sut.reload()
 
         // Then
-        #expect(itemListState == .error(expectedError))
+        #expect(itemsViewState.containerState == .error(expectedError))
     }
 }

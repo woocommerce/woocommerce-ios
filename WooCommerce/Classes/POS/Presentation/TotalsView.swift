@@ -16,15 +16,17 @@ struct TotalsView: View {
     private var shouldShowTotalsFields: Bool {
         viewHelper.shouldShowTotalsFields(for: posModel.paymentState)
     }
-    @State private var isShowingPaymentsButtonSpacing: Bool = false
-    @State private var isShowingSendReceiptModal: Bool = false
+
+    private var shouldShowCollectCashPaymentButton: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.acceptCashForPointOfSale) &&
+        posModel.orderState != .syncing &&
+        (posModel.paymentState == .idle || posModel.paymentState == .acceptingCard)
+    }
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
 
-    private var shouldShowSendReceiptButton: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sendReceiptsForPointOfSale)
-    }
+    @State private var shouldShowCollectCashPayment: Bool = false
 
     var body: some View {
         HStack {
@@ -48,7 +50,6 @@ struct TotalsView: View {
                                 .transition(.opacity)
                                 .background(cardReaderViewLayout.backgroundColor)
                                 .accessibilityShowsLargeContentViewer()
-                                .minimumScaleFactor(0.1)
                                 .layoutPriority(1)
                         }
 
@@ -59,9 +60,19 @@ struct TotalsView: View {
                                 .opacity(viewHelper.shouldShowTotalsFields(for: posModel.paymentState) ? 1 : 0)
                                 .layoutPriority(2)
                         }
+                        Button(action: {
+                            shouldShowCollectCashPayment = true
+                        }, label: {
+                            Text(Localization.cashPaymentButtonTitle)
+                                .font(POSFontStyle.posBodyEmphasized)
+                                .foregroundColor(.posPrimaryText)
+                                .frame(height: Constants.buttonHeight)
+                        })
+                        .buttonStyle(SecondaryButtonStyle())
+                        .padding(.horizontal, Constants.buttonHorizontalPadding)
+                        .renderedIf(shouldShowCollectCashPaymentButton)
                     }
                     .animation(.default, value: posModel.cardPresentPaymentInlineMessage)
-                    paymentsActionButtons
                     Spacer()
                 }
                 .animation(.default, value: isShowingCardReaderStatus)
@@ -77,15 +88,14 @@ struct TotalsView: View {
             isShowingTotalsFields = shouldShowTotalsFields
         }
         .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
-        .geometryGroupIfSupported()
-        .posModal(isPresented: $isShowingSendReceiptModal) {
-            POSSendReceiptModalView(sendReceipt: { email in
-                Task { @MainActor in
-                    await posModel.sendReceipt(to: email)
-                }
-            }, isPresented: $isShowingSendReceiptModal)
-            .posModalSizing()
+        .fullScreenCover(isPresented: $shouldShowCollectCashPayment) {
+            if case .loaded(let total) = posModel.orderState {
+                PointOfSaleCollectCashView(orderTotal: total.orderTotal)
+                    .matchedGeometryEffect(id: Constants.matchedGeometryCashId,
+                                           in: totalsFieldAnimation)
+            }
         }
+        .geometryGroupIfSupported()
     }
 
     private var backgroundColor: Color {
@@ -212,62 +222,6 @@ private extension TotalsView {
 }
 
 private extension TotalsView {
-    private var newOrderButton: some View {
-        Button(action: {
-            posModel.startNewCart()
-        }, label: {
-            HStack(spacing: Constants.buttonSpacing) {
-                Text(Localization.newOrder)
-                    .font(Constants.buttonFont)
-            }
-            .frame(minWidth: UIScreen.main.bounds.width / 2)
-        })
-        .padding(Constants.buttonPadding)
-        .foregroundColor(Color.posPrimaryTextInverted)
-        .background(Color.posOverlayFillInverted)
-        .cornerRadius(Constants.buttonCornerRadius)
-    }
-
-    private var sendReceiptButton: some View {
-        Button(action: {
-            isShowingSendReceiptModal = true
-        }, label: {
-            HStack(spacing: Constants.buttonSpacing) {
-                Text(Localization.sendReceipt)
-                    .font(Constants.buttonFont)
-            }
-            .frame(minWidth: UIScreen.main.bounds.width / 2)
-        })
-        .padding(Constants.buttonPadding)
-        .foregroundColor(Color.posPrimaryText)
-        .background(Color.clear)
-        .overlay {
-            RoundedRectangle(cornerRadius: Constants.buttonCornerRadius)
-                        .stroke(Color.posPrimaryText, lineWidth: 1.0)
-        }
-    }
-
-    @ViewBuilder
-    private var paymentsActionButtons: some View {
-        if posModel.paymentState == .cardPaymentSuccessful {
-            if isShowingPaymentsButtonSpacing {
-                Spacer().frame(height: Constants.paymentsButtonSpacing)
-            }
-            sendReceiptButton
-                .renderedIf(shouldShowSendReceiptButton)
-            newOrderButton
-                .onAppear {
-                    isShowingPaymentsButtonSpacing = false
-                    withAnimation(.default.delay(Constants.paymentsButtonButtonSpacingAnimationDelay)) {
-                        isShowingPaymentsButtonSpacing = true
-                    }
-                }
-            Spacer().frame(height: Constants.paymentsButtonSpacing)
-        }
-        else {
-            EmptyView()
-        }
-    }
 
     @ViewBuilder private var cardReaderView: some View {
         switch posModel.cardReaderConnectionStatus {
@@ -362,9 +316,9 @@ private extension TotalsView {
 private extension TotalsView {
     enum Constants {
         static let pricesIdealWidth: CGFloat = 382
-        static let buttonCornerRadius: CGFloat = 8
-
         static let verticalSpacing: CGFloat = 56
+        static let buttonHeight: CGFloat = 56
+        static let buttonHorizontalPadding: CGFloat = 48
 
         static let totalsLineViewPadding: EdgeInsets = .init(top: 20, leading: 24, bottom: 20, trailing: 24)
         static let subtotalsVerticalSpacing: CGFloat = 8
@@ -381,16 +335,11 @@ private extension TotalsView {
         static let subtotalsShimmeringHeight: CGFloat = 36
         static let totalShimmeringHeight: CGFloat = 40
 
-        static let paymentsButtonSpacing: CGFloat = 80
-        static let paymentsButtonButtonSpacingAnimationDelay: CGFloat = 0.3
-        static let buttonSpacing: CGFloat = 12
-        static let buttonPadding: CGFloat = 32
-        static let buttonFont: POSFontStyle = .posBodyEmphasized
-
         /// Used for synchronizing animations of shimmeringLine and textField
         static let matchedGeometrySubtotalId: String = "pos_totals_view_subtotal_matched_geometry_id"
         static let matchedGeometryTaxId: String = "pos_totals_view_tax_matched_geometry_id"
         static let matchedGeometryTotalId: String = "pos_totals_view_total_matched_geometry_id"
+        static let matchedGeometryCashId: String = "pos_totals_view_cash_matched_geometry_id"
 
         static let totalsFieldsHideAnimationDelay: CGFloat = 0.3
     }
@@ -408,14 +357,10 @@ private extension TotalsView {
             "pos.totalsView.taxes",
             value: "Taxes",
             comment: "Title for taxes amount field")
-        static let newOrder = NSLocalizedString(
-            "pos.totalsView.newOrder",
-            value: "New order",
-            comment: "Button title for new order button")
-        static let sendReceipt = NSLocalizedString(
-            "pos.totalsView.sendReceipt",
-            value: "Receipt",
-            comment: "Button title for the receipt button")
+        static let cashPaymentButtonTitle = NSLocalizedString(
+            "pos.totalsView.cash.button.title",
+            value: "Cash payment",
+            comment: "Title for the cash payment button title")
     }
 }
 

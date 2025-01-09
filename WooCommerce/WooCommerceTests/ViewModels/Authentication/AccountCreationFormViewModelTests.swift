@@ -153,7 +153,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         viewModel.password = "simple password"
 
         // Then
-        waitUntil {
+        await until {
             self.viewModel.passwordErrorMessage == nil
         }
     }
@@ -168,7 +168,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         viewModel.email = "real@woocommerce.com"
 
         // Then
-        waitUntil {
+        await until {
             self.viewModel.emailErrorMessage == nil
         }
     }

@@ -52,6 +52,8 @@ final class FilterProductListViewModel: FilterListViewModel {
 
     let filterTypeViewModels: [FilterTypeViewModel]
 
+    let shouldShowHistory: Bool
+
     private let stockStatusFilterViewModel: FilterTypeViewModel
     private let productStatusFilterViewModel: FilterTypeViewModel
     private let productTypeFilterViewModel: FilterTypeViewModel
@@ -73,6 +75,7 @@ final class FilterProductListViewModel: FilterListViewModel {
         self.productTypeFilterViewModel = ProductListFilter.productType(siteID: siteID).createViewModel(filters: filters)
         self.productCategoryFilterViewModel = ProductListFilter.productCategory(siteID: siteID).createViewModel(filters: filters)
         self.productFavoriteFilterViewModel = ProductListFilter.favoriteProducts.createViewModel(filters: filters)
+        self.shouldShowHistory = false
 
         if featureFlagService.isFeatureFlagEnabled(.favoriteProducts) {
             self.filterTypeViewModels = [

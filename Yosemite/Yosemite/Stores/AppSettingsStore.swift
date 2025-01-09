@@ -908,7 +908,14 @@ private extension AppSettingsStore {
 
     /// Retrieves all persisted product filters for a given site
     func loadProductFilterHistory(siteID: Int64, onCompletion: @escaping (Result<[StoredProductSettings.Setting], Error>) -> Void) {
-        // TODO
+        guard let allHistory: ProductFilterHistory = try? fileStorage.data(for: productFilterHistoryURL),
+                let siteHistory = allHistory.history[siteID] else {
+            let error = AppSettingsStoreErrors.noProductFilterHistory
+            onCompletion(.failure(error))
+            return
+        }
+
+        onCompletion(.success(siteHistory))
     }
 
     /// Removes a product filter from the persisted history
@@ -1255,6 +1262,7 @@ enum AppSettingsStoreErrors: Error {
     case noOrdersSettings
     case noProductsSettings
     case noOrderFilterHistory
+    case noProductFilterHistory
     case writeOrdersSettings
     case writeOrderFilterHistory
     case writeProductsSettings

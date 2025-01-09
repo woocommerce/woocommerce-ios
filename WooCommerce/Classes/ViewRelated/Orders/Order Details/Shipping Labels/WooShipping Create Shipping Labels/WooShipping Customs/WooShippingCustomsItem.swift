@@ -91,6 +91,7 @@ struct WooShippingCustomsItem: View {
                     .padding(.top, Layout.collapsibleViewVerticalSpacing)
                 
                 TextField(Localization.HSTariffNumberPlaceholder, text: $viewModel.hsTariffNumber)
+                    .keyboardType(.numberPad)
                     .padding(Layout.extraPadding)
                     .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderLineWidth)
 
@@ -117,6 +118,7 @@ struct WooShippingCustomsItem: View {
                             .foregroundColor(.primary)
                             .subheadlineStyle()
                         TextField("$ 0", text: $viewModel.valuePerUnit)
+                            .keyboardType(.decimalPad)
                             .padding(Layout.extraPadding)
                             .roundedBorder(cornerRadius: Layout.borderCornerRadius,
                                            lineColor: viewModel.valuePerUnit.isEmpty ? .withColorStudio(name: .red, shade: .shade60) : Color(.separator),
@@ -133,6 +135,7 @@ struct WooShippingCustomsItem: View {
                             .subheadlineStyle()
                         HStack {
                             TextField("0", text: $viewModel.weightPerUnit)
+                                .keyboardType(.decimalPad)
                                 .padding(Layout.extraPadding)
                             Text(weightUnit)
                                 .font(.subheadline)

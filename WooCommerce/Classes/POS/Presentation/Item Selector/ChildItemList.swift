@@ -37,12 +37,12 @@ struct ChildItemList: View {
             ScrollView {
                 VStack {
                     ItemList(state: state)
-                        .background(Color.posPrimaryBackground)
-                        .toolbar(.hidden, for: .navigationBar)
-                        .transition(.opacity)
                     GhostItemCardView()
                         .renderedIf(state.isLoading)
                 }
+                .background(Color.posPrimaryBackground)
+                .toolbar(.hidden, for: .navigationBar)
+                .transition(.opacity)
                 .frame(maxWidth: .infinity)
                 .padding(.bottom, floatingControlAreaSize.height)
                 .padding(.horizontal, Constants.itemListPadding)

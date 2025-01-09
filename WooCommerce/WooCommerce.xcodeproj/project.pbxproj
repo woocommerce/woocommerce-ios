@@ -345,6 +345,7 @@
 		026A23FF2A3173F100EFE4BD /* MockBlazeEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026A23FE2A3173F100EFE4BD /* MockBlazeEligibilityChecker.swift */; };
 		026A50282D2F6BD1002C42C2 /* InfiniteScrollTriggerDeterminable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026A50272D2F6BD1002C42C2 /* InfiniteScrollTriggerDeterminable.swift */; };
 		026A502C2D2F6CC3002C42C2 /* View+Measurements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026A502B2D2F6CC3002C42C2 /* View+Measurements.swift */; };
+		026A50302D2F80B5002C42C2 /* ThresholdInfiniteScrollTriggerDeterminerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026A502F2D2F80B5002C42C2 /* ThresholdInfiniteScrollTriggerDeterminerTests.swift */; };
 		026B3C57249A046E00F7823C /* TextFieldTextAlignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026B3C56249A046E00F7823C /* TextFieldTextAlignment.swift */; };
 		026CAF7E2AC2B76C002D23BB /* ConfigurableBundleProductViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026CAF7D2AC2B76C002D23BB /* ConfigurableBundleProductViewModel.swift */; };
 		026CAF802AC2B7FF002D23BB /* ConfigurableBundleProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026CAF7F2AC2B7FF002D23BB /* ConfigurableBundleProductView.swift */; };
@@ -3513,6 +3514,7 @@
 		026A23FE2A3173F100EFE4BD /* MockBlazeEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBlazeEligibilityChecker.swift; sourceTree = "<group>"; };
 		026A50272D2F6BD1002C42C2 /* InfiniteScrollTriggerDeterminable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfiniteScrollTriggerDeterminable.swift; sourceTree = "<group>"; };
 		026A502B2D2F6CC3002C42C2 /* View+Measurements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Measurements.swift"; sourceTree = "<group>"; };
+		026A502F2D2F80B5002C42C2 /* ThresholdInfiniteScrollTriggerDeterminerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdInfiniteScrollTriggerDeterminerTests.swift; sourceTree = "<group>"; };
 		026B3C56249A046E00F7823C /* TextFieldTextAlignment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldTextAlignment.swift; sourceTree = "<group>"; };
 		026CAF7D2AC2B76C002D23BB /* ConfigurableBundleProductViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableBundleProductViewModel.swift; sourceTree = "<group>"; };
 		026CAF7F2AC2B7FF002D23BB /* ConfigurableBundleProductView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableBundleProductView.swift; sourceTree = "<group>"; };
@@ -7116,6 +7118,22 @@
 			children = (
 				026A50272D2F6BD1002C42C2 /* InfiniteScrollTriggerDeterminable.swift */,
 				0290C2592D2C0C5C0090C55C /* InfiniteScrollView.swift */,
+			);
+			path = "Infinite Scroll";
+			sourceTree = "<group>";
+		};
+		026A502D2D2F8087002C42C2 /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+				026A502E2D2F8099002C42C2 /* Infinite Scroll */,
+			);
+			path = Presentation;
+			sourceTree = "<group>";
+		};
+		026A502E2D2F8099002C42C2 /* Infinite Scroll */ = {
+			isa = PBXGroup;
+			children = (
+				026A502F2D2F80B5002C42C2 /* ThresholdInfiniteScrollTriggerDeterminerTests.swift */,
 			);
 			path = "Infinite Scroll";
 			sourceTree = "<group>";
@@ -12766,6 +12784,7 @@
 				20ADE9442C6B361500C91265 /* Card Present Payments */,
 				DAD988C72C4A9D49009DE9E3 /* Models */,
 				02CD3BFC2C35D01600E575C4 /* Mocks */,
+				026A502D2D2F8087002C42C2 /* Presentation */,
 				20A130E92C5A26F70058022F /* Tools */,
 				DABF35252C11B412006AF826 /* ViewModels */,
 			);
@@ -16857,6 +16876,7 @@
 				4552085B25829091001CF873 /* AddAttributeViewModelTests.swift in Sources */,
 				02F1E6BD2A39805C00C3E4C7 /* ProductDescriptionAICoordinatorTests.swift in Sources */,
 				019130212CF5B0FF008C0C88 /* TapToPayEducationViewModelTests.swift in Sources */,
+				026A50302D2F80B5002C42C2 /* ThresholdInfiniteScrollTriggerDeterminerTests.swift in Sources */,
 				CC33238C29CDF67D00CA9709 /* ComponentSettingsViewModelTests.swift in Sources */,
 				86F5FFE42CA30D9200C767C4 /* CustomFieldsListViewModelTests.swift in Sources */,
 				0261F5A728D454CF00B7AC72 /* ProductSearchUICommandTests.swift in Sources */,

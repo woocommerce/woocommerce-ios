@@ -104,7 +104,7 @@ final class PointOfSaleItemsControllerTests {
         try #require(itemsViewState.containerState == .loading)
 
         // When
-        await sut.loadNextItems()
+        try await sut.loadNextItems()
 
         // Then
         #expect(itemsViewState.containerState == .empty)
@@ -118,7 +118,7 @@ final class PointOfSaleItemsControllerTests {
         try #require(itemsViewState.containerState == .loading)
 
         // When
-        await sut.loadNextItems()
+        try await sut.loadNextItems()
 
         // Then
         #expect(itemsViewState == ItemsViewState(containerState: .content,
@@ -134,7 +134,7 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadInitialItems()
 
         // When
-        await sut.loadNextItems()
+        try await sut.loadNextItems()
 
         // Then
         guard case .loaded(let items) = itemsViewState.itemsStack.root else {
@@ -151,7 +151,7 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadInitialItems()
 
         // When
-        await sut.loadNextItems()
+        try await sut.loadNextItems()
 
         // Then
         #expect(itemProvider.spyLastRequestedPageNumber == 2)
@@ -198,7 +198,7 @@ final class PointOfSaleItemsControllerTests {
                                                   buttonText: "Retry")
 
         // When
-        await sut.loadNextItems()
+        try await sut.loadNextItems()
 
         // Then
         #expect(itemsViewState.containerState == .error(expectedError))
@@ -210,12 +210,12 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadInitialItems()
 
         itemProvider.shouldThrowError = true
-        await sut.loadNextItems()
+        try await sut.loadNextItems()
         try #require(itemProvider.spyLastRequestedPageNumber == 2)
         itemProvider.spyLastRequestedPageNumber = 0
 
         // When
-        await sut.loadNextItems()
+        try await sut.loadNextItems()
 
         // Then
         #expect(itemProvider.spyLastRequestedPageNumber == 2)
@@ -240,7 +240,7 @@ final class PointOfSaleItemsControllerTests {
         itemProvider.shouldSimulateTwoPages = true
         await sut.loadInitialItems()
 
-        await sut.loadNextItems()
+        try await sut.loadNextItems()
         try #require(itemProvider.spyLastRequestedPageNumber == 2)
 
         // When
@@ -257,7 +257,7 @@ final class PointOfSaleItemsControllerTests {
 
         // When
         itemProvider.shouldReturnZeroItems = true
-        await sut.loadNextItems()
+        try await sut.loadNextItems()
 
         // Then
         #expect(itemsViewState == ItemsViewState(containerState: .content,
@@ -272,7 +272,7 @@ final class PointOfSaleItemsControllerTests {
 
         // When
         itemProvider.shouldReturnZeroItems = true
-        await sut.loadNextItems()
+        try await sut.loadNextItems()
 
         // Then
         try #require(itemProvider.spyLastRequestedPageNumber == 1)

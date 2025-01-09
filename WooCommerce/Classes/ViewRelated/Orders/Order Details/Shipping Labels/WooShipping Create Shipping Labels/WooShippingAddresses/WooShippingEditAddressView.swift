@@ -77,6 +77,15 @@ struct WooShippingEditAddressView: View {
                 }
             }
         }
+        .safeAreaInset(edge: .bottom) {
+            // TODO: Update the button text and action if there is missing information or changes to save
+            Button(Localization.close) {
+                dismiss()
+            }
+            .buttonStyle(PrimaryButtonStyle())
+            .padding()
+            .background(Color(uiColor: .systemBackground))
+        }
     }
 
     private struct AddressTextField: View {
@@ -290,6 +299,9 @@ private extension WooShippingEditAddressView {
         static let done = NSLocalizedString("wooShipping.createLabels.editAddress.done",
                                             value: "Done",
                                             comment: "Button to dismiss the keyboard")
+        static let close = NSLocalizedString("wooShipping.createLabels.editAddress.close",
+                                            value: "Close",
+                                            comment: "Button to close the address editing view in the Woo Shipping label creation flow")
     }
 }
 

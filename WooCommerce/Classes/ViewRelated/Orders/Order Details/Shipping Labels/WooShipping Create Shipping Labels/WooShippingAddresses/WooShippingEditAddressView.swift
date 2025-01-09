@@ -27,7 +27,9 @@ struct WooShippingEditAddressView: View {
                     AddressTextField(field: .company, text: $company, focused: $focusedField)
                 } else {
                     Button {
-                        showCompanyField = true
+                        withAnimation {
+                            showCompanyField = true
+                        }
                     } label: {
                         Text(Localization.addCompany)
                     }

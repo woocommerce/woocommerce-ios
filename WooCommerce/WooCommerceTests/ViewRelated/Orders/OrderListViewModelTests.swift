@@ -267,15 +267,9 @@ final class OrderListViewModelTests: XCTestCase {
 
         // When
         viewModel.activate()
-        let topBanner = await waitForAsync { promise in
-            viewModel.$topBanner.sink { topBanner in
-                promise(topBanner)
-            }
-            .store(in: &self.subscriptions)
-        }
 
         // Then
-        XCTAssert(topBanner == .none)
+        XCTAssert(viewModel.topBanner == .none)
     }
 
     func test_storing_error_shows_error_banner() async {
@@ -284,17 +278,10 @@ final class OrderListViewModelTests: XCTestCase {
         let viewModel = OrderListViewModel(siteID: siteID, filters: nil)
 
         // When
-        viewModel.dataLoadingError = expectedError
         viewModel.activate()
-        let topBanner = await waitForAsync { promise in
-            viewModel.$topBanner.sink { topBanner in
-                promise(topBanner)
-            }
-            .store(in: &self.subscriptions)
-        }
+        viewModel.dataLoadingError = expectedError
 
-        // Then
-        XCTAssert(topBanner == .error(expectedError))
+        XCTAssert(viewModel.topBanner == .error(expectedError))
     }
 
     // MARK: - Filters Applied

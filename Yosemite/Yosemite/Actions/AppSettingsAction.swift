@@ -93,14 +93,14 @@ public enum AppSettingsAction: Action {
     /// Inserts or updates the product filter history
     case upsertProductFilterHistory(filter: StoredProductSettings.Setting,
                                     onCompletion: (Error?) -> Void)
-    
+
     /// Retrieves all persisted product filters for a given site
     case loadProductFilterHistory(siteID: Int64, onCompletion: (Result<[StoredProductSettings.Setting], Error>) -> Void)
-    
+
     /// Removes a product filter from the persisted history
     case removeFromProductFilterHistory(filter: StoredProductSettings.Setting,
                                         onCompletion: (Error?) -> Void)
-    
+
     /// Clears all the product filter history for a given site
     case resetProductFilterHistory(siteID: Int64, onCompletion: (Error?) -> Void)
 

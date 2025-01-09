@@ -152,6 +152,14 @@ public class AppSettingsStore: Store {
                                    onCompletion: onCompletion)
         case .resetProductsSettings:
             resetProductsSettings()
+        case let .upsertProductFilterHistory(filter, onCompletion):
+            upsertProductFilterHistory(filter: filter, onCompletion: onCompletion)
+        case let .loadProductFilterHistory(siteID, onCompletion):
+            loadProductFilterHistory(siteID: siteID, onCompletion: onCompletion)
+        case let .removeFromProductFilterHistory(filter, onCompletion):
+            removeFromProductFilterHistory(filter: filter, onCompletion: onCompletion)
+        case let .resetProductFilterHistory(siteID, onCompletion):
+            resetProductFilterHistory(siteID: siteID, onCompletion: onCompletion)
         case .setOrderAddOnsFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
             setOrderAddOnsFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadOrderAddOnsSwitchState(onCompletion: let onCompletion):
@@ -861,6 +869,32 @@ private extension AppSettingsStore {
         } catch {
             DDLogError("⛔️ Deleting the product settings files failed. Error: \(error)")
         }
+    }
+}
+
+// MARK: - Product filter history
+//
+private extension AppSettingsStore {
+    /// Inserts or updates the product filter history
+    func upsertProductFilterHistory(filter: StoredProductSettings.Setting,
+                                    onCompletion: @escaping (Error?) -> Void) {
+        // TODO
+    }
+
+    /// Retrieves all persisted product filters for a given site
+    func loadProductFilterHistory(siteID: Int64, onCompletion: @escaping (Result<[StoredProductSettings.Setting], Error>) -> Void) {
+        // TODO
+    }
+
+    /// Removes a product filter from the persisted history
+    func removeFromProductFilterHistory(filter: StoredProductSettings.Setting,
+                                        onCompletion: @escaping (Error?) -> Void) {
+        // TODO
+    }
+
+    /// Clears all the product filter history for a given site
+    func resetProductFilterHistory(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
+        // TODO
     }
 }
 

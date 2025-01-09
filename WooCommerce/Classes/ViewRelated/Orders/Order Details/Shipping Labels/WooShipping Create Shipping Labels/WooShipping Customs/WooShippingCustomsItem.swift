@@ -9,10 +9,10 @@ struct WooShippingCustomsItem: View {
     @State private var isShowingCountries = false
     @State private var isShowingDescriptionInfoDialog = false
     @State private var isShowingOriginCountryInfoDialog = false
-
-
+    
+    
     @Environment(\.shippingWeightUnit) var weightUnit: String
-
+    
     var body: some View {
         CollapsibleView(isCollapsed: $isCollapsed,
                         shouldShowDividers: false,
@@ -25,9 +25,9 @@ struct WooShippingCustomsItem: View {
                     Spacer()
                     Image(systemName: "exclamationmark.circle")
                         .foregroundColor(.withColorStudio(name: .red, shade: .shade60))
-                        .renderedIf(viewModel.informationIsMissing)
+                        .renderedIf(viewModel.requiredInformationIsMissing)
                 }
-
+                
                 VStack(alignment: .leading, spacing: Layout.collapsibleViewBottomLabelVerticalSpacing) {
                     HStack {
                         Text(viewModel.description)
@@ -41,15 +41,16 @@ struct WooShippingCustomsItem: View {
                     HStack(spacing: Layout.collapsedUnitsHorizontalSpacing) {
                         Text(viewModel.originCountry.name)
                         Spacer()
-                        Text(viewModel.weightPerUnit)
+                        Text(viewModel.valuePerUnit)
+                            .renderedIf(viewModel.valuePerUnit.isNotEmpty)
+                        emptyValuePlaceholder
+                            .renderedIf(viewModel.valuePerUnit.isEmpty)
+                        Text("•")
+                            .renderedIf(viewModel.weightPerUnit.isNotEmpty || viewModel.valuePerUnit.isNotEmpty)
+                        Text("\(viewModel.weightPerUnit) \(weightUnit)")
                             .renderedIf(viewModel.weightPerUnit.isNotEmpty)
                         emptyValuePlaceholder
                             .renderedIf(viewModel.weightPerUnit.isEmpty)
-                        Text("•")
-                            .renderedIf(viewModel.weightPerUnit.isNotEmpty || viewModel.valuePerUnit.isNotEmpty)
-                        Text(viewModel.valuePerUnit)
-                        emptyValuePlaceholder
-                            .renderedIf(viewModel.valuePerUnit.isEmpty)
                     }
                 }.renderedIf(isCollapsed)
                     .foregroundColor(.primary)
@@ -69,7 +70,7 @@ struct WooShippingCustomsItem: View {
                     } label: {
                         Image(systemName: "info.circle")
                             .foregroundColor(Color(.wooCommercePurple(.shade60)))
-
+                        
                     }
                 }
                 .padding(.top, Layout.descriptionTopPadding)
@@ -78,13 +79,13 @@ struct WooShippingCustomsItem: View {
                     .roundedBorder(cornerRadius: Layout.borderCornerRadius,
                                    lineColor: viewModel.description.isEmpty ? .withColorStudio(name: .red, shade: .shade60) : Color(.separator),
                                    lineWidth: Layout.borderLineWidth)
-
-
+                
+                
                 Text(Localization.valueRequiredWarningText)
                     .foregroundColor(.withColorStudio(name: .red, shade: .shade60))
                     .footnoteStyle()
                     .renderedIf(viewModel.description.isEmpty)
-
+                
                 Text(Localization.HSTariffNumber)
                     .foregroundColor(.primary)
                     .subheadlineStyle()
@@ -94,12 +95,12 @@ struct WooShippingCustomsItem: View {
                     .keyboardType(.numberPad)
                     .padding(Layout.extraPadding)
                     .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderLineWidth)
-
+                
                 Text(Localization.tariffNumberRulesWarningText)
                     .foregroundColor(.withColorStudio(name: .red, shade: .shade60))
                     .footnoteStyle()
                     .renderedIf(!viewModel.isValidTariffNumber)
-
+                
                 Button {
                     isShowingHSTarrifInfoWebView = true
                 } label: {
@@ -111,7 +112,7 @@ struct WooShippingCustomsItem: View {
                     .footnoteStyle()
                     .padding(.bottom, Layout.collapsibleViewVerticalSpacing)
                 }
-
+                
                 HStack(alignment: .top) {
                     VStack(alignment: .leading) {
                         Text(Localization.valuePerUnitTitle)
@@ -128,7 +129,7 @@ struct WooShippingCustomsItem: View {
                             .footnoteStyle()
                             .renderedIf(viewModel.valuePerUnit.isEmpty)
                     }
-
+                    
                     VStack(alignment: .leading) {
                         Text(Localization.weightPerUnitTitle)
                             .foregroundColor(.primary)
@@ -152,7 +153,7 @@ struct WooShippingCustomsItem: View {
                     }
                 }
                 .padding(.bottom, Layout.collapsibleViewVerticalSpacing)
-
+                
                 HStack {
                     Text(Localization.originCountryTitle)
                         .foregroundColor(.primary)
@@ -162,11 +163,11 @@ struct WooShippingCustomsItem: View {
                     } label: {
                         Image(systemName: "info.circle")
                             .foregroundColor(Color(.wooCommercePurple(.shade60)))
-
+                        
                     }
                 }
-                    .subheadlineStyle()
-
+                .subheadlineStyle()
+                
                 Button {
                     isShowingCountries = true
                 } label: {
@@ -204,18 +205,18 @@ struct WooShippingCustomsItem: View {
                 .background(FullScreenCoverClearBackgroundView())
         }
     }
-
+    
     var emptyValuePlaceholder: some View {
         RoundedRectangle(cornerRadius: Layout.emptyValuePlaceholderCornerRadius)
-                            .fill(Color.withColorStudio(name: .red, shade: .shade0))
-                            .frame(width: Layout.emptyValuePlaceholderWidth, height: Layout.emptyValuePlaceholderHeight)
+            .fill(Color.withColorStudio(name: .red, shade: .shade0))
+            .frame(width: Layout.emptyValuePlaceholderWidth, height: Layout.emptyValuePlaceholderHeight)
     }
 }
 
 extension WooShippingCustomsItem {
     func productCardBorderColor() -> Color {
         if isCollapsed {
-            if viewModel.informationIsMissing {
+            if viewModel.requiredInformationIsMissing {
                 return .withColorStudio(name: .red, shade: .shade60)
             } else {
                 return Color(.separator)
@@ -229,34 +230,34 @@ extension WooShippingCustomsItem {
 extension WooShippingCustomsItem {
     enum Localization {
         static let descriptionTitle = NSLocalizedString("wooShipping.customsItems.description",
-                                              value: "Description",
-                                              comment: "Title for the customs items description text field for customs items")
+                                                        value: "Description",
+                                                        comment: "Title for the customs items description text field for customs items")
         static let HSTariffNumber = NSLocalizedString("wooShipping.customsItems.hsTariffNumber",
-                                                       value: "HS tariff number",
-                                                       comment: "Title for the HS Tariff Number text field for customs items")
+                                                      value: "HS tariff number",
+                                                      comment: "Title for the HS Tariff Number text field for customs items")
         static let HSTariffNumberPlaceholder = NSLocalizedString("wooShipping.customsItems.hsTariffNumber.placeholder",
-                                                       value: "Optional",
-                                                       comment: "Placeholder for the HS Tariff Number text field for customs items")
+                                                                 value: "Optional",
+                                                                 comment: "Placeholder for the HS Tariff Number text field for customs items")
         static let HSTariffNumberMoreInfo = NSLocalizedString("wooShipping.customsItems.hsTariffNumber.moreInfoText",
-                                                       value: "More info about HS tariff",
-                                                       comment: "Information text about the HS Tariff")
+                                                              value: "More info about HS tariff",
+                                                              comment: "Information text about the HS Tariff")
         static let valuePerUnitTitle = NSLocalizedString("wooShipping.customsItems.valuePerUnit",
-                                              value: "Value per unit",
-                                              comment: "Title for the customs items value per unit text field for customs items")
+                                                         value: "Value per unit",
+                                                         comment: "Title for the customs items value per unit text field for customs items")
         static let weightPerUnitTitle = NSLocalizedString("wooShipping.customsItems.weightPerUnit",
-                                              value: "Weight per unit",
-                                              comment: "Title for the customs items weight per unit text field for customs items")
+                                                          value: "Weight per unit",
+                                                          comment: "Title for the customs items weight per unit text field for customs items")
         static let valueRequiredWarningText = NSLocalizedString("wooShipping.customsItems.valueRequired",
-                                              value: "Value required",
-                                              comment: "Warning text when some required value is missing")
+                                                                value: "Value required",
+                                                                comment: "Warning text when some required value is missing")
         static let tariffNumberRulesWarningText = NSLocalizedString("wooShipping.customsItems.tariffNumberRulesWarning",
-                                              value: "The tariff number must be between 6 and 12 digits long",
-                                              comment: "Warning text when the shipping customs tariff number is not valid")
+                                                                    value: "The tariff number must be between 6 and 12 digits long",
+                                                                    comment: "Warning text when the shipping customs tariff number is not valid")
         static let originCountryTitle = NSLocalizedString("wooShipping.customsItems.originCountry",
-                                              value: "Origin Country",
-                                              comment: "Title for the origin country text field")
+                                                          value: "Origin Country",
+                                                          comment: "Title for the origin country text field")
     }
-
+    
     enum Layout {
         static let collapsibleViewTopPadding: CGFloat = 4.0
         static let collapsedUnitsHorizontalSpacing: CGFloat = 4.0
@@ -272,6 +273,6 @@ extension WooShippingCustomsItem {
         static let emptyValuePlaceholderCornerRadius: CGFloat = 2.0
         static let emptyValuePlaceholderWidth: CGFloat = 48.0
         static let emptyValuePlaceholderHeight: CGFloat = 16.0
-
+        
     }
 }

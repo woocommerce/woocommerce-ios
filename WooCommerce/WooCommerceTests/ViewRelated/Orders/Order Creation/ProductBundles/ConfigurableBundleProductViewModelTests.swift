@@ -342,7 +342,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 
         // The products are loaded async before the bundle item view models are set.
         waitUntil {
-            viewModel.bundleItemViewModels.isNotEmpty
+            viewModel.bundleItemViewModels.first != nil
         }
 
         // Then

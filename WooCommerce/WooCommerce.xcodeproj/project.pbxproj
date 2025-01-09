@@ -57,6 +57,7 @@
 		019630B82D0211F400219D80 /* TapToPayAwarenessMomentDeterminerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019630B72D0211F400219D80 /* TapToPayAwarenessMomentDeterminerTests.swift */; };
 		01ADC1362C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ADC1352C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift */; };
 		01ADC1382C9AB6050036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ADC1372C9AB6050036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift */; };
+		01B744E22D2FCA1400AEB3F4 /* PushNotificationBackgroundSynchronizerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B744E12D2FCA1300AEB3F4 /* PushNotificationBackgroundSynchronizerFactory.swift */; };
 		01BB6C072D09DC560094D55B /* CardPresentModalLocationPreAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BB6C062D09DC470094D55B /* CardPresentModalLocationPreAlert.swift */; };
 		01BB6C0A2D09E9630094D55B /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BB6C092D09E9630094D55B /* LocationService.swift */; };
 		01BD77442C58CED400147191 /* PointOfSaleCardPresentPaymentProcessingMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BD77432C58CED400147191 /* PointOfSaleCardPresentPaymentProcessingMessageView.swift */; };
@@ -3222,6 +3223,7 @@
 		019630B72D0211F400219D80 /* TapToPayAwarenessMomentDeterminerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayAwarenessMomentDeterminerTests.swift; sourceTree = "<group>"; };
 		01ADC1352C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift; sourceTree = "<group>"; };
 		01ADC1372C9AB6050036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift; sourceTree = "<group>"; };
+		01B744E12D2FCA1300AEB3F4 /* PushNotificationBackgroundSynchronizerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationBackgroundSynchronizerFactory.swift; sourceTree = "<group>"; };
 		01BB6C062D09DC470094D55B /* CardPresentModalLocationPreAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalLocationPreAlert.swift; sourceTree = "<group>"; };
 		01BB6C092D09E9630094D55B /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		01BD77432C58CED400147191 /* PointOfSaleCardPresentPaymentProcessingMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentProcessingMessageView.swift; sourceTree = "<group>"; };
@@ -10743,6 +10745,7 @@
 		B5BBD6DC21B1701F00E3207E /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
+				01B744E12D2FCA1300AEB3F4 /* PushNotificationBackgroundSynchronizerFactory.swift */,
 				B555530E21B57DE700449E71 /* ApplicationAdapter.swift */,
 				B56C721121B5B44000E5E85B /* PushNotificationsConfiguration.swift */,
 				B5BBD6DD21B1703600E3207E /* PushNotificationsManager.swift */,
@@ -16083,6 +16086,7 @@
 				02645D7D27BA027B0065DC68 /* Inbox.swift in Sources */,
 				D81D9228222E7F0800FFA585 /* OrderStatusListViewController.swift in Sources */,
 				CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */,
+				01B744E22D2FCA1400AEB3F4 /* PushNotificationBackgroundSynchronizerFactory.swift in Sources */,
 				CE4ECA582BC5B66A005F9386 /* WCAnalyticsStatsTotals+UI.swift in Sources */,
 				01FB19582C6E901800A44FF0 /* DynamicHStack.swift in Sources */,
 				AEB73C0C25CD734200A8454A /* AttributePickerViewModel.swift in Sources */,

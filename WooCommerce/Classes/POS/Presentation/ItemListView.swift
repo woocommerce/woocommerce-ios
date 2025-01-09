@@ -165,8 +165,8 @@ private extension ItemListView {
     @ViewBuilder
     func childListView(parentItem: POSItem) -> some View {
         switch parentItem {
-        case let .parentProduct(parentProduct):
-            ChildItemList(parentItem: parentItem, parentProduct: parentProduct)
+        case let .variableParentProduct(parentProduct):
+            ChildItemList(parentItem: parentItem, title: parentProduct.name)
         default:
             EmptyView()
         }

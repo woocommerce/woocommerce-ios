@@ -9,7 +9,6 @@ import class WooFoundation.CurrencySettings
 
 public enum PointOfSaleItemServiceError: Error, Equatable {
     case requestFailed
-    case invalidParentProduct(POSParentProduct)
     case unknown
 }
 
@@ -65,13 +64,7 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
         return .init(items: mapProductsToPOSItems(products: filteredProducts), hasMorePages: pagedProducts.hasMorePages)
     }
 
-    public func providePointOfSaleVariationItems(for parentProduct: POSParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
-        guard case let .variable(variableProduct) = parentProduct.type else {
-            assertionFailure(
-                "Unexpected parent product when loading variations: \(parentProduct)"
-            )
-            throw PointOfSaleItemServiceError.invalidParentProduct(parentProduct)
-        }
+    public func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
         let variations = try await variationRemote
             .loadVariationsForPointOfSale(for: siteID,
                                           parentProductID: parentProduct.productID,
@@ -80,7 +73,7 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
             items: variations.compactMap({ variation in
                 let variationName = ProductVariationFormatter().generateName(
                     for: variation,
-                    from: variableProduct.allAttributes
+                    from: parentProduct.allAttributes
                 )
                 return POSItem
                     .variation(.init(id: UUID(),
@@ -113,11 +106,13 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                                                            productID: product.productID,
                                                            price: product.price))
                 case .variable:
-                    return .parentProduct(POSParentProduct(id: UUID(),
-                                                           name: product.name,
-                                                           productImageSource: thumbnailSource,
-                                                           productID: product.productID,
-                                                           type: .variable(.init(allAttributes: product.attributesForVariations))))
+                    return .variableParentProduct(POSVariableParentProduct(
+                        id: UUID(),
+                        name: product.name,
+                        productImageSource: thumbnailSource,
+                        productID: product.productID,
+                        allAttributes: product.attributesForVariations
+                    ))
                 default:
                     return nil
             }

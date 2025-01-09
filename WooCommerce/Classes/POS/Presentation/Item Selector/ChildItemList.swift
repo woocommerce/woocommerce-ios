@@ -4,7 +4,7 @@ import Yosemite
 /// Displays a scrollable list of child items in POS.
 struct ChildItemList: View {
     private let parentItem: POSItem
-    private let parentProduct: POSParentProduct
+    private let title: String
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @Environment(\.dismiss) private var dismiss
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
@@ -15,9 +15,9 @@ struct ChildItemList: View {
             .loading([])
     }
 
-    init(parentItem: POSItem, parentProduct: POSParentProduct) {
+    init(parentItem: POSItem, title: String) {
         self.parentItem = parentItem
-        self.parentProduct = parentProduct
+        self.title = title
     }
 
     var body: some View {
@@ -30,7 +30,7 @@ struct ChildItemList: View {
                         .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
                         .foregroundColor(.primary)
                 }
-                POSHeaderTitleView(title: parentProduct.name)
+                POSHeaderTitleView(title: title)
                 Spacer()
             }
             .padding(.horizontal, Constants.itemListPadding)
@@ -72,14 +72,13 @@ private extension ChildItemList {
 #if DEBUG
 
 #Preview("Variable product child items") {
-    let parentProduct = POSParentProduct(
+    let parentProduct = POSVariableParentProduct(
         id: .init(),
         name: "Variable latte",
         productImageSource: nil,
-        productID: 1,
-        type: .variable(.init())
+        productID: 1
     )
-    let parentItem = POSItem.parentProduct(parentProduct)
+    let parentItem = POSItem.variableParentProduct(parentProduct)
     let itemsController = PointOfSalePreviewItemsController()
     itemsController.itemsViewState = .init(containerState: .content,
                                            itemsStack: ItemsStackState(
@@ -112,7 +111,7 @@ private extension ChildItemList {
         itemsController: itemsController,
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
-    return ChildItemList(parentItem: parentItem, parentProduct: parentProduct)
+    return ChildItemList(parentItem: parentItem, title: parentProduct.name)
         .environmentObject(posModel)
 }
 

@@ -46,7 +46,6 @@ struct TotalsView: View {
                                             cardReaderViewLayout.bottomPadding)
                                 .padding(.top, dynamicTypeSize.isAccessibilitySize ? nil : cardReaderViewLayout.topPadding)
                                 .transition(.opacity)
-                                .background(cardReaderViewLayout.backgroundColor)
                                 .accessibilityShowsLargeContentViewer()
                                 .layoutPriority(1)
                         }

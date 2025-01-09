@@ -61,7 +61,6 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     private let orderController: PointOfSaleOrderControllerProtocol
     private let analytics: Analytics
 
-    private var isCashPaymentInProgress: Bool = false
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
 
@@ -130,7 +129,6 @@ extension PointOfSaleAggregateModel {
     }
 
     func startNewCart() {
-        isCashPaymentInProgress = false
         removeAllItemsFromCart()
         orderController.clearOrder()
         setStateForEditing()
@@ -202,13 +200,38 @@ extension PointOfSaleAggregateModel {
     }
 
     func startCashPayment() {
-        isCashPaymentInProgress = true
-        paymentState = .cash(.collectingCash)
+        // Uncomment the lines below to prevent card payments from as soon as the button to open cash payment entry is tapped.
+//        Task { @MainActor [weak self] in
+//            guard let self else { return }
+//            try? await cardPresentPaymentService.cancelPayment()
+            paymentState = .cash(.collectingCash)
+//        }
     }
 
     func cancelCashPayment() {
-        isCashPaymentInProgress = false
-        paymentState = .card(.idle)
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            // Because we don't know the previous card payment state, we have to cancel then collect again.
+            // If the reader's not connected, we don't want to call collect because it'll start a connection attempt.
+            // This is bad.
+            // To improve this, if we keep allowing card payments while cash payment is showing, we should improve the
+            // paymentState representation to allow two payment states to be known. It would need to be a struct with something like:
+            /*
+
+             struct PointOfSalePaymentState {
+                 let activePaymentMethod: PointOfSaleActivePaymentMethod //(enum for just `.card`, `.cash` without associated type)
+                 let cardPaymentState: PointOfSaleCardPaymentState
+                 let cashPaymentState: PointOfSaleCashPaymentState
+             }
+
+             */
+            if case .connected = cardReaderConnectionStatus {
+                try? await cardPresentPaymentService.cancelPayment()
+                await collectPayment()
+            } else {
+                paymentState = .card(.idle)
+            }
+        }
     }
 
     private func cashPaymentSuccess() {
@@ -217,6 +240,9 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     func collectCashPayment() async throws {
+        // Currently, we allow card payments right up until the `Mark order complete` button is tapped.
+        // Delete the following row if we decide to cancel at the outset of cash payments.
+        try? await cardPresentPaymentService.cancelPayment()
         try await orderController.collectCashPayment()
         cashPaymentSuccess()
     }
@@ -232,9 +258,10 @@ extension PointOfSaleAggregateModel {
     }
 
     func cancelThenCollectPayment() {
-        cardPresentPaymentService.cancelPayment()
         Task { [weak self] in
-            await self?.collectPayment()
+            guard let self else { return }
+            try await cardPresentPaymentService.cancelPayment()
+            await collectPayment()
         }
     }
 
@@ -314,10 +341,6 @@ private extension PointOfSaleAggregateModel {
                 let newPaymentState = PointOfSalePaymentState(from: paymentEvent,
                                                               using: presentationStyleDeterminerDependencies)
 
-                if self.isCashPaymentInProgress, case .card = newPaymentState {
-                    cardPresentPaymentService.cancelPayment()
-                    return .cash(.paymentSuccess)
-                }
                 return newPaymentState
             }
             .assign(to: &$paymentState)

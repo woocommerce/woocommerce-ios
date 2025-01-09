@@ -83,7 +83,7 @@ final class FilterProductListViewModel: FilterListViewModel {
         self.productTypeFilterViewModel = ProductListFilter.productType(siteID: siteID).createViewModel(filters: filters)
         self.productCategoryFilterViewModel = ProductListFilter.productCategory(siteID: siteID).createViewModel(filters: filters)
         self.productFavoriteFilterViewModel = ProductListFilter.favoriteProducts.createViewModel(filters: filters)
-        self.shouldShowHistory = false
+        self.shouldShowHistory = featureFlagService.isFeatureFlagEnabled(.filterHistoryOnOrderAndProductLists)
         self.stores = stores
         self.siteID = siteID
 

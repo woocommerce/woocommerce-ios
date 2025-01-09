@@ -1,6 +1,7 @@
 import XCTest
 import Yosemite
 @testable import WooCommerce
+import Combine
 
 final class ConfigurableBundleProductViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
@@ -23,7 +24,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 
     // MARK: - Validation
 
-    func test_validation_is_failure_when_bundle_item_is_invalid() throws {
+    func test_validation_is_failure_when_bundle_item_is_invalid() async throws {
         // Given
         // The bundle size has to be 5.
         let product = Product.fake().copy(productID: 1, bundleMinSize: nil, bundleMaxSize: 5, bundledItems: [
@@ -38,10 +39,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
                                                            stores: self.stores,
                                                            onConfigure: { _ in })
 
-        // The products are loaded async before the bundle item view models are set.
-        waitUntil {
-            viewModel.bundleItemViewModels.isNotEmpty
-        }
+        await assertBundleItemsLoaded(on: viewModel)
 
         XCTAssertTrue(viewModel.isConfigureEnabled)
 
@@ -60,7 +58,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isConfigureEnabled)
     }
 
-    func test_validation_is_success_when_bundle_size_matches() throws {
+    func test_validation_is_success_when_bundle_size_matches() async throws {
         // Given
         // The bundle size has to be 5.
         let product = Product.fake().copy(productID: 1, bundleMinSize: 5, bundleMaxSize: 5, bundledItems: [
@@ -77,9 +75,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
                                                            onConfigure: { _ in })
 
         // The products are loaded async before the bundle item view models are set.
-        waitUntil {
-            viewModel.bundleItemViewModels.isNotEmpty
-        }
+        await assertBundleItemsLoaded(on: viewModel)
 
         XCTAssertFalse(viewModel.isConfigureEnabled)
         XCTAssertTrue(viewModel.validationState.isFailure)
@@ -97,7 +93,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.validationState.isSuccess)
     }
 
-    func test_validation_is_success_when_default_bundle_size_matches() throws {
+    func test_validation_is_success_when_default_bundle_size_matches() async throws {
         // Given
         // The bundle size has to be 5.
         let product = Product.fake().copy(productID: 1, bundleMinSize: 5, bundleMaxSize: 5, bundledItems: [
@@ -114,15 +110,13 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
                                                            onConfigure: { _ in })
 
         // The products are loaded async before the bundle item view models are set.
-        waitUntil {
-            viewModel.bundleItemViewModels.isNotEmpty
-        }
+        await assertBundleItemsLoaded(on: viewModel)
 
         XCTAssertTrue(viewModel.isConfigureEnabled)
         XCTAssertTrue(viewModel.validationState.isSuccess)
     }
 
-    func test_validation_is_failure_when_bundle_size_exceeds_max() throws {
+    func test_validation_is_failure_when_bundle_size_exceeds_max() async throws {
         // Given
         let product = Product.fake().copy(productID: 1, bundleMaxSize: 5, bundledItems: [
             // One optional item
@@ -138,9 +132,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
                                                            onConfigure: { _ in })
 
         // The products are loaded async before the bundle item view models are set.
-        waitUntil {
-            viewModel.bundleItemViewModels.isNotEmpty
-        }
+        await assertBundleItemsLoaded(on: viewModel)
 
         // Optional non-selected bundle item quantity is not counted for the bundle size.
         let optionalItem = try XCTUnwrap(viewModel.bundleItemViewModels[0])
@@ -157,7 +149,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.validationState.isFailure)
     }
 
-    func test_validation_is_failure_when_bundle_size_smaller_than_min() throws {
+    func test_validation_is_failure_when_bundle_size_smaller_than_min() async throws {
         // Given
         let product = Product.fake().copy(productID: 1, bundleMinSize: 5, bundledItems: [
             .fake().copy(productID: 2)
@@ -171,9 +163,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
                                                            onConfigure: { _ in })
 
         // The products are loaded async before the bundle item view models are set.
-        waitUntil {
-            viewModel.bundleItemViewModels.isNotEmpty
-        }
+        await assertBundleItemsLoaded(on: viewModel)
 
         let item = try XCTUnwrap(viewModel.bundleItemViewModels[0])
         item.quantity = 4
@@ -185,7 +175,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 
     // MARK: - `loadProductsErrorMessage`
 
-    func test_loadProductsErrorMessage_is_set_when_retrieveProducts_fails() throws {
+    func test_loadProductsErrorMessage_is_set_when_retrieveProducts_fails() async throws {
         // Given
         let product = Product.fake().copy(productID: 1, bundledItems: [
             .fake().copy(productID: 2)
@@ -199,12 +189,10 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
                                                            onConfigure: { _ in })
 
         // Then
-        waitUntil {
-            viewModel.loadProductsErrorMessage != nil
-        }
+        await assertProductsErrorMessage(on: viewModel, equals: "Cannot load the bundled products. Please try again.")
     }
 
-    func test_errorMessage_is_reset_when_retrieveProducts_fails_then_succeeds_after_retry() throws {
+    func test_errorMessage_is_reset_when_retrieveProducts_fails_then_succeeds_after_retry() async throws {
         // Given
         let product = Product.fake().copy(productID: 1, bundledItems: [
             .fake().copy(productID: 2)
@@ -216,20 +204,18 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
                                                            childItems: [],
                                                            stores: stores,
                                                            onConfigure: { _ in })
-        waitUntil {
-            viewModel.loadProductsErrorMessage != nil
-        }
+
+        await assertProductsErrorMessage(on: viewModel, equals: "Cannot load the bundled products. Please try again.")
+
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
         mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
         viewModel.retry()
 
         // Then
-        waitUntil {
-            viewModel.loadProductsErrorMessage == nil
-        }
+        await assertProductsErrorMessage(on: viewModel, equals: nil)
     }
 
-    func test_configure_invokes_onConfigure_if_configuration_is_changed() throws {
+    func test_configure_invokes_onConfigure_if_configuration_is_changed() async throws {
         // Given
         let product = Product.fake().copy(productID: 1, bundledItems: [
             .fake().copy(productID: 2)
@@ -238,17 +224,17 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
 
         var configurationsFromOnConfigure: [BundledProductConfiguration] = []
+        let expectation = expectation(description: "onConfigure closure invoked")
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
                                                            stores: self.stores,
                                                            onConfigure: { configurations in
             configurationsFromOnConfigure = configurations
+            expectation.fulfill()
         })
 
         // The products are loaded async before the bundle item view models are set.
-        waitUntil {
-            viewModel.bundleItemViewModels.isNotEmpty
-        }
+        await assertBundleItemsLoaded(on: viewModel)
 
         // When altering the bundle item
         let bundleItemViewModel = try XCTUnwrap(viewModel.bundleItemViewModels.first)
@@ -256,16 +242,14 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 
         viewModel.configure()
 
-        waitUntil {
-            configurationsFromOnConfigure.isNotEmpty
-        }
+        await fulfillment(of: [expectation])
 
         // Then
         let configurationFromOnConfigure = try XCTUnwrap(configurationsFromOnConfigure.first)
         XCTAssertEqual(configurationFromOnConfigure.quantity, 8)
     }
 
-    func test_configure_does_not_invoke_onConfigure_if_configuration_is_the_same_when_bundle_is_not_new() throws {
+    func test_configure_does_not_invoke_onConfigure_if_configuration_is_the_same_when_bundle_is_not_new() async throws {
         // Given
         let product = Product.fake().copy(productID: 1, bundledItems: [
             .fake().copy(productID: 2)
@@ -283,15 +267,13 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         })
 
         // The products are loaded async before the bundle item view models are set.
-        waitUntil {
-            viewModel.bundleItemViewModels.isNotEmpty
-        }
+        await assertBundleItemsLoaded(on: viewModel)
 
         // When
         viewModel.configure()
     }
 
-    func test_configure_invokes_onConfigure_if_configuration_is_the_same_when_bundle_is_new() throws {
+    func test_configure_invokes_onConfigure_if_configuration_is_the_same_when_bundle_is_new() async throws {
         // Given
         let product = Product.fake().copy(productID: 1, bundledItems: [
             .fake().copy(productID: 2, minQuantity: 2, maxQuantity: 8, defaultQuantity: 6)
@@ -310,9 +292,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         })
 
         // The products are loaded async before the bundle item view models are set.
-        waitUntil {
-            viewModel.bundleItemViewModels.isNotEmpty
-        }
+        await assertBundleItemsLoaded(on: viewModel)
 
         // When
         viewModel.configure()
@@ -322,7 +302,8 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         XCTAssertEqual(configurationFromOnConfigure.quantity, 6)
     }
 
-    func test_bundleItemViewModels_have_correct_quantity_when_parent_order_item_quantity_is_more_than_one() throws {
+    // Slowest
+    func test_bundleItemViewModels_have_correct_quantity_when_parent_order_item_quantity_is_more_than_one() async throws {
         // Given
         let product = Product.fake().copy(productID: 1, bundledItems: [
             .fake().copy(productID: 2)
@@ -341,9 +322,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
                                                            onConfigure: { _ in })
 
         // The products are loaded async before the bundle item view models are set.
-        waitUntil {
-            viewModel.bundleItemViewModels.first != nil
-        }
+        await assertBundleItemsLoaded(on: viewModel)
 
         // Then
         let bundleItemViewModel = try XCTUnwrap(viewModel.bundleItemViewModels.first)
@@ -373,6 +352,36 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 }
 
 private extension ConfigurableBundleProductViewModelTests {
+    func assertBundleItemsLoaded(on viewModel: ConfigurableBundleProductViewModel) async {
+        let expectation = expectation(description: "Bundle items are set")
+
+        var subscriptions = Set<AnyCancellable>()
+        viewModel.$bundleItemViewModels
+            .sink { items in
+                if items.isNotEmpty {
+                    expectation.fulfill()
+                }
+            }
+            .store(in: &subscriptions)
+
+        await fulfillment(of: [expectation], timeout: 1.0)
+    }
+
+    func assertProductsErrorMessage(on viewModel: ConfigurableBundleProductViewModel, equals: String?) async {
+        let expectation = expectation(description: "Error message is set")
+
+        var subscriptions = Set<AnyCancellable>()
+        viewModel.$loadProductsErrorMessage
+            .sink {
+                if $0 == equals {
+                    expectation.fulfill()
+                }
+            }
+            .store(in: &subscriptions)
+
+        await fulfillment(of: [expectation], timeout: 1.0)
+    }
+
     func mockProductsRetrieval(result: Result<(products: [Product], hasNextPage: Bool), Error>) {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {

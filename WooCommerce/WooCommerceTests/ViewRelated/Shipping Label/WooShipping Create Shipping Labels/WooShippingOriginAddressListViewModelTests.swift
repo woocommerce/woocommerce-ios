@@ -56,4 +56,22 @@ final class WooShippingOriginAddressListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedAddressID, addressToSelect.id)
     }
 
+    func test_select_calls_onSelect_closure() {
+        // Given
+        let addressToSelect = WooShippingOriginAddress.fake().copy(id: "1")
+        let addresses = [addressToSelect, WooShippingOriginAddress.fake().copy(id: "2")]
+        let viewModel = WooShippingOriginAddressListViewModel(addresses: addresses, selectedAddressID: nil)
+
+        // When
+        let selectedAddress = waitFor { promise in
+            viewModel.onSelect = { address in
+                promise(address)
+            }
+            viewModel.select(addressToSelect)
+        }
+
+        // Then
+        XCTAssertEqual(selectedAddress, addressToSelect)
+    }
+
 }

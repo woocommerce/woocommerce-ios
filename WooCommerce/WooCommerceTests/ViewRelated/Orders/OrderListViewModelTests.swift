@@ -265,7 +265,7 @@ final class OrderListViewModelTests: XCTestCase {
 
     // MARK: - Banner visibility
 
-    func test_banner_should_not_be_shown_when_there_is_no_error() async {
+    func test_banner_should_not_be_shown_when_there_is_no_error() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID,
                                            stores: stores,
@@ -287,10 +287,11 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssert(viewModel.topBanner == .none)
     }
 
-    func test_storing_error_shows_error_banner() async {
+    func test_storing_error_shows_error_banner() {
         // Given
         let expectedError = MockError()
         let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
                                            storageManager: storageManager,
                                            filters: nil)
 

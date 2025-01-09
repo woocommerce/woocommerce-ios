@@ -66,6 +66,12 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.productsSettings)
     }()
 
+    /// URL to the plist file containing the persisted product filter history
+    private lazy var productFilterHistoryURL: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.productFilterHistory)
+    }()
+
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
@@ -878,7 +884,26 @@ private extension AppSettingsStore {
     /// Inserts or updates the product filter history
     func upsertProductFilterHistory(filter: StoredProductSettings.Setting,
                                     onCompletion: @escaping (Error?) -> Void) {
-        // TODO
+        var existingHistory: [Int64: [StoredProductSettings.Setting]] = [:]
+        if let storedHistory: ProductFilterHistory = try? fileStorage.data(for: productFilterHistoryURL) {
+            existingHistory = storedHistory.history
+        }
+
+        var siteHistory = existingHistory[filter.siteID] ?? []
+        if siteHistory.contains(filter) {
+            siteHistory = [filter] + siteHistory.filter { $0 != filter } // move the filter to the top
+        } else {
+            siteHistory.insert(filter, at: 0) // add to the top of the list
+        }
+        existingHistory[filter.siteID] = siteHistory
+
+        let newStoredHistory = ProductFilterHistory(history: existingHistory)
+        do {
+            try fileStorage.write(newStoredHistory, to: productFilterHistoryURL)
+            onCompletion(nil)
+        } catch {
+            onCompletion(AppSettingsStoreErrors.writeProductFilterHistory)
+        }
     }
 
     /// Retrieves all persisted product filters for a given site
@@ -1233,6 +1258,7 @@ enum AppSettingsStoreErrors: Error {
     case writeOrdersSettings
     case writeOrderFilterHistory
     case writeProductsSettings
+    case writeProductFilterHistory
     case noEligibilityErrorInfo
 }
 
@@ -1250,4 +1276,5 @@ private enum Constants {
     static let ordersSettings = "orders-settings.plist"
     static let productsSettings = "products-settings.plist"
     static let orderFilterHistory = "order-filter-history.plist"
+    static let productFilterHistory = "product-filter-history.plist"
 }

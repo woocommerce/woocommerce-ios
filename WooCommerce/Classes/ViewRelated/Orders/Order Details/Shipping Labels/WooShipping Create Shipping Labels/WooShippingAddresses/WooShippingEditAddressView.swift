@@ -39,12 +39,16 @@ struct WooShippingEditAddressView: View {
                     .font(.subheadline)
                     .bold()
                 }
-                AddressTextField(field: .country, text: $country, focused: $focusedField)
-                    .padding(.top, Constants.extraPadding)
+                AddressSelection(field: .country, selected: country) {
+                    // TODO: Handle country selection
+                }
+                .padding(.top, Constants.extraPadding)
                 AddressTextField(field: .address, text: $address, focused: $focusedField)
                 AddressTextField(field: .city, text: $city, focused: $focusedField)
                 AdaptiveStack(horizontalAlignment: .leading, verticalAlignment: .top, spacing: Constants.innerSpacing) {
-                    AddressTextField(field: .state, text: $state, focused: $focusedField)
+                    AddressSelection(field: .state, selected: state) {
+                        // TODO: Handle state selection
+                    }
                     AddressTextField(field: .postalCode, text: $postalCode, focused: $focusedField)
                 }
                 .padding(.bottom, Constants.extraPadding)
@@ -91,8 +95,48 @@ struct WooShippingEditAddressView: View {
                     .focused($focused, equals: field)
                     .padding()
                     .roundedBorder(cornerRadius: Constants.cornerRadius,
-                                   lineColor: focused == field ? Color(.accent) : Color(.separator),
-                                   lineWidth: focused == field ? 2 : 1)
+                                   lineColor: focused == field ? Color(.accent) : Constants.defaultBorderColor,
+                                   lineWidth: focused == field ? 2 : Constants.defaultBorderWidth)
+            }
+        }
+    }
+
+    private struct AddressSelection: View {
+        /// Which address field to display.
+        let field: AddressField
+
+        /// The text to display for the selection.
+        let selected: String
+
+        /// The action to perform when the button is tapped.
+        var action: () -> Void
+
+        var body: some View {
+            VStack(spacing: Constants.innerSpacing) {
+                HStack {
+                    Text(field.title)
+                    if field.required {
+                        Text("*")
+                    }
+                    Spacer()
+                }
+                .font(.subheadline)
+                .foregroundStyle(Color(.text))
+                Button {
+                    action()
+                } label: {
+                    HStack {
+                        Text(selected)
+                            .bodyStyle()
+                        Spacer()
+                        Image(systemName: "chevron.up.chevron.down")
+                            .foregroundStyle(Color(.accent))
+                    }
+                    .padding()
+                    .roundedBorder(cornerRadius: Constants.cornerRadius,
+                                   lineColor: Constants.defaultBorderColor,
+                                   lineWidth: Constants.defaultBorderWidth)
+                }
             }
         }
     }
@@ -141,6 +185,8 @@ private extension WooShippingEditAddressView {
         static let innerSpacing: CGFloat = 8
         static let extraPadding: CGFloat = 24
         static let cornerRadius: CGFloat = 8
+        static let defaultBorderColor: Color = Color(.separator)
+        static let defaultBorderWidth: CGFloat = 1
     }
 
     enum Localization {

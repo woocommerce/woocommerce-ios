@@ -74,12 +74,7 @@ struct WooShippingEditAddressView: View {
         @Binding var text: String
 
         /// The focused state of the field.
-        var focused: FocusState<AddressField?>.Binding
-
-        /// Whether the field is focused.
-        private var isFocused: Bool {
-            focused.wrappedValue == field
-        }
+        @FocusState.Binding var focused: AddressField?
 
         var body: some View {
             VStack(spacing: Constants.innerSpacing) {
@@ -93,11 +88,11 @@ struct WooShippingEditAddressView: View {
                 .font(.subheadline)
                 .foregroundStyle(Color(.text))
                 TextField(field.title, text: $text, prompt: Text(field.required ? "" : Localization.optional))
-                    .focused(focused, equals: field)
+                    .focused($focused, equals: field)
                     .padding()
                     .roundedBorder(cornerRadius: Constants.cornerRadius,
-                                   lineColor: isFocused ? Color(.accent) : Color(.separator),
-                                   lineWidth: isFocused ? 2 : 1)
+                                   lineColor: focused == field ? Color(.accent) : Color(.separator),
+                                   lineWidth: focused == field ? 2 : 1)
             }
         }
     }

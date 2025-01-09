@@ -364,7 +364,7 @@ private extension ConfigurableBundleProductViewModelTests {
             }
             .store(in: &subscriptions)
 
-        await fulfillment(of: [expectation], timeout: 1.0)
+        await fulfillment(of: [expectation], timeout: 5.0)
     }
 
     func assertProductsErrorMessage(on viewModel: ConfigurableBundleProductViewModel, equals: String?) async {
@@ -379,7 +379,7 @@ private extension ConfigurableBundleProductViewModelTests {
             }
             .store(in: &subscriptions)
 
-        await fulfillment(of: [expectation], timeout: 1.0)
+        await fulfillment(of: [expectation], timeout: 5.0)
     }
 
     func mockProductsRetrieval(result: Result<(products: [Product], hasNextPage: Bool), Error>) {

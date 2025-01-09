@@ -40,6 +40,8 @@ struct ChildItemList: View {
                         .background(Color.posPrimaryBackground)
                         .toolbar(.hidden, for: .navigationBar)
                         .transition(.opacity)
+                    GhostItemCardView()
+                        .renderedIf(state.isLoading)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.bottom, floatingControlAreaSize.height)

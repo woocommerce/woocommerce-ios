@@ -78,12 +78,24 @@ struct WooShippingEditAddressView: View {
             }
         }
         .safeAreaInset(edge: .bottom) {
-            // TODO: Update the button text and action if there is missing information or changes to save
-            Button(Localization.close) {
-                dismiss()
+            VStack(spacing: .zero) {
+                Divider()
+                VStack(spacing: Constants.verticalSpacing) {
+                    // TODO: Update the text and color if address is unverified
+                    HStack {
+                        Image(systemName: "checkmark.circle")
+                        Text(Localization.verified)
+                    }
+                    .font(.subheadline)
+                    .foregroundStyle(Color(.withColorStudio(.green, shade: .shade60)))
+                    // TODO: Update the button text and action if there is missing information or changes to save
+                    Button(Localization.close) {
+                        dismiss()
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                }
+                .padding()
             }
-            .buttonStyle(PrimaryButtonStyle())
-            .padding()
             .background(Color(uiColor: .systemBackground))
         }
     }
@@ -302,6 +314,9 @@ private extension WooShippingEditAddressView {
         static let close = NSLocalizedString("wooShipping.createLabels.editAddress.close",
                                             value: "Close",
                                             comment: "Button to close the address editing view in the Woo Shipping label creation flow")
+        static let verified = NSLocalizedString("wooShipping.createLabels.editAddress.verified",
+                                            value: "Address verified",
+                                            comment: "Text indicating that the address has been verified in the Woo Shipping label creation flow")
     }
 }
 

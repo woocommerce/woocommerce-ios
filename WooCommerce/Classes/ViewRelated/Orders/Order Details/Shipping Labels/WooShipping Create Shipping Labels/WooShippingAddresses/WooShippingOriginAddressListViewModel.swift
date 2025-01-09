@@ -5,6 +5,10 @@ final class WooShippingOriginAddressListViewModel: ObservableObject {
     let addresses: [WooShippingOriginAddress]
     @Published private(set) var selectedAddressID: String?
 
+    /// Origin address to edit.
+    /// Setting this property will navigate to the address edit screen.
+    @Published var addressToEdit: WooShippingOriginAddress?
+
     /// Closure (set externally) called when an address is selected.
     var onSelect: ((WooShippingOriginAddress) -> Void)?
 

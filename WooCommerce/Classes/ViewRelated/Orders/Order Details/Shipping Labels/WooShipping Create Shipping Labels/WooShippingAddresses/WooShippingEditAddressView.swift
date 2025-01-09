@@ -19,6 +19,8 @@ struct WooShippingEditAddressView: View {
     /// Tracks the focused address field.
     @FocusState private var focusedField: AddressField?
 
+    @Environment(\.dismiss) private var dismiss
+
     var body: some View {
         ScrollView {
             VStack(spacing: Constants.verticalSpacing) {
@@ -54,6 +56,13 @@ struct WooShippingEditAddressView: View {
                     .tint(Color(.accent))
             }
             .padding()
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(Localization.cancel) {
+                        dismiss()
+                    }
+                }
+            }
         }
     }
 
@@ -176,6 +185,9 @@ private extension WooShippingEditAddressView {
         static let defaultAddress = NSLocalizedString("wooShipping.createLabels.editAddress.defaultAddress",
                                                     value: "Save as default origin address",
                                                     comment: "Label for the default address toggle in the Woo Shipping label creation flow")
+        static let cancel = NSLocalizedString("wooShipping.createLabels.editAddress.cancel",
+                                            value: "Cancel",
+                                            comment: "Button to cancel editing an address in the Woo Shipping label creation flow")
     }
 }
 

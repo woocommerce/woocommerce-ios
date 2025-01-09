@@ -158,6 +158,11 @@ final class WordPressMediaLibraryImagePickerCoordinatorTests: XCTestCase {
                 self.sourceViewController.presentedViewController != nil
             }
             let mediaPicker = try XCTUnwrap(self.sourceViewController.presentedViewController as? WordPressMediaLibraryPickerViewController)
+
+            self.waitUntil {
+                return mediaPicker.presentationController?.delegate != nil
+            }
+
             mediaPicker.presentationController?.delegate?.presentationControllerDidDismiss?(.init(presentedViewController: .init(), presenting: nil))
         }
 

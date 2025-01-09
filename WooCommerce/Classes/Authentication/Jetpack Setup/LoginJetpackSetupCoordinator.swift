@@ -90,7 +90,7 @@ private extension LoginJetpackSetupCoordinator {
 
             // open the store picker if the matched site doesn't have Woo so the user can install it.
             guard matchedSite.isWooCommerceActive else {
-                self.storePickerCoordinator?.start()
+                showNoWooErrorScreen(for: matchedSite)
                 return
             }
 
@@ -115,6 +115,19 @@ private extension LoginJetpackSetupCoordinator {
             self.authentication.presentSupport(from: viewController, screen: .storePicker)
         }))
         viewController.present(alert, animated: true)
+    }
+
+    func showNoWooErrorScreen(for site: Site) {
+        let viewModel = NoWooErrorViewModel(
+            site: site,
+            showsConnectedStores: false, // avoid looping from store picker > no woo > store picker
+            onSetupCompletion: { [weak self] siteID in
+                guard let self = self else { return }
+                self.navigationController.popViewController(animated: true)
+                self.storePickerCoordinator?.didSelectStore(with: siteID, onCompletion: {})
+        })
+        let noWooUI = ULErrorViewController(viewModel: viewModel)
+        navigationController.show(noWooUI, sender: nil)
     }
 }
 

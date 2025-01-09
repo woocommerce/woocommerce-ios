@@ -23,70 +23,70 @@ steps:
   #################
   # Create Prototype Build
   #################
-  # - label: ":hammer_and_wrench: Prototype Build"
-  #   command: .buildkite/commands/prototype-build.sh
-  #   plugins: [$CI_TOOLKIT]
-  #   if: build.pull_request.id != null
-  #   notify:
-  #     - github_commit_status:
-  #         context: Prototype Build
+  - label: ":hammer_and_wrench: Prototype Build"
+    command: .buildkite/commands/prototype-build.sh
+    plugins: [$CI_TOOLKIT]
+    if: build.pull_request.id != null
+    notify:
+      - github_commit_status:
+          context: Prototype Build
 
   #################
   # Run Unit Tests
   #################
-  # - label: ":microscope: Unit Tests"
-  #   command: .buildkite/commands/run-unit-tests.sh
-  #   depends_on: build
-  #   plugins: [$CI_TOOLKIT]
-  #   artifact_paths:
-  #     - fastlane/test_output/*
-  #   notify:
-  #     - github_commit_status:
-  #         context: Unit Tests
+  - label: ":microscope: Unit Tests"
+    command: .buildkite/commands/run-unit-tests.sh
+    depends_on: build
+    plugins: [$CI_TOOLKIT]
+    artifact_paths:
+      - fastlane/test_output/*
+    notify:
+      - github_commit_status:
+          context: Unit Tests
 
   #################
   # Linters
   #################
-  # - group: Linters
-  #   steps:
-  #     - label: ":radioactive_sign: Danger - PR Check"
-  #       command: danger
-  #       key: danger
-  #       if: build.pull_request.id != null
-  #       retry:
-  #         manual:
-  #           permit_on_passed: true
-  #       agents:
-  #         queue: linter
-  #       notify:
-  #         - github_commit_status:
-  #             context: Danger - PR Check
+  - group: Linters
+    steps:
+      - label: ":radioactive_sign: Danger - PR Check"
+        command: danger
+        key: danger
+        if: build.pull_request.id != null
+        retry:
+          manual:
+            permit_on_passed: true
+        agents:
+          queue: linter
+        notify:
+          - github_commit_status:
+              context: Danger - PR Check
 
-  #     - label: ":swift: SwiftLint"
-  #       command: swiftlint
-  #       notify:
-  #         - github_commit_status:
-  #             context: SwiftLint
-  #       agents:
-  #         queue: linter
+      - label: ":swift: SwiftLint"
+        command: swiftlint
+        notify:
+          - github_commit_status:
+              context: SwiftLint
+        agents:
+          queue: linter
 
-  #     - label: 🧹 Lint Translations
-  #       command: gplint /workdir/WooCommerce/Resources/AppStoreStrings.pot
-  #       plugins:
-  #         - docker#v3.8.0:
-  #             image: public.ecr.aws/automattic/glotpress-validator:1.0.0
-  #       agents:
-  #         queue: default
-  #       notify:
-  #         - github_commit_status:
-  #             context: Lint Translations
+      - label: 🧹 Lint Translations
+        command: gplint /workdir/WooCommerce/Resources/AppStoreStrings.pot
+        plugins:
+          - docker#v3.8.0:
+              image: public.ecr.aws/automattic/glotpress-validator:1.0.0
+        agents:
+          queue: default
+        notify:
+          - github_commit_status:
+              context: Lint Translations
 
-  #     - label: ":sleuth_or_spy: Lint Localized Strings Format"
-  #       command: .buildkite/commands/lint-localized-strings-format.sh
-  #       plugins: [$CI_TOOLKIT]
-  #       notify:
-  #         - github_commit_status:
-  #             context: Lint Localized Strings Format
+      - label: ":sleuth_or_spy: Lint Localized Strings Format"
+        command: .buildkite/commands/lint-localized-strings-format.sh
+        plugins: [$CI_TOOLKIT]
+        notify:
+          - github_commit_status:
+              context: Lint Localized Strings Format
 
   #################
   # UI Tests
@@ -95,8 +95,7 @@ steps:
     command: .buildkite/commands/run-ui-tests.sh UITests 'iPhone 16'
     depends_on: build
     # Only run on `trunk` and `release/*` -- See p91TBi-cBM-p2#comment-13736
-    # if: build.branch == 'trunk' || build.branch =~ /^release\//
-    if: build.branch == 'jostnes/update-screenobject-and-timeouts'
+    if: build.branch == 'trunk' || build.branch =~ /^release\//
     plugins: [$CI_TOOLKIT]
     artifact_paths:
       - fastlane/test_output/*
@@ -108,8 +107,7 @@ steps:
     command: .buildkite/commands/run-ui-tests.sh UITests "iPad (10th generation)"
     depends_on: build
     # Only run on `trunk` and `release/*` -- See p91TBi-cBM-p2#comment-13736
-    # if: build.branch == 'trunk' || build.branch =~ /^release\//
-    if: build.branch == 'jostnes/update-screenobject-and-timeouts'
+    if: build.branch == 'trunk' || build.branch =~ /^release\//
     plugins: [$CI_TOOLKIT]
     artifact_paths:
       - fastlane/test_output/*

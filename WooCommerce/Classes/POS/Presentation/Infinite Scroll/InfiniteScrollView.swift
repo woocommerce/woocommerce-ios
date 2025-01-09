@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// A scroll view that supports infinite scrolling by triggering a load more action when the user scrolls near the bottom
+/// A scroll view that supports infinite scrolling by triggering a load more action when the user scrolls near the bottom.
 struct InfiniteScrollView<Content: View, LoadingView: View>: View {
     @State private var scrollViewHeight: CGFloat = 0
 

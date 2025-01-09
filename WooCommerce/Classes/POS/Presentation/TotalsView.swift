@@ -215,7 +215,7 @@ private extension TotalsView {
 
     @ViewBuilder private var paymentView: some View {
         switch posModel.paymentState {
-        case .card(let cardPaymentState):
+        case .card:
             switch posModel.cardReaderConnectionStatus {
             case .connected, .disconnecting, .cancellingConnection:
                 if let inlinePaymentMessage = posModel.cardPresentPaymentInlineMessage {

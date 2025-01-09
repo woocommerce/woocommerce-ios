@@ -198,7 +198,7 @@ final class PointOfSaleItemsControllerTests {
                                                   buttonText: "Retry")
 
         // When
-        try await sut.loadNextItems()
+        try? await sut.loadNextItems()
 
         // Then
         #expect(itemsViewState.containerState == .error(expectedError))
@@ -210,12 +210,12 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadInitialItems()
 
         itemProvider.shouldThrowError = true
-        try await sut.loadNextItems()
+        try? await sut.loadNextItems()
         try #require(itemProvider.spyLastRequestedPageNumber == 2)
         itemProvider.spyLastRequestedPageNumber = 0
 
         // When
-        try await sut.loadNextItems()
+        try? await sut.loadNextItems()
 
         // Then
         #expect(itemProvider.spyLastRequestedPageNumber == 2)

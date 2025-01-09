@@ -26,6 +26,7 @@ struct PointOfSaleDashboardView: View {
             case .content:
                 contentView
                     .accessibilitySortPriority(2)
+                    .ignoresSafeArea(edges: .bottom)
             }
 
             if case .card = posModel.paymentState {

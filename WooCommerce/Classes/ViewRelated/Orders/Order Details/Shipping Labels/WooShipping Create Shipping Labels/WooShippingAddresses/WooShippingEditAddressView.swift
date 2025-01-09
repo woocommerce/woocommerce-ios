@@ -88,15 +88,14 @@ struct WooShippingEditAddressView: View {
             VStack(spacing: .zero) {
                 Divider()
                 VStack(spacing: Constants.verticalSpacing) {
-                    // TODO: Update the text and color if address is unverified
                     HStack {
-                        Image(systemName: "checkmark.circle")
-                        Text(Localization.verified)
+                        Image(systemName: viewModel.status == .verified ? "checkmark.circle" : "exclamationmark.circle")
+                        Text(Localization.Status.label(for: viewModel.status))
                     }
                     .font(.subheadline)
-                    .foregroundStyle(Color(.withColorStudio(.green, shade: .shade60)))
-                    // TODO: Update the button text and action if there is missing information or changes to save
-                    Button(Localization.close) {
+                    .foregroundStyle(viewModel.status == .verified ? Color(.withColorStudio(.green, shade: .shade60)) : Color(.withColorStudio(.red, shade: .shade60)))
+                    Button(Localization.Button.label(for: viewModel.status)) {
+                        // TODO: Update the action if there is missing information or changes to save
                         dismiss()
                     }
                     .buttonStyle(PrimaryButtonStyle())
@@ -318,12 +317,50 @@ private extension WooShippingEditAddressView {
         static let done = NSLocalizedString("wooShipping.createLabels.editAddress.done",
                                             value: "Done",
                                             comment: "Button to dismiss the keyboard")
-        static let close = NSLocalizedString("wooShipping.createLabels.editAddress.close",
-                                            value: "Close",
-                                            comment: "Button to close the address editing view in the Woo Shipping label creation flow")
-        static let verified = NSLocalizedString("wooShipping.createLabels.editAddress.verified",
-                                            value: "Address verified",
-                                            comment: "Text indicating that the address has been verified in the Woo Shipping label creation flow")
+
+        enum Status {
+            static func label(for status: WooShippingAddressStatus) -> String {
+                switch status {
+                case .verified:
+                    return verified
+                case .unverified:
+                    return unverified
+                case .missingInformation:
+                    return missingInformation
+                }
+            }
+            static let verified = NSLocalizedString("wooShipping.createLabels.editAddress.verified",
+                                                    value: "Address verified",
+                                                    comment: "Text indicating that the address has been verified in the Woo Shipping label creation flow")
+            static let unverified = NSLocalizedString("wooShipping.createLabels.editAddress.unverified",
+                                                      value: "Unverified address",
+                                                      comment: "Text indicating that the address is unverified in the Woo Shipping label creation flow")
+            static let missingInformation = NSLocalizedString("wooShipping.createLabels.editAddress.missingInformation",
+                                                              value: "Missing information",
+                                                              comment: "Text indicating that the address is missing information in the Woo Shipping label creation flow")
+        }
+
+        enum Button {
+            static func label(for status: WooShippingAddressStatus) -> String {
+                switch status {
+                case .verified:
+                    return close
+                case .unverified:
+                    return validateAddress
+                case .missingInformation:
+                    return addMissingInformation
+                }
+            }
+            static let close = NSLocalizedString("wooShipping.createLabels.editAddress.close",
+                                                 value: "Close",
+                                                 comment: "Button to close the address editing view in the Woo Shipping label creation flow")
+            static let validateAddress = NSLocalizedString("wooShipping.createLabels.editAddress.validateAddress",
+                                                           value: "Validate & Save",
+                                                           comment: "Button label indicating the address needs to be validated and saved for a Woo Shipping label")
+            static let addMissingInformation = NSLocalizedString("wooShipping.createLabels.editAddress.addMissingInformation",
+                                                                 value: "Add Missing Information",
+                                                                 comment: "Button label indicating that the address is missing information for a Woo Shipping label")
+        }
     }
 }
 

@@ -252,25 +252,25 @@ private extension TotalsView {
 }
 
 private extension TotalsView {
-    struct CardReaderViewLayout {
+    struct PaymentViewLayout {
         let backgroundColor: Color
         let topPadding: CGFloat?
         let bottomPadding: CGFloat?
         let sidePadding: CGFloat = 8
 
-        static let primary = CardReaderViewLayout(
+        static let primary = PaymentViewLayout(
             backgroundColor: .clear,
             topPadding: nil,
             bottomPadding: 8
         )
 
-        static let outlined = CardReaderViewLayout(
+        static let outlined = PaymentViewLayout(
             backgroundColor: Color(.quaternarySystemFill),
             topPadding: 40,
             bottomPadding: 40
         )
 
-        static let topAligned = CardReaderViewLayout(
+        static let topAligned = PaymentViewLayout(
             backgroundColor: .clear,
             topPadding: 96,
             bottomPadding: 96
@@ -294,7 +294,7 @@ private extension TotalsView {
         }
     }
 
-    private var cardReaderViewLayout: CardReaderViewLayout {
+    private var cardReaderViewLayout: PaymentViewLayout {
         guard isShowingCardReaderStatus else {
             return .primary
         }

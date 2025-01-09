@@ -130,7 +130,7 @@ final class FilterProductListViewModelTests: XCTestCase {
 
         // When
         let retrievedFilters = try await viewModel.retrieveFilterHistory()
-        
+
         // Then
         XCTAssertEqual(retrievedFilters, [expectedFilters])
     }

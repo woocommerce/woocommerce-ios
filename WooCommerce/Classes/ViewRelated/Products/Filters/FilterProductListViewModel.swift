@@ -41,8 +41,13 @@ final class FilterProductListViewModel: FilterListViewModel {
             self.numberOfActiveFilters = numberOfActiveFilters
         }
 
+        /// Generated string to be displayed in the filter history.
         var readableString: String {
-            let elements: [String?] = [stockStatus?.rawValue, productStatus?.rawValue, promotableProductType?.productType.rawValue, productCategory?.slug]
+            let elements: [String?] = [stockStatus?.description,
+                                       productStatus?.description,
+                                       promotableProductType?.productType.description,
+                                       productCategory?.description,
+                                       favoriteProduct?.description]
             return elements.compactMap { $0 }.joined(separator: ", ")
         }
 

@@ -182,7 +182,7 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadInitialItems()
 
         // When
-        await sut.loadNextItems()
+        try await sut.loadNextItems()
 
         // Then
         guard case .loaded(let items, let hasMoreItems) = itemsViewState.itemsStack.root else {

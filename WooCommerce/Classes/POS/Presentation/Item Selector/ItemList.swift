@@ -7,10 +7,6 @@ import struct Yosemite.POSVariableParentProduct
 struct ItemList: View {
     let state: ItemListState
 
-    init(state: ItemListState) {
-        self.state = state
-    }
-
     var body: some View {
         ForEach(state.items) { item in
             ItemListRow(item: item)

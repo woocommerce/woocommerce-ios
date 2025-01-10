@@ -93,9 +93,7 @@ struct WooShippingEditAddressView: View {
                         Text(Localization.Status.label(for: viewModel.status))
                     }
                     .font(.subheadline)
-                    .foregroundStyle(viewModel.status == .verified
-                                     ? Color(.withColorStudio(.green, shade: .shade60))
-                                     : Color(.withColorStudio(.red, shade: .shade60)))
+                    .foregroundStyle(viewModel.status == .verified ? Constants.green : Constants.red)
                     Button(Localization.Button.label(for: viewModel.status)) {
                         if viewModel.status == .verified {
                             dismiss()
@@ -278,6 +276,10 @@ private extension WooShippingEditAddressView {
         static let cornerRadius: CGFloat = 8
         static let defaultBorderColor: Color = Color(.separator)
         static let defaultBorderWidth: CGFloat = 1
+        static let green = Color(UIColor(light: .withColorStudio(.green, shade: .shade60),
+                                         dark: .withColorStudio(.green, shade: .shade40)))
+        static let red = Color(UIColor(light: .withColorStudio(.red, shade: .shade60),
+                                       dark: .withColorStudio(.red, shade: .shade40)))
     }
 
     enum Localization {

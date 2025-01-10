@@ -9,7 +9,7 @@ struct ItemList<HeaderView: View>: View {
         case parent(POSItem)
     }
 
-    @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
+    @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @EnvironmentObject var posModel: PointOfSaleAggregateModel
     let state: ItemListState
     private let node: BaseItem

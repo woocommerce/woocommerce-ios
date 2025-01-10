@@ -7,10 +7,9 @@ import class Yosemite.Store
 
 protocol PointOfSaleItemsControllerProtocol {
     var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { get }
-    func loadInitialItems() async
-    func loadNextItems() async throws
+    func loadInitialItems(base: ItemListBaseItem) async
+    func loadNextItems(base: ItemListBaseItem) async throws
     func reload() async
-    func loadInitialChildItems(for parent: POSItem) async
 }
 
 class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
@@ -30,7 +29,17 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     }
 
     @MainActor
-    func loadInitialItems() async {
+    func loadInitialItems(base: ItemListBaseItem) async {
+        switch base {
+        case .root:
+            await loadInitialRootItems()
+        case .parent(let parent):
+            await loadInitialChildItems(for: parent)
+        }
+    }
+
+    @MainActor
+    private func loadInitialRootItems() async {
         itemsViewState = .init(containerState: .loading, itemsStack: ItemsStackState(root: .loading([]),
                                                                                      itemStates: [:]))
         do {
@@ -46,7 +55,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     }
 
     @MainActor
-    func loadNextItems() async throws {
+    func loadNextItems(base: ItemListBaseItem) async throws {
         guard paginationTracker.hasNextPage else {
             return
         }
@@ -84,7 +93,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     }
 
     @MainActor
-    func loadInitialChildItems(for parent: POSItem) async {
+    private func loadInitialChildItems(for parent: POSItem) async {
         switch parent {
         case let .variableParentProduct(parentProduct):
             updateState(for: parent, to: .loading([]))

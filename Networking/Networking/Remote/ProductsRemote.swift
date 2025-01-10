@@ -639,7 +639,6 @@ public extension ProductsRemote {
         static let after = "after"
         static let extendedInfo = "extended_info"
         static let downloadable = "downloadable"
-        static let virtual = "virtual"
     }
 
     private enum ParameterValues {

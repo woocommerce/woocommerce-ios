@@ -2,19 +2,7 @@ import SwiftUI
 
 /// View for editing an address in the Woo Shipping label creation flow.
 struct WooShippingEditAddressView: View {
-    @State var name: String
-    @State var company: String
-    @State var country: String
-    @State var address: String
-    @State var city: String
-    @State var state: String
-    @State var postalCode: String
-    @State var email: String
-    @State var phone: String
-    @State var saveAsDefault: Bool
-
-    /// Whether to show the company field by default.
-    @State var showCompanyField: Bool
+    @ObservedObject var viewModel: WooShippingEditAddressViewModel
 
     /// Tracks the focused address field.
     @FocusState private var focusedField: AddressField?
@@ -24,13 +12,13 @@ struct WooShippingEditAddressView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: Constants.verticalSpacing) {
-                AddressTextField(field: .name, text: $name, focused: $focusedField)
-                if showCompanyField {
-                    AddressTextField(field: .company, text: $company, focused: $focusedField)
+                AddressTextField(field: .name, text: $viewModel.name, focused: $focusedField)
+                if viewModel.showCompanyField {
+                    AddressTextField(field: .company, text: $viewModel.company, focused: $focusedField)
                 } else {
                     Button {
                         withAnimation {
-                            showCompanyField = true
+                            viewModel.showCompanyField = true
                         }
                     } label: {
                         Text(Localization.addCompany)
@@ -39,23 +27,23 @@ struct WooShippingEditAddressView: View {
                     .font(.subheadline)
                     .bold()
                 }
-                AddressSelection(field: .country, selected: country) {
+                AddressSelection(field: .country, selected: viewModel.country) {
                     // TODO: Handle country selection
                 }
                 .padding(.top, Constants.extraPadding)
-                AddressTextField(field: .address, text: $address, focused: $focusedField)
-                AddressTextField(field: .city, text: $city, focused: $focusedField)
+                AddressTextField(field: .address, text: $viewModel.address, focused: $focusedField)
+                AddressTextField(field: .city, text: $viewModel.city, focused: $focusedField)
                 AdaptiveStack(horizontalAlignment: .leading, verticalAlignment: .top, spacing: Constants.innerSpacing) {
-                    AddressSelection(field: .state, selected: state) {
+                    AddressSelection(field: .state, selected: viewModel.state) {
                         // TODO: Handle state selection
                     }
-                    AddressTextField(field: .postalCode, text: $postalCode, focused: $focusedField)
+                    AddressTextField(field: .postalCode, text: $viewModel.postalCode, focused: $focusedField)
                 }
                 .padding(.bottom, Constants.extraPadding)
-                AddressTextField(field: .email, text: $email, focused: $focusedField)
-                AddressTextField(field: .phone, text: $phone, focused: $focusedField)
+                AddressTextField(field: .email, text: $viewModel.email, focused: $focusedField)
+                AddressTextField(field: .phone, text: $viewModel.phone, focused: $focusedField)
                     .padding(.bottom, Constants.extraPadding)
-                Toggle(Localization.defaultAddress, isOn: $saveAsDefault)
+                Toggle(Localization.defaultAddress, isOn: $viewModel.saveAsDefault)
                     .font(.subheadline)
                     .tint(Color(.accent))
             }
@@ -203,7 +191,7 @@ private extension WooShippingEditAddressView {
     func focusNextField() {
         switch focusedField {
         case .name:
-            focusedField = showCompanyField ? .company : .address
+            focusedField = viewModel.showCompanyField ? .company : .address
         case .company:
             focusedField = .address
         case .address:
@@ -229,7 +217,7 @@ private extension WooShippingEditAddressView {
         case .company:
             focusedField = .name
         case .address:
-            focusedField = showCompanyField ? .company : .name
+            focusedField = viewModel.showCompanyField ? .company : .name
         case .city:
             focusedField = .address
         case .postalCode:
@@ -306,29 +294,29 @@ private extension WooShippingEditAddressView {
 }
 
 #Preview("Without Company") {
-    WooShippingEditAddressView(name: "HEADQUARTERS",
-                               company: "",
-                               country: "UNITED STATES",
-                               address: "15 ALGONKIN ST",
-                               city: "TICONDEROGA",
-                               state: "NY",
-                               postalCode: "12883-1487",
-                               email: "",
-                               phone: "",
-                               saveAsDefault: true,
-                               showCompanyField: false)
+    WooShippingEditAddressView(viewModel: .init(name: "HEADQUARTERS",
+                                                company: "",
+                                                country: "UNITED STATES",
+                                                address: "15 ALGONKIN ST",
+                                                city: "TICONDEROGA",
+                                                state: "NY",
+                                                postalCode: "12883-1487",
+                                                email: "",
+                                                phone: "",
+                                                saveAsDefault: true,
+                                                showCompanyField: false))
 }
 
 #Preview("With Company") {
-    WooShippingEditAddressView(name: "HEADQUARTERS",
-                               company: "COMPANY",
-                               country: "UNITED STATES",
-                               address: "15 ALGONKIN ST",
-                               city: "TICONDEROGA",
-                               state: "NY",
-                               postalCode: "12883-1487",
-                               email: "",
-                               phone: "",
-                               saveAsDefault: false,
-                               showCompanyField: true)
+    WooShippingEditAddressView(viewModel: .init(name: "HEADQUARTERS",
+                                                company: "COMPANY",
+                                                country: "UNITED STATES",
+                                                address: "15 ALGONKIN ST",
+                                                city: "TICONDEROGA",
+                                                state: "NY",
+                                                postalCode: "12883-1487",
+                                                email: "",
+                                                phone: "",
+                                                saveAsDefault: false,
+                                                showCompanyField: true))
 }

@@ -49,17 +49,17 @@ struct WooShippingOriginAddressListView: View {
                 // TODO: Handle edits to the address fields
                 // TODO: Confirm what to display for `address` field
                 NavigationStack {
-                    WooShippingEditAddressView(name: address.fullName ?? "",
-                                               company: address.company,
-                                               country: address.country,
-                                               address: address.address1,
-                                               city: address.city,
-                                               state: address.state,
-                                               postalCode: address.postcode,
-                                               email: address.email,
-                                               phone: address.phone,
-                                               saveAsDefault: address.defaultAddress,
-                                               showCompanyField: address.company.isNotEmpty)
+                    WooShippingEditAddressView(viewModel: .init(name: address.fullName ?? "",
+                                                                company: address.company,
+                                                                country: address.country,
+                                                                address: address.address1,
+                                                                city: address.city,
+                                                                state: address.state,
+                                                                postalCode: address.postcode,
+                                                                email: address.email,
+                                                                phone: address.phone,
+                                                                saveAsDefault: address.defaultAddress,
+                                                                showCompanyField: address.company.isNotEmpty))
                     .navigationTitle(Localization.editOrigin)
                     .navigationBarTitleDisplayMode(.inline)
                 }

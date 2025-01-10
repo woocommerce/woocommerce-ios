@@ -337,13 +337,13 @@ private extension WooShippingEditAddressView {
             }
             static let verified = NSLocalizedString("wooShipping.createLabels.editAddress.verified",
                                                     value: "Address verified",
-                                                    comment: "Text indicating that the address has been verified in the Woo Shipping label creation flow")
+                                                    comment: "Label when the address has been verified in the Woo Shipping label creation flow")
             static let unverified = NSLocalizedString("wooShipping.createLabels.editAddress.unverified",
                                                       value: "Unverified address",
-                                                      comment: "Text indicating that the address is unverified in the Woo Shipping label creation flow")
+                                                      comment: "Label when the address is unverified in the Woo Shipping label creation flow")
             static let missingInformation = NSLocalizedString("wooShipping.createLabels.editAddress.missingInformation",
                                                               value: "Missing information",
-                                                              comment: "Text indicating that the address is missing information in the Woo Shipping label creation flow")
+                                                              comment: "Label when the address is missing information in the Woo Shipping label creation flow")
         }
 
         enum Button {
@@ -365,7 +365,7 @@ private extension WooShippingEditAddressView {
                                                            comment: "Button label indicating the address needs to be validated and saved for a Woo Shipping label")
             static let addMissingInformation = NSLocalizedString("wooShipping.createLabels.editAddress.addMissingInformation",
                                                                  value: "Add Missing Information",
-                                                                 comment: "Button label indicating that the address is missing information for a Woo Shipping label")
+                                                                 comment: "Button label indicating the address is missing information for a Woo Shipping label")
         }
     }
 }

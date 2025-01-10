@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-26 13:54:03+0000 */
+/* Translation-Revision-Date: 2024-12-27 09:54:07+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -251,10 +251,6 @@ which should be translated separately and considered part of this sentence. */
 /* Number of items in packages in Shipping Labels in plural form. Reads like - 10 items */
 "- %1$d items" = "- %1$d 個項目";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 1
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 1 */
-"1" = "1";
-
 /* Navigation bar title for selecting multiple products when one product has been selected.
    Title of the action button at the bottom of the Select Products screen when one product is selected */
 "1 Product Selected" = "已選取　1 件商品";
@@ -271,19 +267,11 @@ which should be translated separately and considered part of this sentence. */
 /* Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment */
 "1. Create an order" = "1. 建立訂單";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 2
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
-"2" = "2";
-
 /* Disclaimer regarding some of the features related to shipping. */
 "2. Only available in the U.S. – an additional extension will be required for other countries." = "2. 僅適用於美國；其他國家\/地區需要額外擴充功能才能使用。";
 
 /* Step 2 of the 'How it works' list, instructing the merchant to how to select Tap to Pay payments */
 "2. Tap “Collect Payment” and choose “Tap to Pay on iPhone”." = "2. 點選「收取款項」並選擇「iPhone 卡緊收」。";
-
-/* Settings > Manage Card Reader > Connect > Help hint number 3
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
-"3" = "3";
 
 /* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
 "3. Present your iPhone to the customer." = "3. 向顧客展示你的 iPhone。";
@@ -985,9 +973,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button on the store onboarding launched store screen. */
 "Back to My Store" = "返回我的商店";
 
-/* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
-"Back to Order" = "返回訂單";
-
 /* Text for the button to dismiss the store picker error screen */
 "Back to sites" = "返回網站";
 
@@ -1559,7 +1544,6 @@ which should be translated separately and considered part of this sentence. */
 "Clear selection" = "清除選取項目";
 
 /* Accessibility label for the close button
-   Button to dismiss modal overlay. Presented to users after refunding a payment fails
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
    Navigation bar action to close the gift card code scanner.
@@ -2269,7 +2253,6 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when finding a reader to connect to fails
    Button to dismiss the first created product screen
    Button to dismiss the Jetpack benefits screen.
-   Button to dismiss. Presented to users after collecting a payment fails
    Button to dismiss. Presented to users when updating the card reader software fails
    Dismiss button in inbox note row.
    Dismiss button in store picker
@@ -5989,9 +5972,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
 "Return to My Store" = "返回我的商店";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
-"Return to Payments" = "返回「付款」";
-
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "包裹無法投遞時退還寄件者";
 
@@ -6381,6 +6361,9 @@ which should be translated separately and considered part of this sentence. */
 /* Header text on Add New Custom Package screen in Shipping Label flow
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "設定你要運送產品的包裹。 我們會儲存該設定，以供未來的訂單使用。";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
+"SetUpTapToPayPaymentPrompt.skipButton.title" = "先不要";
 
 /* Settings button in the hub menu
    Settings navigation title
@@ -7519,9 +7502,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Tab selector title that shows the statistics for this year */
 "This Year" = "今年";
-
-/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "此應用程式需要權限才能透過藍牙連接讀卡機。若你希望允許此權限，請變更隱私設定。";
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "此應用程式要求你在伺服器上安裝 WooCommerce 3.5，否則無法正常運作。請儘快更新以繼續使用此應用程式。";
@@ -9989,8 +9969,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "掃瞄讀卡機";
 
+/* A title for CTA to present native location permission alert */
+"cardPresentPayment.locationPreAlert.continueButton" = "繼續";
+
+/* A notice at the bottom explaining that location services can be changed in the Settings app later */
+"cardPresentPayment.locationPreAlert.settingsNotice" = "你稍後可以在「設定」應用程式中變更此選項。";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"cardPresentPayment.locationPreAlert.subtitle" = "需要位置服務權限，才可減少詐騙行為、防範爭議，並確保付款流程安全。";
+
+/* A title explaining why location services are needed to make a payment */
+"cardPresentPayment.locationPreAlert.title" = "在下一個畫面啟用位置服務，即可允許付款。";
+
+/* Dismisses the location alert */
+"cardPresentPayment.locationRequired.dismiss" = "關閉";
+
+/* Opens iOS's Device Settings for the app */
+"cardPresentPayment.locationRequired.openSettings" = "開啟裝置設定";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"cardPresentPayment.locationRequired.subtitle" = "需要位置服務權限，才可減少詐騙行為、防範爭議，並確保付款流程安全。";
+
+/* A title explaining the requirement of location services for making a payment */
+"cardPresentPayment.locationRequired.title" = "在裝置設定中啟用位置服務，即可允許付款。";
+
+/* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.backToOrder" = "返回訂單";
+
+/* Button to dismiss modal overlay. Presented to users after refunding a payment fails */
+"cardPresentPaymentsModal.error.close" = "關閉";
+
+/* Button to dismiss. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.dismiss" = "關閉";
+
+/* Button to email receipts. Presented to users after a payment processing has failed */
+"cardPresentPaymentsModal.error.emailReceipt" = "電子郵件收據";
+
 /* Message informing the user that a receipt has been sent to their email address. %1$@ is the email address */
 "cardPresentPaymentsModal.error.receiptMessage" = "收據已傳送至 %1$@";
+
+/* Button to dismiss modal overlay and try another payment method. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.tryAnotherPaymentMethod" = "嘗試其他付款方式";
 
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "cardPresentPaymentsModal.success.emailReceipt" = "電子郵件收據";
@@ -10496,6 +10515,27 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "裝置上的媒體檔案";
 
+/* Button to dismiss the Edit Store List view */
+"editStoreListView.cancelButton" = "取消";
+
+/* Footer of the Current Store section of the the Edit Store List view */
+"editStoreListView.currentStoreFooter" = "請在隱藏此商店前，先切換至其他商店";
+
+/* Header of the Current Store section of the the Edit Store List view */
+"editStoreListView.currentStoreHeader" = "目前的商店";
+
+/* Footer of the Other Stores section on the Edit Store List view */
+"editStoreListView.otherStoresFooter" = "商店挑選器會排除未選取的商店";
+
+/* Header of the Other Stores section on the Edit Store List view */
+"editStoreListView.otherStoresHeader" = "其他商店";
+
+/* Button to save changes in the Edit Store List view */
+"editStoreListView.saveButton" = "儲存";
+
+/* Title of the Edit Store List view */
+"editStoreListView.title" = "可檢視的商店";
+
 /* Title for button to view the feedback survey about adding shipping to an order */
 "editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "歡迎將想法告訴我們";
 
@@ -10634,6 +10674,132 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "檢視所有行銷活動";
+
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"hardware.cardReader.cardReaderServiceError.bluetoothDenied" = "此應用程式需要權限，才可存取藍牙來連結至你的讀卡機。 請在系統的「設定」應用程式 (位於 Woo 區段) 中授予權限。";
+
+/* Error message when the Apple built-in reader account is deactivated. */
+"hardware.cardReader.underlyingError.appleBuiltInReaderAccountDeactivated" = "連結的 Apple ID 帳號已停用。";
+
+/* Error message when Bluetooth is already paired with another device. */
+"hardware.cardReader.underlyingError.bluetoothAlreadyPairedWithAnotherDevice" = "藍牙讀卡機已和其他裝置配對。 請先重設讀卡機配對，才可連結至此裝置。";
+
+/* Error message when the Bluetooth connection has an invalid location ID parameter. */
+"hardware.cardReader.underlyingError.bluetoothConnectionInvalidLocationIdParameter" = "藍牙連結的位置 ID 無效。";
+
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"hardware.cardReader.underlyingError.bluetoothDenied" = "此應用程式需要權限，才可存取藍牙來連結至你的讀卡機。 請在系統的「設定」應用程式 (位於 Woo 區段) 中授予權限。";
+
+/* Error message when the Bluetooth peer removed pairing information. */
+"hardware.cardReader.underlyingError.bluetoothPeerRemovedPairingInformation" = "讀卡機已移除此裝置的配對資訊。 嘗試在 iOS 設定中遺忘此讀卡機。";
+
+/* Error message when Bluetooth reconnect has started. */
+"hardware.cardReader.underlyingError.bluetoothReconnectStarted" = "藍牙讀卡機已中斷連結，我們正在嘗試重新連結。";
+
+/* Error message when an operation cannot be canceled because it is already completed. */
+"hardware.cardReader.underlyingError.cancelFailedAlreadyCompleted" = "此操作無法取消，因為已經完成。";
+
+/* Error message when card swipe functionality is unavailable. */
+"hardware.cardReader.underlyingError.cardSwipeNotAvailable" = "刷卡功能無法使用。";
+
+/* Error message when the command is not allowed. */
+"hardware.cardReader.underlyingError.commandNotAllowed" = "請聯絡支援團隊：系統不允許此命令由作業系統執行。";
+
+/* Error message when the command requires cardholder consent. */
+"hardware.cardReader.underlyingError.commandRequiresCardholderConsent" = "持卡人須先同意，此操作才可成功進行。";
+
+/* Error message when the connection token provider finishes with an error. */
+"hardware.cardReader.underlyingError.connectionTokenProviderCompletedWithError" = "擷取連結權杖時發生錯誤。";
+
+/* Error message when the connection token provider operation times out. */
+"hardware.cardReader.underlyingError.connectionTokenProviderTimedOut" = "連結權杖要求已逾時。";
+
+/* Error message when a feature is unavailable. */
+"hardware.cardReader.underlyingError.featureNotAvailable" = "請聯絡支援團隊：此功能無法使用。";
+
+/* Error message when forwarding a live mode payment in test mode is prohibited. */
+"hardware.cardReader.underlyingError.forwardingLiveModePaymentInTestMode" = "禁止在測試模式中轉移即時模式付款。";
+
+/* Error message when forwarding a test mode payment in live mode is prohibited. */
+"hardware.cardReader.underlyingError.forwardingTestModePaymentInLiveMode" = "禁止在即時模式中轉移測試模式付款。";
+
+/* Error message when Interac is not supported in offline mode. */
+"hardware.cardReader.underlyingError.interacNotSupportedOffline" = "Interac 不支援離線模式。";
+
+/* Error message when an internal network error occurs. */
+"hardware.cardReader.underlyingError.internalNetworkError" = "發生不明網路錯誤。";
+
+/* Error message when the internet connection operation timed out. */
+"hardware.cardReader.underlyingError.internetConnectTimeOut" = "連結讀卡機的網際網路連結逾時。 請確保裝置與讀卡機連上相同的 Wifi 網路，而你的讀卡機已成功連結至 Wifi 網路。";
+
+/* Error message when the client secret is invalid. */
+"hardware.cardReader.underlyingError.invalidClientSecret" = "請聯絡支援團隊：用戶端密碼無效。";
+
+/* Error message when the discovery configuration is invalid. */
+"hardware.cardReader.underlyingError.invalidDiscoveryConfiguration" = "請聯絡支援團隊：探索設定無效。";
+
+/* Error message when the location ID parameter is invalid. */
+"hardware.cardReader.underlyingError.invalidLocationIdParameter" = "位置 ID 無效。";
+
+/* Error message when the reader for update is invalid. */
+"hardware.cardReader.underlyingError.invalidReaderForUpdate" = "更新的讀卡機無效。";
+
+/* Error message when the refund parameters are invalid. */
+"hardware.cardReader.underlyingError.invalidRefundParameters" = "請聯絡支援團隊：退款參數無效。";
+
+/* Error message when a required parameter is invalid. */
+"hardware.cardReader.underlyingError.invalidRequiredParameter" = "請聯絡支援團隊：要求的參數無效。";
+
+/* Error message when EMV data is missing. */
+"hardware.cardReader.underlyingError.missingEMVData" = "讀卡機無法讀取所出示付款方式的資料。 如果你重覆遇到此問題，代表讀卡機可能已故障，屆時請聯絡支援團隊。";
+
+/* Error message when the payment intent is missing. */
+"hardware.cardReader.underlyingError.nilPaymentIntent" = "請聯絡支援團隊：付款意向遺失。";
+
+/* Error message when the refund payment method is missing. */
+"hardware.cardReader.underlyingError.nilRefundPaymentMethod" = "請聯絡支援團隊：退款的付款方式遺失。";
+
+/* Error message when the setup intent is missing. */
+"hardware.cardReader.underlyingError.nilSetupIntent" = "請聯絡支援團隊：設定意向遺失。";
+
+/* Error message when the card is expired and offline mode is active. */
+"hardware.cardReader.underlyingError.offlineAndCardExpired" = "離線時確認款項，辨識出信用卡已到期。";
+
+/* Error message when there is a mismatch between offline collect and confirm. */
+"hardware.cardReader.underlyingError.offlineCollectAndConfirmMismatch" = "請確保網路連結在款項收取與確認時不中斷。";
+
+/* Error message when a test card is used in live mode while offline. */
+"hardware.cardReader.underlyingError.offlineTestCardInLivemode" = "離線時於即時模式中使用測試信用卡。";
+
+/* Error message when the offline transaction was declined. */
+"hardware.cardReader.underlyingError.offlineTransactionDeclined" = "在離線時確認付款，卡片驗證失敗。";
+
+/* Error message when online PIN is not supported in offline mode. */
+"hardware.cardReader.underlyingError.onlinePinNotSupportedOffline" = "線上 PIN 碼不支援離線模式。 請使用其他卡片重試付款。";
+
+/* Error message when the reader connection configuration is invalid. */
+"hardware.cardReader.underlyingError.readerConnectionConfigurationInvalid" = "讀卡機連結設定無效。";
+
+/* Error message when the reader is missing encryption keys. */
+"hardware.cardReader.underlyingError.readerMissingEncryptionKeys" = "此讀卡機遺失收取款項所需的加密金鑰，且已中斷連結並重新啟動。 重新連結至讀卡機，即可嘗試重新安裝金鑰。 如果持續發生錯誤，請聯絡支援團隊。";
+
+/* Error message when the reader software update fails due to an expired update. */
+"hardware.cardReader.underlyingError.readerSoftwareUpdateFailedExpiredUpdate" = "無法更新讀卡機軟體，因為此更新已過期。 請中斷連結，再重新連結至讀卡機，即可擷取新的更新。";
+
+/* Error message when the reader tipping parameter is invalid. */
+"hardware.cardReader.underlyingError.readerTippingParameterInvalid" = "請聯絡支援團隊：讀卡機的小費參數無效。";
+
+/* Error message when the refund operation failed. */
+"hardware.cardReader.underlyingError.refundFailed" = "退款失敗。 顧客的銀行或發卡機構無法正確處理退款 (如銀行帳戶已關閉，或卡片發生問題)。";
+
+/* Error message when there is an error decoding the Stripe API response. */
+"hardware.cardReader.underlyingError.stripeAPIResponseDecodingError" = "請聯絡支援團隊：在解碼 Stripe API 回應時發生錯誤。";
+
+/* Error message when an unexpected error occurs with the reader. */
+"hardware.cardReader.underlyingError.unexpectedReaderError" = "讀卡機發生意外錯誤。";
+
+/* Error message when the reader's IP address is unknown. */
+"hardware.cardReader.underlyingError.unknownReaderIpAddress" = "探索程序所回傳的讀卡機沒有 IP 位址，故無法連結。";
 
 /* Title of the view containing Coupons list */
 "hubMenu.couponsList" = "折價券";
@@ -10858,9 +11024,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory. */
 "menu.payments.tapToPay.about.row.title" = "關於「卡緊收」";
-
-/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
-"menu.payments.tapToPay.feedback.row.title" = "分享意見反應";
 
 /* Title for the Tap to Pay section in the In-Person payments settings */
 "menu.payments.tapToPay.section.title" = "卡緊收";
@@ -11583,6 +11746,21 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "無法載入總金額";
 
+/* Button title for sending a receipt */
+"pointOfSale.sendreceipt.button.title" = "傳送";
+
+/* Text that shows at the top of the receipts screen along the back button. */
+"pointOfSale.sendreceipt.emailReceiptNavigationText" = "電子郵件收據";
+
+/* Error message that is displayed when an invalid email is used when emailing a receipt. */
+"pointOfSale.sendreceipt.emailValidationErrorText" = "請輸入有效的電子郵件。";
+
+/* Generic error message that is displayed when there's an error emailing a receipt. */
+"pointOfSale.sendreceipt.sendReceiptErrorText" = "嘗試傳送此電子郵件時發生錯誤。 請再試一次。";
+
+/* Placeholder for the view where an email address should be entered when sending receipts */
+"pointOfSale.sendreceipt.textfield.placeholder" = "輸入電子郵件地址";
+
 /* Button to dismiss the payments onboarding sheet from the POS dashboard. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "取消";
 
@@ -11668,10 +11846,13 @@ which should be translated separately and considered part of this sentence. */
 "pos.simpleProductsModal.title" = "為什麼我無法查看自己的商品？";
 
 /* Button title for new order button */
-"pos.totalsView.newOrder" = "新訂單";
+"pos.totalsView.button.newOrder" = "新訂單";
 
 /* Button title for the receipt button */
-"pos.totalsView.sendReceipt" = "收據";
+"pos.totalsView.button.sendReceipt" = "電子郵件收據";
+
+/* Text for the banner requiring specific WooCommerce version. */
+"pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "請將 WooCommerce 更新至 9.5.0 版";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "小計";
@@ -12112,6 +12293,18 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "取消";
 
+/* Badge wording when the customs information is completed */
+"shippingLabels.customs.completedBadge" = "已完成";
+
+/* Customs row title in the main Shipping Labels view */
+"shippingLabels.customs.customsTitle" = "海關";
+
+/* Accessibility label for the button to edit the shipping labels customs */
+"shippingLabels.customs.editButtonAccessibiliy" = "編輯運送標籤海關資訊";
+
+/* Badge wording when the customs information is missing */
+"shippingLabels.customs.missingInfo" = "缺少資訊";
+
 /* Accessibility title for the edit button on a shipping line row. */
 "shippingLine.edit.button.accessibilityLabel" = "編輯運送方式";
 
@@ -12177,6 +12370,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in date range picker to add a Custom Range tab */
 "storePerformanceViewModel.addCustomRange" = "新增";
+
+/* Button to edit the items to be displayed on the store picker */
+"storePicker.editList" = "編輯";
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "連結現有商店";
@@ -12328,6 +12524,84 @@ which should be translated separately and considered part of this sentence. */
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is successful, we show a Notice to alert the user – this is the title of the notice. */
 "tap.to.pay.try.payment.refundNotice.success.title" = "Tap To Pay (卡緊收) 測試付款";
+
+/* Title of the button to dismiss the Tap to Pay awareness screen */
+"tapToPay.awarenessMoment.closeButton" = "關閉";
+
+/* A title for CTA to start Tap to Pay set up process */
+"tapToPay.awarenessMoment.enableButton" = "立即啟用";
+
+/* A title for CTA to open a view explaining Tap to Pay */
+"tapToPay.awarenessMoment.learnMore" = "深入了解";
+
+/* A subtitle for the Tap to Pay modal promoting the feature. */
+"tapToPay.awarenessMoment.subtitle" = "僅以一個 iPhone 手機接受感應式付款。";
+
+/* Title for the Tap to Pay modal promoting the feature. When using the name “Tap to Pay on iPhone” in headlines or copy, do not shorten to “Tap to Pay” or “Apple Tap to Pay. Always typeset “Tap to Pay on iPhone” as five words. The T and Ps should be uppercased, followed by lowercase letters. */
+"tapToPay.awarenessMoment.title" = "iPhone 卡緊收。 現可使用。";
+
+/* Text for the button to take one step back in Tap to Pay education flow */
+"tapToPay.education.back" = "返回";
+
+/* Text for the button to dismiss Tap to Pay education flow */
+"tapToPay.education.done" = "完成";
+
+/* Text for the button to go to the next Tap to Pay education flow step */
+"tapToPay.education.next" = "下一步";
+
+/* Button title for Set up Tap to Pay button in Tap to Pay education flow. The button opens the Set Up Tap to Pay on iPhone flow. */
+"tapToPay.education.setUpTapToPay" = "設定「iPhone 卡緊收」";
+
+/* Text for the button to skip Tap to Pay education flow to the last step */
+"tapToPay.education.skip" = "略過";
+
+/* First description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep1" = "在 iPhone 上建立訂單、新增商品或自訂金額，並使用「iPhone 卡緊收」結帳。";
+
+/* Second description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep2" = "向顧客示出你的 iPhone。";
+
+/* Third description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep3" = "顧客手持行動裝置靠近你的 iPhone，並置於感應支付符號上方。";
+
+/* Fourth description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep4" = "你看到「完成」的核取記號時，代表讀卡完畢，交易正在處理中。";
+
+/* Title for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.title" = "如何透過「iPhone 卡緊收」接受 Apple Pay 與其他數位錢包。";
+
+/* First description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep1" = "在 iPhone 上建立訂單、新增商品或自訂金額，並使用「iPhone 卡緊收」結帳。";
+
+/* Second description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep2" = "向顧客示出你的 iPhone。";
+
+/* Third description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep3" = "顧客手持卡片，以水平方向置於 iPhone 感應支付符號上方。";
+
+/* Fourth description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep4" = "你看到「完成」的核取記號時，代表讀卡完畢，交易正在處理中。";
+
+/* Title for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.title" = "如何使用「iPhone 卡緊收」接受感應式卡片。";
+
+/* Message displayed when a contactless transaction fails due to PIN issues. Provides steps to retry using another contactless payment method or alternative payment options. */
+"tapToPay.education.step.fallbackMethod.description" = "有些卡片無法透過 PIN 碼完成感應式交易，因而導致付款失敗。\n\n請詢問顧客是否有其他感應式卡片或電子錢包，並選取「重新嘗試收款」，即可繼續使用「iPhone 卡緊收」繼續交易。\n\n或者也可以選取「嘗試其他付款方式」，並選擇如「現金」、「分享付款連結」、「貨幣識別器」或「掃描付款」等支援的替代方式。";
+
+/* Title for the 'Fallback payment method' Tap to Pay merchant education step */
+"tapToPay.education.step.fallbackMethod.title" = "如何接受其他付款方式。";
+
+/* Description for the initial Tap to Pay merchant education step. When using the name “Tap to Pay on iPhone” in headlines or copy, do not shorten to “Tap to Pay” or “Apple Tap to Pay. Always typeset “Tap to Pay on iPhone” as five words. The T and Ps should be uppercased, followed by lowercase letters. */
+"tapToPay.education.step.intro.description" = "你可透過「iPhone 卡緊收」與 Woo 應用程式親自收款，或透過手機接受感應式付款，不論是實體簽帳金融卡、信用卡，到 Apple Pay 與其他數位錢包等都可使用，無須安裝其他硬體設備。 簡單、安全且隱密。";
+
+/* Title for the initial Tap to Pay merchant education step */
+"tapToPay.education.step.intro.title" = "僅以一個 iPhone 手機接受感應式付款。";
+
+/* Instructions for customers using accessibility options during PIN entry with Tap to Pay on iPhone.Describes how to use audible guidance for drawing or tapping the PIN digits and the gesture to submit. */
+"tapToPay.education.step.pin.description" = "系統會在特定情況下，提示顧客在「iPhone 卡緊收」功能中輸入卡片 PIN 碼。\n\n若顧客需要閱讀或其他方面的協助，只要選取 PIN 畫面上的「無障礙選項」，即可使用無障礙選項。 有聲指引會引導顧客在畫面上畫出 PIN 碼，或點選畫面來代表每個數字：即按一下代表 1，按兩下代表 2，以此類推。 若要提交 PIN 碼，只要以兩指向右滑動即可。";
+
+/* Title for the 'PIN entry' Tap to Pay merchant education step */
+"tapToPay.education.step.pin.title" = "如何處理卡片的 PIN 條目。";
 
 /* A label prompting users to learn more about Tap to Pay on iPhone.
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -12605,11 +12879,11 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "需成年人簽名";
 
+/* Label for the toggle to mark the order as complete on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.afterPurchaseMarkComplete" = "購買標籤後，將此訂單標示為完成並通知顧客";
+
 /* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
 "wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (基本費用)";
-
-/* Label for the toggle to mark the order as complete on the shipping label creation screen */
-"wooShipping.createLabels.bottomSheet.markComplete" = "將此訂單標示為完成並通知客戶";
 
 /* Header for order details section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.orderDetails" = "訂單詳細資料";
@@ -12652,6 +12926,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
+
+/* Heading for the package section in the shipping label creation screen. */
+"wooShipping.createLabels.package.title" = "包裹";
+
+/* Label for the total shipment weight input field in the shipping label creation screen. */
+"wooShipping.createLabels.package.totalWeight" = "貨件總重量 (含包裝)";
 
 /* Link for more information about how to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.info" = "了解如何從行動裝置印製";

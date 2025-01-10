@@ -1,5 +1,6 @@
 
 import XCTest
+import Nimble
 
 extension XCTestCase {
     /// Creates an XCTestExpectation and waits for `block` to call `fulfill()`.
@@ -24,7 +25,7 @@ extension XCTestCase {
         wait(for: [exp], timeout: timeout)
     }
 
-    /// Creates an `XCTestExpectation` and waits until `condition` returns `true`.
+    /// Waits until `condition` returns `true`.
     ///
     /// Example usage:
     ///
@@ -36,23 +37,37 @@ extension XCTestCase {
     /// }
     /// ```
     ///
-    public func waitUntil(file: StaticString = #file,
+    @available(*, noasync, message: "Use await until(expression:) instead!")
+    public func waitUntil(fileID: String = #fileID,
+                          file: FileString = #filePath,
                           line: UInt = #line,
+                          column: UInt = #column,
                           timeout: TimeInterval = 5.0,
-                          condition: @escaping (() -> Bool)) {
-        let predicate = NSPredicate { _, _ -> Bool in
-            return condition()
-        }
+                          _ expression: @escaping () throws -> Bool) {
+        _ = expect(fileID: fileID, file: file, line: line, column: column, expression)
+            .toEventually(beTrue(), timeout: .seconds(Int(timeout)))
+    }
 
-        let exp = expectation(for: predicate, evaluatedWith: nil)
-
-        let result = XCTWaiter.wait(for: [exp], timeout: timeout)
-        switch result {
-        case .timedOut:
-            XCTFail("Timed out waiting for condition to return `true`.", file: file, line: line)
-        default:
-            break
-        }
+    /// Waits until `condition` returns `true` in async conext.
+    ///
+    /// Example usage:
+    ///
+    /// ```
+    /// var valueThatIsUpdatedAsynchronously: Int = 0
+    ///
+    /// await until {
+    ///     valueThatIsUpdatedAsynchronously > 5
+    /// }
+    /// ```
+    ///
+    public func until(fileID: String = #fileID,
+                      file: FileString = #filePath,
+                      line: UInt = #line,
+                      column: UInt = #column,
+                      timeout: TimeInterval = 5.0,
+                      _ expression: @escaping () throws -> Bool) async {
+        _ = await expect(fileID: fileID, file: file, line: line, column: column, expression)
+            .toEventually(beTrue(), timeout: .seconds(Int(timeout)))
     }
 
     /// Waits until a value is provided by a promise (block) and returns that value.

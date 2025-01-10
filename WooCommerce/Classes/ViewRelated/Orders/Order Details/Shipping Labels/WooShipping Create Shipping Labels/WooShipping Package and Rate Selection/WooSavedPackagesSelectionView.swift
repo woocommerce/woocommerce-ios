@@ -151,7 +151,12 @@ struct WooSavedPackagesSelectionView: View {
                 addPackageButtonTapped()
             }
             .disabled(selectionButtonDisabled)
-            .buttonStyle(PrimaryButtonStyle())
+            .if(viewModel.previousSelectedAndSelectedSavedPackageAreSame) {
+                $0.buttonStyle(SecondaryButtonStyle())
+            }
+            .if(!viewModel.previousSelectedAndSelectedSavedPackageAreSame) {
+                $0.buttonStyle(PrimaryButtonStyle())
+            }
             .padding()
         }
     }
@@ -163,6 +168,12 @@ struct WooSavedPackagesSelectionView: View {
     private var selectionButtonText: String {
         if selectionButtonDisabled {
             return WooShippingAddPackageView.Localization.selectPackage
+        }
+        if let previousSelectedPackage = viewModel.previousSelectedPackage {
+            if previousSelectedPackage.id == viewModel.selectedSavedPackageId {
+                return WooShippingAddPackageView.Localization.done
+            }
+            return WooShippingAddPackageView.Localization.useSelectedPackage
         }
         return WooShippingAddPackageView.Localization.addPackage
     }

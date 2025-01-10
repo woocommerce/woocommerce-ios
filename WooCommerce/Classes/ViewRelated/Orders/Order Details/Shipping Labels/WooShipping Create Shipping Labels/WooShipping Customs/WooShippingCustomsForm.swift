@@ -1,5 +1,6 @@
 import SwiftUI
 import WooFoundation
+import Yosemite
 
 struct WooShippingCustomsForm: View {
     @Environment(\.presentationMode) var presentationMode
@@ -58,72 +59,107 @@ struct WooShippingCustomsForm: View {
 
     var body: some View {
         NavigationView {
-        GeometryReader { geometry in
-            ScrollViewReader { proxy in
-                ScrollView {
-                        VStack(alignment: .leading, spacing: Constants.defaultVerticalSpacing) {
-                            HStack {
-                                Text(Localization.contentType)
-                                    .font(.subheadline)
-                                Spacer()
-                            }
-
-                            contentTypeSelectionView
-
-                            HStack {
-                                Text(Localization.restrictionType)
-                                    .font(.subheadline)
-                                Spacer()
-                            }
-
-                            restrictionTypeSelectionView
-
-                            HStack {
-                                Text(Localization.internationalTransactionNumber)
-                                    .font(.subheadline)
-                                Spacer()
-                            }
-
-                            TextField("", text: $viewModel.internationalTransactionNumber)
-                                .padding(Constants.borderPadding)
-                                .roundedBorder(cornerRadius: Constants.borderCornerRadius, lineColor: Color(.separator), lineWidth: Constants.borderWidth)
-
-                            Button {
-                                isShowingITNInfoWebView = true
-                            } label: {
-                                HStack(alignment: .top, spacing: Constants.intoButtonHorizontalSpacing) {
-                                    Image(systemName: "info.circle")
-                                    Text(Localization.infoText)
+            GeometryReader { geometry in
+                VStack {
+                    ScrollViewReader { proxy in
+                        ScrollView {
+                            VStack(alignment: .leading, spacing: Constants.defaultVerticalSpacing) {
+                                HStack {
+                                    Text(Localization.contentType)
+                                        .font(.subheadline)
+                                    Spacer()
                                 }
-                                .foregroundColor(Color(.wooCommercePurple(.shade60)))
-                                .footnoteStyle()
-                            }
 
-                            Toggle(isOn: $viewModel.returnToSenderIfNotDelivered) {
-                                Text(Localization.returnToSenderMessage)
-                                    .font(.subheadline)
-                            }
-                            .tint(Color.accentColor)
-                        }
-                        .padding()
-                        .toolbar {
-                            ToolbarItem(placement: .cancellationAction) {
-                                Button(action: {
-                                    presentationMode.wrappedValue.dismiss()
-                                }, label: {
-                                    Text(Localization.cancel)
-                                })
-                            }
-                        }
-                        .navigationTitle(Localization.customs)
-                        .navigationBarTitleDisplayMode(.inline)
+                                contentTypeSelectionView
+                                    .padding(.bottom, Constants.defaultVerticalSpacing)
 
-                        Spacer()
+                                HStack {
+                                    Text(Localization.restrictionType)
+                                        .font(.subheadline)
+                                    Spacer()
+                                }
+
+                                restrictionTypeSelectionView
+                                    .padding(.bottom, Constants.defaultVerticalSpacing)
+
+                                HStack {
+                                    Text(Localization.internationalTransactionNumber)
+                                        .font(.subheadline)
+                                    Spacer()
+                                }
+
+                                TextField("", text: $viewModel.internationalTransactionNumber)
+                                    .padding(Constants.borderPadding)
+                                    .roundedBorder(cornerRadius: Constants.borderCornerRadius, lineColor: Color(.separator), lineWidth: Constants.borderWidth)
+
+                                Button {
+                                    isShowingITNInfoWebView = true
+                                } label: {
+                                    HStack(alignment: .top, spacing: Constants.intoButtonHorizontalSpacing) {
+                                        Image(systemName: "info.circle")
+                                        Text(Localization.infoText)
+                                    }
+                                    .foregroundColor(Color(.wooCommercePurple(.shade60)))
+                                    .footnoteStyle()
+                                    .padding(.bottom, Constants.bottomButtonPadding)
+                                }
+
+                                Toggle(isOn: $viewModel.returnToSenderIfNotDelivered) {
+                                    Text(Localization.returnToSenderMessage)
+                                        .font(.subheadline)
+                                }
+                                .tint(Color.accentColor)
+                                .padding(.bottom, Constants.returnToSenderRowBottomPadding)
+
+                                Text(Localization.productDetailsTitle)
+                                    .tertiaryTitleStyle()
+                                    .padding(.bottom, Constants.defaultVerticalSpacing)
+
+                                // Dummy data
+                                WooShippingCustomsItem(viewModel: WooShippingCustomsItemViewModel(
+                                    title: "Little Nap Brazil 250g",
+                                    description: "Coffee Beans",
+                                    hsTariffNumber: "HS 14-1",
+                                    valuePerUnit: "$20.00",
+                                    weightPerUnit: "0.3kg",
+                                    originCountry: WooShippingCustomsCountry(code: "US", name: "United States"))
+                                )
+                            }
+                            .padding()
+                            .toolbar {
+                                ToolbarItem(placement: .cancellationAction) {
+                                    Button(action: {
+                                        presentationMode.wrappedValue.dismiss()
+                                    }, label: {
+                                        Text(Localization.cancel)
+                                    })
+                                }
+                            }
+                            .navigationTitle(Localization.customs)
+                            .navigationBarTitleDisplayMode(.inline)
+
+                            Spacer()
+                        }
+                        .navigationViewStyle(.stack)
+                        .safariSheet(isPresented: $isShowingITNInfoWebView, url: viewModel.itnInfoURL)
                     }
-                    .navigationViewStyle(.stack)
-                    .safariSheet(isPresented: $isShowingITNInfoWebView, url: viewModel.itnInfoURL)
+
+                    Spacer()
+
+                    Divider()
+
+                    Button {
+                        // TODO: Save values
+                        presentationMode.wrappedValue.dismiss()
+                    } label: {
+                        Text(viewModel.informationIsMissing ? Localization.addMissingInformationButtonTitle : Localization.saveCustomsDetailsButtonTitle)
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                    .disabled(viewModel.informationIsMissing)
+                    .padding(Constants.bottomButtonPadding)
                 }
             }
+
         }
     }
 }
@@ -151,16 +187,27 @@ extension WooShippingCustomsForm {
         static let returnToSenderMessage = NSLocalizedString("wooShipping.customs.returnToSenderMessage",
                                                               value: "Return to sender if package is not able to be delivered",
                                                               comment: "Info label for a toggle to return the package to a sender if necessary toggle")
+        static let addMissingInformationButtonTitle = NSLocalizedString("wooShipping.customs.addMissingInformationButtonTitle",
+                                                              value: "Add Missing Information",
+                                                              comment: "Customs button title when it's disabled and there's still info to add")
+        static let saveCustomsDetailsButtonTitle = NSLocalizedString("wooShipping.customs.saveCustomsDetails",
+                                                              value: "Save Customs Details",
+                                                              comment: "Customs button title when it's enabled and there's no info to add")
+        static let productDetailsTitle = NSLocalizedString("wooShipping.customs.productDetails",
+                                                           value: "Product Details",
+                                                           comment: "Product Details Section title")
     }
 
 }
 
 extension WooShippingCustomsForm {
     enum Constants {
-        static let defaultVerticalSpacing: CGFloat = 16.0
+        static let defaultVerticalSpacing: CGFloat = 8.0
         static let borderCornerRadius: CGFloat = 8
         static let borderWidth: CGFloat = 1
         static let borderPadding: CGFloat = 16
         static let intoButtonHorizontalSpacing: CGFloat = 8
+        static let bottomButtonPadding: CGFloat = 16.0
+        static let returnToSenderRowBottomPadding: CGFloat = 32.0
     }
 }

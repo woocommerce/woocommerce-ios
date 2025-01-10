@@ -79,7 +79,10 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                     .variation(.init(id: UUID(),
                                      name: variationName,
                                      formattedPrice: currencyFormatter.formatAmount(variation.price) ?? "-",
-                                     productImageSource: variation.image?.src))
+                                     price: variation.price,
+                                     productImageSource: variation.image?.src,
+                                     productID: variation.productID,
+                                     variationID: variation.productVariationID))
             }),
             // TODO-14696: pagination support for variations lists
             hasMorePages: false

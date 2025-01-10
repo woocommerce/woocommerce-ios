@@ -1,3 +1,3 @@
-På bara två veckor har vi proppat den här utgåvan full. Det finns stöd för GTIN:s globala produktidentifierare, och du kan redigera uppmaningen till handling i Blaze-kampanjer.
 
-Butiksinställningar för personliga betalningar går fortare, bekräftelser av skickade kvitton är tydligare och det är smidigare att testa ”Tryck för att betala” på iPhone. Dessutom har vi förbättrat adminpanelens statistik och åtgärdat några buggar.
+Den här uppdateringen förbättrar tillförlitligheten och tydligheten i din WooCommerce-upplevelse! Dra nytta av förbättrad Jetpack-installation, smidigare mediehantering och bättre arbetsflöden för produkter och betalningar. Vi har även optimerat lagringsutrymmet och åtgärdat viktiga problem med användargränssnittet för att förbättra prestandan. Dessutom kan du nu enkelt få hjälp med vår Tryck för att betala-introduktion!
+

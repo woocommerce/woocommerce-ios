@@ -103,7 +103,7 @@ final class ThemesCarouselViewModelTests: XCTestCase {
         viewModel.updateCurrentTheme(id: theme1.id)
 
         // Then
-        waitUntil {
+        await until {
             viewModel.state == .content(themes: [theme2])
         }
     }
@@ -132,7 +132,7 @@ final class ThemesCarouselViewModelTests: XCTestCase {
         viewModel.updateCurrentTheme(id: theme1.id)
 
         // Then
-        waitUntil {
+        await until {
             viewModel.state == .error
         }
     }

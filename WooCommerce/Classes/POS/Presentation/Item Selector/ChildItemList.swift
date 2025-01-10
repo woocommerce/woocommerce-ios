@@ -83,14 +83,20 @@ private extension ChildItemList {
                                                             POSVariation(
                                                                 id: .init(),
                                                                 name: "Cinamon chestnut latte",
-                                                                formattedPrice: "$5.75"
+                                                                formattedPrice: "$5.75",
+                                                                price: "5.75",
+                                                                productID: 134,
+                                                                variationID: 256
                                                             )
                                                         ),
                                                         .variation(
                                                             POSVariation(
                                                                 id: .init(),
                                                                 name: "Choco latte",
-                                                                formattedPrice: "$6.5"
+                                                                formattedPrice: "$6.5",
+                                                                price: "6.5",
+                                                                productID: 134,
+                                                                variationID: 256
                                                             )
                                                         )
                                                     ], hasMoreItems: false)]))

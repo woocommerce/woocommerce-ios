@@ -4,6 +4,10 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     @Published var internationalTransactionNumber: String
     @Published var returnToSenderIfNotDelivered: Bool
 
+    var informationIsMissing: Bool {
+        false
+    }
+
     let contentType: WooShippingContentType = .merchandise
     let restrictionType: WooShippingRestrictionType = .none
 

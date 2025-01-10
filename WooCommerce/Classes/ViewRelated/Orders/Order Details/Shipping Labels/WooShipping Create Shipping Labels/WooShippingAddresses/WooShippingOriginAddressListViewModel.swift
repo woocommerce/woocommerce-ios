@@ -5,6 +5,9 @@ final class WooShippingOriginAddressListViewModel: ObservableObject {
     let addresses: [WooShippingOriginAddress]
     @Published private(set) var selectedAddressID: String?
 
+    /// Closure (set externally) called when an address is selected.
+    var onSelect: ((WooShippingOriginAddress) -> Void)?
+
     init(addresses: [WooShippingOriginAddress],
          selectedAddressID: String? = nil) {
         self.addresses = addresses
@@ -22,6 +25,7 @@ final class WooShippingOriginAddressListViewModel: ObservableObject {
             return
         }
         selectedAddressID = address.id
+        onSelect?(address)
     }
 }
 

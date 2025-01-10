@@ -199,13 +199,14 @@ extension PointOfSaleAggregateModel {
         }
     }
 
+    // Prevents card payments from the moment the merchant decides we start collecting cash
+    // Once we get the callback from the card service, we switch to cash collection state
     func startCashPayment() {
-        // Uncomment the lines below to prevent card payments from as soon as the button to open cash payment entry is tapped.
-//        Task { @MainActor [weak self] in
-//            guard let self else { return }
-//            try? await cardPresentPaymentService.cancelPayment()
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            try? await cardPresentPaymentService.cancelPayment()
             paymentState = .cash(.collectingCash)
-//        }
+        }
     }
 
     func cancelCashPayment() {
@@ -240,9 +241,6 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     func collectCashPayment() async throws {
-        // Currently, we allow card payments right up until the `Mark order complete` button is tapped.
-        // Delete the following row if we decide to cancel at the outset of cash payments.
-        try? await cardPresentPaymentService.cancelPayment()
         try await orderController.collectCashPayment()
         cashPaymentSuccess()
     }

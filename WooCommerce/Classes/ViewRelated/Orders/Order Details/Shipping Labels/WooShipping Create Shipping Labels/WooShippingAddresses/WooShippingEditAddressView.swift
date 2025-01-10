@@ -93,12 +93,18 @@ struct WooShippingEditAddressView: View {
                         Text(Localization.Status.label(for: viewModel.status))
                     }
                     .font(.subheadline)
-                    .foregroundStyle(viewModel.status == .verified ? Color(.withColorStudio(.green, shade: .shade60)) : Color(.withColorStudio(.red, shade: .shade60)))
+                    .foregroundStyle(viewModel.status == .verified
+                                     ? Color(.withColorStudio(.green, shade: .shade60))
+                                     : Color(.withColorStudio(.red, shade: .shade60)))
                     Button(Localization.Button.label(for: viewModel.status)) {
-                        // TODO: Update the action if there is missing information or changes to save
-                        dismiss()
+                        if viewModel.status == .verified {
+                            dismiss()
+                        } else {
+                            // TODO: Handle remote verification
+                        }
                     }
                     .buttonStyle(PrimaryButtonStyle())
+                    .disabled(viewModel.status == .missingInformation)
                 }
                 .padding()
             }

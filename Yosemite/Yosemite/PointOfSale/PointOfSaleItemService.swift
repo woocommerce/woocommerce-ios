@@ -55,8 +55,6 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
         }
 
         let eligibilityCriteria: [(Product) -> Bool] = [
-            isNotVirtual,
-            isNotDownloadable,
             hasPrice
         ]
         let filteredProducts = filterProducts(products: products, using: eligibilityCriteria)
@@ -125,14 +123,6 @@ private extension PointOfSaleItemService {
         return products.filter { product in
             criteria.allSatisfy { $0(product) }
         }
-    }
-
-    func isNotVirtual(product: Product) -> Bool {
-        !product.virtual
-    }
-
-    func isNotDownloadable(product: Product) -> Bool {
-        !product.downloadable
     }
 
     func hasPrice(product: Product) -> Bool {

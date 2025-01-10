@@ -64,6 +64,8 @@ final class FilterProductListViewModel: FilterListViewModel {
 
     let shouldShowHistory: Bool
 
+    let source = FilterSource.products
+
     private let stockStatusFilterViewModel: FilterTypeViewModel
     private let productStatusFilterViewModel: FilterTypeViewModel
     private let productTypeFilterViewModel: FilterTypeViewModel

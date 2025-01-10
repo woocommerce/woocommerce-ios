@@ -2,6 +2,11 @@ import Combine
 import UIKit
 import Yosemite
 
+enum FilterSource: String {
+    case orders
+    case products
+}
+
 protocol HumanReadable {
     var readableString: String { get }
 }
@@ -28,6 +33,9 @@ protocol FilterListViewModel {
 
     /// Whether to display the entry point to the filter history
     var shouldShowHistory: Bool { get }
+
+    /// The entry point where the filter was opened
+    var source: FilterSource { get }
 
     // Navigation & Actions
 

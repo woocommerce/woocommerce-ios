@@ -6,18 +6,14 @@ import struct Yosemite.POSVariableParentProduct
 /// Displays a list of POS items or placeholder card based on the given state.
 struct ItemList: View {
     let state: ItemListState
-    private let analytics: Analytics
 
-    init(state: ItemListState,
-         analytics: Analytics = ServiceLocator.analytics) {
+    init(state: ItemListState) {
         self.state = state
-        self.analytics = analytics
     }
 
     var body: some View {
         ForEach(state.items) { item in
-            ItemListRow(item: item,
-                        analytics: analytics)
+            ItemListRow(item: item)
         }
         GhostItemCardView()
             .renderedIf(state.isLoading)
@@ -26,7 +22,7 @@ struct ItemList: View {
 
 private struct ItemListRow: View {
     let item: POSItem
-    let analytics: Analytics
+    let analytics: Analytics = ServiceLocator.analytics
     @EnvironmentObject var posModel: PointOfSaleAggregateModel
 
     var body: some View {

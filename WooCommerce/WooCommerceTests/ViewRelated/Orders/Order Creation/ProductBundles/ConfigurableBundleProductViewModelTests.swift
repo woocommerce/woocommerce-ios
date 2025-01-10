@@ -331,17 +331,20 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 
     // MARK: - Analytics
 
-    func test_configure_tracks_orderFormBundleProductConfigurationSaveTapped_event() throws {
+    func test_configure_tracks_orderFormBundleProductConfigurationSaveTapped_event() async throws {
         // Given
         let product = Product.fake().copy(productID: 1, bundledItems: [
             .fake().copy(productID: 2)
         ])
+        let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
+        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
 
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
                                                            stores: stores,
                                                            analytics: analytics,
                                                            onConfigure: { _ in })
+        await assertBundleItemsLoaded(on: viewModel)
 
         // When
         viewModel.configure()

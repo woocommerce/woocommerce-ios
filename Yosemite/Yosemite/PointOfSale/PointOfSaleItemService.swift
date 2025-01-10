@@ -65,10 +65,11 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     }
 
     public func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
-        let variations = try await variationRemote
+        let pagedVariations = try await variationRemote
             .loadVariationsForPointOfSale(for: siteID,
                                           parentProductID: parentProduct.productID,
                                           pageNumber: pageNumber)
+        let variations = pagedVariations.items
         return .init(
             items: variations.compactMap({ variation in
                 let variationName = ProductVariationFormatter().generateName(

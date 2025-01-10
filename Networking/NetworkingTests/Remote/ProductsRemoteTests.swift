@@ -981,6 +981,19 @@ final class ProductsRemoteTests: XCTestCase {
         }
     }
 
+    func test_loadProductsForPointOfSale_sets_correct_parameters() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        _ = try? await remote.loadProductsForPointOfSale(for: sampleSiteID, productTypes: [.simple, .variable], pageNumber: 1)
+
+        // Then
+        let queryParametersDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        XCTAssertEqual(queryParametersDictionary["downloadable"] as? String, String(false))
+        XCTAssertEqual(queryParametersDictionary["include_types"] as? String, "simple,variable")
+    }
+
     func test_loadProductsForPointOfSale_when_page_has_no_products_then_loads_expected_products() async throws {
         // Given
         let remote = ProductsRemote(network: network)

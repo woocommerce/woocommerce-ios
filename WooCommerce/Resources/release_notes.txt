@@ -1,4 +1,1 @@
-- [**] Store Picker: Sites can now be hidden from the list for a more focused experience for agencies. [https://github.com/woocommerce/woocommerce-ios/pull/14780]
-- [*] Fetching plugins info in the app (e.g. payments onboarding) is more resilient to unexpected types in unrelated fields in the system status response. This used to result in a decoding error. [https://github.com/woocommerce/woocommerce-ios/pull/14781]
-- [*] Fixed an issue on iPad where creating an order with a custom amount type failed after selecting and deselecting a product. [https://github.com/woocommerce/woocommerce-ios/pull/14789]
-
+This update introduces the ability to hide specific stores from the store picker, perfect for agencies managing multiple sites. We’ve also enhanced plugin info fetching to handle unexpected data types, ensuring smoother performance. Additionally, a bug on iPad causing order creation issues with custom amounts has been resolved. Enjoy a more focused and reliable experience!

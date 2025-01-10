@@ -1,5 +1,12 @@
 import SwiftUI
 
+/// Possible statuses for a Woo Shipping address.
+enum WooShippingAddressStatus {
+    case verified
+    case unverified
+    case missingInformation
+}
+
 /// View for editing an address in the Woo Shipping label creation flow.
 struct WooShippingEditAddressView: View {
     @ObservedObject var viewModel: WooShippingEditAddressViewModel
@@ -332,7 +339,8 @@ private extension WooShippingEditAddressView {
                                                 email: "",
                                                 phone: "",
                                                 saveAsDefault: true,
-                                                showCompanyField: false))
+                                                showCompanyField: false,
+                                                status: .verified))
 }
 
 #Preview("With Company") {
@@ -347,5 +355,6 @@ private extension WooShippingEditAddressView {
                                                 email: "",
                                                 phone: "",
                                                 saveAsDefault: false,
-                                                showCompanyField: true))
+                                                showCompanyField: true,
+                                                status: .unverified))
 }

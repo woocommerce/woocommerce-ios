@@ -17,6 +17,9 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     /// Whether to show the company field by default.
     @Published var showCompanyField: Bool
 
+    /// Editing status of the address.
+    @Published private(set) var status: WooShippingAddressStatus
+
     init(id: String,
          name: String,
          company: String,
@@ -28,7 +31,8 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
          email: String,
          phone: String,
          saveAsDefault: Bool,
-         showCompanyField: Bool) {
+         showCompanyField: Bool,
+         status: WooShippingAddressStatus) {
         self.id = id
         self.name = name
         self.company = company
@@ -41,5 +45,6 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         self.phone = phone
         self.saveAsDefault = saveAsDefault
         self.showCompanyField = showCompanyField
+        self.status = status
     }
 }

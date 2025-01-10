@@ -35,7 +35,6 @@ struct ItemList<HeaderView: View>: View {
                 else { return }
                 try await posModel.loadNextItems()
             },
-            contentBottomPadding: floatingControlAreaSize.height,
             content: {
                 LazyVStack {
                     headerView
@@ -43,15 +42,15 @@ struct ItemList<HeaderView: View>: View {
                     ForEach(state.items) { item in
                         ItemListRow(item: item)
                     }
+
+                    GhostItemCardView()
+                        .renderedIf(state.isLoading)
                 }
-            },
-            loadingView: {
-                GhostItemCardView()
-                    .renderedIf(state.isLoading)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, Constants.itemListPadding)
+                .padding(.bottom, floatingControlAreaSize.height)
             }
         )
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, Constants.itemListPadding)
     }
 }
 

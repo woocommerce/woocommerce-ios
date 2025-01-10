@@ -66,6 +66,27 @@ struct WooShippingEditAddressView: View {
                         dismiss()
                     }
                 }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Button(action: {
+                        focusPreviousField()
+                    }, label: {
+                        Image(systemName: "chevron.backward")
+                    })
+                    .disabled(focusedField == AddressField.allCases.first)
+                    Button(action: {
+                        focusNextField()
+                    }, label: {
+                        Image(systemName: "chevron.forward")
+                    })
+                    .disabled(focusedField == AddressField.allCases.last)
+                    Spacer()
+                    Button {
+                        dismissKeyboard()
+                    } label: {
+                        Text(Localization.done)
+                            .bold()
+                    }
+                }
             }
         }
     }
@@ -143,7 +164,7 @@ struct WooShippingEditAddressView: View {
 }
 
 private extension WooShippingEditAddressView {
-    enum AddressField {
+    enum AddressField: CaseIterable {
         case name
         case company
         case country
@@ -176,6 +197,55 @@ private extension WooShippingEditAddressView {
                 return false
             }
         }
+    }
+
+    /// Navigates to the next address field in the form.
+    func focusNextField() {
+        switch focusedField {
+        case .name:
+            focusedField = showCompanyField ? .company : .address
+        case .company:
+            focusedField = .address
+        case .address:
+            focusedField = .city
+        case .city:
+            focusedField = .postalCode
+        case .postalCode:
+            focusedField = .email
+        case .email:
+            focusedField = .phone
+        case .phone:
+            focusedField = nil
+        case .none, .country, .state:
+            break
+        }
+    }
+
+    /// Navigates to the previous address field in the form.
+    func focusPreviousField() {
+        switch focusedField {
+        case .name:
+            focusedField = nil
+        case .company:
+            focusedField = .name
+        case .address:
+            focusedField = showCompanyField ? .company : .name
+        case .city:
+            focusedField = .address
+        case .postalCode:
+            focusedField = .city
+        case .email:
+            focusedField = .postalCode
+        case .phone:
+            focusedField = .email
+        case .none, .country, .state:
+            break
+        }
+    }
+
+    /// Dismisses the keyboard.
+    func dismissKeyboard() {
+        focusedField = nil
     }
 }
 
@@ -230,6 +300,9 @@ private extension WooShippingEditAddressView {
         static let cancel = NSLocalizedString("wooShipping.createLabels.editAddress.cancel",
                                             value: "Cancel",
                                             comment: "Button to cancel editing an address in the Woo Shipping label creation flow")
+        static let done = NSLocalizedString("wooShipping.createLabels.editAddress.done",
+                                            value: "Done",
+                                            comment: "Button to dismiss the keyboard")
     }
 }
 

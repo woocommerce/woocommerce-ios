@@ -7,7 +7,6 @@ struct ChildItemList: View {
     private let title: String
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
 
     private var state: ItemListState {
         posModel.itemsViewState.itemsStack
@@ -34,17 +33,11 @@ struct ChildItemList: View {
                 Spacer()
             }
             .padding(.horizontal, Constants.itemListPadding)
-            ScrollView {
-                VStack {
-                    ItemList(state: state)
-                        .background(Color.posPrimaryBackground)
-                        .toolbar(.hidden, for: .navigationBar)
-                        .transition(.opacity)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.bottom, floatingControlAreaSize.height)
-                .padding(.horizontal, Constants.itemListPadding)
-            }
+            ItemList(state: state,
+                     node: .parent(parentItem))
+                .background(Color.posPrimaryBackground)
+                .toolbar(.hidden, for: .navigationBar)
+                .transition(.opacity)
         }
         .task {
             guard state.items.isEmpty else {
@@ -106,7 +99,7 @@ private extension ChildItemList {
                                                                 variationID: 256
                                                             )
                                                         )
-                                                    ])]))
+                                                    ], hasMoreItems: false)]))
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
         cardPresentPaymentService: CardPresentPaymentPreviewService(),

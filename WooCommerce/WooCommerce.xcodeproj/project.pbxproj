@@ -343,6 +343,9 @@
 		02695770237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0269576F237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift */; };
 		0269A63C2581D26C007B49ED /* ShippingLabelPrintingStepListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0269A63B2581D26C007B49ED /* ShippingLabelPrintingStepListView.swift */; };
 		026A23FF2A3173F100EFE4BD /* MockBlazeEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026A23FE2A3173F100EFE4BD /* MockBlazeEligibilityChecker.swift */; };
+		026A50282D2F6BD1002C42C2 /* InfiniteScrollTriggerDeterminable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026A50272D2F6BD1002C42C2 /* InfiniteScrollTriggerDeterminable.swift */; };
+		026A502C2D2F6CC3002C42C2 /* View+Measurements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026A502B2D2F6CC3002C42C2 /* View+Measurements.swift */; };
+		026A50302D2F80B5002C42C2 /* ThresholdInfiniteScrollTriggerDeterminerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026A502F2D2F80B5002C42C2 /* ThresholdInfiniteScrollTriggerDeterminerTests.swift */; };
 		026B3C57249A046E00F7823C /* TextFieldTextAlignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026B3C56249A046E00F7823C /* TextFieldTextAlignment.swift */; };
 		026CAF7E2AC2B76C002D23BB /* ConfigurableBundleProductViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026CAF7D2AC2B76C002D23BB /* ConfigurableBundleProductViewModel.swift */; };
 		026CAF802AC2B7FF002D23BB /* ConfigurableBundleProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026CAF7F2AC2B7FF002D23BB /* ConfigurableBundleProductView.swift */; };
@@ -420,6 +423,7 @@
 		028FA46C257E0D9F00F88A48 /* PlainTextSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028FA46B257E0D9F00F88A48 /* PlainTextSectionHeaderView.swift */; };
 		028FF8E32AA1E1C60038964F /* ProductDetailsCellViewModel+AddOns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028FF8E22AA1E1C60038964F /* ProductDetailsCellViewModel+AddOns.swift */; };
 		029048292C2B5825009B77F9 /* PointOfSaleCardPresentPaymentFoundMultipleReadersAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029048282C2B5825009B77F9 /* PointOfSaleCardPresentPaymentFoundMultipleReadersAlertViewModel.swift */; };
+		0290C25A2D2C0C5C0090C55C /* InfiniteScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290C2592D2C0C5C0090C55C /* InfiniteScrollView.swift */; };
 		0290E26F238E3CE400B5C466 /* ListSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E26D238E3CE400B5C466 /* ListSelectorViewController.swift */; };
 		0290E275238E4F8100B5C466 /* PaginatedListSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E273238E4F8100B5C466 /* PaginatedListSelectorViewController.swift */; };
 		0290E27E238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift */; };
@@ -3509,6 +3513,9 @@
 		0269576F237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecTextViewAttachmentHandler.swift; sourceTree = "<group>"; };
 		0269A63B2581D26C007B49ED /* ShippingLabelPrintingStepListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPrintingStepListView.swift; sourceTree = "<group>"; };
 		026A23FE2A3173F100EFE4BD /* MockBlazeEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBlazeEligibilityChecker.swift; sourceTree = "<group>"; };
+		026A50272D2F6BD1002C42C2 /* InfiniteScrollTriggerDeterminable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfiniteScrollTriggerDeterminable.swift; sourceTree = "<group>"; };
+		026A502B2D2F6CC3002C42C2 /* View+Measurements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Measurements.swift"; sourceTree = "<group>"; };
+		026A502F2D2F80B5002C42C2 /* ThresholdInfiniteScrollTriggerDeterminerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdInfiniteScrollTriggerDeterminerTests.swift; sourceTree = "<group>"; };
 		026B3C56249A046E00F7823C /* TextFieldTextAlignment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldTextAlignment.swift; sourceTree = "<group>"; };
 		026CAF7D2AC2B76C002D23BB /* ConfigurableBundleProductViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableBundleProductViewModel.swift; sourceTree = "<group>"; };
 		026CAF7F2AC2B7FF002D23BB /* ConfigurableBundleProductView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableBundleProductView.swift; sourceTree = "<group>"; };
@@ -3588,6 +3595,7 @@
 		028FA46B257E0D9F00F88A48 /* PlainTextSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainTextSectionHeaderView.swift; sourceTree = "<group>"; };
 		028FF8E22AA1E1C60038964F /* ProductDetailsCellViewModel+AddOns.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductDetailsCellViewModel+AddOns.swift"; sourceTree = "<group>"; };
 		029048282C2B5825009B77F9 /* PointOfSaleCardPresentPaymentFoundMultipleReadersAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentFoundMultipleReadersAlertViewModel.swift; sourceTree = "<group>"; };
+		0290C2592D2C0C5C0090C55C /* InfiniteScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfiniteScrollView.swift; sourceTree = "<group>"; };
 		0290E26D238E3CE400B5C466 /* ListSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListSelectorViewController.swift; sourceTree = "<group>"; };
 		0290E273238E4F8100B5C466 /* PaginatedListSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedListSelectorViewController.swift; sourceTree = "<group>"; };
 		0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockStatusListSelectorCommandTests.swift; sourceTree = "<group>"; };
@@ -7003,6 +7011,7 @@
 		026826A12BF59DED0036F959 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				026A50262D2F6BBF002C42C2 /* Infinite Scroll */,
 				029149792D2682DF00F7B3B3 /* Item Selector */,
 				01620C4C2C5394A400D3EA2F /* Reusable Views */,
 				02E71DB42C118C470036C2FD /* Card Present Payments */,
@@ -7104,6 +7113,31 @@
 				6856DCE1638958DA296D690F /* KeyboardStateProviderTests.swift */,
 			);
 			path = Keyboard;
+			sourceTree = "<group>";
+		};
+		026A50262D2F6BBF002C42C2 /* Infinite Scroll */ = {
+			isa = PBXGroup;
+			children = (
+				026A50272D2F6BD1002C42C2 /* InfiniteScrollTriggerDeterminable.swift */,
+				0290C2592D2C0C5C0090C55C /* InfiniteScrollView.swift */,
+			);
+			path = "Infinite Scroll";
+			sourceTree = "<group>";
+		};
+		026A502D2D2F8087002C42C2 /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+				026A502E2D2F8099002C42C2 /* Infinite Scroll */,
+			);
+			path = Presentation;
+			sourceTree = "<group>";
+		};
+		026A502E2D2F8099002C42C2 /* Infinite Scroll */ = {
+			isa = PBXGroup;
+			children = (
+				026A502F2D2F80B5002C42C2 /* ThresholdInfiniteScrollTriggerDeterminerTests.swift */,
+			);
+			path = "Infinite Scroll";
 			sourceTree = "<group>";
 		};
 		026CF637237E9AA5009563D4 /* Variations */ = {
@@ -8231,6 +8265,7 @@
 				B649BC7D2A1C295B007AB988 /* View+HighlightModifier.swift */,
 				02B60DFA2A58809F004C47FF /* View+MediaSourceActionSheet.swift */,
 				CE6E110E2C91EF6800563DD4 /* View+RoundedBorder.swift */,
+				026A502B2D2F6CC3002C42C2 /* View+Measurements.swift */,
 			);
 			path = "View Modifiers";
 			sourceTree = "<group>";
@@ -12752,6 +12787,7 @@
 				20ADE9442C6B361500C91265 /* Card Present Payments */,
 				DAD988C72C4A9D49009DE9E3 /* Models */,
 				02CD3BFC2C35D01600E575C4 /* Mocks */,
+				026A502D2D2F8087002C42C2 /* Presentation */,
 				20A130E92C5A26F70058022F /* Tools */,
 				DABF35252C11B412006AF826 /* ViewModels */,
 			);
@@ -15359,6 +15395,7 @@
 				451C77732404534000413F73 /* ProductSettingsSections.swift in Sources */,
 				024DF31623742BB6006658FE /* AztecStrikethroughFormatBarCommand.swift in Sources */,
 				02817B39242B34560050AD8B /* ToolbarView.swift in Sources */,
+				026A50282D2F6BD1002C42C2 /* InfiniteScrollTriggerDeterminable.swift in Sources */,
 				2004E2CA2C07771400D62521 /* CardPresentPaymentReaderConnectionResult.swift in Sources */,
 				860B85F12ADE3A0E00E85884 /* BulletPointView.swift in Sources */,
 				D817586222BB64C300289CFE /* OrderDetailsNotices.swift in Sources */,
@@ -16322,6 +16359,7 @@
 				DEC2962926C20ECB005A056B /* CollapsibleView.swift in Sources */,
 				028F3F962B0F1A2A00F8E227 /* ConfigurationIndicator.swift in Sources */,
 				B9F3DAAF29BB73CD00DDD545 /* CreateOrderAppIntent.swift in Sources */,
+				0290C25A2D2C0C5C0090C55C /* InfiniteScrollView.swift in Sources */,
 				AEDDDA0A25CA9C980077F9B2 /* AttributePickerViewController.swift in Sources */,
 				7E7C5F862719A93C00315B61 /* ProductCategoryViewModelBuilder.swift in Sources */,
 				204D1D622C5A50840064A6BE /* POSModalViewModifier.swift in Sources */,
@@ -16534,6 +16572,7 @@
 				AEE9A880293A3E5500227C92 /* RefreshablePlainList.swift in Sources */,
 				203163B72C1C5EDF001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedChargeReaderView.swift in Sources */,
 				2004E2ED2C0F5DD800D62521 /* CardPresentPaymentCollectOrderPaymentUseCaseAdaptor.swift in Sources */,
+				026A502C2D2F6CC3002C42C2 /* View+Measurements.swift in Sources */,
 				868029532C184E6C00CB64A1 /* BottomSheetProductCategory.swift in Sources */,
 				B55BC1F121A878A30011A0C0 /* String+HTML.swift in Sources */,
 				B56C721221B5B44000E5E85B /* PushNotificationsConfiguration.swift in Sources */,
@@ -16841,6 +16880,7 @@
 				4552085B25829091001CF873 /* AddAttributeViewModelTests.swift in Sources */,
 				02F1E6BD2A39805C00C3E4C7 /* ProductDescriptionAICoordinatorTests.swift in Sources */,
 				019130212CF5B0FF008C0C88 /* TapToPayEducationViewModelTests.swift in Sources */,
+				026A50302D2F80B5002C42C2 /* ThresholdInfiniteScrollTriggerDeterminerTests.swift in Sources */,
 				CC33238C29CDF67D00CA9709 /* ComponentSettingsViewModelTests.swift in Sources */,
 				86F5FFE42CA30D9200C767C4 /* CustomFieldsListViewModelTests.swift in Sources */,
 				0261F5A728D454CF00B7AC72 /* ProductSearchUICommandTests.swift in Sources */,

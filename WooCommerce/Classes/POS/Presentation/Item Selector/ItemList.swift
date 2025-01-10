@@ -11,6 +11,8 @@ struct ItemList<HeaderView: View>: View {
 
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @EnvironmentObject var posModel: PointOfSaleAggregateModel
+    @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
+
     let state: ItemListState
     private let node: BaseItem
     private let headerView: HeaderView
@@ -24,29 +26,31 @@ struct ItemList<HeaderView: View>: View {
     }
 
     var body: some View {
-        ScrollView {
-            LazyVStack {
-                headerView
+        InfiniteScrollView(
+            triggerDeterminer: infiniteScrollTriggerDeterminer,
+            loadMore: {
+                guard case .root = node,
+                      case .loaded(_, let hasMoreItems) = state,
+                      hasMoreItems
+                else { return }
+                try await posModel.loadNextItems()
+            },
+            content: {
+                LazyVStack {
+                    headerView
 
-                ForEach(state.items) { item in
-                    ItemListRow(item: item)
-                }
+                    ForEach(state.items) { item in
+                        ItemListRow(item: item)
+                    }
 
-                switch state {
-                case .loading, .loaded(_, hasMoreItems: true):
                     GhostItemCardView()
-                        .onAppear {
-                            guard case .root = node else { return }
-                            Task { await posModel.loadNextItems() }
-                        }
-                default:
-                    EmptyView()
+                        .renderedIf(state.isLoading)
                 }
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, Constants.itemListPadding)
+                .padding(.bottom, floatingControlAreaSize.height)
             }
-            .frame(maxWidth: .infinity)
-            .padding(.bottom, floatingControlAreaSize.height)
-            .padding(.horizontal, Constants.itemListPadding)
-        }
+        )
     }
 }
 

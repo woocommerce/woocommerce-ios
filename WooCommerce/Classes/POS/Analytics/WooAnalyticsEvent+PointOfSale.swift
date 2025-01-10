@@ -10,7 +10,7 @@ extension WooAnalyticsEvent {
         /// Event property Key.
         private enum Key {
             static let paymentsOnboardingState = "onboarding_state"
-            static let productType = "product_type"
+            static let itemType = "product_type"
         }
 
         static func paymentsOnboardingShown() -> WooAnalyticsEvent {
@@ -23,7 +23,7 @@ extension WooAnalyticsEvent {
         }
 
         static func addItemToCart(type: CartItemType) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleAddItemToCart, properties: [Key.productType: type.analyticsValue])
+            WooAnalyticsEvent(statName: .pointOfSaleAddItemToCart, properties: [Key.itemType: type.analyticsValue])
         }
     }
 }

@@ -273,51 +273,6 @@ static NSString * const RemoteOptionValueOrderByPostID = @"ID";
            }];
 }
 
-- (void)getLikesForPostID:(NSNumber *)postID
-                    count:(NSNumber *)count
-                   before:(NSString *)before
-           excludeUserIDs:(NSArray<NSNumber *> *)excludeUserIDs
-                  success:(void (^)(NSArray<RemoteLikeUser *> * _Nonnull users, NSNumber *found))success
-                  failure:(void (^)(NSError * _Nullable))failure
-{
-    NSParameterAssert(postID);
-
-    NSString *path = [NSString stringWithFormat:@"sites/%@/posts/%@/likes", self.siteID, postID];
-    NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:WordPressComRESTAPIVersion_1_2];
-    NSNumber *siteID = self.siteID;
-
-    // If no count provided, default to endpoint max.
-    if (count == 0) {
-        count = @90;
-    }
-    
-    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:@{ @"number": count }];
-    
-    if (before) {
-        parameters[@"before"] = before;
-    }
-    
-    if (excludeUserIDs) {
-        parameters[@"exclude"] = excludeUserIDs;
-    }
-
-    [self.wordPressComRESTAPI get:requestUrl
-                       parameters:parameters
-                          success:^(id responseObject, NSHTTPURLResponse *httpResponse) {
-        if (success) {
-            NSArray *jsonUsers = responseObject[@"likes"] ?: @[];
-            NSArray<RemoteLikeUser *> *users = [self remoteUsersFromJSONArray:jsonUsers postID:postID siteID:siteID];
-            NSNumber *found = [responseObject numberForKey:@"found"] ?: @0;
-            success(users, found);
-        }
-    } failure:^(NSError *error, NSHTTPURLResponse *httpResponse) {
-        if (failure) {
-            failure(error);
-        }
-    }];
-}
-
 - (NSDictionary *)dictionaryWithRemoteOptions:(id <PostServiceRemoteOptions>)options
 {
     NSMutableDictionary *remoteParams = [NSMutableDictionary dictionary];
@@ -594,23 +549,6 @@ static NSString * const RemoteOptionValueOrderByPostID = @"ID";
 
 + (NSArray *)tagNamesFromJSONDictionary:(NSDictionary *)jsonTags {
     return [jsonTags allKeys];
-}
-
-/**
- *  @brief  Returns an array of RemoteLikeUser based on provided JSON
- *          representation of users.
- *
- *  @param  jsonUsers   An array containing JSON representations of users.
- *  @param  postID      ID of the Post the users liked.
- *  @param  siteID      ID of the Post's site.
- */
-- (NSArray<RemoteLikeUser *> *)remoteUsersFromJSONArray:(NSArray *)jsonUsers
-                                                 postID:(NSNumber *)postID
-                                                 siteID:(NSNumber *)siteID
-{
-    return [jsonUsers wp_map:^id(NSDictionary *jsonUser) {
-        return [[RemoteLikeUser alloc] initWithDictionary:jsonUser postID:postID siteID:siteID];
-    }];
 }
 
 @end

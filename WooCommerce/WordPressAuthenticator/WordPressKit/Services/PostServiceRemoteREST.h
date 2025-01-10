@@ -12,7 +12,7 @@
  *
  *
  *  @discussion Drafts and auto-drafts are just overwritten by autosave for the same
-                user if the post is not locked.
+ *              user if the post is not locked.
  *              Non drafts or other users drafts are not overwritten.
  *  @param      post        The post to save.  Cannot be nil.
  *  @param      success     The block that will be executed on success.  Can be nil.
@@ -35,26 +35,6 @@
 - (void)getAutoSaveForPost:(RemotePost * _Nonnull)post
                    success:(void (^ _Nullable)(RemotePost * _Nullable))success
                    failure:(void (^ _Nullable)(NSError * _Nullable error))failure;
-
-/**
- *  @brief      Requests a list of users that liked the post with the specified ID.
- *
- *  @discussion Due to the API limitation, up to 90 users will be returned from the
- *              endpoint.
- *
- *  @param      postID          The ID for the post. Cannot be nil.
- *  @param      count           Number of records to retrieve. Cannot be nil. If 0, will default to endpoint max.
- *  @param      before          Filter results to Likes before this date/time string. Can be nil.
- *  @param      excludeUserIDs  Array of user IDs to exclude from response. Can be nil.
- *  @param      success         The block that will be executed on success. Can be nil.
- *  @param      failure         The block that will be executed on failure. Can be nil.
- */
-- (void)getLikesForPostID:(NSNumber * _Nonnull)postID
-                    count:(NSNumber * _Nonnull)count
-                   before:(NSString * _Nullable)before
-           excludeUserIDs:(NSArray<NSNumber *> * _Nullable)excludeUserIDs
-                  success:(void (^ _Nullable)(NSArray<RemoteLikeUser *> * _Nonnull users, NSNumber * _Nonnull found))success
-                  failure:(void (^ _Nullable)(NSError * _Nullable))failure;
 
 /// Returns a remote post with the given data.
 + (nonnull RemotePost *)remotePostFromJSONDictionary:(nonnull NSDictionary *)jsonPost;

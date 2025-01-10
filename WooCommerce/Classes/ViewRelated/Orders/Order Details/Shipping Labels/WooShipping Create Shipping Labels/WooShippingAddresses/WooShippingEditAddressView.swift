@@ -82,7 +82,7 @@ struct WooShippingEditAddressView: View {
 
         var body: some View {
             VStack(spacing: Constants.innerSpacing) {
-                HStack {
+                HStack(spacing: Constants.requiredLabelSpacing) {
                     Text(field.title)
                     if field.required {
                         Text("*")
@@ -113,7 +113,7 @@ struct WooShippingEditAddressView: View {
 
         var body: some View {
             VStack(spacing: Constants.innerSpacing) {
-                HStack {
+                HStack(spacing: Constants.requiredLabelSpacing) {
                     Text(field.title)
                     if field.required {
                         Text("*")
@@ -187,6 +187,7 @@ private extension WooShippingEditAddressView {
         static let cornerRadius: CGFloat = 8
         static let defaultBorderColor: Color = Color(.separator)
         static let defaultBorderWidth: CGFloat = 1
+        static let requiredLabelSpacing: CGFloat = 4
     }
 
     enum Localization {

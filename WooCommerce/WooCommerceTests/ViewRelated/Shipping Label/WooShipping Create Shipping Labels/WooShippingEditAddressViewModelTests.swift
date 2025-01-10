@@ -5,6 +5,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
     func test_it_inits_with_expected_values() {
         // Given
+        let id = "default_address"
         let name = "JANE DOE"
         let company = "HEADQUARTERS"
         let address = "15 ALGONKIN ST STE 100"
@@ -18,7 +19,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         let showCompanyField = true
 
         // When
-        let viewModel = WooShippingEditAddressViewModel(name: name,
+        let viewModel = WooShippingEditAddressViewModel(id: id,
+                                                        name: name,
                                                         company: company,
                                                         country: country,
                                                         address: address,
@@ -31,6 +33,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         showCompanyField: showCompanyField)
 
         // Then
+        XCTAssertEqual(viewModel.id, id)
         XCTAssertEqual(viewModel.name, name)
         XCTAssertEqual(viewModel.company, company)
         XCTAssertEqual(viewModel.country, country)

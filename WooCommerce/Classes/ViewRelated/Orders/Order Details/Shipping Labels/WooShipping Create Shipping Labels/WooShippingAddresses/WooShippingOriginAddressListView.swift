@@ -27,7 +27,7 @@ struct WooShippingOriginAddressListView: View {
                     }
                     Spacer()
                     PencilEditButton {
-                        viewModel.addressToEdit = address
+                        viewModel.editAddress(address)
                     }
                     .buttonStyle(TextButtonStyle())
                 }
@@ -45,21 +45,10 @@ struct WooShippingOriginAddressListView: View {
                 .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: Constants.verticalSpacing, trailing: 0))
             }
             .listStyle(.plain)
-            .sheet(item: $viewModel.addressToEdit) { address in
+            .sheet(item: $viewModel.addressToEdit) { addressToEdit in
                 // TODO: Handle edits to the address fields
-                // TODO: Confirm what to display for `address` field
                 NavigationStack {
-                    WooShippingEditAddressView(viewModel: .init(name: address.fullName ?? "",
-                                                                company: address.company,
-                                                                country: address.country,
-                                                                address: address.address1,
-                                                                city: address.city,
-                                                                state: address.state,
-                                                                postalCode: address.postcode,
-                                                                email: address.email,
-                                                                phone: address.phone,
-                                                                saveAsDefault: address.defaultAddress,
-                                                                showCompanyField: address.company.isNotEmpty))
+                    WooShippingEditAddressView(viewModel: addressToEdit)
                     .navigationTitle(Localization.editOrigin)
                     .navigationBarTitleDisplayMode(.inline)
                 }

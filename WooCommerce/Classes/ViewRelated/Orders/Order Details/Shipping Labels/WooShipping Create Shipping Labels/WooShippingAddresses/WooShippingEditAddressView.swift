@@ -294,7 +294,8 @@ private extension WooShippingEditAddressView {
 }
 
 #Preview("Without Company") {
-    WooShippingEditAddressView(viewModel: .init(name: "HEADQUARTERS",
+    WooShippingEditAddressView(viewModel: .init(id: UUID().uuidString,
+                                                name: "HEADQUARTERS",
                                                 company: "",
                                                 country: "UNITED STATES",
                                                 address: "15 ALGONKIN ST",
@@ -308,7 +309,8 @@ private extension WooShippingEditAddressView {
 }
 
 #Preview("With Company") {
-    WooShippingEditAddressView(viewModel: .init(name: "HEADQUARTERS",
+    WooShippingEditAddressView(viewModel: .init(id: UUID().uuidString,
+                                                name: "HEADQUARTERS",
                                                 company: "COMPANY",
                                                 country: "UNITED STATES",
                                                 address: "15 ALGONKIN ST",

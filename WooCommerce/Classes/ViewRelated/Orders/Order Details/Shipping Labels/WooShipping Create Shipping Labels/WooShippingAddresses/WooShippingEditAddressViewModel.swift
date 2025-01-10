@@ -1,7 +1,8 @@
 import SwiftUI
 
 /// View model for editing an address in the Woo Shipping label flow.
-final class WooShippingEditAddressViewModel: ObservableObject {
+final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
+    let id: String
     @Published var name: String
     @Published var company: String
     @Published var country: String
@@ -16,7 +17,8 @@ final class WooShippingEditAddressViewModel: ObservableObject {
     /// Whether to show the company field by default.
     @Published var showCompanyField: Bool
 
-    init(name: String,
+    init(id: String,
+         name: String,
          company: String,
          country: String,
          address: String,
@@ -27,6 +29,7 @@ final class WooShippingEditAddressViewModel: ObservableObject {
          phone: String,
          saveAsDefault: Bool,
          showCompanyField: Bool) {
+        self.id = id
         self.name = name
         self.company = company
         self.country = country

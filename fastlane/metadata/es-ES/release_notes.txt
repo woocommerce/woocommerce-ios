@@ -1,3 +1,3 @@
-En solo dos semanas, hemos llenado hasta los topes esta versión. Es compatible con el identificador global de producto GTIN y puedes editar la llamada a la acción en las campañas de Blaze.
 
-La configuración de la tienda para los pagos en persona es más rápida, las confirmaciones de recibo enviado son más claras y la opción Tap to Pay en iPhone es más fácil. Además, hemos mejorado las estadísticas del escritorio y eliminado algunos errores.
+Esta actualización aporta una mayor fiabilidad y transparencia a tu experiencia con WooCommerce. Disfruta de una configuración de Jetpack mejorada, una gestión de medios más fluida y mejores flujos de trabajo de productos y pagos. También hemos optimizado el almacenamiento y hemos solucionado problemas clave de la interfaz de usuario para mejorar el rendimiento. Además, ahora el proceso de iniciación de Tap to Pay te guía de forma sencilla.
+

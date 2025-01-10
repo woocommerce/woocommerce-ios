@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-26 09:54:05+0000 */
+/* Translation-Revision-Date: 2024-12-27 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -251,10 +251,6 @@ which should be translated separately and considered part of this sentence. */
 /* Number of items in packages in Shipping Labels in plural form. Reads like - 10 items */
 "- %1$d items" = "- %1$d öğe";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 1
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 1 */
-"1" = "1";
-
 /* Navigation bar title for selecting multiple products when one product has been selected.
    Title of the action button at the bottom of the Select Products screen when one product is selected */
 "1 Product Selected" = "1 Ürün Seçildi";
@@ -271,19 +267,11 @@ which should be translated separately and considered part of this sentence. */
 /* Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment */
 "1. Create an order" = "1. Sipariş oluşturun";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 2
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
-"2" = "2";
-
 /* Disclaimer regarding some of the features related to shipping. */
 "2. Only available in the U.S. – an additional extension will be required for other countries." = "2. Yalnızca ABD'de kullanıma sunulmuştur. Diğer ülkeler için ek bir uzantı gerekecektir.";
 
 /* Step 2 of the 'How it works' list, instructing the merchant to how to select Tap to Pay payments */
 "2. Tap “Collect Payment” and choose “Tap to Pay on iPhone”." = "2. “Ödemeyi Al” seçeneğine dokunun ve ardından “Tap to Pay on iPhone” seçeneğini belirleyin.";
-
-/* Settings > Manage Card Reader > Connect > Help hint number 3
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
-"3" = "3";
 
 /* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
 "3. Present your iPhone to the customer." = "3. iPhone'unuzu müşteriye gösterin.";
@@ -985,9 +973,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button on the store onboarding launched store screen. */
 "Back to My Store" = "Mağazama Dön";
 
-/* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
-"Back to Order" = "Siparişe Geri Dön";
-
 /* Text for the button to dismiss the store picker error screen */
 "Back to sites" = "Sitelere Geri Dön";
 
@@ -1559,7 +1544,6 @@ which should be translated separately and considered part of this sentence. */
 "Clear selection" = "Seçimi temizle";
 
 /* Accessibility label for the close button
-   Button to dismiss modal overlay. Presented to users after refunding a payment fails
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
    Navigation bar action to close the gift card code scanner.
@@ -2269,7 +2253,6 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when finding a reader to connect to fails
    Button to dismiss the first created product screen
    Button to dismiss the Jetpack benefits screen.
-   Button to dismiss. Presented to users after collecting a payment fails
    Button to dismiss. Presented to users when updating the card reader software fails
    Dismiss button in inbox note row.
    Dismiss button in store picker
@@ -5989,9 +5972,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
 "Return to My Store" = "Mağazama Dön";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
-"Return to Payments" = "Ödemeler Ekranına Dön";
-
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Paket teslim edilemezse gönderene iade et";
 
@@ -6381,6 +6361,9 @@ which should be translated separately and considered part of this sentence. */
 /* Header text on Add New Custom Package screen in Shipping Label flow
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "Ürünlerinizi göndereceğiniz paket tipini ayarlayın. Gelecekte aldığınız siparişler için bu seçiminizi hatırlayacağız.";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
+"SetUpTapToPayPaymentPrompt.skipButton.title" = "Şimdi değil";
 
 /* Settings button in the hub menu
    Settings navigation title
@@ -7519,9 +7502,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Tab selector title that shows the statistics for this year */
 "This Year" = "Bu Yıl";
-
-/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "Bu uygulamanın bir kart okuyucuya bağlanmak için Bluetooth'a erişim iznine ihtiyacı var, buna izin vermek istiyorsanız lütfen gizlilik ayarlarını değiştirin.";
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "Bu uygulama için sunucunuza WooCommerce 3.5'i yüklemeniz gerekir; bu olmadan düzgün çalışmaz. Bu uygulamayı kullanmaya devam etmek için mümkün olan en kısa süre içinde güncelleyin.";
@@ -9989,8 +9969,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "Okuyucu için taranıyor";
 
+/* A title for CTA to present native location permission alert */
+"cardPresentPayment.locationPreAlert.continueButton" = "Devam";
+
+/* A notice at the bottom explaining that location services can be changed in the Settings app later */
+"cardPresentPayment.locationPreAlert.settingsNotice" = "Bu seçeneği daha sonra Ayarlar uygulamasından değiştirebilirsiniz.";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"cardPresentPayment.locationPreAlert.subtitle" = "Dolandırıcılık riskini azaltmak, anlaşmazlıkları önlemek ve güvenli ödemeler sağlamak için konum hizmetleri izni gerekir.";
+
+/* A title explaining why location services are needed to make a payment */
+"cardPresentPayment.locationPreAlert.title" = "Ödemelere izin vermek için sonraki ekrandan konum hizmetlerini etkinleştirin.";
+
+/* Dismisses the location alert */
+"cardPresentPayment.locationRequired.dismiss" = "Kapat";
+
+/* Opens iOS's Device Settings for the app */
+"cardPresentPayment.locationRequired.openSettings" = "Cihaz Ayarlarını Aç";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"cardPresentPayment.locationRequired.subtitle" = "Dolandırıcılık riskini azaltmak, anlaşmazlıkları önlemek ve güvenli ödemeler sağlamak için konum hizmetleri izni gerekir.";
+
+/* A title explaining the requirement of location services for making a payment */
+"cardPresentPayment.locationRequired.title" = "Ödemelere izin vermek için cihaz ayarlarından konum hizmetlerini etkinleştirin.";
+
+/* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.backToOrder" = "Siparişe Geri Dön";
+
+/* Button to dismiss modal overlay. Presented to users after refunding a payment fails */
+"cardPresentPaymentsModal.error.close" = "Kapat";
+
+/* Button to dismiss. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.dismiss" = "Kapat";
+
+/* Button to email receipts. Presented to users after a payment processing has failed */
+"cardPresentPaymentsModal.error.emailReceipt" = "Faturayı e-posta ile gönderin";
+
 /* Message informing the user that a receipt has been sent to their email address. %1$@ is the email address */
 "cardPresentPaymentsModal.error.receiptMessage" = "%1$@ adresine bir fatura gönderildi";
+
+/* Button to dismiss modal overlay and try another payment method. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.tryAnotherPaymentMethod" = "Başka Bir Ödeme Yöntemi Dene";
 
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "cardPresentPaymentsModal.success.emailReceipt" = "Faturayı e-posta ile gönderin";
@@ -10496,6 +10515,27 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "Cihazdaki ortamlar";
 
+/* Button to dismiss the Edit Store List view */
+"editStoreListView.cancelButton" = "İptal Et";
+
+/* Footer of the Current Store section of the the Edit Store List view */
+"editStoreListView.currentStoreFooter" = "Lütfen bu mağazayı gizlemeden önce başka bir mağazaya geçin";
+
+/* Header of the Current Store section of the the Edit Store List view */
+"editStoreListView.currentStoreHeader" = "Mevcut mağaza";
+
+/* Footer of the Other Stores section on the Edit Store List view */
+"editStoreListView.otherStoresFooter" = "Seçilmeyen mağazalar, mağaza seçicide dahil edilmez";
+
+/* Header of the Other Stores section on the Edit Store List view */
+"editStoreListView.otherStoresHeader" = "Diğer mağazalar";
+
+/* Button to save changes in the Edit Store List view */
+"editStoreListView.saveButton" = "Kaydet";
+
+/* Title of the Edit Store List view */
+"editStoreListView.title" = "Görünen Mağazalar";
+
 /* Title for button to view the feedback survey about adding shipping to an order */
 "editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "Görüşlerinizi almak isteriz";
 
@@ -10634,6 +10674,132 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "Tüm kampanyaları görüntüle";
+
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"hardware.cardReader.cardReaderServiceError.bluetoothDenied" = "Kart okuyucunuzu bağlamak için bu uygulamanın Bluetooth erişimi izni olması gerekir. Sistemin Ayarlar uygulamasında Woo bölümünden izin verebilirsiniz.";
+
+/* Error message when the Apple built-in reader account is deactivated. */
+"hardware.cardReader.underlyingError.appleBuiltInReaderAccountDeactivated" = "Bağlı Apple Kimliği hesabı devre dışı bırakılamaz.";
+
+/* Error message when Bluetooth is already paired with another device. */
+"hardware.cardReader.underlyingError.bluetoothAlreadyPairedWithAnotherDevice" = "Bluetooth okuyucu zaten başka bir cihazla bağlı. Bu cihazı bağlamak için okuyucunun eşleşmesinin sıfırlanması gerekir.";
+
+/* Error message when the Bluetooth connection has an invalid location ID parameter. */
+"hardware.cardReader.underlyingError.bluetoothConnectionInvalidLocationIdParameter" = "Bluetooth bağlantısında geçersiz konum kimliği var.";
+
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"hardware.cardReader.underlyingError.bluetoothDenied" = "Kart okuyucunuzu bağlamak için bu uygulamanın Bluetooth erişimi izni olması gerekir. Sistemin Ayarlar uygulamasında Woo bölümünden izin verebilirsiniz.";
+
+/* Error message when the Bluetooth peer removed pairing information. */
+"hardware.cardReader.underlyingError.bluetoothPeerRemovedPairingInformation" = "Okuyucu bu cihaz eşleme bilgilerini kaldırdı. iOS Ayarları'nda okuyucu unutuluyor.";
+
+/* Error message when Bluetooth reconnect has started. */
+"hardware.cardReader.underlyingError.bluetoothReconnectStarted" = "Bluetooth okuyucusunun bağlantısı kesildi, yeniden bağlamaya çalışıyoruz.";
+
+/* Error message when an operation cannot be canceled because it is already completed. */
+"hardware.cardReader.underlyingError.cancelFailedAlreadyCompleted" = "İşlem zaten tamamlandığından dolayı iptal edilemedi.";
+
+/* Error message when card swipe functionality is unavailable. */
+"hardware.cardReader.underlyingError.cardSwipeNotAvailable" = "Kartı geçirme işlevi kullanılamıyor.";
+
+/* Error message when the command is not allowed. */
+"hardware.cardReader.underlyingError.commandNotAllowed" = "Lütfen destek ekibiyle iletişime geçin. Komutun işletim sisteminde yürütülmesine izin verilmiyor.";
+
+/* Error message when the command requires cardholder consent. */
+"hardware.cardReader.underlyingError.commandRequiresCardholderConsent" = "Bu işlemin başarılı olması için kart sahibinin onay vermesi gerekir.";
+
+/* Error message when the connection token provider finishes with an error. */
+"hardware.cardReader.underlyingError.connectionTokenProviderCompletedWithError" = "Bağlantı belirteci alınırken hata oluştu.";
+
+/* Error message when the connection token provider operation times out. */
+"hardware.cardReader.underlyingError.connectionTokenProviderTimedOut" = "Bağlantı belirteci talebi zaman aşımına uğradı.";
+
+/* Error message when a feature is unavailable. */
+"hardware.cardReader.underlyingError.featureNotAvailable" = "Lütfen destek ekibiyle iletişime geçin. Özellik kullanılamıyor.";
+
+/* Error message when forwarding a live mode payment in test mode is prohibited. */
+"hardware.cardReader.underlyingError.forwardingLiveModePaymentInTestMode" = "Canlı modda canlı mod ödemesinin iletilmesi yasaktır.";
+
+/* Error message when forwarding a test mode payment in live mode is prohibited. */
+"hardware.cardReader.underlyingError.forwardingTestModePaymentInLiveMode" = "Canlı modda test modu ödemesinin iletilmesi yasaktır.";
+
+/* Error message when Interac is not supported in offline mode. */
+"hardware.cardReader.underlyingError.interacNotSupportedOffline" = "Interac, çevrimdışı modda desteklenmez.";
+
+/* Error message when an internal network error occurs. */
+"hardware.cardReader.underlyingError.internalNetworkError" = "Bilinmeyen bir ağ hatası oluştu.";
+
+/* Error message when the internet connection operation timed out. */
+"hardware.cardReader.underlyingError.internetConnectTimeOut" = "İnternetten okuyucuya bağlanma işlemi zaman aşımına uğradı. Cihazınızın ve okuyucunun aynı Wifi ağında olduğundan ve okuyucunuzun Wifi ağına bağlı olduğundan emin olun.";
+
+/* Error message when the client secret is invalid. */
+"hardware.cardReader.underlyingError.invalidClientSecret" = "Lütfen destek ekibiyle iletişime geçin. İstemci gizli anahtarı geçersiz.";
+
+/* Error message when the discovery configuration is invalid. */
+"hardware.cardReader.underlyingError.invalidDiscoveryConfiguration" = "Lütfen destek ekibiyle iletişime geçin. Keşif yapılandırması geçersiz.";
+
+/* Error message when the location ID parameter is invalid. */
+"hardware.cardReader.underlyingError.invalidLocationIdParameter" = "Konum kimliği geçersiz.";
+
+/* Error message when the reader for update is invalid. */
+"hardware.cardReader.underlyingError.invalidReaderForUpdate" = "Güncellenecek okuyucu geçersiz.";
+
+/* Error message when the refund parameters are invalid. */
+"hardware.cardReader.underlyingError.invalidRefundParameters" = "Lütfen destek ekibiyle iletişime geçin. Para iadesi parametreleri geçersiz.";
+
+/* Error message when a required parameter is invalid. */
+"hardware.cardReader.underlyingError.invalidRequiredParameter" = "Lütfen destek ekibiyle iletişime geçin. Gerekli bir parametre geçersiz.";
+
+/* Error message when EMV data is missing. */
+"hardware.cardReader.underlyingError.missingEMVData" = "Okuyucu, sağlanan ödeme yönteminden veri okuyamadı. Bu hata tekrar ederse okuyucu arızalı olabilir, lütfen destek ekibiyle iletişime geçin.";
+
+/* Error message when the payment intent is missing. */
+"hardware.cardReader.underlyingError.nilPaymentIntent" = "Lütfen destek ekibiyle iletişime geçin. Ödeme amacı eksik.";
+
+/* Error message when the refund payment method is missing. */
+"hardware.cardReader.underlyingError.nilRefundPaymentMethod" = "Lütfen destek ekibiyle iletişime geçin. Para iadesi ödeme yöntemi eksik.";
+
+/* Error message when the setup intent is missing. */
+"hardware.cardReader.underlyingError.nilSetupIntent" = "Lütfen destek ekibiyle iletişime geçin. Kurulum amacı eksik.";
+
+/* Error message when the card is expired and offline mode is active. */
+"hardware.cardReader.underlyingError.offlineAndCardExpired" = "Çevrimdışıyken ödeme onaylanıyor ve kartın kullanım süresinin dolduğu tespit edildi.";
+
+/* Error message when there is a mismatch between offline collect and confirm. */
+"hardware.cardReader.underlyingError.offlineCollectAndConfirmMismatch" = "Lütfen ödeme alınırken ve onaylanırken ağ bağlantısının kesilmediğinden emin olun.";
+
+/* Error message when a test card is used in live mode while offline. */
+"hardware.cardReader.underlyingError.offlineTestCardInLivemode" = "Çevrimdışıyken canlı modda test kartı kullanılır.";
+
+/* Error message when the offline transaction was declined. */
+"hardware.cardReader.underlyingError.offlineTransactionDeclined" = "Çevrimdışıyken bir ödemenin onaylanması ve kartın doğrulanması başarısız oldu.";
+
+/* Error message when online PIN is not supported in offline mode. */
+"hardware.cardReader.underlyingError.onlinePinNotSupportedOffline" = "Çevrimiçi Pin, çevrimdışı modda desteklenmez. Lütfen ödemeyi farklı bir kartla yapmayı deneyin.";
+
+/* Error message when the reader connection configuration is invalid. */
+"hardware.cardReader.underlyingError.readerConnectionConfigurationInvalid" = "Okuyucu bağlantısı yapılandırması geçersiz.";
+
+/* Error message when the reader is missing encryption keys. */
+"hardware.cardReader.underlyingError.readerMissingEncryptionKeys" = "Okuyucuda ödeme almak için gereken şifreleme anahtarları eksik, okuyucunun bağlantısı kesilip yeniden yüklendi. Anahtarları yeniden yüklemeyi denemek için okuyucuyu tekrar bağlayın. Bu hata devam ederse lütfen desteğe başvurun.";
+
+/* Error message when the reader software update fails due to an expired update. */
+"hardware.cardReader.underlyingError.readerSoftwareUpdateFailedExpiredUpdate" = "Güncellemenin süresi dolduğundan okuyucu yazılımı güncellemesi başarısız oldu. Yeni güncelleme almak için lütfen okuyucunun bağlantısını kesip yeniden bağlanın.";
+
+/* Error message when the reader tipping parameter is invalid. */
+"hardware.cardReader.underlyingError.readerTippingParameterInvalid" = "Lütfen destek ekibiyle iletişime geçin. Okuyucu bahşiş parametresi geçersiz.";
+
+/* Error message when the refund operation failed. */
+"hardware.cardReader.underlyingError.refundFailed" = "Para iadesi başarısız oldu. Müşterinin bankası veya kartını düzenleyen kurum, doğru şekilde işleme alamadı (ör. kapalı banka hesabı veya kartla ilgili bir sorun).";
+
+/* Error message when there is an error decoding the Stripe API response. */
+"hardware.cardReader.underlyingError.stripeAPIResponseDecodingError" = "Lütfen destek ekibiyle iletişime geçin. Stripe API yanıtının şifresi çözülürken hata oluştu.";
+
+/* Error message when an unexpected error occurs with the reader. */
+"hardware.cardReader.underlyingError.unexpectedReaderError" = "Okuyucuyla ilgili beklenmedik bir hata oluştu.";
+
+/* Error message when the reader's IP address is unknown. */
+"hardware.cardReader.underlyingError.unknownReaderIpAddress" = "Keşiften döndürülen okuyucunun IP adresi yok ve bu okuyucuya bağlanılamıyor.";
 
 /* Title of the view containing Coupons list */
 "hubMenu.couponsList" = "Kuponlar";
@@ -10858,9 +11024,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory. */
 "menu.payments.tapToPay.about.row.title" = "Tap to Pay Hakkında";
-
-/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
-"menu.payments.tapToPay.feedback.row.title" = "Görüşlerinizi Paylaşın";
 
 /* Title for the Tap to Pay section in the In-Person payments settings */
 "menu.payments.tapToPay.section.title" = "Tap To Pay";
@@ -11583,6 +11746,21 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Toplamlar yüklenemedi";
 
+/* Button title for sending a receipt */
+"pointOfSale.sendreceipt.button.title" = "Gönder";
+
+/* Text that shows at the top of the receipts screen along the back button. */
+"pointOfSale.sendreceipt.emailReceiptNavigationText" = "Faturayı e-posta ile gönderin";
+
+/* Error message that is displayed when an invalid email is used when emailing a receipt. */
+"pointOfSale.sendreceipt.emailValidationErrorText" = "Lütfen geçerli bir e-posta girin.";
+
+/* Generic error message that is displayed when there's an error emailing a receipt. */
+"pointOfSale.sendreceipt.sendReceiptErrorText" = "Bu e-posta gönderilmeye çalışılırken hata oluştu. Tekrar deneyin.";
+
+/* Placeholder for the view where an email address should be entered when sending receipts */
+"pointOfSale.sendreceipt.textfield.placeholder" = "E-posta yazın";
+
 /* Button to dismiss the payments onboarding sheet from the POS dashboard. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "İptal Et";
 
@@ -11668,10 +11846,13 @@ which should be translated separately and considered part of this sentence. */
 "pos.simpleProductsModal.title" = "Ürünlerimi neden göremiyorum?";
 
 /* Button title for new order button */
-"pos.totalsView.newOrder" = "Yeni sipariş";
+"pos.totalsView.button.newOrder" = "Yeni sipariş";
 
 /* Button title for the receipt button */
-"pos.totalsView.sendReceipt" = "Fatura";
+"pos.totalsView.button.sendReceipt" = "Faturayı e-posta ile gönderin";
+
+/* Text for the banner requiring specific WooCommerce version. */
+"pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "Lütfen WooCommerce'ü 9.5.0 veya daha yeni bir sürüme güncelleyin";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "Ara Toplam";
@@ -12112,6 +12293,18 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "İptal et";
 
+/* Badge wording when the customs information is completed */
+"shippingLabels.customs.completedBadge" = "Tamamlandı";
+
+/* Customs row title in the main Shipping Labels view */
+"shippingLabels.customs.customsTitle" = "Gümrük";
+
+/* Accessibility label for the button to edit the shipping labels customs */
+"shippingLabels.customs.editButtonAccessibiliy" = "Kargo Etiketi Gümrük Bilgilerini Düzenleme";
+
+/* Badge wording when the customs information is missing */
+"shippingLabels.customs.missingInfo" = "Bilgi eksik";
+
 /* Accessibility title for the edit button on a shipping line row. */
 "shippingLine.edit.button.accessibilityLabel" = "Gönderimi düzenle";
 
@@ -12177,6 +12370,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in date range picker to add a Custom Range tab */
 "storePerformanceViewModel.addCustomRange" = "Ekle";
+
+/* Button to edit the items to be displayed on the store picker */
+"storePicker.editList" = "Düzenle";
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "Mevcut mağazayı bağla";
@@ -12328,6 +12524,84 @@ which should be translated separately and considered part of this sentence. */
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is successful, we show a Notice to alert the user – this is the title of the notice. */
 "tap.to.pay.try.payment.refundNotice.success.title" = "Tap To Pay Deneme Ödemesi";
+
+/* Title of the button to dismiss the Tap to Pay awareness screen */
+"tapToPay.awarenessMoment.closeButton" = "Kapat";
+
+/* A title for CTA to start Tap to Pay set up process */
+"tapToPay.awarenessMoment.enableButton" = "Şimdi etkinleştir";
+
+/* A title for CTA to open a view explaining Tap to Pay */
+"tapToPay.awarenessMoment.learnMore" = "Daha fazla bilgi edinin";
+
+/* A subtitle for the Tap to Pay modal promoting the feature. */
+"tapToPay.awarenessMoment.subtitle" = "Yalnızca iPhone ile temassız ödeme kabul edin.";
+
+/* Title for the Tap to Pay modal promoting the feature. When using the name “Tap to Pay on iPhone” in headlines or copy, do not shorten to “Tap to Pay” or “Apple Tap to Pay. Always typeset “Tap to Pay on iPhone” as five words. The T and Ps should be uppercased, followed by lowercase letters. */
+"tapToPay.awarenessMoment.title" = "iPhone'da Tap to Pay. Artık kullanılabilir.";
+
+/* Text for the button to take one step back in Tap to Pay education flow */
+"tapToPay.education.back" = "Geri";
+
+/* Text for the button to dismiss Tap to Pay education flow */
+"tapToPay.education.done" = "Tamam";
+
+/* Text for the button to go to the next Tap to Pay education flow step */
+"tapToPay.education.next" = "Sonraki";
+
+/* Button title for Set up Tap to Pay button in Tap to Pay education flow. The button opens the Set Up Tap to Pay on iPhone flow. */
+"tapToPay.education.setUpTapToPay" = "iPhone'da Tap to Pay kurun";
+
+/* Text for the button to skip Tap to Pay education flow to the last step */
+"tapToPay.education.skip" = "Atla";
+
+/* First description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep1" = "iPhone'unuzda sipariş oluşturun, ürünleri veya özel tutarı ekleyin ve iPhone'da Tap to Pay ile ödeme yapın.";
+
+/* Second description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep2" = "iPhone'unuzu müşteriye gösterin.";
+
+/* Third description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep3" = "Müşteriniz cihazını iPhone'unuzun yakınında, temassız simgesinin üstünde tutar.";
+
+/* Fourth description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep4" = "Tamamlandı onay işaretini gördüğünüzde kart okunması tamamlanmıştır ve işlem yapılmıştır.";
+
+/* Title for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.title" = "iPhone'da Tap to Pay ile Apple Pay ve diğer dijital cüzdanlar nasıl kabul edilir?";
+
+/* First description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep1" = "iPhone'unuzda sipariş oluşturun, ürünleri veya özel tutarı ekleyin ve iPhone'da Tap to Pay ile ödeme yapın.";
+
+/* Second description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep2" = "iPhone'unuzu müşteriye gösterin.";
+
+/* Third description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep3" = "Müşteriniz kartını iPhone'unuzun üzerinde temassız simgesinin üstünde yatay olarak tutar.";
+
+/* Fourth description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep4" = "Tamamlandı onay işaretini gördüğünüzde kart okunması tamamlanmıştır ve işlem yapılmıştır.";
+
+/* Title for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.title" = "iPhone'da Tap to Pay ile temassız kart nasıl kabul edilir?";
+
+/* Message displayed when a contactless transaction fails due to PIN issues. Provides steps to retry using another contactless payment method or alternative payment options. */
+"tapToPay.education.step.fallbackMethod.description" = "Bazı kartlarda Pin kodu kullanılarak temassız işlem yapılamaz, bu da ödemenin başarısız olmasına neden olur.\n\nMüşteriye başka bir temassız kartı veya dijital cüzdanı olup olmadığını sorun ve işleme iPhone'da Tap to Pay ile devam etmek için Yeniden Almayı Dene seçeneğini belirleyin.\n\nYoksa Başka Ödeme Yöntemi Dene seçeneğini belirleyin ve Nakit, Ödeme Bağlantısı Paylaş, Nakit Okuyucu veya Ödemek İçin Tara gibi başka bir desteklenen alternatifi seçin.";
+
+/* Title for the 'Fallback payment method' Tap to Pay merchant education step */
+"tapToPay.education.step.fallbackMethod.title" = "Alternatif bir ödeme yöntemi nasıl kabul edilir?";
+
+/* Description for the initial Tap to Pay merchant education step. When using the name “Tap to Pay on iPhone” in headlines or copy, do not shorten to “Tap to Pay” or “Apple Tap to Pay. Always typeset “Tap to Pay on iPhone” as five words. The T and Ps should be uppercased, followed by lowercase letters. */
+"tapToPay.education.step.intro.description" = "iPhone ve Woo uygulamasında Tap to Pay ile fiziksel banka veya kredi kartlarıyla Apple Pay'e ya da diğer dijital cüzdanlara şahsen, temassız olarak yapılan ödemeleri doğrudan iPhone'unuzdan kabul edebilirsiniz. Ekstra donanım gerekmez. Kolay, güvenli ve gizlidir.";
+
+/* Title for the initial Tap to Pay merchant education step */
+"tapToPay.education.step.intro.title" = "Yalnızca iPhone ile temassız ödeme kabul edin.";
+
+/* Instructions for customers using accessibility options during PIN entry with Tap to Pay on iPhone.Describes how to use audible guidance for drawing or tapping the PIN digits and the gesture to submit. */
+"tapToPay.education.step.pin.description" = "iPhone'da Tap to Pay kullanırken bazı durumlarda müşterilerden kartlarının Pin kodunu girmeleri istenir.\n\nGörsel veya farklı şekilde destek alması gereken müşteriler için Pin ekranında \"Erişilebilirlik Seçenekleri\" seçilerek erişilebilirlik seçeneklerine erişilebilir. Sesli talimatlar müşterileri Pin kodunu ekranda çizmeleri veya her rakamı ekrana dokunarak (1 için bir kere, 2 için iki kere dokunma gibi) girmeleri için yönlendirir. Pin kodunu göndermek için iki parmakla ekranı sağa kaydırmaları yeterlidir.";
+
+/* Title for the 'PIN entry' Tap to Pay merchant education step */
+"tapToPay.education.step.pin.title" = "Kart için PIN nasıl girilir?";
 
 /* A label prompting users to learn more about Tap to Pay on iPhone.
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -12605,11 +12879,11 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "Yetişkin İmzası Gerekli";
 
+/* Label for the toggle to mark the order as complete on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.afterPurchaseMarkComplete" = "Bir etiket satın aldıktan sonra bu siparişi tamamlandı olarak işaretleyin ve müşteriyi bilgilendirin";
+
 /* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
 "wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (temel ücret)";
-
-/* Label for the toggle to mark the order as complete on the shipping label creation screen */
-"wooShipping.createLabels.bottomSheet.markComplete" = "Bu siparişi tamamlandı olarak işaretleyin ve müşteriyi bilgilendirin";
 
 /* Header for order details section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.orderDetails" = "Sipariş bilgileri";
@@ -12652,6 +12926,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
+
+/* Heading for the package section in the shipping label creation screen. */
+"wooShipping.createLabels.package.title" = "Paket";
+
+/* Label for the total shipment weight input field in the shipping label creation screen. */
+"wooShipping.createLabels.package.totalWeight" = "Toplam gönderi ağırlığı (paketle)";
 
 /* Link for more information about how to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.info" = "Mobil cihazınızdan nasıl yazdıracağınız hakkında bilgi edinin";

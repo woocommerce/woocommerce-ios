@@ -1,3 +1,3 @@
-In sole due settimane abbiamo riempito questa release di contenuti. È disponibile il supporto per l'identificatore di prodotto globale GTIN ed è possibile modificare l'invito all'azione nelle campagne Blaze.
 
-L'impostazione del negozio per i pagamenti di persona è più veloce, le conferme di invio ricevute sono più chiare e il test Tap to Pay su iPhone è più fluido. Inoltre, abbiamo migliorato le statistiche della bacheca ed eliminato alcuni bug.
+Con questo aggiornamento, l'esperienza WooCommerce è ancora più affidabile e chiara. Con configurazione Jetpack migliorata, gestione dei media più fluida e flussi di lavoro relativi al prodotto e ai pagamenti più efficienti. Inoltre abbiamo ottimizzato l'archiviazione e gestito i problemi relativi all'interfaccia utente per migliorare le prestazioni. Per concludere, prova la guida introduttiva a Tocca per pagare.
+

@@ -39,7 +39,7 @@ struct ItemList<HeaderView: View>: View {
             content: {
                 LazyVStack {
                     headerView
-                    
+
                     ForEach(state.items) { item in
                         ItemListRow(item: item)
                     }

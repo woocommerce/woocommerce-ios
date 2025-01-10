@@ -34,6 +34,9 @@ struct WooShippingCreateLabelsView: View {
     /// Whether the shipment details bottom sheet is expanded.
     @State private var isShipmentDetailsExpanded = false
 
+    /// Whether the origin address list sheet is presented.
+    @State private var isOriginAddressListPresented = false
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -111,10 +114,20 @@ struct WooShippingCreateLabelsView: View {
                             HStack(alignment: .firstTextBaseline, spacing: Layout.bottomSheetSpacing) {
                                 Text(Localization.BottomSheet.shipFrom)
                                     .trackSize(size: $shipmentDetailsShipFromSize)
-                                Text(viewModel.originAddress)
-                                    .lineLimit(1)
-                                    .truncationMode(.tail)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                Button {
+                                    isOriginAddressListPresented = true
+                                } label: {
+                                    HStack {
+                                        Text(viewModel.originAddress)
+                                            .lineLimit(1)
+                                            .truncationMode(.tail)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                        Image(systemName: "ellipsis")
+                                            .frame(width: Layout.ellipsisWidth)
+                                            .bold()
+                                    }
+                                }
+                                .buttonStyle(TextButtonStyle())
                             }
                             .padding(Layout.bottomSheetPadding)
                             Divider()
@@ -157,6 +170,11 @@ struct WooShippingCreateLabelsView: View {
                     .padding([.bottom, .horizontal], Layout.bottomSheetPadding)
                 }
                 .ignoresSafeArea(edges: .horizontal)
+                .sheet(isPresented: $isOriginAddressListPresented) {
+                    WooShippingOriginAddressListView(viewModel: viewModel.originAddresses)
+                        .presentationDetents([.medium, .large])
+                        .presentationDragIndicator(.visible)
+                }
             }
             .shippingWeightUnit(viewModel.weightUnit)
             .shippingDimensionsUnit(viewModel.dimensionsUnit)
@@ -271,6 +289,7 @@ private extension WooShippingCreateLabelsView {
         static let iconSize: CGFloat = 32
         static let rowHeight: CGFloat = 32
         static let chevronSize: CGFloat = 30
+        static let ellipsisWidth: CGFloat = 22
         static let bottomSheetSpacing: CGFloat = 16
         static let bottomSheetPadding: CGFloat = 16
     }

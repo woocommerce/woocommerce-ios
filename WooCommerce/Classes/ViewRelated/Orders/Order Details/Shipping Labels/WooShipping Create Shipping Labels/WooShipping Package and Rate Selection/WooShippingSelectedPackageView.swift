@@ -38,6 +38,8 @@ struct WooShippingSelectedPackageView: View {
         }
     }
 
+    @FocusState var isTotalWeightInputActive: Bool
+
     private var shipmentWeight: some View {
         VStack(alignment: .leading) {
             Text(Localization.totalWeight)
@@ -46,6 +48,18 @@ struct WooShippingSelectedPackageView: View {
                 TextField("", text: $totalWeight)
                     .keyboardType(.decimalPad)
                     .bodyStyle()
+                    .focused($isTotalWeightInputActive)
+                    .toolbar {
+                        ToolbarItemGroup(placement: .keyboard) {
+                            Spacer()
+                            Button {
+                                isTotalWeightInputActive = false
+                            } label: {
+                                Text(Localization.done)
+                                    .bold()
+                            }
+                        }
+                    }
                 Text(weightUnit)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
@@ -70,6 +84,9 @@ private extension WooShippingSelectedPackageView {
         static let totalWeight = NSLocalizedString("wooShipping.createLabels.package.totalWeight",
                                                     value: "Total shipment weight (with package)",
                                                     comment: "Label for the total shipment weight input field in the shipping label creation screen.")
+        static let done = NSLocalizedString("wooShipping.createLabels.package.done",
+                                            value: "Done",
+                                            comment: "Button for dismissing the keyboard")
     }
 }
 

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-27 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-12-26 09:54:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -251,10 +251,6 @@ which should be translated separately and considered part of this sentence. */
 /* Number of items in packages in Shipping Labels in plural form. Reads like - 10 items */
 "- %1$d items" = "- %1$d個のアイテム";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 1
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 1 */
-"1" = "1";
-
 /* Navigation bar title for selecting multiple products when one product has been selected.
    Title of the action button at the bottom of the Select Products screen when one product is selected */
 "1 Product Selected" = "1件の商品を選択済み";
@@ -271,19 +267,11 @@ which should be translated separately and considered part of this sentence. */
 /* Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment */
 "1. Create an order" = "1. 注文を作成する";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 2
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
-"2" = "2";
-
 /* Disclaimer regarding some of the features related to shipping. */
 "2. Only available in the U.S. – an additional extension will be required for other countries." = "2. 米国でのみ利用可能 – 他の国ではさらに延長が必要になります。";
 
 /* Step 2 of the 'How it works' list, instructing the merchant to how to select Tap to Pay payments */
 "2. Tap “Collect Payment” and choose “Tap to Pay on iPhone”." = "2. 「支払いを受け取る」をタップし「Tap to Pay on iPhone」を選択します。";
-
-/* Settings > Manage Card Reader > Connect > Help hint number 3
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
-"3" = "2";
 
 /* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
 "3. Present your iPhone to the customer." = "3. お客様に iPhone を提示します。";
@@ -985,9 +973,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button on the store onboarding launched store screen. */
 "Back to My Store" = "ストアに戻る";
 
-/* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
-"Back to Order" = "注文に戻る";
-
 /* Text for the button to dismiss the store picker error screen */
 "Back to sites" = "サイトに戻る";
 
@@ -1559,7 +1544,6 @@ which should be translated separately and considered part of this sentence. */
 "Clear selection" = "選択を解除";
 
 /* Accessibility label for the close button
-   Button to dismiss modal overlay. Presented to users after refunding a payment fails
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
    Navigation bar action to close the gift card code scanner.
@@ -2269,7 +2253,6 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when finding a reader to connect to fails
    Button to dismiss the first created product screen
    Button to dismiss the Jetpack benefits screen.
-   Button to dismiss. Presented to users after collecting a payment fails
    Button to dismiss. Presented to users when updating the card reader software fails
    Dismiss button in inbox note row.
    Dismiss button in store picker
@@ -5989,9 +5972,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
 "Return to My Store" = "ストアに戻る";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
-"Return to Payments" = "支払いに戻る";
-
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "荷物を配達できなかった場合、荷送人に差し戻す";
 
@@ -6381,6 +6361,9 @@ which should be translated separately and considered part of this sentence. */
 /* Header text on Add New Custom Package screen in Shipping Label flow
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "商品の配送に使用する荷物を設定します。 今後の注文用に保存されます。";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
+"SetUpTapToPayPaymentPrompt.skipButton.title" = "後で";
 
 /* Settings button in the hub menu
    Settings navigation title
@@ -7519,9 +7502,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Tab selector title that shows the statistics for this year */
 "This Year" = "今年";
-
-/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "このアプリが Bluetooth 経由でカードリーダーに接続するには権限が必要です。許可する場合は、プライバシー設定を変更してください。";
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "このアプリは、サーバーに WooCommerce 3.5をインストールしない限り、正常に機能しません。引き続きアプリを使用するには、すぐに更新する必要があります。";
@@ -9989,8 +9969,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "Reader をスキャンしています";
 
+/* A title for CTA to present native location permission alert */
+"cardPresentPayment.locationPreAlert.continueButton" = "続行";
+
+/* A notice at the bottom explaining that location services can be changed in the Settings app later */
+"cardPresentPayment.locationPreAlert.settingsNotice" = "このオプションは設定アプリで後から変更できます。";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"cardPresentPayment.locationPreAlert.subtitle" = "位置情報サービスのパーミッションは、不正行為を減らし、係争を防止して安全な支払いを確保するために必要です。";
+
+/* A title explaining why location services are needed to make a payment */
+"cardPresentPayment.locationPreAlert.title" = "次の画面で位置情報サービスを有効にして、支払いを許可します。";
+
+/* Dismisses the location alert */
+"cardPresentPayment.locationRequired.dismiss" = "閉じる";
+
+/* Opens iOS's Device Settings for the app */
+"cardPresentPayment.locationRequired.openSettings" = "端末設定を開く";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"cardPresentPayment.locationRequired.subtitle" = "位置情報サービスのパーミッションは、不正行為を減らし、係争を防止して安全な支払いを確保するために必要です。";
+
+/* A title explaining the requirement of location services for making a payment */
+"cardPresentPayment.locationRequired.title" = "端末設定で位置情報サービスを有効にして、支払いを許可します。";
+
+/* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.backToOrder" = "注文に戻る";
+
+/* Button to dismiss modal overlay. Presented to users after refunding a payment fails */
+"cardPresentPaymentsModal.error.close" = "閉じる";
+
+/* Button to dismiss. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.dismiss" = "閉じる";
+
+/* Button to email receipts. Presented to users after a payment processing has failed */
+"cardPresentPaymentsModal.error.emailReceipt" = "領収書をメールで送信";
+
 /* Message informing the user that a receipt has been sent to their email address. %1$@ is the email address */
 "cardPresentPaymentsModal.error.receiptMessage" = "領収書を %1$@ に送信しました";
+
+/* Button to dismiss modal overlay and try another payment method. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.tryAnotherPaymentMethod" = "別の支払い方法を試す";
 
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "cardPresentPaymentsModal.success.emailReceipt" = "領収書をメールで送信";
@@ -10496,6 +10515,27 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "端末上のメディア";
 
+/* Button to dismiss the Edit Store List view */
+"editStoreListView.cancelButton" = "キャンセル";
+
+/* Footer of the Current Store section of the the Edit Store List view */
+"editStoreListView.currentStoreFooter" = "このストアを非表示にする前に、別のストアに切り替えてください";
+
+/* Header of the Current Store section of the the Edit Store List view */
+"editStoreListView.currentStoreHeader" = "現在のストア";
+
+/* Footer of the Other Stores section on the Edit Store List view */
+"editStoreListView.otherStoresFooter" = "選択されていないストアはストア選択画面から除外されます";
+
+/* Header of the Other Stores section on the Edit Store List view */
+"editStoreListView.otherStoresHeader" = "その他のストア";
+
+/* Button to save changes in the Edit Store List view */
+"editStoreListView.saveButton" = "保存";
+
+/* Title of the Edit Store List view */
+"editStoreListView.title" = "表示されるストア";
+
 /* Title for button to view the feedback survey about adding shipping to an order */
 "editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "フィードバックを共有";
 
@@ -10634,6 +10674,132 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "すべてのキャンペーンを表示";
+
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"hardware.cardReader.cardReaderServiceError.bluetoothDenied" = "このアプリでカードリーダーに接続するには Bluetooth へのパーミッションが必要です。 システムの設定アプリの「Woo」セクションでパーミッションを付与できます。";
+
+/* Error message when the Apple built-in reader account is deactivated. */
+"hardware.cardReader.underlyingError.appleBuiltInReaderAccountDeactivated" = "リンクした Apple ID アカウントが無効化されています。";
+
+/* Error message when Bluetooth is already paired with another device. */
+"hardware.cardReader.underlyingError.bluetoothAlreadyPairedWithAnotherDevice" = "Bluetooth リーダーはすでに別の端末とペアリングされています。 リーダーをこの端末に接続するには、ペアリングをリセットする必要があります。";
+
+/* Error message when the Bluetooth connection has an invalid location ID parameter. */
+"hardware.cardReader.underlyingError.bluetoothConnectionInvalidLocationIdParameter" = "Bluetooth 接続に無効なロケーション ID があります。";
+
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"hardware.cardReader.underlyingError.bluetoothDenied" = "このアプリでカードリーダーに接続するには Bluetooth へのパーミッションが必要です。 システムの設定アプリの「Woo」セクションでパーミッションを付与できます。";
+
+/* Error message when the Bluetooth peer removed pairing information. */
+"hardware.cardReader.underlyingError.bluetoothPeerRemovedPairingInformation" = "リーダーがこの端末のペアリング情報を削除しました。 iOS 設定ではリーダーは不要です。";
+
+/* Error message when Bluetooth reconnect has started. */
+"hardware.cardReader.underlyingError.bluetoothReconnectStarted" = "Bluetooth リーダーの接続が解除されました。再接続を試行しています。";
+
+/* Error message when an operation cannot be canceled because it is already completed. */
+"hardware.cardReader.underlyingError.cancelFailedAlreadyCompleted" = "この操作はすでに完了しているため、キャンセルできませんでした。";
+
+/* Error message when card swipe functionality is unavailable. */
+"hardware.cardReader.underlyingError.cardSwipeNotAvailable" = "カードのスワイプ機能は利用できません。";
+
+/* Error message when the command is not allowed. */
+"hardware.cardReader.underlyingError.commandNotAllowed" = "サポートにお問い合わせください。このコマンドはオペレーティングシステムによる実行が許可されていません。";
+
+/* Error message when the command requires cardholder consent. */
+"hardware.cardReader.underlyingError.commandRequiresCardholderConsent" = "この操作を続行するには、カード所有者が同意する必要があります。";
+
+/* Error message when the connection token provider finishes with an error. */
+"hardware.cardReader.underlyingError.connectionTokenProviderCompletedWithError" = "接続トークンの取得中にエラーが発生しました。";
+
+/* Error message when the connection token provider operation times out. */
+"hardware.cardReader.underlyingError.connectionTokenProviderTimedOut" = "接続トークンのリクエストがタイムアウトしました。";
+
+/* Error message when a feature is unavailable. */
+"hardware.cardReader.underlyingError.featureNotAvailable" = "サポートにお問い合わせください。この機能は利用できません。";
+
+/* Error message when forwarding a live mode payment in test mode is prohibited. */
+"hardware.cardReader.underlyingError.forwardingLiveModePaymentInTestMode" = "テストモードでライブモードの支払いを転送することは禁止されています。";
+
+/* Error message when forwarding a test mode payment in live mode is prohibited. */
+"hardware.cardReader.underlyingError.forwardingTestModePaymentInLiveMode" = "ライブモードでテストモードの支払いを転送することは禁止されています。";
+
+/* Error message when Interac is not supported in offline mode. */
+"hardware.cardReader.underlyingError.interacNotSupportedOffline" = "オフラインモードでは Interac はサポートされていません。";
+
+/* Error message when an internal network error occurs. */
+"hardware.cardReader.underlyingError.internalNetworkError" = "不明なネットワークエラーが発生しました。";
+
+/* Error message when the internet connection operation timed out. */
+"hardware.cardReader.underlyingError.internetConnectTimeOut" = "インターネット経由でのリーダーとの接続がタイムアウトしました。 お使いの端末とリーダーが同じ Wi-Fi ネットワークにあり、リーダーが Wi-Fi ネットワークに接続されていることを確認します。";
+
+/* Error message when the client secret is invalid. */
+"hardware.cardReader.underlyingError.invalidClientSecret" = "サポートにお問い合わせください。クライアントシークレットが無効です。";
+
+/* Error message when the discovery configuration is invalid. */
+"hardware.cardReader.underlyingError.invalidDiscoveryConfiguration" = "サポートにお問い合わせください。検出の設定が無効です。";
+
+/* Error message when the location ID parameter is invalid. */
+"hardware.cardReader.underlyingError.invalidLocationIdParameter" = "ロケーション ID が無効です。";
+
+/* Error message when the reader for update is invalid. */
+"hardware.cardReader.underlyingError.invalidReaderForUpdate" = "アップデートのリーダーが無効です。";
+
+/* Error message when the refund parameters are invalid. */
+"hardware.cardReader.underlyingError.invalidRefundParameters" = "サポートにお問い合わせください。返金の変数が無効です。";
+
+/* Error message when a required parameter is invalid. */
+"hardware.cardReader.underlyingError.invalidRequiredParameter" = "サポートにお問い合わせください。必須の変数が無効です。";
+
+/* Error message when EMV data is missing. */
+"hardware.cardReader.underlyingError.missingEMVData" = "提示された支払い方法からリーダーがデータを読み込めませんでした。 このエラーが繰り返し発生する場合は、リーダーに問題がある可能性があります。サポートにお問い合わせください。";
+
+/* Error message when the payment intent is missing. */
+"hardware.cardReader.underlyingError.nilPaymentIntent" = "サポートにお問い合わせください。支払いのインテントがありません。";
+
+/* Error message when the refund payment method is missing. */
+"hardware.cardReader.underlyingError.nilRefundPaymentMethod" = "サポートにお問い合わせください。返金の支払い方法がありません。";
+
+/* Error message when the setup intent is missing. */
+"hardware.cardReader.underlyingError.nilSetupIntent" = "サポートにお問い合わせください。設定のインテントがありません。";
+
+/* Error message when the card is expired and offline mode is active. */
+"hardware.cardReader.underlyingError.offlineAndCardExpired" = "オフライン中に支払いを確認したところ、カードの有効期限が切れていることがわかりました。";
+
+/* Error message when there is a mismatch between offline collect and confirm. */
+"hardware.cardReader.underlyingError.offlineCollectAndConfirmMismatch" = "支払いの受け取りと確認の際にネットワーク接続が安定していることを確認してください。";
+
+/* Error message when a test card is used in live mode while offline. */
+"hardware.cardReader.underlyingError.offlineTestCardInLivemode" = "オフライン中にテストカードがライブモードで使用されています。";
+
+/* Error message when the offline transaction was declined. */
+"hardware.cardReader.underlyingError.offlineTransactionDeclined" = "オフライン中に支払いを確認したところ、カードを認証できませんでした。";
+
+/* Error message when online PIN is not supported in offline mode. */
+"hardware.cardReader.underlyingError.onlinePinNotSupportedOffline" = "オフラインモードではオンライン PIN はサポートされていません。 別のカードでもう一度お支払いをお試しください。";
+
+/* Error message when the reader connection configuration is invalid. */
+"hardware.cardReader.underlyingError.readerConnectionConfigurationInvalid" = "リーダーの接続設定が無効です。";
+
+/* Error message when the reader is missing encryption keys. */
+"hardware.cardReader.underlyingError.readerMissingEncryptionKeys" = "支払いの受け取りに必要な暗号化キーがリーダーにありません。リーダーが接続を解除して再起動しました。 リーダーに再接続して、キーの再インストールをお試しください。 エラーが解決しない場合は、サポートにご連絡ください。";
+
+/* Error message when the reader software update fails due to an expired update. */
+"hardware.cardReader.underlyingError.readerSoftwareUpdateFailedExpiredUpdate" = "アップデートの有効期限が切れているため、リーダーのソフトウェアを更新できませんでした。 リーダーの接続を解除し、再接続して新しいアップデートを取得してください。";
+
+/* Error message when the reader tipping parameter is invalid. */
+"hardware.cardReader.underlyingError.readerTippingParameterInvalid" = "サポートにお問い合わせください。リーダーのチップの変数が無効です。";
+
+/* Error message when the refund operation failed. */
+"hardware.cardReader.underlyingError.refundFailed" = "返金が失敗しました。 お客様がご利用の銀行またはカード発行会社で適切に処理されませんでした (銀行口座が閉鎖されている、カードに問題があるなど)。";
+
+/* Error message when there is an error decoding the Stripe API response. */
+"hardware.cardReader.underlyingError.stripeAPIResponseDecodingError" = "サポートにお問い合わせください。Stripe API レスポンスのデコード中にエラーが発生しました。";
+
+/* Error message when an unexpected error occurs with the reader. */
+"hardware.cardReader.underlyingError.unexpectedReaderError" = "リーダーに予期しないエラーが発生しました。";
+
+/* Error message when the reader's IP address is unknown. */
+"hardware.cardReader.underlyingError.unknownReaderIpAddress" = "検出により返されたリーダーには IP アドレスがないため、接続できません。";
 
 /* Title of the view containing Coupons list */
 "hubMenu.couponsList" = "クーポン";
@@ -10858,9 +11024,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory. */
 "menu.payments.tapToPay.about.row.title" = "Tap to Pay について";
-
-/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
-"menu.payments.tapToPay.feedback.row.title" = "フィードバックを共有";
 
 /* Title for the Tap to Pay section in the In-Person payments settings */
 "menu.payments.tapToPay.section.title" = "Tap To Pay";
@@ -11583,6 +11746,21 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "合計を読み込めませんでした";
 
+/* Button title for sending a receipt */
+"pointOfSale.sendreceipt.button.title" = "送信";
+
+/* Text that shows at the top of the receipts screen along the back button. */
+"pointOfSale.sendreceipt.emailReceiptNavigationText" = "領収書をメールで送信";
+
+/* Error message that is displayed when an invalid email is used when emailing a receipt. */
+"pointOfSale.sendreceipt.emailValidationErrorText" = "有効なメールアドレスを入力してください。";
+
+/* Generic error message that is displayed when there's an error emailing a receipt. */
+"pointOfSale.sendreceipt.sendReceiptErrorText" = "このメールを送信しようとしたところ、エラーが発生しました。 もう一度お試しください。";
+
+/* Placeholder for the view where an email address should be entered when sending receipts */
+"pointOfSale.sendreceipt.textfield.placeholder" = "メールアドレスを入力";
+
 /* Button to dismiss the payments onboarding sheet from the POS dashboard. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "キャンセル";
 
@@ -11668,10 +11846,13 @@ which should be translated separately and considered part of this sentence. */
 "pos.simpleProductsModal.title" = "商品が表示されないのはなぜですか ?";
 
 /* Button title for new order button */
-"pos.totalsView.newOrder" = "新しい注文";
+"pos.totalsView.button.newOrder" = "新しい注文";
 
 /* Button title for the receipt button */
-"pos.totalsView.sendReceipt" = "領収書";
+"pos.totalsView.button.sendReceipt" = "領収書をメールで送信";
+
+/* Text for the banner requiring specific WooCommerce version. */
+"pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "WooCommerce をバージョン9.5.0にアップデートしてください";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "小計";
@@ -12112,6 +12293,18 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "キャンセル";
 
+/* Badge wording when the customs information is completed */
+"shippingLabels.customs.completedBadge" = "完了";
+
+/* Customs row title in the main Shipping Labels view */
+"shippingLabels.customs.customsTitle" = "税関";
+
+/* Accessibility label for the button to edit the shipping labels customs */
+"shippingLabels.customs.editButtonAccessibiliy" = "配送ラベルの顧客情報を編集";
+
+/* Badge wording when the customs information is missing */
+"shippingLabels.customs.missingInfo" = "情報がありません";
+
 /* Accessibility title for the edit button on a shipping line row. */
 "shippingLine.edit.button.accessibilityLabel" = "配送を編集";
 
@@ -12177,6 +12370,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in date range picker to add a Custom Range tab */
 "storePerformanceViewModel.addCustomRange" = "追加";
+
+/* Button to edit the items to be displayed on the store picker */
+"storePicker.editList" = "編集";
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "既存のストアを連携";
@@ -12328,6 +12524,84 @@ which should be translated separately and considered part of this sentence. */
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is successful, we show a Notice to alert the user – this is the title of the notice. */
 "tap.to.pay.try.payment.refundNotice.success.title" = "Tap To Pay のお試し支払い";
+
+/* Title of the button to dismiss the Tap to Pay awareness screen */
+"tapToPay.awarenessMoment.closeButton" = "閉じる";
+
+/* A title for CTA to start Tap to Pay set up process */
+"tapToPay.awarenessMoment.enableButton" = "すぐに有効化";
+
+/* A title for CTA to open a view explaining Tap to Pay */
+"tapToPay.awarenessMoment.learnMore" = "さらに詳しく";
+
+/* A subtitle for the Tap to Pay modal promoting the feature. */
+"tapToPay.awarenessMoment.subtitle" = "非接触型決済は iPhone のみで受け付けています。";
+
+/* Title for the Tap to Pay modal promoting the feature. When using the name “Tap to Pay on iPhone” in headlines or copy, do not shorten to “Tap to Pay” or “Apple Tap to Pay. Always typeset “Tap to Pay on iPhone” as five words. The T and Ps should be uppercased, followed by lowercase letters. */
+"tapToPay.awarenessMoment.title" = "iPhone のTap to Pay。 現在利用できます。";
+
+/* Text for the button to take one step back in Tap to Pay education flow */
+"tapToPay.education.back" = "戻る";
+
+/* Text for the button to dismiss Tap to Pay education flow */
+"tapToPay.education.done" = "完了";
+
+/* Text for the button to go to the next Tap to Pay education flow step */
+"tapToPay.education.next" = "次";
+
+/* Button title for Set up Tap to Pay button in Tap to Pay education flow. The button opens the Set Up Tap to Pay on iPhone flow. */
+"tapToPay.education.setUpTapToPay" = "iPhone で Tap to Pay を設定";
+
+/* Text for the button to skip Tap to Pay education flow to the last step */
+"tapToPay.education.skip" = "スキップ";
+
+/* First description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep1" = "iPhone で注文を作成し、商品かカスタムの金額を追加して、iPhone の Tap to Pay で購入手続きをします。";
+
+/* Second description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep2" = "お客様に iPhone を提示します。";
+
+/* Third description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep3" = "お客様が端末を iPhone に近づけて、コンタクトレス記号にかざします。";
+
+/* Fourth description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep4" = "「完了」チェックマークが表示されたら、カードの読み込みが完了して取引が処理されます。";
+
+/* Title for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.title" = "iPhone の Tap to Pay で Apple Pay やその他のデジタルウォレットを受け付ける方法";
+
+/* First description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep1" = "iPhone で注文を作成し、商品かカスタムの金額を追加して、iPhone の Tap to Pay で購入手続きをします。";
+
+/* Second description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep2" = "お客様に iPhone を提示します。";
+
+/* Third description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep3" = "お客様がカードを iPhone の上部、コンタクトレス記号に水平にかざします。";
+
+/* Fourth description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep4" = "「完了」チェックマークが表示されたら、カードの読み込みが完了して取引が処理されます。";
+
+/* Title for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.title" = "iPhone の Tap to Pay で非接触型カードを受け付ける方法";
+
+/* Message displayed when a contactless transaction fails due to PIN issues. Provides steps to retry using another contactless payment method or alternative payment options. */
+"tapToPay.education.step.fallbackMethod.description" = "一部のカードでは PIN を使用して非接触型取引を完了できず、支払いがエラーになる可能性があります。\n\nお客様に別の非接触型カードかデジタルウォレットをお持ちでないかどうかを確認し、「もう一度受け取りを試みる」を選択して、iPhone の Tap to Pay を使用した取引を続行してください。\n\nお持ちでない場合は「別の支払い方法を試す」を選択し、「現金」、「支払いリンクを共有する」、「キャッシュリーダー」、「スキャンして支払う」など、サポートされている別の方法を選択します。";
+
+/* Title for the 'Fallback payment method' Tap to Pay merchant education step */
+"tapToPay.education.step.fallbackMethod.title" = "その他の支払い方法を受け付ける方法";
+
+/* Description for the initial Tap to Pay merchant education step. When using the name “Tap to Pay on iPhone” in headlines or copy, do not shorten to “Tap to Pay” or “Apple Tap to Pay. Always typeset “Tap to Pay on iPhone” as five words. The T and Ps should be uppercased, followed by lowercase letters. */
+"tapToPay.education.step.intro.description" = "iPhone の Tap to Pay と Woo アプリを使用すると、iPhone で直接対面での非接触型決済を受け付けることができます。物理的なデビットカードやクレジットカード、Apple Pay、その他のデジタルウォレットなどに対応しており、追加のハードウェアは必要ありません。 簡単、安全でプライバシーは保護されます。";
+
+/* Title for the initial Tap to Pay merchant education step */
+"tapToPay.education.step.intro.title" = "非接触型決済は iPhone のみで受け付けています。";
+
+/* Instructions for customers using accessibility options during PIN entry with Tap to Pay on iPhone.Describes how to use audible guidance for drawing or tapping the PIN digits and the gesture to submit. */
+"tapToPay.education.step.pin.description" = "iPhone の Tap to Pay を使用する特定の状況下では、カードの PIN を入力するよう促すメッセージが表示されます。\n\n視覚補助などのサポートを必要とするお客様については、PIN 画面で「アクセシビリティオプション」を選択すると、アクセシビリティオプションを利用できます。 音声の指示に従って画面に PIN を入力するか、1なら1回、2なら2回のように画面をタップして1桁ずつ指示します。 PIN を送信するには、2本の指で右にスワイプするだけです。";
+
+/* Title for the 'PIN entry' Tap to Pay merchant education step */
+"tapToPay.education.step.pin.title" = "カードの PIN 入力を処理する方法";
 
 /* A label prompting users to learn more about Tap to Pay on iPhone.
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -12605,11 +12879,11 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "成年の署名が必要";
 
+/* Label for the toggle to mark the order as complete on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.afterPurchaseMarkComplete" = "ラベルを購入したら、この注文に完了のマークを付けてお客様に通知してください";
+
 /* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
 "wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (基本料金)";
-
-/* Label for the toggle to mark the order as complete on the shipping label creation screen */
-"wooShipping.createLabels.bottomSheet.markComplete" = "この注文に完了のマークを付けてお客様に通知";
 
 /* Header for order details section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.orderDetails" = "注文詳細";
@@ -12652,6 +12926,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
+
+/* Heading for the package section in the shipping label creation screen. */
+"wooShipping.createLabels.package.title" = "荷物";
+
+/* Label for the total shipment weight input field in the shipping label creation screen. */
+"wooShipping.createLabels.package.totalWeight" = "配送の総重量 (梱包を含む)";
 
 /* Link for more information about how to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.info" = "モバイルデバイスを使って印刷する方法を確認";

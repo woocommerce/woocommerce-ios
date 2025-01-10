@@ -10,8 +10,7 @@ public final class MyStoreScreen: ScreenObject {
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [ { $0.staticTexts["Your WooCommerce Store"] }],
-            app: app,
-            waitTimeout: 35
+            app: app
         )
     }
 

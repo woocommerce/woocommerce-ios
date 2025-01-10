@@ -3,12 +3,10 @@ import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 
 struct ItemListView: View {
-    @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     @EnvironmentObject var posModel: PointOfSaleAggregateModel
 
-    @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
     @State private var showSimpleProductsModal: Bool = false
     private var itemListState: ItemListState {
         posModel.itemsViewState.itemsStack.root
@@ -23,7 +21,7 @@ struct ItemListView: View {
                 headerView
                 switch itemListState {
                 case .loading(let items),
-                        .loaded(let items):
+                        .loaded(let items, _):
                     listView(items)
                 case .error:
                     // Currently unused, but this will show errors that are displayed inline with previously
@@ -134,28 +132,11 @@ private extension ItemListView {
 
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
-        InfiniteScrollView(
-            triggerDeterminer: infiniteScrollTriggerDeterminer,
-            loadMore: {
-                try await posModel.loadNextItems()
-            },
-            contentBottomPadding: floatingControlAreaSize.height,
-            content: {
-                VStack {
-                    if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
-                        bannerCardView
-                    }
-                    ItemList(state: itemListState)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, Constants.itemListPadding)
-            },
-            loadingView: {
-                GhostItemCardView()
-                    .renderedIf(itemListState.isLoading)
-                    .padding(.horizontal, Constants.itemListPadding)
+        ItemList(state: itemListState) {
+            if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
+                bannerCardView
             }
-        )
+        }
     }
 
     @ViewBuilder
@@ -241,7 +222,6 @@ private extension ItemListView {
         static let iconPadding: CGFloat = 26
         static let itemListPadding: CGFloat = 16
         static let bannerCardPadding: CGFloat = 16
-        static let viewHeight: CGFloat = UIScreen.main.bounds.height
     }
 
     enum BannerState {

@@ -63,7 +63,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         insertCampaigns([fakeBlazeCampaign])
 
         // Then
-        waitUntil {
+        await until {
             self.pushNotesManager.requestedLocalNotifications.isNotEmpty
         }
 
@@ -110,7 +110,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         insertCampaigns([fakeBlazeCampaign1, fakeBlazeCampaign2, fakeBlazeCampaign3])
 
         // Then
-        waitUntil {
+        await until {
             self.pushNotesManager.requestedLocalNotifications.isNotEmpty
         }
 
@@ -144,7 +144,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         // When
         insertCampaigns([fakeBlazeCampaign1])
 
-        waitUntil {
+        await until {
             self.pushNotesManager.requestedLocalNotifications.count == 1
         }
 
@@ -180,7 +180,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         insertCampaigns([fakeBlazeCampaign1, fakeBlazeCampaign2])
 
         // Then
-        waitUntil {
+        await until {
             self.pushNotesManager.requestedLocalNotifications.isNotEmpty
         }
 
@@ -297,7 +297,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         // When
         await sut.scheduleNoCampaignReminder()
 
-        waitUntil {
+        await until {
             self.pushNotesManager.canceledLocalNotificationScenarios.isNotEmpty
         }
 
@@ -321,7 +321,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         await sut.scheduleAbandonedCreationReminder()
 
         // Then
-        waitUntil {
+        await until {
             self.pushNotesManager.requestedLocalNotifications.isNotEmpty
         }
 
@@ -367,7 +367,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         // When
         await sut.scheduleAbandonedCreationReminder()
 
-        waitUntil {
+        await until {
             self.pushNotesManager.requestedLocalNotifications.count == 1
         }
 
@@ -420,7 +420,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         pushNotesManager.sendLocalNotificationResponse(response)
 
         // Then
-        waitUntil {
+        await until {
             self.defaults[.blazeAbandonedCampaignCreationReminderOpened] == true
         }
     }

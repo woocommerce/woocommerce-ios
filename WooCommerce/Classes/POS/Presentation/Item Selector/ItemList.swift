@@ -3,14 +3,60 @@ import enum Yosemite.POSItem
 import struct Yosemite.POSVariableParentProduct
 
 /// Displays a list of POS items or placeholder card based on the given state.
-struct ItemList: View {
+struct ItemList<HeaderView: View>: View {
+    enum BaseItem {
+        case root
+        case parent(POSItem)
+    }
+
+    @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
+    @EnvironmentObject var posModel: PointOfSaleAggregateModel
+    @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
+
     let state: ItemListState
+    private let node: BaseItem
+    private let headerView: HeaderView
+
+    init(state: ItemListState,
+         node: BaseItem = .root,
+         @ViewBuilder headerView: () -> HeaderView = { EmptyView() }) {
+        self.state = state
+        self.node = node
+        self.headerView = headerView()
+    }
 
     var body: some View {
-        ForEach(state.items) { item in
-            ItemListRow(item: item)
-        }
+        InfiniteScrollView(
+            triggerDeterminer: infiniteScrollTriggerDeterminer,
+            loadMore: {
+                guard case .root = node,
+                      case .loaded(_, let hasMoreItems) = state,
+                      hasMoreItems
+                else { return }
+                try await posModel.loadNextItems()
+            },
+            contentBottomPadding: floatingControlAreaSize.height,
+            content: {
+                LazyVStack {
+                    headerView
+                    
+                    ForEach(state.items) { item in
+                        ItemListRow(item: item)
+                    }
+                }
+            },
+            loadingView: {
+                GhostItemCardView()
+                    .renderedIf(state.isLoading)
+            }
+        )
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, Constants.itemListPadding)
     }
+}
+
+private enum Constants {
+    static let itemListPadding: CGFloat = 16
 }
 
 private struct ItemListRow: View {
@@ -79,13 +125,19 @@ private extension ItemListRow {
                                 productID: 16
                             )
                         )
-                    ]
+                    ],
+                    hasMoreItems: false
                 )
     )
 }
 
 #Preview("Loading") {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
     ItemList(state: .loading([]))
+        .environmentObject(posModel)
 }
 
 #endif

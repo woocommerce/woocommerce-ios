@@ -35,6 +35,24 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shippingRates.count, 1)
     }
 
+    func test_origin_addresses_fetched_and_converted_to_originAddresses_view_model() {
+        // Given
+        let originAddress = WooShippingOriginAddress.fake().copy(id: "default", defaultAddress: true)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            if case let .loadOriginAddresses(_, completion) = action {
+                completion(.success([originAddress]))
+            }
+        }
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(), stores: stores)
+
+        // Then
+        XCTAssertEqual(viewModel.originAddresses.addresses.count, 1)
+        XCTAssertEqual(viewModel.originAddresses.selectedAddressID, originAddress.id)
+    }
+
     func test_default_origin_address_fetched_and_converted_to_formatted_originAddress() {
         // Given
         let originAddresses = [WooShippingOriginAddress.fake(),

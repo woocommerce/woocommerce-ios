@@ -9,7 +9,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private let currencyFormatter: CurrencyFormatter
     private let order: Order
     private let itemsDataSource: WooShippingItemsDataSource
-    private var originAddresses: [WooShippingOriginAddress] = []
     private let destinationAddress: ShippingLabelAddress?
     private let stores: StoresManager
     private var subscriptions: Set<AnyCancellable> = []
@@ -51,6 +50,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Selected shipping rate when creating a shipping label.
     @Published private var selectedRate: WooShippingSelectedRate?
+
+    /// View model for a list of origin addresses to ship from.
+    private(set) var originAddresses = WooShippingOriginAddressListViewModel(addresses: [])
 
     /// Address to ship from (store address).
     @Published private var selectedOriginAddress: WooShippingOriginAddress?
@@ -242,8 +244,12 @@ private extension WooShippingCreateLabelsViewModel {
             guard let self else { return }
             switch result {
             case .success(let addresses):
-                originAddresses = addresses
                 selectedOriginAddress = addresses.first(where: \.defaultAddress)
+                originAddresses = WooShippingOriginAddressListViewModel(addresses: addresses,
+                                                                        selectedAddressID: selectedOriginAddress?.id)
+                originAddresses.onSelect = { [weak self] selectedAddress in
+                    self?.selectedOriginAddress = selectedAddress
+                }
             case .failure(let error):
                 DDLogError("⛔️ Error loading origin addresses for Woo Shipping labels: \(error)")
             }

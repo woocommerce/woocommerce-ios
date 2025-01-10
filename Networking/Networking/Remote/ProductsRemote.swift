@@ -217,7 +217,6 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.order: Order.ascending.value,
             ParameterKey.productStatus: POSConstants.productStatus,
             ParameterKey.downloadable: String(false),
-            ParameterKey.virtual: String(false)
         ]
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,

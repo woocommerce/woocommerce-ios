@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-26 09:54:05+0000 */
+/* Translation-Revision-Date: 2024-12-27 09:54:14+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -251,10 +251,6 @@ which should be translated separately and considered part of this sentence. */
 /* Number of items in packages in Shipping Labels in plural form. Reads like - 10 items */
 "- %1$d items" = "- %1$d item";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 1
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 1 */
-"1" = "1";
-
 /* Navigation bar title for selecting multiple products when one product has been selected.
    Title of the action button at the bottom of the Select Products screen when one product is selected */
 "1 Product Selected" = "1 Produk Dipilih";
@@ -271,19 +267,11 @@ which should be translated separately and considered part of this sentence. */
 /* Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment */
 "1. Create an order" = "1. Buat pesanan";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 2
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
-"2" = "2";
-
 /* Disclaimer regarding some of the features related to shipping. */
 "2. Only available in the U.S. – an additional extension will be required for other countries." = "2. Hanya tersedia di Amerika Serikat - ekstensi tambahan diperlukan bagi negara-negara lain.";
 
 /* Step 2 of the 'How it works' list, instructing the merchant to how to select Tap to Pay payments */
 "2. Tap “Collect Payment” and choose “Tap to Pay on iPhone”." = "2. Ketuk “Terima Pembayaran” dan pilih “Ketuk untuk Bayar di iPhone”.";
-
-/* Settings > Manage Card Reader > Connect > Help hint number 3
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
-"3" = "3";
 
 /* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
 "3. Present your iPhone to the customer." = "3. Tunjukkan iPhone Anda kepada pelanggan.";
@@ -985,9 +973,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button on the store onboarding launched store screen. */
 "Back to My Store" = "Kembali ke Toko Saya";
 
-/* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
-"Back to Order" = "Kembali ke Pesanan";
-
 /* Text for the button to dismiss the store picker error screen */
 "Back to sites" = "Kembali ke Situs";
 
@@ -1559,7 +1544,6 @@ which should be translated separately and considered part of this sentence. */
 "Clear selection" = "Hapus pilihan";
 
 /* Accessibility label for the close button
-   Button to dismiss modal overlay. Presented to users after refunding a payment fails
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
    Navigation bar action to close the gift card code scanner.
@@ -2269,7 +2253,6 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when finding a reader to connect to fails
    Button to dismiss the first created product screen
    Button to dismiss the Jetpack benefits screen.
-   Button to dismiss. Presented to users after collecting a payment fails
    Button to dismiss. Presented to users when updating the card reader software fails
    Dismiss button in inbox note row.
    Dismiss button in store picker
@@ -5989,9 +5972,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
 "Return to My Store" = "Kembali ke Toko Saya";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
-"Return to Payments" = "Kembali ke Pembayaran";
-
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Kembalikan ke pengirim jika paket tidak dapat dikirimkan";
 
@@ -6381,6 +6361,9 @@ which should be translated separately and considered part of this sentence. */
 /* Header text on Add New Custom Package screen in Shipping Label flow
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "Siapkan paket yang akan digunakan untuk mengirim produk Anda. Kami akan menyimpannya untuk pesanan selanjutnya.";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
+"SetUpTapToPayPaymentPrompt.skipButton.title" = "Lain kali";
 
 /* Settings button in the hub menu
    Settings navigation title
@@ -7519,9 +7502,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Tab selector title that shows the statistics for this year */
 "This Year" = "Tahun Ini";
-
-/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "Harap ubah pengaturan privasi karena aplikasi ini memerlukan izin untuk mengakses Bluetooth agar terhubung dengan pembaca kartu.";
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "Aplikasi ini mewajibkan Anda menginstal WooCommerce 3.5 di server Anda dan tidak berfungsi dengan semestinya jika Anda tidak menginstalnya. Perbarui sesegera mungkin untuk terus menggunakan aplikasi ini.";
@@ -9989,8 +9969,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "Memindai pembaca";
 
+/* A title for CTA to present native location permission alert */
+"cardPresentPayment.locationPreAlert.continueButton" = "Lanjutkan";
+
+/* A notice at the bottom explaining that location services can be changed in the Settings app later */
+"cardPresentPayment.locationPreAlert.settingsNotice" = "Anda dapat mengubah pilihan ini di lain waktu melalui aplikasi Pengaturan.";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"cardPresentPayment.locationPreAlert.subtitle" = "Izin akses lokasi diperlukan untuk mengurangi risiko penipuan, mencegah timbulnya sengketa, dan memastikan keamanan pembayaran.";
+
+/* A title explaining why location services are needed to make a payment */
+"cardPresentPayment.locationPreAlert.title" = "Aktifkan layanan lokasi di layar berikutnya agat dapat melakukan pembayaran.";
+
+/* Dismisses the location alert */
+"cardPresentPayment.locationRequired.dismiss" = "Abaikan";
+
+/* Opens iOS's Device Settings for the app */
+"cardPresentPayment.locationRequired.openSettings" = "Buka Pengaturan Perangkat";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"cardPresentPayment.locationRequired.subtitle" = "Izin akses lokasi diperlukan untuk mengurangi risiko penipuan, mencegah timbulnya sengketa, dan memastikan keamanan pembayaran.";
+
+/* A title explaining the requirement of location services for making a payment */
+"cardPresentPayment.locationRequired.title" = "Aktifkan layanan lokasi di pengaturan perangkat untuk mengizinkan pembayaran.";
+
+/* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.backToOrder" = "Kembali ke Pesanan";
+
+/* Button to dismiss modal overlay. Presented to users after refunding a payment fails */
+"cardPresentPaymentsModal.error.close" = "Tutup";
+
+/* Button to dismiss. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.dismiss" = "Abaikan";
+
+/* Button to email receipts. Presented to users after a payment processing has failed */
+"cardPresentPaymentsModal.error.emailReceipt" = "Email tanda terima";
+
 /* Message informing the user that a receipt has been sent to their email address. %1$@ is the email address */
 "cardPresentPaymentsModal.error.receiptMessage" = "Tanda terima dikirimkan ke %1$@";
+
+/* Button to dismiss modal overlay and try another payment method. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.tryAnotherPaymentMethod" = "Coba Metode Pembayaran Lainnya";
 
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "cardPresentPaymentsModal.success.emailReceipt" = "Email tanda terima";
@@ -10496,6 +10515,27 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "Media di perangkat";
 
+/* Button to dismiss the Edit Store List view */
+"editStoreListView.cancelButton" = "Batal";
+
+/* Footer of the Current Store section of the the Edit Store List view */
+"editStoreListView.currentStoreFooter" = "Beralih ke toko lain sebelum menyembunyikan toko ini";
+
+/* Header of the Current Store section of the the Edit Store List view */
+"editStoreListView.currentStoreHeader" = "Toko Saat Ini";
+
+/* Footer of the Other Stores section on the Edit Store List view */
+"editStoreListView.otherStoresFooter" = "Toko yang tidak terpilih tidak akan muncul di pemilih toko";
+
+/* Header of the Other Stores section on the Edit Store List view */
+"editStoreListView.otherStoresHeader" = "Toko lain";
+
+/* Button to save changes in the Edit Store List view */
+"editStoreListView.saveButton" = "Simpan";
+
+/* Title of the Edit Store List view */
+"editStoreListView.title" = "Toko yang Dapat Dilihat";
+
 /* Title for button to view the feedback survey about adding shipping to an order */
 "editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "Bagikan feedback Anda";
 
@@ -10634,6 +10674,132 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "Lihat semua kampanye";
+
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"hardware.cardReader.cardReaderServiceError.bluetoothDenied" = "Aplikasi ini memerlukan izin untuk mengakses Bluetooth agar dapat terhubung ke pembaca kartu Anda. Anda dapat memberikan izin melalui aplikasi Pengaturan sistem di bagian Woo.";
+
+/* Error message when the Apple built-in reader account is deactivated. */
+"hardware.cardReader.underlyingError.appleBuiltInReaderAccountDeactivated" = "Akun Apple ID yang ditautkan telah dinonaktifkan.";
+
+/* Error message when Bluetooth is already paired with another device. */
+"hardware.cardReader.underlyingError.bluetoothAlreadyPairedWithAnotherDevice" = "Perangkat pembaca Bluetooth sudah dipasangkan dengan perangkat lain. Pemasangan perangkat pembaca harus diatur ulang agar terhubung ke perangkat ini.";
+
+/* Error message when the Bluetooth connection has an invalid location ID parameter. */
+"hardware.cardReader.underlyingError.bluetoothConnectionInvalidLocationIdParameter" = "Koneksi Bluetooth memiliki ID lokasi yang tidak valid.";
+
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"hardware.cardReader.underlyingError.bluetoothDenied" = "Aplikasi ini memerlukan izin untuk mengakses Bluetooth agar dapat terhubung ke pembaca kartu Anda. Anda dapat memberikan izin melalui aplikasi Pengaturan sistem di bagian Woo.";
+
+/* Error message when the Bluetooth peer removed pairing information. */
+"hardware.cardReader.underlyingError.bluetoothPeerRemovedPairingInformation" = "Perangkat pembaca telah menghapus informasi penghubungan perangkat ini. Coba hapus perangkat pembaca di Pengaturan iOS.";
+
+/* Error message when Bluetooth reconnect has started. */
+"hardware.cardReader.underlyingError.bluetoothReconnectStarted" = "Perangkat pembaca Bluetooth terputus, dan kami sedang mencoba menyambungkannya kembali.";
+
+/* Error message when an operation cannot be canceled because it is already completed. */
+"hardware.cardReader.underlyingError.cancelFailedAlreadyCompleted" = "Operasi tidak dapat dibatalkan karena sudah selesai.";
+
+/* Error message when card swipe functionality is unavailable. */
+"hardware.cardReader.underlyingError.cardSwipeNotAvailable" = "Fitur gesek kartu tidak tersedia.";
+
+/* Error message when the command is not allowed. */
+"hardware.cardReader.underlyingError.commandNotAllowed" = "Hubungi dukungan - perintah ini tidak diizinkan oleh sistem pengoperasian.";
+
+/* Error message when the command requires cardholder consent. */
+"hardware.cardReader.underlyingError.commandRequiresCardholderConsent" = "Pemegang kartu harus memberikan izin agar operasi ini berhasil.";
+
+/* Error message when the connection token provider finishes with an error. */
+"hardware.cardReader.underlyingError.connectionTokenProviderCompletedWithError" = "Terjadi error saat mengambil token koneksi.";
+
+/* Error message when the connection token provider operation times out. */
+"hardware.cardReader.underlyingError.connectionTokenProviderTimedOut" = "Waktu permintaan token koneksi telah habis. ";
+
+/* Error message when a feature is unavailable. */
+"hardware.cardReader.underlyingError.featureNotAvailable" = "Hubungi dukungan - fitur ini tidak tersedia.";
+
+/* Error message when forwarding a live mode payment in test mode is prohibited. */
+"hardware.cardReader.underlyingError.forwardingLiveModePaymentInTestMode" = "Dilarang meneruskan pembayaran mode langsung dalam mode pengujian.";
+
+/* Error message when forwarding a test mode payment in live mode is prohibited. */
+"hardware.cardReader.underlyingError.forwardingTestModePaymentInLiveMode" = "Dilarang meneruskan pembayaran mode pengujian dalam mode langsung.";
+
+/* Error message when Interac is not supported in offline mode. */
+"hardware.cardReader.underlyingError.interacNotSupportedOffline" = "Interac tidak tersedia saat mode offline.";
+
+/* Error message when an internal network error occurs. */
+"hardware.cardReader.underlyingError.internalNetworkError" = "Terjadi error jaringan yang tidak diketahui.";
+
+/* Error message when the internet connection operation timed out. */
+"hardware.cardReader.underlyingError.internetConnectTimeOut" = "Waktu koneksi ke pembaca melalui internet telah habis. Pastikan perangkat Anda dan pembaca berada di jaringan Wifi yang sama, serta perangkat pembaca itu sendiri telah terhubung ke Wifi.";
+
+/* Error message when the client secret is invalid. */
+"hardware.cardReader.underlyingError.invalidClientSecret" = "Hubungi dukungan - informasi rahasia (client secret) tidak valid.";
+
+/* Error message when the discovery configuration is invalid. */
+"hardware.cardReader.underlyingError.invalidDiscoveryConfiguration" = "Hubungi dukungan - konfigurasi pencarian tidak valid.";
+
+/* Error message when the location ID parameter is invalid. */
+"hardware.cardReader.underlyingError.invalidLocationIdParameter" = "ID lokasi tidak valid.";
+
+/* Error message when the reader for update is invalid. */
+"hardware.cardReader.underlyingError.invalidReaderForUpdate" = "Perangkat pembaca kartu untuk pembaruan tidak valid.";
+
+/* Error message when the refund parameters are invalid. */
+"hardware.cardReader.underlyingError.invalidRefundParameters" = "Hubungi dukungan - parameter pengembalian dana tidak valid.";
+
+/* Error message when a required parameter is invalid. */
+"hardware.cardReader.underlyingError.invalidRequiredParameter" = "Hubungi dukungan - parameter wajib tidak valid.";
+
+/* Error message when EMV data is missing. */
+"hardware.cardReader.underlyingError.missingEMVData" = "Perangkat pembaca kartu gagal membaca data dari metode pembayaran yang digunakan. Jika masih terjadi error, perangkat pembaca kartu mungkin bermasalah. Oleh karena itu, harap hubungi dukungan.";
+
+/* Error message when the payment intent is missing. */
+"hardware.cardReader.underlyingError.nilPaymentIntent" = "Hubungi dukungan - tujuan pembayaran tidak ditemukan.";
+
+/* Error message when the refund payment method is missing. */
+"hardware.cardReader.underlyingError.nilRefundPaymentMethod" = "Hubungi dukungan - metode pengembalian dana tidak ditemukan.";
+
+/* Error message when the setup intent is missing. */
+"hardware.cardReader.underlyingError.nilSetupIntent" = "Hubungi dukungan - tujuan penyiapan tidak ditemukan.";
+
+/* Error message when the card is expired and offline mode is active. */
+"hardware.cardReader.underlyingError.offlineAndCardExpired" = "Konfirmasi pembayaran dalam mode offline gagal karena kartu terdeteksi telah kedaluwarsa.";
+
+/* Error message when there is a mismatch between offline collect and confirm. */
+"hardware.cardReader.underlyingError.offlineCollectAndConfirmMismatch" = "Pastikan koneksi jaringan stabil selama proses pengumpulan dan konfirmasi pembayaran.";
+
+/* Error message when a test card is used in live mode while offline. */
+"hardware.cardReader.underlyingError.offlineTestCardInLivemode" = "Kartu pengujian digunakan dalam mode langsung saat offline.";
+
+/* Error message when the offline transaction was declined. */
+"hardware.cardReader.underlyingError.offlineTransactionDeclined" = "Konfirmasi pembayaran dalam mode offline gagal karena verifikasi kartu tidak berhasil.";
+
+/* Error message when online PIN is not supported in offline mode. */
+"hardware.cardReader.underlyingError.onlinePinNotSupportedOffline" = "PIN Online tidak tersedia saat mode offline. Coba lagi pembayaran dengan kartu lain.";
+
+/* Error message when the reader connection configuration is invalid. */
+"hardware.cardReader.underlyingError.readerConnectionConfigurationInvalid" = "Konfigurasi sambungan perangkat pembaca kartu tidak valid.";
+
+/* Error message when the reader is missing encryption keys. */
+"hardware.cardReader.underlyingError.readerMissingEncryptionKeys" = "Perangkat pembaca kartu tidak memiliki kunci enkripsi yang diperlukan, terputus sambungannya, dan dinyalakan ulang. Sambungkan kembali perangkat pembaca kartu untuk mencoba menginstal ulang kunci. Jika masih terjadi error, hubungi dukungan.";
+
+/* Error message when the reader software update fails due to an expired update. */
+"hardware.cardReader.underlyingError.readerSoftwareUpdateFailedExpiredUpdate" = "Pembaruan perangkat lunak pembaca kartu gagal karena telah kedaluwarsa. Lepaskan dan sambungkan kembali perangkat pembaca kartu untuk mendapatkan pembaruan mutakhir.";
+
+/* Error message when the reader tipping parameter is invalid. */
+"hardware.cardReader.underlyingError.readerTippingParameterInvalid" = "Hubungi dukungan - parameter tip perangkat pembaca kartu tidak valid.";
+
+/* Error message when the refund operation failed. */
+"hardware.cardReader.underlyingError.refundFailed" = "Pengembalian dana gagal. Bank atau penerbit kartu pelanggan tidak dapat memproses transaksi dengan benar (mis. rekening bank ditutup atau terdapat masalah dengan kartu).";
+
+/* Error message when there is an error decoding the Stripe API response. */
+"hardware.cardReader.underlyingError.stripeAPIResponseDecodingError" = "Hubungi dukungan - terjadi error saat mendekode respons API Stripe.";
+
+/* Error message when an unexpected error occurs with the reader. */
+"hardware.cardReader.underlyingError.unexpectedReaderError" = "Terjadi error tidak terduga dengan perangkat pembaca kartu.";
+
+/* Error message when the reader's IP address is unknown. */
+"hardware.cardReader.underlyingError.unknownReaderIpAddress" = "Perangkat pembaca ditemukan, tetapi tidak memiliki alamat IP dan tidak dapat terhubung.";
 
 /* Title of the view containing Coupons list */
 "hubMenu.couponsList" = "Kupon";
@@ -10858,9 +11024,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory. */
 "menu.payments.tapToPay.about.row.title" = "Tentang Ketuk untuk Bayar";
-
-/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
-"menu.payments.tapToPay.feedback.row.title" = "Bagikan Feedback";
 
 /* Title for the Tap to Pay section in the In-Person payments settings */
 "menu.payments.tapToPay.section.title" = "Ketuk untuk Bayar";
@@ -11583,6 +11746,21 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Tidak bisa memuat total";
 
+/* Button title for sending a receipt */
+"pointOfSale.sendreceipt.button.title" = "Kirim";
+
+/* Text that shows at the top of the receipts screen along the back button. */
+"pointOfSale.sendreceipt.emailReceiptNavigationText" = "Email tanda terima";
+
+/* Error message that is displayed when an invalid email is used when emailing a receipt. */
+"pointOfSale.sendreceipt.emailValidationErrorText" = "Masukkan email yang valid.";
+
+/* Generic error message that is displayed when there's an error emailing a receipt. */
+"pointOfSale.sendreceipt.sendReceiptErrorText" = "Terjadi error saat mencoba mengirim email ini. Coba lagi.";
+
+/* Placeholder for the view where an email address should be entered when sending receipts */
+"pointOfSale.sendreceipt.textfield.placeholder" = "Ketik email";
+
 /* Button to dismiss the payments onboarding sheet from the POS dashboard. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "Batal";
 
@@ -11668,10 +11846,13 @@ which should be translated separately and considered part of this sentence. */
 "pos.simpleProductsModal.title" = "Mengapa produk saya tidak muncul?";
 
 /* Button title for new order button */
-"pos.totalsView.newOrder" = "Pesanan baru";
+"pos.totalsView.button.newOrder" = "Pesanan baru";
 
 /* Button title for the receipt button */
-"pos.totalsView.sendReceipt" = "Tanda terima";
+"pos.totalsView.button.sendReceipt" = "Email tanda terima";
+
+/* Text for the banner requiring specific WooCommerce version. */
+"pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "Perbarui WooCommerce ke versi 9.5.0";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "Subtotal";
@@ -12112,6 +12293,18 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "Batal";
 
+/* Badge wording when the customs information is completed */
+"shippingLabels.customs.completedBadge" = "Selesai";
+
+/* Customs row title in the main Shipping Labels view */
+"shippingLabels.customs.customsTitle" = "Bea cukai";
+
+/* Accessibility label for the button to edit the shipping labels customs */
+"shippingLabels.customs.editButtonAccessibiliy" = "Sunting Informasi Bea Cukai di Label Pengiriman";
+
+/* Badge wording when the customs information is missing */
+"shippingLabels.customs.missingInfo" = "Informasi tidak ditemukan";
+
 /* Accessibility title for the edit button on a shipping line row. */
 "shippingLine.edit.button.accessibilityLabel" = "Edit pengiriman";
 
@@ -12177,6 +12370,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in date range picker to add a Custom Range tab */
 "storePerformanceViewModel.addCustomRange" = "Tambah";
+
+/* Button to edit the items to be displayed on the store picker */
+"storePicker.editList" = "Sunting";
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "Sambungkan toko yang sudah ada";
@@ -12328,6 +12524,84 @@ which should be translated separately and considered part of this sentence. */
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is successful, we show a Notice to alert the user – this is the title of the notice. */
 "tap.to.pay.try.payment.refundNotice.success.title" = "Uji Coba Pembayaran Ketuk untuk Bayar";
+
+/* Title of the button to dismiss the Tap to Pay awareness screen */
+"tapToPay.awarenessMoment.closeButton" = "Tutup";
+
+/* A title for CTA to start Tap to Pay set up process */
+"tapToPay.awarenessMoment.enableButton" = "Aktifkan sekarang";
+
+/* A title for CTA to open a view explaining Tap to Pay */
+"tapToPay.awarenessMoment.learnMore" = "Baca selengkapnya";
+
+/* A subtitle for the Tap to Pay modal promoting the feature. */
+"tapToPay.awarenessMoment.subtitle" = "Terima pembayaran nirsentuh hanya dengan iPhone.";
+
+/* Title for the Tap to Pay modal promoting the feature. When using the name “Tap to Pay on iPhone” in headlines or copy, do not shorten to “Tap to Pay” or “Apple Tap to Pay. Always typeset “Tap to Pay on iPhone” as five words. The T and Ps should be uppercased, followed by lowercase letters. */
+"tapToPay.awarenessMoment.title" = "Fitur Ketuk untuk Bayar di iPhone. Sudah tersedia.";
+
+/* Text for the button to take one step back in Tap to Pay education flow */
+"tapToPay.education.back" = "Kembali";
+
+/* Text for the button to dismiss Tap to Pay education flow */
+"tapToPay.education.done" = "Selesai";
+
+/* Text for the button to go to the next Tap to Pay education flow step */
+"tapToPay.education.next" = "Berikutnya";
+
+/* Button title for Set up Tap to Pay button in Tap to Pay education flow. The button opens the Set Up Tap to Pay on iPhone flow. */
+"tapToPay.education.setUpTapToPay" = "Atur Fitur Ketuk untuk Bayar di iPhone";
+
+/* Text for the button to skip Tap to Pay education flow to the last step */
+"tapToPay.education.skip" = "Lewatkan";
+
+/* First description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep1" = "Buat pesanan di iPhone, tambahkan produk atau jumlah tertentu, lalu checkout dengan fitur Ketuk untuk Bayar di iPhone.";
+
+/* Second description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep2" = "Tunjukkan iPhone Anda kepada pelanggan.";
+
+/* Third description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep3" = "Pastikan pelanggan mendekatkan perangkatnya ke iPhone Anda, tepat di atas simbol nirsentuh.";
+
+/* Fourth description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep4" = "Jika tanda centang 'Selesai' terlihat, berarti kartu sudah terbaca dan transaksi sedang diproses.";
+
+/* Title for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.title" = "Cara menerima Apple Pay dan dompet digital lainnya dengan fitur Ketuk untuk Bayar di iPhone.";
+
+/* First description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep1" = "Buat pesanan di iPhone, tambahkan produk atau jumlah tertentu, lalu checkout dengan fitur Ketuk untuk Bayar di iPhone.";
+
+/* Second description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep2" = "Tunjukkan iPhone Anda kepada pelanggan.";
+
+/* Third description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep3" = "Pastikan pelanggan memegang kartu secara horizontal di atas iPhone Anda, tepat di atas simbol nirsentuh.";
+
+/* Fourth description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep4" = "Jika tanda centang 'Selesai' terlihat, berarti kartu sudah terbaca dan transaksi sedang diproses.";
+
+/* Title for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.title" = "Cara menerima kartu nirsentuh dengan fitur Ketuk untuk Bayar di iPhone.";
+
+/* Message displayed when a contactless transaction fails due to PIN issues. Provides steps to retry using another contactless payment method or alternative payment options. */
+"tapToPay.education.step.fallbackMethod.description" = "Ada beberapa kartu yang tidak bisa menyelesaikan transaksi nirsentuh dengan PIN sehingga pembayaran bisa gagal.\n\n Minta pelanggan untuk menggunakan kartu nirsentuh atau dompet digital lainnya, lalu pilih Coba Ulangi Pengumpulan untuk melanjutkan transaksi melalui fitur Ketuk untuk Bayar di iPhone.\n\nJika tidak, pilih Coba Metode Pembayaran Lain, lalu pilih metode alternatif yang tersedia seperti Tunai, Bagikan Tautan Pembayaran, Pembaca Uang Tunai, atau Pindai untuk Bayar.";
+
+/* Title for the 'Fallback payment method' Tap to Pay merchant education step */
+"tapToPay.education.step.fallbackMethod.title" = "Cara menerima metode pembayaran alternatif.";
+
+/* Description for the initial Tap to Pay merchant education step. When using the name “Tap to Pay on iPhone” in headlines or copy, do not shorten to “Tap to Pay” or “Apple Tap to Pay. Always typeset “Tap to Pay on iPhone” as five words. The T and Ps should be uppercased, followed by lowercase letters. */
+"tapToPay.education.step.intro.description" = "Dengan fitur Ketuk untuk Bayar di iPhone dan aplikasi Woo, Anda bisa menerima pembayaran nirsentuh langsung di iPhone, mulai dari kartu debit dan kredit fisik, hingga Apple Pay dan dompet digital lainnya, tanpa perlu perangkat tambahan. Mudah, aman, dan privasi terjaga.";
+
+/* Title for the initial Tap to Pay merchant education step */
+"tapToPay.education.step.intro.title" = "Terima pembayaran nirsentuh hanya dengan iPhone.";
+
+/* Instructions for customers using accessibility options during PIN entry with Tap to Pay on iPhone.Describes how to use audible guidance for drawing or tapping the PIN digits and the gesture to submit. */
+"tapToPay.education.step.pin.description" = "Di situasi tertentu, pelanggan akan diminta memasukkan PIN kartu menggunakan fitur Ketuk untuk Bayar di iPhone.\n\nPelanggan yang memerlukan bantuan visual atau bantuan lainnya dapat mengakses opsi aksesibilitas di layar PIN melalui tombol ‘Pilihan Aksesibilitas’. Pelanggan dapat mengikuti instruksi audio untuk menggambar PIN di layar atau mengetuk layar sesuai jumlah digit: sekali ketukan untuk angka 1, dua kali ketukan untuk angka 2, dan seterusnya. Cukup geser layar ke kanan dengan dua jari untuk mengirimkan PIN.";
+
+/* Title for the 'PIN entry' Tap to Pay merchant education step */
+"tapToPay.education.step.pin.title" = "Cara menangani entri PIN untuk kartu.";
 
 /* A label prompting users to learn more about Tap to Pay on iPhone.
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -12605,11 +12879,11 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "Tanda Tangan Orang Dewasa Wajib Diisi";
 
+/* Label for the toggle to mark the order as complete on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.afterPurchaseMarkComplete" = "Setelah membeli label, tandai pesanan ini 'selesai' dan kirim pemberitahuan ke pelanggan";
+
 /* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
 "wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (biaya dasar)";
-
-/* Label for the toggle to mark the order as complete on the shipping label creation screen */
-"wooShipping.createLabels.bottomSheet.markComplete" = "Tandai pesanan ini selesai dan kirim pemberitahuan ke pelanggan";
 
 /* Header for order details section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.orderDetails" = "Rincian pesanan";
@@ -12652,6 +12926,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
+
+/* Heading for the package section in the shipping label creation screen. */
+"wooShipping.createLabels.package.title" = "Paket";
+
+/* Label for the total shipment weight input field in the shipping label creation screen. */
+"wooShipping.createLabels.package.totalWeight" = "Total berat pengiriman (dengan paket)";
 
 /* Link for more information about how to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.info" = "Pelajari cara mencetak dari perangkat seluler Anda";

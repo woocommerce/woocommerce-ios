@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-25 16:54:05+0000 */
+/* Translation-Revision-Date: 2024-12-30 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -251,10 +251,6 @@ which should be translated separately and considered part of this sentence. */
 /* Number of items in packages in Shipping Labels in plural form. Reads like - 10 items */
 "- %1$d items" = "- %1$d artiklar";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 1
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 1 */
-"1" = "1";
-
 /* Navigation bar title for selecting multiple products when one product has been selected.
    Title of the action button at the bottom of the Select Products screen when one product is selected */
 "1 Product Selected" = "1 produkt vald";
@@ -271,19 +267,11 @@ which should be translated separately and considered part of this sentence. */
 /* Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment */
 "1. Create an order" = "1. Skapa en beställning";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 2
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
-"2" = "2";
-
 /* Disclaimer regarding some of the features related to shipping. */
 "2. Only available in the U.S. – an additional extension will be required for other countries." = "2. Endast tillgängligt i USA – en ytterligare utökning kommer vara obligatoriskt för andra länder.";
 
 /* Step 2 of the 'How it works' list, instructing the merchant to how to select Tap to Pay payments */
 "2. Tap “Collect Payment” and choose “Tap to Pay on iPhone”." = "2. Tryck på \"Ta emot betalning\" och välj \"Tryck för att betala på iPhone\".";
-
-/* Settings > Manage Card Reader > Connect > Help hint number 3
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
-"3" = "3";
 
 /* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
 "3. Present your iPhone to the customer." = "3. Håll fram din iPhone till kunden.";
@@ -985,9 +973,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button on the store onboarding launched store screen. */
 "Back to My Store" = "Tillbaka till min butik";
 
-/* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
-"Back to Order" = "Tillbaka till beställningar";
-
 /* Text for the button to dismiss the store picker error screen */
 "Back to sites" = "Tillbaka till webbplatser";
 
@@ -1559,7 +1544,6 @@ which should be translated separately and considered part of this sentence. */
 "Clear selection" = "Rensa val";
 
 /* Accessibility label for the close button
-   Button to dismiss modal overlay. Presented to users after refunding a payment fails
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
    Navigation bar action to close the gift card code scanner.
@@ -2269,7 +2253,6 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when finding a reader to connect to fails
    Button to dismiss the first created product screen
    Button to dismiss the Jetpack benefits screen.
-   Button to dismiss. Presented to users after collecting a payment fails
    Button to dismiss. Presented to users when updating the card reader software fails
    Dismiss button in inbox note row.
    Dismiss button in store picker
@@ -5989,9 +5972,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
 "Return to My Store" = "Tillbaka till min butik";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
-"Return to Payments" = "Tillbaka till betalningar";
-
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Returnera till avsändare om paketet inte kan levereras";
 
@@ -6381,6 +6361,9 @@ which should be translated separately and considered part of this sentence. */
 /* Header text on Add New Custom Package screen in Shipping Label flow
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "Konfigurera paketet som du kommer att använda för att skicka dina produkter. Vi kommer att spara den för framtida beställningar.";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
+"SetUpTapToPayPaymentPrompt.skipButton.title" = "Inte nu";
 
 /* Settings button in the hub menu
    Settings navigation title
@@ -7519,9 +7502,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Tab selector title that shows the statistics for this year */
 "This Year" = "Det här året";
-
-/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "Den här appen behöver tillstånd att använda Bluetooth för att ansluta till en kortläsare, ändra integritetsinställningarna om du vill tillåta detta.";
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "Du behöver installera WooCommerce 3.5 på din server för att kunna använda den här appen, annars kommer den inte att fungera korrekt. Uppdatera så snart möjligt för att kunna fortsätta använda den här appen.";
@@ -9989,8 +9969,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "Skannar efter läsare";
 
+/* A title for CTA to present native location permission alert */
+"cardPresentPayment.locationPreAlert.continueButton" = "Fortsätt";
+
+/* A notice at the bottom explaining that location services can be changed in the Settings app later */
+"cardPresentPayment.locationPreAlert.settingsNotice" = "Du kan ändra det här alternativet senare i appen för Inställningar.";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"cardPresentPayment.locationPreAlert.subtitle" = "Det krävs behörighet för platstjänster för att begränsa bedrägerier, förhindra tvister och säkerställa säkra betalningar.";
+
+/* A title explaining why location services are needed to make a payment */
+"cardPresentPayment.locationPreAlert.title" = "Aktivera platstjänster på nästa skärm för att tillåta betalningar.";
+
+/* Dismisses the location alert */
+"cardPresentPayment.locationRequired.dismiss" = "Avfärda";
+
+/* Opens iOS's Device Settings for the app */
+"cardPresentPayment.locationRequired.openSettings" = "Öppna enhetens inställningar";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"cardPresentPayment.locationRequired.subtitle" = "Det krävs behörighet för platstjänster för att begränsa bedrägerier, förhindra tvister och säkerställa säkra betalningar.";
+
+/* A title explaining the requirement of location services for making a payment */
+"cardPresentPayment.locationRequired.title" = "Aktivera platstjänster i enhetens inställningar för att tillåta betalningar.";
+
+/* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.backToOrder" = "Tillbaka till order";
+
+/* Button to dismiss modal overlay. Presented to users after refunding a payment fails */
+"cardPresentPaymentsModal.error.close" = "Stäng";
+
+/* Button to dismiss. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.dismiss" = "Avfärda";
+
+/* Button to email receipts. Presented to users after a payment processing has failed */
+"cardPresentPaymentsModal.error.emailReceipt" = "Kvitto via e-post";
+
 /* Message informing the user that a receipt has been sent to their email address. %1$@ is the email address */
 "cardPresentPaymentsModal.error.receiptMessage" = "Ett kvitto har skickats till %1$@";
+
+/* Button to dismiss modal overlay and try another payment method. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.tryAnotherPaymentMethod" = "Prova en annan betalningsmetod.";
 
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "cardPresentPaymentsModal.success.emailReceipt" = "Kvitto via e-post";
@@ -10496,6 +10515,27 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "Media på enhet";
 
+/* Button to dismiss the Edit Store List view */
+"editStoreListView.cancelButton" = "Avbryt";
+
+/* Footer of the Current Store section of the the Edit Store List view */
+"editStoreListView.currentStoreFooter" = "Byt till en annan butik innan du döljer den här butiken";
+
+/* Header of the Current Store section of the the Edit Store List view */
+"editStoreListView.currentStoreHeader" = "Nuvarande butik";
+
+/* Footer of the Other Stores section on the Edit Store List view */
+"editStoreListView.otherStoresFooter" = "Butiker som inte har valts kommer att uteslutas från butiksväljaren";
+
+/* Header of the Other Stores section on the Edit Store List view */
+"editStoreListView.otherStoresHeader" = "Andra butiker";
+
+/* Button to save changes in the Edit Store List view */
+"editStoreListView.saveButton" = "Spara";
+
+/* Title of the Edit Store List view */
+"editStoreListView.title" = "Synliga butiker";
+
 /* Title for button to view the feedback survey about adding shipping to an order */
 "editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "Dela din feedback";
 
@@ -10634,6 +10674,132 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "Visa alla kampanjer";
+
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"hardware.cardReader.cardReaderServiceError.bluetoothDenied" = "Den här appen behöver ha behörighet att använda Bluetooth för att ansluta till din kortläsare. Du kan ge behörighet i avsnittet Woo i systemets app för Inställningar.";
+
+/* Error message when the Apple built-in reader account is deactivated. */
+"hardware.cardReader.underlyingError.appleBuiltInReaderAccountDeactivated" = "Det länkade Apple ID-kontot har inaktiverats.";
+
+/* Error message when Bluetooth is already paired with another device. */
+"hardware.cardReader.underlyingError.bluetoothAlreadyPairedWithAnotherDevice" = "Bluetooth-läsaren är redan parkopplad med en annan enhet. Du måste återställa läsarens parkoppling för att den ska kunna anslutas till den här enheten.";
+
+/* Error message when the Bluetooth connection has an invalid location ID parameter. */
+"hardware.cardReader.underlyingError.bluetoothConnectionInvalidLocationIdParameter" = "Bluetooth-anslutningen har ett ogiltigt plats-ID.";
+
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"hardware.cardReader.underlyingError.bluetoothDenied" = "Den här appen behöver ha behörighet att använda Bluetooth för att ansluta till din kortläsare. Du kan ge behörighet i avsnittet Woo i systemets app för Inställningar.";
+
+/* Error message when the Bluetooth peer removed pairing information. */
+"hardware.cardReader.underlyingError.bluetoothPeerRemovedPairingInformation" = "Läsaren har tagit bort enhetens parkopplingsinformation. Försök med att glömma läsaren i iOS-inställningarna.";
+
+/* Error message when Bluetooth reconnect has started. */
+"hardware.cardReader.underlyingError.bluetoothReconnectStarted" = "Bluetooth-läsaren har kopplats bort och vi försöker återansluta.";
+
+/* Error message when an operation cannot be canceled because it is already completed. */
+"hardware.cardReader.underlyingError.cancelFailedAlreadyCompleted" = "Processen kunde inte avbrytas eftersom den redan var slutförd.";
+
+/* Error message when card swipe functionality is unavailable. */
+"hardware.cardReader.underlyingError.cardSwipeNotAvailable" = "Kortläsningsfunktionen är inte tillgänglig.";
+
+/* Error message when the command is not allowed. */
+"hardware.cardReader.underlyingError.commandNotAllowed" = "Kontakta supporten. Operativsystemet tillåter inte att kommandot utförs.";
+
+/* Error message when the command requires cardholder consent. */
+"hardware.cardReader.underlyingError.commandRequiresCardholderConsent" = "Kortinnehavaren måste ge sitt samtycke för att åtgärden ska kunna genomföras.";
+
+/* Error message when the connection token provider finishes with an error. */
+"hardware.cardReader.underlyingError.connectionTokenProviderCompletedWithError" = "Ett fel uppstod vid hämtning av anslutningstoken.";
+
+/* Error message when the connection token provider operation times out. */
+"hardware.cardReader.underlyingError.connectionTokenProviderTimedOut" = "Begäran om anslutningstoken avbröts då tidsgränsen uppnåddes.";
+
+/* Error message when a feature is unavailable. */
+"hardware.cardReader.underlyingError.featureNotAvailable" = "Kontakta supporten. Funktionen är inte tillgänglig.";
+
+/* Error message when forwarding a live mode payment in test mode is prohibited. */
+"hardware.cardReader.underlyingError.forwardingLiveModePaymentInTestMode" = "Det är förbjudet att vidarebefordra en live-betalning i testläge.";
+
+/* Error message when forwarding a test mode payment in live mode is prohibited. */
+"hardware.cardReader.underlyingError.forwardingTestModePaymentInLiveMode" = "Det är förbjudet att vidarebefordra en testbetalning i live-läge.";
+
+/* Error message when Interac is not supported in offline mode. */
+"hardware.cardReader.underlyingError.interacNotSupportedOffline" = "Interac stöds inte i offlineläge.";
+
+/* Error message when an internal network error occurs. */
+"hardware.cardReader.underlyingError.internalNetworkError" = "Ett okänt nätverksfel uppstod.";
+
+/* Error message when the internet connection operation timed out. */
+"hardware.cardReader.underlyingError.internetConnectTimeOut" = "Anslutningen till läsaren via internet avbröts då tidsgränsen uppnåddes. Se till att din enhet och läsaren är anslutna till samma Wifi-nätverk och att läsaren är ansluten till Wifi-nätverket.";
+
+/* Error message when the client secret is invalid. */
+"hardware.cardReader.underlyingError.invalidClientSecret" = "Kontakta supporten. Klienthemligheten är ogiltig.";
+
+/* Error message when the discovery configuration is invalid. */
+"hardware.cardReader.underlyingError.invalidDiscoveryConfiguration" = "Kontakta supporten. Konfigurationen för upptäckt är ogiltig.";
+
+/* Error message when the location ID parameter is invalid. */
+"hardware.cardReader.underlyingError.invalidLocationIdParameter" = "Plats-ID är ogiltigt.";
+
+/* Error message when the reader for update is invalid. */
+"hardware.cardReader.underlyingError.invalidReaderForUpdate" = "Läsaren för uppdateringen är ogiltig.";
+
+/* Error message when the refund parameters are invalid. */
+"hardware.cardReader.underlyingError.invalidRefundParameters" = "Kontakta supporten. Parametrarna för återbetalning är ogiltiga.";
+
+/* Error message when a required parameter is invalid. */
+"hardware.cardReader.underlyingError.invalidRequiredParameter" = "Kontakta supporten. En obligatorisk parameter är ogiltig.";
+
+/* Error message when EMV data is missing. */
+"hardware.cardReader.underlyingError.missingEMVData" = "Läsaren kunde inte läsa data från den betalningsmetod som angetts. Om du får det här felet upprepade gånger kan det vara fel på läsaren och du bör kontakta supporten.";
+
+/* Error message when the payment intent is missing. */
+"hardware.cardReader.underlyingError.nilPaymentIntent" = "Kontakta supporten. Betalningsavsikten saknas.";
+
+/* Error message when the refund payment method is missing. */
+"hardware.cardReader.underlyingError.nilRefundPaymentMethod" = "Kontakta supporten. Återbetalningsmetoden saknas.";
+
+/* Error message when the setup intent is missing. */
+"hardware.cardReader.underlyingError.nilSetupIntent" = "Kontakta supporten. Installationsavsikten saknas.";
+
+/* Error message when the card is expired and offline mode is active. */
+"hardware.cardReader.underlyingError.offlineAndCardExpired" = "Bekräftelse av en betalning offline när kortet har identifierats som utgånget.";
+
+/* Error message when there is a mismatch between offline collect and confirm. */
+"hardware.cardReader.underlyingError.offlineCollectAndConfirmMismatch" = "Se till att nätverksanslutningen är stabil när betalningar genomförs och bekräftas.";
+
+/* Error message when a test card is used in live mode while offline. */
+"hardware.cardReader.underlyingError.offlineTestCardInLivemode" = "Ett testkort används i live-läge medan det är offline.";
+
+/* Error message when the offline transaction was declined. */
+"hardware.cardReader.underlyingError.offlineTransactionDeclined" = "Bekräftelse av en betalning offline när verifiering av kortet misslyckades.";
+
+/* Error message when online PIN is not supported in offline mode. */
+"hardware.cardReader.underlyingError.onlinePinNotSupportedOffline" = "PIN-kod online stöds inte i offlineläge. Försök att betala med ett annat kort.";
+
+/* Error message when the reader connection configuration is invalid. */
+"hardware.cardReader.underlyingError.readerConnectionConfigurationInvalid" = "Konfigurationen för läsarens anslutning är ogiltig.";
+
+/* Error message when the reader is missing encryption keys. */
+"hardware.cardReader.underlyingError.readerMissingEncryptionKeys" = "Läsaren saknar de krypteringsnycklar som krävs för att ta emot betalningar, och den har kopplats bort och startats om. Återanslut till läsaren för att försöka installera nycklarna på nytt. Kontakta supportavdelningen om felet kvarstår.";
+
+/* Error message when the reader software update fails due to an expired update. */
+"hardware.cardReader.underlyingError.readerSoftwareUpdateFailedExpiredUpdate" = "Uppdateringen av läsarens programvara misslyckades eftersom uppdateringen har löpt ut. För att hämta en ny uppdatering måste du koppla från och återansluta läsaren.";
+
+/* Error message when the reader tipping parameter is invalid. */
+"hardware.cardReader.underlyingError.readerTippingParameterInvalid" = "Kontakta supporten. Parametern för att ge dricks i läsaren är ogiltig.";
+
+/* Error message when the refund operation failed. */
+"hardware.cardReader.underlyingError.refundFailed" = "Återbetalningen misslyckades. Kundens bank eller kortutgivare kunde inte behandla den korrekt (till exempel om bankkontot avslutats eller om det uppstått problem med kortet).";
+
+/* Error message when there is an error decoding the Stripe API response. */
+"hardware.cardReader.underlyingError.stripeAPIResponseDecodingError" = "Kontakta supporten. Det uppstod ett fel vid avkodningen av svaret från Stripe API.";
+
+/* Error message when an unexpected error occurs with the reader. */
+"hardware.cardReader.underlyingError.unexpectedReaderError" = "Ett oväntat fel uppstod med läsaren.";
+
+/* Error message when the reader's IP address is unknown. */
+"hardware.cardReader.underlyingError.unknownReaderIpAddress" = "Den läsare som returnerats från identifiering har ingen IP-adress och det går inte att ansluta till den.";
 
 /* Title of the view containing Coupons list */
 "hubMenu.couponsList" = "Rabattkoder";
@@ -10858,9 +11024,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory. */
 "menu.payments.tapToPay.about.row.title" = "Om Tap to Pay";
-
-/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
-"menu.payments.tapToPay.feedback.row.title" = "Dela feedback";
 
 /* Title for the Tap to Pay section in the In-Person payments settings */
 "menu.payments.tapToPay.section.title" = "Tap to Pay";
@@ -11583,6 +11746,21 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Det gick inte att hämta summor.";
 
+/* Button title for sending a receipt */
+"pointOfSale.sendreceipt.button.title" = "Skicka";
+
+/* Text that shows at the top of the receipts screen along the back button. */
+"pointOfSale.sendreceipt.emailReceiptNavigationText" = "Kvitto via e-post";
+
+/* Error message that is displayed when an invalid email is used when emailing a receipt. */
+"pointOfSale.sendreceipt.emailValidationErrorText" = "Ange en giltig e-post.";
+
+/* Generic error message that is displayed when there's an error emailing a receipt. */
+"pointOfSale.sendreceipt.sendReceiptErrorText" = "Ett fel uppstod när e-postmeddelandet skulle skickas. Försök igen.";
+
+/* Placeholder for the view where an email address should be entered when sending receipts */
+"pointOfSale.sendreceipt.textfield.placeholder" = "Skriv e-post";
+
 /* Button to dismiss the payments onboarding sheet from the POS dashboard. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "Avbryt";
 
@@ -11668,10 +11846,13 @@ which should be translated separately and considered part of this sentence. */
 "pos.simpleProductsModal.title" = "Varför kan jag inte se mina produkter?";
 
 /* Button title for new order button */
-"pos.totalsView.newOrder" = "Ny beställning";
+"pos.totalsView.button.newOrder" = "Ny beställning";
 
 /* Button title for the receipt button */
-"pos.totalsView.sendReceipt" = "Kvitto";
+"pos.totalsView.button.sendReceipt" = "Kvitto via e-post";
+
+/* Text for the banner requiring specific WooCommerce version. */
+"pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "Uppdatera WooCommerce till version 9.5.0";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "Delsumma";
@@ -12112,6 +12293,18 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "Avbryt";
 
+/* Badge wording when the customs information is completed */
+"shippingLabels.customs.completedBadge" = "Slutförd";
+
+/* Customs row title in the main Shipping Labels view */
+"shippingLabels.customs.customsTitle" = "Tull";
+
+/* Accessibility label for the button to edit the shipping labels customs */
+"shippingLabels.customs.editButtonAccessibiliy" = "Redigera tullinformation för fraktsedlar";
+
+/* Badge wording when the customs information is missing */
+"shippingLabels.customs.missingInfo" = "Information saknas";
+
 /* Accessibility title for the edit button on a shipping line row. */
 "shippingLine.edit.button.accessibilityLabel" = "Redigera frakt";
 
@@ -12177,6 +12370,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in date range picker to add a Custom Range tab */
 "storePerformanceViewModel.addCustomRange" = "Lägg till";
+
+/* Button to edit the items to be displayed on the store picker */
+"storePicker.editList" = "Redigera";
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "Anslut befintlig butik";
@@ -12328,6 +12524,84 @@ which should be translated separately and considered part of this sentence. */
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is successful, we show a Notice to alert the user – this is the title of the notice. */
 "tap.to.pay.try.payment.refundNotice.success.title" = "Testbetalning med Tryck för att betala";
+
+/* Title of the button to dismiss the Tap to Pay awareness screen */
+"tapToPay.awarenessMoment.closeButton" = "Stäng";
+
+/* A title for CTA to start Tap to Pay set up process */
+"tapToPay.awarenessMoment.enableButton" = "Aktivera nu";
+
+/* A title for CTA to open a view explaining Tap to Pay */
+"tapToPay.awarenessMoment.learnMore" = "Lär dig mer";
+
+/* A subtitle for the Tap to Pay modal promoting the feature. */
+"tapToPay.awarenessMoment.subtitle" = "Ta emot kontaktlösa betalningar med endast en iPhone.";
+
+/* Title for the Tap to Pay modal promoting the feature. When using the name “Tap to Pay on iPhone” in headlines or copy, do not shorten to “Tap to Pay” or “Apple Tap to Pay. Always typeset “Tap to Pay on iPhone” as five words. The T and Ps should be uppercased, followed by lowercase letters. */
+"tapToPay.awarenessMoment.title" = "Tryck för att Betala på iPhone Tillgänglig nu!";
+
+/* Text for the button to take one step back in Tap to Pay education flow */
+"tapToPay.education.back" = "Tillbaka";
+
+/* Text for the button to dismiss Tap to Pay education flow */
+"tapToPay.education.done" = "Klar";
+
+/* Text for the button to go to the next Tap to Pay education flow step */
+"tapToPay.education.next" = "Nästa";
+
+/* Button title for Set up Tap to Pay button in Tap to Pay education flow. The button opens the Set Up Tap to Pay on iPhone flow. */
+"tapToPay.education.setUpTapToPay" = "Konfigurera Tryck för att Betala på iPhone";
+
+/* Text for the button to skip Tap to Pay education flow to the last step */
+"tapToPay.education.skip" = "Hoppa över";
+
+/* First description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep1" = "Skapa en order på din iPhone, lägg till produkter eller ett eget belopp och betala med Tryck för att Betala på iPhone.";
+
+/* Second description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep2" = "Håll fram din iPhone till kunden.";
+
+/* Third description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep3" = "Din kund håller sin enhet nära din iPhone över symbolen för kontaktlös betalning.";
+
+/* Fourth description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep4" = "När du ser kryssmarkeringen Klar har kortläsningen slutförts och transaktionen behandlas.";
+
+/* Title for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.title" = "Så tar du emot Apple Pay och andra digitala plånböcker med Tryck för att Betala på iPhone.";
+
+/* First description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep1" = "Skapa en order på din iPhone, lägg till produkter eller ett eget belopp och betala med Tryck för att Betala på iPhone.";
+
+/* Second description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep2" = "Håll fram din iPhone till kunden.";
+
+/* Third description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep3" = "Din kund håller sitt kort horisontellt högst upp på din iPhone över symbolen för kontaktlös betalning.";
+
+/* Fourth description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep4" = "När du ser kryssmarkeringen Klar har kortläsningen slutförts och transaktionen behandlas.";
+
+/* Title for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.title" = "Så tar du emot kontaktlösa kort med Tryck för att Betala på iPhone.";
+
+/* Message displayed when a contactless transaction fails due to PIN issues. Provides steps to retry using another contactless payment method or alternative payment options. */
+"tapToPay.education.step.fallbackMethod.description" = "Med vissa kort går det inte att genomföra kontaktlösa transaktioner med hjälp av en PIN-kod, och då kan betalningen misslyckas.\n\nFråga kunden om de har ett annat kontaktlöst kort eller en digital plånbok, och välj Försök betala igen för att fortsätta transaktionen med Tryck för att Betala på iPhone.\n\nI annat fall väljer du Prova en annan betalningsmetod och väljer ett alternativ som stöds, som kontanter, Dela betalningslänk, Kontantläsare eller Skanna för att betala.";
+
+/* Title for the 'Fallback payment method' Tap to Pay merchant education step */
+"tapToPay.education.step.fallbackMethod.title" = "Så tar du emot en alternativ betalningsmetod.";
+
+/* Description for the initial Tap to Pay merchant education step. When using the name “Tap to Pay on iPhone” in headlines or copy, do not shorten to “Tap to Pay” or “Apple Tap to Pay. Always typeset “Tap to Pay on iPhone” as five words. The T and Ps should be uppercased, followed by lowercase letters. */
+"tapToPay.education.step.intro.description" = "Med Tryck för att Betala på iPhone och i Woo-appen kan du acceptera personliga, kontaktlösa betalningar direkt på din iPhone, alltifrån fysiska betalkort och kreditkort till Apple Pay och andra digitala plånböcker, utan att någon extra hårdvara behövs. Det är enkelt, säkert och privat.";
+
+/* Title for the initial Tap to Pay merchant education step */
+"tapToPay.education.step.intro.title" = "Ta emot kontaktlösa betalningar med endast en iPhone.";
+
+/* Instructions for customers using accessibility options during PIN entry with Tap to Pay on iPhone.Describes how to use audible guidance for drawing or tapping the PIN digits and the gesture to submit. */
+"tapToPay.education.step.pin.description" = "I vissa situationer uppmanas kunder att ange PIN-koden för sitt kort med funktionen Tryck för att Betala på iPhone.\n\nKunder som behöver visuell, eller annan, hjälp kommer åt tillgänglighetsalternativen genom att välja \"Tillgänglighetsalternativ\" på skärmen för PIN-koden. Ljudinstruktioner vägleder kunderna att skriva sin PIN-kod på skärmen eller trycka på skärmen för att ange varje siffra, genom att trycka en gång för 1, två gånger för 2 och så vidare. Svep höger med två fingrar för att bekräfta PIN-koden.";
+
+/* Title for the 'PIN entry' Tap to Pay merchant education step */
+"tapToPay.education.step.pin.title" = "Så hanterar du inmatning av PIN-kod för ett kort.";
 
 /* A label prompting users to learn more about Tap to Pay on iPhone.
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -12605,11 +12879,11 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "Måste signeras av en vuxen";
 
+/* Label for the toggle to mark the order as complete on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.afterPurchaseMarkComplete" = "När du har köpt en fraktsedel markerar du ordern som slutförd och meddelar kunden.";
+
 /* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
 "wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (grundavgift)";
-
-/* Label for the toggle to mark the order as complete on the shipping label creation screen */
-"wooShipping.createLabels.bottomSheet.markComplete" = "Markera denna beställning som slutförd och avisera kunden";
 
 /* Header for order details section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.orderDetails" = "Beställningsinformation";
@@ -12652,6 +12926,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
+
+/* Heading for the package section in the shipping label creation screen. */
+"wooShipping.createLabels.package.title" = "Paket";
+
+/* Label for the total shipment weight input field in the shipping label creation screen. */
+"wooShipping.createLabels.package.totalWeight" = "Total vikt på försändelsen (med emballage)";
 
 /* Link for more information about how to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.info" = "Lär dig hur man skriver ut från din mobila enhet";

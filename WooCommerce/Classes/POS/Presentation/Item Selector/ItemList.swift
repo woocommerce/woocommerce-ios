@@ -24,8 +24,7 @@ struct ItemList<HeaderView: View>: View {
         InfiniteScrollView(
             triggerDeterminer: infiniteScrollTriggerDeterminer,
             loadMore: {
-                guard case .root = node,
-                      case .loaded(_, let hasMoreItems) = state,
+                guard case .loaded(_, let hasMoreItems) = state,
                       hasMoreItems
                 else { return }
                 try await posModel.loadNextItems(base: node)

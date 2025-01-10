@@ -1,6 +1,9 @@
 import Testing
+import Foundation
 import Combine
 @testable import WooCommerce
+import struct Yosemite.POSVariableParentProduct
+import enum Yosemite.POSItem
 
 final class PointOfSaleItemsControllerTests {
     private let itemProvider: MockPointOfSaleItemService
@@ -186,6 +189,32 @@ final class PointOfSaleItemsControllerTests {
 
         // Then
         guard case .loaded(let items, let hasMoreItems) = itemsViewState.itemsStack.root else {
+            Issue.record("Expected loaded ItemList state, but got \(itemsViewState)")
+            return
+        }
+        #expect(hasMoreItems)
+        #expect(items.count == 4)
+    }
+
+    @Test func loadNextItems_child_when_simulateFetchNextPage_then_state_is_loaded_with_hasMoreItems() async throws {
+        // Given
+        let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: UUID(),
+                                                                                name: "Fake Parent",
+                                                                                productImageSource: nil,
+                                                                                productID: 12345))
+        let baseItem = ItemListBaseItem.parent(parentItem)
+        itemProvider.items = [parentItem]
+        itemProvider.shouldSimulateTwoPagesOfVariations = true
+        itemProvider.shouldSimulateMorePagesOfVariations = true
+
+        await sut.loadInitialItems(base: .root)
+        await sut.loadInitialItems(base: baseItem)
+
+        // When
+        try await sut.loadNextItems(base: baseItem)
+
+        // Then
+        guard case .loaded(let items, let hasMoreItems) = itemsViewState.itemsStack.itemStates[parentItem] else {
             Issue.record("Expected loaded ItemList state, but got \(itemsViewState)")
             return
         }

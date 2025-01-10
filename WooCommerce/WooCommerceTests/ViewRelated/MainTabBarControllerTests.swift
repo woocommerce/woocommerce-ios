@@ -227,7 +227,10 @@ final class MainTabBarControllerTests: XCTestCase {
 
         // HubMenuViewController should be pushed, and be the MainTabBarController visible index
         waitUntil {
-            hubMenuNavigationController.topViewController is HubMenuViewController &&
+            hubMenuNavigationController.topViewController is HubMenuViewController
+        }
+
+        waitUntil {
             tabBarController.selectedIndex == WooTab.hubMenu.visibleIndex()
         }
     }

@@ -651,7 +651,7 @@ public extension ProductsRemote {
 
 private extension ProductsRemote {
     enum POSConstants {
-        static let productsPerPage = "100"
+        static let productsPerPage = "25"
         static let productType = "simple"
         static let productStatus = "publish"
     }

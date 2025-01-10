@@ -88,23 +88,24 @@ final class PointOfSaleItemServiceTests: XCTestCase {
 
     func test_PointOfSaleItemServiceProtocol_when_eligibility_criteria_applies_then_returns_correct_number_of_items() async throws {
         // Given
-        let expectedNumberOfItems = 2
-        let expectedItemNames = ["Dymo LabelWriter 4XL", "Private Hoodie"]
+        let expectedItemNames = ["Dymo LabelWriter 4XL", "Virtual Polo", "Private Hoodie"]
 
         // When
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-for-eligibility-criteria")
         let pagedItems = try await itemProvider.providePointOfSaleItems()
 
         // Then
-        let expectedItems = pagedItems.items
-        XCTAssertEqual(expectedItems.count, expectedNumberOfItems)
+        let items = pagedItems.items
+        XCTAssertEqual(items.count, expectedItemNames.count)
 
-        guard case .simpleProduct(let firstEligibleSimpleProduct) = expectedItems.first,
-              case .simpleProduct(let secondEligibleSimpleProduct) = expectedItems.last else {
-            return XCTFail("Expected \(expectedNumberOfItems) eligible items. Got \(expectedItems.count) instead.")
+        let itemNames: [String] = items.compactMap {
+            guard case let .simpleProduct(simpleProduct) = $0 else {
+                XCTFail("Expected simple product.")
+                return nil
+            }
+            return simpleProduct.name
         }
-        XCTAssertEqual(firstEligibleSimpleProduct.name, expectedItemNames.first)
-        XCTAssertEqual(secondEligibleSimpleProduct.name, expectedItemNames.last)
+        XCTAssertEqual(itemNames, expectedItemNames)
     }
 
     // MARK: - Query Parameters

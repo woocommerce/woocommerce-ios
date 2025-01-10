@@ -218,6 +218,7 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
     }
 
     @objc private func showFilterHistory() {
+        ServiceLocator.analytics.track(event: .FilterHistory.trackEntryPointTapped(from: viewModel.source))
         let controller = FilterHistoryViewHostingController(viewModel: viewModel, onSelection: { [weak self] selectedCriteria in
             guard let self else { return }
             viewModel.applyPastFilter(selectedCriteria)

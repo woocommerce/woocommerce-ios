@@ -212,20 +212,7 @@ extension PointOfSaleAggregateModel {
     func cancelCashPayment() {
         Task { @MainActor [weak self] in
             guard let self else { return }
-            // Because we don't know the previous card payment state, we have to cancel then collect again.
-            // If the reader's not connected, we don't want to call collect because it'll start a connection attempt.
-            // This is bad.
-            // To improve this, if we keep allowing card payments while cash payment is showing, we should improve the
-            // paymentState representation to allow two payment states to be known. It would need to be a struct with something like:
-            /*
 
-             struct PointOfSalePaymentState {
-                 let activePaymentMethod: PointOfSaleActivePaymentMethod //(enum for just `.card`, `.cash` without associated type)
-                 let cardPaymentState: PointOfSaleCardPaymentState
-                 let cashPaymentState: PointOfSaleCashPaymentState
-             }
-
-             */
             if case .connected = cardReaderConnectionStatus {
                 try? await cardPresentPaymentService.cancelPayment()
                 await collectPayment()

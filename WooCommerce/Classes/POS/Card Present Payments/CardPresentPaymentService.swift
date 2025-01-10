@@ -104,7 +104,11 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     func disconnectReader() async {
         readerConnectionStatusSubject.send(.disconnecting)
 
-        try? await cancelPayment()
+        do {
+            try await cancelPayment()
+        } catch {
+            DDLogError("Attempting to cancel the payment has failed \(error)")
+        }
 
         connectionControllerManager.knownReaderProvider.forgetCardReader()
 

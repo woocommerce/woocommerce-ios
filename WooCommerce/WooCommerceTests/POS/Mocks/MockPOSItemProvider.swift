@@ -11,6 +11,7 @@ final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
     var shouldThrowError = false
     var shouldReturnZeroItems = false
     var shouldSimulateTwoPages = false
+    var shouldSimulateMorePages = false
 
     var spyLastRequestedPageNumber: Int?
     func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem> {
@@ -23,7 +24,7 @@ final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
         }
         if shouldSimulateTwoPages,
             pageNumber > 1 {
-            return .init(items: MockPointOfSaleItemService.makeSecondPageItems(), hasMorePages: false)
+            return .init(items: MockPointOfSaleItemService.makeSecondPageItems(), hasMorePages: shouldSimulateMorePages)
         }
         return .init(items: MockPointOfSaleItemService.makeInitialItems(), hasMorePages: shouldSimulateTwoPages)
     }

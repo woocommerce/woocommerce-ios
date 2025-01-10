@@ -105,23 +105,16 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
 
     @MainActor
     private func loadInitialChildItems(for parent: POSItem) async {
-        switch parent {
-        case let .variableParentProduct(parentProduct):
-            updateState(for: parent, to: .loading([]))
+        updateState(for: parent, to: .loading([]))
 
-            let paginationTracker = paginationTracker(for: parent)
-            do {
-                try await paginationTracker.syncFirstPage { [weak self] pageNumber in
-                    guard let self else { return true }
-                    return try await fetchVariationItems(parentProduct: parentProduct, parentItem: parent, pageNumber: Store.Default.firstPageNumber)
-                }
-            } catch {
-                // TODO: 14694 - Handle error from loading initial variations.
+        let paginationTracker = paginationTracker(for: parent)
+        do {
+            try await paginationTracker.syncFirstPage { [weak self] pageNumber in
+                guard let self else { return true }
+                return try await fetchChildItems(for: parent, pageNumber: Store.Default.firstPageNumber)
             }
-
-        default:
-            assertionFailure("Unsupported parent type for loading child items: \(parent)")
-            return
+        } catch {
+            // TODO: 14694 - Handle error from loading initial variations.
         }
     }
 
@@ -138,17 +131,22 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
         do {
             _ = try await paginationTracker.ensureNextPageIsSynced { [weak self] pageNumber in
                 guard let self else { return true }
-                switch parent {
-                case let .variableParentProduct(parentProduct):
-                    return try await fetchVariationItems(parentProduct: parentProduct, parentItem: parent, pageNumber: pageNumber)
-                default:
-                    assertionFailure()
-                    return true
-                }
+                return try await fetchChildItems(for: parent, pageNumber: pageNumber)
             }
         } catch {
             // TODO: 14694 - Handle error from loading the next page, like showing an error UI at the end or as an overlay.
             updateState(for: parent, to: .error(PointOfSaleErrorState.errorOnLoadingProducts()))
+        }
+    }
+
+    @MainActor
+    private func fetchChildItems(for parent: POSItem, pageNumber: Int) async throws -> Bool {
+        switch parent {
+        case let .variableParentProduct(parentProduct):
+            return try await fetchVariationItems(parentProduct: parentProduct, parentItem: parent, pageNumber: pageNumber)
+        case .simpleProduct, .variation:
+            assertionFailure("Unsupported parent type for loading child items: \(parent)")
+            return false
         }
     }
 

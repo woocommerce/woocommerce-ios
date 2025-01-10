@@ -86,7 +86,7 @@ struct WooShippingEditAddressView: View {
         }
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: .zero) {
-                Divider()
+                Divider().ignoresSafeArea(edges: [.horizontal])
                 VStack(spacing: Constants.verticalSpacing) {
                     HStack {
                         Image(systemName: viewModel.status == .verified ? "checkmark.circle" : "exclamationmark.circle")

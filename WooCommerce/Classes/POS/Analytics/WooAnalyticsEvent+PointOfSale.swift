@@ -1,5 +1,4 @@
 import enum Yosemite.CardPresentPaymentOnboardingState
-import enum Yosemite.POSItem
 
 extension WooAnalyticsEvent {
     enum PointOfSale {

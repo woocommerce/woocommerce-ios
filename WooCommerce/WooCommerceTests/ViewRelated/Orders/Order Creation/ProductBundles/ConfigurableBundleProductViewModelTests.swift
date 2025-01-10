@@ -341,7 +341,8 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
                                                            onConfigure: { _ in })
 
         // The products are loaded async before the bundle item view models are set.
-        waitUntil {
+        // This test occasionally fails on CI due to slowness, cannot reproduce locally.
+        waitUntil(timeout: 10.0) {
             viewModel.bundleItemViewModels.isNotEmpty
         }
 

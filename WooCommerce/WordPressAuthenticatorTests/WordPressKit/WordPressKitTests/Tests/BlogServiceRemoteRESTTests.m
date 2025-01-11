@@ -75,32 +75,6 @@
 //                         failure:^(NSError *error) {}];
 //}
 //
-//#pragma mark - Synchronizing post types for a blog
-//
-//- (void)testThatSyncPostTypesForBlogWorks
-//{
-//    RemoteBlog *blog = OCMStrictClassMock([RemoteBlog class]);
-//    OCMStub([blog blogID]).andReturn(@10);
-//    
-//    WordPressComRestApi *api = OCMStrictClassMock([WordPressComRestApi class]);
-//    BlogServiceRemoteREST *service = nil;
-//
-//    XCTAssertNoThrow(service = [[BlogServiceRemoteREST alloc] initWithWordPressComRestApi:api siteID:blog.blogID]);
-//
-//    NSString *endpoint = [NSString stringWithFormat:@"sites/%@/post-types", blog.blogID];
-//    NSString *url = [service pathForEndpoint:endpoint
-//                                 withVersion:WordPressComRESTAPIVersion_1_1];
-//
-//    NSDictionary *parameters = @{@"context": @"edit"};
-//    OCMStub([api get:[OCMArg isEqual:url]
-//          parameters:[OCMArg isEqual:parameters]
-//             success:[OCMArg isNotNil]
-//             failure:[OCMArg isNotNil]]);
-//
-//    [service syncPostTypesWithSuccess:^(NSArray<RemotePostType *> *postTypes) {}
-//                              failure:^(NSError *error) {}];
-//}
-//
 //#pragma mark - Synchronizing post formats for a blog
 //
 //- (void)testThatSyncPostFormatsForBlogWorks

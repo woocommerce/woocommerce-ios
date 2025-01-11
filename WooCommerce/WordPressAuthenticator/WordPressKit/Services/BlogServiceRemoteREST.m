@@ -1,7 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "BlogServiceRemoteREST.h"
 #import "NSMutableDictionary+Helpers.h"
-#import "RemotePostType.h"
 #import "WordPressAuthenticator-Swift.h"
 @import NSObject_SafeExpectations;
 @import WordPressShared;
@@ -52,11 +51,6 @@ static NSString * const RemoteBlogSharingTwitterName                        = @"
 static NSString * const RemoteBlogSharingCommentLikesEnabled                = @"jetpack_comment_likes_enabled";
 static NSString * const RemoteBlogSharingDisabledLikes                      = @"disabled_likes";
 static NSString * const RemoteBlogSharingDisabledReblogs                    = @"disabled_reblogs";
-
-static NSString * const RemotePostTypesKey                                  = @"post_types";
-static NSString * const RemotePostTypeNameKey                               = @"name";
-static NSString * const RemotePostTypeLabelKey                              = @"label";
-static NSString * const RemotePostTypeQueryableKey                          = @"api_queryable";
 
 #pragma mark - Keys used for Update Calls
 // Note: Only god knows why these don't match the "Parsing Keys"
@@ -129,36 +123,6 @@ static NSInteger const RemoteBlogUncategorizedCategory                      = 1;
                                   failure(error);
                               }
                           }];
-}
-
-- (void)syncPostTypesWithSuccess:(PostTypesHandler)success
-                         failure:(void (^)(NSError *error))failure
-{
-    NSString *path = [self pathForPostTypes];
-    NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:WordPressComRESTAPIVersion_1_1];
-    NSDictionary *parameters = @{@"context": @"edit"};
-    [self.wordPressComRESTAPI get:requestUrl
-       parameters:parameters
-          success:^(NSDictionary *responseObject, NSHTTPURLResponse *httpResponse) {
-             
-              NSAssert([responseObject isKindOfClass:[NSDictionary class]], @"Response should be a dictionary.");
-              NSArray <RemotePostType *> *postTypes = [[responseObject arrayForKey:RemotePostTypesKey] wp_map:^id(NSDictionary *json) {
-                  return [self remotePostTypeWithDictionary:json];
-              }];
-              if (!postTypes.count) {
-                  WPAuthenticatorLogError(@"Response to %@ did not include post types for site.", requestUrl);
-                  failure(nil);
-                  return;
-              }
-              if (success) {
-                  success(postTypes);
-              }
-          } failure:^(NSError *error, NSHTTPURLResponse *httpResponse) {
-              if (failure) {
-                  failure(error);
-              }
-          }];
 }
 
 - (void)syncPostFormatsWithSuccess:(PostFormatsHandler)success
@@ -363,15 +327,6 @@ static NSInteger const RemoteBlogUncategorizedCategory                      = 1;
     } else {
         return @{};
     }
-}
-
-- (RemotePostType *)remotePostTypeWithDictionary:(NSDictionary *)json
-{
-    RemotePostType *postType = [[RemotePostType alloc] init];
-    postType.name = [json stringForKey:RemotePostTypeNameKey];
-    postType.label = [json stringForKey:RemotePostTypeLabelKey];
-    postType.apiQueryable = [json numberForKey:RemotePostTypeQueryableKey];
-    return postType;
 }
 
 - (RemoteBlogSettings *)remoteBlogSettingFromJSONDictionary:(NSDictionary *)json

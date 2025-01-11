@@ -1,13 +1,8 @@
 #import "BlogServiceRemoteXMLRPC.h"
 #import "NSMutableDictionary+Helpers.h"
-#import "RemotePostType.h"
 #import "WordPressAuthenticator-Swift.h"
 @import NSObject_SafeExpectations;
 @import WordPressShared;
-
-static NSString * const RemotePostTypeNameKey = @"name";
-static NSString * const RemotePostTypeLabelKey = @"label";
-static NSString * const RemotePostTypePublicKey = @"public";
 
 @implementation BlogServiceRemoteXMLRPC
 
@@ -66,34 +61,6 @@ static NSString * const RemotePostTypePublicKey = @"public";
                      }
                      
                  } failure:^(NSError *error, NSHTTPURLResponse *response) {
-                     if (failure) {
-                         failure(error);
-                     }
-                 }];
-}
-
-- (void)syncPostTypesWithSuccess:(PostTypesHandler)success failure:(void (^)(NSError *error))failure
-{
-    NSArray *parameters = [self defaultXMLRPCArguments];
-    [self.api callMethod:@"wp.getPostTypes"
-              parameters:parameters
-                 success:^(id responseObject, NSHTTPURLResponse *response) {
-
-                     NSAssert([responseObject isKindOfClass:[NSDictionary class]], @"Response should be a dictionary.");
-                     NSArray <RemotePostType *> *postTypes = [[responseObject allObjects] wp_map:^id(NSDictionary *json) {
-                         return [self remotePostTypeFromXMLRPCDictionary:json];
-                     }];
-                     if (!postTypes.count) {
-                         WPAuthenticatorLogError(@"Response to wp.getPostTypes did not include post types for site.");
-                         failure(nil);
-                         return;
-                     }
-                     if (success) {
-                         success(postTypes);
-                     }
-                 } failure:^(NSError *error, NSHTTPURLResponse *response) {
-                     WPAuthenticatorLogError(@"Error syncing post types (%@): %@", response.URL, error);
-                     
                      if (failure) {
                          failure(error);
                      }
@@ -195,15 +162,6 @@ static NSString * const RemotePostTypePublicKey = @"public";
     user.displayName = [xmlrpcUser stringForKey:@"display_name"];
     user.email = [xmlrpcUser stringForKey:@"email"];
     return user;
-}
-
-- (RemotePostType *)remotePostTypeFromXMLRPCDictionary:(NSDictionary *)json
-{
-    RemotePostType *postType = [[RemotePostType alloc] init];
-    postType.name = [json stringForKey:RemotePostTypeNameKey];
-    postType.label = [json stringForKey:RemotePostTypeLabelKey];
-    postType.apiQueryable = [json numberForKey:RemotePostTypePublicKey];
-    return postType;
 }
 
 @end

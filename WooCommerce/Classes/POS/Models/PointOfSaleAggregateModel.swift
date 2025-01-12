@@ -201,24 +201,19 @@ extension PointOfSaleAggregateModel {
 
     // Prevents card payments from the moment the merchant decides we start collecting cash
     // Once we get the callback from the card service, we switch to cash collection state
-    func startCashPayment() {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
-            try? await cardPresentPaymentService.cancelPayment()
-            paymentState = .cash(.collectingCash)
-        }
+    @MainActor
+    func startCashPayment() async {
+        try? await cardPresentPaymentService.cancelPayment()
+        paymentState = .cash(.collectingCash)
     }
 
-    func cancelCashPayment() {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
-
-            if case .connected = cardReaderConnectionStatus {
-                try? await cardPresentPaymentService.cancelPayment()
-                await collectPayment()
-            } else {
-                paymentState = .card(.idle)
-            }
+    @MainActor
+    func cancelCashPayment() async {
+        if case .connected = cardReaderConnectionStatus {
+            try? await cardPresentPaymentService.cancelPayment()
+            await collectPayment()
+        } else {
+            paymentState = .card(.idle)
         }
     }
 

@@ -56,12 +56,14 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     func isRequired(_ field: WooShippingEditAddressView.AddressField) -> Bool {
         switch field {
-        case .name, .country, .address, .city, .state, .postalCode, .email:
+        case .name:
+            return company.isEmpty
+        case .company:
+            return name.isEmpty
+        case .country, .address, .city, .state, .postalCode, .email:
             return true
         case .phone:
             return phoneNumberRequired
-        case .company:
-            return false
         }
     }
 }

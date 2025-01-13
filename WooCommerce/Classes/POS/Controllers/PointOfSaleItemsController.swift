@@ -7,10 +7,9 @@ import class Yosemite.Store
 
 protocol PointOfSaleItemsControllerProtocol {
     var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { get }
-    func loadInitialItems() async
-    func loadNextItems() async
+    func loadInitialItems(base: ItemListBaseItem) async
+    func loadNextItems(base: ItemListBaseItem) async
     func reload() async
-    func loadInitialChildItems(for parent: POSItem) async
 }
 
 class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
@@ -22,6 +21,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
                    itemsStack: ItemsStackState(root: .loading([]),
                                                itemStates: [:]))
     private let paginationTracker: AsyncPaginationTracker
+    private var childPaginationTrackers: [POSItem: AsyncPaginationTracker] = [:]
     private let itemProvider: PointOfSaleItemServiceProtocol
 
     init(itemProvider: PointOfSaleItemServiceProtocol) {
@@ -30,7 +30,17 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     }
 
     @MainActor
-    func loadInitialItems() async {
+    func loadInitialItems(base: ItemListBaseItem) async {
+        switch base {
+        case .root:
+            await loadInitialRootItems()
+        case .parent(let parent):
+            await loadInitialChildItems(for: parent)
+        }
+    }
+
+    @MainActor
+    private func loadInitialRootItems() async {
         itemsViewState = .init(containerState: .loading, itemsStack: ItemsStackState(root: .loading([]),
                                                                                      itemStates: [:]))
         do {
@@ -46,7 +56,17 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     }
 
     @MainActor
-    func loadNextItems() async {
+    func loadNextItems(base: ItemListBaseItem) async {
+        switch base {
+        case .root:
+            await loadNextRootItems()
+        case .parent(let parent):
+            await loadNextChildItems(for: parent)
+        }
+    }
+
+    @MainActor
+    private func loadNextRootItems() async {
         guard paginationTracker.hasNextPage else {
             return
         }
@@ -83,19 +103,59 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     }
 
     @MainActor
-    func loadInitialChildItems(for parent: POSItem) async {
+    private func loadInitialChildItems(for parent: POSItem) async {
+        updateState(for: parent, to: .loading([]))
+
+        let paginationTracker = paginationTracker(for: parent)
+        do {
+            try await paginationTracker.syncFirstPage { [weak self] pageNumber in
+                guard let self else { return true }
+                return try await fetchChildItems(for: parent, pageNumber: Store.Default.firstPageNumber)
+            }
+        } catch {
+            // TODO: 14694 - Handle error from loading initial variations.
+        }
+    }
+
+    @MainActor
+    private func loadNextChildItems(for parent: POSItem) async {
+        let paginationTracker = paginationTracker(for: parent)
+
+        guard paginationTracker.hasNextPage else {
+            return
+        }
+        let currentItems = itemsViewState.itemsStack.itemStates[parent]?.items ?? []
+        updateState(for: parent, to: .loading(currentItems))
+
+        do {
+            _ = try await paginationTracker.ensureNextPageIsSynced { [weak self] pageNumber in
+                guard let self else { return true }
+                return try await fetchChildItems(for: parent, pageNumber: pageNumber)
+            }
+        } catch {
+            // TODO: 14694 - Handle error from loading the next page, like showing an error UI at the end or as an overlay.
+            updateState(for: parent, to: .error(PointOfSaleErrorState.errorOnLoadingProducts()))
+        }
+    }
+
+    @MainActor
+    private func fetchChildItems(for parent: POSItem, pageNumber: Int) async throws -> Bool {
         switch parent {
         case let .variableParentProduct(parentProduct):
-            updateState(for: parent, to: .loading([]))
-            do {
-                // TODO-14696: pagination support for variations lists
-                try await fetchVariationItems(parentProduct: parentProduct, parentItem: parent, pageNumber: Store.Default.firstPageNumber)
-            } catch {
-                // TODO: 14694 - Handle error from loading initial variations.
-            }
-        default:
+            return try await fetchVariationItems(parentProduct: parentProduct, parentItem: parent, pageNumber: pageNumber)
+        case .simpleProduct, .variation:
             assertionFailure("Unsupported parent type for loading child items: \(parent)")
-            return
+            return false
+        }
+    }
+
+    private func paginationTracker(for parent: POSItem) -> AsyncPaginationTracker {
+        if let childPaginationTracker = childPaginationTrackers[parent] {
+            return childPaginationTracker
+        } else {
+            let newChildPaginationTracker = AsyncPaginationTracker()
+            childPaginationTrackers[parent] = newChildPaginationTracker
+            return newChildPaginationTracker
         }
     }
 }
@@ -136,7 +196,7 @@ private extension PointOfSaleItemsController {
     private func fetchVariationItems(parentProduct: POSVariableParentProduct,
                                      parentItem: POSItem,
                                      pageNumber: Int,
-                                     appendToExistingItems: Bool = true) async throws {
+                                     appendToExistingItems: Bool = true) async throws -> Bool {
         let pagedItems = try await itemProvider.providePointOfSaleVariationItems(
             for: parentProduct,
             pageNumber: pageNumber
@@ -150,6 +210,7 @@ private extension PointOfSaleItemsController {
         allItems.append(contentsOf: uniqueNewItems)
 
         updateState(for: parentItem, to: .loaded(allItems, hasMoreItems: pagedItems.hasMorePages))
+        return pagedItems.hasMorePages
     }
 }
 

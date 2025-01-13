@@ -9,4 +9,6 @@ enum PointOfSaleItemListCardConstants {
     static let verticalTextPadding: CGFloat = 8
     static let itemNameFont: POSFontStyle = .posBodyEmphasized
     static let itemPriceFont: POSFontStyle = .posBodyRegular
+    static let accessoryButtonMaxWidth: CGFloat = 136
+    static let accessoryButtonPadding: CGFloat = 16
 }

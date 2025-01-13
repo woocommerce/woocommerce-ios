@@ -24,7 +24,7 @@ protocol PointOfSaleAggregateModelProtocol {
 
     var itemsViewState: ItemsViewState { get }
     func loadInitialItems() async
-    func loadNextItems() async
+    func loadNextItems() async throws
     func reload() async
     func loadInitialChildItems(for parent: POSItem) async
 
@@ -98,8 +98,8 @@ extension PointOfSaleAggregateModel {
     }
 
     @MainActor
-    func loadNextItems() async {
-        await itemsController.loadNextItems()
+    func loadNextItems() async throws {
+        try await itemsController.loadNextItems()
     }
 
     @MainActor

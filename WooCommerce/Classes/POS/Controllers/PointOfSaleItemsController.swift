@@ -8,7 +8,7 @@ import class Yosemite.Store
 protocol PointOfSaleItemsControllerProtocol {
     var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { get }
     func loadInitialItems() async
-    func loadNextItems() async
+    func loadNextItems() async throws
     func reload() async
     func loadInitialChildItems(for parent: POSItem) async
 }
@@ -40,13 +40,13 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
             }
         } catch {
             itemsViewState = .init(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
-                                   itemsStack: ItemsStackState(root: .loaded([]),
+                                   itemsStack: ItemsStackState(root: .loaded([], hasMoreItems: false),
                                                                itemStates: [:]))
         }
     }
 
     @MainActor
-    func loadNextItems() async {
+    func loadNextItems() async throws {
         guard paginationTracker.hasNextPage else {
             return
         }
@@ -62,8 +62,9 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
         } catch {
             // TODO: 14694 - Handle error from loading the next page, like showing an error UI at the end or as an overlay.
             itemsViewState = .init(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
-                                   itemsStack: ItemsStackState(root: .loaded(currentItems),
+                                   itemsStack: ItemsStackState(root: .loaded(currentItems, hasMoreItems: true),
                                                                itemStates: currentItemStates))
+            throw error
         }
     }
 
@@ -77,7 +78,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
         } catch {
             // TODO: 14694 - Handle error from pull-to-refresh, like showing an error UI at the beginning or as an overlay.
             itemsViewState = .init(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
-                                   itemsStack: ItemsStackState(root: .loaded([]),
+                                   itemsStack: ItemsStackState(root: .loaded([], hasMoreItems: false),
                                                                itemStates: [:]))
         }
     }
@@ -117,13 +118,13 @@ private extension PointOfSaleItemsController {
         allItems.append(contentsOf: uniqueNewItems)
         if allItems.isEmpty {
             itemsViewState = .init(containerState: .empty,
-                                   itemsStack: ItemsStackState(root: .loaded([]),
+                                   itemsStack: ItemsStackState(root: .loaded([], hasMoreItems: false),
                                                                itemStates: [:]))
         } else {
             let itemStates = itemsViewState.itemsStack.itemStates
                 .filter { allItems.contains($0.key) }
             itemsViewState = .init(containerState: .content,
-                                   itemsStack: ItemsStackState(root: .loaded(allItems),
+                                   itemsStack: ItemsStackState(root: .loaded(allItems, hasMoreItems: pagedItems.hasMorePages),
                                                                itemStates: itemStates))
         }
         return pagedItems.hasMorePages
@@ -149,7 +150,7 @@ private extension PointOfSaleItemsController {
         }
         allItems.append(contentsOf: uniqueNewItems)
 
-        updateState(for: parentItem, to: .loaded(allItems))
+        updateState(for: parentItem, to: .loaded(allItems, hasMoreItems: pagedItems.hasMorePages))
     }
 }
 

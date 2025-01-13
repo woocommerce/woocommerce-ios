@@ -50,4 +50,38 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.status, .verified)
     }
 
+    func test_isRequired_returns_expected_values() {
+        // Given
+        let viewModel = WooShippingEditAddressViewModel(id: "default_address",
+                                                        name: "JANE DOE",
+                                                        company: "HEADQUARTERS",
+                                                        country: "US",
+                                                        address: "15 ALGONKIN ST STE 100",
+                                                        city: "TICONDEROGA",
+                                                        state: "NY",
+                                                        postalCode: "12883-1487",
+                                                        email: "TEST@EXAMPLE.COM",
+                                                        phone: "123-456-7890",
+                                                        saveAsDefault: true,
+                                                        showCompanyField: true,
+                                                        isVerified: true)
+
+        // When
+        var requirements: [WooShippingEditAddressView.AddressField: Bool] = [:]
+        for field in WooShippingEditAddressView.AddressField.allCases {
+            requirements[field] = viewModel.isRequired(field)
+        }
+
+        // Then
+        XCTAssertEqual(requirements[.name], true)
+        XCTAssertEqual(requirements[.company], false)
+        XCTAssertEqual(requirements[.country], true)
+        XCTAssertEqual(requirements[.address], true)
+        XCTAssertEqual(requirements[.city], true)
+        XCTAssertEqual(requirements[.state], true)
+        XCTAssertEqual(requirements[.postalCode], true)
+        XCTAssertEqual(requirements[.email], true)
+        XCTAssertEqual(requirements[.phone], true)
+    }
+
 }

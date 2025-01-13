@@ -48,4 +48,13 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         self.showCompanyField = showCompanyField
         self.status = isVerified ? .verified : .unverified
     }
+
+    func isRequired(_ field: WooShippingEditAddressView.AddressField) -> Bool {
+        switch field {
+        case .name, .country, .address, .city, .state, .postalCode, .email, .phone:
+            return true
+        case .company:
+            return false
+        }
+    }
 }

@@ -45,7 +45,8 @@ final class WooShippingOriginAddressListViewModel: ObservableObject {
                                                         phone: address.phone,
                                                         saveAsDefault: address.defaultAddress,
                                                         showCompanyField: address.company.isNotEmpty,
-                                                        isVerified: address.isVerified)
+                                                        isVerified: address.isVerified,
+                                                        phoneNumberRequired: true) // Always required for origin address
     }
 }
 

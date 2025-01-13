@@ -32,7 +32,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         phone: phone,
                                                         saveAsDefault: saveAsDefault,
                                                         showCompanyField: showCompanyField,
-                                                        isVerified: isVerified)
+                                                        isVerified: isVerified,
+                                                        phoneNumberRequired: true)
 
         // Then
         XCTAssertEqual(viewModel.id, id)
@@ -52,19 +53,20 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
     func test_isRequired_returns_expected_values() {
         // Given
-        let viewModel = WooShippingEditAddressViewModel(id: "default_address",
-                                                        name: "JANE DOE",
-                                                        company: "HEADQUARTERS",
-                                                        country: "US",
-                                                        address: "15 ALGONKIN ST STE 100",
-                                                        city: "TICONDEROGA",
-                                                        state: "NY",
-                                                        postalCode: "12883-1487",
-                                                        email: "TEST@EXAMPLE.COM",
-                                                        phone: "123-456-7890",
+        let viewModel = WooShippingEditAddressViewModel(id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: "",
+                                                        address: "",
+                                                        city: "",
+                                                        state: "",
+                                                        postalCode: "",
+                                                        email: "",
+                                                        phone: "",
                                                         saveAsDefault: true,
                                                         showCompanyField: true,
-                                                        isVerified: true)
+                                                        isVerified: true,
+                                                        phoneNumberRequired: true)
 
         // When
         var requirements: [WooShippingEditAddressView.AddressField: Bool] = [:]
@@ -82,6 +84,30 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertEqual(requirements[.postalCode], true)
         XCTAssertEqual(requirements[.email], true)
         XCTAssertEqual(requirements[.phone], true)
+    }
+
+    func test_isRequired_returns_false_when_phone_number_not_required() {
+        // Given
+        let viewModel = WooShippingEditAddressViewModel(id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: "",
+                                                        address: "",
+                                                        city: "",
+                                                        state: "",
+                                                        postalCode: "",
+                                                        email: "",
+                                                        phone: "",
+                                                        saveAsDefault: true,
+                                                        showCompanyField: true,
+                                                        isVerified: true,
+                                                        phoneNumberRequired: false)
+
+        // When
+        let isPhoneRequired = viewModel.isRequired(.phone)
+
+        // Then
+        XCTAssertFalse(isPhoneRequired)
     }
 
 }

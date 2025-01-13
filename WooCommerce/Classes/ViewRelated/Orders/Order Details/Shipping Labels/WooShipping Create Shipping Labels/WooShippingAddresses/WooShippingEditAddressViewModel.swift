@@ -17,6 +17,9 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     /// Whether to show the company field by default.
     @Published var showCompanyField: Bool
 
+    /// Whether the phone number is required.
+    private let phoneNumberRequired: Bool
+
     // TODO: Set status based on initial verified status, whether any changes have been made, and local validation.
     /// Status of the address, based on local validation and remote verification.
     var status: WooShippingAddressStatus
@@ -33,7 +36,8 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
          phone: String,
          saveAsDefault: Bool,
          showCompanyField: Bool,
-         isVerified: Bool) {
+         isVerified: Bool,
+         phoneNumberRequired: Bool) {
         self.id = id
         self.name = name
         self.company = company
@@ -47,12 +51,15 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         self.saveAsDefault = saveAsDefault
         self.showCompanyField = showCompanyField
         self.status = isVerified ? .verified : .unverified
+        self.phoneNumberRequired = phoneNumberRequired
     }
 
     func isRequired(_ field: WooShippingEditAddressView.AddressField) -> Bool {
         switch field {
-        case .name, .country, .address, .city, .state, .postalCode, .email, .phone:
+        case .name, .country, .address, .city, .state, .postalCode, .email:
             return true
+        case .phone:
+            return phoneNumberRequired
         case .company:
             return false
         }

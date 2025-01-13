@@ -383,7 +383,8 @@ private extension WooShippingEditAddressView {
                                                 phone: "",
                                                 saveAsDefault: true,
                                                 showCompanyField: false,
-                                                isVerified: true))
+                                                isVerified: true,
+                                                phoneNumberRequired: true))
 }
 
 #Preview("With Company") {
@@ -399,5 +400,6 @@ private extension WooShippingEditAddressView {
                                                 phone: "",
                                                 saveAsDefault: false,
                                                 showCompanyField: true,
-                                                isVerified: false))
+                                                isVerified: false,
+                                                phoneNumberRequired: true))
 }

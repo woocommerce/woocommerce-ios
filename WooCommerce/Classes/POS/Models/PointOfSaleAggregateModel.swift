@@ -98,8 +98,8 @@ extension PointOfSaleAggregateModel {
     }
 
     @MainActor
-    func loadNextItems() async throws {
-        try await itemsController.loadNextItems()
+    func loadNextItems() async {
+        await itemsController.loadNextItems()
     }
 
     @MainActor

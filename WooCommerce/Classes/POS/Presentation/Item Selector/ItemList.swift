@@ -34,7 +34,7 @@ struct ItemList<HeaderView: View>: View {
                       case .loaded(_, let hasMoreItems) = state,
                       hasMoreItems
                 else { return }
-                try await posModel.loadNextItems()
+                await posModel.loadNextItems()
             },
             content: {
                 LazyVStack {

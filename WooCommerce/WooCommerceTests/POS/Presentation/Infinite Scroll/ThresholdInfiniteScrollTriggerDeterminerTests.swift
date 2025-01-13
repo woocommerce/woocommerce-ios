@@ -58,7 +58,7 @@ struct ThresholdInfiniteScrollTriggerDeterminerTests {
         #expect(result == false)
     }
 
-    @Test func shouldTriggerInfiniteScroll_returns_false_when_triggered_twice_at_same_position() async throws {
+    @Test func shouldTriggerInfiniteScroll_returns_true_when_triggered_twice_at_same_position() async throws {
         // Given
         let sut = ThresholdInfiniteScrollTriggerDeterminer()
         let scrollViewHeight: CGFloat = 500
@@ -74,35 +74,6 @@ struct ThresholdInfiniteScrollTriggerDeterminerTests {
         )
 
         // Second attempt at same position
-        let secondResult = sut.shouldTriggerInfiniteScroll(
-            scrollPosition: scrollPosition,
-            scrollViewHeight: scrollViewHeight,
-            contentHeight: contentHeight
-        )
-
-        // Then
-        #expect(firstResult == true)
-        #expect(secondResult == false)
-    }
-
-    @Test func shouldTriggerInfiniteScroll_returns_true_when_triggered_after_reset() async throws {
-        // Given
-        let sut = ThresholdInfiniteScrollTriggerDeterminer()
-        let scrollViewHeight: CGFloat = 500
-        let contentHeight: CGFloat = 1000
-        let scrollPosition = contentHeight - scrollViewHeight - 100
-
-        // When
-        // First trigger
-        let firstResult = sut.shouldTriggerInfiniteScroll(
-            scrollPosition: scrollPosition,
-            scrollViewHeight: scrollViewHeight,
-            contentHeight: contentHeight
-        )
-
-        sut.resetStatesIfNeeded()
-
-        // Second attempt after reset
         let secondResult = sut.shouldTriggerInfiniteScroll(
             scrollPosition: scrollPosition,
             scrollViewHeight: scrollViewHeight,

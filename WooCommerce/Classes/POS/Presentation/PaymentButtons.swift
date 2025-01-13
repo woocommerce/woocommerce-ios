@@ -65,7 +65,9 @@ private extension PaymentsActionButtons {
     func handleSendReceiptAction() async {
         let isEligible = await checkReceiptEligibility()
         if isEligible {
-            isShowingSendReceiptView = true
+            withAnimation {
+                isShowingSendReceiptView = true
+            }
         } else {
             isShowingReceiptNotEligibleBanner = true
         }

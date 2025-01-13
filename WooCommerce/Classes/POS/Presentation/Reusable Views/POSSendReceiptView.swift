@@ -17,7 +17,9 @@ struct POSSendReceiptView: View {
         VStack(alignment: .center, spacing: 20) {
             HStack {
                 Button(action: {
-                    isShowingSendReceiptView = false
+                    withAnimation {
+                        isShowingSendReceiptView = false
+                    }
                 }, label: {
                     HStack {
                         Image(systemName: "chevron.left")
@@ -93,7 +95,9 @@ struct POSSendReceiptView: View {
             do {
                 errorMessage = nil
                 try await posModel.sendReceipt(to: textFieldInput)
-                isShowingSendReceiptView = false
+                withAnimation {
+                    isShowingSendReceiptView = false
+                }
             } catch {
                 errorMessage = Localization.sendReceiptErrorText
             }

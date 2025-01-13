@@ -13,6 +13,7 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
     var body: some View {
         if isShowingSendReceiptView {
             POSSendReceiptView(isShowingSendReceiptView: $isShowingSendReceiptView)
+                .transition(.move(edge: .bottom))
         } else {
             ZStack {
                 VStack(alignment: .center, spacing: Constants.headerSpacing) {

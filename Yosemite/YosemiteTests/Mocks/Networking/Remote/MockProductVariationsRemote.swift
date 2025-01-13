@@ -91,8 +91,8 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
         // no-op
     }
 
-    func loadVariationsForPointOfSale(for siteID: Int64, parentProductID: Int64, pageNumber: Int) async throws -> [ProductVariation] {
-        []
+    func loadVariationsForPointOfSale(for siteID: Int64, parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<ProductVariation> {
+        .init(items: [], hasMorePages: false)
     }
 
     func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void) {

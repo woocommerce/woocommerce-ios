@@ -160,7 +160,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
 
         // When
-        let variations = try await remote.loadVariationsForPointOfSale(for: sampleSiteID, parentProductID: sampleProductID)
+        let variations = try await remote.loadVariationsForPointOfSale(for: sampleSiteID, parentProductID: sampleProductID).items
 
         // Then
         XCTAssertEqual(variations.count, 8)
@@ -223,6 +223,61 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
         XCTAssertEqual(firstVariation.menuOrder, 8)
     }
+
+    func test_loadVariationsForPointOfSale_returns_page_details() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+
+        // When
+        let hasMorePages = try await remote.loadVariationsForPointOfSale(for: sampleSiteID, parentProductID: sampleProductID).hasMorePages
+
+        // Then
+        XCTAssertTrue(hasMorePages)
+    }
+
+    func test_loadVariationssForPointOfSale_returns_hasMorePages_based_on_header_with_case_insensitive_name() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        network.responseHeaders = ["X-WP-TotalPages": "5"]
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+
+        // When loading page 1 to 4
+        for pageNumber in 1...4 {
+            let pagedVariations = try await remote.loadVariationsForPointOfSale(for: sampleSiteID,
+                                                                                parentProductID: sampleProductID,
+                                                                                pageNumber: pageNumber)
+
+            // Then
+            XCTAssertTrue(pagedVariations.hasMorePages)
+        }
+
+        // When loading page 5
+        let pagedVariations = try await remote.loadVariationsForPointOfSale(for: sampleSiteID,
+                                                                            parentProductID: sampleProductID,
+                                                                            pageNumber: 5)
+
+        // Then
+        XCTAssertFalse(pagedVariations.hasMorePages)
+    }
+
+    func test_loadVariationssForPointOfSale_returns_hasMorePages_true_when_header_is_not_set() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        network.responseHeaders = nil
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+
+        // When loading the first 5 pages
+        for pageNumber in 1...5 {
+            let pagedVariations = try await remote.loadVariationsForPointOfSale(for: sampleSiteID,
+                                                                                parentProductID: sampleProductID,
+                                                                                pageNumber: pageNumber)
+
+            // Then
+            XCTAssertTrue(pagedVariations.hasMorePages)
+        }
+    }
+
 
     func test_loadVariationsForPointOfSale_properly_relays_networking_error() async throws {
         // Given

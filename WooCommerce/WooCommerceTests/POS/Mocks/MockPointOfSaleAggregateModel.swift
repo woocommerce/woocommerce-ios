@@ -42,13 +42,11 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
         self.paymentState = paymentState
     }
 
-    func loadInitialItems() async { }
+    func loadInitialItems(base: ItemListBaseItem) async { }
 
-    func loadNextItems() async { }
+    func loadNextItems(base: ItemListBaseItem) async { }
 
     func reload() async { }
-
-    func loadInitialChildItems(for parent: POSItem) async { }
 
     var cart: [CartItem] = []
 

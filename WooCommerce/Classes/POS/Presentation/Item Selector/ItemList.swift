@@ -1,24 +1,20 @@
 import SwiftUI
 import enum Yosemite.POSItem
+import protocol WooFoundation.Analytics
 import struct Yosemite.POSVariableParentProduct
 
 /// Displays a list of POS items or placeholder card based on the given state.
 struct ItemList<HeaderView: View>: View {
-    enum BaseItem {
-        case root
-        case parent(POSItem)
-    }
-
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @EnvironmentObject var posModel: PointOfSaleAggregateModel
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
     let state: ItemListState
-    private let node: BaseItem
+    private let node: ItemListBaseItem
     private let headerView: HeaderView
 
     init(state: ItemListState,
-         node: BaseItem = .root,
+         node: ItemListBaseItem = .root,
          @ViewBuilder headerView: () -> HeaderView = { EmptyView() }) {
         self.state = state
         self.node = node
@@ -29,11 +25,10 @@ struct ItemList<HeaderView: View>: View {
         InfiniteScrollView(
             triggerDeterminer: infiniteScrollTriggerDeterminer,
             loadMore: {
-                guard case .root = node,
-                      case .loaded(_, let hasMoreItems) = state,
+                guard case .loaded(_, let hasMoreItems) = state,
                       hasMoreItems
                 else { return }
-                try await posModel.loadNextItems()
+                try await posModel.loadNextItems(base: node)
             },
             content: {
                 LazyVStack {
@@ -60,6 +55,7 @@ private enum Constants {
 
 private struct ItemListRow: View {
     let item: POSItem
+    let analytics: Analytics = ServiceLocator.analytics
     @EnvironmentObject var posModel: PointOfSaleAggregateModel
 
     var body: some View {
@@ -67,6 +63,7 @@ private struct ItemListRow: View {
         case let .simpleProduct(product):
             Button(action: {
                 posModel.addToCart(product)
+                analytics.track(event: .PointOfSale.addItemToCart(type: .simpleProduct))
             }, label: {
                 SimpleProductCardView(product: product)
             })
@@ -83,6 +80,7 @@ private struct ItemListRow: View {
         case let .variation(variation):
             Button(action: {
                 posModel.addToCart(variation)
+                analytics.track(event: .PointOfSale.addItemToCart(type: .variation))
             }, label: {
                 VariationCardView(variation: variation)
             })

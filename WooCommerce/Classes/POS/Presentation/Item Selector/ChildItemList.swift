@@ -43,7 +43,7 @@ struct ChildItemList: View {
             guard state.items.isEmpty else {
                 return
             }
-            await posModel.loadInitialChildItems(for: parentItem)
+            await posModel.loadInitialItems(base: .parent(parentItem))
         }
     }
 }

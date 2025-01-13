@@ -9,7 +9,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+        stores = MockStoresManager(sessionManager: .testingInstance)
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }

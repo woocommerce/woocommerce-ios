@@ -1,5 +1,6 @@
 import SwiftUI
 import enum Yosemite.POSItem
+import protocol WooFoundation.Analytics
 import struct Yosemite.POSVariableParentProduct
 
 /// Displays a list of POS items or placeholder card based on the given state.
@@ -54,6 +55,7 @@ private enum Constants {
 
 private struct ItemListRow: View {
     let item: POSItem
+    let analytics: Analytics = ServiceLocator.analytics
     @EnvironmentObject var posModel: PointOfSaleAggregateModel
 
     var body: some View {
@@ -61,6 +63,7 @@ private struct ItemListRow: View {
         case let .simpleProduct(product):
             Button(action: {
                 posModel.addToCart(product)
+                analytics.track(event: .PointOfSale.addItemToCart(type: .simpleProduct))
             }, label: {
                 SimpleProductCardView(product: product)
             })
@@ -77,6 +80,7 @@ private struct ItemListRow: View {
         case let .variation(variation):
             Button(action: {
                 posModel.addToCart(variation)
+                analytics.track(event: .PointOfSale.addItemToCart(type: .variation))
             }, label: {
                 VariationCardView(variation: variation)
             })

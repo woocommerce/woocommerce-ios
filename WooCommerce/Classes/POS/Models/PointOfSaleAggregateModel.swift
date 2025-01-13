@@ -112,9 +112,6 @@ extension PointOfSaleAggregateModel {
 extension PointOfSaleAggregateModel {
     func addToCart(_ item: POSOrderableItem) {
         cart.insert(CartItem(id: UUID(), item: item, quantity: 1), at: 0)
-        Task { @MainActor in
-            analytics.track(.pointOfSaleAddItemToCart)
-        }
     }
 
     func remove(cartItem: CartItem) {

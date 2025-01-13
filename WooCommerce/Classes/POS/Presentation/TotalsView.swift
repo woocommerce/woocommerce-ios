@@ -318,7 +318,9 @@ private extension TotalsView {
                 break
             }
         case .cash:
-            break
+            return PaymentViewLayout(backgroundColor: backgroundColor,
+                                     topPadding: nil,
+                                     bottomPadding: nil)
         }
 
         if posModel.cardReaderConnectionStatus == .disconnected {

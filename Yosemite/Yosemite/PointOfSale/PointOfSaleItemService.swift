@@ -85,7 +85,6 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                                      productID: variation.productID,
                                      variationID: variation.productVariationID))
             }),
-            // TODO-14696: pagination support for variations lists
             hasMorePages: pagedVariations.hasMorePages
         )
     }

@@ -38,6 +38,7 @@ struct WooShippingOriginAddressListView: View {
                 .roundedBorder(cornerRadius: Constants.cornerRadius,
                                lineColor: Color(viewModel.isSelected(address) ? .wooCommercePurple(.shade60) : .separator),
                                lineWidth: viewModel.isSelected(address) ? 2 : 0.5)
+                .contentShape(Rectangle())
                 .onTapGesture {
                     viewModel.select(address)
                 }

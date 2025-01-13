@@ -6,11 +6,9 @@ import enum Yosemite.POSItem
 final class MockPointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> = Empty()
 
-    func loadInitialItems() async { }
+    func loadInitialItems(base: ItemListBaseItem) async { }
 
-    func loadNextItems() async { }
+    func loadNextItems(base: ItemListBaseItem) async { }
 
     func reload() async { }
-
-    func loadInitialChildItems(for parent: Yosemite.POSItem) async { }
 }

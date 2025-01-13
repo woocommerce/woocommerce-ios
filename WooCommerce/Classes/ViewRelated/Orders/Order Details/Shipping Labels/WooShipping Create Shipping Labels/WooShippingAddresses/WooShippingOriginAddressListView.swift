@@ -27,7 +27,7 @@ struct WooShippingOriginAddressListView: View {
                     }
                     Spacer()
                     PencilEditButton {
-                        // TODO: Edit origin address
+                        viewModel.editAddress(address)
                     }
                     .buttonStyle(TextButtonStyle())
                 }
@@ -38,13 +38,21 @@ struct WooShippingOriginAddressListView: View {
                 .roundedBorder(cornerRadius: Constants.cornerRadius,
                                lineColor: Color(viewModel.isSelected(address) ? .wooCommercePurple(.shade60) : .separator),
                                lineWidth: viewModel.isSelected(address) ? 2 : 0.5)
-                    .onTapGesture {
-                        viewModel.select(address)
-                    }
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: Constants.verticalSpacing, trailing: 0))
+                .onTapGesture {
+                    viewModel.select(address)
+                }
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: Constants.verticalSpacing, trailing: 0))
             }
             .listStyle(.plain)
+            .sheet(item: $viewModel.addressToEdit) { addressToEdit in
+                // TODO: Handle edits to the address fields
+                NavigationStack {
+                    WooShippingEditAddressView(viewModel: addressToEdit)
+                    .navigationTitle(Localization.editOrigin)
+                    .navigationBarTitleDisplayMode(.inline)
+                }
+            }
         }
         .padding()
     }
@@ -66,6 +74,9 @@ private extension WooShippingOriginAddressListView {
         static let defaultAddress = NSLocalizedString("wooShipping.originAddresses.defaultAddress",
                                                       value: "(default)",
                                                       comment: "Indicates that the address is the default origin address  on the shipping label creation screen")
+        static let editOrigin = NSLocalizedString("wooShipping.originAddresses.editOrigin",
+                                                    value: "Edit Origin",
+                                                    comment: "Title for the edit origin address screen in the shipping label creation flow")
     }
 }
 

@@ -736,7 +736,7 @@ private extension AppSettingsStore {
         if siteHistory.contains(filter) {
             siteHistory = [filter] + siteHistory.filter { $0 != filter } // move the filter to the top
         } else {
-            siteHistory.append(filter)
+            siteHistory.insert(filter, at: 0) // add to the top of the list
         }
         existingHistory[filter.siteID] = siteHistory
 

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-26 09:54:05+0000 */
+/* Translation-Revision-Date: 2024-12-27 09:54:07+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -251,10 +251,6 @@ which should be translated separately and considered part of this sentence. */
 /* Number of items in packages in Shipping Labels in plural form. Reads like - 10 items */
 "- %1$d items" = "- %1$d개 아이템";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 1
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 1 */
-"1" = "1";
-
 /* Navigation bar title for selecting multiple products when one product has been selected.
    Title of the action button at the bottom of the Select Products screen when one product is selected */
 "1 Product Selected" = "제품 1개 선택됨";
@@ -271,19 +267,11 @@ which should be translated separately and considered part of this sentence. */
 /* Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment */
 "1. Create an order" = "1. 주문 생성";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 2
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
-"2" = "2";
-
 /* Disclaimer regarding some of the features related to shipping. */
 "2. Only available in the U.S. – an additional extension will be required for other countries." = "2. 미국에서만 이용 가능 – 다른 국가의 경우에는 추가 확장 기능이 필요합니다.";
 
 /* Step 2 of the 'How it works' list, instructing the merchant to how to select Tap to Pay payments */
 "2. Tap “Collect Payment” and choose “Tap to Pay on iPhone”." = "2. \"결제 받기\"를 탭하고 \"Tap to Pay on iPhone\"을 선택합니다.";
-
-/* Settings > Manage Card Reader > Connect > Help hint number 3
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
-"3" = "3개";
 
 /* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
 "3. Present your iPhone to the customer." = "3. iPhone을 고객에게 내밉니다.";
@@ -985,9 +973,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button on the store onboarding launched store screen. */
 "Back to My Store" = "내 스토어로 돌아가기";
 
-/* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
-"Back to Order" = "주문으로 돌아가기";
-
 /* Text for the button to dismiss the store picker error screen */
 "Back to sites" = "사이트로 돌아가기";
 
@@ -1559,7 +1544,6 @@ which should be translated separately and considered part of this sentence. */
 "Clear selection" = "선택 지우기";
 
 /* Accessibility label for the close button
-   Button to dismiss modal overlay. Presented to users after refunding a payment fails
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
    Navigation bar action to close the gift card code scanner.
@@ -2269,7 +2253,6 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when finding a reader to connect to fails
    Button to dismiss the first created product screen
    Button to dismiss the Jetpack benefits screen.
-   Button to dismiss. Presented to users after collecting a payment fails
    Button to dismiss. Presented to users when updating the card reader software fails
    Dismiss button in inbox note row.
    Dismiss button in store picker
@@ -5989,9 +5972,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
 "Return to My Store" = "내 스토어로 돌아가기";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
-"Return to Payments" = "결제로 돌아가기";
-
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "패키지를 배송할 수 없는 경우 보낸 사람에게 반송";
 
@@ -6381,6 +6361,9 @@ which should be translated separately and considered part of this sentence. */
 /* Header text on Add New Custom Package screen in Shipping Label flow
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "상품 배송에 사용할 패키지를 설정하세요. 향후 주문을 위해 저장됩니다.";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
+"SetUpTapToPayPaymentPrompt.skipButton.title" = "지금 안 함";
 
 /* Settings button in the hub menu
    Settings navigation title
@@ -7519,9 +7502,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Tab selector title that shows the statistics for this year */
 "This Year" = "올해";
-
-/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "Bluetooth에 접근하여 카드 리더에 연결하는 권한이 이 앱에 필요합니다. 이 권한을 허용하려면 프라이버시 설정을 변경하세요.";
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "이 앱을 사용하려면 서버에 WooCommerce 3.5를 설치해야 합니다. 설치되지 않은 경우 앱이 정상적으로 작동하지 않습니다. 이 앱을 계속 사용하려면 가능한 한 빨리 업데이트하세요.";
@@ -9989,8 +9969,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "리더 스캔 중";
 
+/* A title for CTA to present native location permission alert */
+"cardPresentPayment.locationPreAlert.continueButton" = "계속";
+
+/* A notice at the bottom explaining that location services can be changed in the Settings app later */
+"cardPresentPayment.locationPreAlert.settingsNotice" = "나중에 설정 앱에서 이 옵션을 변경할 수 있습니다.";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"cardPresentPayment.locationPreAlert.subtitle" = "사기를 줄이고, 분쟁을 방지하고, 안전하게 결제하려면 위치 서비스 권한이 필요합니다.";
+
+/* A title explaining why location services are needed to make a payment */
+"cardPresentPayment.locationPreAlert.title" = "결제를 허용하려면 다음 화면에서 위치 서비스를 활성화하세요.";
+
+/* Dismisses the location alert */
+"cardPresentPayment.locationRequired.dismiss" = "해제";
+
+/* Opens iOS's Device Settings for the app */
+"cardPresentPayment.locationRequired.openSettings" = "기기 설정 열기";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"cardPresentPayment.locationRequired.subtitle" = "사기를 줄이고, 분쟁을 방지하고, 안전하게 결제하려면 위치 서비스 권한이 필요합니다.";
+
+/* A title explaining the requirement of location services for making a payment */
+"cardPresentPayment.locationRequired.title" = "결제를 허용하려면 기기 설정에서 위치 서비스를 활성화하세요.";
+
+/* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.backToOrder" = "주문으로 돌아가기";
+
+/* Button to dismiss modal overlay. Presented to users after refunding a payment fails */
+"cardPresentPaymentsModal.error.close" = "닫기";
+
+/* Button to dismiss. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.dismiss" = "해제";
+
+/* Button to email receipts. Presented to users after a payment processing has failed */
+"cardPresentPaymentsModal.error.emailReceipt" = "이메일로 영수증 보내기";
+
 /* Message informing the user that a receipt has been sent to their email address. %1$@ is the email address */
 "cardPresentPaymentsModal.error.receiptMessage" = "영수증이 %1$@(으)로 발송됨";
+
+/* Button to dismiss modal overlay and try another payment method. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.tryAnotherPaymentMethod" = "다른 결제 수단 시도";
 
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "cardPresentPaymentsModal.success.emailReceipt" = "이메일 영수증";
@@ -10496,6 +10515,27 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "기기의 미디어";
 
+/* Button to dismiss the Edit Store List view */
+"editStoreListView.cancelButton" = "취소";
+
+/* Footer of the Current Store section of the the Edit Store List view */
+"editStoreListView.currentStoreFooter" = "이 스토어를 숨기기 전에 다른 스토어로 전환하세요.";
+
+/* Header of the Current Store section of the the Edit Store List view */
+"editStoreListView.currentStoreHeader" = "현재 스토어";
+
+/* Footer of the Other Stores section on the Edit Store List view */
+"editStoreListView.otherStoresFooter" = "선택되지 않은 스토어는 스토어 선택기에서 제외됩니다.";
+
+/* Header of the Other Stores section on the Edit Store List view */
+"editStoreListView.otherStoresHeader" = "기타 스토어";
+
+/* Button to save changes in the Edit Store List view */
+"editStoreListView.saveButton" = "저장";
+
+/* Title of the Edit Store List view */
+"editStoreListView.title" = "표시되는 스토어";
+
 /* Title for button to view the feedback survey about adding shipping to an order */
 "editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "피드백 공유";
 
@@ -10634,6 +10674,132 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "모든 캠페인 보기";
+
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"hardware.cardReader.cardReaderServiceError.bluetoothDenied" = "블루투스에 접근하여 카드 리더에 연결하는 권한이 이 앱에 필요합니다. 시스템의 설정 앱의 Woo 섹션에서 권한을 부여할 수 있습니다.";
+
+/* Error message when the Apple built-in reader account is deactivated. */
+"hardware.cardReader.underlyingError.appleBuiltInReaderAccountDeactivated" = "연결된 Apple ID 계정이 비활성화되었습니다.";
+
+/* Error message when Bluetooth is already paired with another device. */
+"hardware.cardReader.underlyingError.bluetoothAlreadyPairedWithAnotherDevice" = "블루투스 리더가 이미 다른 기기와 페어링되었습니다. 이 기기에 연결하려면 리더의 페어링을 재설정해야 합니다.";
+
+/* Error message when the Bluetooth connection has an invalid location ID parameter. */
+"hardware.cardReader.underlyingError.bluetoothConnectionInvalidLocationIdParameter" = "블루투스 연결에 유효하지 않은 위치 ID가 있습니다.";
+
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"hardware.cardReader.underlyingError.bluetoothDenied" = "블루투스에 접근하여 카드 리더에 연결하는 권한이 이 앱에 필요합니다. 시스템의 설정 앱의 Woo 섹션에서 권한을 부여할 수 있습니다.";
+
+/* Error message when the Bluetooth peer removed pairing information. */
+"hardware.cardReader.underlyingError.bluetoothPeerRemovedPairingInformation" = "이 기기의 페어링 정보가 리더에서 제거되었습니다. iOS 설정에서 리더를 해제해 보세요.";
+
+/* Error message when Bluetooth reconnect has started. */
+"hardware.cardReader.underlyingError.bluetoothReconnectStarted" = "블루투스 리더 연결이 해제되었으며 다시 연결하려는 중입니다.";
+
+/* Error message when an operation cannot be canceled because it is already completed. */
+"hardware.cardReader.underlyingError.cancelFailedAlreadyCompleted" = "작업이 이미 완료되어서 취소할 수 없습니다.";
+
+/* Error message when card swipe functionality is unavailable. */
+"hardware.cardReader.underlyingError.cardSwipeNotAvailable" = "카드 살짝 밀기 기능을 사용할 수 없습니다.";
+
+/* Error message when the command is not allowed. */
+"hardware.cardReader.underlyingError.commandNotAllowed" = "지원팀에 문의하세요. 운영 체제의 명령 실행이 허용되지 않습니다.";
+
+/* Error message when the command requires cardholder consent. */
+"hardware.cardReader.underlyingError.commandRequiresCardholderConsent" = "이 작업에 성공하려면 카드 소유자가 동의를 제공해야 합니다.";
+
+/* Error message when the connection token provider finishes with an error. */
+"hardware.cardReader.underlyingError.connectionTokenProviderCompletedWithError" = "연결 토큰을 가져오는 중 오류가 발생했습니다.";
+
+/* Error message when the connection token provider operation times out. */
+"hardware.cardReader.underlyingError.connectionTokenProviderTimedOut" = "연결 토큰 요청 시간을 초과했습니다.";
+
+/* Error message when a feature is unavailable. */
+"hardware.cardReader.underlyingError.featureNotAvailable" = "지원팀에 문의하세요. 기능을 사용할 수 없습니다.";
+
+/* Error message when forwarding a live mode payment in test mode is prohibited. */
+"hardware.cardReader.underlyingError.forwardingLiveModePaymentInTestMode" = "테스트 모드에서는 실시간 모드 결제 전달이 금지되어 있습니다.";
+
+/* Error message when forwarding a test mode payment in live mode is prohibited. */
+"hardware.cardReader.underlyingError.forwardingTestModePaymentInLiveMode" = "실시간 모드에서는 테스트 모드 결제 전달이 금지되어 있습니다.";
+
+/* Error message when Interac is not supported in offline mode. */
+"hardware.cardReader.underlyingError.interacNotSupportedOffline" = "오프라인 모드에서는 상호작용이 지원되지 않습니다.";
+
+/* Error message when an internal network error occurs. */
+"hardware.cardReader.underlyingError.internalNetworkError" = "알 수 없는 네트워크 오류가 발생했습니다.";
+
+/* Error message when the internet connection operation timed out. */
+"hardware.cardReader.underlyingError.internetConnectTimeOut" = "인터넷을 통한 리더 연결 시간을 초과했습니다. 기기와 리더의 WiFi 네트워크가 동일하고 리더가 WiFi 네트워크에 연결되었는지 확인하세요.";
+
+/* Error message when the client secret is invalid. */
+"hardware.cardReader.underlyingError.invalidClientSecret" = "지원팀에 문의하세요. 클라이언트 비밀번호가 유효하지 않습니다.";
+
+/* Error message when the discovery configuration is invalid. */
+"hardware.cardReader.underlyingError.invalidDiscoveryConfiguration" = "지원팀에 문의하세요. 검색 구성이 유효하지 않습니다.";
+
+/* Error message when the location ID parameter is invalid. */
+"hardware.cardReader.underlyingError.invalidLocationIdParameter" = "위치 ID가 유효하지 않습니다.";
+
+/* Error message when the reader for update is invalid. */
+"hardware.cardReader.underlyingError.invalidReaderForUpdate" = "업데이트할 리더가 유효하지 않습니다.";
+
+/* Error message when the refund parameters are invalid. */
+"hardware.cardReader.underlyingError.invalidRefundParameters" = "지원팀에 문의하세요. 환불 파라미터가 유효하지 않습니다.";
+
+/* Error message when a required parameter is invalid. */
+"hardware.cardReader.underlyingError.invalidRequiredParameter" = "지원팀에 문의하세요. 필수 파라미터가 유효하지 않습니다.";
+
+/* Error message when EMV data is missing. */
+"hardware.cardReader.underlyingError.missingEMVData" = "제시된 결제 수단의 데이터를 리더에서 읽지 못했습니다. 이 오류가 여러 차례 발생하면 리더에 결함이 있을 수 있으니 지원팀에 문의하세요.";
+
+/* Error message when the payment intent is missing. */
+"hardware.cardReader.underlyingError.nilPaymentIntent" = "지원팀에 문의하세요. 결제 의도가 누락되었습니다.";
+
+/* Error message when the refund payment method is missing. */
+"hardware.cardReader.underlyingError.nilRefundPaymentMethod" = "지원팀에 문의하세요. 환불 결제 수단이 누락되었습니다.";
+
+/* Error message when the setup intent is missing. */
+"hardware.cardReader.underlyingError.nilSetupIntent" = "지원팀에 문의하세요. 설정 의도가 누락되었습니다.";
+
+/* Error message when the card is expired and offline mode is active. */
+"hardware.cardReader.underlyingError.offlineAndCardExpired" = "오프라인 상태에서 결제를 확정 중인데 카드가 만료된 것으로 식별되었습니다.";
+
+/* Error message when there is a mismatch between offline collect and confirm. */
+"hardware.cardReader.underlyingError.offlineCollectAndConfirmMismatch" = "결제 수령 및 확정 시 네트워크 연결이 지속되는지 확인하세요.";
+
+/* Error message when a test card is used in live mode while offline. */
+"hardware.cardReader.underlyingError.offlineTestCardInLivemode" = "오프라인 상태에서는 실시간 모드로 테스트 카드가 사용됩니다.";
+
+/* Error message when the offline transaction was declined. */
+"hardware.cardReader.underlyingError.offlineTransactionDeclined" = "오프라인 상태에서 결제를 확정 중인데 카드의 인증에 실패했습니다.";
+
+/* Error message when online PIN is not supported in offline mode. */
+"hardware.cardReader.underlyingError.onlinePinNotSupportedOffline" = "오프라인 모드에서는 온라인 PIN이 지원되지 않습니다. 다른 카드로 결제를 다시 시도하세요.";
+
+/* Error message when the reader connection configuration is invalid. */
+"hardware.cardReader.underlyingError.readerConnectionConfigurationInvalid" = "리더 연결 구성이 유효하지 않습니다.";
+
+/* Error message when the reader is missing encryption keys. */
+"hardware.cardReader.underlyingError.readerMissingEncryptionKeys" = "결제하기에 필요한 암호화 키가 리더에 누락되었으며, 연결이 해제되고 다시 부팅되었습니다. 리더에 다시 연결하여 키 재설치를 시도하세요. 오류가 계속되면 지원팀에 문의하세요.";
+
+/* Error message when the reader software update fails due to an expired update. */
+"hardware.cardReader.underlyingError.readerSoftwareUpdateFailedExpiredUpdate" = "업데이트가 만료되어서 리더 소프트웨어 업데이트에 실패했습니다. 리더 연결을 해제하고 다시 연결하여 새 업데이트를 찾아보세요.";
+
+/* Error message when the reader tipping parameter is invalid. */
+"hardware.cardReader.underlyingError.readerTippingParameterInvalid" = "지원팀에 문의하세요. 리더 티핑 파라미터가 유효하지 않습니다.";
+
+/* Error message when the refund operation failed. */
+"hardware.cardReader.underlyingError.refundFailed" = "환불되지 않았습니다. 고객의 은행 또는 카드 발급사에서 올바르게 처리할 수 없었습니다(예: 종료된 은행 계좌 또는 카드의 문제).";
+
+/* Error message when there is an error decoding the Stripe API response. */
+"hardware.cardReader.underlyingError.stripeAPIResponseDecodingError" = "지원팀에 문의하세요. Stripe API 응답 디코딩 중 오류가 발생했습니다.";
+
+/* Error message when an unexpected error occurs with the reader. */
+"hardware.cardReader.underlyingError.unexpectedReaderError" = "리더에서 예기치 않은 오류가 발생했습니다.";
+
+/* Error message when the reader's IP address is unknown. */
+"hardware.cardReader.underlyingError.unknownReaderIpAddress" = "검색에서 반환된 리더에 IP 주소가 없으며 연결할 수 없습니다.";
 
 /* Title of the view containing Coupons list */
 "hubMenu.couponsList" = "쿠폰";
@@ -10858,9 +11024,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory. */
 "menu.payments.tapToPay.about.row.title" = "Tap to Pay 개요";
-
-/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
-"menu.payments.tapToPay.feedback.row.title" = "피드백 공유";
 
 /* Title for the Tap to Pay section in the In-Person payments settings */
 "menu.payments.tapToPay.section.title" = "Tap to Pay";
@@ -11583,6 +11746,21 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "합계를 로드할 수 없음";
 
+/* Button title for sending a receipt */
+"pointOfSale.sendreceipt.button.title" = "보내기";
+
+/* Text that shows at the top of the receipts screen along the back button. */
+"pointOfSale.sendreceipt.emailReceiptNavigationText" = "이메일로 영수증 보내기";
+
+/* Error message that is displayed when an invalid email is used when emailing a receipt. */
+"pointOfSale.sendreceipt.emailValidationErrorText" = "유효한 이메일을 입력하세요.";
+
+/* Generic error message that is displayed when there's an error emailing a receipt. */
+"pointOfSale.sendreceipt.sendReceiptErrorText" = "이 이메일 발송 시도 중 오류가 발생했습니다. 다시 시도하세요.";
+
+/* Placeholder for the view where an email address should be entered when sending receipts */
+"pointOfSale.sendreceipt.textfield.placeholder" = "이메일 주소 입력";
+
 /* Button to dismiss the payments onboarding sheet from the POS dashboard. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "취소";
 
@@ -11668,10 +11846,13 @@ which should be translated separately and considered part of this sentence. */
 "pos.simpleProductsModal.title" = "왜 내 상품이 보이지 않나요?";
 
 /* Button title for new order button */
-"pos.totalsView.newOrder" = "새 주문";
+"pos.totalsView.button.newOrder" = "새 주문";
 
 /* Button title for the receipt button */
-"pos.totalsView.sendReceipt" = "영수증";
+"pos.totalsView.button.sendReceipt" = "이메일로 영수증 보내기";
+
+/* Text for the banner requiring specific WooCommerce version. */
+"pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "우커머스를 버전 9.5.0으로 업데이트하세요";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "소계";
@@ -12112,6 +12293,18 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "취소";
 
+/* Badge wording when the customs information is completed */
+"shippingLabels.customs.completedBadge" = "완료됨";
+
+/* Customs row title in the main Shipping Labels view */
+"shippingLabels.customs.customsTitle" = "세관";
+
+/* Accessibility label for the button to edit the shipping labels customs */
+"shippingLabels.customs.editButtonAccessibiliy" = "배송 레이블 세관 정보 편집";
+
+/* Badge wording when the customs information is missing */
+"shippingLabels.customs.missingInfo" = "누락된 정보";
+
 /* Accessibility title for the edit button on a shipping line row. */
 "shippingLine.edit.button.accessibilityLabel" = "배송 수정";
 
@@ -12177,6 +12370,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in date range picker to add a Custom Range tab */
 "storePerformanceViewModel.addCustomRange" = "추가";
+
+/* Button to edit the items to be displayed on the store picker */
+"storePicker.editList" = "편집";
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "기존 스토어 연결";
@@ -12328,6 +12524,84 @@ which should be translated separately and considered part of this sentence. */
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is successful, we show a Notice to alert the user – this is the title of the notice. */
 "tap.to.pay.try.payment.refundNotice.success.title" = "Tap To Pay 테스트 결제";
+
+/* Title of the button to dismiss the Tap to Pay awareness screen */
+"tapToPay.awarenessMoment.closeButton" = "닫기";
+
+/* A title for CTA to start Tap to Pay set up process */
+"tapToPay.awarenessMoment.enableButton" = "지금 활성화";
+
+/* A title for CTA to open a view explaining Tap to Pay */
+"tapToPay.awarenessMoment.learnMore" = "더 알아보기";
+
+/* A subtitle for the Tap to Pay modal promoting the feature. */
+"tapToPay.awarenessMoment.subtitle" = "iPhone에서만 비접촉 결제가 수락됩니다.";
+
+/* Title for the Tap to Pay modal promoting the feature. When using the name “Tap to Pay on iPhone” in headlines or copy, do not shorten to “Tap to Pay” or “Apple Tap to Pay. Always typeset “Tap to Pay on iPhone” as five words. The T and Ps should be uppercased, followed by lowercase letters. */
+"tapToPay.awarenessMoment.title" = "Tap to Pay on iPhone. 지금 사용할 수 있습니다.";
+
+/* Text for the button to take one step back in Tap to Pay education flow */
+"tapToPay.education.back" = "뒤로";
+
+/* Text for the button to dismiss Tap to Pay education flow */
+"tapToPay.education.done" = "완료";
+
+/* Text for the button to go to the next Tap to Pay education flow step */
+"tapToPay.education.next" = "다음";
+
+/* Button title for Set up Tap to Pay button in Tap to Pay education flow. The button opens the Set Up Tap to Pay on iPhone flow. */
+"tapToPay.education.setUpTapToPay" = "Tap to Pay on iPhone 설정";
+
+/* Text for the button to skip Tap to Pay education flow to the last step */
+"tapToPay.education.skip" = "건너뛰기";
+
+/* First description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep1" = "iPhone에서 주문을 생성하고 상품 또는 사용자 정의 금액을 추가하고, Tap to Pay on iPhone에서 계산합니다.";
+
+/* Second description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep2" = "고객에게 iPhone을 보여줍니다.";
+
+/* Third description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep3" = "고객이 iPhone의 비접촉 기호 위에 기기를 가까이 댑니다.";
+
+/* Fourth description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep4" = "완료 체크 표시가 표시되면 카드 읽기가 완료되고 거래가 처리되고 있는 것입니다.";
+
+/* Title for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.title" = "Tap to Pay on iPhone에서 Apple Pay 및 기타 디지털 지갑을 수락하는 방법.";
+
+/* First description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep1" = "iPhone에서 주문을 생성하고 상품 또는 사용자 정의 금액을 추가하고, Tap to Pay on iPhone에서 계산합니다.";
+
+/* Second description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep2" = "고객에게 iPhone을 보여줍니다.";
+
+/* Third description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep3" = "고객이 iPhone 상단의 비접촉 기호 위에 가로로 카드를 댑니다.";
+
+/* Fourth description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep4" = "완료 체크 표시가 표시되면 카드 읽기가 완료되고 거래가 처리되고 있는 것입니다.";
+
+/* Title for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.title" = "Tap to Pay on iPhone으로 비접촉 카드를 수락하는 방법.";
+
+/* Message displayed when a contactless transaction fails due to PIN issues. Provides steps to retry using another contactless payment method or alternative payment options. */
+"tapToPay.education.step.fallbackMethod.description" = "일부 카드에서는 PIN을 사용하여 비접촉 거래를 완료할 수 없으며, 결제에 실패할 수 있습니다.\n\n고객에게 다른 비접촉 카드 또는 디지털 지갑이 있는지 물어보거나 다시 수령 시도를 선택하여 Tap to Pay on iPhone을 사용하여 거래를 계속합니다.\n\n그렇지 않으면 기타 결제 수단 시도를 선택하고 지원되는 대안(예: 현금, 결제 링크 공유, 현금 리더 또는 스캔하여 결제)을 선택합니다.";
+
+/* Title for the 'Fallback payment method' Tap to Pay merchant education step */
+"tapToPay.education.step.fallbackMethod.title" = "대체 결제 수단을 수락하는 방법.";
+
+/* Description for the initial Tap to Pay merchant education step. When using the name “Tap to Pay on iPhone” in headlines or copy, do not shorten to “Tap to Pay” or “Apple Tap to Pay. Always typeset “Tap to Pay on iPhone” as five words. The T and Ps should be uppercased, followed by lowercase letters. */
+"tapToPay.education.step.intro.description" = "Tap to Pay on iPhone 및 Woo 앱을 이용하면 별도의 하드웨어가 없어도 실물 체크카드와 신용카드부터 Apple Pay 및 기타 디지털 지갑 등 iPhone에서 바로 대면 비접촉 결제를 수락할 수 있습니다. 쉽고 안전하며 개인정보가 보호됩니다.";
+
+/* Title for the initial Tap to Pay merchant education step */
+"tapToPay.education.step.intro.title" = "iPhone에서만 비접촉 결제가 수락됩니다.";
+
+/* Instructions for customers using accessibility options during PIN entry with Tap to Pay on iPhone.Describes how to use audible guidance for drawing or tapping the PIN digits and the gesture to submit. */
+"tapToPay.education.step.pin.description" = "특정 상황에서 고객에게 Tap to Pay on iPhone으로 카드 PIN을 입력하라는 메시지가 표시됩니다.\n\n시각적 도움이나 기타 도움이 필요한 고객은 PIN 화면에서 '접근성 옵션'을 선택하여 접근성 옵션에 접근할 수 있습니다. 음성 안내는 고객에게 화면에 PIN을 그리거나 화면을 눌러 각 숫자를 표시하도록 안내합니다(1은 한 번, 2는 두 번 누르는 식). PIN을 제출하려면 두 손가락으로 오른쪽으로 살짝 밀면 됩니다.";
+
+/* Title for the 'PIN entry' Tap to Pay merchant education step */
+"tapToPay.education.step.pin.title" = "카드의 PIN 항목을 처리하는 방법.";
 
 /* A label prompting users to learn more about Tap to Pay on iPhone.
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -12605,11 +12879,11 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "성인 서명 필수";
 
+/* Label for the toggle to mark the order as complete on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.afterPurchaseMarkComplete" = "레이블을 구매한 후에는 이 주문을 완료로 표시하고 고객에게 알립니다";
+
 /* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
 "wooShipping.createLabels.bottomSheet.baseFee" = "%1$@(기본 수수료)";
-
-/* Label for the toggle to mark the order as complete on the shipping label creation screen */
-"wooShipping.createLabels.bottomSheet.markComplete" = "이 주문을 완료로 표시하고 고객에게 알림";
 
 /* Header for order details section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.orderDetails" = "주문 상세 정보";
@@ -12652,6 +12926,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
+
+/* Heading for the package section in the shipping label creation screen. */
+"wooShipping.createLabels.package.title" = "패키지";
+
+/* Label for the total shipment weight input field in the shipping label creation screen. */
+"wooShipping.createLabels.package.totalWeight" = "총 배송 무게(패키지 포함)";
 
 /* Link for more information about how to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.info" = "모바일 장치에서 인쇄하는 방법 알아보기";

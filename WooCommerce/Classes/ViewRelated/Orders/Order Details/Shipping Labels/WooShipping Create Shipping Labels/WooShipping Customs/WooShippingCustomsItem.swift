@@ -2,6 +2,7 @@ import SwiftUI
 import WooFoundation
 
 struct WooShippingCustomsItem: View {
+    @Environment(\.colorScheme) var colorScheme
     /// Whether the item list is collapsed
     @State private var isCollapsed: Bool = true
     @ObservedObject var viewModel: WooShippingCustomsItemViewModel
@@ -24,7 +25,7 @@ struct WooShippingCustomsItem: View {
                         .headlineStyle()
                     Spacer()
                     Image(systemName: "exclamationmark.circle")
-                        .foregroundColor(.withColorStudio(name: .red, shade: .shade60))
+                        .foregroundColor(warningRedColor)
                         .renderedIf(viewModel.requiredInformationIsMissing)
                 }
 
@@ -53,7 +54,7 @@ struct WooShippingCustomsItem: View {
 
                         Text("•")
                             .renderedIf(viewModel.weightPerUnit.isNotEmpty || viewModel.valuePerUnit.isNotEmpty)
-                        
+
                         if viewModel.weightPerUnit.isEmpty {
                             emptyValuePlaceholder
                         } else {
@@ -85,12 +86,12 @@ struct WooShippingCustomsItem: View {
                 TextField("", text: $viewModel.description)
                     .padding(Layout.extraPadding)
                     .roundedBorder(cornerRadius: Layout.borderCornerRadius,
-                                   lineColor: viewModel.description.isEmpty ? .withColorStudio(name: .red, shade: .shade60) : Color(.separator),
+                                   lineColor: viewModel.description.isEmpty ? warningRedColor : Color(.separator),
                                    lineWidth: Layout.borderLineWidth)
 
 
                 Text(Localization.valueRequiredWarningText)
-                    .foregroundColor(.withColorStudio(name: .red, shade: .shade60))
+                    .foregroundColor(warningRedColor)
                     .footnoteStyle()
                     .renderedIf(viewModel.description.isEmpty)
 
@@ -105,7 +106,7 @@ struct WooShippingCustomsItem: View {
                     .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderLineWidth)
 
                 Text(Localization.tariffNumberRulesWarningText)
-                    .foregroundColor(.withColorStudio(name: .red, shade: .shade60))
+                    .foregroundColor(warningRedColor)
                     .footnoteStyle()
                     .renderedIf(!viewModel.isValidTariffNumber)
 
@@ -130,10 +131,10 @@ struct WooShippingCustomsItem: View {
                             .keyboardType(.decimalPad)
                             .padding(Layout.extraPadding)
                             .roundedBorder(cornerRadius: Layout.borderCornerRadius,
-                                           lineColor: viewModel.valuePerUnit.isEmpty ? .withColorStudio(name: .red, shade: .shade60) : Color(.separator),
+                                           lineColor: viewModel.valuePerUnit.isEmpty ? warningRedColor : Color(.separator),
                                            lineWidth: Layout.borderLineWidth)
                         Text(Localization.valueRequiredWarningText)
-                            .foregroundColor(.withColorStudio(name: .red, shade: .shade60))
+                            .foregroundColor(warningRedColor)
                             .footnoteStyle()
                             .renderedIf(viewModel.valuePerUnit.isEmpty)
                     }
@@ -152,10 +153,10 @@ struct WooShippingCustomsItem: View {
                                 .padding(.trailing, Layout.unitsHorizontalSpacing)
                         }
                         .roundedBorder(cornerRadius: Layout.borderCornerRadius,
-                                       lineColor: viewModel.weightPerUnit.isEmpty ? .withColorStudio(name: .red, shade: .shade60) : Color(.separator),
+                                       lineColor: viewModel.weightPerUnit.isEmpty ? warningRedColor : Color(.separator),
                                        lineWidth: Layout.borderLineWidth)
                         Text(Localization.valueRequiredWarningText)
-                            .foregroundColor(.withColorStudio(name: .red, shade: .shade60))
+                            .foregroundColor(warningRedColor)
                             .footnoteStyle()
                             .renderedIf(viewModel.weightPerUnit.isEmpty)
                     }
@@ -219,13 +220,19 @@ struct WooShippingCustomsItem: View {
                             .fill(Color.withColorStudio(name: .red, shade: .shade0))
                             .frame(width: Layout.emptyValuePlaceholderWidth, height: Layout.emptyValuePlaceholderHeight)
     }
+
+    private var warningRedColor: Color {
+        let shade: ColorStudioShade = colorScheme == .dark ? .shade40 : .shade60
+
+        return .withColorStudio(name: .red, shade: shade)
+    }
 }
 
 extension WooShippingCustomsItem {
     func productCardBorderColor() -> Color {
         if isCollapsed {
             if viewModel.requiredInformationIsMissing {
-                return .withColorStudio(name: .red, shade: .shade60)
+                return warningRedColor
             } else {
                 return Color(.separator)
             }
@@ -281,6 +288,5 @@ extension WooShippingCustomsItem {
         static let emptyValuePlaceholderCornerRadius: CGFloat = 2.0
         static let emptyValuePlaceholderWidth: CGFloat = 48.0
         static let emptyValuePlaceholderHeight: CGFloat = 16.0
-
     }
 }

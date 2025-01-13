@@ -30,10 +30,13 @@ struct WooShippingCustomsItem: View {
 
                 VStack(alignment: .leading, spacing: Layout.collapsibleViewBottomLabelVerticalSpacing) {
                     HStack {
-                        Text(viewModel.description)
-                            .renderedIf(viewModel.description.isNotEmpty)
-                        emptyValuePlaceholder
-                            .renderedIf(viewModel.description.isEmpty)
+
+                        if viewModel.description.isEmpty {
+                            emptyValuePlaceholder
+                        } else {
+                            Text(viewModel.description)
+                        }
+
                         Spacer()
                         Text(viewModel.hsTariffNumber)
                             .renderedIf(viewModel.hsTariffNumber.isNotEmpty)
@@ -41,16 +44,21 @@ struct WooShippingCustomsItem: View {
                     HStack(spacing: Layout.collapsedUnitsHorizontalSpacing) {
                         Text(viewModel.originCountry.name)
                         Spacer()
-                        Text(viewModel.valuePerUnit)
-                            .renderedIf(viewModel.valuePerUnit.isNotEmpty)
-                        emptyValuePlaceholder
-                            .renderedIf(viewModel.valuePerUnit.isEmpty)
+
+                        if viewModel.valuePerUnit.isEmpty {
+                            emptyValuePlaceholder
+                        } else {
+                            Text(viewModel.valuePerUnit)
+                        }
+
                         Text("•")
                             .renderedIf(viewModel.weightPerUnit.isNotEmpty || viewModel.valuePerUnit.isNotEmpty)
-                        Text("\(viewModel.weightPerUnit) \(weightUnit)")
-                            .renderedIf(viewModel.weightPerUnit.isNotEmpty)
-                        emptyValuePlaceholder
-                            .renderedIf(viewModel.weightPerUnit.isEmpty)
+                        
+                        if viewModel.weightPerUnit.isEmpty {
+                            emptyValuePlaceholder
+                        } else {
+                            Text("\(viewModel.weightPerUnit) \(weightUnit)")
+                        }
                     }
                 }.renderedIf(isCollapsed)
                     .foregroundColor(.primary)

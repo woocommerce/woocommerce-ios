@@ -1,8 +1,14 @@
+import Foundation
 import SwiftUI
 import Yosemite
+import protocol Storage.StorageManagerType
 
 /// View model for editing an address in the Woo Shipping label flow.
 final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
+    private let siteID: Int64
+    private let stores: StoresManager
+    private let storageManager: StorageManagerType
+
     enum AddressType {
         case origin
         case destination
@@ -42,6 +48,35 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     /// Status of the address, based on local validation and remote verification.
     var status: WooShippingAddressStatus
 
+    // MARK: State/Country
+
+    /// ResultsController: Loads Countries from the Storage Layer.
+    ///
+    private lazy var resultsController: ResultsController<StorageCountry> = {
+        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+        return ResultsController(storageManager: storageManager, matching: nil, sortedBy: [descriptor])
+    }()
+
+    /// List of countries that can be used as an origin address.
+    var countries: [Country] {
+        switch addressType {
+        case .origin:
+            resultsController.fetchedObjects.filter { Constants.acceptedUSPSCountries.contains($0.code) }
+        case .destination:
+            resultsController.fetchedObjects
+        }
+    }
+
+    /// States of the selected country.
+    var statesOfSelectedCountry: [StateOfACountry] {
+        countries.first { $0.code == country }?.states.sorted { $0.name < $1.name } ?? []
+    }
+
+    /// Whether the state is required for the selected country.
+    var stateRequired: Bool {
+        statesOfSelectedCountry.isNotEmpty
+    }
+
     init(type: AddressType,
          id: String,
          name: String,
@@ -56,7 +91,9 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
          isDefault: Bool,
          showCompanyField: Bool,
          isVerified: Bool,
-         phoneNumberRequired: Bool) {
+         phoneNumberRequired: Bool,
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.addressType = type
         self.id = id
         self.name = name
@@ -72,9 +109,16 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         self.showCompanyField = showCompanyField
         self.status = isVerified ? .verified : .unverified
         self.phoneNumberRequired = phoneNumberRequired
+        self.stores = stores
+        self.siteID = stores.sessionManager.defaultStoreID ?? Int64.min
+        self.storageManager = storageManager
+
+        fetchCountries()
     }
 
-    convenience init(address: WooShippingOriginAddress) {
+    convenience init(address: WooShippingOriginAddress,
+                     stores: StoresManager = ServiceLocator.stores,
+                     storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.init(type: .origin,
                   id: address.id,
                   name: address.fullName,
@@ -89,7 +133,9 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                   isDefault: address.defaultAddress,
                   showCompanyField: address.company.isNotEmpty,
                   isVerified: address.isVerified,
-                  phoneNumberRequired: true)
+                  phoneNumberRequired: true,
+                  stores: stores,
+                  storageManager: storageManager)
     }
 
     func isRequired(_ field: WooShippingEditAddressView.AddressField) -> Bool {
@@ -98,10 +144,50 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
             return company.isEmpty
         case .company:
             return name.isEmpty
-        case .country, .address, .city, .state, .postalCode, .email:
+        case .country, .address, .city, .postalCode, .email:
             return true
+        case .state:
+            return stateRequired
         case .phone:
             return phoneNumberRequired
         }
+    }
+}
+
+// MARK: Remote
+private extension WooShippingEditAddressViewModel {
+    func fetchCountries() {
+        try? resultsController.performFetch()
+        let action = DataAction.synchronizeCountries(siteID: siteID) { [weak self] (result) in
+            guard let self = self else { return }
+            switch result {
+            case .success:
+                try? self.resultsController.performFetch()
+            case .failure:
+                break
+            }
+        }
+
+        stores.dispatch(action)
+    }
+}
+
+// MARK: Constants
+private extension WooShippingEditAddressViewModel {
+    enum Constants {
+        /// This is hardcoded for now based on: https://git.io/JBuja.
+        /// It would be great if this can be fetched remotely.
+        ///
+        static let acceptedUSPSCountries = [
+            "US", // United States
+            "PR", // Puerto Rico
+            "VI", // Virgin Islands
+            "GU", // Guam
+            "AS", // American Samoa
+            "UM", // United States Minor Outlying Islands
+            "MH", // Marshall Islands
+            "FM", // Micronesia
+            "MP" // Northern Mariana Islands
+        ]
     }
 }

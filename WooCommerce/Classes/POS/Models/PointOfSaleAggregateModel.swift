@@ -163,9 +163,9 @@ extension PointOfSaleAggregateModel {
 
     /// Starts a payment immediately if a reader is connected.
     /// Otherwise, schedules a payment to start the next time a reader connects.
-    /// Note that any schedlued payments are cancelled by `cancelReaderPreparation`
+    /// Note that any scheduled payments are cancelled by `cancelReaderPreparation`
     /// e.g. when the TotalsView goes offscreen.
-    func startPaymentWhenCardReaderConnected() async {
+    private func startPaymentWhenCardReaderConnected() async {
         guard case .connected = cardReaderConnectionStatus else {
             return startPaymentOnCardReaderConnection = $cardReaderConnectionStatus
                 .filter { status in
@@ -179,15 +179,15 @@ extension PointOfSaleAggregateModel {
                 .removeDuplicates()
                 .sink { _ in
                     Task { @MainActor [weak self] in
-                        await self?.collectPayment()
+                        await self?.collectCardPayment()
                     }
                 }
         }
-        await collectPayment()
+        await collectCardPayment()
     }
 
     @MainActor
-    func collectPayment() async {
+    private func collectCardPayment() async {
         guard let order = orderController.order else {
             return
             // Should this throw?
@@ -210,7 +210,7 @@ extension PointOfSaleAggregateModel {
     @MainActor
     func cancelCashPayment() async {
         if case .connected = cardReaderConnectionStatus {
-            await collectPayment()
+            await collectCardPayment()
         } else {
             paymentState = .card(.idle)
         }
@@ -240,7 +240,7 @@ extension PointOfSaleAggregateModel {
         Task { [weak self] in
             guard let self else { return }
             try await cardPresentPaymentService.cancelPayment()
-            await collectPayment()
+            await collectCardPayment()
         }
     }
 

@@ -51,7 +51,10 @@ private extension LoginJetpackSetupCoordinator {
                 self.analytics.track(.loginJetpackSetupAuthorizedUsingDifferentWPCOMAccount)
                 self.showVerifyWPComAccount(email: email)
             } else {
-                self.showStorePickerForLogin()
+                // dismiss the setup view
+                self.navigationController.presentedViewController?.dismiss(animated: true, completion: { [weak self] in
+                    self?.showStorePickerForLogin()
+                })
             }
 
         })
@@ -72,6 +75,7 @@ private extension LoginJetpackSetupCoordinator {
     }
 
     func showStorePickerForLogin() {
+        showLoadingView()
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
 
         // Tries re-syncing to get an updated store list
@@ -85,18 +89,26 @@ private extension LoginJetpackSetupCoordinator {
                 return self.showNoMatchedSiteAlert(from: topViewController)
             }
 
-            // dismiss the setup view
-            self.navigationController.dismiss(animated: true)
-
-            // open the store picker if the matched site doesn't have Woo so the user can install it.
-            guard matchedSite.isWooCommerceActive else {
-                showNoWooErrorScreen(for: matchedSite)
-                return
+            // Dismiss loading view
+            navigationController.presentedViewController?.dismiss(animated: true) { [weak self] in
+                // open the store picker if the matched site doesn't have Woo so the user can install it.
+                guard matchedSite.isWooCommerceActive else {
+                    self?.showNoWooErrorScreen(for: matchedSite)
+                    return
+                }
+                
+                // navigate the user to the home screen.
+                self?.storePickerCoordinator?.didSelectStore(with: matchedSite.siteID, onCompletion: {})
             }
-
-            // navigate the user to the home screen.
-            self.storePickerCoordinator?.didSelectStore(with: matchedSite.siteID, onCompletion: {})
         }
+    }
+
+    func showLoadingView() {
+        let viewProperties = InProgressViewProperties(title: Localization.syncingStore, message: "")
+        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+        inProgressViewController.modalPresentationStyle = .overCurrentContext
+
+        navigationController.present(inProgressViewController, animated: true, completion: nil)
     }
 
     func showNoMatchedSiteAlert(from viewController: UIViewController) {
@@ -142,6 +154,11 @@ private extension LoginJetpackSetupCoordinator {
         static let contactSupport = NSLocalizedString(
             "Contact Support",
             comment: "Title of the button to contact support for help accessing a store after Jetpack setup"
+        )
+        static let syncingStore = NSLocalizedString(
+            "loginJetpackSetupCoordinator.syncingStore",
+            value: "Syncing store...",
+            comment: "Label indicating that the store is being synced in the Jetpack setup flow"
         )
     }
 }

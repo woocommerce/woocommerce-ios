@@ -17,6 +17,10 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     /// Whether to show the company field by default.
     @Published var showCompanyField: Bool
 
+    // TODO: Set status based on initial verified status, whether any changes have been made, and local validation.
+    /// Status of the address, based on local validation and remote verification.
+    var status: WooShippingAddressStatus
+
     init(id: String,
          name: String,
          company: String,
@@ -28,7 +32,8 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
          email: String,
          phone: String,
          saveAsDefault: Bool,
-         showCompanyField: Bool) {
+         showCompanyField: Bool,
+         isVerified: Bool) {
         self.id = id
         self.name = name
         self.company = company
@@ -41,5 +46,6 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         self.phone = phone
         self.saveAsDefault = saveAsDefault
         self.showCompanyField = showCompanyField
+        self.status = isVerified ? .verified : .unverified
     }
 }

@@ -17,6 +17,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         let phone = "123-456-7890"
         let saveAsDefault = true
         let showCompanyField = true
+        let isVerified = true
 
         // When
         let viewModel = WooShippingEditAddressViewModel(id: id,
@@ -30,7 +31,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         email: email,
                                                         phone: phone,
                                                         saveAsDefault: saveAsDefault,
-                                                        showCompanyField: showCompanyField)
+                                                        showCompanyField: showCompanyField,
+                                                        isVerified: isVerified)
 
         // Then
         XCTAssertEqual(viewModel.id, id)
@@ -45,6 +47,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.phone, phone)
         XCTAssertEqual(viewModel.saveAsDefault, saveAsDefault)
         XCTAssertEqual(viewModel.showCompanyField, showCompanyField)
+        XCTAssertEqual(viewModel.status, .verified)
     }
 
 }

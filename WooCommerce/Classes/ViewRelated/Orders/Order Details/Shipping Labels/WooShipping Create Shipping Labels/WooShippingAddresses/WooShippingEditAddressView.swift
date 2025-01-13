@@ -1,5 +1,12 @@
 import SwiftUI
 
+/// Possible statuses for a Woo Shipping address.
+enum WooShippingAddressStatus {
+    case verified
+    case unverified
+    case missingInformation
+}
+
 /// View for editing an address in the Woo Shipping label creation flow.
 struct WooShippingEditAddressView: View {
     @ObservedObject var viewModel: WooShippingEditAddressViewModel
@@ -76,6 +83,30 @@ struct WooShippingEditAddressView: View {
                     }
                 }
             }
+        }
+        .safeAreaInset(edge: .bottom) {
+            VStack(spacing: .zero) {
+                Divider().ignoresSafeArea(edges: [.horizontal])
+                VStack(spacing: Constants.verticalSpacing) {
+                    HStack {
+                        Image(systemName: viewModel.status == .verified ? "checkmark.circle" : "exclamationmark.circle")
+                        Text(Localization.Status.label(for: viewModel.status))
+                    }
+                    .font(.subheadline)
+                    .foregroundStyle(viewModel.status == .verified ? Constants.green : Constants.red)
+                    Button(Localization.Button.label(for: viewModel.status)) {
+                        if viewModel.status == .verified {
+                            dismiss()
+                        } else {
+                            // TODO: Handle remote verification
+                        }
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                    .disabled(viewModel.status == .missingInformation)
+                }
+                .padding()
+            }
+            .background(Color(uiColor: .systemBackground))
         }
     }
 
@@ -245,6 +276,10 @@ private extension WooShippingEditAddressView {
         static let cornerRadius: CGFloat = 8
         static let defaultBorderColor: Color = Color(.separator)
         static let defaultBorderWidth: CGFloat = 1
+        static let green = Color(UIColor(light: .withColorStudio(.green, shade: .shade60),
+                                         dark: .withColorStudio(.green, shade: .shade40)))
+        static let red = Color(UIColor(light: .withColorStudio(.red, shade: .shade60),
+                                       dark: .withColorStudio(.red, shade: .shade40)))
         static let requiredLabelSpacing: CGFloat = 4
     }
 
@@ -291,6 +326,50 @@ private extension WooShippingEditAddressView {
         static let done = NSLocalizedString("wooShipping.createLabels.editAddress.done",
                                             value: "Done",
                                             comment: "Button to dismiss the keyboard")
+
+        enum Status {
+            static func label(for status: WooShippingAddressStatus) -> String {
+                switch status {
+                case .verified:
+                    return verified
+                case .unverified:
+                    return unverified
+                case .missingInformation:
+                    return missingInformation
+                }
+            }
+            static let verified = NSLocalizedString("wooShipping.createLabels.editAddress.verified",
+                                                    value: "Address verified",
+                                                    comment: "Label when the address has been verified in the Woo Shipping label creation flow")
+            static let unverified = NSLocalizedString("wooShipping.createLabels.editAddress.unverified",
+                                                      value: "Unverified address",
+                                                      comment: "Label when the address is unverified in the Woo Shipping label creation flow")
+            static let missingInformation = NSLocalizedString("wooShipping.createLabels.editAddress.missingInformation",
+                                                              value: "Missing information",
+                                                              comment: "Label when the address is missing information in the Woo Shipping label creation flow")
+        }
+
+        enum Button {
+            static func label(for status: WooShippingAddressStatus) -> String {
+                switch status {
+                case .verified:
+                    return close
+                case .unverified:
+                    return validateAddress
+                case .missingInformation:
+                    return addMissingInformation
+                }
+            }
+            static let close = NSLocalizedString("wooShipping.createLabels.editAddress.close",
+                                                 value: "Close",
+                                                 comment: "Button to close the address editing view in the Woo Shipping label creation flow")
+            static let validateAddress = NSLocalizedString("wooShipping.createLabels.editAddress.validateAddress",
+                                                           value: "Validate & Save",
+                                                           comment: "Button label indicating the address needs to be validated and saved for a Woo Shipping label")
+            static let addMissingInformation = NSLocalizedString("wooShipping.createLabels.editAddress.addMissingInformation",
+                                                                 value: "Add Missing Information",
+                                                                 comment: "Button label indicating the address is missing information for a Woo Shipping label")
+        }
     }
 }
 
@@ -306,7 +385,8 @@ private extension WooShippingEditAddressView {
                                                 email: "",
                                                 phone: "",
                                                 saveAsDefault: true,
-                                                showCompanyField: false))
+                                                showCompanyField: false,
+                                                isVerified: true))
 }
 
 #Preview("With Company") {
@@ -321,5 +401,6 @@ private extension WooShippingEditAddressView {
                                                 email: "",
                                                 phone: "",
                                                 saveAsDefault: false,
-                                                showCompanyField: true))
+                                                showCompanyField: true,
+                                                isVerified: false))
 }

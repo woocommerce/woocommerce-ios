@@ -7,7 +7,6 @@ struct ChildItemList: View {
     private let title: String
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
 
     private var state: ItemListState {
         posModel.itemsViewState.itemsStack
@@ -34,23 +33,17 @@ struct ChildItemList: View {
                 Spacer()
             }
             .padding(.horizontal, Constants.itemListPadding)
-            ScrollView {
-                VStack {
-                    ItemList(state: state)
-                        .background(Color.posPrimaryBackground)
-                        .toolbar(.hidden, for: .navigationBar)
-                        .transition(.opacity)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.bottom, floatingControlAreaSize.height)
-                .padding(.horizontal, Constants.itemListPadding)
-            }
+            ItemList(state: state,
+                     node: .parent(parentItem))
+                .toolbar(.hidden, for: .navigationBar)
+                .transition(.opacity)
         }
+        .background(Color.posPrimaryBackground)
         .task {
             guard state.items.isEmpty else {
                 return
             }
-            await posModel.loadInitialChildItems(for: parentItem)
+            await posModel.loadInitialItems(base: .parent(parentItem))
         }
     }
 }
@@ -106,7 +99,7 @@ private extension ChildItemList {
                                                                 variationID: 256
                                                             )
                                                         )
-                                                    ])]))
+                                                    ], hasMoreItems: false)]))
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
         cardPresentPaymentService: CardPresentPaymentPreviewService(),

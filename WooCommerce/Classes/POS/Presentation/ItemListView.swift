@@ -3,12 +3,10 @@ import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 
 struct ItemListView: View {
-    @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     @EnvironmentObject var posModel: PointOfSaleAggregateModel
 
-    @State private var lastScrollPosition: CGFloat = 0
     @State private var showSimpleProductsModal: Bool = false
     private var itemListState: ItemListState {
         posModel.itemsViewState.itemsStack.root
@@ -23,7 +21,7 @@ struct ItemListView: View {
                 headerView
                 switch itemListState {
                 case .loading(let items),
-                        .loaded(let items):
+                        .loaded(let items, _):
                     listView(items)
                 case .error:
                     // Currently unused, but this will show errors that are displayed inline with previously
@@ -134,31 +132,10 @@ private extension ItemListView {
 
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
-        ScrollView {
-            VStack {
-                if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
-                    bannerCardView
-                }
-                ItemList(state: itemListState)
+        ItemList(state: itemListState) {
+            if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
+                bannerCardView
             }
-            .frame(maxWidth: .infinity)
-            .padding(.bottom, floatingControlAreaSize.height)
-            .padding(.horizontal, Constants.itemListPadding)
-            .background(GeometryReader { proxy in
-                Color.clear
-                    .onChange(of: proxy.frame(in: .global).maxY) { maxY in
-                        if itemListState.isLoading {
-                            return
-                        }
-                        let threshold = Constants.viewHeight * Constants.scrollThresholdMultiplier
-                        if maxY < threshold && maxY < lastScrollPosition {
-                            Task {
-                                await posModel.loadNextItems()
-                            }
-                        }
-                        lastScrollPosition = maxY
-                    }
-            })
         }
     }
 
@@ -245,8 +222,6 @@ private extension ItemListView {
         static let iconPadding: CGFloat = 26
         static let itemListPadding: CGFloat = 16
         static let bannerCardPadding: CGFloat = 16
-        static let viewHeight: CGFloat = UIScreen.main.bounds.height
-        static let scrollThresholdMultiplier: CGFloat = 1.7
     }
 
     enum BannerState {
@@ -298,7 +273,7 @@ private extension ItemListView {
 #Preview("Loaded with all product types") {
     let itemsController = PointOfSalePreviewItemsController()
     Task { @MainActor in
-        await itemsController.loadInitialItems()
+        await itemsController.loadInitialItems(base: .root)
     }
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,

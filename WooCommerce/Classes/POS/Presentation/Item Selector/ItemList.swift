@@ -1,22 +1,61 @@
 import SwiftUI
 import enum Yosemite.POSItem
+import protocol WooFoundation.Analytics
 import struct Yosemite.POSVariableParentProduct
 
 /// Displays a list of POS items or placeholder card based on the given state.
-struct ItemList: View {
+struct ItemList<HeaderView: View>: View {
+    @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
+    @EnvironmentObject var posModel: PointOfSaleAggregateModel
+    @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
+
     let state: ItemListState
+    private let node: ItemListBaseItem
+    private let headerView: HeaderView
+
+    init(state: ItemListState,
+         node: ItemListBaseItem = .root,
+         @ViewBuilder headerView: () -> HeaderView = { EmptyView() }) {
+        self.state = state
+        self.node = node
+        self.headerView = headerView()
+    }
 
     var body: some View {
-        ForEach(state.items) { item in
-            ItemListRow(item: item)
-        }
-        GhostItemCardView()
-            .renderedIf(state.isLoading)
+        InfiniteScrollView(
+            triggerDeterminer: infiniteScrollTriggerDeterminer,
+            loadMore: {
+                guard case .loaded(_, let hasMoreItems) = state,
+                      hasMoreItems
+                else { return }
+                try await posModel.loadNextItems(base: node)
+            },
+            content: {
+                LazyVStack {
+                    headerView
+
+                    ForEach(state.items) { item in
+                        ItemListRow(item: item)
+                    }
+
+                    GhostItemCardView()
+                        .renderedIf(state.isLoading)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, Constants.itemListPadding)
+                .padding(.bottom, floatingControlAreaSize.height)
+            }
+        )
     }
+}
+
+private enum Constants {
+    static let itemListPadding: CGFloat = 16
 }
 
 private struct ItemListRow: View {
     let item: POSItem
+    let analytics: Analytics = ServiceLocator.analytics
     @EnvironmentObject var posModel: PointOfSaleAggregateModel
 
     var body: some View {
@@ -24,6 +63,7 @@ private struct ItemListRow: View {
         case let .simpleProduct(product):
             Button(action: {
                 posModel.addToCart(product)
+                analytics.track(event: .PointOfSale.addItemToCart(type: .simpleProduct))
             }, label: {
                 SimpleProductCardView(product: product)
             })
@@ -40,6 +80,7 @@ private struct ItemListRow: View {
         case let .variation(variation):
             Button(action: {
                 posModel.addToCart(variation)
+                analytics.track(event: .PointOfSale.addItemToCart(type: .variation))
             }, label: {
                 VariationCardView(variation: variation)
             })
@@ -81,13 +122,19 @@ private extension ItemListRow {
                                 productID: 16
                             )
                         )
-                    ]
+                    ],
+                    hasMoreItems: false
                 )
     )
 }
 
 #Preview("Loading") {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
     ItemList(state: .loading([]))
+        .environmentObject(posModel)
 }
 
 #endif

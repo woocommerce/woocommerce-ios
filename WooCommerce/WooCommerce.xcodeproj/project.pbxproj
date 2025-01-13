@@ -901,6 +901,7 @@
 		20DB185B2CF5D9220018D3E1 /* MockPointOfSaleOrderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DB185A2CF5D9220018D3E1 /* MockPointOfSaleOrderController.swift */; };
 		20DB185D2CF5E7630018D3E1 /* PointOfSaleOrderControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DB185C2CF5E7560018D3E1 /* PointOfSaleOrderControllerTests.swift */; };
 		20E188842AD059A50053E945 /* AboutTapToPayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20E188832AD059A50053E945 /* AboutTapToPayView.swift */; };
+		20EFAEA62D35337F00D35F9C /* ItemListErrorCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20EFAEA52D35337F00D35F9C /* ItemListErrorCardView.swift */; };
 		20F7B12D2D12C7B900C08193 /* ItemsContainerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F7B12C2D12C7B900C08193 /* ItemsContainerState.swift */; };
 		20F7B12F2D12CBE700C08193 /* ItemsViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F7B12E2D12CBE700C08193 /* ItemsViewState.swift */; };
 		20FA73882CDCC3A900554BE3 /* OrderDetailsSyncStateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FA73872CDCC3A900554BE3 /* OrderDetailsSyncStateController.swift */; };
@@ -4081,6 +4082,7 @@
 		20DB185C2CF5E7560018D3E1 /* PointOfSaleOrderControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleOrderControllerTests.swift; sourceTree = "<group>"; };
 		20E014E12CF63671008C823B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		20E188832AD059A50053E945 /* AboutTapToPayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutTapToPayView.swift; sourceTree = "<group>"; };
+		20EFAEA52D35337F00D35F9C /* ItemListErrorCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListErrorCardView.swift; sourceTree = "<group>"; };
 		20F7B12C2D12C7B900C08193 /* ItemsContainerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsContainerState.swift; sourceTree = "<group>"; };
 		20F7B12E2D12CBE700C08193 /* ItemsViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsViewState.swift; sourceTree = "<group>"; };
 		20FA73872CDCC3A900554BE3 /* OrderDetailsSyncStateController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsSyncStateController.swift; sourceTree = "<group>"; };
@@ -7337,6 +7339,7 @@
 			isa = PBXGroup;
 			children = (
 				0291497A2D2682FF00F7B3B3 /* ItemList.swift */,
+				20EFAEA52D35337F00D35F9C /* ItemListErrorCardView.swift */,
 				0291497C2D26CB2500F7B3B3 /* ChildItemList.swift */,
 			);
 			path = "Item Selector";
@@ -16779,6 +16782,7 @@
 				26B9875D273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift in Sources */,
 				CE6302482BAB60AE00E3325C /* CustomerDetailViewModel.swift in Sources */,
 				DEF36DEA2898D3CF00178AC2 /* AuthenticatedWebViewModel.swift in Sources */,
+				20EFAEA62D35337F00D35F9C /* ItemListErrorCardView.swift in Sources */,
 				26132B3C2C3DA20C004C157F /* PushNotificationBackgroundSynchronizer.swift in Sources */,
 				6885E2CC2C32B14B004C8D70 /* TotalsViewHelper.swift in Sources */,
 				45A0E4CB2566B56000D4E8C3 /* NumberOfLinkedProductsTableViewCell.swift in Sources */,

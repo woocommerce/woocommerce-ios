@@ -80,9 +80,9 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
                 return try await fetchItems(pageNumber: pageNumber)
             }
         } catch {
-            // TODO: 14694 - Handle error from loading the next page, like showing an error UI at the end or as an overlay.
-            itemsViewState = .init(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
-                                   itemsStack: ItemsStackState(root: .loaded(currentItems, hasMoreItems: true),
+            itemsViewState = .init(containerState: .content,
+                                   itemsStack: ItemsStackState(root: .inlineError(currentItems,
+                                                                                  error: .errorOnLoadingProductsNextPage()),
                                                                itemStates: currentItemStates))
         }
     }
@@ -133,8 +133,8 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
                 return try await fetchChildItems(for: parent, pageNumber: pageNumber)
             }
         } catch {
-            // TODO: 14694 - Handle error from loading the next page, like showing an error UI at the end or as an overlay.
-            updateState(for: parent, to: .error(PointOfSaleErrorState.errorOnLoadingProducts()))
+            updateState(for: parent, to: .inlineError(currentItems,
+                                                      error: PointOfSaleErrorState.errorOnLoadingVariationsNextPage()))
         }
     }
 

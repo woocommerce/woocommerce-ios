@@ -4,6 +4,7 @@ import Codegen
 enum ItemListState {
     case loading(_ currentItems: [POSItem])
     case loaded(_ items: [POSItem], hasMoreItems: Bool)
+    case inlineError(_ items: [POSItem], error: PointOfSaleErrorState)
     case error(PointOfSaleErrorState)
 
     var isLoading: Bool {
@@ -20,7 +21,8 @@ extension ItemListState {
     var items: [POSItem] {
         switch self {
         case .loading(let items),
-                .loaded(let items, _):
+                .loaded(let items, _),
+                .inlineError(let items, _):
             return items
         case .error:
             return []

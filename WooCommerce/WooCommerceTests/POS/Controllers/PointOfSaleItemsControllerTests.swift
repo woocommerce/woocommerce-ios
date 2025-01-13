@@ -222,6 +222,33 @@ final class PointOfSaleItemsControllerTests {
         #expect(items.count == 4)
     }
 
+    @Test func loadNextItems_child_when_service_throws_then_state_is_inlineError() async throws {
+        // Given
+        let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: UUID(),
+                                                                                name: "Fake Parent",
+                                                                                productImageSource: nil,
+                                                                                productID: 12345))
+        let baseItem = ItemListBaseItem.parent(parentItem)
+        itemProvider.items = [parentItem]
+        itemProvider.shouldSimulateTwoPagesOfVariations = true
+
+        await sut.loadInitialItems(base: .root)
+        await sut.loadInitialItems(base: baseItem)
+
+        itemProvider.shouldThrowError = true
+
+        // When
+        await sut.loadNextItems(base: baseItem)
+
+        // Then
+        guard case .inlineError(let items, let errorState) = itemsViewState.itemsStack.itemStates[parentItem] else {
+            Issue.record("Expected inlineError ItemList state, but got \(itemsViewState)")
+            return
+        }
+        #expect(items.count == 2)
+        #expect(errorState == PointOfSaleErrorState.errorOnLoadingVariationsNextPage())
+    }
+
     @Test func loadInitialItems_when_no_items_then_state_is_loaded_empty() async throws {
         // Given
         itemProvider.shouldReturnZeroItems = true
@@ -250,7 +277,7 @@ final class PointOfSaleItemsControllerTests {
         #expect(itemsViewState.containerState == .error(expectedError))
     }
 
-    @Test func loadNextItems_when_itemProvider_throws_error_then_state_is_error() async throws {
+    @Test func loadNextItems_when_itemProvider_throws_error_then_state_is_inlineError() async throws {
         // Given
         try #require(itemsViewState.containerState == .loading)
 
@@ -258,15 +285,19 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadInitialItems(base: .root)
 
         itemProvider.shouldThrowError = true
-        let expectedError = PointOfSaleErrorState(title: "Error loading products",
-                                                  subtitle: "Give it another go?",
-                                                  buttonText: "Retry")
 
         // When
         await sut.loadNextItems(base: .root)
 
         // Then
-        #expect(itemsViewState.containerState == .error(expectedError))
+        #expect(itemsViewState.containerState == .content)
+
+        guard case .inlineError(let items, let errorState) = itemsViewState.itemsStack.root else {
+            Issue.record("Expected inlineError ItemList state, but got \(itemsViewState)")
+            return
+        }
+        #expect(items.count == 2)
+        #expect(errorState == PointOfSaleErrorState.errorOnLoadingProductsNextPage())
     }
 
     @Test func loadNextItems_after_itemProvider_throws_error_then_the_same_page_is_requested_next() async throws {

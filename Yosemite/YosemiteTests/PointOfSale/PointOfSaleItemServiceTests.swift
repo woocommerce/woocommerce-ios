@@ -40,7 +40,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         }
     }
 
-    func test_PointOfSaleItemServiceProtocol_when_empty_data_for_non_first_page_then_returns_empty_items_and_no_next_page() async throws {
+    func test_PointOfSaleItemServiceProtocol_when_empty_data_for_non_first_page_of_products_then_returns_empty_items_and_no_next_page() async throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
 
@@ -213,6 +213,42 @@ final class PointOfSaleItemServiceTests: XCTestCase {
                        "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/11/img_0002-1.jpeg?fit=4288%2C2848&ssl=1")
         XCTAssertEqual(firstVariation.productID, parentProductID)
         XCTAssertEqual(firstVariation.productVariationID, 1275)
+    }
+
+    func test_providePointOfSaleVariationItems_returns_variation_page_details_when_load_succeeds() async throws {
+        // Given
+        let itemProvider = PointOfSaleItemService(siteID: siteID,
+                                                  currencySettings: currencySettings,
+                                                  network: network,
+                                                  isVariableProductsFeatureEnabled: true)
+        let parentProductID: Int64 = 123
+
+        // When
+        network.responseHeaders = ["X-WP-TotalPages": "5"]
+        network.simulateResponse(requestUrlSuffix: "products/\(parentProductID)/variations", filename: "product-variations-load-all")
+        let pagedVariations = try await itemProvider.providePointOfSaleVariationItems(
+            for: .init(
+                id: .init(),
+                name: "Tea",
+                productImageSource: nil,
+                productID: parentProductID,
+                allAttributes: [
+                        .init(
+                            siteID: siteID,
+                            attributeID: 0,
+                            name: "Size",
+                            position: 4,
+                            visible: true,
+                            variation: true,
+                            options: ["6 piece"]
+                        )
+                    ]
+            ),
+            pageNumber: 1
+        )
+
+        // Then
+        XCTAssertTrue(pagedVariations.hasMorePages)
     }
 
     func test_providePointOfSaleVariationItems_throws_error_when_variations_load_fails() async throws {

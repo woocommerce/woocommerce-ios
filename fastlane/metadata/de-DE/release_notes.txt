@@ -1,3 +1,3 @@
-Wir haben diese neue Version in nur zwei Wochen mit unzähligen Neuerungen ausgestattet! Es gibt nun einen GTIN-Support für die global eindeutige Produktkennung. Außerdem kannst du den Call-to-Action in Blaze-Kampagnen bearbeiten.
 
-Das Einrichten persönlicher Zahlungen im Shop gelingt nun noch schneller, die Bestätigung für den Versand von Belegen ist eindeutiger und der Test von „Tap to Pay“ auf dem iPhone ist jetzt noch nahtloser. Außerdem haben wir die Dashboard-Statistiken verbessert und einige Bugs behoben.
+Mit diesem Update wird dein WooCommerce-Erlebnis noch zuverlässiger und unkomplizierter! Wir haben die Jetpack-Einrichtung, die Medienhandhabung sowie die Produkt- und Zahlungs-Workflows verbessert. Außerdem haben wir die Speicherung optimiert und wichtige UI-Probleme behoben, um die Performance zu steigern. Und bei Tap to Pay wirst du jetzt ganz einfach durch das Onboarding geführt.
+

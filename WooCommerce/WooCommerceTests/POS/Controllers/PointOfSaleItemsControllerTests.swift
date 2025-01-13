@@ -122,7 +122,7 @@ final class PointOfSaleItemsControllerTests {
         try #require(itemsViewState.containerState == .loading)
 
         // When
-        try await sut.loadNextItems(base: .root)
+        await sut.loadNextItems(base: .root)
 
         // Then
         #expect(itemsViewState.containerState == .empty)
@@ -137,7 +137,7 @@ final class PointOfSaleItemsControllerTests {
         try #require(itemsViewState.containerState == .loading)
 
         // When
-        try await sut.loadNextItems(base: .root)
+        await sut.loadNextItems(base: .root)
 
         // Then
         #expect(itemsViewState == ItemsViewState(containerState: .content,
@@ -153,7 +153,7 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadInitialItems(base: .root)
 
         // When
-        try await sut.loadNextItems(base: .root)
+        await sut.loadNextItems(base: .root)
 
         // Then
         guard case .loaded(let items, _) = itemsViewState.itemsStack.root else {
@@ -170,7 +170,7 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadInitialItems(base: .root)
 
         // When
-        try await sut.loadNextItems(base: .root)
+        await sut.loadNextItems(base: .root)
 
         // Then
         #expect(itemProvider.spyLastRequestedPageNumber == 2)
@@ -185,7 +185,7 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadInitialItems(base: .root)
 
         // When
-        try await sut.loadNextItems(base: .root)
+        await sut.loadNextItems(base: .root)
 
         // Then
         guard case .loaded(let items, let hasMoreItems) = itemsViewState.itemsStack.root else {
@@ -211,7 +211,7 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadInitialItems(base: baseItem)
 
         // When
-        try await sut.loadNextItems(base: baseItem)
+        await sut.loadNextItems(base: baseItem)
 
         // Then
         guard case .loaded(let items, let hasMoreItems) = itemsViewState.itemsStack.itemStates[parentItem] else {
@@ -263,12 +263,10 @@ final class PointOfSaleItemsControllerTests {
                                                   buttonText: "Retry")
 
         // When
-        do {
-            try await sut.loadNextItems(base: .root)
-        } catch {
-            // Then
-            #expect(itemsViewState.containerState == .error(expectedError))
-        }
+        await sut.loadNextItems(base: .root)
+
+        // Then
+        #expect(itemsViewState.containerState == .error(expectedError))
     }
 
     @Test func loadNextItems_after_itemProvider_throws_error_then_the_same_page_is_requested_next() async throws {
@@ -277,12 +275,12 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadInitialItems(base: .root)
 
         itemProvider.shouldThrowError = true
-        try? await sut.loadNextItems(base: .root)
+        await sut.loadNextItems(base: .root)
         try #require(itemProvider.spyLastRequestedPageNumber == 2)
         itemProvider.spyLastRequestedPageNumber = 0
 
         // When
-        try? await sut.loadNextItems(base: .root)
+        await sut.loadNextItems(base: .root)
 
         // Then
         #expect(itemProvider.spyLastRequestedPageNumber == 2)
@@ -307,7 +305,7 @@ final class PointOfSaleItemsControllerTests {
         itemProvider.shouldSimulateTwoPages = true
         await sut.loadInitialItems(base: .root)
 
-        try await sut.loadNextItems(base: .root)
+        await sut.loadNextItems(base: .root)
         try #require(itemProvider.spyLastRequestedPageNumber == 2)
 
         // When
@@ -324,7 +322,7 @@ final class PointOfSaleItemsControllerTests {
 
         // When
         itemProvider.shouldReturnZeroItems = true
-        try await sut.loadNextItems(base: .root)
+        await sut.loadNextItems(base: .root)
 
         // Then
         #expect(itemsViewState == ItemsViewState(containerState: .content,
@@ -340,7 +338,7 @@ final class PointOfSaleItemsControllerTests {
 
         // When
         itemProvider.shouldReturnZeroItems = true
-        try await sut.loadNextItems(base: .root)
+        await sut.loadNextItems(base: .root)
 
         // Then
         try #require(itemProvider.spyLastRequestedPageNumber == 1)

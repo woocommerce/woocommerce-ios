@@ -8,7 +8,7 @@ import class Yosemite.Store
 protocol PointOfSaleItemsControllerProtocol {
     var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { get }
     func loadInitialItems(base: ItemListBaseItem) async
-    func loadNextItems(base: ItemListBaseItem) async throws
+    func loadNextItems(base: ItemListBaseItem) async
     func reload() async
 }
 
@@ -56,17 +56,17 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     }
 
     @MainActor
-    func loadNextItems(base: ItemListBaseItem) async throws {
+    func loadNextItems(base: ItemListBaseItem) async {
         switch base {
         case .root:
-            try await loadNextRootItems()
+            await loadNextRootItems()
         case .parent(let parent):
             await loadNextChildItems(for: parent)
         }
     }
 
     @MainActor
-    private func loadNextRootItems() async throws {
+    private func loadNextRootItems() async {
         guard paginationTracker.hasNextPage else {
             return
         }
@@ -84,7 +84,6 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
             itemsViewState = .init(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
                                    itemsStack: ItemsStackState(root: .loaded(currentItems, hasMoreItems: true),
                                                                itemStates: currentItemStates))
-            throw error
         }
     }
 

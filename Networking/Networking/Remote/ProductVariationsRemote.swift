@@ -337,6 +337,6 @@ public extension ProductVariationsRemote {
 
 private extension ProductVariationsRemote {
     enum POSConstants {
-        static let variationsPerPage: Int = 100
+        static let variationsPerPage: Int = 25
     }
 }

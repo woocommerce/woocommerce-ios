@@ -41,16 +41,7 @@ struct VariationCardView: View {
 }
 
 private extension VariationCardView {
-    enum Constants {
-        static let productCardSize: CGFloat = 112
-        static let maximumProductCardSize: CGFloat = Constants.productCardSize * 2
-        static let cardSpacing: CGFloat = 0
-        static let textSpacing: CGFloat = 8
-        static let horizontalTextPadding: CGFloat = 32
-        static let verticalTextPadding: CGFloat = 8
-        static let itemNameFont: POSFontStyle = .posBodyEmphasized
-        static let itemPriceFont: POSFontStyle = .posBodyRegular
-    }
+    typealias Constants = PointOfSaleItemListCardConstants
 }
 
 #Preview("Variation without image") {

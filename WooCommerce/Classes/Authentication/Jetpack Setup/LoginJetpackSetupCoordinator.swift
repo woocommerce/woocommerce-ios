@@ -96,7 +96,7 @@ private extension LoginJetpackSetupCoordinator {
                     self?.showNoWooErrorScreen(for: matchedSite)
                     return
                 }
-                
+
                 // navigate the user to the home screen.
                 self?.storePickerCoordinator?.didSelectStore(with: matchedSite.siteID, onCompletion: {})
             }

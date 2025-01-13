@@ -7040,13 +7040,9 @@
 				68C53CBD2C1FE59B00C6D80B /* ItemListView.swift */,
 				026826A32BF59DF60036F959 /* CartView.swift */,
 				026826A22BF59DF60036F959 /* ItemRowView.swift */,
-				026826A42BF59DF60036F959 /* SimpleProductCardView.swift */,
-				204C20452D35471400E6D9CF /* PointOfSaleItemListCardConstants.swift */,
 				68D8FBD02BFEF9C700477C42 /* TotalsView.swift */,
 				68AF3C3A2D01481A006F1ED2 /* POSReceiptEligibilityBanner.swift */,
 				DA1D68C12C36F0980097859A /* PointOfSaleAssets.swift */,
-				027ADB6D2D1BF5E3009608DB /* ParentProductCardView.swift */,
-				029149772D26658A00F7B3B3 /* VariationCardView.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -7343,6 +7339,10 @@
 			children = (
 				0291497A2D2682FF00F7B3B3 /* ItemList.swift */,
 				20EFAEA52D35337F00D35F9C /* ItemListErrorCardView.swift */,
+				026826A42BF59DF60036F959 /* SimpleProductCardView.swift */,
+				204C20452D35471400E6D9CF /* PointOfSaleItemListCardConstants.swift */,
+				027ADB6D2D1BF5E3009608DB /* ParentProductCardView.swift */,
+				029149772D26658A00F7B3B3 /* VariationCardView.swift */,
 				0291497C2D26CB2500F7B3B3 /* ChildItemList.swift */,
 			);
 			path = "Item Selector";

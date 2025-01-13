@@ -5,6 +5,7 @@ class WooShippingCustomsItemViewModelTests: XCTestCase {
     private var viewModel: WooShippingCustomsItemViewModel!
 
     override func setUp() {
+        super.setUp()
         viewModel = WooShippingCustomsItemViewModel(title: "",
                                                     description: "",
                                                     hsTariffNumber: "",

@@ -48,6 +48,7 @@ struct TotalsView: View {
                                 .transition(.opacity)
                                 .accessibilityShowsLargeContentViewer()
                                 .layoutPriority(1)
+                                .background(backgroundColor)
                         }
 
                         if isShowingTotalsFields {
@@ -94,6 +95,8 @@ struct TotalsView: View {
             .posSecondaryBackground
         case .card(.processingPayment):
             colorScheme == .light ? Color(.wooCommercePurple(.shade70)) : Color(.wooCommercePurple(.shade10))
+        case .cash(.collectingCash):
+            colorScheme == .light ? .clear : Color.posSecondaryBackground
         default:
             .clear
         }

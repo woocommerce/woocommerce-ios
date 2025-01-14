@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 /// View model for editing an address in the Woo Shipping label flow.
 final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
@@ -71,6 +72,24 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         self.showCompanyField = showCompanyField
         self.status = isVerified ? .verified : .unverified
         self.phoneNumberRequired = phoneNumberRequired
+    }
+
+    convenience init(address: WooShippingOriginAddress) {
+        self.init(type: .origin,
+                  id: address.id,
+                  name: address.fullName,
+                  company: address.company,
+                  country: address.country,
+                  address: address.combinedAddress,
+                  city: address.city,
+                  state: address.state,
+                  postalCode: address.postcode,
+                  email: address.email,
+                  phone: address.phone,
+                  isDefault: address.defaultAddress,
+                  showCompanyField: address.company.isNotEmpty,
+                  isVerified: address.isVerified,
+                  phoneNumberRequired: true)
     }
 
     func isRequired(_ field: WooShippingEditAddressView.AddressField) -> Bool {

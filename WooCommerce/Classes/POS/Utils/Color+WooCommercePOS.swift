@@ -87,6 +87,15 @@ extension Color {
         )
     }
 
+    static var posTextSuccess: Color {
+        Color(
+            UIColor(
+                light: UIColor(red: 10.0/255.0, green: 148.0/255.0, blue: 0.0/255.0, alpha: 1.0),
+                dark: UIColor(red: 10.0/255.0, green: 148.0/255.0, blue: 0.0/255.0, alpha: 1.0)
+            )
+        )
+    }
+
     // MARK: - Buttons
 
     static var posPrimaryButtonBackground: Color {

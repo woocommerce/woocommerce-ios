@@ -2070,6 +2070,7 @@
 		B99B30CD2A85200D0066743D /* AddressFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99B30CC2A85200D0066743D /* AddressFormViewModel.swift */; };
 		B99B87A72AEFCF0A006B8AB1 /* Order+Empty.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99B87A62AEFCF0A006B8AB1 /* Order+Empty.swift */; };
 		B9A0F7A62B1735B10035A153 /* UpdateProductInventoryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A0F7A52B1735B10035A153 /* UpdateProductInventoryViewModelTests.swift */; };
+		B9A5317F2D2FCC5600208304 /* WooShippingCustomsItemViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A5317E2D2FCC5000208304 /* WooShippingCustomsItemViewModelTests.swift */; };
 		B9ACF6882BEE4FC60076E6BC /* String+ProductQuantityRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9ACF6872BEE4FC60076E6BC /* String+ProductQuantityRules.swift */; };
 		B9B0391628A6824200DC1C83 /* PermanentNoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */; };
 		B9B0391828A6838400DC1C83 /* PermanentNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391728A6838400DC1C83 /* PermanentNoticeView.swift */; };
@@ -5218,6 +5219,7 @@
 		B99B30CC2A85200D0066743D /* AddressFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressFormViewModel.swift; sourceTree = "<group>"; };
 		B99B87A62AEFCF0A006B8AB1 /* Order+Empty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+Empty.swift"; sourceTree = "<group>"; };
 		B9A0F7A52B1735B10035A153 /* UpdateProductInventoryViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProductInventoryViewModelTests.swift; sourceTree = "<group>"; };
+		B9A5317E2D2FCC5000208304 /* WooShippingCustomsItemViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingCustomsItemViewModelTests.swift; sourceTree = "<group>"; };
 		B9ACF6872BEE4FC60076E6BC /* String+ProductQuantityRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ProductQuantityRules.swift"; sourceTree = "<group>"; };
 		B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermanentNoticePresenter.swift; sourceTree = "<group>"; };
 		B9B0391728A6838400DC1C83 /* PermanentNoticeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermanentNoticeView.swift; sourceTree = "<group>"; };
@@ -11161,6 +11163,14 @@
 			path = UpdateInventory;
 			sourceTree = "<group>";
 		};
+		B9A5317D2D2FCC3900208304 /* WooShipping Customs */ = {
+			isa = PBXGroup;
+			children = (
+				B9A5317E2D2FCC5000208304 /* WooShippingCustomsItemViewModelTests.swift */,
+			);
+			path = "WooShipping Customs";
+			sourceTree = "<group>";
+		};
 		B9B0391B28A690DA00DC1C83 /* PermanentNotice */ = {
 			isa = PBXGroup;
 			children = (
@@ -12260,6 +12270,7 @@
 		CEC3CC722C9343BC00B93FBE /* WooShipping Create Shipping Labels */ = {
 			isa = PBXGroup;
 			children = (
+				B9A5317D2D2FCC3900208304 /* WooShipping Customs */,
 				CE2207032CA5C55100E16D9B /* WooShippingCreateLabelsViewModelTests.swift */,
 				CE7B4A572CA191F400F764EB /* WooShippingItemRowViewModelTests.swift */,
 				CEC3CC732C9343DF00B93FBE /* WooShippingItemsViewModelTests.swift */,
@@ -17298,6 +17309,7 @@
 				02B21C5529C84E4A00C5623B /* WPAdminWebViewModelTests.swift in Sources */,
 				D802547826551DB8001B2CC1 /* CardPresentModalDisplayMessageTests.swift in Sources */,
 				02503C632538301400FD235D /* ProductVariationFormActionsFactory+ReadonlyVariationTests.swift in Sources */,
+				B9A5317F2D2FCC5600208304 /* WooShippingCustomsItemViewModelTests.swift in Sources */,
 				DE67D46926BAA82600EFE8DB /* Publisher+WithLatestFromTests.swift in Sources */,
 				023EC2E024DA87460021DA91 /* ProductInventorySettingsViewModelTests.swift in Sources */,
 				AEB73C1725CD8E5800A8454A /* AttributePickerViewModelTests.swift in Sources */,

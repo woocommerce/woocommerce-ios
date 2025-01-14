@@ -15,11 +15,11 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
     @Published var weightPerUnit: String
     @Published var originCountry: WooShippingCustomsCountry
 
-    var informationIsMissing: Bool = true
-
     private let storageManager: StorageManagerType
     private let stores: StoresManager
     private let siteID: Int64
+
+    let hsTariffURL = WooConstants.URLs.hsTariffURL.asURL()
 
     private lazy var resultsController: ResultsController<StorageCountry> = {
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
@@ -35,7 +35,23 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
         return countries.map { WooShippingCustomsCountry(code: $0.code, name: $0.name) }
     }
 
-    let hsTariffURL = WooConstants.URLs.hsTariffURL.asURL()
+    var isValidTariffNumber: Bool {
+        guard hsTariffNumber.isNotEmpty else {
+            return true
+        }
+
+        // Check if the string contains only digits
+        let digitsOnly = CharacterSet.decimalDigits.isSuperset(of: CharacterSet(charactersIn: hsTariffNumber))
+        guard digitsOnly else { return false }
+
+        // Check the length of the string
+        let length = hsTariffNumber.count
+        return length >= 6 && length <= 12
+    }
+
+    var requiredInformationIsMissing: Bool {
+        description.isEmpty || valuePerUnit.isEmpty || weightPerUnit.isEmpty
+    }
 
     init(title: String,
          description: String,

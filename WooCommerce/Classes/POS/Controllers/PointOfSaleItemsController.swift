@@ -7,7 +7,9 @@ import class Yosemite.Store
 
 protocol PointOfSaleItemsControllerProtocol {
     var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { get }
-    func reloadItems(base: ItemListBaseItem) async
+    /// Loads the first page of items for a given base item.
+    func loadItems(base: ItemListBaseItem) async
+    /// Loads the next page of items for a given base item.
     func loadNextItems(base: ItemListBaseItem) async
 }
 
@@ -29,7 +31,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     }
 
     @MainActor
-    func reloadItems(base: ItemListBaseItem) async {
+    func loadItems(base: ItemListBaseItem) async {
         switch base {
         case .root:
             await loadRootItems()

@@ -64,7 +64,7 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
                                                                                                itemStates: [:]))
     var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { $itemsViewState }
 
-    func reloadItems(base: ItemListBaseItem) async {
+    func loadItems(base: ItemListBaseItem) async {
         switch base {
         case .root:
             itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded(mockItems, hasMoreItems: true),

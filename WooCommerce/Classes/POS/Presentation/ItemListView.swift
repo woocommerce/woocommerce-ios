@@ -273,7 +273,7 @@ private extension ItemListView {
 #Preview("Loaded with all product types") {
     let itemsController = PointOfSalePreviewItemsController()
     Task { @MainActor in
-        await itemsController.reloadItems(base: .root)
+        await itemsController.loadItems(base: .root)
     }
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,

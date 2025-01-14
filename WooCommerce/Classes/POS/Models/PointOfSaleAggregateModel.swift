@@ -92,7 +92,7 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     func reloadItems(base: ItemListBaseItem) async {
-        await itemsController.reloadItems(base: base)
+        await itemsController.loadItems(base: base)
     }
 
     @MainActor

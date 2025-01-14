@@ -46,9 +46,9 @@ struct TotalsView: View {
                                             cardReaderViewLayout.bottomPadding)
                                 .padding(.top, dynamicTypeSize.isAccessibilitySize ? nil : cardReaderViewLayout.topPadding)
                                 .transition(.opacity)
-                                .background(cardReaderViewLayout.backgroundColor)
                                 .accessibilityShowsLargeContentViewer()
                                 .layoutPriority(1)
+                                .background(backgroundColor)
                         }
 
                         if isShowingTotalsFields {
@@ -93,10 +93,12 @@ struct TotalsView: View {
 
     private var backgroundColor: Color {
         switch posModel.paymentState {
-        case .card(.cardPaymentSuccessful):
+        case .card(.cardPaymentSuccessful), .cash(.paymentSuccess):
             .posSecondaryBackground
         case .card(.processingPayment):
             colorScheme == .light ? Color(.wooCommercePurple(.shade70)) : Color(.wooCommercePurple(.shade10))
+        case .cash(.collectingCash):
+            colorScheme == .light ? .clear : Color.posSecondaryBackground
         default:
             .clear
         }
@@ -218,7 +220,7 @@ private extension TotalsView {
 
     @ViewBuilder private var paymentView: some View {
         switch posModel.paymentState {
-        case .card(let cardPaymentState):
+        case .card:
             switch posModel.cardReaderConnectionStatus {
             case .connected, .disconnecting, .cancellingConnection:
                 if let inlinePaymentMessage = posModel.cardPresentPaymentInlineMessage {
@@ -255,25 +257,25 @@ private extension TotalsView {
 }
 
 private extension TotalsView {
-    struct CardReaderViewLayout {
+    struct PaymentViewLayout {
         let backgroundColor: Color
         let topPadding: CGFloat?
         let bottomPadding: CGFloat?
         let sidePadding: CGFloat = 8
 
-        static let primary = CardReaderViewLayout(
+        static let primary = PaymentViewLayout(
             backgroundColor: .clear,
             topPadding: nil,
             bottomPadding: 8
         )
 
-        static let outlined = CardReaderViewLayout(
+        static let outlined = PaymentViewLayout(
             backgroundColor: Color(.quaternarySystemFill),
             topPadding: 40,
             bottomPadding: 40
         )
 
-        static let topAligned = CardReaderViewLayout(
+        static let topAligned = PaymentViewLayout(
             backgroundColor: .clear,
             topPadding: 96,
             bottomPadding: 96
@@ -297,7 +299,7 @@ private extension TotalsView {
         }
     }
 
-    private var cardReaderViewLayout: CardReaderViewLayout {
+    private var cardReaderViewLayout: PaymentViewLayout {
         guard isShowingCardReaderStatus else {
             return .primary
         }
@@ -318,7 +320,9 @@ private extension TotalsView {
                 break
             }
         case .cash:
-            break
+            return PaymentViewLayout(backgroundColor: backgroundColor,
+                                     topPadding: nil,
+                                     bottomPadding: nil)
         }
 
         if posModel.cardReaderConnectionStatus == .disconnected {

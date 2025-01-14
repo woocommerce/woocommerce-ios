@@ -26,15 +26,18 @@ struct PointOfSaleDashboardView: View {
             case .content:
                 contentView
                     .accessibilitySortPriority(2)
+                    .ignoresSafeArea(edges: .bottom)
             }
 
-            POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
-                                   showSupport: $showSupport)
-                .shadow(color: Color.black.opacity(0.12), radius: 4, y: 2)
-                .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
-                .trackSize(size: $floatingSize)
-                .accessibilitySortPriority(1)
-                .renderedIf(posModel.itemsViewState.containerState != .loading)
+            if case .card = posModel.paymentState {
+                POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
+                                       showSupport: $showSupport)
+                    .shadow(color: Color.black.opacity(0.12), radius: 4, y: 2)
+                    .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
+                    .trackSize(size: $floatingSize)
+                    .accessibilitySortPriority(1)
+                    .renderedIf(posModel.itemsViewState.containerState != .loading)
+            }
 
             POSConnectivityView()
         }

@@ -35,18 +35,22 @@ struct PointOfSaleCollectCashView: View {
                         await posModel.cancelCashPayment()
                     }
                 }, label: {
-                    VStack {
-                        HStack {
-                            Image(systemName: "chevron.left")
-                            Text(Localization.backNavigationTitle)
-                        }
-                        .font(.posTitleRegular)
-                        .bold()
-                        .foregroundColor(.primary)
-
-                        Text(formattedOrderTotal)
-                            .font(.posBodyRegular)
+                    HStack(alignment: .top) {
+                        Image(systemName: "chevron.left")
+                            .font(.posTitleRegular)
+                            .bold()
                             .foregroundColor(.primary)
+                        VStack(alignment: .leading, spacing: Constants.navigationButtonSpacing) {
+                            Text(Localization.backNavigationTitle)
+                                .font(.posTitleRegular)
+                                .bold()
+                                .foregroundColor(.primary)
+
+                            Text(formattedOrderTotal)
+                                .font(.posBodyRegular)
+                                .foregroundColor(.primary)
+                        }
+                        .padding(.top, -Constants.navigationButtonSpacing)
                     }
                 })
                 Spacer()
@@ -92,8 +96,8 @@ struct PointOfSaleCollectCashView: View {
             })
             .padding(Constants.buttonPadding)
             .frame(maxWidth: .infinity)
-            .foregroundColor(Color.posPrimaryTextInverted)
-            .background(Color.posOverlayFillInverted)
+            .foregroundColor(colorScheme == .light ? Color.white : Color.black)
+            .background(Color.posPrimaryButtonBackground)
             .cornerRadius(Constants.buttonCornerRadius)
             .contentShape(Rectangle())
             .disabled(isLoading)
@@ -117,6 +121,7 @@ private extension PointOfSaleCollectCashView {
     enum Constants {
         static let buttonSpacing: CGFloat = 12
         static let buttonPadding: CGFloat = 32
+        static let navigationButtonSpacing: CGFloat = 4
         static let buttonFont: POSFontStyle = .posBodyEmphasized
         static let buttonCornerRadius: CGFloat = 8
     }

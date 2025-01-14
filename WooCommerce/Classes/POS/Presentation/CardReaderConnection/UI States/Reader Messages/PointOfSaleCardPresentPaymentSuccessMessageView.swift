@@ -25,7 +25,6 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
                             Text(viewModel.title)
                                 .font(.posTitleEmphasized)
                                 .foregroundStyle(Color.posPrimaryText)
-                                .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
                                 .accessibilityAddTraits(.isHeader)
                                 .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 

@@ -2,12 +2,14 @@ import Foundation
 import SwiftUI
 import Yosemite
 import protocol Storage.StorageManagerType
+import Combine
 
 /// View model for editing an address in the Woo Shipping label flow.
 final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     private let siteID: Int64
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private var cancellables: Set<AnyCancellable> = []
 
     enum AddressType {
         case origin
@@ -22,10 +24,10 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     let id: String
     @Published var name: String
     @Published var company: String
-    @Published var country: String
+    private(set) var country: String
     @Published var address: String
     @Published var city: String
-    @Published var state: String
+    private(set) var state: String
     @Published var postalCode: String
     @Published var email: String
     @Published var phone: String
@@ -57,6 +59,30 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         return ResultsController(storageManager: storageManager, matching: nil, sortedBy: [descriptor])
     }()
 
+    /// Selected country. We observe this to update the `country` property.
+    @Published private(set) var selectedCountry: Country?
+
+    /// Selected state. We observe this to update the `state` property.
+    @Published private(set) var selectedState: StateOfACountry?
+
+    /// View model for selecting a country from a list.
+    var countrySelectorVM: CountrySelectorViewModel {
+        let selectedCountryBinding = Binding<AreaSelectorCommandProtocol?>(
+            get: { self.selectedCountry },
+            set: { self.selectedCountry = $0 as? Country}
+        )
+        return CountrySelectorViewModel(countries: countries, selected: selectedCountryBinding)
+    }
+
+    /// View model for selecting a state from a list.
+    var stateSelectorVM: StateSelectorViewModel {
+        let selectedStateBinding = Binding<AreaSelectorCommandProtocol?>(
+            get: { self.selectedState },
+            set: { self.selectedState = $0 as? StateOfACountry }
+        )
+        return StateSelectorViewModel(states: statesOfSelectedCountry, selected: selectedStateBinding)
+    }
+
     /// List of countries that can be used as an origin address.
     var countries: [Country] {
         switch addressType {
@@ -73,7 +99,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     }
 
     /// Whether the state is required for the selected country.
-    var stateRequired: Bool {
+    private var stateRequired: Bool {
         statesOfSelectedCountry.isNotEmpty
     }
 
@@ -113,6 +139,8 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         self.siteID = stores.sessionManager.defaultStoreID ?? Int64.min
         self.storageManager = storageManager
 
+        observeSelectedCountry()
+        observeSelectedState()
         fetchCountries()
     }
 
@@ -154,21 +182,53 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     }
 }
 
+private extension WooShippingEditAddressViewModel {
+    func observeSelectedCountry() {
+        $selectedCountry
+            .dropFirst()
+            .sink { [weak self] selectedCountry in
+                guard let self, let selectedCountry, self.selectedCountry != selectedCountry else { return }
+                country = selectedCountry.code
+                selectedState = nil
+            }
+            .store(in: &cancellables)
+    }
+
+    func observeSelectedState() {
+        $selectedState
+            .dropFirst()
+            .sink { [weak self] selectedState in
+                guard let self else { return }
+                state = selectedState?.code ?? ""
+            }
+            .store(in: &cancellables)
+    }
+}
+
 // MARK: Remote
 private extension WooShippingEditAddressViewModel {
     func fetchCountries() {
-        try? resultsController.performFetch()
+        refreshCountriesAndUpdateSelections()
         let action = DataAction.synchronizeCountries(siteID: siteID) { [weak self] (result) in
             guard let self = self else { return }
             switch result {
             case .success:
-                try? self.resultsController.performFetch()
+                refreshCountriesAndUpdateSelections()
             case .failure:
                 break
             }
         }
 
         stores.dispatch(action)
+    }
+
+    func refreshCountriesAndUpdateSelections() {
+        try? resultsController.performFetch()
+        // Updating the selected country clears the selected state.
+        // We track the initial state code so we can set the correct selected state.
+        let stateCode = state
+        selectedCountry = countries.first { $0.code == country }
+        selectedState = statesOfSelectedCountry.first { $0.code == stateCode }
     }
 }
 

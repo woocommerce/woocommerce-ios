@@ -44,8 +44,12 @@ struct WooShippingEditAddressView: View {
                 AddressTextField(field: .address, text: $viewModel.address, required: viewModel.isRequired(.address), focused: $focusedField)
                 AddressTextField(field: .city, text: $viewModel.city, required: viewModel.isRequired(.city), focused: $focusedField)
                 AdaptiveStack(horizontalAlignment: .leading, verticalAlignment: .top, spacing: Constants.innerSpacing) {
-                    AddressSelection(field: .state, selected: viewModel.selectedState?.name ?? "", required: viewModel.isRequired(.state)) {
-                        isPresentingStateSelector = true
+                    if viewModel.statesOfSelectedCountry.isNotEmpty {
+                        AddressSelection(field: .state, selected: viewModel.selectedState?.name ?? " ", required: viewModel.isRequired(.state)) {
+                            isPresentingStateSelector = true
+                        }
+                    } else {
+                        AddressTextField(field: .state, text: $viewModel.state, required: viewModel.isRequired(.state), focused: $focusedField)
                     }
                     AddressTextField(field: .postalCode, text: $viewModel.postalCode, required: viewModel.isRequired(.postalCode), focused: $focusedField)
                 }

@@ -27,7 +27,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     private(set) var country: String
     @Published var address: String
     @Published var city: String
-    private(set) var state: String
+    @Published var state: String
     @Published var postalCode: String
     @Published var email: String
     @Published var phone: String

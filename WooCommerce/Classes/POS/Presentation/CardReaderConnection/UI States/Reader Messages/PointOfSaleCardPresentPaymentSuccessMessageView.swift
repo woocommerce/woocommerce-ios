@@ -11,46 +11,51 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
     @State private var isShowingReceiptNotEligibleBanner: Bool = false
 
     var body: some View {
-        if isShowingSendReceiptView {
-            POSSendReceiptView(isShowingSendReceiptView: $isShowingSendReceiptView)
-                .transition(.move(edge: .bottom))
-        } else {
-            ZStack {
-                VStack(alignment: .center, spacing: Constants.headerSpacing) {
-                    successIcon
-                        .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-                        .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
-                    VStack(alignment: .center, spacing: Constants.textSpacing) {
-                        Text(viewModel.title)
-                            .font(.posTitleEmphasized)
-                            .foregroundStyle(Color.posPrimaryText)
-                            .accessibilityAddTraits(.isHeader)
-                            .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
-
-                        if let message = viewModel.message {
-                            Text(message)
-                                .font(.posBodyRegular)
+        VStack {
+            if isShowingSendReceiptView {
+                POSSendReceiptView(isShowingSendReceiptView: $isShowingSendReceiptView)
+                    .transition(.move(edge: .leading))
+            } else {
+                ZStack {
+                    VStack(alignment: .center, spacing: Constants.headerSpacing) {
+                        successIcon
+                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+                            .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
+                        VStack(alignment: .center, spacing: Constants.textSpacing) {
+                            Text(viewModel.title)
+                                .font(.posTitleEmphasized)
                                 .foregroundStyle(Color.posPrimaryText)
                                 .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
-                        }
-                    }
-                    PaymentsActionButtons(isShowingSendReceiptView: $isShowingSendReceiptView,
-                                          isShowingReceiptNotEligibleBanner: $isShowingReceiptNotEligibleBanner)
-                        .matchedGeometryEffect(id: animation.actionButtonsTransitionId, in: animation.namespace, properties: .position)
-                }
-                .multilineTextAlignment(.center)
+                                .accessibilityAddTraits(.isHeader)
+                                .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
-                if isShowingReceiptNotEligibleBanner {
-                    VStack {
-                        Spacer()
-                        POSReceiptEligibilityBanner(isVisible: $isShowingReceiptNotEligibleBanner)
-                            .transition(.move(edge: .bottom))
-                            .padding(.bottom)
+                            if let message = viewModel.message {
+                                Text(message)
+                                    .font(.posBodyRegular)
+                                    .foregroundStyle(Color.posPrimaryText)
+                                    .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
+                            }
+                        }
+                        PaymentsActionButtons(isShowingSendReceiptView: $isShowingSendReceiptView,
+                                              isShowingReceiptNotEligibleBanner: $isShowingReceiptNotEligibleBanner)
+                            .matchedGeometryEffect(id: animation.actionButtonsTransitionId, in: animation.namespace, properties: .position)
                     }
-                    .edgesIgnoringSafeArea(.bottom)
+                    .multilineTextAlignment(.center)
+
+                    if isShowingReceiptNotEligibleBanner {
+                        VStack {
+                            Spacer()
+                            POSReceiptEligibilityBanner(isVisible: $isShowingReceiptNotEligibleBanner)
+                                .transition(.move(edge: .bottom))
+                                .padding(.bottom)
+                        }
+                        .edgesIgnoringSafeArea(.bottom)
+                    }
                 }
+                .transition(.move(edge: .trailing))
             }
         }
+        .animation(.default, value: isShowingSendReceiptView)
     }
 
     private var successIcon: some View {

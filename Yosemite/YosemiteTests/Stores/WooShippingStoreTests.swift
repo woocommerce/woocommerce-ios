@@ -347,7 +347,9 @@ final class WooShippingStoreTests: XCTestCase {
                                                                  orderID: self.sampleOrderID,
                                                                  originAddress: .fake(),
                                                                  destinationAddress: .fake(),
-                                                                 package: .fake()) { result in
+                                                                 package: .fake(),
+                                                                 backendProcessingDelay: 0.0,
+                                                                 pollingDelay: 0.0) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -372,7 +374,9 @@ final class WooShippingStoreTests: XCTestCase {
                                                                  orderID: self.sampleOrderID,
                                                                  originAddress: .fake(),
                                                                  destinationAddress: .fake(),
-                                                                 package: .fake()) { result in
+                                                                 package: .fake(),
+                                                                 backendProcessingDelay: 0.0,
+                                                                 pollingDelay: 0.0) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -383,6 +387,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
+    // slow
     func test_purchaseShippingLabel_returns_error_on_checkLabelStatus_request_failure() throws {
         // Given
         let expectedError = NetworkError.timeout()
@@ -426,7 +431,9 @@ final class WooShippingStoreTests: XCTestCase {
                                                                  orderID: self.sampleOrderID,
                                                                  originAddress: .fake(),
                                                                  destinationAddress: .fake(),
-                                                                 package: .fake()) { result in
+                                                                 package: .fake(),
+                                                                 backendProcessingDelay: 0.0,
+                                                                 pollingDelay: 0.0) { result in
                 promise(result)
             }
             store.onAction(action)

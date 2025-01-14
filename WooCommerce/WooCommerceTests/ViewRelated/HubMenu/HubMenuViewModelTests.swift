@@ -22,7 +22,7 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_viewDidAppear_triggers_blaze_eligibility_check_only_if_site_is_ineligible() {
+    func test_viewDidAppear_triggers_blaze_eligibility_check_only_if_site_is_ineligible() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         // Setting site ID is required before setting `Site`.
@@ -34,42 +34,33 @@ final class HubMenuViewModelTests: XCTestCase {
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores,
                                          blazeEligibilityChecker: blazeEligibilityChecker)
-        waitUntil {
+        await until {
             // The first check is triggered by `updateMenuItemEligibility`
             blazeEligibilityChecker.siteEligibilityCheckCount == 1
         }
 
         // When
-        viewModel.viewDidAppear()
+        await viewModel.viewDidAppear()
 
         // Then
-        waitUntil {
-            blazeEligibilityChecker.siteEligibilityCheckCount == 2
-        }
+        XCTAssert(blazeEligibilityChecker.siteEligibilityCheckCount == 2)
 
         // When
         blazeEligibilityChecker.updateSiteEligibility(true)
-        viewModel.viewDidAppear()
+        await viewModel.viewDidAppear()
 
         // Then
-        waitUntil {
-            blazeEligibilityChecker.siteEligibilityCheckCount == 3
-        }
+        XCTAssert(blazeEligibilityChecker.siteEligibilityCheckCount == 3)
 
         // When
-        viewModel.viewDidAppear()
+        await viewModel.viewDidAppear()
 
-        // Then
-        waitForExpectation(timeout: 2) { expectation in
-            expectation.isInverted = true
-            if blazeEligibilityChecker.siteEligibilityCheckCount == 4 {
-                expectation.fulfill() // This should not happen
-            }
-        }
+        // Then value should remain the same
+        XCTAssert(blazeEligibilityChecker.siteEligibilityCheckCount == 3)
     }
 
     @MainActor
-    func test_createGoogleAdsCampaignCoordinator_sets_correct_value_for_shouldStartCampaignCreation() {
+    func test_createGoogleAdsCampaignCoordinator_sets_correct_value_for_shouldStartCampaignCreation() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         // Setting site ID is required before setting `Site`.
@@ -82,6 +73,10 @@ final class HubMenuViewModelTests: XCTestCase {
                                          stores: stores,
                                          googleAdsEligibilityChecker: checker)
 
+        await until {
+            checker.siteEligibilityCheckTriggered
+        }
+
         // When
         let navigationController = UINavigationController()
         let coordinator = viewModel.createGoogleAdsCampaignCoordinator(with: navigationController)
@@ -92,12 +87,10 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // When
         mockGoogleAdsCampaignFetch(with: .success([GoogleAdsCampaign.fake()]), for: stores)
-        viewModel.refreshGoogleAdsCampaignCheck()
+        await viewModel.refreshGoogleAdsCampaignCheck()
 
         // Then
-        waitUntil {
-            viewModel.hasGoogleAdsCampaigns == true
-        }
+        XCTAssertTrue(viewModel.hasGoogleAdsCampaigns)
         let updatedCoordinator = viewModel.createGoogleAdsCampaignCoordinator(with: navigationController)
         XCTAssertFalse(updatedCoordinator.shouldStartCampaignCreation)
     }
@@ -659,7 +652,7 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_hasGoogleAdsCampaigns_is_false_when_site_has_no_campaigns() {
+    func test_hasGoogleAdsCampaigns_is_false_when_site_has_no_campaigns() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         // Setting site ID is required before setting `Site`.
@@ -684,17 +677,18 @@ final class HubMenuViewModelTests: XCTestCase {
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores,
                                          googleAdsEligibilityChecker: eligibilityChecker)
-        viewModel.refreshGoogleAdsCampaignCheck()
-        waitUntil {
-            fetchAdsCampaignsTriggered
+        await until {
+            eligibilityChecker.siteEligibilityCheckTriggered
         }
+        await viewModel.refreshGoogleAdsCampaignCheck()
 
         // Then
+        XCTAssertTrue(fetchAdsCampaignsTriggered)
         XCTAssertFalse(viewModel.hasGoogleAdsCampaigns)
     }
 
     @MainActor
-    func test_hasGoogleAdsCampaigns_is_true_when_site_has_campaigns() {
+    func test_hasGoogleAdsCampaigns_is_true_when_site_has_campaigns() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         // Setting site ID is required before setting `Site`.
@@ -720,12 +714,14 @@ final class HubMenuViewModelTests: XCTestCase {
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores,
                                          googleAdsEligibilityChecker: eligibilityChecker)
-        viewModel.refreshGoogleAdsCampaignCheck()
-        waitUntil {
-            fetchAdsCampaignsTriggered
+        await until {
+            eligibilityChecker.siteEligibilityCheckTriggered
         }
 
+        await viewModel.refreshGoogleAdsCampaignCheck()
+
         // Then
+        XCTAssertTrue(fetchAdsCampaignsTriggered)
         XCTAssertTrue(viewModel.hasGoogleAdsCampaigns)
     }
 

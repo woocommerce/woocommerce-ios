@@ -21,19 +21,6 @@ struct ChildItemList: View {
 
     var body: some View {
         VStack {
-            HStack {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "chevron.backward")
-                        .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
-                        .foregroundColor(.primary)
-                }
-                POSHeaderTitleView(title: title)
-                Spacer()
-            }
-            .padding(.horizontal, Constants.itemListPadding)
-
             switch state {
             case .loading, .loaded, .inlineError:
                 listView
@@ -56,20 +43,47 @@ struct ChildItemList: View {
 }
 
 private extension ChildItemList {
+    @ViewBuilder var headerView: some View {
+        HStack {
+            Button {
+                dismiss()
+            } label: {
+                Image(systemName: "chevron.backward")
+                    .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
+                    .foregroundColor(.primary)
+            }
+            POSHeaderTitleView(title: title)
+            Spacer()
+        }
+        .padding(.horizontal, Constants.itemListPadding)
+    }
+
     @ViewBuilder
     var listView: some View {
-        ItemList(state: state,
-                 node: .parent(parentItem))
-            .transition(.opacity)
+        VStack {
+            headerView
+
+            ItemList(state: state,
+                     node: .parent(parentItem))
+                .transition(.opacity)
+        }
     }
 
     @ViewBuilder
     func errorView(error: PointOfSaleErrorState) -> some View {
-        PointOfSaleItemListErrorView(error: error, onRetry: {
-            Task {
-                await posModel.loadItems(base: .parent(parentItem))
+        ZStack {
+            VStack {
+                headerView
+                Spacer()
             }
-        })
+            
+            PointOfSaleItemListErrorView(error: error, onRetry: {
+                Task {
+                    await posModel.loadItems(base: .parent(parentItem))
+                }
+            })
+            .zIndex(1)
+        }
     }
 }
 

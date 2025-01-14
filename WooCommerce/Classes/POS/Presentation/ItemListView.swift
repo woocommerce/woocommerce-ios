@@ -21,7 +21,8 @@ struct ItemListView: View {
                 headerView
                 switch itemListState {
                 case .loading(let items),
-                        .loaded(let items, _):
+                        .loaded(let items, _),
+                        .inlineError(let items, _):
                     listView(items)
                 case .error:
                     // Currently unused, but this will show errors that are displayed inline with previously
@@ -160,7 +161,8 @@ private extension ItemListState {
     var eligibleToShowSimpleProductsBanner: Bool {
         switch self {
         case .loading,
-                .loaded:
+                .loaded,
+                .inlineError:
             return true
         case .error:
             return false

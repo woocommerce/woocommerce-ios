@@ -38,14 +38,31 @@ struct ItemList<HeaderView: View>: View {
                         ItemListRow(item: item)
                     }
 
-                    GhostItemCardView()
-                        .renderedIf(state.isLoading)
+                    footerRows
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, Constants.itemListPadding)
                 .padding(.bottom, floatingControlAreaSize.height)
             }
         )
+    }
+
+    @ViewBuilder var footerRows: some View {
+        VStack {
+            switch state {
+            case .loading:
+                GhostItemCardView()
+            case .inlineError(_, let errorState):
+                ItemListErrorCardView(errorState: errorState,
+                                      buttonAction: {
+                    Task { @MainActor in
+                        await posModel.loadNextItems(base: node)
+                    }
+                })
+            case .loaded, .error:
+                EmptyView()
+            }
+        }
     }
 }
 

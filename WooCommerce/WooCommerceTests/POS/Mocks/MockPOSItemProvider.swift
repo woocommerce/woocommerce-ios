@@ -33,6 +33,9 @@ final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
     var shouldSimulateTwoPagesOfVariations = false
     var shouldSimulateMorePagesOfVariations = false
     func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
+        if shouldThrowError {
+            throw MockError.requestFailed
+        }
         if shouldSimulateTwoPagesOfVariations,
            pageNumber > 1 {
             return .init(items: MockPointOfSaleItemService.makeSecondPageVariationItems(), hasMorePages: shouldSimulateMorePagesOfVariations)

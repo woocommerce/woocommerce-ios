@@ -3,16 +3,6 @@
     {
       "filename" : "card-reader-connecting-light.pdf",
       "idiom" : "universal"
-    },
-    {
-      "appearances" : [
-        {
-          "appearance" : "luminosity",
-          "value" : "dark"
-        }
-      ],
-      "filename" : "card-reader-connecting-dark.pdf",
-      "idiom" : "universal"
     }
   ],
   "info" : {

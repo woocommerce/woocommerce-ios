@@ -82,7 +82,7 @@ struct PointOfSaleCollectCashView: View {
                     isLoading = false
                 }
             }, label: {
-                HStack(spacing: Constants.buttonSpacing) {
+                ZStack {
                     if isLoading {
                         ProgressView()
                             .progressViewStyle(CircularProgressViewStyle())
@@ -92,7 +92,7 @@ struct PointOfSaleCollectCashView: View {
                             .font(Constants.buttonFont)
                     }
                 }
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: .infinity, minHeight: Constants.buttonMinHeight)
             })
             .padding(Constants.buttonPadding)
             .frame(maxWidth: .infinity)
@@ -121,6 +121,7 @@ private extension PointOfSaleCollectCashView {
     enum Constants {
         static let buttonSpacing: CGFloat = 12
         static let buttonPadding: CGFloat = 32
+        static let buttonMinHeight: CGFloat = 32
         static let navigationButtonSpacing: CGFloat = 4
         static let buttonFont: POSFontStyle = .posBodyEmphasized
         static let buttonCornerRadius: CGFloat = 8

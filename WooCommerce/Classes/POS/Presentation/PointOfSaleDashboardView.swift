@@ -18,7 +18,7 @@ struct PointOfSaleDashboardView: View {
             case .empty:
                 PointOfSaleItemListEmptyView()
             case .error(let errorContents):
-                PointOfSaleItemListErrorView(error: errorContents, onRetry: {
+                PointOfSaleItemListFullscreenErrorView(error: errorContents, onRetry: {
                     Task {
                         await posModel.reloadItems(base: .root)
                     }

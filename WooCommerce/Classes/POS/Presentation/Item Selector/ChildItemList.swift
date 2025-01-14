@@ -33,12 +33,16 @@ struct ChildItemList: View {
                 Spacer()
             }
             .padding(.horizontal, Constants.itemListPadding)
-            ItemList(state: state,
-                     node: .parent(parentItem))
-                .toolbar(.hidden, for: .navigationBar)
-                .transition(.opacity)
+
+            switch state {
+            case .loading, .loaded, .inlineError:
+                listView
+            case let .error(error):
+                errorView(error: error)
+            }
         }
         .background(Color.posPrimaryBackground)
+        .toolbar(.hidden, for: .navigationBar)
         .refreshable {
             await posModel.reloadItems(base: .parent(parentItem))
         }
@@ -48,6 +52,24 @@ struct ChildItemList: View {
             }
             await posModel.reloadItems(base: .parent(parentItem))
         }
+    }
+}
+
+private extension ChildItemList {
+    @ViewBuilder
+    var listView: some View {
+        ItemList(state: state,
+                 node: .parent(parentItem))
+            .transition(.opacity)
+    }
+
+    @ViewBuilder
+    func errorView(error: PointOfSaleErrorState) -> some View {
+        PointOfSaleItemListErrorView(error: error, onRetry: {
+            Task {
+                await posModel.reloadItems(base: .root)
+            }
+        })
     }
 }
 
@@ -103,6 +125,29 @@ private extension ChildItemList {
                                                             )
                                                         )
                                                     ], hasMoreItems: false)]))
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: itemsController,
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
+    return ChildItemList(parentItem: parentItem, title: parentProduct.name)
+        .environmentObject(posModel)
+}
+
+#Preview("Variable items load error") {
+    let parentProduct = POSVariableParentProduct(
+        id: .init(),
+        name: "Variable latte",
+        productImageSource: nil,
+        productID: 1
+    )
+    let parentItem = POSItem.variableParentProduct(parentProduct)
+    let itemsController = PointOfSalePreviewItemsController()
+    itemsController.itemsViewState = .init(containerState: .content,
+                                           itemsStack: ItemsStackState(
+                                            root: .loading([]),
+                                            itemStates: [
+                                                parentItem: .error(.errorOnLoadingVariations())
+                                            ]))
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
         cardPresentPaymentService: CardPresentPaymentPreviewService(),

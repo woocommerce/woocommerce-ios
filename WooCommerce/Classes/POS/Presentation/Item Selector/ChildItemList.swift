@@ -67,7 +67,7 @@ private extension ChildItemList {
     func errorView(error: PointOfSaleErrorState) -> some View {
         PointOfSaleItemListErrorView(error: error, onRetry: {
             Task {
-                await posModel.loadItems(base: .root)
+                await posModel.loadItems(base: .parent(parentItem))
             }
         })
     }

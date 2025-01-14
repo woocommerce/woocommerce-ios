@@ -5,7 +5,7 @@ struct InfiniteScrollView<Content: View>: View {
     @State private var scrollViewHeight: CGFloat = 0
 
     private let triggerDeterminer: InfiniteScrollTriggerDeterminable
-    private let loadMore: () async throws -> Void
+    private let loadMore: () async -> Void
     private let content: Content
 
     /// - Parameters:
@@ -14,7 +14,7 @@ struct InfiniteScrollView<Content: View>: View {
     ///   - content: The main content view to display in the scroll view.
     init(
         triggerDeterminer: InfiniteScrollTriggerDeterminable,
-        loadMore: @escaping () async throws -> Void,
+        loadMore: @escaping () async -> Void,
         @ViewBuilder content: () -> Content
     ) {
         self.triggerDeterminer = triggerDeterminer
@@ -39,11 +39,7 @@ struct InfiniteScrollView<Content: View>: View {
                                         contentHeight: contentHeight
                                     ) {
                                     Task { @MainActor in
-                                        do {
-                                            try await loadMore()
-                                        } catch {
-                                            triggerDeterminer.resetStatesIfNeeded()
-                                        }
+                                        await loadMore()
                                     }
                                 }
                             }

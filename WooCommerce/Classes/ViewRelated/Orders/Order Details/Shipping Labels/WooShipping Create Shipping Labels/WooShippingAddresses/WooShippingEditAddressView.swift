@@ -1,20 +1,15 @@
 import SwiftUI
 
+/// Possible statuses for a Woo Shipping address.
+enum WooShippingAddressStatus {
+    case verified
+    case unverified
+    case missingInformation
+}
+
 /// View for editing an address in the Woo Shipping label creation flow.
 struct WooShippingEditAddressView: View {
-    @State var name: String
-    @State var company: String
-    @State var country: String
-    @State var address: String
-    @State var city: String
-    @State var state: String
-    @State var postalCode: String
-    @State var email: String
-    @State var phone: String
-    @State var saveAsDefault: Bool
-
-    /// Whether to show the company field by default.
-    @State var showCompanyField: Bool
+    @ObservedObject var viewModel: WooShippingEditAddressViewModel
 
     /// Tracks the focused address field.
     @FocusState private var focusedField: AddressField?
@@ -24,13 +19,13 @@ struct WooShippingEditAddressView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: Constants.verticalSpacing) {
-                AddressTextField(field: .name, text: $name, focused: $focusedField)
-                if showCompanyField {
-                    AddressTextField(field: .company, text: $company, focused: $focusedField)
+                AddressTextField(field: .name, text: $viewModel.name, focused: $focusedField)
+                if viewModel.showCompanyField {
+                    AddressTextField(field: .company, text: $viewModel.company, focused: $focusedField)
                 } else {
                     Button {
                         withAnimation {
-                            showCompanyField = true
+                            viewModel.showCompanyField = true
                         }
                     } label: {
                         Text(Localization.addCompany)
@@ -39,23 +34,23 @@ struct WooShippingEditAddressView: View {
                     .font(.subheadline)
                     .bold()
                 }
-                AddressSelection(field: .country, selected: country) {
+                AddressSelection(field: .country, selected: viewModel.country) {
                     // TODO: Handle country selection
                 }
                 .padding(.top, Constants.extraPadding)
-                AddressTextField(field: .address, text: $address, focused: $focusedField)
-                AddressTextField(field: .city, text: $city, focused: $focusedField)
+                AddressTextField(field: .address, text: $viewModel.address, focused: $focusedField)
+                AddressTextField(field: .city, text: $viewModel.city, focused: $focusedField)
                 AdaptiveStack(horizontalAlignment: .leading, verticalAlignment: .top, spacing: Constants.innerSpacing) {
-                    AddressSelection(field: .state, selected: state) {
+                    AddressSelection(field: .state, selected: viewModel.state) {
                         // TODO: Handle state selection
                     }
-                    AddressTextField(field: .postalCode, text: $postalCode, focused: $focusedField)
+                    AddressTextField(field: .postalCode, text: $viewModel.postalCode, focused: $focusedField)
                 }
                 .padding(.bottom, Constants.extraPadding)
-                AddressTextField(field: .email, text: $email, focused: $focusedField)
-                AddressTextField(field: .phone, text: $phone, focused: $focusedField)
+                AddressTextField(field: .email, text: $viewModel.email, focused: $focusedField)
+                AddressTextField(field: .phone, text: $viewModel.phone, focused: $focusedField)
                     .padding(.bottom, Constants.extraPadding)
-                Toggle(Localization.defaultAddress, isOn: $saveAsDefault)
+                Toggle(Localization.defaultAddress, isOn: $viewModel.saveAsDefault)
                     .font(.subheadline)
                     .tint(Color(.accent))
             }
@@ -88,6 +83,30 @@ struct WooShippingEditAddressView: View {
                     }
                 }
             }
+        }
+        .safeAreaInset(edge: .bottom) {
+            VStack(spacing: .zero) {
+                Divider().ignoresSafeArea(edges: [.horizontal])
+                VStack(spacing: Constants.verticalSpacing) {
+                    HStack {
+                        Image(systemName: viewModel.status == .verified ? "checkmark.circle" : "exclamationmark.circle")
+                        Text(Localization.Status.label(for: viewModel.status))
+                    }
+                    .font(.subheadline)
+                    .foregroundStyle(viewModel.status == .verified ? Constants.green : Constants.red)
+                    Button(Localization.Button.label(for: viewModel.status)) {
+                        if viewModel.status == .verified {
+                            dismiss()
+                        } else {
+                            // TODO: Handle remote verification
+                        }
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                    .disabled(viewModel.status == .missingInformation)
+                }
+                .padding()
+            }
+            .background(Color(uiColor: .systemBackground))
         }
     }
 
@@ -203,7 +222,7 @@ private extension WooShippingEditAddressView {
     func focusNextField() {
         switch focusedField {
         case .name:
-            focusedField = showCompanyField ? .company : .address
+            focusedField = viewModel.showCompanyField ? .company : .address
         case .company:
             focusedField = .address
         case .address:
@@ -229,7 +248,7 @@ private extension WooShippingEditAddressView {
         case .company:
             focusedField = .name
         case .address:
-            focusedField = showCompanyField ? .company : .name
+            focusedField = viewModel.showCompanyField ? .company : .name
         case .city:
             focusedField = .address
         case .postalCode:
@@ -257,6 +276,10 @@ private extension WooShippingEditAddressView {
         static let cornerRadius: CGFloat = 8
         static let defaultBorderColor: Color = Color(.separator)
         static let defaultBorderWidth: CGFloat = 1
+        static let green = Color(UIColor(light: .withColorStudio(.green, shade: .shade60),
+                                         dark: .withColorStudio(.green, shade: .shade40)))
+        static let red = Color(UIColor(light: .withColorStudio(.red, shade: .shade60),
+                                       dark: .withColorStudio(.red, shade: .shade40)))
         static let requiredLabelSpacing: CGFloat = 4
     }
 
@@ -303,33 +326,81 @@ private extension WooShippingEditAddressView {
         static let done = NSLocalizedString("wooShipping.createLabels.editAddress.done",
                                             value: "Done",
                                             comment: "Button to dismiss the keyboard")
+
+        enum Status {
+            static func label(for status: WooShippingAddressStatus) -> String {
+                switch status {
+                case .verified:
+                    return verified
+                case .unverified:
+                    return unverified
+                case .missingInformation:
+                    return missingInformation
+                }
+            }
+            static let verified = NSLocalizedString("wooShipping.createLabels.editAddress.verified",
+                                                    value: "Address verified",
+                                                    comment: "Label when the address has been verified in the Woo Shipping label creation flow")
+            static let unverified = NSLocalizedString("wooShipping.createLabels.editAddress.unverified",
+                                                      value: "Unverified address",
+                                                      comment: "Label when the address is unverified in the Woo Shipping label creation flow")
+            static let missingInformation = NSLocalizedString("wooShipping.createLabels.editAddress.missingInformation",
+                                                              value: "Missing information",
+                                                              comment: "Label when the address is missing information in the Woo Shipping label creation flow")
+        }
+
+        enum Button {
+            static func label(for status: WooShippingAddressStatus) -> String {
+                switch status {
+                case .verified:
+                    return close
+                case .unverified:
+                    return validateAddress
+                case .missingInformation:
+                    return addMissingInformation
+                }
+            }
+            static let close = NSLocalizedString("wooShipping.createLabels.editAddress.close",
+                                                 value: "Close",
+                                                 comment: "Button to close the address editing view in the Woo Shipping label creation flow")
+            static let validateAddress = NSLocalizedString("wooShipping.createLabels.editAddress.validateAddress",
+                                                           value: "Validate & Save",
+                                                           comment: "Button label indicating the address needs to be validated and saved for a Woo Shipping label")
+            static let addMissingInformation = NSLocalizedString("wooShipping.createLabels.editAddress.addMissingInformation",
+                                                                 value: "Add Missing Information",
+                                                                 comment: "Button label indicating the address is missing information for a Woo Shipping label")
+        }
     }
 }
 
 #Preview("Without Company") {
-    WooShippingEditAddressView(name: "HEADQUARTERS",
-                               company: "",
-                               country: "UNITED STATES",
-                               address: "15 ALGONKIN ST",
-                               city: "TICONDEROGA",
-                               state: "NY",
-                               postalCode: "12883-1487",
-                               email: "",
-                               phone: "",
-                               saveAsDefault: true,
-                               showCompanyField: false)
+    WooShippingEditAddressView(viewModel: .init(id: UUID().uuidString,
+                                                name: "HEADQUARTERS",
+                                                company: "",
+                                                country: "UNITED STATES",
+                                                address: "15 ALGONKIN ST",
+                                                city: "TICONDEROGA",
+                                                state: "NY",
+                                                postalCode: "12883-1487",
+                                                email: "",
+                                                phone: "",
+                                                saveAsDefault: true,
+                                                showCompanyField: false,
+                                                isVerified: true))
 }
 
 #Preview("With Company") {
-    WooShippingEditAddressView(name: "HEADQUARTERS",
-                               company: "COMPANY",
-                               country: "UNITED STATES",
-                               address: "15 ALGONKIN ST",
-                               city: "TICONDEROGA",
-                               state: "NY",
-                               postalCode: "12883-1487",
-                               email: "",
-                               phone: "",
-                               saveAsDefault: false,
-                               showCompanyField: true)
+    WooShippingEditAddressView(viewModel: .init(id: UUID().uuidString,
+                                                name: "HEADQUARTERS",
+                                                company: "COMPANY",
+                                                country: "UNITED STATES",
+                                                address: "15 ALGONKIN ST",
+                                                city: "TICONDEROGA",
+                                                state: "NY",
+                                                postalCode: "12883-1487",
+                                                email: "",
+                                                phone: "",
+                                                saveAsDefault: false,
+                                                showCompanyField: true,
+                                                isVerified: false))
 }

@@ -9,14 +9,9 @@ protocol InfiniteScrollTriggerDeterminable {
     ///   - contentHeight: The total height of all scrollable content.
     /// - Returns: A boolean indicating whether infinite scroll should be triggered.
     func shouldTriggerInfiniteScroll(scrollPosition: CGFloat, scrollViewHeight: CGFloat, contentHeight: CGFloat) -> Bool
-
-    /// Resets the internal scroll trigger tracking state.
-    /// This is typically called when content loading fails to allow retrying.
-    func resetStatesIfNeeded()
 }
 
 final class ThresholdInfiniteScrollTriggerDeterminer: InfiniteScrollTriggerDeterminable, ObservableObject {
-    private var lastTriggeredContentHeight: CGFloat?
     private let scrollTriggerThreshold: CGFloat
 
     /// Initializes a threshold-based infinite scroll trigger determiner.
@@ -37,16 +32,6 @@ final class ThresholdInfiniteScrollTriggerDeterminer: InfiniteScrollTriggerDeter
             return false
         }
 
-        // Prevents duplicate triggers by tracking the content height at which infinite scroll was last triggered.
-        if scrollRatio >= scrollTriggerThreshold && lastTriggeredContentHeight != contentHeight {
-            lastTriggeredContentHeight = contentHeight
-            return true
-        } else {
-            return false
-        }
-    }
-
-    func resetStatesIfNeeded() {
-        lastTriggeredContentHeight = nil
+        return scrollRatio >= scrollTriggerThreshold
     }
 }

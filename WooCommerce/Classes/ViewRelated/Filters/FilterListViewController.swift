@@ -2,11 +2,15 @@ import Combine
 import UIKit
 import Yosemite
 
+protocol HumanReadable {
+    var readableString: String { get }
+}
+
 /// The view model protocol for filtering a list of models with generic filters.
 ///
 protocol FilterListViewModel {
     /// The type of the final value returned to the caller of `FilterListViewController`.
-    associatedtype Criteria: Equatable
+    associatedtype Criteria: Equatable, HumanReadable
 
     // Filter Action UI configuration
 
@@ -26,6 +30,21 @@ protocol FilterListViewModel {
     var shouldShowHistory: Bool { get }
 
     // Navigation & Actions
+
+    /// Retrieves past filters
+    func retrieveFilterHistory() async throws -> [Criteria]
+
+    /// Applies a filter in the history
+    func applyPastFilter(_ filter: Criteria)
+
+    /// Saves a selected filter to the history
+    func saveSelectedFilterToHistory(_ filter: Criteria)
+
+    /// Removes a filter from the history
+    func removeFilterFromHistory(_ filter: Criteria)
+
+    /// Removes all saved filters from the history
+    func clearAllFilterHistory()
 
     /// Resets the filter criteria.
     func clearAll()
@@ -162,6 +181,9 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
                 return
             }
             let criteria = self.viewModel.criteria
+            if viewModel.filterTypeViewModels.numberOfActiveFilters > 0 {
+                viewModel.saveSelectedFilterToHistory(criteria)
+            }
             self.onFilterAction(criteria)
         }
     }
@@ -188,7 +210,14 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
     }
 
     @objc private func showFilterHistory() {
-        // TODO-14791: show history view
+        let controller = FilterHistoryViewHostingController(viewModel: viewModel, onSelection: { [weak self] selectedCriteria in
+            guard let self else { return }
+            viewModel.applyPastFilter(selectedCriteria)
+            listSelectorCommand.data = viewModel.filterTypeViewModels
+            updateUI(numberOfActiveFilters: viewModel.filterTypeViewModels.numberOfActiveFilters)
+            listSelector.reloadData()
+        })
+        present(controller, animated: true)
     }
 }
 

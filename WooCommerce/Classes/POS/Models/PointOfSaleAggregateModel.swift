@@ -24,7 +24,7 @@ protocol PointOfSaleAggregateModelProtocol {
 
     var itemsViewState: ItemsViewState { get }
     func reloadItems(base: ItemListBaseItem) async
-    func loadNextItems(base: ItemListBaseItem) async throws
+    func loadNextItems(base: ItemListBaseItem) async
 
     var cart: [CartItem] { get }
     func addToCart(_ item: POSOrderableItem)
@@ -96,8 +96,8 @@ extension PointOfSaleAggregateModel {
     }
 
     @MainActor
-    func loadNextItems(base: ItemListBaseItem) async throws {
-        try await itemsController.loadNextItems(base: base)
+    func loadNextItems(base: ItemListBaseItem) async {
+        await itemsController.loadNextItems(base: base)
     }
 }
 

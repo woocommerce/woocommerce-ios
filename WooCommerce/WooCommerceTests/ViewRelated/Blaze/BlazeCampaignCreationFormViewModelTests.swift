@@ -244,7 +244,6 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         await viewModel.onLoad()
 
         // Then
-        print("triggeredFetchAISuggestions", triggeredFetchAISuggestions)
         XCTAssertFalse(triggeredFetchAISuggestions)
     }
 

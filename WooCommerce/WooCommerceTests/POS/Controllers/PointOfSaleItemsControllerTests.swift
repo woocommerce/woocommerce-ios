@@ -18,7 +18,7 @@ final class PointOfSaleItemsControllerTests {
         sut.itemsViewStatePublisher.assign(to: &$itemsViewState)
     }
 
-    @Test func reloadItems_requests_first_page_after_loading_two_pages() async throws {
+    @Test func loadItems_requests_first_page_after_loading_two_pages() async throws {
         // Given
         try #require(itemsViewState.containerState == .loading)
         itemProvider.shouldSimulateTwoPages = true
@@ -34,7 +34,7 @@ final class PointOfSaleItemsControllerTests {
         #expect(itemProvider.spyLastRequestedPageNumber == 1)
     }
 
-    @Test func reloadItems_results_in_loaded_state() async throws {
+    @Test func loadItems_results_in_loaded_state() async throws {
         // Given
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()
         try #require(itemsViewState.containerState == .loading)
@@ -48,7 +48,7 @@ final class PointOfSaleItemsControllerTests {
                                                                              itemStates: [:])))
     }
 
-    @Test func reloadItems_with_more_pages_sets_hasMoreItems() async throws {
+    @Test func loadItems_with_more_pages_sets_hasMoreItems() async throws {
         // Given
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()
         try #require(itemsViewState.containerState == .loading)
@@ -63,7 +63,7 @@ final class PointOfSaleItemsControllerTests {
                                                                              itemStates: [:])))
     }
 
-    @Test func reloadItems_when_called_multiple_times_then_items_are_not_duplicated() async throws {
+    @Test func loadItems_when_called_multiple_times_then_items_are_not_duplicated() async throws {
         // Given
         try #require(itemsViewState.containerState == .loading)
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()
@@ -99,7 +99,7 @@ final class PointOfSaleItemsControllerTests {
         #expect(itemsViewState.containerState == .empty)
     }
 
-    @Test func reloadItems_when_initial_items_has_items_but_no_more_pages_then_state_is_loaded_with_initial_items() async throws {
+    @Test func loadItems_when_initial_items_has_items_but_no_more_pages_then_state_is_loaded_with_initial_items() async throws {
         // Given
         let initialItems = MockPointOfSaleItemService.makeInitialItems()
         itemProvider.items = initialItems
@@ -220,7 +220,7 @@ final class PointOfSaleItemsControllerTests {
         #expect(errorState == PointOfSaleErrorState.errorOnLoadingVariationsNextPage())
     }
 
-    @Test func reloadItems_when_no_items_then_state_is_loaded_empty() async throws {
+    @Test func loadItems_when_no_items_then_state_is_loaded_empty() async throws {
         // Given
         itemProvider.shouldReturnZeroItems = true
 
@@ -233,7 +233,7 @@ final class PointOfSaleItemsControllerTests {
         #expect(itemsViewState.containerState == .empty)
     }
 
-    @Test func reloadItems_when_itemProvider_throws_error_then_state_is_error() async throws {
+    @Test func loadItems_when_itemProvider_throws_error_then_state_is_error() async throws {
         // Given
         itemProvider.shouldThrowError = true
         let expectedError = PointOfSaleErrorState(title: "Error loading products",
@@ -288,7 +288,7 @@ final class PointOfSaleItemsControllerTests {
         #expect(itemProvider.spyLastRequestedPageNumber == 2)
     }
 
-    @Test func reloadItems_results_in_state_loaded_with_expected_items() async throws {
+    @Test func loadItems_results_in_state_loaded_with_expected_items() async throws {
         // Given
         try #require(itemsViewState.containerState == .loading)
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()

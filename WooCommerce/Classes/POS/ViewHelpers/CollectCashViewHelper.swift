@@ -34,11 +34,11 @@ final class CollectCashViewHelper {
         return true
     }
 
-    func parseCurrency(_ amountString: String) -> NSDecimalNumber? {
+    private func parseCurrency(_ amountString: String) -> NSDecimalNumber? {
         currencyFormatter.convertToDecimal(amountString, locale: .current)
     }
 
-    func formatAsCurrency(_ amount: NSDecimalNumber) -> String {
+    private func formatAsCurrency(_ amount: NSDecimalNumber) -> String {
         currencyFormatter.formatAmount(amount) ?? "$0.00"
     }
 }

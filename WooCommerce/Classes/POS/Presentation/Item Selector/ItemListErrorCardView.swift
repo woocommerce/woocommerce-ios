@@ -11,7 +11,6 @@ struct ItemListErrorCardView: View {
             POSErrorExclamationMark(size: 48)
             .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
                    height: Constants.productCardSize * scale)
-            .clipped()
 
             VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 Text(errorState.title)

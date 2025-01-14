@@ -243,7 +243,6 @@ private extension TotalsView {
                 if case .loaded(let total) = posModel.orderState {
                     PointOfSaleCollectCashView(orderTotal: total.orderTotal)
                         .transition(.move(edge: .trailing))
-                        .animation(.easeInOut, value: posModel.paymentState)
                 }
             case .paymentSuccess:
                 if case .loaded(let total) = posModel.orderState {

@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct PointOfSaleCollectCashView: View {
-    @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @FocusState private var isTextFieldFocused: Bool
@@ -32,7 +31,9 @@ struct PointOfSaleCollectCashView: View {
         VStack(alignment: .center, spacing: 20) {
             HStack {
                 Button(action: {
-                    dismiss()
+                    Task { @MainActor in
+                        await posModel.cancelCashPayment()
+                    }
                 }, label: {
                     VStack {
                         HStack {
@@ -71,11 +72,8 @@ struct PointOfSaleCollectCashView: View {
                     isLoading = true
                     do {
                         try await markComplete()
-                        // TODO:
-                        // Redirect to success view on completion
-                        // https://github.com/woocommerce/woocommerce-ios/issues/14602
                     } catch {
-                        debugPrint(error)
+                        errorMessage = Localization.failedToCollectCashPayment
                     }
                     isLoading = false
                 }
@@ -111,11 +109,7 @@ struct PointOfSaleCollectCashView: View {
     }
 
     private func markComplete() async throws {
-        do {
-            try await posModel.collectCashPayment()
-        } catch {
-            debugPrint(error)
-        }
+        try await posModel.collectCashPayment()
     }
 }
 
@@ -152,6 +146,11 @@ private extension PointOfSaleCollectCashView {
             "pointOfSale.cashview.button.markpaymentcompleted.title",
             value: "Mark payment as complete",
             comment: "Button to mark a cash payment as completed"
+        )
+        static let failedToCollectCashPayment = NSLocalizedString(
+            "pointOfSale.cashview.failedToCollectCashPayment.draft",
+            value: "Error trying to process payment. Try again.",
+            comment: "Error message when the system fails to collect a cash payment."
         )
     }
 }

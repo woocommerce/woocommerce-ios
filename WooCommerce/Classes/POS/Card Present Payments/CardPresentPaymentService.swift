@@ -104,7 +104,11 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     func disconnectReader() async {
         readerConnectionStatusSubject.send(.disconnecting)
 
-        cancelPayment()
+        do {
+            try await cancelPayment()
+        } catch {
+            DDLogError("Attempting to cancel the payment has failed \(error)")
+        }
 
         connectionControllerManager.knownReaderProvider.forgetCardReader()
 
@@ -161,6 +165,18 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     func cancelPayment() {
         paymentTask?.cancel()
     }
+
+    @MainActor
+    func cancelPayment() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            var nillableContinuation: CheckedContinuation<Void, any Error>? = continuation
+            let action = CardPresentPaymentAction.cancelPayment { result in
+                nillableContinuation?.resume(with: result)
+                nillableContinuation = nil
+            }
+            stores.dispatch(action)
+        }
+    }
 }
 
 private extension CardPresentPaymentService {
@@ -213,4 +229,5 @@ enum CardPresentPaymentServiceError: Error {
     case invalidAmount
     case unknownPaymentError(underlyingError: Error)
     case incompleteAddressConnectionError
+    case couldNotCancelPayment
 }

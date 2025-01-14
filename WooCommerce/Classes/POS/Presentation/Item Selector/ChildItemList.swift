@@ -44,13 +44,13 @@ struct ChildItemList: View {
         .background(Color.posPrimaryBackground)
         .toolbar(.hidden, for: .navigationBar)
         .refreshable {
-            await posModel.reloadItems(base: .parent(parentItem))
+            await posModel.loadItems(base: .parent(parentItem))
         }
         .task {
             guard state.items.isEmpty else {
                 return
             }
-            await posModel.reloadItems(base: .parent(parentItem))
+            await posModel.loadItems(base: .parent(parentItem))
         }
     }
 }
@@ -67,7 +67,7 @@ private extension ChildItemList {
     func errorView(error: PointOfSaleErrorState) -> some View {
         PointOfSaleItemListErrorView(error: error, onRetry: {
             Task {
-                await posModel.reloadItems(base: .root)
+                await posModel.loadItems(base: .root)
             }
         })
     }

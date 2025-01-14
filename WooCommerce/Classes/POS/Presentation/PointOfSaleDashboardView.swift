@@ -20,7 +20,7 @@ struct PointOfSaleDashboardView: View {
             case .error(let errorContents):
                 PointOfSaleItemListFullscreenErrorView(error: errorContents, onRetry: {
                     Task {
-                        await posModel.reloadItems(base: .root)
+                        await posModel.loadItems(base: .root)
                     }
                 })
             case .content:
@@ -69,7 +69,7 @@ struct PointOfSaleDashboardView: View {
             supportForm
         }
         .task {
-            await posModel.reloadItems(base: .root)
+            await posModel.loadItems(base: .root)
         }
     }
 

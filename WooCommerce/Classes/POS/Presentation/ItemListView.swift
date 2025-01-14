@@ -35,7 +35,7 @@ struct ItemListView: View {
             })
         }
         .refreshable {
-            await posModel.reloadItems(base: .root)
+            await posModel.loadItems(base: .root)
         }
         .background(Color.posPrimaryBackground)
         .accessibilityElement(children: .contain)

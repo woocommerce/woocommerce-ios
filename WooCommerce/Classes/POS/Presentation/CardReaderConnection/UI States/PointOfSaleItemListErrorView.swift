@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// A view that displays an error message with a retry CTA when the list of POS items fails to load.
 struct PointOfSaleItemListErrorView: View {
     private let error: PointOfSaleErrorState
     private let onRetry: (() -> Void)?

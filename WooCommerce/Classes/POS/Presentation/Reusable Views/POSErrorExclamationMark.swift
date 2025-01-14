@@ -1,9 +1,9 @@
 import SwiftUI
 
 struct POSErrorExclamationMark: View {
-    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    let size: CGFloat
+    private let size: CGFloat
     init(size: CGFloat = PointOfSaleCardPresentPaymentLayout.errorIconSize) {
         self.size = size
     }

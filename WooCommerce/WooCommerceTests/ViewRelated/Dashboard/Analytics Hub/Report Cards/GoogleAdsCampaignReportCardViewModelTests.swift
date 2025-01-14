@@ -19,6 +19,14 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
         eventEmitter = StoreStatsUsageTracksEventEmitter(analytics: analytics)
         stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: .fake().copy(adminURL: sampleAdminURL)))
         ServiceLocator.setCurrencySettings(CurrencySettings()) // Default is US
+        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
+            switch action {
+            case let .retrieveCampaignStats(_, _, _, _, _, onCompletion):
+                onCompletion(.success(self.sampleCampaignStats()))
+            default:
+                break
+            }
+        }
     }
 
     func test_isEligibleForGoogleAds_true_when_eligible_for_GoogleAds() async {
@@ -26,6 +34,7 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
         let vm = GoogleAdsCampaignReportCardViewModel(siteID: sampleSiteID,
                                                       timeRange: .today,
                                                       usageTracksEventEmitter: eventEmitter,
+                                                      stores: stores,
                                                       googleAdsEligibilityChecker: MockGoogleAdsEligibilityChecker(isEligible: true))
 
         // When
@@ -40,6 +49,7 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
         let vm = GoogleAdsCampaignReportCardViewModel(siteID: sampleSiteID,
                                                       timeRange: .today,
                                                       usageTracksEventEmitter: eventEmitter,
+                                                      stores: stores,
                                                       googleAdsEligibilityChecker: MockGoogleAdsEligibilityChecker(isEligible: false))
 
         // When
@@ -212,7 +222,8 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
         let vm = GoogleAdsCampaignReportCardViewModel(siteID: sampleSiteID,
                                                       timeRange: .today,
                                                       usageTracksEventEmitter: eventEmitter,
-                                                      analytics: analytics)
+                                                      analytics: analytics,
+                                                      stores: stores)
 
         // When
         vm.onDisplayCallToAction()

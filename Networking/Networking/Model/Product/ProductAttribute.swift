@@ -120,6 +120,14 @@ extension ProductAttribute: Comparable {
     }
 }
 
+extension ProductAttribute: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(siteID)
+        hasher.combine(name)
+        hasher.combine(attributeID)
+    }
+}
+
 // MARK: - Decoding Errors
 //
 enum ProductAttributeDecodingError: Error {

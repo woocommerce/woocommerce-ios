@@ -62,7 +62,7 @@ struct WooShippingAddPackageView: View {
                     })
                 }
             }
-            .navigationTitle(Localization.addPackage)
+            .navigationTitle(packagesViewModel.previousSelectedPackage != nil ? Localization.editPackage :  Localization.addPackage)
             .navigationBarTitleDisplayMode(.inline)
         }
         .navigationViewStyle(.stack)
@@ -138,5 +138,20 @@ extension WooShippingAddPackageView {
         static let saved = NSLocalizedString("wooShipping.createLabel.addPackage.saved",
                                              value: "Saved",
                                              comment: "Info label for saved package option")
+        static let selectPackage = NSLocalizedString("wooShipping.createLabel.addPackage.selectPackage",
+                                                     value: "Select Package",
+                                                     comment: "Title for the Add Package screen Select Package button")
+        static let addPackageDetails = NSLocalizedString("wooShipping.createLabel.addPackage.addPackageDetails",
+                                                         value: "Add Package Details",
+                                                         comment: "Title for the Add Package screen Add Package Details button")
+        static let editPackage = NSLocalizedString("wooShipping.createLabel.editPackage.title",
+                                                   value: "Edit Package",
+                                                   comment: "Title for the Edit Package screen")
+        static let done = NSLocalizedString("wooShipping.createLabel.editPackage.done",
+                                            value: "Done",
+                                            comment: "Title for the Edit Package screen Done button")
+        static let useSelectedPackage = NSLocalizedString("wooShipping.createLabel.editPackage.useSelectedPackage",
+                                                          value: "Use Selected Package",
+                                                          comment: "Title for the Edit Package screen Use Selected Package button")
     }
 }

@@ -59,7 +59,9 @@ struct TotalsView: View {
                                 .layoutPriority(2)
                         }
                         Button(action: {
-                            posModel.startCashPayment()
+                            Task { @MainActor in
+                                await posModel.startCashPayment()
+                            }
                         }, label: {
                             Text(Localization.cashPaymentButtonTitle)
                                 .font(POSFontStyle.posBodyEmphasized)

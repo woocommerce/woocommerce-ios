@@ -104,7 +104,9 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertTrue(onSuccess)
         let storedPackages = try XCTUnwrap(storageManager.viewStorage.firstObject(ofType: StorageWooShippingPackagesResponse.self)).toReadOnly()
         XCTAssertEqual(storedPackages.siteID, sampleSiteID)
-        XCTAssertEqual(storedPackages.customPackages.count, 5)
+        XCTAssertEqual(storedPackages.customPackages.count, 2)
+        XCTAssertEqual(storedPackages.customPackages.first?.boxWeight, 0.25)
+        XCTAssertEqual(storedPackages.customPackages.last?.boxWeight, 0.25)
         XCTAssertEqual(storedPackages.savedPredefinedPackages.count, 2)
     }
 
@@ -298,6 +300,11 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(storedPackages.allPredefinedOptions.first?.predefinedOptions.count, 1)
         XCTAssertEqual(storedPackages.allPredefinedOptions.first?.predefinedOptions.first?.predefinedPackages.count, 2)
         XCTAssertEqual(storedPackages.customPackages.count, 1)
+        XCTAssertEqual(storedPackages.customPackages.first?.name, "Custom name")
+        XCTAssertEqual(storedPackages.customPackages.first?.boxWeight, 0.01)
+        XCTAssertEqual(storedPackages.customPackages.first?.id, "849225dc153")
+        XCTAssertEqual(storedPackages.customPackages.first?.type, .box)
+        XCTAssertEqual(storedPackages.customPackages.first?.dimensions, "12 x 12 x 12")
         XCTAssertEqual(storedPackages.savedPredefinedPackages.count, 2)
         XCTAssertTrue(storedPackages.savedPredefinedPackages.contains(where: { $0.package.id == "small_flat_box" }))
     }
@@ -340,7 +347,9 @@ final class WooShippingStoreTests: XCTestCase {
                                                                  orderID: self.sampleOrderID,
                                                                  originAddress: .fake(),
                                                                  destinationAddress: .fake(),
-                                                                 package: .fake()) { result in
+                                                                 package: .fake(),
+                                                                 backendProcessingDelay: 0.0,
+                                                                 pollingDelay: 0.0) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -365,7 +374,9 @@ final class WooShippingStoreTests: XCTestCase {
                                                                  orderID: self.sampleOrderID,
                                                                  originAddress: .fake(),
                                                                  destinationAddress: .fake(),
-                                                                 package: .fake()) { result in
+                                                                 package: .fake(),
+                                                                 backendProcessingDelay: 0.0,
+                                                                 pollingDelay: 0.0) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -376,6 +387,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
+    // slow
     func test_purchaseShippingLabel_returns_error_on_checkLabelStatus_request_failure() throws {
         // Given
         let expectedError = NetworkError.timeout()
@@ -419,7 +431,9 @@ final class WooShippingStoreTests: XCTestCase {
                                                                  orderID: self.sampleOrderID,
                                                                  originAddress: .fake(),
                                                                  destinationAddress: .fake(),
-                                                                 package: .fake()) { result in
+                                                                 package: .fake(),
+                                                                 backendProcessingDelay: 0.0,
+                                                                 pollingDelay: 0.0) { result in
                 promise(result)
             }
             store.onAction(action)

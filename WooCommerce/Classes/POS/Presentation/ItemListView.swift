@@ -3,12 +3,10 @@ import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 
 struct ItemListView: View {
-    @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     @EnvironmentObject var posModel: PointOfSaleAggregateModel
 
-    @State private var lastScrollPosition: CGFloat = 0
     @State private var showSimpleProductsModal: Bool = false
     private var itemListState: ItemListState {
         posModel.itemsViewState.itemsStack.root
@@ -18,20 +16,26 @@ struct ItemListView: View {
     private var isHeaderBannerDismissed: Bool = false
 
     var body: some View {
-        VStack {
-            headerView
-            switch itemListState {
-            case .loading(let items),
-                    .loaded(let items):
-                listView(items)
-            case .error:
-                // Currently unused, but this will show errors that are displayed inline with previously
-                // loaded items, e.g. when loading a new page or refreshing.
-                EmptyView()
+        NavigationStack {
+            VStack {
+                headerView
+                switch itemListState {
+                case .loading(let items),
+                        .loaded(let items, _),
+                        .inlineError(let items, _):
+                    listView(items)
+                case .error:
+                    // Currently unused, but this will show errors that are displayed inline with previously
+                    // loaded items, e.g. when loading a new page or refreshing.
+                    EmptyView()
+                }
             }
+            .navigationDestination(for: POSItem.self, destination: { item in
+                childListView(parentItem: item)
+            })
         }
         .refreshable {
-            await posModel.reload()
+            await posModel.reloadItems(base: .root)
         }
         .background(Color.posPrimaryBackground)
         .accessibilityElement(children: .contain)
@@ -48,7 +52,7 @@ private extension ItemListView {
     var headerView: some View {
         VStack {
             HStack {
-                POSHeaderTitleView()
+                POSHeaderTitleView(title: Localization.title)
                 if !shouldShowHeaderBanner {
                     Spacer()
                     Button(action: {
@@ -129,59 +133,20 @@ private extension ItemListView {
 
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
-        ScrollView {
-            VStack {
-                if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
-                    bannerCardView
-                }
-                ForEach(items) { item in
-                    listRow(item: item)
-                }
-                GhostItemCardView()
-                    .renderedIf(itemListState.isLoading)
+        ItemList(state: itemListState) {
+            if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
+                bannerCardView
             }
-            .frame(maxWidth: .infinity)
-            .padding(.bottom, floatingControlAreaSize.height)
-            .padding(.horizontal, Constants.itemListPadding)
-            .background(GeometryReader { proxy in
-                Color.clear
-                    .onChange(of: proxy.frame(in: .global).maxY) { maxY in
-                        if itemListState.isLoading {
-                            return
-                        }
-                        let threshold = Constants.viewHeight * Constants.scrollThresholdMultiplier
-                        if maxY < threshold && maxY < lastScrollPosition {
-                            Task {
-                                await posModel.loadNextItems()
-                            }
-                        }
-                        lastScrollPosition = maxY
-                    }
-            })
         }
     }
 
     @ViewBuilder
-    func listRow(item: POSItem) -> some View {
-        switch item {
-        case .simpleProduct(let simpleProduct):
-            Button {
-                posModel.addToCart(simpleProduct)
-            } label: {
-                SimpleProductCardView(product: simpleProduct)
-            }
-        case .parentProduct(let parentProduct):
-            Button {
-                print("Tapped parent product")
-            } label: {
-                ParentProductCardView(parentProduct: parentProduct)
-            }
-        case .variation(let variation):
-            Button(action: {
-                print("Tapped variation \(variation.name)")
-            }, label: {
-                VariationCardView(variation: variation)
-            })
+    func childListView(parentItem: POSItem) -> some View {
+        switch parentItem {
+        case let .variableParentProduct(parentProduct):
+            ChildItemList(parentItem: parentItem, title: parentProduct.name)
+        default:
+            EmptyView()
         }
     }
 }
@@ -196,7 +161,8 @@ private extension ItemListState {
     var eligibleToShowSimpleProductsBanner: Bool {
         switch self {
         case .loading,
-                .loaded:
+                .loaded,
+                .inlineError:
             return true
         case .error:
             return false
@@ -258,8 +224,6 @@ private extension ItemListView {
         static let iconPadding: CGFloat = 26
         static let itemListPadding: CGFloat = 16
         static let bannerCardPadding: CGFloat = 16
-        static let viewHeight: CGFloat = UIScreen.main.bounds.height
-        static let scrollThresholdMultiplier: CGFloat = 1.7
     }
 
     enum BannerState {
@@ -267,6 +231,12 @@ private extension ItemListView {
     }
 
     enum Localization {
+        static let title = NSLocalizedString(
+            "pos.itemlistview.title",
+            value: "Products",
+            comment: "Title at the top of the Point of Sale product selector screen."
+        )
+
         static let headerBannerTitle = NSLocalizedString(
             "pos.itemlistview.headerBanner.title",
             value: "Showing simple products only",
@@ -301,7 +271,27 @@ private extension ItemListView {
 }
 
 #if DEBUG
-#Preview {
-    ItemListView()
+
+#Preview("Loaded with all product types") {
+    let itemsController = PointOfSalePreviewItemsController()
+    Task { @MainActor in
+        await itemsController.loadItems(base: .root)
+    }
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: itemsController,
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
+    return ItemListView()
+        .environmentObject(posModel)
 }
+
+#Preview("Loading") {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
+    return ItemListView()
+        .environmentObject(posModel)
+}
+
 #endif

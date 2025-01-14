@@ -2,48 +2,6 @@ import Foundation
 import Yosemite
 import WooFoundation
 
-// MARK: - View Model for a Variation Attribute
-//
-struct VariationAttributeViewModel: Equatable {
-
-    /// Attribute name
-    ///
-    let name: String
-
-    /// Attribute value
-    ///
-    let value: String?
-
-    /// Returns the attribute value, or "Any \(name)" if the attribute value is nil or empty
-    ///
-    var nameOrValue: String {
-        guard let value = value, value.isNotEmpty else {
-            return String(format: Localization.anyAttributeFormat, name)
-        }
-        return value
-    }
-
-    init(name: String, value: String? = nil) {
-        self.name = name
-        self.value = value
-    }
-
-    init(orderItemAttribute: OrderItemAttribute) {
-        self.init(name: orderItemAttribute.name, value: orderItemAttribute.value)
-    }
-
-    init(productVariationAttribute: ProductVariationAttribute) {
-        self.init(name: productVariationAttribute.name, value: productVariationAttribute.option)
-    }
-}
-
-extension VariationAttributeViewModel {
-    enum Localization {
-        static let anyAttributeFormat =
-            NSLocalizedString("Any %1$@", comment: "Format of a product variation attribute description where the attribute is set to any value.")
-    }
-}
-
 
 // MARK: - View Model for a product details cell
 //

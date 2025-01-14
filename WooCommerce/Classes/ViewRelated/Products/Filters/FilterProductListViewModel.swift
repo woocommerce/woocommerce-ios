@@ -9,7 +9,7 @@ final class FilterProductListViewModel: FilterListViewModel {
     typealias Criteria = Filters
 
     /// Aggregates the filter values that can be updated in the Filter Products UI.
-    struct Filters: Equatable {
+    struct Filters: Equatable, HumanReadable {
         let stockStatus: ProductStockStatus?
         let productStatus: ProductStatus?
         let promotableProductType: PromotableProductType?
@@ -41,6 +41,11 @@ final class FilterProductListViewModel: FilterListViewModel {
             self.numberOfActiveFilters = numberOfActiveFilters
         }
 
+        var readableString: String {
+            let elements: [String?] = [stockStatus?.rawValue, productStatus?.rawValue, promotableProductType?.productType.rawValue, productCategory?.slug]
+            return elements.compactMap { $0 }.joined(separator: ", ")
+        }
+
         // Generate a string based on populated filters, like "instock,publish,simple,clothes"
         var analyticsDescription: String {
             let elements: [String?] = [stockStatus?.rawValue, productStatus?.rawValue, promotableProductType?.productType.rawValue, productCategory?.slug]
@@ -51,6 +56,8 @@ final class FilterProductListViewModel: FilterListViewModel {
     let filterActionTitle = NSLocalizedString("Show Products", comment: "Button title for applying filters to a list of products.")
 
     let filterTypeViewModels: [FilterTypeViewModel]
+
+    let shouldShowHistory: Bool
 
     private let stockStatusFilterViewModel: FilterTypeViewModel
     private let productStatusFilterViewModel: FilterTypeViewModel
@@ -73,6 +80,7 @@ final class FilterProductListViewModel: FilterListViewModel {
         self.productTypeFilterViewModel = ProductListFilter.productType(siteID: siteID).createViewModel(filters: filters)
         self.productCategoryFilterViewModel = ProductListFilter.productCategory(siteID: siteID).createViewModel(filters: filters)
         self.productFavoriteFilterViewModel = ProductListFilter.favoriteProducts.createViewModel(filters: filters)
+        self.shouldShowHistory = false
 
         if featureFlagService.isFeatureFlagEnabled(.favoriteProducts) {
             self.filterTypeViewModels = [
@@ -107,6 +115,26 @@ final class FilterProductListViewModel: FilterListViewModel {
                        productCategory: productCategory,
                        favoriteProduct: favoriteProduct,
                        numberOfActiveFilters: numberOfActiveFilters)
+    }
+
+    func applyPastFilter(_ filter: Filters) {
+        fatalError("Filter history is not yet implemented for product list")
+    }
+
+    func retrieveFilterHistory() async throws -> [Filters] {
+        fatalError("Filter history is not yet implemented for product list")
+    }
+
+    func saveSelectedFilterToHistory(_ filter: Criteria) {
+        fatalError("Filter history is not yet implemented for product list")
+    }
+
+    func removeFilterFromHistory(_ filter: Criteria) {
+        fatalError("Filter history is not yet implemented for product list")
+    }
+
+    func clearAllFilterHistory() {
+        fatalError("Filter history is not yet implemented for product list")
     }
 
     func clearAll() {

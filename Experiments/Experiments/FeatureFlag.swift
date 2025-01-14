@@ -193,10 +193,6 @@ public enum FeatureFlag: Int {
     ///
     case productGlobalUniqueIdentifierSupport
 
-    /// Supports Woo Payments onboarding in POS so that merchants who have not completed onboarding can access POS.
-    ///
-    case paymentsOnboardingInPointOfSale
-
     /// Enables sending receipt after the payment via the API
     case sendReceiptAfterPayment
 
@@ -219,4 +215,8 @@ public enum FeatureFlag: Int {
     /// Supports hiding sites from the store picker
     ///
     case hideSitesInStorePicker
+
+    /// Supports managing filer history on order and product lists
+    ///
+    case filterHistoryOnOrderAndProductLists
 }

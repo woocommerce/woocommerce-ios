@@ -298,21 +298,30 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.cardPresentPaymentInlineMessage == nil)
         }
 
-        @Test func startCashPayment_sets_payment_state_to_collectingCash() {
+        @Test func startCashPayment_calls_for_ongoing_card_payment_cancellation() async {
             // When
-            sut.startCashPayment()
+            await sut.startCashPayment()
+
+            // Then
+            #expect(cardPresentPaymentService.cancelPaymentCalled == true)
+            #expect(sut.paymentState == .cash(.collectingCash))
+        }
+
+        @Test func startCashPayment_sets_payment_state_to_collectingCash() async {
+            // When
+            await sut.startCashPayment()
 
             // Then
             #expect(sut.paymentState == .cash(.collectingCash))
         }
 
-        @Test func cancelCashPayment_resets_payment_state_to_idle() {
+        @Test func cancelCashPayment_resets_payment_state_to_idle() async {
             // Given
-            sut.startCashPayment()
+            await sut.startCashPayment()
             #expect(sut.paymentState == .cash(.collectingCash))
 
             // When
-            sut.cancelCashPayment()
+            await sut.cancelCashPayment()
 
             // Then
             #expect(sut.paymentState == .card(.idle))
@@ -325,11 +334,11 @@ struct PointOfSaleAggregateModelTests {
             await sut.checkOut()
             #expect(sut.orderStage == .finalizing)
 
-            sut.startCashPayment()
+            await sut.startCashPayment()
             #expect(sut.paymentState == .cash(.collectingCash))
 
             // When
-            sut.cancelCashPayment()
+            await sut.cancelCashPayment()
 
             // Then
             #expect(sut.orderStage == .finalizing)

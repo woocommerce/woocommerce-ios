@@ -38,7 +38,7 @@ final class WooShippingRemoteTests: XCTestCase {
 
         // Then
         let packagesResponse = try XCTUnwrap(result.get())
-        XCTAssertEqual(packagesResponse.customPackages.count, 5)
+        XCTAssertEqual(packagesResponse.customPackages.count, 2)
         XCTAssertEqual(packagesResponse.customPackages.first?.id, "69d7052f934a7c218329de9c1abe3858")
         XCTAssertEqual(packagesResponse.customPackages.first?.name, "WCS&T Box")
         XCTAssertEqual(packagesResponse.customPackages.first?.dimensions, "15 x 15 x 15")
@@ -387,7 +387,7 @@ final class WooShippingRemoteTests: XCTestCase {
     func test_loadOriginAddresses_parses_success_response() throws {
         // Given
         let remote = WooShippingRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "origin-addresses", filename: "wooshipping-get-origin-addresses-success")
+        network.simulateResponse(requestUrlSuffix: "address/origins", filename: "wooshipping-get-origin-addresses-success")
 
         // When
         let result: Result<[WooShippingOriginAddress], Error> = waitFor { promise in
@@ -417,7 +417,7 @@ final class WooShippingRemoteTests: XCTestCase {
     func test_loadOriginAddresses_returns_error_on_failure() throws {
         // Given
         let remote = WooShippingRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "origin-addresses", filename: "generic_error")
+        network.simulateResponse(requestUrlSuffix: "address/origins", filename: "generic_error")
 
         // When
         let result: Result<[WooShippingOriginAddress], Error> = waitFor { promise in

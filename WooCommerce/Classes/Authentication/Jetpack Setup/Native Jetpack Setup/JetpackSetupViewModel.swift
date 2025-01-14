@@ -96,11 +96,13 @@ final class JetpackSetupViewModel: ObservableObject {
     }()
 
     private let analytics: Analytics
+    private let delayBeforeRetry: Double
 
     init(siteURL: String,
          connectionOnly: Bool,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
+         delayBeforeRetry: Double = Constants.delayBeforeRetry,
          onStoreNavigation: @escaping (String?) -> Void = { _ in}) {
         self.siteURL = siteURL
         self.connectionOnly = connectionOnly
@@ -109,6 +111,7 @@ final class JetpackSetupViewModel: ObservableObject {
         self.setupSteps = connectionOnly ? [.connection, .done] : JetpackInstallStep.allCases
         self.storeNavigationHandler = onStoreNavigation
         self.siteConnectionURL = URL(string: String(format: Constants.jetpackInstallString, siteURL, Constants.mobileRedirectURL))
+        self.delayBeforeRetry = delayBeforeRetry
     }
 
     func isSetupStepFailed(_ step: JetpackInstallStep) -> Bool {
@@ -325,7 +328,7 @@ private extension JetpackSetupViewModel {
                     self.setupError = missingWpcomUserError
                     self.trackSetupDuringLogin(.loginJetpackSetupCannotFindWPCOMUser, failure: missingWpcomUserError)
                     // Retry fetching user in case Jetpack sync takes some time.
-                    DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delayBeforeRetry) { [weak self] in
+                    DispatchQueue.main.asyncAfter(deadline: .now() + delayBeforeRetry) { [weak self] in
                         self?.checkJetpackConnection(retryCount: retryCount + 1)
                     }
                     return
@@ -340,7 +343,7 @@ private extension JetpackSetupViewModel {
             case .failure(let error):
                 DDLogError("⛔️ Error checking Jetpack connection: \(error)")
                 self.setupError = error
-                DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delayBeforeRetry) { [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + delayBeforeRetry) { [weak self] in
                     self?.checkJetpackConnection(retryCount: retryCount + 1)
                 }
             }

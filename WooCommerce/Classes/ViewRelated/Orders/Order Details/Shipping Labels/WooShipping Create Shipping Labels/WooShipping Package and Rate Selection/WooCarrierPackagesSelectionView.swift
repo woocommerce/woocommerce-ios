@@ -136,13 +136,35 @@ struct WooCarrierPackagesSelectionView: View {
             }
             Spacer()
             Divider()
-            Button(WooShippingAddPackageView.Localization.addPackage) {
+            Button(selectionButtonText) {
                 addPackageButtonTapped()
             }
-            .disabled(viewModel.selectedCarriersPackageId == nil)
-            .buttonStyle(PrimaryButtonStyle())
+            .disabled(selectionButtonDisabled)
+            .if(viewModel.previousSelectedAndSelectedCarriersPackageAreSame) {
+                $0.buttonStyle(SecondaryButtonStyle())
+            }
+            .if(!viewModel.previousSelectedAndSelectedCarriersPackageAreSame) {
+                $0.buttonStyle(PrimaryButtonStyle())
+            }
             .padding()
         }
+    }
+
+    private var selectionButtonDisabled: Bool {
+        viewModel.selectedCarriersPackageId == nil
+    }
+
+    private var selectionButtonText: String {
+        if selectionButtonDisabled {
+            return WooShippingAddPackageView.Localization.selectPackage
+        }
+        if let previousSelectedPackage = viewModel.previousSelectedPackage {
+            if previousSelectedPackage.id == viewModel.selectedCarriersPackageId {
+                return WooShippingAddPackageView.Localization.done
+            }
+            return WooShippingAddPackageView.Localization.useSelectedPackage
+        }
+        return WooShippingAddPackageView.Localization.addPackage
     }
 
     private func addPackageButtonTapped() {

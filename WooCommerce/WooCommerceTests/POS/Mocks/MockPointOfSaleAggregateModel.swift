@@ -1,5 +1,6 @@
 import Foundation
 @testable import WooCommerce
+import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 
 final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
@@ -41,11 +42,9 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
         self.paymentState = paymentState
     }
 
-    func loadInitialItems() async { }
+    func reloadItems(base: ItemListBaseItem) async { }
 
-    func loadNextItems() async { }
-
-    func reload() async { }
+    func loadNextItems(base: ItemListBaseItem) async { }
 
     var cart: [CartItem] = []
 

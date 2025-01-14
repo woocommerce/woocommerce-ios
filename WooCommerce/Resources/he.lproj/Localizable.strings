@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-26 15:54:04+0000 */
+/* Translation-Revision-Date: 2024-12-26 11:54:47+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -251,10 +251,6 @@ which should be translated separately and considered part of this sentence. */
 /* Number of items in packages in Shipping Labels in plural form. Reads like - 10 items */
 "- %1$d items" = "- ⁦%1$d⁩ פריטים";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 1
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 1 */
-"1" = "1";
-
 /* Navigation bar title for selecting multiple products when one product has been selected.
    Title of the action button at the bottom of the Select Products screen when one product is selected */
 "1 Product Selected" = "נבחר מוצר אחד";
@@ -271,19 +267,11 @@ which should be translated separately and considered part of this sentence. */
 /* Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment */
 "1. Create an order" = "1. יש ליצור הזמנה";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 2
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
-"2" = "2";
-
 /* Disclaimer regarding some of the features related to shipping. */
 "2. Only available in the U.S. – an additional extension will be required for other countries." = "2. זמין רק בארצות הברית – במדינות אחרות נדרשת הרחבה נוספת.";
 
 /* Step 2 of the 'How it works' list, instructing the merchant to how to select Tap to Pay payments */
 "2. Tap “Collect Payment” and choose “Tap to Pay on iPhone”." = "2. יש להקיש על \"לאסוף תשלום\" ולבחור \"Tap To Pay ב-iPhone\".";
-
-/* Settings > Manage Card Reader > Connect > Help hint number 3
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
-"3" = "3";
 
 /* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
 "3. Present your iPhone to the customer." = "3. יש לתת ללקוח את ה-iPhone.";
@@ -985,9 +973,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button on the store onboarding launched store screen. */
 "Back to My Store" = "חזרה אל 'החנות שלי'";
 
-/* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
-"Back to Order" = "בחזרה להזמנה";
-
 /* Text for the button to dismiss the store picker error screen */
 "Back to sites" = "בחזרה לאתרים";
 
@@ -1559,7 +1544,6 @@ which should be translated separately and considered part of this sentence. */
 "Clear selection" = "ניקוי בחירה";
 
 /* Accessibility label for the close button
-   Button to dismiss modal overlay. Presented to users after refunding a payment fails
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
    Navigation bar action to close the gift card code scanner.
@@ -2269,7 +2253,6 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when finding a reader to connect to fails
    Button to dismiss the first created product screen
    Button to dismiss the Jetpack benefits screen.
-   Button to dismiss. Presented to users after collecting a payment fails
    Button to dismiss. Presented to users when updating the card reader software fails
    Dismiss button in inbox note row.
    Dismiss button in store picker
@@ -5989,9 +5972,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
 "Return to My Store" = "חזרה ל'חנות שלי'";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
-"Return to Payments" = "חזרה לתשלומים";
-
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "להחזיר לשולח אם לא ניתן לשלוח את החבילה";
 
@@ -6381,6 +6361,9 @@ which should be translated separately and considered part of this sentence. */
 /* Header text on Add New Custom Package screen in Shipping Label flow
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "הגדרת האריזה שבה ברצונך לשלוח את המוצרים. אנחנו נשמור אותה להזמנות עתידיות.";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
+"SetUpTapToPayPaymentPrompt.skipButton.title" = "לא עכשיו";
 
 /* Settings button in the hub menu
    Settings navigation title
@@ -7519,9 +7502,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Tab selector title that shows the statistics for this year */
 "This Year" = "השנה";
-
-/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "לאפליקציה נדרשת גישה ל-Bluetooth כדי להתחבר אל קורא הכרטיסים, עליך לשנות את הגדרות הפרטיות אם ברצונך לאפשר זאת.";
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "כדי להשתמש באפליקציה זו, יש להתקין את WooCommerce 3.5 בשרת שלך, אחרת האפליקציה לא תעבוד בצורה תקינה. כדאי לבצע עדכון בהקדם האפשרי כדי להמשיך להשתמש באפליקציה זו.";
@@ -9989,8 +9969,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "המערכת סורקת כדי לאתר קורא";
 
+/* A title for CTA to present native location permission alert */
+"cardPresentPayment.locationPreAlert.continueButton" = "המשך";
+
+/* A notice at the bottom explaining that location services can be changed in the Settings app later */
+"cardPresentPayment.locationPreAlert.settingsNotice" = "אפשר לשנות את האפשרות הזאת בשלב מאוחר יותר דרך אפליקציית ההגדרות.";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"cardPresentPayment.locationPreAlert.subtitle" = "נדרשת הרשאה לשירותי המיקום כדי לצמצם הונאות, למנוע מחלוקות ולוודא שהתשלומים מאובטחים.";
+
+/* A title explaining why location services are needed to make a payment */
+"cardPresentPayment.locationPreAlert.title" = "יש להפעיל את שירותי המיקום במסך הבא כדי לאפשר תשלומים.";
+
+/* Dismisses the location alert */
+"cardPresentPayment.locationRequired.dismiss" = "לבטל";
+
+/* Opens iOS's Device Settings for the app */
+"cardPresentPayment.locationRequired.openSettings" = "לפתוח את הגדרות המכשיר";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"cardPresentPayment.locationRequired.subtitle" = "נדרשת הרשאה לשירותי המיקום כדי לצמצם הונאות, למנוע מחלוקות ולוודא שהתשלומים מאובטחים.";
+
+/* A title explaining the requirement of location services for making a payment */
+"cardPresentPayment.locationRequired.title" = "יש להפעיל את שירותי המיקום בהגדרות המכשיר כדי לאפשר תשלומים.";
+
+/* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.backToOrder" = "בחזרה להזמנה";
+
+/* Button to dismiss modal overlay. Presented to users after refunding a payment fails */
+"cardPresentPaymentsModal.error.close" = "לסגור";
+
+/* Button to dismiss. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.dismiss" = "לבטל";
+
+/* Button to email receipts. Presented to users after a payment processing has failed */
+"cardPresentPaymentsModal.error.emailReceipt" = "לשלוח קבלה באימייל";
+
 /* Message informing the user that a receipt has been sent to their email address. %1$@ is the email address */
 "cardPresentPaymentsModal.error.receiptMessage" = "הקבלה נשלחה אל %1$@";
+
+/* Button to dismiss modal overlay and try another payment method. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.tryAnotherPaymentMethod" = "לנסות אמצעי תשלום אחר";
 
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "cardPresentPaymentsModal.success.emailReceipt" = "לשלוח קבלה באימייל";
@@ -10496,6 +10515,27 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "מדיה במכשיר";
 
+/* Button to dismiss the Edit Store List view */
+"editStoreListView.cancelButton" = "ביטול";
+
+/* Footer of the Current Store section of the the Edit Store List view */
+"editStoreListView.currentStoreFooter" = "עליך להחליף לחנות אחרת לפני ההסתרה של חנות זו";
+
+/* Header of the Current Store section of the the Edit Store List view */
+"editStoreListView.currentStoreHeader" = "החנות הנוכחית";
+
+/* Footer of the Other Stores section on the Edit Store List view */
+"editStoreListView.otherStoresFooter" = "חנויות שלא נבחרו לא יופיעו בבורר החנויות";
+
+/* Header of the Other Stores section on the Edit Store List view */
+"editStoreListView.otherStoresHeader" = "חנויות אחרות";
+
+/* Button to save changes in the Edit Store List view */
+"editStoreListView.saveButton" = "לשמור";
+
+/* Title of the Edit Store List view */
+"editStoreListView.title" = "חנויות זמינות לצפייה";
+
 /* Title for button to view the feedback survey about adding shipping to an order */
 "editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "לשלוח את המשוב שלך";
 
@@ -10634,6 +10674,132 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "להציג את כל הקמפיינים";
+
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"hardware.cardReader.cardReaderServiceError.bluetoothDenied" = "לאפליקציה נדרשת גישה ל-Bluetooth כדי להתחבר אל קורא הכרטיסים. באפשרותך להעניק הרשאה באפליקציית ההגדרות של המערכת, דרך המקטע של Woo.";
+
+/* Error message when the Apple built-in reader account is deactivated. */
+"hardware.cardReader.underlyingError.appleBuiltInReaderAccountDeactivated" = "החשבון המקושר של Apple ID הושבת.";
+
+/* Error message when Bluetooth is already paired with another device. */
+"hardware.cardReader.underlyingError.bluetoothAlreadyPairedWithAnotherDevice" = "קורא ה-Bluetooth כבר מקושר למכשיר אחר. עליך לאפס את הקישור של קורא כרטיסים כדי לחבר אותו למכשיר זה.";
+
+/* Error message when the Bluetooth connection has an invalid location ID parameter. */
+"hardware.cardReader.underlyingError.bluetoothConnectionInvalidLocationIdParameter" = "קיים מזהה מיקום לא תקין בחיבור ה-Bluetooth.";
+
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"hardware.cardReader.underlyingError.bluetoothDenied" = "לאפליקציה נדרשת גישה ל-Bluetooth כדי להתחבר אל קורא הכרטיסים. באפשרותך להעניק הרשאה באפליקציית ההגדרות של המערכת, דרך המקטע של Woo.";
+
+/* Error message when the Bluetooth peer removed pairing information. */
+"hardware.cardReader.underlyingError.bluetoothPeerRemovedPairingInformation" = "קורא הכרטיסים מחק את פרטי הקישור של המכשיר. כדאי לנסות לשכוח את קורא הכרטיסים מההגדרות של iOS.";
+
+/* Error message when Bluetooth reconnect has started. */
+"hardware.cardReader.underlyingError.bluetoothReconnectStarted" = "קורא ה-Bluetooth נותק ואנחנו מנסים להתחבר מחדש.";
+
+/* Error message when an operation cannot be canceled because it is already completed. */
+"hardware.cardReader.underlyingError.cancelFailedAlreadyCompleted" = "לא ניתן לבטל את הפעולה מאחר שהיא כבר הושלמה.";
+
+/* Error message when card swipe functionality is unavailable. */
+"hardware.cardReader.underlyingError.cardSwipeNotAvailable" = "הפונקציונליות של העברת הכרטיס לא זמינה.";
+
+/* Error message when the command is not allowed. */
+"hardware.cardReader.underlyingError.commandNotAllowed" = "יש לפנות לתמיכה – אין הרשאה ממערכת ההפעלה לבצע את הפקודה הזאת.";
+
+/* Error message when the command requires cardholder consent. */
+"hardware.cardReader.underlyingError.commandRequiresCardholderConsent" = "מחזיק הכרטיס חייב להביע הסכמה כדי שהפעולה הזו תבוצע בהצלחה.";
+
+/* Error message when the connection token provider finishes with an error. */
+"hardware.cardReader.underlyingError.connectionTokenProviderCompletedWithError" = "אירעה שגיאה בהבאת אסימון החיבור.";
+
+/* Error message when the connection token provider operation times out. */
+"hardware.cardReader.underlyingError.connectionTokenProviderTimedOut" = "הסתיים הזמן הקצוב של בקשת אסימון החיבור.";
+
+/* Error message when a feature is unavailable. */
+"hardware.cardReader.underlyingError.featureNotAvailable" = "יש לפנות לתמיכה – האפשרות לא זמינה.";
+
+/* Error message when forwarding a live mode payment in test mode is prohibited. */
+"hardware.cardReader.underlyingError.forwardingLiveModePaymentInTestMode" = "אין הרשאה להעביר תשלום בסביבה אמיתית כאשר הקורא מוגדר למצב בדיקה.";
+
+/* Error message when forwarding a test mode payment in live mode is prohibited. */
+"hardware.cardReader.underlyingError.forwardingTestModePaymentInLiveMode" = "אין הרשאה להעביר תשלום במצב בדיקה כאשר הקורא מוגדר לסביבה אמיתית.";
+
+/* Error message when Interac is not supported in offline mode. */
+"hardware.cardReader.underlyingError.interacNotSupportedOffline" = "השירות של Interac לא נתמך במצב לא מקוון.";
+
+/* Error message when an internal network error occurs. */
+"hardware.cardReader.underlyingError.internalNetworkError" = "אירעה שגיאת רשת לא מזוהה.";
+
+/* Error message when the internet connection operation timed out. */
+"hardware.cardReader.underlyingError.internetConnectTimeOut" = "מתחבר אל קורא הכרטיסים דרך האינטרנט – הזמן הקצוב הסתיים. עליך לוודא שהמכשיר וקורא הכרטיסים מחוברים אל אותה רשת אלחוטית ושקורא הכרטיסים מחוברת לרשת האלחוטית.";
+
+/* Error message when the client secret is invalid. */
+"hardware.cardReader.underlyingError.invalidClientSecret" = "יש לפנות לתמיכה – סוד הלקוח לא תקין.";
+
+/* Error message when the discovery configuration is invalid. */
+"hardware.cardReader.underlyingError.invalidDiscoveryConfiguration" = "יש לפנות לתמיכה – תצורת האיתור לא תקינה.";
+
+/* Error message when the location ID parameter is invalid. */
+"hardware.cardReader.underlyingError.invalidLocationIdParameter" = "מזהה המיקום לא תקין.";
+
+/* Error message when the reader for update is invalid. */
+"hardware.cardReader.underlyingError.invalidReaderForUpdate" = "קורא הכרטיסים שהוגדר לעדכון אינו תקין.";
+
+/* Error message when the refund parameters are invalid. */
+"hardware.cardReader.underlyingError.invalidRefundParameters" = "יש לפנות לתמיכה – הפרמטרים להחזר הכספי חסרים.";
+
+/* Error message when a required parameter is invalid. */
+"hardware.cardReader.underlyingError.invalidRequiredParameter" = "יש לפנות לתמיכה – פרמטר נדרש לא תקין.";
+
+/* Error message when EMV data is missing. */
+"hardware.cardReader.underlyingError.missingEMVData" = "קורא הכרטיסים נכשל בקריאת הנתונים מאמצעי התשלום שהוצג. אם השגיאה הזאת מופיעה לעיתים קרובות, ייתכן שיש תקלה בקורא הכרטיסים ומומלץ לפנות לתמיכה.";
+
+/* Error message when the payment intent is missing. */
+"hardware.cardReader.underlyingError.nilPaymentIntent" = "יש לפנות לתמיכה – כוונת התשלום חסרה.";
+
+/* Error message when the refund payment method is missing. */
+"hardware.cardReader.underlyingError.nilRefundPaymentMethod" = "יש לפנות לתמיכה – אמצעי התשלום להחזר הכספי חסר.";
+
+/* Error message when the setup intent is missing. */
+"hardware.cardReader.underlyingError.nilSetupIntent" = "יש לפנות לתמיכה – כוונת ההגדרה חסרה.";
+
+/* Error message when the card is expired and offline mode is active. */
+"hardware.cardReader.underlyingError.offlineAndCardExpired" = "במהלך אישור התשלום במצב לא מקוון, זיהינו שהכרטיס לא תקף.";
+
+/* Error message when there is a mismatch between offline collect and confirm. */
+"hardware.cardReader.underlyingError.offlineCollectAndConfirmMismatch" = "עליך לוודא שהחיבור לרשת יציב במהלך הגבייה והאישור של התשלום.";
+
+/* Error message when a test card is used in live mode while offline. */
+"hardware.cardReader.underlyingError.offlineTestCardInLivemode" = "נעשה שימוש בכרטיס בדיקה במהלך מצב פעיל בחיבור לא מקוון.";
+
+/* Error message when the offline transaction was declined. */
+"hardware.cardReader.underlyingError.offlineTransactionDeclined" = "במהלך אישור התשלום במצב לא מקוון, אימות הכרטיס נכשל.";
+
+/* Error message when online PIN is not supported in offline mode. */
+"hardware.cardReader.underlyingError.onlinePinNotSupportedOffline" = "PIN מקוון לא נתמך במצב לא מקוון. יש לנסות לגבות את התשלום שוב עם כרטיס שונה.";
+
+/* Error message when the reader connection configuration is invalid. */
+"hardware.cardReader.underlyingError.readerConnectionConfigurationInvalid" = "תצורת החיבור של קורא הכרטיסים לא תקינה.";
+
+/* Error message when the reader is missing encryption keys. */
+"hardware.cardReader.underlyingError.readerMissingEncryptionKeys" = "לקורא הכרטיסים חסרים מפתחות הצפנה שדרושים לגביית תשלומים. לכן, הקורא התנתק והופעל מחדש. יש להתחבר אל קורא הכרטיסים מחדש כדי לנסות להתקין את המפתחות מחדש. אם השגיאה לא תיפתר, מומלץ ליצור קשר עם התמיכה.";
+
+/* Error message when the reader software update fails due to an expired update. */
+"hardware.cardReader.underlyingError.readerSoftwareUpdateFailedExpiredUpdate" = "עדכון התוכנה של קורא הכרטיסים נכשל מאחר שהעדכון לא בתוקף. עליך לנתק את קורא הכרטיסים ולחברו שוב כדי לקבל עדכון חדש.";
+
+/* Error message when the reader tipping parameter is invalid. */
+"hardware.cardReader.underlyingError.readerTippingParameterInvalid" = "יש לפנות לתמיכה – פרמטר התשר של קורא הכרטיסים לא תקין.";
+
+/* Error message when the refund operation failed. */
+"hardware.cardReader.underlyingError.refundFailed" = "ההחזר הכספי נכשל. המנפיק של הבנק או הכרטיס של הלקוח לא הצליח לעבד את אמצעי התשלום בצורה תקינה (למשל, עקב חשבון בנק שנסגר או בעיה עם הכרטיס).";
+
+/* Error message when there is an error decoding the Stripe API response. */
+"hardware.cardReader.underlyingError.stripeAPIResponseDecodingError" = "יש לפנות לתמיכה – אירעה שגיאה בפענוח קוד התגובה של Stripe API.";
+
+/* Error message when an unexpected error occurs with the reader. */
+"hardware.cardReader.underlyingError.unexpectedReaderError" = "אירעה שגיאה בלתי צפויה עם קורא הכרטיסים.";
+
+/* Error message when the reader's IP address is unknown. */
+"hardware.cardReader.underlyingError.unknownReaderIpAddress" = "לקורא הכרטיסים שחזר מהאיתור אין כתובת IP ולא ניתן להתחבר אליו.";
 
 /* Title of the view containing Coupons list */
 "hubMenu.couponsList" = "קופונים";
@@ -10858,9 +11024,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory. */
 "menu.payments.tapToPay.about.row.title" = "אודות Tap To Pay";
-
-/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
-"menu.payments.tapToPay.feedback.row.title" = "לשתף משוב";
 
 /* Title for the Tap to Pay section in the In-Person payments settings */
 "menu.payments.tapToPay.section.title" = "Tap to Pay";
@@ -11583,6 +11746,21 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "לא ניתן היה לטעון את הסכום הכולל";
 
+/* Button title for sending a receipt */
+"pointOfSale.sendreceipt.button.title" = "לשלוח";
+
+/* Text that shows at the top of the receipts screen along the back button. */
+"pointOfSale.sendreceipt.emailReceiptNavigationText" = "לשלוח קבלה באימייל";
+
+/* Error message that is displayed when an invalid email is used when emailing a receipt. */
+"pointOfSale.sendreceipt.emailValidationErrorText" = "יש להזין אימייל תקין.";
+
+/* Generic error message that is displayed when there's an error emailing a receipt. */
+"pointOfSale.sendreceipt.sendReceiptErrorText" = "שגיאה בניסיון לשלוח את האימייל. יש לנסות שוב.";
+
+/* Placeholder for the view where an email address should be entered when sending receipts */
+"pointOfSale.sendreceipt.textfield.placeholder" = "להקליד אימייל";
+
 /* Button to dismiss the payments onboarding sheet from the POS dashboard. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "ביטול";
 
@@ -11668,10 +11846,13 @@ which should be translated separately and considered part of this sentence. */
 "pos.simpleProductsModal.title" = "למה המוצרים שלי לא מופיעים?";
 
 /* Button title for new order button */
-"pos.totalsView.newOrder" = "הזמנה חדשה";
+"pos.totalsView.button.newOrder" = "הזמנה חדשה";
 
 /* Button title for the receipt button */
-"pos.totalsView.sendReceipt" = "קבלה";
+"pos.totalsView.button.sendReceipt" = "לשלוח קבלה באימייל";
+
+/* Text for the banner requiring specific WooCommerce version. */
+"pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "יש לעדכן את WooCommerce לגרסה 9.5.0";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "סכום ביניים";
@@ -12112,6 +12293,18 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "ביטול";
 
+/* Badge wording when the customs information is completed */
+"shippingLabels.customs.completedBadge" = "הושלמה";
+
+/* Customs row title in the main Shipping Labels view */
+"shippingLabels.customs.customsTitle" = "מכס";
+
+/* Accessibility label for the button to edit the shipping labels customs */
+"shippingLabels.customs.editButtonAccessibiliy" = "לערוך את פרטי המכס של תווית המשלוח";
+
+/* Badge wording when the customs information is missing */
+"shippingLabels.customs.missingInfo" = "מידע חסר";
+
 /* Accessibility title for the edit button on a shipping line row. */
 "shippingLine.edit.button.accessibilityLabel" = "לערוך את המשלוח";
 
@@ -12177,6 +12370,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in date range picker to add a Custom Range tab */
 "storePerformanceViewModel.addCustomRange" = "להוסיף";
+
+/* Button to edit the items to be displayed on the store picker */
+"storePicker.editList" = "לערוך";
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "לחבר חנות קיימת";
@@ -12328,6 +12524,84 @@ which should be translated separately and considered part of this sentence. */
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is successful, we show a Notice to alert the user – this is the title of the notice. */
 "tap.to.pay.try.payment.refundNotice.success.title" = "תשלום לניסיון ב-Tap To Pay";
+
+/* Title of the button to dismiss the Tap to Pay awareness screen */
+"tapToPay.awarenessMoment.closeButton" = "לסגור";
+
+/* A title for CTA to start Tap to Pay set up process */
+"tapToPay.awarenessMoment.enableButton" = "לאפשר עכשיו";
+
+/* A title for CTA to open a view explaining Tap to Pay */
+"tapToPay.awarenessMoment.learnMore" = "למידע נוסף";
+
+/* A subtitle for the Tap to Pay modal promoting the feature. */
+"tapToPay.awarenessMoment.subtitle" = "לקבל תשלומים ללא מגע באמצעות מכשיר iPhone בלבד.";
+
+/* Title for the Tap to Pay modal promoting the feature. When using the name “Tap to Pay on iPhone” in headlines or copy, do not shorten to “Tap to Pay” or “Apple Tap to Pay. Always typeset “Tap to Pay on iPhone” as five words. The T and Ps should be uppercased, followed by lowercase letters. */
+"tapToPay.awarenessMoment.title" = "Tap To Pay ב-iPhone. זמין כעת.";
+
+/* Text for the button to take one step back in Tap to Pay education flow */
+"tapToPay.education.back" = "חזרה";
+
+/* Text for the button to dismiss Tap to Pay education flow */
+"tapToPay.education.done" = "בוצע";
+
+/* Text for the button to go to the next Tap to Pay education flow step */
+"tapToPay.education.next" = "הבא";
+
+/* Button title for Set up Tap to Pay button in Tap to Pay education flow. The button opens the Set Up Tap to Pay on iPhone flow. */
+"tapToPay.education.setUpTapToPay" = "להגדיר את Tap to Pay ב-iPhone";
+
+/* Text for the button to skip Tap to Pay education flow to the last step */
+"tapToPay.education.skip" = "לדלג";
+
+/* First description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep1" = "יש ליצור הזמנה ב-iPhone, להוסיף את המוצרים או סכום בהתאמה אישית ולבחור בתשלום באמצעות Tap To Pay ב-iPhone.";
+
+/* Second description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep2" = "יש להציג ללקוח את ה-iPhone שלך.";
+
+/* Third description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep3" = "הלקוח יחזיק את המכשיר שלו ליד ה-iPhone שלך, מעל הסימן 'ללא מגע'.";
+
+/* Fourth description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep4" = "כאשר מופיע הסימון Done לציון השלמת הפעולה, קריאת הכרטיס הושלמה והעסקה נמצאת בתהליך עיבוד.";
+
+/* Title for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.title" = "איך לקבל Apple Pay וארנקים דיגיטליים אחרים עם Tap To Pay ב-iPhone.";
+
+/* First description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep1" = "יש ליצור הזמנה ב-iPhone, להוסיף את המוצרים או סכום בהתאמה אישית ולבחור בתשלום באמצעות Tap To Pay ב-iPhone.";
+
+/* Second description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep2" = "יש להציג ללקוח את ה-iPhone שלך.";
+
+/* Third description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep3" = "הלקוח יחזיק את הכרטיס אופקית מעל החלק העליון של ה-iPhone שלך, מעל הסימן 'ללא מגע'.";
+
+/* Fourth description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep4" = "כאשר מופיע הסימון Done לציון השלמת הפעולה, קריאת הכרטיס הושלמה והעסקה נמצאת בתהליך עיבוד.";
+
+/* Title for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.title" = "איך לקבל כרטיס ללא מגע עם Tap To Pay ב-iPhone.";
+
+/* Message displayed when a contactless transaction fails due to PIN issues. Provides steps to retry using another contactless payment method or alternative payment options. */
+"tapToPay.education.step.fallbackMethod.description" = "בכרטיסים מסוימים אין אפשרות להשלים עסקאות ללא מגע באמצעות PIN, והניסיון לתשלום עלול להיכשל.\n\nכדאי לשאול את הלקוח אם יש ברשותו כרטיס אחר ללא מגע או ארנק דיגיטלי שונה ולבחור 'לנסות לגבות שוב' כדי להמשיך את העסקה באמצעות Tap To Pay ב-iPhone.\n\nאם אין אפשרות כזאת, אפשר לבחור 'לנסות אמצעי תשלום אחר' ולבחור חלופה נתמכת, למשל כסף מזומן, שיתוף קישור לתשלום, קורא כרטיסים או 'סריקה לתשלום'.";
+
+/* Title for the 'Fallback payment method' Tap to Pay merchant education step */
+"tapToPay.education.step.fallbackMethod.title" = "איך לקבל אמצעי תשלום חלופי.";
+
+/* Description for the initial Tap to Pay merchant education step. When using the name “Tap to Pay on iPhone” in headlines or copy, do not shorten to “Tap to Pay” or “Apple Tap to Pay. Always typeset “Tap to Pay on iPhone” as five words. The T and Ps should be uppercased, followed by lowercase letters. */
+"tapToPay.education.step.intro.description" = "בעזרת Tap To Pay ב-iPhone ואפליקציית Woo, אפשר לקבל תשלומים באופן אישי וללא מגע ישירות מה-iPhone – החל בכרטיסי חיוב וכרטיסי אשראי פיזיים וכלה ב-Apple Pay וארנקים דיגיטליים אחרים - ללא צורך בחומרה נוספת. התהליך קל, מאובטח ופרטי.";
+
+/* Title for the initial Tap to Pay merchant education step */
+"tapToPay.education.step.intro.title" = "לקבל תשלומים ללא מגע באמצעות מכשיר iPhone בלבד.";
+
+/* Instructions for customers using accessibility options during PIN entry with Tap to Pay on iPhone.Describes how to use audible guidance for drawing or tapping the PIN digits and the gesture to submit. */
+"tapToPay.education.step.pin.description" = "הלקוחות יתבקשו להזין את מספר ה-PIN של הכרטיס שלכם בנסיבות מסוימות עם Tap To Pay ב-iPhone.\n\nללקוחות שצריכים עזרה חזותית, ניתן לגשת לאפשרויות נגישות על ידי בחירה ב'אפשרויות נגישות' במסך ה-PIN. הוראות קוליות ידריכו את הלקוחות לצייר את ה-PIN על המסך או להקיש על המסך כדי לסמן כל ספרה – הקשה אחת למספר 1, שתי הקשות למספר 2 וכן הלאה. כדי לשלוח את ה-PIN, הם צריכים להחליק ימינה בעזרת שתי האצבעות.";
+
+/* Title for the 'PIN entry' Tap to Pay merchant education step */
+"tapToPay.education.step.pin.title" = "איך לטפל בהזנת PIN של כרטיס.";
 
 /* A label prompting users to learn more about Tap to Pay on iPhone.
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -12605,11 +12879,11 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "נדרשת חתימה של אדם מבוגר";
 
+/* Label for the toggle to mark the order as complete on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.afterPurchaseMarkComplete" = "לאחר רכישת תווית, יש לסמן את ההזמנה כ'הושלמה' ולהודיע ללקוח";
+
 /* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
 "wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (עמלה בסיסית)";
-
-/* Label for the toggle to mark the order as complete on the shipping label creation screen */
-"wooShipping.createLabels.bottomSheet.markComplete" = "לסמן שההזמנה הושלמה ולהודיע ללקוח";
 
 /* Header for order details section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.orderDetails" = "פרטי הזמנה";
@@ -12652,6 +12926,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "‎%1$@ x %2$@ x %3$@ %4$@";
+
+/* Heading for the package section in the shipping label creation screen. */
+"wooShipping.createLabels.package.title" = "חבילה";
+
+/* Label for the total shipment weight input field in the shipping label creation screen. */
+"wooShipping.createLabels.package.totalWeight" = "משקל משלוח כולל (כולל חבילה)";
 
 /* Link for more information about how to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.info" = "ללמוד כיצד להדפיס באמצעות המכשיר הנייד שלך";

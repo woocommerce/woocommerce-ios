@@ -2,14 +2,14 @@ import struct Networking.PagedItems
 
 public enum POSItem: Equatable, Identifiable, Hashable {
     case simpleProduct(POSSimpleProduct)
-    case parentProduct(POSParentProduct)
+    case variableParentProduct(POSVariableParentProduct)
     case variation(POSVariation)
 
     public var id: UUID {
         switch self {
         case .simpleProduct(let product):
             return product.id
-        case .parentProduct(let parentProduct):
+        case .variableParentProduct(let parentProduct):
             return parentProduct.id
         case .variation(let variation):
             return variation.id
@@ -54,6 +54,7 @@ public extension Sequence where Element == POSOrderableItem {
 
 public protocol PointOfSaleItemServiceProtocol {
     func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem>
+    func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem>
 }
 
 // Default implementation for convenience, so we do not need to pass the first page explicitly

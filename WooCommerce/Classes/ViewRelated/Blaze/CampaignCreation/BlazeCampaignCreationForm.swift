@@ -455,11 +455,6 @@ private extension BlazeCampaignCreationForm {
             value: "Preview",
             comment: "Title of the Blaze campaign creation screen"
         )
-        static let shopNow = NSLocalizedString(
-            "blazeCampaignCreationForm.shopNow",
-            value: "Shop Now",
-            comment: "Button to shop on the Blaze ad preview"
-        )
         static let suggestedByAI = NSLocalizedString(
             "blazeCampaignCreationForm.suggestedByAI",
             value: "Suggested by AI",

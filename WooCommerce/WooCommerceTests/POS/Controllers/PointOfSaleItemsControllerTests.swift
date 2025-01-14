@@ -203,8 +203,8 @@ final class PointOfSaleItemsControllerTests {
         itemProvider.items = [parentItem]
         itemProvider.shouldSimulateTwoPagesOfVariations = true
 
-        await sut.loadInitialItems(base: .root)
-        await sut.loadInitialItems(base: baseItem)
+        await sut.loadItems(base: .root)
+        await sut.loadItems(base: baseItem)
 
         itemProvider.shouldThrowError = true
 

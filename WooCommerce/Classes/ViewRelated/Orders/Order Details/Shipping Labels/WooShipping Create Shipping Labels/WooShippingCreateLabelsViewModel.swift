@@ -28,6 +28,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         true
     }
 
+    var orderItems: [OrderItem] {
+        order.items
+    }
+
     /// View model for the section displayed after a shipping label is purchased.
     @Published private(set) var postPurchase: WooShippingPostPurchaseViewModel?
 

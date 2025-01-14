@@ -115,15 +115,9 @@ struct WooShippingCustomsForm: View {
                                     .tertiaryTitleStyle()
                                     .padding(.bottom, Constants.defaultVerticalSpacing)
 
-                                // Dummy data
-                                WooShippingCustomsItem(viewModel: WooShippingCustomsItemViewModel(
-                                    title: "Little Nap Brazil 250g",
-                                    description: "",
-                                    hsTariffNumber: "",
-                                    valuePerUnit: "",
-                                    weightPerUnit: "",
-                                    originCountry: WooShippingCustomsCountry(code: "US", name: "United States"))
-                                )
+                                ForEach(viewModel.itemsViewModels, id: \.title) { itemViewModel in
+                                    WooShippingCustomsItem(viewModel: itemViewModel)
+                                }
                             }
                             .padding()
                             .toolbar {
@@ -151,6 +145,7 @@ struct WooShippingCustomsForm: View {
                     Button {
                         // TODO: Save values
                         presentationMode.wrappedValue.dismiss()
+                        viewModel.onDismiss()
                     } label: {
                         Text(viewModel.informationIsMissing ? Localization.addMissingInformationButtonTitle : Localization.saveCustomsDetailsButtonTitle)
                     }

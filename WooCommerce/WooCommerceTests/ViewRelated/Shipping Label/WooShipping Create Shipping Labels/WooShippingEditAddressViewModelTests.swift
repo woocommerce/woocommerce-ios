@@ -20,7 +20,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         let isVerified = true
 
         // When
-        let viewModel = WooShippingEditAddressViewModel(id: id,
+        let viewModel = WooShippingEditAddressViewModel(type: .origin,
+                                                        id: id,
                                                         name: name,
                                                         company: company,
                                                         country: country,
@@ -30,7 +31,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         postalCode: postalCode,
                                                         email: email,
                                                         phone: phone,
-                                                        saveAsDefault: saveAsDefault,
+                                                        isDefault: saveAsDefault,
                                                         showCompanyField: showCompanyField,
                                                         isVerified: isVerified,
                                                         phoneNumberRequired: true)
@@ -46,14 +47,15 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.postalCode, postalCode)
         XCTAssertEqual(viewModel.email, email)
         XCTAssertEqual(viewModel.phone, phone)
-        XCTAssertEqual(viewModel.saveAsDefault, saveAsDefault)
+        XCTAssertEqual(viewModel.isDefault, saveAsDefault)
         XCTAssertEqual(viewModel.showCompanyField, showCompanyField)
         XCTAssertEqual(viewModel.status, .verified)
     }
 
     func test_isRequired_returns_expected_values() {
         // Given
-        let viewModel = WooShippingEditAddressViewModel(id: "",
+        let viewModel = WooShippingEditAddressViewModel(type: .origin,
+                                                        id: "",
                                                         name: "",
                                                         company: "",
                                                         country: "",
@@ -63,7 +65,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         postalCode: "",
                                                         email: "",
                                                         phone: "",
-                                                        saveAsDefault: true,
+                                                        isDefault: true,
                                                         showCompanyField: true,
                                                         isVerified: true,
                                                         phoneNumberRequired: true)
@@ -88,7 +90,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
     func test_isRequired_returns_false_for_company_when_name_is_not_empty() {
         // Given
-        let viewModel = WooShippingEditAddressViewModel(id: "",
+        let viewModel = WooShippingEditAddressViewModel(type: .origin,
+                                                        id: "",
                                                         name: "JANE DOE",
                                                         company: "",
                                                         country: "",
@@ -98,7 +101,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         postalCode: "",
                                                         email: "",
                                                         phone: "",
-                                                        saveAsDefault: true,
+                                                        isDefault: true,
                                                         showCompanyField: true,
                                                         isVerified: true,
                                                         phoneNumberRequired: false)
@@ -112,7 +115,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
     func test_isRequired_returns_false_for_name_when_company_is_not_empty() {
         // Given
-        let viewModel = WooShippingEditAddressViewModel(id: "",
+        let viewModel = WooShippingEditAddressViewModel(type: .origin,
+                                                        id: "",
                                                         name: "",
                                                         company: "HEADQUARTERS",
                                                         country: "",
@@ -122,7 +126,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         postalCode: "",
                                                         email: "",
                                                         phone: "",
-                                                        saveAsDefault: true,
+                                                        isDefault: true,
                                                         showCompanyField: true,
                                                         isVerified: true,
                                                         phoneNumberRequired: false)
@@ -136,7 +140,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
     func test_isRequired_returns_false_when_phone_number_not_required() {
         // Given
-        let viewModel = WooShippingEditAddressViewModel(id: "",
+        let viewModel = WooShippingEditAddressViewModel(type: .origin,
+                                                        id: "",
                                                         name: "",
                                                         company: "",
                                                         country: "",
@@ -146,7 +151,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         postalCode: "",
                                                         email: "",
                                                         phone: "",
-                                                        saveAsDefault: true,
+                                                        isDefault: true,
                                                         showCompanyField: true,
                                                         isVerified: true,
                                                         phoneNumberRequired: false)
@@ -158,4 +163,47 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertFalse(isPhoneRequired)
     }
 
+    func test_it_inits_with_expected_values_for_origin_address_type() {
+        // Given/When
+        let viewModel = WooShippingEditAddressViewModel(type: .origin,
+                                                        id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: "",
+                                                        address: "",
+                                                        city: "",
+                                                        state: "",
+                                                        postalCode: "",
+                                                        email: "",
+                                                        phone: "",
+                                                        isDefault: true,
+                                                        showCompanyField: true,
+                                                        isVerified: true,
+                                                        phoneNumberRequired: true)
+
+        // Then
+        XCTAssertTrue(viewModel.showSaveAsDefault)
+    }
+
+    func test_it_inits_with_expected_values_for_destination_address_type() {
+        // Given/When
+        let viewModel = WooShippingEditAddressViewModel(type: .destination,
+                                                        id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: "",
+                                                        address: "",
+                                                        city: "",
+                                                        state: "",
+                                                        postalCode: "",
+                                                        email: "",
+                                                        phone: "",
+                                                        isDefault: true,
+                                                        showCompanyField: true,
+                                                        isVerified: true,
+                                                        phoneNumberRequired: true)
+
+        // Then
+        XCTAssertFalse(viewModel.showSaveAsDefault)
+    }
 }

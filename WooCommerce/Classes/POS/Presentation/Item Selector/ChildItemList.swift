@@ -39,11 +39,14 @@ struct ChildItemList: View {
                 .transition(.opacity)
         }
         .background(Color.posPrimaryBackground)
+        .refreshable {
+            await posModel.reloadItems(base: .parent(parentItem))
+        }
         .task {
             guard state.items.isEmpty else {
                 return
             }
-            await posModel.loadInitialItems(base: .parent(parentItem))
+            await posModel.reloadItems(base: .parent(parentItem))
         }
     }
 }

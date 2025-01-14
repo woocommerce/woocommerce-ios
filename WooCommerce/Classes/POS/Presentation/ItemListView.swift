@@ -35,7 +35,7 @@ struct ItemListView: View {
             })
         }
         .refreshable {
-            await posModel.reload()
+            await posModel.reloadItems(base: .root)
         }
         .background(Color.posPrimaryBackground)
         .accessibilityElement(children: .contain)
@@ -275,7 +275,7 @@ private extension ItemListView {
 #Preview("Loaded with all product types") {
     let itemsController = PointOfSalePreviewItemsController()
     Task { @MainActor in
-        await itemsController.loadInitialItems(base: .root)
+        await itemsController.loadItems(base: .root)
     }
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,

@@ -7,9 +7,10 @@ import class Yosemite.Store
 
 protocol PointOfSaleItemsControllerProtocol {
     var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { get }
-    func loadInitialItems(base: ItemListBaseItem) async
+    /// Loads the first page of items for a given base item.
+    func loadItems(base: ItemListBaseItem) async
+    /// Loads the next page of items for a given base item.
     func loadNextItems(base: ItemListBaseItem) async
-    func reload() async
 }
 
 class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
@@ -30,23 +31,21 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     }
 
     @MainActor
-    func loadInitialItems(base: ItemListBaseItem) async {
+    func loadItems(base: ItemListBaseItem) async {
         switch base {
         case .root:
-            await loadInitialRootItems()
+            await loadRootItems()
         case .parent(let parent):
-            await loadInitialChildItems(for: parent)
+            await loadChildItems(for: parent)
         }
     }
 
     @MainActor
-    private func loadInitialRootItems() async {
-        itemsViewState = .init(containerState: .loading, itemsStack: ItemsStackState(root: .loading([]),
-                                                                                     itemStates: [:]))
+    private func loadRootItems() async {
         do {
-            try await paginationTracker.syncFirstPage { [weak self] pageNumber in
+            try await paginationTracker.resync { [weak self] pageNumber in
                 guard let self else { return true }
-                return try await fetchItems(pageNumber: pageNumber)
+                return try await fetchItems(pageNumber: pageNumber, appendToExistingItems: false)
             }
         } catch {
             itemsViewState = .init(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
@@ -88,29 +87,13 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     }
 
     @MainActor
-    func reload() async {
-        do {
-            try await paginationTracker.resync { [weak self] pageNumber in
-                guard let self else { return true }
-                return try await fetchItems(pageNumber: pageNumber, appendToExistingItems: false)
-            }
-        } catch {
-            // TODO: 14694 - Handle error from pull-to-refresh, like showing an error UI at the beginning or as an overlay.
-            itemsViewState = .init(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
-                                   itemsStack: ItemsStackState(root: .loaded([], hasMoreItems: false),
-                                                               itemStates: [:]))
-        }
-    }
-
-    @MainActor
-    private func loadInitialChildItems(for parent: POSItem) async {
-        updateState(for: parent, to: .loading([]))
+    private func loadChildItems(for parent: POSItem) async {
 
         let paginationTracker = paginationTracker(for: parent)
         do {
-            try await paginationTracker.syncFirstPage { [weak self] pageNumber in
+            try await paginationTracker.resync { [weak self] pageNumber in
                 guard let self else { return true }
-                return try await fetchChildItems(for: parent, pageNumber: Store.Default.firstPageNumber)
+                return try await fetchChildItems(for: parent, pageNumber: Store.Default.firstPageNumber, appendToExistingItems: false)
             }
         } catch {
             // TODO: 14694 - Handle error from loading initial variations.
@@ -130,7 +113,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
         do {
             _ = try await paginationTracker.ensureNextPageIsSynced { [weak self] pageNumber in
                 guard let self else { return true }
-                return try await fetchChildItems(for: parent, pageNumber: pageNumber)
+                return try await fetchChildItems(for: parent, pageNumber: pageNumber, appendToExistingItems: true)
             }
         } catch {
             updateState(for: parent, to: .inlineError(currentItems,
@@ -139,10 +122,13 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     }
 
     @MainActor
-    private func fetchChildItems(for parent: POSItem, pageNumber: Int) async throws -> Bool {
+    private func fetchChildItems(for parent: POSItem, pageNumber: Int, appendToExistingItems: Bool) async throws -> Bool {
         switch parent {
         case let .variableParentProduct(parentProduct):
-            return try await fetchVariationItems(parentProduct: parentProduct, parentItem: parent, pageNumber: pageNumber)
+            return try await fetchVariationItems(parentProduct: parentProduct,
+                                                 parentItem: parent,
+                                                 pageNumber: pageNumber,
+                                                 appendToExistingItems: appendToExistingItems)
         case .simpleProduct, .variation:
             assertionFailure("Unsupported parent type for loading child items: \(parent)")
             return false

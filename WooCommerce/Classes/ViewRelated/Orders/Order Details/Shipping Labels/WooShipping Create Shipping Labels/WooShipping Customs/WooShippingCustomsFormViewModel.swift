@@ -8,7 +8,6 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     @Published var returnToSenderIfNotDelivered: Bool = false
 
     let onCompletion: (ShippingLabelCustomsForm) -> ()
-    let orderItems: [OrderItem]
 
     @Published var requiredInformationIsEntered: Bool = false
 
@@ -21,16 +20,15 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
 
     init(orderItems: [OrderItem], onCompletion: @escaping (ShippingLabelCustomsForm) -> ()) {
         self.onCompletion = onCompletion
-        self.orderItems = orderItems
 
         itemsViewModels = orderItems.map {
             WooShippingCustomsItemViewModel(
-                title: $0.name,
                 description: $0.name,
                 hsTariffNumber: "",
                 valuePerUnit: "",
                 weightPerUnit: "",
-                originCountry: WooShippingCustomsCountry(code: "US", name: "United States")
+                originCountry: WooShippingCustomsCountry(code: "US", name: "United States"),
+                orderItem: $0
             )
         }
 
@@ -48,7 +46,16 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
                                             restrictionComments: "",
                                             nonDeliveryOption: returnToSenderIfNotDelivered ? .return : .abandon,
                                             itn: internationalTransactionNumber,
-                                            items: [])
+                                            items: itemsViewModels.map {
+            ShippingLabelCustomsForm.Item(description: $0.description,
+                                          quantity: $0.orderItem.quantity,
+                                          value: Double($0.valuePerUnit) ?? 0,
+                                          weight: Double($0.weightPerUnit) ?? 0,
+                                          hsTariffNumber: $0.hsTariffNumber,
+                                          originCountry: $0.originCountry.name,
+                                          productID: $0.orderItem.productID)
+            }
+        )
         onCompletion(form)
     }
 }

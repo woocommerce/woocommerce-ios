@@ -19,6 +19,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let stores: StoresManager
     private let siteID: Int64
+    let orderItem: OrderItem
 
     let hsTariffURL = WooConstants.URLs.hsTariffURL.asURL()
 
@@ -54,20 +55,21 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
 
-    init(title: String,
-         description: String,
+    init(description: String,
          hsTariffNumber: String,
          valuePerUnit: String,
          weightPerUnit: String,
          originCountry: WooShippingCustomsCountry,
+         orderItem: OrderItem,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores) {
-        self.title = title
+        self.title = orderItem.name
         self.description = description
         self.hsTariffNumber = hsTariffNumber
         self.valuePerUnit = valuePerUnit
         self.weightPerUnit = weightPerUnit
         self.originCountry = originCountry
+        self.orderItem = orderItem
         self.storageManager = storageManager
         self.stores = stores
         self.siteID = stores.sessionManager.defaultStoreID ?? Int64.min

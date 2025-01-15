@@ -205,7 +205,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         }
         XCTAssertEqual(
             firstVariation.name,
-            "marble - nuts - 99% - \(String.localizedStringWithFormat(VariationAttributeViewModel.Localization.anyAttributeFormat, "Size"))"
+            "marble, nuts, 99%, \(String.localizedStringWithFormat(VariationAttributeViewModel.Localization.anyAttributeFormat, "Size"))"
         )
         XCTAssertEqual(firstVariation.formattedPrice, "$12.00")
         XCTAssertEqual(firstVariation.price, "12")

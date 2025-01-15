@@ -9,10 +9,13 @@ public struct ProductVariationFormatter {
     /// - Parameters:
     ///   - variation: The product variation whose name is being generated
     ///   - allAttributes: A list of attributes from the parent `Product`
+    ///   - separator: The string to use to separate attributes used to make up the name. Default `" - "`
     ///
-    public func generateName(for variation: ProductVariation, from allAttributes: [ProductAttribute]) -> String {
+    public func generateName(for variation: ProductVariation,
+                             from allAttributes: [ProductAttribute],
+                             separator: String = " - ") -> String {
         let variationAttributes = generateAttributes(for: variation, from: allAttributes)
-        return variationAttributes.map { $0.nameOrValue }.joined(separator: " - ")
+        return variationAttributes.map { $0.nameOrValue }.joined(separator: separator)
     }
 
     /// Generates the variation attributes, given a list of the parent product attributes.

@@ -74,7 +74,8 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
             items: variations.compactMap({ variation in
                 let variationName = ProductVariationFormatter().generateName(
                     for: variation,
-                    from: parentProduct.allAttributes
+                    from: parentProduct.allAttributes,
+                    separator: ", "
                 )
                 return POSItem
                     .variation(.init(id: UUID(),

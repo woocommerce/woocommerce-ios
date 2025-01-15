@@ -17,7 +17,14 @@ public struct POSVariation: OrderSyncProductVariationTypeProtocol, Equatable, Ha
     // Variation specific
     public let parentProductName: String
 
-    public init(id: UUID, name: String, formattedPrice: String, price: String, productImageSource: String? = nil, productID: Int64, variationID: Int64, parentProductName: String) {
+    public init(id: UUID,
+                name: String,
+                formattedPrice: String,
+                price: String,
+                productImageSource: String? = nil,
+                productID: Int64,
+                variationID: Int64,
+                parentProductName: String) {
         self.id = id
         self.name = name
         self.formattedPrice = formattedPrice

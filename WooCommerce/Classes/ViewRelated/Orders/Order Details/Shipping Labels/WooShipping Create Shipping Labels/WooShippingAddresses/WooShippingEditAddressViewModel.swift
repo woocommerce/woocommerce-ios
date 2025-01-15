@@ -45,15 +45,27 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     // MARK: Local requirements & validation
 
+    /// Whether the address has been remotely verified.
+    private var isVerified: Bool
+
     /// Fields that are invalid based on local validation.
     @Published private(set) var invalidFields: [WooShippingEditAddressView.AddressField] = []
 
     /// Whether the phone number is required.
     private let phoneNumberRequired: Bool
 
-    // TODO: Set status based on initial verified status, whether any changes have been made, and local validation.
+    // TODO: Set status to unverified if the address was verified remotely but there are unsaved changes.
     /// Status of the address, based on local validation and remote verification.
-    var status: WooShippingAddressStatus
+    var status: WooShippingAddressStatus {
+        switch (isVerified, invalidFields.isEmpty) {
+        case (true, true):
+            return .verified
+        case (false, true):
+            return .unverified
+        case (_, false):
+            return .missingInformation
+        }
+    }
 
     // MARK: State/Country
 
@@ -143,7 +155,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         self.phone = phone
         self.isDefaultAddress = isDefaultAddress
         self.showCompanyField = showCompanyField
-        self.status = isVerified ? .verified : .unverified
+        self.isVerified = isVerified
         self.phoneNumberRequired = phoneNumberRequired
         self.stores = stores
         self.siteID = stores.sessionManager.defaultStoreID ?? Int64.min

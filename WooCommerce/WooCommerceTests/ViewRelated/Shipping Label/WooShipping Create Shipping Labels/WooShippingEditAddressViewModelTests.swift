@@ -435,7 +435,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.selectedState)
     }
 
-    func test_validateAddress_sets_empty_invalidFields_when_all_fields_valid() {
+    func test_validateAddress_sets_expected_properties_when_all_fields_valid() {
         // Given
         let storageManager = MockStorageManager()
         let country = Country(code: "US", name: "United States", states: [StateOfACountry(code: "NY", name: "New York")])
@@ -462,9 +462,10 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.invalidFields.isEmpty)
+        XCTAssertEqual(viewModel.status, .verified)
     }
 
-    func test_validateAddress_sets_expected_invalidFields_when_all_fields_empty() {
+    func test_validateAddress_sets_expected_properties_when_all_fields_empty() {
         // Given
         let viewModel = WooShippingEditAddressViewModel(type: .destination,
                                                         id: "",
@@ -489,9 +490,10 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         // Note that empty state is valid when country is empty (has no states).
         let expectedInvalidFields = WooShippingEditAddressView.AddressField.allCases.filter { $0 != .state }
         XCTAssertEqual(viewModel.invalidFields, expectedInvalidFields)
+        XCTAssertEqual(viewModel.status, .missingInformation)
     }
 
-    func test_validate_sets_empty_invalidFields_when_all_fields_valid() {
+    func test_validate_sets_expected_properties_when_all_fields_valid() {
         // Given
         let storageManager = MockStorageManager()
         let country = Country(code: "US", name: "United States", states: [StateOfACountry(code: "NY", name: "New York")])
@@ -520,9 +522,10 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.invalidFields.isEmpty)
+        XCTAssertEqual(viewModel.status, .verified)
     }
 
-    func test_validate_sets_expected_invalidFields_when_all_fields_empty() {
+    func test_validate_sets_expected_properties_when_all_fields_empty() {
         // Given
         let viewModel = WooShippingEditAddressViewModel(type: .destination,
                                                         id: "",
@@ -549,6 +552,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         // Note that empty state is valid when country is empty (has no states).
         let expectedInvalidFields = WooShippingEditAddressView.AddressField.allCases.filter { $0 != .state }
         XCTAssertEqual(viewModel.invalidFields, expectedInvalidFields)
+        XCTAssertEqual(viewModel.status, .missingInformation)
     }
 
     func test_validate_sets_state_as_invalid_field_when_empty_and_country_contains_states() {

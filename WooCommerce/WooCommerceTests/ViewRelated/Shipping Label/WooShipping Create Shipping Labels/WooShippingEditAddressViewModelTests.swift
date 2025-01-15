@@ -20,6 +20,10 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         let showCompanyField = true
         let isVerified = true
 
+        let storageManager = MockStorageManager()
+        let countries = [Country(code: "US", name: "United States", states: [StateOfACountry(code: "NY", name: "New York")])]
+        storageManager.insertSampleCountries(readOnlyCountries: countries)
+
         // When
         let viewModel = WooShippingEditAddressViewModel(type: .origin,
                                                         id: id,
@@ -35,7 +39,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         isDefault: saveAsDefault,
                                                         showCompanyField: showCompanyField,
                                                         isVerified: isVerified,
-                                                        phoneNumberRequired: true)
+                                                        phoneNumberRequired: true,
+                                                        storageManager: storageManager)
 
         // Then
         XCTAssertEqual(viewModel.id, id)

@@ -90,33 +90,25 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
             return onCompletion(false)
         }
 
-        switch paymentGatewayID {
-        case CardPresentPaymentsPlugin.wcPay.gatewayID:
-            Task { @MainActor in
-                async let isWooCommerceSupported = isPluginSupported(Constants.wcPluginName,
-                                                                     minimumVersion: Constants.ReceiptAfterPayment.wcPluginMinimumVersion)
-                async let isWooPaymentsSupported = isPluginSupported(CardPresentPaymentsPlugin.wcPay.pluginName,
-                                                                     minimumVersion: Constants.ReceiptAfterPayment.wcPayPluginMinimumVersion)
-                let wooCommerceResult = await isWooCommerceSupported
-                let wooPaymentsResult = await isWooPaymentsSupported
-                let isSupported = wooCommerceResult && wooPaymentsResult
+        Task { @MainActor in
+            async let wooCommerceSupported = isPluginSupported(Constants.wcPluginName,
+                                                               minimumVersion: Constants.ReceiptAfterPayment.wcPluginMinimumVersion)
 
-                onCompletion(isSupported)
-            }
-        case CardPresentPaymentsPlugin.stripe.gatewayID:
-            Task { @MainActor in
-                async let isWooCommerceSupported = isPluginSupported(Constants.wcPluginName,
-                                                                     minimumVersion: Constants.ReceiptAfterPayment.wcPluginMinimumVersion)
-                async let isStripeSupported = isPluginSupported(CardPresentPaymentsPlugin.stripe.pluginName,
-                                                                minimumVersion: Constants.ReceiptAfterPayment.stripePluginMinimumVersion)
-                let wooCommerceResult = await isWooCommerceSupported
-                let stripeResult = await isStripeSupported
-                let isSupported = wooCommerceResult && stripeResult
+            async let gatewaySupported: Bool = {
+                switch paymentGatewayID {
+                case CardPresentPaymentsPlugin.wcPay.gatewayID:
+                    return await isPluginSupported(CardPresentPaymentsPlugin.wcPay.pluginName,
+                                                   minimumVersion: Constants.ReceiptAfterPayment.wcPayPluginMinimumVersion)
+                case CardPresentPaymentsPlugin.stripe.gatewayID:
+                    return await isPluginSupported(CardPresentPaymentsPlugin.stripe.pluginName,
+                                                   minimumVersion: Constants.ReceiptAfterPayment.stripePluginMinimumVersion)
+                default:
+                    return false
+                }
+            }()
 
-                onCompletion(isSupported)
-            }
-        default:
-            onCompletion(false)
+            let (isWooCommerceSupported, isGatewaySupported) = await (wooCommerceSupported, gatewaySupported)
+            onCompletion(isWooCommerceSupported && isGatewaySupported)
         }
     }
 }

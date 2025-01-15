@@ -6,14 +6,14 @@ protocol BuiltInCardReaderMerchantEducationPresenting {
     func presentMerchantEducation(completion: @escaping () -> Void)
 }
 
-final class BuiltInCardReaderMerchantEducationPresenter: BuiltInCardReaderMerchantEducationPresenting {
+final class BuiltInCardReaderMerchantEducationPresenter: @preconcurrency BuiltInCardReaderMerchantEducationPresenting {
     private weak var rootViewController: ViewControllerPresenting?
 
     init(rootViewController: UIViewController) {
         self.rootViewController = rootViewController
     }
 
-    func presentMerchantEducation(completion: @escaping () -> Void) {
+    @MainActor func presentMerchantEducation(completion: @escaping () -> Void) {
         let viewController = UIHostingController(rootView: TapToPayEducationView(viewModel: .init(completion: { _ in
             completion()
         })))

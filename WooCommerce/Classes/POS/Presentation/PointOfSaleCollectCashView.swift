@@ -5,21 +5,17 @@ struct PointOfSaleCollectCashView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @FocusState private var isTextFieldFocused: Bool
 
+    private let viewHelper = CollectCashViewHelper()
+
     @State private var textFieldAmountInput: String = ""
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
+    @State private var changeDueMessage: String?
 
     let orderTotal: String
 
     private var formattedOrderTotal: String {
         String.localizedStringWithFormat(Localization.backNavigationSubtitle, orderTotal)
-    }
-
-    private func validateAmount() -> Bool {
-        // TODO:
-        // Validate amount entered vs order total
-        // https://github.com/woocommerce/woocommerce-ios/issues/14749
-        return true
     }
 
     @StateObject private var textFieldViewModel = FormattableAmountTextFieldViewModel(size: .extraLarge,
@@ -60,7 +56,14 @@ struct PointOfSaleCollectCashView: View {
             FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
                 .onChange(of: textFieldViewModel.amount) { newValue in
                     textFieldAmountInput = newValue
+                    updateChangeDueMessage()
                 }
+
+            if let changeDue = changeDueMessage {
+                Text(changeDue)
+                    .font(.posBodyRegular)
+                    .foregroundColor(.posTextSuccess)
+            }
 
             if let errorMessage = errorMessage {
                 Text(errorMessage)
@@ -70,7 +73,7 @@ struct PointOfSaleCollectCashView: View {
 
             Button(action: {
                 Task { @MainActor in
-                    guard validateAmount() else {
+                    guard validateAmountOnSubmit() else {
                         return
                     }
                     isLoading = true
@@ -107,6 +110,7 @@ struct PointOfSaleCollectCashView: View {
         .background(backgroundColor)
         .padding()
         .animation(.easeInOut, value: errorMessage)
+        .animation(.easeInOut, value: changeDueMessage)
         .onChange(of: textFieldAmountInput) { _ in
             errorMessage = nil
         }
@@ -115,6 +119,23 @@ struct PointOfSaleCollectCashView: View {
     private func markComplete() async throws {
         try await posModel.collectCashPayment()
     }
+}
+
+private extension PointOfSaleCollectCashView {
+    private func updateChangeDueMessage() {
+        changeDueMessage = viewHelper.updatechangeDueMessage(
+            orderTotal: orderTotal,
+            textFieldAmountInput: textFieldAmountInput)
+    }
+
+    private func validateAmountOnSubmit() -> Bool {
+        viewHelper.validateAmountOnSubmit(
+            orderTotal: orderTotal,
+            textFieldAmountInput: textFieldAmountInput,
+            onError: { error in
+                errorMessage = error
+            })
+        }
 }
 
 private extension PointOfSaleCollectCashView {
@@ -154,7 +175,7 @@ private extension PointOfSaleCollectCashView {
             comment: "Button to mark a cash payment as completed"
         )
         static let failedToCollectCashPayment = NSLocalizedString(
-            "pointOfSale.cashview.failedToCollectCashPayment.draft",
+            "pointOfSale.cashview.failedtocollectcashpayment.errormessage",
             value: "Error trying to process payment. Try again.",
             comment: "Error message when the system fails to collect a cash payment."
         )

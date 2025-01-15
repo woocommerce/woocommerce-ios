@@ -19,6 +19,11 @@ struct WooShippingEditAddressView: View {
     /// Used to validate the field when the focus changes.
     @State private var previousFocusedField: WooShippingAddressFieldType?
 
+    /// Tracks the previously focused address field.
+    ///
+    /// Used to validate the field when the focus changes.
+    @State private var previousFocusedField: AddressField?
+
     @Environment(\.dismiss) private var dismiss
 
     @State private var isPresentingCountrySelector: Bool = false
@@ -77,6 +82,12 @@ struct WooShippingEditAddressView: View {
                 }
             }
             .padding()
+            .onChange(of: focusedField) { newField in
+                if let previousFocusedField {
+                    viewModel.validate(previousFocusedField)
+                }
+                previousFocusedField = newField
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.cancel) {

@@ -36,7 +36,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         postalCode: postalCode,
                                                         email: email,
                                                         phone: phone,
-                                                        isDefault: saveAsDefault,
+                                                        isDefaultAddress: saveAsDefault,
                                                         showCompanyField: showCompanyField,
                                                         isVerified: isVerified,
                                                         phoneNumberRequired: true,
@@ -53,7 +53,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.postalCode, postalCode)
         XCTAssertEqual(viewModel.email, email)
         XCTAssertEqual(viewModel.phone, phone)
-        XCTAssertEqual(viewModel.isDefault, saveAsDefault)
+        XCTAssertEqual(viewModel.isDefaultAddress, saveAsDefault)
         XCTAssertEqual(viewModel.showCompanyField, showCompanyField)
         XCTAssertEqual(viewModel.status, .verified)
     }
@@ -93,7 +93,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.postalCode, address.postcode)
         XCTAssertEqual(viewModel.phone, address.phone)
         XCTAssertEqual(viewModel.email, address.email)
-        XCTAssertTrue(viewModel.isDefault)
+        XCTAssertTrue(viewModel.isDefaultAddress)
         XCTAssertTrue(viewModel.showCompanyField)
         XCTAssertEqual(viewModel.status, .verified)
         XCTAssertTrue(viewModel.showSaveAsDefault)
@@ -115,7 +115,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         postalCode: "",
                                                         email: "",
                                                         phone: "",
-                                                        isDefault: true,
+                                                        isDefaultAddress: true,
                                                         showCompanyField: true,
                                                         isVerified: true,
                                                         phoneNumberRequired: true,
@@ -153,7 +153,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         postalCode: "",
                                                         email: "",
                                                         phone: "",
-                                                        isDefault: true,
+                                                        isDefaultAddress: true,
                                                         showCompanyField: true,
                                                         isVerified: true,
                                                         phoneNumberRequired: false)
@@ -178,7 +178,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         postalCode: "",
                                                         email: "",
                                                         phone: "",
-                                                        isDefault: true,
+                                                        isDefaultAddress: true,
                                                         showCompanyField: true,
                                                         isVerified: true,
                                                         phoneNumberRequired: false)
@@ -203,7 +203,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         postalCode: "",
                                                         email: "",
                                                         phone: "",
-                                                        isDefault: true,
+                                                        isDefaultAddress: true,
                                                         showCompanyField: true,
                                                         isVerified: true,
                                                         phoneNumberRequired: false)
@@ -233,7 +233,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         postalCode: "",
                                                         email: "",
                                                         phone: "",
-                                                        isDefault: true,
+                                                        isDefaultAddress: true,
                                                         showCompanyField: true,
                                                         isVerified: true,
                                                         phoneNumberRequired: true,
@@ -262,7 +262,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         postalCode: "",
                                                         email: "",
                                                         phone: "",
-                                                        isDefault: true,
+                                                        isDefaultAddress: true,
                                                         showCompanyField: true,
                                                         isVerified: true,
                                                         phoneNumberRequired: true,
@@ -298,7 +298,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         postalCode: "",
                                                         email: "",
                                                         phone: "",
-                                                        isDefault: true,
+                                                        isDefaultAddress: true,
                                                         showCompanyField: true,
                                                         isVerified: true,
                                                         phoneNumberRequired: true,
@@ -326,7 +326,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         postalCode: "",
                                                         email: "",
                                                         phone: "",
-                                                        isDefault: true,
+                                                        isDefaultAddress: true,
                                                         showCompanyField: true,
                                                         isVerified: true,
                                                         phoneNumberRequired: true,
@@ -358,7 +358,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         postalCode: "",
                                                         email: "",
                                                         phone: "",
-                                                        isDefault: true,
+                                                        isDefaultAddress: true,
                                                         showCompanyField: true,
                                                         isVerified: true,
                                                         phoneNumberRequired: true,
@@ -388,7 +388,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         postalCode: "",
                                                         email: "",
                                                         phone: "",
-                                                        isDefault: true,
+                                                        isDefaultAddress: true,
                                                         showCompanyField: true,
                                                         isVerified: true,
                                                         phoneNumberRequired: true,
@@ -420,7 +420,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         postalCode: "",
                                                         email: "",
                                                         phone: "",
-                                                        isDefault: true,
+                                                        isDefaultAddress: true,
                                                         showCompanyField: true,
                                                         isVerified: true,
                                                         phoneNumberRequired: true,

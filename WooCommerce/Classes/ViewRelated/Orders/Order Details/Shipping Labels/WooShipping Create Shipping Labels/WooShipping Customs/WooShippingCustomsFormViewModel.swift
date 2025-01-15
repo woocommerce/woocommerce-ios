@@ -44,7 +44,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
                                           quantity: $0.orderItem.quantity,
                                           value: Double($0.valuePerUnit) ?? 0,
                                           weight: Double($0.weightPerUnit) ?? 0,
-                                          hsTariffNumber: $0.hsTariffNumber,
+                                          hsTariffNumber: $0.isValidTariffNumber ? $0.hsTariffNumber : "",
                                           originCountry: $0.originCountry.name,
                                           productID: $0.orderItem.productID)
             }

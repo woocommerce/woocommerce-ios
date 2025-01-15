@@ -51,7 +51,7 @@ struct WooShippingEditAddressView: View {
                 AddressTextField(field: .phone, text: $viewModel.phone, required: viewModel.isRequired(.phone), focused: $focusedField)
                     .padding(.bottom, Constants.extraPadding)
                 if viewModel.showSaveAsDefault {
-                    Toggle(Localization.defaultAddress, isOn: $viewModel.isDefault)
+                    Toggle(Localization.defaultAddress, isOn: $viewModel.isDefaultAddress)
                         .font(.subheadline)
                         .tint(Color(.accent))
                 }
@@ -384,7 +384,7 @@ private extension WooShippingEditAddressView {
                                                 postalCode: "12883-1487",
                                                 email: "",
                                                 phone: "",
-                                                isDefault: true,
+                                                isDefaultAddress: true,
                                                 showCompanyField: false,
                                                 isVerified: true,
                                                 phoneNumberRequired: true))
@@ -402,7 +402,7 @@ private extension WooShippingEditAddressView {
                                                 postalCode: "12883-1487",
                                                 email: "",
                                                 phone: "",
-                                                isDefault: false,
+                                                isDefaultAddress: false,
                                                 showCompanyField: true,
                                                 isVerified: false,
                                                 phoneNumberRequired: true))

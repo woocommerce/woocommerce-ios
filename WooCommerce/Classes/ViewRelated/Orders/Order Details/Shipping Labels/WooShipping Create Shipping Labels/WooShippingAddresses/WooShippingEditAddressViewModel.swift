@@ -23,9 +23,11 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     @Published var postalCode: String
     @Published var email: String
     @Published var phone: String
-    @Published var isDefault: Bool
 
-    /// Whether to show the "save as default" toggle.
+    /// Whether the address is the default address for shipping labels; this is only used for origin addresses.
+    @Published var isDefaultAddress: Bool
+
+    /// Whether to show the "save as default" toggle, to save the address as the default origin address.
     var showSaveAsDefault: Bool {
         addressType == .origin
     }
@@ -53,7 +55,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
          postalCode: String,
          email: String,
          phone: String,
-         isDefault: Bool,
+         isDefaultAddress: Bool,
          showCompanyField: Bool,
          isVerified: Bool,
          phoneNumberRequired: Bool) {
@@ -68,7 +70,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         self.postalCode = postalCode
         self.email = email
         self.phone = phone
-        self.isDefault = isDefault
+        self.isDefaultAddress = isDefaultAddress
         self.showCompanyField = showCompanyField
         self.status = isVerified ? .verified : .unverified
         self.phoneNumberRequired = phoneNumberRequired
@@ -86,7 +88,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                   postalCode: address.postcode,
                   email: address.email,
                   phone: address.phone,
-                  isDefault: address.defaultAddress,
+                  isDefaultAddress: address.defaultAddress,
                   showCompanyField: address.company.isNotEmpty,
                   isVerified: address.isVerified,
                   phoneNumberRequired: true)

@@ -147,10 +147,10 @@ struct WooShippingCustomsForm: View {
                         presentationMode.wrappedValue.dismiss()
                         viewModel.onDismiss()
                     } label: {
-                        Text(viewModel.informationIsMissing ? Localization.addMissingInformationButtonTitle : Localization.saveCustomsDetailsButtonTitle)
+                        Text(viewModel.requiredInformationIsEntered ? Localization.saveCustomsDetailsButtonTitle : Localization.addMissingInformationButtonTitle)
                     }
                     .buttonStyle(PrimaryButtonStyle())
-                    .disabled(viewModel.informationIsMissing)
+                    .disabled(!viewModel.requiredInformationIsEntered)
                     .padding(Constants.bottomButtonPadding)
                 }
             }

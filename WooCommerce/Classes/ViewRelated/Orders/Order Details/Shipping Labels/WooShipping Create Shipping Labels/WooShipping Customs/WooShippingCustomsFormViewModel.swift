@@ -1,5 +1,7 @@
 import SwiftUI
 import Yosemite
+import Combine
+import WooFoundation
 
 final class WooShippingCustomsFormViewModel: ObservableObject {
     @Published var internationalTransactionNumber: String = ""
@@ -8,22 +10,20 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     let onCompletion: (ShippingLabelCustomsForm) -> ()
     let orderItems: [OrderItem]
 
-    var informationIsMissing: Bool {
-        true
-    }
+    @Published var requiredInformationIsEntered: Bool = false
 
     let contentType: WooShippingContentType = .merchandise
     let restrictionType: WooShippingRestrictionType = .none
 
     let itnInfoURL = URL(string: "https://pe.usps.com/text/imm/immc5_010.htm")
 
+    private var cancellables = Set<AnyCancellable>()
+
     init(orderItems: [OrderItem], onCompletion: @escaping (ShippingLabelCustomsForm) -> ()) {
         self.onCompletion = onCompletion
         self.orderItems = orderItems
-    }
 
-    var itemsViewModels: [WooShippingCustomsItemViewModel] {
-        orderItems.map {
+        itemsViewModels = orderItems.map {
             WooShippingCustomsItemViewModel(
                 title: $0.name,
                 description: $0.name,
@@ -33,7 +33,11 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
                 originCountry: WooShippingCustomsCountry(code: "US", name: "United States")
             )
         }
+
+        listenToItemsRequiredInformationValues()
     }
+
+    @Published var itemsViewModels: [WooShippingCustomsItemViewModel] = []
 
     func onDismiss() {
         let form = ShippingLabelCustomsForm(packageID: "",
@@ -46,6 +50,25 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
                                             itn: internationalTransactionNumber,
                                             items: [])
         onCompletion(form)
+    }
+}
+
+private extension WooShippingCustomsFormViewModel {
+    func listenToItemsRequiredInformationValues() {
+        $itemsViewModels
+            .map { childViewModels in
+                childViewModels.map { $0.$requiredInformationIsEntered.eraseToAnyPublisher() }
+            }
+            .flatMap { childPublishers in
+                childPublishers.combineLatest() // Combine the latest values from all child publishers
+            }
+            .map { childValidityArray in
+                childValidityArray.allSatisfy { $0 } // Check if all are valid
+            }
+            .sink { [weak self] value in
+                self?.requiredInformationIsEntered = value
+            }
+            .store(in: &cancellables)
     }
 }
 

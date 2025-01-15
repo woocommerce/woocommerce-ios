@@ -1,5 +1,6 @@
 import Yosemite
 import SwiftUI
+import Combine
 import protocol Storage.StorageManagerType
 
 struct WooShippingCustomsCountry: Hashable {
@@ -49,9 +50,9 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
         return length >= 6 && length <= 12
     }
 
-    var requiredInformationIsMissing: Bool {
-        description.isEmpty || valuePerUnit.isEmpty || weightPerUnit.isEmpty
-    }
+    @Published var requiredInformationIsEntered: Bool = false
+
+    private var cancellables = Set<AnyCancellable>()
 
     init(title: String,
          description: String,
@@ -72,6 +73,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
         self.siteID = stores.sessionManager.defaultStoreID ?? Int64.min
 
         fetchCountries()
+        combineRequiredInformationIsEntered()
     }
 }
 
@@ -89,5 +91,13 @@ extension WooShippingCustomsItemViewModel {
         }
 
         stores.dispatch(action)
+    }
+
+    func combineRequiredInformationIsEntered() {
+        Publishers.CombineLatest3($description, $valuePerUnit, $weightPerUnit)
+            .sink { [weak self] description, valuePerUnit, weightPerUnit in
+                self?.requiredInformationIsEntered = description.isNotEmpty && valuePerUnit.isNotEmpty && weightPerUnit.isNotEmpty
+            }
+            .store(in: &cancellables)
     }
 }

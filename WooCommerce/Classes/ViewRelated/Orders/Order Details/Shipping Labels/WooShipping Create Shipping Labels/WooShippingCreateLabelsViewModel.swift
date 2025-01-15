@@ -25,7 +25,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Whether the custom information is completed or not.
     var customsInformationIsCompleted: Bool {
         // To be synced with real data
-        true
+        false
     }
 
     var orderItems: [OrderItem] {

@@ -330,4 +330,85 @@ final class PointOfSaleItemsControllerTests {
         // Then
         try #require(itemProvider.spyLastRequestedPageNumber == 1)
     }
+
+    @Test func loadItems_sets_root_items_to_loading_state_while_preserving_existing_items() async throws {
+        // Given
+        let initialItems = MockPointOfSaleItemService.makeInitialItems()
+        await sut.loadItems(base: .root)
+        try #require(itemsViewState.itemsStack.root.items == initialItems)
+
+        var states: [ItemListState] = []
+        let cancellable = sut.itemsViewStatePublisher
+            .sink { state in
+                states.append(state.itemsStack.root)
+            }
+
+        // When
+        await sut.loadItems(base: .root)
+
+        // Then
+        let loadingStates = states.filter { $0.isLoading }
+        #expect(loadingStates.count == 1)
+        if case .loading(let items) = loadingStates.first {
+            #expect(items == initialItems)
+        }
+        cancellable.cancel()
+    }
+
+    @Test func loadItems_sets_container_state_to_loading_and_root_state_to_loading_state_when_no_existing_items() async throws {
+        // Given
+        itemProvider.shouldReturnZeroItems = true
+        await sut.loadItems(base: .root)
+        try #require(itemsViewState.itemsStack.root.items == [])
+
+        var states: [ItemsViewState] = []
+        let cancellable = sut.itemsViewStatePublisher
+            .sink { state in
+                states.append(state)
+            }
+
+        // When
+        await sut.loadItems(base: .root)
+
+        // Then
+        let loadingStates = states.filter { $0.containerState == .loading }
+        #expect(loadingStates.count == 1)
+        #expect(loadingStates.first?.itemsStack.root == .loading([]))
+        cancellable.cancel()
+    }
+
+    @Test func loadItems_sets_child_items_to_loading_state_while_preserving_existing_items() async throws {
+        // Given
+        let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: UUID(),
+                                                                              name: "Parent product",
+                                                                              productImageSource: nil,
+                                                                              productID: 125))
+        let baseItem = ItemListBaseItem.parent(parentItem)
+        itemProvider.items = [parentItem]
+
+        // Loads initial items.
+        await sut.loadItems(base: .root)
+        await sut.loadItems(base: baseItem)
+
+        let initialChildItems = itemsViewState.itemsStack.itemStates[parentItem]?.items ?? []
+        try #require(!initialChildItems.isEmpty)
+
+        var states: [ItemListState] = []
+        let cancellable = sut.itemsViewStatePublisher.sink { state in
+            if let childState = state.itemsStack.itemStates[parentItem] {
+                states.append(childState)
+            }
+        }
+
+        // When
+        await sut.loadItems(base: baseItem)
+
+        // Then
+        let loadingStates = states.filter { $0.isLoading }
+        #expect(loadingStates.count == 1)
+        if case .loading(let items) = loadingStates.first {
+            #expect(items == initialChildItems)
+        }
+        cancellable.cancel()
+    }
 }

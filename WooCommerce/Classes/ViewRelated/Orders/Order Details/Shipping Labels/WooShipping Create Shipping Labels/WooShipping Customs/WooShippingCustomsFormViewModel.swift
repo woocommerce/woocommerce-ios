@@ -11,8 +11,8 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
 
     @Published var requiredInformationIsEntered: Bool = false
 
-    let contentType: WooShippingContentType = .merchandise
-    let restrictionType: WooShippingRestrictionType = .none
+    @Published var contentType: WooShippingContentType = .merchandise
+    @Published var restrictionType: WooShippingRestrictionType = .none
 
     let itnInfoURL = URL(string: "https://pe.usps.com/text/imm/immc5_010.htm")
 
@@ -22,7 +22,8 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
         self.onCompletion = onCompletion
 
         itemsViewModels = orderItems.map {
-            WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "US", name: "United States"), orderItem: $0)
+            WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "US", name: "United States"),
+                                            orderItem: $0)
         }
 
         listenToItemsRequiredInformationValues()

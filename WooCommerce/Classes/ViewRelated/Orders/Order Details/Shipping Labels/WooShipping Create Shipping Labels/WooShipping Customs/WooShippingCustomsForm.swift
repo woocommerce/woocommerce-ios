@@ -12,6 +12,7 @@ struct WooShippingCustomsForm: View {
             // show selection
             ForEach(WooShippingContentType.allCases, id: \.self) { option in
                 Button {
+                    viewModel.contentType = option
                 } label: {
                     Text(option.name)
                         .bodyStyle()
@@ -37,6 +38,7 @@ struct WooShippingCustomsForm: View {
             // show selection
             ForEach(WooShippingRestrictionType.allCases, id: \.self) { option in
                 Button {
+                    viewModel.restrictionType = option
                 } label: {
                     Text(option.name)
                         .bodyStyle()

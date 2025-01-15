@@ -57,6 +57,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
 
 private extension WooShippingCustomsFormViewModel {
     func listenToItemsRequiredInformationValues() {
+        // Listen to the items required information and enable the button depending on it
         $itemsViewModels
             .map { childViewModels in
                 childViewModels.map { $0.$requiredInformationIsEntered.eraseToAnyPublisher() }

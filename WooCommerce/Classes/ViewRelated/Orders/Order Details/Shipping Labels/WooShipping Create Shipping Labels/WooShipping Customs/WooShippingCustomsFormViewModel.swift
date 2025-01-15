@@ -22,6 +22,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
         self.onCompletion = onCompletion
 
         itemsViewModels = orderItems.map {
+            // TODO: Pass the origin country
             WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "US", name: "United States"),
                                             orderItem: $0)
         }

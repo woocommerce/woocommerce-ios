@@ -33,20 +33,7 @@ final class WooShippingOriginAddressListViewModel: ObservableObject {
     }
 
     func editAddress(_ address: WooShippingOriginAddress) {
-        addressToEdit = WooShippingEditAddressViewModel(id: address.id,
-                                                        name: address.fullName,
-                                                        company: address.company,
-                                                        country: address.country,
-                                                        address: address.combinedAddress,
-                                                        city: address.city,
-                                                        state: address.state,
-                                                        postalCode: address.postcode,
-                                                        email: address.email,
-                                                        phone: address.phone,
-                                                        saveAsDefault: address.defaultAddress,
-                                                        showCompanyField: address.company.isNotEmpty,
-                                                        isVerified: address.isVerified,
-                                                        phoneNumberRequired: true) // Always required for origin address
+        addressToEdit = WooShippingEditAddressViewModel(address: address)
     }
 }
 

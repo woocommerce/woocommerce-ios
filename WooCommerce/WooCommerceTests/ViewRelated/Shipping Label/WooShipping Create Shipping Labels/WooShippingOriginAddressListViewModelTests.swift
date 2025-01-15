@@ -108,7 +108,7 @@ final class WooShippingOriginAddressListViewModelTests: XCTestCase {
         XCTAssertEqual(addressToEditViewModel.postalCode, addressToEdit.postcode)
         XCTAssertEqual(addressToEditViewModel.phone, addressToEdit.phone)
         XCTAssertEqual(addressToEditViewModel.email, addressToEdit.email)
-        XCTAssertTrue(addressToEditViewModel.saveAsDefault)
+        XCTAssertTrue(addressToEditViewModel.isDefaultAddress)
     }
 
 }

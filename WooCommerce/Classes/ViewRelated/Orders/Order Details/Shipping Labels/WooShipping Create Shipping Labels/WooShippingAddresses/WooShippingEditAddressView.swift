@@ -50,9 +50,11 @@ struct WooShippingEditAddressView: View {
                 AddressTextField(field: .email, text: $viewModel.email, required: viewModel.isRequired(.email), focused: $focusedField)
                 AddressTextField(field: .phone, text: $viewModel.phone, required: viewModel.isRequired(.phone), focused: $focusedField)
                     .padding(.bottom, Constants.extraPadding)
-                Toggle(Localization.defaultAddress, isOn: $viewModel.saveAsDefault)
-                    .font(.subheadline)
-                    .tint(Color(.accent))
+                if viewModel.showSaveAsDefault {
+                    Toggle(Localization.defaultAddress, isOn: $viewModel.isDefaultAddress)
+                        .font(.subheadline)
+                        .tint(Color(.accent))
+                }
             }
             .padding()
             .toolbar {
@@ -371,7 +373,8 @@ private extension WooShippingEditAddressView {
 }
 
 #Preview("Without Company") {
-    WooShippingEditAddressView(viewModel: .init(id: UUID().uuidString,
+    WooShippingEditAddressView(viewModel: .init(type: .origin,
+                                                id: UUID().uuidString,
                                                 name: "HEADQUARTERS",
                                                 company: "",
                                                 country: "UNITED STATES",
@@ -381,14 +384,15 @@ private extension WooShippingEditAddressView {
                                                 postalCode: "12883-1487",
                                                 email: "",
                                                 phone: "",
-                                                saveAsDefault: true,
+                                                isDefaultAddress: true,
                                                 showCompanyField: false,
                                                 isVerified: true,
                                                 phoneNumberRequired: true))
 }
 
 #Preview("With Company") {
-    WooShippingEditAddressView(viewModel: .init(id: UUID().uuidString,
+    WooShippingEditAddressView(viewModel: .init(type: .destination,
+                                                id: UUID().uuidString,
                                                 name: "HEADQUARTERS",
                                                 company: "COMPANY",
                                                 country: "UNITED STATES",
@@ -398,7 +402,7 @@ private extension WooShippingEditAddressView {
                                                 postalCode: "12883-1487",
                                                 email: "",
                                                 phone: "",
-                                                saveAsDefault: false,
+                                                isDefaultAddress: false,
                                                 showCompanyField: true,
                                                 isVerified: false,
                                                 phoneNumberRequired: true))

@@ -5,7 +5,7 @@ enum PointOfSaleItemListCardConstants {
     static let maximumProductCardSize: CGFloat = PointOfSaleItemListCardConstants.productCardSize * 2
     static let cardSpacing: CGFloat = 0
     static let textSpacing: CGFloat = 6
-    static let horizontalTextPadding: CGFloat = 32
+    static let horizontalTextPadding: CGFloat = 16
     static let verticalTextPadding: CGFloat = 8
     static let itemNameFont: POSFontStyle = .posLargeDetailEmphasized
     static let itemDetailFont: POSFontStyle = .posLargeDetailRegular

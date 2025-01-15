@@ -207,6 +207,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         observeSelectedCountry()
         observeSelectedState()
         fetchCountries()
+        validateAddress()
     }
 
     convenience init(address: WooShippingOriginAddress,

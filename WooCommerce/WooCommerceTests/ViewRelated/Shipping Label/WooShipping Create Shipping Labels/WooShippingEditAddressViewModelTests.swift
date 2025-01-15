@@ -15,7 +15,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         let postalCode = "12883-1487"
         let country = "US"
         let email = "TEST@EXAMPLE.COM"
-        let phone = "123-456-7890"
+        let phone = "1-234-456-7890"
         let saveAsDefault = true
         let showCompanyField = true
         let isVerified = true
@@ -72,12 +72,12 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                state: "NY",
                                                postcode: "12883-1487",
                                                country: "US",
-                                               phone: "123-456-7890",
+                                               phone: "223-456-7890",
                                                firstName: "JANE",
                                                lastName: "DOE",
                                                email: "TEST@EXAMPLE.COM",
                                                defaultAddress: true,
-                                               isVerified: true)
+                                               isVerified: false)
 
         // When
         let viewModel = WooShippingEditAddressViewModel(address: address, storageManager: storageManager)
@@ -95,9 +95,31 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.email.value, address.email)
         XCTAssertTrue(viewModel.isDefaultAddress)
         XCTAssertTrue(viewModel.showCompanyField)
-        XCTAssertEqual(viewModel.status, .verified)
+        XCTAssertEqual(viewModel.status, .unverified)
         XCTAssertTrue(viewModel.showSaveAsDefault)
         XCTAssertEqual(viewModel.countries.count, 1, "Should only include USPS-supported countries for origin addresses")
+    }
+
+    func test_it_validates_address_with_missing_information_and_sets_expected_status_on_init() {
+        // Given & When
+        let viewModel = WooShippingEditAddressViewModel(type: .destination,
+                                                        id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: "",
+                                                        address: "",
+                                                        city: "",
+                                                        state: "",
+                                                        postalCode: "",
+                                                        email: "",
+                                                        phone: "",
+                                                        isDefaultAddress: true,
+                                                        showCompanyField: true,
+                                                        isVerified: false,
+                                                        phoneNumberRequired: true)
+
+        // Then
+        XCTAssertEqual(viewModel.status, .missingInformation)
     }
 
     func test_expected_fields_are_required() {

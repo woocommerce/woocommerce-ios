@@ -356,9 +356,9 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                 ctaText = firstSuggestion.ctaText
             }
         } catch {
-            if let name = product?.name, let shortDescription = product?.shortDescription {
-                tagline = name
-                description = shortDescription
+            if let productName = product?.name, let productDescription = product?.shortDescription ?? product?.fullDescription {
+                tagline = productName
+                description = productDescription
                 ctaText = Localization.shopNow
             }
             DDLogError("⛔️ Error fetching Blaze AI suggestions: \(error)")

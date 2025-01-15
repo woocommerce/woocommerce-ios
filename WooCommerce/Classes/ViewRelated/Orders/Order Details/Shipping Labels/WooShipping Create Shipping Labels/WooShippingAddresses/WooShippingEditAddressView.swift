@@ -16,6 +16,9 @@ struct WooShippingEditAddressView: View {
 
     @Environment(\.dismiss) private var dismiss
 
+    @State private var isPresentingCountrySelector: Bool = false
+    @State private var isPresentingStateSelector: Bool = false
+
     var body: some View {
         ScrollView {
             VStack(spacing: Constants.verticalSpacing) {
@@ -34,15 +37,19 @@ struct WooShippingEditAddressView: View {
                     .font(.subheadline)
                     .bold()
                 }
-                AddressSelection(field: .country, selected: viewModel.country, required: viewModel.isRequired(.country)) {
-                    // TODO: Handle country selection
+                AddressSelection(field: .country, selected: viewModel.selectedCountry?.name ?? "", required: viewModel.isRequired(.country)) {
+                    isPresentingCountrySelector = true
                 }
                 .padding(.top, Constants.extraPadding)
                 AddressTextField(field: .address, text: $viewModel.address, required: viewModel.isRequired(.address), focused: $focusedField)
                 AddressTextField(field: .city, text: $viewModel.city, required: viewModel.isRequired(.city), focused: $focusedField)
                 AdaptiveStack(horizontalAlignment: .leading, verticalAlignment: .top, spacing: Constants.innerSpacing) {
-                    AddressSelection(field: .state, selected: viewModel.state, required: viewModel.isRequired(.state)) {
-                        // TODO: Handle state selection
+                    if viewModel.statesOfSelectedCountry.isNotEmpty {
+                        AddressSelection(field: .state, selected: viewModel.selectedState?.name ?? " ", required: viewModel.isRequired(.state)) {
+                            isPresentingStateSelector = true
+                        }
+                    } else {
+                        AddressTextField(field: .state, text: $viewModel.state, required: viewModel.isRequired(.state), focused: $focusedField)
                     }
                     AddressTextField(field: .postalCode, text: $viewModel.postalCode, required: viewModel.isRequired(.postalCode), focused: $focusedField)
                 }
@@ -83,6 +90,38 @@ struct WooShippingEditAddressView: View {
                         Text(Localization.done)
                             .bold()
                     }
+                }
+            }
+            .sheet(isPresented: $isPresentingCountrySelector) {
+                NavigationStack {
+                    FilterListSelector(viewModel: viewModel.countrySelectorVM)
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button {
+                                    isPresentingCountrySelector = false
+                                } label: {
+                                    Text(Localization.done)
+                                        .bold()
+                                }
+                            }
+                        }
+                }
+            }
+            .sheet(isPresented: $isPresentingStateSelector) {
+                NavigationStack {
+                    FilterListSelector(viewModel: viewModel.stateSelectorVM)
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button {
+                                    isPresentingStateSelector = false
+                                } label: {
+                                    Text(Localization.done)
+                                        .bold()
+                                }
+                            }
+                        }
                 }
             }
         }

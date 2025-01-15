@@ -20,6 +20,10 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         let showCompanyField = true
         let isVerified = true
 
+        let storageManager = MockStorageManager()
+        let countries = [Country(code: "US", name: "United States", states: [StateOfACountry(code: "NY", name: "New York")])]
+        storageManager.insertSampleCountries(readOnlyCountries: countries)
+
         // When
         let viewModel = WooShippingEditAddressViewModel(type: .origin,
                                                         id: id,
@@ -35,7 +39,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         isDefaultAddress: saveAsDefault,
                                                         showCompanyField: showCompanyField,
                                                         isVerified: isVerified,
-                                                        phoneNumberRequired: true)
+                                                        phoneNumberRequired: true,
+                                                        storageManager: storageManager)
 
         // Then
         XCTAssertEqual(viewModel.id, id)
@@ -55,6 +60,10 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
     func test_origin_address_inits_with_expected_values() {
         // Given
+        let storageManager = MockStorageManager()
+        let state = StateOfACountry(code: "NY", name: "New York")
+        let countries = [Country(code: "US", name: "United States", states: [state]), Country(code: "CA", name: "Canada", states: [])]
+        storageManager.insertSampleCountries(readOnlyCountries: countries)
         let address = WooShippingOriginAddress(id: "default_address",
                                                company: "HEADQUARTERS",
                                                address1: "15 ALGONKIN ST",
@@ -71,7 +80,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                isVerified: true)
 
         // When
-        let viewModel = WooShippingEditAddressViewModel(address: address)
+        let viewModel = WooShippingEditAddressViewModel(address: address, storageManager: storageManager)
 
         // Then
         XCTAssertEqual(viewModel.id, address.id)
@@ -88,10 +97,13 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.showCompanyField)
         XCTAssertEqual(viewModel.status, .verified)
         XCTAssertTrue(viewModel.showSaveAsDefault)
+        XCTAssertEqual(viewModel.countries.count, 1, "Should only include USPS-supported countries for origin addresses")
     }
 
     func test_isRequired_returns_expected_values() {
         // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storageManager = MockStorageManager()
         let viewModel = WooShippingEditAddressViewModel(type: .origin,
                                                         id: "",
                                                         name: "",
@@ -106,7 +118,9 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         isDefaultAddress: true,
                                                         showCompanyField: true,
                                                         isVerified: true,
-                                                        phoneNumberRequired: true)
+                                                        phoneNumberRequired: true,
+                                                        stores: stores,
+                                                        storageManager: storageManager)
 
         // When
         var requirements: [WooShippingEditAddressView.AddressField: Bool] = [:]
@@ -120,7 +134,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertEqual(requirements[.country], true)
         XCTAssertEqual(requirements[.address], true)
         XCTAssertEqual(requirements[.city], true)
-        XCTAssertEqual(requirements[.state], true)
+        XCTAssertEqual(requirements[.state], false)
         XCTAssertEqual(requirements[.postalCode], true)
         XCTAssertEqual(requirements[.email], true)
         XCTAssertEqual(requirements[.phone], true)
@@ -202,7 +216,12 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
     }
 
     func test_it_inits_with_expected_values_for_origin_address_type() {
-        // Given/When
+        // Given
+        let storageManager = MockStorageManager()
+        let countries = [Country(code: "US", name: "United States", states: []), Country(code: "CA", name: "Canada", states: [])]
+        storageManager.insertSampleCountries(readOnlyCountries: countries)
+
+        // When
         let viewModel = WooShippingEditAddressViewModel(type: .origin,
                                                         id: "",
                                                         name: "",
@@ -217,14 +236,21 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         isDefaultAddress: true,
                                                         showCompanyField: true,
                                                         isVerified: true,
-                                                        phoneNumberRequired: true)
+                                                        phoneNumberRequired: true,
+                                                        storageManager: storageManager)
 
         // Then
         XCTAssertTrue(viewModel.showSaveAsDefault)
+        XCTAssertEqual(viewModel.countries.count, 1, "Should only include USPS-supported countries for origin addresses")
     }
 
     func test_it_inits_with_expected_values_for_destination_address_type() {
-        // Given/When
+        // Given
+        let storageManager = MockStorageManager()
+        let countries = [Country(code: "US", name: "United States", states: []), Country(code: "CA", name: "Canada", states: [])]
+        storageManager.insertSampleCountries(readOnlyCountries: countries)
+
+        // When
         let viewModel = WooShippingEditAddressViewModel(type: .destination,
                                                         id: "",
                                                         name: "",
@@ -239,9 +265,173 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         isDefaultAddress: true,
                                                         showCompanyField: true,
                                                         isVerified: true,
-                                                        phoneNumberRequired: true)
+                                                        phoneNumberRequired: true,
+                                                        storageManager: storageManager)
 
         // Then
         XCTAssertFalse(viewModel.showSaveAsDefault)
+        XCTAssertEqual(viewModel.countries.count, 2, "Should include all countries for destination addresses")
+    }
+
+    func test_init_fetches_countries_from_remote() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storageManager = MockStorageManager()
+        let country = Country(code: "US", name: "United States", states: [])
+        stores.whenReceivingAction(ofType: DataAction.self) { action in
+            switch action {
+            case .synchronizeCountries(_, let completion):
+                storageManager.insertSampleCountries(readOnlyCountries: [country])
+                completion(.success([country]))
+            }
+        }
+
+        // When
+        let viewModel = WooShippingEditAddressViewModel(type: .destination,
+                                                        id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: "",
+                                                        address: "",
+                                                        city: "",
+                                                        state: "",
+                                                        postalCode: "",
+                                                        email: "",
+                                                        phone: "",
+                                                        isDefaultAddress: true,
+                                                        showCompanyField: true,
+                                                        isVerified: true,
+                                                        phoneNumberRequired: true,
+                                                        stores: stores,
+                                                        storageManager: storageManager)
+
+        // Then
+        XCTAssertEqual(viewModel.countries.count, 1)
+        XCTAssertTrue(stores.receivedActions.first is DataAction)
+    }
+
+    func test_isRequired_returns_true_when_selected_country_contains_states() {
+        // Given
+        let storageManager = MockStorageManager()
+        let country = Country(code: "US", name: "United States", states: [.init(code: "NY", name: "New York")])
+        storageManager.insertSampleCountries(readOnlyCountries: [country])
+        let viewModel = WooShippingEditAddressViewModel(type: .destination,
+                                                        id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: country.code,
+                                                        address: "",
+                                                        city: "",
+                                                        state: "",
+                                                        postalCode: "",
+                                                        email: "",
+                                                        phone: "",
+                                                        isDefaultAddress: true,
+                                                        showCompanyField: true,
+                                                        isVerified: true,
+                                                        phoneNumberRequired: true,
+                                                        storageManager: storageManager)
+
+        // When
+        let isStateRequired = viewModel.isRequired(.state)
+
+        // Then
+        XCTAssertTrue(isStateRequired)
+    }
+
+    func test_selected_country_and_state_properies_set_when_address_contains_country_and_state_in_countries() {
+        // Given
+        let storageManager = MockStorageManager()
+        let state = StateOfACountry(code: "NY", name: "New York")
+        let country = Country(code: "US", name: "United States", states: [state])
+        storageManager.insertSampleCountries(readOnlyCountries: [country])
+
+        // When
+        let viewModel = WooShippingEditAddressViewModel(type: .destination,
+                                                        id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: country.code,
+                                                        address: "",
+                                                        city: "",
+                                                        state: state.code,
+                                                        postalCode: "",
+                                                        email: "",
+                                                        phone: "",
+                                                        isDefaultAddress: true,
+                                                        showCompanyField: true,
+                                                        isVerified: true,
+                                                        phoneNumberRequired: true,
+                                                        storageManager: storageManager)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedCountry, country)
+        XCTAssertEqual(viewModel.selectedState, state)
+        XCTAssertEqual(viewModel.country, country.code)
+        XCTAssertEqual(viewModel.state, state.code)
+    }
+
+    func test_selectedState_cleared_when_new_country_is_selected() {
+        // Given
+        let storageManager = MockStorageManager()
+        let state = StateOfACountry(code: "NY", name: "New York")
+        let country = Country(code: "US", name: "United States", states: [state])
+        storageManager.insertSampleCountries(readOnlyCountries: [country])
+        let viewModel = WooShippingEditAddressViewModel(type: .destination,
+                                                        id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: country.code,
+                                                        address: "",
+                                                        city: "",
+                                                        state: state.code,
+                                                        postalCode: "",
+                                                        email: "",
+                                                        phone: "",
+                                                        isDefaultAddress: true,
+                                                        showCompanyField: true,
+                                                        isVerified: true,
+                                                        phoneNumberRequired: true,
+                                                        storageManager: storageManager)
+
+        // When
+        let countrySelectorCommand = viewModel.countrySelectorVM.command
+        let viewController = ListSelectorViewController(command: countrySelectorCommand, onDismiss: { _ in }) // Needed because of legacy UIKit ways
+        countrySelectorCommand.handleSelectedChange(selected: Country.fake(), viewController: viewController)
+
+        // Then
+        XCTAssertNil(viewModel.selectedState)
+    }
+
+    func test_selectedState_not_cleared_when_same_country_is_selected() {
+        // Given
+        let storageManager = MockStorageManager()
+        let state = StateOfACountry(code: "NY", name: "New York")
+        let country = Country(code: "US", name: "United States", states: [state])
+        storageManager.insertSampleCountries(readOnlyCountries: [country])
+        let viewModel = WooShippingEditAddressViewModel(type: .destination,
+                                                        id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: country.code,
+                                                        address: "",
+                                                        city: "",
+                                                        state: state.code,
+                                                        postalCode: "",
+                                                        email: "",
+                                                        phone: "",
+                                                        isDefaultAddress: true,
+                                                        showCompanyField: true,
+                                                        isVerified: true,
+                                                        phoneNumberRequired: true,
+                                                        storageManager: storageManager)
+
+        // When
+        let countrySelectorCommand = viewModel.countrySelectorVM.command
+        let viewController = ListSelectorViewController(command: countrySelectorCommand, onDismiss: { _ in }) // Needed because of legacy UIKit ways
+        countrySelectorCommand.handleSelectedChange(selected: country, viewController: viewController)
+
+        // Then
+        XCTAssertNotNil(viewModel.selectedState)
     }
 }

@@ -434,4 +434,207 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(viewModel.selectedState)
     }
+
+    func test_validateAddress_sets_empty_invalidFields_when_all_fields_valid() {
+        // Given
+        let storageManager = MockStorageManager()
+        let country = Country(code: "US", name: "United States", states: [StateOfACountry(code: "NY", name: "New York")])
+        storageManager.insertSampleCountries(readOnlyCountries: [country])
+        let viewModel = WooShippingEditAddressViewModel(type: .destination,
+                                                        id: "",
+                                                        name: "JANE DOE",
+                                                        company: "HEADQUARTERS",
+                                                        country: "US",
+                                                        address: "15 ALGONKIN ST STE 100",
+                                                        city: "TICONDEROGA",
+                                                        state: "NY",
+                                                        postalCode: "12883-1487",
+                                                        email: "TEST@EXAMPLE.COM",
+                                                        phone: "1-234-456-7890",
+                                                        isDefaultAddress: true,
+                                                        showCompanyField: true,
+                                                        isVerified: true,
+                                                        phoneNumberRequired: true,
+                                                        storageManager: storageManager)
+
+        // When
+        viewModel.validateAddress()
+
+        // Then
+        XCTAssertTrue(viewModel.invalidFields.isEmpty)
+    }
+
+    func test_validateAddress_sets_expected_invalidFields_when_all_fields_empty() {
+        // Given
+        let viewModel = WooShippingEditAddressViewModel(type: .destination,
+                                                        id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: "",
+                                                        address: "",
+                                                        city: "",
+                                                        state: "",
+                                                        postalCode: "",
+                                                        email: "",
+                                                        phone: "",
+                                                        isDefaultAddress: true,
+                                                        showCompanyField: true,
+                                                        isVerified: true,
+                                                        phoneNumberRequired: true)
+
+        // When
+        viewModel.validateAddress()
+
+        // Then
+        // Note that empty state is valid when country is empty (has no states).
+        let expectedInvalidFields = WooShippingEditAddressView.AddressField.allCases.filter { $0 != .state }
+        XCTAssertEqual(viewModel.invalidFields, expectedInvalidFields)
+    }
+
+    func test_validate_sets_empty_invalidFields_when_all_fields_valid() {
+        // Given
+        let storageManager = MockStorageManager()
+        let country = Country(code: "US", name: "United States", states: [StateOfACountry(code: "NY", name: "New York")])
+        storageManager.insertSampleCountries(readOnlyCountries: [country])
+        let viewModel = WooShippingEditAddressViewModel(type: .destination,
+                                                        id: "",
+                                                        name: "JANE DOE",
+                                                        company: "HEADQUARTERS",
+                                                        country: "US",
+                                                        address: "15 ALGONKIN ST STE 100",
+                                                        city: "TICONDEROGA",
+                                                        state: "NY",
+                                                        postalCode: "12883-1487",
+                                                        email: "TEST@EXAMPLE.COM",
+                                                        phone: "1-234-456-7890",
+                                                        isDefaultAddress: true,
+                                                        showCompanyField: true,
+                                                        isVerified: true,
+                                                        phoneNumberRequired: true,
+                                                        storageManager: storageManager)
+
+        // When
+        for field in WooShippingEditAddressView.AddressField.allCases {
+            viewModel.validate(field)
+        }
+
+        // Then
+        XCTAssertTrue(viewModel.invalidFields.isEmpty)
+    }
+
+    func test_validate_sets_expected_invalidFields_when_all_fields_empty() {
+        // Given
+        let viewModel = WooShippingEditAddressViewModel(type: .destination,
+                                                        id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: "",
+                                                        address: "",
+                                                        city: "",
+                                                        state: "",
+                                                        postalCode: "",
+                                                        email: "",
+                                                        phone: "",
+                                                        isDefaultAddress: true,
+                                                        showCompanyField: true,
+                                                        isVerified: true,
+                                                        phoneNumberRequired: true)
+
+        // When
+        for field in WooShippingEditAddressView.AddressField.allCases {
+            viewModel.validate(field)
+        }
+
+        // Then
+        // Note that empty state is valid when country is empty (has no states).
+        let expectedInvalidFields = WooShippingEditAddressView.AddressField.allCases.filter { $0 != .state }
+        XCTAssertEqual(viewModel.invalidFields, expectedInvalidFields)
+    }
+
+    func test_validate_sets_state_as_invalid_field_when_empty_and_country_contains_states() {
+        // Given
+        let storageManager = MockStorageManager()
+        let country = Country(code: "US", name: "United States", states: [.fake()])
+        storageManager.insertSampleCountries(readOnlyCountries: [country])
+        let viewModel = WooShippingEditAddressViewModel(type: .destination,
+                                                        id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: "US",
+                                                        address: "",
+                                                        city: "",
+                                                        state: "",
+                                                        postalCode: "",
+                                                        email: "",
+                                                        phone: "",
+                                                        isDefaultAddress: true,
+                                                        showCompanyField: true,
+                                                        isVerified: true,
+                                                        phoneNumberRequired: true,
+                                                        storageManager: storageManager)
+
+        // When
+        viewModel.validate(.state)
+
+        // Then
+        XCTAssertEqual(viewModel.invalidFields, [.state])
+    }
+
+    func test_validate_sets_phone_as_invalid_field_when_invalid_for_US() {
+        // Given
+        let storageManager = MockStorageManager()
+        let country = Country(code: "US", name: "United States", states: [])
+        storageManager.insertSampleCountries(readOnlyCountries: [country])
+        let viewModel = WooShippingEditAddressViewModel(type: .destination,
+                                                        id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: "US",
+                                                        address: "",
+                                                        city: "",
+                                                        state: "",
+                                                        postalCode: "",
+                                                        email: "",
+                                                        phone: "123-4567",
+                                                        isDefaultAddress: true,
+                                                        showCompanyField: true,
+                                                        isVerified: true,
+                                                        phoneNumberRequired: true,
+                                                        storageManager: storageManager)
+
+        // When
+        viewModel.validate(.phone)
+
+        // Then
+        XCTAssertEqual(viewModel.invalidFields, [.phone])
+    }
+
+    func test_validate_removes_valid_field_from_invalidFields() {
+        // Given
+        let viewModel = WooShippingEditAddressViewModel(type: .destination,
+                                                        id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: "",
+                                                        address: "",
+                                                        city: "",
+                                                        state: "",
+                                                        postalCode: "",
+                                                        email: "",
+                                                        phone: "",
+                                                        isDefaultAddress: true,
+                                                        showCompanyField: true,
+                                                        isVerified: true,
+                                                        phoneNumberRequired: true)
+        // Precondition check
+        viewModel.validate(.name)
+        XCTAssertTrue(viewModel.invalidFields.contains(.name))
+
+        // When
+        viewModel.name = "JANE DOE"
+        viewModel.validate(.name)
+
+        // Then
+        XCTAssertFalse(viewModel.invalidFields.contains(.name))
+    }
 }

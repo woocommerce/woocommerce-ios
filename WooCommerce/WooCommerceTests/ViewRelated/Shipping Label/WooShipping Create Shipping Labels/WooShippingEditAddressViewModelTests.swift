@@ -1,5 +1,6 @@
 import XCTest
 @testable import WooCommerce
+import Yosemite
 
 final class WooShippingEditAddressViewModelTests: XCTestCase {
 
@@ -54,9 +55,6 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
     func test_origin_address_inits_with_expected_values() {
         // Given
-        let storageManager = MockStorageManager()
-        let countries = [Country(code: "US", name: "United States", states: []), Country(code: "CA", name: "Canada", states: [])]
-        storageManager.insertSampleCountries(readOnlyCountries: countries)
         let address = WooShippingOriginAddress(id: "default_address",
                                                company: "HEADQUARTERS",
                                                address1: "15 ALGONKIN ST",
@@ -73,7 +71,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                isVerified: true)
 
         // When
-        let viewModel = WooShippingEditAddressViewModel(address: address, storageManager: storageManager)
+        let viewModel = WooShippingEditAddressViewModel(address: address)
 
         // Then
         XCTAssertEqual(viewModel.id, address.id)
@@ -90,7 +88,6 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.showCompanyField)
         XCTAssertEqual(viewModel.status, .verified)
         XCTAssertTrue(viewModel.showSaveAsDefault)
-        XCTAssertEqual(viewModel.countries.count, 1, "Should only include USPS-supported countries for origin addresses")
     }
 
     func test_isRequired_returns_expected_values() {

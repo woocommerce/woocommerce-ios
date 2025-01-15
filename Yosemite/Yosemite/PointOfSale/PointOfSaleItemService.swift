@@ -54,12 +54,7 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
             return .init(items: [], hasMorePages: false)
         }
 
-        let eligibilityCriteria: [(Product) -> Bool] = [
-            hasPrice
-        ]
-        let filteredProducts = filterProducts(products: products, using: eligibilityCriteria)
-
-        return .init(items: mapProductsToPOSItems(products: filteredProducts), hasMorePages: pagedProducts.hasMorePages)
+        return .init(items: mapProductsToPOSItems(products: products), hasMorePages: pagedProducts.hasMorePages)
     }
 
     public func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
@@ -115,17 +110,5 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                     return nil
             }
         }
-    }
-}
-
-private extension PointOfSaleItemService {
-    func filterProducts(products: [Product], using criteria: [(Product) -> Bool]) -> [Product] {
-        return products.filter { product in
-            criteria.allSatisfy { $0(product) }
-        }
-    }
-
-    func hasPrice(product: Product) -> Bool {
-        !product.price.isEmpty
     }
 }

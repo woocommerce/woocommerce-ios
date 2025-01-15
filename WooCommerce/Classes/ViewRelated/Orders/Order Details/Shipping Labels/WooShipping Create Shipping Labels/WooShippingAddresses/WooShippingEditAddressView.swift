@@ -185,8 +185,14 @@ struct WooShippingEditAddressView: View {
                     .focused($focused, equals: field.type)
                     .padding()
                     .roundedBorder(cornerRadius: Constants.cornerRadius,
-                                   lineColor: focused == field.type ? Color(.accent) : Constants.defaultBorderColor,
+                                   lineColor: Constants.fieldBorderColor(focused: focused == field.type, valid: field.errorMessage == nil),
                                    lineWidth: focused == field.type ? 2 : Constants.defaultBorderWidth)
+                if let errorMessage = field.errorMessage {
+                    Text(errorMessage)
+                        .font(.subheadline)
+                        .foregroundStyle(Constants.red)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
         }
     }
@@ -224,6 +230,12 @@ struct WooShippingEditAddressView: View {
                     .roundedBorder(cornerRadius: Constants.cornerRadius,
                                    lineColor: Constants.defaultBorderColor,
                                    lineWidth: Constants.defaultBorderWidth)
+                }
+                if let errorMessage = field.errorMessage {
+                    Text(errorMessage)
+                        .font(.subheadline)
+                        .foregroundStyle(Constants.red)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
         }
@@ -295,6 +307,12 @@ private extension WooShippingEditAddressView {
         static let red = Color(UIColor(light: .withColorStudio(.red, shade: .shade60),
                                        dark: .withColorStudio(.red, shade: .shade40)))
         static let requiredLabelSpacing: CGFloat = 4
+        static func fieldBorderColor(focused: Bool, valid: Bool) -> Color {
+            guard valid else {
+                return red
+            }
+            return focused ? Color(.accent) : defaultBorderColor
+        }
     }
 
     enum Localization {

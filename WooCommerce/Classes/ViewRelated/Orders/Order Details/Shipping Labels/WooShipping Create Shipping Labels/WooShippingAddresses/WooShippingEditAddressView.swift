@@ -96,12 +96,32 @@ struct WooShippingEditAddressView: View {
                 NavigationStack {
                     FilterListSelector(viewModel: viewModel.countrySelectorVM)
                         .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button {
+                                    isPresentingCountrySelector = false
+                                } label: {
+                                    Text(Localization.done)
+                                        .bold()
+                                }
+                            }
+                        }
                 }
             }
             .sheet(isPresented: $isPresentingStateSelector) {
                 NavigationStack {
                     FilterListSelector(viewModel: viewModel.stateSelectorVM)
                         .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button {
+                                    isPresentingStateSelector = false
+                                } label: {
+                                    Text(Localization.done)
+                                        .bold()
+                                }
+                            }
+                        }
                 }
             }
         }

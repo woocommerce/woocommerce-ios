@@ -14,7 +14,7 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
         VStack {
             if isShowingSendReceiptView {
                 POSSendReceiptView(isShowingSendReceiptView: $isShowingSendReceiptView)
-                    .transition(.move(edge: .leading))
+                    .transition(.move(edge: .trailing))
             } else {
                 ZStack {
                     VStack(alignment: .center, spacing: Constants.headerSpacing) {
@@ -51,7 +51,7 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
                         .edgesIgnoringSafeArea(.bottom)
                     }
                 }
-                .transition(.move(edge: .trailing))
+                .transition(.move(edge: .leading))
             }
         }
         .animation(.default, value: isShowingSendReceiptView)

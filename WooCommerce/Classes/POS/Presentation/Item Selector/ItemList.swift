@@ -89,11 +89,7 @@ private struct ItemListRow: View {
             NavigationLink(value: item) {
                 ParentProductCardView(name: parentProduct.name,
                                       imageSource: parentProduct.productImageSource,
-                                      detailView: {
-                    Text(Localization.variationsAvailable)
-                        .foregroundStyle(Color.posSecondaryText)
-                        .font(PointOfSaleItemListCardConstants.itemDetailFont)
-                })
+                                      detailText: Localization.variationsAvailable)
             }
         case let .variation(variation):
             Button(action: {

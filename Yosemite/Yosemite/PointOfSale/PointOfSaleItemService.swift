@@ -83,7 +83,8 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                                      price: variation.price,
                                      productImageSource: variation.image?.src,
                                      productID: variation.productID,
-                                     variationID: variation.productVariationID))
+                                     variationID: variation.productVariationID,
+                                     parentProductName: parentProduct.name))
             }),
             hasMorePages: pagedVariations.hasMorePages
         )

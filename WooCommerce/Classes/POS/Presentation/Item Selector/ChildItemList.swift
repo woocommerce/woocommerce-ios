@@ -89,7 +89,8 @@ private extension ChildItemList {
                                                                 formattedPrice: "$5.75",
                                                                 price: "5.75",
                                                                 productID: 134,
-                                                                variationID: 256
+                                                                variationID: 256,
+                                                                parentProductName: parentProduct.name
                                                             )
                                                         ),
                                                         .variation(
@@ -99,7 +100,8 @@ private extension ChildItemList {
                                                                 formattedPrice: "$6.5",
                                                                 price: "6.5",
                                                                 productID: 134,
-                                                                variationID: 256
+                                                                variationID: 256,
+                                                                parentProductName: parentProduct.name
                                                             )
                                                         )
                                                     ], hasMoreItems: false)]))

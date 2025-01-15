@@ -14,23 +14,25 @@ struct ItemRowView: View {
     }
 
     var body: some View {
-        HStack(spacing: Constants.horizontalCardSpacing) {
+        HStack(spacing: Constants.horizontalElementSpacing) {
             productImage
 
-            VStack(alignment: .leading, spacing: Constants.itemNameAndPriceSpacing) {
-                Text(cartItem.item.name)
+            VStack(alignment: .leading, spacing: Constants.itemTitleAndPriceSpacing * (1 / scale)) {
+                Text(cartItem.title)
                     .foregroundColor(Color.posPrimaryText)
-                    .font(Constants.itemNameFont)
-                    .padding(.leading, Constants.horizontalElementSpacing * (1 / scale))
-                    .padding(.top, Constants.verticalPadding * (1 / scale))
+                    .font(Constants.itemTitleFont)
+                if let subtitle = cartItem.subtitle {
+                    Text(subtitle)
+                        .foregroundColor(Color.posSecondaryText)
+                        .font(Constants.itemSubtitleFont)
+                }
                 Text(cartItem.item.formattedPrice)
-                    .foregroundColor(Color.posPrimaryText)
+                    .foregroundColor(Color.posSecondaryText)
                     .font(Constants.itemPriceFont)
-                    .padding(.leading, Constants.horizontalElementSpacing * (1 / scale))
-                    .padding(.bottom, Constants.verticalPadding * (1 / scale))
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .accessibilityElement(children: .combine)
-            Spacer()
+
             if let onItemRemoveTapped {
                 Button(action: {
                     onItemRemoveTapped()
@@ -90,7 +92,7 @@ private extension ItemRowView {
 
 private extension ItemRowView {
     enum Constants {
-        static let productCardSize: CGFloat = 76
+        static let productCardSize: CGFloat = 96
         static let maximumProductCardSize: CGFloat = Self.productCardSize * 1.5
         static let productCardCornerRadius: CGFloat = 8
         // The use of stroke means the shape is rendered as an outline (border) rather than a filled shape,
@@ -98,10 +100,10 @@ private extension ItemRowView {
         static let nilOutline: CGFloat = 0
         static let verticalPadding: CGFloat = 4
         static let horizontalPadding: CGFloat = 16
-        static let horizontalCardSpacing: CGFloat = 0
         static let horizontalElementSpacing: CGFloat = 16
-        static let itemNameAndPriceSpacing: CGFloat = 8
-        static let itemNameFont: POSFontStyle = .posDetailEmphasized
+        static let itemTitleAndPriceSpacing: CGFloat = 4
+        static let itemTitleFont: POSFontStyle = .posDetailEmphasized
+        static let itemSubtitleFont: POSFontStyle = .posDetailLight
         static let itemPriceFont: POSFontStyle = .posDetailLight
     }
 
@@ -115,9 +117,22 @@ private extension ItemRowView {
 }
 
 #if DEBUG
-#Preview {
+@available(iOS 17.0, *)
+#Preview(traits: .sizeThatFitsLayout) {
     ItemRowView(cartItem: CartItem(id: UUID(),
                                    item: PointOfSalePreviewItemService().providePointOfSaleItem(),
+                                   title: "Item Title",
+                                   subtitle: "Item Subtitle",
+                                   quantity: 2),
+                onItemRemoveTapped: { })
+}
+
+@available(iOS 17.0, *)
+#Preview(traits: .sizeThatFitsLayout) {
+    ItemRowView(cartItem: CartItem(id: UUID(),
+                                   item: PointOfSalePreviewItemService().providePointOfSaleItem(),
+                                   title: "Item Title",
+                                   subtitle: nil,
                                    quantity: 2),
                 onItemRemoveTapped: { })
 }

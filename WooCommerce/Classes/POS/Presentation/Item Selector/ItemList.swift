@@ -79,7 +79,7 @@ private struct ItemListRow: View {
         switch item {
         case let .simpleProduct(product):
             Button(action: {
-                posModel.addToCart(product)
+                posModel.addToCart(item)
                 analytics.track(event: .PointOfSale.addItemToCart(type: .simpleProduct))
             }, label: {
                 SimpleProductCardView(product: product)
@@ -96,7 +96,7 @@ private struct ItemListRow: View {
             }
         case let .variation(variation):
             Button(action: {
-                posModel.addToCart(variation)
+                posModel.addToCart(item)
                 analytics.track(event: .PointOfSale.addItemToCart(type: .variation))
             }, label: {
                 VariationCardView(variation: variation)

@@ -176,6 +176,7 @@ private extension CartView {
         static let cartHeaderElementSpacing: CGFloat = 16
         static let cartAnimation: Animation = .spring(duration: 0.2)
         static let checkoutButtonVerticalPadding: CGFloat = 16
+        static let cartItemSpacing: CGFloat = 16
     }
 
     enum Localization {

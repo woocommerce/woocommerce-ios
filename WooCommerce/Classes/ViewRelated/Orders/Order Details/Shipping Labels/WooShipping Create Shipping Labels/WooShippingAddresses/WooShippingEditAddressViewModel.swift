@@ -48,6 +48,24 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     /// Whether the phone number is required.
     private let phoneNumberRequired: Bool
 
+    /// Validates phone number for the address.
+    /// This take into account whether phone is not empty,
+    /// has length 10 with additional "1" area code for US.
+    ///
+    private var isPhoneNumberValid: Bool {
+        guard phone.isNotEmpty else {
+            return false
+        }
+        guard isUSAddress else {
+            return true
+        }
+        if phone.hasPrefix("1") {
+            return phone.count == 11
+        } else {
+            return phone.count == 10
+        }
+    }
+
     // TODO: Set status based on initial verified status, whether any changes have been made, and local validation.
     /// Status of the address, based on local validation and remote verification.
     var status: WooShippingAddressStatus
@@ -93,6 +111,11 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         case .destination:
             resultsController.fetchedObjects
         }
+    }
+
+    /// Whether the address is in the US.
+    var isUSAddress: Bool {
+        country == "US"
     }
 
     /// States of the selected country.

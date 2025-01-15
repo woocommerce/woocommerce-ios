@@ -22,14 +22,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
         self.onCompletion = onCompletion
 
         itemsViewModels = orderItems.map {
-            WooShippingCustomsItemViewModel(
-                description: $0.name,
-                hsTariffNumber: "",
-                valuePerUnit: "",
-                weightPerUnit: "",
-                originCountry: WooShippingCustomsCountry(code: "US", name: "United States"),
-                orderItem: $0
-            )
+            WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "US", name: "United States"), orderItem: $0)
         }
 
         listenToItemsRequiredInformationValues()

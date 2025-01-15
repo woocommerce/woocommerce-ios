@@ -10,10 +10,10 @@ struct WooShippingCustomsCountry: Hashable {
 
 final class WooShippingCustomsItemViewModel: ObservableObject {
     @Published var title: String
-    @Published var description: String
-    @Published var hsTariffNumber: String
-    @Published var valuePerUnit: String
-    @Published var weightPerUnit: String
+    @Published var description: String = ""
+    @Published var hsTariffNumber: String = ""
+    @Published var valuePerUnit: String = ""
+    @Published var weightPerUnit: String = ""
     @Published var originCountry: WooShippingCustomsCountry
 
     private let storageManager: StorageManagerType
@@ -55,19 +55,11 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
 
-    init(description: String,
-         hsTariffNumber: String,
-         valuePerUnit: String,
-         weightPerUnit: String,
-         originCountry: WooShippingCustomsCountry,
+    init(originCountry: WooShippingCustomsCountry,
          orderItem: OrderItem,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores) {
         self.title = orderItem.name
-        self.description = description
-        self.hsTariffNumber = hsTariffNumber
-        self.valuePerUnit = valuePerUnit
-        self.weightPerUnit = weightPerUnit
         self.originCountry = originCountry
         self.orderItem = orderItem
         self.storageManager = storageManager

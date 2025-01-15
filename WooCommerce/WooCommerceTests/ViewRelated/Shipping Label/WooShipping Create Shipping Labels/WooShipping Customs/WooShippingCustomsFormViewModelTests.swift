@@ -43,4 +43,22 @@ class WooShippingCustomsFormViewModelTests: XCTestCase {
         XCTAssertEqual(passedForm?.items.first?.hsTariffNumber, viewModel.itemsViewModels.first?.hsTariffNumber)
         XCTAssertEqual(passedForm?.items.first?.originCountry, viewModel.itemsViewModels.first?.originCountry.name)
     }
+
+    func test_onDismiss_when_calls_onCompletion_with_invalid_hsTariffNumber_then_returns_empty() {
+        // Given
+        let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
+
+        var passedForm: ShippingLabelCustomsForm?
+        viewModel = WooShippingCustomsFormViewModel(orderItems: orderItems, onCompletion: { form in
+            passedForm = form
+        })
+
+        viewModel.itemsViewModels.first?.hsTariffNumber = "12"
+
+        // When
+        viewModel.onDismiss()
+
+        // Then
+        XCTAssertTrue(passedForm?.items.first?.hsTariffNumber.isEmpty ?? false)
+    }
 }

@@ -32,6 +32,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     @Published var itemsViewModels: [WooShippingCustomsItemViewModel] = []
 
     func onDismiss() {
+        // TODO: Add missing values if possible
         let form = ShippingLabelCustomsForm(packageID: "",
                                             packageName: "",
                                             contentsType: contentType.toFormContentsType(),

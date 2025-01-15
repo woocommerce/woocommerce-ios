@@ -31,7 +31,7 @@ struct ItemList<HeaderView: View>: View {
                 await posModel.loadNextItems(base: node)
             },
             content: {
-                LazyVStack {
+                LazyVStack(spacing: Constants.itemSpacing) {
                     headerView
 
                     ForEach(state.items) { item in
@@ -68,6 +68,7 @@ struct ItemList<HeaderView: View>: View {
 
 private enum Constants {
     static let itemListPadding: CGFloat = 16
+    static let itemSpacing: CGFloat = 16
 }
 
 private struct ItemListRow: View {

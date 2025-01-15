@@ -67,7 +67,7 @@ struct CartView: View {
             if posModel.cart.isNotEmpty {
                 ScrollViewReader { proxy in
                     ScrollView {
-                        VStack(spacing: 0) {
+                        VStack(spacing: Constants.cartItemSpacing) {
                             ForEach(posModel.cart, id: \.id) { cartItem in
                                 ItemRowView(cartItem: cartItem,
                                             onItemRemoveTapped: posModel.orderStage == .building ? {

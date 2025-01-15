@@ -49,12 +49,10 @@ struct ItemRowView: View {
         .background(backgroundColor)
         .overlay {
             RoundedRectangle(cornerRadius: Constants.productCardCornerRadius)
-                .stroke(Color.black, lineWidth: Constants.nilOutline)
+                .stroke(Color.posCartItemOutline, lineWidth: cardOutlineWidth)
         }
         .clipShape(RoundedRectangle(cornerRadius: Constants.productCardCornerRadius))
         .padding(.horizontal, Constants.horizontalPadding)
-        .padding(.vertical, Constants.verticalPadding)
-        .shadow(color: Color.black.opacity(0.08), radius: 4, y: 2)
     }
 
     @ViewBuilder
@@ -80,6 +78,15 @@ struct ItemRowView: View {
 }
 
 private extension ItemRowView {
+    var cardOutlineWidth: CGFloat {
+        switch colorScheme {
+        case .dark:
+            return 0
+        default:
+            return Constants.cardOutlineWidth
+        }
+    }
+
     var backgroundColor: Color {
         switch colorScheme {
         case .dark:
@@ -95,10 +102,7 @@ private extension ItemRowView {
         static let productCardSize: CGFloat = 96
         static let maximumProductCardSize: CGFloat = Self.productCardSize * 1.5
         static let productCardCornerRadius: CGFloat = 8
-        // The use of stroke means the shape is rendered as an outline (border) rather than a filled shape,
-        // since we still have to give it a value, we use 0 so it renders no border but it's shaped as one.
-        static let nilOutline: CGFloat = 0
-        static let verticalPadding: CGFloat = 4
+        static let cardOutlineWidth: CGFloat = 1
         static let horizontalPadding: CGFloat = 16
         static let horizontalElementSpacing: CGFloat = 16
         static let itemTitleAndPriceSpacing: CGFloat = 4

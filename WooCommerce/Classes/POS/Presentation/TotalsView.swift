@@ -20,13 +20,11 @@ struct TotalsView: View {
     private var shouldShowCollectCashPaymentButton: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.acceptCashForPointOfSale) &&
         posModel.orderState != .syncing &&
-        (posModel.paymentState == .idle || posModel.paymentState == .acceptingCard)
+        (posModel.paymentState == .card(.idle) || posModel.paymentState == .card(.acceptingCard))
     }
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
-
-    @State private var shouldShowCollectCashPayment: Bool = false
 
     var body: some View {
         HStack {
@@ -38,7 +36,7 @@ struct TotalsView: View {
 
                     VStack(alignment: .center, spacing: Constants.verticalSpacing) {
                         if isShowingCardReaderStatus {
-                            cardReaderView
+                            paymentView
                                 .font(.title)
                                 .padding([.leading, .trailing],
                                          dynamicTypeSize.isAccessibilitySize ? nil :
@@ -48,9 +46,9 @@ struct TotalsView: View {
                                             cardReaderViewLayout.bottomPadding)
                                 .padding(.top, dynamicTypeSize.isAccessibilitySize ? nil : cardReaderViewLayout.topPadding)
                                 .transition(.opacity)
-                                .background(cardReaderViewLayout.backgroundColor)
                                 .accessibilityShowsLargeContentViewer()
                                 .layoutPriority(1)
+                                .background(backgroundColor)
                         }
 
                         if isShowingTotalsFields {
@@ -61,7 +59,9 @@ struct TotalsView: View {
                                 .layoutPriority(2)
                         }
                         Button(action: {
-                            shouldShowCollectCashPayment = true
+                            Task { @MainActor in
+                                await posModel.startCashPayment()
+                            }
                         }, label: {
                             Text(Localization.cashPaymentButtonTitle)
                                 .font(POSFontStyle.posBodyEmphasized)
@@ -88,22 +88,17 @@ struct TotalsView: View {
             isShowingTotalsFields = shouldShowTotalsFields
         }
         .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
-        .fullScreenCover(isPresented: $shouldShowCollectCashPayment) {
-            if case .loaded(let total) = posModel.orderState {
-                PointOfSaleCollectCashView(orderTotal: total.orderTotal)
-                    .matchedGeometryEffect(id: Constants.matchedGeometryCashId,
-                                           in: totalsFieldAnimation)
-            }
-        }
         .geometryGroupIfSupported()
     }
 
     private var backgroundColor: Color {
         switch posModel.paymentState {
-        case .cardPaymentSuccessful:
+        case .card(.cardPaymentSuccessful), .cash(.paymentSuccess):
             .posSecondaryBackground
-        case .processingPayment:
+        case .card(.processingPayment):
             colorScheme == .light ? Color(.wooCommercePurple(.shade70)) : Color(.wooCommercePurple(.shade10))
+        case .cash(.collectingCash):
+            colorScheme == .light ? .clear : Color.posSecondaryBackground
         default:
             .clear
         }
@@ -210,7 +205,7 @@ private extension TotalsView {
     /// Hide totals fields with animation after a delay when starting to processing a payment
     /// - Parameter isShowing
     private func hideTotalsFieldsWithDelay(_ isShowing: Bool) {
-        guard !isShowing && posModel.paymentState == .processingPayment else {
+        guard !isShowing && posModel.paymentState == .card(.processingPayment) else {
             self.isShowingTotalsFields = isShowing
             return
         }
@@ -223,46 +218,64 @@ private extension TotalsView {
 
 private extension TotalsView {
 
-    @ViewBuilder private var cardReaderView: some View {
-        switch posModel.cardReaderConnectionStatus {
-        case .connected, .disconnecting, .cancellingConnection:
-            if let inlinePaymentMessage = posModel.cardPresentPaymentInlineMessage {
-                HStack(alignment: .center) {
-                    Spacer()
-                    PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
-                    Spacer()
+    @ViewBuilder private var paymentView: some View {
+        switch posModel.paymentState {
+        case .card:
+            switch posModel.cardReaderConnectionStatus {
+            case .connected, .disconnecting, .cancellingConnection:
+                if let inlinePaymentMessage = posModel.cardPresentPaymentInlineMessage {
+                    HStack(alignment: .center) {
+                        Spacer()
+                        PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
+                        Spacer()
+                    }
+                } else {
+                    EmptyView()
                 }
-            } else {
-                EmptyView()
+            case .disconnected:
+                PointOfSaleCardPresentPaymentReaderDisconnectedMessageView {
+                    posModel.connectCardReader()
+                }
             }
-        case .disconnected:
-            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView {
-                posModel.connectCardReader()
+        case .cash(let cashPaymentState):
+            switch cashPaymentState {
+            case .collectingCash:
+                if case .loaded(let total) = posModel.orderState {
+                    PointOfSaleCollectCashView(orderTotal: total.orderTotal)
+                }
+            case .paymentSuccess:
+                if case .loaded(let total) = posModel.orderState {
+                    HStack(alignment: .center) {
+                        Spacer()
+                        PointOfSaleCardPresentPaymentInLineMessage(messageType: .paymentSuccess(viewModel: .init(formattedOrderTotal: total.orderTotal)))
+                        Spacer()
+                    }
+                }
             }
         }
     }
 }
 
 private extension TotalsView {
-    struct CardReaderViewLayout {
+    struct PaymentViewLayout {
         let backgroundColor: Color
         let topPadding: CGFloat?
         let bottomPadding: CGFloat?
         let sidePadding: CGFloat = 8
 
-        static let primary = CardReaderViewLayout(
+        static let primary = PaymentViewLayout(
             backgroundColor: .clear,
             topPadding: nil,
             bottomPadding: 8
         )
 
-        static let outlined = CardReaderViewLayout(
+        static let outlined = PaymentViewLayout(
             backgroundColor: Color(.quaternarySystemFill),
             topPadding: 40,
             bottomPadding: 40
         )
 
-        static let topAligned = CardReaderViewLayout(
+        static let topAligned = PaymentViewLayout(
             backgroundColor: .clear,
             topPadding: 96,
             bottomPadding: 96
@@ -286,23 +299,30 @@ private extension TotalsView {
         }
     }
 
-    private var cardReaderViewLayout: CardReaderViewLayout {
+    private var cardReaderViewLayout: PaymentViewLayout {
         guard isShowingCardReaderStatus else {
             return .primary
         }
 
         switch posModel.paymentState {
-        case .validatingOrderError:
-            return .outlined
-        case .paymentError:
-            return .topAligned
-        case .idle,
-                .acceptingCard,
-                .validatingOrder,
-                .preparingReader,
-                .processingPayment,
-                .cardPaymentSuccessful:
-            break
+        case .card(let cardPaymentState):
+            switch cardPaymentState {
+            case .validatingOrderError:
+                return .outlined
+            case .paymentError:
+                return .topAligned
+            case .idle,
+                    .acceptingCard,
+                    .validatingOrder,
+                    .preparingReader,
+                    .processingPayment,
+                    .cardPaymentSuccessful:
+                break
+            }
+        case .cash:
+            return PaymentViewLayout(backgroundColor: backgroundColor,
+                                     topPadding: nil,
+                                     bottomPadding: nil)
         }
 
         if posModel.cardReaderConnectionStatus == .disconnected {

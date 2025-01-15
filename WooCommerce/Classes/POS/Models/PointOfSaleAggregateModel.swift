@@ -23,10 +23,8 @@ protocol PointOfSaleAggregateModelProtocol {
     func trackCardPaymentsOnboardingShown()
 
     var itemsViewState: ItemsViewState { get }
-    func loadInitialItems() async
-    func loadNextItems() async
-    func reload() async
-    func loadInitialChildItems(for parent: POSItem) async
+    func loadItems(base: ItemListBaseItem) async
+    func loadNextItems(base: ItemListBaseItem) async
 
     var cart: [CartItem] { get }
     func addToCart(_ item: POSOrderableItem)
@@ -72,7 +70,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
-         paymentState: PointOfSalePaymentState = .idle) {
+         paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.itemsController = itemsController
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderController = orderController
@@ -93,23 +91,13 @@ extension PointOfSaleAggregateModel {
     }
 
     @MainActor
-    func loadInitialItems() async {
-        await itemsController.loadInitialItems()
+    func loadItems(base: ItemListBaseItem) async {
+        await itemsController.loadItems(base: base)
     }
 
     @MainActor
-    func loadNextItems() async {
-        await itemsController.loadNextItems()
-    }
-
-    @MainActor
-    func reload() async {
-        await itemsController.reload()
-    }
-
-    @MainActor
-    func loadInitialChildItems(for parent: POSItem) async {
-        await itemsController.loadInitialChildItems(for: parent)
+    func loadNextItems(base: ItemListBaseItem) async {
+        await itemsController.loadNextItems(base: base)
     }
 }
 
@@ -118,9 +106,6 @@ extension PointOfSaleAggregateModel {
 extension PointOfSaleAggregateModel {
     func addToCart(_ item: POSOrderableItem) {
         cart.insert(CartItem(id: UUID(), item: item, quantity: 1), at: 0)
-        Task { @MainActor in
-            analytics.track(.pointOfSaleAddItemToCart)
-        }
     }
 
     func remove(cartItem: CartItem) {
@@ -143,7 +128,7 @@ extension PointOfSaleAggregateModel {
 
     private func setStateForEditing() {
         orderStage = .building
-        paymentState = .idle
+        paymentState = .card(.idle)
         cardPresentPaymentInlineMessage = nil
     }
 }
@@ -170,9 +155,9 @@ extension PointOfSaleAggregateModel {
 
     /// Starts a payment immediately if a reader is connected.
     /// Otherwise, schedules a payment to start the next time a reader connects.
-    /// Note that any schedlued payments are cancelled by `cancelReaderPreparation`
+    /// Note that any scheduled payments are cancelled by `cancelReaderPreparation`
     /// e.g. when the TotalsView goes offscreen.
-    func startPaymentWhenCardReaderConnected() async {
+    private func startPaymentWhenCardReaderConnected() async {
         guard case .connected = cardReaderConnectionStatus else {
             return startPaymentOnCardReaderConnection = $cardReaderConnectionStatus
                 .filter { status in
@@ -186,15 +171,15 @@ extension PointOfSaleAggregateModel {
                 .removeDuplicates()
                 .sink { _ in
                     Task { @MainActor [weak self] in
-                        await self?.collectPayment()
+                        await self?.collectCardPayment()
                     }
                 }
         }
-        await collectPayment()
+        await collectCardPayment()
     }
 
     @MainActor
-    func collectPayment() async {
+    private func collectCardPayment() async {
         guard let order = orderController.order else {
             return
             // Should this throw?
@@ -206,13 +191,31 @@ extension PointOfSaleAggregateModel {
         }
     }
 
+    // Prevents card payments from the moment the merchant decides we start collecting cash
+    // Once we get the callback from the card service, we switch to cash collection state
+    @MainActor
+    func startCashPayment() async {
+        try? await cardPresentPaymentService.cancelPayment()
+        paymentState = .cash(.collectingCash)
+    }
+
+    @MainActor
+    func cancelCashPayment() async {
+        if case .connected = cardReaderConnectionStatus {
+            await collectCardPayment()
+        } else {
+            paymentState = .card(.idle)
+        }
+    }
+
+    private func cashPaymentSuccess() {
+        paymentState = .cash(.paymentSuccess)
+    }
+
     @MainActor
     func collectCashPayment() async throws {
-        do {
-            try await orderController.collectCashPayment()
-        } catch {
-            debugPrint(error)
-        }
+        try await orderController.collectCashPayment()
+        cashPaymentSuccess()
     }
 
     @MainActor
@@ -226,9 +229,10 @@ extension PointOfSaleAggregateModel {
     }
 
     func cancelThenCollectPayment() {
-        cardPresentPaymentService.cancelPayment()
         Task { [weak self] in
-            await self?.collectPayment()
+            guard let self else { return }
+            try await cardPresentPaymentService.cancelPayment()
+            await collectCardPayment()
         }
     }
 
@@ -302,10 +306,13 @@ private extension PointOfSaleAggregateModel {
             .assign(to: &$cardPresentPaymentInlineMessage)
 
         cardPresentPaymentService.paymentEventPublisher
-            .compactMap { [weak self] paymentEvent in
-                guard let self else { return .none }
-                return PointOfSalePaymentState(from: paymentEvent,
-                                               using: presentationStyleDeterminerDependencies)
+            .compactMap { [weak self] paymentEvent -> PointOfSalePaymentState? in
+                guard let self else { return nil }
+
+                let newPaymentState = PointOfSalePaymentState(from: paymentEvent,
+                                                              using: presentationStyleDeterminerDependencies)
+
+                return newPaymentState
             }
             .assign(to: &$paymentState)
 

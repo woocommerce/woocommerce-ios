@@ -1,0 +1,173 @@
+import SwiftUI
+
+/// Hosting controller for `FilterHistoryView`
+final class FilterHistoryViewHostingController<ViewModel: FilterListViewModel>: UIHostingController<FilterHistoryView<ViewModel>> {
+    init(viewModel: ViewModel, onSelection: @escaping (ViewModel.Criteria) -> Void) {
+        super.init(rootView: FilterHistoryView(viewModel: viewModel, onSelection: onSelection))
+        rootView.onDismiss = { [weak self] in
+            self?.dismiss(animated: true)
+        }
+    }
+
+    @MainActor @preconcurrency required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+/// View to list all saved filter history
+struct FilterHistoryView<ViewModel: FilterListViewModel>: View {
+
+    /// to be set externally on the hosting controller
+    var onDismiss: () -> Void = {}
+
+    private let viewModel: ViewModel
+    private let onSelection: (ViewModel.Criteria) -> Void
+
+    @State private var selectedFilter: ViewModel.Criteria?
+    @State private var savedFilters: [ViewModel.Criteria] = []
+    @State private var error: Error?
+    @State private var shouldConfirmClearingHistory = false
+
+    private let title = NSLocalizedString(
+        "filterHistoryView.title",
+        value: "Filter History",
+        comment: "Title of the Filter History view"
+    )
+
+    private let cancel = NSLocalizedString(
+        "filterHistoryView.cancel",
+        value: "Cancel",
+        comment: "Cancel button on the Filter History view"
+    )
+
+    private let apply = NSLocalizedString(
+        "filterHistoryView.apply",
+        value: "Apply",
+        comment: "Apply button on the Filter History view"
+    )
+
+    private let emptyState = NSLocalizedString(
+        "filterHistoryView.emptyState",
+        value: "No past filters found",
+        comment: "Label on the empty state of the Filter History view"
+    )
+
+    private let recent = NSLocalizedString(
+        "filterHistoryView.recent",
+        value: "Recent",
+        comment: "Header label of the Filter History view"
+    )
+
+    private let clearHistory = NSLocalizedString(
+        "filterHistoryView.clearHistory",
+        value: "Clear History",
+        comment: "Button to clear all history on the Filter History view"
+    )
+
+    private let clearHistoryConfirmation = NSLocalizedString(
+        "filterHistoryView.clearHistoryConfirmation",
+        value: "Are you sure you want to clear all the filter history?",
+        comment: "Message to confirm clearing all history on the Filter History view"
+    )
+
+    init(viewModel: ViewModel, onSelection: @escaping (ViewModel.Criteria) -> Void) {
+        self.viewModel = viewModel
+        self.onSelection = onSelection
+    }
+
+    var body: some View {
+        NavigationStack {
+            VStack {
+                if error != nil || savedFilters.isEmpty {
+                    emptyStateView
+                } else {
+                    filterListView
+                }
+            }
+            .navigationTitle(title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(cancel) {
+                        onDismiss()
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(apply) {
+                        guard let selectedFilter else { return }
+                        onSelection(selectedFilter)
+                        onDismiss()
+                    }
+                    .disabled(selectedFilter == nil)
+                }
+            }
+        }
+        .task {
+            do {
+                savedFilters = try await viewModel.retrieveFilterHistory()
+            } catch {
+                self.error = error
+            }
+        }
+        .alert(clearHistoryConfirmation, isPresented: $shouldConfirmClearingHistory) {
+            Button(cancel, role: .cancel) {}
+            Button(clearHistory, role: .destructive) {
+                viewModel.clearAllFilterHistory()
+                savedFilters = []
+                selectedFilter = nil
+            }
+        }
+    }
+}
+
+private extension FilterHistoryView {
+    var filterListView: some View {
+        List {
+            Section {
+                ForEach(savedFilters, id: \.readableString) { filter in
+                    SelectableItemRow(title: filter.readableString,
+                                      selected: selectedFilter == filter,
+                                      displayMode: .compact,
+                                      alignment: .trailing)
+                    .onTapGesture {
+                        selectedFilter = filter
+                    }
+                }
+                .onDelete { offsets in
+                    offsets.forEach { index in
+                        viewModel.removeFilterFromHistory(savedFilters[index])
+                    }
+                    savedFilters.remove(atOffsets: offsets)
+
+                    if let selectedFilter, !savedFilters.contains(selectedFilter) {
+                        self.selectedFilter = nil
+                    }
+                }
+            } header: {
+                Text(recent)
+            }
+
+            Section {
+                Button(action: {
+                    shouldConfirmClearingHistory = true
+                }, label: {
+                    Text(clearHistory)
+                        .errorStyle()
+                })
+                .buttonStyle(.plain)
+                .frame(maxWidth: .infinity, alignment: .center)
+            }
+        }
+        .listStyle(.grouped)
+    }
+
+    @ViewBuilder
+    var emptyStateView: some View {
+        Image(systemName: "clock")
+            .foregroundColor(.secondary)
+            .font(.largeTitle)
+            .padding(.bottom)
+        Text(emptyState)
+            .secondaryBodyStyle()
+    }
+}

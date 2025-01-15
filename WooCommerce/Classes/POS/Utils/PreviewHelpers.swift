@@ -64,29 +64,23 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
                                                                                                itemStates: [:]))
     var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { $itemsViewState }
 
-    func loadInitialItems() async {
-        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded(mockItems),
-                                                                                              itemStates: [:]))
+    func loadItems(base: ItemListBaseItem) async {
+        switch base {
+        case .root:
+            itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded(mockItems, hasMoreItems: true),
+                                                                                                  itemStates: [:]))
+        case .parent(let parent):
+            await loadInitialChildItems(for: parent)
+        }
     }
 
-    func loadNextItems() async {
+    func loadNextItems(base: ItemListBaseItem) async {
         itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loading(mockItems),
                                                                                               itemStates: [:]))
     }
 
-    func reload() async {
-        itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded([]),
-                                                                                              itemStates: [:]))
-    }
-
-    func loadInitialChildItems(for parent: POSItem) async {
-        itemsViewState = ItemsViewState(
-            containerState: .content,
-            itemsStack: ItemsStackState(
-                root: .loading(mockItems),
-                itemStates: [parent: .loaded(mockVariationItems)]
-            )
-        )
+    private func loadInitialChildItems(for parent: POSItem) async {
+        // Set `itemsViewState` instead.
     }
 }
 

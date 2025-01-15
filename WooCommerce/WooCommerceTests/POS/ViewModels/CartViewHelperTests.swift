@@ -5,15 +5,15 @@ import Testing
 struct CartViewHelperTests {
     let sut = CartViewHelper()
 
-    @Test func shouldPreventCartEditing_when_paymentState_idle_and_order_is_syncing() async throws {
+    @Test func shouldPreventCartEditing_when_card_paymentState_idle_and_order_is_syncing() async throws {
         // Given
 
         // When, Then
         #expect(sut.shouldPreventCartEditing(orderState: .syncing,
-                                             paymentState: .idle) == true)
+                                             paymentState: .card(.idle)) == true)
     }
 
-    @Test func shouldPreventCartEditing_when_paymentState_cardPaymentSuccessful() async throws {
+    @Test func shouldPreventCartEditing_when_card_paymentState_cardPaymentSuccessful() async throws {
         // Given
         let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
             cartTotal: "$10.00",
@@ -22,10 +22,10 @@ struct CartViewHelperTests {
 
         // When, Then
         #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
-                                             paymentState: .cardPaymentSuccessful) == true)
+                                             paymentState: .card(.cardPaymentSuccessful)) == true)
     }
 
-    @Test func shouldPreventCartEditing_when_paymentState_processingPayment() async throws {
+    @Test func shouldPreventCartEditing_when_card_paymentState_processingPayment() async throws {
         // Given
         let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
             cartTotal: "$10.00",
@@ -34,10 +34,10 @@ struct CartViewHelperTests {
 
         // When, Then
         #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
-                                             paymentState: .processingPayment) == true)
+                                             paymentState: .card(.processingPayment)) == true)
     }
 
-    @Test func shouldPreventCartEditing_false_when_paymentState_acceptingCard() async throws {
+    @Test func shouldPreventCartEditing_false_when_card_paymentState_acceptingCard() async throws {
         // Given
         let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
             cartTotal: "$10.00",
@@ -46,10 +46,10 @@ struct CartViewHelperTests {
 
         // When, Then
         #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
-                                             paymentState: .acceptingCard) == false)
+                                             paymentState: .card(.acceptingCard)) == false)
     }
 
-    @Test func shouldPreventCartEditing_false_when_paymentState_validatingOrderError() async throws {
+    @Test func shouldPreventCartEditing_false_when_card_paymentState_validatingOrderError() async throws {
         // Given
         let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
             cartTotal: "$10.00",
@@ -58,7 +58,7 @@ struct CartViewHelperTests {
 
         // When, Then
         #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
-                                             paymentState: .validatingOrderError) == false)
+                                             paymentState: .card(.validatingOrderError)) == false)
     }
 
     @Test(arguments: zip([0, 1, 2, 3], [nil, "1 item", "2 items", "3 items"]))

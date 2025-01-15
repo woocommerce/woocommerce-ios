@@ -7,8 +7,6 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     @Published var internationalTransactionNumber: String = ""
     @Published var returnToSenderIfNotDelivered: Bool = false
 
-    let onCompletion: (ShippingLabelCustomsForm) -> ()
-
     @Published var requiredInformationIsEntered: Bool = false
 
     @Published var contentType: WooShippingContentType = .merchandise
@@ -17,6 +15,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     let itnInfoURL = URL(string: "https://pe.usps.com/text/imm/immc5_010.htm")
 
     private var cancellables = Set<AnyCancellable>()
+    private let onCompletion: (ShippingLabelCustomsForm) -> ()
 
     init(orderItems: [OrderItem], onCompletion: @escaping (ShippingLabelCustomsForm) -> ()) {
         self.onCompletion = onCompletion

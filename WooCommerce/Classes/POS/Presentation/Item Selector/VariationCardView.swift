@@ -27,8 +27,8 @@ struct VariationCardView: View {
                     .font(Constants.itemNameFont)
 
                 Text(variation.formattedPrice)
-                    .foregroundStyle(Color.posPrimaryText)
-                    .font(Constants.itemPriceFont)
+                    .foregroundStyle(Color.posSecondaryText)
+                    .font(Constants.itemDetailFont)
             }
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
             .padding(.vertical, Constants.verticalTextPadding * (1 / scale))

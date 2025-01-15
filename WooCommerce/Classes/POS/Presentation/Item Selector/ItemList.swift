@@ -92,7 +92,7 @@ private struct ItemListRow: View {
                                       detailView: {
                     Text(Localization.variationsAvailable)
                         .foregroundStyle(Color.posSecondaryText)
-                        .font(.posBodyRegular)
+                        .font(PointOfSaleItemListCardConstants.itemDetailFont)
                 })
             }
         case let .variation(variation):

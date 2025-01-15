@@ -96,7 +96,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
                 return try await fetchChildItems(for: parent, pageNumber: Store.Default.firstPageNumber, appendToExistingItems: false)
             }
         } catch {
-            // TODO: 14694 - Handle error from loading initial variations.
+            updateState(for: parent, to: .error(.errorOnLoadingVariations()))
         }
     }
 

@@ -6,9 +6,15 @@ struct PointOfSaleErrorState: Equatable {
     let buttonText: String
 
     static func errorOnLoadingProducts() -> Self {
-        PointOfSaleErrorState(title: Constants.failedToLoadTitle,
-                              subtitle: Constants.failedToLoadSubtitle,
-                              buttonText: Constants.failedToLoadButtonTitle)
+        PointOfSaleErrorState(title: Constants.failedToLoadProductsTitle,
+                              subtitle: Constants.failedToLoadProductsSubtitle,
+                              buttonText: Constants.failedToLoadProductsButtonTitle)
+    }
+
+    static func errorOnLoadingVariations() -> Self {
+        PointOfSaleErrorState(title: Constants.failedToLoadVariationsTitle,
+                              subtitle: Constants.failedToLoadVariationsSubtitle,
+                              buttonText: Constants.failedToLoadVariationsButtonTitle)
     }
 
     static func errorOnLoadingProductsNextPage() -> Self {
@@ -24,20 +30,35 @@ struct PointOfSaleErrorState: Equatable {
     }
 
     enum Constants {
-        static let failedToLoadTitle = NSLocalizedString(
-            "pos.itemList.failedToLoadTitle",
+        static let failedToLoadProductsTitle = NSLocalizedString(
+            "pos.itemList.failedToLoadProductsTitle",
             value: "Error loading products",
             comment: "Text appearing on the item list screen when there's an error loading products."
         )
-        static let failedToLoadSubtitle = NSLocalizedString(
-            "pos.itemList.failedToLoadSubtitle",
+        static let failedToLoadProductsSubtitle = NSLocalizedString(
+            "pos.itemList.failedToLoadProductsSubtitle",
             value: "Give it another go?",
             comment: "Text appearing on the item list screen as subtitle when there's an error loading products."
         )
-        static let failedToLoadButtonTitle = NSLocalizedString(
-            "pos.itemList.failedToLoadButtonTitle",
+        static let failedToLoadProductsButtonTitle = NSLocalizedString(
+            "pos.itemList.failedToLoadProductsButtonTitle",
             value: "Retry",
             comment: "Text for the button appearing on the item list screen when there's an error loading products."
+        )
+        static let failedToLoadVariationsTitle = NSLocalizedString(
+            "pos.itemList.failedToLoadVariationsTitle",
+            value: "Error loading variations",
+            comment: "Text appearing on the item list screen when there's an error loading variations."
+        )
+        static let failedToLoadVariationsSubtitle = NSLocalizedString(
+            "pos.itemList.failedToLoadVariationsSubtitle",
+            value: "Give it another go?",
+            comment: "Text appearing on the item list screen as subtitle when there's an error loading variations."
+        )
+        static let failedToLoadVariationsButtonTitle = NSLocalizedString(
+            "pos.itemList.failedToLoadVariationsButtonTitle",
+            value: "Retry",
+            comment: "Text for the button appearing on the item list screen when there's an error loading variations."
         )
         static let failedToLoadProductsNextPageTitle = NSLocalizedString(
             "pos.itemList.failedToLoadProductsNextPageTitle",

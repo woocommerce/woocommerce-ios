@@ -80,13 +80,7 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
     }
 
     private func loadInitialChildItems(for parent: POSItem) async {
-        itemsViewState = ItemsViewState(
-            containerState: .content,
-            itemsStack: ItemsStackState(
-                root: .loading(mockItems),
-                itemStates: [parent: .loaded(mockVariationItems, hasMoreItems: true)]
-            )
-        )
+        // Set `itemsViewState` instead.
     }
 }
 

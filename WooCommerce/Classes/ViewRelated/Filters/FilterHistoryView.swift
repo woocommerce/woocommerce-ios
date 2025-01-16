@@ -129,6 +129,7 @@ private extension FilterHistoryView {
                                       selected: selectedFilter == filter,
                                       displayMode: .compact,
                                       alignment: .trailing)
+                    .listRowInsets(EdgeInsets())
                     .onTapGesture {
                         selectedFilter = filter
                     }

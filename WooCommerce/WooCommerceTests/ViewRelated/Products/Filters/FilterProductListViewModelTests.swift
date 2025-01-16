@@ -91,4 +91,116 @@ final class FilterProductListViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.filterTypeViewModels.contains(where: { $0.title == FilterProductListViewModel.ProductListFilter.Localization.favoriteProduct } ))
     }
+
+    func test_applyPastFilter_updates_the_filters_correctly() {
+        // Given
+        let filters = createMockFilters(stockStatus: .inStock)
+        let viewModel = FilterProductListViewModel(filters: filters, siteID: 0)
+
+        // When
+        let newFilter = createMockFilters(stockStatus: .onBackOrder)
+        viewModel.applyPastFilter(newFilter)
+
+        // Then
+        XCTAssertEqual(viewModel.criteria.stockStatus, .onBackOrder)
+    }
+
+    @MainActor
+    func test_retrieveFilterHistory_returns_correct_results() async throws {
+        // Given
+        let siteID: Int64 = 123
+        let expectedFilters = createMockFilters(stockStatus: .outOfStock)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadProductFilterHistory(_, onCompletion):
+                onCompletion(.success([StoredProductSettings.Setting(siteID: siteID,
+                                                                     sort: nil,
+                                                                     stockStatusFilter: expectedFilters.stockStatus,
+                                                                     productStatusFilter: expectedFilters.productStatus,
+                                                                     productTypeFilter: expectedFilters.promotableProductType?.productType,
+                                                                     productCategoryFilter: expectedFilters.productCategory,
+                                                                     favoriteProduct: expectedFilters.favoriteProduct?.isActive ?? false)]))
+            default:
+                break
+            }
+        }
+
+        let viewModel = FilterProductListViewModel(filters: createMockFilters(), siteID: siteID, stores: stores)
+
+        // When
+        let retrievedFilters = try await viewModel.retrieveFilterHistory()
+
+        // Then
+        XCTAssertEqual(retrievedFilters, [expectedFilters])
+    }
+
+    func test_saveSelectedFilterToHistory_sends_correct_settings_to_storage() {
+        // Given
+        let siteID: Int64 = 123
+        let filters = createMockFilters()
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        var savedSettings: StoredProductSettings.Setting?
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .upsertProductFilterHistory(settings, onCompletion):
+                savedSettings = settings
+                onCompletion(nil)
+            default:
+                break
+            }
+        }
+        let viewModel = FilterProductListViewModel(filters: filters, siteID: siteID, stores: stores)
+
+        // When
+        viewModel.saveSelectedFilterToHistory(filters)
+
+        // Then
+        XCTAssertEqual(savedSettings?.stockStatusFilter, filters.stockStatus)
+        XCTAssertEqual(savedSettings?.productTypeFilter, filters.promotableProductType?.productType)
+        XCTAssertEqual(savedSettings?.productStatusFilter, filters.productStatus)
+        XCTAssertEqual(savedSettings?.productCategoryFilter, filters.productCategory)
+        XCTAssertEqual(savedSettings?.favoriteProduct, filters.favoriteProduct?.isActive ?? false)
+    }
+
+    func test_removeFilterFromHistory_removes_the_correct_settings_in_storage() {
+        // Given
+        let siteID: Int64 = 123
+        let filters = createMockFilters()
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        var removedSettings: StoredProductSettings.Setting?
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .removeFromProductFilterHistory(settings, onCompletion):
+                removedSettings = settings
+                onCompletion(nil)
+            default:
+                break
+            }
+        }
+        let viewModel = FilterProductListViewModel(filters: filters, siteID: siteID, stores: stores)
+
+        // When
+        viewModel.removeFilterFromHistory(filters)
+
+        // Then
+        XCTAssertEqual(removedSettings?.stockStatusFilter, filters.stockStatus)
+        XCTAssertEqual(removedSettings?.productTypeFilter, filters.promotableProductType?.productType)
+        XCTAssertEqual(removedSettings?.productStatusFilter, filters.productStatus)
+        XCTAssertEqual(removedSettings?.productCategoryFilter, filters.productCategory)
+        XCTAssertEqual(removedSettings?.favoriteProduct, filters.favoriteProduct?.isActive ?? false)
+    }
+}
+
+private extension FilterProductListViewModelTests {
+    func createMockFilters(stockStatus: ProductStockStatus? = .inStock) -> FilterProductListViewModel.Filters {
+        FilterProductListViewModel.Filters(stockStatus: stockStatus,
+                                           productStatus: .draft,
+                                           promotableProductType: PromotableProductType(productType: .grouped,
+                                                                                        isAvailable: true,
+                                                                                        promoteUrl: nil),
+                                           productCategory: filterProductCategory,
+                                           favoriteProduct: FavoriteProductsFilter(),
+                                           numberOfActiveFilters: 5)
+    }
 }

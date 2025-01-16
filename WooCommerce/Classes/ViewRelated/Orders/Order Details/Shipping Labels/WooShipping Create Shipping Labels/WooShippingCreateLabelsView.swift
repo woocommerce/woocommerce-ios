@@ -50,7 +50,7 @@ struct WooShippingCreateLabelsView: View {
                     WooShippingHazmat(enabled: !viewModel.canViewLabel)
 
                     WooShippingCustomsRow(informationIsCompleted: viewModel.customsInformationIsCompleted,
-                                          customsFormViewModel: WooShippingCustomsFormViewModel(orderItems: viewModel.orderItems, onCompletion: { form in
+                                          customsFormViewModel: WooShippingCustomsFormViewModel(order: viewModel.order, onCompletion: { form in
                         // TODO: Remove debug print
                         debugPrint("form", form)
                     }))

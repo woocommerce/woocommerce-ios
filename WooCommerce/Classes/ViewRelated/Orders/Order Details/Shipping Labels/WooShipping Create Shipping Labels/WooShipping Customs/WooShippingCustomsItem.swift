@@ -46,20 +46,21 @@ struct WooShippingCustomsItem: View {
                         Text(viewModel.originCountry.name)
                         Spacer()
 
-                        if viewModel.valuePerUnit.isEmpty {
-                            emptyValuePlaceholder
-                        } else {
-                            Text(viewModel.valuePerUnit)
-                        }
-
-                        Text("•")
-                            .renderedIf(viewModel.weightPerUnit.isNotEmpty || viewModel.valuePerUnit.isNotEmpty)
-
                         if viewModel.weightPerUnit.isEmpty {
                             emptyValuePlaceholder
                         } else {
                             Text("\(viewModel.weightPerUnit) \(weightUnit)")
                         }
+
+                        Text("•")
+                            .renderedIf(viewModel.weightPerUnit.isNotEmpty || viewModel.valuePerUnit.isNotEmpty)
+
+                        if viewModel.valuePerUnit.isEmpty {
+                            emptyValuePlaceholder
+                        } else {
+                            Text("\(viewModel.currencySymbol)\(viewModel.valuePerUnit)")
+                        }
+
                     }
                 }.renderedIf(isCollapsed)
                     .foregroundColor(.primary)
@@ -127,12 +128,20 @@ struct WooShippingCustomsItem: View {
                         Text(Localization.valuePerUnitTitle)
                             .foregroundColor(.primary)
                             .subheadlineStyle()
-                        TextField("$ 0", text: $viewModel.valuePerUnit)
-                            .keyboardType(.decimalPad)
-                            .padding(Layout.extraPadding)
-                            .roundedBorder(cornerRadius: Layout.borderCornerRadius,
-                                           lineColor: viewModel.valuePerUnit.isEmpty ? warningRedColor : Color(.separator),
-                                           lineWidth: Layout.borderLineWidth)
+                        HStack(spacing: Layout.unitsHorizontalSpacing) {
+                            Text(viewModel.currencySymbol)
+                                .font(.body)
+                                .foregroundStyle(.secondary)
+
+                            TextField("0", text: $viewModel.valuePerUnit)
+                                .font(.body)
+                                .keyboardType(.decimalPad)
+                        }
+                        .padding(Layout.extraPadding)
+                        .roundedBorder(cornerRadius: Layout.borderCornerRadius,
+                                       lineColor: viewModel.valuePerUnit.isEmpty ? warningRedColor : Color(.separator),
+                                       lineWidth: Layout.borderLineWidth)
+                        
                         Text(Localization.valueRequiredWarningText)
                             .foregroundColor(warningRedColor)
                             .footnoteStyle()
@@ -145,10 +154,11 @@ struct WooShippingCustomsItem: View {
                             .subheadlineStyle()
                         HStack {
                             TextField("0", text: $viewModel.weightPerUnit)
+                                .font(.body)
                                 .keyboardType(.decimalPad)
                                 .padding(Layout.extraPadding)
                             Text(weightUnit)
-                                .font(.subheadline)
+                                .font(.body)
                                 .foregroundStyle(.secondary)
                                 .padding(.trailing, Layout.unitsHorizontalSpacing)
                         }

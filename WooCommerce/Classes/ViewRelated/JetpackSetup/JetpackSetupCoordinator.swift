@@ -118,7 +118,14 @@ private extension JetpackSetupCoordinator {
                 requiresConnectionOnly: requiresConnectionOnly
             ))
             if let connectedEmail = jetpackConnectedEmail {
-                startAuthentication(with: connectedEmail)
+                /// prevent asking for authentication again if the user starts Jetpack setup again after completion.
+                if stores.isAuthenticated,
+                   stores.isAuthenticatedWithoutWPCom == false,
+                    let credentials = stores.sessionManager.defaultCredentials {
+                    refreshSite(with: credentials)
+                } else {
+                    startAuthentication(with: connectedEmail)
+                }
             } else {
                 showWPComEmailLogin()
             }
@@ -253,6 +260,10 @@ private extension JetpackSetupCoordinator {
         analytics.track(.jetpackSetupCompleted)
         stores.sessionManager.deleteApplicationPassword()
         stores.authenticate(credentials: credentials)
+        refreshSite(with: credentials)
+    }
+
+    func refreshSite(with credentials: Credentials) {
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.syncingData, message: ""))
         rootViewController.topmostPresentedViewController.present(progressView, animated: true)
 

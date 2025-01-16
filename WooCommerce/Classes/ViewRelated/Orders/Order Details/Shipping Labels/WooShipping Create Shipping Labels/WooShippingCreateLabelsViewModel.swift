@@ -25,7 +25,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Whether the custom information is completed or not.
     var customsInformationIsCompleted: Bool {
         // To be synced with real data
-        true
+        false
+    }
+
+    var orderItems: [OrderItem] {
+        order.items
     }
 
     /// View model for the section displayed after a shipping label is purchased.

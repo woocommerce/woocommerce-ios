@@ -26,7 +26,7 @@ struct WooShippingCustomsItem: View {
                     Spacer()
                     Image(systemName: "exclamationmark.circle")
                         .foregroundColor(warningRedColor)
-                        .renderedIf(viewModel.requiredInformationIsMissing)
+                        .renderedIf(!viewModel.requiredInformationIsEntered)
                 }
 
                 VStack(alignment: .leading, spacing: Layout.collapsibleViewBottomLabelVerticalSpacing) {
@@ -231,10 +231,10 @@ struct WooShippingCustomsItem: View {
 extension WooShippingCustomsItem {
     func productCardBorderColor() -> Color {
         if isCollapsed {
-            if viewModel.requiredInformationIsMissing {
-                return warningRedColor
-            } else {
+            if viewModel.requiredInformationIsEntered {
                 return Color(.separator)
+            } else {
+                return warningRedColor
             }
         } else {
             return .withColorStudio(name: .purple, shade: .shade60)

@@ -1,21 +1,77 @@
 import SwiftUI
+import Yosemite
+import Combine
+import WooFoundation
 
 final class WooShippingCustomsFormViewModel: ObservableObject {
-    @Published var internationalTransactionNumber: String
-    @Published var returnToSenderIfNotDelivered: Bool
+    @Published var internationalTransactionNumber: String = ""
+    @Published var returnToSenderIfNotDelivered: Bool = false
 
-    var informationIsMissing: Bool {
-        false
-    }
+    @Published var requiredInformationIsEntered: Bool = false
 
-    let contentType: WooShippingContentType = .merchandise
-    let restrictionType: WooShippingRestrictionType = .none
+    @Published var contentType: WooShippingContentType = .merchandise
+    @Published var restrictionType: WooShippingRestrictionType = .none
 
     let itnInfoURL = URL(string: "https://pe.usps.com/text/imm/immc5_010.htm")
 
-    init(internationalTransactionNumber: String, returnToSenderIfNotDelivered: Bool) {
-        self.internationalTransactionNumber = internationalTransactionNumber
-        self.returnToSenderIfNotDelivered = returnToSenderIfNotDelivered
+    private var cancellables = Set<AnyCancellable>()
+    private let onCompletion: (ShippingLabelCustomsForm) -> ()
+
+    init(orderItems: [OrderItem], onCompletion: @escaping (ShippingLabelCustomsForm) -> ()) {
+        self.onCompletion = onCompletion
+
+        itemsViewModels = orderItems.map {
+            // TODO: Pass the origin country
+            WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "US", name: "United States"),
+                                            orderItem: $0)
+        }
+
+        listenToItemsRequiredInformationValues()
+    }
+
+    @Published var itemsViewModels: [WooShippingCustomsItemViewModel] = []
+
+    func onDismiss() {
+        // TODO: Add missing values if possible
+        let form = ShippingLabelCustomsForm(packageID: "",
+                                            packageName: "",
+                                            contentsType: contentType.toFormContentsType(),
+                                            contentExplanation: "",
+                                            restrictionType: restrictionType.toFormRestrictionType(),
+                                            restrictionComments: "",
+                                            nonDeliveryOption: returnToSenderIfNotDelivered ? .return : .abandon,
+                                            itn: internationalTransactionNumber,
+                                            items: itemsViewModels.map {
+            ShippingLabelCustomsForm.Item(description: $0.description,
+                                          quantity: $0.orderItem.quantity,
+                                          value: Double($0.valuePerUnit) ?? 0,
+                                          weight: Double($0.weightPerUnit) ?? 0,
+                                          hsTariffNumber: $0.isValidTariffNumber ? $0.hsTariffNumber : "",
+                                          originCountry: $0.originCountry.name,
+                                          productID: $0.orderItem.productID)
+            }
+        )
+        onCompletion(form)
+    }
+}
+
+private extension WooShippingCustomsFormViewModel {
+    func listenToItemsRequiredInformationValues() {
+        // Listen to the items required information and enable the button depending on it
+        $itemsViewModels
+            .map { childViewModels in
+                childViewModels.map { $0.$requiredInformationIsEntered.eraseToAnyPublisher() }
+            }
+            .flatMap { childPublishers in
+                childPublishers.combineLatest() // Combine the latest values from all child publishers
+            }
+            .map { childValidityArray in
+                childValidityArray.allSatisfy { $0 } // Check if all are valid
+            }
+            .sink { [weak self] value in
+                self?.requiredInformationIsEntered = value
+            }
+            .store(in: &cancellables)
     }
 }
 
@@ -53,6 +109,19 @@ extension WooShippingRestrictionType {
         static let other = NSLocalizedString("wooShipping.customs.restrictionType.other",
                                                    value: "Other",
                                                    comment: "Info label for shipping restriction type other")
+    }
+
+    func toFormRestrictionType() -> ShippingLabelCustomsForm.RestrictionType {
+        switch self {
+        case .none:
+            return .none
+        case .quarantine:
+            return .quarantine
+        case .sanitary:
+            return .sanitaryOrPhytosanitaryInspection
+        case .other:
+            return .other
+        }
     }
 }
 
@@ -101,5 +170,22 @@ extension WooShippingContentType {
         static let other = NSLocalizedString("wooShipping.customs.contentType.other",
                                                    value: "Other...",
                                                    comment: "Info label for shipping content type merchandise")
+    }
+
+    func toFormContentsType() -> ShippingLabelCustomsForm.ContentsType {
+        switch self {
+        case .merchandise:
+            return .merchandise
+        case .gift:
+            return .gift
+        case .returnedGoods:
+            return .other
+        case .sample:
+            return .sample
+        case .documents:
+            return .documents
+        case .other:
+            return .other
+        }
     }
 }

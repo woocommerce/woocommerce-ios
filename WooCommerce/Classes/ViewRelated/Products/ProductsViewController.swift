@@ -831,27 +831,6 @@ private extension ProductsViewController {
         }
     }
 
-    /// Request a new product banner from `ProductsTopBannerFactory` and wire actionButtons actions
-    /// To show a top banner, we can dispatch a loadFeedbackVisibility action from AppSettingsStore and update the top banner accordingly
-    /// Ref: https://github.com/woocommerce/woocommerce-ios/issues/6682
-    ///
-    func requestAndShowNewTopBannerView(for bannerType: ProductsTopBannerFactory.BannerType) {
-        let isExpanded = topBannerView?.isExpanded ?? false
-        ProductsTopBannerFactory.topBanner(isExpanded: isExpanded,
-                                           type: bannerType,
-                                           expandedStateChangeHandler: { [weak self] in
-            self?.updateTableHeaderViewHeight()
-        }, onGiveFeedbackButtonPressed: { [weak self] in
-            self?.presentProductsFeedback()
-        }, onDismissButtonPressed: { [weak self] in
-            self?.hideTopBannerView()
-        }, onCompletion: { [weak self] topBannerView in
-            self?.topBannerContainerView.updateSubview(topBannerView)
-            self?.topBannerView = topBannerView
-            self?.updateTableHeaderViewHeight()
-        })
-    }
-
     /// Request a new error loading data banner from `ErrorTopBannerFactory` and display it in the table header
     ///
     func requestAndShowErrorTopBannerView(for error: Error) {
@@ -1264,13 +1243,6 @@ private extension ProductsViewController {
     func clearFilter(sourceBarButtonItem: UIBarButtonItem? = nil, sourceView: UIView? = nil) {
         ServiceLocator.analytics.track(.productListClearFiltersTapped)
         filters = FilterProductListViewModel.Filters()
-    }
-
-    /// Presents productsFeedback survey.
-    ///
-    func presentProductsFeedback() {
-        let navigationController = SurveyCoordinatingController(survey: .productsFeedback)
-        present(navigationController, animated: true, completion: nil)
     }
 }
 

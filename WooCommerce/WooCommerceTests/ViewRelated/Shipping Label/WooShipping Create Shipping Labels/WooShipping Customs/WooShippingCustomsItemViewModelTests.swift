@@ -7,7 +7,7 @@ class WooShippingCustomsItemViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         viewModel = WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "", name: "United States"),
-                                                    orderItem: MockOrderItem.sampleItem())
+                                                    orderItem: MockOrderItem.sampleItem(), currencySymbol: "$")
     }
 
     func test_when_tariff_number_is_empty_then_it_is_valid() {

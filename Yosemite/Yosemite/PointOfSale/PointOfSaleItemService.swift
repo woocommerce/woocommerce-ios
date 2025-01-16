@@ -72,7 +72,7 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
         let variations = pagedVariations.items
         return .init(
             items: variations.compactMap({ variation in
-                let variationName = ProductVariationFormatter().generateName(
+                let variationName = ProductVariationFormatter().generateNameWithAttributeNames(
                     for: variation,
                     from: parentProduct.allAttributes,
                     separator: ", "

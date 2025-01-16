@@ -63,7 +63,6 @@ final class SurveyViewController: UIViewController, SurveyViewControllerOutputs 
 extension SurveyViewController {
     enum Source {
         case inAppFeedback
-        case productsFeedback
         case addOnsI1
         case orderCreation
         case orderFormShippingLines
@@ -72,11 +71,6 @@ extension SurveyViewController {
             switch self {
             case .inAppFeedback:
                 return WooConstants.URLs.inAppFeedback
-                    .asURL()
-                    .tagPlatform("ios")
-                    .tagAppVersion(Bundle.main.bundleVersion())
-            case .productsFeedback:
-                return WooConstants.URLs.productsFeedback
                     .asURL()
                     .tagPlatform("ios")
                     .tagAppVersion(Bundle.main.bundleVersion())
@@ -102,8 +96,7 @@ extension SurveyViewController {
             switch self {
             case .inAppFeedback:
                 return Localization.title
-            case .productsFeedback,
-                    .addOnsI1,
+            case .addOnsI1,
                     .orderCreation,
                     .orderFormShippingLines:
                 return Localization.giveFeedback
@@ -115,8 +108,6 @@ extension SurveyViewController {
             switch self {
             case .inAppFeedback:
                 return .general
-            case .productsFeedback:
-                return .productsGeneral
             case .addOnsI1:
                 return .addOnsI1
             case .orderCreation:

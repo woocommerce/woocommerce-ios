@@ -94,7 +94,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .sendReceiptsForPointOfSale:
             return true
         case .acceptCashForPointOfSale:
-            return false
+            return true
         case .tapToPayEducation:
             return true
         case .variableProductsInPointOfSale:

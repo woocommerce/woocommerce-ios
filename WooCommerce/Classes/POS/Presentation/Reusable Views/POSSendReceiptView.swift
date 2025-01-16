@@ -35,7 +35,7 @@ struct POSSendReceiptView: View {
 
             TextField(Localization.textfieldPlaceholder, text: $textFieldInput)
                 .keyboardType(.emailAddress)
-                .textInputAutocapitalization(.none)
+                .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .multilineTextAlignment(.center)
                 .font(POSFontStyle.posTitleRegular)

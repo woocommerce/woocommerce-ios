@@ -256,7 +256,7 @@ private extension JetpackSetupCoordinator {
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.syncingData, message: ""))
         rootViewController.topmostPresentedViewController.present(progressView, animated: true)
 
-        let action = AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: site.url) { [weak self] result in
+        let action = SiteAction.syncSiteByDomain(domain: site.url.trimHTTPScheme()) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let site):

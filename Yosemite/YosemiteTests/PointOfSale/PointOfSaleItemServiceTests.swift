@@ -88,7 +88,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
 
     func test_PointOfSaleItemServiceProtocol_when_eligibility_criteria_applies_then_returns_correct_number_of_items() async throws {
         // Given
-        let expectedItemNames = ["Dymo LabelWriter 4XL", "Virtual Polo", "Private Hoodie"]
+        let expectedItemNames = ["Dymo LabelWriter 4XL", "Virtual Polo", "Private Hoodie", "Hoodie with Zipper without price"]
 
         // When
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-for-eligibility-criteria")

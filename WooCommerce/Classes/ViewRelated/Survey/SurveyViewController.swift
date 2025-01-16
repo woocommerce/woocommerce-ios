@@ -186,10 +186,6 @@ extension URL {
         appendingQueryItem(URLQueryItem(name: Tags.surveyRequestAppVersionTag, value: version))
     }
 
-    func tagShippingLabelsMilestone(_ milestone: String) -> URL {
-        appendingQueryItem(URLQueryItem(name: Tags.surveyRequestShippingLabelsMilestoneTag, value: milestone))
-    }
-
     private func appendingQueryItem(_ queryItem: URLQueryItem) -> URL {
         guard var urlComponents = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
             assertionFailure("Cannot create URL components from \(self)")
@@ -207,8 +203,6 @@ extension URL {
     private enum Tags {
         static let surveyRequestPlatformTag = "woo-mobile-platform"
         static let surveyRequestAppVersionTag = "app-version"
-        static let surveyRequestProductMilestoneTag = "product-milestone"
-        static let surveyRequestShippingLabelsMilestoneTag = "shipping_label_milestone"
     }
 }
 

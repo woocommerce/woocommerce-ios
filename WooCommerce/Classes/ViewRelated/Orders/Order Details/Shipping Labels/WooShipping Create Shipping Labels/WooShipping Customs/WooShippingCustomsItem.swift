@@ -141,7 +141,7 @@ struct WooShippingCustomsItem: View {
                         .roundedBorder(cornerRadius: Layout.borderCornerRadius,
                                        lineColor: viewModel.valuePerUnit.isEmpty ? warningRedColor : Color(.separator),
                                        lineWidth: Layout.borderLineWidth)
-                        
+                    
                         Text(Localization.valueRequiredWarningText)
                             .foregroundColor(warningRedColor)
                             .footnoteStyle()

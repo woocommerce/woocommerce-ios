@@ -17,13 +17,13 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private let onCompletion: (ShippingLabelCustomsForm) -> ()
 
-    init(orderItems: [OrderItem], onCompletion: @escaping (ShippingLabelCustomsForm) -> ()) {
+    init(order: Order, onCompletion: @escaping (ShippingLabelCustomsForm) -> ()) {
         self.onCompletion = onCompletion
 
-        itemsViewModels = orderItems.map {
+        itemsViewModels = order.items.map {
             // TODO: Pass the origin country
             WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "US", name: "United States"),
-                                            orderItem: $0)
+                                            orderItem: $0, currencySymbol: currencySymbol(from: order))
         }
 
         listenToItemsRequiredInformationValues()
@@ -72,6 +72,13 @@ private extension WooShippingCustomsFormViewModel {
                 self?.requiredInformationIsEntered = value
             }
             .store(in: &cancellables)
+    }
+
+    func currencySymbol(from order: Order) -> String {
+        guard let currencyCode = CurrencyCode(rawValue: order.currency) else {
+            return ""
+        }
+        return ServiceLocator.currencySettings.symbol(from: currencyCode)
     }
 }
 

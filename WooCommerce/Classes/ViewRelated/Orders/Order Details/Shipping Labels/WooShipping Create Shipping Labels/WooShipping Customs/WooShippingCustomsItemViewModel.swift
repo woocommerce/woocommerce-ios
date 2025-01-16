@@ -19,6 +19,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let stores: StoresManager
     private let siteID: Int64
+    let currencySymbol: String
     let orderItem: OrderItem
 
     let hsTariffURL = WooConstants.URLs.hsTariffURL.asURL()
@@ -57,11 +58,13 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
 
     init(originCountry: WooShippingCustomsCountry,
          orderItem: OrderItem,
+         currencySymbol: String,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores) {
         self.title = orderItem.name
         self.originCountry = originCountry
         self.orderItem = orderItem
+        self.currencySymbol = currencySymbol
         self.storageManager = storageManager
         self.stores = stores
         self.siteID = stores.sessionManager.defaultStoreID ?? Int64.min

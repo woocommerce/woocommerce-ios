@@ -10,7 +10,7 @@ class WooShippingCustomsFormViewModelTests: XCTestCase {
         let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
 
         var passedForm: ShippingLabelCustomsForm?
-        viewModel = WooShippingCustomsFormViewModel(orderItems: orderItems, onCompletion: { form in
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { form in
             passedForm = form
         })
 
@@ -49,7 +49,7 @@ class WooShippingCustomsFormViewModelTests: XCTestCase {
         let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
 
         var passedForm: ShippingLabelCustomsForm?
-        viewModel = WooShippingCustomsFormViewModel(orderItems: orderItems, onCompletion: { form in
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { form in
             passedForm = form
         })
 
@@ -60,5 +60,16 @@ class WooShippingCustomsFormViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(passedForm?.items.first?.hsTariffNumber.isEmpty ?? false)
+    }
+
+    func test_init_passes_right_currency() {
+        // Given
+        let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
+
+        // When
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(currency: "USD", items: orderItems), onCompletion: { _ in })
+
+        // Then
+        XCTAssertEqual(viewModel.itemsViewModels.first?.currencySymbol, "$")
     }
 }

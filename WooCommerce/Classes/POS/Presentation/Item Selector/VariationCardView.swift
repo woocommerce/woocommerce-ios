@@ -27,8 +27,8 @@ struct VariationCardView: View {
                     .font(Constants.itemNameFont)
 
                 Text(variation.formattedPrice)
-                    .foregroundStyle(Color.posPrimaryText)
-                    .font(Constants.itemPriceFont)
+                    .foregroundStyle(Color.posSecondaryText)
+                    .font(Constants.itemDetailFont)
             }
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
             .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
@@ -50,7 +50,8 @@ private extension VariationCardView {
                                  formattedPrice: "$5.00",
                                  price: "5.00",
                                  productID: 134,
-                                 variationID: 256)
+                                 variationID: 256,
+                                 parentProductName: "Coffee")
     VariationCardView(variation: variation)
 }
 
@@ -61,6 +62,7 @@ private extension VariationCardView {
                                  price: "5.00",
                                  productImageSource: "https://pd.w.org/2024/12/986762d0d4d4cf17.82435881-scaled.jpeg",
                                  productID: 134,
-                                 variationID: 256)
+                                 variationID: 256,
+                                 parentProductName: "Coffee")
     VariationCardView(variation: variation)
 }

@@ -1,18 +1,18 @@
 import SwiftUI
 
 /// Displays a card for a parent product in POS.
-struct ParentProductCardView<DetailView: View>: View {
+struct ParentProductCardView: View {
     private let name: String
     private let imageSource: String?
-    private let detailView: DetailView
+    private let detailText: String
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
-    init(name: String, imageSource: String?, @ViewBuilder detailView: () -> DetailView) {
+    init(name: String, imageSource: String?, detailText: String) {
         self.name = name
         self.imageSource = imageSource
-        self.detailView = detailView()
+        self.detailText = detailText
     }
 
     var body: some View {
@@ -31,7 +31,9 @@ struct ParentProductCardView<DetailView: View>: View {
                     .multilineTextAlignment(.leading)
                     .font(Constants.itemNameFont)
 
-                detailView
+                Text(detailText)
+                    .foregroundStyle(Color.posSecondaryText)
+                    .font(Constants.itemDetailFont)
             }
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
             .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
@@ -48,8 +50,7 @@ private typealias Constants = PointOfSaleItemListCardConstants
 #if DEBUG
 #Preview {
     ParentProductCardView(name: "Parent product",
-                          imageSource: nil) {
-        Text("Detail view")
-    }
+                          imageSource: nil,
+                          detailText: "Detail text")
 }
 #endif

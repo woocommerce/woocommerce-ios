@@ -575,6 +575,36 @@ final class ProductVariationsRemoteTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
     }
+
+    // MARK: Parameter Tests
+
+    func test_loadVariationsForPointOfSale_sets_correct_parameters() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+
+        // When
+        _ = try? await remote.loadVariationsForPointOfSale(for: sampleSiteID, parentProductID: sampleProductID, pageNumber: 2)
+
+        // Then
+        let queryParametersDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        XCTAssertEqual(queryParametersDictionary["downloadable"] as? String, String(false))
+        XCTAssertEqual(queryParametersDictionary["page"] as? String, "2")
+        XCTAssertEqual(queryParametersDictionary["per_page"] as? String, "25")
+    }
+
+    func test_loadAllProductVariations_sets_correct_parameters() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+
+        // When
+        remote.loadAllProductVariations(for: sampleSiteID, productID: sampleProductID, variationIDs: [], completion: { _, _ in })
+
+        // Then
+        let queryParametersDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        XCTAssertNil(queryParametersDictionary["downloadable"] as? String)
+        XCTAssertEqual(queryParametersDictionary["page"] as? String, "1")
+        XCTAssertEqual(queryParametersDictionary["per_page"] as? String, "25")
+    }
 }
 
 private extension ProductVariationsRemoteTests {

@@ -254,11 +254,6 @@ extension WooConstants {
         case orderCreationFeedback = "https://automattic.survey.fm/woo-app-order-creation-production"
 #endif
 
-#if DEBUG
-        case couponManagementFeedback = "https://automattic.survey.fm/woo-app-coupon-management-testing"
-#else
-        case couponManagementFeedback = "https://automattic.survey.fm/woo-app-coupon-management-production"
-#endif
         /// URL for the Enable Cash on Delivery (or Pay in Person) onboarding step's learn more link using the Stripe plugin
         ///
         case stripeCashOnDeliveryLearnMore = "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/#section-8"

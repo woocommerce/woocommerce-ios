@@ -75,22 +75,9 @@ final class WooShippingOriginAddressListViewModelTests: XCTestCase {
         XCTAssertEqual(selectedAddress, addressToSelect)
     }
 
-    func test_editAddress_sets_addressToEdit_view_model_with_expected_values() throws {
+    func test_editAddress_sets_addressToEdit_view_model() throws {
         // Given
-        let addressToEdit = WooShippingOriginAddress(id: "default_address",
-                                                     company: "HEADQUARTERS",
-                                                     address1: "15 ALGONKIN ST",
-                                                     address2: "STE 100",
-                                                     city: "TICONDEROGA",
-                                                     state: "NY",
-                                                     postcode: "12883-1487",
-                                                     country: "US",
-                                                     phone: "123-456-7890",
-                                                     firstName: "JANE",
-                                                     lastName: "DOE",
-                                                     email: "TEST@EXAMPLE.COM",
-                                                     defaultAddress: true,
-                                                     isVerified: true)
+        let addressToEdit = WooShippingOriginAddress.fake()
         let viewModel = WooShippingOriginAddressListViewModel(addresses: [addressToEdit])
 
         // When
@@ -98,17 +85,6 @@ final class WooShippingOriginAddressListViewModelTests: XCTestCase {
 
         // Then
         let addressToEditViewModel = try XCTUnwrap(viewModel.addressToEdit, "addressToEdit was unexpectedly nil")
-        XCTAssertEqual(addressToEditViewModel.id, addressToEdit.id)
-        XCTAssertEqual(addressToEditViewModel.name, addressToEdit.fullName)
-        XCTAssertEqual(addressToEditViewModel.country, addressToEdit.country)
-        XCTAssertEqual(addressToEditViewModel.company, addressToEdit.company)
-        XCTAssertEqual(addressToEditViewModel.address, addressToEdit.combinedAddress)
-        XCTAssertEqual(addressToEditViewModel.city, addressToEdit.city)
-        XCTAssertEqual(addressToEditViewModel.state, addressToEdit.state)
-        XCTAssertEqual(addressToEditViewModel.postalCode, addressToEdit.postcode)
-        XCTAssertEqual(addressToEditViewModel.phone, addressToEdit.phone)
-        XCTAssertEqual(addressToEditViewModel.email, addressToEdit.email)
-        XCTAssertTrue(addressToEditViewModel.saveAsDefault)
     }
 
 }

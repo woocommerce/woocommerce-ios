@@ -18,8 +18,8 @@ struct WooShippingCustomsRow: View {
             Spacer()
 
             Text(informationIsCompleted ? Localization.completedStatus : Localization.missingInfoStatus)
-                .captionStyle()
                 .foregroundColor(.black)
+                .captionStyle()
                 .padding(.horizontal, Layout.statusBadgeHorizontalPadding)
                 .padding(.vertical, Layout.statusBadgeVerticalPadding)
                 .background(

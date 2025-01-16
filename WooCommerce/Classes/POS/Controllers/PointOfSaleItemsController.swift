@@ -42,11 +42,12 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
 
     @MainActor
     private func loadRootItems() async {
-        let items = itemsViewState.itemsStack.root.items
-        let containerState: ItemsContainerState = items.isEmpty ? .loading : .content
+        let currentItems = itemsViewState.itemsStack.root.items
+        let currentItemStates = itemsViewState.itemsStack.itemStates
+        let containerState: ItemsContainerState = currentItems.isEmpty ? .loading : .content
         itemsViewState = .init(containerState: containerState,
-                               itemsStack: ItemsStackState(root: .loading(items),
-                                                           itemStates: [:]))
+                               itemsStack: ItemsStackState(root: .loading(currentItems),
+                                                           itemStates: currentItemStates))
 
         do {
             try await paginationTracker.resync { [weak self] pageNumber in

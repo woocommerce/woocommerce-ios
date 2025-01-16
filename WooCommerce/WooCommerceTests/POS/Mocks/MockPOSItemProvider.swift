@@ -8,7 +8,8 @@ import struct Yosemite.PagedItems
 import struct Yosemite.POSVariableParentProduct
 
 final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
-    var items: [POSItem] = []
+    /// An array of pages of items, returned when other flags are not set.
+    var itemPages: [[POSItem]] = []
     var shouldThrowError = false
     var shouldReturnZeroItems = false
     var shouldSimulateTwoPages = false
@@ -23,11 +24,12 @@ final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
         if shouldReturnZeroItems {
             return .init(items: [], hasMorePages: false)
         }
-        if shouldSimulateTwoPages,
-            pageNumber > 1 {
-            return .init(items: MockPointOfSaleItemService.makeSecondPageItems(), hasMorePages: shouldSimulateMorePages)
+        if shouldSimulateTwoPages {
+            return pageNumber > 1 ?
+                .init(items: MockPointOfSaleItemService.makeSecondPageItems(), hasMorePages: shouldSimulateMorePages):
+                .init(items: MockPointOfSaleItemService.makeInitialItems(), hasMorePages: shouldSimulateTwoPages)
         }
-        return .init(items: MockPointOfSaleItemService.makeInitialItems(), hasMorePages: shouldSimulateTwoPages)
+        return .init(items: (itemPages[safe: pageNumber - 1] ?? []), hasMorePages: itemPages.count > pageNumber)
     }
 
     var shouldSimulateTwoPagesOfVariations = false

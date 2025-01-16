@@ -10,7 +10,7 @@ class WooShippingCustomsFormViewModelTests: XCTestCase {
         let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
 
         var passedForm: ShippingLabelCustomsForm?
-        viewModel = WooShippingCustomsFormViewModel(orderItems: orderItems, onCompletion: { form in
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { form in
             passedForm = form
         })
 
@@ -49,7 +49,7 @@ class WooShippingCustomsFormViewModelTests: XCTestCase {
         let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
 
         var passedForm: ShippingLabelCustomsForm?
-        viewModel = WooShippingCustomsFormViewModel(orderItems: orderItems, onCompletion: { form in
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { form in
             passedForm = form
         })
 

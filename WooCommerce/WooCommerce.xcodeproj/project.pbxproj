@@ -443,7 +443,6 @@
 		0295355B245ADF8100BDC42B /* FilterType+Products.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0295355A245ADF8100BDC42B /* FilterType+Products.swift */; };
 		029700EC24FE38C900D242F8 /* ScrollWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029700EB24FE38C900D242F8 /* ScrollWatcher.swift */; };
 		029700EF24FE38F000D242F8 /* ScrollWatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029700EE24FE38F000D242F8 /* ScrollWatcherTests.swift */; };
-		0298431225936DFC00979CAE /* ShippingLabelsTopBannerFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0298431125936DFC00979CAE /* ShippingLabelsTopBannerFactoryTests.swift */; };
 		029A9C672535873000BECEC5 /* AppCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029A9C662535873000BECEC5 /* AppCoordinatorTests.swift */; };
 		029B0F57234197B80010C1F3 /* ProductSearchUICommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029B0F56234197B80010C1F3 /* ProductSearchUICommand.swift */; };
 		029D025A2C2319FA00CB1E75 /* PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029D02592C2319FA00CB1E75 /* PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModel.swift */; };
@@ -3626,7 +3625,6 @@
 		0295355A245ADF8100BDC42B /* FilterType+Products.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FilterType+Products.swift"; sourceTree = "<group>"; };
 		029700EB24FE38C900D242F8 /* ScrollWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollWatcher.swift; sourceTree = "<group>"; };
 		029700EE24FE38F000D242F8 /* ScrollWatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollWatcherTests.swift; sourceTree = "<group>"; };
-		0298431125936DFC00979CAE /* ShippingLabelsTopBannerFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelsTopBannerFactoryTests.swift; sourceTree = "<group>"; };
 		029A9C662535873000BECEC5 /* AppCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinatorTests.swift; sourceTree = "<group>"; };
 		029B0F56234197B80010C1F3 /* ProductSearchUICommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSearchUICommand.swift; sourceTree = "<group>"; };
 		029D02592C2319FA00CB1E75 /* PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModel.swift; sourceTree = "<group>"; };
@@ -7194,7 +7192,6 @@
 			children = (
 				0277AE9A256CA8A200F45C4A /* AggregatedShippingLabelOrderItemsTests.swift */,
 				025678C625773399009D7E6C /* Collection+ShippingLabelTests.swift */,
-				0298431125936DFC00979CAE /* ShippingLabelsTopBannerFactoryTests.swift */,
 			);
 			path = "Shipping Labels";
 			sourceTree = "<group>";
@@ -17121,7 +17118,6 @@
 				D82DFB4C225F303200EFE2CB /* EmptyListMessageWithActionTests.swift in Sources */,
 				0242CFB829F278B70080F500 /* ProductFormAIEligibilityCheckerTests.swift in Sources */,
 				E10DFC78267331590083AFF2 /* ApplicationLogViewModelTests.swift in Sources */,
-				0298431225936DFC00979CAE /* ShippingLabelsTopBannerFactoryTests.swift in Sources */,
 				CE6A8FB82B7291760063564D /* AnalyticsReportLinkViewModelTests.swift in Sources */,
 				B98968572A98F227007A2FBE /* TaxEducationalDialogViewModelTests.swift in Sources */,
 				CE63024A2BAC46A200E3325C /* CustomerDetailViewModelTests.swift in Sources */,

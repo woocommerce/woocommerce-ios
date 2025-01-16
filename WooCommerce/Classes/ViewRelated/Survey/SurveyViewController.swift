@@ -64,7 +64,6 @@ extension SurveyViewController {
     enum Source {
         case inAppFeedback
         case addOnsI1
-        case orderCreation
         case orderFormShippingLines
 
         fileprivate var url: URL {
@@ -76,11 +75,6 @@ extension SurveyViewController {
                     .tagAppVersion(Bundle.main.bundleVersion())
             case .addOnsI1:
                 return WooConstants.URLs.orderAddOnI1Feedback
-                    .asURL()
-                    .tagPlatform("ios")
-                    .tagAppVersion(Bundle.main.bundleVersion())
-            case .orderCreation:
-                return WooConstants.URLs.orderCreationFeedback
                     .asURL()
                     .tagPlatform("ios")
                     .tagAppVersion(Bundle.main.bundleVersion())
@@ -97,7 +91,6 @@ extension SurveyViewController {
             case .inAppFeedback:
                 return Localization.title
             case .addOnsI1,
-                    .orderCreation,
                     .orderFormShippingLines:
                 return Localization.giveFeedback
             }
@@ -110,8 +103,6 @@ extension SurveyViewController {
                 return .general
             case .addOnsI1:
                 return .addOnsI1
-            case .orderCreation:
-                return .orderCreation
             case .orderFormShippingLines:
                 return .orderFormShippingLines
             }

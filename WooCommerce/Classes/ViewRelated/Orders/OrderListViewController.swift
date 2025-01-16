@@ -140,10 +140,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     ///
     private var selectedOrderID: Int64?
 
-    /// Banner variation that will be shown as In-Person Payments feedback banner. If any.
-    ///
-    private var inPersonPaymentsSurveyVariation: SurveyViewController.Source?
-
     /// Store plan banner presentation handler.
     ///
     private var storePlanBannerPresenter: StorePlanBannerPresenter?

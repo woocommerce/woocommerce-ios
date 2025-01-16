@@ -242,14 +242,6 @@ extension WooConstants {
         ///
         case inPersonPaymentsLearnMoreStripe = "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/"
 
-        /// URL for the order creation feedback survey (full order creation and simple payments)
-        ///
-#if DEBUG
-        case orderCreationFeedback = "https://automattic.survey.fm/woo-app-order-creation-testing"
-#else
-        case orderCreationFeedback = "https://automattic.survey.fm/woo-app-order-creation-production"
-#endif
-
         /// URL for the Enable Cash on Delivery (or Pay in Person) onboarding step's learn more link using the Stripe plugin
         ///
         case stripeCashOnDeliveryLearnMore = "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/#section-8"

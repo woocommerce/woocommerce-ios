@@ -15,10 +15,6 @@ struct ItemListView: View {
     @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
     private var isHeaderBannerDismissed: Bool = false
 
-    // Used for refresh control workaround for an issue where the view is redrawn and the refresh control task is canceled.
-    // As a workaround, Task is perserved and can be associated with a unique ID from each refresh control trigger.
-    @State private var refreshControlTaskID: UUID?
-
     var body: some View {
         NavigationStack {
             VStack {
@@ -39,18 +35,9 @@ struct ItemListView: View {
             })
         }
         .refreshable {
-            // Only allows one refresh task at a time now that the refresh control is released on redraw.
-            guard refreshControlTaskID == nil else {
-                return
-            }
-            refreshControlTaskID = .init()
-        }
-        .task(id: refreshControlTaskID) {
-            guard refreshControlTaskID != nil else {
-                return
-            }
-            await posModel.loadItems(base: .root)
-            refreshControlTaskID = nil
+            await Task {
+                await posModel.loadItems(base: .root)
+            }.value
         }
         .background(Color.posPrimaryBackground)
         .accessibilityElement(children: .contain)

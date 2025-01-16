@@ -68,7 +68,6 @@ extension SurveyViewController {
         case addOnsI1
         case orderCreation
         case couponManagement
-        case storeSetup
         case productCreationAI
         case orderFormShippingLines
 
@@ -105,11 +104,6 @@ extension SurveyViewController {
                     .asURL()
                     .tagPlatform("ios")
                     .tagAppVersion(Bundle.main.bundleVersion())
-            case .storeSetup:
-                return WooConstants.URLs.storeSetupFeedback
-                    .asURL()
-                    .tagPlatform("ios")
-                    .tagAppVersion(Bundle.main.bundleVersion())
             case .productCreationAI:
                 return WooConstants.URLs.productCreationAIFeedback
                     .asURL()
@@ -132,7 +126,6 @@ extension SurveyViewController {
                     .addOnsI1,
                     .orderCreation,
                     .couponManagement,
-                    .storeSetup,
                     .productCreationAI,
                     .orderFormShippingLines:
                 return Localization.giveFeedback
@@ -154,8 +147,6 @@ extension SurveyViewController {
                 return .orderCreation
             case .couponManagement:
                 return .couponManagement
-            case .storeSetup:
-                return .storeSetup
             case .productCreationAI:
                 return .productCreationAI
             case .orderFormShippingLines:

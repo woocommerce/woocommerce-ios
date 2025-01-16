@@ -63,7 +63,7 @@ final class SurveyViewControllerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(mirror.webView.isLoading)
-        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.storeSetupFeedback
+        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.whatIsWPCom
                         .asURL()
                         .tagPlatform("ios")
                         .tagAppVersion(Bundle.main.bundleVersion()))

@@ -4,6 +4,7 @@
 -----
 - [Internal] [*] Improved handling of the navigation to the Woo Installation screen post Jetpack setup [https://github.com/woocommerce/woocommerce-ios/pull/14837]
 - [*] Receipts: Email receipts can now be sent to customers after failed payments using WooCommerce Stripe 9.1.0+. [https://github.com/woocommerce/woocommerce-ios/pull/14864].
+- [Internal] Removed feedback survey for Store Setup feature [https://github.com/woocommerce/woocommerce-ios/pull/14888]
 
 21.4
 -----

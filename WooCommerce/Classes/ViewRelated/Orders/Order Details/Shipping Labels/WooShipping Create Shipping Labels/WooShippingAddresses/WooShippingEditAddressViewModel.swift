@@ -45,12 +45,27 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     // MARK: Local requirements & validation
 
+    /// Whether the address has been remotely verified.
+    private var isVerified: Bool
+
+    /// Fields that are invalid based on local validation.
+    @Published private(set) var invalidFields: [WooShippingEditAddressView.AddressField] = []
+
     /// Whether the phone number is required.
     private let phoneNumberRequired: Bool
 
-    // TODO: Set status based on initial verified status, whether any changes have been made, and local validation.
+    // TODO: Set status to unverified if the address was verified remotely but there are unsaved changes.
     /// Status of the address, based on local validation and remote verification.
-    var status: WooShippingAddressStatus
+    var status: WooShippingAddressStatus {
+        switch (isVerified, invalidFields.isEmpty) {
+        case (true, true):
+            return .verified
+        case (false, true):
+            return .unverified
+        case (_, false):
+            return .missingInformation
+        }
+    }
 
     // MARK: State/Country
 
@@ -95,6 +110,11 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         }
     }
 
+    /// Whether the address is in the US.
+    var isUSAddress: Bool {
+        country == "US"
+    }
+
     /// States of the selected country.
     var statesOfSelectedCountry: [StateOfACountry] {
         countries.first { $0.code == country }?.states.sorted { $0.name < $1.name } ?? []
@@ -135,7 +155,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         self.phone = phone
         self.isDefaultAddress = isDefaultAddress
         self.showCompanyField = showCompanyField
-        self.status = isVerified ? .verified : .unverified
+        self.isVerified = isVerified
         self.phoneNumberRequired = phoneNumberRequired
         self.stores = stores
         self.siteID = stores.sessionManager.defaultStoreID ?? Int64.min
@@ -180,6 +200,69 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
             return stateRequired
         case .phone:
             return phoneNumberRequired
+        }
+    }
+}
+
+// MARK: Validation
+
+extension WooShippingEditAddressViewModel {
+    /// Locally validates all fields in the address at once.
+    func validateAddress() {
+        for field in WooShippingEditAddressView.AddressField.allCases {
+            validate(field)
+        }
+    }
+
+    /// Locally validates the given field and appends/removes it from the list of invalid fields.
+    func validate(_ field: WooShippingEditAddressView.AddressField) {
+        if isValid(field) {
+            invalidFields.removeAll { $0 == field }
+        } else if !invalidFields.contains(field) {
+            invalidFields.append(field)
+        }
+    }
+
+    /// Checks if the field is valid based on local validation.
+    private func isValid(_ field: WooShippingEditAddressView.AddressField) -> Bool {
+        switch field {
+        case .name:
+            return !isRequired(.name) || name.isNotEmpty
+        case .company:
+            return !isRequired(.company) || company.isNotEmpty
+        case .country:
+            return !isRequired(.country) || country.isNotEmpty
+        case .address:
+            return !isRequired(.address) || address.isNotEmpty
+        case .city:
+            return !isRequired(.city) || city.isNotEmpty
+        case .state:
+            return !isRequired(.state) || state.isNotEmpty
+        case .postalCode:
+            return !isRequired(.postalCode) || postalCode.isNotEmpty
+        case .email:
+            return !isRequired(.email) || email.isNotEmpty
+        case .phone:
+            return isPhoneNumberValid
+        }
+    }
+
+    /// Validates phone number for the address.
+    /// This take into account whether phone is not empty,
+    /// has length 10 with additional "1" area code for US.
+    ///
+    private var isPhoneNumberValid: Bool {
+        guard phone.isNotEmpty else {
+            return !phoneNumberRequired
+        }
+        guard isUSAddress else {
+            return true
+        }
+        let phoneDigits = phone.components(separatedBy: .decimalDigits.inverted).joined()
+        if phoneDigits.hasPrefix("1") {
+            return phoneDigits.count == 11
+        } else {
+            return phoneDigits.count == 10
         }
     }
 }

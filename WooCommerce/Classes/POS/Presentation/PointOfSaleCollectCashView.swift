@@ -106,6 +106,7 @@ struct PointOfSaleCollectCashView: View {
             Spacer()
         }
         .background(backgroundColor)
+        .padding(.top, Constants.navigationHeaderTopPadding)
         .padding([.horizontal, .bottom])
         .animation(.easeInOut, value: errorMessage)
         .animation(.easeInOut, value: changeDueMessage)
@@ -142,6 +143,7 @@ private extension PointOfSaleCollectCashView {
         static let buttonPadding: CGFloat = 32
         static let buttonMinHeight: CGFloat = 32
         static let navigationButtonSpacing: CGFloat = 8
+        static let navigationHeaderTopPadding: CGFloat = 8
         static let buttonFont: POSFontStyle = .posBodyEmphasized
         static let buttonCornerRadius: CGFloat = 8
     }

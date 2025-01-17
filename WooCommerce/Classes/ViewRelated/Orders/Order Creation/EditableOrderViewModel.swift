@@ -63,7 +63,12 @@ final class EditableOrderViewModel: ObservableObject {
     /// Indicates whether user has made any changes
     ///
     var hasChanges: Bool {
-        return orderSynchronizer.orderHasBeenChanged
+        if selectionSyncApproach == .onRecalculateButtonTap {
+            // In split view, we need to check whether the screen has changes that are not yet synced to the order.
+            return orderSynchronizer.orderHasBeenChanged || syncRequired
+        } else {
+            return orderSynchronizer.orderHasBeenChanged
+        }
     }
 
     /// Indicates whether view can be dismissed.

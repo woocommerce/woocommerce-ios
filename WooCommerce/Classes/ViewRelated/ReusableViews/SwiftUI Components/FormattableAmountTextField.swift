@@ -4,7 +4,8 @@ import SwiftUI
 ///
 struct FormattableAmountTextField: View {
     @ScaledMetric private var scale: CGFloat = 1.0
-    @FocusState private var focusAmountInput: Bool
+    @FocusState private var internalFocusAmountInput: Bool
+    private var externalFocusBinding: FocusState<Bool>.Binding?
 
     @ObservedObject private var viewModel: FormattableAmountTextFieldViewModel
     private let style: Style
@@ -14,13 +15,22 @@ struct FormattableAmountTextField: View {
         self.style = style
     }
 
+
+    private var focusAmountInput: FocusState<Bool>.Binding {
+        if let externalFocusBinding = externalFocusBinding {
+            return externalFocusBinding
+        } else {
+            return $internalFocusAmountInput
+        }
+    }
+
     var body: some View {
         ZStack(alignment: .center) {
             // Hidden input text field
             TextField("", text: $viewModel.textFieldAmountText)
                 .onChange(of: viewModel.textFieldAmountText, perform: viewModel.updateAmount)
                 .focused()
-                .focused($focusAmountInput)
+                .focused(focusAmountInput)
                 .keyboardType(viewModel.allowNegativeNumber ? .numbersAndPunctuation : .decimalPad)
                 .opacity(0)
 
@@ -31,14 +41,20 @@ struct FormattableAmountTextField: View {
                 .lineLimit(1)
                 .frame(maxWidth: .infinity, alignment: style.textAlignment)
                 .padding(5)
-                .if(focusAmountInput && style.showsBorder, transform: { field in
+                .if(focusAmountInput.wrappedValue && style.showsBorder, transform: { field in
                     field.roundedBorder(cornerRadius: 8, lineColor: Color(.wooCommercePurple(.shade60)), lineWidth: 1)
                 })
                 .onTapGesture {
-                    focusAmountInput = true
+                    focusAmountInput.wrappedValue = true
                 }
         }
         .fixedSize(horizontal: false, vertical: true)
+    }
+
+    func focused(_ focusBinding: FocusState<Bool>.Binding) -> FormattableAmountTextField {
+        var copy = self
+        copy.externalFocusBinding = focusBinding
+        return copy
     }
 }
 

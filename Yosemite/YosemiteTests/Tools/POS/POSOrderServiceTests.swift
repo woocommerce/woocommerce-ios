@@ -33,6 +33,8 @@ struct POSOrderServiceTests {
 
         // Then
         #expect(mockOrdersRemote.spyCreatePOSOrder?.currency.uppercased() == "EUR")
+        let fields = try #require(mockOrdersRemote.spyCreatePOSOrderFields)
+        #expect(fields.contains(.currency) == true)
     }
 
     @Test

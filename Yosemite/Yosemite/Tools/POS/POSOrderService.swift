@@ -122,7 +122,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
         if posOrder != nil {
             syncedOrder = try await ordersRemote.updatePOSOrder(siteID: siteID, order: order, fields: [.items])
         } else {
-            syncedOrder = try await ordersRemote.createPOSOrder(siteID: siteID, order: order, fields: [.items, .status])
+            syncedOrder = try await ordersRemote.createPOSOrder(siteID: siteID, order: order, fields: [.items, .status, .currency])
         }
         return syncedOrder
     }

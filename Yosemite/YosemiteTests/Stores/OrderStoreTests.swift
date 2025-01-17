@@ -1265,6 +1265,7 @@ final class OrderStoreTests: XCTestCase {
         let expectedKeys = [
             "billing",
             "coupon_lines",
+            "currency",
             "customer_id",
             "customer_note",
             "fee_lines",
@@ -1292,6 +1293,7 @@ final class OrderStoreTests: XCTestCase {
         let expectedKeys = [
             "billing",
             "coupon_lines",
+            "currency",
             "customer_id",
             "customer_note",
             "fee_lines",

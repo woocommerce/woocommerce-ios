@@ -588,6 +588,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
         // Then
         let queryParametersDictionary = try XCTUnwrap(network.queryParametersDictionary)
         XCTAssertEqual(queryParametersDictionary["downloadable"] as? String, String(false))
+        XCTAssertEqual(queryParametersDictionary["status"] as? String, "publish")
         XCTAssertEqual(queryParametersDictionary["page"] as? String, "2")
         XCTAssertEqual(queryParametersDictionary["per_page"] as? String, "25")
     }
@@ -602,6 +603,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
         // Then
         let queryParametersDictionary = try XCTUnwrap(network.queryParametersDictionary)
         XCTAssertNil(queryParametersDictionary["downloadable"] as? String)
+        XCTAssertNil(queryParametersDictionary["status"] as? String)
         XCTAssertEqual(queryParametersDictionary["page"] as? String, "1")
         XCTAssertEqual(queryParametersDictionary["per_page"] as? String, "25")
     }

@@ -292,4 +292,34 @@ final class SiteRemoteTests: XCTestCase {
             (error as? DotcomError) == .unauthorized
         })
     }
+
+    // MARK: - `loadSite`
+
+    func test_loadSite_by_domain_returns_site_info_on_success() async throws {
+        // Given
+        let domain = "example.com"
+        network.simulateResponse(requestUrlSuffix: "sites/\(domain)", filename: "site")
+
+        // When
+        let response = try await remote.loadSite(domain: domain)
+
+        // Then
+        XCTAssertEqual(response.siteID, 1112233334444555)
+        XCTAssertEqual(response.name, "Testing Blog")
+        XCTAssertEqual(response.url, "https://some-testing-url.testing.blog")
+    }
+
+    func test_loadSite_by_domai_returns_error_upon_failure() async throws {
+        // Given
+        let domain = "example.com"
+        network.simulateResponse(requestUrlSuffix: "sites/\(domain)", filename: "site-error")
+
+        await assertThrowsError({
+            // When
+            _ = try await remote.loadSite(domain: domain)
+        }, errorAssert: { ($0 as? DotcomError) == .unknown(
+            code: "parse_error",
+            message: "The Jetpack site is inaccessible or returned an error: parse error (local). not well formed [-32710]"
+        )})
+    }
 }

@@ -14,7 +14,7 @@ struct POSSendReceiptView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: 20) {
+        VStack(alignment: .center) {
             HStack {
                 Button(action: {
                     withAnimation {
@@ -22,17 +22,16 @@ struct POSSendReceiptView: View {
                     }
                 }, label: {
                     HStack {
-                        Image(systemName: "chevron.left")
+                        Image(systemName: "chevron.backward")
                         Text(Localization.emailReceiptNavigationText)
                     }
-                    .font(.title)
-                    .bold()
-                    .foregroundColor(.primary)
+                    .font(.posTitleEmphasized)
+                    .foregroundColor(.posPrimaryText)
+                    .accessibilityAddTraits(.isHeader)
                 })
                 Spacer()
             }
             .buttonStyle(.plain)
-            .padding()
             .disabled(isLoading)
 
             TextField(Localization.textfieldPlaceholder, text: $textFieldInput)
@@ -78,7 +77,7 @@ struct POSSendReceiptView: View {
 
             Spacer()
         }
-        .padding()
+        .padding([.horizontal, .bottom])
         .animation(.easeInOut, value: errorMessage)
         .onChange(of: textFieldInput) { _ in
             errorMessage = nil

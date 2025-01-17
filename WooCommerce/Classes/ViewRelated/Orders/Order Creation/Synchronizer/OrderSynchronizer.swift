@@ -40,6 +40,9 @@ protocol OrderSynchronizer {
     ///
     var order: Order { get }
 
+    /// Indicates whether the order has been changed in this OrderSynchronizer
+    var orderHasBeenChanged: Bool { get }
+
     /// Publisher for the order toe be synced or that is synced.
     ///
     var orderPublisher: Published<Order>.Publisher { get }

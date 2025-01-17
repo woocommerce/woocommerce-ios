@@ -89,6 +89,12 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
     ///
     private let debounceDuration: TimeInterval
 
+    var orderHasBeenChanged: Bool {
+        return order != initialOrder
+    }
+
+    private let initialOrder: Order
+
     // MARK: Initializers
 
 
@@ -99,15 +105,18 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
          debounceDuration: TimeInterval = 1.0) {
         self.siteID = siteID
         self.stores = stores
-        let storeCurrency = currencySettings.currencyCode
-        self.order = OrderFactory.newOrder(currency: storeCurrency)
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.blockingBehavior = .majorUpdates
         self.debounceDuration = debounceDuration
 
         if case let .editing(initialOrder) = flow {
-            order = initialOrder
+            self.initialOrder = initialOrder
+            self.order = initialOrder
         } else {
+            let storeCurrency = currencySettings.currencyCode
+            let newOrder = OrderFactory.newOrder(currency: storeCurrency)
+            self.initialOrder = newOrder
+            self.order = newOrder
             updateBaseSyncOrderStatus()
         }
 

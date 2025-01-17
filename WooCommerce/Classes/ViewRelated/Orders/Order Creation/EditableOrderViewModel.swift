@@ -63,12 +63,7 @@ final class EditableOrderViewModel: ObservableObject {
     /// Indicates whether user has made any changes
     ///
     var hasChanges: Bool {
-        switch flow {
-        case .creation:
-            return orderSynchronizer.order != OrderFactory.newOrder(currency: ServiceLocator.currencySettings.currencyCode)
-        case .editing(let initialOrder):
-            return orderSynchronizer.order != initialOrder
-        }
+        return orderSynchronizer.orderHasBeenChanged
     }
 
     /// Indicates whether view can be dismissed.

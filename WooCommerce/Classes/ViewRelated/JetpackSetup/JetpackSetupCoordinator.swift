@@ -118,14 +118,7 @@ private extension JetpackSetupCoordinator {
                 requiresConnectionOnly: requiresConnectionOnly
             ))
             if let connectedEmail = jetpackConnectedEmail {
-                /// prevent asking for authentication again if the user starts Jetpack setup again after completion.
-                if stores.isAuthenticated,
-                   stores.isAuthenticatedWithoutWPCom == false,
-                    let credentials = stores.sessionManager.defaultCredentials {
-                    refreshSite(with: credentials)
-                } else {
-                    startAuthentication(with: connectedEmail)
-                }
+                startAuthentication(with: connectedEmail)
             } else {
                 showWPComEmailLogin()
             }
@@ -258,12 +251,9 @@ private extension JetpackSetupCoordinator {
 
     func authenticateUserAndRefreshSite(with credentials: Credentials) {
         analytics.track(.jetpackSetupCompleted)
-        stores.sessionManager.deleteApplicationPassword()
+        let previousCredentials = stores.sessionManager.defaultCredentials
         stores.authenticate(credentials: credentials)
-        refreshSite(with: credentials)
-    }
 
-    func refreshSite(with credentials: Credentials) {
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.syncingData, message: ""))
         rootViewController.topmostPresentedViewController.present(progressView, animated: true)
 
@@ -271,6 +261,7 @@ private extension JetpackSetupCoordinator {
             guard let self else { return }
             switch result {
             case .success(let site):
+                self.stores.sessionManager.deleteApplicationPassword()
                 self.stores.updateDefaultStore(storeID: site.siteID)
                 self.stores.synchronizeEntities { [weak self] in
                     self?.stores.updateDefaultStore(site)
@@ -288,6 +279,11 @@ private extension JetpackSetupCoordinator {
                 progressView.dismiss(animated: true, completion: { [weak self] in
                     self?.showAlert(message: Localization.errorFetchingSites, onRetry: {
                         self?.authenticateUserAndRefreshSite(with: credentials)
+                    }, onCancel: {
+                        // Revert the change to credentials
+                        if let previousCredentials {
+                            self?.stores.authenticate(credentials: previousCredentials)
+                        }
                     })
                 })
 
@@ -447,7 +443,8 @@ private extension JetpackSetupCoordinator {
     /// Shows an error alert with a button to retry the failed action.
     ///
     func showAlert(message: String,
-                   onRetry: (() -> Void)? = nil) {
+                   onRetry: (() -> Void)? = nil,
+                   onCancel: (() -> Void)? = nil) {
         let alert = UIAlertController(title: message,
                                       message: nil,
                                       preferredStyle: .alert)
@@ -457,7 +454,9 @@ private extension JetpackSetupCoordinator {
             }
             alert.addAction(retryAction)
         }
-        let cancelAction = UIAlertAction(title: Localization.cancelButton, style: .cancel)
+        let cancelAction = UIAlertAction(title: Localization.cancelButton, style: .cancel) { _ in
+            onCancel?()
+        }
         alert.addAction(cancelAction)
         rootViewController.topmostPresentedViewController.present(alert, animated: true)
     }

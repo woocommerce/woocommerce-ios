@@ -7,7 +7,6 @@ struct PointOfSaleDashboardView: View {
     @State private var showSupport: Bool = false
 
     @State private var floatingSize: CGSize = .zero
-    @State private var isAnimating: Bool = false
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
@@ -37,7 +36,7 @@ struct PointOfSaleDashboardView: View {
                     .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
                     .trackSize(size: $floatingSize)
                     .accessibilitySortPriority(1)
-                    .renderedIf(posModel.itemsViewState.containerState != .loading && !isAnimating)
+                    .renderedIf(posModel.itemsViewState.containerState != .loading)
             }
 
             POSConnectivityView()
@@ -72,13 +71,7 @@ struct PointOfSaleDashboardView: View {
         .task {
             await posModel.reloadItems(base: .root)
         }
-        .onChange(of: posModel.itemsViewState.containerState) { containerState in
-            if containerState == .loading {
-                withAnimation {
-                    isAnimating = false
-                }
-            }
-        }
+        .ignoresSafeArea(.keyboard)
     }
 
     private var contentView: some View {

@@ -1150,7 +1150,7 @@ platform :ios do
       api_key_path = nil
     end
 
-    match(
+    sync_code_signing(
       type: 'enterprise',
       team_id: get_required_env('INT_EXPORT_TEAM_ID'),
       app_identifier: ALPHA_BUNDLE_IDENTIFIERS,
@@ -1165,7 +1165,7 @@ platform :ios do
   #
   # @option [Boolean] readonly (default: true) Whether to only fetch existing certificates and profiles, without generating new ones.
   lane :update_certs_and_profiles_app_store do |readonly: true|
-    match(
+    sync_code_signing(
       type: 'appstore',
       team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
       app_identifier: MAIN_BUNDLE_IDENTIFIERS,

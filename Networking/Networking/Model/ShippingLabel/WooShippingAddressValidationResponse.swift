@@ -9,8 +9,8 @@ import Foundation
 internal struct WooShippingAddressValidationResponse: Equatable {
     let result: Result<WooShippingAddressValidationSuccess, WooShippingAddressValidationError>
 
-    init(normalizedAddress: ShippingLabelAddress?,
-         originalAddress: ShippingLabelAddress?,
+    init(normalizedAddress: WooShippingAddress?,
+         originalAddress: WooShippingAddress?,
          isTrivialNormalization: Bool?,
          errors: WooShippingAddressValidationError?) {
         if let errors {
@@ -30,8 +30,8 @@ internal struct WooShippingAddressValidationResponse: Equatable {
 extension WooShippingAddressValidationResponse: Decodable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let normalizedAddress = try container.decodeIfPresent(ShippingLabelAddress.self, forKey: .normalized)
-        let originalAddress = try container.decodeIfPresent(ShippingLabelAddress.self, forKey: .original)
+        let normalizedAddress = try container.decodeIfPresent(WooShippingAddress.self, forKey: .normalized)
+        let originalAddress = try container.decodeIfPresent(WooShippingAddress.self, forKey: .original)
         let isTrivialNormalization = try container.decodeIfPresent(Bool.self, forKey: .isTrivialNormalization)
         let errors = try container.decodeIfPresent(WooShippingAddressValidationError.self, forKey: .errors)
         self.init(normalizedAddress: normalizedAddress, originalAddress: originalAddress, isTrivialNormalization: isTrivialNormalization, errors: errors)

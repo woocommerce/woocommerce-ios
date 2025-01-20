@@ -39,6 +39,9 @@ final class MockWooShippingRemote {
     /// The results to return based on the given arguments in `loadOriginAddresses`
     private var loadOriginAddresses = [ResultKey: Result<[WooShippingOriginAddress], Error>]()
 
+    /// The results to return based on the given arguments in `addressValidation`
+    private var addressValidation = [ResultKey: Result<WooShippingAddressValidationSuccess, Error>]()
+
     /// Set the value passed to the `completion` block if `createPackage` is called.
     func whenCreatePackage(siteID: Int64,
                            thenReturn result: Result<WooShippingCreatePackageResponse, Error>) {
@@ -100,6 +103,13 @@ final class MockWooShippingRemote {
                              thenReturn result: Result<[WooShippingOriginAddress], Error>) {
         let key = ResultKey(siteID: siteID)
         loadOriginAddresses[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `addressValidation` is called.
+    func whenAddressValidation(siteID: Int64,
+                               thenReturn result: Result<WooShippingAddressValidationSuccess, Error>) {
+        let key = ResultKey(siteID: siteID)
+        addressValidation[key] = result
     }
 }
 
@@ -239,6 +249,21 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
             let key = ResultKey(siteID: siteID)
             if let result = self.loadOriginAddresses[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func addressValidation(siteID: Int64,
+                           address: ShippingLabelAddress,
+                           completion: @escaping (Result<WooShippingAddressValidationSuccess, any Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = ResultKey(siteID: siteID)
+            if let result = self.addressValidation[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

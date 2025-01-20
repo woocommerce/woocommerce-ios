@@ -106,8 +106,6 @@ target 'WooCommerce' do
 
   wordpress_shared
   wordpress_ui
-  # TODO: remove once WordPressAuthenticator fold completed
-  svprogresshud
 
   aztec
 

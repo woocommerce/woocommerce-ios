@@ -44,4 +44,59 @@ class WooShippingCustomsItemViewModelTests: XCTestCase {
         viewModel.hsTariffNumber = "987654321098"
         XCTAssertTrue(viewModel.isValidTariffNumber)
     }
+
+    func test_internationalTransactionNumberIsRequired_when_currency_symbol_is_not_$_returns_false() {
+        // When
+        viewModel = WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "", name: "United States"),
+                                                    orderItem: MockOrderItem.sampleItem(), currencySymbol: "€")
+
+        // Then
+        XCTAssertFalse(viewModel.internationalTransactionNumberIsRequired)
+
+    }
+
+    func test_internationalTransactionNumberIsRequired_when_currency_symbol_is_$_but_value_is_less_than_2500_returns_false() {
+        // When
+        viewModel = WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "", name: "United States"),
+                                                    orderItem: MockOrderItem.sampleItem(), currencySymbol: "$")
+        viewModel.valuePerUnit = "1000"
+
+        // Then
+        XCTAssertFalse(viewModel.internationalTransactionNumberIsRequired)
+
+    }
+
+    func test_internationalTransactionNumberIsRequired_when_currency_symbol_is_$_and_value_is_more_than_2500_but_no_hs_tariff_number_returns_false() {
+        // When
+        viewModel = WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "", name: "United States"),
+                                                    orderItem: MockOrderItem.sampleItem(), currencySymbol: "$")
+        viewModel.valuePerUnit = "1000"
+        viewModel.hsTariffNumber = ""
+
+        // Then
+        XCTAssertFalse(viewModel.internationalTransactionNumberIsRequired)
+
+    }
+
+    func test_internationalTransactionNumberIsRequired_when_currency_symbol_is_$_and_value_is_more_than_2500_but_invalid_hs_tariff_number_returns_false() {
+        // When
+        viewModel = WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "", name: "United States"),
+                                                    orderItem: MockOrderItem.sampleItem(), currencySymbol: "$")
+        viewModel.valuePerUnit = "1000"
+        viewModel.hsTariffNumber = "123"
+
+        // Then
+        XCTAssertFalse(viewModel.internationalTransactionNumberIsRequired)
+    }
+
+    func test_internationalTransactionNumberIsRequired_when_currency_symbol_is_$_and_value_is_more_than_2500_and_valid_hs_tariff_number_returns_true() {
+        // When
+        viewModel = WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "", name: "United States"),
+                                                    orderItem: MockOrderItem.sampleItem(), currencySymbol: "$")
+        viewModel.valuePerUnit = "3000"
+        viewModel.hsTariffNumber = "123456"
+
+        // Then
+        XCTAssertTrue(viewModel.internationalTransactionNumberIsRequired)
+    }
 }

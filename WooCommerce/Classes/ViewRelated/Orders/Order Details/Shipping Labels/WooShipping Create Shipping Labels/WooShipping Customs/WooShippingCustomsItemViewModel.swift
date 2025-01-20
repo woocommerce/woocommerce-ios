@@ -105,6 +105,7 @@ extension WooShippingCustomsItemViewModel {
             .sink { [weak self] valuePerUnit, hsTariffNumber in
                 guard let self = self else { return }
 
+                // Items valued more than $2500 with a valid HSTariff Number require an International Transaction Number
                 self.internationalTransactionNumberIsRequired = self.currencySymbol == "$" &&
                 (Double(valuePerUnit) ?? 0) > 2500 &&
                 hsTariffNumber.isNotEmpty &&

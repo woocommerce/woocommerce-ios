@@ -25,7 +25,7 @@ struct SimpleProductCardView: View {
                     .lineLimit(2)
                     .foregroundStyle(Color.posPrimaryText)
                     .multilineTextAlignment(.leading)
-                    .font(Constants.itemNameFont)
+                    .font(Constants.itemTitleFont)
 
                 Text(product.formattedPrice)
                     .foregroundStyle(Color.posSecondaryText)

@@ -101,9 +101,23 @@ struct WooShippingCustomsForm: View {
                                 restrictionTypeSelectionView
                                     .padding(.bottom, Constants.defaultVerticalSpacing)
 
+                                Group {
+                                    Text(Localization.restrictionTypeDetails)
+                                            .font(.subheadline)
+                                    TextField("", text: $viewModel.restrictionDetails)
+                                        .padding(Constants.borderPadding)
+                                        .roundedBorder(cornerRadius: Constants.borderCornerRadius, lineColor: Color(.separator), lineWidth: Constants.borderWidth)
+                                    Text(Localization.restrictionTypeFootnote)
+                                        .footnoteStyle()
+                                    Text(Localization.valueRequiredWarning)
+                                        .foregroundColor(warningRedColor)
+                                        .footnoteStyle()
+                                        .renderedIf(viewModel.restrictionDetails.isEmpty)
+                                }
+                                .renderedIf(viewModel.restrictionType == .other)
+
                                 Text(Localization.internationalTransactionNumber)
                                     .font(.subheadline)
-
 
                                 TextField("", text: $viewModel.internationalTransactionNumber)
                                     .padding(Constants.borderPadding)
@@ -201,6 +215,12 @@ extension WooShippingCustomsForm {
         static let contentDetailsFootnote = NSLocalizedString("wooShipping.customs.contentDetailsFootnote",
                                                    value: "Please describe what kind of goods this package contains",
                                                    comment: "Footnote for the Content Details text field in the Shipping Customs Form")
+        static let restrictionTypeDetails = NSLocalizedString("wooShipping.customs.restrictionTypeDetails",
+                                                   value: "Restriction Details",
+                                                   comment: "Title for the Content Details text field in the Shipping Customs Form")
+        static let restrictionTypeFootnote = NSLocalizedString("wooShipping.customs.restrictionTypeDetailsFootnote",
+                                                   value: "Please describe what kind of restrictions this package must have",
+                                                   comment: "Footnote for the Restriction Type text field in the Shipping Customs Form")
         static let restrictionType = NSLocalizedString("wooShipping.customs.restrictionType",
                                                    value: "Restriction Type",
                                                    comment: "Title for the Restriction Type menu in the Shipping Customs Form")

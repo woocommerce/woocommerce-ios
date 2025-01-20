@@ -12,6 +12,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     @Published var itemsRequiredInformationIsEntered: Bool = false
 
     @Published var contentExplanation: String = ""
+    @Published var restrictionDetails: String = ""
     @Published var contentType: WooShippingContentType = .merchandise
     @Published var restrictionType: WooShippingRestrictionType = .none
 
@@ -43,7 +44,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
                                             contentsType: contentType.toFormContentsType(),
                                             contentExplanation: contentExplanation,
                                             restrictionType: restrictionType.toFormRestrictionType(),
-                                            restrictionComments: "",
+                                            restrictionComments: restrictionDetails,
                                             nonDeliveryOption: returnToSenderIfNotDelivered ? .return : .abandon,
                                             itn: isValidITN() ? internationalTransactionNumber : "",
                                             items: itemsViewModels.map {

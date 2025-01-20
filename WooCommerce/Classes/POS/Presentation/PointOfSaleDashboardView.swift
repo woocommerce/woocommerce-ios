@@ -71,6 +71,7 @@ struct PointOfSaleDashboardView: View {
         .task {
             await posModel.loadItems(base: .root)
         }
+        .ignoresSafeArea(.keyboard)
     }
 
     private var contentView: some View {

@@ -42,10 +42,6 @@ extension UserDefaults {
         // AI prompt tone
         case aiPromptTone
 
-        // Product Creation AI
-        case numberOfTimesProductCreationAISurveySuggested
-        case didStartProductCreationAISurvey
-
         // Theme installation
         case themesPendingInstall
 

@@ -537,7 +537,7 @@ extension PackageCreationError: LocalizedError {
                                      comment: "The title of the alert when there is a generic error adding the package")
         }
     }
-    
+
     public var errorDescription: String? {
         switch self {
         case .duplicatePackageNames, .duplicateCustomPackageNames:

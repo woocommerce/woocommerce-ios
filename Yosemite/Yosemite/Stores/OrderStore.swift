@@ -751,7 +751,6 @@ extension OrderStore.GiftCardError {
     }
 }
 
-
 extension OrderStore.GiftCardError: CustomStringConvertible {
     public var description: String {
         switch self {

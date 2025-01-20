@@ -1,6 +1,6 @@
 import Foundation
 
-public extension SystemStatus {
+public extension SystemStatusReport {
     /// Details about a store's settings in its system status report.
     ///
     struct Settings: Decodable {

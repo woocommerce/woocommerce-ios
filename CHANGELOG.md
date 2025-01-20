@@ -1,6 +1,13 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 21.4
+This update introduces the ability to hide specific stores from the store picker, perfect for agencies managing multiple sites. We’ve also enhanced plugin info fetching to handle unexpected data types, ensuring smoother performance. Additionally, a bug on iPad causing order creation issues with custom amounts has been resolved. Enjoy a more focused and reliable experience!
+
+## 21.3
+
+This update brings enhanced reliability and clarity to your WooCommerce experience! Enjoy improved Jetpack setup, smoother media handling, and better product and payment workflows. We’ve also optimized storage and addressed key UI issues to elevate performance. Plus, Tap to Pay onboarding now guides you with ease!
+
 ## 21.2
 In just two weeks, we've jam-packed this release. There's GTIN global product identifier support, and you can edit the call-to-action in Blaze campaigns.
 

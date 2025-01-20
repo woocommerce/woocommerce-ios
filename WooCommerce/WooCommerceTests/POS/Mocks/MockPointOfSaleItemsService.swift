@@ -4,13 +4,9 @@ import Combine
 import enum Yosemite.POSItem
 
 final class MockPointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
-    var itemListStatePublisher: any Publisher<WooCommerce.ItemListState, Never> = Empty()
+    var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> = Empty()
 
-    var allItems: [POSItem] = []
+    func loadItems(base: ItemListBaseItem) async { }
 
-    func loadInitialItems() async { }
-
-    func loadNextItems() async { }
-
-    func reload() async { }
+    func loadNextItems(base: ItemListBaseItem) async { }
 }

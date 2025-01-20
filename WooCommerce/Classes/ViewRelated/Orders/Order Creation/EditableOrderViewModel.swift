@@ -1550,6 +1550,13 @@ private extension EditableOrderViewModel {
         syncRequired = false
     }
 
+    func isSyncRequired(products: [Product], variations: [ProductVariation]) -> Bool {
+        let addedItemsToSync = productInputAdditionsToSync(products: products, variations: variations)
+        let removedItemsToSync = productInputDeletionsToSync(products: products, variations: variations)
+
+        return (addedItemsToSync + removedItemsToSync).isNotEmpty
+    }
+
     /// Adds a selected product (from the product list) to the order.
     ///
     func changeSelectionStateForProduct(_ product: Product, to isSelected: Bool) {
@@ -2012,7 +2019,7 @@ private extension EditableOrderViewModel {
         case .immediate:
             syncOrderItems(products: selectedProducts, variations: selectedProductVariations)
         case .onRecalculateButtonTap:
-            syncRequired = true
+            syncRequired = isSyncRequired(products: selectedProducts, variations: selectedProductVariations)
         case .onSelectorButtonTap:
             return
         }

@@ -10,39 +10,42 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            switch posModel.itemListState {
-            case .initialLoading:
+            switch posModel.itemsViewState.containerState {
+            case .loading:
                 PointOfSaleLoadingView()
                     .transition(.opacity)
                     .ignoresSafeArea()
             case .empty:
                 PointOfSaleItemListEmptyView()
             case .error(let errorContents):
-                PointOfSaleItemListErrorView(error: errorContents, onRetry: {
+                PointOfSaleItemListFullscreenErrorView(error: errorContents, onRetry: {
                     Task {
-                        await posModel.loadInitialItems()
+                        await posModel.loadItems(base: .root)
                     }
                 })
-            case .loading, .loaded:
+            case .content:
                 contentView
                     .accessibilitySortPriority(2)
+                    .ignoresSafeArea(edges: .bottom)
             }
 
-            POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
-                                   showSupport: $showSupport)
-                .shadow(color: Color.black.opacity(0.12), radius: 4, y: 2)
-                .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
-                .trackSize(size: $floatingSize)
-                .accessibilitySortPriority(1)
-                .renderedIf(posModel.itemListState != .initialLoading)
+            if case .card = posModel.paymentState {
+                POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
+                                       showSupport: $showSupport)
+                    .shadow(color: Color.black.opacity(0.12), radius: 4, y: 2)
+                    .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
+                    .trackSize(size: $floatingSize)
+                    .accessibilitySortPriority(1)
+                    .renderedIf(posModel.itemsViewState.containerState != .loading)
+            }
 
             POSConnectivityView()
         }
         .environment(\.floatingControlAreaSize,
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
-        .environment(\.posBackgroundAppearance, posModel.paymentState != .processingPayment ? .primary : .secondary)
-        .animation(.easeInOut, value: posModel.itemListState == .initialLoading)
+        .environment(\.posBackgroundAppearance, posModel.paymentState != .card(.processingPayment) ? .primary : .secondary)
+        .animation(.easeInOut, value: posModel.itemsViewState.containerState == .loading)
         .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
         .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
@@ -66,7 +69,7 @@ struct PointOfSaleDashboardView: View {
             supportForm
         }
         .task {
-            await posModel.loadInitialItems()
+            await posModel.loadItems(base: .root)
         }
     }
 

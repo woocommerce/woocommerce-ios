@@ -5,7 +5,6 @@ struct WooShippingPackageAndRatePlaceholder: View {
     let onSelectPackage: (WooShippingPackageDataRepresentable) -> Void
 
     @State private var showAddPackage: Bool = false
-    @ObservedObject var viewModel: WooShippingCreateLabelsViewModel
 
     var body: some View {
         VStack(spacing: .zero) {
@@ -67,8 +66,7 @@ private extension WooShippingPackageAndRatePlaceholder {
 import struct Yosemite.Order
 
 #Preview {
-    WooShippingPackageAndRatePlaceholder(onSelectPackage: { _ in },
-                                         viewModel: WooShippingCreateLabelsViewModel(order: Order.sampleOrder))
+    WooShippingPackageAndRatePlaceholder(onSelectPackage: { _ in })
         .padding()
 }
 

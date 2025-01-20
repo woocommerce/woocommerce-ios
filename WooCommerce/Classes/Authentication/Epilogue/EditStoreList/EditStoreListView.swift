@@ -77,12 +77,27 @@ struct EditStoreListView: View {
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.saveButton) {
-                        viewModel.didSaveChanges()
+                    if viewModel.isUpdatingNotificationSettings {
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                    } else {
+                        Button(Localization.saveButton) {
+                            Task {
+                                await viewModel.saveChanges()
+                            }
+                        }
+                        .disabled(viewModel.hasChanges == false)
                     }
-                    .disabled(viewModel.hasChanges == false)
                 }
             }
+            .alert(Localization.errorUpdatingNotificationSettings, isPresented: $viewModel.shouldShowErrorAlert, actions: {
+                Button(Localization.cancelButton) {}
+                Button(Localization.retryButton) {
+                    Task {
+                        await viewModel.saveChanges()
+                    }
+                }
+            })
         }
     }
 }
@@ -123,6 +138,16 @@ private extension EditStoreListView {
             "editStoreListView.otherStoresFooter",
             value: "Stores that are not selected will be excluded from the store picker",
             comment: "Footer of the Other Stores section on the Edit Store List view"
+        )
+        static let retryButton = NSLocalizedString(
+            "editStoreListView.retryButton",
+            value: "Retry",
+            comment: "Button to retry saving changes in the Edit Store List view"
+        )
+        static let errorUpdatingNotificationSettings = NSLocalizedString(
+            "editStoreListView.errorUpdatingNotificationSettings",
+            value: "There was an error when updating notification settings. Please try again.",
+            comment: "Error message when updating notification settings fails when saving the store list for the store picker"
         )
     }
 }

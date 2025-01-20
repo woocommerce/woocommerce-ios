@@ -6,6 +6,11 @@ struct WooShippingSelectedPackageView: View {
 
     @Environment(\.shippingWeightUnit) private var weightUnit
 
+    @State private var showPackageSelection = false
+
+    /// Closure to perform when a new package is selected.
+    let updateSelectedPackage: (WooShippingPackageDataRepresentable) -> Void
+
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -13,7 +18,7 @@ struct WooShippingSelectedPackageView: View {
                     .headlineStyle()
                 Spacer()
                 PencilEditButton {
-                    // TODO: Edit selected package
+                    showPackageSelection = true
                 }
                 .buttonStyle(TextButtonStyle())
             }
@@ -25,7 +30,15 @@ struct WooShippingSelectedPackageView: View {
             .padding(.bottom)
             shipmentWeight
         }
+        .sheet(isPresented: $showPackageSelection) {
+            WooShippingAddPackageView(selectedPackage: package) { newPackage in
+                updateSelectedPackage(newPackage)
+                showPackageSelection = false
+            }
+        }
     }
+
+    @FocusState var isTotalWeightInputActive: Bool
 
     private var shipmentWeight: some View {
         VStack(alignment: .leading) {
@@ -35,6 +48,18 @@ struct WooShippingSelectedPackageView: View {
                 TextField("", text: $totalWeight)
                     .keyboardType(.decimalPad)
                     .bodyStyle()
+                    .focused($isTotalWeightInputActive)
+                    .toolbar {
+                        ToolbarItemGroup(placement: .keyboard) {
+                            Spacer()
+                            Button {
+                                isTotalWeightInputActive = false
+                            } label: {
+                                Text(Localization.done)
+                                    .bold()
+                            }
+                        }
+                    }
                 Text(weightUnit)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
@@ -59,6 +84,9 @@ private extension WooShippingSelectedPackageView {
         static let totalWeight = NSLocalizedString("wooShipping.createLabels.package.totalWeight",
                                                     value: "Total shipment weight (with package)",
                                                     comment: "Label for the total shipment weight input field in the shipping label creation screen.")
+        static let done = NSLocalizedString("wooShipping.createLabels.package.done",
+                                            value: "Done",
+                                            comment: "Button for dismissing the keyboard")
     }
 }
 
@@ -70,7 +98,8 @@ private extension WooShippingSelectedPackageView {
                                                                    weight: "4",
                                                                    source: .predefined(sourceTitle: "USPS Priority Mail Flat Rate Boxes", sourceID: "usps"),
                                                                    packageType: "box"),
-                                   totalWeight: .constant("6"))
+                                   totalWeight: .constant("6"),
+                                   updateSelectedPackage: { _ in })
     .shippingDimensionsUnit("in")
     .shippingWeightUnit("lb")
 }
@@ -83,7 +112,8 @@ private extension WooShippingSelectedPackageView {
                                                                    weight: "",
                                                                    source: .custom,
                                                                    packageType: "box"),
-                                   totalWeight: .constant("6"))
+                                   totalWeight: .constant("6"),
+                                   updateSelectedPackage: { _ in })
     .shippingDimensionsUnit("in")
     .shippingWeightUnit("lb")
 }

@@ -61,11 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v21.2-whats-new"
+msgctxt "v21.4-whats-new"
 msgid ""
-"In just two weeks, we've jam-packed this release. There's GTIN global product identifier support, and you can edit the call-to-action in Blaze campaigns.\n"
-"\n"
-"Store setup for in-person payments is faster, receipt sent confirmations clearer, and testing Tap to Pay on iPhone is smoother. Plus, we've improved dashboard statistics and squashed some bugs.\n"
+"This update introduces the ability to hide specific stores from the store picker, perfect for agencies managing multiple sites. We’ve also enhanced plugin info fetching to handle unexpected data types, ensuring smoother performance. Additionally, a bug on iPad causing order creation issues with custom amounts has been resolved. Enjoy a more focused and reliable experience!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

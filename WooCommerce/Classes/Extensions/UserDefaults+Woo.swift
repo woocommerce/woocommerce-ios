@@ -49,10 +49,6 @@ extension UserDefaults {
         // Theme installation
         case themesPendingInstall
 
-        // Store Creation
-        case siteIDPendingStoreSwitch
-        case expectedStoreNamePendingStoreSwitch
-
         // Watch
         case watchDependencies
 
@@ -73,6 +69,9 @@ extension UserDefaults {
         // Tap to Pay awareness moment
         case tapToPayAwarenessMomentPresented
         case tapToPayAwarenessMomentFirstLaunchCompleted
+
+        // Hide stores from store picker
+        case hiddenStoreIDs
     }
 }
 

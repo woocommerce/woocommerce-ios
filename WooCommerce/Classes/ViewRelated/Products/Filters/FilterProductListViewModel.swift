@@ -9,7 +9,7 @@ final class FilterProductListViewModel: FilterListViewModel {
     typealias Criteria = Filters
 
     /// Aggregates the filter values that can be updated in the Filter Products UI.
-    struct Filters: Equatable {
+    struct Filters: Equatable, HumanReadable {
         let stockStatus: ProductStockStatus?
         let productStatus: ProductStatus?
         let promotableProductType: PromotableProductType?
@@ -41,6 +41,16 @@ final class FilterProductListViewModel: FilterListViewModel {
             self.numberOfActiveFilters = numberOfActiveFilters
         }
 
+        /// Generated string to be displayed in the filter history.
+        var readableString: String {
+            let elements: [String?] = [stockStatus?.description,
+                                       productStatus?.description,
+                                       promotableProductType?.productType.description,
+                                       productCategory?.description,
+                                       favoriteProduct?.description]
+            return elements.compactMap { $0 }.joined(separator: ", ")
+        }
+
         // Generate a string based on populated filters, like "instock,publish,simple,clothes"
         var analyticsDescription: String {
             let elements: [String?] = [stockStatus?.rawValue, productStatus?.rawValue, promotableProductType?.productType.rawValue, productCategory?.slug]
@@ -52,12 +62,16 @@ final class FilterProductListViewModel: FilterListViewModel {
 
     let filterTypeViewModels: [FilterTypeViewModel]
 
+    let shouldShowHistory: Bool
+
     private let stockStatusFilterViewModel: FilterTypeViewModel
     private let productStatusFilterViewModel: FilterTypeViewModel
     private let productTypeFilterViewModel: FilterTypeViewModel
     private let productCategoryFilterViewModel: FilterTypeViewModel
     private let productFavoriteFilterViewModel: FilterTypeViewModel
 
+    private let siteID: Int64
+    private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
 
     /// - Parameters:
@@ -66,6 +80,7 @@ final class FilterProductListViewModel: FilterListViewModel {
     ///   - featureFlagService: Feature flag service
     init(filters: Filters,
          siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.featureFlagService = featureFlagService
         self.stockStatusFilterViewModel = ProductListFilter.stockStatus.createViewModel(filters: filters)
@@ -73,6 +88,9 @@ final class FilterProductListViewModel: FilterListViewModel {
         self.productTypeFilterViewModel = ProductListFilter.productType(siteID: siteID).createViewModel(filters: filters)
         self.productCategoryFilterViewModel = ProductListFilter.productCategory(siteID: siteID).createViewModel(filters: filters)
         self.productFavoriteFilterViewModel = ProductListFilter.favoriteProducts.createViewModel(filters: filters)
+        self.shouldShowHistory = featureFlagService.isFeatureFlagEnabled(.filterHistoryOnOrderAndProductLists)
+        self.stores = stores
+        self.siteID = siteID
 
         if featureFlagService.isFeatureFlagEnabled(.favoriteProducts) {
             self.filterTypeViewModels = [
@@ -107,6 +125,75 @@ final class FilterProductListViewModel: FilterListViewModel {
                        productCategory: productCategory,
                        favoriteProduct: favoriteProduct,
                        numberOfActiveFilters: numberOfActiveFilters)
+    }
+
+    func applyPastFilter(_ filter: Filters) {
+        stockStatusFilterViewModel.selectedValue = filter.stockStatus
+        productStatusFilterViewModel.selectedValue = filter.productStatus
+        productTypeFilterViewModel.selectedValue = filter.promotableProductType
+        productCategoryFilterViewModel.selectedValue = filter.productCategory
+        productFavoriteFilterViewModel.selectedValue = filter.favoriteProduct
+    }
+
+    @MainActor
+    func retrieveFilterHistory() async throws -> [Filters] {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(AppSettingsAction.loadProductFilterHistory(siteID: siteID, onCompletion: { result in
+                switch result {
+                case .success(let history):
+                    let filters = history.map { settings in
+                        let promotableProductType = settings.productTypeFilter.map { PromotableProductType(productType: $0, isAvailable: true, promoteUrl: nil) }
+                        return FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
+                                                                  productStatus: settings.productStatusFilter,
+                                                                  promotableProductType: promotableProductType,
+                                                                  productCategory: settings.productCategoryFilter,
+                                                                  favoriteProduct: settings.favoriteProduct ? FavoriteProductsFilter() : nil,
+                                                                  numberOfActiveFilters: settings.numberOfActiveFilters())
+                    }
+                    continuation.resume(returning: filters)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }))
+        }
+    }
+
+    func saveSelectedFilterToHistory(_ filter: Filters) {
+        let productSettings = StoredProductSettings.Setting(siteID: siteID,
+                                                            sort: nil, // This will be ignored in product filter anyway
+                                                            stockStatusFilter: filter.stockStatus,
+                                                            productStatusFilter: filter.productStatus,
+                                                            productTypeFilter: filter.promotableProductType?.productType,
+                                                            productCategoryFilter: filter.productCategory,
+                                                            favoriteProduct: filter.favoriteProduct?.isActive ?? false)
+        stores.dispatch(AppSettingsAction.upsertProductFilterHistory(filter: productSettings, onCompletion: { error in
+            if let error {
+                DDLogError("⛔️ Error saving product filter to history: \(error)")
+            }
+        }))
+    }
+
+    func removeFilterFromHistory(_ filter: Filters) {
+        let productSettings = StoredProductSettings.Setting(siteID: siteID,
+                                                            sort: nil, // This will be ignored in product filter anyway
+                                                            stockStatusFilter: filter.stockStatus,
+                                                            productStatusFilter: filter.productStatus,
+                                                            productTypeFilter: filter.promotableProductType?.productType,
+                                                            productCategoryFilter: filter.productCategory,
+                                                            favoriteProduct: filter.favoriteProduct?.isActive ?? false)
+        stores.dispatch(AppSettingsAction.removeFromProductFilterHistory(filter: productSettings, onCompletion: { error in
+            if let error {
+                DDLogError("⛔️ Error removing product filter from history: \(error)")
+            }
+        }))
+    }
+
+    func clearAllFilterHistory() {
+        stores.dispatch(AppSettingsAction.resetProductFilterHistory(siteID: siteID, onCompletion: { error in
+            if let error {
+                DDLogError("⛔️ Error resetting product filter history: \(error)")
+            }
+        }))
     }
 
     func clearAll() {

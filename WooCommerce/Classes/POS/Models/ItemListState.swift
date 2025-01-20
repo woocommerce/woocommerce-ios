@@ -1,14 +1,13 @@
 import enum Yosemite.POSItem
-import protocol Yosemite.POSOrderableItem
+import Codegen
 
-enum ItemListState: Equatable {
-    case empty
-    case initialLoading
+enum ItemListState {
     case loading(_ currentItems: [POSItem])
-    case loaded(_ items: [POSItem])
+    case loaded(_ items: [POSItem], hasMoreItems: Bool)
+    case inlineError(_ items: [POSItem], error: PointOfSaleErrorState)
     case error(PointOfSaleErrorState)
 
-    var isLoadingAfterInitialLoad: Bool {
+    var isLoading: Bool {
         switch self {
         case .loading:
             return true
@@ -17,3 +16,18 @@ enum ItemListState: Equatable {
         }
     }
 }
+
+extension ItemListState {
+    var items: [POSItem] {
+        switch self {
+        case .loading(let items),
+                .loaded(let items, _),
+                .inlineError(let items, _):
+            return items
+        case .error:
+            return []
+        }
+    }
+}
+
+extension ItemListState: Equatable, GeneratedCopiable {}

@@ -38,7 +38,7 @@ final class WooShippingRemoteTests: XCTestCase {
 
         // Then
         let packagesResponse = try XCTUnwrap(result.get())
-        XCTAssertEqual(packagesResponse.customPackages.count, 5)
+        XCTAssertEqual(packagesResponse.customPackages.count, 2)
         XCTAssertEqual(packagesResponse.customPackages.first?.id, "69d7052f934a7c218329de9c1abe3858")
         XCTAssertEqual(packagesResponse.customPackages.first?.name, "WCS&T Box")
         XCTAssertEqual(packagesResponse.customPackages.first?.dimensions, "15 x 15 x 15")
@@ -376,6 +376,52 @@ final class WooShippingRemoteTests: XCTestCase {
             remote.printLabel(siteID: self.sampleSiteID,
                               labelIDs: [4321],
                               paperSize: .label) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+
+    func test_loadOriginAddresses_parses_success_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "address/origins", filename: "wooshipping-get-origin-addresses-success")
+
+        // When
+        let result: Result<[WooShippingOriginAddress], Error> = waitFor { promise in
+            remote.loadOriginAddresses(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let addresses = try XCTUnwrap(result.get())
+        XCTAssertEqual(addresses.count, 1)
+        XCTAssertEqual(addresses.first?.company, "Superlative Centaur")
+        XCTAssertEqual(addresses.first?.city, "SAN FRANCISCO")
+        XCTAssertEqual(addresses.first?.state, "CA")
+        XCTAssertEqual(addresses.first?.postcode, "94110-4929")
+        XCTAssertEqual(addresses.first?.country, "US")
+        XCTAssertEqual(addresses.first?.phone, "12345678901")
+        XCTAssertEqual(addresses.first?.address1, "60 29TH ST PMB 343")
+        XCTAssertEqual(addresses.first?.firstName, "First")
+        XCTAssertEqual(addresses.first?.lastName, "Last")
+        XCTAssertEqual(addresses.first?.email, "email@automattic.com")
+        XCTAssertEqual(addresses.first?.id, "store_details")
+        XCTAssertEqual(addresses.first?.defaultAddress, true)
+        XCTAssertEqual(addresses.first?.isVerified, true)
+    }
+
+    func test_loadOriginAddresses_returns_error_on_failure() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "address/origins", filename: "generic_error")
+
+        // When
+        let result: Result<[WooShippingOriginAddress], Error> = waitFor { promise in
+            remote.loadOriginAddresses(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
         }

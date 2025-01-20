@@ -26,7 +26,7 @@ public enum WooShippingAction: Action {
     /// Fetch list of packages.
     ///
     case loadPackages(siteID: Int64,
-                      completion: (Result<WooShippingPackagesResponse, Error>) -> Void)
+                      completion: (Result<WooShippingPackagesResponse, WooShippingLoadPackagesError>) -> Void)
 
     /// Fetch list of packages.
     ///
@@ -51,4 +51,9 @@ public enum WooShippingAction: Action {
                     labelIDs: [Int64],
                     paperSize: ShippingLabelPaperSize,
                     completion: (Result<ShippingLabelPrintData, Error>) -> Void)
+
+    /// Fetch list of origin addresses.
+    ///
+    case loadOriginAddresses(siteID: Int64,
+                             completion: (Result<[WooShippingOriginAddress], Error>) -> Void)
 }

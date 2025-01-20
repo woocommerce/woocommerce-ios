@@ -97,10 +97,10 @@ final class HubMenuViewModel: ObservableObject {
     private(set) lazy var posItemProvider: PointOfSaleItemServiceProtocol = {
         let currencySettings = ServiceLocator.currencySettings
 
-        return PointOfSaleProductService(siteID: siteID,
-                                         currencySettings: currencySettings,
-                                         credentials: credentials,
-                                         isVariableProductsFeatureEnabled: featureFlagService.isFeatureFlagEnabled(.variableProductsInPointOfSale))
+        return PointOfSaleItemService(siteID: siteID,
+                                      currencySettings: currencySettings,
+                                      credentials: credentials,
+                                      isVariableProductsFeatureEnabled: featureFlagService.isFeatureFlagEnabled(.variableProductsInPointOfSale))
     }()
 
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)
@@ -159,8 +159,7 @@ final class HubMenuViewModel: ObservableObject {
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.googleAdsEligibilityChecker = googleAdsEligibilityChecker
         self.cardPresentPaymentsOnboarding = CardPresentPaymentsOnboardingUseCase()
-        self.posEligibilityChecker = POSEligibilityChecker(cardPresentPaymentsOnboarding: cardPresentPaymentsOnboarding,
-                                                           siteSettings: ServiceLocator.selectedSiteSettings,
+        self.posEligibilityChecker = POSEligibilityChecker(siteSettings: ServiceLocator.selectedSiteSettings,
                                                            currencySettings: ServiceLocator.currencySettings,
                                                            featureFlagService: featureFlagService)
         self.analytics = analytics
@@ -171,15 +170,22 @@ final class HubMenuViewModel: ObservableObject {
         createCardPresentPaymentService()
     }
 
-    func viewDidAppear() {
+    func viewDidAppear() async {
         NotificationCenter.default.post(name: .hubMenuViewDidAppear, object: nil)
         viewAppeared = true
-        if !hasGoogleAdsCampaigns {
-            refreshGoogleAdsCampaignCheck()
-        }
 
-        if !isSiteEligibleForBlaze {
-            refreshBlazeEligibilityCheck()
+        await withTaskGroup(of: Void.self) { group in
+            if !hasGoogleAdsCampaigns {
+                group.addTask {
+                    await self.refreshGoogleAdsCampaignCheck()
+                }
+            }
+
+            if !isSiteEligibleForBlaze {
+                group.addTask {
+                    await self.refreshBlazeEligibilityCheck()
+                }
+            }
         }
     }
 
@@ -208,19 +214,16 @@ final class HubMenuViewModel: ObservableObject {
         navigateToDestination(.reviewDetails(parcel: parcel))
     }
 
-    func refreshGoogleAdsCampaignCheck() {
-        Task { @MainActor in
-            hasGoogleAdsCampaigns = await checkIfSiteHasGoogleAdsCampaigns()
-        }
+    func refreshGoogleAdsCampaignCheck() async {
+        hasGoogleAdsCampaigns = await checkIfSiteHasGoogleAdsCampaigns()
     }
 
-    func refreshBlazeEligibilityCheck() {
+    func refreshBlazeEligibilityCheck() async {
         guard let site = currentSite else {
             return
         }
-        Task { @MainActor in
-            isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible(site)
-        }
+
+        isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible(site)
     }
 
     func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {
@@ -284,7 +287,6 @@ private extension HubMenuViewModel {
     }
 
     func setupPOSElement() {
-        cardPresentPaymentsOnboarding.refreshIfNecessary()
         posEligibilityChecker.isEligible.map { isEligibleForPOS in
             if isEligibleForPOS {
                 return PointOfSaleEntryPoint()
@@ -475,6 +477,27 @@ private extension HubMenuViewModel {
             stores.dispatch(GoogleAdsAction.fetchAdsCampaigns(siteID: siteID) { result in
                 continuation.resume(with: result)
             })
+        }
+    }
+}
+
+// MARK: - Helpers
+extension HubMenuViewModel {
+    func viewDidAppear() {
+        Task { @MainActor in
+            await viewDidAppear()
+        }
+    }
+
+    func refreshBlazeEligibilityCheck() {
+        Task { @MainActor in
+            await refreshBlazeEligibilityCheck()
+        }
+    }
+
+    func refreshGoogleAdsCampaignCheck() {
+        Task { @MainActor in
+            await refreshGoogleAdsCampaignCheck()
         }
     }
 }

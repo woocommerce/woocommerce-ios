@@ -1,6 +1,5 @@
 import SwiftUI
 import Combine
-import struct Yosemite.ShippingLabelStoreOptions
 
 struct WooShippingAddPackageView: View {
     enum PackageProviderType: CaseIterable {
@@ -18,11 +17,8 @@ struct WooShippingAddPackageView: View {
     }
 
     @Environment(\.presentationMode) var presentationMode
-
-    // Holds type of selected package, it can be `custom`, `carrier` or `saved`
-    @State var selectedPackageType = PackageProviderType.custom
-    @StateObject var packagesViewModel = WooShippingAddPackageViewModel()
-    @State var customPackageViewModel = WooShippingAddCustomPackageViewModel()
+    @ObservedObject var packagesViewModel: WooShippingAddPackageViewModel
+    @ObservedObject var customPackageViewModel: WooShippingAddCustomPackageViewModel
 
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
 
@@ -31,8 +27,16 @@ struct WooShippingAddPackageView: View {
     @Environment(\.shippingWeightUnit) private var weightUnit
     @Environment(\.shippingDimensionsUnit) private var dimensionsUnit
 
-    init(addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
+    init(selectedPackage: WooShippingPackageDataRepresentable? = nil,
+         addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
         self.addPackageAction = addPackageAction
+        packagesViewModel = WooShippingAddPackageViewModel(selectedPackage: selectedPackage)
+        switch selectedPackage?.source {
+        case .custom:
+            customPackageViewModel = WooShippingAddCustomPackageViewModel(selectedPackage: selectedPackage)
+        default:
+            customPackageViewModel = WooShippingAddCustomPackageViewModel()
+        }
     }
 
     // MARK: - UI
@@ -40,7 +44,7 @@ struct WooShippingAddPackageView: View {
     var body: some View {
         NavigationView {
             VStack {
-                Picker("", selection: $selectedPackageType) {
+                Picker("", selection: $packagesViewModel.selectedPackageType) {
                     ForEach(PackageProviderType.allCases, id: \.self) {
                         Text($0.name)
                     }
@@ -58,20 +62,17 @@ struct WooShippingAddPackageView: View {
                     })
                 }
             }
-            .navigationTitle(Localization.addPackage)
+            .navigationTitle(packagesViewModel.previousSelectedPackage != nil ? Localization.editPackage :  Localization.addPackage)
             .navigationBarTitleDisplayMode(.inline)
         }
         .navigationViewStyle(.stack)
-        .task {
-            packagesViewModel.loadPackages()
-        }
     }
 
     // MARK: UI components
 
     @ViewBuilder
     private var selectedPackageTypeView: some View {
-        switch selectedPackageType {
+        switch packagesViewModel.selectedPackageType {
         case .custom:
             WooAddCustomPackageView(viewModel: customPackageViewModel,
                                     addPackageAction: addPackageAction)
@@ -137,5 +138,20 @@ extension WooShippingAddPackageView {
         static let saved = NSLocalizedString("wooShipping.createLabel.addPackage.saved",
                                              value: "Saved",
                                              comment: "Info label for saved package option")
+        static let selectPackage = NSLocalizedString("wooShipping.createLabel.addPackage.selectPackage",
+                                                     value: "Select Package",
+                                                     comment: "Title for the Add Package screen Select Package button")
+        static let addPackageDetails = NSLocalizedString("wooShipping.createLabel.addPackage.addPackageDetails",
+                                                         value: "Add Package Details",
+                                                         comment: "Title for the Add Package screen Add Package Details button")
+        static let editPackage = NSLocalizedString("wooShipping.createLabel.editPackage.title",
+                                                   value: "Edit Package",
+                                                   comment: "Title for the Edit Package screen")
+        static let done = NSLocalizedString("wooShipping.createLabel.editPackage.done",
+                                            value: "Done",
+                                            comment: "Title for the Edit Package screen Done button")
+        static let useSelectedPackage = NSLocalizedString("wooShipping.createLabel.editPackage.useSelectedPackage",
+                                                          value: "Use Selected Package",
+                                                          comment: "Title for the Edit Package screen Use Selected Package button")
     }
 }

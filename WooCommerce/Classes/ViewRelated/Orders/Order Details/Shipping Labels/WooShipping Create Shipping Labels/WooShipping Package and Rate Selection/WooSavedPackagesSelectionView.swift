@@ -12,6 +12,13 @@ enum WooShippingPackageSource {
             return sourceTitle
         }
     }
+
+    var sourceID: String? {
+        guard case .predefined(_, let sourceID) = self else {
+            return nil
+        }
+        return sourceID
+    }
 }
 
 protocol WooShippingPackageDataRepresentable {
@@ -113,7 +120,9 @@ struct WooSavedPackagesSelectionView: View {
                 }
                 else {
                     Button {
-                        viewModel.loadPackages()
+                        Task {
+                            await viewModel.loadPackages()
+                        }
                     } label: {
                         Image(systemName: "arrow.trianglehead.counterclockwise")
                     }
@@ -122,28 +131,51 @@ struct WooSavedPackagesSelectionView: View {
             }
             else {
                 Divider()
-                List {
-                    packagesSection(for: viewModel.customSavedPackages)
-                    packagesSection(for: viewModel.predefinedSavedPackages)
-                }
-                .listStyle(.plain)
-                .refreshable {
-                    await withCheckedContinuation { continuation in
-                        viewModel.loadPackages {
-                            continuation.resume()
-                        }
+                ScrollViewReader { scroll in
+                    List {
+                        packagesSection(for: viewModel.customSavedPackages)
+                        packagesSection(for: viewModel.predefinedSavedPackages)
+                    }
+                    .listStyle(.plain)
+                    .refreshable {
+                        await viewModel.loadPackages()
+                    }
+                    .task {
+                        scroll.scrollTo(viewModel.selectedSavedPackageId)
                     }
                 }
                 Divider()
             }
             Spacer()
-            Button(WooShippingAddPackageView.Localization.addPackage) {
+            Button(selectionButtonText) {
                 addPackageButtonTapped()
             }
-            .disabled(viewModel.selectedSavedPackageId == nil || !viewModel.hasSavedPackages)
-            .buttonStyle(PrimaryButtonStyle())
+            .disabled(selectionButtonDisabled)
+            .if(viewModel.previousSelectedAndSelectedSavedPackageAreSame) {
+                $0.buttonStyle(SecondaryButtonStyle())
+            }
+            .if(!viewModel.previousSelectedAndSelectedSavedPackageAreSame) {
+                $0.buttonStyle(PrimaryButtonStyle())
+            }
             .padding()
         }
+    }
+
+    private var selectionButtonDisabled: Bool {
+        viewModel.selectedSavedPackageId == nil || !viewModel.hasSavedPackages
+    }
+
+    private var selectionButtonText: String {
+        if selectionButtonDisabled {
+            return WooShippingAddPackageView.Localization.selectPackage
+        }
+        if let previousSelectedPackage = viewModel.previousSelectedPackage {
+            if previousSelectedPackage.id == viewModel.selectedSavedPackageId {
+                return WooShippingAddPackageView.Localization.done
+            }
+            return WooShippingAddPackageView.Localization.useSelectedPackage
+        }
+        return WooShippingAddPackageView.Localization.addPackage
     }
 
     @ViewBuilder
@@ -170,6 +202,7 @@ struct WooSavedPackagesSelectionView: View {
                     viewModel.selectedSavedPackageId = viewModel.selectedSavedPackageId == package.id ? nil : package.id
                 }
             )
+            .id(package.id)
             .alignmentGuide(.listRowSeparatorLeading) { _ in
                 return 16
             }

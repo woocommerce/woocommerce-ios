@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-27 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-12-27 09:54:14+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -251,10 +251,6 @@ which should be translated separately and considered part of this sentence. */
 /* Number of items in packages in Shipping Labels in plural form. Reads like - 10 items */
 "- %1$d items" = "- %1$d Artikel";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 1
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 1 */
-"1" = "1";
-
 /* Navigation bar title for selecting multiple products when one product has been selected.
    Title of the action button at the bottom of the Select Products screen when one product is selected */
 "1 Product Selected" = "1 Produkt ausgewählt";
@@ -271,19 +267,11 @@ which should be translated separately and considered part of this sentence. */
 /* Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment */
 "1. Create an order" = "1. Eine Bestellung erstellen";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 2
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
-"2" = "2";
-
 /* Disclaimer regarding some of the features related to shipping. */
 "2. Only available in the U.S. – an additional extension will be required for other countries." = "2. Nur in den USA verfügbar. Für andere Länder ist eine zusätzliche Erweiterung erforderlich.";
 
 /* Step 2 of the 'How it works' list, instructing the merchant to how to select Tap to Pay payments */
 "2. Tap “Collect Payment” and choose “Tap to Pay on iPhone”." = "2. Tippe auf „Zahlung empfangen“ und wähle „Tap to Pay“ auf dem iPhone.";
-
-/* Settings > Manage Card Reader > Connect > Help hint number 3
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
-"3" = "3";
 
 /* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
 "3. Present your iPhone to the customer." = "3. Zeige deinem Kunden dein iPhone.";
@@ -985,9 +973,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button on the store onboarding launched store screen. */
 "Back to My Store" = "Zurück zu „Mein Shop“";
 
-/* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
-"Back to Order" = "Zurück zur Bestellung";
-
 /* Text for the button to dismiss the store picker error screen */
 "Back to sites" = "Zurück zu den Websites";
 
@@ -1559,7 +1544,6 @@ which should be translated separately and considered part of this sentence. */
 "Clear selection" = "Auswahl löschen";
 
 /* Accessibility label for the close button
-   Button to dismiss modal overlay. Presented to users after refunding a payment fails
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
    Navigation bar action to close the gift card code scanner.
@@ -2269,7 +2253,6 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when finding a reader to connect to fails
    Button to dismiss the first created product screen
    Button to dismiss the Jetpack benefits screen.
-   Button to dismiss. Presented to users after collecting a payment fails
    Button to dismiss. Presented to users when updating the card reader software fails
    Dismiss button in inbox note row.
    Dismiss button in store picker
@@ -5989,9 +5972,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
 "Return to My Store" = "Zurück zu „Mein Shop“";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
-"Return to Payments" = "Zurück zu den Zahlungen";
-
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "An Absender zurücksenden, wenn Paket nicht zugestellt werden kann";
 
@@ -6381,6 +6361,9 @@ which should be translated separately and considered part of this sentence. */
 /* Header text on Add New Custom Package screen in Shipping Label flow
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "Richte das Paket ein, mit dem du deine Produkte versendest. Wir speichern es für zukünftige Bestellungen.";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
+"SetUpTapToPayPaymentPrompt.skipButton.title" = "Nicht jetzt";
 
 /* Settings button in the hub menu
    Settings navigation title
@@ -7519,9 +7502,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Tab selector title that shows the statistics for this year */
 "This Year" = "Dieses Jahr";
-
-/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "Diese App benötigt das Recht, auf Bluetooth zuzugreifen, um eine Verbindung mit einem Kartenlesegerät herzustellen. Wenn du dies zulassen möchtest, ändere bitte die Privatsphäre-Einstellungen.";
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "Für diese App musst du WooCommerce 3.5 auf deinem Server installieren, da sie andernfalls nicht richtig funktioniert. Nimm die Aktualisierung so bald wie möglich vor, um diese App weiterhin zu verwenden.";
@@ -9989,8 +9969,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "Suche nach Kartenlesegerät";
 
+/* A title for CTA to present native location permission alert */
+"cardPresentPayment.locationPreAlert.continueButton" = "Weiter";
+
+/* A notice at the bottom explaining that location services can be changed in the Settings app later */
+"cardPresentPayment.locationPreAlert.settingsNotice" = "Du kannst diese Option später in der Einstellungs-App ändern.";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"cardPresentPayment.locationPreAlert.subtitle" = "Die Berechtigung für Standortdienste ist erforderlich, um Betrug und Reklamationen zu verhindern sowie für sichere Zahlungen zu sorgen.";
+
+/* A title explaining why location services are needed to make a payment */
+"cardPresentPayment.locationPreAlert.title" = "Aktiviere die Standortdienste auf dem nächsten Bildschirm, um Zahlungen zuzulassen.";
+
+/* Dismisses the location alert */
+"cardPresentPayment.locationRequired.dismiss" = "Verwerfen";
+
+/* Opens iOS's Device Settings for the app */
+"cardPresentPayment.locationRequired.openSettings" = "Geräteeinstellungen öffnen";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"cardPresentPayment.locationRequired.subtitle" = "Die Berechtigung für Standortdienste ist erforderlich, um Betrug und Reklamationen zu verhindern sowie für sichere Zahlungen zu sorgen.";
+
+/* A title explaining the requirement of location services for making a payment */
+"cardPresentPayment.locationRequired.title" = "Aktiviere die Standortdienste in den Geräteeinstellungen, um Zahlungen zuzulassen.";
+
+/* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.backToOrder" = "Zurück zur Bestellung";
+
+/* Button to dismiss modal overlay. Presented to users after refunding a payment fails */
+"cardPresentPaymentsModal.error.close" = "Schließen";
+
+/* Button to dismiss. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.dismiss" = "Verwerfen";
+
+/* Button to email receipts. Presented to users after a payment processing has failed */
+"cardPresentPaymentsModal.error.emailReceipt" = "Beleg per E-Mail senden";
+
 /* Message informing the user that a receipt has been sent to their email address. %1$@ is the email address */
 "cardPresentPaymentsModal.error.receiptMessage" = "Es wurde ein Beleg an %1$@ gesendet";
+
+/* Button to dismiss modal overlay and try another payment method. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.tryAnotherPaymentMethod" = "Andere Zahlungsmethode verwenden";
 
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "cardPresentPaymentsModal.success.emailReceipt" = "Beleg per E-Mail senden";
@@ -10496,6 +10515,27 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "Medien auf Gerät";
 
+/* Button to dismiss the Edit Store List view */
+"editStoreListView.cancelButton" = "Abbrechen";
+
+/* Footer of the Current Store section of the the Edit Store List view */
+"editStoreListView.currentStoreFooter" = "Wechsle zu einem anderen Shop, bevor du diesen Shop ausblendest";
+
+/* Header of the Current Store section of the the Edit Store List view */
+"editStoreListView.currentStoreHeader" = "Aktueller Shop";
+
+/* Footer of the Other Stores section on the Edit Store List view */
+"editStoreListView.otherStoresFooter" = "Nicht ausgewählte Shops werden nicht in der Shop-Auswahl angezeigt";
+
+/* Header of the Other Stores section on the Edit Store List view */
+"editStoreListView.otherStoresHeader" = "Andere Shops";
+
+/* Button to save changes in the Edit Store List view */
+"editStoreListView.saveButton" = "Speichern";
+
+/* Title of the Edit Store List view */
+"editStoreListView.title" = "Sichtbare Shops";
+
 /* Title for button to view the feedback survey about adding shipping to an order */
 "editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "Feedback teilen";
 
@@ -10634,6 +10674,132 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "Alle Kampagnen anzeigen";
+
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"hardware.cardReader.cardReaderServiceError.bluetoothDenied" = "Diese App benötigt die Berechtigung zum Zugreifen auf Bluetooth, um eine Verbindung zum Kartenleser herstellen zu können. Du kannst diese Berechtigung in der Einstellungs-App des Systems im Abschnitt für Woo gewähren.";
+
+/* Error message when the Apple built-in reader account is deactivated. */
+"hardware.cardReader.underlyingError.appleBuiltInReaderAccountDeactivated" = "Das verknüpfte Apple-ID-Konto wurde deaktiviert.";
+
+/* Error message when Bluetooth is already paired with another device. */
+"hardware.cardReader.underlyingError.bluetoothAlreadyPairedWithAnotherDevice" = "Der Bluetooth-Leser ist bereits mit einem anderen Gerät gekoppelt. Die Kopplung des Lesers muss zurückgesetzt werden, damit eine Verbindung zu diesem Gerät hergestellt werden kann.";
+
+/* Error message when the Bluetooth connection has an invalid location ID parameter. */
+"hardware.cardReader.underlyingError.bluetoothConnectionInvalidLocationIdParameter" = "Die Orts-ID der Bluetooth-Verbindung ist ungültig.";
+
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"hardware.cardReader.underlyingError.bluetoothDenied" = "Diese App benötigt die Berechtigung zum Zugreifen auf Bluetooth, um eine Verbindung zum Kartenleser herstellen zu können. Du kannst diese Berechtigung in der Einstellungs-App des Systems im Abschnitt für Woo gewähren.";
+
+/* Error message when the Bluetooth peer removed pairing information. */
+"hardware.cardReader.underlyingError.bluetoothPeerRemovedPairingInformation" = "Die Informationen zur Gerätekopplung wurden vom Leser entfernt. Versuche, den Leser aus den iOS-Einstellungen zu entfernen.";
+
+/* Error message when Bluetooth reconnect has started. */
+"hardware.cardReader.underlyingError.bluetoothReconnectStarted" = "Die Verbindung zum Bluetooth-Leser wurde getrennt. Es wird versucht, die Verbindung wiederherzustellen.";
+
+/* Error message when an operation cannot be canceled because it is already completed. */
+"hardware.cardReader.underlyingError.cancelFailedAlreadyCompleted" = "Der Vorgang konnte nicht abgebrochen werden, weil er bereits abgeschlossen war.";
+
+/* Error message when card swipe functionality is unavailable. */
+"hardware.cardReader.underlyingError.cardSwipeNotAvailable" = "Die Funktion zum Durchziehen der Karte ist nicht verfügbar.";
+
+/* Error message when the command is not allowed. */
+"hardware.cardReader.underlyingError.commandNotAllowed" = "Die Ausführung des Befehls ist unter diesem Betriebssystem nicht zulässig. Wende dich an den Support.";
+
+/* Error message when the command requires cardholder consent. */
+"hardware.cardReader.underlyingError.commandRequiresCardholderConsent" = "Der Karteninhaber muss zustimmen, damit dieser Vorgang erfolgreich durchgeführt werden kann.";
+
+/* Error message when the connection token provider finishes with an error. */
+"hardware.cardReader.underlyingError.connectionTokenProviderCompletedWithError" = "Beim Abrufen des Verbindungs-Tokens ist ein Fehler aufgetreten.";
+
+/* Error message when the connection token provider operation times out. */
+"hardware.cardReader.underlyingError.connectionTokenProviderTimedOut" = "Bei der Verbindungs-Token-Anfrage ist eine Zeitüberschreitung aufgetreten.";
+
+/* Error message when a feature is unavailable. */
+"hardware.cardReader.underlyingError.featureNotAvailable" = "Die Funktion ist nicht verfügbar. Wende dich an den Support.";
+
+/* Error message when forwarding a live mode payment in test mode is prohibited. */
+"hardware.cardReader.underlyingError.forwardingLiveModePaymentInTestMode" = "Das Weiterleiten einer Live-Modus-Zahlung im Testmodus ist nicht gestattet.";
+
+/* Error message when forwarding a test mode payment in live mode is prohibited. */
+"hardware.cardReader.underlyingError.forwardingTestModePaymentInLiveMode" = "Das Weiterleiten einer Testmoduszahlung im Live-Modus ist nicht gestattet.";
+
+/* Error message when Interac is not supported in offline mode. */
+"hardware.cardReader.underlyingError.interacNotSupportedOffline" = "Interac wird im Offline-Modus nicht unterstützt.";
+
+/* Error message when an internal network error occurs. */
+"hardware.cardReader.underlyingError.internalNetworkError" = "Ein unbekannter Netzwerkfehler ist aufgetreten.";
+
+/* Error message when the internet connection operation timed out. */
+"hardware.cardReader.underlyingError.internetConnectTimeOut" = "Beim Versuch, über das Internet eine Verbindung zum Leser herzustellen, ist eine Zeitüberschreitung aufgetreten. Vergewissere dich, dass dein Gerät und der Leser dasselbe WLAN nutzen und dass dein Leser mit dem WLAN verbunden ist.";
+
+/* Error message when the client secret is invalid. */
+"hardware.cardReader.underlyingError.invalidClientSecret" = "Der Client-Sicherheitsschlüssel ist ungültig. Wende dich an den Support.";
+
+/* Error message when the discovery configuration is invalid. */
+"hardware.cardReader.underlyingError.invalidDiscoveryConfiguration" = "Die Erkennungskonfiguration ist ungültig. Wende dich an den Support.";
+
+/* Error message when the location ID parameter is invalid. */
+"hardware.cardReader.underlyingError.invalidLocationIdParameter" = "Die Orts-ID ist ungültig.";
+
+/* Error message when the reader for update is invalid. */
+"hardware.cardReader.underlyingError.invalidReaderForUpdate" = "Der für das Update ausgewählte Leser ist ungültig.";
+
+/* Error message when the refund parameters are invalid. */
+"hardware.cardReader.underlyingError.invalidRefundParameters" = "Die Parameter für die Rückerstattung sind ungültig. Wende dich an den Support.";
+
+/* Error message when a required parameter is invalid. */
+"hardware.cardReader.underlyingError.invalidRequiredParameter" = "Ein erforderlicher Parameter ist ungültig. Wende dich an den Support.";
+
+/* Error message when EMV data is missing. */
+"hardware.cardReader.underlyingError.missingEMVData" = "Die Daten der angegebenen Zahlungsmethode konnten vom Leser nicht gelesen werden. Wenn dieser Fehler wiederholt auftritt, ist der Leser möglicherweise defekt. Wende dich in diesem Fall an den Support.";
+
+/* Error message when the payment intent is missing. */
+"hardware.cardReader.underlyingError.nilPaymentIntent" = "Die Zahlungsabsicht fehlt. Wende dich an den Support.";
+
+/* Error message when the refund payment method is missing. */
+"hardware.cardReader.underlyingError.nilRefundPaymentMethod" = "Die Zahlungsmethode für die Rückerstattung fehlt. Wende dich an den Support.";
+
+/* Error message when the setup intent is missing. */
+"hardware.cardReader.underlyingError.nilSetupIntent" = "Die Einrichtungsabsicht fehlt. Wende dich an den Support.";
+
+/* Error message when the card is expired and offline mode is active. */
+"hardware.cardReader.underlyingError.offlineAndCardExpired" = "Die Zahlung wird im Offline-Modus bestätigt und die Karte wurde als abgelaufen identifiziert.";
+
+/* Error message when there is a mismatch between offline collect and confirm. */
+"hardware.cardReader.underlyingError.offlineCollectAndConfirmMismatch" = "Stelle sicher, dass die Netzwerkverbindung beim Empfangen und Bestätigen von Zahlungen stabil bleibt.";
+
+/* Error message when a test card is used in live mode while offline. */
+"hardware.cardReader.underlyingError.offlineTestCardInLivemode" = "Eine Testkarte wird im Live-Modus verwendet, während der Offline-Modus aktiv ist.";
+
+/* Error message when the offline transaction was declined. */
+"hardware.cardReader.underlyingError.offlineTransactionDeclined" = "Die Zahlung wird im Offline-Modus bestätigt und die Verifizierung der Karte ist fehlgeschlagen.";
+
+/* Error message when online PIN is not supported in offline mode. */
+"hardware.cardReader.underlyingError.onlinePinNotSupportedOffline" = "Die Online-PIN-Methode wird im Offline-Modus nicht unterstützt. Versuche es mit einer anderen Karte.";
+
+/* Error message when the reader connection configuration is invalid. */
+"hardware.cardReader.underlyingError.readerConnectionConfigurationInvalid" = "Die Konfiguration der Leserverbindung ist ungültig.";
+
+/* Error message when the reader is missing encryption keys. */
+"hardware.cardReader.underlyingError.readerMissingEncryptionKeys" = "Beim Leser fehlen die für das Akzeptieren von Zahlungen erforderlichen Verschlüsselungsschlüssel. Daher wurde die Verbindung zum Leser getrennt und er wurde neu gestartet. Stelle die Verbindung zum Leser wieder her und versuche, die Schlüssel erneut zu installieren. Wenn dieser Fehler weiterhin auftritt, wende dich an den Support.";
+
+/* Error message when the reader software update fails due to an expired update. */
+"hardware.cardReader.underlyingError.readerSoftwareUpdateFailedExpiredUpdate" = "Die Software des Lesegeräts konnte nicht aktualisiert werden, weil das Update abgelaufen ist. Trenne die Verbindung zum Lesegerät und verbinde es dann erneut, um ein neues Update abzurufen.";
+
+/* Error message when the reader tipping parameter is invalid. */
+"hardware.cardReader.underlyingError.readerTippingParameterInvalid" = "Der Trinkgeld-Parameter des Lesegeräts ist ungültig. Wende dich an den Support.";
+
+/* Error message when the refund operation failed. */
+"hardware.cardReader.underlyingError.refundFailed" = "Die Rückerstattung ist fehlgeschlagen. Die Bank oder der Kartenanbieter des Kunden konnte die Transaktion nicht richtig verarbeiten (mögliche Gründe: Bankkonto nicht mehr vorhanden oder Kartenproblem).";
+
+/* Error message when there is an error decoding the Stripe API response. */
+"hardware.cardReader.underlyingError.stripeAPIResponseDecodingError" = "Beim Entschlüsseln der Stripe-API-Antwort ist ein Fehler aufgetreten. Wende dich an den Support.";
+
+/* Error message when an unexpected error occurs with the reader. */
+"hardware.cardReader.underlyingError.unexpectedReaderError" = "Beim Lesegerät ist ein unerwarteter Fehler aufgetreten.";
+
+/* Error message when the reader's IP address is unknown. */
+"hardware.cardReader.underlyingError.unknownReaderIpAddress" = "Das von der Analyse zurückgegebene Lesegerät hat keine IP-Adresse und kann nicht verbunden werden.";
 
 /* Title of the view containing Coupons list */
 "hubMenu.couponsList" = "Gutscheine";
@@ -10858,9 +11024,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory. */
 "menu.payments.tapToPay.about.row.title" = "Informationen zu Tap to Pay";
-
-/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
-"menu.payments.tapToPay.feedback.row.title" = "Feedback teilen";
 
 /* Title for the Tap to Pay section in the In-Person payments settings */
 "menu.payments.tapToPay.section.title" = "Tap to Pay";
@@ -11583,6 +11746,21 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Gesamtbeträge konnten nicht geladen werden";
 
+/* Button title for sending a receipt */
+"pointOfSale.sendreceipt.button.title" = "Senden";
+
+/* Text that shows at the top of the receipts screen along the back button. */
+"pointOfSale.sendreceipt.emailReceiptNavigationText" = "Beleg per E-Mail senden";
+
+/* Error message that is displayed when an invalid email is used when emailing a receipt. */
+"pointOfSale.sendreceipt.emailValidationErrorText" = "Bitte gib eine gültige E-Mail-Adresse ein.";
+
+/* Generic error message that is displayed when there's an error emailing a receipt. */
+"pointOfSale.sendreceipt.sendReceiptErrorText" = "Fehler beim Senden dieser E-Mail. Versuche es erneut.";
+
+/* Placeholder for the view where an email address should be entered when sending receipts */
+"pointOfSale.sendreceipt.textfield.placeholder" = "E-Mail-Adresse eingeben";
+
 /* Button to dismiss the payments onboarding sheet from the POS dashboard. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "Abbrechen";
 
@@ -11668,10 +11846,13 @@ which should be translated separately and considered part of this sentence. */
 "pos.simpleProductsModal.title" = "Warum werden mir meine Produkte nicht angezeigt?";
 
 /* Button title for new order button */
-"pos.totalsView.newOrder" = "Neue Bestellung";
+"pos.totalsView.button.newOrder" = "Neue Bestellung";
 
 /* Button title for the receipt button */
-"pos.totalsView.sendReceipt" = "Beleg";
+"pos.totalsView.button.sendReceipt" = "Beleg per E-Mail senden";
+
+/* Text for the banner requiring specific WooCommerce version. */
+"pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "Bitte aktualisiere WooCommerce auf Version 9.5.0";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "Zwischensumme";
@@ -12112,6 +12293,18 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "Abbrechen";
 
+/* Badge wording when the customs information is completed */
+"shippingLabels.customs.completedBadge" = "Abgeschlossen";
+
+/* Customs row title in the main Shipping Labels view */
+"shippingLabels.customs.customsTitle" = "Zoll";
+
+/* Accessibility label for the button to edit the shipping labels customs */
+"shippingLabels.customs.editButtonAccessibiliy" = "Versandetiketten bearbeiten – Zollinformationen";
+
+/* Badge wording when the customs information is missing */
+"shippingLabels.customs.missingInfo" = "Informationen fehlen";
+
 /* Accessibility title for the edit button on a shipping line row. */
 "shippingLine.edit.button.accessibilityLabel" = "Versand bearbeiten";
 
@@ -12177,6 +12370,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in date range picker to add a Custom Range tab */
 "storePerformanceViewModel.addCustomRange" = "Hinzufügen";
+
+/* Button to edit the items to be displayed on the store picker */
+"storePicker.editList" = "Bearbeiten";
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "Bestehenden Shop verbinden";
@@ -12328,6 +12524,84 @@ which should be translated separately and considered part of this sentence. */
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is successful, we show a Notice to alert the user – this is the title of the notice. */
 "tap.to.pay.try.payment.refundNotice.success.title" = "Tap to Pay-Testzahlung";
+
+/* Title of the button to dismiss the Tap to Pay awareness screen */
+"tapToPay.awarenessMoment.closeButton" = "Schließen";
+
+/* A title for CTA to start Tap to Pay set up process */
+"tapToPay.awarenessMoment.enableButton" = "Jetzt aktivieren";
+
+/* A title for CTA to open a view explaining Tap to Pay */
+"tapToPay.awarenessMoment.learnMore" = "Weitere Informationen";
+
+/* A subtitle for the Tap to Pay modal promoting the feature. */
+"tapToPay.awarenessMoment.subtitle" = "So nimmst du kontaktlose Zahlungen auf dem iPhone entgegen.";
+
+/* Title for the Tap to Pay modal promoting the feature. When using the name “Tap to Pay on iPhone” in headlines or copy, do not shorten to “Tap to Pay” or “Apple Tap to Pay. Always typeset “Tap to Pay on iPhone” as five words. The T and Ps should be uppercased, followed by lowercase letters. */
+"tapToPay.awarenessMoment.title" = "Tap to Pay auf dem iPhone. Jetzt verfügbar!";
+
+/* Text for the button to take one step back in Tap to Pay education flow */
+"tapToPay.education.back" = "Zurück";
+
+/* Text for the button to dismiss Tap to Pay education flow */
+"tapToPay.education.done" = "Fertig";
+
+/* Text for the button to go to the next Tap to Pay education flow step */
+"tapToPay.education.next" = "Weiter";
+
+/* Button title for Set up Tap to Pay button in Tap to Pay education flow. The button opens the Set Up Tap to Pay on iPhone flow. */
+"tapToPay.education.setUpTapToPay" = "Tap to Pay auf dem iPhone einrichten";
+
+/* Text for the button to skip Tap to Pay education flow to the last step */
+"tapToPay.education.skip" = "Überspringen";
+
+/* First description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep1" = "Erstelle auf deinem iPhone eine Bestellung, füge Produkte oder einen individuellen Betrag hinzu und wähle zum Bezahlen Tap to Pay auf dem iPhone aus.";
+
+/* Second description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep2" = "Zeige dem Kunden dein iPhone.";
+
+/* Third description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep3" = "Der Kunde hält sein Gerät an dein iPhone, über das Kontaktlos-Symbol.";
+
+/* Fourth description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep4" = "Wenn das „Fertig“-Häkchen angezeigt wird, wurde die Karte gelesen und die Zahlung wird verarbeitet.";
+
+/* Title for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.title" = "So akzeptierst du Apple Pay und andere digitale Wallets bei Tap to Pay auf dem iPhone.";
+
+/* First description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep1" = "Erstelle auf deinem iPhone eine Bestellung, füge Produkte oder einen individuellen Betrag hinzu und wähle zum Bezahlen Tap to Pay auf dem iPhone aus.";
+
+/* Second description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep2" = "Zeige dem Kunden dein iPhone.";
+
+/* Third description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep3" = "Der Kunde hält seine Karte horizontal oben an dein iPhone, über das Kontaktlos-Symbol.";
+
+/* Fourth description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep4" = "Wenn das „Fertig“-Häkchen angezeigt wird, wurde die Karte gelesen und die Zahlung wird verarbeitet.";
+
+/* Title for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.title" = "So akzeptierst du eine Karte für kontaktlose Zahlungen bei Tap to Pay auf dem iPhone.";
+
+/* Message displayed when a contactless transaction fails due to PIN issues. Provides steps to retry using another contactless payment method or alternative payment options. */
+"tapToPay.education.step.fallbackMethod.description" = "Bei manchen Karten sind kontaktlose Transaktionen mit PIN nicht möglich, weswegen unter Umständen die Zahlung fehlschlägt.\n\nFrage in diesen Fällen die Kunden, ob sie eine andere Karte für kontaktlose Zahlungen oder ein anderes digitales Wallet haben, und wähle dann die Option zum erneuten Versuchen aus, um die Transaktion mit Tap to Pay auf dem iPhone fortzusetzen.\n\nWähle anderenfalls die Option „Andere Zahlungsmethode verwenden“ aus und entscheide dich für eine unterstützte Alternative, beispielsweise Barzahlung, das Teilen eines Zahlungslinks, Cash Reader oder Scan to Pay.";
+
+/* Title for the 'Fallback payment method' Tap to Pay merchant education step */
+"tapToPay.education.step.fallbackMethod.title" = "So akzeptierst du eine alternative Zahlungsmethode.";
+
+/* Description for the initial Tap to Pay merchant education step. When using the name “Tap to Pay on iPhone” in headlines or copy, do not shorten to “Tap to Pay” or “Apple Tap to Pay. Always typeset “Tap to Pay on iPhone” as five words. The T and Ps should be uppercased, followed by lowercase letters. */
+"tapToPay.education.step.intro.description" = "Mit Tap to Pay auf dem iPhone und der Woo-App kannst du persönliche kontaktlose Zahlungen mit physischen Debit- und Kreditkarten, Apple Pay oder anderen digitalen Wallets direkt auf deinem iPhone entgegennehmen. Es ist einfach, sicher und privat.";
+
+/* Title for the initial Tap to Pay merchant education step */
+"tapToPay.education.step.intro.title" = "So nimmst du kontaktlose Zahlungen auf dem iPhone entgegen.";
+
+/* Instructions for customers using accessibility options during PIN entry with Tap to Pay on iPhone.Describes how to use audible guidance for drawing or tapping the PIN digits and the gesture to submit. */
+"tapToPay.education.step.pin.description" = "Bei Tap to Pay auf dem iPhone werden Kunden unter bestimmten Bedingungen aufgefordert, ihre Karten-PIN einzugeben.\n\nKunden, die visuelle oder anderweitige Unterstützung benötigen, können über die Optionen für Bedienungshilfen auf dem PIN-Bildschirm auf entsprechende Optionen zugreifen. Mit Audio-Anweisungen werden Kunden angeleitet, ihre PIN auf dem Bildschim zu zeichnen oder die Zahlen per Tippen auf dem Bildschirm einzugeben – einmal tippen für 1, zweimal tippen für 2 usw. Zum Übermitteln der PIN müssen sie nur mit zwei Fingern nach rechts wischen.";
+
+/* Title for the 'PIN entry' Tap to Pay merchant education step */
+"tapToPay.education.step.pin.title" = "So handhabst du die PIN-Eingabe für eine Karte.";
 
 /* A label prompting users to learn more about Tap to Pay on iPhone.
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -12605,11 +12879,11 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "Unterschrift eines Erwachsenen erforderlich";
 
+/* Label for the toggle to mark the order as complete on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.afterPurchaseMarkComplete" = "Diese Bestellung nach dem Kauf des Etiketts als abgeschlossen markieren und den Kunden benachrichtigen";
+
 /* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
 "wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (Grundgebühr)";
-
-/* Label for the toggle to mark the order as complete on the shipping label creation screen */
-"wooShipping.createLabels.bottomSheet.markComplete" = "Diese Bestellung als abgeschlossen markieren und den Kunden benachrichtigen";
 
 /* Header for order details section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.orderDetails" = "Bestelldetails";
@@ -12652,6 +12926,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
+
+/* Heading for the package section in the shipping label creation screen. */
+"wooShipping.createLabels.package.title" = "Paket";
+
+/* Label for the total shipment weight input field in the shipping label creation screen. */
+"wooShipping.createLabels.package.totalWeight" = "Gesamtgewicht der Sendung (mit Verpackung)";
 
 /* Link for more information about how to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.info" = "So druckst du von deinem Mobilgerät aus";

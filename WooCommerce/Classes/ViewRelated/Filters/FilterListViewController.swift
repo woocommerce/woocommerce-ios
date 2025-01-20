@@ -2,11 +2,15 @@ import Combine
 import UIKit
 import Yosemite
 
+protocol HumanReadable {
+    var readableString: String { get }
+}
+
 /// The view model protocol for filtering a list of models with generic filters.
 ///
 protocol FilterListViewModel {
     /// The type of the final value returned to the caller of `FilterListViewController`.
-    associatedtype Criteria: Equatable
+    associatedtype Criteria: Equatable, HumanReadable
 
     // Filter Action UI configuration
 
@@ -22,7 +26,25 @@ protocol FilterListViewModel {
     /// The final value returned to the caller of `FilterListViewController`.
     var criteria: Criteria { get }
 
+    /// Whether to display the entry point to the filter history
+    var shouldShowHistory: Bool { get }
+
     // Navigation & Actions
+
+    /// Retrieves past filters
+    func retrieveFilterHistory() async throws -> [Criteria]
+
+    /// Applies a filter in the history
+    func applyPastFilter(_ filter: Criteria)
+
+    /// Saves a selected filter to the history
+    func saveSelectedFilterToHistory(_ filter: Criteria)
+
+    /// Removes a filter from the history
+    func removeFilterFromHistory(_ filter: Criteria)
+
+    /// Removes all saved filters from the history
+    func clearAllFilterHistory()
 
     /// Resets the filter criteria.
     func clearAll()
@@ -102,6 +124,7 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
     }()
 
     private var clearAllBarButtonItem: UIBarButtonItem?
+    private var historyBarButtonItem: UIBarButtonItem?
 
     private var selectedFilterTypeSubscription: AnyCancellable?
     private var selectedFilterValueSubscription: AnyCancellable?
@@ -158,6 +181,9 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
                 return
             }
             let criteria = self.viewModel.criteria
+            if viewModel.filterTypeViewModels.numberOfActiveFilters > 0 {
+                viewModel.saveSelectedFilterToHistory(criteria)
+            }
             self.onFilterAction(criteria)
         }
     }
@@ -182,6 +208,17 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
         listSelector.reloadData()
         onClearAction()
     }
+
+    @objc private func showFilterHistory() {
+        let controller = FilterHistoryViewHostingController(viewModel: viewModel, onSelection: { [weak self] selectedCriteria in
+            guard let self else { return }
+            viewModel.applyPastFilter(selectedCriteria)
+            listSelectorCommand.data = viewModel.filterTypeViewModels
+            updateUI(numberOfActiveFilters: viewModel.filterTypeViewModels.numberOfActiveFilters)
+            listSelector.reloadData()
+        })
+        present(controller, animated: true)
+    }
 }
 
 // MARK: - View Configuration
@@ -196,6 +233,15 @@ private extension FilterListViewController {
 
         let clearAllButtonTitle = NSLocalizedString("Clear all", comment: "Button title for clearing all filters for the list.")
         clearAllBarButtonItem = UIBarButtonItem(title: clearAllButtonTitle, style: .plain, target: self, action: #selector(clearAllButtonTapped))
+
+        if viewModel.shouldShowHistory {
+            historyBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "clock"), style: .plain, target: self, action: #selector(showFilterHistory))
+            historyBarButtonItem?.accessibilityHint = NSLocalizedString(
+                "filterListViewController.historyBarButtonItem.accessibilityHint",
+                value: "Filter history",
+                comment: "Accessibility hint for the filter history button on the filter list screen"
+            )
+        }
     }
 
     func configureMainView() {
@@ -347,7 +393,14 @@ private extension FilterListViewController {
     }
 
     func updateClearAllActionVisibility(numberOfActiveFilters: Int) {
-        listSelector.navigationItem.rightBarButtonItem = numberOfActiveFilters > 0 ? clearAllBarButtonItem: nil
+        let buttonItems: [UIBarButtonItem] = {
+            var contents = [historyBarButtonItem].compactMap { $0 }
+            if numberOfActiveFilters > 0, let clearAllBarButtonItem {
+                contents.append(clearAllBarButtonItem)
+            }
+            return contents
+        }()
+        listSelector.navigationItem.rightBarButtonItems = buttonItems
     }
 }
 

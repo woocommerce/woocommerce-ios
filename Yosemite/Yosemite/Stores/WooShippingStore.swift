@@ -65,6 +65,8 @@ public final class WooShippingStore: Store {
                                   completion: completion)
         case let .printLabel(siteID, labelIDs, paperSize, completion):
             printLabel(siteID: siteID, labelIDs: labelIDs, paperSize: paperSize, completion: completion)
+        case .loadOriginAddresses(let siteID, let completion):
+            loadOriginAddresses(siteID: siteID, completion: completion)
         }
     }
 }
@@ -89,7 +91,16 @@ private extension WooShippingStore {
     func deletePackage(siteID: Int64,
                        packageID: String,
                        completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void) {
-        remote.deletePackage(siteID: siteID, packageID: packageID, completion: completion)
+        remote.deletePackage(siteID: siteID, packageID: packageID) { [weak self] result in
+            switch result {
+            case .success(let packages):
+                self?.upsertCreatePackagesResponseInBackground(readOnlyPackages: packages, siteID: siteID, onCompletion: {
+                    completion(.success(packages))
+                })
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 
     func loadLabelRates(siteID: Int64,
@@ -107,7 +118,7 @@ private extension WooShippingStore {
     }
 
     func loadPackages(siteID: Int64,
-                      completion: @escaping (Result<WooShippingPackagesResponse, Error>) -> Void) {
+                      completion: @escaping (Result<WooShippingPackagesResponse, WooShippingLoadPackagesError>) -> Void) {
         remote.loadPackages(siteID: siteID) { [weak self] result in
             switch result {
             case .success(let packages):
@@ -115,7 +126,7 @@ private extension WooShippingStore {
                     completion(.success(packages))
                 }
             case .failure(let error):
-                completion(.failure(error))
+                completion(.failure(WooShippingLoadPackagesError.loadingFailed(error: error)))
             }
         }
     }
@@ -173,6 +184,11 @@ private extension WooShippingStore {
                     paperSize: ShippingLabelPaperSize,
                     completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
         remote.printLabel(siteID: siteID, labelIDs: labelIDs, paperSize: paperSize, completion: completion)
+    }
+
+    func loadOriginAddresses(siteID: Int64,
+                             completion: @escaping (Result<[WooShippingOriginAddress], Error>) -> Void) {
+        remote.loadOriginAddresses(siteID: siteID, completion: completion)
     }
 }
 
@@ -460,4 +476,13 @@ public enum WooShippingLabelPurchaseError: Error {
     case purchaseErrorStatus
     /// No labels are returned by initial purchase request
     case purchaseMissingLabels
+}
+
+public enum WooShippingLoadPackagesError: Error, Equatable {
+    case loadingInProgress
+    case loadingFailed(error: Error)
+
+    public static func ==(lhs: WooShippingLoadPackagesError, rhs: WooShippingLoadPackagesError) -> Bool {
+        return lhs.localizedDescription == rhs.localizedDescription
+    }
 }

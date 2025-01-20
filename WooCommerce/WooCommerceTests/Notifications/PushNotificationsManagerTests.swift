@@ -30,6 +30,10 @@ final class PushNotificationsManagerTests: XCTestCase {
     ///
     private var userNotificationCenter: MockUserNotificationsCenterAdapter!
 
+    /// Mock: PushNotificationBackgroundSynchronizerFactory
+    ///
+    private var backgroundSynchronizerFactory: MockPushNotificationBackgroundSynchronizerFactory!
+
     private var subscriptions = Set<AnyCancellable>()
 
     // MARK: - Overridden Methods
@@ -51,6 +55,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         mockSynchronizeNotificationsAction()
 
         userNotificationCenter = MockUserNotificationsCenterAdapter()
+        backgroundSynchronizerFactory = MockPushNotificationBackgroundSynchronizerFactory()
 
         manager = {
             let configuration = PushNotificationsConfiguration(application: self.application,
@@ -58,7 +63,7 @@ final class PushNotificationsManagerTests: XCTestCase {
                                                                storesManager: self.storesManager,
                                                                userNotificationsCenter: self.userNotificationCenter)
 
-            return PushNotificationsManager(configuration: configuration)
+            return PushNotificationsManager(configuration: configuration, backgroundSynchronizerFactory: backgroundSynchronizerFactory)
         }()
     }
 
@@ -67,6 +72,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         manager.resetBadgeCountForAllStores {}
         manager = nil
         userNotificationCenter = nil
+        backgroundSynchronizerFactory = nil
         storesManager = nil
 
         defaults.removePersistentDomain(forName: Sample.defaultSuiteName)
@@ -227,6 +233,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // When
         application.applicationState = .background
+        backgroundSynchronizerFactory.synchronizer.backgroundFetchResult = .newData
         let result = await manager.handleRemoteNotificationInTheBackground(userInfo: payload)
 
         // Then
@@ -234,7 +241,6 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         guard case .synchronizeNotifications =
                 storesManager.receivedActions.compactMap({ $0 as? NotificationAction }).first else {
-            XCTFail()
             return
         }
     }
@@ -245,6 +251,14 @@ final class PushNotificationsManagerTests: XCTestCase {
     ///
     func testHandleNotificationResultsInSynchronizeNotificationsActionWhichSignalsThatThereIsNoNewDataOnErrorWhenAppStateIsBackground() async {
         // Given
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+
+            return PushNotificationsManager(configuration: configuration)
+        }()
         let payload = notificationPayload()
         mockSynchronizeNotificationsAction(error: NSError(domain: "", code: 0))
 
@@ -273,7 +287,7 @@ final class PushNotificationsManagerTests: XCTestCase {
                                                                storesManager: self.storesManager,
                                                                userNotificationsCenter: self.userNotificationCenter)
 
-            return PushNotificationsManager(configuration: configuration)
+            return PushNotificationsManager(configuration: configuration, backgroundSynchronizerFactory: backgroundSynchronizerFactory)
         }()
         let payload = notificationPayload(type: .storeOrder)
         let response = try XCTUnwrap(MockNotificationResponse(notificationUserInfo: payload))
@@ -300,7 +314,7 @@ final class PushNotificationsManagerTests: XCTestCase {
                                                                storesManager: self.storesManager,
                                                                userNotificationsCenter: self.userNotificationCenter)
 
-            return PushNotificationsManager(configuration: configuration)
+            return PushNotificationsManager(configuration: configuration, backgroundSynchronizerFactory: backgroundSynchronizerFactory)
         }()
 
         // When
@@ -326,7 +340,7 @@ final class PushNotificationsManagerTests: XCTestCase {
                                                                storesManager: self.storesManager,
                                                                userNotificationsCenter: self.userNotificationCenter)
 
-            return PushNotificationsManager(configuration: configuration)
+            return PushNotificationsManager(configuration: configuration, backgroundSynchronizerFactory: backgroundSynchronizerFactory)
         }()
 
         // When
@@ -352,7 +366,7 @@ final class PushNotificationsManagerTests: XCTestCase {
                                                                storesManager: self.storesManager,
                                                                userNotificationsCenter: self.userNotificationCenter)
 
-            return PushNotificationsManager(configuration: configuration)
+            return PushNotificationsManager(configuration: configuration, backgroundSynchronizerFactory: backgroundSynchronizerFactory)
         }()
 
         var emittedNotifications = [WooCommerce.PushNotification]()
@@ -408,7 +422,7 @@ final class PushNotificationsManagerTests: XCTestCase {
                                                                storesManager: self.storesManager,
                                                                userNotificationsCenter: self.userNotificationCenter)
 
-            return PushNotificationsManager(configuration: configuration)
+            return PushNotificationsManager(configuration: configuration, backgroundSynchronizerFactory: backgroundSynchronizerFactory)
         }()
 
         var emittedNotifications = [WooCommerce.PushNotification]()
@@ -444,7 +458,7 @@ final class PushNotificationsManagerTests: XCTestCase {
                                                                defaults: self.defaults,
                                                                storesManager: self.storesManager,
                                                                userNotificationsCenter: self.userNotificationCenter)
-            return PushNotificationsManager(configuration: configuration)
+            return PushNotificationsManager(configuration: configuration, backgroundSynchronizerFactory: backgroundSynchronizerFactory)
         }()
 
         var emittedNotifications = [WooCommerce.PushNotification]()
@@ -487,7 +501,7 @@ final class PushNotificationsManagerTests: XCTestCase {
                                                                defaults: self.defaults,
                                                                storesManager: stores,
                                                                userNotificationsCenter: self.userNotificationCenter)
-            return PushNotificationsManager(configuration: configuration)
+            return PushNotificationsManager(configuration: configuration, backgroundSynchronizerFactory: backgroundSynchronizerFactory)
         }()
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         let siteID = Int64(123)
@@ -514,7 +528,7 @@ final class PushNotificationsManagerTests: XCTestCase {
                                                                defaults: self.defaults,
                                                                storesManager: stores,
                                                                userNotificationsCenter: self.userNotificationCenter)
-            return PushNotificationsManager(configuration: configuration)
+            return PushNotificationsManager(configuration: configuration, backgroundSynchronizerFactory: backgroundSynchronizerFactory)
         }()
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         let siteID = Int64(123)
@@ -543,7 +557,7 @@ final class PushNotificationsManagerTests: XCTestCase {
                                                                defaults: self.defaults,
                                                                storesManager: stores,
                                                                userNotificationsCenter: self.userNotificationCenter)
-            return PushNotificationsManager(configuration: configuration)
+            return PushNotificationsManager(configuration: configuration, backgroundSynchronizerFactory: backgroundSynchronizerFactory)
         }()
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         stores.updateDefaultStore(storeID: 123)
@@ -568,7 +582,7 @@ final class PushNotificationsManagerTests: XCTestCase {
                                                                defaults: self.defaults,
                                                                storesManager: stores,
                                                                userNotificationsCenter: self.userNotificationCenter)
-            return PushNotificationsManager(configuration: configuration)
+            return PushNotificationsManager(configuration: configuration, backgroundSynchronizerFactory: backgroundSynchronizerFactory)
         }()
         application.applicationIconBadgeNumber = 90
 
@@ -595,7 +609,7 @@ final class PushNotificationsManagerTests: XCTestCase {
                                                                storesManager: self.storesManager,
                                                                userNotificationsCenter: self.userNotificationCenter)
 
-            return PushNotificationsManager(configuration: configuration)
+            return PushNotificationsManager(configuration: configuration, backgroundSynchronizerFactory: backgroundSynchronizerFactory)
         }()
 
         application.applicationState = .active
@@ -628,7 +642,7 @@ final class PushNotificationsManagerTests: XCTestCase {
                                                                storesManager: self.storesManager,
                                                                userNotificationsCenter: self.userNotificationCenter)
 
-            return PushNotificationsManager(configuration: configuration)
+            return PushNotificationsManager(configuration: configuration, backgroundSynchronizerFactory: backgroundSynchronizerFactory)
         }()
 
         // When
@@ -713,4 +727,20 @@ private struct Sample {
     /// Sample Message
     ///
     static let defaultMessage = "Loren Ipsum Expectom patronum wingardium leviousm"
+}
+
+// MARK: - Mocks
+
+private class MockPushNotificationBackgroundSynchronizer: PushNotificationBackgroundSynchronizerProtocol {
+    var backgroundFetchResult: UIBackgroundFetchResult = .noData
+    func sync() async -> UIBackgroundFetchResult {
+        return backgroundFetchResult
+    }
+}
+
+private class MockPushNotificationBackgroundSynchronizerFactory: PushNotificationBackgroundSynchronizerFactoryProtocol {
+    var synchronizer = MockPushNotificationBackgroundSynchronizer()
+    func make(userInfo: [AnyHashable: Any], stores: StoresManager) -> any PushNotificationBackgroundSynchronizerProtocol {
+        return synchronizer
+    }
 }

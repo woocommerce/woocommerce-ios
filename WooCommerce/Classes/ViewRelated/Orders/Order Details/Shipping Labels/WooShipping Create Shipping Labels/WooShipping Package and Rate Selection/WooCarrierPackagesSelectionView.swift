@@ -26,40 +26,45 @@ struct WooCarrierPackagesView: View {
     let onRefresh: () async -> Void
 
     var body: some View {
-        List {
-            ForEach(carrierTab.packageGroups, id: \.id) { packageGroup in
-                Section {
-                    ForEach(packageGroup.packages, id: \.id) { package in
-                        WooShippingPackageOptionView(
-                            isSelected: selectedPackageId == package.id,
-                            package: package,
-                            showTopDivider: false,
-                            showSource: false,
-                            tapAction: {
-                                tapAction(package.id)
-                            },
-                            starAction: {
-                                starAction(package.id)
-                                // Just temporary, will be replaced with proper logic
-                            },
-                            starred: starredPackages.contains(package.id)
-                        )
-                        .alignmentGuide(.listRowSeparatorLeading) { _ in
-                            return 16
+        ScrollViewReader { scroll in
+            List {
+                ForEach(carrierTab.packageGroups, id: \.id) { packageGroup in
+                    Section {
+                        ForEach(packageGroup.packages, id: \.id) { package in
+                            WooShippingPackageOptionView(
+                                isSelected: selectedPackageId == package.id,
+                                package: package,
+                                showTopDivider: false,
+                                showSource: false,
+                                tapAction: {
+                                    tapAction(package.id)
+                                },
+                                starAction: {
+                                    starAction(package.id)
+                                },
+                                starred: starredPackages.contains(package.id)
+                            )
+                            .alignmentGuide(.listRowSeparatorLeading) { _ in
+                                return 16
+                            }
+                            .id(package.id)
                         }
+                    } header: {
+                        HStack {
+                            Text(packageGroup.name.uppercased())
+                                .foregroundColor(.secondary)
+                                .captionStyle()
+                                .multilineTextAlignment(.leading)
+                            Spacer()
+                        }
+                        .padding(.horizontal)
+                        .background(Color.clear)
                     }
-                } header: {
-                    HStack {
-                        Text(packageGroup.name.uppercased())
-                            .foregroundColor(.secondary)
-                            .captionStyle()
-                            .multilineTextAlignment(.leading)
-                        Spacer()
-                    }
-                    .padding(.horizontal)
-                    .background(Color.clear)
+                    .listRowInsets(.zero)
                 }
-                .listRowInsets(.zero)
+            }
+            .task {
+                scroll.scrollTo(selectedPackageId)
             }
         }
         .listStyle(.plain)
@@ -109,7 +114,9 @@ struct WooCarrierPackagesSelectionView: View {
             }
             else {
                 Button {
-                    viewModel.loadPackages()
+                    Task {
+                        await viewModel.loadPackages()
+                    }
                 } label: {
                     Image(systemName: "arrow.trianglehead.counterclockwise")
                 }
@@ -124,22 +131,40 @@ struct WooCarrierPackagesSelectionView: View {
                 }, starAction: { packageID in
                     viewModel.starUnstarPackage(packageID, carrierID: selectedCarrierTab.carrier.rawValue)
                 }, onRefresh: {
-                    await withCheckedContinuation { continuation in
-                        viewModel.loadPackages {
-                            continuation.resume()
-                        }
-                    }
+                    await viewModel.loadPackages()
                 })
             }
             Spacer()
             Divider()
-            Button(WooShippingAddPackageView.Localization.addPackage) {
+            Button(selectionButtonText) {
                 addPackageButtonTapped()
             }
-            .disabled(viewModel.selectedCarriersPackageId == nil)
-            .buttonStyle(PrimaryButtonStyle())
+            .disabled(selectionButtonDisabled)
+            .if(viewModel.previousSelectedAndSelectedCarriersPackageAreSame) {
+                $0.buttonStyle(SecondaryButtonStyle())
+            }
+            .if(!viewModel.previousSelectedAndSelectedCarriersPackageAreSame) {
+                $0.buttonStyle(PrimaryButtonStyle())
+            }
             .padding()
         }
+    }
+
+    private var selectionButtonDisabled: Bool {
+        viewModel.selectedCarriersPackageId == nil
+    }
+
+    private var selectionButtonText: String {
+        if selectionButtonDisabled {
+            return WooShippingAddPackageView.Localization.selectPackage
+        }
+        if let previousSelectedPackage = viewModel.previousSelectedPackage {
+            if previousSelectedPackage.id == viewModel.selectedCarriersPackageId {
+                return WooShippingAddPackageView.Localization.done
+            }
+            return WooShippingAddPackageView.Localization.useSelectedPackage
+        }
+        return WooShippingAddPackageView.Localization.addPackage
     }
 
     private func addPackageButtonTapped() {

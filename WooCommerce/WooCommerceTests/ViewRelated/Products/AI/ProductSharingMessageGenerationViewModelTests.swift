@@ -476,7 +476,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         // When
         // Regeneration attempt
         await viewModel.generateShareMessage()
-        waitUntil {
+        await until {
             viewModel.generationInProgress == false
         }
 

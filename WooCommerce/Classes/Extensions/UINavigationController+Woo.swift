@@ -89,7 +89,9 @@ extension UIViewController: NavigationSwipeBackHandler {
     }
 }
 
-extension UIViewController: UIGestureRecognizerDelegate {
+/// The `@retroactive` attribute is used for adding `UIGestureRecognizerDelegate` conformance to `UIViewController` from the UIKit module.
+/// This is necessary due to Swift 6 [SE-0364 proposal](https://github.com/swiftlang/swift-evolution/blob/main/proposals/0364-retroactive-conformance-warning.md).
+extension UIViewController: @retroactive UIGestureRecognizerDelegate {
 
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer.isEqual(navigationController?.interactivePopGestureRecognizer) && navigationController?.topViewController == self {

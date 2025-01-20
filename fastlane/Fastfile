@@ -1131,7 +1131,7 @@ platform :ios do
   # Optionally, it can create any new necessary certificate or profile.
   #
   # @option [Boolean] readonly (default: true) Whether to only fetch existing certificates and profiles, without generating new ones.
-  private_lane :update_certs_and_profiles_enterprise do |readonly: true|
+  lane :update_certs_and_profiles_enterprise do |readonly: true|
     if readonly
       # In readonly mode, we can use the API key
       api_key_path = ASC_KEY_PATH
@@ -1157,7 +1157,7 @@ platform :ios do
   # Optionally, it can create any new necessary certificate or profile.
   #
   # @option [Boolean] readonly (default: true) Whether to only fetch existing certificates and profiles, without generating new ones.
-  private_lane :update_certs_and_profiles_app_store do |readonly: true|
+  lane :update_certs_and_profiles_app_store do |readonly: true|
     match(
       type: 'appstore',
       team_id: get_required_env('EXT_EXPORT_TEAM_ID'),

@@ -527,7 +527,7 @@ public enum PackageCreationError: Error, Equatable {
 /// Package Creation UI errors
 ///
 extension PackageCreationError: LocalizedError {
-    var alertTitle: String {
+    public var alertTitle: String {
         switch self {
         case .duplicatePackageNames, .duplicateNamesByCarrier, .duplicateCustomPackageNames, .duplicatePredefinedPackageNames:
             return NSLocalizedString("Invalid Package Name",

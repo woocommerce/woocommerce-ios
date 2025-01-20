@@ -5,6 +5,18 @@ import Yosemite
 class WooShippingCustomsFormViewModelTests: XCTestCase {
     private var viewModel: WooShippingCustomsFormViewModel!
 
+    override func setUp() {
+        super.setUp()
+
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake(), onCompletion: { _ in })
+    }
+
+    override func tearDown() {
+        super.tearDown()
+
+        viewModel = nil
+    }
+
     func test_onDismiss_calls_onCompletion_with_right_values() {
         // Given
         let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
@@ -16,7 +28,7 @@ class WooShippingCustomsFormViewModelTests: XCTestCase {
 
         viewModel.restrictionType = .quarantine
         viewModel.contentType = .gift
-        viewModel.internationalTransactionNumber = "1234"
+        viewModel.internationalTransactionNumber = "NOEEI 30.37(a)"
         viewModel.returnToSenderIfNotDelivered = false
 
         viewModel.itemsViewModels.first?.description = "Test Item"
@@ -62,6 +74,24 @@ class WooShippingCustomsFormViewModelTests: XCTestCase {
         XCTAssertTrue(passedForm?.items.first?.hsTariffNumber.isEmpty ?? false)
     }
 
+    func test_onDismiss_when_calls_onCompletion_with_invalid_itn_then_returns_empty() {
+        // Given
+        let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
+
+        var passedForm: ShippingLabelCustomsForm?
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { form in
+            passedForm = form
+        })
+
+        viewModel.internationalTransactionNumber = "1234"
+
+        // When
+        viewModel.onDismiss()
+
+        // Then
+        XCTAssertTrue(passedForm?.itn.isEmpty ?? false)
+    }
+
     func test_init_passes_right_currency() {
         // Given
         let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
@@ -71,5 +101,53 @@ class WooShippingCustomsFormViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.itemsViewModels.first?.currencySymbol, "$")
+    }
+
+    func test_isValidITN_when_internationalTransactionNumber_is_empty_then_returns_true() {
+        // Given
+        viewModel.internationalTransactionNumber = ""
+
+        // Then
+        XCTAssertTrue(viewModel.isValidITN())
+    }
+
+    func test_isValidITN_when_passing_a_valid_AES_internationalTransactionNumber_then_returns_true() {
+        // Given
+        viewModel.internationalTransactionNumber = "AES X12345678901234"
+
+        // Then
+        XCTAssertTrue(viewModel.isValidITN())
+    }
+
+    func test_isValidITN_when_passing_a_valid_NOEEI_internationalTransactionNumber_then_returns_true() {
+        // Given
+        viewModel.internationalTransactionNumber = "NOEEI 30.37(a)"
+
+        // Then
+        XCTAssertTrue(viewModel.isValidITN())
+    }
+
+    func test_isValidITN_when_passing_an_invalid_internationalTransactionNumber_then_returns_false() {
+        // Given
+        viewModel.internationalTransactionNumber = "INVALID 123456"
+
+        // Then
+        XCTAssertFalse(viewModel.isValidITN())
+    }
+
+    func test_isValidITN_when_passing_an_AES_internationalTransactionNumber_with_special_characters_then_returns_false() {
+        // Given
+        viewModel.internationalTransactionNumber = "AES X123@#4567890"
+
+        // Then
+        XCTAssertFalse(viewModel.isValidITN())
+    }
+
+    func test_isValidITN_when_passing_a_long_internationalTransactionNumber_then_returns_false() {
+        // Given
+        viewModel.internationalTransactionNumber = "AES X12345678901234567890"
+
+        // Then
+        XCTAssertFalse(viewModel.isValidITN())
     }
 }

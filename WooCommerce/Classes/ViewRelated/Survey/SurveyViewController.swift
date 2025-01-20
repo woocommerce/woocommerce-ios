@@ -64,7 +64,6 @@ extension SurveyViewController {
     enum Source {
         case inAppFeedback
         case productsFeedback
-        case shippingLabelsRelease3Feedback
         case addOnsI1
         case orderCreation
         case couponManagement
@@ -82,12 +81,6 @@ extension SurveyViewController {
                 return WooConstants.URLs.productsFeedback
                     .asURL()
                     .tagPlatform("ios")
-                    .tagAppVersion(Bundle.main.bundleVersion())
-            case .shippingLabelsRelease3Feedback:
-                return WooConstants.URLs.shippingLabelsRelease3Feedback
-                    .asURL()
-                    .tagPlatform("ios")
-                    .tagShippingLabelsMilestone("3")
                     .tagAppVersion(Bundle.main.bundleVersion())
             case .addOnsI1:
                 return WooConstants.URLs.orderAddOnI1Feedback
@@ -122,7 +115,6 @@ extension SurveyViewController {
             case .inAppFeedback:
                 return Localization.title
             case .productsFeedback,
-                    .shippingLabelsRelease3Feedback,
                     .addOnsI1,
                     .orderCreation,
                     .couponManagement,
@@ -139,8 +131,6 @@ extension SurveyViewController {
                 return .general
             case .productsFeedback:
                 return .productsGeneral
-            case .shippingLabelsRelease3Feedback:
-                return .shippingLabelsRelease3
             case .addOnsI1:
                 return .addOnsI1
             case .orderCreation:
@@ -196,10 +186,6 @@ extension URL {
         appendingQueryItem(URLQueryItem(name: Tags.surveyRequestAppVersionTag, value: version))
     }
 
-    func tagShippingLabelsMilestone(_ milestone: String) -> URL {
-        appendingQueryItem(URLQueryItem(name: Tags.surveyRequestShippingLabelsMilestoneTag, value: milestone))
-    }
-
     private func appendingQueryItem(_ queryItem: URLQueryItem) -> URL {
         guard var urlComponents = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
             assertionFailure("Cannot create URL components from \(self)")
@@ -217,8 +203,6 @@ extension URL {
     private enum Tags {
         static let surveyRequestPlatformTag = "woo-mobile-platform"
         static let surveyRequestAppVersionTag = "app-version"
-        static let surveyRequestProductMilestoneTag = "product-milestone"
-        static let surveyRequestShippingLabelsMilestoneTag = "shipping_label_milestone"
     }
 }
 

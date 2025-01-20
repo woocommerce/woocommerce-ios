@@ -198,14 +198,6 @@ extension WooConstants {
         ///
         case productsFeedback = "https://automattic.survey.fm/woo-app-feature-feedback-products"
 
-        /// URL for the shipping labels M3 feedback survey
-        ///
-#if DEBUG
-        case shippingLabelsRelease3Feedback = "https://automattic.survey.fm/woo-app-testing-feature-feedback-shipping-labels"
-#else
-        case shippingLabelsRelease3Feedback = "https://automattic.survey.fm/woo-app-feature-feedback-shipping-labels"
-#endif
-
         /// URL for the order add-on i1 feedback survey
         ///
 #if DEBUG

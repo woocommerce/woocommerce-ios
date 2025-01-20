@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import class WooFoundation.CurrencyFormatter
 
 final class CollectCashViewHelper {
@@ -10,9 +11,9 @@ final class CollectCashViewHelper {
               let inputDecimal = parseCurrency(textFieldAmountInput) else {
             return nil
         }
-        if inputDecimal.compare(orderDecimal) == .orderedDescending {
-            let changeDue = inputDecimal.subtracting(orderDecimal)
-            return  String.localizedStringWithFormat(Localization.changeDueMessage, formatAsCurrency(changeDue))
+        if inputDecimal > orderDecimal {
+            let changeDue = inputDecimal - orderDecimal
+            return String.localizedStringWithFormat(Localization.changeDueMessage, formatAsCurrency(changeDue))
         } else {
             return nil
         }
@@ -27,18 +28,39 @@ final class CollectCashViewHelper {
             return false
         }
 
-        if inputDecimal.compare(orderDecimal) == .orderedAscending {
+        if inputDecimal < orderDecimal {
             onError(Localization.cashPaymentAmountNotEnough)
             return false
         }
         return true
     }
 
-    private func parseCurrency(_ amountString: String) -> NSDecimalNumber? {
-        currencyFormatter.convertToDecimal(amountString, locale: .current)
+    private func parseCurrency(_ amountString: String) -> Decimal? {
+        // Removes all leading/trailing whitespace, if any
+        let sanitized = amountString.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // Removes currency symbol
+        let symbol = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
+        let stringWithoutSymbol = sanitized.replacingOccurrences(of: symbol, with: "")
+
+        // Configures the formatter as close as possible to use the Store's settings
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.generatesDecimalNumbers = true
+        formatter.groupingSeparator = ServiceLocator.currencySettings.groupingSeparator
+        formatter.decimalSeparator = ServiceLocator.currencySettings.decimalSeparator
+        formatter.minimumFractionDigits = ServiceLocator.currencySettings.fractionDigits
+        formatter.maximumFractionDigits = ServiceLocator.currencySettings.fractionDigits
+
+        // Attempts to parse
+        guard let number = formatter.number(from: stringWithoutSymbol) else {
+            DDLogError("❌ Failed to parse currency for \(stringWithoutSymbol)")
+            return nil
+        }
+        return number.decimalValue
     }
 
-    private func formatAsCurrency(_ amount: NSDecimalNumber) -> String {
+    private func formatAsCurrency(_ amount: Decimal) -> String {
         currencyFormatter.formatAmount(amount) ?? "$0.00"
     }
 }

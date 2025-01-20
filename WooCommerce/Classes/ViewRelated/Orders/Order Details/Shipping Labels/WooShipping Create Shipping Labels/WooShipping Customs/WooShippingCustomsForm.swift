@@ -12,6 +12,7 @@ struct WooShippingCustomsForm: View {
             // show selection
             ForEach(WooShippingContentType.allCases, id: \.self) { option in
                 Button {
+                    viewModel.contentType = option
                 } label: {
                     Text(option.name)
                         .bodyStyle()
@@ -37,6 +38,7 @@ struct WooShippingCustomsForm: View {
             // show selection
             ForEach(WooShippingRestrictionType.allCases, id: \.self) { option in
                 Button {
+                    viewModel.restrictionType = option
                 } label: {
                     Text(option.name)
                         .bodyStyle()
@@ -115,15 +117,9 @@ struct WooShippingCustomsForm: View {
                                     .tertiaryTitleStyle()
                                     .padding(.bottom, Constants.defaultVerticalSpacing)
 
-                                // Dummy data
-                                WooShippingCustomsItem(viewModel: WooShippingCustomsItemViewModel(
-                                    title: "Little Nap Brazil 250g",
-                                    description: "",
-                                    hsTariffNumber: "",
-                                    valuePerUnit: "",
-                                    weightPerUnit: "",
-                                    originCountry: WooShippingCustomsCountry(code: "US", name: "United States"))
-                                )
+                                ForEach(viewModel.itemsViewModels, id: \.title) { itemViewModel in
+                                    WooShippingCustomsItem(viewModel: itemViewModel)
+                                }
                             }
                             .padding()
                             .toolbar {
@@ -151,11 +147,12 @@ struct WooShippingCustomsForm: View {
                     Button {
                         // TODO: Save values
                         presentationMode.wrappedValue.dismiss()
+                        viewModel.onDismiss()
                     } label: {
-                        Text(viewModel.informationIsMissing ? Localization.addMissingInformationButtonTitle : Localization.saveCustomsDetailsButtonTitle)
+                        Text(viewModel.requiredInformationIsEntered ? Localization.saveCustomsDetailsButtonTitle : Localization.addMissingInformationButtonTitle)
                     }
                     .buttonStyle(PrimaryButtonStyle())
-                    .disabled(viewModel.informationIsMissing)
+                    .disabled(!viewModel.requiredInformationIsEntered)
                     .padding(Constants.bottomButtonPadding)
                 }
             }

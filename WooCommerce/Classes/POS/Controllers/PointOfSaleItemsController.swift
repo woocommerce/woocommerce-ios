@@ -42,6 +42,13 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
 
     @MainActor
     private func loadRootItems() async {
+        let currentItems = itemsViewState.itemsStack.root.items
+        let currentItemStates = itemsViewState.itemsStack.itemStates
+        let containerState: ItemsContainerState = currentItems.isEmpty ? .loading : .content
+        itemsViewState = .init(containerState: containerState,
+                               itemsStack: ItemsStackState(root: .loading(currentItems),
+                                                           itemStates: currentItemStates))
+
         do {
             try await paginationTracker.resync { [weak self] pageNumber in
                 guard let self else { return true }
@@ -88,6 +95,8 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
 
     @MainActor
     private func loadChildItems(for parent: POSItem) async {
+        let items = itemsViewState.itemsStack.itemStates[parent]?.items ?? []
+        updateState(for: parent, to: .loading(items))
 
         let paginationTracker = paginationTracker(for: parent)
         do {
@@ -96,7 +105,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
                 return try await fetchChildItems(for: parent, pageNumber: Store.Default.firstPageNumber, appendToExistingItems: false)
             }
         } catch {
-            // TODO: 14694 - Handle error from loading initial variations.
+            updateState(for: parent, to: .error(.errorOnLoadingVariations()))
         }
     }
 

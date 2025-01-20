@@ -66,11 +66,10 @@ final class EnhancedCouponListViewController: UIViewController {
 private extension EnhancedCouponListViewController {
     func configureCouponListViewController() {
         let couponListViewController = CouponListViewController(siteID: siteID,
-                                                            showFeedbackBannerIfAppropriate: true,
-                                                            emptyStateActionTitle: Localization.createCouponAction,
-                                                            onDataLoaded: configureNavigationBarItems,
-                                                            emptyStateAction: displayCouponTypeBottomSheet,
-                                                            onCouponSelected: showDetails)
+                                                                emptyStateActionTitle: Localization.createCouponAction,
+                                                                onDataLoaded: configureNavigationBarItems,
+                                                                emptyStateAction: displayCouponTypeBottomSheet,
+                                                                onCouponSelected: showDetails)
 
         couponListViewController.view.translatesAutoresizingMaskIntoConstraints = false
         addChild(couponListViewController)

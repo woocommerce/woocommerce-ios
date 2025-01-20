@@ -80,13 +80,7 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
     }
 
     private func loadInitialChildItems(for parent: POSItem) async {
-        itemsViewState = ItemsViewState(
-            containerState: .content,
-            itemsStack: ItemsStackState(
-                root: .loading(mockItems),
-                itemStates: [parent: .loaded(mockVariationItems, hasMoreItems: true)]
-            )
-        )
+        // Set `itemsViewState` instead.
     }
 }
 
@@ -114,13 +108,15 @@ private var mockVariationItems: [POSItem] {
                          formattedPrice: "$1.00",
                          price: "1.00",
                          productID: 134,
-                         variationID: 256)),
+                         variationID: 256,
+                         parentProductName: "Variable product")),
         .variation(.init(id: UUID(),
                          name: "Variation 2",
                          formattedPrice: "$2.00",
                          price: "2.00",
                          productID: 134,
-                         variationID: 256)),
+                         variationID: 256,
+                         parentProductName: "Variable product")),
     ]
 }
 

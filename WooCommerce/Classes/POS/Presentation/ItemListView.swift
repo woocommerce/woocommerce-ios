@@ -33,11 +33,13 @@ struct ItemListView: View {
             .navigationDestination(for: POSItem.self, destination: { item in
                 childListView(parentItem: item)
             })
+            .background(Color.posPrimaryBackground)
         }
         .refreshable {
-            await posModel.reloadItems(base: .root)
+            await Task {
+                await posModel.loadItems(base: .root)
+            }.value
         }
-        .background(Color.posPrimaryBackground)
         .accessibilityElement(children: .contain)
         .posModal(isPresented: $showSimpleProductsModal) {
             SimpleProductsOnlyInformation(isPresented: $showSimpleProductsModal)

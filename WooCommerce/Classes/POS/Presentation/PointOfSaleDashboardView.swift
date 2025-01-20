@@ -18,9 +18,9 @@ struct PointOfSaleDashboardView: View {
             case .empty:
                 PointOfSaleItemListEmptyView()
             case .error(let errorContents):
-                PointOfSaleItemListErrorView(error: errorContents, onRetry: {
+                PointOfSaleItemListFullscreenErrorView(error: errorContents, onRetry: {
                     Task {
-                        await posModel.reloadItems(base: .root)
+                        await posModel.loadItems(base: .root)
                     }
                 })
             case .content:
@@ -69,8 +69,9 @@ struct PointOfSaleDashboardView: View {
             supportForm
         }
         .task {
-            await posModel.reloadItems(base: .root)
+            await posModel.loadItems(base: .root)
         }
+        .ignoresSafeArea(.keyboard)
     }
 
     private var contentView: some View {

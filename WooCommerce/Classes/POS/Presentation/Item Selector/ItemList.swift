@@ -31,7 +31,7 @@ struct ItemList<HeaderView: View>: View {
                 await posModel.loadNextItems(base: node)
             },
             content: {
-                LazyVStack {
+                LazyVStack(spacing: Constants.itemSpacing) {
                     headerView
 
                     ForEach(state.items) { item in
@@ -68,6 +68,7 @@ struct ItemList<HeaderView: View>: View {
 
 private enum Constants {
     static let itemListPadding: CGFloat = 16
+    static let itemSpacing: CGFloat = 16
 }
 
 private struct ItemListRow: View {
@@ -79,7 +80,7 @@ private struct ItemListRow: View {
         switch item {
         case let .simpleProduct(product):
             Button(action: {
-                posModel.addToCart(product)
+                posModel.addToCart(item)
                 analytics.track(event: .PointOfSale.addItemToCart(type: .simpleProduct))
             }, label: {
                 SimpleProductCardView(product: product)
@@ -88,15 +89,11 @@ private struct ItemListRow: View {
             NavigationLink(value: item) {
                 ParentProductCardView(name: parentProduct.name,
                                       imageSource: parentProduct.productImageSource,
-                                      detailView: {
-                    Text(Localization.variationsAvailable)
-                        .foregroundStyle(Color.posSecondaryText)
-                        .font(.posBodyRegular)
-                })
+                                      detailText: Localization.variationsAvailable)
             }
         case let .variation(variation):
             Button(action: {
-                posModel.addToCart(variation)
+                posModel.addToCart(item)
                 analytics.track(event: .PointOfSale.addItemToCart(type: .variation))
             }, label: {
                 VariationCardView(variation: variation)

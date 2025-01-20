@@ -1122,18 +1122,16 @@ platform :ios do
   # Optionally, it can create any new necessary certificate or profile.
   #
   # @option [Boolean] readonly (default: true) Whether to only fetch existing certificates and profiles, without generating new ones.
-  lane :update_certs_and_profiles do |options|
-    alpha_code_signing(options)
-    appstore_code_signing(options)
+  lane :update_certs_and_profiles do |readonly: true|
+    alpha_code_signing(readonly: readonly)
+    appstore_code_signing(readonly: readonly)
   end
 
   # Downloads all the required certificates and profiles the enterprise build.
   # Optionally, it can create any new necessary certificate or profile.
   #
   # @option [Boolean] readonly (default: true) Whether to only fetch existing certificates and profiles, without generating new ones.
-  private_lane :alpha_code_signing do |options|
-    readonly = options.fetch(:readonly, true)
-
+  private_lane :alpha_code_signing do |readonly: true|
     if readonly
       # In readonly mode, we can use the API key
       api_key_path = ASC_KEY_PATH
@@ -1159,12 +1157,12 @@ platform :ios do
   # Optionally, it can create any new necessary certificate or profile.
   #
   # @option [Boolean] readonly (default: true) Whether to only fetch existing certificates and profiles, without generating new ones.
-  private_lane :appstore_code_signing do |options|
+  private_lane :appstore_code_signing do |readonly: true|
     match(
       type: 'appstore',
       team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
       app_identifier: MAIN_BUNDLE_IDENTIFIERS,
-      readonly: options.fetch(:readonly, true),
+      readonly: readonly,
       api_key_path: ASC_KEY_PATH
     )
   end

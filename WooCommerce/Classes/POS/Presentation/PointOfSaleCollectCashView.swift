@@ -1,9 +1,30 @@
 import SwiftUI
+import Combine
+
+final class KeyboardObserver: ObservableObject {
+    @Published var keyboardHeight: CGFloat = 0
+    private var cancellables = Set<AnyCancellable>()
+
+    init() {
+        let keyboardWillShow = NotificationCenter.default.publisher(for: UIResponder.keyboardWillChangeFrameNotification)
+        let keyboardWillHide = NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)
+
+        keyboardWillShow.merge(with: keyboardWillHide)
+            .sink { [weak self] notification in
+                guard let self = self else { return }
+                if let endFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
+                    self.keyboardHeight = endFrame.origin.y >= UIScreen.main.bounds.height ? 0 : endFrame.height
+                }
+            }
+            .store(in: &cancellables)
+    }
+}
 
 struct PointOfSaleCollectCashView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @FocusState private var isTextFieldFocused: Bool
+    @StateObject private var keyboardObserver = KeyboardObserver()
 
     private let viewHelper = CollectCashViewHelper()
 
@@ -18,13 +39,21 @@ struct PointOfSaleCollectCashView: View {
         String.localizedStringWithFormat(Localization.backNavigationSubtitle, orderTotal)
     }
 
+    private var keyboardHeight: CGFloat {
+        if keyboardObserver.keyboardHeight < Constants.keyboardShownButtonSpacing {
+            return Constants.keyboardShownButtonSpacing
+        } else {
+            return Constants.keyboardHiddenButtonSpacing
+        }
+    }
+
     @StateObject private var textFieldViewModel = FormattableAmountTextFieldViewModel(size: .extraLarge,
                                                                                       locale: Locale.autoupdatingCurrent,
                                                                                       storeCurrencySettings: ServiceLocator.currencySettings,
                                                                                       allowNegativeNumber: false)
 
     var body: some View {
-        VStack(alignment: .center) {
+        VStack(alignment: .center, spacing: 2) {
             HStack {
                 Button(action: {
                     Task { @MainActor in
@@ -63,10 +92,13 @@ struct PointOfSaleCollectCashView: View {
                     .foregroundColor(.posSecondaryText)
             }
 
+            Spacer().frame(height: keyboardHeight)
+
             if let errorMessage = errorMessage {
                 Text(errorMessage)
                     .font(POSFontStyle.posBodyRegular)
                     .foregroundColor(.red)
+                    .padding(.bottom, Constants.errorMessagePadding)
             }
 
             Button(action: {
@@ -110,6 +142,7 @@ struct PointOfSaleCollectCashView: View {
         .padding([.horizontal, .bottom])
         .animation(.easeInOut, value: errorMessage)
         .animation(.easeInOut, value: changeDueMessage)
+        .animation(.easeInOut, value: keyboardObserver.keyboardHeight)
         .onChange(of: textFieldAmountInput) { _ in
             errorMessage = nil
         }
@@ -146,6 +179,9 @@ private extension PointOfSaleCollectCashView {
         static let navigationHeaderTopPadding: CGFloat = 8
         static let buttonFont: POSFontStyle = .posBodyEmphasized
         static let buttonCornerRadius: CGFloat = 8
+        static let errorMessagePadding: CGFloat = 8
+        static let keyboardShownButtonSpacing: CGFloat = 80
+        static let keyboardHiddenButtonSpacing: CGFloat = 20
     }
 
     private var backgroundColor: Color {

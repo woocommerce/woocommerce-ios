@@ -6,6 +6,10 @@ struct VariationCardView: View {
 
     @ScaledMetric private var scale: CGFloat = 1.0
 
+    private var dimension: CGFloat {
+        min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
+    }
+
     init(variation: POSVariation) {
         self.variation = variation
     }
@@ -13,11 +17,9 @@ struct VariationCardView: View {
     var body: some View {
         HStack(spacing: Constants.cardSpacing) {
             POSItemImageView(imageSource: variation.productImageSource,
-                             imageSize: Constants.productCardSize * scale,
-                             scale: scale)
-            .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
-                   height: Constants.productCardSize * scale)
-            .clipped()
+                             imageSize: dimension,
+                             scale: 1)
+            .frame(width: dimension, height: dimension)
 
             VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 Text(variation.name)
@@ -34,7 +36,7 @@ struct VariationCardView: View {
             .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
             Spacer()
         }
-        .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
+        .frame(maxWidth: .infinity, idealHeight: dimension)
         .background(Color.posSecondaryBackground)
         .posItemCardBorderStyles()
     }

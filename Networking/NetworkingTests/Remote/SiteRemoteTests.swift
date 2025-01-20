@@ -309,7 +309,7 @@ final class SiteRemoteTests: XCTestCase {
         XCTAssertEqual(response.url, "https://some-testing-url.testing.blog")
     }
 
-    func test_loadSite_by_domai_returns_error_upon_failure() async throws {
+    func test_loadSite_by_domain_returns_error_upon_failure() async throws {
         // Given
         let domain = "example.com"
         network.simulateResponse(requestUrlSuffix: "sites/\(domain)", filename: "site-error")

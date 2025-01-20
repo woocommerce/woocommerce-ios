@@ -1,9 +1,10 @@
 import Foundation
 import SwiftUI
-import class WooFoundation.CurrencyFormatter
+import WooFoundation
 
 final class CollectCashViewHelper {
     private let currencyFormatter: CurrencyFormatter = WooFoundation.CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+    private let currencySettings: CurrencySettings = ServiceLocator.currencySettings
 
     func updatechangeDueMessage(orderTotal: String,
                                 textFieldAmountInput: String) -> String? {
@@ -40,17 +41,17 @@ final class CollectCashViewHelper {
         let sanitized = amountString.trimmingCharacters(in: .whitespacesAndNewlines)
 
         // Removes currency symbol
-        let symbol = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
+        let symbol = currencySettings.symbol(from: currencySettings.currencyCode)
         let stringWithoutSymbol = sanitized.replacingOccurrences(of: symbol, with: "")
 
         // Configures the formatter as close as possible to use the Store's settings
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         formatter.generatesDecimalNumbers = true
-        formatter.groupingSeparator = ServiceLocator.currencySettings.groupingSeparator
-        formatter.decimalSeparator = ServiceLocator.currencySettings.decimalSeparator
-        formatter.minimumFractionDigits = ServiceLocator.currencySettings.fractionDigits
-        formatter.maximumFractionDigits = ServiceLocator.currencySettings.fractionDigits
+        formatter.groupingSeparator = currencySettings.groupingSeparator
+        formatter.decimalSeparator = currencySettings.decimalSeparator
+        formatter.minimumFractionDigits = currencySettings.fractionDigits
+        formatter.maximumFractionDigits = currencySettings.fractionDigits
 
         // Attempts to parse
         guard let number = formatter.number(from: stringWithoutSymbol) else {

@@ -54,7 +54,7 @@ final class CollectCashViewHelper {
 
         // Attempts to parse
         guard let number = formatter.number(from: stringWithoutSymbol) else {
-            DDLogError("❌ Failed to parse currency for \(stringWithoutSymbol)")
+            DDLogError("❌ Failed to parse currency for \(stringWithoutSymbol). Details: \(formatter.logDebugDetails)")
             return nil
         }
         return number.decimalValue
@@ -83,5 +83,23 @@ private extension CollectCashViewHelper {
             value: "Amount must be more or equal to total.",
             comment: "Error message when the cash amount entered is less than the order total."
         )
+    }
+}
+
+
+extension NumberFormatter {
+    var logDebugDetails: String {
+        """
+        NumberFormatter Details:
+        ------------------------
+        Number Style: \(self.numberStyle)
+        Grouping Separator: \(self.groupingSeparator ?? "nil")
+        Decimal Separator: \(self.decimalSeparator ?? "nil")
+        Minimum Fraction Digits: \(self.minimumFractionDigits)
+        Maximum Fraction Digits: \(self.maximumFractionDigits)
+        Locale: \(self.locale.identifier)
+        Rounding Mode: \(self.roundingMode)
+        Uses Grouping Separator: \(self.usesGroupingSeparator)
+        """
     }
 }

@@ -2158,7 +2158,6 @@
 		CC53FB3E2758E2D500C4CA4F /* ProductRowViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC53FB3D2758E2D500C4CA4F /* ProductRowViewModelTests.swift */; };
 		CC53FB402759042600C4CA4F /* ProductSelectorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC53FB3F2759042600C4CA4F /* ProductSelectorViewModelTests.swift */; };
 		CC593A6726EA116300EF0E04 /* ShippingLabelAddNewPackageViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC593A6626EA116300EF0E04 /* ShippingLabelAddNewPackageViewModelTests.swift */; };
-		CC593A6B26EA640800EF0E04 /* PackageCreationError+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC593A6A26EA640800EF0E04 /* PackageCreationError+UI.swift */; };
 		CC5BA5F5287EDC900072F307 /* CustomFieldViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5BA5F4287EDC900072F307 /* CustomFieldViewModelTests.swift */; };
 		CC5C278727EE19A700B25D2A /* UnifiedOrderScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5C278627EE19A600B25D2A /* UnifiedOrderScreen.swift */; };
 		CC5C278B27EE314F00B25D2A /* orders_3337_create_order.json in Resources */ = {isa = PBXBuildFile; fileRef = CC5C278A27EE314E00B25D2A /* orders_3337_create_order.json */; };
@@ -5307,7 +5306,6 @@
 		CC53FB3D2758E2D500C4CA4F /* ProductRowViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductRowViewModelTests.swift; sourceTree = "<group>"; };
 		CC53FB3F2759042600C4CA4F /* ProductSelectorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSelectorViewModelTests.swift; sourceTree = "<group>"; };
 		CC593A6626EA116300EF0E04 /* ShippingLabelAddNewPackageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddNewPackageViewModelTests.swift; sourceTree = "<group>"; };
-		CC593A6A26EA640800EF0E04 /* PackageCreationError+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PackageCreationError+UI.swift"; sourceTree = "<group>"; };
 		CC5BA5F4287EDC900072F307 /* CustomFieldViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFieldViewModelTests.swift; sourceTree = "<group>"; };
 		CC5C278627EE19A600B25D2A /* UnifiedOrderScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnifiedOrderScreen.swift; sourceTree = "<group>"; };
 		CC5C278A27EE314E00B25D2A /* orders_3337_create_order.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = orders_3337_create_order.json; sourceTree = "<group>"; };
@@ -11344,7 +11342,6 @@
 				CC254F3726C43B52005F3C82 /* ShippingLabelCustomPackageFormViewModel.swift */,
 				CCD2F51926D67BB50010E679 /* ShippingLabelServicePackageList.swift */,
 				CCD2F51B26D697860010E679 /* ShippingLabelServicePackageListViewModel.swift */,
-				CC593A6A26EA640800EF0E04 /* PackageCreationError+UI.swift */,
 			);
 			path = "Package Creation";
 			sourceTree = "<group>";
@@ -16814,7 +16811,6 @@
 				02BE9CC029C05CFD00292333 /* SitePreviewView.swift in Sources */,
 				D8B4D5EE26C2C26C00F34E94 /* InPersonPaymentsStripeAcountReviewView.swift in Sources */,
 				6850C5EE2B69E6580026A93B /* ReceiptViewModel.swift in Sources */,
-				CC593A6B26EA640800EF0E04 /* PackageCreationError+UI.swift in Sources */,
 				CE1F512920697F0100C6C810 /* UIFont+Helpers.swift in Sources */,
 				68E674A52A4DA8510034BA1E /* PurchaseUpgradeErrorView.swift in Sources */,
 				2687165A24D350C20042F6AE /* SurveyCoordinatingController.swift in Sources */,

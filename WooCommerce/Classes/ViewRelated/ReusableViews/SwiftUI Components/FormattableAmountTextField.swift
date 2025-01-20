@@ -74,3 +74,11 @@ private extension FormattableAmountTextField {
         }
     }
 }
+
+#Preview {
+    let viewModel = FormattableAmountTextFieldViewModel(size: .extraLarge,
+                                                        locale: .current,
+                                                        storeCurrencySettings: .init(),
+                                                        allowNegativeNumber: false)
+    FormattableAmountTextField(viewModel: viewModel, style: .pos)
+}

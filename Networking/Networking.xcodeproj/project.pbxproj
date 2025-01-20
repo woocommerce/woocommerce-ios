@@ -892,6 +892,7 @@
 		CEC7D5932CDD0D9900111B79 /* WooShippingPredefinedOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC7D5922CDD0D9900111B79 /* WooShippingPredefinedOption.swift */; };
 		CEC7D5952CDD164D00111B79 /* WooShippingCreatePackageMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC7D5942CDD164D00111B79 /* WooShippingCreatePackageMapper.swift */; };
 		CECC759E23D6231A00486676 /* order-560-all-refunds.json in Resources */ = {isa = PBXBuildFile; fileRef = CECC759D23D6231900486676 /* order-560-all-refunds.json */; };
+		CED9BCBB2D3EAC5E00C063B8 /* wooshipping-address-validation-success.json in Resources */ = {isa = PBXBuildFile; fileRef = CED9BCBA2D3EAC5E00C063B8 /* wooshipping-address-validation-success.json */; };
 		CEDA78622B30A4460076AA09 /* payment-gateway-cod-malformed.json in Resources */ = {isa = PBXBuildFile; fileRef = CEDA78612B30A4460076AA09 /* payment-gateway-cod-malformed.json */; };
 		CEE02EE92B34579E00162F63 /* DecodingError+CodingPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE02EE82B34579E00162F63 /* DecodingError+CodingPath.swift */; };
 		CEE02EEB2B34811400162F63 /* DecodingError+CodingPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE02EEA2B34811400162F63 /* DecodingError+CodingPathTests.swift */; };
@@ -2085,6 +2086,7 @@
 		CEC7D5922CDD0D9900111B79 /* WooShippingPredefinedOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingPredefinedOption.swift; sourceTree = "<group>"; };
 		CEC7D5942CDD164D00111B79 /* WooShippingCreatePackageMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingCreatePackageMapper.swift; sourceTree = "<group>"; };
 		CECC759D23D6231900486676 /* order-560-all-refunds.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-560-all-refunds.json"; sourceTree = "<group>"; };
+		CED9BCBA2D3EAC5E00C063B8 /* wooshipping-address-validation-success.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wooshipping-address-validation-success.json"; sourceTree = "<group>"; };
 		CEDA78612B30A4460076AA09 /* payment-gateway-cod-malformed.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "payment-gateway-cod-malformed.json"; sourceTree = "<group>"; };
 		CEE02EE82B34579E00162F63 /* DecodingError+CodingPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DecodingError+CodingPath.swift"; sourceTree = "<group>"; };
 		CEE02EEA2B34811400162F63 /* DecodingError+CodingPathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DecodingError+CodingPathTests.swift"; sourceTree = "<group>"; };
@@ -3560,6 +3562,7 @@
 				CE1EA4BA2CEB78F60039F477 /* wooshipping-purchase-success.json */,
 				CE90E99B2CEFCAA50068D852 /* wooshipping-label-status-success.json */,
 				CE2FB3972CF74C5C0046201C /* wooshipping-label-print-success.json */,
+				CED9BCBA2D3EAC5E00C063B8 /* wooshipping-address-validation-success.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -4299,6 +4302,7 @@
 				DE42F9602967C88400D514C2 /* report-orders-total-without-data.json in Resources */,
 				DE9DEEF5291CF1B40070AD7C /* site-plugin-without-envelope.json in Resources */,
 				EEFC4C972A5E996C004C5A83 /* jwt-token-success.json in Resources */,
+				CED9BCBB2D3EAC5E00C063B8 /* wooshipping-address-validation-success.json in Resources */,
 				0261F5A928D4641500B7AC72 /* products-sku-search.json in Resources */,
 				EE57C14A2980CE4B00BC31E7 /* taxes-classes-without-data.json in Resources */,
 				DE20045B2BF6146700660A72 /* product-stock-without-data-envelope.json in Resources */,

@@ -73,29 +73,37 @@ struct WooShippingCustomsForm: View {
                     ScrollViewReader { proxy in
                         ScrollView {
                             VStack(alignment: .leading, spacing: Constants.defaultVerticalSpacing) {
-                                HStack {
-                                    Text(Localization.contentType)
+                                Text(Localization.contentType)
                                         .font(.subheadline)
-                                    Spacer()
-                                }
 
                                 contentTypeSelectionView
                                     .padding(.bottom, Constants.defaultVerticalSpacing)
 
-                                HStack {
-                                    Text(Localization.restrictionType)
-                                        .font(.subheadline)
-                                    Spacer()
+                                Group {
+                                    Text(Localization.contentDetails)
+                                            .font(.subheadline)
+                                    TextField("", text: $viewModel.contentExplanation)
+                                        .padding(Constants.borderPadding)
+                                        .roundedBorder(cornerRadius: Constants.borderCornerRadius, lineColor: Color(.separator), lineWidth: Constants.borderWidth)
+                                    Text(Localization.contentDetailsFootnote)
+                                        .footnoteStyle()
+                                    Text(Localization.valueRequiredWarning)
+                                        .foregroundColor(warningRedColor)
+                                        .footnoteStyle()
+                                        .renderedIf(viewModel.contentExplanation.isEmpty)
                                 }
+                                .renderedIf(viewModel.contentType == .other)
+
+
+                                Text(Localization.restrictionType)
+                                        .font(.subheadline)
 
                                 restrictionTypeSelectionView
                                     .padding(.bottom, Constants.defaultVerticalSpacing)
 
-                                HStack {
-                                    Text(Localization.internationalTransactionNumber)
-                                        .font(.subheadline)
-                                    Spacer()
-                                }
+                                Text(Localization.internationalTransactionNumber)
+                                    .font(.subheadline)
+
 
                                 TextField("", text: $viewModel.internationalTransactionNumber)
                                     .padding(Constants.borderPadding)
@@ -187,6 +195,12 @@ extension WooShippingCustomsForm {
         static let contentType = NSLocalizedString("wooShipping.customs.contentType",
                                                    value: "Content Type",
                                                    comment: "Title for the Content Type menu in the Shipping Customs Form")
+        static let contentDetails = NSLocalizedString("wooShipping.customs.contentDetails",
+                                                   value: "Content Details",
+                                                   comment: "Title for the Content Details text field in the Shipping Customs Form")
+        static let contentDetailsFootnote = NSLocalizedString("wooShipping.customs.contentDetailsFootnote",
+                                                   value: "Please describe what kind of goods this package contains",
+                                                   comment: "Footnote for the Content Details text field in the Shipping Customs Form")
         static let restrictionType = NSLocalizedString("wooShipping.customs.restrictionType",
                                                    value: "Restriction Type",
                                                    comment: "Title for the Restriction Type menu in the Shipping Customs Form")
@@ -214,6 +228,9 @@ extension WooShippingCustomsForm {
         static let itnRequiredWarningMessage = NSLocalizedString("wooShipping.customs.itnValidation",
                                                            value: "International Transaction Number is required for shipping items valued over $2,500",
                                                            comment: "Customs validation warning for the ITN field")
+        static let valueRequiredWarning = NSLocalizedString("wooShipping.customs.valueRequiredWarning",
+                                                   value: "Value required",
+                                                   comment: "Footnote when a required value is missing")
 
     }
 

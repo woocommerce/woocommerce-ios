@@ -11,6 +11,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     @Published var requiredInformationIsEntered: Bool = false
     @Published var itemsRequiredInformationIsEntered: Bool = false
 
+    @Published var contentExplanation: String = ""
     @Published var contentType: WooShippingContentType = .merchandise
     @Published var restrictionType: WooShippingRestrictionType = .none
 
@@ -40,7 +41,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
         let form = ShippingLabelCustomsForm(packageID: "",
                                             packageName: "",
                                             contentsType: contentType.toFormContentsType(),
-                                            contentExplanation: "",
+                                            contentExplanation: contentExplanation,
                                             restrictionType: restrictionType.toFormRestrictionType(),
                                             restrictionComments: "",
                                             nonDeliveryOption: returnToSenderIfNotDelivered ? .return : .abandon,

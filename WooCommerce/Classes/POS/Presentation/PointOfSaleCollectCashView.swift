@@ -35,20 +35,19 @@ struct PointOfSaleCollectCashView: View {
                         Image(systemName: "chevron.left")
                             .font(.posTitleRegular)
                             .bold()
-                            .foregroundColor(.primary)
                         VStack(alignment: .leading, spacing: Constants.navigationButtonSpacing) {
                             Text(Localization.backNavigationTitle)
                                 .font(.posTitleRegular)
                                 .bold()
-                                .foregroundColor(.primary)
 
                             Text(formattedOrderTotal)
                                 .font(.posBodyRegular)
-                                .foregroundColor(.primary)
                         }
                         .padding(.top, -Constants.navigationButtonSpacing)
                     }
+                    .foregroundColor(navigationForegroundColor)
                 })
+                .disabled(isLoading)
                 Spacer()
             }
             .padding()
@@ -154,6 +153,10 @@ private extension PointOfSaleCollectCashView {
         default:
             return .clear
         }
+    }
+
+    private var navigationForegroundColor: Color {
+        isLoading ? .posBackgroundButtonDisabled : .primary
     }
 
     enum Localization {

@@ -133,6 +133,12 @@ GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES = {
 
 ASC_KEY_PATH = File.join(SECRETS_DIR, 'app_store_connect_fastlane_api_key.json')
 
+CODE_SIGNING_STORAGE_OPTIONS = {
+  storage_mode: 's3',
+  s3_bucket: 'a8c-fastlane-match',
+  s3_region: 'us-east-2'
+}.freeze
+
 # Use this instead of getting values from ENV directly
 # It will throw an error if the requested value is missing
 def get_required_env(key)
@@ -1149,7 +1155,8 @@ platform :ios do
       team_id: get_required_env('INT_EXPORT_TEAM_ID'),
       app_identifier: ALPHA_BUNDLE_IDENTIFIERS,
       readonly: readonly,
-      api_key_path: api_key_path
+      api_key_path: api_key_path,
+      **CODE_SIGNING_STORAGE_OPTIONS
     )
   end
 
@@ -1163,7 +1170,8 @@ platform :ios do
       team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
       app_identifier: MAIN_BUNDLE_IDENTIFIERS,
       readonly: readonly,
-      api_key_path: ASC_KEY_PATH
+      api_key_path: ASC_KEY_PATH,
+      **CODE_SIGNING_STORAGE_OPTIONS
     )
   end
 

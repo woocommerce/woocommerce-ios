@@ -7,6 +7,7 @@ enum TapToPayEducationResult {
     case setUpTapToPay
 }
 
+@MainActor
 final class TapToPayEducationViewModel: ObservableObject {
     struct Action {
         let title: String

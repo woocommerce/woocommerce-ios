@@ -25,8 +25,6 @@ struct DashboardView: View {
     var onboardingTaskTapped: ((Site, StoreOnboardingTask) -> Void)?
     /// Set externally in the hosting controller.
     var viewAllOnboardingTasksTapped: ((Site) -> Void)?
-    /// Set externally in the hosting controller.
-    var onboardingShareFeedbackAction: (() -> Void)?
 
     /// Set externally in the hosting controller.
     var showAllBlazeCampaignsTapped: (() -> Void)?
@@ -215,8 +213,6 @@ private extension DashboardView {
                         }, onViewAllTapped: {
                             guard let currentSite else { return }
                             viewAllOnboardingTasksTapped?(currentSite)
-                        }, shareFeedbackAction: {
-                            onboardingShareFeedbackAction?()
                         })
                     case .blaze:
                         BlazeCampaignDashboardView(viewModel: viewModel.blazeCampaignDashboardViewModel,

@@ -193,5 +193,7 @@ private func makeItem(name: String = "",
                     item: MockPOSOrderableItem(name: name,
                                                formattedPrice: formattedPrice,
                                                orderItemsToMatch: orderItemsToMatch),
+                    title: name,
+                    subtitle: nil,
                     quantity: quantity)
 }

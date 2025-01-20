@@ -32,10 +32,6 @@ final class CouponListViewModel {
     ///
     @Published private(set) var state: CouponListState = .initialized
 
-    @Published private(set) var shouldDisplayFeedbackBanner: Bool = false
-
-    @Published private var isFeedbackBannerEnabledInAppSettings: Bool = false
-
     /// couponViewModels: ViewModels for the cells representing Coupons
     ///
     @Published private(set) var couponViewModels: [CellViewModel] = []
@@ -64,7 +60,6 @@ final class CouponListViewModel {
     // MARK: - Initialization and setup
     //
     init(siteID: Int64,
-         showFeedbackBannerIfAppropriate: Bool = true,
          syncingCoordinator: SyncingCoordinatorProtocol = SyncingCoordinator(),
          storesManager: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -78,10 +73,6 @@ final class CouponListViewModel {
 
         configureSyncingCoordinator()
         configureResultsController()
-
-        if showFeedbackBannerIfAppropriate {
-            configureFeedbackBannerVisibility()
-        }
     }
 
     func buildCouponViewModels() {
@@ -125,19 +116,6 @@ final class CouponListViewModel {
     ///
     func tableWillDisplayCell(at indexPath: IndexPath) {
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: indexPath.row)
-    }
-
-    /// Mark feedback request as dismissed and update banner visibility
-    ///
-    func dismissFeedbackBanner() {
-        let action = AppSettingsAction.updateFeedbackStatus(type: .couponManagement,
-                                                            status: .dismissed) { [weak self] result in
-            if let error = result.failure {
-                DDLogError("⛔️ Error updating feedback visibility for coupon management: \(error)")
-            }
-            self?.isFeedbackBannerEnabledInAppSettings = false
-        }
-        storesManager.dispatch(action)
     }
 
     /// Enable coupons for the store
@@ -191,28 +169,6 @@ private extension CouponListViewModel {
     ///
     func configureSyncingCoordinator() {
         syncingCoordinator.delegate = self
-    }
-
-    func configureFeedbackBannerVisibility() {
-        checkAppSettingsForFeedbackBannerVisibility()
-        $state.combineLatest($isFeedbackBannerEnabledInAppSettings)
-            .map { state, feedbackBannerVisibility -> Bool in
-                state.shouldShowTopBanner && feedbackBannerVisibility
-            }
-            .assign(to: &$shouldDisplayFeedbackBanner)
-    }
-
-    func checkAppSettingsForFeedbackBannerVisibility() {
-        let action = AppSettingsAction.loadFeedbackVisibility(type: .couponManagement) { [weak self] result in
-            switch result {
-            case .success(let visible):
-                self?.isFeedbackBannerEnabledInAppSettings = visible
-            case.failure(let error):
-                self?.isFeedbackBannerEnabledInAppSettings = false
-                DDLogError("⛔️ Error load feedback visibility for coupon management: \(error)")
-            }
-        }
-        storesManager.dispatch(action)
     }
 
     /// Check whether coupons are enabled for this store.

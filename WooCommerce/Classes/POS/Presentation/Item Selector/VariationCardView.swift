@@ -6,6 +6,10 @@ struct VariationCardView: View {
 
     @ScaledMetric private var scale: CGFloat = 1.0
 
+    private var dimension: CGFloat {
+        min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
+    }
+
     init(variation: POSVariation) {
         self.variation = variation
     }
@@ -13,11 +17,9 @@ struct VariationCardView: View {
     var body: some View {
         HStack(spacing: Constants.cardSpacing) {
             POSItemImageView(imageSource: variation.productImageSource,
-                             imageSize: Constants.productCardSize * scale,
-                             scale: scale)
-            .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
-                   height: Constants.productCardSize * scale)
-            .clipped()
+                             imageSize: dimension,
+                             scale: 1)
+            .frame(width: dimension, height: dimension)
 
             VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 Text(variation.name)
@@ -27,14 +29,14 @@ struct VariationCardView: View {
                     .font(Constants.itemNameFont)
 
                 Text(variation.formattedPrice)
-                    .foregroundStyle(Color.posPrimaryText)
-                    .font(Constants.itemPriceFont)
+                    .foregroundStyle(Color.posSecondaryText)
+                    .font(Constants.itemDetailFont)
             }
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
             .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
             Spacer()
         }
-        .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
+        .frame(maxWidth: .infinity, idealHeight: dimension)
         .background(Color.posSecondaryBackground)
         .posItemCardBorderStyles()
     }
@@ -50,7 +52,8 @@ private extension VariationCardView {
                                  formattedPrice: "$5.00",
                                  price: "5.00",
                                  productID: 134,
-                                 variationID: 256)
+                                 variationID: 256,
+                                 parentProductName: "Coffee")
     VariationCardView(variation: variation)
 }
 
@@ -61,6 +64,7 @@ private extension VariationCardView {
                                  price: "5.00",
                                  productImageSource: "https://pd.w.org/2024/12/986762d0d4d4cf17.82435881-scaled.jpeg",
                                  productID: 134,
-                                 variationID: 256)
+                                 variationID: 256,
+                                 parentProductName: "Coffee")
     VariationCardView(variation: variation)
 }

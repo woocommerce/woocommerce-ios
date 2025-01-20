@@ -34,11 +34,9 @@ struct PointOfSaleCollectCashView: View {
                     HStack(alignment: .top) {
                         Image(systemName: "chevron.backward")
                             .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
-                            .foregroundColor(.primary)
                         VStack(alignment: .leading) {
                             Text(Localization.backNavigationTitle)
                                 .font(.posTitleEmphasized)
-                                .foregroundColor(.posPrimaryText)
                                 .accessibilityAddTraits(.isHeader)
 
                             Text(formattedOrderTotal)

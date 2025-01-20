@@ -755,7 +755,7 @@ platform :ios do
 
   desc 'Builds a prototype build (Enterprise build)'
   lane :build_for_prototype_build do
-    alpha_code_signing
+    update_certs_and_profiles_enterprise
 
     # Get the current build version, and update it if needed
     versions = Xcodeproj::Config.new(File.new(PUBLIC_CONFIG_FILE)).to_hash
@@ -1123,7 +1123,7 @@ platform :ios do
   #
   # @option [Boolean] readonly (default: true) Whether to only fetch existing certificates and profiles, without generating new ones.
   lane :update_certs_and_profiles do |readonly: true|
-    alpha_code_signing(readonly: readonly)
+    update_certs_and_profiles_enterprise(readonly: readonly)
     update_certs_and_profiles_app_store(readonly: readonly)
   end
 
@@ -1131,7 +1131,7 @@ platform :ios do
   # Optionally, it can create any new necessary certificate or profile.
   #
   # @option [Boolean] readonly (default: true) Whether to only fetch existing certificates and profiles, without generating new ones.
-  private_lane :alpha_code_signing do |readonly: true|
+  private_lane :update_certs_and_profiles_enterprise do |readonly: true|
     if readonly
       # In readonly mode, we can use the API key
       api_key_path = ASC_KEY_PATH

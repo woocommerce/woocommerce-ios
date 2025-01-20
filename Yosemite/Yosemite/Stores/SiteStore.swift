@@ -225,3 +225,70 @@ public enum SiteLaunchError: Error, Equatable {
         self = .alreadyLaunched
     }
 }
+
+/// SiteLaunch errors strings used in `StoreOnboardingLaunchStoreView`
+///
+public extension SiteLaunchError {
+    var title: String {
+        switch self {
+        case .alreadyLaunched:
+            return NSLocalizedString(
+                "Could not launch your store",
+                comment: "Title of the alert when the site cannot be launched from store onboarding > launch store screen."
+            )
+        case .unexpected:
+            return NSLocalizedString(
+                "Unexpected error",
+                comment: "Title of the alert when the site cannot be launched from store onboarding > launch store screen."
+            )
+        }
+    }
+
+    var message: String {
+        switch self {
+        case .alreadyLaunched:
+            return NSLocalizedString(
+                "We found that the store has already launched.",
+                comment: "Message of the alert when the site cannot be launched from store onboarding > launch store screen."
+            )
+        case .unexpected:
+            return NSLocalizedString(
+                "Oops, some unexpected errors happened.",
+                comment: "Message of the alert when the site cannot be launched from store onboarding > launch store screen."
+            )
+        }
+    }
+
+    var dismissTitle: String {
+        switch self {
+        case .alreadyLaunched:
+            return NSLocalizedString("OK",
+                comment: "Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen."
+            )
+        case .unexpected:
+            return NSLocalizedString(
+                "Cancel",
+                comment: "Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen."
+            )
+        }
+    }
+
+    var retryTitle: String? {
+        switch self {
+        case .alreadyLaunched:
+            return nil
+        case .unexpected:
+            return NSLocalizedString(
+                "Try again",
+                comment: "Title of the try again action when the site cannot be launched from store onboarding > launch store screen."
+            )
+        }
+    }
+}
+
+/// Conformance to support listing in SwiftUI
+extension SiteLaunchError: Identifiable {
+    public var id: String {
+        title
+    }
+}

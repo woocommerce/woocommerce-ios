@@ -55,6 +55,14 @@ extension Color {
         )
     }
 
+    // An ugly duckling; intended for use for borders where the bordered view has
+    // `.posSecondaryBackground` in light mode, even though it's on another `.posSecondaryBackground` view. Does not adapt
+    static var posCartItemOutline: Color {
+        Color(
+            UIColor(red: 220.0/255.0, green: 220.0/255.0, blue: 222.0/255.0, alpha: 1.0)
+        )
+    }
+
     // MARK: - Text
 
     static var posPrimaryText: Color {

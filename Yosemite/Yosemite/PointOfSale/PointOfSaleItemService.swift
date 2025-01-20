@@ -70,6 +70,8 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                                           parentProductID: parentProduct.productID,
                                           pageNumber: pageNumber)
         let variations = pagedVariations.items
+            // Remove this when WC version 9.7 has significant adoption in POS stores.
+            .filter { !$0.downloadable }
         return .init(
             items: variations.compactMap({ variation in
                 let variationName = ProductVariationFormatter().generateNameWithAttributeNames(

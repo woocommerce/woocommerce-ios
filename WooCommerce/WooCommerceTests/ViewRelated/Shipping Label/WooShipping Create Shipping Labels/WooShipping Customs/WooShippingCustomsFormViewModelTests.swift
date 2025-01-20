@@ -150,4 +150,67 @@ class WooShippingCustomsFormViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.isValidITN())
     }
+
+    func test_internationalTransactionNumberIsRequired_when_item_view_models_does_not_require_internationalTransactionNumber_returns_false() {
+        // Given
+        let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
+
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { _ in })
+
+        viewModel.itemsViewModels.first?.internationalTransactionNumberIsRequired = false
+
+        XCTAssertFalse(viewModel.internationalTransactionNumberIsRequired)
+    }
+
+    func test_requiredInformationIsEntered_when_one_item_view_model_requiredInformationIsEntered_is_false_then_returns_false() {
+        // Given
+        let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
+
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { _ in })
+
+        viewModel.itemsViewModels.first?.requiredInformationIsEntered = false
+
+        XCTAssertFalse(viewModel.requiredInformationIsEntered)
+    }
+
+    func test_requiredInformationIsEntered_when_one_item_view_model_requiredInformationIsEntered_is_true_but_requires_itn_then_returns_false() {
+        // Given
+        let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
+
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { _ in })
+
+        viewModel.itemsViewModels.first?.requiredInformationIsEntered = true
+        viewModel.itemsViewModels.first?.internationalTransactionNumberIsRequired = true
+        viewModel.internationalTransactionNumber = ""
+
+        XCTAssertFalse(viewModel.requiredInformationIsEntered)
+    }
+
+    func test_requiredInformationIsEntered_when_itn_is_required_but_invalid_then_returns_false() {
+        // Given
+        let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
+
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { _ in })
+
+        viewModel.itemsViewModels.first?.requiredInformationIsEntered = true
+        viewModel.itemsViewModels.first?.internationalTransactionNumberIsRequired = true
+        viewModel.internationalTransactionNumber = "1234"
+
+        XCTAssertFalse(viewModel.requiredInformationIsEntered)
+    }
+
+    func test_requiredInformationIsEntered_when_itn_is_required_and_valid_then_returns_true() {
+        // Given
+        let orderItems = [MockOrderItem.sampleItem()]
+
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { _ in })
+
+        debugPrint("viewModel.itemsViewModels", viewModel.itemsViewModels)
+
+        viewModel.internationalTransactionNumber = "NOEEI 30.37(a)"
+        viewModel.itemsViewModels.first?.requiredInformationIsEntered = true
+        viewModel.itemsViewModels.first?.internationalTransactionNumberIsRequired = true
+
+        XCTAssertTrue(viewModel.requiredInformationIsEntered)
+    }
 }

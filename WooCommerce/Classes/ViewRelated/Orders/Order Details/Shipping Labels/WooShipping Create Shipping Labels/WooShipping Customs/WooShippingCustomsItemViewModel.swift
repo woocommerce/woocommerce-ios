@@ -53,6 +53,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
     }
 
     @Published var requiredInformationIsEntered: Bool = false
+    @Published var internationalTransactionNumberIsRequired: Bool = false
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -71,6 +72,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
 
         fetchCountries()
         combineRequiredInformationIsEntered()
+        combineInternationalTransactionNumberIsRequired()
     }
 }
 
@@ -94,6 +96,19 @@ extension WooShippingCustomsItemViewModel {
         Publishers.CombineLatest3($description, $valuePerUnit, $weightPerUnit)
             .sink { [weak self] description, valuePerUnit, weightPerUnit in
                 self?.requiredInformationIsEntered = description.isNotEmpty && valuePerUnit.isNotEmpty && weightPerUnit.isNotEmpty
+            }
+            .store(in: &cancellables)
+    }
+
+    func combineInternationalTransactionNumberIsRequired() {
+        Publishers.CombineLatest($valuePerUnit, $hsTariffNumber)
+            .sink { [weak self] valuePerUnit, hsTariffNumber in
+                guard let self = self else { return }
+
+                self.internationalTransactionNumberIsRequired = self.currencySymbol == "$" &&
+                (Double(valuePerUnit) ?? 0) > 2500 &&
+                hsTariffNumber.isNotEmpty &&
+                isValidTariffNumber
             }
             .store(in: &cancellables)
     }

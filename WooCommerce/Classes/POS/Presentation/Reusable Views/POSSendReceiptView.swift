@@ -6,6 +6,7 @@ struct POSSendReceiptView: View {
     @State private var textFieldInput: String = ""
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
+    @FocusState private var isTextFieldFocused: Bool
 
     @Binding private(set) var isShowingSendReceiptView: Bool
 
@@ -19,6 +20,7 @@ struct POSSendReceiptView: View {
                 Button(action: {
                     withAnimation {
                         isShowingSendReceiptView = false
+                        isTextFieldFocused = false
                     }
                 }, label: {
                     HStack {
@@ -41,6 +43,7 @@ struct POSSendReceiptView: View {
                 .multilineTextAlignment(.center)
                 .font(POSFontStyle.posTitleRegular)
                 .focused()
+                .focused($isTextFieldFocused)
                 .padding()
                 .onSubmit {
                     sendReceipt()
@@ -96,6 +99,7 @@ struct POSSendReceiptView: View {
                 try await posModel.sendReceipt(to: textFieldInput)
                 withAnimation {
                     isShowingSendReceiptView = false
+                    isTextFieldFocused = false
                 }
             } catch {
                 errorMessage = Localization.sendReceiptErrorText

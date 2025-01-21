@@ -29,29 +29,30 @@ struct PointOfSaleCollectCashView: View {
                 Button(action: {
                     Task { @MainActor in
                         await posModel.cancelCashPayment()
+                        isTextFieldFocused = false
                     }
                 }, label: {
                     HStack(alignment: .top) {
                         Image(systemName: "chevron.backward")
                             .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
-                            .foregroundColor(.primary)
                         VStack(alignment: .leading) {
                             Text(Localization.backNavigationTitle)
                                 .font(.posTitleEmphasized)
-                                .foregroundColor(.posPrimaryText)
                                 .accessibilityAddTraits(.isHeader)
 
                             Text(formattedOrderTotal)
                                 .font(.posBodyRegular)
-                                .foregroundColor(.primary)
                         }
                         .padding(.top, -Constants.navigationButtonSpacing)
                     }
+                    .foregroundColor(navigationForegroundColor)
                 })
+                .disabled(isLoading)
                 Spacer()
             }
 
             FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
+                .focused($isTextFieldFocused)
                 .onChange(of: textFieldViewModel.amount) { newValue in
                     textFieldAmountInput = newValue
                     updateChangeDueMessage()
@@ -81,6 +82,7 @@ struct PointOfSaleCollectCashView: View {
                         errorMessage = Localization.failedToCollectCashPayment
                     }
                     isLoading = false
+                    isTextFieldFocused = false
                 }
             }, label: {
                 ZStack {
@@ -155,6 +157,10 @@ private extension PointOfSaleCollectCashView {
         default:
             return .clear
         }
+    }
+
+    private var navigationForegroundColor: Color {
+        isLoading ? .posBackgroundButtonDisabled : .primary
     }
 
     enum Localization {

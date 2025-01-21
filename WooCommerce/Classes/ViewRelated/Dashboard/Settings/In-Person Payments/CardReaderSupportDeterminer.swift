@@ -16,6 +16,7 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
     private let configuration: CardPresentPaymentsConfiguration
     private let siteID: Int64
     private var locationManager: CLLocationManager = CLLocationManager()
+    private static var deviceSupportsLocalMobileReader: [Int64: Bool] = [:]
 
     init(siteID: Int64,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
@@ -59,7 +60,16 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
 
     @MainActor
     func deviceSupportsLocalMobileReader() async -> Bool {
-        await withCheckedContinuation { continuation in
+        /// There may be crashes due to multiple consecutive calls checkDeviceSupport
+        /// Local mobile reader (Tap to Pay) support shouldn't change during the app lifecycle
+        /// Only a change in operating system version can affect it which would require a restart of the app
+        ///
+        if let cachedResult = Self.deviceSupportsLocalMobileReader[siteID] {
+            return cachedResult
+        }
+
+
+        let deviceSupportsLocalMobileReader = await withCheckedContinuation { continuation in
             let action = CardPresentPaymentAction.checkDeviceSupport(
                 siteID: siteID,
                 cardReaderType: .appleBuiltIn,
@@ -69,6 +79,9 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
                 }
             stores.dispatch(action)
         }
+
+        Self.deviceSupportsLocalMobileReader[siteID] = deviceSupportsLocalMobileReader
+        return deviceSupportsLocalMobileReader
     }
 
     @MainActor

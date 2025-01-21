@@ -58,5 +58,8 @@ enum ApplicationPasswordDecodingError: Error {
     case missingWpOrgUsername
 }
 
-// Add equatable conformance to Secret when possible
-extension Secret: Equatable where Self.RawValue: Equatable {}
+
+/// The `@retroactive` attribute is used to apply `Equatable` conformance to `Secret` from the WordPressShared module.
+/// This is necessary due to Swift 6 [SE-0364 proposal](https://github.com/swiftlang/swift-evolution/blob/main/proposals/0364-retroactive-conformance-warning.md).
+//  Add equatable conformance to Secret when possible.
+extension Secret: @retroactive Equatable where Self.RawValue: Equatable {}

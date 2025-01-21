@@ -1,3 +1,1 @@
-
-Cette mise à jour améliore la fiabilité et la clarté de votre expérience WooCommerce ! Profitez d’une meilleure configuration Jetpack, d’une gestion plus fluide des médias et de meilleurs flux de produit et de paiement. Nous avons également optimisé le stockage et corrigé des problèmes d’interface importants pour améliorer les performances. Par ailleurs, l’intégration Appuyer pour payer vous guide désormais facilement !
-
+Cette mise à jour introduit la possibilité de masquer certaines boutiques spécifiques dans le sélecteur de boutique, c’est parfait pour les agences qui gèrent plusieurs sites. Nous avons également amélioré l’extraction d’informations de l’extension pour gérer des types de données inattendues, pour plus de fluidité. Par ailleurs, un bug sur iPad qui provoquait des problèmes de création de commandes avec des montants personnalisés a été résolu. Profitez d’une expérience plus ciblée et fiable !

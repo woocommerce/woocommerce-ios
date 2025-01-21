@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PointOfSaleCollectCashView: View {
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @FocusState private var isTextFieldFocused: Bool
 
@@ -31,23 +32,11 @@ struct PointOfSaleCollectCashView: View {
                         await posModel.cancelCashPayment()
                     }
                 }, label: {
-                    HStack(alignment: .top) {
-                        Image(systemName: "chevron.backward")
-                            .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
-                        VStack(alignment: .leading) {
-                            Text(Localization.backNavigationTitle)
-                                .font(.posTitleEmphasized)
-                                .accessibilityAddTraits(.isHeader)
-
-                            Text(formattedOrderTotal)
-                                .font(.posBodyRegular)
-                        }
-                        .padding(.top, -Constants.navigationButtonSpacing)
-                    }
-                    .foregroundColor(navigationForegroundColor)
+                    navigationHeader
                 })
                 .disabled(isLoading)
                 Spacer()
+                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
             }
 
             FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
@@ -108,7 +97,7 @@ struct PointOfSaleCollectCashView: View {
                 }
                 .frame(maxWidth: .infinity, minHeight: Constants.buttonMinHeight)
             })
-            .padding(Constants.buttonPadding)
+            .padding(dynamicTypeSize.isAccessibilitySize ? 0 : Constants.buttonPadding)
             .frame(maxWidth: .infinity)
             .foregroundColor(colorScheme == .light ? Color.white : Color.black)
             .background(Color.posPrimaryButtonBackground)
@@ -119,7 +108,7 @@ struct PointOfSaleCollectCashView: View {
             Spacer()
         }
         .background(backgroundColor)
-        .padding(.top, Constants.navigationHeaderTopPadding)
+        .padding(.top, dynamicTypeSize.isAccessibilitySize ? 0 : Constants.navigationHeaderTopPadding)
         .padding([.horizontal, .bottom])
         .animation(.easeInOut, value: errorMessage)
         .animation(.easeInOut, value: changeDueMessage)
@@ -130,6 +119,42 @@ struct PointOfSaleCollectCashView: View {
 
     private func markComplete() async throws {
         try await posModel.collectCashPayment()
+    }
+}
+
+private extension PointOfSaleCollectCashView {
+    @ViewBuilder
+    var navigationHeader: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            HStack(alignment: .top) {
+                Image(systemName: "chevron.backward")
+                    .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
+                HStack() {
+                    Text(Localization.backNavigationTitle)
+                        .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
+                        .accessibilityAddTraits(.isHeader)
+                    Spacer()
+                    Text(formattedOrderTotal)
+                        .font(.posBodyRegular, maximumContentSizeCategory: .accessibilityLarge)
+                }
+            }
+            .foregroundColor(navigationForegroundColor)
+        } else {
+            HStack(alignment: .top) {
+                Image(systemName: "chevron.backward")
+                    .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
+                VStack(alignment: .leading) {
+                    Text(Localization.backNavigationTitle)
+                        .font(.posTitleEmphasized)
+                        .accessibilityAddTraits(.isHeader)
+
+                    Text(formattedOrderTotal)
+                        .font(.posBodyRegular)
+                }
+                .padding(.top, -Constants.navigationButtonSpacing)
+            }
+            .foregroundColor(navigationForegroundColor)
+        }
     }
 }
 

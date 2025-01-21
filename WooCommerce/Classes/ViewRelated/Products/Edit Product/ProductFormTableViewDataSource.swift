@@ -293,7 +293,7 @@ private extension ProductFormTableViewDataSource {
                                                attributes: [.font: font,
                                                             .foregroundColor: linkColor,
                                                             .underlineStyle: NSUnderlineStyle.single.rawValue,
-                                                            .underlineColor: linkColor,
+                                                            .underlineColor: UIColor.clear,
                                                             .link: Constants.legalURL])
             attributedString.replaceFirstOccurrence(of: linkContent, with: legalLink)
             return attributedString

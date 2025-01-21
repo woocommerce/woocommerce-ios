@@ -287,7 +287,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                              completion: @escaping (Result<WooShippingOriginAddressUpdate, any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            
+
             let key = ResultKey(siteID: siteID)
             if let result = self.updateOriginAddress[key] {
                 completion(result)

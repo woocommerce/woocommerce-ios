@@ -254,6 +254,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         saveProduct(status: .published)
     }
 
+    @objc func dismissPresentedViewController() {
+        presentedViewController?.dismiss(animated: true, completion: nil)
+    }
+
     func saveProductAsDraft() {
         if viewModel.formType == .add {
             ServiceLocator.analytics.track(.addProductSaveAsDraftTapped, withProperties: ["product_type": product.productType.rawValue])
@@ -1042,7 +1046,12 @@ private extension ProductFormViewController {
         guard let url = URL(string: product.permalink) else {
             return
         }
-        WebviewHelper.launch(url, with: self)
+        
+        let viewModel = DefaultAuthenticatedWebViewModel(title: product.name, initialURL: url)
+        let controller = AuthenticatedWebViewController(viewModel: viewModel)
+        let navigationController = UINavigationController(rootViewController: controller)
+        navigationController.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(dismissPresentedViewController))
+        present(navigationController, animated: true)
     }
 
     func displayShareProduct(from sourceView: UIBarButtonItem, analyticSource: WooAnalyticsEvent.ProductForm.ShareProductSource) {

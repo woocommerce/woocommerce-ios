@@ -7,6 +7,10 @@ struct SimpleProductCardView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
+    private var dimension: CGFloat {
+        min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
+    }
+
     init(product: POSSimpleProduct) {
         self.product = product
     }
@@ -14,18 +18,16 @@ struct SimpleProductCardView: View {
     var body: some View {
         HStack(spacing: Constants.cardSpacing) {
             POSItemImageView(imageSource: product.productImageSource,
-                             imageSize: Constants.productCardSize * scale,
-                             scale: scale)
-            .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
-                   height: Constants.productCardSize * scale)
-            .clipped()
+                             imageSize: dimension,
+                             scale: 1)
+            .frame(width: dimension, height: dimension)
 
             VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 Text(product.name)
                     .lineLimit(2)
                     .foregroundStyle(Color.posPrimaryText)
                     .multilineTextAlignment(.leading)
-                    .font(Constants.itemNameFont)
+                    .font(Constants.itemTitleFont)
 
                 Text(product.formattedPrice)
                     .foregroundStyle(Color.posSecondaryText)
@@ -35,7 +37,7 @@ struct SimpleProductCardView: View {
             .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
             Spacer()
         }
-        .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
+        .frame(maxWidth: .infinity, idealHeight: dimension)
         .background(Color.posSecondaryBackground)
         .posItemCardBorderStyles()
     }

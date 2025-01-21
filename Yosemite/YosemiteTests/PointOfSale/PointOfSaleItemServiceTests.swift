@@ -137,7 +137,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         XCTAssertEqual(network.queryParametersDictionary?["include_types"] as? String, "simple,variable")
     }
 
-    func test_providePointOfSaleVariationItems_returns_variations_when_load_succeeds() async throws {
+    func test_providePointOfSaleVariationItems_returns_variations_with_non_downloadable_filter_when_load_succeeds() async throws {
         // Given
         let itemProvider = PointOfSaleItemService(siteID: siteID,
                                                   currencySettings: currencySettings,
@@ -203,17 +203,18 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         guard case let .variation(firstVariation) = firstVariation else {
             return XCTFail("Variation is expected.")
         }
+        // The first variation in the `product-variations-load-all` response is a downloadble variation and should be filtered out by the service.
         XCTAssertEqual(
             firstVariation.name,
-            "Shape: marble, Flavor: nuts, Darkness: 99%, " +
+            "Shape: brick, Flavor: nuts, Darkness: 99%, " +
             String.localizedStringWithFormat(VariationAttributeViewModel.Localization.anyAttributeFormat, "Size")
         )
-        XCTAssertEqual(firstVariation.formattedPrice, "$12.00")
-        XCTAssertEqual(firstVariation.price, "12")
+        XCTAssertEqual(firstVariation.formattedPrice, "-")
+        XCTAssertEqual(firstVariation.price, "")
         XCTAssertEqual(firstVariation.productImageSource,
                        "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/11/img_0002-1.jpeg?fit=4288%2C2848&ssl=1")
         XCTAssertEqual(firstVariation.productID, parentProductID)
-        XCTAssertEqual(firstVariation.productVariationID, 1275)
+        XCTAssertEqual(firstVariation.productVariationID, 1274)
     }
 
     func test_providePointOfSaleVariationItems_returns_variation_page_details_when_load_succeeds() async throws {

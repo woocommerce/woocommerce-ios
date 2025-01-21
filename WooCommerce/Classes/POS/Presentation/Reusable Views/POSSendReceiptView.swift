@@ -15,29 +15,30 @@ struct POSSendReceiptView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: 20) {
+        VStack(alignment: .center) {
             HStack {
                 Button(action: {
-                    isShowingSendReceiptView = false
-                    isTextFieldFocused = false
+                    withAnimation {
+                        isShowingSendReceiptView = false
+                        isTextFieldFocused = false
+                    }
                 }, label: {
                     HStack {
-                        Image(systemName: "chevron.left")
+                        Image(systemName: "chevron.backward")
                         Text(Localization.emailReceiptNavigationText)
                     }
-                    .font(.title)
-                    .bold()
-                    .foregroundColor(.primary)
+                    .font(.posTitleEmphasized)
+                    .foregroundColor(.posPrimaryText)
+                    .accessibilityAddTraits(.isHeader)
                 })
                 Spacer()
             }
             .buttonStyle(.plain)
-            .padding()
             .disabled(isLoading)
 
             TextField(Localization.textfieldPlaceholder, text: $textFieldInput)
                 .keyboardType(.emailAddress)
-                .textInputAutocapitalization(.none)
+                .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .multilineTextAlignment(.center)
                 .font(POSFontStyle.posTitleRegular)
@@ -79,7 +80,7 @@ struct POSSendReceiptView: View {
 
             Spacer()
         }
-        .padding()
+        .padding([.horizontal, .bottom])
         .animation(.easeInOut, value: errorMessage)
         .onChange(of: textFieldInput) { _ in
             errorMessage = nil
@@ -96,8 +97,10 @@ struct POSSendReceiptView: View {
             do {
                 errorMessage = nil
                 try await posModel.sendReceipt(to: textFieldInput)
-                isShowingSendReceiptView = false
-                isTextFieldFocused = false
+                withAnimation {
+                    isShowingSendReceiptView = false
+                    isTextFieldFocused = false
+                }
             } catch {
                 errorMessage = Localization.sendReceiptErrorText
             }

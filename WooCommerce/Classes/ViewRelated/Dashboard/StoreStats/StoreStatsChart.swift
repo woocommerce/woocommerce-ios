@@ -72,23 +72,24 @@ struct StoreStatsChart: View {
                 Rectangle().fill(.clear).contentShape(Rectangle())
                     .gesture(DragGesture()
                         .onChanged { value in
-                            // Only show selection and don't trigger updating selected index.
                             updateSelectedDate(at: value.location,
                                                proxy: proxy,
                                                geometry: geometry)
+                            // Do not support deselection here to avoid UI glitch
+                            updateSelectedIndex(supportsDeselection: false)
                         }
                         .onEnded { value in
                             updateSelectedDate(at: value.location,
                                                proxy: proxy,
                                                geometry: geometry)
-                            updateSelectedIndex()
+                            updateSelectedIndex(supportsDeselection: true)
                         }
                     )
                     .onTapGesture { location in
                         updateSelectedDate(at: location,
                                            proxy: proxy,
                                            geometry: geometry)
-                        updateSelectedIndex()
+                        updateSelectedIndex(supportsDeselection: true)
                     }
             }
         }
@@ -113,9 +114,9 @@ struct StoreStatsChart: View {
         selectedRevenue = viewModel.intervals.first(where: { $0.date == selectedDate })?.revenue
     }
 
-    private func updateSelectedIndex() {
+    private func updateSelectedIndex(supportsDeselection: Bool) {
         if let index = viewModel.intervals.firstIndex(where: { $0.date == selectedDate }) {
-            if index == selectedIndex {
+            if supportsDeselection, index == selectedIndex {
                 onIntervalSelected(nil)
                 selectedIndex = nil
                 selectedDate = nil

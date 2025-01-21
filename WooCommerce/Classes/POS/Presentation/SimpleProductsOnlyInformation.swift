@@ -2,6 +2,9 @@ import SwiftUI
 
 struct SimpleProductsOnlyInformation: View {
     @Binding var isPresented: Bool
+    private var variableProductsEnabled: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.variableProductsInPointOfSale)
+    }
     let deepLinkNavigator: DeepLinkNavigator?
 
     init(isPresented: Binding<Bool>,
@@ -17,14 +20,14 @@ struct SimpleProductsOnlyInformation: View {
                     .font(.posTitleEmphasized)
 
                 Group {
-                    Text(Localization.simpleProductsOnlyIssueMessage)
-                    Text(Localization.simpleProductsOnlyFutureMessage)
+                    Text(issueMessage)
+                    Text(futureMessage)
                         .padding(.bottom, Constants.textToModalBottomPadding)
                 }
                 .font(.posBodyRegular)
 
                 VStack(spacing: Constants.textSpacing) {
-                    Text(Localization.modalHint)
+                    Text(hintMessage)
                         .font(.posDetailLight)
 
                     Button {
@@ -52,6 +55,18 @@ struct SimpleProductsOnlyInformation: View {
         .padding(Constants.modalContentPadding)
         .frame(width: Constants.modalFrameWidth)
     }
+
+    private var issueMessage: String {
+        variableProductsEnabled ? Localization.variableAndSimpleProductsOnlyIssueMessage : Localization.simpleProductsOnlyIssueMessage
+    }
+
+    private var futureMessage: String {
+        variableProductsEnabled ? Localization.variableAndSimpleProductsOnlyFutureMessage : Localization.simpleProductsOnlyFutureMessage
+    }
+
+    private var hintMessage: String {
+        variableProductsEnabled ? Localization.variableAndSimpleProdustsOnlyHint : Localization.modalHint
+    }
 }
 
 // Constants and Localization enums
@@ -78,15 +93,30 @@ private extension SimpleProductsOnlyInformation {
             value: "Only simple physical products can be used with POS right now.",
             comment: "Message in the simple products information modal in POS"
         )
+        static let variableAndSimpleProductsOnlyIssueMessage = NSLocalizedString(
+            "pos.simpleProductsModal.message.issue.variableAndSimple",
+            value: "Only simple and variable non-downloadable products can be used with POS right now.",
+            comment: "Message in the simple products information modal in POS when variable products are supported"
+        )
         static let simpleProductsOnlyFutureMessage = NSLocalizedString(
             "pos.simpleProductsModal.message.future",
             value: "Other product types, such as variable and virtual, will be available in future updates.",
             comment: "Message in the simple products information modal in POS, explaining future plans"
         )
+        static let variableAndSimpleProductsOnlyFutureMessage = NSLocalizedString(
+            "pos.simpleProductsModal.message.future.variableAndSimple",
+            value: "Other product types will be available in future updates.",
+            comment: "Message in the simple products information modal in POS, explaining future plans when variable products are supported"
+        )
         static let modalHint = NSLocalizedString(
             "pos.simpleProductsModal.hint",
             value: "To take payment for a non-simple product, exit POS and create a new order from the orders tab.",
             comment: "Hint in the simple products information modal in POS"
+        )
+        static let variableAndSimpleProdustsOnlyHint = NSLocalizedString(
+            "pos.simpleProductsModal.hint.variableAndSimple",
+            value: "To take payment for an unsupported product, exit POS and create a new order from the orders tab.",
+            comment: "Hint in the simple products information modal in POS, explaining future plans when variable products are supported"
         )
         static let modalAction = NSLocalizedString(
             "pos.simpleProductsModal.action",

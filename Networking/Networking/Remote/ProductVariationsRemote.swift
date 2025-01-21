@@ -83,6 +83,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                                productID: parentProductID,
                                                variationIDs: [],
                                                downloadable: false,
+                                               status: .published,
                                                context: nil,
                                                pageNumber: pageNumber,
                                                pageSize: POSConstants.variationsPerPage)
@@ -103,6 +104,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                           productID: Int64,
                                           variationIDs: [Int64],
                                           downloadable: Bool? = nil,
+                                          status: ProductStatus? = nil,
                                           context: String?,
                                           pageNumber: Int,
                                           pageSize: Int) -> JetpackRequest {
@@ -113,7 +115,8 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
             ParameterKey.perPage: String(pageSize),
             ParameterKey.downloadable: downloadable.map { String($0) },
             ParameterKey.contextKey: context ?? Default.context,
-            ParameterKey.include: variationIDs.isEmpty ? nil: stringOfVariationIDs
+            ParameterKey.include: variationIDs.isEmpty ? nil: stringOfVariationIDs,
+            ParameterKey.status: status?.rawValue
         ]
             .compactMapValues { $0 }
 
@@ -336,6 +339,7 @@ public extension ProductVariationsRemote {
         static let image: String = "image"
         static let include: String    = "include"
         static let downloadable: String = "downloadable"
+        static let status: String = "status"
     }
 }
 

@@ -40,7 +40,9 @@ struct BlazeEditAdView: View {
 
                         ctaText
 
-                        suggestedByAI
+                        if viewModel.isUsingAISuggestions {
+                            suggestedByAI
+                        }
                     }
                     .padding(insets: Layout.textBlockInsets)
                 }
@@ -402,6 +404,7 @@ struct BlazeEditAdView_Previews: PreviewProvider {
                                                        description: "Description",
                                                        ctaText: "Shop now"),
                                          suggestions: [],
+                                         isUsingAISuggestions: true,
                                          onSave: { _ in })
         )
     }

@@ -94,6 +94,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                                     productID: productID,
                                     adData: adData,
                                     suggestions: suggestions,
+                                    isUsingAISuggestions: isUsingAISuggestions,
                                     onSave: { [weak self] adData in
             guard let self else { return }
             self.image = adData.image

@@ -51,6 +51,20 @@ struct PointOfSaleCollectCashView: View {
             }
 
             FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
+                .onSubmit {
+                    Task { @MainActor in
+                        guard validateAmountOnSubmit() else {
+                            return
+                        }
+                        isLoading = true
+                        do {
+                            try await markComplete()
+                        } catch {
+                            errorMessage = Localization.failedToCollectCashPayment
+                        }
+                        isLoading = false
+                    }
+                }
                 .onChange(of: textFieldViewModel.amount) { newValue in
                     textFieldAmountInput = newValue
                     updateChangeDueMessage()

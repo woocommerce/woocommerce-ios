@@ -1046,11 +1046,12 @@ private extension ProductFormViewController {
         guard let url = URL(string: product.permalink) else {
             return
         }
-        
         let viewModel = DefaultAuthenticatedWebViewModel(title: product.name, initialURL: url)
         let controller = AuthenticatedWebViewController(viewModel: viewModel)
         let navigationController = UINavigationController(rootViewController: controller)
-        navigationController.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(dismissPresentedViewController))
+        controller.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
+                                                                      target: self,
+                                                                      action: #selector(dismissPresentedViewController))
         present(navigationController, animated: true)
     }
 

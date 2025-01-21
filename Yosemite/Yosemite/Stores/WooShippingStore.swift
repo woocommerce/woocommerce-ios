@@ -67,6 +67,8 @@ public final class WooShippingStore: Store {
             printLabel(siteID: siteID, labelIDs: labelIDs, paperSize: paperSize, completion: completion)
         case .loadOriginAddresses(let siteID, let completion):
             loadOriginAddresses(siteID: siteID, completion: completion)
+        case let .validateAddress(siteID, address, completion):
+            validateAddress(siteID: siteID, address: address, completion: completion)
         }
     }
 }
@@ -249,6 +251,12 @@ private extension WooShippingStore {
                 }
             }
         }
+    }
+
+    func validateAddress(siteID: Int64,
+                         address: ShippingLabelAddress,
+                         completion: @escaping (Result<WooShippingAddressValidationSuccess, Error>) -> Void) {
+        remote.addressValidation(siteID: siteID, address: address, completion: completion)
     }
 }
 

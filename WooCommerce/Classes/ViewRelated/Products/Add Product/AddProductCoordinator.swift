@@ -63,15 +63,6 @@ final class AddProductCoordinator: Coordinator {
     private var addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol
     private var addProductWithAIBottomSheetPresenter: BottomSheetPresenter?
 
-    private lazy var productCreationAISurveyPresenter: BottomSheetPresenter = {
-        BottomSheetPresenter(configure: { bottomSheet in
-            var sheet = bottomSheet
-            sheet.prefersEdgeAttachedInCompactHeight = true
-            sheet.prefersGrabberVisible = false
-            sheet.detents = [.medium()]
-        })
-    }()
-
     private let wooSubscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
 
     /// - Parameters:
@@ -238,7 +229,6 @@ private extension AddProductCoordinator {
             self?.onProductCreated(product)
             self?.navigationController.dismiss(animated: true) {
                 self?.presentProduct(product, formType: .edit, isAIContent: true)
-                self?.presentProductCreationAIFeedbackIfApplicable()
             }
         }))
         navigationController.present(UINavigationController(rootViewController: viewController), animated: true)
@@ -282,31 +272,6 @@ private extension AddProductCoordinator {
         } else {
             navigationController.pushViewController(viewController, animated: true)
         }
-    }
-
-    /// Presents AI Product Creation survey
-    ///
-    func presentProductCreationAIFeedbackIfApplicable() {
-        let useCase = ProductCreationAISurveyUseCase()
-
-        guard useCase.shouldShowProductCreationAISurvey() else {
-            return
-        }
-
-        let controller = ProductCreationAISurveyConfirmationHostingController(viewModel: .init(onStart: { [weak self] in
-            guard let self else { return }
-
-            self.productCreationAISurveyPresenter.dismiss(onDismiss: { [weak self] in
-                let survey = SurveyCoordinatingController(survey: .productCreationAI)
-                self?.navigationController.present(survey, animated: true, completion: nil)
-                useCase.didStartProductCreationAISurvey()
-            })
-        }, onSkip: { [weak self] in
-            self?.productCreationAISurveyPresenter.dismiss()
-        }))
-
-        productCreationAISurveyPresenter.present(controller, from: navigationController)
-        useCase.didSuggestProductCreationAISurvey()
     }
 
     /// Presents the celebratory view for the first created product.

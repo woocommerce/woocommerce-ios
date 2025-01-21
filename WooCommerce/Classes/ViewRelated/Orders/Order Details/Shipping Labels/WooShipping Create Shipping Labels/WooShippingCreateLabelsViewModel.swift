@@ -7,12 +7,13 @@ import Combine
 ///
 final class WooShippingCreateLabelsViewModel: ObservableObject {
     private let currencyFormatter: CurrencyFormatter
-    private let order: Order
     private let itemsDataSource: WooShippingItemsDataSource
     private let destinationAddress: ShippingLabelAddress?
     private let stores: StoresManager
     private var subscriptions: Set<AnyCancellable> = []
     private var debounceDuration: Double = 1
+
+    let order: Order
 
     /// The purchased shipping label.
     @Published private var shippingLabel: ShippingLabel?
@@ -25,7 +26,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Whether the custom information is completed or not.
     var customsInformationIsCompleted: Bool {
         // To be synced with real data
-        true
+        false
     }
 
     /// View model for the section displayed after a shipping label is purchased.

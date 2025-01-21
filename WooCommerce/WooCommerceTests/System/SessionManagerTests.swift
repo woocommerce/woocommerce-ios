@@ -277,48 +277,6 @@ final class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.aiPromptTone])
     }
 
-    /// Verifies that `numberOfTimesProductCreationAISurveySuggested` is set to `nil` upon reset
-    ///
-    func test_numberOfTimesProductCreationAISurveySuggested_is_set_to_nil_upon_reset() throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
-
-        // When
-        defaults[UserDefaults.Key.numberOfTimesProductCreationAISurveySuggested] = 2
-
-        // Then
-        XCTAssertEqual(try XCTUnwrap(defaults[UserDefaults.Key.numberOfTimesProductCreationAISurveySuggested] as? Int), 2)
-
-        // When
-        sut.reset()
-
-        // Then
-        XCTAssertNil(defaults[UserDefaults.Key.numberOfTimesProductCreationAISurveySuggested])
-    }
-
-    /// Verifies that `didStartProductCreationAISurvey` is set to `nil` upon reset
-    ///
-    func test_didStartProductCreationAISurvey_is_set_to_nil_upon_reset() throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
-
-        // When
-        defaults[.didStartProductCreationAISurvey] = true
-
-        // Then
-        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.didStartProductCreationAISurvey] as? Bool))
-
-        // When
-        sut.reset()
-
-        // Then
-        XCTAssertNil(defaults[.didStartProductCreationAISurvey])
-    }
-
     /// Verifies that `themesPendingInstall` is set to `nil` upon reset
     ///
     func test_themesPendingInstall_is_set_to_nil_upon_reset() throws {

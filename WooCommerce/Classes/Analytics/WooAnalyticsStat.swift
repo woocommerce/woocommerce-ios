@@ -552,6 +552,13 @@ enum WooAnalyticsStat: String {
     //
     case orderListViewFilterOptionsTapped = "order_list_view_filter_options_tapped"
 
+    // MARK: Filter History
+    //
+    case filterHistoryButtonTapped = "filter_history_button_tapped"
+    case filterHistoryPastFilterApplied = "filter_history_past_filter_applied"
+    case filterHistoryPastFilterRemoved = "filter_history_past_filter_removed"
+    case filterHistoryCleared = "filter_history_cleared"
+
     // MARK: Barcode Scanning events
     //
     case orderCreationProductBarcodeScanningTapped = "order_creation_product_barcode_scanning_tapped"

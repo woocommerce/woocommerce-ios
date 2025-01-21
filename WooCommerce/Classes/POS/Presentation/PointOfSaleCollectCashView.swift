@@ -24,7 +24,7 @@ struct PointOfSaleCollectCashView: View {
                                                                                       allowNegativeNumber: false)
 
     var body: some View {
-        VStack(alignment: .center, spacing: 20) {
+        VStack(alignment: .center) {
             HStack {
                 Button(action: {
                     Task { @MainActor in
@@ -32,26 +32,23 @@ struct PointOfSaleCollectCashView: View {
                     }
                 }, label: {
                     HStack(alignment: .top) {
-                        Image(systemName: "chevron.left")
-                            .font(.posTitleRegular)
-                            .bold()
-                            .foregroundColor(.primary)
-                        VStack(alignment: .leading, spacing: Constants.navigationButtonSpacing) {
+                        Image(systemName: "chevron.backward")
+                            .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
+                        VStack(alignment: .leading) {
                             Text(Localization.backNavigationTitle)
-                                .font(.posTitleRegular)
-                                .bold()
-                                .foregroundColor(.primary)
+                                .font(.posTitleEmphasized)
+                                .accessibilityAddTraits(.isHeader)
 
                             Text(formattedOrderTotal)
                                 .font(.posBodyRegular)
-                                .foregroundColor(.primary)
                         }
                         .padding(.top, -Constants.navigationButtonSpacing)
                     }
+                    .foregroundColor(navigationForegroundColor)
                 })
+                .disabled(isLoading)
                 Spacer()
             }
-            .padding()
 
             FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
                 .onChange(of: textFieldViewModel.amount) { newValue in
@@ -85,7 +82,7 @@ struct PointOfSaleCollectCashView: View {
                     isLoading = false
                 }
             }, label: {
-                HStack(spacing: Constants.buttonSpacing) {
+                ZStack {
                     if isLoading {
                         ProgressView()
                             .progressViewStyle(CircularProgressViewStyle())
@@ -95,7 +92,7 @@ struct PointOfSaleCollectCashView: View {
                             .font(Constants.buttonFont)
                     }
                 }
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: .infinity, minHeight: Constants.buttonMinHeight)
             })
             .padding(Constants.buttonPadding)
             .frame(maxWidth: .infinity)
@@ -108,7 +105,8 @@ struct PointOfSaleCollectCashView: View {
             Spacer()
         }
         .background(backgroundColor)
-        .padding()
+        .padding(.top, Constants.navigationHeaderTopPadding)
+        .padding([.horizontal, .bottom])
         .animation(.easeInOut, value: errorMessage)
         .animation(.easeInOut, value: changeDueMessage)
         .onChange(of: textFieldAmountInput) { _ in
@@ -142,7 +140,9 @@ private extension PointOfSaleCollectCashView {
     enum Constants {
         static let buttonSpacing: CGFloat = 12
         static let buttonPadding: CGFloat = 32
-        static let navigationButtonSpacing: CGFloat = 4
+        static let buttonMinHeight: CGFloat = 32
+        static let navigationButtonSpacing: CGFloat = 8
+        static let navigationHeaderTopPadding: CGFloat = 8
         static let buttonFont: POSFontStyle = .posBodyEmphasized
         static let buttonCornerRadius: CGFloat = 8
     }
@@ -154,6 +154,10 @@ private extension PointOfSaleCollectCashView {
         default:
             return .clear
         }
+    }
+
+    private var navigationForegroundColor: Color {
+        isLoading ? .posBackgroundButtonDisabled : .primary
     }
 
     enum Localization {

@@ -25,7 +25,7 @@ struct PointOfSaleCollectCashView: View {
                                                                                       allowNegativeNumber: false)
 
     var body: some View {
-        VStack(alignment: .center) {
+        VStack(alignment: .center, spacing: dynamicTypeSize.isAccessibilitySize ? 0 : 8) {
             HStack {
                 Button(action: {
                     Task { @MainActor in
@@ -40,6 +40,7 @@ struct PointOfSaleCollectCashView: View {
             }
 
             FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
+                .scaleEffect(dynamicTypeSize.isAccessibilitySize ? 0.7 : 1.0)
                 .onSubmit {
                     Task { @MainActor in
                         guard validateAmountOnSubmit() else {

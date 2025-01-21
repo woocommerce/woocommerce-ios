@@ -138,6 +138,9 @@ private extension LoginOnboardingViewController {
         let button = UIButton(frame: .zero)
         button.accessibilityIdentifier = "Login Onboarding Skip Button"
         button.applyLinkButtonStyle()
+        button.titleLabel?.applyHeadlineStyle()
+        button.setTitleColor(.init(light: .black, dark: .white), for: .normal)
+        button.setTitleColor(.init(light: .gray(.shade80), dark: .gray(.shade20)), for: .highlighted)
         button.setTitle(Localization.skipButtonTitle, for: .normal)
         button.on(.touchUpInside) { [weak self] _ in
             self?.onDismiss(.skip)

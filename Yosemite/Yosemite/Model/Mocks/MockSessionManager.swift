@@ -43,7 +43,7 @@ public struct MockSessionManager: SessionManagerProtocol {
         // Do nothing
     }
 
-    public func deleteApplicationPassword() {
+    public func deleteApplicationPassword(using credentials: Credentials?) {
         // Do nothing
     }
 }

@@ -99,7 +99,7 @@ extension Color {
         Color(
             UIColor(
                 light: UIColor(red: 8.0/255.0, green: 251.0/255.0, blue: 135.0/255.0, alpha: 1.0),
-                dark: UIColor(red: 8.0/255.0, green: 251.0/255.0, blue: 135.0/255.0, alpha: 1.0)
+                dark: UIColor(red: 2.0/255.0, green: 140.0/255.0, blue: 89.0/255.0, alpha: 1.0)
             )
         )
     }

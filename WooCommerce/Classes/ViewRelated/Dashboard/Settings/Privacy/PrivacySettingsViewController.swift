@@ -273,7 +273,7 @@ private extension PrivacySettingsViewController {
         textView.delegate = self
 
         var linkTextAttributes = textView.linkTextAttributes ?? [:]
-        linkTextAttributes[.underlineColor] = UIColor.primary
+        linkTextAttributes[.underlineColor] = UIColor.clear
         linkTextAttributes[.foregroundColor] = UIColor.primary
         textView.linkTextAttributes = linkTextAttributes
 

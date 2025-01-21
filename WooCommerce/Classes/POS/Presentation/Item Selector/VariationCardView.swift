@@ -26,7 +26,7 @@ struct VariationCardView: View {
                     .lineLimit(2)
                     .foregroundStyle(Color.posPrimaryText)
                     .multilineTextAlignment(.leading)
-                    .font(Constants.itemNameFont)
+                    .font(Constants.itemTitleFont)
 
                 Text(variation.formattedPrice)
                     .foregroundStyle(Color.posSecondaryText)

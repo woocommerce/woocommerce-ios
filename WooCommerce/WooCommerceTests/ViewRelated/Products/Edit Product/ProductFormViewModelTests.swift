@@ -56,7 +56,7 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertFalse(canViewProductInStore)
     }
 
-    func test_edit_product_form_with_non_published_status_cannot_view_product_in_store() {
+    func test_edit_product_form_with_non_published_status_can_view_product_in_store() {
         // Arrange
         let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.pending.rawValue)
         let viewModel = createViewModel(product: product, formType: .edit)
@@ -65,7 +65,7 @@ final class ProductFormViewModelTests: XCTestCase {
         let canViewProductInStore = viewModel.canViewProductInStore()
 
         // Assert
-        XCTAssertFalse(canViewProductInStore)
+        XCTAssertTrue(canViewProductInStore)
     }
 
     func test_add_product_form_with_non_published_status_cannot_view_product_in_store() {

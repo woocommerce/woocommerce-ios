@@ -46,6 +46,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // When
@@ -69,6 +70,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
         // When
         sut.tagline = sampleString(length: 1)
@@ -84,6 +86,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
         // When
         sut.tagline = sampleString(length: 31)
@@ -99,6 +102,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
         // When
         sut.tagline = sampleString(length: 32)
@@ -114,6 +118,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // When
@@ -129,6 +134,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // When
@@ -147,6 +153,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
         // When
         sut.description = sampleString(length: 1)
@@ -162,6 +169,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
         // When
         sut.description = sampleString(length: 139)
@@ -177,6 +185,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
         // When
         sut.description = sampleString(length: 140)
@@ -192,6 +201,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // When
@@ -207,6 +217,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // When
@@ -227,6 +238,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
         // When
         sut.ctaText = sampleString(length: 1)
@@ -242,6 +254,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
         // When
         sut.ctaText = sampleString(length: 25)
@@ -257,6 +270,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
         // When
         sut.ctaText = sampleString(length: 26)
@@ -272,6 +286,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // When
@@ -288,6 +303,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // When
@@ -305,6 +321,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // Then
@@ -317,6 +334,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // When
@@ -341,6 +359,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                                                description: "Sample description",
                                                                ctaText: "Sample CTA"),
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // When
@@ -356,6 +375,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // When
@@ -371,6 +391,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // When
@@ -386,6 +407,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // When
@@ -401,6 +423,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // When
@@ -416,6 +439,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // When
@@ -434,6 +458,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                                                description: "Sample description",
                                                                ctaText: "Sample CTA"),
                                        suggestions: [.fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // When
@@ -451,6 +476,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake(), .fake(), .fake()],
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // Then
@@ -463,6 +489,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: sampleAISuggestions,
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // When
@@ -481,6 +508,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: sampleAISuggestions,
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // When
@@ -501,6 +529,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: sampleAISuggestions,
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // Then
@@ -513,6 +542,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: sampleAISuggestions,
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // When
@@ -534,6 +564,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: sampleAISuggestions,
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // When
@@ -549,6 +580,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: sampleAISuggestions,
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         sut.didTapNext()
@@ -570,6 +602,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: sampleAISuggestions,
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // When
@@ -585,6 +618,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: sampleAISuggestions,
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
         sut.didTapNext()
         XCTAssertEqual(sut.tagline, "First suggested tagline")
@@ -602,6 +636,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: sampleAISuggestions,
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
         sut.didTapNext()
         sut.didTapNext()
@@ -626,6 +661,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                                                description: sampleAISuggestions[1].textSnippet,
                                                                ctaText: sampleAISuggestions[1].ctaText),
                                        suggestions: sampleAISuggestions,
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // Then
@@ -642,6 +678,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: sampleAISuggestions,
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // When
@@ -669,6 +706,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        productID: 34,
                                        adData: sampleAdData,
                                        suggestions: sampleAISuggestions,
+                                       isUsingAISuggestions: true,
                                        onSave: { _ in })
 
         // When
@@ -701,6 +739,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                                                description: sampleAISuggestions[1].textSnippet,
                                                                ctaText: sampleAISuggestions[1].ctaText),
                                        suggestions: sampleAISuggestions,
+                                       isUsingAISuggestions: true,
                                        analytics: analytics,
                                        onSave: { _ in })
 
@@ -727,6 +766,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                                                description: sampleAISuggestions[1].textSnippet,
                                                                ctaText: sampleAISuggestions[1].ctaText),
                                        suggestions: sampleAISuggestions,
+                                       isUsingAISuggestions: true,
                                        analytics: analytics,
                                        onSave: { _ in })
 

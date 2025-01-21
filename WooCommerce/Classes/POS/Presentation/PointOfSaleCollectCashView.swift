@@ -29,6 +29,7 @@ struct PointOfSaleCollectCashView: View {
                 Button(action: {
                     Task { @MainActor in
                         await posModel.cancelCashPayment()
+                        isTextFieldFocused = false
                     }
                 }, label: {
                     HStack(alignment: .top) {
@@ -51,6 +52,7 @@ struct PointOfSaleCollectCashView: View {
             }
 
             FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
+                .focused($isTextFieldFocused)
                 .onChange(of: textFieldViewModel.amount) { newValue in
                     textFieldAmountInput = newValue
                     updateChangeDueMessage()
@@ -80,6 +82,7 @@ struct PointOfSaleCollectCashView: View {
                         errorMessage = Localization.failedToCollectCashPayment
                     }
                     isLoading = false
+                    isTextFieldFocused = false
                 }
             }, label: {
                 ZStack {

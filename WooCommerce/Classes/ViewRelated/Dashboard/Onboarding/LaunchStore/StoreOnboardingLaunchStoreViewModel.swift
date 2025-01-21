@@ -37,9 +37,9 @@ final class StoreOnboardingLaunchStoreViewModel: ObservableObject {
                         ]
         )
         let upgradeLink = NSAttributedString(string: linkContent, attributes: [.font: font,
-                                                                                      .foregroundColor: linkColor,
-                                                                                      .underlineStyle: NSUnderlineStyle.single.rawValue,
-                                                                                      .underlineColor: UIColor.textLink])
+                                                                               .foregroundColor: linkColor,
+                                                                               .underlineStyle: NSUnderlineStyle.single.rawValue,
+                                                                               .underlineColor: UIColor.clear])
         attributedString.replaceFirstOccurrence(of: linkContent, with: upgradeLink)
         return attributedString
     }()

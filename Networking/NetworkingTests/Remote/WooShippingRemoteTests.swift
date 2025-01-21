@@ -451,7 +451,28 @@ final class WooShippingRemoteTests: XCTestCase {
         XCTAssertFalse(validationResponse.isTrivialNormalization)
     }
 
-    func test_addressValidation_returns_error_on_failure() {
+    func test_addressValidation_returns_errors_on_failure() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "address/normalize", filename: "wooshipping-address-validation-error")
+
+        // When
+        let result: Result<WooShippingAddressValidationSuccess, Error> = waitFor { promise in
+            remote.addressValidation(siteID: self.sampleSiteID,
+                                     address: ShippingLabelAddress.fake()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let error = try XCTUnwrap(result.failure as? WooShippingAddressValidationError)
+        XCTAssertEqual(error.addressError, "House number is missing")
+        XCTAssertEqual(error.generalError, "Address not found")
+        XCTAssertEqual(error.nameError, "Either Name or Company is required")
+    }
+
+    func test_addressValidation_returns_error_on_network_failure() {
         // Given
         let remote = WooShippingRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "address/normalize", filename: "generic_error")

@@ -77,7 +77,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
     }
 }
 
-extension WooShippingCustomsItemViewModel {
+private extension WooShippingCustomsItemViewModel {
     func fetchCountries() {
         try? resultsController.performFetch()
         let action = DataAction.synchronizeCountries(siteID: siteID) { [weak self] (result) in

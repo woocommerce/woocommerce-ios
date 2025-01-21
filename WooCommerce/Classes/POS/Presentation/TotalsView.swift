@@ -34,7 +34,7 @@ struct TotalsView: View {
                     Spacer()
                         .renderedIf(cardReaderViewLayout.topPadding == nil)
 
-                    VStack(alignment: .center, spacing: Constants.verticalSpacing) {
+                    VStack(alignment: .center, spacing: dynamicTypeSize.isAccessibilitySize ? 0 : Constants.verticalSpacing) {
                         if isShowingCardReaderStatus {
                             paymentView
                                 .font(.title)

@@ -10,17 +10,14 @@ protocol ReceiptEligibilityUseCaseProtocol {
 final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
-    private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
 
     private var siteID: Int64 {
         stores.sessionManager.defaultStoreID ?? 0
     }
 
     init(stores: StoresManager = ServiceLocator.stores,
-         cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.stores = stores
-        self.cardPresentPaymentsOnboarding = cardPresentPaymentsOnboarding
         self.featureFlagService = featureFlagService
     }
 

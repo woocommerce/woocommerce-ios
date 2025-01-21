@@ -212,7 +212,8 @@ extension WooShippingCustomsForm {
                                                            value: "Please enter a valid ITN",
                                                            comment: "Customs validation warning for the ITN field")
         static let itnRequiredWarningMessage = NSLocalizedString("wooShipping.customs.itnValidation",
-                                                           value: "International Transaction Number is required for shipping items valued over $2,500",
+                                                           value: "International Transaction Number is required for shipping items " +
+                                                                 "valued over $2,500 per tariff number",
                                                            comment: "Customs validation warning for the ITN field")
 
     }

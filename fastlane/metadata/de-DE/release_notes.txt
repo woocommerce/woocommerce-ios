@@ -1,3 +1,1 @@
-
-Mit diesem Update wird dein WooCommerce-Erlebnis noch zuverlässiger und unkomplizierter! Wir haben die Jetpack-Einrichtung, die Medienhandhabung sowie die Produkt- und Zahlungs-Workflows verbessert. Außerdem haben wir die Speicherung optimiert und wichtige UI-Probleme behoben, um die Performance zu steigern. Und bei Tap to Pay wirst du jetzt ganz einfach durch das Onboarding geführt.
-
+Durch dieses Update erhältst du die Möglichkeit, bestimmte Shops in der Shop-Auswahl auszublenden – perfekt für Agenturen geeignet, die mehrere Websites verwalten. Außerdem haben wir das Abrufen von Plugin-Informationen verbessert, um unerwartete Datentypen zu verarbeiten. Dies ermöglicht eine reibungslosere Performance. Des Weiteren wurde ein Fehler auf dem iPad behoben, durch den es zu Problemen bei der Erstellung von Bestellungen mit individuellen Beträgen kam. Genieße eine fokussierteres und zuverlässigeres Erlebnis!

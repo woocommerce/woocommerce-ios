@@ -1,1 +1,3 @@
-Pembaruan ini memperkenalkan fitur untuk menyembunyikan toko tertentu dari pemilih situs, yang sangat berguna bagi agensi yang mengelola banyak situs. Proses pengambilan info plugin turut kami perbaiki guna menangani jenis data tak terduga, sehingga memastikan performa yang lebih baik. Selain itu, bug pada iPad yang menyebabkan masalah pembuatan pesanan dengan jumlah kustom telah teratasi. Nikmati pengalaman yang lebih fokus dan andal!
+
+Dengan pembaruan ini, pengalaman Anda dalam menggunakan WooCommerce menjadi lebih andal dan jelas! Nikmati pengaturan Jetpack yang lebih baik, penanganan media yang lebih lancar, dan alur kerja produk serta pembayaran yang lebih efisien. Penyimpanan juga telah ditingkatkan dan masalah UI utama diatasi guna memaksimalkan performa. Selain itu, panduan penyiapan Ketuk untuk Bayar kini lebih mudah diikuti!
+

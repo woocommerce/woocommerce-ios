@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-01-14 09:54:09+0000 */
+/* Translation-Revision-Date: 2024-12-27 09:54:07+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -804,7 +804,8 @@ which should be translated separately and considered part of this sentence. */
    Title when there is no filter set. */
 "Any" = "모두";
 
-/* Product variation attribute description where the attribute is set to any value. */
+/* Format of a product variation attribute description where the attribute is set to any value.
+   Product variation attribute description where the attribute is set to any value. */
 "Any %1$@" = "모든 %1$@";
 
 /* My Store > Settings > App (Application) settings section title */
@@ -3488,6 +3489,9 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "재고 있음";
+
+/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
+"In the United Kingdom, cards may only be used with Tap to Pay for transactions up to %1$@." = "영국의 경우 카드로 최대 %1$@까지의 거래에만 Tap to Pay를 사용 가능할 수 있습니다.";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "사이트 관리자의 연결 > 계정 연결 아래 Jetpack 대시보드에서 워드프레스닷컴에 연결하는 데 사용한 이메일을 찾을 수 있습니다.";
@@ -7600,6 +7604,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "대상";
 
+/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
+"To accept payments above this limit, consider purchasing a card reader." = "이 한도를 초과하는 결제를 받으려면 카드 리더 구매를 고려하세요.";
+
 /* Description text for the product discount row informational tooltip */
 "To add a Product Discount, please remove all Coupons from your order" = "제품 할인을 추가하려면 주문에서 쿠폰을 모두 제거하세요.";
 
@@ -10517,17 +10524,11 @@ which should be translated separately and considered part of this sentence. */
 /* Header of the Current Store section of the the Edit Store List view */
 "editStoreListView.currentStoreHeader" = "현재 스토어";
 
-/* Error message when updating notification settings fails when saving the store list for the store picker */
-"editStoreListView.errorUpdatingNotificationSettings" = "알림 설정을 업데이트할 때 오류가 발생했습니다. 다시 시도하세요.";
-
 /* Footer of the Other Stores section on the Edit Store List view */
 "editStoreListView.otherStoresFooter" = "선택되지 않은 스토어는 스토어 선택기에서 제외됩니다.";
 
 /* Header of the Other Stores section on the Edit Store List view */
 "editStoreListView.otherStoresHeader" = "기타 스토어";
-
-/* Button to retry saving changes in the Edit Store List view */
-"editStoreListView.retryButton" = "다시 시도";
 
 /* Button to save changes in the Edit Store List view */
 "editStoreListView.saveButton" = "저장";
@@ -10604,9 +10605,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the filter used to show only favorite products. */
 "favoriteProductsFilter.favoriteProducts" = "즐겨 찾는 상품";
-
-/* Accessibility hint for the filter history button on the filter list screen */
-"filterListViewController.historyBarButtonItem.accessibilityHint" = "필터 기록";
 
 /* Row title for filtering orders by customer. */
 "filterOrderListViewModel.OrderListFilter.rowCustomer" = "고객";
@@ -11718,15 +11716,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "이 주문은 실패했을 수 있습니다.";
 
-/* Subtitle for the cash payment view navigation back buttonReads as 'Total: $1.23' */
-"pointOfSale.cashview.back.navigation.subtitle" = "합계: %1$@";
-
-/* Title for the cash payment view navigation back button */
-"pointOfSale.cashview.back.navigation.title" = "현금 결제";
-
-/* Button to mark a cash payment as completed */
-"pointOfSale.cashview.button.markpaymentcompleted.title" = "결제 완료로 표시";
-
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "기다려 주세요.";
 
@@ -11778,9 +11767,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.done" = "완료";
 
-/* Title for the payment method used when collecting cash payment in Point of Sale. */
-"pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "대면 결제";
-
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "상품을 눌러 \n 장바구니에 추가";
 
@@ -11792,9 +11778,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "지우기";
-
-/* Back button title in the child item list screen. */
-"pos.childItemList.back" = "뒤로";
 
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "인터넷에 연결되지 않음";
@@ -11808,6 +11791,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "판매 지점 모드를 종료할까요?";
 
+/* Title at the top of the Point of Sale product selector screen. */
+"pos.headerTitleView.productSelectorTitle" = "상품";
+
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadButtonTitle" = "다시 시도";
 
@@ -11816,9 +11802,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadTitle" = "상품 로드 오류";
-
-/* Title at the top of the Point of Sale item list full screen. */
-"pos.itemListFullscreen.title" = "상품";
 
 /* Accessibility label for button to dismiss the product selector header banner. The banner explains current POS limitations. Tapping the button prevents it being shown again. */
 "pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel" = "해제";
@@ -11834,12 +11817,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title" = "단순 상품만 표시";
-
-/* Title at the top of the Point of Sale product selector screen. */
-"pos.itemlistview.title" = "상품";
-
-/* Text indicating that there are options available for a parent product */
-"pos.parentProductCard.optionsAvailable" = "사용 가능한 옵션";
 
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "단순 상품을 추가하려면 POS를 종료하고 상품으로 이동하세요.";
@@ -11873,9 +11850,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title for the receipt button */
 "pos.totalsView.button.sendReceipt" = "이메일로 영수증 보내기";
-
-/* Title for the cash payment button title */
-"pos.totalsView.cash.button.title" = "현금 결제";
 
 /* Text for the banner requiring specific WooCommerce version. */
 "pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "우커머스를 버전 9.5.0으로 업데이트하세요";
@@ -12316,27 +12290,6 @@ which should be translated separately and considered part of this sentence. */
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
 "share details" = "상세 정보 공유";
 
-/* Body for the custom items description educational dialog */
-"shipping.customs.descriptionInfoDialogBody" = "EU(유럽연합) 세관 규칙을 따르는 국가로 배송할 때는 아이템마다 명확하고 구체적인 설명을 제공해야 합니다. 예를 들어, 의류를 발송하는 경우 설명이 수락될 수 있으려면 의류 유형을 표시해야 합니다(예: 남성용 셔츠, 여아용 조끼, 남아용 재킷). 그렇게 하지 않으면 배송이 세관에서 지체되거나 차단될 수 있습니다.";
-
-/* Button title for the done button in the customs description educational dialog */
-"shipping.customs.descriptionInfoDialogDone" = "완료";
-
-/* Button title for the learn more action in the custom descriptions info dialog */
-"shipping.customs.descriptionInfoDialogLearnMore" = "더 알아보기";
-
-/* Title for the custom description educational dialog */
-"shipping.customs.descriptionInfoDialogTitle" = "설명";
-
-/* Body for the custom items origin country educational dialog */
-"shipping.customs.originCountryInfoDialogBody" = "상품이 제조 또는 조립된 국가입니다.";
-
-/* Button title for the done button in the customs description educational dialog */
-"shipping.customs.originCountryInfoDialogDoneButton" = "완료";
-
-/* Title for the custom origin country educational dialog */
-"shipping.customs.originCountryInfoDialogTitle" = "원산지 국가";
-
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "취소";
 
@@ -12423,9 +12376,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "기존 스토어 연결";
-
-/* Store Picker's Section Title: Displayed whenever there are multiple Stores. The content inside the bracket indicates the number of stores hidden from the store picker. The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)' */
-"storePickerViewModel.pickStoreWithHiddenStoreCount" = "연결할 스토어 선택(%1$d개 숨김)";
 
 /* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
 "storeStatsChart.xSelectedValue" = "선택한 날짜";
@@ -12574,12 +12524,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is successful, we show a Notice to alert the user – this is the title of the notice. */
 "tap.to.pay.try.payment.refundNotice.success.title" = "Tap To Pay 테스트 결제";
-
-/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
-"tapToPay.aboutTapToPay.contactlessLimit.gb" = "영국에서는 거래에 대한 카드 결제를 %1$@까지 Tap to Pay로 수락할 수 있습니다. %1$@ 초과 결제의 경우 일부 카드는 고객이 스마트폰에 PIN을 직접 입력할 수 있지만, 그 외의 카드는 결제를 완료하려면 카드 리더가 필요합니다.";
-
-/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
-"tapToPay.aboutTapToPay.overLimitSuggestion" = "이 한도를 초과하는 모든 결제를 수락하려면 카드 리더 구매를 고려하세요.";
 
 /* Title of the button to dismiss the Tap to Pay awareness screen */
 "tapToPay.awarenessMoment.closeButton" = "닫기";
@@ -12866,9 +12810,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "주";
 
-/* Title for the Add Package screen Add Package Details button */
-"wooShipping.createLabel.addPackage.addPackageDetails" = "패키지 상세 정보 추가";
-
 /* Info label for selected box as a package type */
 "wooShipping.createLabel.addPackage.box" = "상자";
 
@@ -12914,9 +12855,6 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for saved package option */
 "wooShipping.createLabel.addPackage.saved" = "저장됨";
 
-/* Title for the Add Package screen Select Package button */
-"wooShipping.createLabel.addPackage.selectPackage" = "패키지 선택";
-
 /* Title for the Add Package screen */
 "wooShipping.createLabel.addPackage.title" = "패키지 추가";
 
@@ -12928,15 +12866,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button to dismiss the shipping label screen */
 "wooShipping.createLabel.closeButton" = "닫기";
-
-/* Title for the Edit Package screen Done button */
-"wooShipping.createLabel.editPackage.done" = "완료";
-
-/* Title for the Edit Package screen */
-"wooShipping.createLabel.editPackage.title" = "패키지 편집";
-
-/* Title for the Edit Package screen Use Selected Package button */
-"wooShipping.createLabel.editPackage.useSelectedPackage" = "선택한 패키지 사용";
 
 /* Label for section in shipping label creation to declare when a package contains hazardous materials. */
 "wooShipping.createLabel.hazmatLabel" = "위험물 또는 유해물질을 배송하시나요?";
@@ -12997,9 +12926,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
-
-/* Button for dismissing the keyboard */
-"wooShipping.createLabels.package.done" = "완료";
 
 /* Heading for the package section in the shipping label creation screen. */
 "wooShipping.createLabels.package.title" = "패키지";
@@ -13078,96 +13004,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to view a shipping label */
 "wooShipping.createLabels.viewLabelTitle" = "배송 레이블 보기";
-
-/* Customs button title when it's disabled and there's still info to add */
-"wooShipping.customs.addMissingInformationButtonTitle" = "누락된 정보 추가";
-
-/* Cancel button in navigation bar to dismiss the screen */
-"wooShipping.customs.cancel" = "취소";
-
-/* Title for the Content Type menu in the Shipping Customs Form */
-"wooShipping.customs.contentType" = "내용물 유형";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.documents" = "문서";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.gift" = "선물";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.merchandise" = "물품";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.other" = "기타...";
-
-/* Info label for shipping content type returned goods */
-"wooShipping.customs.contentType.returnedGoods" = "반품된 상품";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.sample" = "샘플";
-
-/* Title for the Internaction Transaction Number in the Shipping Customs Form */
-"wooShipping.customs.internationalTransactionNumber" = "국제 거래 번호";
-
-/* Explanatory text for the international transaction number in customs */
-"wooShipping.customs.internationalTransactionNumber.infoText" = "ITN에 대한 자세한 내용";
-
-/* Product Details Section title */
-"wooShipping.customs.productDetails" = "상품 상세 정보";
-
-/* Title for the Restriction Type menu in the Shipping Customs Form */
-"wooShipping.customs.restrictionType" = "제한 유형";
-
-/* Info label for shipping restriction type none */
-"wooShipping.customs.restrictionType.none" = "해당 없음";
-
-/* Info label for shipping restriction type other */
-"wooShipping.customs.restrictionType.other" = "기타";
-
-/* Info label for shipping restriction type quarantine */
-"wooShipping.customs.restrictionType.quarantine" = "격리";
-
-/* Info label for shipping restriction type sanitary */
-"wooShipping.customs.restrictionType.sanitary" = "위생\/식물검역 검사";
-
-/* Info label for a toggle to return the package to a sender if necessary toggle */
-"wooShipping.customs.returnToSenderMessage" = "패키지를 배송할 수 없는 경우 보낸 사람에게 반송";
-
-/* Customs button title when it's enabled and there's no info to add */
-"wooShipping.customs.saveCustomsDetails" = "세관 상세 정보 저장";
-
-/* Title for the Customs screen */
-"wooShipping.customs.title" = "세관";
-
-/* Title for the customs items description text field for customs items */
-"wooShipping.customsItems.description" = "설명";
-
-/* Title for the HS Tariff Number text field for customs items */
-"wooShipping.customsItems.hsTariffNumber" = "HS 관세 번호";
-
-/* Information text about the HS Tariff */
-"wooShipping.customsItems.hsTariffNumber.moreInfoText" = "HS 관세에 대한 자세한 내용";
-
-/* Placeholder for the HS Tariff Number text field for customs items */
-"wooShipping.customsItems.hsTariffNumber.placeholder" = "선택 사항";
-
-/* Title for the origin country text field */
-"wooShipping.customsItems.originCountry" = "원산지 국가";
-
-/* Title for the customs items value per unit text field for customs items */
-"wooShipping.customsItems.valuePerUnit" = "개당 가격";
-
-/* Warning text when some required value is missing */
-"wooShipping.customsItems.valueRequired" = "값 필수";
-
-/* Title for the customs items weight per unit text field for customs items */
-"wooShipping.customsItems.weightPerUnit" = "개당 무게";
-
-/* Indicates that the address is the default origin address  on the shipping label creation screen */
-"wooShipping.originAddresses.defaultAddress" = "(기본)";
-
-/* Heading for the list of origin addresses to choose from on the shipping label creation screen */
-"wooShipping.originAddresses.shipFrom" = "출발지";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "우커머스, 내 스토어, 오늘, 이번 주, 이번 달, 이번 해, 주문수, 방문자, 전환, 상위 전환, 판매된 제품";

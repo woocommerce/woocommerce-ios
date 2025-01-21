@@ -1,1 +1,3 @@
-Bu güncelleme, birden fazla siteyi yöneten ajanslar için mükemmel bir özellik olan belirli mağazaları mağaza seçiciden gizleyebilme olanağını sunar. Eklenti bilgisi getirmeyi, beklenmeyen veri türlerini işleyebilmesi için de geliştirerek daha sorunsuz bir performans sağladık. Ayrıca iPad'de özel tutarlarda sipariş oluşturma sorunlarına neden olan bir hata çözüldü. Daha odaklı ve güvenilir bir deneyimin keyfini çıkarın!
+
+Bu güncelleme, WooCommerce deneyiminize gelişmiş güvenilirlik ve netlik sağlar. İyileştirilmiş Jetpack kurulumunun, daha sorunsuz ortam kullanımının ve daha iyi ürün ve ödeme iş akışlarının keyfini çıkarın. Performansı iyileştirmek için depolama optimize edildi ve önemli kullanıcı arayüzü sorunları ele alındı. Ayrıca Tap to Pay hazırlık süreci sizi kolayca yönlendirir!
+

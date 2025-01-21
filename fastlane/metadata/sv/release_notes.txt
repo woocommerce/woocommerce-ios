@@ -1,1 +1,3 @@
-Den här uppdateringen introducerar möjligheten att dölja specifika butiker från butiksväljaren, vilket är perfekt för byråer som hanterar flera webbplatser. Vi har också förbättrat hämtningen av tilläggsinformation för att hantera oväntade datatyper, vilket säkerställer smidigare prestanda. Dessutom har vi åtgärdat en bugg på iPad som orsakade problem vid beställningsskapande med anpassade belopp. Ta del av en mer fokuserad och tillförlitlig upplevelse.
+
+Den här uppdateringen förbättrar tillförlitligheten och tydligheten i din WooCommerce-upplevelse! Dra nytta av förbättrad Jetpack-installation, smidigare mediehantering och bättre arbetsflöden för produkter och betalningar. Vi har även optimerat lagringsutrymmet och åtgärdat viktiga problem med användargränssnittet för att förbättra prestandan. Dessutom kan du nu enkelt få hjälp med vår Tryck för att betala-introduktion!
+

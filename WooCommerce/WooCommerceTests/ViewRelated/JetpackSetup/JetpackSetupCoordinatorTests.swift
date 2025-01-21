@@ -156,8 +156,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
     func test_handleAuthenticationUrl_proceeds_to_authenticate_user_if_jetpack_is_already_connected() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        let siteURL = "https://example.com"
-        let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID, url: siteURL)
+        let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
         let expectedScheme = "scheme"
         let coordinator = JetpackSetupCoordinator(site: testSite, dotcomAuthScheme: expectedScheme, rootViewController: navigationController, stores: stores)
         let url = try XCTUnwrap(URL(string: "scheme://magic-login?token=test"))
@@ -175,18 +174,11 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
             }
         }
 
-        let expectedSite = Site.fake().copy(siteID: 44, url: siteURL)
-        stores.whenReceivingAction(ofType: SiteAction.self) { action in
-            switch action {
-            case let .syncSiteByDomain(domain, completion):
-                XCTAssertEqual(domain, "example.com")
-                completion(.success(expectedSite))
-            default:
-                break
-            }
-        }
+        let expectedSite = Site.fake().copy(siteID: 44, url: "https://example.com")
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
+            case .synchronizeSitesAndReturnSelectedSiteInfo(_, let onCompletion):
+                onCompletion(.success(expectedSite))
             case .synchronizeAccount(let onCompletion):
                 onCompletion(.success(expectedAccount))
             case .synchronizeAccountSettings(_, let onCompletion):

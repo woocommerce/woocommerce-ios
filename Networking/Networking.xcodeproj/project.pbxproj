@@ -1120,8 +1120,6 @@
 		DEDA8DB52B187DE40076BF0F /* WordPressThemeMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DB42B187DE40076BF0F /* WordPressThemeMapper.swift */; };
 		DEDA8DB72B187E770076BF0F /* theme-mine-success.json in Resources */ = {isa = PBXBuildFile; fileRef = DEDA8DB62B187E770076BF0F /* theme-mine-success.json */; };
 		DEDA8DB92B187EC90076BF0F /* WordPressThemeMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DB82B187EC90076BF0F /* WordPressThemeMapperTests.swift */; };
-		DEE55CCC2D3A0551006D0251 /* site.json in Resources */ = {isa = PBXBuildFile; fileRef = DEE55CCB2D3A0551006D0251 /* site.json */; };
-		DEE55CCE2D3A069C006D0251 /* site-error.json in Resources */ = {isa = PBXBuildFile; fileRef = DEE55CCD2D3A069C006D0251 /* site-error.json */; };
 		DEEDA4442975003800F845AB /* settings-general-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEEDA4432975003800F845AB /* settings-general-without-data.json */; };
 		DEEF8E6529C832B500D47411 /* wordpress-site-info-with-auth-url.json in Resources */ = {isa = PBXBuildFile; fileRef = DEEF8E6429C832B500D47411 /* wordpress-site-info-with-auth-url.json */; };
 		DEEF8E6829C858AD00D47411 /* OneTimeApplicationPasswordUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEF8E6729C858AD00D47411 /* OneTimeApplicationPasswordUseCase.swift */; };
@@ -2317,8 +2315,6 @@
 		DEDA8DB42B187DE40076BF0F /* WordPressThemeMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressThemeMapper.swift; sourceTree = "<group>"; };
 		DEDA8DB62B187E770076BF0F /* theme-mine-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "theme-mine-success.json"; sourceTree = "<group>"; };
 		DEDA8DB82B187EC90076BF0F /* WordPressThemeMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressThemeMapperTests.swift; sourceTree = "<group>"; };
-		DEE55CCB2D3A0551006D0251 /* site.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = site.json; sourceTree = "<group>"; };
-		DEE55CCD2D3A069C006D0251 /* site-error.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "site-error.json"; sourceTree = "<group>"; };
 		DEEDA4432975003800F845AB /* settings-general-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "settings-general-without-data.json"; sourceTree = "<group>"; };
 		DEEF8E6429C832B500D47411 /* wordpress-site-info-with-auth-url.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wordpress-site-info-with-auth-url.json"; sourceTree = "<group>"; };
 		DEEF8E6729C858AD00D47411 /* OneTimeApplicationPasswordUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneTimeApplicationPasswordUseCase.swift; sourceTree = "<group>"; };
@@ -3448,8 +3444,6 @@
 				CC0786622678F79500BA9AC1 /* shipping-label-purchase-success.json */,
 				CC0786C6267BB10700BA9AC1 /* shipping-label-status-success.json */,
 				CE606D8A2BE38B04001CB424 /* shipping-methods.json */,
-				DEE55CCB2D3A0551006D0251 /* site.json */,
-				DEE55CCD2D3A069C006D0251 /* site-error.json */,
 				B56C1EB920EA7D2C00D749F9 /* sites.json */,
 				2670C3FD270F4E6A002FE931 /* sites-malformed.json */,
 				7426CA1221AF34A3004E9FFC /* site-api.json */,
@@ -4565,7 +4559,6 @@
 				CEF2DD9D2B56E04F00A3DD0B /* jetpack-settings-invalid-module.json in Resources */,
 				45B79AC62C9355F800DCCB2C /* meta-data-products-and-orders_nested_in_data.json in Resources */,
 				DE9D6BCC270D769C00BA6562 /* shipping-label-address-without-name-validation-success.json in Resources */,
-				DEE55CCC2D3A0551006D0251 /* site.json in Resources */,
 				74A1D263211898F000931DFA /* site-visits-day.json in Resources */,
 				31054710262E2EE400C5C02B /* wcpay-payment-intent-succeeded.json in Resources */,
 				EE9826922B17569400A3F57E /* product-subscription-sync-renewals-day-month-format-int-values.json in Resources */,
@@ -4640,7 +4633,6 @@
 				2683D71024456EE4002A1589 /* categories-extra.json in Resources */,
 				A69FE19D2588D70E0059A96B /* order-with-deleted-refunds.json in Resources */,
 				E18152C228F85E0A0011A0EC /* iap-products.json in Resources */,
-				DEE55CCE2D3A069C006D0251 /* site-error.json in Resources */,
 				02B41A90296BC85800FE3311 /* site-domains.json in Resources */,
 				DE2004702BFB535500660A72 /* product-report.json in Resources */,
 				EE57C13E297FBEE200BC31E7 /* product-tags-created-without-data.json in Resources */,

@@ -26,11 +26,6 @@ public protocol SiteRemoteProtocol {
     /// - Returns: The site that matches the site ID.
     func loadSite(siteID: Int64) async throws -> Site
 
-    /// Loads a site.
-    /// - Parameter domain: Domain of the site to load.
-    /// - Returns: The site that matches the site ID.
-    func loadSite(domain: String) async throws -> Site
-
     /// Update a site title.
     /// - Parameters:
     ///   - siteID: Remote ID of the site to update
@@ -132,16 +127,6 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
 
     public func loadSite(siteID: Int64) async throws -> Site {
         let path = Path.loadSite(siteID: siteID)
-        let parameters = [
-            SiteParameter.Fields.key: SiteParameter.Fields.value,
-            SiteParameter.Options.key: SiteParameter.Options.value
-        ]
-        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
-        return try await enqueue(request)
-    }
-
-    public func loadSite(domain: String) async throws -> Site {
-        let path = Path.loadSite(domain: domain)
         let parameters = [
             SiteParameter.Fields.key: SiteParameter.Fields.value,
             SiteParameter.Options.key: SiteParameter.Options.value
@@ -320,10 +305,6 @@ private extension SiteRemote {
 
         static func loadSite(siteID: Int64) -> String {
             "sites/\(siteID)"
-        }
-
-        static func loadSite(domain: String) -> String {
-            "sites/\(domain)"
         }
 
         static func siteSettings(siteID: Int64) -> String {

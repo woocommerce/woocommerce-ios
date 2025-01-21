@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-01-15 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-12-24 11:54:49+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -804,7 +804,8 @@ which should be translated separately and considered part of this sentence. */
    Title when there is no filter set. */
 "Any" = "Alle";
 
-/* Product variation attribute description where the attribute is set to any value. */
+/* Format of a product variation attribute description where the attribute is set to any value.
+   Product variation attribute description where the attribute is set to any value. */
 "Any %1$@" = "Elke %1$@";
 
 /* My Store > Settings > App (Application) settings section title */
@@ -3482,6 +3483,9 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "Op voorraad";
+
+/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
+"In the United Kingdom, cards may only be used with Tap to Pay for transactions up to %1$@." = "Kaarten kunnen in het Verenigd Koninkrijk alleen gebruikt worden met Tap to Pay voor transacties tot %1$@.";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "In je sitebeheer kan je de e-mail vinden die je gebruikt hebt om verbinding te maken met WordPress.com via het Jetpack-dashboard onder Verbindingen > Accountverbinding";
@@ -7594,6 +7598,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "Aan";
 
+/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
+"To accept payments above this limit, consider purchasing a card reader." = "Overweeg een kaartlezer te kopen om betalingen boven deze limiet te kunnen accepteren.";
+
 /* Description text for the product discount row informational tooltip */
 "To add a Product Discount, please remove all Coupons from your order" = "Verwijder alle Coupons om een Productkorting toe te voegen";
 
@@ -10511,17 +10518,11 @@ which should be translated separately and considered part of this sentence. */
 /* Header of the Current Store section of the the Edit Store List view */
 "editStoreListView.currentStoreHeader" = "Huidige winkel";
 
-/* Error message when updating notification settings fails when saving the store list for the store picker */
-"editStoreListView.errorUpdatingNotificationSettings" = "Er is een fout opgetreden bij het bijwerken van de notificatie-instellingen. Probeer het opnieuw.";
-
 /* Footer of the Other Stores section on the Edit Store List view */
 "editStoreListView.otherStoresFooter" = "Winkels die niet geselecteerd zijn, worden uitgesloten van de winkelkiezer.";
 
 /* Header of the Other Stores section on the Edit Store List view */
 "editStoreListView.otherStoresHeader" = "Andere winkels";
-
-/* Button to retry saving changes in the Edit Store List view */
-"editStoreListView.retryButton" = "Opnieuw proberen";
 
 /* Button to save changes in the Edit Store List view */
 "editStoreListView.saveButton" = "Opslaan";
@@ -10598,9 +10599,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the filter used to show only favorite products. */
 "favoriteProductsFilter.favoriteProducts" = "Favoriete producten";
-
-/* Accessibility hint for the filter history button on the filter list screen */
-"filterListViewController.historyBarButtonItem.accessibilityHint" = "Filtergeschiedenis";
 
 /* Row title for filtering orders by customer. */
 "filterOrderListViewModel.OrderListFilter.rowCustomer" = "Klant";
@@ -11712,15 +11710,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "Deze bestelling is mogelijk mislukt";
 
-/* Subtitle for the cash payment view navigation back buttonReads as 'Total: $1.23' */
-"pointOfSale.cashview.back.navigation.subtitle" = "Totaal: %1$@";
-
-/* Title for the cash payment view navigation back button */
-"pointOfSale.cashview.back.navigation.title" = "Contante betaling";
-
-/* Button to mark a cash payment as completed */
-"pointOfSale.cashview.button.markpaymentcompleted.title" = "Betaling markeren als voltooid";
-
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Een moment geduld";
 
@@ -11772,9 +11761,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.done" = "Klaar";
 
-/* Title for the payment method used when collecting cash payment in Point of Sale. */
-"pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "Fysiek betalen";
-
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Tik op een product om het \n toe te voegen aan de winkelwagen";
 
@@ -11786,9 +11772,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "Wissen";
-
-/* Back button title in the child item list screen. */
-"pos.childItemList.back" = "Terug";
 
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "Geen internetverbinding";
@@ -11802,6 +11785,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Verkooppuntmodus afsluiten?";
 
+/* Title at the top of the Point of Sale product selector screen. */
+"pos.headerTitleView.productSelectorTitle" = "Producten";
+
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadButtonTitle" = "Opnieuw proberen";
 
@@ -11810,9 +11796,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadTitle" = "Fout bij laden van producten";
-
-/* Title at the top of the Point of Sale item list full screen. */
-"pos.itemListFullscreen.title" = "Producten";
 
 /* Accessibility label for button to dismiss the product selector header banner. The banner explains current POS limitations. Tapping the button prevents it being shown again. */
 "pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel" = "Negeren";
@@ -11828,12 +11811,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title" = "Alleen simpele producten weergeven";
-
-/* Title at the top of the Point of Sale product selector screen. */
-"pos.itemlistview.title" = "Producten";
-
-/* Text indicating that there are options available for a parent product */
-"pos.parentProductCard.optionsAvailable" = "Beschikbare opties";
 
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "Verlaat POS en ga naar Producten om er een toe te voegen";
@@ -11867,9 +11844,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title for the receipt button */
 "pos.totalsView.button.sendReceipt" = "Betalingsbewijs e-mailen";
-
-/* Title for the cash payment button title */
-"pos.totalsView.cash.button.title" = "Contante betaling";
 
 /* Text for the banner requiring specific WooCommerce version. */
 "pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "Update WooCommerce naar versie 9.5.0";
@@ -12310,27 +12284,6 @@ which should be translated separately and considered part of this sentence. */
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
 "share details" = "gegevens delen";
 
-/* Body for the custom items description educational dialog */
-"shipping.customs.descriptionInfoDialogBody" = "Bij het verzenden naar landen waarin douanewetgeving van de Europese Unie (EU) geldt, moet je een duidelijke, specifieke beschrijving van elk artikel opgeven. Als je bijvoorbeeld kleding verzendt, moet je in de beschrijving duidelijk aangeven wat voor soort kleding het is (bijv. herenshirt, damesvest, kinderjas). Anders kunnen verzendingen vertraging oplopen of stil komen staan bij de douane.";
-
-/* Button title for the done button in the customs description educational dialog */
-"shipping.customs.descriptionInfoDialogDone" = "Gereed";
-
-/* Button title for the learn more action in the custom descriptions info dialog */
-"shipping.customs.descriptionInfoDialogLearnMore" = "Meer informatie";
-
-/* Title for the custom description educational dialog */
-"shipping.customs.descriptionInfoDialogTitle" = "Omschrijving";
-
-/* Body for the custom items origin country educational dialog */
-"shipping.customs.originCountryInfoDialogBody" = "Land waarin het product is geproduceerd of samengesteld.";
-
-/* Button title for the done button in the customs description educational dialog */
-"shipping.customs.originCountryInfoDialogDoneButton" = "Gereed";
-
-/* Title for the custom origin country educational dialog */
-"shipping.customs.originCountryInfoDialogTitle" = "Land van herkomst";
-
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "Annuleren";
 
@@ -12417,9 +12370,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "Een bestaande winkel koppelen";
-
-/* Store Picker's Section Title: Displayed whenever there are multiple Stores. The content inside the bracket indicates the number of stores hidden from the store picker. The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)' */
-"storePickerViewModel.pickStoreWithHiddenStoreCount" = "Kies een winkel om te verbinden (%1$d verborgen)";
 
 /* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
 "storeStatsChart.xSelectedValue" = "Geselecteerde datum";
@@ -12568,12 +12518,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is successful, we show a Notice to alert the user – this is the title of the notice. */
 "tap.to.pay.try.payment.refundNotice.success.title" = "Tik om te betalen-testbetaling";
-
-/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
-"tapToPay.aboutTapToPay.contactlessLimit.gb" = "In het Verenigd Koninkrijk kan je alleen kaartbetalingen accepteren met Tap to Pay voor transacties tot %1$@. Voor betalingen van meer dan %1$@ kunnen klanten met bepaalde kaarten hun pincode rechtstreeks invoeren op de telefoon, maar voor andere kaarten is een kaartlezer vereist om de betaling te voltooien.";
-
-/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
-"tapToPay.aboutTapToPay.overLimitSuggestion" = "Overweeg een kaartlezer te kopen om alle betalingen boven deze limiet te kunnen accepteren.";
 
 /* Title of the button to dismiss the Tap to Pay awareness screen */
 "tapToPay.awarenessMoment.closeButton" = "Sluiten";
@@ -12860,9 +12804,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "Weken";
 
-/* Title for the Add Package screen Add Package Details button */
-"wooShipping.createLabel.addPackage.addPackageDetails" = "Pakketgegevens toevoegen";
-
 /* Info label for selected box as a package type */
 "wooShipping.createLabel.addPackage.box" = "Doos";
 
@@ -12908,9 +12849,6 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for saved package option */
 "wooShipping.createLabel.addPackage.saved" = "Opgeslagen";
 
-/* Title for the Add Package screen Select Package button */
-"wooShipping.createLabel.addPackage.selectPackage" = "Pakket selecteren";
-
 /* Title for the Add Package screen */
 "wooShipping.createLabel.addPackage.title" = "Pakket toevoegen";
 
@@ -12922,15 +12860,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button to dismiss the shipping label screen */
 "wooShipping.createLabel.closeButton" = "Sluiten";
-
-/* Title for the Edit Package screen Done button */
-"wooShipping.createLabel.editPackage.done" = "Gereed";
-
-/* Title for the Edit Package screen */
-"wooShipping.createLabel.editPackage.title" = "Pakket bewerken";
-
-/* Title for the Edit Package screen Use Selected Package button */
-"wooShipping.createLabel.editPackage.useSelectedPackage" = "Het geselecteerde pakket gebruiken";
 
 /* Label for section in shipping label creation to declare when a package contains hazardous materials. */
 "wooShipping.createLabel.hazmatLabel" = "Ben je van plan om gevaarlijke goederen of gevaarlijke materialen te verzenden?";
@@ -12991,9 +12920,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
-
-/* Button for dismissing the keyboard */
-"wooShipping.createLabels.package.done" = "Gereed";
 
 /* Heading for the package section in the shipping label creation screen. */
 "wooShipping.createLabels.package.title" = "Pakket";
@@ -13072,96 +12998,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to view a shipping label */
 "wooShipping.createLabels.viewLabelTitle" = "Verzendlabel weergeven";
-
-/* Customs button title when it's disabled and there's still info to add */
-"wooShipping.customs.addMissingInformationButtonTitle" = "Ontbrekende informatie toevoegen";
-
-/* Cancel button in navigation bar to dismiss the screen */
-"wooShipping.customs.cancel" = "Annuleren";
-
-/* Title for the Content Type menu in the Shipping Customs Form */
-"wooShipping.customs.contentType" = "Type content";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.documents" = "Documenten";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.gift" = "Cadeau";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.merchandise" = "Merchandise";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.other" = "Overig ...";
-
-/* Info label for shipping content type returned goods */
-"wooShipping.customs.contentType.returnedGoods" = "Geretourneerde goederen";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.sample" = "Voorbeeld";
-
-/* Title for the Internaction Transaction Number in the Shipping Customs Form */
-"wooShipping.customs.internationalTransactionNumber" = "Internationaal transactienummer";
-
-/* Explanatory text for the international transaction number in customs */
-"wooShipping.customs.internationalTransactionNumber.infoText" = "Meer informatie over ITN";
-
-/* Product Details Section title */
-"wooShipping.customs.productDetails" = "Productgegevens";
-
-/* Title for the Restriction Type menu in the Shipping Customs Form */
-"wooShipping.customs.restrictionType" = "Soort beperking";
-
-/* Info label for shipping restriction type none */
-"wooShipping.customs.restrictionType.none" = "Geen";
-
-/* Info label for shipping restriction type other */
-"wooShipping.customs.restrictionType.other" = "Overig";
-
-/* Info label for shipping restriction type quarantine */
-"wooShipping.customs.restrictionType.quarantine" = "Quarantaine";
-
-/* Info label for shipping restriction type sanitary */
-"wooShipping.customs.restrictionType.sanitary" = "Sanitaire\/fytosanitaire inspectie";
-
-/* Info label for a toggle to return the package to a sender if necessary toggle */
-"wooShipping.customs.returnToSenderMessage" = "Terugsturen naar afzender als het pakket niet kan worden geleverd";
-
-/* Customs button title when it's enabled and there's no info to add */
-"wooShipping.customs.saveCustomsDetails" = "Douanegegevens opslaan";
-
-/* Title for the Customs screen */
-"wooShipping.customs.title" = "Douane";
-
-/* Title for the customs items description text field for customs items */
-"wooShipping.customsItems.description" = "Omschrijving";
-
-/* Title for the HS Tariff Number text field for customs items */
-"wooShipping.customsItems.hsTariffNumber" = "HS Tariff-nummer";
-
-/* Information text about the HS Tariff */
-"wooShipping.customsItems.hsTariffNumber.moreInfoText" = "Meer informatie over HS Tariff";
-
-/* Placeholder for the HS Tariff Number text field for customs items */
-"wooShipping.customsItems.hsTariffNumber.placeholder" = "Optioneel";
-
-/* Title for the origin country text field */
-"wooShipping.customsItems.originCountry" = "Land van herkomst";
-
-/* Title for the customs items value per unit text field for customs items */
-"wooShipping.customsItems.valuePerUnit" = "Waarde per eenheid";
-
-/* Warning text when some required value is missing */
-"wooShipping.customsItems.valueRequired" = "Waarde vereist";
-
-/* Title for the customs items weight per unit text field for customs items */
-"wooShipping.customsItems.weightPerUnit" = "Gewicht per eenheid";
-
-/* Indicates that the address is the default origin address  on the shipping label creation screen */
-"wooShipping.originAddresses.defaultAddress" = "(standaard)";
-
-/* Heading for the list of origin addresses to choose from on the shipping label creation screen */
-"wooShipping.originAddresses.shipFrom" = "Verzenden van";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, mijn winkel, vandaag, deze week, deze maand, dit jaar, bestellingen, bezoekers, conversie, topconversie, verkochte artikelen";

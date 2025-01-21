@@ -23,17 +23,11 @@ public enum SiteAction: Action {
     ///
     case enableFreeTrial(siteID: Int64, completion: (Result<Void, Error>) -> Void)
 
-    /// Syncs a site to storage using its ID.
+    /// Syncs a site from WPCOM to storage.
     /// - Parameter:
     ///   - siteID: ID of the site to load.
     ///   - completion: Called when the result of the synced site is available.
     case syncSite(siteID: Int64, completion: (Result<Site, Error>) -> Void)
-
-    /// Syncs a site to storage using its domain.
-    /// - Parameter:
-    ///   - domain: Domain of the site to load.
-    ///   - completion: Called when the result of the synced site is available.
-    case syncSiteByDomain(domain: String, completion: (Result<Site, Error>) -> Void)
 
     /// Updates title for the given site.
     /// - Parameters:

@@ -1,1 +1,3 @@
-Esta atualização traz a capacidade de ocultar determinadas lojas pelo seletor de lojas, o que é ideal para agências que gerenciam vários sites. Também aprimoramos a busca por informações de plugins para lidar com tipos de dados inesperados, garantindo um desempenho melhor. Além disso, resolvemos um bug em iPads que estava causando problemas na criação de pedidos com valores personalizados. Desfrute de uma experiência mais focada e confiável!
+
+Esta atualização aumenta a confiabilidade e a clareza da sua experiência no WooCommerce. Aproveite a configuração refinada do Jetpack, o gerenciamento simplificado de mídia e os fluxos de trabalho aprimorados de produto e pagamentos. Também otimizamos o armazenamento e corrigimos problemas importantes de IU para melhorar o desempenho. Além disso, a integração do Tap to Pay agora tem orientações fáceis de seguir.
+

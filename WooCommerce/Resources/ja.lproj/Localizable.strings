@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-01-14 11:54:04+0000 */
+/* Translation-Revision-Date: 2024-12-26 09:54:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -804,7 +804,8 @@ which should be translated separately and considered part of this sentence. */
    Title when there is no filter set. */
 "Any" = "任意";
 
-/* Product variation attribute description where the attribute is set to any value. */
+/* Format of a product variation attribute description where the attribute is set to any value.
+   Product variation attribute description where the attribute is set to any value. */
 "Any %1$@" = "任意の %1$@";
 
 /* My Store > Settings > App (Application) settings section title */
@@ -3488,6 +3489,9 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "在庫あり";
+
+/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
+"In the United Kingdom, cards may only be used with Tap to Pay for transactions up to %1$@." = "英国では、%1$@までの取引に対し、Tap to Pay でのみカードを使用できます。";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "サイト管理画面で、Jetpack ダッシュボードの「接続」>「アカウント接続」から WordPress.com への接続に使用したメールアドレスを確認できます。";
@@ -7600,6 +7604,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "送信先";
 
+/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
+"To accept payments above this limit, consider purchasing a card reader." = "この制限を超えて支払いを受け入れるには、カードリーダーの購入をご検討ください。";
+
 /* Description text for the product discount row informational tooltip */
 "To add a Product Discount, please remove all Coupons from your order" = "「商品割引」を追加するには、注文からすべてのクーポンを削除してください";
 
@@ -10517,17 +10524,11 @@ which should be translated separately and considered part of this sentence. */
 /* Header of the Current Store section of the the Edit Store List view */
 "editStoreListView.currentStoreHeader" = "現在のストア";
 
-/* Error message when updating notification settings fails when saving the store list for the store picker */
-"editStoreListView.errorUpdatingNotificationSettings" = "通知設定を更新する際にエラーが発生しました。 もう一度お試しください。";
-
 /* Footer of the Other Stores section on the Edit Store List view */
 "editStoreListView.otherStoresFooter" = "選択されていないストアはストア選択画面から除外されます";
 
 /* Header of the Other Stores section on the Edit Store List view */
 "editStoreListView.otherStoresHeader" = "その他のストア";
-
-/* Button to retry saving changes in the Edit Store List view */
-"editStoreListView.retryButton" = "再試行";
 
 /* Button to save changes in the Edit Store List view */
 "editStoreListView.saveButton" = "保存";
@@ -10604,9 +10605,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the filter used to show only favorite products. */
 "favoriteProductsFilter.favoriteProducts" = "お気に入り商品";
-
-/* Accessibility hint for the filter history button on the filter list screen */
-"filterListViewController.historyBarButtonItem.accessibilityHint" = "履歴をフィルター";
 
 /* Row title for filtering orders by customer. */
 "filterOrderListViewModel.OrderListFilter.rowCustomer" = "顧客";
@@ -11718,15 +11716,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "この注文は失敗した可能性があります";
 
-/* Subtitle for the cash payment view navigation back buttonReads as 'Total: $1.23' */
-"pointOfSale.cashview.back.navigation.subtitle" = "合計: %1$@";
-
-/* Title for the cash payment view navigation back button */
-"pointOfSale.cashview.back.navigation.title" = "現金での支払い";
-
-/* Button to mark a cash payment as completed */
-"pointOfSale.cashview.button.markpaymentcompleted.title" = "支払いを完了としてマーク";
-
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "しばらくお待ちください";
 
@@ -11778,9 +11767,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.done" = "完了";
 
-/* Title for the payment method used when collecting cash payment in Point of Sale. */
-"pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "直接支払い";
-
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "商品をタップして\n お買い物カゴに追加します";
 
@@ -11792,9 +11778,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "消去";
-
-/* Back button title in the child item list screen. */
-"pos.childItemList.back" = "戻る";
 
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "インターネットに接続していません";
@@ -11808,6 +11791,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "販売時点管理モードを終了しますか ?";
 
+/* Title at the top of the Point of Sale product selector screen. */
+"pos.headerTitleView.productSelectorTitle" = "商品";
+
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadButtonTitle" = "再試行";
 
@@ -11816,9 +11802,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadTitle" = "商品の読み込み中にエラーが発生しました";
-
-/* Title at the top of the Point of Sale item list full screen. */
-"pos.itemListFullscreen.title" = "商品";
 
 /* Accessibility label for button to dismiss the product selector header banner. The banner explains current POS limitations. Tapping the button prevents it being shown again. */
 "pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel" = "閉じる";
@@ -11834,12 +11817,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title" = "シンプルな商品のみ表示中";
-
-/* Title at the top of the Point of Sale product selector screen. */
-"pos.itemlistview.title" = "商品";
-
-/* Text indicating that there are options available for a parent product */
-"pos.parentProductCard.optionsAvailable" = "オプションを使用可能";
 
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "追加するには、POSを終了して「商品」に移動します";
@@ -11873,9 +11850,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title for the receipt button */
 "pos.totalsView.button.sendReceipt" = "領収書をメールで送信";
-
-/* Title for the cash payment button title */
-"pos.totalsView.cash.button.title" = "現金での支払い";
 
 /* Text for the banner requiring specific WooCommerce version. */
 "pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "WooCommerce をバージョン9.5.0にアップデートしてください";
@@ -12316,27 +12290,6 @@ which should be translated separately and considered part of this sentence. */
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
 "share details" = "詳細情報を共有する";
 
-/* Body for the custom items description educational dialog */
-"shipping.customs.descriptionInfoDialogBody" = "欧州連合 (EU) の関税法規則に従う国に発送する場合、すべての品目について明確で具体的な説明を記載する必要があります。 たとえば衣類を送る場合、どのようなタイプの衣類であるか (例: 男性用シャツ、女児用ベスト、男児用上着など) を明記しなければ認められません。 これを怠ると、配送が税関で遅延または中断されることがあります。";
-
-/* Button title for the done button in the customs description educational dialog */
-"shipping.customs.descriptionInfoDialogDone" = "完了";
-
-/* Button title for the learn more action in the custom descriptions info dialog */
-"shipping.customs.descriptionInfoDialogLearnMore" = "さらに詳しく";
-
-/* Title for the custom description educational dialog */
-"shipping.customs.descriptionInfoDialogTitle" = "説明";
-
-/* Body for the custom items origin country educational dialog */
-"shipping.customs.originCountryInfoDialogBody" = "商品製造国または商品の組み立てが行われた国。";
-
-/* Button title for the done button in the customs description educational dialog */
-"shipping.customs.originCountryInfoDialogDoneButton" = "完了";
-
-/* Title for the custom origin country educational dialog */
-"shipping.customs.originCountryInfoDialogTitle" = "配送元の国";
-
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "キャンセル";
 
@@ -12423,9 +12376,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "既存のストアを連携";
-
-/* Store Picker's Section Title: Displayed whenever there are multiple Stores. The content inside the bracket indicates the number of stores hidden from the store picker. The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)' */
-"storePickerViewModel.pickStoreWithHiddenStoreCount" = "連携するストアを選択 (非表示: %1$d)";
 
 /* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
 "storeStatsChart.xSelectedValue" = "選択した日付";
@@ -12574,12 +12524,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is successful, we show a Notice to alert the user – this is the title of the notice. */
 "tap.to.pay.try.payment.refundNotice.success.title" = "Tap To Pay のお試し支払い";
-
-/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
-"tapToPay.aboutTapToPay.contactlessLimit.gb" = "英国では%1$@までの取引に対し、Tap to Pay でカードを受け付けることができます。 %1$@を超える支払いの場合、一部のカードでは顧客が直接電話で PIN を入力できますが、その他のカードでは支払いを完了するためにカードリーダーが必要です。";
-
-/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
-"tapToPay.aboutTapToPay.overLimitSuggestion" = "この制限を超えてすべての支払いを受け付けるには、カードリーダーの購入をご検討ください。";
 
 /* Title of the button to dismiss the Tap to Pay awareness screen */
 "tapToPay.awarenessMoment.closeButton" = "閉じる";
@@ -12866,9 +12810,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "週";
 
-/* Title for the Add Package screen Add Package Details button */
-"wooShipping.createLabel.addPackage.addPackageDetails" = "荷物の詳細を追加";
-
 /* Info label for selected box as a package type */
 "wooShipping.createLabel.addPackage.box" = "ボックス";
 
@@ -12914,9 +12855,6 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for saved package option */
 "wooShipping.createLabel.addPackage.saved" = "保存済み";
 
-/* Title for the Add Package screen Select Package button */
-"wooShipping.createLabel.addPackage.selectPackage" = "荷物を選択";
-
 /* Title for the Add Package screen */
 "wooShipping.createLabel.addPackage.title" = "パッケージを追加";
 
@@ -12928,15 +12866,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button to dismiss the shipping label screen */
 "wooShipping.createLabel.closeButton" = "閉じる";
-
-/* Title for the Edit Package screen Done button */
-"wooShipping.createLabel.editPackage.done" = "完了";
-
-/* Title for the Edit Package screen */
-"wooShipping.createLabel.editPackage.title" = "荷物を編集";
-
-/* Title for the Edit Package screen Use Selected Package button */
-"wooShipping.createLabel.editPackage.useSelectedPackage" = "選択済みの荷物を使用";
 
 /* Label for section in shipping label creation to declare when a package contains hazardous materials. */
 "wooShipping.createLabel.hazmatLabel" = "危険物または有害物質を発送しようとしていますか ?";
@@ -12997,9 +12926,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
-
-/* Button for dismissing the keyboard */
-"wooShipping.createLabels.package.done" = "完了";
 
 /* Heading for the package section in the shipping label creation screen. */
 "wooShipping.createLabels.package.title" = "荷物";
@@ -13078,96 +13004,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to view a shipping label */
 "wooShipping.createLabels.viewLabelTitle" = "配送ラベルを表示";
-
-/* Customs button title when it's disabled and there's still info to add */
-"wooShipping.customs.addMissingInformationButtonTitle" = "不足情報を追加";
-
-/* Cancel button in navigation bar to dismiss the screen */
-"wooShipping.customs.cancel" = "キャンセル";
-
-/* Title for the Content Type menu in the Shipping Customs Form */
-"wooShipping.customs.contentType" = "中身の種類";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.documents" = "文書";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.gift" = "ギフト";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.merchandise" = "商品";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.other" = "その他...";
-
-/* Info label for shipping content type returned goods */
-"wooShipping.customs.contentType.returnedGoods" = "返品された商品";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.sample" = "サンプル";
-
-/* Title for the Internaction Transaction Number in the Shipping Customs Form */
-"wooShipping.customs.internationalTransactionNumber" = "国際取引番号 (ITN)";
-
-/* Explanatory text for the international transaction number in customs */
-"wooShipping.customs.internationalTransactionNumber.infoText" = "ITN に関する詳細";
-
-/* Product Details Section title */
-"wooShipping.customs.productDetails" = "商品情報";
-
-/* Title for the Restriction Type menu in the Shipping Customs Form */
-"wooShipping.customs.restrictionType" = "制限の種類";
-
-/* Info label for shipping restriction type none */
-"wooShipping.customs.restrictionType.none" = "なし";
-
-/* Info label for shipping restriction type other */
-"wooShipping.customs.restrictionType.other" = "その他";
-
-/* Info label for shipping restriction type quarantine */
-"wooShipping.customs.restrictionType.quarantine" = "検疫";
-
-/* Info label for shipping restriction type sanitary */
-"wooShipping.customs.restrictionType.sanitary" = "検疫 \/ 植物検疫検査";
-
-/* Info label for a toggle to return the package to a sender if necessary toggle */
-"wooShipping.customs.returnToSenderMessage" = "荷物を配達できなかった場合、荷送人に差し戻す";
-
-/* Customs button title when it's enabled and there's no info to add */
-"wooShipping.customs.saveCustomsDetails" = "税関情報を保存";
-
-/* Title for the Customs screen */
-"wooShipping.customs.title" = "税関";
-
-/* Title for the customs items description text field for customs items */
-"wooShipping.customsItems.description" = "説明";
-
-/* Title for the HS Tariff Number text field for customs items */
-"wooShipping.customsItems.hsTariffNumber" = "HS コード番号";
-
-/* Information text about the HS Tariff */
-"wooShipping.customsItems.hsTariffNumber.moreInfoText" = "HS コードに関する詳細";
-
-/* Placeholder for the HS Tariff Number text field for customs items */
-"wooShipping.customsItems.hsTariffNumber.placeholder" = "オプション";
-
-/* Title for the origin country text field */
-"wooShipping.customsItems.originCountry" = "配送元の国";
-
-/* Title for the customs items value per unit text field for customs items */
-"wooShipping.customsItems.valuePerUnit" = "価値 \/ 個";
-
-/* Warning text when some required value is missing */
-"wooShipping.customsItems.valueRequired" = "必須の値";
-
-/* Title for the customs items weight per unit text field for customs items */
-"wooShipping.customsItems.weightPerUnit" = "重量 \/ 個";
-
-/* Indicates that the address is the default origin address  on the shipping label creation screen */
-"wooShipping.originAddresses.defaultAddress" = "(デフォルト)";
-
-/* Heading for the list of origin addresses to choose from on the shipping label creation screen */
-"wooShipping.originAddresses.shipFrom" = "出荷元";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, 自分のストア, 今日, 今週, 今月, 今年, 注文, 訪問者, コンバージョン, 上位コンバージョン, 販売済み商品";

@@ -323,47 +323,6 @@ final class SiteStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil))
     }
-
-    // MARK: - `syncSiteByDomain`
-
-   func test_syncSiteByDomain_returns_site_on_success() {
-       // Given
-       let siteID: Int64 = 123
-       let domain = "example.com"
-       let site = Site.fake().copy(siteID: siteID, name: "Miffy", url: "https://\(domain)")
-       remote.whenLoadingSite(thenReturn: .success(site))
-
-       // When
-       let result = waitFor { promise in
-           self.store.onAction(SiteAction.syncSiteByDomain(domain: domain, completion: { result in
-               promise(result)
-           }))
-       }
-
-       // Then
-       XCTAssertTrue(result.isSuccess)
-       let loadedSite = viewStorage.loadSite(siteID: siteID)
-       XCTAssertEqual(loadedSite?.name, "Miffy")
-   }
-
-   func test_syncSiteByDomain_returns_error_on_failure() throws {
-       // Given
-       let siteID: Int64 = 123
-       let domain = "example.com"
-       remote.whenLoadingSite(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil)))
-
-       // When
-       let result = waitFor { promise in
-           self.store.onAction(SiteAction.syncSiteByDomain(domain: domain, completion: { result in
-               promise(result)
-           }))
-       }
-
-       // Then
-       XCTAssertFalse(result.isSuccess)
-       let error = try XCTUnwrap(result.failure)
-       XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil))
-   }
 }
 
 private extension SiteStoreTests {

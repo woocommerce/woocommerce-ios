@@ -135,8 +135,8 @@ private extension EditStoreListView {
             comment: "Header of the Other Stores section on the Edit Store List view"
         )
         static let otherStoresFooter = NSLocalizedString(
-            "editStoreListView.unselectedStoresNote",
-            value: "Unselected stores will be excluded from the store picker and won't receive push notifications for new orders or product.",
+            "editStoreListView.otherStoresFooter",
+            value: "Stores that are not selected will be excluded from the store picker",
             comment: "Footer of the Other Stores section on the Edit Store List view"
         )
         static let retryButton = NSLocalizedString(

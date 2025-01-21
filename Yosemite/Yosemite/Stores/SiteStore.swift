@@ -50,8 +50,6 @@ public final class SiteStore: Store {
             enableFreeTrial(siteID: siteID, completion: completion)
         case let .syncSite(siteID, completion):
             syncSite(siteID: siteID, completion: completion)
-        case let .syncSiteByDomain(domain, completion):
-            syncSite(domain: domain, completion: completion)
         case let .updateSiteTitle(siteID, title, completion):
             updateSiteTitle(siteID: siteID, title: title, completion: completion)
         case let .uploadStoreProfilerAnswers(siteID, answers, completion):
@@ -112,21 +110,6 @@ private extension SiteStore {
                 let site = try await remote.loadSite(siteID: siteID)
                 await upsertStoredSiteInBackground(readOnlySite: site)
                 guard let syncedSite = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() else {
-                    return completion(.failure(SynchronizeSiteError.unknownSite))
-                }
-                completion(.success(syncedSite))
-            } catch {
-                completion(.failure(error))
-            }
-        }
-    }
-
-    func syncSite(domain: String, completion: @escaping (Result<Site, Error>) -> Void) {
-        Task { @MainActor in
-            do {
-                let site = try await remote.loadSite(domain: domain)
-                await upsertStoredSiteInBackground(readOnlySite: site)
-                guard let syncedSite = storageManager.viewStorage.loadSite(siteID: site.siteID)?.toReadOnly() else {
                     return completion(.failure(SynchronizeSiteError.unknownSite))
                 }
                 completion(.success(syncedSite))

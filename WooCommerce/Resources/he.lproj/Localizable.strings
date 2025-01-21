@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-01-15 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-12-26 11:54:47+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -804,7 +804,8 @@ which should be translated separately and considered part of this sentence. */
    Title when there is no filter set. */
 "Any" = "כל אפשרות";
 
-/* Product variation attribute description where the attribute is set to any value. */
+/* Format of a product variation attribute description where the attribute is set to any value.
+   Product variation attribute description where the attribute is set to any value. */
 "Any %1$@" = "כל %1$@";
 
 /* My Store > Settings > App (Application) settings section title */
@@ -3488,6 +3489,9 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "במלאי";
+
+/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
+"In the United Kingdom, cards may only be used with Tap to Pay for transactions up to %1$@." = "בבריטניה, מותר להשתמש בכרטיסים עם Tap To Pay רק עבור עסקאות עד לסכום %1$@.";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "באזור הניהול של האתר שלך אפשר למצוא את כתובת האימייל שבה השתמשת כדי להתחבר אל WordPress.com מלוח הבקרה של Jetpack במקטע 'חשבונות מקושרים' > 'חיבור החשבון'";
@@ -7600,6 +7604,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "עד";
 
+/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
+"To accept payments above this limit, consider purchasing a card reader." = "כדי לקבל תשלומים מעל מגבלה זו, כדאי לשקול לרכוש קורא כרטיסים.";
+
 /* Description text for the product discount row informational tooltip */
 "To add a Product Discount, please remove all Coupons from your order" = "כדי להוסיף הנחת מוצר, יש להסיר את כל הקופונים מההזמנה";
 
@@ -10517,17 +10524,11 @@ which should be translated separately and considered part of this sentence. */
 /* Header of the Current Store section of the the Edit Store List view */
 "editStoreListView.currentStoreHeader" = "החנות הנוכחית";
 
-/* Error message when updating notification settings fails when saving the store list for the store picker */
-"editStoreListView.errorUpdatingNotificationSettings" = "אירעה שגיאה בעת עדכון ההגדרות של ההודעות. יש לנסות שוב.";
-
 /* Footer of the Other Stores section on the Edit Store List view */
 "editStoreListView.otherStoresFooter" = "חנויות שלא נבחרו לא יופיעו בבורר החנויות";
 
 /* Header of the Other Stores section on the Edit Store List view */
 "editStoreListView.otherStoresHeader" = "חנויות אחרות";
-
-/* Button to retry saving changes in the Edit Store List view */
-"editStoreListView.retryButton" = "לנסות שוב";
 
 /* Button to save changes in the Edit Store List view */
 "editStoreListView.saveButton" = "לשמור";
@@ -10604,9 +10605,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the filter used to show only favorite products. */
 "favoriteProductsFilter.favoriteProducts" = "מוצרים מועדפים";
-
-/* Accessibility hint for the filter history button on the filter list screen */
-"filterListViewController.historyBarButtonItem.accessibilityHint" = "היסטוריית מסננים";
 
 /* Row title for filtering orders by customer. */
 "filterOrderListViewModel.OrderListFilter.rowCustomer" = "לקוח";
@@ -11718,15 +11716,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "ייתכן שההזמנה נכשלה";
 
-/* Subtitle for the cash payment view navigation back buttonReads as 'Total: $1.23' */
-"pointOfSale.cashview.back.navigation.subtitle" = "סכום כולל: %1$@";
-
-/* Title for the cash payment view navigation back button */
-"pointOfSale.cashview.back.navigation.title" = "תשלום במזומן";
-
-/* Button to mark a cash payment as completed */
-"pointOfSale.cashview.button.markpaymentcompleted.title" = "לסמן את התשלום כ'הושלם'";
-
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "רק רגע";
 
@@ -11778,9 +11767,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.done" = "בוצע";
 
-/* Title for the payment method used when collecting cash payment in Point of Sale. */
-"pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "לשלם באופן אישי";
-
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "יש להקיש על מוצר כדי \n להוסיף את המוצר לעגלה";
 
@@ -11792,9 +11778,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "למחוק";
-
-/* Back button title in the child item list screen. */
-"pos.childItemList.back" = "חזרה";
 
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "אין חיבור אינטרנט";
@@ -11808,6 +11791,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "האם לצאת ממצב 'נקודת מכירה'?";
 
+/* Title at the top of the Point of Sale product selector screen. */
+"pos.headerTitleView.productSelectorTitle" = "מוצרים";
+
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadButtonTitle" = "לנסות שוב";
 
@@ -11816,9 +11802,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadTitle" = "שגיאה בטעינת המוצרים";
-
-/* Title at the top of the Point of Sale item list full screen. */
-"pos.itemListFullscreen.title" = "מוצרים";
 
 /* Accessibility label for button to dismiss the product selector header banner. The banner explains current POS limitations. Tapping the button prevents it being shown again. */
 "pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel" = "לבטל";
@@ -11834,12 +11817,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title" = "מציג רק מוצרים פשוטים";
-
-/* Title at the top of the Point of Sale product selector screen. */
-"pos.itemlistview.title" = "מוצרים";
-
-/* Text indicating that there are options available for a parent product */
-"pos.parentProductCard.optionsAvailable" = "אפשרויות זמינות";
 
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "כדי להוסיף מוצר אחד, יש לצאת מ-POS ולעבור אל 'מוצרים'";
@@ -11873,9 +11850,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title for the receipt button */
 "pos.totalsView.button.sendReceipt" = "לשלוח קבלה באימייל";
-
-/* Title for the cash payment button title */
-"pos.totalsView.cash.button.title" = "תשלום במזומן";
 
 /* Text for the banner requiring specific WooCommerce version. */
 "pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "יש לעדכן את WooCommerce לגרסה 9.5.0";
@@ -12316,27 +12290,6 @@ which should be translated separately and considered part of this sentence. */
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
 "share details" = "לשתף פרטים";
 
-/* Body for the custom items description educational dialog */
-"shipping.customs.descriptionInfoDialogBody" = "במשלוח למדינות שעונות על כללי המכס של האיחוד האירופי, עליך לספק תיאור ברור וספציפי לגבי כל פריט. לדוגמה, אם המשלוח כולל בגדים, יש לציין את סוגי הבגדים במשלוח (למשל, חולצות גברים, אפודות של נשים, ג'קטים של ילדים) כדי שהתיאור יענה על הדרישות. אחרת, ייתכן שמשלוחים יעוכבו או ייחסמו במכס.";
-
-/* Button title for the done button in the customs description educational dialog */
-"shipping.customs.descriptionInfoDialogDone" = "בוצע";
-
-/* Button title for the learn more action in the custom descriptions info dialog */
-"shipping.customs.descriptionInfoDialogLearnMore" = "למידע נוסף";
-
-/* Title for the custom description educational dialog */
-"shipping.customs.descriptionInfoDialogTitle" = "תיאור";
-
-/* Body for the custom items origin country educational dialog */
-"shipping.customs.originCountryInfoDialogBody" = "המדינה שבה המוצר נוצר או הורכב.";
-
-/* Button title for the done button in the customs description educational dialog */
-"shipping.customs.originCountryInfoDialogDoneButton" = "בוצע";
-
-/* Title for the custom origin country educational dialog */
-"shipping.customs.originCountryInfoDialogTitle" = "מדינת המוצא";
-
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "ביטול";
 
@@ -12423,9 +12376,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "לחבר חנות קיימת";
-
-/* Store Picker's Section Title: Displayed whenever there are multiple Stores. The content inside the bracket indicates the number of stores hidden from the store picker. The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)' */
-"storePickerViewModel.pickStoreWithHiddenStoreCount" = "יש לבחור חנות כדי להתחבר (⁦%1$d⁩ מוסתרות)";
 
 /* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
 "storeStatsChart.xSelectedValue" = "תאריך נבחר";
@@ -12574,12 +12524,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is successful, we show a Notice to alert the user – this is the title of the notice. */
 "tap.to.pay.try.payment.refundNotice.success.title" = "תשלום לניסיון ב-Tap To Pay";
-
-/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
-"tapToPay.aboutTapToPay.contactlessLimit.gb" = "בבריטניה, ניתן לקבל תשלומים בכרטיסים עם Tap To Pay עבור עסקאות עד סכום של %1$@. לעסקאות מעל סכום של %1$@, בכרטיסים מסוימים הלקוחות יכולים להזין קוד PIN ישירות בטלפון, ובכרטיסים אחרים נדרש קורא כרטיסים נפרד כדי להשלים את התשלום.";
-
-/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
-"tapToPay.aboutTapToPay.overLimitSuggestion" = "כדי לקבל את כל התשלומים מעל המגבלה הזאת, כדאי לשקול לרכוש קורא כרטיסים.";
 
 /* Title of the button to dismiss the Tap to Pay awareness screen */
 "tapToPay.awarenessMoment.closeButton" = "לסגור";
@@ -12866,9 +12810,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "שבועות";
 
-/* Title for the Add Package screen Add Package Details button */
-"wooShipping.createLabel.addPackage.addPackageDetails" = "להוסיף את פרטי החבילה";
-
 /* Info label for selected box as a package type */
 "wooShipping.createLabel.addPackage.box" = "קופסה";
 
@@ -12914,9 +12855,6 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for saved package option */
 "wooShipping.createLabel.addPackage.saved" = "נשמר";
 
-/* Title for the Add Package screen Select Package button */
-"wooShipping.createLabel.addPackage.selectPackage" = "לבחור חבילה";
-
 /* Title for the Add Package screen */
 "wooShipping.createLabel.addPackage.title" = "להוסיף חבילה";
 
@@ -12928,15 +12866,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button to dismiss the shipping label screen */
 "wooShipping.createLabel.closeButton" = "לסגור";
-
-/* Title for the Edit Package screen Done button */
-"wooShipping.createLabel.editPackage.done" = "בוצע";
-
-/* Title for the Edit Package screen */
-"wooShipping.createLabel.editPackage.title" = "לערוך את החבילה";
-
-/* Title for the Edit Package screen Use Selected Package button */
-"wooShipping.createLabel.editPackage.useSelectedPackage" = "להשתמש בחבילה שנבחרה";
 
 /* Label for section in shipping label creation to declare when a package contains hazardous materials. */
 "wooShipping.createLabel.hazmatLabel" = "המשלוח שלך כולל סחורות מסוכנות או חומרים מסוכנים?";
@@ -12997,9 +12926,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "‎%1$@ x %2$@ x %3$@ %4$@";
-
-/* Button for dismissing the keyboard */
-"wooShipping.createLabels.package.done" = "בוצע";
 
 /* Heading for the package section in the shipping label creation screen. */
 "wooShipping.createLabels.package.title" = "חבילה";
@@ -13078,96 +13004,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to view a shipping label */
 "wooShipping.createLabels.viewLabelTitle" = "להציג את תווית המשלוח";
-
-/* Customs button title when it's disabled and there's still info to add */
-"wooShipping.customs.addMissingInformationButtonTitle" = "להוסיף פרטים חסרים";
-
-/* Cancel button in navigation bar to dismiss the screen */
-"wooShipping.customs.cancel" = "ביטול";
-
-/* Title for the Content Type menu in the Shipping Customs Form */
-"wooShipping.customs.contentType" = "סוג התכולה";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.documents" = "מסמכים";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.gift" = "מתנה";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.merchandise" = "סחורה רשמית";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.other" = "אחר…";
-
-/* Info label for shipping content type returned goods */
-"wooShipping.customs.contentType.returnedGoods" = "מוצרים שהוחזרו";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.sample" = "דוגמה";
-
-/* Title for the Internaction Transaction Number in the Shipping Customs Form */
-"wooShipping.customs.internationalTransactionNumber" = "International Transaction Number";
-
-/* Explanatory text for the international transaction number in customs */
-"wooShipping.customs.internationalTransactionNumber.infoText" = "מידע נוסף על ITN";
-
-/* Product Details Section title */
-"wooShipping.customs.productDetails" = "פרטי המוצר";
-
-/* Title for the Restriction Type menu in the Shipping Customs Form */
-"wooShipping.customs.restrictionType" = "סוג הגבלה";
-
-/* Info label for shipping restriction type none */
-"wooShipping.customs.restrictionType.none" = "ללא";
-
-/* Info label for shipping restriction type other */
-"wooShipping.customs.restrictionType.other" = "אחר";
-
-/* Info label for shipping restriction type quarantine */
-"wooShipping.customs.restrictionType.quarantine" = "בידוד";
-
-/* Info label for shipping restriction type sanitary */
-"wooShipping.customs.restrictionType.sanitary" = "בדיקת תברואה\/בדיקה פיטוסניטרית";
-
-/* Info label for a toggle to return the package to a sender if necessary toggle */
-"wooShipping.customs.returnToSenderMessage" = "להחזיר לשולח אם לא ניתן לשלוח את החבילה";
-
-/* Customs button title when it's enabled and there's no info to add */
-"wooShipping.customs.saveCustomsDetails" = "לשמור את פרטי המכס";
-
-/* Title for the Customs screen */
-"wooShipping.customs.title" = "מכס";
-
-/* Title for the customs items description text field for customs items */
-"wooShipping.customsItems.description" = "תיאור";
-
-/* Title for the HS Tariff Number text field for customs items */
-"wooShipping.customsItems.hsTariffNumber" = "מספר של תעריף HS";
-
-/* Information text about the HS Tariff */
-"wooShipping.customsItems.hsTariffNumber.moreInfoText" = "מידע נוסף על תעריף HS";
-
-/* Placeholder for the HS Tariff Number text field for customs items */
-"wooShipping.customsItems.hsTariffNumber.placeholder" = "אופציונלי";
-
-/* Title for the origin country text field */
-"wooShipping.customsItems.originCountry" = "מדינת המוצא";
-
-/* Title for the customs items value per unit text field for customs items */
-"wooShipping.customsItems.valuePerUnit" = "ערך ליחידה";
-
-/* Warning text when some required value is missing */
-"wooShipping.customsItems.valueRequired" = "ערך נדרש";
-
-/* Title for the customs items weight per unit text field for customs items */
-"wooShipping.customsItems.weightPerUnit" = "משקל ליחידה";
-
-/* Indicates that the address is the default origin address  on the shipping label creation screen */
-"wooShipping.originAddresses.defaultAddress" = "(ברירת מחדל)";
-
-/* Heading for the list of origin addresses to choose from on the shipping label creation screen */
-"wooShipping.originAddresses.shipFrom" = "מוצא למשלוח";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "WooCommerce, החנות שלי, היום, השבוע, החודש, השנה, הזמנות, מבקרים, המרות, המרות מובילות, פריטים שנמכרו";

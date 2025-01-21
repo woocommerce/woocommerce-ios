@@ -1,1 +1,3 @@
-Questo aggiornamento introduce la possibilità di nascondere determinati negozi nel selezionatore di negozi, una soluzione ideale per agenzie che gestiscono più siti. Abbiamo anche migliorato il recupero delle informazioni sui plugin affinché vengano gestiti tipi di dati non previsti per prestazioni più fluide. Abbiamo inoltre eliminato un bug che creava problemi per la creazione di ordini con importi personalizzati su iPad. Goditi un'esperienza più affidabile e senza distrazioni!
+
+Con questo aggiornamento, l'esperienza WooCommerce è ancora più affidabile e chiara. Con configurazione Jetpack migliorata, gestione dei media più fluida e flussi di lavoro relativi al prodotto e ai pagamenti più efficienti. Inoltre abbiamo ottimizzato l'archiviazione e gestito i problemi relativi all'interfaccia utente per migliorare le prestazioni. Per concludere, prova la guida introduttiva a Tocca per pagare.
+

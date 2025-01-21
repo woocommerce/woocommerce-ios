@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-01-14 09:54:10+0000 */
+/* Translation-Revision-Date: 2024-12-27 09:54:14+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -804,7 +804,8 @@ which should be translated separately and considered part of this sentence. */
    Title when there is no filter set. */
 "Any" = "Sembarang";
 
-/* Product variation attribute description where the attribute is set to any value. */
+/* Format of a product variation attribute description where the attribute is set to any value.
+   Product variation attribute description where the attribute is set to any value. */
 "Any %1$@" = "Setiap %1$@";
 
 /* My Store > Settings > App (Application) settings section title */
@@ -3488,6 +3489,9 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "Tersedia";
+
+/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
+"In the United Kingdom, cards may only be used with Tap to Pay for transactions up to %1$@." = "Di Inggris, kartu hanya boleh digunakan dengan Ketuk untuk Bayar dalam transaksi hingga %1$@.";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "Di admin situs, Anda bisa menemukan email yang digunakan untuk terhubung ke WordPress.com dari Dasbor Jetpack di bagian Koneksi > Koneksi Akun";
@@ -7600,6 +7604,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "ke";
 
+/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
+"To accept payments above this limit, consider purchasing a card reader." = "Untuk menerima pembayaran di atas batas ini, pertimbangkan pembelian pembaca kartu.";
+
 /* Description text for the product discount row informational tooltip */
 "To add a Product Discount, please remove all Coupons from your order" = "Untuk menambahkan Diskon Produk, silakan hapus semua Kupon dari pesanan Anda";
 
@@ -10517,17 +10524,11 @@ which should be translated separately and considered part of this sentence. */
 /* Header of the Current Store section of the the Edit Store List view */
 "editStoreListView.currentStoreHeader" = "Toko Saat Ini";
 
-/* Error message when updating notification settings fails when saving the store list for the store picker */
-"editStoreListView.errorUpdatingNotificationSettings" = "Terjadi error saat memperbarui pengaturan pemberitahuan. Harap coba lagi.";
-
 /* Footer of the Other Stores section on the Edit Store List view */
 "editStoreListView.otherStoresFooter" = "Toko yang tidak terpilih tidak akan muncul di pemilih toko";
 
 /* Header of the Other Stores section on the Edit Store List view */
 "editStoreListView.otherStoresHeader" = "Toko lain";
-
-/* Button to retry saving changes in the Edit Store List view */
-"editStoreListView.retryButton" = "Coba lagi";
 
 /* Button to save changes in the Edit Store List view */
 "editStoreListView.saveButton" = "Simpan";
@@ -10604,9 +10605,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the filter used to show only favorite products. */
 "favoriteProductsFilter.favoriteProducts" = "Produk Favorit";
-
-/* Accessibility hint for the filter history button on the filter list screen */
-"filterListViewController.historyBarButtonItem.accessibilityHint" = "Riwayat penyaringan";
 
 /* Row title for filtering orders by customer. */
 "filterOrderListViewModel.OrderListFilter.rowCustomer" = "Pelanggan";
@@ -11718,15 +11716,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "Pesanan ini mungkin gagal";
 
-/* Subtitle for the cash payment view navigation back buttonReads as 'Total: $1.23' */
-"pointOfSale.cashview.back.navigation.subtitle" = "Total: %1$@";
-
-/* Title for the cash payment view navigation back button */
-"pointOfSale.cashview.back.navigation.title" = "Pembayaran tunai";
-
-/* Button to mark a cash payment as completed */
-"pointOfSale.cashview.button.markpaymentcompleted.title" = "Tandai pembayaran selesai";
-
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Harap tunggu";
 
@@ -11778,9 +11767,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.done" = "Selesai";
 
-/* Title for the payment method used when collecting cash payment in Point of Sale. */
-"pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "Pembayaran Langsung";
-
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Ketuk produk ke \n tambahkan ke keranjang";
 
@@ -11792,9 +11778,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "Hapus";
-
-/* Back button title in the child item list screen. */
-"pos.childItemList.back" = "Kembali";
 
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "Tidak ada koneksi internet";
@@ -11808,6 +11791,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Keluar dari mode Point of Sale?";
 
+/* Title at the top of the Point of Sale product selector screen. */
+"pos.headerTitleView.productSelectorTitle" = "Produk";
+
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadButtonTitle" = "Coba lagi";
 
@@ -11816,9 +11802,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadTitle" = "Terjadi error saat memuat produk";
-
-/* Title at the top of the Point of Sale item list full screen. */
-"pos.itemListFullscreen.title" = "Produk";
 
 /* Accessibility label for button to dismiss the product selector header banner. The banner explains current POS limitations. Tapping the button prevents it being shown again. */
 "pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel" = "Tutup";
@@ -11834,12 +11817,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title" = "Menunjukkan produk sederhana saja";
-
-/* Title at the top of the Point of Sale product selector screen. */
-"pos.itemlistview.title" = "Produk";
-
-/* Text indicating that there are options available for a parent product */
-"pos.parentProductCard.optionsAvailable" = "Pilihan tersedia";
 
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "Untuk menambahkan produk, keluar dari POS dan buka Produk.";
@@ -11873,9 +11850,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title for the receipt button */
 "pos.totalsView.button.sendReceipt" = "Email tanda terima";
-
-/* Title for the cash payment button title */
-"pos.totalsView.cash.button.title" = "Pembayaran tunai";
 
 /* Text for the banner requiring specific WooCommerce version. */
 "pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "Perbarui WooCommerce ke versi 9.5.0";
@@ -12316,27 +12290,6 @@ which should be translated separately and considered part of this sentence. */
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
 "share details" = "bagikan detail";
 
-/* Body for the custom items description educational dialog */
-"shipping.customs.descriptionInfoDialogBody" = "Ketika mengirimkan barang ke negara yang menerapkan aturan bea cukai Uni Eropa (UE), Anda harus memberikan deskripsi yang jelas dan spesifik tentang setiap item. Contohnya, jika Anda mengirim pakaian, Anda harus menerangkan jenis pakaiannya (misalnya, baju pria, rompi wanita, jaket anak) agar deskripsinya memadai. Jika tidak, pengiriman akan tertunda atau tertahan di bea cukai.";
-
-/* Button title for the done button in the customs description educational dialog */
-"shipping.customs.descriptionInfoDialogDone" = "Selesai";
-
-/* Button title for the learn more action in the custom descriptions info dialog */
-"shipping.customs.descriptionInfoDialogLearnMore" = "Baca selengkapnya";
-
-/* Title for the custom description educational dialog */
-"shipping.customs.descriptionInfoDialogTitle" = "Deskripsi";
-
-/* Body for the custom items origin country educational dialog */
-"shipping.customs.originCountryInfoDialogBody" = "Negara tempat pembuatan atau perakitan produk.";
-
-/* Button title for the done button in the customs description educational dialog */
-"shipping.customs.originCountryInfoDialogDoneButton" = "Selesai";
-
-/* Title for the custom origin country educational dialog */
-"shipping.customs.originCountryInfoDialogTitle" = "Negara Asal";
-
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "Batal";
 
@@ -12423,9 +12376,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "Sambungkan toko yang sudah ada";
-
-/* Store Picker's Section Title: Displayed whenever there are multiple Stores. The content inside the bracket indicates the number of stores hidden from the store picker. The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)' */
-"storePickerViewModel.pickStoreWithHiddenStoreCount" = "Pilih Toko yang akan Dihubungkan (%1$d disembunyikan)";
 
 /* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
 "storeStatsChart.xSelectedValue" = "Tanggal yang Dipilih";
@@ -12574,12 +12524,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is successful, we show a Notice to alert the user – this is the title of the notice. */
 "tap.to.pay.try.payment.refundNotice.success.title" = "Uji Coba Pembayaran Ketuk untuk Bayar";
-
-/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
-"tapToPay.aboutTapToPay.contactlessLimit.gb" = "Di Inggris, Anda dapat menerima pembayaran kartu dengan Ketuk untuk Bayar untuk transaksi hingga %1$@. Untuk pembayaran lebih dari %1$@, sejumlah kartu memungkinkan pelanggan memasukkan PIN-nya langsung dari ponsel, sedangkan beberapa yang lain memerlukan pembaca kartu untuk menyelesaikan pembayaran.";
-
-/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
-"tapToPay.aboutTapToPay.overLimitSuggestion" = "Untuk menerima semua pembayaran di atas batas ini, Anda mungkin perlu membeli pembaca kartu.";
 
 /* Title of the button to dismiss the Tap to Pay awareness screen */
 "tapToPay.awarenessMoment.closeButton" = "Tutup";
@@ -12866,9 +12810,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "Minggu";
 
-/* Title for the Add Package screen Add Package Details button */
-"wooShipping.createLabel.addPackage.addPackageDetails" = "Tambahkan Rincian Paket";
-
 /* Info label for selected box as a package type */
 "wooShipping.createLabel.addPackage.box" = "Kotak";
 
@@ -12914,9 +12855,6 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for saved package option */
 "wooShipping.createLabel.addPackage.saved" = "Disimpan";
 
-/* Title for the Add Package screen Select Package button */
-"wooShipping.createLabel.addPackage.selectPackage" = "Pilih Paket";
-
 /* Title for the Add Package screen */
 "wooShipping.createLabel.addPackage.title" = "Tambah Paket";
 
@@ -12928,15 +12866,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button to dismiss the shipping label screen */
 "wooShipping.createLabel.closeButton" = "Tutup";
-
-/* Title for the Edit Package screen Done button */
-"wooShipping.createLabel.editPackage.done" = "Selesai";
-
-/* Title for the Edit Package screen */
-"wooShipping.createLabel.editPackage.title" = "Edit Paket";
-
-/* Title for the Edit Package screen Use Selected Package button */
-"wooShipping.createLabel.editPackage.useSelectedPackage" = "Gunakan Paket yang Dipilih";
 
 /* Label for section in shipping label creation to declare when a package contains hazardous materials. */
 "wooShipping.createLabel.hazmatLabel" = "Apakah Anda mengirim barang berisiko atau bahan berbahaya?";
@@ -12997,9 +12926,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
-
-/* Button for dismissing the keyboard */
-"wooShipping.createLabels.package.done" = "Selesai";
 
 /* Heading for the package section in the shipping label creation screen. */
 "wooShipping.createLabels.package.title" = "Paket";
@@ -13078,96 +13004,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to view a shipping label */
 "wooShipping.createLabels.viewLabelTitle" = "Lihat Label Pengiriman";
-
-/* Customs button title when it's disabled and there's still info to add */
-"wooShipping.customs.addMissingInformationButtonTitle" = "Tambahkan Informasi yang Kurang";
-
-/* Cancel button in navigation bar to dismiss the screen */
-"wooShipping.customs.cancel" = "Batal";
-
-/* Title for the Content Type menu in the Shipping Customs Form */
-"wooShipping.customs.contentType" = "Jenis Isi";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.documents" = "Dokumen";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.gift" = "Hadiah";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.merchandise" = "Barang dagangan";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.other" = "Lainnya...";
-
-/* Info label for shipping content type returned goods */
-"wooShipping.customs.contentType.returnedGoods" = "Barang yang Dikembalikan";
-
-/* Info label for shipping content type merchandise */
-"wooShipping.customs.contentType.sample" = "Sampel";
-
-/* Title for the Internaction Transaction Number in the Shipping Customs Form */
-"wooShipping.customs.internationalTransactionNumber" = "Nomor Transaksi Internasional (ITN)";
-
-/* Explanatory text for the international transaction number in customs */
-"wooShipping.customs.internationalTransactionNumber.infoText" = "Info selengkapnya tentang ITN";
-
-/* Product Details Section title */
-"wooShipping.customs.productDetails" = "Rincian Produk";
-
-/* Title for the Restriction Type menu in the Shipping Customs Form */
-"wooShipping.customs.restrictionType" = "Tipe Batasan";
-
-/* Info label for shipping restriction type none */
-"wooShipping.customs.restrictionType.none" = "Tidak ada";
-
-/* Info label for shipping restriction type other */
-"wooShipping.customs.restrictionType.other" = "Lainnya";
-
-/* Info label for shipping restriction type quarantine */
-"wooShipping.customs.restrictionType.quarantine" = "Karantina";
-
-/* Info label for shipping restriction type sanitary */
-"wooShipping.customs.restrictionType.sanitary" = "Pemeriksaan Sanitasi\/Fitosanitasi";
-
-/* Info label for a toggle to return the package to a sender if necessary toggle */
-"wooShipping.customs.returnToSenderMessage" = "Kembalikan ke pengirim jika paket dapat diantar";
-
-/* Customs button title when it's enabled and there's no info to add */
-"wooShipping.customs.saveCustomsDetails" = "Simpan Rincian Bea Cukai";
-
-/* Title for the Customs screen */
-"wooShipping.customs.title" = "Bea cukai";
-
-/* Title for the customs items description text field for customs items */
-"wooShipping.customsItems.description" = "Deskripsi";
-
-/* Title for the HS Tariff Number text field for customs items */
-"wooShipping.customsItems.hsTariffNumber" = "Nomor tarif HS";
-
-/* Information text about the HS Tariff */
-"wooShipping.customsItems.hsTariffNumber.moreInfoText" = "Info selengkapnya tentang tarif HS";
-
-/* Placeholder for the HS Tariff Number text field for customs items */
-"wooShipping.customsItems.hsTariffNumber.placeholder" = "Opsional";
-
-/* Title for the origin country text field */
-"wooShipping.customsItems.originCountry" = "Negara Asal";
-
-/* Title for the customs items value per unit text field for customs items */
-"wooShipping.customsItems.valuePerUnit" = "Nilai per unit";
-
-/* Warning text when some required value is missing */
-"wooShipping.customsItems.valueRequired" = "Nilai wajib diisi";
-
-/* Title for the customs items weight per unit text field for customs items */
-"wooShipping.customsItems.weightPerUnit" = "Berat per unit";
-
-/* Indicates that the address is the default origin address  on the shipping label creation screen */
-"wooShipping.originAddresses.defaultAddress" = "(default)";
-
-/* Heading for the list of origin addresses to choose from on the shipping label creation screen */
-"wooShipping.originAddresses.shipFrom" = "Dikirim Dari";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, toko saya, hari ini, minggu ini, bulan ini, tahun ini, pesanan, pengunjung, konversi, konversi teratas, item terjual";

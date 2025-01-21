@@ -581,7 +581,7 @@ private extension AppDelegate {
 // MARK: - Magic link
 private extension AppDelegate {
     func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool {
-        return if ServiceLocator.stores.isAuthenticated {
+        return if ServiceLocator.stores.isAuthenticatedWithoutWPCom {
             handleAuthenticationUrlForJetpackSetup(url, rootViewController: rootViewController)
         } else {
             ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)

@@ -6,6 +6,19 @@ final class CollectCashViewHelper {
     private let currencyFormatter: CurrencyFormatter = WooFoundation.CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     private let currencySettings: CurrencySettings = ServiceLocator.currencySettings
 
+    // Configures the formatter as close as possible to use the Store's settings
+    private lazy var numberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.generatesDecimalNumbers = true
+        formatter.groupingSeparator = currencySettings.groupingSeparator
+        formatter.decimalSeparator = currencySettings.decimalSeparator
+        formatter.minimumFractionDigits = currencySettings.fractionDigits
+        formatter.maximumFractionDigits = currencySettings.fractionDigits
+
+        return formatter
+    }()
+
     func updatechangeDueMessage(orderTotal: String,
                                 textFieldAmountInput: String) -> String? {
         guard let orderDecimal = parseCurrency(orderTotal),
@@ -44,18 +57,9 @@ final class CollectCashViewHelper {
         let symbol = currencySettings.symbol(from: currencySettings.currencyCode)
         let stringWithoutSymbol = sanitized.replacingOccurrences(of: symbol, with: "")
 
-        // Configures the formatter as close as possible to use the Store's settings
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.generatesDecimalNumbers = true
-        formatter.groupingSeparator = currencySettings.groupingSeparator
-        formatter.decimalSeparator = currencySettings.decimalSeparator
-        formatter.minimumFractionDigits = currencySettings.fractionDigits
-        formatter.maximumFractionDigits = currencySettings.fractionDigits
-
         // Attempts to parse
-        guard let number = formatter.number(from: stringWithoutSymbol) else {
-            DDLogError("❌ Failed to parse currency for \(stringWithoutSymbol). Details: \(formatter.logDebugDetails)")
+        guard let number = numberFormatter.number(from: stringWithoutSymbol) else {
+            DDLogError("❌ Failed to parse currency for \(stringWithoutSymbol). Details: \(numberFormatter.logDebugDetails)")
             return nil
         }
         return number.decimalValue

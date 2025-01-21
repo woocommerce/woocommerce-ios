@@ -2731,6 +2731,7 @@
 		DE86E9272A4BEA2500A89A5B /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */; };
 		DE86E9292A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9282A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift */; };
 		DE87F4082D2D375E00869522 /* FilterHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE87F4072D2D375E00869522 /* FilterHistoryView.swift */; };
+		DE87F40E2D30C90B00869522 /* WooAnalyticsEvent+FilterHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE87F40D2D30C90300869522 /* WooAnalyticsEvent+FilterHistory.swift */; };
 		DE8AA0B12BBE50CF0084D2CC /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8AA0B02BBE50CF0084D2CC /* DashboardView.swift */; };
 		DE8AA0B32BBE55E40084D2CC /* DashboardViewHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8AA0B22BBE55E40084D2CC /* DashboardViewHostingController.swift */; };
 		DE8AA0B52BBEBE590084D2CC /* ViewControllerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8AA0B42BBEBE590084D2CC /* ViewControllerContainer.swift */; };
@@ -5886,6 +5887,7 @@
 		DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
 		DE86E9282A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+AIFeedback.swift"; sourceTree = "<group>"; };
 		DE87F4072D2D375E00869522 /* FilterHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterHistoryView.swift; sourceTree = "<group>"; };
+		DE87F40D2D30C90300869522 /* WooAnalyticsEvent+FilterHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+FilterHistory.swift"; sourceTree = "<group>"; };
 		DE8AA0B02BBE50CF0084D2CC /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		DE8AA0B22BBE55E40084D2CC /* DashboardViewHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewHostingController.swift; sourceTree = "<group>"; };
 		DE8AA0B42BBEBE590084D2CC /* ViewControllerContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerContainer.swift; sourceTree = "<group>"; };
@@ -9871,6 +9873,7 @@
 				DE6D84A82C3D07850014FBFF /* WooAnalyticsEvent+GoogleAds.swift */,
 				262562342C52A6410075A8CC /* WooAnalyticsEvent+BackgroudUpdates.swift */,
 				86EC6EBC2CD3882900D7D2FE /* WooAnalyticsEvent+CustomFields.swift */,
+				DE87F40D2D30C90300869522 /* WooAnalyticsEvent+FilterHistory.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -16544,6 +16547,7 @@
 				DE74F2A327E41D650002FE59 /* EnableAnalyticsViewModel.swift in Sources */,
 				AE77EA5027A47C99006A21BD /* View+AddingDividers.swift in Sources */,
 				EE5B5BB32AB30C0A009BCBD6 /* ProductCreationAIEligibilityChecker.swift in Sources */,
+				DE87F40E2D30C90B00869522 /* WooAnalyticsEvent+FilterHistory.swift in Sources */,
 				B98C6D502B149C3900A243E1 /* UINavigationItem+Configuration.swift in Sources */,
 				262EB5AE298C70EF009DCC36 /* SupportFormViewModel.swift in Sources */,
 				45B4F0262860BD0A00F3B16E /* WCShipCTAView.swift in Sources */,

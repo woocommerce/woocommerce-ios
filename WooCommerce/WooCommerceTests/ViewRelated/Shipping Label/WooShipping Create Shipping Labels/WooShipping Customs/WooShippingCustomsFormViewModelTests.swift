@@ -151,36 +151,40 @@ class WooShippingCustomsFormViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isValidITN())
     }
 
-    func test_internationalTransactionNumberIsRequired_when_item_view_models_does_not_require_internationalTransactionNumber_returns_false() {
+    func test_internationalTransactionNumberIsRequired_when_item_view_models_hsTariffNumberTotalValue_is_nil_then_returns_false() {
         // Given
         let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
 
         viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { _ in })
 
-        viewModel.itemsViewModels.first?.internationalTransactionNumberIsRequired = false
+        // When
+        viewModel.itemsViewModels.first?.hsTariffNumberTotalValue = nil
 
+        // Then
         XCTAssertFalse(viewModel.internationalTransactionNumberIsRequired)
     }
 
-    func test_requiredInformationIsEntered_when_one_item_view_model_requiredInformationIsEntered_is_false_then_returns_false() {
+    func test_internationalTransactionNumberIsRequired_when_item_view_models_hsTariffNumberTotalValue_is_less_than_2500_then_returns_false() {
         // Given
         let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
 
         viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { _ in })
 
-        viewModel.itemsViewModels.first?.requiredInformationIsEntered = false
+        // When
+        viewModel.itemsViewModels.first?.hsTariffNumberTotalValue = ("123456", 1000)
 
         XCTAssertFalse(viewModel.requiredInformationIsEntered)
     }
 
-    func test_requiredInformationIsEntered_when_one_item_view_model_requiredInformationIsEntered_is_true_but_requires_itn_then_returns_false() {
+    func test_internationalTransactionNumberIsRequired_when_item_view_models_hsTariffNumberTotalValue_is_less_than_2500_then_returns_true() {
         // Given
         let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
 
         viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { _ in })
 
         viewModel.itemsViewModels.first?.requiredInformationIsEntered = true
-        viewModel.itemsViewModels.first?.internationalTransactionNumberIsRequired = true
+        viewModel.itemsViewModels.first?.hsTariffNumberTotalValue = ("123456", 1000)
+        viewModel.itemsViewModels[1].hsTariffNumberTotalValue = ("123456", 2000)
         viewModel.internationalTransactionNumber = ""
 
         XCTAssertFalse(viewModel.requiredInformationIsEntered)
@@ -193,7 +197,6 @@ class WooShippingCustomsFormViewModelTests: XCTestCase {
         viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { _ in })
 
         viewModel.itemsViewModels.first?.requiredInformationIsEntered = true
-        viewModel.itemsViewModels.first?.internationalTransactionNumberIsRequired = true
         viewModel.internationalTransactionNumber = "1234"
 
         XCTAssertFalse(viewModel.requiredInformationIsEntered)
@@ -209,7 +212,6 @@ class WooShippingCustomsFormViewModelTests: XCTestCase {
 
         viewModel.internationalTransactionNumber = "NOEEI 30.37(a)"
         viewModel.itemsViewModels.first?.requiredInformationIsEntered = true
-        viewModel.itemsViewModels.first?.internationalTransactionNumberIsRequired = true
 
         XCTAssertTrue(viewModel.requiredInformationIsEntered)
     }

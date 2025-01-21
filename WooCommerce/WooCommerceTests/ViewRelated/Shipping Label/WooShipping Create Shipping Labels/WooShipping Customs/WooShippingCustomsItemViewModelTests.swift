@@ -45,58 +45,53 @@ class WooShippingCustomsItemViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isValidTariffNumber)
     }
 
-    func test_internationalTransactionNumberIsRequired_when_currency_symbol_is_not_$_returns_false() {
+    func test_hsTariffNumberTotalValue_when_currency_symbol_is_not_$_returns_nil() {
         // When
+        let orderItem = MockOrderItem.sampleItem(quantity: 2)
         viewModel = WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "", name: "United States"),
-                                                    orderItem: MockOrderItem.sampleItem(), currencySymbol: "€")
+                                                    orderItem: orderItem, currencySymbol: "$")
 
         // Then
-        XCTAssertFalse(viewModel.internationalTransactionNumberIsRequired)
+        XCTAssertNil(viewModel.hsTariffNumberTotalValue)
 
     }
 
-    func test_internationalTransactionNumberIsRequired_when_currency_symbol_is_$_but_value_is_less_than_2500_returns_false() {
+    func test_hsTariffNumberTotalValue_when_currency_symbol_is_$_but_hsTariffNumber_is_empty_returns_nil() {
         // When
+        let orderItem = MockOrderItem.sampleItem(quantity: 2)
         viewModel = WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "", name: "United States"),
-                                                    orderItem: MockOrderItem.sampleItem(), currencySymbol: "$")
-        viewModel.valuePerUnit = "1000"
-
-        // Then
-        XCTAssertFalse(viewModel.internationalTransactionNumberIsRequired)
-
-    }
-
-    func test_internationalTransactionNumberIsRequired_when_currency_symbol_is_$_and_value_is_more_than_2500_but_no_hs_tariff_number_returns_false() {
-        // When
-        viewModel = WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "", name: "United States"),
-                                                    orderItem: MockOrderItem.sampleItem(), currencySymbol: "$")
+                                                    orderItem: orderItem, currencySymbol: "$")
         viewModel.valuePerUnit = "1000"
         viewModel.hsTariffNumber = ""
 
         // Then
-        XCTAssertFalse(viewModel.internationalTransactionNumberIsRequired)
+        XCTAssertNil(viewModel.hsTariffNumberTotalValue)
 
     }
 
-    func test_internationalTransactionNumberIsRequired_when_currency_symbol_is_$_and_value_is_more_than_2500_but_invalid_hs_tariff_number_returns_false() {
+    func test_hsTariffNumberTotalValue_when_currency_symbol_is_$_but_invalid_hs_tariff_number_returns_nil() {
         // When
+        let orderItem = MockOrderItem.sampleItem(quantity: 2)
         viewModel = WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "", name: "United States"),
-                                                    orderItem: MockOrderItem.sampleItem(), currencySymbol: "$")
-        viewModel.valuePerUnit = "1000"
+                                                    orderItem: orderItem, currencySymbol: "$")
         viewModel.hsTariffNumber = "123"
+        viewModel.valuePerUnit = "1000"
+
 
         // Then
-        XCTAssertFalse(viewModel.internationalTransactionNumberIsRequired)
+        XCTAssertNil(viewModel.hsTariffNumberTotalValue)
     }
 
-    func test_internationalTransactionNumberIsRequired_when_currency_symbol_is_$_and_value_is_more_than_2500_and_valid_hs_tariff_number_returns_true() {
+    func test_hsTariffNumberTotalValue_when_currency_symbol_is_$_and_value_is_more_than_2500_and_valid_hs_tariff_number_returns_values() {
         // When
+        let orderItem = MockOrderItem.sampleItem(quantity: 2)
         viewModel = WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "", name: "United States"),
-                                                    orderItem: MockOrderItem.sampleItem(), currencySymbol: "$")
+                                                    orderItem: orderItem, currencySymbol: "$")
         viewModel.valuePerUnit = "3000"
         viewModel.hsTariffNumber = "123456"
 
         // Then
-        XCTAssertTrue(viewModel.internationalTransactionNumberIsRequired)
+        XCTAssertEqual(viewModel.hsTariffNumberTotalValue?.0, viewModel.hsTariffNumber)
+        XCTAssertEqual(viewModel.hsTariffNumberTotalValue?.1, Decimal(string: viewModel.valuePerUnit)! * orderItem.quantity)
     }
 }

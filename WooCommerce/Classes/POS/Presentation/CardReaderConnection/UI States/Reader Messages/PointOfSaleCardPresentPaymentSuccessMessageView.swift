@@ -68,17 +68,13 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
                 .frame(width: Constants.imageSize.width, height: Constants.imageSize.height)
                 .shadow(color: Color(.wooCommerceEmerald(.shade80)).opacity(Constants.shadowOpacity),
                         radius: Constants.shadowRadius, x: Constants.shadowSize.width, y: Constants.shadowSize.height)
-                .foregroundColor(circleBackgroundColor)
+                .foregroundColor(.posSuccessColor)
             Image(PointOfSaleAssets.successCheck.imageName)
                 .renderingMode(.template)
                 .foregroundColor(checkmarkColor)
                 .frame(width: 52)
                 .accessibilityHidden(true)
         }
-    }
-
-    private var circleBackgroundColor: Color {
-        Color(red: 8/255, green: 251/255, blue: 135/255)
     }
 
     private var checkmarkColor: Color {

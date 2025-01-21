@@ -95,11 +95,11 @@ extension Color {
         )
     }
 
-    static var posTextSuccess: Color {
+    static var posSuccessColor: Color {
         Color(
             UIColor(
-                light: UIColor(red: 10.0/255.0, green: 148.0/255.0, blue: 0.0/255.0, alpha: 1.0),
-                dark: UIColor(red: 10.0/255.0, green: 148.0/255.0, blue: 0.0/255.0, alpha: 1.0)
+                light: UIColor(red: 8.0/255.0, green: 251.0/255.0, blue: 135.0/255.0, alpha: 1.0),
+                dark: UIColor(red: 8.0/255.0, green: 251.0/255.0, blue: 135.0/255.0, alpha: 1.0)
             )
         )
     }

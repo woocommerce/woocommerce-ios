@@ -79,23 +79,18 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
 
 private extension WooShippingCustomsFormViewModel {
     func listenForRequiredInformation() {
-        Publishers.CombineLatest3($itemsRequiredInformationIsEntered, $internationalTransactionNumber, $internationalTransactionNumberIsRequired)
-            .sink { [weak self] itemsRequiredInformationIsEntered, internationalTransactionNumber, internationalTransactionNumberIsRequired in
-                guard let self = self else { return }
+        let firstBatch = Publishers.CombineLatest4($contentType, $contentExplanation, $restrictionType, $restrictionDetails)
+        let secondBatch = Publishers.CombineLatest3($itemsRequiredInformationIsEntered, $internationalTransactionNumber, $internationalTransactionNumberIsRequired)
 
-                guard itemsRequiredInformationIsEntered else {
-                    self.requiredInformationIsEntered = false
-                    return
-                }
+        firstBatch.combineLatest(secondBatch).sink { firstBatchOutput, secondBatchOutput in
+            let (contentType, contentExplanation, restrictionType, restrictionDetails) = firstBatchOutput
+            let (itemsRequiredInfo, internationalTransactionNumber, transactionNumberRequired) = secondBatchOutput
 
-                guard internationalTransactionNumberIsRequired else {
-                    self.requiredInformationIsEntered = true
-                    return
-                }
-
-                self.requiredInformationIsEntered = internationalTransactionNumber.isNotEmpty && self.isValidITN()
-            }
-            .store(in: &cancellables)
+            self.requiredInformationIsEntered = (contentType != .other || contentExplanation.isNotEmpty) &&
+            (restrictionType != .other || restrictionDetails.isNotEmpty) &&
+            itemsRequiredInfo &&
+            (!transactionNumberRequired || internationalTransactionNumber.isNotEmpty)
+        }.store(in: &cancellables)
     }
 
     func listenForInternationalTransactionNumberIsRequired() {

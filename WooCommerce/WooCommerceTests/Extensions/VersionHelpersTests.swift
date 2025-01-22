@@ -40,6 +40,10 @@ struct VersionHelpersTests {
         VersionTestCase(foundVersion: "1.0.0-rc1", requiredMinimumVersion: "1.0.0", meetsMinimum: false),
         VersionTestCase(foundVersion: "1.0.0-pl", requiredMinimumVersion: "1.0.0", meetsMinimum: true),
         VersionTestCase(foundVersion: "1.0.0-p1", requiredMinimumVersion: "1.0.0", meetsMinimum: true),
+
+        VersionTestCase(foundVersion: "9.6.0-rc.1", requiredMinimumVersion: "9.6.0-rc.2", meetsMinimum: false),
+        VersionTestCase(foundVersion: "9.6.0-rc.1", requiredMinimumVersion: "9.6.0-rc.1", meetsMinimum: true),
+        VersionTestCase(foundVersion: "9.6.0-rc.2", requiredMinimumVersion: "9.6.0-rc.1", meetsMinimum: true),
     ])
     func compareAsVersion(testCase: VersionTestCase) {
         let meetsMinimum = VersionHelpers.compare(testCase.foundVersion, testCase.requiredMinimumVersion) != .orderedAscending

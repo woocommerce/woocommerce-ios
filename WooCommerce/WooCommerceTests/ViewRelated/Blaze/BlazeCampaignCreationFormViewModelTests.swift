@@ -16,8 +16,10 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     private var sampleProduct: Product {
         .fake().copy(siteID: sampleSiteID,
                      productID: sampleProductID,
+                     name: "My Woo Product",
                      permalink: "Sample product url",
                      statusKey: (ProductStatus.published.rawValue),
+                     shortDescription: "Short description of My Woo Product",
                      images: [.fake().copy(imageID: 1)])
     }
 
@@ -210,6 +212,39 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(triggeredFetchAISuggestions)
+    }
+
+    @MainActor
+    func test_onLoad_does_not_fetch_AI_suggestions_again() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockDownloadImage(sampleImage)
+        var triggeredFetchAISuggestions = false
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            switch action {
+            case let .fetchAISuggestions(_, _, completion):
+                triggeredFetchAISuggestions = true
+                completion(.failure(MockError()))
+            default:
+                break
+            }
+        }
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           onCompletion: {})
+
+        // Preload AI suggestions and reset the flag
+        await viewModel.onLoad()
+        triggeredFetchAISuggestions = false
+
+        // When
+        await viewModel.onLoad()
+
+        // Then
+        XCTAssertFalse(triggeredFetchAISuggestions)
     }
 
     @MainActor

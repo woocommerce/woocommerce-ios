@@ -94,6 +94,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                                     productID: productID,
                                     adData: adData,
                                     suggestions: suggestions,
+                                    isUsingAISuggestions: isUsingAISuggestions,
                                     onSave: { [weak self] adData in
             guard let self else { return }
             self.image = adData.image
@@ -323,7 +324,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     func onLoad() async {
         await withTaskGroup(of: Void.self) { group in
-            if suggestions.isEmpty {
+            // Make sure AI Suggestions are called just if suggestions are empty, and we didn't already populated tagline, description and ctaText.
+            if suggestions.isEmpty && tagline.isEmpty && description.isEmpty && ctaText.isEmpty {
                 group.addTask {
                     await self.loadAISuggestions()
                 }
@@ -355,6 +357,11 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                 ctaText = firstSuggestion.ctaText
             }
         } catch {
+            if let productName = product?.name, let productDescription = product?.shortDescription ?? product?.fullDescription {
+                tagline = productName
+                description = productDescription
+                ctaText = Localization.shopNow
+            }
             DDLogError("⛔️ Error fetching Blaze AI suggestions: \(error)")
             analytics.track(event: .Blaze.CreationForm.suggestionLoadingFailed(error: error))
             self.error = .failedToLoadAISuggestions
@@ -565,6 +572,11 @@ private extension BlazeCampaignCreationFormViewModel {
             value: "%1$@, %2$d day from %3$@",
             comment: "Blaze campaign budget details with duration in singular form. " +
             "Reads like: $35, 1 day from Dec 31"
+        )
+        static let shopNow = NSLocalizedString(
+            "blazeCampaignCreationForm.shopNow",
+            value: "Shop Now",
+            comment: "Button to shop on the Blaze ad preview"
         )
         static let budgetMultipleDays = NSLocalizedString(
             "blazeCampaignCreationFormViewModel.budgetMultipleDays",

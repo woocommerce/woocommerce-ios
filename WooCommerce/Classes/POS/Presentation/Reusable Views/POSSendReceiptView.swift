@@ -3,6 +3,7 @@ import class WordPressShared.EmailFormatValidator
 
 struct POSSendReceiptView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @State private var textFieldInput: String = ""
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
@@ -15,7 +16,7 @@ struct POSSendReceiptView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center) {
+        VStack(alignment: .center, spacing: conditionalPadding(8)) {
             HStack {
                 Button(action: {
                     withAnimation {
@@ -29,6 +30,7 @@ struct POSSendReceiptView: View {
                     }
                     .font(.posTitleEmphasized)
                     .foregroundColor(.posPrimaryText)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility3)
                     .accessibilityAddTraits(.isHeader)
                 })
                 Spacer()
@@ -37,6 +39,7 @@ struct POSSendReceiptView: View {
             .disabled(isLoading)
 
             TextField(Localization.textfieldPlaceholder, text: $textFieldInput)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                 .keyboardType(.emailAddress)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
@@ -70,7 +73,8 @@ struct POSSendReceiptView: View {
                 }
                 .frame(maxWidth: .infinity)
             })
-            .padding(Constants.buttonPadding)
+            .dynamicTypeSize(...DynamicTypeSize.accessibility3)
+            .padding(conditionalPadding(Constants.buttonPadding))
             .frame(maxWidth: .infinity)
             .foregroundColor(Color.posPrimaryTextInverted)
             .background(isEmailValid ? Color.posPrimaryButtonBackground : Color.posBackgroundButtonDisabled)
@@ -115,6 +119,16 @@ private extension POSSendReceiptView {
         static let buttonPadding: CGFloat = 32
         static let buttonFont: POSFontStyle = .posBodyEmphasized
         static let buttonCornerRadius: CGFloat = 8
+    }
+
+    private func conditionalPadding(_ padding: CGFloat) -> CGFloat {
+        if dynamicTypeSize.isAccessibilitySize {
+            return 0
+        } else if dynamicTypeSize >= .xLarge {
+            return padding * 0.5
+        } else {
+            return padding
+        }
     }
 }
 

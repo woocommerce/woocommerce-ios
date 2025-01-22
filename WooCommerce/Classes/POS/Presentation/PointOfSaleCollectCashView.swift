@@ -40,7 +40,7 @@ struct PointOfSaleCollectCashView: View {
             }
 
             FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
-                .dynamicTypeSize(...DynamicTypeSize.accessibility3)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                 .onSubmit {
                     Task { @MainActor in
                         await submitCashAmount()
@@ -86,6 +86,7 @@ struct PointOfSaleCollectCashView: View {
             .background(Color.posPrimaryButtonBackground)
             .cornerRadius(Constants.buttonCornerRadius)
             .contentShape(Rectangle())
+            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             .disabled(isLoading)
 
             Spacer()

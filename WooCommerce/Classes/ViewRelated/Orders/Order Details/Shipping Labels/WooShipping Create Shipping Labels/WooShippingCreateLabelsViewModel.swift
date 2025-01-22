@@ -25,8 +25,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Whether the custom information is completed or not.
     var customsInformationIsCompleted: Bool {
-        // To be synced with real data
-        false
+        customsForm != nil
     }
 
     /// View model for the section displayed after a shipping label is purchased.
@@ -118,6 +117,16 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Closure to execute after the label is successfully purchased.
     let onLabelPurchase: ((_ markOrderComplete: Bool) -> Void)?
+
+    private(set) var customsForm: ShippingLabelCustomsForm?
+
+    lazy var customsFormViewModel: WooShippingCustomsFormViewModel = {
+        WooShippingCustomsFormViewModel(order: order, onCompletion: { [weak self] form in
+            // TODO: Remove debug print
+            debugPrint("form", form)
+            self?.onCustomsFormFilled(form: form)
+        })
+    }()
 
     /// Initialize the view model without an existing shipping label.
     init(order: Order,
@@ -222,6 +231,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             }
         }
         stores.dispatch(action)
+    }
+
+    func onCustomsFormFilled(form: ShippingLabelCustomsForm) {
+        customsForm = form
     }
 }
 
@@ -385,7 +398,7 @@ private extension WooShippingCreateLabelsViewModel {
                                      weight: weight,
                                      isLetter: WooShippingPackageType(rawValue: packageData.packageType) == .envelope,
                                      hazmatCategory: nil, // Hazmat support will be added in a future milestone
-                                     customsForm: nil) // Customs form support will be added in a future milestone
+                                     customsForm: customsForm) // Customs form support will be added in a future milestone
     }
 }
 

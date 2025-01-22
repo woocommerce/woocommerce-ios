@@ -205,8 +205,6 @@ class WooShippingCustomsFormViewModelTests: XCTestCase {
 
         viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { _ in })
 
-        debugPrint("viewModel.itemsViewModels", viewModel.itemsViewModels)
-
         viewModel.internationalTransactionNumber = "NOEEI 30.37(a)"
         viewModel.itemsViewModels.first?.requiredInformationIsEntered = true
         viewModel.itemsViewModels.first?.internationalTransactionNumberIsRequired = true

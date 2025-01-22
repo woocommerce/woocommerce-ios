@@ -437,7 +437,7 @@ private extension DashboardView {
 
             static let subtitle = NSLocalizedString(
                 "dashboardView.shareStoreCard.subtitle",
-                value: "Use email or social media to spread the word about your store",
+                value: "Use email or social media to spread the word about your store.",
                 comment: "Subtitle of the Share Your Store card"
             )
 

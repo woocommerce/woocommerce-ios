@@ -44,15 +44,15 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.id, id)
-        XCTAssertEqual(viewModel.name, name)
-        XCTAssertEqual(viewModel.company, company)
-        XCTAssertEqual(viewModel.country, country)
-        XCTAssertEqual(viewModel.address, address)
-        XCTAssertEqual(viewModel.city, city)
-        XCTAssertEqual(viewModel.state, state)
-        XCTAssertEqual(viewModel.postalCode, postalCode)
-        XCTAssertEqual(viewModel.email, email)
-        XCTAssertEqual(viewModel.phone, phone)
+        XCTAssertEqual(viewModel.name.value, name)
+        XCTAssertEqual(viewModel.company.value, company)
+        XCTAssertEqual(viewModel.country.value, country)
+        XCTAssertEqual(viewModel.address.value, address)
+        XCTAssertEqual(viewModel.city.value, city)
+        XCTAssertEqual(viewModel.state.value, state)
+        XCTAssertEqual(viewModel.postalCode.value, postalCode)
+        XCTAssertEqual(viewModel.email.value, email)
+        XCTAssertEqual(viewModel.phone.value, phone)
         XCTAssertEqual(viewModel.isDefaultAddress, saveAsDefault)
         XCTAssertEqual(viewModel.showCompanyField, showCompanyField)
         XCTAssertEqual(viewModel.status, .verified)
@@ -84,15 +84,15 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.id, address.id)
-        XCTAssertEqual(viewModel.name, address.fullName)
-        XCTAssertEqual(viewModel.country, address.country)
-        XCTAssertEqual(viewModel.company, address.company)
-        XCTAssertEqual(viewModel.address, address.combinedAddress)
-        XCTAssertEqual(viewModel.city, address.city)
-        XCTAssertEqual(viewModel.state, address.state)
-        XCTAssertEqual(viewModel.postalCode, address.postcode)
-        XCTAssertEqual(viewModel.phone, address.phone)
-        XCTAssertEqual(viewModel.email, address.email)
+        XCTAssertEqual(viewModel.name.value, address.fullName)
+        XCTAssertEqual(viewModel.country.value, address.country)
+        XCTAssertEqual(viewModel.company.value, address.company)
+        XCTAssertEqual(viewModel.address.value, address.combinedAddress)
+        XCTAssertEqual(viewModel.city.value, address.city)
+        XCTAssertEqual(viewModel.state.value, address.state)
+        XCTAssertEqual(viewModel.postalCode.value, address.postcode)
+        XCTAssertEqual(viewModel.phone.value, address.phone)
+        XCTAssertEqual(viewModel.email.value, address.email)
         XCTAssertTrue(viewModel.isDefaultAddress)
         XCTAssertTrue(viewModel.showCompanyField)
         XCTAssertEqual(viewModel.status, .verified)
@@ -100,7 +100,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.countries.count, 1, "Should only include USPS-supported countries for origin addresses")
     }
 
-    func test_isRequired_returns_expected_values() {
+    func test_expected_fields_are_required() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let storageManager = MockStorageManager()
@@ -122,25 +122,19 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         stores: stores,
                                                         storageManager: storageManager)
 
-        // When
-        var requirements: [WooShippingEditAddressView.AddressField: Bool] = [:]
-        for field in WooShippingEditAddressView.AddressField.allCases {
-            requirements[field] = viewModel.isRequired(field)
-        }
-
         // Then
-        XCTAssertEqual(requirements[.name], true)
-        XCTAssertEqual(requirements[.company], true)
-        XCTAssertEqual(requirements[.country], true)
-        XCTAssertEqual(requirements[.address], true)
-        XCTAssertEqual(requirements[.city], true)
-        XCTAssertEqual(requirements[.state], false)
-        XCTAssertEqual(requirements[.postalCode], true)
-        XCTAssertEqual(requirements[.email], true)
-        XCTAssertEqual(requirements[.phone], true)
+        XCTAssertEqual(viewModel.name.required, true)
+        XCTAssertEqual(viewModel.company.required, true)
+        XCTAssertEqual(viewModel.country.required, true)
+        XCTAssertEqual(viewModel.address.required, true)
+        XCTAssertEqual(viewModel.city.required, true)
+        XCTAssertEqual(viewModel.state.required, false)
+        XCTAssertEqual(viewModel.postalCode.required, true)
+        XCTAssertEqual(viewModel.email.required, true)
+        XCTAssertEqual(viewModel.phone.required, true)
     }
 
-    func test_isRequired_returns_false_for_company_when_name_is_not_empty() {
+    func test_company_not_required_when_name_is_not_empty() {
         // Given
         let viewModel = WooShippingEditAddressViewModel(type: .origin,
                                                         id: "",
@@ -158,14 +152,11 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         isVerified: true,
                                                         phoneNumberRequired: false)
 
-        // When
-        let isCompanyRequired = viewModel.isRequired(.company)
-
         // Then
-        XCTAssertFalse(isCompanyRequired)
+        XCTAssertFalse(viewModel.company.required)
     }
 
-    func test_isRequired_returns_false_for_name_when_company_is_not_empty() {
+    func test_name_not_required_when_company_is_not_empty() {
         // Given
         let viewModel = WooShippingEditAddressViewModel(type: .origin,
                                                         id: "",
@@ -183,14 +174,11 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         isVerified: true,
                                                         phoneNumberRequired: false)
 
-        // When
-        let isNameRequired = viewModel.isRequired(.name)
-
         // Then
-        XCTAssertFalse(isNameRequired)
+        XCTAssertFalse(viewModel.name.required)
     }
 
-    func test_isRequired_returns_false_when_phone_number_not_required() {
+    func test_phone_number_not_required_when_phoneNumberRequired_set_to_false() {
         // Given
         let viewModel = WooShippingEditAddressViewModel(type: .origin,
                                                         id: "",
@@ -208,11 +196,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         isVerified: true,
                                                         phoneNumberRequired: false)
 
-        // When
-        let isPhoneRequired = viewModel.isRequired(.phone)
-
         // Then
-        XCTAssertFalse(isPhoneRequired)
+        XCTAssertFalse(viewModel.phone.required)
     }
 
     func test_it_inits_with_expected_values_for_origin_address_type() {
@@ -310,7 +295,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertTrue(stores.receivedActions.first is DataAction)
     }
 
-    func test_isRequired_returns_true_when_selected_country_contains_states() {
+    func test_state_required_when_selected_country_contains_states() {
         // Given
         let storageManager = MockStorageManager()
         let country = Country(code: "US", name: "United States", states: [.init(code: "NY", name: "New York")])
@@ -332,11 +317,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         phoneNumberRequired: true,
                                                         storageManager: storageManager)
 
-        // When
-        let isStateRequired = viewModel.isRequired(.state)
-
         // Then
-        XCTAssertTrue(isStateRequired)
+        XCTAssertTrue(viewModel.state.required)
     }
 
     func test_selected_country_and_state_properies_set_when_address_contains_country_and_state_in_countries() {
@@ -367,8 +349,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.selectedCountry, country)
         XCTAssertEqual(viewModel.selectedState, state)
-        XCTAssertEqual(viewModel.country, country.code)
-        XCTAssertEqual(viewModel.state, state.code)
+        XCTAssertEqual(viewModel.country.value, country.code)
+        XCTAssertEqual(viewModel.state.value, state.code)
     }
 
     func test_selectedState_cleared_when_new_country_is_selected() {
@@ -488,8 +470,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
         // Then
         // Note that empty state is valid when country is empty (has no states).
-        let expectedInvalidFields = WooShippingEditAddressView.AddressField.allCases.filter { $0 != .state }
-        XCTAssertEqual(viewModel.invalidFields, expectedInvalidFields)
+        let expectedInvalidFieldTypes = WooShippingAddressFieldType.allCases.filter { $0 != .state }
+        XCTAssertEqual(viewModel.invalidFields.map { $0.type }, expectedInvalidFieldTypes)
         XCTAssertEqual(viewModel.status, .missingInformation)
     }
 
@@ -516,7 +498,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         storageManager: storageManager)
 
         // When
-        for field in WooShippingEditAddressView.AddressField.allCases {
+        for field in WooShippingAddressFieldType.allCases {
             viewModel.validate(field)
         }
 
@@ -544,14 +526,14 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         phoneNumberRequired: true)
 
         // When
-        for field in WooShippingEditAddressView.AddressField.allCases {
+        for field in WooShippingAddressFieldType.allCases {
             viewModel.validate(field)
         }
 
         // Then
         // Note that empty state is valid when country is empty (has no states).
-        let expectedInvalidFields = WooShippingEditAddressView.AddressField.allCases.filter { $0 != .state }
-        XCTAssertEqual(viewModel.invalidFields, expectedInvalidFields)
+        let expectedInvalidFields = WooShippingAddressFieldType.allCases.filter { $0 != .state }
+        XCTAssertEqual(viewModel.invalidFields.map { $0.type }, expectedInvalidFields)
         XCTAssertEqual(viewModel.status, .missingInformation)
     }
 
@@ -581,7 +563,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         viewModel.validate(.state)
 
         // Then
-        XCTAssertEqual(viewModel.invalidFields, [.state])
+        XCTAssertTrue(viewModel.invalidFields.map { $0.type }.contains(.state))
     }
 
     func test_validate_sets_phone_as_invalid_field_when_invalid_for_US() {
@@ -610,7 +592,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         viewModel.validate(.phone)
 
         // Then
-        XCTAssertEqual(viewModel.invalidFields, [.phone])
+        XCTAssertTrue(viewModel.invalidFields.map { $0.type }.contains(.phone))
     }
 
     func test_validate_removes_valid_field_from_invalidFields() {
@@ -632,13 +614,13 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         phoneNumberRequired: true)
         // Precondition check
         viewModel.validate(.name)
-        XCTAssertTrue(viewModel.invalidFields.contains(.name))
+        XCTAssertTrue(viewModel.invalidFields.map { $0.type }.contains(.name))
 
         // When
-        viewModel.name = "JANE DOE"
+        viewModel.name.value = "JANE DOE"
         viewModel.validate(.name)
 
         // Then
-        XCTAssertFalse(viewModel.invalidFields.contains(.name))
+        XCTAssertFalse(viewModel.invalidFields.map { $0.type }.contains(.name))
     }
 }

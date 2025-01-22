@@ -22,15 +22,15 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     // MARK: Address properties
 
     let id: String
-    @Published var name: String
-    @Published var company: String
-    private(set) var country: String
-    @Published var address: String
-    @Published var city: String
-    @Published var state: String
-    @Published var postalCode: String
-    @Published var email: String
-    @Published var phone: String
+    @Published var name: WooShippingAddressField
+    @Published var company: WooShippingAddressField
+    @Published var country: WooShippingAddressField
+    @Published var address: WooShippingAddressField
+    @Published var city: WooShippingAddressField
+    @Published var state: WooShippingAddressField
+    @Published var postalCode: WooShippingAddressField
+    @Published var email: WooShippingAddressField
+    @Published var phone: WooShippingAddressField
 
     /// Whether the address is the default address for shipping labels; this is only used for origin addresses.
     @Published var isDefaultAddress: Bool
@@ -48,8 +48,14 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     /// Whether the address has been remotely verified.
     private var isVerified: Bool
 
-    /// Fields that are invalid based on local validation.
-    @Published private(set) var invalidFields: [WooShippingEditAddressView.AddressField] = []
+    var allFields: [WooShippingAddressField] {
+        [name, company, country, address, city, state, postalCode, email, phone]
+    }
+
+    /// Fields with validation errors based on local validation.
+    var invalidFields: [WooShippingAddressField] {
+        allFields.filter { $0.errorMessage != nil }
+    }
 
     /// Whether the phone number is required.
     private let phoneNumberRequired: Bool
@@ -112,12 +118,12 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     /// Whether the address is in the US.
     var isUSAddress: Bool {
-        country == "US"
+        country.value == "US"
     }
 
     /// States of the selected country.
     var statesOfSelectedCountry: [StateOfACountry] {
-        countries.first { $0.code == country }?.states.sorted { $0.name < $1.name } ?? []
+        countries.first { $0.code == country.value }?.states.sorted { $0.name < $1.name } ?? []
     }
 
     /// Whether the state is required for the selected country.
@@ -144,15 +150,25 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.addressType = type
         self.id = id
-        self.name = name
-        self.company = company
-        self.country = country
-        self.address = address
-        self.city = city
-        self.state = state
-        self.postalCode = postalCode
-        self.email = email
-        self.phone = phone
+        self.name = WooShippingAddressField(type: .name, value: name, required: company.isEmpty, validate: { _ in return nil })
+        self.company = WooShippingAddressField(type: .company, value: company, required: name.isEmpty, validate: { _ in return nil })
+        self.country = WooShippingAddressField(type: .country, value: country, required: true, validate: { newCountry in
+            newCountry.isEmpty ? Localization.Validation.country : nil
+        })
+        self.address = WooShippingAddressField(type: .address, value: address, required: true, validate: { newAddress in
+            newAddress.isEmpty ? Localization.Validation.address : nil
+        })
+        self.city = WooShippingAddressField(type: .city, value: city, required: true, validate: { newCity in
+            newCity.isEmpty ? Localization.Validation.city : nil
+        })
+        self.state = WooShippingAddressField(type: .state, value: state, required: false, validate: { _ in return nil })
+        self.postalCode = WooShippingAddressField(type: .postalCode, value: postalCode, required: true, validate: { newPostalCode in
+            newPostalCode.isEmpty ? Localization.Validation.postalCode : nil
+        })
+        self.email = WooShippingAddressField(type: .email, value: email, required: true, validate: { newEmail in
+            newEmail.isEmpty ? Localization.Validation.email : nil
+        })
+        self.phone = WooShippingAddressField(type: .phone, value: phone, required: phoneNumberRequired, validate: { _ in return nil})
         self.isDefaultAddress = isDefaultAddress
         self.showCompanyField = showCompanyField
         self.isVerified = isVerified
@@ -161,6 +177,33 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         self.siteID = stores.sessionManager.defaultStoreID ?? Int64.min
         self.storageManager = storageManager
 
+        // Set validation rules for fields that rely on instance properties.
+        self.name.validate = { [weak self] newName in
+            guard let self, self.company.value.isEmpty else {
+                return nil
+            }
+            return newName.isEmpty ? Localization.Validation.nameOrCompany : nil
+        }
+        self.company.validate = { [weak self] newCompany in
+            guard let self, self.name.value.isEmpty else {
+                return nil
+            }
+            return newCompany.isEmpty ? Localization.Validation.nameOrCompany : nil
+        }
+        self.state.validate = { [weak self] newState in
+            guard let self, stateRequired else {
+                return nil
+            }
+            return newState.isEmpty ? Localization.Validation.state : nil
+        }
+        self.phone.validate = { [weak self] newPhone in
+            guard let self, phoneNumberRequired else {
+                return nil
+            }
+            return self.isPhoneNumberValid ? nil : Localization.Validation.phone
+        }
+
+        observeNameAndCompany()
         observeSelectedCountry()
         observeSelectedState()
         fetchCountries()
@@ -187,64 +230,19 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                   stores: stores,
                   storageManager: storageManager)
     }
-
-    func isRequired(_ field: WooShippingEditAddressView.AddressField) -> Bool {
-        switch field {
-        case .name:
-            return company.isEmpty
-        case .company:
-            return name.isEmpty
-        case .country, .address, .city, .postalCode, .email:
-            return true
-        case .state:
-            return stateRequired
-        case .phone:
-            return phoneNumberRequired
-        }
-    }
 }
 
 // MARK: Validation
 
 extension WooShippingEditAddressViewModel {
-    /// Locally validates all fields in the address at once.
+    /// Validate all fields in the address.
     func validateAddress() {
-        for field in WooShippingEditAddressView.AddressField.allCases {
-            validate(field)
-        }
+        allFields.forEach { $0.validateField() }
     }
 
-    /// Locally validates the given field and appends/removes it from the list of invalid fields.
-    func validate(_ field: WooShippingEditAddressView.AddressField) {
-        if isValid(field) {
-            invalidFields.removeAll { $0 == field }
-        } else if !invalidFields.contains(field) {
-            invalidFields.append(field)
-        }
-    }
-
-    /// Checks if the field is valid based on local validation.
-    private func isValid(_ field: WooShippingEditAddressView.AddressField) -> Bool {
-        switch field {
-        case .name:
-            return !isRequired(.name) || name.isNotEmpty
-        case .company:
-            return !isRequired(.company) || company.isNotEmpty
-        case .country:
-            return !isRequired(.country) || country.isNotEmpty
-        case .address:
-            return !isRequired(.address) || address.isNotEmpty
-        case .city:
-            return !isRequired(.city) || city.isNotEmpty
-        case .state:
-            return !isRequired(.state) || state.isNotEmpty
-        case .postalCode:
-            return !isRequired(.postalCode) || postalCode.isNotEmpty
-        case .email:
-            return !isRequired(.email) || email.isNotEmpty
-        case .phone:
-            return isPhoneNumberValid
-        }
+    /// Validate the address field with the given type.
+    func validate(_ field: WooShippingAddressFieldType) {
+        allFields.first { $0.type == field }?.validateField()
     }
 
     /// Validates phone number for the address.
@@ -252,13 +250,13 @@ extension WooShippingEditAddressViewModel {
     /// has length 10 with additional "1" area code for US.
     ///
     private var isPhoneNumberValid: Bool {
-        guard phone.isNotEmpty else {
+        guard phone.value.isNotEmpty else {
             return !phoneNumberRequired
         }
         guard isUSAddress else {
             return true
         }
-        let phoneDigits = phone.components(separatedBy: .decimalDigits.inverted).joined()
+        let phoneDigits = phone.value.components(separatedBy: .decimalDigits.inverted).joined()
         if phoneDigits.hasPrefix("1") {
             return phoneDigits.count == 11
         } else {
@@ -268,13 +266,24 @@ extension WooShippingEditAddressViewModel {
 }
 
 private extension WooShippingEditAddressViewModel {
+    func observeNameAndCompany() {
+        $name.combineLatest($company)
+            .sink { [weak self] name, company in
+                guard let self else { return }
+                self.name.required = company.value.isEmpty
+                self.company.required = name.value.isEmpty
+            }
+            .store(in: &cancellables)
+    }
+
     func observeSelectedCountry() {
         $selectedCountry
             .dropFirst()
             .sink { [weak self] selectedCountry in
                 guard let self, let selectedCountry, self.selectedCountry != selectedCountry else { return }
-                country = selectedCountry.code
+                country.value = selectedCountry.code
                 selectedState = nil
+                state.required = stateRequired
             }
             .store(in: &cancellables)
     }
@@ -284,7 +293,7 @@ private extension WooShippingEditAddressViewModel {
             .dropFirst()
             .sink { [weak self] selectedState in
                 guard let self else { return }
-                state = selectedState?.code ?? ""
+                state.value = selectedState?.code ?? ""
             }
             .store(in: &cancellables)
     }
@@ -311,8 +320,8 @@ private extension WooShippingEditAddressViewModel {
         try? resultsController.performFetch()
         // Updating the selected country clears the selected state.
         // We track the initial state code so we can set the correct selected state.
-        let stateCode = state
-        selectedCountry = countries.first { $0.code == country }
+        let stateCode = state.value
+        selectedCountry = countries.first { $0.code == country.value }
         selectedState = statesOfSelectedCountry.first { $0.code == stateCode }
     }
 }
@@ -334,5 +343,37 @@ private extension WooShippingEditAddressViewModel {
             "FM", // Micronesia
             "MP" // Northern Mariana Islands
         ]
+    }
+}
+
+private extension WooShippingEditAddressViewModel {
+    enum Localization {
+        enum Validation {
+            static let nameOrCompany = NSLocalizedString("wooShipping.createLabels.editAddress.validation.nameOrCompany",
+                                                         value: "Please provide a valid name or company name.",
+                                                         comment: "Validation message when the name and company fields are empty " +
+                                                         "in the Woo Shipping label creation flow")
+            static let email = NSLocalizedString("wooShipping.createLabels.editAddress.validation.email",
+                                                 value: "Please provide a valid email address.",
+                                                 comment: "Validation message when the email field is empty in the Woo Shipping label creation flow")
+            static let phone = NSLocalizedString("wooShipping.createLabels.editAddress.validation.phone",
+                                                 value: "Please provide a valid phone number.",
+                                                 comment: "Validation message when the phone field is empty in the Woo Shipping label creation flow")
+            static let country = NSLocalizedString("wooShipping.createLabels.editAddress.validation.country",
+                                                   value: "Please select a country.",
+                                                   comment: "Validation message when the country field is empty in the Woo Shipping label creation flow")
+            static let address = NSLocalizedString("wooShipping.createLabels.editAddress.validation.address",
+                                                   value: "Please provide a valid address.",
+                                                   comment: "Validation message when the address field is empty in the Woo Shipping label creation flow")
+            static let city = NSLocalizedString("wooShipping.createLabels.editAddress.validation.city",
+                                                value: "Please provide a valid city.",
+                                                comment: "Validation message when the city field is empty in the Woo Shipping label creation flow")
+            static let state = NSLocalizedString("wooShipping.createLabels.editAddress.validation.state",
+                                                 value: "Please provide a valid state.",
+                                                 comment: "Validation message when the state field is empty in the Woo Shipping label creation flow")
+            static let postalCode = NSLocalizedString("wooShipping.createLabels.editAddress.validation.postalCode",
+                                                      value: "Please provide a valid postal code.",
+                                                      comment: "Validation message when the postal code field is empty in the Woo Shipping label creation flow")
+        }
     }
 }

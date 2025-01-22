@@ -31,7 +31,6 @@ final class WooShippingAddressField: ObservableObject {
 
     private func observeValue() {
         $value
-            .debounce(for: 0.5, scheduler: RunLoop.main)
             .removeDuplicates()
             .map { [weak self] newValue in
                 self?.validate(newValue)
@@ -42,12 +41,6 @@ final class WooShippingAddressField: ObservableObject {
     /// Validates the field with the current value.
     func validateField() {
         errorMessage = validate(value)
-    }
-
-    /// Clears the current validation error.
-    /// This can be used to reset an error for later re-validation.
-    func clearError() {
-        errorMessage = nil
     }
 }
 

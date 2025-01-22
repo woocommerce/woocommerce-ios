@@ -136,6 +136,36 @@ final class CoreDataManagerTests: XCTestCase {
         }
     }
 
+    func test_performAndSave_resets_the_database_if_it_is_corrupted() throws {
+        // Given
+        let modelsInventory = try makeModelsInventory()
+        let manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
+
+        waitFor { promise in
+            manager.performAndSave({ storage in
+                self.insertAccount(to: storage)
+            }, completion: {
+                promise(())
+            }, on: .main)
+        }
+
+        XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
+
+        // When
+        let storeURL = CoreDataManager.storeURL(with: storageIdentifier)
+        try deleteStoreFiles(at: storeURL) // intentionally remove the database file to force access error
+        waitFor { promise in
+            manager.performAndSave({ storage in
+                self.insertAccount(to: storage)
+            }, completion: {
+                promise(())
+            }, on: .main)
+        }
+
+        // Then
+        XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 0)
+    }
+
     func test_when_the_model_is_incompatible_then_it_recovers_and_recreates_the_database() throws {
         // Given
         let modelsInventory = try makeModelsInventory()

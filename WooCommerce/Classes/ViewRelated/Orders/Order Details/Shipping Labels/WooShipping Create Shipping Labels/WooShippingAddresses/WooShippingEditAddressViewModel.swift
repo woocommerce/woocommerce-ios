@@ -267,11 +267,13 @@ extension WooShippingEditAddressViewModel {
 
 private extension WooShippingEditAddressViewModel {
     func observeNameAndCompany() {
-        $name.combineLatest($company)
+        (name.$value.removeDuplicates()).combineLatest(company.$value.removeDuplicates())
             .sink { [weak self] name, company in
                 guard let self else { return }
-                self.name.required = company.value.isEmpty
-                self.company.required = name.value.isEmpty
+                self.name.required = company.isEmpty
+                self.company.required = name.isEmpty
+                self.name.validateField()
+                self.company.validateField()
             }
             .store(in: &cancellables)
     }

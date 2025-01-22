@@ -84,7 +84,10 @@ struct WooShippingCustomsForm: View {
                                             .font(.subheadline)
                                     TextField("", text: $viewModel.contentExplanation)
                                         .padding(Constants.borderPadding)
-                                        .roundedBorder(cornerRadius: Constants.borderCornerRadius, lineColor: Color(.separator), lineWidth: Constants.borderWidth)
+                                        .roundedBorder(cornerRadius: Constants.borderCornerRadius,
+                                                       lineColor: viewModel.contentExplanation.isEmpty ?
+                                                       warningRedColor : Color(.separator),
+                                                       lineWidth: Constants.borderWidth)
                                     Text(Localization.contentDetailsFootnote)
                                         .footnoteStyle()
                                     Text(Localization.valueRequiredWarning)
@@ -106,7 +109,10 @@ struct WooShippingCustomsForm: View {
                                             .font(.subheadline)
                                     TextField("", text: $viewModel.restrictionDetails)
                                         .padding(Constants.borderPadding)
-                                        .roundedBorder(cornerRadius: Constants.borderCornerRadius, lineColor: Color(.separator), lineWidth: Constants.borderWidth)
+                                        .roundedBorder(cornerRadius: Constants.borderCornerRadius,
+                                                       lineColor: viewModel.restrictionDetails.isEmpty ?
+                                                       warningRedColor : Color(.separator),
+                                                       lineWidth: Constants.borderWidth)
                                     Text(Localization.restrictionTypeFootnote)
                                         .footnoteStyle()
                                     Text(Localization.valueRequiredWarning)

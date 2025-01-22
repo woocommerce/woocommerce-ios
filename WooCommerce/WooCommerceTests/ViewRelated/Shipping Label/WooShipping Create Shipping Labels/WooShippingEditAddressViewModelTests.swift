@@ -485,7 +485,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         isDefaultAddress: true,
                                                         showCompanyField: true,
                                                         isVerified: true,
-                                                        phoneNumberRequired: true)
+                                                        phoneNumberRequired: true,
+                                                        debounceDelayInSeconds: 0)
 
         // When
         viewModel.validateAddress()
@@ -517,7 +518,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         showCompanyField: true,
                                                         isVerified: true,
                                                         phoneNumberRequired: true,
-                                                        storageManager: storageManager)
+                                                        storageManager: storageManager,
+                                                        debounceDelayInSeconds: 0)
 
         // When
         for field in WooShippingAddressFieldType.allCases {
@@ -545,7 +547,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         isDefaultAddress: true,
                                                         showCompanyField: true,
                                                         isVerified: true,
-                                                        phoneNumberRequired: true)
+                                                        phoneNumberRequired: true,
+                                                        debounceDelayInSeconds: 0)
 
         // When
         for field in WooShippingAddressFieldType.allCases {
@@ -579,7 +582,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         showCompanyField: true,
                                                         isVerified: true,
                                                         phoneNumberRequired: true,
-                                                        storageManager: storageManager)
+                                                        storageManager: storageManager,
+                                                        debounceDelayInSeconds: 0)
 
         // When
         viewModel.validate(.state)
@@ -608,7 +612,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         showCompanyField: true,
                                                         isVerified: true,
                                                         phoneNumberRequired: true,
-                                                        storageManager: storageManager)
+                                                        storageManager: storageManager,
+                                                        debounceDelayInSeconds: 0)
 
         // When
         viewModel.validate(.phone)
@@ -633,7 +638,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         isDefaultAddress: true,
                                                         showCompanyField: true,
                                                         isVerified: true,
-                                                        phoneNumberRequired: true)
+                                                        phoneNumberRequired: true,
+                                                        debounceDelayInSeconds: 0)
         // Precondition check
         viewModel.validate(.name)
         XCTAssertTrue(viewModel.invalidFields.map { $0.type }.contains(.name))

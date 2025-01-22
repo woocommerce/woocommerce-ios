@@ -9,6 +9,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     private let siteID: Int64
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private let debounceDelay: Double
     private var cancellables: Set<AnyCancellable> = []
 
     enum AddressType {
@@ -147,7 +148,8 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
          isVerified: Bool,
          phoneNumberRequired: Bool,
          stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         debounceDelayInSeconds: Double = 1) {
         self.addressType = type
         self.id = id
         self.name = WooShippingAddressField(type: .name, value: name, required: company.isEmpty, validate: { _ in return nil })
@@ -176,6 +178,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         self.stores = stores
         self.siteID = stores.sessionManager.defaultStoreID ?? Int64.min
         self.storageManager = storageManager
+        self.debounceDelay = debounceDelayInSeconds
 
         // Set validation rules for fields that rely on instance properties.
         self.name.validate = { [weak self] newName in
@@ -268,7 +271,19 @@ extension WooShippingEditAddressViewModel {
 
 private extension WooShippingEditAddressViewModel {
     func observeNameAndCompany() {
-        (name.$value.removeDuplicates()).combineLatest(company.$value.removeDuplicates())
+        let nameValues = name.$value.removeDuplicates()
+        let companyValues = company.$value.removeDuplicates()
+
+        (nameValues).combineLatest(companyValues)
+            .sink { [weak self] _, _ in
+                guard let self else { return }
+                self.name.clearError()
+                self.company.clearError()
+            }
+            .store(in: &cancellables)
+
+        (nameValues).combineLatest(companyValues)
+            .debounce(for: .seconds(debounceDelay), scheduler: DispatchQueue.main)
             .sink { [weak self] name, company in
                 guard let self else { return }
                 self.name.required = company.isEmpty

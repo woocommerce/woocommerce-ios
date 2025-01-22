@@ -129,29 +129,29 @@ public class ResultsController<T: ResultsControllerMutableType> {
     /// Executes the fetch request on the store to get objects asynchronously.
     ///
     public func performFetch(completion: ((Result<Void, Error>) -> Void)? = nil) {
-    guard let viewContext = viewStorage as? NSManagedObjectContext else {
-        let error = NSError(domain: "ResultsController",
-                            code: 1,
-                            userInfo: [NSLocalizedDescriptionKey: "Invalid viewStorage in performFetch method"])
-        completion?(.failure(error))
-        return
-    }
+        guard let viewContext = viewStorage as? NSManagedObjectContext else {
+            let error = NSError(domain: "ResultsController",
+                                code: 1,
+                                userInfo: [NSLocalizedDescriptionKey: "Invalid viewStorage in performFetch method"])
+            completion?(.failure(error))
+            return
+        }
 
-    // Since perform is called on NSManagedObjectContext, it's thread-safe,
-    // and all the code block inside it is dispatched async.
-    viewContext.perform {
-        do {
-            try self.controller.performFetch()
-            DispatchQueue.main.async {
-                completion?(.success(()))
-            }
-        } catch {
-            DispatchQueue.main.async {
-                completion?(.failure(error))
+        // Since perform is called on NSManagedObjectContext, it's thread-safe,
+        // and all the code block inside it is dispatched async.
+        viewContext.perform {
+            do {
+                try self.controller.performFetch()
+                DispatchQueue.main.async {
+                    completion?(.success(()))
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    completion?(.failure(error))
+                }
             }
         }
     }
-}
 
     /// Returns the fetched object at a given indexPath.
     ///

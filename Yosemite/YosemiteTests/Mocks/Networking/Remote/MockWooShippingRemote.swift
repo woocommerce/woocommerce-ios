@@ -116,7 +116,7 @@ final class MockWooShippingRemote {
     }
 
     /// Set the value passed to the `completion` block if `updateOriginAddress` is called.
-    func whenupdatingOriginAddress(siteID: Int64,
+    func whenUpdatingOriginAddress(siteID: Int64,
                                    thenReturn result: Result<WooShippingOriginAddressUpdate, Error>) {
         let key = ResultKey(siteID: siteID)
         updateOriginAddress[key] = result

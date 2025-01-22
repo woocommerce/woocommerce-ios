@@ -19,11 +19,6 @@ struct WooShippingEditAddressView: View {
     /// Used to validate the field when the focus changes.
     @State private var previousFocusedField: WooShippingAddressFieldType?
 
-    /// Tracks the previously focused address field.
-    ///
-    /// Used to validate the field when the focus changes.
-    @State private var previousFocusedField: AddressField?
-
     @Environment(\.dismiss) private var dismiss
 
     @State private var isPresentingCountrySelector: Bool = false
@@ -194,6 +189,9 @@ struct WooShippingEditAddressView: View {
                 .foregroundStyle(Color(.text))
                 TextField(Localization.title(for: field.type), text: $field.value, prompt: Text(field.required ? "" : Localization.optional))
                     .focused($focused, equals: field.type)
+                    .onChange(of: field.value) { _ in
+                        field.clearError()
+                    }
                     .padding()
                     .roundedBorder(cornerRadius: Constants.cornerRadius,
                                    lineColor: Constants.fieldBorderColor(focused: focused == field.type, valid: field.errorMessage == nil),

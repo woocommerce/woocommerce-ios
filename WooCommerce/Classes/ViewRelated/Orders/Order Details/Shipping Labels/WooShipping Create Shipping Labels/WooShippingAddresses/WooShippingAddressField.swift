@@ -36,6 +36,7 @@ final class WooShippingAddressField: ObservableObject {
 
     private func observeValue() {
         $value
+            .debounce(for: 0.5, scheduler: DispatchQueue.main)
             .map { [weak self] newValue in
                 guard let self else { return nil }
                 return validate(newValue)
@@ -51,6 +52,12 @@ final class WooShippingAddressField: ObservableObject {
     /// Validates the field with the current value.
     func validateField() {
         errorMessage = validate(value)
+    }
+
+    /// Clears the current validation error.
+    /// This can be used to reset an error for later re-validation.
+    func clearError() {
+        errorMessage = nil
     }
 }
 

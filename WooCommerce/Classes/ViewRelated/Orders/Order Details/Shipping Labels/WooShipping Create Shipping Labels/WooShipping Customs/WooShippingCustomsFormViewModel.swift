@@ -96,15 +96,18 @@ private extension WooShippingCustomsFormViewModel {
     func listenForInternationalTransactionNumberIsRequired() {
          $itemsViewModels
             .map { childViewModels in
-                childViewModels.map { $0.$internationalTransactionNumberIsRequired.eraseToAnyPublisher() }
+                childViewModels.map { $0.$hsTariffNumberTotalValue.eraseToAnyPublisher() }
             }
             .flatMap { childPublishers in
                 childPublishers.combineLatest()
             }
-            .map { childValidityArray in
-                childValidityArray.contains { $0 }
-            }.sink { [weak self] value in
-                self?.internationalTransactionNumberIsRequired = value
+            .sink { [weak self] values in
+                var hsTariffNumberTotalValueDictionary: [String: Decimal] = [:]
+                for (hsTariffNumber, totalValuePerItem) in values.compacted() {
+                    hsTariffNumberTotalValueDictionary[hsTariffNumber, default: 0] += totalValuePerItem
+                }
+
+                self?.internationalTransactionNumberIsRequired = hsTariffNumberTotalValueDictionary.values.contains { $0 > 2500 }
             }
             .store(in: &cancellables)
     }

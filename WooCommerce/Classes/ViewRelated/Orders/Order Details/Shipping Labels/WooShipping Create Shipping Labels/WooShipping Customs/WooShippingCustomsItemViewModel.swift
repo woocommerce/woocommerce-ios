@@ -15,6 +15,8 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
     @Published var valuePerUnit: String = ""
     @Published var weightPerUnit: String = ""
     @Published var originCountry: WooShippingCustomsCountry
+    // Useful to determine externally if the shipping requires an ITN
+    @Published var hsTariffNumberTotalValue: (String, Decimal)?
 
     private let storageManager: StorageManagerType
     private let stores: StoresManager
@@ -53,7 +55,6 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
     }
 
     @Published var requiredInformationIsEntered: Bool = false
-    @Published var internationalTransactionNumberIsRequired: Bool = false
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -72,11 +73,11 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
 
         fetchCountries()
         combineRequiredInformationIsEntered()
-        combineInternationalTransactionNumberIsRequired()
+        combineHSTariffNumberTotalValue()
     }
 }
 
-extension WooShippingCustomsItemViewModel {
+private extension WooShippingCustomsItemViewModel {
     func fetchCountries() {
         try? resultsController.performFetch()
         let action = DataAction.synchronizeCountries(siteID: siteID) { [weak self] (result) in
@@ -100,16 +101,20 @@ extension WooShippingCustomsItemViewModel {
             .store(in: &cancellables)
     }
 
-    func combineInternationalTransactionNumberIsRequired() {
+    func combineHSTariffNumberTotalValue() {
         Publishers.CombineLatest($valuePerUnit, $hsTariffNumber)
             .sink { [weak self] valuePerUnit, hsTariffNumber in
                 guard let self = self else { return }
 
-                // Items valued more than $2500 with a valid HSTariff Number require an International Transaction Number
-                self.internationalTransactionNumberIsRequired = self.currencySymbol == "$" &&
-                (Double(valuePerUnit) ?? 0) > 2500 &&
-                hsTariffNumber.isNotEmpty &&
-                isValidTariffNumber
+                guard self.currencySymbol == "$",
+                      let valuePerUnitDecimal = Decimal(string: valuePerUnit),
+                      hsTariffNumber.isNotEmpty,
+                      isValidTariffNumber else {
+                    self.hsTariffNumberTotalValue = nil
+                    return
+                }
+
+                self.hsTariffNumberTotalValue = (hsTariffNumber, valuePerUnitDecimal * orderItem.quantity)
             }
             .store(in: &cancellables)
     }

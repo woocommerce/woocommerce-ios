@@ -171,7 +171,7 @@ struct WooShippingEditAddressView: View {
         @FocusState.Binding var focused: WooShippingAddressFieldType?
 
         var body: some View {
-            VStack(spacing: Constants.verticalSpacing) {
+            VStack(spacing: Constants.innerSpacing) {
                 HStack(spacing: Constants.requiredLabelSpacing) {
                     Text(Localization.title(for: field.type))
                     if field.required {

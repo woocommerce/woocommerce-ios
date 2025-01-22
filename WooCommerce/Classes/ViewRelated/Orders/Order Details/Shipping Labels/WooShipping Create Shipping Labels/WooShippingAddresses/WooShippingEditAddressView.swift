@@ -193,7 +193,7 @@ struct WooShippingEditAddressView: View {
 
     private struct AddressSelection: View {
         /// Which address field to display.
-        let field: WooShippingAddressField
+        @ObservedObject var field: WooShippingAddressField
 
         /// The action to perform when the button is tapped.
         var action: () -> Void
@@ -214,7 +214,7 @@ struct WooShippingEditAddressView: View {
                     action()
                 } label: {
                     HStack {
-                        Text(field.displayValue)
+                        Text(field.displayValue ?? field.value)
                             .bodyStyle()
                         Spacer()
                         Image(systemName: "chevron.up.chevron.down")

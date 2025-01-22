@@ -7,11 +7,10 @@ final class WooShippingAddressField: ObservableObject {
     /// The value for the field.
     @Published var value: String
 
-    /// The display value for the field.
+    /// An optional display value for the field.
     ///
-    /// This is set to `value` by default.
-    /// Set a new value with `setDisplayValue(_:)` for fields where the value is not suited for display.
-    @Published private(set) var displayValue: String
+    /// Set the display value with `setDisplayValue(_:)` for fields where the value is not suited for display.
+    @Published private(set) var displayValue: String?
 
     /// Whether the field is required.
     @Published var required: Bool
@@ -29,7 +28,6 @@ final class WooShippingAddressField: ObservableObject {
          validate: @escaping (String) -> String?) {
         self.type = type
         self.value = value
-        self.displayValue = value
         self.required = required
         self.validate = validate
 
@@ -41,7 +39,6 @@ final class WooShippingAddressField: ObservableObject {
             .removeDuplicates()
             .map { [weak self] newValue in
                 guard let self else { return nil }
-                setDisplayValue(newValue)
                 return validate(newValue)
             }
             .assign(to: &$errorMessage)

@@ -104,12 +104,9 @@ private extension WooShippingCustomsFormViewModel {
             .flatMap { childPublishers in
                 childPublishers.combineLatest()
             }
-            .sink { [weak self] value in
-                // Remove nils
-                let compactedValues = value.compactMap { $0 }
-
+            .sink { [weak self] values in
                 var hsTariffNumberTotalValueDictionary: [String: Decimal] = [:]
-                for (hsTariffNumber, totalValuePerItem) in compactedValues {
+                for (hsTariffNumber, totalValuePerItem) in values.compacted() {
                     hsTariffNumberTotalValueDictionary[hsTariffNumber, default: 0] += totalValuePerItem
                 }
 

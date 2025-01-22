@@ -34,7 +34,7 @@ struct TotalsView: View {
                     Spacer()
                         .renderedIf(cardReaderViewLayout.topPadding == nil)
 
-                    VStack(alignment: .center, spacing: dynamicTypeSize.isAccessibilitySize ? 0 : Constants.verticalSpacing) {
+                    VStack(alignment: .center, spacing: dynamicVerticalSpacing(for: dynamicTypeSize)) {
                         if isShowingCardReaderStatus {
                             paymentView
                                 .font(.title)
@@ -382,6 +382,23 @@ private extension TotalsView {
             "pos.totalsView.cash.button.title",
             value: "Cash payment",
             comment: "Title for the cash payment button title")
+    }
+
+    private func dynamicVerticalSpacing(for size: DynamicTypeSize) -> CGFloat {
+        switch size {
+        case    .accessibility1,
+                .accessibility2,
+                .accessibility3,
+                .accessibility4,
+                .accessibility5:
+            return 0
+        case .xLarge, .xxLarge:
+            return Constants.verticalSpacing * 0.75
+        case .xxxLarge:
+            return Constants.verticalSpacing * 0.5
+        default:
+            return Constants.verticalSpacing
+        }
     }
 }
 

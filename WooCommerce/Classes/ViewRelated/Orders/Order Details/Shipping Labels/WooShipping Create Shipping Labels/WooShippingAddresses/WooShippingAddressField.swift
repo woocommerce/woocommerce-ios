@@ -4,8 +4,14 @@ import SwiftUI
 final class WooShippingAddressField: ObservableObject {
     let type: WooShippingAddressFieldType
 
-    /// The value to display for the field.
+    /// The value for the field.
     @Published var value: String
+
+    /// The display value for the field.
+    ///
+    /// This is set to `value` by default.
+    /// Set a new value with `setDisplayValue(_:)` for fields where the value is not suited for display.
+    @Published private(set) var displayValue: String
 
     /// Whether the field is required.
     @Published var required: Bool
@@ -23,6 +29,7 @@ final class WooShippingAddressField: ObservableObject {
          validate: @escaping (String) -> String?) {
         self.type = type
         self.value = value
+        self.displayValue = value
         self.required = required
         self.validate = validate
 
@@ -33,9 +40,16 @@ final class WooShippingAddressField: ObservableObject {
         $value
             .removeDuplicates()
             .map { [weak self] newValue in
-                self?.validate(newValue)
+                guard let self else { return nil }
+                setDisplayValue(newValue)
+                return validate(newValue)
             }
             .assign(to: &$errorMessage)
+    }
+
+    /// Sets the display value to the provided value.
+    func setDisplayValue(_ value: String) {
+        displayValue = value
     }
 
     /// Validates the field with the current value.

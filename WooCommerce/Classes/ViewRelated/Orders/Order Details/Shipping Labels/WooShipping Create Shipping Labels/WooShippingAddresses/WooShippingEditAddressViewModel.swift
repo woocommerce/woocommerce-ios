@@ -284,6 +284,7 @@ private extension WooShippingEditAddressViewModel {
             .sink { [weak self] selectedCountry in
                 guard let self, let selectedCountry, self.selectedCountry != selectedCountry else { return }
                 country.value = selectedCountry.code
+                country.setDisplayValue(selectedCountry.name)
                 selectedState = nil
                 state.required = stateRequired
             }
@@ -296,6 +297,7 @@ private extension WooShippingEditAddressViewModel {
             .sink { [weak self] selectedState in
                 guard let self else { return }
                 state.value = selectedState?.code ?? ""
+                state.setDisplayValue(selectedState?.name ?? "")
             }
             .store(in: &cancellables)
     }

@@ -214,7 +214,7 @@ struct WooShippingEditAddressView: View {
                     action()
                 } label: {
                     HStack {
-                        Text(field.value)
+                        Text(field.displayValue)
                             .bodyStyle()
                         Spacer()
                         Image(systemName: "chevron.up.chevron.down")

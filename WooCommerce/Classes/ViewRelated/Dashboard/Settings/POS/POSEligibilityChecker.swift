@@ -130,7 +130,7 @@ private extension POSEligibilityChecker {
 private extension POSEligibilityChecker {
     enum Constants {
         static let wcPluginName = "WooCommerce"
-        static let wcPluginMinimumVersion = "9.6.0"
+        static let wcPluginMinimumVersion = "9.6.0-beta"
         static let legacyWcPluginMinimumVersion = "6.6.0"
     }
 }

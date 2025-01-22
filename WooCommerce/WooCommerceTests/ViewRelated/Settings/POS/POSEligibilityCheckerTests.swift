@@ -173,7 +173,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
         accountWhitelistedInBackend(true)
 
         // Supported WooCommerce version
-        setupWooCommerceVersion("9.6.0")
+        setupWooCommerceVersion("9.6.0-beta1")
 
         // When
         let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
@@ -244,7 +244,7 @@ private extension POSEligibilityCheckerTests {
         siteSettings.refresh()
     }
 
-    func setupWooCommerceVersion(_ version: String = "9.6.0") {
+    func setupWooCommerceVersion(_ version: String = "9.6.0-beta") {
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
             case .fetchSystemPlugin(_, _, let completion):

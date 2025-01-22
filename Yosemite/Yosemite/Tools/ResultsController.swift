@@ -2,8 +2,6 @@ import Foundation
 import Storage
 import CoreData
 
-
-
 // MARK: - MutableType: Storage.framework Type that will be retrieved (and converted into ReadOnly)
 //
 public typealias ResultsControllerMutableType = NSManagedObject & ReadOnlyConvertible
@@ -128,12 +126,32 @@ public class ResultsController<T: ResultsControllerMutableType> {
                   sortedBy: descriptors)
     }
 
-
-    /// Executes the fetch request on the store to get objects.
+    /// Executes the fetch request on the store to get objects asynchronously.
     ///
-    public func performFetch() throws {
-        try controller.performFetch()
+    public func performFetch(completion: ((Result<Void, Error>) -> Void)? = nil) {
+    guard let viewContext = viewStorage as? NSManagedObjectContext else {
+        let error = NSError(domain: "ResultsController",
+                            code: 1,
+                            userInfo: [NSLocalizedDescriptionKey: "Invalid viewStorage in performFetch method"])
+        completion?(.failure(error))
+        return
     }
+
+    // Since perform is called on NSManagedObjectContext, it's thread-safe,
+    // and all the code block inside it is dispatched async.
+    viewContext.perform {
+        do {
+            try self.controller.performFetch()
+            DispatchQueue.main.async {
+                completion?(.success(()))
+            }
+        } catch {
+            DispatchQueue.main.async {
+                completion?(.failure(error))
+            }
+        }
+    }
+}
 
     /// Returns the fetched object at a given indexPath.
     ///
@@ -228,14 +246,14 @@ public class ResultsController<T: ResultsControllerMutableType> {
     ///
     private func refreshFetchedObjects(predicate: NSPredicate?) {
         controller.fetchRequest.predicate = predicate
-        try? controller.performFetch()
+        performFetch()
     }
 
     /// Refreshes all of the Fetched Objects, so that the new sort descriptors are applied.
     ///
     private func refreshFetchedObjects(sortDescriptors: [NSSortDescriptor]?) {
         controller.fetchRequest.sortDescriptors = sortDescriptors
-        try? controller.performFetch()
+        performFetch()
     }
 
     /// Initializes the FetchedResultsController
@@ -285,11 +303,10 @@ public class ResultsController<T: ResultsControllerMutableType> {
     @objc func storageWasReset() {
         DDLogInfo("<> ResultsController: Re-Fetching")
 
-        try? self.controller.performFetch()
+        performFetch()
         self.onDidResetContent?()
     }
 }
-
 
 
 // MARK: - Nested Types

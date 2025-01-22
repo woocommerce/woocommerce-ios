@@ -2,7 +2,7 @@ import SwiftUI
 
 extension Color {
 
-    static var accent: Color {
+    static var posAccent: Color {
         return Color(
             UIColor(
                 light: .withColorStudio(.wooCommercePurple, shade: .shade40),
@@ -107,11 +107,11 @@ extension Color {
 
     // MARK: - Buttons
 
-    static var posPrimaryButtonBackground: Color = .accent
+    static var posPrimaryButtonBackground: Color = .posAccent
 
-    static var posSecondaryButtonForeground: Color = .accent
+    static var posSecondaryButtonForeground: Color = .posAccent
 
-    static var posTextButtonForeground: Color = .accent
+    static var posTextButtonForeground: Color = .posAccent
 
     static var posTextButtonForegroundPressed: Color {
         return Color(

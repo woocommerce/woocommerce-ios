@@ -29,7 +29,6 @@ private struct PermanentNoticeContentView: View {
                     .bodyStyle()
                 Button(action: notice.callToActionHandler, label: {
                     Text(notice.callToActionTitle)
-                        .underline()
                         .font(.body)
                         .foregroundColor(Color(.accent))
                 })

@@ -17,7 +17,7 @@ struct POSProgressViewStyle: ProgressViewStyle {
                 lineWidth: lineWidth,
                 lineCap: .butt,
                 circleColor: Color(.wooCommercePurple(.shade10)),
-                fillColor: Color.accent
+                fillColor: Color.posAccent
             ))
     }
 }

@@ -36,7 +36,6 @@ final class WooShippingAddressField: ObservableObject {
 
     private func observeValue() {
         $value
-            .removeDuplicates()
             .map { [weak self] newValue in
                 guard let self else { return nil }
                 return validate(newValue)

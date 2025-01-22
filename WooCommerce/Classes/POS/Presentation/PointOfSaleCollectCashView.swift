@@ -25,7 +25,7 @@ struct PointOfSaleCollectCashView: View {
                                                                                       allowNegativeNumber: false)
 
     var body: some View {
-        VStack(alignment: .center, spacing: dynamicTypeSize.isAccessibilitySize ? 0 : 8) {
+        VStack(alignment: .center, spacing: conditionalPadding(8)) {
             HStack {
                 Button(action: {
                     Task { @MainActor in
@@ -80,7 +80,7 @@ struct PointOfSaleCollectCashView: View {
                 }
                 .frame(maxWidth: .infinity, minHeight: Constants.buttonMinHeight)
             })
-            .padding(dynamicTypeSize.isAccessibilitySize ? 0 : Constants.buttonPadding)
+            .padding(conditionalPadding(Constants.buttonPadding))
             .frame(maxWidth: .infinity)
             .foregroundColor(colorScheme == .light ? Color.white : Color.black)
             .background(Color.posPrimaryButtonBackground)
@@ -91,7 +91,7 @@ struct PointOfSaleCollectCashView: View {
             Spacer()
         }
         .background(backgroundColor)
-        .padding(.top, dynamicTypeSize.isAccessibilitySize ? 0 : Constants.navigationHeaderTopPadding)
+        .padding(.top, conditionalPadding(Constants.navigationHeaderTopPadding))
         .padding([.horizontal, .bottom])
         .animation(.easeInOut, value: errorMessage)
         .animation(.easeInOut, value: changeDueMessage)
@@ -180,6 +180,10 @@ private extension PointOfSaleCollectCashView {
         static let navigationHeaderTopPadding: CGFloat = 8
         static let buttonFont: POSFontStyle = .posBodyEmphasized
         static let buttonCornerRadius: CGFloat = 8
+    }
+
+    private func conditionalPadding(_ padding: CGFloat) -> CGFloat {
+        dynamicTypeSize.isAccessibilitySize ? 0 : padding
     }
 
     private var backgroundColor: Color {

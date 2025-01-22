@@ -44,7 +44,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
                                             contentsType: contentType.toFormContentsType(),
                                             contentExplanation: contentType == .other ? contentExplanation : "",
                                             restrictionType: restrictionType.toFormRestrictionType(),
-                                            restrictionComments:  restrictionType == .other ? restrictionDetails : "",
+                                            restrictionComments: restrictionType == .other ? restrictionDetails : "",
                                             nonDeliveryOption: returnToSenderIfNotDelivered ? .return : .abandon,
                                             itn: isValidITN() ? internationalTransactionNumber : "",
                                             items: itemsViewModels.map {

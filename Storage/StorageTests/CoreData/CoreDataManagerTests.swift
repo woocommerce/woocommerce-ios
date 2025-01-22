@@ -166,7 +166,7 @@ final class CoreDataManagerTests: XCTestCase {
 
         // Clean up
         let storeURL = CoreDataManager.storeURL(with: storageIdentifier)
-        deleteStoreFiles(at: storeURL)
+        try? deleteStoreFiles(at: storeURL)
     }
 
     func test_when_the_model_is_incompatible_then_it_recovers_and_recreates_the_database() throws {

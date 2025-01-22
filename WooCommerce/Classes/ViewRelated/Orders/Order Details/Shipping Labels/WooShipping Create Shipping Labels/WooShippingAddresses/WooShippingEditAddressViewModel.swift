@@ -49,13 +49,11 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     /// Whether the address has been remotely verified.
     private var isVerified: Bool
 
+    /// Whether the address is locally validated (there are no validation errors).
+    @Published private var isValid: Bool = false
+
     var allFields: [WooShippingAddressField] {
         [name, company, country, address, city, state, postalCode, email, phone]
-    }
-
-    /// Fields with validation errors based on local validation.
-    var invalidFields: [WooShippingAddressField] {
-        allFields.filter { $0.errorMessage != nil }
     }
 
     /// Whether the phone number is required.
@@ -64,7 +62,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     // TODO: Set status to unverified if the address was verified remotely but there are unsaved changes.
     /// Status of the address, based on local validation and remote verification.
     var status: WooShippingAddressStatus {
-        switch (isVerified, invalidFields.isEmpty) {
+        switch (isVerified, isValid) {
         case (true, true):
             return .verified
         case (false, true):
@@ -209,6 +207,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         observeNameAndCompany()
         observeSelectedCountry()
         observeSelectedState()
+        observeFieldErrors()
         fetchCountries()
         validateAddress()
     }
@@ -314,6 +313,16 @@ private extension WooShippingEditAddressViewModel {
                 guard let self else { return }
                 state.value = selectedState?.code ?? ""
                 state.setDisplayValue(selectedState?.name ?? "")
+            }
+            .store(in: &cancellables)
+    }
+
+    func observeFieldErrors() {
+        allFields.map { $0.$errorMessage }
+            .combineLatest()
+            .sink { [weak self] errors in
+                guard let self else { return }
+                isValid = errors.allSatisfy { $0 == nil }
             }
             .store(in: &cancellables)
     }

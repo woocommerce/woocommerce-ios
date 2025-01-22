@@ -133,6 +133,12 @@ GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES = {
 
 ASC_KEY_PATH = File.join(SECRETS_DIR, 'app_store_connect_fastlane_api_key.json')
 
+CODE_SIGNING_STORAGE_OPTIONS = {
+  storage_mode: 's3',
+  s3_bucket: 'a8c-fastlane-match',
+  s3_region: 'us-east-2'
+}.freeze
+
 # Use this instead of getting values from ENV directly
 # It will throw an error if the requested value is missing
 def get_required_env(key)
@@ -687,7 +693,7 @@ platform :ios do
 
   desc 'Builds for distribution to the App Store'
   lane :build_for_app_store_connect do
-    appstore_code_signing
+    update_certs_and_profiles_app_store
 
     gym(
       scheme: 'WooCommerce',
@@ -755,7 +761,7 @@ platform :ios do
 
   desc 'Builds a prototype build (Enterprise build)'
   lane :build_for_prototype_build do
-    alpha_code_signing
+    update_certs_and_profiles_enterprise
 
     # Get the current build version, and update it if needed
     versions = Xcodeproj::Config.new(File.new(PUBLIC_CONFIG_FILE)).to_hash
@@ -1122,18 +1128,16 @@ platform :ios do
   # Optionally, it can create any new necessary certificate or profile.
   #
   # @option [Boolean] readonly (default: true) Whether to only fetch existing certificates and profiles, without generating new ones.
-  lane :update_certs_and_profiles do |options|
-    alpha_code_signing(options)
-    appstore_code_signing(options)
+  lane :update_certs_and_profiles do |readonly: true|
+    update_certs_and_profiles_enterprise(readonly: readonly)
+    update_certs_and_profiles_app_store(readonly: readonly)
   end
 
   # Downloads all the required certificates and profiles the enterprise build.
   # Optionally, it can create any new necessary certificate or profile.
   #
   # @option [Boolean] readonly (default: true) Whether to only fetch existing certificates and profiles, without generating new ones.
-  private_lane :alpha_code_signing do |options|
-    readonly = options.fetch(:readonly, true)
-
+  lane :update_certs_and_profiles_enterprise do |readonly: true|
     if readonly
       # In readonly mode, we can use the API key
       api_key_path = ASC_KEY_PATH
@@ -1146,12 +1150,13 @@ platform :ios do
       api_key_path = nil
     end
 
-    match(
+    sync_code_signing(
       type: 'enterprise',
       team_id: get_required_env('INT_EXPORT_TEAM_ID'),
       app_identifier: ALPHA_BUNDLE_IDENTIFIERS,
       readonly: readonly,
-      api_key_path: api_key_path
+      api_key_path: api_key_path,
+      **CODE_SIGNING_STORAGE_OPTIONS
     )
   end
 
@@ -1159,13 +1164,14 @@ platform :ios do
   # Optionally, it can create any new necessary certificate or profile.
   #
   # @option [Boolean] readonly (default: true) Whether to only fetch existing certificates and profiles, without generating new ones.
-  private_lane :appstore_code_signing do |options|
-    match(
+  lane :update_certs_and_profiles_app_store do |readonly: true|
+    sync_code_signing(
       type: 'appstore',
       team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
       app_identifier: MAIN_BUNDLE_IDENTIFIERS,
-      readonly: options.fetch(:readonly, true),
-      api_key_path: ASC_KEY_PATH
+      readonly: readonly,
+      api_key_path: ASC_KEY_PATH,
+      **CODE_SIGNING_STORAGE_OPTIONS
     )
   end
 

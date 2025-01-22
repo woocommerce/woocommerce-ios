@@ -30,6 +30,7 @@ struct PointOfSaleCollectCashView: View {
                 Button(action: {
                     Task { @MainActor in
                         await posModel.cancelCashPayment()
+                        isTextFieldFocused = false
                     }
                 }, label: {
                     navigationHeader
@@ -40,6 +41,7 @@ struct PointOfSaleCollectCashView: View {
             }
 
             FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
+                .focused($isTextFieldFocused)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                 .onSubmit {
                     Task { @MainActor in
@@ -140,6 +142,7 @@ private extension PointOfSaleCollectCashView {
             errorMessage = Localization.failedToCollectCashPayment
         }
         isLoading = false
+        isTextFieldFocused = false
     }
 
     private func updateChangeDueMessage() {

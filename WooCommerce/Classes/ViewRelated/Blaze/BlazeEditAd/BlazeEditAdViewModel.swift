@@ -116,6 +116,7 @@ final class BlazeEditAdViewModel: ObservableObject {
 
     @Published private var selectedSuggestionIndex: Int?
     private let suggestions: [BlazeAISuggestion]
+    private(set) var isUsingAISuggestions: Bool
 
     var canSelectPreviousSuggestion: Bool {
         guard let selectedSuggestionIndex else {
@@ -138,6 +139,7 @@ final class BlazeEditAdViewModel: ObservableObject {
          productID: Int64,
          adData: BlazeEditAdData,
          suggestions: [BlazeAISuggestion],
+         isUsingAISuggestions: Bool,
          analytics: Analytics = ServiceLocator.analytics,
          onSave: @escaping (BlazeEditAdData) -> Void) {
         self.siteID = siteID
@@ -145,6 +147,7 @@ final class BlazeEditAdViewModel: ObservableObject {
 
         self.adData = adData
         self.suggestions = suggestions
+        self.isUsingAISuggestions = isUsingAISuggestions
         if let image = adData.image {
             self.imageState = .success(image)
         } else {

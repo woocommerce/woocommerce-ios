@@ -86,6 +86,11 @@ public extension ProductReport {
     }
 }
 
+/// Conformance to support listing in SwiftUI
+extension ProductReport: Identifiable {
+    public var id: String { "\(productID)-\(variationID ?? 0)" }
+}
+
 private extension ProductReport {
     static func extractSourceURL(from content: String) -> URL? {
         let components = content.split(separator: " ")

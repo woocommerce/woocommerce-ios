@@ -50,7 +50,7 @@ public struct WooShippingOriginAddress: Identifiable, Equatable, GeneratedFakeab
 }
 
 // MARK: Decodable
-extension WooShippingOriginAddress: Decodable {
+extension WooShippingOriginAddress: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -84,6 +84,24 @@ extension WooShippingOriginAddress: Decodable {
                   email: email,
                   defaultAddress: defaultAddress,
                   isVerified: isVerified)
+    }
+
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.id, forKey: .id)
+        try container.encode(self.company, forKey: .company)
+        try container.encode(self.address1, forKey: .address1)
+        try container.encode(self.address2, forKey: .address2)
+        try container.encode(self.city, forKey: .city)
+        try container.encode(self.state, forKey: .state)
+        try container.encode(self.postcode, forKey: .postcode)
+        try container.encode(self.country, forKey: .country)
+        try container.encode(self.phone, forKey: .phone)
+        try container.encode(self.firstName, forKey: .firstName)
+        try container.encode(self.lastName, forKey: .lastName)
+        try container.encode(self.email, forKey: .email)
+        try container.encode(self.defaultAddress, forKey: .defaultAddress)
+        try container.encode(self.isVerified, forKey: .isVerified)
     }
 
     private enum CodingKeys: String, CodingKey {

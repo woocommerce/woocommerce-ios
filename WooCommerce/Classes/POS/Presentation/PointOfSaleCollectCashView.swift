@@ -43,16 +43,7 @@ struct PointOfSaleCollectCashView: View {
                 .scaleEffect(dynamicTypeSize.isAccessibilitySize ? 0.7 : 1.0)
                 .onSubmit {
                     Task { @MainActor in
-                        guard validateAmountOnSubmit() else {
-                            return
-                        }
-                        isLoading = true
-                        do {
-                            try await markComplete()
-                        } catch {
-                            errorMessage = Localization.failedToCollectCashPayment
-                        }
-                        isLoading = false
+                        await submitCashAmount()
                     }
                 }
                 .onChange(of: textFieldViewModel.amount) { newValue in
@@ -74,16 +65,7 @@ struct PointOfSaleCollectCashView: View {
 
             Button(action: {
                 Task { @MainActor in
-                    guard validateAmountOnSubmit() else {
-                        return
-                    }
-                    isLoading = true
-                    do {
-                        try await markComplete()
-                    } catch {
-                        errorMessage = Localization.failedToCollectCashPayment
-                    }
-                    isLoading = false
+                    await submitCashAmount()
                 }
             }, label: {
                 ZStack {
@@ -160,6 +142,19 @@ private extension PointOfSaleCollectCashView {
 }
 
 private extension PointOfSaleCollectCashView {
+    private func submitCashAmount() async {
+        guard validateAmountOnSubmit() else {
+            return
+        }
+        isLoading = true
+        do {
+            try await markComplete()
+        } catch {
+            errorMessage = Localization.failedToCollectCashPayment
+        }
+        isLoading = false
+    }
+
     private func updateChangeDueMessage() {
         changeDueMessage = viewHelper.updatechangeDueMessage(
             orderTotal: orderTotal,

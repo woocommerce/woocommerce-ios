@@ -1,8 +1,0 @@
-# frozen_string_literal: true
-
-# This Matchfile has the shared properties used for all signing types
-
-# Store certs/profiles encrypted in Google Cloud
-storage_mode('s3')
-s3_bucket('a8c-fastlane-match')
-s3_region('us-east-2')

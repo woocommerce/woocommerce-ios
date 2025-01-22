@@ -2,6 +2,7 @@ import Testing
 import Foundation
 @testable import WooCommerce
 import protocol Yosemite.POSOrderableItem
+import enum Yosemite.POSItem
 @testable import struct Yosemite.POSSimpleProduct
 import struct Yosemite.Order
 import Combine
@@ -113,7 +114,7 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             #expect(sut.cart.count == 1)
-            #expect(sut.cart.first?.item.name == item.name)
+            #expect(sut.cart.first?.title == "Item 1")
         }
 
         @Test func removeAllItemsFromCart_removes_everything() async throws {
@@ -525,8 +526,13 @@ struct PointOfSaleAggregateModelTests {
     }
 }
 
-private func makeItem(name: String = "") -> POSOrderableItem {
-    return MockPOSOrderableItem(name: name, formattedPrice: "")
+private func makeItem(name: String = "") -> POSItem {
+    return .simpleProduct(POSSimpleProduct(
+        id: UUID(),
+        name: name,
+        formattedPrice: "",
+        productID: 1,
+        price: ""))
 }
 
 private func makeLoadedOrderState(cartTotal: String = "",

@@ -164,6 +164,13 @@ public extension BlazeCampaignListItem {
     }
 }
 
+/// Conformance to support listing in SwiftUI
+extension BlazeCampaignListItem: Identifiable {
+    public var id: String {
+        campaignID
+    }
+}
+
 // MARK: Private subtypes
 //
 private extension BlazeCampaignListItem {

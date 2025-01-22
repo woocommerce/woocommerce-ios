@@ -8,8 +8,6 @@ struct StoreSetupProgressView: View {
 
     let numberOfTasksCompleted: Int
 
-    let shareFeedbackAction: (() -> Void)?
-
     let hideTaskListAction: (() -> Void)
 
     let isRedacted: Bool
@@ -54,10 +52,6 @@ struct StoreSetupProgressView: View {
 
             // More button
             Menu {
-                Button(Localization.shareFeedbackButton) {
-                    shareFeedbackAction?()
-                }
-
                 Button(Localization.hideStoreSetupListButton) {
                     hideTaskListAction()
                 }
@@ -102,11 +96,6 @@ private extension StoreSetupProgressView {
             )
         }
 
-        static let shareFeedbackButton = NSLocalizedString(
-            "Share feedback",
-            comment: "Title of the feedback button in the action sheet."
-        )
-
         static let hideStoreSetupListButton = NSLocalizedString(
             "Hide store setup list",
             comment: "Title of the Hide store setup list button in the action sheet."
@@ -120,7 +109,6 @@ struct StoreSetupProgressView_Previews: PreviewProvider {
         StoreSetupProgressView(isExpanded: false,
                                totalNumberOfTasks: 5,
                                numberOfTasksCompleted: 1,
-                               shareFeedbackAction: nil,
                                hideTaskListAction: {},
                                isRedacted: false,
                                failedToLoadTasks: false)
@@ -128,7 +116,6 @@ struct StoreSetupProgressView_Previews: PreviewProvider {
         StoreSetupProgressView(isExpanded: true,
                                totalNumberOfTasks: 5,
                                numberOfTasksCompleted: 1,
-                               shareFeedbackAction: nil,
                                hideTaskListAction: {},
                                isRedacted: false,
                                failedToLoadTasks: false)

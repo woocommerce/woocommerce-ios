@@ -33,11 +33,13 @@ struct ItemListView: View {
             .navigationDestination(for: POSItem.self, destination: { item in
                 childListView(parentItem: item)
             })
+            .background(Color.posPrimaryBackground)
         }
         .refreshable {
-            await posModel.loadItems(base: .root)
+            await Task {
+                await posModel.loadItems(base: .root)
+            }.value
         }
-        .background(Color.posPrimaryBackground)
         .accessibilityElement(children: .contain)
         .posModal(isPresented: $showSimpleProductsModal) {
             SimpleProductsOnlyInformation(isPresented: $showSimpleProductsModal)
@@ -86,11 +88,11 @@ private extension ItemListView {
                 Spacer()
             }
             VStack(alignment: .leading, spacing: Constants.bannerTitleSpacing) {
-                Text(Localization.headerBannerTitle)
+                Text(headerBannerTitle)
                     .font(Constants.bannerTitleFont)
                     .accessibilityAddTraits(.isHeader)
                 VStack(alignment: .leading, spacing: Constants.bannerTextSpacing) {
-                    Text(Localization.headerBannerSubtitle)
+                    Text(headerBannerSubtitle)
                     bannerHintAndLearnMoreText
                 }
                 .font(Constants.bannerSubtitleFont)
@@ -125,7 +127,7 @@ private extension ItemListView {
     }
 
     private var bannerHintAndLearnMoreText: Text {
-        Text(Localization.headerBannerHint + " ") +
+        Text(headerBannerHint + " ") +
         Text(Localization.headerBannerLearnMoreHint)
             .font(POSFontStyle.posDetailEmphasized.font())
             .foregroundColor(Color(.accent))
@@ -230,6 +232,22 @@ private extension ItemListView {
         static let isSimpleProductsOnlyBannerDismissedKey = "isSimpleProductsOnlyBannerDismissed"
     }
 
+    var variableProductsEnabled: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.variableProductsInPointOfSale)
+    }
+
+    var headerBannerTitle: String {
+        variableProductsEnabled ? Localization.headerBannerTitleSimpleAndVariable : Localization.headerBannerTitle
+    }
+
+    var headerBannerSubtitle: String {
+        variableProductsEnabled ? Localization.headerBannerSubtitleSimpleAndVariable : Localization.headerBannerSubtitle
+    }
+
+    var headerBannerHint: String {
+        variableProductsEnabled ? Localization.headerBannerHintSimpleAndVariable : Localization.headerBannerHint
+    }
+
     enum Localization {
         static let title = NSLocalizedString(
             "pos.itemlistview.title",
@@ -252,6 +270,24 @@ private extension ItemListView {
         static let headerBannerHint = NSLocalizedString(
             "pos.itemlistview.headerBanner.hint",
             value: "Other product types, such as variable and virtual, will become available in future updates.",
+            comment: "Additional text within the product selector header banner, which explains current POS limitations"
+        )
+
+        static let headerBannerTitleSimpleAndVariable = NSLocalizedString(
+            "pos.itemlistview.headerBanner.title.simpleAndVariable",
+            value: "Showing simple and variable products only",
+            comment: "Title of the product selector header banner, which explains current POS limitations"
+        )
+
+        static let headerBannerSubtitleSimpleAndVariable = NSLocalizedString(
+            "pos.itemlistview.headerBanner.subtitle.simpleAndVariable",
+            value: "Only simple and variable non-downloadable products can be used with POS right now.",
+            comment: "Subtitle of the product selector header banner, which explains current POS limitations"
+        )
+
+        static let headerBannerHintSimpleAndVariable = NSLocalizedString(
+            "pos.itemlistview.headerBanner.hint.simpleAndVariable",
+            value: "Other product types will become available in future updates.",
             comment: "Additional text within the product selector header banner, which explains current POS limitations"
         )
 

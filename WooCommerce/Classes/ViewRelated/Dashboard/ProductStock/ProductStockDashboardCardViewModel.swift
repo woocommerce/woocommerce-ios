@@ -251,7 +251,3 @@ private extension ProductStockDashboardCardViewModel {
         static let dayInSeconds: TimeInterval = 86400
     }
 }
-
-extension ProductReport: Identifiable {
-    public var id: String { "\(productID)-\(variationID ?? 0)" }
-}

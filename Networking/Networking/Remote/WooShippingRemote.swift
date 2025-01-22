@@ -35,6 +35,13 @@ public protocol WooShippingRemoteProtocol {
 
     func loadOriginAddresses(siteID: Int64,
                              completion: @escaping (Result<[WooShippingOriginAddress], Error>) -> Void)
+    func addressValidation(siteID: Int64,
+                           address: ShippingLabelAddress,
+                           completion: @escaping (Result<WooShippingAddressValidationSuccess, Error>) -> Void)
+    func updateOriginAddress(siteID: Int64,
+                             address: WooShippingOriginAddress,
+                             isVerified: Bool,
+                             completion: @escaping (Result<WooShippingOriginAddressUpdate, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
@@ -287,6 +294,60 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Address validation for a shipping address.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site that owns the shipping label.
+    ///   - address: The address that should be verified.
+    ///   - completion: Closure to be executed upon completion.
+    public func addressValidation(siteID: Int64,
+                                  address: ShippingLabelAddress,
+                                  completion: @escaping (Result<WooShippingAddressValidationSuccess, Error>) -> Void) {
+        do {
+            let parameters = [
+                ParameterKey.address: try address.toDictionary()
+            ]
+            let path = "\(Path.normalizeAddress)"
+            let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                         method: .post,
+                                         siteID: siteID,
+                                         path: path,
+                                         parameters: parameters,
+                                         availableAsRESTRequest: true)
+            let mapper = WooShippingAddressValidationSuccessMapper()
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
+
+    /// Updates an origin address.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site.
+    ///   - address: The updated origin address.
+    ///   - isVerified: Whether the address has been remotely verified.
+    ///   - completion: Closure to be executed upon completion.
+    public func updateOriginAddress(siteID: Int64,
+                                    address: WooShippingOriginAddress,
+                                    isVerified: Bool,
+                                    completion: @escaping (Result<WooShippingOriginAddressUpdate, Error>) -> Void) {
+        do {
+            let parameters: [String: Any] = [
+                ParameterKey.address: try address.toDictionary(),
+                ParameterKey.isVerified: isVerified
+            ]
+            let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                         method: .post,
+                                         siteID: siteID,
+                                         path: Path.updateOrigin,
+                                         parameters: parameters,
+                                         availableAsRESTRequest: true)
+            let mapper = WooShippingOriginAddressUpdateMapper()
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
 }
 
 // MARK: Constants
@@ -299,6 +360,8 @@ private extension WooShippingRemote {
         static let status = "label/status"
         static let print = "label/print"
         static let originAddresses = "address/origins"
+        static let normalizeAddress = "address/normalize"
+        static let updateOrigin = "address/update_origin"
     }
 
     enum ParameterKey {
@@ -314,6 +377,8 @@ private extension WooShippingRemote {
         static let customs = "customs"
         static let paperSize = "paper_size"
         static let labelIDCSV = "label_id_csv"
+        static let address = "address"
+        static let isVerified = "isVerified"
     }
 }
 

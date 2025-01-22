@@ -28,6 +28,20 @@ final class ProductVariationFormatterTests: XCTestCase {
         XCTAssertEqual(name, "Blue - Any Size")
     }
 
+    func test_generateNameWithAttributeNames_returns_expected_name_with_attribute_names() {
+        // Given
+        let productAttributes = [ProductAttribute.fake().copy(attributeID: 1, name: "Color"), ProductAttribute.fake().copy(attributeID: 2, name: "Size")]
+        let variation = ProductVariation.fake().copy(attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")])
+
+        // When
+        let name = ProductVariationFormatter().generateNameWithAttributeNames(for: variation,
+                                                                              from: productAttributes,
+                                                                              separator: ", ")
+
+        // Then
+        XCTAssertEqual(name, "Color: Blue, Any Size")
+    }
+
     func test_generateAttributes_returns_expected_attributes() {
         // Given
         let productAttributes = [ProductAttribute.fake().copy(attributeID: 1, name: "Color"), ProductAttribute.fake().copy(attributeID: 2, name: "Size")]

@@ -17,11 +17,11 @@ struct ItemListErrorCardView: View {
                     .lineLimit(2)
                     .foregroundStyle(Color.posPrimaryText)
                     .multilineTextAlignment(.leading)
-                    .font(.posBodyEmphasized)
+                    .font(Constants.itemTitleFont)
 
                 Text(errorState.subtitle)
                     .foregroundStyle(Color.posSecondaryText)
-                    .font(.posBodyRegular)
+                    .font(Constants.itemDetailFont)
             }
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
             .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
@@ -32,6 +32,7 @@ struct ItemListErrorCardView: View {
                 buttonAction()
             } label: {
                 Text(errorState.buttonText)
+                    .font(Constants.itemTitleFont)
             }
             .buttonStyle(POSTertiaryButtonStyle())
             .frame(maxWidth: Constants.accessoryButtonMaxWidth * scale)

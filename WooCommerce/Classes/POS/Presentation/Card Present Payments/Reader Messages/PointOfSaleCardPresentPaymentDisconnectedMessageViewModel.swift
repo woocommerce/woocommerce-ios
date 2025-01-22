@@ -15,9 +15,9 @@ private extension PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewMode
         )
 
         static let instruction = NSLocalizedString(
-            "pointOfSale.cardPresent.readerNotConnected.instruction",
-            value: "To process this payment, please connect your reader.",
-            comment: "Instruction to merchants shown on the Point of Sale Checkout, so they can take a card payment."
+            "pointOfSale.cardPresent.readerNotConnectedOrCash.instruction",
+            value: "To process this payment, please connect your reader or choose cash.",
+            comment: "Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected."
         )
 
         static let collectPayment =  NSLocalizedString(

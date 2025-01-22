@@ -42,9 +42,9 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
         let form = ShippingLabelCustomsForm(packageID: "",
                                             packageName: "",
                                             contentsType: contentType.toFormContentsType(),
-                                            contentExplanation: contentExplanation,
+                                            contentExplanation: contentType == .other ? contentExplanation : "",
                                             restrictionType: restrictionType.toFormRestrictionType(),
-                                            restrictionComments: restrictionDetails,
+                                            restrictionComments:  restrictionType == .other ? restrictionDetails : "",
                                             nonDeliveryOption: returnToSenderIfNotDelivered ? .return : .abandon,
                                             itn: isValidITN() ? internationalTransactionNumber : "",
                                             items: itemsViewModels.map {

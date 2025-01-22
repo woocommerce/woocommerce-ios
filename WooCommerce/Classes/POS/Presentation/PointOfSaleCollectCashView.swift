@@ -108,36 +108,22 @@ struct PointOfSaleCollectCashView: View {
 private extension PointOfSaleCollectCashView {
     @ViewBuilder
     var navigationHeader: some View {
-        if dynamicTypeSize.isAccessibilitySize {
-            HStack(alignment: .top) {
-                Image(systemName: "chevron.backward")
-                    .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
-                HStack() {
-                    Text(Localization.backNavigationTitle)
-                        .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
-                        .accessibilityAddTraits(.isHeader)
+        HStack(alignment: .top) {
+            Image(systemName: "chevron.backward")
+                .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
+            DynamicVStack(horizontalAlignment: .leading, spacing: Constants.navigationButtonSpacing) {
+                Text(Localization.backNavigationTitle)
+                    .font(.posTitleEmphasized)
+                    .accessibilityAddTraits(.isHeader)
+                if dynamicTypeSize.isAccessibilitySize {
                     Spacer()
-                    Text(formattedOrderTotal)
-                        .font(.posBodyRegular, maximumContentSizeCategory: .accessibilityLarge)
                 }
+                Text(formattedOrderTotal)
+                    .font(.posBodyRegular)
             }
-            .foregroundColor(navigationForegroundColor)
-        } else {
-            HStack(alignment: .top) {
-                Image(systemName: "chevron.backward")
-                    .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
-                VStack(alignment: .leading) {
-                    Text(Localization.backNavigationTitle)
-                        .font(.posTitleEmphasized)
-                        .accessibilityAddTraits(.isHeader)
-
-                    Text(formattedOrderTotal)
-                        .font(.posBodyRegular)
-                }
-                .padding(.top, -Constants.navigationButtonSpacing)
-            }
-            .foregroundColor(navigationForegroundColor)
+            .padding(.top, -Constants.navigationButtonSpacing)
         }
+        .foregroundColor(navigationForegroundColor)
     }
 }
 

@@ -1576,6 +1576,7 @@
 		6856DF20E1BDCC391635F707 /* AgeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6856D1A5F72A36AB3704D19D /* AgeTests.swift */; };
 		68600A8F2C65BC5500252EDD /* PointOfSaleItemListErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68600A8E2C65BC5500252EDD /* PointOfSaleItemListErrorView.swift */; };
 		68600A912C65BC9C00252EDD /* PointOfSaleItemListEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68600A902C65BC9C00252EDD /* PointOfSaleItemListEmptyView.swift */; };
+		68625DE62D4134D70042B231 /* DynamicVStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68625DE52D4134D50042B231 /* DynamicVStack.swift */; };
 		68674D312B6C895D00E93FBD /* ReceiptEligibilityUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68674D302B6C895D00E93FBD /* ReceiptEligibilityUseCaseTests.swift */; };
 		68709D3D2A2ED94900A7FA6C /* UpgradesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68709D3C2A2ED94900A7FA6C /* UpgradesView.swift */; };
 		68709D402A2EE2DC00A7FA6C /* UpgradesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68709D3F2A2EE2DC00A7FA6C /* UpgradesViewModel.swift */; };
@@ -4693,6 +4694,7 @@
 		6856DCE1638958DA296D690F /* KeyboardStateProviderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardStateProviderTests.swift; sourceTree = "<group>"; };
 		68600A8E2C65BC5500252EDD /* PointOfSaleItemListErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleItemListErrorView.swift; sourceTree = "<group>"; };
 		68600A902C65BC9C00252EDD /* PointOfSaleItemListEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleItemListEmptyView.swift; sourceTree = "<group>"; };
+		68625DE52D4134D50042B231 /* DynamicVStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicVStack.swift; sourceTree = "<group>"; };
 		68674D302B6C895D00E93FBD /* ReceiptEligibilityUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptEligibilityUseCaseTests.swift; sourceTree = "<group>"; };
 		68709D3C2A2ED94900A7FA6C /* UpgradesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradesView.swift; sourceTree = "<group>"; };
 		68709D3F2A2EE2DC00A7FA6C /* UpgradesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradesViewModel.swift; sourceTree = "<group>"; };
@@ -7019,6 +7021,7 @@
 				01664F9D2C50E685007CB5DD /* POSFontStyle.swift */,
 				010C9A8E2C75C2BF00EBA228 /* Color+Inverted.swift */,
 				01FB19572C6E901800A44FF0 /* DynamicHStack.swift */,
+				68625DE52D4134D50042B231 /* DynamicVStack.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -16856,6 +16859,7 @@
 				45D1CF4523BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift in Sources */,
 				68600A912C65BC9C00252EDD /* PointOfSaleItemListEmptyView.swift in Sources */,
 				319A626127ACAE3400BC96C3 /* InPersonPaymentsPluginChoicesView.swift in Sources */,
+				68625DE62D4134D70042B231 /* DynamicVStack.swift in Sources */,
 				0365986729AFAEFC00F297D3 /* SetUpTapToPayViewModelsOrderedList.swift in Sources */,
 				DEDA8D992B04643E0076BF0F /* ProductSubscription+Empty.swift in Sources */,
 				6856D31F941A33BAE66F394D /* KeyboardFrameAdjustmentProvider.swift in Sources */,

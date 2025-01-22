@@ -211,4 +211,50 @@ class WooShippingCustomsFormViewModelTests: XCTestCase {
 
         XCTAssertTrue(viewModel.requiredInformationIsEntered)
     }
+
+    func test_requiredInformationIsEntered_when_content_type_is_other_but_details_are_empty_then_returns_false() {
+        // Given
+        let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
+
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { _ in })
+
+        viewModel.itemsViewModels.first?.requiredInformationIsEntered = true
+        viewModel.itemsViewModels[1].requiredInformationIsEntered = true
+        viewModel.contentType = .other
+        viewModel.contentExplanation = ""
+
+        XCTAssertFalse(viewModel.requiredInformationIsEntered)
+    }
+
+    func test_requiredInformationIsEntered_when_restriction_type_is_other_but_details_are_empty_then_returns_false() {
+        // Given
+        let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
+
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { _ in })
+
+        viewModel.itemsViewModels.first?.requiredInformationIsEntered = true
+        viewModel.itemsViewModels[1].requiredInformationIsEntered = true
+        viewModel.restrictionType = .other
+        viewModel.restrictionDetails = ""
+
+        XCTAssertFalse(viewModel.requiredInformationIsEntered)
+    }
+
+    func test_requiredInformationIsEntered_when_required_data_is_entered_then_returns_true() {
+        // Given
+        let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
+
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { _ in })
+
+        viewModel.itemsViewModels.first?.requiredInformationIsEntered = true
+        viewModel.itemsViewModels[1].requiredInformationIsEntered = true
+        viewModel.restrictionType = .other
+        viewModel.restrictionDetails = "test"
+        viewModel.contentType = .other
+        viewModel.contentExplanation = "test"
+        viewModel.internationalTransactionNumber = "NOEEI 30.37(a)"
+        viewModel.internationalTransactionNumberIsRequired = true
+
+        XCTAssertTrue(viewModel.requiredInformationIsEntered)
+    }
 }

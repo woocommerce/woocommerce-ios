@@ -29,6 +29,8 @@ final class OrderDetailsViewModel {
         return lookUpOrderStatus(for: order)
     }
 
+    private var pluginsInSync: Bool?
+
     init(order: Order,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -895,9 +897,15 @@ extension OrderDetailsViewModel {
     /// If there is none, we assume plugins are not synced because at least the`WooCommerce` plugin should be present.
     ///
     private func arePluginsSynced() -> Bool {
+        if let pluginsInSync = pluginsInSync {
+            return pluginsInSync
+        }
+
         let predicate = NSPredicate(format: "siteID == %lld", order.siteID)
         let resultsController = ResultsController<StorageSystemPlugin>(storageManager: storageManager, matching: predicate, sortedBy: [])
         try? resultsController.performFetch()
+        let isSynced = !resultsController.isEmpty
+        pluginsInSync = isSynced
         return !resultsController.isEmpty
     }
 

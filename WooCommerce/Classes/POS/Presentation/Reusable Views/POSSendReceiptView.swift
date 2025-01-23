@@ -3,10 +3,12 @@ import class WordPressShared.EmailFormatValidator
 
 struct POSSendReceiptView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @State private var textFieldInput: String = ""
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
     @StateObject private var keyboardObserver = KeyboardObserver()
+    @FocusState private var isTextFieldFocused: Bool
 
     @Binding private(set) var isShowingSendReceiptView: Bool
 
@@ -23,11 +25,12 @@ struct POSSendReceiptView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center) {
+        VStack(alignment: .center, spacing: conditionalPadding(8)) {
             HStack {
                 Button(action: {
                     withAnimation {
                         isShowingSendReceiptView = false
+                        isTextFieldFocused = false
                     }
                 }, label: {
                     HStack {
@@ -36,6 +39,7 @@ struct POSSendReceiptView: View {
                     }
                     .font(.posTitleEmphasized)
                     .foregroundColor(.posPrimaryText)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility3)
                     .accessibilityAddTraits(.isHeader)
                 })
                 Spacer()
@@ -44,12 +48,14 @@ struct POSSendReceiptView: View {
             .disabled(isLoading)
 
             TextField(Localization.textfieldPlaceholder, text: $textFieldInput)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                 .keyboardType(.emailAddress)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .multilineTextAlignment(.center)
                 .font(POSFontStyle.posTitleRegular)
                 .focused()
+                .focused($isTextFieldFocused)
                 .padding()
                 .onSubmit {
                     sendReceipt()
@@ -79,7 +85,8 @@ struct POSSendReceiptView: View {
                 }
                 .frame(maxWidth: .infinity)
             })
-            .padding(Constants.buttonPadding)
+            .dynamicTypeSize(...DynamicTypeSize.accessibility3)
+            .padding(conditionalPadding(Constants.buttonPadding))
             .frame(maxWidth: .infinity)
             .foregroundColor(Color.posPrimaryTextInverted)
             .background(isEmailValid ? Color.posPrimaryButtonBackground : Color.posBackgroundButtonDisabled)
@@ -109,6 +116,7 @@ struct POSSendReceiptView: View {
                 try await posModel.sendReceipt(to: textFieldInput)
                 withAnimation {
                     isShowingSendReceiptView = false
+                    isTextFieldFocused = false
                 }
             } catch {
                 errorMessage = Localization.sendReceiptErrorText
@@ -127,6 +135,16 @@ private extension POSSendReceiptView {
         static let errorMessagePadding: CGFloat = 8
         static let keyboardShownButtonSpacing: CGFloat = 80
         static let keyboardHiddenButtonSpacing: CGFloat = 20
+    }
+
+    private func conditionalPadding(_ padding: CGFloat) -> CGFloat {
+        if dynamicTypeSize.isAccessibilitySize {
+            return 0
+        } else if dynamicTypeSize >= .xLarge {
+            return padding * 0.5
+        } else {
+            return padding
+        }
     }
 }
 

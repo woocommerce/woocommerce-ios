@@ -3,13 +3,13 @@ import SwiftUI
 struct AdaptiveButtonPaddingModifier: ViewModifier {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let defaultButtonPadding: CGFloat
-    
+
     func body(content: Content) -> some View {
         content
             .padding(adjustablePadding(for: dynamicTypeSize,
                                        defaultButtonPadding: defaultButtonPadding))
     }
-    
+
     private func adjustablePadding(for size: DynamicTypeSize, defaultButtonPadding: CGFloat) -> CGFloat {
         switch size {
         case .xxxLarge:       return defaultButtonPadding * 0.7

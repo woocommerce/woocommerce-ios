@@ -46,14 +46,23 @@ private enum Localization {
     )
 
     static let messageDeadline = NSLocalizedString(
-        "There are pending requirements for your account. Please complete those requirements by %1$@ to keep accepting In-Person Payments.",
-        comment: "Error message when because there are pending requirements in the merchant's " +
-        "In-Person Payments account. %1$d will contain the localized deadline (e.g. August 11, 2021)"
+        "There are pending requirements for your account. Please complete those requirements by %1$@ to keep accepting In‑Person Payments.",
+        comment: """
+                 Error message when because there are pending requirements in the merchant's
+                 In-Person Payments account.
+                 %1$d will contain the localized deadline (e.g. August 11, 2021)
+                 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+                 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
+                 """
     )
 
     static let messageUnknownDeadline = NSLocalizedString(
-        "There are pending requirements for your account. Please complete those requirements to keep accepting In-Person Payments.",
-        comment: "Error message when there are pending requirements in the merchant's payment account (without a known deadline)"
+        "There are pending requirements for your account. Please complete those requirements to keep accepting In‑Person Payments.",
+        comment: """
+                 Error message when there are pending requirements in the merchant's payment account (without a known deadline)
+                 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+                 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
+                 """
     )
 
     static let skipButton = NSLocalizedString(

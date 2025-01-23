@@ -31,13 +31,21 @@ struct InPersonPaymentsCountryNotSupported: View {
 
 private enum Localization {
     static let title = NSLocalizedString(
-        "We don’t support In-Person Payments in %1$@",
-        comment: "Title for the error screen when In-Person Payments is not supported in a specific country"
+        "We don’t support In‑Person Payments in %1$@",
+        comment: """
+                 Title for the error screen when In-Person Payments is not supported in a specific country
+                 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+                 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
+                 """
     )
 
     static let titleUnknownCountry = NSLocalizedString(
-        "We don’t support In-Person Payments in your country",
-        comment: "Title for the error screen when In-Person Payments is not supported because we don't know the name of the country"
+        "We don’t support In‑Person Payments in your country",
+        comment: """
+                 Title for the error screen when In-Person Payments is not supported because we don't know the name of the country.
+                 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+                 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
+                 """
     )
 
     static let message = NSLocalizedString(

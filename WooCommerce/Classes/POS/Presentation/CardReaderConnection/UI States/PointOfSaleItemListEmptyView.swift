@@ -2,27 +2,25 @@ import SwiftUI
 
 struct PointOfSaleItemListEmptyView: View {
     var body: some View {
-        PointOfSaleItemListFullscreenView {
-            VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
-                Spacer()
-                Image(decorative: PointOfSaleAssets.magnifierNotFound.imageName)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: Constants.iconSize, height: Constants.iconSize)
-                    .foregroundColor(.posSecondaryText)
-                Text(Localization.emptyProductsTitle)
-                    .foregroundStyle(Color.posSecondaryText)
-                    .font(.posTitleEmphasized)
-                Text(Localization.emptyProductsSubtitle)
-                    .foregroundStyle(Color.posSecondaryText)
-                    .font(.posBodyRegular)
-                    .padding([.leading, .trailing])
-                Text(Localization.emptyProductsHint)
-                    .foregroundStyle(Color.posSecondaryText)
-                    .font(.posBodyRegular)
-                    .padding([.leading, .trailing])
-                Spacer()
-            }
+        VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
+            Spacer()
+            Image(decorative: PointOfSaleAssets.magnifierNotFound.imageName)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: Constants.iconSize, height: Constants.iconSize)
+                .foregroundColor(.posSecondaryText)
+            Text(Localization.emptyProductsTitle)
+                .foregroundStyle(Color.posSecondaryText)
+                .font(.posTitleEmphasized)
+            Text(Localization.emptyProductsSubtitle)
+                .foregroundStyle(Color.posSecondaryText)
+                .font(.posBodyRegular)
+                .padding([.leading, .trailing])
+            Text(Localization.emptyProductsHint)
+                .foregroundStyle(Color.posSecondaryText)
+                .font(.posBodyRegular)
+                .padding([.leading, .trailing])
+            Spacer()
         }
     }
 }

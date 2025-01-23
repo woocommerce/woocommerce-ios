@@ -34,7 +34,7 @@ struct TotalsView: View {
                     Spacer()
                         .renderedIf(cardReaderViewLayout.topPadding == nil)
 
-                    VStack(alignment: .center, spacing: dynamicVerticalSpacing(for: dynamicTypeSize)) {
+                    VStack(alignment: .center, spacing: 0) {
                         if isShowingCardReaderStatus {
                             paymentView
                                 .font(.title)
@@ -385,18 +385,7 @@ private extension TotalsView {
             comment: "Title for the cash payment button title")
     }
 
-    private var isIpadMini: Bool {
-        let screenHeight = UIScreen.main.bounds.height
-        let screenWidth = UIScreen.main.bounds.width
-
-        return max(screenHeight, screenWidth) <= 2266 &&
-        UIDevice.current.userInterfaceIdiom == .pad
-    }
-
-    // Adapts the vertical spacing between components in TotalsView based on dynamic type sizes, and device type
     private func dynamicVerticalSpacing(for size: DynamicTypeSize) -> CGFloat {
-        if isIpadMini { return 0 }
-
         switch size {
         case    .accessibility1,
                 .accessibility2,

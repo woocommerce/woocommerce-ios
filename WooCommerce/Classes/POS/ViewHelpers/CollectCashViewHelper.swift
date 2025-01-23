@@ -36,8 +36,10 @@ final class CollectCashViewHelper {
     func validateAmountOnSubmit(orderTotal: String,
                                 textFieldAmountInput: String,
                                 onError: (String) -> Void) -> Bool {
+        let userInput = textFieldAmountInput.isEmpty ? "0" : textFieldAmountInput
+
         guard let orderDecimal = parseCurrency(orderTotal),
-              let inputDecimal = parseCurrency(textFieldAmountInput) else {
+              let inputDecimal = parseCurrency(userInput) else {
             onError(Localization.failedToCollectCashPayment)
             return false
         }

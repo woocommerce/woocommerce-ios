@@ -17,7 +17,7 @@ struct PointOfSaleDashboardView: View {
                     .ignoresSafeArea()
             case .empty:
                 PointOfSaleItemListFullscreenView {
-                    PointOfSaleItemListEmptyView()
+                    PointOfSaleItemListEmptyView(base: .root)
                 }
             case .error(let errorContents):
                 PointOfSaleItemListFullscreenErrorView(error: errorContents, onRetry: {

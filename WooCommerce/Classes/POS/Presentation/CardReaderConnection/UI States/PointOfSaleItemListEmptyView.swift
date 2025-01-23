@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct PointOfSaleItemListEmptyView: View {
+    let base: ItemListBaseItem
+
     var body: some View {
         VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
             Spacer()

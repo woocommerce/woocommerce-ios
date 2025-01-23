@@ -5,7 +5,6 @@ struct PointOfSaleCollectCashView: View {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @FocusState private var isTextFieldFocused: Bool
-    @StateObject private var keyboardObserver = KeyboardObserver()
 
     private let viewHelper = CollectCashViewHelper()
 
@@ -20,99 +19,90 @@ struct PointOfSaleCollectCashView: View {
         String.localizedStringWithFormat(Localization.backNavigationSubtitle, orderTotal)
     }
 
-    private var keyboardHeight: CGFloat {
-        if keyboardObserver.keyboardHeight < Constants.keyboardShownButtonSpacing {
-            return Constants.keyboardShownButtonSpacing
-        } else {
-            return Constants.keyboardHiddenButtonSpacing
-        }
-    }
-
     @StateObject private var textFieldViewModel = FormattableAmountTextFieldViewModel(size: .extraLarge,
                                                                                       locale: Locale.autoupdatingCurrent,
                                                                                       storeCurrencySettings: ServiceLocator.currencySettings,
                                                                                       allowNegativeNumber: false)
 
     var body: some View {
-        VStack(alignment: .center, spacing: conditionalPadding(8)) {
-            HStack {
-                Button(action: {
-                    Task { @MainActor in
-                        await posModel.cancelCashPayment()
-                        isTextFieldFocused = false
-                    }
-                }, label: {
-                    navigationHeader
-                })
-                .disabled(isLoading)
-                Spacer()
-                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-            }
+        ScrollView {
+            VStack(alignment: .center, spacing: conditionalPadding(8)) {
+                HStack {
+                    Button(action: {
+                        Task { @MainActor in
+                            await posModel.cancelCashPayment()
+                            isTextFieldFocused = false
+                        }
+                    }, label: {
+                        navigationHeader
+                    })
+                    .disabled(isLoading)
+                    Spacer()
+                        .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+                }
 
-            FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
-                .focused($isTextFieldFocused)
-                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-                .onSubmit {
+                FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
+                    .focused($isTextFieldFocused)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+                    .onSubmit {
+                        Task { @MainActor in
+                            await submitCashAmount()
+                        }
+                    }
+                    .onChange(of: textFieldViewModel.amount) { newValue in
+                        textFieldAmountInput = newValue
+                        updateChangeDueMessage()
+                    }
+
+                if let changeDue = changeDueMessage {
+                    Text(changeDue)
+                        .font(.posBodyRegular)
+                        .foregroundColor(.posSecondaryText)
+                }
+
+                if let errorMessage = errorMessage {
+                    Text(errorMessage)
+                        .font(POSFontStyle.posBodyRegular)
+                        .foregroundColor(.red)
+                        .padding(.bottom, Constants.errorMessagePadding)
+                }
+
+                Button(action: {
                     Task { @MainActor in
                         await submitCashAmount()
                     }
-                }
-                .onChange(of: textFieldViewModel.amount) { newValue in
-                    textFieldAmountInput = newValue
-                    updateChangeDueMessage()
-                }
-
-            if let changeDue = changeDueMessage {
-                Text(changeDue)
-                    .font(.posBodyRegular)
-                    .foregroundColor(.posSecondaryText)
-            }
-
-            Spacer().frame(height: keyboardHeight)
-
-            if let errorMessage = errorMessage {
-                Text(errorMessage)
-                    .font(POSFontStyle.posBodyRegular)
-                    .foregroundColor(.red)
-                    .padding(.bottom, Constants.errorMessagePadding)
-            }
-
-            Button(action: {
-                Task { @MainActor in
-                    await submitCashAmount()
-                }
-            }, label: {
-                ZStack {
-                    if isLoading {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle())
-                            .tint(Color.posPrimaryTextInverted)
-                    } else {
-                        Text(Localization.markPaymentCompletedButtonTitle)
-                            .font(Constants.buttonFont)
+                }, label: {
+                    ZStack {
+                        if isLoading {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle())
+                                .tint(Color.posPrimaryTextInverted)
+                        } else {
+                            Text(Localization.markPaymentCompletedButtonTitle)
+                                .font(Constants.buttonFont)
+                        }
                     }
-                }
-                .frame(maxWidth: .infinity, minHeight: Constants.buttonMinHeight)
-            })
-            .padding(conditionalPadding(Constants.buttonPadding))
-            .frame(maxWidth: .infinity)
-            .foregroundColor(colorScheme == .light ? Color.white : Color.black)
-            .background(Color.posPrimaryButtonBackground)
-            .cornerRadius(Constants.buttonCornerRadius)
-            .contentShape(Rectangle())
-            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-            .disabled(isLoading)
+                    .frame(maxWidth: .infinity, minHeight: Constants.buttonMinHeight)
+                })
+                .padding(conditionalPadding(Constants.buttonPadding))
+                .frame(maxWidth: .infinity)
+                .foregroundColor(colorScheme == .light ? Color.white : Color.black)
+                .background(Color.posPrimaryButtonBackground)
+                .cornerRadius(Constants.buttonCornerRadius)
+                .contentShape(Rectangle())
+                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+                .disabled(isLoading)
 
-            Spacer()
-        }
-        .background(backgroundColor)
-        .padding(.top, conditionalPadding(Constants.navigationHeaderTopPadding))
-        .padding([.horizontal, .bottom])
-        .animation(.easeInOut, value: errorMessage)
-        .animation(.easeInOut, value: changeDueMessage)
-        .animation(.easeInOut, value: keyboardObserver.keyboardHeight)
-        .onChange(of: textFieldAmountInput) { _ in
-            errorMessage = nil
+                Spacer()
+            }
+            .background(backgroundColor)
+            .padding(.top, conditionalPadding(Constants.navigationHeaderTopPadding))
+            .padding([.horizontal, .bottom])
+            .animation(.easeInOut, value: errorMessage)
+            .animation(.easeInOut, value: changeDueMessage)
+            .onChange(of: textFieldAmountInput) { _ in
+                errorMessage = nil
+            }
         }
     }
 
@@ -184,8 +174,6 @@ private extension PointOfSaleCollectCashView {
         static let buttonFont: POSFontStyle = .posBodyEmphasized
         static let buttonCornerRadius: CGFloat = 8
         static let errorMessagePadding: CGFloat = 8
-        static let keyboardShownButtonSpacing: CGFloat = 80
-        static let keyboardHiddenButtonSpacing: CGFloat = 20
     }
 
     private func conditionalPadding(_ padding: CGFloat) -> CGFloat {

@@ -120,7 +120,7 @@ extension NSManagedObjectContext: StorageType {
         do {
             return try existingObject(with: objectID) as? T
         } catch {
-            DDLogError("Error loading Object [\(T.entityName)]")
+            DDLogError("Error loading Object [\(T.entityName)]: \(error)")
         }
 
         return nil
@@ -165,7 +165,7 @@ extension NSManagedObjectContext: StorageType {
         do {
             objects = try fetch(request) as? [T]
         } catch {
-            DDLogError("Error loading Objects [\(T.entityName)")
+            DDLogError("Error loading Objects [\(T.entityName)]: \(error)")
             assertionFailure()
         }
 

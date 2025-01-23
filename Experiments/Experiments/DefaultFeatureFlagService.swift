@@ -89,14 +89,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .productGlobalUniqueIdentifierSupport:
             return true
-        case .sendReceiptAfterPayment:
-            return true
         case .sendReceiptsForPointOfSale:
             return true
         case .acceptCashForPointOfSale:
             return false
-        case .tapToPayEducation:
-            return true
         case .variableProductsInPointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .hideSitesInStorePicker:

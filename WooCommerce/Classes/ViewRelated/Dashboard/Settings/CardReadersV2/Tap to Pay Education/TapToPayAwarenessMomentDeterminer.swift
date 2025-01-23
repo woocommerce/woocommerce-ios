@@ -27,10 +27,6 @@ struct TapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining {
     }
 
     func shouldPresent() async -> Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.tapToPayEducation) else {
-            return false
-        }
-
         guard !wasPresented() else {
             return false
         }

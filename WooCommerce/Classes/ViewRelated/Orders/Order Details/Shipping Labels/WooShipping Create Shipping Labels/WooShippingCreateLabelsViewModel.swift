@@ -118,7 +118,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Closure to execute after the label is successfully purchased.
     let onLabelPurchase: ((_ markOrderComplete: Bool) -> Void)?
 
-    private(set) var customsForm: ShippingLabelCustomsForm?
+    private var customsForm: ShippingLabelCustomsForm?
 
     lazy var customsFormViewModel: WooShippingCustomsFormViewModel = {
         WooShippingCustomsFormViewModel(order: order, onCompletion: { [weak self] form in

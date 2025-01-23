@@ -313,11 +313,11 @@ private extension CoreDataManager {
         do {
             try context.save()
         } catch {
-            attemptRecoveryFromCorruptedDatabase(with: error)
+            dropDatabaseAndExit(with: error)
         }
     }
 
-    func attemptRecoveryFromCorruptedDatabase(with error: Error) {
+    func dropDatabaseAndExit(with error: Error) {
         var persistentStoreRemovalError: Error?
         do {
             try persistentContainer.persistentStoreCoordinator.destroyPersistentStore(at: storeURL, type: .sqlite, options: nil)
@@ -325,26 +325,10 @@ private extension CoreDataManager {
             persistentStoreRemovalError = error
         }
 
-        /// Retry!
-        ///
-        persistentContainer.loadPersistentStores { [self] (storeDescription, underlyingError) in
-            guard let underlyingError = underlyingError as NSError? else {
-                return
-            }
-
-            let error = CoreDataManagerError.recoveryFailed
-            let logProperties: [String: Any?] = ["originalError": error,
-                                                 "persistentStoreRemovalError": persistentStoreRemovalError,
-                                                 "retryError": underlyingError]
-            crashLogger.logFatalErrorAndExit(error, userInfo: logProperties.compactMapValues { $0 })
-        }
-
         let logProperties: [String: Any?] = ["originalError": error,
-                                             "persistentStoreRemovalError": persistentStoreRemovalError]
-        crashLogger.logMessage("[CoreDataManager] Reset the database after corrupted store removal.",
-                               properties: logProperties.compactMapValues { $0 },
-                               level: .info)
-        NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
+                                             "persistentStoreRemovalError": persistentStoreRemovalError,
+                                             "message": "[CoreDataManager] Forced reset the database after corrupted store removal."]
+        crashLogger.logFatalErrorAndExit(error, userInfo: logProperties.compactMapValues { $0 })
     }
 }
 

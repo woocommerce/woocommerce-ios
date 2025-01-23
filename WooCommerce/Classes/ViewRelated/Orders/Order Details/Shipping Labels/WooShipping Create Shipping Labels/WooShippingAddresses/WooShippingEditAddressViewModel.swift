@@ -9,6 +9,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     private let siteID: Int64
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private let debounceDelay: Double
     private var cancellables: Set<AnyCancellable> = []
 
     enum AddressType {
@@ -48,13 +49,11 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     /// Whether the address has been remotely verified.
     private var isVerified: Bool
 
+    /// Whether the address is locally validated (there are no validation errors).
+    @Published private var isValid: Bool = false
+
     var allFields: [WooShippingAddressField] {
         [name, company, country, address, city, state, postalCode, email, phone]
-    }
-
-    /// Fields with validation errors based on local validation.
-    var invalidFields: [WooShippingAddressField] {
-        allFields.filter { $0.errorMessage != nil }
     }
 
     /// Whether the phone number is required.
@@ -63,7 +62,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     // TODO: Set status to unverified if the address was verified remotely but there are unsaved changes.
     /// Status of the address, based on local validation and remote verification.
     var status: WooShippingAddressStatus {
-        switch (isVerified, invalidFields.isEmpty) {
+        switch (isVerified, isValid) {
         case (true, true):
             return .verified
         case (false, true):
@@ -147,7 +146,8 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
          isVerified: Bool,
          phoneNumberRequired: Bool,
          stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         debounceDelayInSeconds: Double = 1) {
         self.addressType = type
         self.id = id
         self.name = WooShippingAddressField(type: .name, value: name, required: company.isEmpty, validate: { _ in return nil })
@@ -176,6 +176,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         self.stores = stores
         self.siteID = stores.sessionManager.defaultStoreID ?? Int64.min
         self.storageManager = storageManager
+        self.debounceDelay = debounceDelayInSeconds
 
         // Set validation rules for fields that rely on instance properties.
         self.name.validate = { [weak self] newName in
@@ -206,7 +207,9 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         observeNameAndCompany()
         observeSelectedCountry()
         observeSelectedState()
+        observeFieldErrors()
         fetchCountries()
+        validateAddress()
     }
 
     convenience init(address: WooShippingOriginAddress,
@@ -267,7 +270,19 @@ extension WooShippingEditAddressViewModel {
 
 private extension WooShippingEditAddressViewModel {
     func observeNameAndCompany() {
-        (name.$value.removeDuplicates()).combineLatest(company.$value.removeDuplicates())
+        let nameValues = name.$value.removeDuplicates()
+        let companyValues = company.$value.removeDuplicates()
+
+        (nameValues).combineLatest(companyValues)
+            .sink { [weak self] _, _ in
+                guard let self else { return }
+                self.name.clearError()
+                self.company.clearError()
+            }
+            .store(in: &cancellables)
+
+        (nameValues).combineLatest(companyValues)
+            .debounce(for: .seconds(debounceDelay), scheduler: DispatchQueue.main)
             .sink { [weak self] name, company in
                 guard let self else { return }
                 self.name.required = company.isEmpty
@@ -298,6 +313,16 @@ private extension WooShippingEditAddressViewModel {
                 guard let self else { return }
                 state.value = selectedState?.code ?? ""
                 state.setDisplayValue(selectedState?.name ?? "")
+            }
+            .store(in: &cancellables)
+    }
+
+    func observeFieldErrors() {
+        allFields.map { $0.$errorMessage }
+            .combineLatest()
+            .sink { [weak self] errors in
+                guard let self else { return }
+                isValid = errors.allSatisfy { $0 == nil }
             }
             .store(in: &cancellables)
     }

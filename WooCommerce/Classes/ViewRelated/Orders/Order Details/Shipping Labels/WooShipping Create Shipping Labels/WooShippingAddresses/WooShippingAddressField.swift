@@ -22,13 +22,18 @@ final class WooShippingAddressField: ObservableObject {
     /// Returns an error message if the value is invalid.
     var validate: (String) -> String?
 
+    /// Number of seconds to wait before validating new value input.
+    private let validationDelay: Double
+
     init(type: WooShippingAddressFieldType,
          value: String,
          required: Bool,
+         validationDelayInSeconds: Double = 1,
          validate: @escaping (String) -> String?) {
         self.type = type
         self.value = value
         self.required = required
+        self.validationDelay = validationDelayInSeconds
         self.validate = validate
 
         observeValue()
@@ -36,6 +41,7 @@ final class WooShippingAddressField: ObservableObject {
 
     private func observeValue() {
         $value
+            .debounce(for: .seconds(validationDelay), scheduler: DispatchQueue.main)
             .map { [weak self] newValue in
                 guard let self else { return nil }
                 return validate(newValue)
@@ -51,6 +57,12 @@ final class WooShippingAddressField: ObservableObject {
     /// Validates the field with the current value.
     func validateField() {
         errorMessage = validate(value)
+    }
+
+    /// Clears the current validation error.
+    /// This can be used to reset an error for later re-validation.
+    func clearError() {
+        errorMessage = nil
     }
 }
 

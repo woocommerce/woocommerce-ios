@@ -77,6 +77,12 @@ struct WooShippingEditAddressView: View {
                 }
             }
             .padding()
+            .onChange(of: focusedField) { newField in
+                if let previousFocusedField {
+                    viewModel.validate(previousFocusedField)
+                }
+                previousFocusedField = newField
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.cancel) {
@@ -183,10 +189,19 @@ struct WooShippingEditAddressView: View {
                 .foregroundStyle(Color(.text))
                 TextField(Localization.title(for: field.type), text: $field.value, prompt: Text(field.required ? "" : Localization.optional))
                     .focused($focused, equals: field.type)
+                    .onChange(of: field.value) { _ in
+                        field.clearError()
+                    }
                     .padding()
                     .roundedBorder(cornerRadius: Constants.cornerRadius,
-                                   lineColor: focused == field.type ? Color(.accent) : Constants.defaultBorderColor,
+                                   lineColor: Constants.fieldBorderColor(focused: focused == field.type, valid: field.errorMessage == nil),
                                    lineWidth: focused == field.type ? 2 : Constants.defaultBorderWidth)
+                if let errorMessage = field.errorMessage {
+                    Text(errorMessage)
+                        .font(.subheadline)
+                        .foregroundStyle(Constants.red)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
         }
     }
@@ -224,6 +239,12 @@ struct WooShippingEditAddressView: View {
                     .roundedBorder(cornerRadius: Constants.cornerRadius,
                                    lineColor: Constants.defaultBorderColor,
                                    lineWidth: Constants.defaultBorderWidth)
+                }
+                if let errorMessage = field.errorMessage {
+                    Text(errorMessage)
+                        .font(.subheadline)
+                        .foregroundStyle(Constants.red)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
         }
@@ -295,6 +316,12 @@ private extension WooShippingEditAddressView {
         static let red = Color(UIColor(light: .withColorStudio(.red, shade: .shade60),
                                        dark: .withColorStudio(.red, shade: .shade40)))
         static let requiredLabelSpacing: CGFloat = 4
+        static func fieldBorderColor(focused: Bool, valid: Bool) -> Color {
+            guard valid else {
+                return red
+            }
+            return focused ? Color(.accent) : defaultBorderColor
+        }
     }
 
     enum Localization {

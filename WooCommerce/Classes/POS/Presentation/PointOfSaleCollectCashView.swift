@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PointOfSaleCollectCashView: View {
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @FocusState private var isTextFieldFocused: Bool
 
@@ -24,7 +25,7 @@ struct PointOfSaleCollectCashView: View {
                                                                                       allowNegativeNumber: false)
 
     var body: some View {
-        VStack(alignment: .center) {
+        VStack(alignment: .center, spacing: conditionalPadding(8)) {
             HStack {
                 Button(action: {
                     Task { @MainActor in
@@ -32,27 +33,21 @@ struct PointOfSaleCollectCashView: View {
                         isTextFieldFocused = false
                     }
                 }, label: {
-                    HStack(alignment: .top) {
-                        Image(systemName: "chevron.backward")
-                            .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
-                        VStack(alignment: .leading) {
-                            Text(Localization.backNavigationTitle)
-                                .font(.posTitleEmphasized)
-                                .accessibilityAddTraits(.isHeader)
-
-                            Text(formattedOrderTotal)
-                                .font(.posBodyRegular)
-                        }
-                        .padding(.top, -Constants.navigationButtonSpacing)
-                    }
-                    .foregroundColor(navigationForegroundColor)
+                    navigationHeader
                 })
                 .disabled(isLoading)
                 Spacer()
+                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
             }
 
             FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
                 .focused($isTextFieldFocused)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+                .onSubmit {
+                    Task { @MainActor in
+                        await submitCashAmount()
+                    }
+                }
                 .onChange(of: textFieldViewModel.amount) { newValue in
                     textFieldAmountInput = newValue
                     updateChangeDueMessage()
@@ -72,17 +67,7 @@ struct PointOfSaleCollectCashView: View {
 
             Button(action: {
                 Task { @MainActor in
-                    guard validateAmountOnSubmit() else {
-                        return
-                    }
-                    isLoading = true
-                    do {
-                        try await markComplete()
-                    } catch {
-                        errorMessage = Localization.failedToCollectCashPayment
-                    }
-                    isLoading = false
-                    isTextFieldFocused = false
+                    await submitCashAmount()
                 }
             }, label: {
                 ZStack {
@@ -97,18 +82,19 @@ struct PointOfSaleCollectCashView: View {
                 }
                 .frame(maxWidth: .infinity, minHeight: Constants.buttonMinHeight)
             })
-            .padding(Constants.buttonPadding)
+            .padding(conditionalPadding(Constants.buttonPadding))
             .frame(maxWidth: .infinity)
             .foregroundColor(colorScheme == .light ? Color.white : Color.black)
             .background(Color.posPrimaryButtonBackground)
             .cornerRadius(Constants.buttonCornerRadius)
             .contentShape(Rectangle())
+            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             .disabled(isLoading)
 
             Spacer()
         }
         .background(backgroundColor)
-        .padding(.top, Constants.navigationHeaderTopPadding)
+        .padding(.top, conditionalPadding(Constants.navigationHeaderTopPadding))
         .padding([.horizontal, .bottom])
         .animation(.easeInOut, value: errorMessage)
         .animation(.easeInOut, value: changeDueMessage)
@@ -123,6 +109,42 @@ struct PointOfSaleCollectCashView: View {
 }
 
 private extension PointOfSaleCollectCashView {
+    @ViewBuilder
+    var navigationHeader: some View {
+        HStack(alignment: .top) {
+            Image(systemName: "chevron.backward")
+                .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
+            DynamicVStack(horizontalAlignment: .leading, spacing: Constants.navigationButtonSpacing) {
+                Text(Localization.backNavigationTitle)
+                    .font(.posTitleEmphasized)
+                    .accessibilityAddTraits(.isHeader)
+                if dynamicTypeSize.isAccessibilitySize {
+                    Spacer()
+                }
+                Text(formattedOrderTotal)
+                    .font(.posBodyRegular)
+            }
+            .padding(.top, -Constants.navigationButtonSpacing)
+        }
+        .foregroundColor(navigationForegroundColor)
+    }
+}
+
+private extension PointOfSaleCollectCashView {
+    private func submitCashAmount() async {
+        guard validateAmountOnSubmit() else {
+            return
+        }
+        isLoading = true
+        do {
+            try await markComplete()
+        } catch {
+            errorMessage = Localization.failedToCollectCashPayment
+        }
+        isLoading = false
+        isTextFieldFocused = false
+    }
+
     private func updateChangeDueMessage() {
         changeDueMessage = viewHelper.updatechangeDueMessage(
             orderTotal: orderTotal,
@@ -148,6 +170,10 @@ private extension PointOfSaleCollectCashView {
         static let navigationHeaderTopPadding: CGFloat = 8
         static let buttonFont: POSFontStyle = .posBodyEmphasized
         static let buttonCornerRadius: CGFloat = 8
+    }
+
+    private func conditionalPadding(_ padding: CGFloat) -> CGFloat {
+        dynamicTypeSize.isAccessibilitySize ? 0 : padding
     }
 
     private var backgroundColor: Color {

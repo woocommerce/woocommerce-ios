@@ -17,7 +17,7 @@ class ProductInputTransformerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "9.99")
         let input = OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0)
-        let originalOrder = OrderFactory.emptyNewOrder
+        let originalOrder = OrderFactory.newOrder(currency: .USD)
 
         // When
         let updatedOrder = ProductInputTransformer.update(input: input, on: originalOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
@@ -38,7 +38,7 @@ class ProductInputTransformerTests: XCTestCase {
         let baseSubtotal: Decimal = 8
         let product = Product.fake().copy(productID: sampleProductID, price: "9.99")
         let input = OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0, baseSubtotal: baseSubtotal)
-        let originalOrder = OrderFactory.emptyNewOrder
+        let originalOrder = OrderFactory.newOrder(currency: .USD)
 
         // When
         let updatedOrder = ProductInputTransformer.update(input: input, on: originalOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
@@ -62,7 +62,7 @@ class ProductInputTransformerTests: XCTestCase {
             OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0),
             OrderSyncProductInput(product: .product(anotherProduct), quantity: 1, discount: 0)
         ]
-        let originalOrder = OrderFactory.emptyNewOrder
+        let originalOrder = OrderFactory.newOrder(currency: .USD)
 
         // When
         let updatedOrder = ProductInputTransformer.updateMultipleItems(
@@ -91,7 +91,7 @@ class ProductInputTransformerTests: XCTestCase {
         // Given
         let productVariation = ProductVariation.fake().copy(productID: sampleProductID, productVariationID: sampleProductVariationID, price: "9.99")
         let input = OrderSyncProductInput(product: .variation(productVariation), quantity: 1, discount: 0)
-        let originalOrder = OrderFactory.emptyNewOrder
+        let originalOrder = OrderFactory.newOrder(currency: .USD)
 
         // When
         let updatedOrder = ProductInputTransformer.update(input: input, on: originalOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
@@ -112,7 +112,7 @@ class ProductInputTransformerTests: XCTestCase {
         let baseSubtotal: Decimal = 8
         let productVariation = ProductVariation.fake().copy(productID: sampleProductID, productVariationID: sampleProductVariationID, price: "9.99")
         let input = OrderSyncProductInput(product: .variation(productVariation), quantity: 1, discount: 0, baseSubtotal: baseSubtotal)
-        let originalOrder = OrderFactory.emptyNewOrder
+        let originalOrder = OrderFactory.newOrder(currency: .USD)
 
         // When
         let updatedOrder = ProductInputTransformer.update(input: input, on: originalOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
@@ -140,7 +140,7 @@ class ProductInputTransformerTests: XCTestCase {
             OrderSyncProductInput(product: .variation(productVariation), quantity: 1, discount: 0),
             OrderSyncProductInput(product: .variation(anotherProductVariation), quantity: 1, discount: 0)
         ]
-        let originalOrder = OrderFactory.emptyNewOrder
+        let originalOrder = OrderFactory.newOrder(currency: .USD)
 
         // When
         let updatedOrder = ProductInputTransformer.updateMultipleItems(
@@ -170,7 +170,7 @@ class ProductInputTransformerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let input1 = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1, discount: 0)
-        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
+        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.newOrder(currency: .USD), shouldUpdateOrDeleteZeroQuantities: .delete)
 
         // When
         let input2 = OrderSyncProductInput(id: sampleInputID + 1, product: .product(product), quantity: 1, discount: 0)
@@ -184,7 +184,7 @@ class ProductInputTransformerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "9.99")
         let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0)
-        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
+        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.newOrder(currency: .USD), shouldUpdateOrDeleteZeroQuantities: .delete)
 
         // When
         let input2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 2, discount: 0)
@@ -205,7 +205,7 @@ class ProductInputTransformerTests: XCTestCase {
         let baseSubtotal: Decimal = 8
         let product = Product.fake().copy(productID: sampleProductID, price: "9.99")
         let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0)
-        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
+        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.newOrder(currency: .USD), shouldUpdateOrDeleteZeroQuantities: .delete)
 
         // When
         let input2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 2, discount: 0, baseSubtotal: baseSubtotal)
@@ -226,7 +226,7 @@ class ProductInputTransformerTests: XCTestCase {
         let price: Decimal = 9.99
         let product = Product.fake().copy(productID: sampleProductID, price: "\(price)")
         let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0)
-        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
+        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.newOrder(currency: .USD), shouldUpdateOrDeleteZeroQuantities: .delete)
         let discount: Decimal = 1
 
         // When
@@ -249,7 +249,7 @@ class ProductInputTransformerTests: XCTestCase {
         let price: Decimal = 9.99
         let product = Product.fake().copy(productID: sampleProductID, price: "\(price)")
         let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0)
-        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
+        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.newOrder(currency: .USD), shouldUpdateOrDeleteZeroQuantities: .delete)
         let discount: Decimal = 1
 
         // When
@@ -271,7 +271,7 @@ class ProductInputTransformerTests: XCTestCase {
         let price: Decimal = 9.99
         let product = Product.fake().copy(productID: sampleProductID, price: "\(price)")
         let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 1)
-        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
+        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.newOrder(currency: .USD), shouldUpdateOrDeleteZeroQuantities: .delete)
 
         // When
         let input2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0)
@@ -292,7 +292,7 @@ class ProductInputTransformerTests: XCTestCase {
         let price: Decimal = 9.99
         let product = Product.fake().copy(productID: sampleProductID, price: "\(price)")
         let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 4)
-        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
+        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.newOrder(currency: .USD), shouldUpdateOrDeleteZeroQuantities: .delete)
         let newDiscount: Decimal = 3
 
         // When
@@ -314,7 +314,7 @@ class ProductInputTransformerTests: XCTestCase {
         let product = Product.fake().copy(productID: sampleProductID, price: "9.99")
         let productInput = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0)
         let initialOrder = ProductInputTransformer.updateMultipleItems(with: [productInput],
-                                                                       on: OrderFactory.emptyNewOrder,
+                                                                       on: OrderFactory.newOrder(currency: .USD),
                                                                        shouldUpdateOrDeleteZeroQuantities: .delete)
 
         // When
@@ -373,7 +373,7 @@ class ProductInputTransformerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0)
-        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
+        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.newOrder(currency: .USD), shouldUpdateOrDeleteZeroQuantities: .delete)
 
         // When
         let input2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 0, discount: 0)
@@ -388,7 +388,7 @@ class ProductInputTransformerTests: XCTestCase {
         let product = Product.fake().copy(productID: sampleProductID)
         let productInput = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0)
         let initialOrderUpdate = ProductInputTransformer.updateMultipleItems(with: [productInput],
-                                                                             on: OrderFactory.emptyNewOrder,
+                                                                             on: OrderFactory.newOrder(currency: .USD),
                                                                              shouldUpdateOrDeleteZeroQuantities: .delete)
 
         // When
@@ -404,7 +404,7 @@ class ProductInputTransformerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0)
-        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .update)
+        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.newOrder(currency: .USD), shouldUpdateOrDeleteZeroQuantities: .update)
 
         // When
         let input2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 0, discount: 0)
@@ -420,7 +420,7 @@ class ProductInputTransformerTests: XCTestCase {
         let product = Product.fake().copy(productID: sampleProductID)
         let productInput = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0)
         let initialOrderUpdate = ProductInputTransformer.updateMultipleItems(with: [productInput],
-                                                                             on: OrderFactory.emptyNewOrder,
+                                                                             on: OrderFactory.newOrder(currency: .USD),
                                                                              shouldUpdateOrDeleteZeroQuantities: .update)
 
         // When

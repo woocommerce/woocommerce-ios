@@ -30,7 +30,7 @@ struct ParentProductCardView: View {
                     .lineLimit(2)
                     .foregroundStyle(Color.posPrimaryText)
                     .multilineTextAlignment(.leading)
-                    .font(Constants.itemNameFont)
+                    .font(Constants.itemTitleFont)
 
                 Text(detailText)
                     .foregroundStyle(Color.posSecondaryText)

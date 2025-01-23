@@ -1,3 +1,1 @@
-
-Esta actualización aporta una mayor fiabilidad y transparencia a tu experiencia con WooCommerce. Disfruta de una configuración de Jetpack mejorada, una gestión de medios más fluida y mejores flujos de trabajo de productos y pagos. También hemos optimizado el almacenamiento y hemos solucionado problemas clave de la interfaz de usuario para mejorar el rendimiento. Además, ahora el proceso de iniciación de Tap to Pay te guía de forma sencilla.
-
+Esta actualización introduce la función de ocultar tiendas específicas en el selector de tiendas, algo muy útil para las agencias que gestionen varios sitios. También hemos mejorado la obtención de información de plugins para gestionar los tipos de datos inesperados y asegurar una experiencia sin interrupciones. Además, se ha corregido un error en iPad que provocaba problemas al crear pedidos con importes personalizados. ¡Disfruta de una experiencia más concreta y fiable!

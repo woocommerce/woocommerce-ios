@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import Experiments
+import WooFoundation
 
 /// `FilterListViewModel` for filtering a list of orders.
 final class FilterOrderListViewModel: FilterListViewModel {
@@ -59,6 +60,8 @@ final class FilterOrderListViewModel: FilterListViewModel {
 
     let shouldShowHistory: Bool
 
+    let source = FilterSource.orders
+
     private let orderStatusFilterViewModel: FilterTypeViewModel
     private let dateRangeFilterViewModel: FilterTypeViewModel
     private let productFilterViewModel: FilterTypeViewModel
@@ -66,6 +69,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
 
     private let siteID: Int64
     private let stores: StoresManager
+    private let analytics: Analytics
 
     /// - Parameters:
     ///   - filters: the filters to be applied initially.
@@ -77,7 +81,8 @@ final class FilterOrderListViewModel: FilterListViewModel {
          allowedStatuses: [OrderStatus],
          siteID: Int64,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         orderStatusFilterViewModel = OrderListFilter.orderStatus.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
         dateRangeFilterViewModel = OrderListFilter.dateRange.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
         productFilterViewModel = OrderListFilter.product(siteID: siteID).createViewModel(filters: filters, allowedStatuses: allowedStatuses)
@@ -85,6 +90,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
 
         self.siteID = siteID
         self.stores = stores
+        self.analytics = analytics
 
         shouldShowHistory = featureFlagService.isFeatureFlagEnabled(.filterHistoryOnOrderAndProductLists)
         filterTypeViewModels = [orderStatusFilterViewModel, dateRangeFilterViewModel, customerFilterViewModel, productFilterViewModel]
@@ -130,6 +136,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
         dateRangeFilterViewModel.selectedValue = filter.dateRange
         productFilterViewModel.selectedValue = filter.product
         customerFilterViewModel.selectedValue = filter.customer
+        analytics.track(event: .FilterHistory.trackPastFilterApplied(source: source))
     }
 
     func saveSelectedFilterToHistory(_ filter: Criteria) {
@@ -146,6 +153,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
     }
 
     func removeFilterFromHistory(_ filter: Criteria) {
+        analytics.track(event: .FilterHistory.trackPastFilterRemoved(source: source))
         let settings = StoredOrderSettings.Setting(siteID: siteID,
                                                    orderStatusesFilter: filter.orderStatus,
                                                    dateRangeFilter: filter.dateRange,
@@ -159,6 +167,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
     }
 
     func clearAllFilterHistory() {
+        analytics.track(event: .FilterHistory.trackFilterHistoryCleared(source: source))
         stores.dispatch(AppSettingsAction.resetOrderFilterHistory(siteID: siteID, onCompletion: { error in
             if let error {
                 DDLogError("⛔️ Error clearing all filter history: \(error)")

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-12-27 15:54:04+0000 */
+/* Translation-Revision-Date: 2025-01-15 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -804,8 +804,7 @@ which should be translated separately and considered part of this sentence. */
    Title when there is no filter set. */
 "Any" = "Herhangi biri";
 
-/* Format of a product variation attribute description where the attribute is set to any value.
-   Product variation attribute description where the attribute is set to any value. */
+/* Product variation attribute description where the attribute is set to any value. */
 "Any %1$@" = "Herhangi Bir %1$@";
 
 /* My Store > Settings > App (Application) settings section title */
@@ -3489,9 +3488,6 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "Stokta";
-
-/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
-"In the United Kingdom, cards may only be used with Tap to Pay for transactions up to %1$@." = "Birleşik Krallık'ta Tap to Pay ile %1$@ tutarına kadar olan işlemler için kart kullanılabilir.";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "Site yöneticinizde, Bağlantılar > Hesap bağlantısı bölümünde yer alan Jetpack Yönetim Panelinden WordPress.com'a bağlanmak için kullandığınız e-postayı bulabilirsiniz.";
@@ -7604,9 +7600,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "Şuraya:";
 
-/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
-"To accept payments above this limit, consider purchasing a card reader." = "Bu sınırın üzerindeki ödemeleri kabul etmek için bir kart okuyucu satın almayı düşünün.";
-
 /* Description text for the product discount row informational tooltip */
 "To add a Product Discount, please remove all Coupons from your order" = "Ürün İndirimi eklemek için lütfen siparişinizdeki tüm Kuponları kaldırın";
 
@@ -10524,11 +10517,17 @@ which should be translated separately and considered part of this sentence. */
 /* Header of the Current Store section of the the Edit Store List view */
 "editStoreListView.currentStoreHeader" = "Mevcut mağaza";
 
+/* Error message when updating notification settings fails when saving the store list for the store picker */
+"editStoreListView.errorUpdatingNotificationSettings" = "Bildirim ayarları güncellenirken bir hata oluştu. Lütfen tekrar deneyin.";
+
 /* Footer of the Other Stores section on the Edit Store List view */
 "editStoreListView.otherStoresFooter" = "Seçilmeyen mağazalar, mağaza seçicide dahil edilmez";
 
 /* Header of the Other Stores section on the Edit Store List view */
 "editStoreListView.otherStoresHeader" = "Diğer mağazalar";
+
+/* Button to retry saving changes in the Edit Store List view */
+"editStoreListView.retryButton" = "Tekrar dene";
 
 /* Button to save changes in the Edit Store List view */
 "editStoreListView.saveButton" = "Kaydet";
@@ -10605,6 +10604,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the filter used to show only favorite products. */
 "favoriteProductsFilter.favoriteProducts" = "Favori Ürünler";
+
+/* Accessibility hint for the filter history button on the filter list screen */
+"filterListViewController.historyBarButtonItem.accessibilityHint" = "Filtre geçmişi";
 
 /* Row title for filtering orders by customer. */
 "filterOrderListViewModel.OrderListFilter.rowCustomer" = "Müşteri";
@@ -11716,6 +11718,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "Bu sipariş başarısız olabilir";
 
+/* Subtitle for the cash payment view navigation back buttonReads as 'Total: $1.23' */
+"pointOfSale.cashview.back.navigation.subtitle" = "Toplam: %1$@";
+
+/* Title for the cash payment view navigation back button */
+"pointOfSale.cashview.back.navigation.title" = "Nakit ödeme";
+
+/* Button to mark a cash payment as completed */
+"pointOfSale.cashview.button.markpaymentcompleted.title" = "Ödemeyi tamamlandı olarak işaretle";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Lütfen bekleyin";
 
@@ -11767,6 +11778,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.done" = "Tamam";
 
+/* Title for the payment method used when collecting cash payment in Point of Sale. */
+"pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "Şahsen Ödeyin";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = " için ürüne dokunun Sepete eklemek";
 
@@ -11778,6 +11792,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "Temizle";
+
+/* Back button title in the child item list screen. */
+"pos.childItemList.back" = "Geri";
 
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "İnternet bağlantısı yok";
@@ -11791,9 +11808,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Satış Noktası Modundan Çıkılsın Mı?";
 
-/* Title at the top of the Point of Sale product selector screen. */
-"pos.headerTitleView.productSelectorTitle" = "Ürünler";
-
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadButtonTitle" = "Tekrar dene";
 
@@ -11802,6 +11816,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadTitle" = "Ürünler yüklenirken hata oluştu";
+
+/* Title at the top of the Point of Sale item list full screen. */
+"pos.itemListFullscreen.title" = "Ürünler";
 
 /* Accessibility label for button to dismiss the product selector header banner. The banner explains current POS limitations. Tapping the button prevents it being shown again. */
 "pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel" = "Kapat";
@@ -11817,6 +11834,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title" = "Yalnızca basit ürünler gösteriliyor";
+
+/* Title at the top of the Point of Sale product selector screen. */
+"pos.itemlistview.title" = "Ürünler";
+
+/* Text indicating that there are options available for a parent product */
+"pos.parentProductCard.optionsAvailable" = "Kullanılabilir seçenekler var";
 
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "Birini eklemek için POS'tan çıkın ve Ürünler'e gidin";
@@ -11850,6 +11873,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title for the receipt button */
 "pos.totalsView.button.sendReceipt" = "Faturayı e-posta ile gönderin";
+
+/* Title for the cash payment button title */
+"pos.totalsView.cash.button.title" = "Nakit ödeme";
 
 /* Text for the banner requiring specific WooCommerce version. */
 "pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "Lütfen WooCommerce'ü 9.5.0 veya daha yeni bir sürüme güncelleyin";
@@ -12290,6 +12316,27 @@ which should be translated separately and considered part of this sentence. */
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
 "share details" = "ayrıntıları paylaş";
 
+/* Body for the custom items description educational dialog */
+"shipping.customs.descriptionInfoDialogBody" = "Avrupa Birliği (AB) gümrük kurallarını uygulayan ülkelere gönderim yaparken her öğenin net ve özel bir açıklamasını sağlamalısınız. Örneğin, kıyafet gönderiyorsanız, açıklamanın kabul edilebilir olması için bunun ne tür bir kıyafet olduğunu (ör. erkek gömleği, kadın yeleği, erkek ceketi) belirtmeniz gerekiyor. Aksi takdirde gümrükte gönderimler gecikebilir veya kesintiye uğrayabilir.";
+
+/* Button title for the done button in the customs description educational dialog */
+"shipping.customs.descriptionInfoDialogDone" = "Tamam";
+
+/* Button title for the learn more action in the custom descriptions info dialog */
+"shipping.customs.descriptionInfoDialogLearnMore" = "Daha fazla bilgi edinin";
+
+/* Title for the custom description educational dialog */
+"shipping.customs.descriptionInfoDialogTitle" = "Açıklama";
+
+/* Body for the custom items origin country educational dialog */
+"shipping.customs.originCountryInfoDialogBody" = "Ürünün üretildiği veya monte edildiği ülke.";
+
+/* Button title for the done button in the customs description educational dialog */
+"shipping.customs.originCountryInfoDialogDoneButton" = "Tamam";
+
+/* Title for the custom origin country educational dialog */
+"shipping.customs.originCountryInfoDialogTitle" = "Menşe Ülke";
+
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "İptal et";
 
@@ -12376,6 +12423,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "Mevcut mağazayı bağla";
+
+/* Store Picker's Section Title: Displayed whenever there are multiple Stores. The content inside the bracket indicates the number of stores hidden from the store picker. The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)' */
+"storePickerViewModel.pickStoreWithHiddenStoreCount" = "Bağlanılacak Mağazayı Seçin (%1$d gizli)";
 
 /* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
 "storeStatsChart.xSelectedValue" = "Seçilen tarih";
@@ -12524,6 +12574,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is successful, we show a Notice to alert the user – this is the title of the notice. */
 "tap.to.pay.try.payment.refundNotice.success.title" = "Tap To Pay Deneme Ödemesi";
+
+/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
+"tapToPay.aboutTapToPay.contactlessLimit.gb" = "Birleşik Krallık'ta Tap to Pay ile %1$@ tutarına kadar olan işlemler için kart ödemeleri kabul edebilirsiniz. %1$@ tutarının üzerindeki ödemeler için bazı kartlar müşterilerin PIN'ini doğrudan telefonda girmesini verirken diğerleri ödemeyi tamamlamak için bir kart okuyucu gerektirir.";
+
+/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
+"tapToPay.aboutTapToPay.overLimitSuggestion" = "Bu sınırın üzerindeki tüm ödemeleri kabul etmek için bir kart okuyucu satın almayı düşünün.";
 
 /* Title of the button to dismiss the Tap to Pay awareness screen */
 "tapToPay.awarenessMoment.closeButton" = "Kapat";
@@ -12810,6 +12866,9 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "Haftalar";
 
+/* Title for the Add Package screen Add Package Details button */
+"wooShipping.createLabel.addPackage.addPackageDetails" = "Paket Ayrıntıları Ekle";
+
 /* Info label for selected box as a package type */
 "wooShipping.createLabel.addPackage.box" = "Kutu";
 
@@ -12855,6 +12914,9 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for saved package option */
 "wooShipping.createLabel.addPackage.saved" = "Kaydedildi";
 
+/* Title for the Add Package screen Select Package button */
+"wooShipping.createLabel.addPackage.selectPackage" = "Paket Seç";
+
 /* Title for the Add Package screen */
 "wooShipping.createLabel.addPackage.title" = "Paket Ekleyin";
 
@@ -12866,6 +12928,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button to dismiss the shipping label screen */
 "wooShipping.createLabel.closeButton" = "Kapat";
+
+/* Title for the Edit Package screen Done button */
+"wooShipping.createLabel.editPackage.done" = "Tamam";
+
+/* Title for the Edit Package screen */
+"wooShipping.createLabel.editPackage.title" = "Paketi Düzenleyin";
+
+/* Title for the Edit Package screen Use Selected Package button */
+"wooShipping.createLabel.editPackage.useSelectedPackage" = "Seçilen Paketi Kullan";
 
 /* Label for section in shipping label creation to declare when a package contains hazardous materials. */
 "wooShipping.createLabel.hazmatLabel" = "Zararlı ürünler veya tehlikeli materyaller mi gönderiyorsunuz?";
@@ -12926,6 +12997,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
+
+/* Button for dismissing the keyboard */
+"wooShipping.createLabels.package.done" = "Tamam";
 
 /* Heading for the package section in the shipping label creation screen. */
 "wooShipping.createLabels.package.title" = "Paket";
@@ -13004,6 +13078,96 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to view a shipping label */
 "wooShipping.createLabels.viewLabelTitle" = "Gönderim Etiketini Görüntüleyin";
+
+/* Customs button title when it's disabled and there's still info to add */
+"wooShipping.customs.addMissingInformationButtonTitle" = "Eksik Bilgi Ekle";
+
+/* Cancel button in navigation bar to dismiss the screen */
+"wooShipping.customs.cancel" = "İptal Et";
+
+/* Title for the Content Type menu in the Shipping Customs Form */
+"wooShipping.customs.contentType" = "İçerik Türü";
+
+/* Info label for shipping content type merchandise */
+"wooShipping.customs.contentType.documents" = "Belgeler";
+
+/* Info label for shipping content type merchandise */
+"wooShipping.customs.contentType.gift" = "Hediye";
+
+/* Info label for shipping content type merchandise */
+"wooShipping.customs.contentType.merchandise" = "Ticari Mal";
+
+/* Info label for shipping content type merchandise */
+"wooShipping.customs.contentType.other" = "Diğer...";
+
+/* Info label for shipping content type returned goods */
+"wooShipping.customs.contentType.returnedGoods" = "İade Edilen Ürünler";
+
+/* Info label for shipping content type merchandise */
+"wooShipping.customs.contentType.sample" = "Örnek";
+
+/* Title for the Internaction Transaction Number in the Shipping Customs Form */
+"wooShipping.customs.internationalTransactionNumber" = "Uluslararası İşlem Numarası";
+
+/* Explanatory text for the international transaction number in customs */
+"wooShipping.customs.internationalTransactionNumber.infoText" = "ITN hakkında daha fazla bilgi";
+
+/* Product Details Section title */
+"wooShipping.customs.productDetails" = "Ürün Ayrıntıları";
+
+/* Title for the Restriction Type menu in the Shipping Customs Form */
+"wooShipping.customs.restrictionType" = "Kısıtlama Türü";
+
+/* Info label for shipping restriction type none */
+"wooShipping.customs.restrictionType.none" = "Hiçbiri";
+
+/* Info label for shipping restriction type other */
+"wooShipping.customs.restrictionType.other" = "Diğer";
+
+/* Info label for shipping restriction type quarantine */
+"wooShipping.customs.restrictionType.quarantine" = "Karantina";
+
+/* Info label for shipping restriction type sanitary */
+"wooShipping.customs.restrictionType.sanitary" = "Sağlık\/Bitki Sağlığı Denetimi";
+
+/* Info label for a toggle to return the package to a sender if necessary toggle */
+"wooShipping.customs.returnToSenderMessage" = "Paket teslim edilemiyorsa gönderene iade et";
+
+/* Customs button title when it's enabled and there's no info to add */
+"wooShipping.customs.saveCustomsDetails" = "Gümrük Ayrıntılarını Kaydet";
+
+/* Title for the Customs screen */
+"wooShipping.customs.title" = "Gümrük";
+
+/* Title for the customs items description text field for customs items */
+"wooShipping.customsItems.description" = "Açıklama";
+
+/* Title for the HS Tariff Number text field for customs items */
+"wooShipping.customsItems.hsTariffNumber" = "HS tarife numarası";
+
+/* Information text about the HS Tariff */
+"wooShipping.customsItems.hsTariffNumber.moreInfoText" = "HS tarifesi hakkında daha fazla bilgi";
+
+/* Placeholder for the HS Tariff Number text field for customs items */
+"wooShipping.customsItems.hsTariffNumber.placeholder" = "İsteğe bağlı";
+
+/* Title for the origin country text field */
+"wooShipping.customsItems.originCountry" = "Menşe Ülke";
+
+/* Title for the customs items value per unit text field for customs items */
+"wooShipping.customsItems.valuePerUnit" = "Birim başına değer";
+
+/* Warning text when some required value is missing */
+"wooShipping.customsItems.valueRequired" = "Değer gerekli";
+
+/* Title for the customs items weight per unit text field for customs items */
+"wooShipping.customsItems.weightPerUnit" = "Birim başına ağırlık";
+
+/* Indicates that the address is the default origin address  on the shipping label creation screen */
+"wooShipping.originAddresses.defaultAddress" = "(varsayılan)";
+
+/* Heading for the list of origin addresses to choose from on the shipping label creation screen */
+"wooShipping.originAddresses.shipFrom" = "Gönderen:";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, mağazam, bugün, bu hafta, bu ay, bu yıl, siparişler, ziyaretçiler, dönüşüm, en çok dönüşüm, satılan ürünler";

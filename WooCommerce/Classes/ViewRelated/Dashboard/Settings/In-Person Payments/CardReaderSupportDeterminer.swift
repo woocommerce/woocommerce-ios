@@ -16,6 +16,7 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
     private let configuration: CardPresentPaymentsConfiguration
     private let siteID: Int64
     private var locationManager: CLLocationManager = CLLocationManager()
+    private static var deviceSupportsLocalMobileReader: [Int64: ExpiringBool] = [:]
 
     init(siteID: Int64,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
@@ -59,7 +60,15 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
 
     @MainActor
     func deviceSupportsLocalMobileReader() async -> Bool {
-        await withCheckedContinuation { continuation in
+        /// There may be crashes due to multiple consecutive calls checkDeviceSupport
+        /// Limit the calls to once every 30 seconds and cache the result
+        ///
+        if let cachedResult = Self.deviceSupportsLocalMobileReader[siteID], !cachedResult.isExpired {
+            return cachedResult.value
+        }
+
+
+        let deviceSupportsLocalMobileReader = await withCheckedContinuation { continuation in
             let action = CardPresentPaymentAction.checkDeviceSupport(
                 siteID: siteID,
                 cardReaderType: .appleBuiltIn,
@@ -69,6 +78,9 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
                 }
             stores.dispatch(action)
         }
+
+        Self.deviceSupportsLocalMobileReader[siteID] = ExpiringBool(value: deviceSupportsLocalMobileReader, expirationInSeconds: 30)
+        return deviceSupportsLocalMobileReader
     }
 
     @MainActor
@@ -82,5 +94,17 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
 
             self.stores.dispatch(action)
         }
+    }
+}
+
+// MARK: - Helper for caching local reader device support check
+
+private struct ExpiringBool {
+    let value: Bool
+    let expirationInSeconds: Int
+    private let created = Date()
+
+    var isExpired: Bool {
+        Date().timeIntervalSince(created) > Double(expirationInSeconds)
     }
 }

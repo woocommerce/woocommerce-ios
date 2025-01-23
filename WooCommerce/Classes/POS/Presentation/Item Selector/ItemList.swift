@@ -48,20 +48,20 @@ struct ItemList<HeaderView: View>: View {
     }
 
     @ViewBuilder var footerRows: some View {
-        VStack {
-            switch state {
-            case .loading:
+        switch state {
+        case .loading:
+            ForEach(0..<8) { _ in
                 GhostItemCardView()
-            case .inlineError(_, let errorState):
-                ItemListErrorCardView(errorState: errorState,
-                                      buttonAction: {
-                    Task { @MainActor in
-                        await posModel.loadNextItems(base: node)
-                    }
-                })
-            case .loaded, .error:
-                EmptyView()
             }
+        case .inlineError(_, let errorState):
+            ItemListErrorCardView(errorState: errorState,
+                                  buttonAction: {
+                Task { @MainActor in
+                    await posModel.loadNextItems(base: node)
+                }
+            })
+        case .loaded, .error:
+            EmptyView()
         }
     }
 }

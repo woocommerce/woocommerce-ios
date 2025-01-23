@@ -207,4 +207,59 @@ struct CollectCashViewHelperTests {
         #expect(result == false)
         #expect(capturedErrorMessage == expectedErrorMessage)
     }
+
+    @Test func validateAmountOnSubmit_when_input_is_empty_then_returns_true() {
+        // Given
+        let orderTotal = "$0.00"
+        let inputAmount = ""
+
+        // When
+        let result = sut.validateAmountOnSubmit(
+            orderTotal: orderTotal,
+            textFieldAmountInput: inputAmount,
+            onError: { _ in })
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func validateAmountOnSubmit_when_orderTotal_is_empty_then_returns_false_with_expected_error_message() {
+        // Given
+        let orderTotal = ""
+        let inputAmount = ""
+        let expectedErrorMessage = "Error trying to process payment. Try again."
+        var capturedErrorMessage: String?
+
+        // When
+        let result = sut.validateAmountOnSubmit(
+            orderTotal: orderTotal,
+            textFieldAmountInput: inputAmount,
+            onError: { error in
+                capturedErrorMessage = error
+            })
+
+        // Then
+        #expect(result == false)
+        #expect(capturedErrorMessage == expectedErrorMessage)
+    }
+
+    @Test func validateAmountOnSubmit_when_inputDecimal_is_empty_and_less_than_orderTotal_then_returns_false_with_expected_error_message() {
+        // Given
+        let orderTotal = "$1.00"
+        let inputAmount = ""
+        let expectedErrorMessage = "Amount must be more or equal to total."
+        var capturedErrorMessage: String?
+
+        // When
+        let result = sut.validateAmountOnSubmit(
+            orderTotal: orderTotal,
+            textFieldAmountInput: inputAmount,
+            onError: { error in
+                capturedErrorMessage = error
+            })
+
+        // Then
+        #expect(result == false)
+        #expect(capturedErrorMessage == expectedErrorMessage)
+    }
 }

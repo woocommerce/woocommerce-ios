@@ -344,6 +344,9 @@ private extension CoreDataManagerTests {
         }
     }
 
+    // Attempts corrupting the database file by overwriting the sqlite-wal file.
+    // Our CoreData stack uses the default WAL journal mechanism
+    // so updating this file would corrupt the database.
     func corruptDatabaseFile() {
         let storeURL = CoreDataManager.storeURL(with: storageIdentifier)
         let walURL = storeURL.deletingPathExtension().appendingPathExtension("sqlite-wal")

@@ -222,7 +222,7 @@ private extension JetpackSetupCoordinator {
 
         /// WPCom credentials to authenticate the user in the Jetpack connection web view automatically
         let credentials: Credentials = .wpcom(username: username, authToken: authToken, siteAddress: site.url)
-        guard jetpackConnectedEmail == nil else {
+        guard jetpackConnectedEmail == nil || !site.isJetpackThePluginInstalled else {
             // authenticate user immediately
             return authenticateUserAndRefreshSite(with: credentials)
         }

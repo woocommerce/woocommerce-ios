@@ -96,7 +96,7 @@ private extension CustomersListView {
                                                        value: "No customers yet",
                                                        comment: "Title when there are no customers to show in the Customers list screen.")
         static let emptyStateMessage = NSLocalizedString("customerList.emptyStateMessage",
-                                                         value: "Create an order to start gathering customer insights",
+                                                         value: "Create an order to start gathering customer insights.",
                                                          comment: "Message when there are no customers to show in the Customers list screen.")
         static let searchPlaceholder = NSLocalizedString("customersList.searchPlaceholder",
                                                          value: "Search for customers",

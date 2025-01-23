@@ -62,8 +62,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .scanToUpdateInventory:
             return true
-        case .backendReceipts:
-            return true
         case .splitViewInProductsTab:
             return true
         case .subscriptionsInOrderCreationUI:

@@ -12,7 +12,6 @@ final class MockFeatureFlagService: FeatureFlagService {
     var betterCustomerSelectionInOrder: Bool
     var productBundlesInOrderForm: Bool
     var isScanToUpdateInventoryEnabled: Bool
-    var isBackendReceiptsEnabled: Bool
     var sideBySideViewForOrderForm: Bool
     var isSubscriptionsInOrderCreationCustomersEnabled: Bool
     var isPointOfSaleEnabled: Bool
@@ -37,7 +36,6 @@ final class MockFeatureFlagService: FeatureFlagService {
          betterCustomerSelectionInOrder: Bool = false,
          productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
-         isBackendReceiptsEnabled: Bool = false,
          sideBySideViewForOrderForm: Bool = false,
          isSubscriptionsInOrderCreationCustomersEnabled: Bool = false,
          isPointOfSaleEnabled: Bool = false,
@@ -61,7 +59,6 @@ final class MockFeatureFlagService: FeatureFlagService {
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
         self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
-        self.isBackendReceiptsEnabled = isBackendReceiptsEnabled
         self.sideBySideViewForOrderForm = sideBySideViewForOrderForm
         self.isSubscriptionsInOrderCreationCustomersEnabled = isSubscriptionsInOrderCreationCustomersEnabled
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
@@ -99,8 +96,6 @@ final class MockFeatureFlagService: FeatureFlagService {
             return productBundlesInOrderForm
         case .scanToUpdateInventory:
             return isScanToUpdateInventoryEnabled
-        case .backendReceipts:
-            return isBackendReceiptsEnabled
         case .sideBySideViewForOrderForm:
             return sideBySideViewForOrderForm
         case .subscriptionsInOrderCreationCustomers:

@@ -84,7 +84,7 @@ struct PointOfSaleCollectCashView: View {
                     }
                     .frame(maxWidth: .infinity, minHeight: Constants.buttonMinHeight)
                 })
-                .padding(conditionalPadding(Constants.buttonPadding))
+                .adaptiveButtonPadding(Constants.buttonPadding)
                 .frame(maxWidth: .infinity)
                 .foregroundColor(colorScheme == .light ? Color.white : Color.black)
                 .background(Color.posPrimaryButtonBackground)

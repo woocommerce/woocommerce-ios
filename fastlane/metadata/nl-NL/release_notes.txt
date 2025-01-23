@@ -1,3 +1,1 @@
-
-Deze update biedt verbeterde betrouwbaarheid en duidelijkheid voor je WooCommerce-ervaring! Profiteer van een verbeterde Jetpack-configuratie, soepelere verwerking van media en betere workflows voor producten en betalingen. Daarnaast hebben we opslag geoptimaliseerd en belangrijke UI-problemen opgelost voor betere prestaties. Bovendien helpt de onboarding voor Tap to Pay je nu eenvoudig op weg!
-
+Met deze update introduceren we de mogelijkheid om bepaalde winkels in de winkelpicker te verbergen, wat ideaal is voor agency's die meerdere sites beheren. We hebben ook het ophalen van plugininformatie verbeterd om onverwachte gegevenstypen aan te kunnen, wat voor betere prestaties zorgt. Daarnaast hebben we een bug opgelost die op iPads zorgde voor problemen met aangepaste bedragen bij het aanmaken van bestellingen. Geniet van een gerichtere en betrouwbaardere ervaring!

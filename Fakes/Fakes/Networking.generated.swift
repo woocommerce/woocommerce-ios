@@ -2761,6 +2761,23 @@ extension Networking.WooShippingAccountSettings {
         )
     }
 }
+extension Networking.WooShippingAddress {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingAddress {
+        .init(
+            company: .fake(),
+            name: .fake(),
+            phone: .fake(),
+            country: .fake(),
+            state: .fake(),
+            address1: .fake(),
+            address2: .fake(),
+            city: .fake(),
+            postcode: .fake()
+        )
+    }
+}
 extension Networking.WooShippingCarrierPredefinedOptions {
     /// Returns a "ready to use" type filled with fake values.
     ///

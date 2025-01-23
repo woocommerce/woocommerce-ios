@@ -5,9 +5,11 @@ import WooFoundation
 
 final class WooShippingCustomsFormViewModel: ObservableObject {
     @Published var internationalTransactionNumber: String = ""
+    @Published var internationalTransactionNumberIsRequired: Bool = false
     @Published var returnToSenderIfNotDelivered: Bool = false
 
     @Published var requiredInformationIsEntered: Bool = false
+    @Published var itemsRequiredInformationIsEntered: Bool = false
 
     @Published var contentType: WooShippingContentType = .merchandise
     @Published var restrictionType: WooShippingRestrictionType = .none
@@ -27,6 +29,8 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
         }
 
         listenToItemsRequiredInformationValues()
+        listenForRequiredInformation()
+        listenForInternationalTransactionNumberIsRequired()
     }
 
     @Published var itemsViewModels: [WooShippingCustomsItemViewModel] = []
@@ -40,7 +44,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
                                             restrictionType: restrictionType.toFormRestrictionType(),
                                             restrictionComments: "",
                                             nonDeliveryOption: returnToSenderIfNotDelivered ? .return : .abandon,
-                                            itn: internationalTransactionNumber,
+                                            itn: isValidITN() ? internationalTransactionNumber : "",
                                             items: itemsViewModels.map {
             ShippingLabelCustomsForm.Item(description: $0.description,
                                           quantity: $0.orderItem.quantity,
@@ -53,9 +57,64 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
         )
         onCompletion(form)
     }
+
+    func isValidITN() -> Bool {
+        guard internationalTransactionNumber.isNotEmpty else {
+            return true
+        }
+
+        let pattern = "^(?:(?:AES X\\d{14})|(?:NOEEI 30\\.\\d{1,2}(?:\\([a-z]\\)(?:\\(\\d\\))?)?))$"
+
+        do {
+            let regex = try NSRegularExpression(pattern: pattern)
+            let range = NSRange(internationalTransactionNumber.startIndex..<internationalTransactionNumber.endIndex, in: internationalTransactionNumber)
+            return regex.firstMatch(in: internationalTransactionNumber, options: [], range: range) != nil
+        } catch {
+            return false
+        }
+    }
 }
 
 private extension WooShippingCustomsFormViewModel {
+    func listenForRequiredInformation() {
+        Publishers.CombineLatest3($itemsRequiredInformationIsEntered, $internationalTransactionNumber, $internationalTransactionNumberIsRequired)
+            .sink { [weak self] itemsRequiredInformationIsEntered, internationalTransactionNumber, internationalTransactionNumberIsRequired in
+                guard let self = self else { return }
+
+                guard itemsRequiredInformationIsEntered else {
+                    self.requiredInformationIsEntered = false
+                    return
+                }
+
+                guard internationalTransactionNumberIsRequired else {
+                    self.requiredInformationIsEntered = true
+                    return
+                }
+
+                self.requiredInformationIsEntered = internationalTransactionNumber.isNotEmpty && self.isValidITN()
+            }
+            .store(in: &cancellables)
+    }
+
+    func listenForInternationalTransactionNumberIsRequired() {
+         $itemsViewModels
+            .map { childViewModels in
+                childViewModels.map { $0.$hsTariffNumberTotalValue.eraseToAnyPublisher() }
+            }
+            .flatMap { childPublishers in
+                childPublishers.combineLatest()
+            }
+            .sink { [weak self] values in
+                var hsTariffNumberTotalValueDictionary: [String: Decimal] = [:]
+                for (hsTariffNumber, totalValuePerItem) in values.compacted() {
+                    hsTariffNumberTotalValueDictionary[hsTariffNumber, default: 0] += totalValuePerItem
+                }
+
+                self?.internationalTransactionNumberIsRequired = hsTariffNumberTotalValueDictionary.values.contains { $0 > 2500 }
+            }
+            .store(in: &cancellables)
+    }
+
     func listenToItemsRequiredInformationValues() {
         // Listen to the items required information and enable the button depending on it
         $itemsViewModels
@@ -69,7 +128,7 @@ private extension WooShippingCustomsFormViewModel {
                 childValidityArray.allSatisfy { $0 } // Check if all are valid
             }
             .sink { [weak self] value in
-                self?.requiredInformationIsEntered = value
+                self?.itemsRequiredInformationIsEntered = value
             }
             .store(in: &cancellables)
     }

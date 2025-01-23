@@ -15,6 +15,8 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
     @Published var valuePerUnit: String = ""
     @Published var weightPerUnit: String = ""
     @Published var originCountry: WooShippingCustomsCountry
+    // Useful to determine externally if the shipping requires an ITN
+    @Published var hsTariffNumberTotalValue: (String, Decimal)?
 
     private let storageManager: StorageManagerType
     private let stores: StoresManager
@@ -71,10 +73,11 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
 
         fetchCountries()
         combineRequiredInformationIsEntered()
+        combineHSTariffNumberTotalValue()
     }
 }
 
-extension WooShippingCustomsItemViewModel {
+private extension WooShippingCustomsItemViewModel {
     func fetchCountries() {
         try? resultsController.performFetch()
         let action = DataAction.synchronizeCountries(siteID: siteID) { [weak self] (result) in
@@ -94,6 +97,24 @@ extension WooShippingCustomsItemViewModel {
         Publishers.CombineLatest3($description, $valuePerUnit, $weightPerUnit)
             .sink { [weak self] description, valuePerUnit, weightPerUnit in
                 self?.requiredInformationIsEntered = description.isNotEmpty && valuePerUnit.isNotEmpty && weightPerUnit.isNotEmpty
+            }
+            .store(in: &cancellables)
+    }
+
+    func combineHSTariffNumberTotalValue() {
+        Publishers.CombineLatest($valuePerUnit, $hsTariffNumber)
+            .sink { [weak self] valuePerUnit, hsTariffNumber in
+                guard let self = self else { return }
+
+                guard self.currencySymbol == "$",
+                      let valuePerUnitDecimal = Decimal(string: valuePerUnit),
+                      hsTariffNumber.isNotEmpty,
+                      isValidTariffNumber else {
+                    self.hsTariffNumberTotalValue = nil
+                    return
+                }
+
+                self.hsTariffNumberTotalValue = (hsTariffNumber, valuePerUnitDecimal * orderItem.quantity)
             }
             .store(in: &cancellables)
     }

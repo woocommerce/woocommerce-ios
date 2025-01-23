@@ -1,0 +1,31 @@
+{
+    "data": {
+        "success": true,
+        "normalizedAddress": {
+            "company": "",
+            "address_2": "",
+            "city": "NEW YORK",
+            "state": "NY",
+            "postcode": "10118-0114",
+            "country": "US",
+            "phone": "555-1234",
+            "address_1": "20 W 34TH ST STE 100",
+            "first_name": "NEW",
+            "last_name": "YORK STORE",
+            "email": "john.doe@example.com"
+        },
+        "isTrivialNormalization": false,
+        "address": {
+            "company": "",
+            "name": "New York store",
+            "address_1": "20W 34th St",
+            "address_2": "Suite 100",
+            "city": "New York",
+            "state": "NY",
+            "postcode": "10001",
+            "country": "US",
+            "phone": "555-1234",
+            "email": "john.doe@example.com"
+        }
+    }
+}

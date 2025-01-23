@@ -64,6 +64,8 @@ final class FilterProductListViewModel: FilterListViewModel {
 
     let shouldShowHistory: Bool
 
+    let source = FilterSource.products
+
     private let stockStatusFilterViewModel: FilterTypeViewModel
     private let productStatusFilterViewModel: FilterTypeViewModel
     private let productTypeFilterViewModel: FilterTypeViewModel
@@ -73,6 +75,7 @@ final class FilterProductListViewModel: FilterListViewModel {
     private let siteID: Int64
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
+    private let analytics: Analytics
 
     /// - Parameters:
     ///   - filters: the filters to be applied initially.
@@ -81,7 +84,8 @@ final class FilterProductListViewModel: FilterListViewModel {
     init(filters: Filters,
          siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.featureFlagService = featureFlagService
         self.stockStatusFilterViewModel = ProductListFilter.stockStatus.createViewModel(filters: filters)
         self.productStatusFilterViewModel = ProductListFilter.productStatus.createViewModel(filters: filters)
@@ -91,6 +95,7 @@ final class FilterProductListViewModel: FilterListViewModel {
         self.shouldShowHistory = featureFlagService.isFeatureFlagEnabled(.filterHistoryOnOrderAndProductLists)
         self.stores = stores
         self.siteID = siteID
+        self.analytics = analytics
 
         if featureFlagService.isFeatureFlagEnabled(.favoriteProducts) {
             self.filterTypeViewModels = [
@@ -133,6 +138,7 @@ final class FilterProductListViewModel: FilterListViewModel {
         productTypeFilterViewModel.selectedValue = filter.promotableProductType
         productCategoryFilterViewModel.selectedValue = filter.productCategory
         productFavoriteFilterViewModel.selectedValue = filter.favoriteProduct
+        analytics.track(event: .FilterHistory.trackPastFilterApplied(source: source))
     }
 
     @MainActor
@@ -174,6 +180,7 @@ final class FilterProductListViewModel: FilterListViewModel {
     }
 
     func removeFilterFromHistory(_ filter: Filters) {
+        analytics.track(event: .FilterHistory.trackPastFilterRemoved(source: source))
         let productSettings = StoredProductSettings.Setting(siteID: siteID,
                                                             sort: nil, // This will be ignored in product filter anyway
                                                             stockStatusFilter: filter.stockStatus,
@@ -189,6 +196,7 @@ final class FilterProductListViewModel: FilterListViewModel {
     }
 
     func clearAllFilterHistory() {
+        analytics.track(event: .FilterHistory.trackFilterHistoryCleared(source: source))
         stores.dispatch(AppSettingsAction.resetProductFilterHistory(siteID: siteID, onCompletion: { error in
             if let error {
                 DDLogError("⛔️ Error resetting product filter history: \(error)")

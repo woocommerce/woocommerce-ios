@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-12-27 09:54:07+0000 */
+/* Translation-Revision-Date: 2025-01-15 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -804,8 +804,7 @@ which should be translated separately and considered part of this sentence. */
    Title when there is no filter set. */
 "Any" = "任何";
 
-/* Format of a product variation attribute description where the attribute is set to any value.
-   Product variation attribute description where the attribute is set to any value. */
+/* Product variation attribute description where the attribute is set to any value. */
 "Any %1$@" = "任何 %1$@";
 
 /* My Store > Settings > App (Application) settings section title */
@@ -3489,9 +3488,6 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "尚有存貨";
-
-/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
-"In the United Kingdom, cards may only be used with Tap to Pay for transactions up to %1$@." = "在英國地區，與「卡緊收」搭配使用的卡片交易限額為 %1$@。";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "在你的網站管理中，你可以從 Jetpack 控制台的「連結」>「帳號連結」找到用於連結 WordPress.com 的電子郵件。";
@@ -7604,9 +7600,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "至";
 
-/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
-"To accept payments above this limit, consider purchasing a card reader." = "若要接受高於此限制的付款，請考慮購買讀卡機。";
-
 /* Description text for the product discount row informational tooltip */
 "To add a Product Discount, please remove all Coupons from your order" = "若要新增產品折扣，請移除訂單上的所有優惠券";
 
@@ -10524,11 +10517,17 @@ which should be translated separately and considered part of this sentence. */
 /* Header of the Current Store section of the the Edit Store List view */
 "editStoreListView.currentStoreHeader" = "目前的商店";
 
+/* Error message when updating notification settings fails when saving the store list for the store picker */
+"editStoreListView.errorUpdatingNotificationSettings" = "更新通知設定時發生錯誤。 請再試一次。";
+
 /* Footer of the Other Stores section on the Edit Store List view */
 "editStoreListView.otherStoresFooter" = "商店挑選器會排除未選取的商店";
 
 /* Header of the Other Stores section on the Edit Store List view */
 "editStoreListView.otherStoresHeader" = "其他商店";
+
+/* Button to retry saving changes in the Edit Store List view */
+"editStoreListView.retryButton" = "重試";
 
 /* Button to save changes in the Edit Store List view */
 "editStoreListView.saveButton" = "儲存";
@@ -10605,6 +10604,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the filter used to show only favorite products. */
 "favoriteProductsFilter.favoriteProducts" = "最愛的商品";
+
+/* Accessibility hint for the filter history button on the filter list screen */
+"filterListViewController.historyBarButtonItem.accessibilityHint" = "篩選紀錄";
 
 /* Row title for filtering orders by customer. */
 "filterOrderListViewModel.OrderListFilter.rowCustomer" = "顧客";
@@ -11716,6 +11718,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "此訂單可能失敗";
 
+/* Subtitle for the cash payment view navigation back buttonReads as 'Total: $1.23' */
+"pointOfSale.cashview.back.navigation.subtitle" = "總計：%1$@";
+
+/* Title for the cash payment view navigation back button */
+"pointOfSale.cashview.back.navigation.title" = "現金付款";
+
+/* Button to mark a cash payment as completed */
+"pointOfSale.cashview.button.markpaymentcompleted.title" = "將付款標示為完成";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "請稍候";
 
@@ -11767,6 +11778,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.done" = "完成";
 
+/* Title for the payment method used when collecting cash payment in Point of Sale. */
+"pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "親自付現";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "點選商品即可\n 新增至購物車";
 
@@ -11778,6 +11792,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "清除";
+
+/* Back button title in the child item list screen. */
+"pos.childItemList.back" = "返回";
 
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "沒有網際網路連線";
@@ -11791,9 +11808,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "要結束銷售時點情報系統模式嗎？";
 
-/* Title at the top of the Point of Sale product selector screen. */
-"pos.headerTitleView.productSelectorTitle" = "商品";
-
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadButtonTitle" = "重試";
 
@@ -11802,6 +11816,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadTitle" = "載入商品時發生錯誤";
+
+/* Title at the top of the Point of Sale item list full screen. */
+"pos.itemListFullscreen.title" = "商品";
 
 /* Accessibility label for button to dismiss the product selector header banner. The banner explains current POS limitations. Tapping the button prevents it being shown again. */
 "pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel" = "關閉";
@@ -11817,6 +11834,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title" = "僅顯示簡單商品";
+
+/* Title at the top of the Point of Sale product selector screen. */
+"pos.itemlistview.title" = "商品";
+
+/* Text indicating that there are options available for a parent product */
+"pos.parentProductCard.optionsAvailable" = "可用選項";
 
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "若要新增，請結束 POS 並前往「商品」";
@@ -11850,6 +11873,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title for the receipt button */
 "pos.totalsView.button.sendReceipt" = "電子郵件收據";
+
+/* Title for the cash payment button title */
+"pos.totalsView.cash.button.title" = "現金付款";
 
 /* Text for the banner requiring specific WooCommerce version. */
 "pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "請將 WooCommerce 更新至 9.5.0 版";
@@ -12290,6 +12316,27 @@ which should be translated separately and considered part of this sentence. */
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
 "share details" = "分享詳細資訊";
 
+/* Body for the custom items description educational dialog */
+"shipping.customs.descriptionInfoDialogBody" = "運送到遵循歐盟 (EU) 海關規定的國家\/地區時，請針對各個項目提供清楚明確的描述。 舉例來說，若要寄送衣服，請指明衣服種類 (例如，男性襯衫、女童背心、男童外套)，海關才會採納相關資訊， 否則貨件可能會在海關檢查時遭遇延誤或中斷。";
+
+/* Button title for the done button in the customs description educational dialog */
+"shipping.customs.descriptionInfoDialogDone" = "完成";
+
+/* Button title for the learn more action in the custom descriptions info dialog */
+"shipping.customs.descriptionInfoDialogLearnMore" = "深入了解";
+
+/* Title for the custom description educational dialog */
+"shipping.customs.descriptionInfoDialogTitle" = "描述";
+
+/* Body for the custom items origin country educational dialog */
+"shipping.customs.originCountryInfoDialogBody" = "商品製造或組裝的國家\/地區。";
+
+/* Button title for the done button in the customs description educational dialog */
+"shipping.customs.originCountryInfoDialogDoneButton" = "完成";
+
+/* Title for the custom origin country educational dialog */
+"shipping.customs.originCountryInfoDialogTitle" = "原產國家\/地區";
+
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "取消";
 
@@ -12376,6 +12423,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "連結現有商店";
+
+/* Store Picker's Section Title: Displayed whenever there are multiple Stores. The content inside the bracket indicates the number of stores hidden from the store picker. The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)' */
+"storePickerViewModel.pickStoreWithHiddenStoreCount" = "挑選要連結的商店 (%1$d 間已隱藏)";
 
 /* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
 "storeStatsChart.xSelectedValue" = "已選取日期";
@@ -12524,6 +12574,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is successful, we show a Notice to alert the user – this is the title of the notice. */
 "tap.to.pay.try.payment.refundNotice.success.title" = "Tap To Pay (卡緊收) 測試付款";
+
+/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
+"tapToPay.aboutTapToPay.contactlessLimit.gb" = "在英國，你可接受「卡緊收」感應式卡片支付，但交易金額上限為 %1$@。 當款項超過 %1$@ 時，部分卡片允許客戶直接在手機輸入 PIN 碼，其他卡片則需使用讀卡機完成付款。";
+
+/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
+"tapToPay.aboutTapToPay.overLimitSuggestion" = "若要接受高於此限制的款項，請考慮購買讀卡機。";
 
 /* Title of the button to dismiss the Tap to Pay awareness screen */
 "tapToPay.awarenessMoment.closeButton" = "關閉";
@@ -12810,6 +12866,9 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "週";
 
+/* Title for the Add Package screen Add Package Details button */
+"wooShipping.createLabel.addPackage.addPackageDetails" = "新增包裹詳細資料";
+
 /* Info label for selected box as a package type */
 "wooShipping.createLabel.addPackage.box" = "便利箱";
 
@@ -12855,6 +12914,9 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for saved package option */
 "wooShipping.createLabel.addPackage.saved" = "已儲存";
 
+/* Title for the Add Package screen Select Package button */
+"wooShipping.createLabel.addPackage.selectPackage" = "選取包裹";
+
 /* Title for the Add Package screen */
 "wooShipping.createLabel.addPackage.title" = "新增包裹";
 
@@ -12866,6 +12928,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button to dismiss the shipping label screen */
 "wooShipping.createLabel.closeButton" = "關閉";
+
+/* Title for the Edit Package screen Done button */
+"wooShipping.createLabel.editPackage.done" = "完成";
+
+/* Title for the Edit Package screen */
+"wooShipping.createLabel.editPackage.title" = "編輯包裹";
+
+/* Title for the Edit Package screen Use Selected Package button */
+"wooShipping.createLabel.editPackage.useSelectedPackage" = "使用所選包裹";
 
 /* Label for section in shipping label creation to declare when a package contains hazardous materials. */
 "wooShipping.createLabel.hazmatLabel" = "你要寄送的貨件是否屬於有害或危險物品類別？";
@@ -12926,6 +12997,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
+
+/* Button for dismissing the keyboard */
+"wooShipping.createLabels.package.done" = "完成";
 
 /* Heading for the package section in the shipping label creation screen. */
 "wooShipping.createLabels.package.title" = "包裹";
@@ -13004,6 +13078,96 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to view a shipping label */
 "wooShipping.createLabels.viewLabelTitle" = "檢視貨運標籤";
+
+/* Customs button title when it's disabled and there's still info to add */
+"wooShipping.customs.addMissingInformationButtonTitle" = "新增遺漏的資訊";
+
+/* Cancel button in navigation bar to dismiss the screen */
+"wooShipping.customs.cancel" = "取消";
+
+/* Title for the Content Type menu in the Shipping Customs Form */
+"wooShipping.customs.contentType" = "內容類型";
+
+/* Info label for shipping content type merchandise */
+"wooShipping.customs.contentType.documents" = "文件";
+
+/* Info label for shipping content type merchandise */
+"wooShipping.customs.contentType.gift" = "禮物";
+
+/* Info label for shipping content type merchandise */
+"wooShipping.customs.contentType.merchandise" = "商品";
+
+/* Info label for shipping content type merchandise */
+"wooShipping.customs.contentType.other" = "其他…";
+
+/* Info label for shipping content type returned goods */
+"wooShipping.customs.contentType.returnedGoods" = "退還的貨物";
+
+/* Info label for shipping content type merchandise */
+"wooShipping.customs.contentType.sample" = "樣品";
+
+/* Title for the Internaction Transaction Number in the Shipping Customs Form */
+"wooShipping.customs.internationalTransactionNumber" = "國際交易號碼";
+
+/* Explanatory text for the international transaction number in customs */
+"wooShipping.customs.internationalTransactionNumber.infoText" = "更多 ITN 相關資訊";
+
+/* Product Details Section title */
+"wooShipping.customs.productDetails" = "商品詳細資料";
+
+/* Title for the Restriction Type menu in the Shipping Customs Form */
+"wooShipping.customs.restrictionType" = "限制類型";
+
+/* Info label for shipping restriction type none */
+"wooShipping.customs.restrictionType.none" = "無";
+
+/* Info label for shipping restriction type other */
+"wooShipping.customs.restrictionType.other" = "其他";
+
+/* Info label for shipping restriction type quarantine */
+"wooShipping.customs.restrictionType.quarantine" = "檢疫";
+
+/* Info label for shipping restriction type sanitary */
+"wooShipping.customs.restrictionType.sanitary" = "衛生\/植物檢疫";
+
+/* Info label for a toggle to return the package to a sender if necessary toggle */
+"wooShipping.customs.returnToSenderMessage" = "包裹無法投遞時退回寄件人";
+
+/* Customs button title when it's enabled and there's no info to add */
+"wooShipping.customs.saveCustomsDetails" = "儲存海關詳細資料";
+
+/* Title for the Customs screen */
+"wooShipping.customs.title" = "海關";
+
+/* Title for the customs items description text field for customs items */
+"wooShipping.customsItems.description" = "描述";
+
+/* Title for the HS Tariff Number text field for customs items */
+"wooShipping.customsItems.hsTariffNumber" = "HS 關稅代碼";
+
+/* Information text about the HS Tariff */
+"wooShipping.customsItems.hsTariffNumber.moreInfoText" = "更多 HS 關稅資訊";
+
+/* Placeholder for the HS Tariff Number text field for customs items */
+"wooShipping.customsItems.hsTariffNumber.placeholder" = "選填";
+
+/* Title for the origin country text field */
+"wooShipping.customsItems.originCountry" = "原產國家\/地區";
+
+/* Title for the customs items value per unit text field for customs items */
+"wooShipping.customsItems.valuePerUnit" = "金額 (每單位)";
+
+/* Warning text when some required value is missing */
+"wooShipping.customsItems.valueRequired" = "金額 (必填)";
+
+/* Title for the customs items weight per unit text field for customs items */
+"wooShipping.customsItems.weightPerUnit" = "重量 (每單位)";
+
+/* Indicates that the address is the default origin address  on the shipping label creation screen */
+"wooShipping.originAddresses.defaultAddress" = "(預設)";
+
+/* Heading for the list of origin addresses to choose from on the shipping label creation screen */
+"wooShipping.originAddresses.shipFrom" = "出貨地址";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce、我的商店、今天、本週、本月、今年、訂單、訪客、轉換、最佳轉換、售出的項目";

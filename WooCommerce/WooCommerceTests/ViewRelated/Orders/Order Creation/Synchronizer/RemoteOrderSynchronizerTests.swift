@@ -3,6 +3,7 @@ import TestKit
 import Fakes
 import Combine
 import WordPressAuthenticator
+import WooFoundation
 
 @testable import WooCommerce
 @testable import Yosemite
@@ -1137,6 +1138,39 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Then
         XCTAssertEqual(submittedStatus, .autoDraft) // Submitted Status
         XCTAssertEqual(synchronizer.order.status, .pending) // Selected status
+    }
+
+    func test_order_is_created_with_site_currency() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storeCurrency = CurrencySettings(currencyCode: .GBP,
+                                             currencyPosition: .left,
+                                             thousandSeparator: "",
+                                             decimalSeparator: ".",
+                                             numberOfDecimals: 2)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID,
+                                                   flow: .creation,
+                                                   stores: stores,
+                                                   currencySettings: storeCurrency,
+                                                   debounceDuration: 0.0)
+
+        // When
+        let submittedCurrency: String = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .createOrder(_, order, _, onCompletion):
+                    onCompletion(.success(order))
+                    promise(order.currency)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+
+            synchronizer.addFee.send(.fake())
+        }
+
+        // Then
+        XCTAssertEqual(submittedCurrency.uppercased(), "GBP") // Submitted Status
     }
 
     func test_order_is_synced_with_selected_status_in_editing_flow() {

@@ -1046,6 +1046,14 @@ private extension ProductFormViewController {
         guard let url = URL(string: product.permalink) else {
             return
         }
+
+        let stores = ServiceLocator.stores
+        guard let site = stores.sessionManager.defaultSite,
+            stores.shouldAuthenticateAdminPage(for: site) else {
+            WebviewHelper.launch(url.absoluteString, with: self)
+            return
+        }
+
         let viewModel = DefaultAuthenticatedWebViewModel(title: product.name, initialURL: url)
         let controller = AuthenticatedWebViewController(viewModel: viewModel)
         let navigationController = UINavigationController(rootViewController: controller)

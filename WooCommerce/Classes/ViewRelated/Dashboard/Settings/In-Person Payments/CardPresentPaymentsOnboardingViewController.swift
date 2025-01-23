@@ -66,9 +66,10 @@ struct CardPresentPaymentsOnboardingView: View {
                     viewModel.refresh)
             case .pluginSetupNotCompleted(let plugin):
                 InPersonPaymentsPluginNotSetup(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
-            case .stripeAccountOverdueRequirement:
+            case .stripeAccountOverdueRequirement(let plugin):
                 InPersonPaymentsStripeAccountOverdue(analyticReason: viewModel.state.reasonForAnalytics,
-                                                     onRefresh: viewModel.refresh)
+                                                     onRefresh: viewModel.refresh,
+                                                     plugin: plugin)
             case .stripeAccountPendingRequirement(_, let deadline):
                 InPersonPaymentsStripeAccountPending(
                     deadline: deadline,

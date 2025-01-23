@@ -52,11 +52,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     private(set) var paymentMethodsViewModel: PaymentMethodsViewModel?
     private var paymentMethodsNoticeSubscription: AnyCancellable?
 
-
-    var isTapToPayEducationEnabled: Bool {
-        dependencies.featureFlagService.isFeatureFlagEnabled(.tapToPayEducation)
-    }
-
     struct Dependencies {
         let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
         let onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
@@ -213,14 +208,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
         dependencies.onboardingUseCase.selectPlugin(plugin)
         presentManagePaymentGateways = false
     }
-
-    lazy var aboutTapToPayViewModel: AboutTapToPayViewModel = {
-        AboutTapToPayViewModel(
-            siteID: siteID,
-            configuration: cardPresentPaymentsConfiguration,
-            cardPresentPaymentsOnboardingUseCase: onboardingUseCase,
-            shouldAlwaysHideSetUpTapToPayButton: shouldAlwaysHideSetUpButtonOnAboutTapToPay)
-    }()
 
     lazy var purchaseCardReaderWebViewModel: PurchaseCardReaderWebViewViewModel = {
         PurchaseCardReaderWebViewViewModel(

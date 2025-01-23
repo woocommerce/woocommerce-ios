@@ -38,6 +38,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     @Published var itemsViewModels: [WooShippingCustomsItemViewModel] = []
 
     func onDismiss() {
+        // Package Id and Name not necessary to sync remotely
         let form = ShippingLabelCustomsForm(packageID: "",
                                             packageName: "",
                                             contentsType: contentType.toFormContentsType(),

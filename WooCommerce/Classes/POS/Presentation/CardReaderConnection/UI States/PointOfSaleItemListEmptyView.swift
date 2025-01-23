@@ -74,18 +74,18 @@ private extension PointOfSaleItemListEmptyView {
     }
     enum Localization {
         static let emptyProductsTitle = NSLocalizedString(
-            "pos.pointOfSaleItemListEmptyView.emptyProductsTitle",
-            value: "No supported products found",
+            "pos.pointOfSaleItemListEmptyView.emptyProductsTitle.1",
+            value: "No supported products found.",
             comment: "Text appearing on screen when there are no products to load."
         )
         static let emptyProductsSubtitle = NSLocalizedString(
-            "pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle",
-            value: "POS currently only supports simple products.",
+            "pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1",
+            value: "POS currently only supports simple and variable products.",
             comment: "Subtitle text on screen when there are no products to load."
         )
         static let emptyProductsHint = NSLocalizedString(
-            "pos.pointOfSaleItemListEmptyView.emptyProductsHint",
-            value: "To add one, exit POS and go to Products",
+            "pos.pointOfSaleItemListEmptyView.emptyProductsHint.1",
+            value: "To add one, exit POS and go to Products.",
             comment: "Text hinting the merchant to create a product."
         )
 

@@ -7,21 +7,12 @@ struct POSSendReceiptView: View {
     @State private var textFieldInput: String = ""
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
-    @StateObject private var keyboardObserver = KeyboardObserver()
     @FocusState private var isTextFieldFocused: Bool
 
     @Binding private(set) var isShowingSendReceiptView: Bool
 
     private var isEmailValid: Bool {
         EmailFormatValidator.validate(string: textFieldInput)
-    }
-
-    private var keyboardHeight: CGFloat {
-        if keyboardObserver.keyboardHeight < Constants.keyboardShownButtonSpacing {
-            return Constants.keyboardShownButtonSpacing
-        } else {
-            return Constants.keyboardHiddenButtonSpacing
-        }
     }
 
     var body: some View {
@@ -68,8 +59,6 @@ struct POSSendReceiptView: View {
                     .padding(.bottom, Constants.errorMessagePadding)
             }
 
-            Spacer().frame(height: keyboardHeight)
-
             Button(action: {
                 sendReceipt()
             }, label: {
@@ -98,7 +87,6 @@ struct POSSendReceiptView: View {
         }
         .padding([.horizontal, .bottom])
         .animation(.easeInOut, value: errorMessage)
-        .animation(.easeInOut, value: keyboardObserver.keyboardHeight)
         .onChange(of: textFieldInput) { _ in
             errorMessage = nil
         }
@@ -133,15 +121,13 @@ private extension POSSendReceiptView {
         static let buttonFont: POSFontStyle = .posBodyEmphasized
         static let buttonCornerRadius: CGFloat = 8
         static let errorMessagePadding: CGFloat = 8
-        static let keyboardShownButtonSpacing: CGFloat = 80
-        static let keyboardHiddenButtonSpacing: CGFloat = 20
     }
 
     private func conditionalPadding(_ padding: CGFloat) -> CGFloat {
         if dynamicTypeSize.isAccessibilitySize {
             return 0
         } else if dynamicTypeSize >= .xLarge {
-            return padding * 0.5
+            return padding * 0.8
         } else {
             return padding
         }

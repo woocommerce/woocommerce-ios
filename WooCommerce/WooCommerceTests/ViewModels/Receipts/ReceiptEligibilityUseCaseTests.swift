@@ -197,26 +197,8 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
 
     // MARK: - Send Receipt After Payment
 
-    func test_isEligibleForFailedPaymentEmailReceipts_when_feature_flag_is_disabled_then_returns_false() {
-        // Given
-        let featureFlag = MockFeatureFlagService(isSendReceiptAfterPaymentEnabled: false)
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let sut = ReceiptEligibilityUseCase(stores: stores, featureFlagService: featureFlag)
-
-        // When
-        let isEligible: Bool = waitFor { promise in
-            sut.isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: CardPresentPaymentsPlugin.wcPay.gatewayID, onCompletion: { result in
-                promise(result)
-            })
-        }
-
-        // Then
-        XCTAssertFalse(isEligible)
-    }
-
     func test_isEligibleForFailedPaymentEmailReceipts_when_plugins_are_inactive_then_returns_false() {
         // Given
-        let featureFlag = MockFeatureFlagService(isSendReceiptAfterPaymentEnabled: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let wooCommercePlugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.6.0", active: false)
         let wooPaymentsPlugin = SystemPlugin.fake().copy(name: CardPresentPaymentsPlugin.wcPay.pluginName, version: "8.9.0", active: false)
@@ -234,7 +216,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
             }
         }
 
-        let sut = ReceiptEligibilityUseCase(stores: stores, featureFlagService: featureFlag)
+        let sut = ReceiptEligibilityUseCase(stores: stores)
 
         // When
         let isEligible: Bool = waitFor { promise in
@@ -249,7 +231,6 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
 
     func test_isEligibleForFailedPaymentEmailReceipts_when_plugins_are_supported_then_returns_true() {
         // Given
-        let featureFlag = MockFeatureFlagService(isSendReceiptAfterPaymentEnabled: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let wooCommercePlugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.5.0", active: true)
         let wooPaymentsPlugin = SystemPlugin.fake().copy(name: CardPresentPaymentsPlugin.wcPay.pluginName, version: "8.6.0", active: true)
@@ -267,7 +248,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
             }
         }
 
-        let sut = ReceiptEligibilityUseCase(stores: stores, featureFlagService: featureFlag)
+        let sut = ReceiptEligibilityUseCase(stores: stores)
 
         // When
         let isEligible: Bool = waitFor { promise in
@@ -282,7 +263,6 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
 
     func test_isEligibleForFailedPaymentEmailReceipts_when_plugins_are_supported_dev_then_returns_true() {
         // Given
-        let featureFlag = MockFeatureFlagService(isSendReceiptAfterPaymentEnabled: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let wooCommercePlugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.6.0-dev-1181231238", active: true)
         let wooPaymentsPlugin = SystemPlugin.fake().copy(name: CardPresentPaymentsPlugin.wcPay.pluginName, version: "8.6.0-test-1", active: true)
@@ -300,7 +280,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
             }
         }
 
-        let sut = ReceiptEligibilityUseCase(stores: stores, featureFlagService: featureFlag)
+        let sut = ReceiptEligibilityUseCase(stores: stores)
 
         // When
         let isEligible: Bool = waitFor { promise in
@@ -315,7 +295,6 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
 
     func test_isEligibleForFailedPaymentEmailReceipts_when_woopayments_version_is_incorrect_then_returns_false() {
         // Given
-        let featureFlag = MockFeatureFlagService(isSendReceiptAfterPaymentEnabled: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let wooCommercePlugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.5.0", active: true)
         let wooPaymentsPlugin = SystemPlugin.fake().copy(name: CardPresentPaymentsPlugin.wcPay.pluginName, version: "5.0.0-dev", active: true)
@@ -333,7 +312,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
             }
         }
 
-        let sut = ReceiptEligibilityUseCase(stores: stores, featureFlagService: featureFlag)
+        let sut = ReceiptEligibilityUseCase(stores: stores)
 
         // When
         let isEligible: Bool = waitFor { promise in
@@ -348,7 +327,6 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
 
     func test_isEligibleForFailedPaymentEmailReceipts_when_stripe_gateway_then_returns_true() {
         // Given
-        let featureFlag = MockFeatureFlagService(isSendReceiptAfterPaymentEnabled: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let wooCommercePlugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.5.0", active: true)
         let stripePaymentsPlugin = SystemPlugin.fake().copy(name: CardPresentPaymentsPlugin.stripe.pluginName, version: "9.1.0", active: true)
@@ -366,7 +344,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
             }
         }
 
-        let sut = ReceiptEligibilityUseCase(stores: stores, featureFlagService: featureFlag)
+        let sut = ReceiptEligibilityUseCase(stores: stores)
 
         // When
         let isEligible: Bool = waitFor { promise in
@@ -381,7 +359,6 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
 
     func test_isEligibleForFailedPaymentEmailReceipts_when_stripe_gateway_is_outdated_then_returns_false() {
         // Given
-        let featureFlag = MockFeatureFlagService(isSendReceiptAfterPaymentEnabled: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let wooCommercePlugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.5.0", active: true)
         let stripePaymentsPlugin = SystemPlugin.fake().copy(name: CardPresentPaymentsPlugin.stripe.pluginName, version: "9.0.0", active: true)
@@ -399,7 +376,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
             }
         }
 
-        let sut = ReceiptEligibilityUseCase(stores: stores, featureFlagService: featureFlag)
+        let sut = ReceiptEligibilityUseCase(stores: stores)
 
         // When
         let isEligible: Bool = waitFor { promise in

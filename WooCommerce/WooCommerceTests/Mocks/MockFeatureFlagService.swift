@@ -23,8 +23,6 @@ final class MockFeatureFlagService: FeatureFlagService {
     var viewEditCustomFieldsInProductsAndOrders: Bool
     var favoriteProducts: Bool
     var isProductGlobalUniqueIdentifierSupported: Bool
-    var isSendReceiptAfterPaymentEnabled: Bool
-    var tapToPayEducation: Bool
     var receiptsForPOS: Bool
     var hideSitesInStorePicker: Bool
     var isVariableProductsInPOSEnabled: Bool
@@ -50,8 +48,6 @@ final class MockFeatureFlagService: FeatureFlagService {
          viewEditCustomFieldsInProductsAndOrders: Bool = false,
          favoriteProducts: Bool = false,
          isProductGlobalUniqueIdentifierSupported: Bool = false,
-         isSendReceiptAfterPaymentEnabled: Bool = false,
-         tapToPayEducation: Bool = false,
          receiptsForPOS: Bool = false,
          hideSitesInStorePicker: Bool = false,
          isVariableProductsInPOSEnabled: Bool = false) {
@@ -76,8 +72,6 @@ final class MockFeatureFlagService: FeatureFlagService {
         self.viewEditCustomFieldsInProductsAndOrders = viewEditCustomFieldsInProductsAndOrders
         self.favoriteProducts = favoriteProducts
         self.isProductGlobalUniqueIdentifierSupported = isProductGlobalUniqueIdentifierSupported
-        self.isSendReceiptAfterPaymentEnabled = isSendReceiptAfterPaymentEnabled
-        self.tapToPayEducation = tapToPayEducation
         self.receiptsForPOS = receiptsForPOS
         self.hideSitesInStorePicker = hideSitesInStorePicker
         self.isVariableProductsInPOSEnabled = isVariableProductsInPOSEnabled
@@ -127,10 +121,6 @@ final class MockFeatureFlagService: FeatureFlagService {
             return favoriteProducts
         case .productGlobalUniqueIdentifierSupport:
             return isProductGlobalUniqueIdentifierSupported
-        case .sendReceiptAfterPayment:
-            return isSendReceiptAfterPaymentEnabled
-        case .tapToPayEducation:
-            return tapToPayEducation
         case .sendReceiptsForPointOfSale:
             return receiptsForPOS
         case .hideSitesInStorePicker:

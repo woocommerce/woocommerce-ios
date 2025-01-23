@@ -872,7 +872,7 @@
 		20ADE9462C6B364900C91265 /* CardPresentPaymentRetryApproachTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20ADE9452C6B364900C91265 /* CardPresentPaymentRetryApproachTests.swift */; };
 		20AE33C52B0510BF00527B60 /* PaymentsMenuDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20AE33C42B0510BF00527B60 /* PaymentsMenuDestination.swift */; };
 		20AE33C72B0510D200527B60 /* HubMenuDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20AE33C62B0510D200527B60 /* HubMenuDestination.swift */; };
-		20B0D65E2AD45BDE0059735A /* AboutTapToPayContactlessLimitViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B0D65D2AD45BDE0059735A /* AboutTapToPayContactlessLimitViewModelTests.swift */; };
+		20B0D65E2AD45BDE0059735A /* TapToPayEducationContactlessLimitViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B0D65D2AD45BDE0059735A /* TapToPayEducationContactlessLimitViewModelTests.swift */; };
 		20BBD62C2B3060A300A903F6 /* AddOrderComponentsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BBD62B2B3060A300A903F6 /* AddOrderComponentsSection.swift */; };
 		20BCF6EE2B0E478B00954840 /* WooPaymentsPayoutsOverviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BCF6ED2B0E478B00954840 /* WooPaymentsPayoutsOverviewViewModel.swift */; };
 		20BCF6F02B0E48CC00954840 /* WooPaymentsPayoutsOverviewViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BCF6EF2B0E48CC00954840 /* WooPaymentsPayoutsOverviewViewModelTests.swift */; };
@@ -4052,7 +4052,7 @@
 		20ADE9452C6B364900C91265 /* CardPresentPaymentRetryApproachTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentRetryApproachTests.swift; sourceTree = "<group>"; };
 		20AE33C42B0510BF00527B60 /* PaymentsMenuDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsMenuDestination.swift; sourceTree = "<group>"; };
 		20AE33C62B0510D200527B60 /* HubMenuDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubMenuDestination.swift; sourceTree = "<group>"; };
-		20B0D65D2AD45BDE0059735A /* AboutTapToPayContactlessLimitViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutTapToPayContactlessLimitViewModelTests.swift; sourceTree = "<group>"; };
+		20B0D65D2AD45BDE0059735A /* TapToPayEducationContactlessLimitViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayEducationContactlessLimitViewModelTests.swift; sourceTree = "<group>"; };
 		20BBD62B2B3060A300A903F6 /* AddOrderComponentsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOrderComponentsSection.swift; sourceTree = "<group>"; };
 		20BCF6ED2B0E478B00954840 /* WooPaymentsPayoutsOverviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsOverviewViewModel.swift; sourceTree = "<group>"; };
 		20BCF6EF2B0E48CC00954840 /* WooPaymentsPayoutsOverviewViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsOverviewViewModelTests.swift; sourceTree = "<group>"; };
@@ -7850,7 +7850,7 @@
 				03EF24FF28C0E9EE006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModelTests.swift */,
 				03EF250328C6283B006A033E /* InPersonPaymentsMenuViewModelTests.swift */,
 				039B7E6629F2855B00E21EF4 /* CardPresentPaymentOnboardingViewModelTests.swift */,
-				20B0D65D2AD45BDE0059735A /* AboutTapToPayContactlessLimitViewModelTests.swift */,
+				20B0D65D2AD45BDE0059735A /* TapToPayEducationContactlessLimitViewModelTests.swift */,
 				03B9E52A2A1505A7005C77F5 /* TapToPayReconnectionControllerTests.swift */,
 				019130202CF5B0FF008C0C88 /* TapToPayEducationViewModelTests.swift */,
 				019630B72D0211F400219D80 /* TapToPayAwarenessMomentDeterminerTests.swift */,
@@ -17431,7 +17431,7 @@
 				02ECD1E124FF496200735BE5 /* PaginationTrackerTests.swift in Sources */,
 				45E9A6EB24DAFC3E00A600E8 /* ProductReviewsViewModelTests.swift in Sources */,
 				268EC46426D3F9C100716F5C /* EditCustomerNoteViewModelTests.swift in Sources */,
-				20B0D65E2AD45BDE0059735A /* AboutTapToPayContactlessLimitViewModelTests.swift in Sources */,
+				20B0D65E2AD45BDE0059735A /* TapToPayEducationContactlessLimitViewModelTests.swift in Sources */,
 				453770D12431FF4700AC718D /* ProductSettingsViewModelTests.swift in Sources */,
 				2619FA2C25C897930006DAFF /* AddAttributeOptionsViewModelTests.swift in Sources */,
 				DEB387A02C35109E0025256E /* GoogleAdsCampaignCoordinatorTests.swift in Sources */,

@@ -122,8 +122,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     lazy var customsFormViewModel: WooShippingCustomsFormViewModel = {
         WooShippingCustomsFormViewModel(order: order, onCompletion: { [weak self] form in
-            // TODO: Remove debug print
-            debugPrint("form", form)
             self?.onCustomsFormFilled(form: form)
         })
     }()

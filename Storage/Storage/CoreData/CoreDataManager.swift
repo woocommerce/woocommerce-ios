@@ -335,14 +335,12 @@ private extension CoreDataManager {
             let error = CoreDataManagerError.recoveryFailed
             let logProperties: [String: Any?] = ["originalError": error,
                                                  "persistentStoreRemovalError": persistentStoreRemovalError,
-                                                 "retryError": underlyingError,
-                                                 "appState": UIApplication.shared.applicationState.rawValue]
+                                                 "retryError": underlyingError]
             crashLogger.logFatalErrorAndExit(error, userInfo: logProperties.compactMapValues { $0 })
         }
 
         let logProperties: [String: Any?] = ["originalError": error,
-                                             "persistentStoreRemovalError": persistentStoreRemovalError,
-                                             "appState": UIApplication.shared.applicationState.rawValue]
+                                             "persistentStoreRemovalError": persistentStoreRemovalError]
         crashLogger.logMessage("[CoreDataManager] Reset the database after corrupted store removal.",
                                properties: logProperties.compactMapValues { $0 },
                                level: .info)

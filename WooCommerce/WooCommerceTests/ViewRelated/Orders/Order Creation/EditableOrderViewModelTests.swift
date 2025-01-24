@@ -1152,6 +1152,24 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasChanges)
     }
 
+    func test_hasChanges_returns_true_when_there_are_unsynced_changes_in_split_view() {
+        // Given, When
+        viewModel.selectionSyncApproach = .onRecalculateButtonTap
+        viewModel.syncRequired = true
+
+        // Then
+        XCTAssertTrue(viewModel.hasChanges)
+    }
+
+    func test_hasChanges_returns_false_when_there_are_no_unsynced_changes_or_order_changes_in_split_view() {
+        // Given, When
+        viewModel.selectionSyncApproach = .onRecalculateButtonTap
+        viewModel.syncRequired = false
+
+        // Then
+        XCTAssertFalse(viewModel.hasChanges)
+    }
+
     // MARK: - Tracking Tests
 
     func test_product_is_tracked_when_added() throws {

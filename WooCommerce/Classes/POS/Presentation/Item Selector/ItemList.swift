@@ -49,8 +49,12 @@ struct ItemList<HeaderView: View>: View {
 
     @ViewBuilder var footerRows: some View {
         switch state {
-        case .loading:
-            ForEach(0..<8) { _ in
+        case .loading(let items):
+            if items.isEmpty {
+                ForEach(0..<8) { _ in
+                    GhostItemCardView()
+                }
+            } else {
                 GhostItemCardView()
             }
         case .inlineError(_, let errorState):

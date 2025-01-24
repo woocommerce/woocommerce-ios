@@ -1317,7 +1317,7 @@ final class MigrationTests: XCTestCase {
 
         // Sets a random `filterKey`.
         migratedProductSearchResults.setValue("sku", forKey: "filterKey")
-        targetContext.saveIfNeeded()
+        try targetContext.save()
 
         // Check `filterKey` is correctly set.
         XCTAssertEqual(migratedProductSearchResults.value(forKey: "filterKey") as? String, "sku")

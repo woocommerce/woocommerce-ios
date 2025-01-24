@@ -12,6 +12,7 @@
 - [Internal] Removed feedback survey for shipping label creation [https://github.com/woocommerce/woocommerce-ios/pull/14889]
 - [Internal] Removed feedback survey for product creation AI [https://github.com/woocommerce/woocommerce-ios/pull/14890]
 - [Internal] Removed feedback survey for coupons list [https://github.com/woocommerce/woocommerce-ios/pull/14891]
+- [*] Updated the Stripe Gateway setup URL to point to the appropriate settings page. [https://github.com/woocommerce/woocommerce-ios/pull/14964]
 
 21.4
 -----

@@ -38,7 +38,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     @Published var itemsViewModels: [WooShippingCustomsItemViewModel] = []
 
     func onDismiss() {
-        // Package Id and Name not necessary to sync remotely
+        // TODO: Add package Id and name to support multiple shipments, (where each shipment may have its own customs form)
         let form = ShippingLabelCustomsForm(packageID: "",
                                             packageName: "",
                                             contentsType: contentType.toFormContentsType(),

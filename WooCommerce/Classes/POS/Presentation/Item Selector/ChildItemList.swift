@@ -22,6 +22,8 @@ struct ChildItemList: View {
     var body: some View {
         VStack {
             switch state {
+            case .loaded([], _):
+                emptyView
             case .loading, .loaded, .inlineError:
                 listView
             case let .error(error):
@@ -68,6 +70,19 @@ private extension ChildItemList {
             ItemList(state: state,
                      node: .parent(parentItem))
                 .transition(.opacity)
+        }
+    }
+
+    @ViewBuilder
+    var emptyView: some View {
+        ZStack {
+            VStack {
+                headerView
+                Spacer()
+            }
+
+            PointOfSaleItemListEmptyView(base: .parent(parentItem))
+                .zIndex(1)
         }
     }
 

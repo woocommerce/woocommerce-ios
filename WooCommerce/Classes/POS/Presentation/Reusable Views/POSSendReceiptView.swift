@@ -56,6 +56,7 @@ struct POSSendReceiptView: View {
                 Text(errorMessage)
                     .font(POSFontStyle.posBodyRegular)
                     .foregroundColor(.red)
+                    .padding(.bottom, Constants.errorMessagePadding)
             }
 
             Button(action: {
@@ -119,13 +120,14 @@ private extension POSSendReceiptView {
         static let buttonPadding: CGFloat = 32
         static let buttonFont: POSFontStyle = .posBodyEmphasized
         static let buttonCornerRadius: CGFloat = 8
+        static let errorMessagePadding: CGFloat = 8
     }
 
     private func conditionalPadding(_ padding: CGFloat) -> CGFloat {
         if dynamicTypeSize.isAccessibilitySize {
             return 0
         } else if dynamicTypeSize >= .xLarge {
-            return padding * 0.5
+            return padding * 0.8
         } else {
             return padding
         }

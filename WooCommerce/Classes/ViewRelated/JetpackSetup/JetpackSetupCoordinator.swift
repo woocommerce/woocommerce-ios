@@ -273,6 +273,7 @@ private extension JetpackSetupCoordinator {
                         }
                     })
                 }
+                progressView.dismiss(animated: true)
 
             case .failure(let error):
                 DDLogError("⛔️ Error fetching sites after Jetpack setup: \(error)")

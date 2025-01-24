@@ -271,9 +271,9 @@ private extension JetpackSetupCoordinator {
                         if site.isJetpackCPConnected {
                             self?.presentJCPJetpackInstallFlow()
                         }
+                        progressView.dismiss(animated: true)
                     })
                 }
-                progressView.dismiss(animated: true)
 
             case .failure(let error):
                 DDLogError("⛔️ Error fetching sites after Jetpack setup: \(error)")

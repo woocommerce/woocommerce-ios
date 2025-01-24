@@ -46,7 +46,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
     public init(country: CountryCode, shouldAllowTapToPayInUK: Bool = false) {
         /// Changing `minimumVersion` values here? You'll need to also update `CardPresentPaymentsOnboardingUseCaseTests`
         switch country {
-        case .US:
+        case .US, .PR:
             self.init(
                 countryCode: country,
                 paymentMethods: [.cardPresent],

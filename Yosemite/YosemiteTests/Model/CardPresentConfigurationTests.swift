@@ -15,6 +15,17 @@ class CardPresentConfigurationTests: XCTestCase {
         assertEqual([.chipper, .stripeM2, .appleBuiltIn], configuration.supportedReaders)
     }
 
+    // MARK: - Puerto Rico Tests
+    func test_configuration_for_PR() throws {
+        let configuration = CardPresentPaymentsConfiguration(country: .PR)
+        XCTAssertTrue(configuration.isSupportedCountry)
+        XCTAssertEqual(configuration.currencies, [.USD])
+        XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay, Constants.PaymentGateway.stripe])
+        XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
+        assertEqual([.chipper, .stripeM2, .appleBuiltIn], configuration.supportedReaders)
+        // The `purchaseCardReaderUrl` for PR doesn't exist. On lack of country code, the URL redirection falls back to the M2 reader
+    }
+
     // MARK: - Canada Tests
     func test_configuration_for_Canada() throws {
         let configuration = CardPresentPaymentsConfiguration(country: .CA)

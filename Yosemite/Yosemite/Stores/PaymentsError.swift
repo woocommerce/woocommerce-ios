@@ -3,6 +3,7 @@ import Networking
 
 public enum PaymentsError: Error, LocalizedError {
     case noSuchChargeError(message: String)
+    case orderPaymentCaptureError(message: String?)
     case otherError(error: AnyError)
 
     init(underlyingError error: Error) {
@@ -64,14 +65,26 @@ public enum PaymentsError: Error, LocalizedError {
             /// Return the message directly from the store
             /// "Error: No such charge: 'ch_3KMVapErrorERROR'"
             return message
+        case .orderPaymentCaptureError(let message):
+            /// Return the message directly from the store, e.g. in the case of fractional quantities, which are not allowed
+            /// "Payment capture failed to complete with the following message: Error: Invalid integer: 2.5"
+            return message ?? Localizations.defaultPaymentCaptureMessage
         case .otherError(let error):
             return error.localizedDescription
         }
+    }
+
+    enum Localizations {
+        static let defaultPaymentCaptureMessage = NSLocalizedString(
+            "An unexpected error occurred with the store's payment gateway when capturing payment for the order",
+            comment: "Message presented when an unexpected error occurs with the store's payment gateway."
+        )
     }
 }
 
 enum PaymentsErrorCode: String, Decodable {
     case getChargeError = "wcpay_get_charge"
+    case wcpayCaptureError = "wcpay_capture_error"
     case unknown
 }
 
@@ -89,7 +102,9 @@ extension PaymentsErrorConvertible {
                 return nil
             }
             return .noSuchChargeError(message: message)
-        default:
+        case .wcpayCaptureError:
+            return .orderPaymentCaptureError(message: message)
+        case .unknown:
             return nil
         }
     }

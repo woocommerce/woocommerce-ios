@@ -126,24 +126,6 @@ extension NSManagedObjectContext: StorageType {
         return nil
     }
 
-    /// Persists the changes (if any) to disk.
-    ///
-    public func saveIfNeeded() {
-        guard hasChanges else {
-            return
-        }
-
-        /// cannot infer the entity name here, so leaving it empty
-        Self.ensureCorrectContextUsageIfNeeded(for: "")
-
-        do {
-            try save()
-        } catch {
-            let nserror = error as NSError
-            logErrorAndExit("Unresolved error \(nserror), \(nserror.userInfo)")
-        }
-    }
-
     /// Create an `NSFetchedResultsController` using this `NSManagedObjectContext`.
     ///
     public func createFetchedResultsController<ResultType>(fetchRequest: NSFetchRequest<ResultType>,

@@ -222,7 +222,7 @@ private extension JetpackSetupCoordinator {
 
         /// WPCom credentials to authenticate the user in the Jetpack connection web view automatically
         let credentials: Credentials = .wpcom(username: username, authToken: authToken, siteAddress: site.url)
-        guard jetpackConnectedEmail == nil || !site.isJetpackThePluginInstalled else {
+        guard jetpackConnectedEmail == nil else {
             // authenticate user immediately
             return authenticateUserAndRefreshSite(with: credentials)
         }
@@ -257,7 +257,7 @@ private extension JetpackSetupCoordinator {
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.syncingData, message: ""))
         rootViewController.topmostPresentedViewController.present(progressView, animated: true)
 
-        let action = SiteAction.syncSiteByDomain(domain: site.url.trimHTTPScheme()) { [weak self] result in
+        let resultHandler: (Result<Site, Error>) -> Void = { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let site):
@@ -289,7 +289,12 @@ private extension JetpackSetupCoordinator {
 
             }
         }
-        stores.dispatch(action)
+
+        if site.isJetpackCPConnected {
+            stores.dispatch(AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: site.url, onCompletion: resultHandler))
+        } else {
+            stores.dispatch(SiteAction.syncSiteByDomain(domain: site.url.trimHTTPScheme(), completion: resultHandler))
+        }
     }
 
     func registerForPushNotifications() {

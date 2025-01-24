@@ -747,13 +747,10 @@ public enum WCPayChargesError: Error, LocalizedError {
         self = errorDetails.asWCPayChargesError() ?? .otherError(error: error.toAnyError)
     }
 
-    private static func unwrapError(error: Error) -> WCPayChargesNetworkErrorDetails? {
+    private static func unwrapError(error: Error) -> WCPayChargesErrorConvertible? {
         switch error {
         case let DotcomError.unknown(code, message):
-            guard let errorCode = ErrorCode(rawValue: code) else {
-                return nil
-            }
-            return WCPayChargesNetworkErrorDetails(code: errorCode, message: message)
+            return WCPayChargesDotcomErrorDetails(code: code, message: message)
         case let NetworkError.unacceptableStatusCode(_, response):
             guard let response,
                   let errorDetails = try? JSONDecoder().decode(WCPayChargesNetworkErrorDetails.self, from: response) else {
@@ -765,31 +762,30 @@ public enum WCPayChargesError: Error, LocalizedError {
         }
     }
 
-    enum ErrorCode: String, Decodable {
-        case getChargeError = "wcpay_get_charge"
-        case unknown
-    }
-
-    private struct WCPayChargesNetworkErrorDetails: Decodable {
-        let code: ErrorCode
+    private struct WCPayChargesNetworkErrorDetails: Decodable, WCPayChargesErrorConvertible {
+        let code: WCPayChargesErrorCode
         let message: String?
 
         enum CodingKeys: CodingKey {
             case code
             case message
         }
+    }
 
-        func asWCPayChargesError() -> WCPayChargesError? {
-            switch code {
-            case .getChargeError:
-                guard let message,
-                      message.starts(with: "Error: No such charge") else {
-                    return nil
-                }
-                return .noSuchChargeError(message: message)
-            default:
+    private struct WCPayChargesDotcomErrorDetails: WCPayChargesErrorConvertible {
+        // The response JSON differs from NetworkError above:
+        // `"error": "wcpay_get_charge", "message": "Error fetching charge:"`
+        // It's also decoded further up the chain.
+        let code: WCPayChargesErrorCode
+        let message: String?
+
+        init?(code: String, message: String?) {
+            guard let errorCode = WCPayChargesErrorCode(rawValue: code) else {
                 return nil
             }
+
+            self.code = errorCode
+            self.message = message
         }
     }
 
@@ -801,6 +797,31 @@ public enum WCPayChargesError: Error, LocalizedError {
             return message
         case .otherError(let error):
             return error.localizedDescription
+        }
+    }
+}
+
+enum WCPayChargesErrorCode: String, Decodable {
+    case getChargeError = "wcpay_get_charge"
+    case unknown
+}
+
+protocol WCPayChargesErrorConvertible {
+    var code: WCPayChargesErrorCode { get }
+    var message: String? { get }
+}
+
+extension WCPayChargesErrorConvertible {
+    func asWCPayChargesError() -> WCPayChargesError? {
+        switch code {
+        case .getChargeError:
+            guard let message,
+                  message.starts(with: "Error: No such charge") else {
+                return nil
+            }
+            return .noSuchChargeError(message: message)
+        default:
+            return nil
         }
     }
 }

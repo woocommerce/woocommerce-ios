@@ -737,25 +737,53 @@ public enum WCPayChargesError: Error, LocalizedError {
     case otherError(error: AnyError)
 
     init(underlyingError error: Error) {
-        guard case let DotcomError.unknown(code, message) = error,
-              let message = message else {
-                  self = .otherError(error: error.toAnyError)
-                  return
-              }
+        guard let errorDetails = Self.unwrapError(error: error) else {
+            self = .otherError(error: error.toAnyError)
+            return
+        }
 
         /// See if we recognize this DotcomError code
         ///
-        self = ErrorCode(rawValue: code)?.error(message: message) ?? .otherError(error: error.toAnyError)
+        self = errorDetails.asWCPayChargesError() ?? .otherError(error: error.toAnyError)
     }
 
-    enum ErrorCode: String {
+    private static func unwrapError(error: Error) -> WCPayChargesNetworkErrorDetails? {
+        switch error {
+        case let DotcomError.unknown(code, message):
+            guard let errorCode = ErrorCode(rawValue: code) else {
+                return nil
+            }
+            return WCPayChargesNetworkErrorDetails(code: errorCode, message: message)
+        case let NetworkError.unacceptableStatusCode(_, response):
+            guard let response,
+                  let errorDetails = try? JSONDecoder().decode(WCPayChargesNetworkErrorDetails.self, from: response) else {
+                return nil
+            }
+            return errorDetails
+        default:
+            return nil
+        }
+    }
+
+    enum ErrorCode: String, Decodable {
         case getChargeError = "wcpay_get_charge"
         case unknown
+    }
 
-        func error(message: String) -> WCPayChargesError? {
-            switch self {
+    private struct WCPayChargesNetworkErrorDetails: Decodable {
+        let code: ErrorCode
+        let message: String?
+
+        enum CodingKeys: CodingKey {
+            case code
+            case message
+        }
+
+        func asWCPayChargesError() -> WCPayChargesError? {
+            switch code {
             case .getChargeError:
-                guard message.starts(with: "Error: No such charge") else {
+                guard let message,
+                      message.starts(with: "Error: No such charge") else {
                     return nil
                 }
                 return .noSuchChargeError(message: message)

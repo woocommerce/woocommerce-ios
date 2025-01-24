@@ -661,9 +661,18 @@ private extension CardPresentPaymentStore {
     }
 }
 
-public enum ServerSidePaymentCaptureError: Error {
+public enum ServerSidePaymentCaptureError: Error, LocalizedError {
     case paymentIntentNotSuccessful
     case paymentGateway(error: PaymentsError)
+
+    public var errorDescription: String? {
+        switch self {
+        case .paymentIntentNotSuccessful:
+            return "Payment intent not successful"
+        case .paymentGateway(error: let error):
+            return error.localizedDescription
+        }
+    }
 }
 
 private extension PaymentGatewayAccount {

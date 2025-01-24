@@ -401,7 +401,7 @@ private extension CollectOrderPaymentUseCase {
                                                       paymentGatewayAccount: PaymentGatewayAccount,
                                                       channel: PaymentChannel,
                                                       onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        guard case ServerSidePaymentCaptureError.paymentGateway(.otherError) = error else {
+        guard case ServerSidePaymentCaptureError.paymentGateway = error else {
             return handlePaymentFailureAndRetryPayment(error,
                                                        alertProvider: paymentAlerts,
                                                        paymentGatewayAccount: paymentGatewayAccount,

@@ -9,6 +9,7 @@
 - [Internal] Removed feedback survey for shipping label creation [https://github.com/woocommerce/woocommerce-ios/pull/14889]
 - [Internal] Removed feedback survey for product creation AI [https://github.com/woocommerce/woocommerce-ios/pull/14890]
 - [Internal] Removed feedback survey for coupons list [https://github.com/woocommerce/woocommerce-ios/pull/14891]
+- [Internal] Core Data: Attempt recovery from corrupted database [https://github.com/woocommerce/woocommerce-ios/pull/14961]
 
 21.4
 -----

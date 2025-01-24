@@ -824,7 +824,8 @@ platform :ios do
       phased_release: true,
       precheck_include_in_app_purchases: false,
       api_key_path: ASC_KEY_PATH,
-      force: options[:skip_confirm]
+      force: options[:skip_confirm],
+      copyright: "© #{Time.now.year} WooCommerce"
     )
   end
 

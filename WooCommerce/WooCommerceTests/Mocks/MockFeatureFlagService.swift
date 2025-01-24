@@ -27,6 +27,7 @@ final class MockFeatureFlagService: FeatureFlagService {
     var tapToPayEducation: Bool
     var receiptsForPOS: Bool
     var hideSitesInStorePicker: Bool
+    var isVariableProductsInPOSEnabled: Bool
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
@@ -52,7 +53,8 @@ final class MockFeatureFlagService: FeatureFlagService {
          isSendReceiptAfterPaymentEnabled: Bool = false,
          tapToPayEducation: Bool = false,
          receiptsForPOS: Bool = false,
-         hideSitesInStorePicker: Bool = false) {
+         hideSitesInStorePicker: Bool = false,
+         isVariableProductsInPOSEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -78,6 +80,7 @@ final class MockFeatureFlagService: FeatureFlagService {
         self.tapToPayEducation = tapToPayEducation
         self.receiptsForPOS = receiptsForPOS
         self.hideSitesInStorePicker = hideSitesInStorePicker
+        self.isVariableProductsInPOSEnabled = isVariableProductsInPOSEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -132,6 +135,8 @@ final class MockFeatureFlagService: FeatureFlagService {
             return receiptsForPOS
         case .hideSitesInStorePicker:
             return hideSitesInStorePicker
+        case .variableProductsInPointOfSale:
+            return isVariableProductsInPOSEnabled
         default:
             return false
         }

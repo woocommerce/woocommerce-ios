@@ -1,7 +1,7 @@
 import Foundation
 import Networking
 
-public enum WCPayChargesError: Error, LocalizedError {
+public enum PaymentsError: Error, LocalizedError {
     case noSuchChargeError(message: String)
     case otherError(error: AnyError)
 
@@ -13,16 +13,16 @@ public enum WCPayChargesError: Error, LocalizedError {
 
         /// See if we recognize this DotcomError code
         ///
-        self = errorDetails.asWCPayChargesError() ?? .otherError(error: error.toAnyError)
+        self = errorDetails.asPaymentsError() ?? .otherError(error: error.toAnyError)
     }
 
-    private static func unwrapError(error: Error) -> WCPayChargesErrorConvertible? {
+    private static func unwrapError(error: Error) -> PaymentsErrorConvertible? {
         switch error {
         case let DotcomError.unknown(code, message):
-            return WCPayChargesDotcomErrorDetails(code: code, message: message)
+            return PaymentsDotcomErrorDetails(code: code, message: message)
         case let NetworkError.unacceptableStatusCode(_, response):
             guard let response,
-                  let errorDetails = try? JSONDecoder().decode(WCPayChargesNetworkErrorDetails.self, from: response) else {
+                  let errorDetails = try? JSONDecoder().decode(PaymentsNetworkErrorDetails.self, from: response) else {
                 return nil
             }
             return errorDetails
@@ -31,8 +31,8 @@ public enum WCPayChargesError: Error, LocalizedError {
         }
     }
 
-    private struct WCPayChargesNetworkErrorDetails: Decodable, WCPayChargesErrorConvertible {
-        let code: WCPayChargesErrorCode
+    private struct PaymentsNetworkErrorDetails: Decodable, PaymentsErrorConvertible {
+        let code: PaymentsErrorCode
         let message: String?
 
         enum CodingKeys: CodingKey {
@@ -41,15 +41,15 @@ public enum WCPayChargesError: Error, LocalizedError {
         }
     }
 
-    private struct WCPayChargesDotcomErrorDetails: WCPayChargesErrorConvertible {
+    private struct PaymentsDotcomErrorDetails: PaymentsErrorConvertible {
         // The response JSON differs from NetworkError above:
         // `"error": "wcpay_get_charge", "message": "Error fetching charge:"`
         // It's also decoded further up the chain.
-        let code: WCPayChargesErrorCode
+        let code: PaymentsErrorCode
         let message: String?
 
         init?(code: String, message: String?) {
-            guard let errorCode = WCPayChargesErrorCode(rawValue: code) else {
+            guard let errorCode = PaymentsErrorCode(rawValue: code) else {
                 return nil
             }
 
@@ -70,18 +70,18 @@ public enum WCPayChargesError: Error, LocalizedError {
     }
 }
 
-enum WCPayChargesErrorCode: String, Decodable {
+enum PaymentsErrorCode: String, Decodable {
     case getChargeError = "wcpay_get_charge"
     case unknown
 }
 
-protocol WCPayChargesErrorConvertible {
-    var code: WCPayChargesErrorCode { get }
+protocol PaymentsErrorConvertible {
+    var code: PaymentsErrorCode { get }
     var message: String? { get }
 }
 
-extension WCPayChargesErrorConvertible {
-    func asWCPayChargesError() -> WCPayChargesError? {
+extension PaymentsErrorConvertible {
+    func asPaymentsError() -> PaymentsError? {
         switch code {
         case .getChargeError:
             guard let message,

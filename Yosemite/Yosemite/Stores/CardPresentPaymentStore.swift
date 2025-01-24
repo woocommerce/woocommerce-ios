@@ -558,7 +558,7 @@ private extension CardPresentPaymentStore {
                         completion(.success(charge))
                     }
                 case .failure(let error):
-                    if case .noSuchChargeError = WCPayChargesError(underlyingError: error) {
+                    if case .noSuchChargeError = PaymentsError(underlyingError: error) {
                         self.deleteCharge(siteID: siteID, chargeID: chargeID) {
                             completion(.failure(error))
                         }

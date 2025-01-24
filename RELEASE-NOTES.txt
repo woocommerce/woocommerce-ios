@@ -7,6 +7,7 @@
 - [*] Receipts: Email receipts can now be sent to customers after failed payments using WooCommerce Stripe 9.1.0+. [https://github.com/woocommerce/woocommerce-ios/pull/14864].
 - [*] Order Creation: orders are always created using the store's currency, not the user's [https://github.com/woocommerce/woocommerce-ios/pull/14907]
 - [*] Dashboard: Updated the drag gesture on the Performance chart to show stats instantly. [https://github.com/woocommerce/woocommerce-ios/pull/14906]
+- [*] Product Form: Support previewing products on coming-soon stores. [https://github.com/woocommerce/woocommerce-ios/pull/14931]
 - [*] Jetpack Setup: Fix issue setting up Jetpack for JCP sites when authenticated without WPCom and removing application password after completion [https://github.com/woocommerce/woocommerce-ios/pull/14929]
 - [Internal] Removed feedback survey for Store Setup feature [https://github.com/woocommerce/woocommerce-ios/pull/14888]
 - [Internal] Removed feedback survey for shipping label creation [https://github.com/woocommerce/woocommerce-ios/pull/14889]

@@ -2,6 +2,7 @@ import SwiftUI
 import WooFoundation
 
 struct WooShippingCustomsItem: View {
+    @Environment(\.colorScheme) var colorScheme
     /// Whether the item list is collapsed
     @State private var isCollapsed: Bool = true
     @ObservedObject var viewModel: WooShippingCustomsItemViewModel
@@ -24,22 +25,42 @@ struct WooShippingCustomsItem: View {
                         .headlineStyle()
                     Spacer()
                     Image(systemName: "exclamationmark.circle")
-                        .foregroundColor(.withColorStudio(name: .red, shade: .shade60))
-                        .renderedIf(viewModel.informationIsMissing)
+                        .foregroundColor(warningRedColor)
+                        .renderedIf(!viewModel.requiredInformationIsEntered)
                 }
 
                 VStack(alignment: .leading, spacing: Layout.collapsibleViewBottomLabelVerticalSpacing) {
                     HStack {
-                        Text(viewModel.description)
+
+                        if viewModel.description.isEmpty {
+                            emptyValuePlaceholder
+                        } else {
+                            Text(viewModel.description)
+                        }
+
                         Spacer()
                         Text(viewModel.hsTariffNumber)
+                            .renderedIf(viewModel.hsTariffNumber.isNotEmpty)
                     }
-                    HStack {
+                    HStack(spacing: Layout.collapsedUnitsHorizontalSpacing) {
                         Text(viewModel.originCountry.name)
                         Spacer()
-                        Text(viewModel.weightPerUnit)
+
+                        if viewModel.weightPerUnit.isEmpty {
+                            emptyValuePlaceholder
+                        } else {
+                            Text("\(viewModel.weightPerUnit) \(weightUnit)")
+                        }
+
                         Text("•")
-                        Text(viewModel.valuePerUnit)
+                            .renderedIf(viewModel.weightPerUnit.isNotEmpty || viewModel.valuePerUnit.isNotEmpty)
+
+                        if viewModel.valuePerUnit.isEmpty {
+                            emptyValuePlaceholder
+                        } else {
+                            Text("\(viewModel.currencySymbol)\(viewModel.valuePerUnit)")
+                        }
+
                     }
                 }.renderedIf(isCollapsed)
                     .foregroundColor(.primary)
@@ -65,14 +86,30 @@ struct WooShippingCustomsItem: View {
                 .padding(.top, Layout.descriptionTopPadding)
                 TextField("", text: $viewModel.description)
                     .padding(Layout.extraPadding)
-                    .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderLineWidth)
-                    .padding(.bottom, Layout.collapsibleViewVerticalSpacing)
+                    .roundedBorder(cornerRadius: Layout.borderCornerRadius,
+                                   lineColor: viewModel.description.isEmpty ? warningRedColor : Color(.separator),
+                                   lineWidth: Layout.borderLineWidth)
+
+
+                Text(Localization.valueRequiredWarningText)
+                    .foregroundColor(warningRedColor)
+                    .footnoteStyle()
+                    .renderedIf(viewModel.description.isEmpty)
+
                 Text(Localization.HSTariffNumber)
                     .foregroundColor(.primary)
                     .subheadlineStyle()
+                    .padding(.top, Layout.collapsibleViewVerticalSpacing)
+
                 TextField(Localization.HSTariffNumberPlaceholder, text: $viewModel.hsTariffNumber)
+                    .keyboardType(.numberPad)
                     .padding(Layout.extraPadding)
                     .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderLineWidth)
+
+                Text(Localization.tariffNumberRulesWarningText)
+                    .foregroundColor(warningRedColor)
+                    .footnoteStyle()
+                    .renderedIf(!viewModel.isValidTariffNumber)
 
                 Button {
                     isShowingHSTarrifInfoWebView = true
@@ -91,13 +128,21 @@ struct WooShippingCustomsItem: View {
                         Text(Localization.valuePerUnitTitle)
                             .foregroundColor(.primary)
                             .subheadlineStyle()
-                        TextField("$ 0", text: $viewModel.valuePerUnit)
-                            .padding(Layout.extraPadding)
-                            .roundedBorder(cornerRadius: Layout.borderCornerRadius,
-                                           lineColor: viewModel.valuePerUnit.isEmpty ? .withColorStudio(name: .red, shade: .shade60) : Color(.separator),
-                                           lineWidth: Layout.borderLineWidth)
+                        HStack(spacing: Layout.unitsHorizontalSpacing) {
+                            Text(viewModel.currencySymbol)
+                                .font(.body)
+                                .foregroundStyle(.secondary)
+
+                            TextField("0", text: $viewModel.valuePerUnit)
+                                .font(.body)
+                                .keyboardType(.decimalPad)
+                        }
+                        .padding(Layout.extraPadding)
+                        .roundedBorder(cornerRadius: Layout.borderCornerRadius,
+                                       lineColor: viewModel.valuePerUnit.isEmpty ? warningRedColor : Color(.separator),
+                                       lineWidth: Layout.borderLineWidth)
                         Text(Localization.valueRequiredWarningText)
-                            .foregroundColor(.withColorStudio(name: .red, shade: .shade60))
+                            .foregroundColor(warningRedColor)
                             .footnoteStyle()
                             .renderedIf(viewModel.valuePerUnit.isEmpty)
                     }
@@ -108,17 +153,19 @@ struct WooShippingCustomsItem: View {
                             .subheadlineStyle()
                         HStack {
                             TextField("0", text: $viewModel.weightPerUnit)
+                                .font(.body)
+                                .keyboardType(.decimalPad)
                                 .padding(Layout.extraPadding)
                             Text(weightUnit)
-                                .font(.subheadline)
+                                .font(.body)
                                 .foregroundStyle(.secondary)
                                 .padding(.trailing, Layout.unitsHorizontalSpacing)
                         }
                         .roundedBorder(cornerRadius: Layout.borderCornerRadius,
-                                       lineColor: viewModel.weightPerUnit.isEmpty ? .withColorStudio(name: .red, shade: .shade60) : Color(.separator),
+                                       lineColor: viewModel.weightPerUnit.isEmpty ? warningRedColor : Color(.separator),
                                        lineWidth: Layout.borderLineWidth)
                         Text(Localization.valueRequiredWarningText)
-                            .foregroundColor(.withColorStudio(name: .red, shade: .shade60))
+                            .foregroundColor(warningRedColor)
                             .footnoteStyle()
                             .renderedIf(viewModel.weightPerUnit.isEmpty)
                     }
@@ -176,15 +223,27 @@ struct WooShippingCustomsItem: View {
                 .background(FullScreenCoverClearBackgroundView())
         }
     }
+
+    var emptyValuePlaceholder: some View {
+        RoundedRectangle(cornerRadius: Layout.emptyValuePlaceholderCornerRadius)
+                            .fill(Color.withColorStudio(name: .red, shade: .shade0))
+                            .frame(width: Layout.emptyValuePlaceholderWidth, height: Layout.emptyValuePlaceholderHeight)
+    }
+
+    private var warningRedColor: Color {
+        let shade: ColorStudioShade = colorScheme == .dark ? .shade40 : .shade60
+
+        return .withColorStudio(name: .red, shade: shade)
+    }
 }
 
 extension WooShippingCustomsItem {
     func productCardBorderColor() -> Color {
         if isCollapsed {
-            if viewModel.informationIsMissing {
-                return .withColorStudio(name: .red, shade: .shade60)
-            } else {
+            if viewModel.requiredInformationIsEntered {
                 return Color(.separator)
+            } else {
+                return warningRedColor
             }
         } else {
             return .withColorStudio(name: .purple, shade: .shade60)
@@ -215,6 +274,9 @@ extension WooShippingCustomsItem {
         static let valueRequiredWarningText = NSLocalizedString("wooShipping.customsItems.valueRequired",
                                               value: "Value required",
                                               comment: "Warning text when some required value is missing")
+        static let tariffNumberRulesWarningText = NSLocalizedString("wooShipping.customsItems.tariffNumberRulesWarning",
+                                              value: "The tariff number must be between 6 and 12 digits long",
+                                              comment: "Warning text when the shipping customs tariff number is not valid")
         static let originCountryTitle = NSLocalizedString("wooShipping.customsItems.originCountry",
                                               value: "Origin Country",
                                               comment: "Title for the origin country text field")
@@ -222,6 +284,7 @@ extension WooShippingCustomsItem {
 
     enum Layout {
         static let collapsibleViewTopPadding: CGFloat = 4.0
+        static let collapsedUnitsHorizontalSpacing: CGFloat = 4.0
         static let collapsibleViewBottomContentTrailingPadding: CGFloat = -30.0
         static let collapsibleViewVerticalSpacing: CGFloat = 8.0
         static let collapsibleViewBottomLabelVerticalSpacing: CGFloat = 4.0
@@ -231,5 +294,8 @@ extension WooShippingCustomsItem {
         static let extraPadding: CGFloat = 16.0
         static let hsTariffNumberMoreInfoVerticalSpacing: CGFloat = 8.0
         static let unitsHorizontalSpacing: CGFloat = 8.0
+        static let emptyValuePlaceholderCornerRadius: CGFloat = 2.0
+        static let emptyValuePlaceholderWidth: CGFloat = 48.0
+        static let emptyValuePlaceholderHeight: CGFloat = 16.0
     }
 }

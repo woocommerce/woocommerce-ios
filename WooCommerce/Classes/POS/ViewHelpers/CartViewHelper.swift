@@ -26,14 +26,19 @@ final class CartViewHelper {
 private extension PointOfSalePaymentState {
     var allowsCartEditing: Bool {
         switch self {
-        case .processingPayment,
-                .paymentError,
-                .cardPaymentSuccessful,
-                .validatingOrder,
-                .preparingReader:
+        case .card(let cardPaymentState):
+            switch cardPaymentState {
+            case .processingPayment,
+                    .paymentError,
+                    .cardPaymentSuccessful,
+                    .validatingOrder,
+                    .preparingReader:
+                return false
+            case .idle, .validatingOrderError, .acceptingCard:
+                return true
+            }
+        case .cash:
             return false
-        case .idle, .validatingOrderError, .acceptingCard:
-            return true
         }
     }
 }

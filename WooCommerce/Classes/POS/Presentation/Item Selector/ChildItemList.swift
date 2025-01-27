@@ -7,7 +7,6 @@ struct ChildItemList: View {
     private let title: String
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
 
     private var state: ItemListState {
         posModel.itemsViewState.itemsStack
@@ -22,35 +21,85 @@ struct ChildItemList: View {
 
     var body: some View {
         VStack {
-            HStack {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "chevron.backward")
-                        .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
-                        .foregroundColor(.primary)
-                }
-                POSHeaderTitleView(title: title)
-                Spacer()
+            switch state {
+            case .loaded([], _):
+                emptyView
+            case .loading, .loaded, .inlineError:
+                listView
+            case let .error(error):
+                errorView(error: error)
             }
-            .padding(.horizontal, Constants.itemListPadding)
-            ScrollView {
-                VStack {
-                    ItemList(state: state)
-                        .background(Color.posPrimaryBackground)
-                        .toolbar(.hidden, for: .navigationBar)
-                        .transition(.opacity)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.bottom, floatingControlAreaSize.height)
-                .padding(.horizontal, Constants.itemListPadding)
-            }
+        }
+        .background(Color.posPrimaryBackground)
+        .toolbar(.hidden, for: .navigationBar)
+        .refreshable {
+            await Task {
+                await posModel.loadItems(base: .parent(parentItem))
+            }.value
         }
         .task {
             guard state.items.isEmpty else {
                 return
             }
-            await posModel.loadInitialChildItems(for: parentItem)
+            await posModel.loadItems(base: .parent(parentItem))
+        }
+    }
+}
+
+private extension ChildItemList {
+    @ViewBuilder var headerView: some View {
+        HStack {
+            Button {
+                dismiss()
+            } label: {
+                Image(systemName: "chevron.backward")
+                    .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
+                    .foregroundColor(.primary)
+            }
+            POSHeaderTitleView(title: title)
+            Spacer()
+        }
+        .padding(.horizontal, Constants.itemListPadding)
+    }
+
+    @ViewBuilder
+    var listView: some View {
+        VStack {
+            headerView
+
+            ItemList(state: state,
+                     node: .parent(parentItem))
+                .transition(.opacity)
+        }
+    }
+
+    @ViewBuilder
+    var emptyView: some View {
+        ZStack {
+            VStack {
+                headerView
+                Spacer()
+            }
+
+            PointOfSaleItemListEmptyView(base: .parent(parentItem))
+                .zIndex(1)
+        }
+    }
+
+    @ViewBuilder
+    func errorView(error: PointOfSaleErrorState) -> some View {
+        ZStack {
+            VStack {
+                headerView
+                Spacer()
+            }
+
+            PointOfSaleItemListErrorView(error: error, onRetry: {
+                Task {
+                    await posModel.loadItems(base: .parent(parentItem))
+                }
+            })
+            .zIndex(1)
         }
     }
 }
@@ -93,7 +142,8 @@ private extension ChildItemList {
                                                                 formattedPrice: "$5.75",
                                                                 price: "5.75",
                                                                 productID: 134,
-                                                                variationID: 256
+                                                                variationID: 256,
+                                                                parentProductName: parentProduct.name
                                                             )
                                                         ),
                                                         .variation(
@@ -103,10 +153,34 @@ private extension ChildItemList {
                                                                 formattedPrice: "$6.5",
                                                                 price: "6.5",
                                                                 productID: 134,
-                                                                variationID: 256
+                                                                variationID: 256,
+                                                                parentProductName: parentProduct.name
                                                             )
                                                         )
-                                                    ])]))
+                                                    ], hasMoreItems: false)]))
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: itemsController,
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
+    return ChildItemList(parentItem: parentItem, title: parentProduct.name)
+        .environmentObject(posModel)
+}
+
+#Preview("Variable items load error") {
+    let parentProduct = POSVariableParentProduct(
+        id: .init(),
+        name: "Variable latte",
+        productImageSource: nil,
+        productID: 1
+    )
+    let parentItem = POSItem.variableParentProduct(parentProduct)
+    let itemsController = PointOfSalePreviewItemsController()
+    itemsController.itemsViewState = .init(containerState: .content,
+                                           itemsStack: ItemsStackState(
+                                            root: .loading([]),
+                                            itemStates: [
+                                                parentItem: .error(.errorOnLoadingVariations())
+                                            ]))
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
         cardPresentPaymentService: CardPresentPaymentPreviewService(),

@@ -94,11 +94,11 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .sendReceiptsForPointOfSale:
             return true
         case .acceptCashForPointOfSale:
-            return false
+            return true
         case .tapToPayEducation:
             return true
         case .variableProductsInPointOfSale:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .hideSitesInStorePicker:
             return true
         case .filterHistoryOnOrderAndProductLists:

@@ -67,7 +67,7 @@ struct CartView: View {
             if posModel.cart.isNotEmpty {
                 ScrollViewReader { proxy in
                     ScrollView {
-                        VStack(spacing: 0) {
+                        VStack(spacing: Constants.cartItemSpacing) {
                             ForEach(posModel.cart, id: \.id) { cartItem in
                                 ItemRowView(cartItem: cartItem,
                                             onItemRemoveTapped: posModel.orderStage == .building ? {
@@ -176,6 +176,7 @@ private extension CartView {
         static let cartHeaderElementSpacing: CGFloat = 16
         static let cartAnimation: Animation = .spring(duration: 0.2)
         static let checkoutButtonVerticalPadding: CGFloat = 16
+        static let cartItemSpacing: CGFloat = 16
     }
 
     enum Localization {

@@ -4,11 +4,7 @@ import protocol Yosemite.POSOrderableItem
 struct CartItem {
     let id: UUID
     let item: POSOrderableItem
+    let title: String
+    let subtitle: String?
     let quantity: Int
-
-    init(id: UUID, item: POSOrderableItem, quantity: Int) {
-        self.id = id
-        self.item = item
-        self.quantity = quantity
-    }
 }

@@ -216,6 +216,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.orderBy: OrderKey.name.value,
             ParameterKey.order: Order.ascending.value,
             ParameterKey.productStatus: POSConstants.productStatus,
+            ParameterKey.downloadable: String(false),
         ]
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,
@@ -637,6 +638,7 @@ public extension ProductsRemote {
         static let before = "before"
         static let after = "after"
         static let extendedInfo = "extended_info"
+        static let downloadable = "downloadable"
     }
 
     private enum ParameterValues {
@@ -648,7 +650,7 @@ public extension ProductsRemote {
 
 private extension ProductsRemote {
     enum POSConstants {
-        static let productsPerPage = "100"
+        static let productsPerPage = "25"
         static let productType = "simple"
         static let productStatus = "publish"
     }

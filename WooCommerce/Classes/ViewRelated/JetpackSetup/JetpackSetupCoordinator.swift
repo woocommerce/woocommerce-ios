@@ -271,6 +271,7 @@ private extension JetpackSetupCoordinator {
                         if site.isJetpackCPConnected {
                             self?.presentJCPJetpackInstallFlow()
                         }
+                        progressView.dismiss(animated: true)
                     })
                 }
 

@@ -505,7 +505,6 @@ private extension CardReaderConnectionController {
     /// Retry a search for a card reader
     ///
     func onRetry() {
-        alertsPresenter.dismiss()
         let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { [weak self] _ in
             self?.state = .initializing
         }

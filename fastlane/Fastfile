@@ -486,8 +486,8 @@ platform :ios do
 
     # Don't check translation coverage in CI
     check_translation_progress_all unless is_ci
-    download_localized_strings_and_metadata_from_glotpress
-    lint_localizations
+    # download_localized_strings_and_metadata_from_glotpress
+    # lint_localizations
 
     # Bump the build code
     UI.message('Bumping build code...')

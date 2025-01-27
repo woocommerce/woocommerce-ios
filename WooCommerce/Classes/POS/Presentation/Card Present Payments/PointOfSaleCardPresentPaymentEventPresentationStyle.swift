@@ -160,10 +160,11 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
                         dependencies.dismissReaderConnectionModal()
                     })))
 
-        case .updateFailedLowBattery(let batteryLevel, let cancelUpdate):
+        case .updateFailedLowBattery(let batteryLevel, let retrySearch, let cancelUpdate):
             self = .alert(.updateFailedLowBattery(
                 viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlertViewModel(
                     batteryLevel: batteryLevel,
+                    retrySearchAction: retrySearch,
                     cancelUpdateAction: {
                         cancelUpdate()
                         dependencies.dismissReaderConnectionModal()

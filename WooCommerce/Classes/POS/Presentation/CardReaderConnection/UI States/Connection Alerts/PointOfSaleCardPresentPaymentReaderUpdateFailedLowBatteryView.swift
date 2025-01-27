@@ -33,9 +33,15 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryView: View {
             .frame(maxWidth: .infinity)
             .scrollVerticallyIfNeeded()
 
-            Button(viewModel.cancelButtonViewModel.title,
-                   action: viewModel.cancelButtonViewModel.actionHandler)
-            .buttonStyle(POSSecondaryButtonStyle())
+
+            VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
+                Button(viewModel.retrySearchButtonViewModel.title,
+                       action: viewModel.retrySearchButtonViewModel.actionHandler)
+                .buttonStyle(POSPrimaryButtonStyle())
+                Button(viewModel.cancelButtonViewModel.title,
+                       action: viewModel.cancelButtonViewModel.actionHandler)
+                .buttonStyle(POSSecondaryButtonStyle())
+            }
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
         .multilineTextAlignment(.center)
@@ -46,7 +52,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryView: View {
 #Preview {
     @Namespace var namespace
     return PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryView(
-        viewModel: .init(batteryLevel: nil, cancelUpdateAction: {}),
+        viewModel: .init(batteryLevel: nil, retrySearchAction: {}, cancelUpdateAction: {}),
         animation: .init(namespace: namespace)
     )
 }

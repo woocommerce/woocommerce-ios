@@ -34,15 +34,6 @@ final class OrderDetailsResultsControllers {
     ///
     private lazy var productVariationResultsController: ResultsController<StorageProductVariation> = getProductVariationResultsController()
 
-    /// Fee lines Results Controller.
-    ///
-    private lazy var feeLinesResultsController: ResultsController<StorageOrderFeeLine> = {
-        let predicate = NSPredicate(format: "order.orderID == %ld", order.orderID)
-        let descriptor = NSSortDescriptor(key: "feeID", ascending: true)
-
-        return ResultsController<StorageOrderFeeLine>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
-
     /// Status Results Controller.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
@@ -142,7 +133,7 @@ final class OrderDetailsResultsControllers {
     }
 
     var feeLines: [OrderFeeLine] {
-        return feeLinesResultsController.fetchedObjects
+        return order.fees
     }
 
     /// Shipping methods list
@@ -172,7 +163,6 @@ final class OrderDetailsResultsControllers {
         configureShippingLabelResultsController(onReload: onReload)
         configureAddOnGroupResultsController(onReload: onReload)
         configureSitePluginsResultsController(onReload: onReload)
-        configureFeeLinesResultsController(onReload: onReload)
         configureShippingMethodsResultsController(onReload: onReload)
     }
 
@@ -337,24 +327,6 @@ private extension OrderDetailsResultsControllers {
             try sitePluginsResultsController.performFetch()
         } catch {
             DDLogError("⛔️ Unable to fetch Site Plugins for Site \(siteID): \(error)")
-        }
-    }
-
-    private func configureFeeLinesResultsController(onReload: @escaping () -> Void) {
-        feeLinesResultsController.onDidChangeContent = {
-            onReload()
-        }
-
-        feeLinesResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else { return }
-            self.refetchAllResultsControllers()
-            onReload()
-        }
-
-        do {
-            try feeLinesResultsController.performFetch()
-        } catch {
-            DDLogError("⛔️ Unable to fetch Order Fee lines for Site \(siteID): \(error)")
         }
     }
 

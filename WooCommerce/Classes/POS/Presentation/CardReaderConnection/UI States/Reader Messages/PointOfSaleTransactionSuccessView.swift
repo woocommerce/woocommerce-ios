@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
+struct PointOfSaleTransactionSuccessView: View {
     let viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
@@ -88,7 +88,7 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
     }
 }
 
-private extension PointOfSaleCardPresentPaymentSuccessMessageView {
+private extension PointOfSaleTransactionSuccessView {
     enum Constants {
         static let imageName: String = "checkmark"
         static let imageSize: CGSize = .init(width: 165, height: 165)
@@ -103,7 +103,7 @@ private extension PointOfSaleCardPresentPaymentSuccessMessageView {
 }
 
 #Preview {
-    return PointOfSaleCardPresentPaymentSuccessMessageView(
+    return PointOfSaleTransactionSuccessView(
         viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel(formattedOrderTotal: "$3.00")
     )
 }

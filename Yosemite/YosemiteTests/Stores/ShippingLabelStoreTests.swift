@@ -699,9 +699,10 @@ final class ShippingLabelStoreTests: XCTestCase {
                                                                    originAddress: mockAddress,
                                                                    destinationAddress: mockAddress,
                                                                    packages: mockPackages,
-                                                                   emailCustomerReceipt: true) { result in
-                promise(result)
-            }
+                                                                   emailCustomerReceipt: true,
+                                                                   completion: { promise($0) },
+                                                                   backendProcessingDelay: 0,
+                                                                   pollingDelay: 0)
             store.onAction(action)
         }
 
@@ -733,9 +734,10 @@ final class ShippingLabelStoreTests: XCTestCase {
                                                                    originAddress: mockAddress,
                                                                    destinationAddress: mockAddress,
                                                                    packages: mockPackages,
-                                                                   emailCustomerReceipt: true) { result in
-                promise(result)
-            }
+                                                                   emailCustomerReceipt: true,
+                                                                   completion: { promise($0) },
+                                                                   backendProcessingDelay: 0,
+                                                                   pollingDelay: 0)
             store.onAction(action)
         }
 
@@ -770,9 +772,10 @@ final class ShippingLabelStoreTests: XCTestCase {
                                                                    originAddress: mockAddress,
                                                                    destinationAddress: mockAddress,
                                                                    packages: mockPackages,
-                                                                   emailCustomerReceipt: true) { result in
-                promise(result)
-            }
+                                                                   emailCustomerReceipt: true,
+                                                                   completion: { promise($0) },
+                                                                   backendProcessingDelay: 0,
+                                                                   pollingDelay: 0)
             store.onAction(action)
         }
 
@@ -808,9 +811,10 @@ final class ShippingLabelStoreTests: XCTestCase {
                                                                    originAddress: mockAddress,
                                                                    destinationAddress: mockAddress,
                                                                    packages: mockPackages,
-                                                                   emailCustomerReceipt: true) { result in
-                promise(result)
-            }
+                                                                   emailCustomerReceipt: true,
+                                                                   completion: { promise($0) },
+                                                                   backendProcessingDelay: 0,
+                                                                   pollingDelay: 0)
             store.onAction(action)
         }
 

@@ -64,6 +64,7 @@
 		B99BC2122A1FAE5100E6008A /* CIImage+ImageCombination.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99BC2112A1FAE5100E6008A /* CIImage+ImageCombination.swift */; };
 		B99BC2142A1FAEBC00E6008A /* URL+QRCodeGeneration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99BC2132A1FAEBC00E6008A /* URL+QRCodeGeneration.swift */; };
 		B99BC2162A1FB21700E6008A /* UIImage+Background.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99BC2152A1FB21700E6008A /* UIImage+Background.swift */; };
+		B9A531812D37F57700208304 /* Array+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A531802D37F56F00208304 /* Array+Combine.swift */; };
 		B9C9C63F283E703C001B879F /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C9C635283E703C001B879F /* WooFoundation.framework */; };
 		B9C9C659283E7195001B879F /* NSDecimalNumber+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C658283E7195001B879F /* NSDecimalNumber+Helpers.swift */; };
 		B9C9C65D283E71C8001B879F /* CurrencyFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C65B283E71C8001B879F /* CurrencyFormatter.swift */; };
@@ -157,6 +158,7 @@
 		B99BC2112A1FAE5100E6008A /* CIImage+ImageCombination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CIImage+ImageCombination.swift"; sourceTree = "<group>"; };
 		B99BC2132A1FAEBC00E6008A /* URL+QRCodeGeneration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+QRCodeGeneration.swift"; sourceTree = "<group>"; };
 		B99BC2152A1FB21700E6008A /* UIImage+Background.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Background.swift"; sourceTree = "<group>"; };
+		B9A531802D37F56F00208304 /* Array+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Combine.swift"; sourceTree = "<group>"; };
 		B9AED558283E7553002A2668 /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9AED55B283E755A002A2668 /* Hardware.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Hardware.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9C9C635283E703C001B879F /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -368,6 +370,7 @@
 		B9C9C657283E7174001B879F /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				B9A531802D37F56F00208304 /* Array+Combine.swift */,
 				AE948D0928CF67CE009F3246 /* Date+StartAndEnd.swift */,
 				B9C9C65F283E71F4001B879F /* Double+Woo.swift */,
 				B9C9C658283E7195001B879F /* NSDecimalNumber+Helpers.swift */,
@@ -706,6 +709,7 @@
 				2027F7522C8F0B95004BDF73 /* MockScheduler.swift in Sources */,
 				B9C9C663283E7296001B879F /* Logging.swift in Sources */,
 				6874E81428998AD300074A97 /* LogErrorAndExit.swift in Sources */,
+				B9A531812D37F57700208304 /* Array+Combine.swift in Sources */,
 				B97190D1292CF3BC0065E413 /* Result+Extensions.swift in Sources */,
 				203758752AD55670000E4281 /* CountryCode.swift in Sources */,
 				6896C82A2C75D60D002DDAE2 /* MockAnalyticsPreview.swift in Sources */,

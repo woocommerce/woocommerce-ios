@@ -15,6 +15,7 @@ final class WooShippingOriginAddressListViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.addresses, addresses)
         XCTAssertEqual(viewModel.selectedAddressID, selectedAddressID)
+        XCTAssertNil(viewModel.addressToEdit)
     }
 
     func test_isSelected_returns_expected_value_for_selected_address() {
@@ -72,6 +73,18 @@ final class WooShippingOriginAddressListViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(selectedAddress, addressToSelect)
+    }
+
+    func test_editAddress_sets_addressToEdit_view_model() throws {
+        // Given
+        let addressToEdit = WooShippingOriginAddress.fake()
+        let viewModel = WooShippingOriginAddressListViewModel(addresses: [addressToEdit])
+
+        // When
+        viewModel.editAddress(addressToEdit)
+
+        // Then
+        let addressToEditViewModel = try XCTUnwrap(viewModel.addressToEdit, "addressToEdit was unexpectedly nil")
     }
 
 }

@@ -1,5 +1,6 @@
 import Foundation
 import Networking
+import WooFoundation
 
 /// Factory to create convenience order types.
 ///
@@ -103,9 +104,13 @@ public enum OrderFactory {
         shippingLine.copy(methodID: " ")
     }
 
-    /// References a new empty order with constants `Date` values.
+    /// References a new empty order with constants `Date` values, in the specified currency.
+    /// This should usually be the current store's currency.
     ///
-    public static let emptyNewOrder = Order.empty
+    public static func newOrder(currency: CurrencyCode) -> Order {
+        return Order.empty.copy(currency: currency.rawValue)
+    }
+
 }
 
 public extension OrderFeeLine {

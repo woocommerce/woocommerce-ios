@@ -15,7 +15,7 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
         $state
     }
 
-    @Published private(set) var order: Order = OrderFactory.emptyNewOrder
+    @Published private(set) var order: Order
 
     var orderPublisher: Published<Order>.Publisher {
         $order
@@ -85,20 +85,38 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
     ///
     private var orderSyncTrigger = PassthroughSubject<Order, Never>()
 
+    /// The time interval to wait for the next sync request.
+    ///
+    private let debounceDuration: TimeInterval
+
+    var orderHasBeenChanged: Bool {
+        return order != initialOrder
+    }
+
+    private let initialOrder: Order
+
     // MARK: Initializers
+
 
     init(siteID: Int64,
          flow: EditableOrderViewModel.Flow,
          stores: StoresManager = ServiceLocator.stores,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         debounceDuration: TimeInterval = 1.0) {
         self.siteID = siteID
         self.stores = stores
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.blockingBehavior = .majorUpdates
+        self.debounceDuration = debounceDuration
 
         if case let .editing(initialOrder) = flow {
-            order = initialOrder
+            self.initialOrder = initialOrder
+            self.order = initialOrder
         } else {
+            let storeCurrency = currencySettings.currencyCode
+            let newOrder = OrderFactory.newOrder(currency: storeCurrency)
+            self.initialOrder = newOrder
+            self.order = newOrder
             updateBaseSyncOrderStatus()
         }
 
@@ -413,7 +431,7 @@ private extension RemoteOrderSynchronizer {
                     state = .syncing(blocking: order.containsLocalLines() || order.containsBundleConfigurations())
                 }
             })
-            .debounce(for: 1.0, scheduler: DispatchQueue.main) // Group & wait for 1.0 since the last signal was emitted.
+            .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main) // Group & wait for 1.0 since the last signal was emitted.
             .map { [weak self] order -> AnyPublisher<Order, Never> in // Allow multiple requests, once per update request.
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
 

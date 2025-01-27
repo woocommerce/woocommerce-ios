@@ -123,7 +123,9 @@ private enum Constants {
     static let purchaseReaderForCountryUrlBase = "https://woocommerce.com/products/hardware/"
 }
 
-extension OperatingSystemVersion: Equatable {
+/// The `@retroactive` attribute is used to apply `Equatable` conformance to `OperatingSystemVersion` from the Foundation module.
+/// This is necessary due to Swift 6 [SE-0364 proposal](https://github.com/swiftlang/swift-evolution/blob/main/proposals/0364-retroactive-conformance-warning.md).
+extension OperatingSystemVersion: @retroactive Equatable {
     public static func == (lhs: OperatingSystemVersion, rhs: OperatingSystemVersion) -> Bool {
         return lhs.majorVersion == rhs.majorVersion &&
         lhs.minorVersion == rhs.minorVersion &&

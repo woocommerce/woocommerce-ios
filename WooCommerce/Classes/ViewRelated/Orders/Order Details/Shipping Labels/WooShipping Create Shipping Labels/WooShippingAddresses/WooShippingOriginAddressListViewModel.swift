@@ -5,6 +5,10 @@ final class WooShippingOriginAddressListViewModel: ObservableObject {
     let addresses: [WooShippingOriginAddress]
     @Published private(set) var selectedAddressID: String?
 
+    /// View model for address to edit.
+    /// Setting this property will navigate to the address edit screen.
+    @Published var addressToEdit: WooShippingEditAddressViewModel?
+
     /// Closure (set externally) called when an address is selected.
     var onSelect: ((WooShippingOriginAddress) -> Void)?
 
@@ -26,6 +30,10 @@ final class WooShippingOriginAddressListViewModel: ObservableObject {
         }
         selectedAddressID = address.id
         onSelect?(address)
+    }
+
+    func editAddress(_ address: WooShippingOriginAddress) {
+        addressToEdit = WooShippingEditAddressViewModel(address: address)
     }
 }
 

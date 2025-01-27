@@ -144,13 +144,14 @@ final class POSEligibilityCheckerTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
-    func test_is_eligible_when_WooCommerce_version_is_below_6_6_then_returns_false() throws {
+    func test_is_eligible_when_WooCommerce_version_is_below_9_6_then_returns_false() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true,
+                                                        isVariableProductsInPOSEnabled: true)
         setupCountry(country: .us)
 
         // Unsupported WooCommerce version
-        setupWooCommerceVersion("6.5.0")
+        setupWooCommerceVersion("9.5.2")
 
         // When
         let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
@@ -164,9 +165,53 @@ final class POSEligibilityCheckerTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
-    func test_is_eligible_when_WooCommerce_version_is_above_6_6_then_returns_true() throws {
+    func test_is_eligible_when_WooCommerce_version_is_at_least_9_6_then_returns_true() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true,
+                                                        isVariableProductsInPOSEnabled: true)
+        setupCountry(country: .us)
+        accountWhitelistedInBackend(true)
+
+        // Supported WooCommerce version
+        setupWooCommerceVersion("9.6.0-beta1")
+
+        // When
+        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+                                            siteSettings: siteSettings,
+                                            currencySettings: Fixtures.usdCurrencySettings,
+                                            stores: stores,
+                                            featureFlagService: featureFlagService)
+        checker.isEligible.assign(to: &$isEligible)
+
+        // Then
+        XCTAssertTrue(isEligible)
+    }
+
+    func test_is_eligible_when_WooCommerce_version_is_below_6_6_and_variable_products_disabled_then_returns_false() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true,
+                                                        isVariableProductsInPOSEnabled: false)
+        setupCountry(country: .us)
+
+        // Unsupported WooCommerce version
+        setupWooCommerceVersion("6.5.2")
+
+        // When
+        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+                                            siteSettings: siteSettings,
+                                            currencySettings: Fixtures.usdCurrencySettings,
+                                            stores: stores,
+                                            featureFlagService: featureFlagService)
+        checker.isEligible.assign(to: &$isEligible)
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
+    func test_is_eligible_when_WooCommerce_version_is_at_least_6_6_and_variable_products_disabled_then_returns_true() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true,
+                                                        isVariableProductsInPOSEnabled: false)
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
 
@@ -199,7 +244,7 @@ private extension POSEligibilityCheckerTests {
         siteSettings.refresh()
     }
 
-    func setupWooCommerceVersion(_ version: String = "6.6.0") {
+    func setupWooCommerceVersion(_ version: String = "9.6.0-beta") {
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
             case .fetchSystemPlugin(_, _, let completion):

@@ -42,4 +42,7 @@ protocol CardPresentPaymentFacade {
 
     /// Cancels any in-progress payment.
     func cancelPayment()
+
+    /// Cancels any in-progress payment, returning when complete
+    func cancelPayment() async throws
 }

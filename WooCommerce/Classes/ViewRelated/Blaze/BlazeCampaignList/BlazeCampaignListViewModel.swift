@@ -4,13 +4,6 @@ import Experiments
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 
-/// Conformance to support listing in SwiftUI
-extension BlazeCampaignListItem: Identifiable {
-    public var id: String {
-        campaignID
-    }
-}
-
 /// View model for `BlazeCampaignListView`
 final class BlazeCampaignListViewModel: ObservableObject {
 

@@ -482,6 +482,8 @@
 		DE6831DD26445B2B00E88B9E /* SitePluginStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6831DC26445B2B00E88B9E /* SitePluginStoreTests.swift */; };
 		DE87F4042D2BC93100869522 /* OrderFilterHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE87F4032D2BC92600869522 /* OrderFilterHistory.swift */; };
 		DE87F4062D2BD49700869522 /* AppSettingsStoreTests+OrderFilterHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE87F4052D2BD49700869522 /* AppSettingsStoreTests+OrderFilterHistory.swift */; };
+		DE87F40A2D2F7F9F00869522 /* ProductFilterHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE87F4092D2F7F9800869522 /* ProductFilterHistory.swift */; };
+		DE87F40C2D2F839700869522 /* AppSettingsStoreTests+ProductFilterHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE87F40B2D2F839700869522 /* AppSettingsStoreTests+ProductFilterHistory.swift */; };
 		DEA493922B3BD49700EED015 /* BlazeTargetDevice+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA493912B3BD49700EED015 /* BlazeTargetDevice+ReadOnlyConvertible.swift */; };
 		DEA493942B3D588500EED015 /* BlazeTargetLanguage+ReadonlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA493932B3D588500EED015 /* BlazeTargetLanguage+ReadonlyConvertible.swift */; };
 		DEA493962B3D608B00EED015 /* BlazeTargetTopic+ReadonlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA493952B3D608B00EED015 /* BlazeTargetTopic+ReadonlyConvertible.swift */; };
@@ -1028,6 +1030,8 @@
 		DE6831DC26445B2B00E88B9E /* SitePluginStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginStoreTests.swift; sourceTree = "<group>"; };
 		DE87F4032D2BC92600869522 /* OrderFilterHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderFilterHistory.swift; sourceTree = "<group>"; };
 		DE87F4052D2BD49700869522 /* AppSettingsStoreTests+OrderFilterHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppSettingsStoreTests+OrderFilterHistory.swift"; sourceTree = "<group>"; };
+		DE87F4092D2F7F9800869522 /* ProductFilterHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFilterHistory.swift; sourceTree = "<group>"; };
+		DE87F40B2D2F839700869522 /* AppSettingsStoreTests+ProductFilterHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppSettingsStoreTests+ProductFilterHistory.swift"; sourceTree = "<group>"; };
 		DEA493912B3BD49700EED015 /* BlazeTargetDevice+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlazeTargetDevice+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		DEA493932B3D588500EED015 /* BlazeTargetLanguage+ReadonlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlazeTargetLanguage+ReadonlyConvertible.swift"; sourceTree = "<group>"; };
 		DEA493952B3D608B00EED015 /* BlazeTargetTopic+ReadonlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlazeTargetTopic+ReadonlyConvertible.swift"; sourceTree = "<group>"; };
@@ -1377,6 +1381,7 @@
 		45739F35243767FE00480C95 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				DE87F4092D2F7F9800869522 /* ProductFilterHistory.swift */,
 				45739F362437680F00480C95 /* ProductSettings.swift */,
 				029F44CA28D310BA00FCF439 /* ProductSearchFilter.swift */,
 			);
@@ -1784,6 +1789,7 @@
 				312DB64C268BD22B00AA0EE9 /* AppSettingsStoreTests+CardReaderSettings.swift */,
 				455A931C2747C19300259C7F /* AppSettingsStoreTests+OrdersSettings.swift */,
 				DE87F4052D2BD49700869522 /* AppSettingsStoreTests+OrderFilterHistory.swift */,
+				DE87F40B2D2F839700869522 /* AppSettingsStoreTests+ProductFilterHistory.swift */,
 				458C6DE725ACC554009B300D /* AppSettingsStoreTests+ProductsSettings.swift */,
 				B5BC736720D1AA8F00B5B6FA /* AccountStoreTests.swift */,
 				D88303E825E459DC00C877F9 /* CardPresentPaymentStoreTests.swift */,
@@ -2362,6 +2368,7 @@
 				7493750A22498700007D85D1 /* ProductCategory+ReadOnlyConvertible.swift in Sources */,
 				D8C11A5622DFB0BE00D4A88D /* OrderStatsV4Totals+ReadOnlyConvertible.swift in Sources */,
 				CC2C0372262F32D800928C9C /* ShippingLabelPaymentMethod+ReadonlyConvertible.swift in Sources */,
+				DE87F40A2D2F7F9F00869522 /* ProductFilterHistory.swift in Sources */,
 				74685D4E20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift in Sources */,
 				7471401121877668009A11CC /* NotificationAction.swift in Sources */,
 				6898F3742C0842150039F10A /* PointOfSaleItemServiceProtocol.swift in Sources */,
@@ -2805,6 +2812,7 @@
 				0212AC67242C799B00C51F6C /* ResultsController+StorageProductTests.swift in Sources */,
 				D4CBAE6026D440FA00BBE6D1 /* MockAnnouncementsRemote.swift in Sources */,
 				578CE7902475EBAB00492EBF /* MockProductReviewsRemote.swift in Sources */,
+				DE87F40C2D2F839700869522 /* AppSettingsStoreTests+ProductFilterHistory.swift in Sources */,
 				20D210C12B177EEF0099E517 /* WooPaymentsPayoutServiceTests.swift in Sources */,
 				D87F615E2265B1BC0031A13B /* AppSettingsStoreTests.swift in Sources */,
 				207D2D1B2CFA06BD00F79204 /* POSCartItemTests.swift in Sources */,

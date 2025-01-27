@@ -120,28 +120,10 @@ extension NSManagedObjectContext: StorageType {
         do {
             return try existingObject(with: objectID) as? T
         } catch {
-            DDLogError("Error loading Object [\(T.entityName)]")
+            DDLogError("Error loading Object [\(T.entityName)]: \(error)")
         }
 
         return nil
-    }
-
-    /// Persists the changes (if any) to disk.
-    ///
-    public func saveIfNeeded() {
-        guard hasChanges else {
-            return
-        }
-
-        /// cannot infer the entity name here, so leaving it empty
-        Self.ensureCorrectContextUsageIfNeeded(for: "")
-
-        do {
-            try save()
-        } catch {
-            let nserror = error as NSError
-            logErrorAndExit("Unresolved error \(nserror), \(nserror.userInfo)")
-        }
     }
 
     /// Create an `NSFetchedResultsController` using this `NSManagedObjectContext`.
@@ -165,7 +147,7 @@ extension NSManagedObjectContext: StorageType {
         do {
             objects = try fetch(request) as? [T]
         } catch {
-            DDLogError("Error loading Objects [\(T.entityName)")
+            DDLogError("Error loading Objects [\(T.entityName)]: \(error)")
             assertionFailure()
         }
 

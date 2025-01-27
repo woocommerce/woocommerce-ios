@@ -198,36 +198,12 @@ extension WooConstants {
         ///
         case productsFeedback = "https://automattic.survey.fm/woo-app-feature-feedback-products"
 
-        /// URL for the store setup feedback survey
-        ///
-#if DEBUG
-        case storeSetupFeedback = "https://automattic.survey.fm/testing-debug-woo-mobile-–-store-setup-survey-2022"
-#else
-        case storeSetupFeedback = "https://automattic.survey.fm/woo-mobile-–-store-setup-survey-2022"
-#endif
-
-        /// URL for the shipping labels M3 feedback survey
-        ///
-#if DEBUG
-        case shippingLabelsRelease3Feedback = "https://automattic.survey.fm/woo-app-testing-feature-feedback-shipping-labels"
-#else
-        case shippingLabelsRelease3Feedback = "https://automattic.survey.fm/woo-app-feature-feedback-shipping-labels"
-#endif
-
         /// URL for the order add-on i1 feedback survey
         ///
 #if DEBUG
         case orderAddOnI1Feedback = "https://automattic.survey.fm/woo-app-addons-testing"
 #else
         case orderAddOnI1Feedback = "https://automattic.survey.fm/woo-app-addons-production"
-#endif
-
-        /// URL for the Product Creation with AI feedback survey
-        ///
-#if DEBUG
-        case productCreationAIFeedback = "https://automattic.survey.fm/testing-debug-product-creation-with-ai-dec-2023"
-#else
-        case productCreationAIFeedback = "https://automattic.survey.fm/product-creation-with-ai-dec-2023"
 #endif
 
         /// URL for shipping label creation information
@@ -278,11 +254,6 @@ extension WooConstants {
         case orderCreationFeedback = "https://automattic.survey.fm/woo-app-order-creation-production"
 #endif
 
-#if DEBUG
-        case couponManagementFeedback = "https://automattic.survey.fm/woo-app-coupon-management-testing"
-#else
-        case couponManagementFeedback = "https://automattic.survey.fm/woo-app-coupon-management-production"
-#endif
         /// URL for the Enable Cash on Delivery (or Pay in Person) onboarding step's learn more link using the Stripe plugin
         ///
         case stripeCashOnDeliveryLearnMore = "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/#section-8"

@@ -84,7 +84,7 @@ struct AppSettingsStoreTests_OrderFilterHistory {
                 continuation.resume(with: result)
             })
         }
-        #expect(initialResult == [filter1, filter2])
+        #expect(initialResult == [filter2, filter1])
 
         // When
         let error = await withCheckedContinuation { continuation in

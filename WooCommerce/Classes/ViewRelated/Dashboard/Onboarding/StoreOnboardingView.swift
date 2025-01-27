@@ -21,13 +21,11 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
 
     init(viewModel: StoreOnboardingViewModel,
          navigationController: UINavigationController,
-         site: Site,
-         shareFeedbackAction: (() -> Void)? = nil) {
+         site: Site) {
         self.viewModel = viewModel
         self.sourceNavigationController = navigationController
         self.site = site
-        super.init(rootView: StoreOnboardingView(viewModel: viewModel,
-                                                 shareFeedbackAction: shareFeedbackAction))
+        super.init(rootView: StoreOnboardingView(viewModel: viewModel))
         if #unavailable(iOS 16.0) {
             viewModel.onStateChange = { [weak self] in
                 self?.view.invalidateIntrinsicContentSize()
@@ -99,16 +97,12 @@ struct StoreOnboardingView: View {
 
     @ObservedObject private var viewModel: StoreOnboardingViewModel
 
-    private let shareFeedbackAction: (() -> Void)?
-
     init(viewModel: StoreOnboardingViewModel,
          onTaskTapped: ((StoreOnboardingTask) -> Void)? = nil,
-         onViewAllTapped: (() -> Void)? = nil,
-         shareFeedbackAction: (() -> Void)? = nil) {
+         onViewAllTapped: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.taskTapped = onTaskTapped
         self.viewAllTapped = onViewAllTapped
-        self.shareFeedbackAction = shareFeedbackAction
     }
 
     var body: some View {
@@ -130,7 +124,6 @@ struct StoreOnboardingView: View {
                 StoreSetupProgressView(isExpanded: viewModel.isExpanded,
                                        totalNumberOfTasks: viewModel.taskViewModels.count,
                                        numberOfTasksCompleted: viewModel.numberOfTasksCompleted,
-                                       shareFeedbackAction: shareFeedbackAction,
                                        hideTaskListAction: viewModel.hideTaskList,
                                        isRedacted: viewModel.isRedacted,
                                        failedToLoadTasks: viewModel.failedToLoadTasks)

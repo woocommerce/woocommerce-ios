@@ -35,6 +35,33 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shippingRates.count, 1)
     }
 
+    func test_customsFormRequired_returns_false_for_origin_and_destination_in_US() {
+        // Given
+        let originAddress = WooShippingOriginAddress(id: "default_address",
+                                               company: "HEADQUARTERS",
+                                               address1: "15 ALGONKIN ST",
+                                               address2: "STE 100",
+                                               city: "TICONDEROGA",
+                                               state: "NY",
+                                               postcode: "12883-1487",
+                                               country: "US",
+                                               phone: "223-456-7890",
+                                               firstName: "JANE",
+                                               lastName: "DOE",
+                                               email: "TEST@EXAMPLE.COM",
+                                               defaultAddress: true,
+                                               isVerified: false)
+
+        let address = Address.fake().copy(address1: "1 Main Street", city: "San Francisco", state: "CA", postcode: "12345", country: "US")
+        let order = Order.fake().copy(shippingAddress: address)
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, selectedOriginAddress: originAddress)
+
+        // Then
+        XCTAssertFalse(viewModel.customsFormRequired)
+    }
+
     func test_origin_addresses_fetched_and_converted_to_originAddresses_view_model() {
         // Given
         let originAddress = WooShippingOriginAddress.fake().copy(id: "default", defaultAddress: true)

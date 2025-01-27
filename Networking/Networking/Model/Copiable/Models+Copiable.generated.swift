@@ -1348,7 +1348,8 @@ extension Networking.Order {
         customFields: CopiableProp<[MetaData]> = .copy,
         renewalSubscriptionID: NullableCopiableProp<String> = .copy,
         appliedGiftCards: CopiableProp<[OrderGiftCard]> = .copy,
-        attributionInfo: NullableCopiableProp<OrderAttributionInfo> = .copy
+        attributionInfo: NullableCopiableProp<OrderAttributionInfo> = .copy,
+        shippingLabels: CopiableProp<[ShippingLabel]> = .copy
     ) -> Networking.Order {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -1388,6 +1389,7 @@ extension Networking.Order {
         let renewalSubscriptionID = renewalSubscriptionID ?? self.renewalSubscriptionID
         let appliedGiftCards = appliedGiftCards ?? self.appliedGiftCards
         let attributionInfo = attributionInfo ?? self.attributionInfo
+        let shippingLabels = shippingLabels ?? self.shippingLabels
 
         return Networking.Order(
             siteID: siteID,
@@ -1427,7 +1429,8 @@ extension Networking.Order {
             customFields: customFields,
             renewalSubscriptionID: renewalSubscriptionID,
             appliedGiftCards: appliedGiftCards,
-            attributionInfo: attributionInfo
+            attributionInfo: attributionInfo,
+            shippingLabels: shippingLabels
         )
     }
 }

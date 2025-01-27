@@ -871,7 +871,8 @@ extension Networking.Order {
             customFields: .fake(),
             renewalSubscriptionID: .fake(),
             appliedGiftCards: .fake(),
-            attributionInfo: .fake()
+            attributionInfo: .fake(),
+            shippingLabels: .fake()
         )
     }
 }

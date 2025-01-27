@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleTransactionSuccessView: View {
-    let viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel
+    let viewModel: PointOfSaleTransactionSuccessViewModel
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
@@ -104,6 +104,6 @@ private extension PointOfSaleTransactionSuccessView {
 
 #Preview {
     return PointOfSaleTransactionSuccessView(
-        viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel(formattedOrderTotal: "$3.00")
+        viewModel: PointOfSaleTransactionSuccessViewModel(formattedOrderTotal: "$3.00")
     )
 }

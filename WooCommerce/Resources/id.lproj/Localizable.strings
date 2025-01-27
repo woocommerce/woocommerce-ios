@@ -1266,7 +1266,6 @@ which should be translated separately and considered part of this sentence. */
    Title for the button to cancel the payment methods screen
    Title of an option to dismiss the bulk edit action sheet
    Title of dismiss button presented when site credential login fails
-   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen.
    Title of the dismiss button on the store onboarding payments setup screen. */
 "Cancel" = "Batalkan";
 
@@ -1298,21 +1297,13 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "Tidak dapat menambahkan paket";
 
-/* Order gift card error notice message when the gift card cannot be applied.
-   Order gift card error notice title when the gift card cannot be applied. */
-"Cannot apply gift card to order" = "Tidak dapat menerapkan kartu hadiah pada pesanan";
-
-/* Order gift card error thrown when the gift card cannot be applied. %1$@ is the detailed reason. */
-"Cannot apply gift card to order error: %1$@" = "Error tidak dapat menerapkan kartu hadiah pada pesanan: %1$@";
-
 /* The title of the alert when there is an error duplicating the product */
 "Cannot duplicate product" = "Tidak dapat menduplikasi produk";
 
 /* Error message when no URL to WP-Admin page is found during Jetpack install flow */
 "Cannot find information about your site's WP-Admin. Please try again." = "Informasi tentang WP-Admin situs Anda tidak dapat ditemukan. Mohon ulangi.";
 
-/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
-   The title of the alert when there is an error updating the product */
+/* The title of the alert when there is an error updating the product */
 "Cannot update product" = "Tidak dapat memperbarui Produk";
 
 /* Title of the notice when there is an error updating selected products */
@@ -1858,9 +1849,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message informing the user that there was a problem subscribing to a site or feed. */
 "Could not follow the site at the address specified." = "Tidak dapat mengikuti situs pada lokasi yang ditentukan.";
 
-/* Title of the alert when the site cannot be launched from store onboarding > launch store screen. */
-"Could not launch your store" = "Tidak dapat meluncurkan toko Anda";
-
 /* Error message informing the user that there was a problem unsubscribing to a site or feed. */
 "Could not unfollow the site at the address specified." = "Tidak dapat membatalkan mengikuti situs pada alamat yang ditetapkan.";
 
@@ -1972,9 +1960,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Create Order iOS Shortcut */
 "Create order" = "Buat pesanan";
-
-/* The title of the shipping labels top banner in order details */
-"Create shipping labels from your device!" = "Buat label pengiriman dari perangkat Anda!";
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "Buat variasi pertama Anda";
@@ -2261,7 +2246,6 @@ which should be translated separately and considered part of this sentence. */
    Dismiss the media picking action sheet
    Dismiss the shipment tracking action sheet
    Label for the banner Dismiss button
-   The title of the button to dismiss the banner in order details
    The title of the button to dismiss the banner on the products tab
    Title of the button to dismiss the banner notice in the add-ons view
    Title of the dismiss action button on the coupon list screen */
@@ -3209,18 +3193,10 @@ which should be translated separately and considered part of this sentence. */
 /* Header of the gift card code text field in the order form. */
 "Gift card code" = "Kode kartu hadiah";
 
-/* Order gift card error notice message when the gift card is invalid.
-   Order gift card error notice title when the gift card is invalid. */
-"Gift card is invalid" = "Kartu hadiah tidak valid";
-
-/* Order gift card error notice title when the gift card is invalid. */
-"Gift card is not applied" = "Kartu hadiah tidak diterapkan";
-
 /* No comment provided by engineer. */
 "Gift cards" = "Kartu hadiah";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
-   The title of the button to give feedback about shipping labels features on the banner in order details
    Title of the button to give feedback about the add-ons feature
    Title of the feedback action button on the coupon list screen
    Title on the navigation bar for the products feedback survey */
@@ -3643,12 +3619,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error when an empty Identifier is returned from the barcode scanner */
 "Invalid Identifier" = "Pengenal Tidak Valid";
 
-/* The title of the alert when there is an error with the package name */
-"Invalid Package Name" = "Nama Paket Tidak Valid";
-
-/* The title of the alert when there is an error updating the product SKU */
-"Invalid Product SKU" = "SKU Produk Tidak Valid";
-
 /* No comment provided by engineer. */
 "Invalid Site Address" = "Alamat Situs Tak Sah";
 
@@ -3666,9 +3636,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message generated when announcement service is unable to return a valid endpoint. */
 "Invalid endpoint" = "Titik akhir tidak valid";
-
-/* Order gift card error thrown when the gift card is invalid. %1$@ is the detailed reason. */
-"Invalid gift card error: %1$@" = "Error kartu hadiah tidak valid: %1$@";
 
 /* No comment provided by engineer. */
 "Invalid username" = "Nama pengguna tidak sah";
@@ -4686,8 +4653,7 @@ which should be translated separately and considered part of this sentence. */
    Dismiss button on the alert when there is an error uploading image(s)
    Dismisses the alert
    Ok button for dismissing alert helping users understand their site address
-   Submit button on prompt for user information.
-   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen. */
+   Submit button on prompt for user information. */
 "OK" = "OK";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
@@ -4730,9 +4696,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Hanya pemilik situs yang dapat mengelola metode pembayaran label pengiriman. Hubungi %1$@ (%2$@) untuk mengelola metode pembayaran.";
-
-/* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
-"Oops, some unexpected errors happened." = "Waduh, terjadi error tak terduga.";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Buka pengaturan perangkat";
@@ -5143,9 +5106,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
 "Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.7 or above. Contact support if this error shows on a supported device." = "Pastikan ponsel Anda memenuhi persyaratan berikut: iPhone XS atau yang lebih baru, dengan iOS 16.7 atau yang lebih tinggi. Hubungi dukungan jika error ini muncul pada perangkat yang didukung.";
-
-/* Order gift card error notice message when the gift card is invalid. */
-"Please check the remaining balance of the gift card." = "Harap periksa sisa saldo kartu hadiah.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
 "Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service." = "Pastikan bahwa ID Apple Anda valid, lalu coba lagi. Diperlukan ID Apple yang valid untuk menerima Ketentuan Layanan Apple";
@@ -6013,9 +5973,6 @@ which should be translated separately and considered part of this sentence. */
    Title of the product search filter to search for products that match the SKU. */
 "SKU" = "SKU";
 
-/* The message of the alert when there is an error updating the product SKU */
-"SKU already in use by another product" = "SKU telah digunakan oleh produk lain";
-
 /* Label about the SKU of a product in the product list. Reads, `SKU: productSku`
    SKU label for a product in the bundled products screen. The variable shows the SKU of the product.
    SKU label in order details > product row. The variable shows the SKU of the product. */
@@ -6400,8 +6357,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the primary button on the store onboarding launched store screen. */
 "Share URL" = "Bagikan URL";
 
-/* Title of the feedback action button on the In-Person Payments feedback banner
-   Title of the feedback button in the action sheet. */
+/* Title of the feedback action button on the In-Person Payments feedback banner */
 "Share feedback" = "Bagikan masukan";
 
 /* Title for button allowing users to share information about the app with friends, such as via Messages */
@@ -6640,9 +6596,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Maaf, tapi nama pengguna Anda mengandung frase tak sah %@.";
-
-/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7 */
-"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "Maaf, penghapusan gambar pada variasi produk didukung pada WooCommerce 4.7 atau yang lebih baru. Silakan perbarui situs Anda.";
 
 /* No comment provided by engineer. */
 "Sorry, site addresses can only contain lowercase letters (a-z) and numbers." = "Maaf, alamat situs hanya dapat mengandung huruf kecil (a-z) dan angka saja.";
@@ -7269,15 +7222,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "Saat pertama kali menggunakan Ketuk untuk Bayar di iPhone, Anda akan diarahkan untuk menerima Ketentuan Layanan Apple.";
 
-/* Order gift card error thrown when the gift card is not applied. */
-"The gift card is not applied." = "Kartu hadiah tidak diterapkan.";
-
-/* The message of the alert when another custom package has the same name */
-"The new custom package name is not unique." = "Nama paket khusus baru tidak unik.";
-
-/* The message of the alert when another service package has the same name */
-"The new service package name is not unique." = "Nama paket layanan baru tidak unik.";
-
 /* Message when the presented card does not allow the purchase amount. */
 "The payment amount is not allowed for the card presented. Try another means of payment." = "Nilai pembayaran melewati batas untuk kartu yang dimasukkan. Coba gunakan metode pembayaran lainnya.";
 
@@ -7489,9 +7433,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Tab selector title that shows the statistics for this month */
 "This Month" = "Bulan Ini";
-
-/* The message of the alert when there is an error updating the product SKU */
-"This SKU is used on another product or is invalid." = "SKU ini digunakan pada produk lain atau tidak valid.";
 
 /* Tab selector title that shows the statistics for this week */
 "This Week" = "Minggu Ini";
@@ -7786,8 +7727,7 @@ which should be translated separately and considered part of this sentence. */
 "Try a test order" = "Coba pesanan uji coba";
 
 /* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
-   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
-   Title of the try again action when the site cannot be launched from store onboarding > launch store screen. */
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue. */
 "Try again" = "Coba lagi";
 
 /* Title of the action button to log in with WP-Admin page in a web view, presented when site credential login fails */
@@ -8068,9 +8008,7 @@ which should be translated separately and considered part of this sentence. */
 /* Undo Action */
 "Undo" = "Urungkan";
 
-/* The message of the alert when there is an unexpected error adding the package
-   The message of the alert when there is an unexpected error updating the product
-   Title of the alert when the site cannot be launched from store onboarding > launch store screen. */
+/* The message of the alert when there is an unexpected error adding the package */
 "Unexpected error" = "Kesalahan tak terduga";
 
 /* Country option for a site address. */
@@ -8394,9 +8332,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "Lihat add-on dari perangkat Anda!";
 
-/* Title of the feedback banner on the coupon list screen */
-"View and edit coupons" = "Lihat dan edit kupon";
-
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "Lihat pengaturan untuk file yang dapat diunduh";
 
@@ -8514,9 +8449,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when we're unable to fetch In-App Purchases plans from the server. */
 "We encountered an error loading plan information" = "Terjadi error ketika memuat informasi paket";
 
-/* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
-"We found that the store has already launched." = "Kami mendapati bahwa toko telah diluncurkan.";
-
 /* Message on the expired WPCom plan alert */
 "We have paused your store. You can purchase another plan by logging in to WordPress.com on your browser." = "Kami menghentikan sementara toko Anda. Anda dapat membeli paket lain dengan masuk ke WordPress.com via browser.";
 
@@ -8612,9 +8544,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Store details task to add details about the store. */
 "We’ll use the info to get a head start on your shipping, tax, and payments settings." = "Kami akan menggunaakan data tersebut untuk menyetel pengaturan terkait pengiriman, pajak, dan pembayaran.";
-
-/* Content of the feedback banner on the coupon list screen */
-"We’ve been working on making it possible to view and edit coupons from your device!" = "Kini Anda dapat melihat dan mengedit kupon dengan perangkat Anda!";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "Email apa yang saya gunakan untuk masuk?";
@@ -8800,9 +8729,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instructions guiding the merchant to manage a site's plan upgrade. */
 "You can manage your subscription in your iPhone Settings → Your Name → Subscriptions" = "Anda dapat mengelola langganan di iPhone di Pengaturan → Nama Anda → Langganan";
-
-/* The info of the shipping labels top banner in order details */
-"You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "Sekarang Anda dapat membuat label pengiriman untuk semua pesanan fisik langsung dari perangkat Anda dengan plugin WooCommerce Shipping gratis. Ketuk Buat Label Pengiriman untuk mencoba fitur beta kami!";
 
 /* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
 "You can only add variable subscriptions in the web dashboard" = "Anda hanya dapat menambahkan langganan variabel di dasbor web";
@@ -10520,9 +10446,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when updating notification settings fails when saving the store list for the store picker */
 "editStoreListView.errorUpdatingNotificationSettings" = "Terjadi error saat memperbarui pengaturan pemberitahuan. Harap coba lagi.";
 
-/* Footer of the Other Stores section on the Edit Store List view */
-"editStoreListView.otherStoresFooter" = "Toko yang tidak terpilih tidak akan muncul di pemilih toko";
-
 /* Header of the Other Stores section on the Edit Store List view */
 "editStoreListView.otherStoresHeader" = "Toko lain";
 
@@ -11808,15 +11731,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Keluar dari mode Point of Sale?";
 
-/* Text for the button appearing on the item list screen when there's an error loading products. */
-"pos.itemList.failedToLoadButtonTitle" = "Coba lagi";
-
-/* Text appearing on the item list screen as subtitle when there's an error loading products. */
-"pos.itemList.failedToLoadSubtitle" = "Ingin mencoba sekali lagi?";
-
-/* Text appearing on the item list screen when there's an error loading products. */
-"pos.itemList.failedToLoadTitle" = "Terjadi error saat memuat produk";
-
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "Produk";
 
@@ -11840,15 +11754,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Pilihan tersedia";
-
-/* Text hinting the merchant to create a product. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "Untuk menambahkan produk, keluar dari POS dan buka Produk.";
-
-/* Subtitle text on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle" = "POS saat ini hanya mendukung produk sederhana.";
-
-/* Text appearing on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsTitle" = "Produk yang didukung tidak ditemukan";
 
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Buat pesanan di manajemen toko";
@@ -11960,21 +11865,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text detection failed error message on the starting information screen. */
 "productCreationAIStartingInfoViewModel.textDetectionFailed" = "Terjadi error saat memindai foto. Pilih foto kemasan lainnya atau masukkan detail produk secara manual.";
-
-/* Description in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationView.description" = "Boleh minta waktunya sebentar? Bantu kami memperbaiki fitur berbantuan AI dengan feedback cepat.";
-
-/* Start Survey button title in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationView.startTheSurvey" = "Mulai Survei";
-
-/* Title in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationView.title" = "Kami menghargai masukan Anda!";
-
-/* Dismiss button title in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationViewModel.dontShowItAgain" = "Jangan Tampilkan Lagi";
-
-/* Dismiss button title in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationViewModel.remindMeLater" = "Ingatkan Saya Nanti";
 
 /* Category label for other product creation types */
 "productCreationCategory.other" = "Lainnya";
@@ -12131,9 +12021,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
 "productInventorySettings.globalUniqueIdentifier.title" = "GTIN, UPC, EAN, ISBN";
-
-/* The message of the alert when there is an error updating the product global unique identifier */
-"productInventorySettings.invalidGlobalUniqueIdentifier.error" = "Masukkan angka dan tanda hubung (-) saja.";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "Interval penagihan";

@@ -38,7 +38,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     @Published var itemsViewModels: [WooShippingCustomsItemViewModel] = []
 
     func onDismiss() {
-        // TODO: Add missing values if possible
+        // TODO: Add package Id and name to support multiple shipments, (where each shipment may have its own customs form)
         let form = ShippingLabelCustomsForm(packageID: "",
                                             packageName: "",
                                             contentsType: contentType.toFormContentsType(),

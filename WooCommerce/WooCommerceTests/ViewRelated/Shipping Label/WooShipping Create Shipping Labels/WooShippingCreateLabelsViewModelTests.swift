@@ -343,6 +343,28 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(packageWeightForLabelRates, expectedWeight)
     }
+
+    func test_onCustomsFormFilled_then_customsInformationIsCompleted_returns_true() {
+        // Given
+        let form = ShippingLabelCustomsForm(packageID: "",
+                                            packageName: "",
+                                            contentsType: .documents,
+                                            contentExplanation: "",
+                                            restrictionType: .quarantine,
+                                            restrictionComments: "",
+                                            nonDeliveryOption: .abandon,
+                                            itn: "itn",
+                                            items: [])
+
+        let order = Order.fake()
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(order: order)
+        viewModel.onCustomsFormFilled(form: form)
+
+        // Then
+        XCTAssertTrue(viewModel.customsInformationIsCompleted)
+    }
 }
 
 private extension WooShippingCreateLabelsViewModelTests {

@@ -22,7 +22,7 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
         case .displayReaderMessage(let viewModel):
             PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView(viewModel: viewModel, animation: animation)
         case .paymentSuccess(let viewModel):
-            PointOfSaleCardPresentPaymentSuccessMessageView(viewModel: viewModel, animation: animation)
+            PointOfSaleCardPresentPaymentSuccessMessageView(viewModel: viewModel)
         case .paymentError(let viewModel):
             PointOfSaleCardPresentPaymentErrorMessageView(viewModel: viewModel, animation: animation)
         case .paymentErrorNonRetryable(let viewModel):

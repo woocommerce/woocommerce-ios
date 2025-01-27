@@ -1,15 +1,13 @@
 import SwiftUI
 
 struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
-
     let viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel
-    let animation: POSCardPresentPaymentInLineMessageAnimation
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     @State private var isShowingSendReceiptView: Bool = false
     @State private var isShowingReceiptNotEligibleBanner: Bool = false
-    @State private var isViewVisible: Bool = false
+    @State private var isViewLoaded: Bool = false
 
     var body: some View {
         VStack {
@@ -23,35 +21,30 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
                     VStack(alignment: .center, spacing: Constants.headerSpacing) {
                         successIcon
                             .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-                            .scaleEffect(isViewVisible ? 1 : 0.5)
-                            .rotationEffect(.degrees(isViewVisible ? 0 : -180))
-                            .offset(y: isViewVisible ? 0 : -100)
-                            .opacity(isViewVisible ? 1 : 0)
+                            .scaleEffect(isViewLoaded ? 1 : 0)
+                            .opacity(isViewLoaded ? 1 : 0)
 
                         VStack(alignment: .center, spacing: Constants.textSpacing) {
                             Text(viewModel.title)
                                 .font(.posTitleEmphasized)
                                 .foregroundStyle(Color.posPrimaryText)
                                 .accessibilityAddTraits(.isHeader)
-                                .scaleEffect(isViewVisible ? 1 : 1.5)
-                                .offset(x: isViewVisible ? 0 : -200)
-                                .opacity(isViewVisible ? 1 : 0)
+                                .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
+                                .opacity(isViewLoaded ? 1 : 0)
 
                             if let message = viewModel.message {
                                 Text(message)
                                     .font(.posBodyRegular)
                                     .foregroundStyle(Color.posPrimaryText)
-                                    .scaleEffect(isViewVisible ? 1 : 1.5)
-                                    .offset(x: isViewVisible ? 0 : 200)
-                                    .opacity(isViewVisible ? 1 : 0)
+                                    .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
+                                    .opacity(isViewLoaded ? 1 : 0)
                             }
                         }
-                        
+
                         PaymentsActionButtons(isShowingSendReceiptView: $isShowingSendReceiptView,
                                            isShowingReceiptNotEligibleBanner: $isShowingReceiptNotEligibleBanner)
-                            .scaleEffect(isViewVisible ? 1 : 0.8)
-                            .offset(y: isViewVisible ? 0 : 100)
-                            .opacity(isViewVisible ? 1 : 0)
+                            .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
+                            .opacity(isViewLoaded ? 1 : 0)
                     }
                     .multilineTextAlignment(.center)
 
@@ -65,21 +58,12 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
                         .edgesIgnoringSafeArea(.bottom)
                     }
                 }
-                .transition(.asymmetric(
-                    insertion: .move(edge: .leading).combined(with: .opacity),
-                    removal: .move(edge: .leading).combined(with: .opacity)
-                ))
             }
         }
         .onAppear {
-            print("🎬 Success message view appeared")
-            withAnimation(.spring(response: 0.8, dampingFraction: 0.6)) {
-                isViewVisible = true
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                isViewLoaded = true
             }
-        }
-        .onDisappear {
-            print("🎬 Success message view disappeared")
-            isViewVisible = false
         }
         .animation(.default, value: isShowingSendReceiptView)
     }
@@ -114,14 +98,12 @@ private extension PointOfSaleCardPresentPaymentSuccessMessageView {
         static let shadowSize: CGSize = .init(width: 0, height: 8)
         static let headerSpacing: CGFloat = 56
         static let textSpacing: CGFloat = 16
+        static let animationOffset: CGFloat = 100
     }
 }
 
 #Preview {
-    @Namespace var namespace
-
     return PointOfSaleCardPresentPaymentSuccessMessageView(
-        viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel(formattedOrderTotal: "$3.00"),
-        animation: .init(namespace: namespace)
+        viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel(formattedOrderTotal: "$3.00")
     )
 }

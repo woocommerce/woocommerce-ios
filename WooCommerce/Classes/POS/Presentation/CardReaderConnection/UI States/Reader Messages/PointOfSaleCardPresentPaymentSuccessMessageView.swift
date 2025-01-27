@@ -9,6 +9,7 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
 
     @State private var isShowingSendReceiptView: Bool = false
     @State private var isShowingReceiptNotEligibleBanner: Bool = false
+    @State private var isViewVisible: Bool = false
 
     var body: some View {
         VStack {
@@ -22,24 +23,35 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
                     VStack(alignment: .center, spacing: Constants.headerSpacing) {
                         successIcon
                             .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-                            .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
+                            .scaleEffect(isViewVisible ? 1 : 0.5)
+                            .rotationEffect(.degrees(isViewVisible ? 0 : -180))
+                            .offset(y: isViewVisible ? 0 : -100)
+                            .opacity(isViewVisible ? 1 : 0)
+
                         VStack(alignment: .center, spacing: Constants.textSpacing) {
                             Text(viewModel.title)
                                 .font(.posTitleEmphasized)
                                 .foregroundStyle(Color.posPrimaryText)
                                 .accessibilityAddTraits(.isHeader)
-                                .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
+                                .scaleEffect(isViewVisible ? 1 : 1.5)
+                                .offset(x: isViewVisible ? 0 : -200)
+                                .opacity(isViewVisible ? 1 : 0)
 
                             if let message = viewModel.message {
                                 Text(message)
                                     .font(.posBodyRegular)
                                     .foregroundStyle(Color.posPrimaryText)
-                                    .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
+                                    .scaleEffect(isViewVisible ? 1 : 1.5)
+                                    .offset(x: isViewVisible ? 0 : 200)
+                                    .opacity(isViewVisible ? 1 : 0)
                             }
                         }
+                        
                         PaymentsActionButtons(isShowingSendReceiptView: $isShowingSendReceiptView,
-                                              isShowingReceiptNotEligibleBanner: $isShowingReceiptNotEligibleBanner)
-                            .matchedGeometryEffect(id: animation.actionButtonsTransitionId, in: animation.namespace, properties: .position)
+                                           isShowingReceiptNotEligibleBanner: $isShowingReceiptNotEligibleBanner)
+                            .scaleEffect(isViewVisible ? 1 : 0.8)
+                            .offset(y: isViewVisible ? 0 : 100)
+                            .opacity(isViewVisible ? 1 : 0)
                     }
                     .multilineTextAlignment(.center)
 
@@ -58,6 +70,16 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
                     removal: .move(edge: .leading).combined(with: .opacity)
                 ))
             }
+        }
+        .onAppear {
+            print("🎬 Success message view appeared")
+            withAnimation(.spring(response: 0.8, dampingFraction: 0.6)) {
+                isViewVisible = true
+            }
+        }
+        .onDisappear {
+            print("🎬 Success message view disappeared")
+            isViewVisible = false
         }
         .animation(.default, value: isShowingSendReceiptView)
     }

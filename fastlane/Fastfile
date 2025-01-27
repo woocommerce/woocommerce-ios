@@ -507,25 +507,25 @@ platform :ios do
 
     create_backmerge_pr
 
-    remove_branch_protection(
-      repository: GITHUB_REPO,
-      branch: "release/#{version}"
-    )
+    #remove_branch_protection(
+    #  repository: GITHUB_REPO,
+    #  branch: "release/#{version}"
+    #)
 
     # Close milestone
-    begin
-      set_milestone_frozen_marker(
-        repository: GITHUB_REPO,
-        milestone: version,
-        freeze: false
-      )
-      close_milestone(
-        repository: GITHUB_REPO,
-        milestone: version
-      )
-    rescue StandardError => e
-      report_milestone_error(error_title: "Error closing milestone `#{version}`: #{e.message}")
-    end
+    #begin
+    #  set_milestone_frozen_marker(
+    #    repository: GITHUB_REPO,
+    #    milestone: version,
+    #    freeze: false
+    #  )
+    #  close_milestone(
+    #    repository: GITHUB_REPO,
+    #    milestone: version
+    #  )
+  #  rescue StandardError => e
+    #  report_milestone_error(error_title: "Error closing milestone `#{version}`: #{e.message}")
+  #  end
   end
 
   # This lane publishes a release on GitHub and creates a PR to backmerge the current release branch into the next release/ branch

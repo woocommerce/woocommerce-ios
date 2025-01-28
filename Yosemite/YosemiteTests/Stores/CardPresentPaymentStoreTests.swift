@@ -452,6 +452,38 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         XCTAssertEqual(storageCharge, otherCharge)
     }
 
+    /// Verifies that the store deletes the charge if it's gone from the remote.
+    ///
+    func test_fetchWCPayCharge_deletes_existing_charge_on_no_such_charge_failure_when_using_site_credentials() {
+        // Given
+        let charge = viewStorage.insertNewObject(ofType: Storage.WCPayCharge.self)
+        let networkCharge = WCPayCharge.fake().copy(siteID: sampleSiteID, id: sampleErrorChargeID)
+        charge.update(with: networkCharge)
+        let otherCharge = viewStorage.insertNewObject(ofType: Storage.WCPayCharge.self)
+        let otherNetworkCharge = WCPayCharge.fake().copy(siteID: sampleSiteID, id: sampleChargeID)
+        otherCharge.update(with: otherNetworkCharge)
+
+        XCTAssert(viewStorage.countObjects(ofType: Storage.WCPayCharge.self, matching: nil) == 2)
+
+        let errorResponseData = Loader.contentsOf("wcpay-charge-error-site-credentials")
+        network.simulateError(requestUrlSuffix: "payments/charges/\(sampleErrorChargeID)",
+                              error: NetworkError.unacceptableStatusCode(statusCode: 500, response: errorResponseData))
+
+        // When
+        let _: Result<Yosemite.WCPayCharge, Error> = waitFor { [self] promise in
+            let action = CardPresentPaymentAction.fetchWCPayCharge(siteID: self.sampleSiteID, chargeID: self.sampleErrorChargeID, onCompletion: { result in
+                promise(result)
+            })
+            cardPresentStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.WCPayCharge.self, matching: nil), 1)
+
+        let storageCharge = viewStorage.firstObject(ofType: Storage.WCPayCharge.self)
+        XCTAssertEqual(storageCharge, otherCharge)
+    }
+
     /// Verifies that the store doesn't delete charges just for any old error.
     ///
     func test_fetchWCPayCharge_does_not_delete_existing_charge_on_unknown_failure() {

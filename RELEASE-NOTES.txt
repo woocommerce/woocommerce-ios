@@ -3,6 +3,7 @@
 21.6
 -----
 - [*] Payments: Improved error handling during card payments and refunds [https://github.com/woocommerce/woocommerce-ios/pull/14980]
+- [***] Updated the app look and feel to match the new WooCommerce branding [https://github.com/woocommerce/woocommerce-ios/pull/14825]
 
 21.5
 -----

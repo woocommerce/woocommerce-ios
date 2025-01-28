@@ -115,7 +115,9 @@ private extension CardReaderSettingsConnectedViewController {
         if let error = viewModel.readerUpdateError {
             if case CardReaderServiceError.softwareUpdate(underlyingError: let underlyingError, batteryLevel: let batteryLevel) = error,
                underlyingError == .readerSoftwareUpdateFailedBatteryLow {
-                settingsAlerts.updatingFailedLowBattery(from: self, batteryLevel: batteryLevel, close: { [settingsAlerts] in
+                settingsAlerts.updatingFailedLowBattery(from: self, batteryLevel: batteryLevel, retrySearch: {
+                    viewModel.startCardReaderUpdate()
+                }, close: { [settingsAlerts] in
                     settingsAlerts.dismiss()
                 })
             } else {

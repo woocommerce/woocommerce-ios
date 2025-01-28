@@ -40,7 +40,7 @@ private extension POSModalSizing {
     var frameHeight: CGFloat {
         switch sizeCategory {
         case .extraSmall, .small:
-            return 624
+            return 640
         case .medium, .large, .extraLarge:
             return 656
         case .extraExtraLarge, .extraExtraExtraLarge:

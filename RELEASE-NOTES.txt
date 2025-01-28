@@ -3,7 +3,7 @@
 21.6
 -----
 - [*] Payments: Improved error handling during card payments and refunds [https://github.com/woocommerce/woocommerce-ios/pull/14980]
-- [internal] Improve data fetching in Order Details, to avoid I/O performance on the main thread.
+- [internal] Improve data fetching in Order Details, to avoid I/O performance on the main thread. [https://github.com/woocommerce/woocommerce-ios/pull/14999]
 
 21.5
 -----

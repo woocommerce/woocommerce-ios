@@ -1266,7 +1266,6 @@ which should be translated separately and considered part of this sentence. */
    Title for the button to cancel the payment methods screen
    Title of an option to dismiss the bulk edit action sheet
    Title of dismiss button presented when site credential login fails
-   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen.
    Title of the dismiss button on the store onboarding payments setup screen. */
 "Cancel" = "إلغاء";
 
@@ -1298,21 +1297,13 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "تتعذر إضافة الحزمة";
 
-/* Order gift card error notice message when the gift card cannot be applied.
-   Order gift card error notice title when the gift card cannot be applied. */
-"Cannot apply gift card to order" = "يتعذر تطبيق بطاقة الهدايا على الطلب، الخطأ";
-
-/* Order gift card error thrown when the gift card cannot be applied. %1$@ is the detailed reason. */
-"Cannot apply gift card to order error: %1$@" = "يتعذر تطبيق بطاقة الهدايا على الطلب، الخطأ: %1$@";
-
 /* The title of the alert when there is an error duplicating the product */
 "Cannot duplicate product" = "يتعذر تكرار المنتج";
 
 /* Error message when no URL to WP-Admin page is found during Jetpack install flow */
 "Cannot find information about your site's WP-Admin. Please try again." = "يتعذر العثور على معلومات حول مسؤول ووردبريس الخاص بموقعك. يرجى المحاولة مجددًا.";
 
-/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
-   The title of the alert when there is an error updating the product */
+/* The title of the alert when there is an error updating the product */
 "Cannot update product" = "يتعذر تحديث المنتج";
 
 /* Title of the notice when there is an error updating selected products */
@@ -1858,9 +1849,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message informing the user that there was a problem subscribing to a site or feed. */
 "Could not follow the site at the address specified." = "تعذرت متابعة الموقع على العنوان المحدد.";
 
-/* Title of the alert when the site cannot be launched from store onboarding > launch store screen. */
-"Could not launch your store" = "يتعذر بدء متجرك";
-
 /* Error message informing the user that there was a problem unsubscribing to a site or feed. */
 "Could not unfollow the site at the address specified." = "تعذر إلغاء متابعة الموقع في العنوان المحدد.";
 
@@ -1972,9 +1960,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Create Order iOS Shortcut */
 "Create order" = "إنشاء طلب";
-
-/* The title of the shipping labels top banner in order details */
-"Create shipping labels from your device!" = "قم بإنشاء ملصقات الشحن من جهازك!";
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "إنشاء مجموعتك المتنوعة الأولى";
@@ -2261,7 +2246,6 @@ which should be translated separately and considered part of this sentence. */
    Dismiss the media picking action sheet
    Dismiss the shipment tracking action sheet
    Label for the banner Dismiss button
-   The title of the button to dismiss the banner in order details
    The title of the button to dismiss the banner on the products tab
    Title of the button to dismiss the banner notice in the add-ons view
    Title of the dismiss action button on the coupon list screen */
@@ -3209,18 +3193,10 @@ which should be translated separately and considered part of this sentence. */
 /* Header of the gift card code text field in the order form. */
 "Gift card code" = "كود بطاقة الهدايا";
 
-/* Order gift card error notice message when the gift card is invalid.
-   Order gift card error notice title when the gift card is invalid. */
-"Gift card is invalid" = "بطاقة الهدايا غير صالحة";
-
-/* Order gift card error notice title when the gift card is invalid. */
-"Gift card is not applied" = "بطاقة الهدايا غير مطبقة";
-
 /* No comment provided by engineer. */
 "Gift cards" = "بطاقات الهدايا";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
-   The title of the button to give feedback about shipping labels features on the banner in order details
    Title of the button to give feedback about the add-ons feature
    Title of the feedback action button on the coupon list screen
    Title on the navigation bar for the products feedback survey */
@@ -3643,12 +3619,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error when an empty Identifier is returned from the barcode scanner */
 "Invalid Identifier" = "معرِّف غير صالح";
 
-/* The title of the alert when there is an error with the package name */
-"Invalid Package Name" = "اسم الحزمة غير صالح";
-
-/* The title of the alert when there is an error updating the product SKU */
-"Invalid Product SKU" = "وحدة SKU الخاصة بالمنتج غير صالحة";
-
 /* No comment provided by engineer. */
 "Invalid Site Address" = "عنوان موقع غير صالح";
 
@@ -3666,9 +3636,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message generated when announcement service is unable to return a valid endpoint. */
 "Invalid endpoint" = "نقطة نهاية غير صالحة";
-
-/* Order gift card error thrown when the gift card is invalid. %1$@ is the detailed reason. */
-"Invalid gift card error: %1$@" = "بطاقة الهدايا غير صالحة، الخطأ: %1$@";
 
 /* No comment provided by engineer. */
 "Invalid username" = "اسم المستخدم غير صالح";
@@ -4686,8 +4653,7 @@ which should be translated separately and considered part of this sentence. */
    Dismiss button on the alert when there is an error uploading image(s)
    Dismisses the alert
    Ok button for dismissing alert helping users understand their site address
-   Submit button on prompt for user information.
-   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen. */
+   Submit button on prompt for user information. */
 "OK" = "موافق";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
@@ -4730,9 +4696,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "يمكن لمالك الموقع فقط إدارة طرق دفع ملصقات الشحن. يرجى الاتصال بـ %1$@ (%2$@) لإدارة طرق الدفع.";
-
-/* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
-"Oops, some unexpected errors happened." = "عذرًا، حدثت بعض الأخطاء غير المتوقعة.";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "فتح إعدادات الجهاز";
@@ -5143,9 +5106,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
 "Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.7 or above. Contact support if this error shows on a supported device." = "يرجى التحقق من أن هاتفك يستوفي هذه المتطلبات: iPhone XS أو أحدث يعمل بنظام التشغيل iOS 16.7 أو أعلى. اتصل بالدعم في حال ظهور هذا الخطأ على جهاز مدعوم.";
-
-/* Order gift card error notice message when the gift card is invalid. */
-"Please check the remaining balance of the gift card." = "يرجى التحقق من الرصيد المتبقي لبطاقة الهدايا.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
 "Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service." = "يرجى التحقق من أن معرّف Apple لديك صالح، ثم حاول مجددًا. يلزم وجود معرّف Apple صالح لقبول شروط الخدمة التي تقرها Apple";
@@ -6013,9 +5973,6 @@ which should be translated separately and considered part of this sentence. */
    Title of the product search filter to search for products that match the SKU. */
 "SKU" = "وحدة SKU";
 
-/* The message of the alert when there is an error updating the product SKU */
-"SKU already in use by another product" = "وحدة SKU قيد الاستخدام بالفعل بواسطة منتج آخر";
-
 /* Label about the SKU of a product in the product list. Reads, `SKU: productSku`
    SKU label for a product in the bundled products screen. The variable shows the SKU of the product.
    SKU label in order details > product row. The variable shows the SKU of the product. */
@@ -6400,8 +6357,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the primary button on the store onboarding launched store screen. */
 "Share URL" = "مشاركة عنوان URL";
 
-/* Title of the feedback action button on the In-Person Payments feedback banner
-   Title of the feedback button in the action sheet. */
+/* Title of the feedback action button on the In-Person Payments feedback banner */
 "Share feedback" = "مشاركة الملاحظات.";
 
 /* Title for button allowing users to share information about the app with friends, such as via Messages */
@@ -6640,9 +6596,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "عذرًا، اسم المستخدم الخاص بك يحتوي على عبارة غير صالحة %@.";
-
-/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7 */
-"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "عذرًا، إنَّ إزالة الصورة بشأن مجموعات المنتج المتنوعة مدعومة في WooCommerce الإصدار 4.7 أو أعلى، يرجى تحديث موقعك.";
 
 /* No comment provided by engineer. */
 "Sorry, site addresses can only contain lowercase letters (a-z) and numbers." = "عذرًا، يمكن أن تحتوي عناوين المواقع فقط على حروف أبجدية صغيرة (a-z) وأرقام.";
@@ -7269,15 +7222,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "في المرة الأولى التي تستخدم فيها Pay on iPhone، قد تُطالب بقبول شروط الخدمة التي تُقرها Apple.";
 
-/* Order gift card error thrown when the gift card is not applied. */
-"The gift card is not applied." = "بطاقة الهدايا غير مطبقة.";
-
-/* The message of the alert when another custom package has the same name */
-"The new custom package name is not unique." = "اسم الحزمة المخصصة الجديد غير فريد.";
-
-/* The message of the alert when another service package has the same name */
-"The new service package name is not unique." = "اسم حزمة الخدمة الجديد غير فريد.";
-
 /* Message when the presented card does not allow the purchase amount. */
 "The payment amount is not allowed for the card presented. Try another means of payment." = "مبلغ عملية الدفع غير مسموح به للبطاقة التي تم تقديمها. تجربة وسائل دفع أخرى";
 
@@ -7489,9 +7433,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Tab selector title that shows the statistics for this month */
 "This Month" = "هذا الشهر";
-
-/* The message of the alert when there is an error updating the product SKU */
-"This SKU is used on another product or is invalid." = "تُستخدم وحدة SKU هذه على منتج آخر، أو تكون غير صالحة.";
 
 /* Tab selector title that shows the statistics for this week */
 "This Week" = "هذا الأسبوع";
@@ -7786,8 +7727,7 @@ which should be translated separately and considered part of this sentence. */
 "Try a test order" = "تجربة طلب الاختبار";
 
 /* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
-   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
-   Title of the try again action when the site cannot be launched from store onboarding > launch store screen. */
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue. */
 "Try again" = "حاول مرة أخرى";
 
 /* Title of the action button to log in with WP-Admin page in a web view, presented when site credential login fails */
@@ -8068,9 +8008,7 @@ which should be translated separately and considered part of this sentence. */
 /* Undo Action */
 "Undo" = "تراجع";
 
-/* The message of the alert when there is an unexpected error adding the package
-   The message of the alert when there is an unexpected error updating the product
-   Title of the alert when the site cannot be launched from store onboarding > launch store screen. */
+/* The message of the alert when there is an unexpected error adding the package */
 "Unexpected error" = "خطأ غير متوقع";
 
 /* Country option for a site address. */
@@ -8394,9 +8332,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "اعرض الوظائف الإضافية من جهازك!";
 
-/* Title of the feedback banner on the coupon list screen */
-"View and edit coupons" = "عرض القسائم وتحريرها";
-
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "عرض إعدادات الملف القابلة للتنزيل";
 
@@ -8514,9 +8449,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when we're unable to fetch In-App Purchases plans from the server. */
 "We encountered an error loading plan information" = "واجهنا خطأ في أثناء تحميل معلومات الخطة";
 
-/* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
-"We found that the store has already launched." = "تبين لنا أن متجرك بدأ بالفعل.";
-
 /* Message on the expired WPCom plan alert */
 "We have paused your store. You can purchase another plan by logging in to WordPress.com on your browser." = "لقد أوقفنا متجرك مؤقتًا. يمكنك شراء خطة أخرى عن طريق تسجيل الدخول إلى ووردبريس.كوم على متصفحك.";
 
@@ -8612,9 +8544,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Store details task to add details about the store. */
 "We’ll use the info to get a head start on your shipping, tax, and payments settings." = "سنستخدم المعلومات لنبدأ بإعداد الشحن والضرائب والمدفوعات.";
-
-/* Content of the feedback banner on the coupon list screen */
-"We’ve been working on making it possible to view and edit coupons from your device!" = "لقد كنا نعمل على إتاحة عرض القسائم وتحريرها من جهازك!";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "ما البريد الإلكتروني الذي أستخدمه لتسجيل الدخول؟";
@@ -8800,9 +8729,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instructions guiding the merchant to manage a site's plan upgrade. */
 "You can manage your subscription in your iPhone Settings → Your Name → Subscriptions" = "يمكنك إدارة اشتراكك في إعدادات iPhone الخاص بك ← اسمك ← الاشتراكات";
-
-/* The info of the shipping labels top banner in order details */
-"You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "يمكنك الآن إنشاء ملصقات شحن لجميع الطلبات المادية مباشرةً من جهازك باستخدام إضافة الشحن المجانية عبر WooCommerce. اضغط على \"إنشاء ملصق شحن\" لتجربة ميزة بيتا الخاصة بنا في المستقبل!";
 
 /* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
 "You can only add variable subscriptions in the web dashboard" = "يمكن فقط إضافة اشتراكات متغيرة في لوحة تحكم الويب";
@@ -10520,9 +10446,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when updating notification settings fails when saving the store list for the store picker */
 "editStoreListView.errorUpdatingNotificationSettings" = "حدث خطأ عند تحديث إعدادات التنبيهات. يرجى المحاولة مجددًا.";
 
-/* Footer of the Other Stores section on the Edit Store List view */
-"editStoreListView.otherStoresFooter" = "سيتم استبعاد المتاجر غير المحددة من منتقي المتاجر.";
-
 /* Header of the Other Stores section on the Edit Store List view */
 "editStoreListView.otherStoresHeader" = "متاجر أخرى";
 
@@ -11808,15 +11731,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "هل تريد إنهاء وضع نقطة البيع؟";
 
-/* Text for the button appearing on the item list screen when there's an error loading products. */
-"pos.itemList.failedToLoadButtonTitle" = "إعادة المحاولة";
-
-/* Text appearing on the item list screen as subtitle when there's an error loading products. */
-"pos.itemList.failedToLoadSubtitle" = "هل تريد محاولة أخرى؟";
-
-/* Text appearing on the item list screen when there's an error loading products. */
-"pos.itemList.failedToLoadTitle" = "خطأ في أثناء تحميل المنتجات";
-
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "المنتجات";
 
@@ -11840,15 +11754,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "خيارات متوفرة";
-
-/* Text hinting the merchant to create a product. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "لإضافة واحد، اخرج من POS وانتقل إلى المنتجات";
-
-/* Subtitle text on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle" = "لا يدعم POS حاليًا سوى المنتجات البسيطة.";
-
-/* Text appearing on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsTitle" = "لم يتم العثور على منتجات مدعومة";
 
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "إنشاء طلب في إدارة المتجر";
@@ -11960,21 +11865,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text detection failed error message on the starting information screen. */
 "productCreationAIStartingInfoViewModel.textDetectionFailed" = "حدث خطأ في أثناء فحص الصورة. يرجى تحديد صورة حزم أخرى أو إدخال تفاصيل المنتج يدويًا.";
-
-/* Description in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationView.description" = "هل لديك دقيقة؟ ساعدنا على تحسين الميزات التي تدعم الذكاء الاصطناعي من خلال ملاحظاتك السريعة.";
-
-/* Start Survey button title in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationView.startTheSurvey" = "بدء الاستبيان";
-
-/* Title in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationView.title" = "إسهاماتك محل تقدير!";
-
-/* Dismiss button title in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationViewModel.dontShowItAgain" = "عدم العرض مجددًا";
-
-/* Dismiss button title in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationViewModel.remindMeLater" = "تذكيري لاحقًا";
 
 /* Category label for other product creation types */
 "productCreationCategory.other" = "أخرى";
@@ -12131,9 +12021,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
 "productInventorySettings.globalUniqueIdentifier.title" = "GTIN، وUPC، وEAN، وISBN";
-
-/* The message of the alert when there is an error updating the product global unique identifier */
-"productInventorySettings.invalidGlobalUniqueIdentifier.error" = "يرجى إدخال أرقام وشرطات (-) فقط.";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "الفاصل الزمني للفوترة";

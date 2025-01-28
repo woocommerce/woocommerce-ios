@@ -52,6 +52,7 @@ struct WooShippingCreateLabelsView: View {
                     WooShippingCustomsRow(informationIsCompleted: viewModel.customsInformationIsCompleted,
                                           customsFormViewModel: viewModel.customsFormViewModel)
                         .padding(.bottom, 16)
+                        .renderedIf(viewModel.customsFormRequired)
 
                     if viewModel.canViewLabel {
                         EmptyView()

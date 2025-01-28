@@ -1,14 +1,13 @@
 import SwiftUI
 
-struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
-
-    let viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel
-    let animation: POSCardPresentPaymentInLineMessageAnimation
+struct PointOfSalePaymentSuccessView: View {
+    let viewModel: PointOfSalePaymentSuccessViewModel
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     @State private var isShowingSendReceiptView: Bool = false
     @State private var isShowingReceiptNotEligibleBanner: Bool = false
+    @State private var isViewLoaded: Bool = false
 
     var body: some View {
         VStack {
@@ -22,24 +21,30 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
                     VStack(alignment: .center, spacing: Constants.headerSpacing) {
                         successIcon
                             .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-                            .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
+                            .scaleEffect(isViewLoaded ? 1 : 0)
+                            .opacity(isViewLoaded ? 1 : 0)
+
                         VStack(alignment: .center, spacing: Constants.textSpacing) {
                             Text(viewModel.title)
                                 .font(.posTitleEmphasized)
                                 .foregroundStyle(Color.posPrimaryText)
                                 .accessibilityAddTraits(.isHeader)
-                                .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
+                                .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
+                                .opacity(isViewLoaded ? 1 : 0)
 
                             if let message = viewModel.message {
                                 Text(message)
                                     .font(.posBodyRegular)
                                     .foregroundStyle(Color.posPrimaryText)
-                                    .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
+                                    .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
+                                    .opacity(isViewLoaded ? 1 : 0)
                             }
                         }
+
                         PaymentsActionButtons(isShowingSendReceiptView: $isShowingSendReceiptView,
-                                              isShowingReceiptNotEligibleBanner: $isShowingReceiptNotEligibleBanner)
-                            .matchedGeometryEffect(id: animation.actionButtonsTransitionId, in: animation.namespace, properties: .position)
+                                           isShowingReceiptNotEligibleBanner: $isShowingReceiptNotEligibleBanner)
+                            .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
+                            .opacity(isViewLoaded ? 1 : 0)
                     }
                     .multilineTextAlignment(.center)
 
@@ -53,10 +58,11 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
                         .edgesIgnoringSafeArea(.bottom)
                     }
                 }
-                .transition(.asymmetric(
-                    insertion: .move(edge: .leading).combined(with: .opacity),
-                    removal: .move(edge: .leading).combined(with: .opacity)
-                ))
+            }
+        }
+        .onAppear {
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                isViewLoaded = true
             }
         }
         .animation(.default, value: isShowingSendReceiptView)
@@ -82,7 +88,7 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
     }
 }
 
-private extension PointOfSaleCardPresentPaymentSuccessMessageView {
+private extension PointOfSalePaymentSuccessView {
     enum Constants {
         static let imageName: String = "checkmark"
         static let imageSize: CGSize = .init(width: 165, height: 165)
@@ -92,14 +98,12 @@ private extension PointOfSaleCardPresentPaymentSuccessMessageView {
         static let shadowSize: CGSize = .init(width: 0, height: 8)
         static let headerSpacing: CGFloat = 56
         static let textSpacing: CGFloat = 16
+        static let animationOffset: CGFloat = 100
     }
 }
 
 #Preview {
-    @Namespace var namespace
-
-    return PointOfSaleCardPresentPaymentSuccessMessageView(
-        viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel(formattedOrderTotal: "$3.00"),
-        animation: .init(namespace: namespace)
+    return PointOfSalePaymentSuccessView(
+        viewModel: PointOfSalePaymentSuccessViewModel(formattedOrderTotal: "$3.00")
     )
 }

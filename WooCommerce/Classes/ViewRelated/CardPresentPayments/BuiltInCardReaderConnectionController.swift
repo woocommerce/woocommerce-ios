@@ -440,7 +440,7 @@ private extension BuiltInCardReaderConnectionController {
         stores.dispatch(softwareUpdateAction)
 
 
-        if featureFlagService.isFeatureFlagEnabled(.tapToPayEducation), let presenter = merchantEducationPresenter {
+        if let presenter = merchantEducationPresenter {
             let onboardingAction = CardPresentPaymentAction.observeBuiltInCardReaderAcceptToS { [weak self] events in
                 guard let self else { return }
 

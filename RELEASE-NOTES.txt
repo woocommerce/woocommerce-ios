@@ -3,6 +3,7 @@
 21.6
 -----
 - [*] Payments: improve retry handling when card reader updates fail due to low battery [https://github.com/woocommerce/woocommerce-ios/pull/14990]
+- [*] Payments: Improved error handling during card payments and refunds [https://github.com/woocommerce/woocommerce-ios/pull/14980]
 
 21.5
 -----

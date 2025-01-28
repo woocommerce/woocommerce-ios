@@ -10,7 +10,6 @@ protocol TapToPayAwarenessMomentDetermining {
 struct TapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining {
     private let cardReaderSupportDeterminer: CardReaderSupportDetermining
     private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
-    private let featureFlagService: FeatureFlagService
 
     private let userDefaults: UserDefaults
 
@@ -18,19 +17,13 @@ struct TapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining {
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          cardReaderSupportDeterminer: CardReaderSupportDetermining? = nil,
          cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          userDefaults: UserDefaults = .standard) {
         self.cardReaderSupportDeterminer = cardReaderSupportDeterminer ?? CardReaderSupportDeterminer(siteID: siteID, configuration: configuration)
         self.cardPresentPaymentsOnboarding = cardPresentPaymentsOnboarding
-        self.featureFlagService = featureFlagService
         self.userDefaults = userDefaults
     }
 
     func shouldPresent() async -> Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.tapToPayEducation) else {
-            return false
-        }
-
         guard !wasPresented() else {
             return false
         }

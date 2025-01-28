@@ -31,7 +31,7 @@ struct TapToPayEducationStepView: View {
             }
 
             if let limit = viewModel.limit {
-                AboutTapToPayContactlessLimitView(viewModel: limit)
+                TapToPayEducationContactlessLimitView(viewModel: limit)
                     .padding([.top, .bottom])
             }
 

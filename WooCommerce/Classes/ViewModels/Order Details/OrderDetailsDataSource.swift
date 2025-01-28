@@ -661,9 +661,6 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureSeeReceipt(cell: TwoColumnHeadlineFootnoteTableViewCell) {
-        guard featureFlags.isFeatureFlagEnabled(.backendReceipts) else {
-            return
-        }
         cell.setLeftTitleToLinkStyle(true)
         cell.leftText = Titles.seeReceipt
         cell.rightText = nil

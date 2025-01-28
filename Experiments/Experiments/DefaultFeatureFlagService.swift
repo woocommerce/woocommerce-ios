@@ -62,8 +62,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .scanToUpdateInventory:
             return true
-        case .backendReceipts:
-            return true
         case .splitViewInProductsTab:
             return true
         case .subscriptionsInOrderCreationUI:
@@ -89,13 +87,9 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .productGlobalUniqueIdentifierSupport:
             return true
-        case .sendReceiptAfterPayment:
-            return true
         case .sendReceiptsForPointOfSale:
             return true
         case .acceptCashForPointOfSale:
-            return true
-        case .tapToPayEducation:
             return true
         case .variableProductsInPointOfSale:
             return true

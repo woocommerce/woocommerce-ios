@@ -187,7 +187,7 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
                 viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel(
                     inputMethods: inputMethods)))
         case .paymentSuccess:
-            self = .message(.paymentSuccess(viewModel: PointOfSaleTransactionSuccessViewModel(
+            self = .message(.paymentSuccess(viewModel: PointOfSalePaymentSuccessViewModel(
                 formattedOrderTotal: dependencies.formattedOrderTotalPrice)))
         case .paymentError(error: let error, retryApproach: let retryApproach, _):
             switch error {

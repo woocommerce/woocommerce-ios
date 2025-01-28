@@ -1,6 +1,6 @@
 import Foundation
 
-struct PointOfSaleTransactionSuccessViewModel: Equatable {
+struct PointOfSalePaymentSuccessViewModel: Equatable {
     let title: String = Localization.title
     let message: String?
 
@@ -13,7 +13,7 @@ struct PointOfSaleTransactionSuccessViewModel: Equatable {
     }
 }
 
-private extension PointOfSaleTransactionSuccessViewModel {
+private extension PointOfSalePaymentSuccessViewModel {
     enum Localization {
         static let title = NSLocalizedString(
             "pointOfSale.paymentSuccessful.title",

@@ -7141,6 +7141,7 @@
 		026A502D2D2F8087002C42C2 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				208628722D48E476003F45DC /* Payments Onboarding */,
 				026A502E2D2F8099002C42C2 /* Infinite Scroll */,
 			);
 			path = Presentation;
@@ -8122,6 +8123,14 @@
 				2084B7AD2C77845C00EFBD2E /* PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModelTests.swift */,
 			);
 			path = "Connection Alerts";
+			sourceTree = "<group>";
+		};
+		208628722D48E476003F45DC /* Payments Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				02B191532CCF377E00CF38C9 /* PointOfSaleCardPresentPaymentOnboardingViewModelTests.swift */,
+			);
+			path = "Payments Onboarding";
 			sourceTree = "<group>";
 		};
 		20A130E92C5A26F70058022F /* Tools */ = {
@@ -12822,19 +12831,18 @@
 				02CD3BFC2C35D01600E575C4 /* Mocks */,
 				026A502D2D2F8087002C42C2 /* Presentation */,
 				20A130E92C5A26F70058022F /* Tools */,
-				DABF35252C11B412006AF826 /* ViewModels */,
+				DABF35252C11B412006AF826 /* ViewHelpers */,
 			);
 			path = POS;
 			sourceTree = "<group>";
 		};
-		DABF35252C11B412006AF826 /* ViewModels */ = {
+		DABF35252C11B412006AF826 /* ViewHelpers */ = {
 			isa = PBXGroup;
 			children = (
 				683763192C2E6F5900AD51D0 /* CartViewHelperTests.swift */,
-				02B191532CCF377E00CF38C9 /* PointOfSaleCardPresentPaymentOnboardingViewModelTests.swift */,
 				6891C3652D364C1A00B5B48C /* CollectCashViewHelperTests.swift */,
 			);
-			path = ViewModels;
+			path = ViewHelpers;
 			sourceTree = "<group>";
 		};
 		DAD988C72C4A9D49009DE9E3 /* Models */ = {

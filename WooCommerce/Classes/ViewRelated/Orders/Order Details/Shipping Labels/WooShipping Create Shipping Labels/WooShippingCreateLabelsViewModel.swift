@@ -126,6 +126,26 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         })
     }()
 
+    /// Check for the need of customs form
+    ///
+    var customsFormRequired: Bool {
+        guard let originAddress = selectedOriginAddress,
+              let destinationAddress = destinationAddress else {
+            return false
+        }
+        // Special case: Any shipment from/to military addresses must have Customs
+        if originAddress.country == Constants.usCountryCode,
+           Constants.usMilitaryStates.contains(where: { $0 == originAddress.state }) {
+            return true
+        }
+        if destinationAddress.country == Constants.usCountryCode,
+           Constants.usMilitaryStates.contains(where: { $0 == destinationAddress.state }) {
+            return true
+        }
+
+        return originAddress.country != destinationAddress.country
+    }
+
     /// Initialize the view model without an existing shipping label.
     init(order: Order,
          selectedOriginAddress: WooShippingOriginAddress? = nil,
@@ -421,6 +441,16 @@ private extension WooShippingCreateLabelsViewModel {
                                                               value: "Adult Signature Required",
                                                               comment: "Label for row showing the additional cost to require an adult signature " +
                                                               "on the shipping label creation screen")
+    }
+
+    enum Constants {
+        /// Country code for US - to check for international shipment
+        ///
+        static let usCountryCode = "US"
+
+        /// These US states are a special case because they represent military bases. They're considered "domestic",
+        /// but they require a Customs form to ship from/to them.
+        static let usMilitaryStates = ["AA", "AE", "AP"]
     }
 }
 

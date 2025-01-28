@@ -1612,6 +1612,7 @@
 		68E674AB2A4DAB8C0034BA1E /* CompletedUpgradeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E674AA2A4DAB8C0034BA1E /* CompletedUpgradeView.swift */; };
 		68E674AD2A4DAC010034BA1E /* CurrentPlanDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E674AC2A4DAC010034BA1E /* CurrentPlanDetailsView.swift */; };
 		68E674AF2A4DACD50034BA1E /* UpgradeTopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E674AE2A4DACD50034BA1E /* UpgradeTopBarView.swift */; };
+		68E8C04C2D4285C50094FCAC /* AdaptiveButtonPaddingModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E8C04B2D4285C30094FCAC /* AdaptiveButtonPaddingModifier.swift */; };
 		68E952CC287536010095A23D /* SafariView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E952CB287536010095A23D /* SafariView.swift */; };
 		68E952D0287587BF0095A23D /* CardReaderManualRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E952CF287587BF0095A23D /* CardReaderManualRowView.swift */; };
 		68E952D22875A44B0095A23D /* CardReaderType+Manual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E952D12875A44B0095A23D /* CardReaderType+Manual.swift */; };
@@ -4727,6 +4728,7 @@
 		68E674AA2A4DAB8C0034BA1E /* CompletedUpgradeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletedUpgradeView.swift; sourceTree = "<group>"; };
 		68E674AC2A4DAC010034BA1E /* CurrentPlanDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentPlanDetailsView.swift; sourceTree = "<group>"; };
 		68E674AE2A4DACD50034BA1E /* UpgradeTopBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeTopBarView.swift; sourceTree = "<group>"; };
+		68E8C04B2D4285C30094FCAC /* AdaptiveButtonPaddingModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveButtonPaddingModifier.swift; sourceTree = "<group>"; };
 		68E952CB287536010095A23D /* SafariView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariView.swift; sourceTree = "<group>"; };
 		68E952CF287587BF0095A23D /* CardReaderManualRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderManualRowView.swift; sourceTree = "<group>"; };
 		68E952D12875A44B0095A23D /* CardReaderType+Manual.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardReaderType+Manual.swift"; sourceTree = "<group>"; };
@@ -7008,6 +7010,7 @@
 		026826972BF59D9E0036F959 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				68E8C04B2D4285C30094FCAC /* AdaptiveButtonPaddingModifier.swift */,
 				026826982BF59DA80036F959 /* Color+WooCommercePOS.swift */,
 				68E4E8B42C0EF39D00CFA0C3 /* PreviewHelpers.swift */,
 				DA4104392C247B6900E8456A /* PointOfSalePreviewOrderController.swift */,
@@ -15450,6 +15453,7 @@
 				01BB6C072D09DC560094D55B /* CardPresentModalLocationPreAlert.swift in Sources */,
 				74B5713621CD7604008F9B8E /* SharingHelper.swift in Sources */,
 				261F1A7929C2AB2E001D9861 /* FreeTrialBannerViewModel.swift in Sources */,
+				68E8C04C2D4285C50094FCAC /* AdaptiveButtonPaddingModifier.swift in Sources */,
 				DEF657A82C895B0500ACD61E /* BlazeCampaignObjectivePickerViewModel.swift in Sources */,
 				0313651328ABCB2D00EEE571 /* InPersonPaymentsOnboardingErrorMainContentView.swift in Sources */,
 				B9F148962AD55326008FC795 /* FormattableAmountTextField.swift in Sources */,

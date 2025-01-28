@@ -165,6 +165,9 @@ extension MockStorageManager {
 extension StorageType {
     @available(*, deprecated, message: "Use `MockStorageManager`'s `performAndSave` to handle write operations instead of writing directly.")
     func saveIfNeeded() {
-        (self as! NSManagedObjectContext).saveIfNeeded()
+        let context = self as! NSManagedObjectContext
+        if context.hasChanges {
+            try? context.save()
+        }
     }
 }

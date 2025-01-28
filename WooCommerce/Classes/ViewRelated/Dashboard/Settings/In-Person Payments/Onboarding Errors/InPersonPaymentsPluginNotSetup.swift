@@ -54,7 +54,7 @@ struct InPersonPaymentsPluginNotSetup: View {
     }
 
     private var setupURL: URL? {
-        guard let pluginSectionURL = ServiceLocator.stores.sessionManager.defaultSite?.cardPresentPluginHasPendingTasksURL() else {
+        guard let pluginSectionURL = ServiceLocator.stores.sessionManager.defaultSite?.cardPresentPluginHasPendingTasksURL(plugin: plugin) else {
             return nil
         }
 

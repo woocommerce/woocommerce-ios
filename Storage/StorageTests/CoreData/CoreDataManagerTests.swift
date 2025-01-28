@@ -3,7 +3,6 @@ import CoreData
 @testable import Storage
 @testable import WooFoundation
 
-
 /// CoreDataManager Unit Tests
 ///
 final class CoreDataManagerTests: XCTestCase {
@@ -133,6 +132,41 @@ final class CoreDataManagerTests: XCTestCase {
             XCTFail("Result should be failure")
         case .failure(let error):
             XCTAssertTrue(error is CoreDataManagerTestsError)
+        }
+    }
+
+    func test_performAndSave_resets_the_database_if_it_is_corrupted() throws {
+        // Given
+        let modelsInventory = try makeModelsInventory()
+        var manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
+
+        waitFor { promise in
+            manager.performAndSave({ storage in
+                self.insertAccount(to: storage)
+            }, completion: {
+                promise(())
+            }, on: .main)
+        }
+
+        XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
+
+        // When
+        corruptDatabaseFile()
+        manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: false)
+        manager.performAndSave({ storage in
+            self.insertAccount(to: storage)
+        }, completion: {
+            // no-op
+        }, on: .main)
+
+        // Then: wait to ensure the database is dropped before setting up the CoreData stack again.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            manager = try! self.makeManager(using: modelsInventory, deletingExistingStoreFiles: false)
+            XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 0)
+
+            // Clean up
+            let storeURL = CoreDataManager.storeURL(with: self.storageIdentifier)
+            try? self.deleteStoreFiles(at: storeURL)
         }
     }
 
@@ -307,6 +341,27 @@ private extension CoreDataManagerTests {
             if fileManager.fileExists(atPath: fileURL.path) {
                 try fileManager.removeItem(at: fileURL)
             }
+        }
+    }
+
+    // Attempts corrupting the database file by overwriting the sqlite-wal file.
+    // Our CoreData stack uses the default WAL journal mechanism
+    // so updating this file would corrupt the database.
+    func corruptDatabaseFile() {
+        let storeURL = CoreDataManager.storeURL(with: storageIdentifier)
+        let walURL = storeURL.deletingPathExtension().appendingPathExtension("sqlite-wal")
+        do {
+            // Read the database file into memory
+            var data = try Data(contentsOf: walURL)
+            // Corrupt the data by overwriting random bytes
+            for i in 0..<min(100, data.count) {
+                data[i] = 0xFF // Overwrite with invalid data
+            }
+            // Write the corrupted data back to the file
+            try data.write(to: walURL)
+            print("Database corrupted successfully")
+        } catch {
+            print("Error corrupting database: \(error)")
         }
     }
 }

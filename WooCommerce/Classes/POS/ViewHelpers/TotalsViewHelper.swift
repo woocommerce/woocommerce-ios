@@ -20,4 +20,23 @@ final class TotalsViewHelper {
             return false
         }
     }
+
+    func shouldShowDisconnectedMessage(readerConnectionStatus: CardPresentPaymentReaderConnectionStatus,
+                                       paymentState: PointOfSaleCardPaymentState) -> Bool {
+        guard readerConnectionStatus == .disconnected else {
+            return false
+        }
+        switch paymentState {
+        case .idle,
+                .acceptingCard,
+                .preparingReader:
+            return true
+        case .validatingOrder,
+                .validatingOrderError,
+                .processingPayment,
+                .paymentError,
+                .cardPaymentSuccessful:
+            return false
+        }
+    }
 }

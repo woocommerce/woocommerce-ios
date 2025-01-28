@@ -212,7 +212,10 @@ private extension CardReaderSettingsAlerts {
         return CardPresentModalConnectingFailedUpdatePostalCode(retrySearch: retrySearch, cancelSearch: cancelSearch)
     }
 
-    func updatingFailedLowBattery(from: UIViewController, batteryLevel: Double?, retrySearch: @escaping () -> Void, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+    func updatingFailedLowBattery(from: UIViewController,
+                                  batteryLevel: Double?,
+                                  retrySearch: @escaping () -> Void,
+                                  close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalUpdateFailedLowBattery(batteryLevel: batteryLevel, retrySearch: retrySearch, close: close)
     }
 

@@ -654,23 +654,6 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(giftCardsSection)
     }
 
-    func test_receipts_row_is_hidden_when_feature_flag_is_false() throws {
-        // Given
-        let order = Order.fake()
-        let dataSource = OrderDetailsDataSource(order: order,
-                                                storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                featureFlags: MockFeatureFlagService(isBackendReceiptsEnabled: false))
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
-        let receiptsRow = row(row: .seeReceipt, in: paymentSection)
-        XCTAssertNil(receiptsRow)
-    }
-
     // MARK: Order Attribution
 
     func test_order_attribution_section_is_shown_with_origin_row_even_if_order_has_no_attribution_info() throws {

@@ -9,7 +9,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+        stores = MockStoresManager(sessionManager: .testingInstance)
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
@@ -341,7 +341,8 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
                                                            onConfigure: { _ in })
 
         // The products are loaded async before the bundle item view models are set.
-        waitUntil {
+        // This test occasionally fails on CI due to slowness, cannot reproduce locally.
+        waitUntil(timeout: 10.0) {
             viewModel.bundleItemViewModels.isNotEmpty
         }
 
@@ -357,6 +358,8 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         let product = Product.fake().copy(productID: 1, bundledItems: [
             .fake().copy(productID: 2)
         ])
+        let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
+        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
 
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],

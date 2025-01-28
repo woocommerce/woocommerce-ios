@@ -4,7 +4,7 @@
 # to set up some variables that will be interpolated in the `.yml` pipeline before uploading it.
 
 XCODE_VERSION=$(sed 's/^~> *//' .xcode-version)
-CI_TOOLKIT_PLUGIN_VERSION="3.7.1"
+CI_TOOLKIT_PLUGIN_VERSION="3.9.1"
 
 # Note: `-v4` suffix was added to use xcode-16.1-v4 image; remember to remove that suffix during the next Xcode update
 export IMAGE_ID="xcode-$XCODE_VERSION-v4"

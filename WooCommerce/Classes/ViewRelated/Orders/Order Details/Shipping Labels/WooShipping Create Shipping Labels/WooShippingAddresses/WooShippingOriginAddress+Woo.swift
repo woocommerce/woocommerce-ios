@@ -11,41 +11,14 @@ extension WooShippingOriginAddress {
     /// then a single line is returned containing the other value.
     ///
     var fullNameWithCompany: String {
-        var output: [String] = []
-
-        if let fullName {
-            output.append(fullName)
-        }
-        if company.isNotEmpty {
-            output.append(company)
-        }
-
-        return output.joined(separator: "\n")
+        [fullName, company].compactMap { $0.isEmpty ? nil : $0 }.joined(separator: "\n")
     }
 
-    /// Returns the first and last name combined (if there are, effectively, two names).
+    /// Returns the first and last name combined.
     /// If only one name is present, that name is returned.
-    var fullName: String? {
-        switch (firstName.isNotEmpty, lastName.isNotEmpty) {
-        case (true, true):
-            return "\(firstName) \(lastName)"
-        case (true, false):
-            return firstName
-        case (false, true):
-            return lastName
-        case (false, false):
-            return nil
-        }
+    var fullName: String {
+        [firstName, lastName].compactMap { $0.isEmpty ? nil : $0 }.joined(separator: " ")
     }
-
-    /// Returns the Postal Address, formatted and ready for display.
-    ///
-    var formattedPostalAddress: String? {
-        return postalAddress.formatted(as: .mailingAddress)?.replacingOccurrences(of: "\n", with: ", ")
-    }
-}
-
-private extension WooShippingOriginAddress {
 
     /// Returns the two Address Lines combined (if there are, effectively, two lines).
     /// Per US Post Office standardized rules for address lines. Ref. https://pe.usps.com/text/pub28/28c2_001.htm
@@ -57,6 +30,15 @@ private extension WooShippingOriginAddress {
 
         return address1 + " " + address2
     }
+
+    /// Returns the Postal Address, formatted and ready for display.
+    ///
+    var formattedPostalAddress: String? {
+        return postalAddress.formatted(as: .mailingAddress)?.replacingOccurrences(of: "\n", with: ", ")
+    }
+}
+
+private extension WooShippingOriginAddress {
 
     /// Returns a CNPostalAddress with the receiver's properties
     ///

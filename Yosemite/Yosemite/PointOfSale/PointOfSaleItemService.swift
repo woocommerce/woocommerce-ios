@@ -54,26 +54,23 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
             return .init(items: [], hasMorePages: false)
         }
 
-        let eligibilityCriteria: [(Product) -> Bool] = [
-            isNotVirtual,
-            isNotDownloadable,
-            hasPrice
-        ]
-        let filteredProducts = filterProducts(products: products, using: eligibilityCriteria)
-
-        return .init(items: mapProductsToPOSItems(products: filteredProducts), hasMorePages: pagedProducts.hasMorePages)
+        return .init(items: mapProductsToPOSItems(products: products), hasMorePages: pagedProducts.hasMorePages)
     }
 
     public func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
-        let variations = try await variationRemote
+        let pagedVariations = try await variationRemote
             .loadVariationsForPointOfSale(for: siteID,
                                           parentProductID: parentProduct.productID,
                                           pageNumber: pageNumber)
+        let variations = pagedVariations.items
+            // Remove this when WC version 9.7 has significant adoption in POS stores.
+            .filter { !$0.downloadable }
         return .init(
             items: variations.compactMap({ variation in
-                let variationName = ProductVariationFormatter().generateName(
+                let variationName = ProductVariationFormatter().generateNameWithAttributeNames(
                     for: variation,
-                    from: parentProduct.allAttributes
+                    from: parentProduct.allAttributes,
+                    separator: ", "
                 )
                 return POSItem
                     .variation(.init(id: UUID(),
@@ -82,10 +79,10 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                                      price: variation.price,
                                      productImageSource: variation.image?.src,
                                      productID: variation.productID,
-                                     variationID: variation.productVariationID))
+                                     variationID: variation.productVariationID,
+                                     parentProductName: parentProduct.name))
             }),
-            // TODO-14696: pagination support for variations lists
-            hasMorePages: false
+            hasMorePages: pagedVariations.hasMorePages
         )
     }
 
@@ -117,25 +114,5 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                     return nil
             }
         }
-    }
-}
-
-private extension PointOfSaleItemService {
-    func filterProducts(products: [Product], using criteria: [(Product) -> Bool]) -> [Product] {
-        return products.filter { product in
-            criteria.allSatisfy { $0(product) }
-        }
-    }
-
-    func isNotVirtual(product: Product) -> Bool {
-        !product.virtual
-    }
-
-    func isNotDownloadable(product: Product) -> Bool {
-        !product.downloadable
-    }
-
-    func hasPrice(product: Product) -> Bool {
-        !product.price.isEmpty
     }
 }

@@ -1,6 +1,11 @@
 import Foundation
 
-enum PointOfSalePaymentState {
+enum PointOfSalePaymentState: Equatable {
+    case card(PointOfSaleCardPaymentState)
+    case cash(PointOfSaleCashPaymentState)
+}
+
+enum PointOfSaleCardPaymentState: Equatable {
     case idle
     case acceptingCard
     case validatingOrder
@@ -11,35 +16,40 @@ enum PointOfSalePaymentState {
     case cardPaymentSuccessful
 }
 
+enum PointOfSaleCashPaymentState: Equatable {
+    case collectingCash
+    case paymentSuccess
+}
+
 extension PointOfSalePaymentState {
     init?(from cardPaymentEvent: CardPresentPaymentEvent,
           using paymentEventPresentationStyleDependencies: PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies) {
         switch cardPaymentEvent {
         case .idle:
-            self = .idle
+            self = .card(.idle)
         case .show(.validatingOrder):
-            self = .validatingOrder
+            self = .card(.validatingOrder)
         case .show(.preparingForPayment):
-            self = .preparingReader
+            self = .card(.preparingReader)
         case .show(.tapSwipeOrInsertCard):
-            self = .acceptingCard
+            self = .card(.acceptingCard)
         case .show(.processing),
                 .show(.displayReaderMessage):
-            self = .processingPayment
+            self = .card(.processingPayment)
         case .show(.paymentError):
             if case let .show(eventDetails) = cardPaymentEvent,
                case let .message(messageType) = PointOfSaleCardPresentPaymentEventPresentationStyle(
                 for: eventDetails,
                 dependencies: paymentEventPresentationStyleDependencies),
                case .validatingOrderError = messageType {
-                self = .validatingOrderError
+                self = .card(.validatingOrderError)
             } else {
-                self = .paymentError
+                self = .card(.paymentError)
             }
         case .show(.paymentCaptureError):
-            self = .paymentError
+            self = .card(.paymentError)
         case .show(.paymentSuccess):
-            self = .cardPaymentSuccessful
+            self = .card(.cardPaymentSuccessful)
         default:
             return nil
         }
@@ -47,16 +57,18 @@ extension PointOfSalePaymentState {
 
     var shownFullScreen: Bool {
         switch self {
-        case .processingPayment,
-                .paymentError,
-                .cardPaymentSuccessful:
+        case .card(.processingPayment),
+                .card(.paymentError),
+                .card(.cardPaymentSuccessful):
             return true
-        case .idle,
-                .validatingOrder,
-                .validatingOrderError,
-                .preparingReader,
-                .acceptingCard:
+        case .card(.idle),
+                .card(.validatingOrder),
+                .card(.validatingOrderError),
+                .card(.preparingReader),
+                .card(.acceptingCard):
             return false
+        case .cash:
+            return true
         }
     }
 }

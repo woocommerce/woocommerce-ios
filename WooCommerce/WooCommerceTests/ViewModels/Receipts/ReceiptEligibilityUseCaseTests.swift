@@ -205,7 +205,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
 
         // When
         let isEligible: Bool = waitFor { promise in
-            sut.isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: GatewayID.wcPayments, onCompletion: { result in
+            sut.isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: CardPresentPaymentsPlugin.wcPay.gatewayID, onCompletion: { result in
                 promise(result)
             })
         }
@@ -219,14 +219,14 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         let featureFlag = MockFeatureFlagService(isSendReceiptAfterPaymentEnabled: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let wooCommercePlugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.6.0", active: false)
-        let wooPaymentsPlugin = SystemPlugin.fake().copy(name: "WooPayments", version: "8.9.0", active: false)
+        let wooPaymentsPlugin = SystemPlugin.fake().copy(name: CardPresentPaymentsPlugin.wcPay.pluginName, version: "8.9.0", active: false)
 
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
             case let .fetchSystemPlugin(_, systemPluginName, onCompletion):
                 if systemPluginName == "WooCommerce" {
                     onCompletion(wooCommercePlugin)
-                } else if systemPluginName == "WooPayments" {
+                } else if systemPluginName == CardPresentPaymentsPlugin.wcPay.pluginName {
                     onCompletion(wooPaymentsPlugin)
                 }
             default:
@@ -238,7 +238,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
 
         // When
         let isEligible: Bool = waitFor { promise in
-            sut.isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: GatewayID.wcPayments, onCompletion: { result in
+            sut.isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: CardPresentPaymentsPlugin.wcPay.gatewayID, onCompletion: { result in
                 promise(result)
             })
         }
@@ -252,14 +252,14 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         let featureFlag = MockFeatureFlagService(isSendReceiptAfterPaymentEnabled: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let wooCommercePlugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.5.0", active: true)
-        let wooPaymentsPlugin = SystemPlugin.fake().copy(name: "WooPayments", version: "8.6.0", active: true)
+        let wooPaymentsPlugin = SystemPlugin.fake().copy(name: CardPresentPaymentsPlugin.wcPay.pluginName, version: "8.6.0", active: true)
 
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
             case let .fetchSystemPlugin(_, systemPluginName, onCompletion):
                 if systemPluginName == "WooCommerce" {
                     onCompletion(wooCommercePlugin)
-                } else if systemPluginName == "WooPayments" {
+                } else if systemPluginName == CardPresentPaymentsPlugin.wcPay.pluginName {
                     onCompletion(wooPaymentsPlugin)
                 }
             default:
@@ -271,7 +271,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
 
         // When
         let isEligible: Bool = waitFor { promise in
-            sut.isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: GatewayID.wcPayments, onCompletion: { result in
+            sut.isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: CardPresentPaymentsPlugin.wcPay.gatewayID, onCompletion: { result in
                 promise(result)
             })
         }
@@ -285,14 +285,14 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         let featureFlag = MockFeatureFlagService(isSendReceiptAfterPaymentEnabled: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let wooCommercePlugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.6.0-dev-1181231238", active: true)
-        let wooPaymentsPlugin = SystemPlugin.fake().copy(name: "WooPayments", version: "8.6.0-test-1", active: true)
+        let wooPaymentsPlugin = SystemPlugin.fake().copy(name: CardPresentPaymentsPlugin.wcPay.pluginName, version: "8.6.0-test-1", active: true)
 
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
             case let .fetchSystemPlugin(_, systemPluginName, onCompletion):
                 if systemPluginName == "WooCommerce" {
                     onCompletion(wooCommercePlugin)
-                } else if systemPluginName == "WooPayments" {
+                } else if systemPluginName == CardPresentPaymentsPlugin.wcPay.pluginName {
                     onCompletion(wooPaymentsPlugin)
                 }
             default:
@@ -304,7 +304,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
 
         // When
         let isEligible: Bool = waitFor { promise in
-            sut.isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: GatewayID.wcPayments, onCompletion: { result in
+            sut.isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: CardPresentPaymentsPlugin.wcPay.gatewayID, onCompletion: { result in
                 promise(result)
             })
         }
@@ -318,14 +318,14 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         let featureFlag = MockFeatureFlagService(isSendReceiptAfterPaymentEnabled: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let wooCommercePlugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.5.0", active: true)
-        let wooPaymentsPlugin = SystemPlugin.fake().copy(name: "WooPayments", version: "5.0.0-dev", active: true)
+        let wooPaymentsPlugin = SystemPlugin.fake().copy(name: CardPresentPaymentsPlugin.wcPay.pluginName, version: "5.0.0-dev", active: true)
 
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
             case let .fetchSystemPlugin(_, systemPluginName, onCompletion):
                 if systemPluginName == "WooCommerce" {
                     onCompletion(wooCommercePlugin)
-                } else if systemPluginName == "WooPayments" {
+                } else if systemPluginName == CardPresentPaymentsPlugin.wcPay.pluginName {
                     onCompletion(wooPaymentsPlugin)
                 }
             default:
@@ -337,7 +337,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
 
         // When
         let isEligible: Bool = waitFor { promise in
-            sut.isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: GatewayID.wcPayments, onCompletion: { result in
+            sut.isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: CardPresentPaymentsPlugin.wcPay.gatewayID, onCompletion: { result in
                 promise(result)
             })
         }
@@ -346,20 +346,53 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
-    func test_isEligibleForFailedPaymentEmailReceipts_when_plugins_are_supported_but_stripe_gateway_then_returns_false() {
+    func test_isEligibleForFailedPaymentEmailReceipts_when_stripe_gateway_then_returns_true() {
         // Given
         let featureFlag = MockFeatureFlagService(isSendReceiptAfterPaymentEnabled: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let wooCommercePlugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.5.0", active: true)
-        let wooPaymentsPlugin = SystemPlugin.fake().copy(name: "WooPayments", version: "8.6.0", active: true)
+        let stripePaymentsPlugin = SystemPlugin.fake().copy(name: CardPresentPaymentsPlugin.stripe.pluginName, version: "9.1.0", active: true)
 
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
             case let .fetchSystemPlugin(_, systemPluginName, onCompletion):
                 if systemPluginName == "WooCommerce" {
                     onCompletion(wooCommercePlugin)
-                } else if systemPluginName == "WooPayments" {
-                    onCompletion(wooPaymentsPlugin)
+                } else if systemPluginName == CardPresentPaymentsPlugin.stripe.pluginName {
+                    onCompletion(stripePaymentsPlugin)
+                }
+            default:
+                XCTFail("Unexpected action")
+            }
+        }
+
+        let sut = ReceiptEligibilityUseCase(stores: stores, featureFlagService: featureFlag)
+
+        // When
+        let isEligible: Bool = waitFor { promise in
+            sut.isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: "woocommerce-stripe", onCompletion: { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(isEligible)
+    }
+
+    func test_isEligibleForFailedPaymentEmailReceipts_when_stripe_gateway_is_outdated_then_returns_false() {
+        // Given
+        let featureFlag = MockFeatureFlagService(isSendReceiptAfterPaymentEnabled: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let wooCommercePlugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.5.0", active: true)
+        let stripePaymentsPlugin = SystemPlugin.fake().copy(name: CardPresentPaymentsPlugin.stripe.pluginName, version: "9.0.0", active: true)
+
+        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            switch action {
+            case let .fetchSystemPlugin(_, systemPluginName, onCompletion):
+                if systemPluginName == "WooCommerce" {
+                    onCompletion(wooCommercePlugin)
+                } else if systemPluginName == CardPresentPaymentsPlugin.stripe.pluginName {
+                    onCompletion(stripePaymentsPlugin)
                 }
             default:
                 XCTFail("Unexpected action")
@@ -377,11 +410,5 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertFalse(isEligible)
-    }
-}
-
-private extension ReceiptEligibilityUseCaseTests {
-    enum GatewayID {
-        static let wcPayments: String = "woocommerce-payments"
     }
 }

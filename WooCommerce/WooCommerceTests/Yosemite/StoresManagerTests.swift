@@ -535,6 +535,10 @@ final class MockSessionManager: SessionManagerProtocol {
         // Do nothing
     }
 
+    func deleteApplicationPassword(using credentials: Credentials?) {
+        deleteApplicationPasswordInvoked = true
+    }
+
     func deleteApplicationPassword() {
         deleteApplicationPasswordInvoked = true
     }

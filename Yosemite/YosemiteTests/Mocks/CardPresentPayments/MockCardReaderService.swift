@@ -90,7 +90,7 @@ final class MockCardReaderService: CardReaderService {
         didReceiveAConfigurationProvider = true
         spyStartDiscoveryMethod = discoveryMethod
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {[weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {[weak self] in
             self?.discoveryStatusSubject.send(.discovering)
         }
     }
@@ -100,7 +100,7 @@ final class MockCardReaderService: CardReaderService {
 
         /// Delaying the effect of this method so that unit tests are actually async
         return Future { promise in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {[weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {[weak self] in
                 self?.discoveryStatusSubject.send(.idle)
                 promise(.success(()))
             }
@@ -110,7 +110,7 @@ final class MockCardReaderService: CardReaderService {
     func connect(_ reader: Hardware.CardReader, options: Hardware.CardReaderConnectionOptions?) -> AnyPublisher<CardReader, Error> {
         Future() { promise in
             /// Delaying the effect of this method so that unit tests are actually async
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {[weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {[weak self] in
                 let connectedReader = MockCardReader.bbposChipper2XBT()
                 promise(Result.success(connectedReader))
                 self?.connectedReadersSubject.send([connectedReader])
@@ -121,7 +121,7 @@ final class MockCardReaderService: CardReaderService {
     func disconnect() -> Future<Void, Error> {
         didHitDisconnect = true
         return Future() { promise in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                 promise(Result.success(()))
             }
         }
@@ -154,7 +154,7 @@ final class MockCardReaderService: CardReaderService {
 
     func cancelPaymentIntent() -> Future<Void, Error> {
         Future() { [weak self] promise in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                 self?.didTapCancelPayment = true
                 promise(Result.success(()))
             }

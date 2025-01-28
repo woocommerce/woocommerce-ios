@@ -148,6 +148,10 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
             self.pushNotesManager.requestedLocalNotifications.count == 1
         }
 
+        await until {
+            self.pushNotesManager.canceledLocalNotificationScenarios.isNotEmpty
+        }
+
         // Then
         XCTAssertTrue(pushNotesManager.canceledLocalNotificationScenarios.contains([LocalNotification.Scenario.blazeNoCampaignReminder]))
     }

@@ -170,15 +170,22 @@ final class HubMenuViewModel: ObservableObject {
         createCardPresentPaymentService()
     }
 
-    func viewDidAppear() {
+    func viewDidAppear() async {
         NotificationCenter.default.post(name: .hubMenuViewDidAppear, object: nil)
         viewAppeared = true
-        if !hasGoogleAdsCampaigns {
-            refreshGoogleAdsCampaignCheck()
-        }
 
-        if !isSiteEligibleForBlaze {
-            refreshBlazeEligibilityCheck()
+        await withTaskGroup(of: Void.self) { group in
+            if !hasGoogleAdsCampaigns {
+                group.addTask {
+                    await self.refreshGoogleAdsCampaignCheck()
+                }
+            }
+
+            if !isSiteEligibleForBlaze {
+                group.addTask {
+                    await self.refreshBlazeEligibilityCheck()
+                }
+            }
         }
     }
 
@@ -207,19 +214,16 @@ final class HubMenuViewModel: ObservableObject {
         navigateToDestination(.reviewDetails(parcel: parcel))
     }
 
-    func refreshGoogleAdsCampaignCheck() {
-        Task { @MainActor in
-            hasGoogleAdsCampaigns = await checkIfSiteHasGoogleAdsCampaigns()
-        }
+    func refreshGoogleAdsCampaignCheck() async {
+        hasGoogleAdsCampaigns = await checkIfSiteHasGoogleAdsCampaigns()
     }
 
-    func refreshBlazeEligibilityCheck() {
+    func refreshBlazeEligibilityCheck() async {
         guard let site = currentSite else {
             return
         }
-        Task { @MainActor in
-            isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible(site)
-        }
+
+        isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible(site)
     }
 
     func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {
@@ -473,6 +477,27 @@ private extension HubMenuViewModel {
             stores.dispatch(GoogleAdsAction.fetchAdsCampaigns(siteID: siteID) { result in
                 continuation.resume(with: result)
             })
+        }
+    }
+}
+
+// MARK: - Helpers
+extension HubMenuViewModel {
+    func viewDidAppear() {
+        Task { @MainActor in
+            await viewDidAppear()
+        }
+    }
+
+    func refreshBlazeEligibilityCheck() {
+        Task { @MainActor in
+            await refreshBlazeEligibilityCheck()
+        }
+    }
+
+    func refreshGoogleAdsCampaignCheck() {
+        Task { @MainActor in
+            await refreshGoogleAdsCampaignCheck()
         }
     }
 }

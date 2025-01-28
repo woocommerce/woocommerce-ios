@@ -1,3 +1,0 @@
-
-Esta actualización aporta una mayor fiabilidad y transparencia a tu experiencia con WooCommerce. Disfruta de una configuración de Jetpack mejorada, una gestión de medios más fluida y mejores flujos de trabajo de productos y pagos. También hemos optimizado el almacenamiento y hemos solucionado problemas clave de la interfaz de usuario para mejorar el rendimiento. Además, ahora el proceso de iniciación de Tap to Pay te guía de forma sencilla.
-

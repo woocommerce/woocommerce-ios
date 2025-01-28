@@ -1,3 +1,0 @@
-
-Deze update biedt verbeterde betrouwbaarheid en duidelijkheid voor je WooCommerce-ervaring! Profiteer van een verbeterde Jetpack-configuratie, soepelere verwerking van media en betere workflows voor producten en betalingen. Daarnaast hebben we opslag geoptimaliseerd en belangrijke UI-problemen opgelost voor betere prestaties. Bovendien helpt de onboarding voor Tap to Pay je nu eenvoudig op weg!
-

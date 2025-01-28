@@ -1,0 +1,23 @@
+{
+    "data": {
+        "success": false,
+        "errors": {
+            "address": "House number is missing",
+            "name": "Either Name or Company is required",
+            "general": "Address not found"
+        },
+        "isTrivialNormalization": false,
+        "address": {
+            "company": "",
+            "name": "",
+            "address_1": "20W 34th St",
+            "address_2": "Suite 100",
+            "city": "New York",
+            "state": "NY",
+            "postcode": "10001",
+            "country": "US",
+            "phone": "555-1234",
+            "email": "john.doe@example.com"
+        }
+    }
+}

@@ -1,3 +1,0 @@
-
-Con questo aggiornamento, l'esperienza WooCommerce è ancora più affidabile e chiara. Con configurazione Jetpack migliorata, gestione dei media più fluida e flussi di lavoro relativi al prodotto e ai pagamenti più efficienti. Inoltre abbiamo ottimizzato l'archiviazione e gestito i problemi relativi all'interfaccia utente per migliorare le prestazioni. Per concludere, prova la guida introduttiva a Tocca per pagare.
-

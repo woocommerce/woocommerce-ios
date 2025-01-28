@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-12-27 11:54:04+0000 */
+/* Translation-Revision-Date: 2025-01-14 09:54:06+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -804,8 +804,7 @@ which should be translated separately and considered part of this sentence. */
    Title when there is no filter set. */
 "Any" = "任何";
 
-/* Format of a product variation attribute description where the attribute is set to any value.
-   Product variation attribute description where the attribute is set to any value. */
+/* Product variation attribute description where the attribute is set to any value. */
 "Any %1$@" = "任何 %1$@";
 
 /* My Store > Settings > App (Application) settings section title */
@@ -1267,7 +1266,6 @@ which should be translated separately and considered part of this sentence. */
    Title for the button to cancel the payment methods screen
    Title of an option to dismiss the bulk edit action sheet
    Title of dismiss button presented when site credential login fails
-   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen.
    Title of the dismiss button on the store onboarding payments setup screen. */
 "Cancel" = "取消";
 
@@ -1299,21 +1297,13 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "无法添加包裹";
 
-/* Order gift card error notice message when the gift card cannot be applied.
-   Order gift card error notice title when the gift card cannot be applied. */
-"Cannot apply gift card to order" = "订单无法使用礼品卡";
-
-/* Order gift card error thrown when the gift card cannot be applied. %1$@ is the detailed reason. */
-"Cannot apply gift card to order error: %1$@" = "订单无法使用礼品卡的错误：%1$@";
-
 /* The title of the alert when there is an error duplicating the product */
 "Cannot duplicate product" = "无法复制产品";
 
 /* Error message when no URL to WP-Admin page is found during Jetpack install flow */
 "Cannot find information about your site's WP-Admin. Please try again." = "无法找到有关您站点 WP-Admin 的信息。 请重试。";
 
-/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
-   The title of the alert when there is an error updating the product */
+/* The title of the alert when there is an error updating the product */
 "Cannot update product" = "无法更新产品";
 
 /* Title of the notice when there is an error updating selected products */
@@ -1859,9 +1849,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message informing the user that there was a problem subscribing to a site or feed. */
 "Could not follow the site at the address specified." = "无法关注指定地址的站点。";
 
-/* Title of the alert when the site cannot be launched from store onboarding > launch store screen. */
-"Could not launch your store" = "无法启动您的商店";
-
 /* Error message informing the user that there was a problem unsubscribing to a site or feed. */
 "Could not unfollow the site at the address specified." = "无法取消关注指定地址的站点。";
 
@@ -1973,9 +1960,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Create Order iOS Shortcut */
 "Create order" = "创建订单";
-
-/* The title of the shipping labels top banner in order details */
-"Create shipping labels from your device!" = "通过您的设备创建配送标签！";
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "创建您的第一个变体";
@@ -2262,7 +2246,6 @@ which should be translated separately and considered part of this sentence. */
    Dismiss the media picking action sheet
    Dismiss the shipment tracking action sheet
    Label for the banner Dismiss button
-   The title of the button to dismiss the banner in order details
    The title of the button to dismiss the banner on the products tab
    Title of the button to dismiss the banner notice in the add-ons view
    Title of the dismiss action button on the coupon list screen */
@@ -3210,18 +3193,10 @@ which should be translated separately and considered part of this sentence. */
 /* Header of the gift card code text field in the order form. */
 "Gift card code" = "礼品卡代码";
 
-/* Order gift card error notice message when the gift card is invalid.
-   Order gift card error notice title when the gift card is invalid. */
-"Gift card is invalid" = "礼品卡无效";
-
-/* Order gift card error notice title when the gift card is invalid. */
-"Gift card is not applied" = "未应用礼品卡";
-
 /* No comment provided by engineer. */
 "Gift cards" = "礼品卡";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
-   The title of the button to give feedback about shipping labels features on the banner in order details
    Title of the button to give feedback about the add-ons feature
    Title of the feedback action button on the coupon list screen
    Title on the navigation bar for the products feedback survey */
@@ -3490,9 +3465,6 @@ which should be translated separately and considered part of this sentence. */
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "有货";
 
-/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
-"In the United Kingdom, cards may only be used with Tap to Pay for transactions up to %1$@." = "在英国，使用“点按付款”功能的银行卡付款仅可用于金额不超过 %1$@ 的交易。";
-
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "进行站点管理时，您可以在 Jetpack 控制面板中找到用于连接 WordPress.com 的电子邮件，具体位于“连接”>“帐户连接”下";
 
@@ -3647,12 +3619,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error when an empty Identifier is returned from the barcode scanner */
 "Invalid Identifier" = "无效标识符";
 
-/* The title of the alert when there is an error with the package name */
-"Invalid Package Name" = "包裹名称无效";
-
-/* The title of the alert when there is an error updating the product SKU */
-"Invalid Product SKU" = "无效的产品 SKU";
-
 /* No comment provided by engineer. */
 "Invalid Site Address" = "无效站点地址";
 
@@ -3670,9 +3636,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message generated when announcement service is unable to return a valid endpoint. */
 "Invalid endpoint" = "端点无效";
-
-/* Order gift card error thrown when the gift card is invalid. %1$@ is the detailed reason. */
-"Invalid gift card error: %1$@" = "礼品卡无效的错误：%1$@";
 
 /* No comment provided by engineer. */
 "Invalid username" = "无效用户名";
@@ -4690,8 +4653,7 @@ which should be translated separately and considered part of this sentence. */
    Dismiss button on the alert when there is an error uploading image(s)
    Dismisses the alert
    Ok button for dismissing alert helping users understand their site address
-   Submit button on prompt for user information.
-   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen. */
+   Submit button on prompt for user information. */
 "OK" = "确定";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
@@ -4734,9 +4696,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "只有站点所有者可以管理配送标签付款方式。 请联系 %1$@ (%2$@)，来管理付款方式。";
-
-/* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
-"Oops, some unexpected errors happened." = "糟糕，发生意外错误。";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "打开设备设置";
@@ -5147,9 +5106,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
 "Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.7 or above. Contact support if this error shows on a supported device." = "请检查您的手机是否符合以下要求：运行 iOS 16.7 或以上版本的 iPhone XS 或更新机型。 如果支持的设备上出现此错误，请联系支持人员。";
-
-/* Order gift card error notice message when the gift card is invalid. */
-"Please check the remaining balance of the gift card." = "请检查礼品卡的余额。";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
 "Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service." = "请检查您的 Apple ID 是否有效，然后重试。 接受 Apple 的服务条款时需要使用一个有效的 Apple ID";
@@ -6017,9 +5973,6 @@ which should be translated separately and considered part of this sentence. */
    Title of the product search filter to search for products that match the SKU. */
 "SKU" = "SKU";
 
-/* The message of the alert when there is an error updating the product SKU */
-"SKU already in use by another product" = "SKU 已用于其他产品";
-
 /* Label about the SKU of a product in the product list. Reads, `SKU: productSku`
    SKU label for a product in the bundled products screen. The variable shows the SKU of the product.
    SKU label in order details > product row. The variable shows the SKU of the product. */
@@ -6404,8 +6357,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the primary button on the store onboarding launched store screen. */
 "Share URL" = "分享 URL";
 
-/* Title of the feedback action button on the In-Person Payments feedback banner
-   Title of the feedback button in the action sheet. */
+/* Title of the feedback action button on the In-Person Payments feedback banner */
 "Share feedback" = "分享反馈";
 
 /* Title for button allowing users to share information about the app with friends, such as via Messages */
@@ -6644,9 +6596,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "对不起，您的用户名中包含非法短语 %@.";
-
-/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7 */
-"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "抱歉，WooCommerce 4.7 或高更版本支持删除产品变体的图片，请更新您的网站。";
 
 /* No comment provided by engineer. */
 "Sorry, site addresses can only contain lowercase letters (a-z) and numbers." = "抱歉，站点地址只能使用小写字母和数字。";
@@ -7273,15 +7222,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "第一次在 iPhone 上使用“点按付款”功能时，系统可能会提醒您接受 Apple 的服务条款。";
 
-/* Order gift card error thrown when the gift card is not applied. */
-"The gift card is not applied." = "未应用该礼品卡。";
-
-/* The message of the alert when another custom package has the same name */
-"The new custom package name is not unique." = "新定制包裹名称不唯一。";
-
-/* The message of the alert when another service package has the same name */
-"The new service package name is not unique." = "新服务包裹名称不唯一。";
-
 /* Message when the presented card does not allow the purchase amount. */
 "The payment amount is not allowed for the card presented. Try another means of payment." = "当前银行卡不支持该付款金额。 请尝试其他付款方式。";
 
@@ -7494,9 +7434,6 @@ which should be translated separately and considered part of this sentence. */
 /* Tab selector title that shows the statistics for this month */
 "This Month" = "本月";
 
-/* The message of the alert when there is an error updating the product SKU */
-"This SKU is used on another product or is invalid." = "此 SKU 已用于其他产品或无效。";
-
 /* Tab selector title that shows the statistics for this week */
 "This Week" = "本周";
 
@@ -7603,9 +7540,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "结束日期";
-
-/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
-"To accept payments above this limit, consider purchasing a card reader." = "如需接受超过此限额的付款，请考虑购买读卡器。";
 
 /* Description text for the product discount row informational tooltip */
 "To add a Product Discount, please remove all Coupons from your order" = "如需添加产品折扣，请删除订单中的所有优惠券";
@@ -7793,8 +7727,7 @@ which should be translated separately and considered part of this sentence. */
 "Try a test order" = "体验测试订单";
 
 /* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
-   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
-   Title of the try again action when the site cannot be launched from store onboarding > launch store screen. */
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue. */
 "Try again" = "请重试";
 
 /* Title of the action button to log in with WP-Admin page in a web view, presented when site credential login fails */
@@ -8075,9 +8008,7 @@ which should be translated separately and considered part of this sentence. */
 /* Undo Action */
 "Undo" = "撤消";
 
-/* The message of the alert when there is an unexpected error adding the package
-   The message of the alert when there is an unexpected error updating the product
-   Title of the alert when the site cannot be launched from store onboarding > launch store screen. */
+/* The message of the alert when there is an unexpected error adding the package */
 "Unexpected error" = "意外错误";
 
 /* Country option for a site address. */
@@ -8401,9 +8332,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "通过您的设备查看加载项！";
 
-/* Title of the feedback banner on the coupon list screen */
-"View and edit coupons" = "查看并编辑优惠券";
-
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "查看可下载文件的设置";
 
@@ -8521,9 +8449,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when we're unable to fetch In-App Purchases plans from the server. */
 "We encountered an error loading plan information" = "加载套餐信息时出现错误";
 
-/* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
-"We found that the store has already launched." = "我们发现此商店已发布。";
-
 /* Message on the expired WPCom plan alert */
 "We have paused your store. You can purchase another plan by logging in to WordPress.com on your browser." = "我们已暂停您的商店。 您可以通过浏览器登录 WordPress.com，购买其他套餐。";
 
@@ -8619,9 +8544,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Store details task to add details about the store. */
 "We’ll use the info to get a head start on your shipping, tax, and payments settings." = "我们将使用此信息抢先开始设置运费、税费和付款。";
-
-/* Content of the feedback banner on the coupon list screen */
-"We’ve been working on making it possible to view and edit coupons from your device!" = "我们一直致力于不断改进，让您能够从设备上也可以查看并编辑优惠券！";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "我用什么电子邮件登录？";
@@ -8807,9 +8729,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instructions guiding the merchant to manage a site's plan upgrade. */
 "You can manage your subscription in your iPhone Settings → Your Name → Subscriptions" = "您可以前往 iPhone 的“设置”→ 您的姓名 →“订阅”来管理订阅";
-
-/* The info of the shipping labels top banner in order details */
-"You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "现在，您可以利用免费的 WooCommerce Shipping 插件，直接通过您的设备为所有实体订单创建配送标签。 轻按“创建配送标签”试用我们的 Beta 版功能！";
 
 /* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
 "You can only add variable subscriptions in the web dashboard" = "您只可在 Web 仪表盘中添加可变订阅";
@@ -10524,11 +10443,14 @@ which should be translated separately and considered part of this sentence. */
 /* Header of the Current Store section of the the Edit Store List view */
 "editStoreListView.currentStoreHeader" = "当前商店";
 
-/* Footer of the Other Stores section on the Edit Store List view */
-"editStoreListView.otherStoresFooter" = "未选择的商店将不会出现在商店选择器中";
+/* Error message when updating notification settings fails when saving the store list for the store picker */
+"editStoreListView.errorUpdatingNotificationSettings" = "更新通知设置时出错。 请重试。";
 
 /* Header of the Other Stores section on the Edit Store List view */
 "editStoreListView.otherStoresHeader" = "其他商店";
+
+/* Button to retry saving changes in the Edit Store List view */
+"editStoreListView.retryButton" = "重试";
 
 /* Button to save changes in the Edit Store List view */
 "editStoreListView.saveButton" = "保存";
@@ -10605,6 +10527,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the filter used to show only favorite products. */
 "favoriteProductsFilter.favoriteProducts" = "收藏产品";
+
+/* Accessibility hint for the filter history button on the filter list screen */
+"filterListViewController.historyBarButtonItem.accessibilityHint" = "筛选器历史记录";
 
 /* Row title for filtering orders by customer. */
 "filterOrderListViewModel.OrderListFilter.rowCustomer" = "客户";
@@ -11716,6 +11641,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "该订单可能已失败";
 
+/* Subtitle for the cash payment view navigation back buttonReads as 'Total: $1.23' */
+"pointOfSale.cashview.back.navigation.subtitle" = "总计：%1$@";
+
+/* Title for the cash payment view navigation back button */
+"pointOfSale.cashview.back.navigation.title" = "现金付款";
+
+/* Button to mark a cash payment as completed */
+"pointOfSale.cashview.button.markpaymentcompleted.title" = "将付款标记为已完成";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "请稍候";
 
@@ -11767,6 +11701,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.done" = "完成";
 
+/* Title for the payment method used when collecting cash payment in Point of Sale. */
+"pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "现场付款";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "点击产品以 \n 将其添加到购物车";
 
@@ -11778,6 +11715,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "清除";
+
+/* Back button title in the child item list screen. */
+"pos.childItemList.back" = "返回";
 
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "未连接互联网";
@@ -11791,17 +11731,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "退出销售点模式？";
 
-/* Title at the top of the Point of Sale product selector screen. */
-"pos.headerTitleView.productSelectorTitle" = "产品";
-
-/* Text for the button appearing on the item list screen when there's an error loading products. */
-"pos.itemList.failedToLoadButtonTitle" = "重试";
-
-/* Text appearing on the item list screen as subtitle when there's an error loading products. */
-"pos.itemList.failedToLoadSubtitle" = "再试一次？";
-
-/* Text appearing on the item list screen when there's an error loading products. */
-"pos.itemList.failedToLoadTitle" = "加载产品时出错";
+/* Title at the top of the Point of Sale item list full screen. */
+"pos.itemListFullscreen.title" = "产品";
 
 /* Accessibility label for button to dismiss the product selector header banner. The banner explains current POS limitations. Tapping the button prevents it being shown again. */
 "pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel" = "忽略";
@@ -11818,14 +11749,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title" = "仅显示简单产品";
 
-/* Text hinting the merchant to create a product. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "如需添加产品，请退出 POS，然后转到“产品”";
+/* Title at the top of the Point of Sale product selector screen. */
+"pos.itemlistview.title" = "产品";
 
-/* Subtitle text on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle" = "POS 目前仅支持简单产品。";
-
-/* Text appearing on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsTitle" = "未找到受支持的产品";
+/* Text indicating that there are options available for a parent product */
+"pos.parentProductCard.optionsAvailable" = "可用选项";
 
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "在商店管理中创建订单";
@@ -11850,6 +11778,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title for the receipt button */
 "pos.totalsView.button.sendReceipt" = "电子邮件收据";
+
+/* Title for the cash payment button title */
+"pos.totalsView.cash.button.title" = "现金付款";
 
 /* Text for the banner requiring specific WooCommerce version. */
 "pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "请将 WooCommerce 更新至 9.5.0 版本";
@@ -11934,21 +11865,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text detection failed error message on the starting information screen. */
 "productCreationAIStartingInfoViewModel.textDetectionFailed" = "扫描照片时出错。 请选择其他包装照片或手动输入产品详细信息。";
-
-/* Description in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationView.description" = "有时间吗？ 请提供快速反馈，以帮助我们改进人工智能辅助功能。";
-
-/* Start Survey button title in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationView.startTheSurvey" = "开始调查";
-
-/* Title in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationView.title" = "您的宝贵意见对我们非常重要！";
-
-/* Dismiss button title in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationViewModel.dontShowItAgain" = "不再显示";
-
-/* Dismiss button title in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationViewModel.remindMeLater" = "稍后提醒我";
 
 /* Category label for other product creation types */
 "productCreationCategory.other" = "其他";
@@ -12105,9 +12021,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
 "productInventorySettings.globalUniqueIdentifier.title" = "GTIN、UPC、EAN、ISBN";
-
-/* The message of the alert when there is an error updating the product global unique identifier */
-"productInventorySettings.invalidGlobalUniqueIdentifier.error" = "请仅输入数字和连字符 (-)。";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "计费间隔";
@@ -12290,6 +12203,27 @@ which should be translated separately and considered part of this sentence. */
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
 "share details" = "共享详情";
 
+/* Body for the custom items description educational dialog */
+"shipping.customs.descriptionInfoDialogBody" = "在运输到遵守欧盟 (EU) 海关规则的国家\/地区时，您必须对每件商品提供清晰、具体的描述。 例如，如果要寄送的是服装，您的描述中需要指明服装的类型（如男士衬衫、女童背心、男童夹克）才可被接受。 否则货物可能会在海关滞留或被扣留。";
+
+/* Button title for the done button in the customs description educational dialog */
+"shipping.customs.descriptionInfoDialogDone" = "完成";
+
+/* Button title for the learn more action in the custom descriptions info dialog */
+"shipping.customs.descriptionInfoDialogLearnMore" = "了解更多";
+
+/* Title for the custom description educational dialog */
+"shipping.customs.descriptionInfoDialogTitle" = "描述";
+
+/* Body for the custom items origin country educational dialog */
+"shipping.customs.originCountryInfoDialogBody" = "产品的制造或组装国家\/地区。";
+
+/* Button title for the done button in the customs description educational dialog */
+"shipping.customs.originCountryInfoDialogDoneButton" = "完成";
+
+/* Title for the custom origin country educational dialog */
+"shipping.customs.originCountryInfoDialogTitle" = "原产国家\/地区";
+
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "取消";
 
@@ -12376,6 +12310,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "连接现有商店";
+
+/* Store Picker's Section Title: Displayed whenever there are multiple Stores. The content inside the bracket indicates the number of stores hidden from the store picker. The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)' */
+"storePickerViewModel.pickStoreWithHiddenStoreCount" = "选择要关联的商店（%1$d 个已隐藏）";
 
 /* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
 "storeStatsChart.xSelectedValue" = "选定日期";
@@ -12524,6 +12461,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is successful, we show a Notice to alert the user – this is the title of the notice. */
 "tap.to.pay.try.payment.refundNotice.success.title" = "试用“点按付款”进行付款";
+
+/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
+"tapToPay.aboutTapToPay.contactlessLimit.gb" = "在英国，您可以使用“点按付款”功能接受交易金额不超过 %1$@ 的银行卡付款。 对于超过 %1$@ 的付款，有些银行卡允许客户直接在手机上输入 PIN，而有些银行卡则需要客户使用读卡器来完成付款。";
+
+/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
+"tapToPay.aboutTapToPay.overLimitSuggestion" = "如需接受超过此限额的所有付款，请考虑购买读卡器。";
 
 /* Title of the button to dismiss the Tap to Pay awareness screen */
 "tapToPay.awarenessMoment.closeButton" = "关闭";
@@ -12810,6 +12753,9 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "周";
 
+/* Title for the Add Package screen Add Package Details button */
+"wooShipping.createLabel.addPackage.addPackageDetails" = "添加包裹详细信息";
+
 /* Info label for selected box as a package type */
 "wooShipping.createLabel.addPackage.box" = "箱子";
 
@@ -12855,6 +12801,9 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for saved package option */
 "wooShipping.createLabel.addPackage.saved" = "已保存";
 
+/* Title for the Add Package screen Select Package button */
+"wooShipping.createLabel.addPackage.selectPackage" = "选择包裹";
+
 /* Title for the Add Package screen */
 "wooShipping.createLabel.addPackage.title" = "添加包裹";
 
@@ -12866,6 +12815,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button to dismiss the shipping label screen */
 "wooShipping.createLabel.closeButton" = "关闭";
+
+/* Title for the Edit Package screen Done button */
+"wooShipping.createLabel.editPackage.done" = "完成";
+
+/* Title for the Edit Package screen */
+"wooShipping.createLabel.editPackage.title" = "编辑包裹";
+
+/* Title for the Edit Package screen Use Selected Package button */
+"wooShipping.createLabel.editPackage.useSelectedPackage" = "使用所选的包裹";
 
 /* Label for section in shipping label creation to declare when a package contains hazardous materials. */
 "wooShipping.createLabel.hazmatLabel" = "您是否要运输危险品或危险物质？";
@@ -12926,6 +12884,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
+
+/* Button for dismissing the keyboard */
+"wooShipping.createLabels.package.done" = "完成";
 
 /* Heading for the package section in the shipping label creation screen. */
 "wooShipping.createLabels.package.title" = "包裹";
@@ -13004,6 +12965,96 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to view a shipping label */
 "wooShipping.createLabels.viewLabelTitle" = "查看运输标签";
+
+/* Customs button title when it's disabled and there's still info to add */
+"wooShipping.customs.addMissingInformationButtonTitle" = "添加缺失的信息";
+
+/* Cancel button in navigation bar to dismiss the screen */
+"wooShipping.customs.cancel" = "取消";
+
+/* Title for the Content Type menu in the Shipping Customs Form */
+"wooShipping.customs.contentType" = "内容类型";
+
+/* Info label for shipping content type merchandise */
+"wooShipping.customs.contentType.documents" = "文档";
+
+/* Info label for shipping content type merchandise */
+"wooShipping.customs.contentType.gift" = "礼品";
+
+/* Info label for shipping content type merchandise */
+"wooShipping.customs.contentType.merchandise" = "商品";
+
+/* Info label for shipping content type merchandise */
+"wooShipping.customs.contentType.other" = "其他...";
+
+/* Info label for shipping content type returned goods */
+"wooShipping.customs.contentType.returnedGoods" = "退回的商品";
+
+/* Info label for shipping content type merchandise */
+"wooShipping.customs.contentType.sample" = "样品";
+
+/* Title for the Internaction Transaction Number in the Shipping Customs Form */
+"wooShipping.customs.internationalTransactionNumber" = "国际交易编号";
+
+/* Explanatory text for the international transaction number in customs */
+"wooShipping.customs.internationalTransactionNumber.infoText" = "关于 ITN 的更多信息";
+
+/* Product Details Section title */
+"wooShipping.customs.productDetails" = "产品详细信息";
+
+/* Title for the Restriction Type menu in the Shipping Customs Form */
+"wooShipping.customs.restrictionType" = "限制类型";
+
+/* Info label for shipping restriction type none */
+"wooShipping.customs.restrictionType.none" = "无";
+
+/* Info label for shipping restriction type other */
+"wooShipping.customs.restrictionType.other" = "其他";
+
+/* Info label for shipping restriction type quarantine */
+"wooShipping.customs.restrictionType.quarantine" = "隔离";
+
+/* Info label for shipping restriction type sanitary */
+"wooShipping.customs.restrictionType.sanitary" = "卫生\/植物检疫检查";
+
+/* Info label for a toggle to return the package to a sender if necessary toggle */
+"wooShipping.customs.returnToSenderMessage" = "如果包裹无法送达，会退回给寄件人";
+
+/* Customs button title when it's enabled and there's no info to add */
+"wooShipping.customs.saveCustomsDetails" = "保存海关详细信息";
+
+/* Title for the Customs screen */
+"wooShipping.customs.title" = "海关";
+
+/* Title for the customs items description text field for customs items */
+"wooShipping.customsItems.description" = "描述";
+
+/* Title for the HS Tariff Number text field for customs items */
+"wooShipping.customsItems.hsTariffNumber" = "HS 关税编号";
+
+/* Information text about the HS Tariff */
+"wooShipping.customsItems.hsTariffNumber.moreInfoText" = "关于 HS 关税的更多信息";
+
+/* Placeholder for the HS Tariff Number text field for customs items */
+"wooShipping.customsItems.hsTariffNumber.placeholder" = "可选";
+
+/* Title for the origin country text field */
+"wooShipping.customsItems.originCountry" = "原产国家\/地区";
+
+/* Title for the customs items value per unit text field for customs items */
+"wooShipping.customsItems.valuePerUnit" = "单位价值";
+
+/* Warning text when some required value is missing */
+"wooShipping.customsItems.valueRequired" = "值不能为空";
+
+/* Title for the customs items weight per unit text field for customs items */
+"wooShipping.customsItems.weightPerUnit" = "单位重量";
+
+/* Indicates that the address is the default origin address  on the shipping label creation screen */
+"wooShipping.originAddresses.defaultAddress" = "（默认）";
+
+/* Heading for the list of origin addresses to choose from on the shipping label creation screen */
+"wooShipping.originAddresses.shipFrom" = "发货地";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, 我的商店, 今天, 本周, 本月, 本年, 订单, 访问者, 转化率, 最高转化率, 已销售项目";

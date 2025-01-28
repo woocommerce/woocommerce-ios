@@ -1,9 +1,24 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
+21.6
+-----
+- [*] Payments: Improved error handling during card payments and refunds [https://github.com/woocommerce/woocommerce-ios/pull/14980]
+
 21.5
 -----
+- [*] Blaze: if the AI is unable to provide suggestions in the creation form, the form will now automatically use product information to ensure all fields of the preview are populated. [https://github.com/woocommerce/woocommerce-ios/pull/14868]
 - [Internal] [*] Improved handling of the navigation to the Woo Installation screen post Jetpack setup [https://github.com/woocommerce/woocommerce-ios/pull/14837]
 - [*] Receipts: Email receipts can now be sent to customers after failed payments using WooCommerce Stripe 9.1.0+. [https://github.com/woocommerce/woocommerce-ios/pull/14864].
+- [*] Order Creation: orders are always created using the store's currency, not the user's [https://github.com/woocommerce/woocommerce-ios/pull/14907]
+- [*] Dashboard: Updated the drag gesture on the Performance chart to show stats instantly. [https://github.com/woocommerce/woocommerce-ios/pull/14906]
+- [*] Product Form: Support previewing products on coming-soon stores. [https://github.com/woocommerce/woocommerce-ios/pull/14931]
+- [*] Jetpack Setup: Fix issue setting up Jetpack for JCP sites when authenticated without WPCom and removing application password after completion [https://github.com/woocommerce/woocommerce-ios/pull/14929]
+- [Internal] Removed feedback survey for Store Setup feature [https://github.com/woocommerce/woocommerce-ios/pull/14888]
+- [Internal] Removed feedback survey for shipping label creation [https://github.com/woocommerce/woocommerce-ios/pull/14889]
+- [Internal] Removed feedback survey for product creation AI [https://github.com/woocommerce/woocommerce-ios/pull/14890]
+- [Internal] Removed feedback survey for coupons list [https://github.com/woocommerce/woocommerce-ios/pull/14891]
+- [Internal] Core Data: Attempt recovery from corrupted database [https://github.com/woocommerce/woocommerce-ios/pull/14961]
+- [*] Updated the Stripe Gateway setup URL to point to the appropriate settings page. [https://github.com/woocommerce/woocommerce-ios/pull/14964]
 
 21.4
 -----

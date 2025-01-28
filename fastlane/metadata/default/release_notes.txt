@@ -1,3 +1,1 @@
-
-This update brings enhanced reliability and clarity to your WooCommerce experience! Enjoy improved Jetpack setup, smoother media handling, and better product and payment workflows. We’ve also optimized storage and addressed key UI issues to elevate performance. Plus, Tap to Pay onboarding now guides you with ease!
-
+Get ready for a smoother WooCommerce experience! This update brings smarter AI-powered product previews, instant dashboard stats, and improved email receipts for failed payments. We’ve also fine-tuned order creation, enhanced Jetpack setups, and enabled previews for coming-soon stores. Plus, we’ve addressed navigation, database recovery, and streamlined workflows.

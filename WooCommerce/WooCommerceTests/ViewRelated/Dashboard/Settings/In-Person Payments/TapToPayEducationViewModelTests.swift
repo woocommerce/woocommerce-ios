@@ -2,6 +2,7 @@ import Testing
 import Combine
 @testable import WooCommerce
 
+@MainActor
 struct TapToPayEducationViewModelTests {
     private let cardReaderSupportDeterminer: MockCardReaderSupportDeterminer
 

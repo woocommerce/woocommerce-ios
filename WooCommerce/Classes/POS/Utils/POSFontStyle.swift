@@ -7,6 +7,8 @@ enum POSFontStyle {
     case posTitleEmphasized
     case posBodyRegular
     case posBodyEmphasized
+    case posLargeDetailEmphasized
+    case posLargeDetailRegular
     case posDetailLight
     case posDetailRegular
     case posDetailEmphasized
@@ -22,6 +24,10 @@ enum POSFontStyle {
             Font.system(size: scaledValue(24, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
         case .posBodyEmphasized:
             Font.system(size: scaledValue(24, maximumContentSizeCategory: maximumContentSizeCategory), weight: .bold)
+        case .posLargeDetailEmphasized:
+            Font.system(size: scaledValue(20, maximumContentSizeCategory: maximumContentSizeCategory), weight: .semibold)
+        case .posLargeDetailRegular:
+            Font.system(size: scaledValue(20, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
         case .posDetailLight:
             Font.system(size: scaledValue(16, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
         case .posDetailRegular:

@@ -34,7 +34,7 @@ struct TotalsView: View {
                     Spacer()
                         .renderedIf(cardReaderViewLayout.topPadding == nil)
 
-                    VStack(alignment: .center, spacing: Constants.verticalSpacing) {
+                    VStack(alignment: .center, spacing: 0) {
                         if isShowingCardReaderStatus {
                             paymentView
                                 .font(.title)
@@ -67,6 +67,7 @@ struct TotalsView: View {
                                 .font(POSFontStyle.posBodyEmphasized)
                                 .foregroundColor(.posPrimaryText)
                                 .frame(height: Constants.buttonHeight)
+                                .minimumScaleFactor(0.5)
                         })
                         .buttonStyle(SecondaryButtonStyle())
                         .padding(.horizontal, Constants.buttonHorizontalPadding)
@@ -242,6 +243,7 @@ private extension TotalsView {
             case .collectingCash:
                 if case .loaded(let total) = posModel.orderState {
                     PointOfSaleCollectCashView(orderTotal: total.orderTotal)
+                        .transition(.move(edge: .trailing))
                 }
             case .paymentSuccess:
                 if case .loaded(let total) = posModel.orderState {
@@ -381,6 +383,23 @@ private extension TotalsView {
             "pos.totalsView.cash.button.title",
             value: "Cash payment",
             comment: "Title for the cash payment button title")
+    }
+
+    private func dynamicVerticalSpacing(for size: DynamicTypeSize) -> CGFloat {
+        switch size {
+        case    .accessibility1,
+                .accessibility2,
+                .accessibility3,
+                .accessibility4,
+                .accessibility5:
+            return 0
+        case .xLarge, .xxLarge:
+            return Constants.verticalSpacing * 0.75
+        case .xxxLarge:
+            return Constants.verticalSpacing * 0.5
+        default:
+            return Constants.verticalSpacing
+        }
     }
 }
 

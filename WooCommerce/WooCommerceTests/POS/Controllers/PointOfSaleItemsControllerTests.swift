@@ -37,6 +37,7 @@ final class PointOfSaleItemsControllerTests {
     @Test func loadItems_results_in_loaded_state() async throws {
         // Given
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()
+        itemProvider.itemPages = [expectedItems]
         try #require(itemsViewState.containerState == .loading)
 
         // When
@@ -67,6 +68,7 @@ final class PointOfSaleItemsControllerTests {
         // Given
         try #require(itemsViewState.containerState == .loading)
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()
+        itemProvider.itemPages = [expectedItems]
 
         // When
         await sut.loadItems(base: .root)
@@ -102,8 +104,7 @@ final class PointOfSaleItemsControllerTests {
     @Test func loadItems_when_initial_items_has_items_but_no_more_pages_then_state_is_loaded_with_initial_items() async throws {
         // Given
         let initialItems = MockPointOfSaleItemService.makeInitialItems()
-        itemProvider.items = initialItems
-        itemProvider.shouldSimulateTwoPages = false
+        itemProvider.itemPages = [initialItems]
 
         try #require(itemsViewState.containerState == .loading)
 
@@ -119,7 +120,6 @@ final class PointOfSaleItemsControllerTests {
     @Test func loadNextItems_when_simulateFetchNextPage_then_state_is_loaded_with_expected_items() async throws {
         // Given
         let initialItems = MockPointOfSaleItemService.makeInitialItems()
-        itemProvider.items = initialItems
         itemProvider.shouldSimulateTwoPages = true
         await sut.loadItems(base: .root)
 
@@ -150,7 +150,6 @@ final class PointOfSaleItemsControllerTests {
     @Test func loadNextItems_when_simulateFetchNextPage_then_state_is_loaded_with_hasMoreItems() async throws {
         // Given
         let initialItems = MockPointOfSaleItemService.makeInitialItems()
-        itemProvider.items = initialItems
         itemProvider.shouldSimulateTwoPages = true
         itemProvider.shouldSimulateMorePages = true
         await sut.loadItems(base: .root)
@@ -174,7 +173,6 @@ final class PointOfSaleItemsControllerTests {
                                                                                 productImageSource: nil,
                                                                                 productID: 12345))
         let baseItem = ItemListBaseItem.parent(parentItem)
-        itemProvider.items = [parentItem]
         itemProvider.shouldSimulateTwoPagesOfVariations = true
         itemProvider.shouldSimulateMorePagesOfVariations = true
 
@@ -200,7 +198,6 @@ final class PointOfSaleItemsControllerTests {
                                                                                 productImageSource: nil,
                                                                                 productID: 12345))
         let baseItem = ItemListBaseItem.parent(parentItem)
-        itemProvider.items = [parentItem]
         itemProvider.shouldSimulateTwoPagesOfVariations = true
 
         await sut.loadItems(base: .root)
@@ -292,6 +289,7 @@ final class PointOfSaleItemsControllerTests {
         // Given
         try #require(itemsViewState.containerState == .loading)
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()
+        itemProvider.itemPages = [expectedItems]
 
         // When
         await sut.loadItems(base: .root)
@@ -304,6 +302,8 @@ final class PointOfSaleItemsControllerTests {
 
     @Test func loadNextItems_when_next_page_is_empty_then_state_is_loaded() async throws {
         // Given
+        let expectedItems = MockPointOfSaleItemService.makeInitialItems()
+        itemProvider.itemPages = [expectedItems]
         await sut.loadItems(base: .root)
         try #require(itemProvider.spyLastRequestedPageNumber == 1)
 
@@ -313,7 +313,7 @@ final class PointOfSaleItemsControllerTests {
 
         // Then
         #expect(itemsViewState == ItemsViewState(containerState: .content,
-                                                 itemsStack: ItemsStackState(root: .loaded(MockPointOfSaleItemService.makeInitialItems(),
+                                                 itemsStack: ItemsStackState(root: .loaded(expectedItems,
                                                                                            hasMoreItems: false),
                                                                              itemStates: [:])))
     }
@@ -329,5 +329,106 @@ final class PointOfSaleItemsControllerTests {
 
         // Then
         try #require(itemProvider.spyLastRequestedPageNumber == 1)
+    }
+
+    @Test func loadItems_sets_root_items_to_loading_state_while_preserving_existing_items() async throws {
+        // Given
+        let initialItems = MockPointOfSaleItemService.makeInitialItems()
+        itemProvider.itemPages = [initialItems]
+        await sut.loadItems(base: .root)
+        try #require(itemsViewState.itemsStack.root.items == initialItems)
+
+        var states: [ItemListState] = []
+        let cancellable = sut.itemsViewStatePublisher
+            .sink { state in
+                states.append(state.itemsStack.root)
+            }
+
+        // When
+        await sut.loadItems(base: .root)
+
+        // Then
+        let loadingStates = states.filter { $0.isLoading }
+        #expect(loadingStates.count == 1)
+        if case .loading(let items) = loadingStates.first {
+            #expect(items == initialItems)
+        }
+        cancellable.cancel()
+    }
+
+    @Test func loadItems_sets_container_state_to_loading_and_root_state_to_loading_state_when_no_existing_items() async throws {
+        // Given
+        itemProvider.shouldReturnZeroItems = true
+        await sut.loadItems(base: .root)
+        try #require(itemsViewState.itemsStack.root.items == [])
+
+        var states: [ItemsViewState] = []
+        let cancellable = sut.itemsViewStatePublisher
+            .sink { state in
+                states.append(state)
+            }
+
+        // When
+        await sut.loadItems(base: .root)
+
+        // Then
+        let loadingStates = states.filter { $0.containerState == .loading }
+        #expect(loadingStates.count == 1)
+        #expect(loadingStates.first?.itemsStack.root == .loading([]))
+        cancellable.cancel()
+    }
+
+    @Test func loadItems_preserves_itemStates() async throws {
+        // Given
+        let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: UUID(),
+                                                                              name: "Parent product",
+                                                                              productImageSource: nil,
+                                                                              productID: 125))
+        itemProvider.itemPages = [[parentItem]]
+        await sut.loadItems(base: .root)
+        await sut.loadItems(base: .parent(parentItem))
+        let itemStates = itemsViewState.itemsStack.itemStates
+        try #require(itemStates != [:])
+
+        // When
+        await sut.loadItems(base: .root)
+
+        // Then
+        try #require(itemsViewState.itemsStack.itemStates == itemStates)
+    }
+
+    @Test func loadItems_sets_child_items_to_loading_state_while_preserving_existing_items() async throws {
+        // Given
+        let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: UUID(),
+                                                                              name: "Parent product",
+                                                                              productImageSource: nil,
+                                                                              productID: 125))
+        let baseItem = ItemListBaseItem.parent(parentItem)
+        itemProvider.itemPages = [[parentItem]]
+
+        // Loads initial items.
+        await sut.loadItems(base: .root)
+        await sut.loadItems(base: baseItem)
+
+        let initialChildItems = itemsViewState.itemsStack.itemStates[parentItem]?.items ?? []
+        try #require(!initialChildItems.isEmpty)
+
+        var states: [ItemListState] = []
+        let cancellable = sut.itemsViewStatePublisher.sink { state in
+            if let childState = state.itemsStack.itemStates[parentItem] {
+                states.append(childState)
+            }
+        }
+
+        // When
+        await sut.loadItems(base: baseItem)
+
+        // Then
+        let loadingStates = states.filter { $0.isLoading }
+        #expect(loadingStates.count == 1)
+        if case .loading(let items) = loadingStates.first {
+            #expect(items == initialChildItems)
+        }
+        cancellable.cancel()
     }
 }

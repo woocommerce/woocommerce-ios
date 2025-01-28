@@ -1,3 +1,0 @@
-
-Bu güncelleme, WooCommerce deneyiminize gelişmiş güvenilirlik ve netlik sağlar. İyileştirilmiş Jetpack kurulumunun, daha sorunsuz ortam kullanımının ve daha iyi ürün ve ödeme iş akışlarının keyfini çıkarın. Performansı iyileştirmek için depolama optimize edildi ve önemli kullanıcı arayüzü sorunları ele alındı. Ayrıca Tap to Pay hazırlık süreci sizi kolayca yönlendirir!
-

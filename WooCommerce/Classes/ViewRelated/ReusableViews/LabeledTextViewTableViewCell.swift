@@ -44,6 +44,7 @@ private extension LabeledTextViewTableViewCell {
     func configureBackground() {
         backgroundColor = .systemColor(.secondarySystemGroupedBackground)
         productTextField.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        productStatusBadgeHolder.backgroundColor = .listForeground(modal: false)
     }
 
     func configureLabelStyle() {

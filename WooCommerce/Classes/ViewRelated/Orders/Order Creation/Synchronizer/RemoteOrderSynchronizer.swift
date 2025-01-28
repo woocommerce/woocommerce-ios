@@ -15,7 +15,7 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
         $state
     }
 
-    @Published private(set) var order: Order = OrderFactory.emptyNewOrder
+    @Published private(set) var order: Order
 
     var orderPublisher: Published<Order>.Publisher {
         $order
@@ -89,6 +89,12 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
     ///
     private let debounceDuration: TimeInterval
 
+    var orderHasBeenChanged: Bool {
+        return order != initialOrder
+    }
+
+    private let initialOrder: Order
+
     // MARK: Initializers
 
 
@@ -104,8 +110,13 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
         self.debounceDuration = debounceDuration
 
         if case let .editing(initialOrder) = flow {
-            order = initialOrder
+            self.initialOrder = initialOrder
+            self.order = initialOrder
         } else {
+            let storeCurrency = currencySettings.currencyCode
+            let newOrder = OrderFactory.newOrder(currency: storeCurrency)
+            self.initialOrder = newOrder
+            self.order = newOrder
             updateBaseSyncOrderStatus()
         }
 

@@ -1,77 +1,64 @@
-import Foundation
+import SwiftUI
 import Yosemite
 import WooFoundation
 
-class AboutTapToPayViewModel: ObservableObject {
-    let configuration: CardPresentPaymentsConfiguration
-    private let cardReaderSupportDeterminer: CardReaderSupportDetermining
+struct TapToPayEducationContactlessLimitView: View {
+    let viewModel: TapToPayEducationContactlessLimitViewModel
+    @State private var showingWebView: Bool = false
 
-    @Published var shouldShowContactlessLimit: Bool = false
-    @Published var shouldShowButton: Bool = false
-
-    lazy var webViewModel: WebViewSheetViewModel = {
-        WebViewSheetViewModel(
-            url: WooConstants.URLs.inPersonPaymentsLearnMoreWCPayTapToPay.asURL(),
-            navigationTitle: Localization.webViewTitle,
-            authenticated: false)
-    }()
-
-    let siteID: Int64
-
-    let formattedMinimumOperatingSystemVersionForTapToPay: String
-
-    let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
-
-    let shouldAlwaysHideSetUpTapToPayButton: Bool
-
-    init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
-         configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
-         cardReaderSupportDeterminer: CardReaderSupportDetermining? = nil,
-         cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol? = nil,
-         shouldAlwaysHideSetUpTapToPayButton: Bool = false) {
-        self.siteID = siteID
-        self.configuration = configuration
-        self.cardReaderSupportDeterminer = cardReaderSupportDeterminer ?? CardReaderSupportDeterminer(siteID: siteID, configuration: configuration)
-
-        if let cardPresentPaymentsOnboardingUseCase {
-            self.cardPresentPaymentsOnboardingUseCase = cardPresentPaymentsOnboardingUseCase
-        } else {
-            let onboardingUseCase = CardPresentPaymentsOnboardingUseCase()
-            self.cardPresentPaymentsOnboardingUseCase = onboardingUseCase
-            self.cardPresentPaymentsOnboardingUseCase.refresh()
+    var body: some View {
+        VStack(alignment: .leading, spacing: Layout.spacing) {
+            HStack {
+                Image(systemName: "info.circle")
+                Text(Localization.importantInformation)
+            }
+            .headlineStyle()
+            Text(viewModel.contactlessLimitDetails)
+            Text(Localization.overLimitSuggestion)
+            Button(Localization.limitButtonTitle) {
+                viewModel.orderCardReaderPressed()
+                showingWebView = true
+            }
+            .buttonStyle(TextButtonStyle())
         }
-
-        self.shouldAlwaysHideSetUpTapToPayButton = shouldAlwaysHideSetUpTapToPayButton
-        shouldShowContactlessLimit = configuration.contactlessLimitAmount != nil
-        self.formattedMinimumOperatingSystemVersionForTapToPay = configuration.minimumOperatingSystemVersionForTapToPay.localizedFormattedString
-        refreshButtonVisibility()
-    }
-
-    func setUpFlowDismissed() {
-        refreshButtonVisibility()
-    }
-
-    private func refreshButtonVisibility() {
-        guard !shouldAlwaysHideSetUpTapToPayButton else {
-            return shouldShowButton = false
-        }
-
-        Task { @MainActor in
-            let hasTapToPayUsage = await cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
-            shouldShowButton = !hasTapToPayUsage
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .background(Color(.wooCommercePurple(.shade0)))
+        .cornerRadius(Layout.cornerRadius)
+        .sheet(isPresented: $showingWebView) {
+            WebViewSheet(viewModel: viewModel.webViewModel) {
+                showingWebView = false
+            }
         }
     }
 }
 
-private extension AboutTapToPayViewModel {
+private extension TapToPayEducationContactlessLimitView {
     enum Localization {
-        static let webViewTitle = NSLocalizedString(
-            "About Tap to Pay",
-            comment: "Title for the webview used by merchants to view more details about Tap to Pay on iPhone")
+        static let importantInformation = NSLocalizedString(
+            "Important information",
+            comment: "Heading for the details pane showing the contactless limit on About Tap to Pay")
+
+        static let overLimitSuggestion = NSLocalizedString(
+            "tapToPay.aboutTapToPay.overLimitSuggestion",
+            value: "To accept all payments above this limit, consider purchasing a card reader.",
+            comment: "A suggestion to buy a hardware card reader to handle transactions above the contactless limit, " +
+            "shown on the About Tap to Pay screen")
+
+        static let limitButtonTitle = NSLocalizedString(
+            "Learn more about card readers",
+            comment: "A button to view more about hardware card readers to handle transactions above the contactless " +
+            "limit, shown on the About Tap to Pay screen")
+    }
+
+    enum Layout {
+        static let spacing: CGFloat = 16
+        static let cornerRadius: CGFloat = 8
     }
 }
 
-class AboutTapToPayContactlessLimitViewModel {
+
+final class TapToPayEducationContactlessLimitViewModel {
     private let configuration: CardPresentPaymentsConfiguration
 
     let contactlessLimitDetails: String
@@ -98,7 +85,7 @@ class AboutTapToPayContactlessLimitViewModel {
     }
 }
 
-private extension AboutTapToPayContactlessLimitViewModel {
+private extension TapToPayEducationContactlessLimitViewModel {
     private enum Constants {
         static let utmCampaign = "about_tap_to_pay_contactless_limit"
         static let utmSource = "about_tap_to_pay"

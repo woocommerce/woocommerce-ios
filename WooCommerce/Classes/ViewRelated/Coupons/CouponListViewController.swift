@@ -36,7 +36,6 @@ final class CouponListViewController: UIViewController, GhostableViewController 
     private var subscriptions: Set<AnyCancellable> = []
 
     private lazy var dataSource: UITableViewDiffableDataSource<Section, CouponListViewModel.CellViewModel> = makeDataSource()
-    private lazy var topBannerView: TopBannerView = createFeedbackBannerView()
 
     private var onDataLoaded: ((Bool) -> Void)?
     private let emptyStateAction: (() -> Void)
@@ -44,13 +43,12 @@ final class CouponListViewController: UIViewController, GhostableViewController 
     private let onCouponSelected: ((Coupon) -> Void)
 
     init(siteID: Int64,
-         showFeedbackBannerIfAppropriate: Bool,
          emptyStateActionTitle: String,
          onDataLoaded: ((Bool) -> Void)? = nil,
          emptyStateAction: @escaping (() -> Void),
          onCouponSelected: @escaping ((Coupon) -> Void)) {
         self.siteID = siteID
-        self.viewModel = CouponListViewModel(siteID: siteID, showFeedbackBannerIfAppropriate: showFeedbackBannerIfAppropriate)
+        self.viewModel = CouponListViewModel(siteID: siteID)
         self.onDataLoaded = onDataLoaded
         self.emptyStateAction = emptyStateAction
         self.emptyStateActionTitle = emptyStateActionTitle
@@ -97,25 +95,6 @@ final class CouponListViewController: UIViewController, GhostableViewController 
                     self.startFooterLoadingIndicator()
                 case .initialized:
                     break
-                }
-            }
-            .store(in: &subscriptions)
-
-        viewModel.$shouldDisplayFeedbackBanner
-            .removeDuplicates()
-            .sink { [weak self] isVisible in
-                guard let self = self else { return }
-                if isVisible {
-                    // Configure header container view
-                    let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(self.tableView.frame.width), height: 0))
-                    headerContainer.addSubview(self.topBannerView)
-                    headerContainer.pinSubviewToSafeArea(self.topBannerView)
-
-                    self.tableView.tableHeaderView = headerContainer
-                    self.tableView.updateHeaderHeight()
-                } else {
-                    self.topBannerView.removeFromSuperview()
-                    self.tableView.tableHeaderView = nil
                 }
             }
             .store(in: &subscriptions)
@@ -235,39 +214,6 @@ private extension CouponListViewController {
                 return cell
             }
         )
-    }
-
-    func createFeedbackBannerView() -> TopBannerView {
-        let giveFeedbackAction = TopBannerViewModel.ActionButton(title: Localization.giveFeedbackAction) { [weak self] _ in
-            ServiceLocator.analytics.track(event: .featureFeedbackBanner(context: .couponManagement, action: .gaveFeedback))
-            self?.presentCouponsFeedback()
-        }
-        let dismissAction = TopBannerViewModel.ActionButton(title: Localization.dismissAction) { [weak self] _ in
-            ServiceLocator.analytics.track(event: .featureFeedbackBanner(context: .couponManagement, action: .dismissed))
-            self?.viewModel.dismissFeedbackBanner()
-        }
-        let expandedStateChangeHandler: (() -> Void)? = { [weak self] in
-            self?.tableView.updateHeaderHeight()
-        }
-        let actions = [giveFeedbackAction, dismissAction]
-        let viewModel = TopBannerViewModel(title: Localization.feedbackBannerTitle,
-                                           infoText: Localization.feedbackBannerContent,
-                                           icon: .speakerIcon.withRenderingMode(.alwaysTemplate),
-                                           iconTintColor: .wooCommercePurple(.shade50),
-                                           isExpanded: false,
-                                           topButton: .chevron(handler: expandedStateChangeHandler),
-                                           actionButtons: actions)
-        let topBannerView = TopBannerView(viewModel: viewModel)
-        topBannerView.translatesAutoresizingMaskIntoConstraints = false
-        return topBannerView
-    }
-
-    /// Presents coupons survey
-    ///
-    func presentCouponsFeedback() {
-        // Present survey
-        let navigationController = SurveyCoordinatingController(survey: .couponManagement)
-        present(navigationController, animated: true, completion: nil)
     }
 }
 
@@ -391,12 +337,6 @@ private extension CouponListViewController {
         static let couponsDisabledAction = NSLocalizedString(
             "Enable Coupons",
             comment: "The action button on the placeholder overlay on the coupon list screen when coupons are disabled for the store."
-        )
-
-        static let feedbackBannerTitle = NSLocalizedString("View and edit coupons", comment: "Title of the feedback banner on the coupon list screen")
-        static let feedbackBannerContent = NSLocalizedString(
-            "We’ve been working on making it possible to view and edit coupons from your device!",
-            comment: "Content of the feedback banner on the coupon list screen"
         )
 
         static let giveFeedbackAction = NSLocalizedString("Give feedback", comment: "Title of the feedback action button on the coupon list screen")

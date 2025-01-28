@@ -27,7 +27,7 @@ protocol PointOfSaleAggregateModelProtocol {
     func loadNextItems(base: ItemListBaseItem) async
 
     var cart: [CartItem] { get }
-    func addToCart(_ item: POSOrderableItem)
+    func addToCart(_ item: POSItem)
     func remove(cartItem: CartItem)
     func removeAllItemsFromCart()
     func addMoreToCart()
@@ -103,9 +103,23 @@ extension PointOfSaleAggregateModel {
 
 // MARK: - Cart
 
+private extension POSItem {
+    var cartItem: CartItem? {
+        switch self {
+        case .simpleProduct(let simpleProduct):
+            return CartItem(id: UUID(), item: simpleProduct, title: simpleProduct.name, subtitle: nil, quantity: 1)
+        case .variation(let variation):
+            return CartItem(id: UUID(), item: variation, title: variation.parentProductName, subtitle: variation.name, quantity: 1)
+        case .variableParentProduct:
+            return nil
+        }
+    }
+}
+
 extension PointOfSaleAggregateModel {
-    func addToCart(_ item: POSOrderableItem) {
-        cart.insert(CartItem(id: UUID(), item: item, quantity: 1), at: 0)
+    func addToCart(_ item: POSItem) {
+        guard let cartItem = item.cartItem else { return }
+        cart.insert(cartItem, at: cart.startIndex)
     }
 
     func remove(cartItem: CartItem) {

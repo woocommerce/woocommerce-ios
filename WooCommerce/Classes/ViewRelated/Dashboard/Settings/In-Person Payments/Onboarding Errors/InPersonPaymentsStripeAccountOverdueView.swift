@@ -4,9 +4,9 @@ import enum Yosemite.CardPresentPaymentsPlugin
 struct InPersonPaymentsStripeAccountOverdue: View {
     let analyticReason: String
     let onRefresh: () -> Void
+    let plugin: CardPresentPaymentsPlugin
     @State private var presentedSetupURL: URL? = nil
 
-    private let plugin: CardPresentPaymentsPlugin = .stripe
 
     var body: some View {
         InPersonPaymentsOnboardingError(
@@ -36,7 +36,7 @@ struct InPersonPaymentsStripeAccountOverdue: View {
      }
 
     private var setupURL: URL? {
-        guard let pluginSectionURL = ServiceLocator.stores.sessionManager.defaultSite?.cardPresentPluginHasPendingTasksURL() else {
+        guard let pluginSectionURL = ServiceLocator.stores.sessionManager.defaultSite?.cardPresentPluginHasPendingTasksURL(plugin: plugin) else {
             return nil
         }
 
@@ -85,6 +85,6 @@ private enum Localization {
 
 struct InPersonPaymentsStripeAccountOverdue_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsStripeAccountOverdue(analyticReason: "", onRefresh: { })
+        InPersonPaymentsStripeAccountOverdue(analyticReason: "", onRefresh: { }, plugin: .stripe)
     }
 }

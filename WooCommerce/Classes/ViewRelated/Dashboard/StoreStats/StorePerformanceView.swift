@@ -274,7 +274,6 @@ private extension StorePerformanceView {
            chartViewModel.hasRevenue {
             VStack {
                 StoreStatsChart(viewModel: chartViewModel) { selectedIndex in
-                    viewModel.trackInteraction()
                     viewModel.didSelectStatsInterval(at: selectedIndex)
                 }
                 .frame(height: Layout.chartViewHeight)

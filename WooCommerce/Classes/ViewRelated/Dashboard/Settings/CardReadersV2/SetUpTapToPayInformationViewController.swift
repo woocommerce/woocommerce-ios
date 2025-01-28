@@ -136,7 +136,14 @@ struct SetUpTapToPayInformationView: View {
         .padding()
         .onAppear(perform: viewModel.viewDidAppear)
         .sheet(isPresented: $showingAboutTapToPay) {
-            AboutTapToPayViewInNavigationView(viewModel: AboutTapToPayViewModel(shouldAlwaysHideSetUpTapToPayButton: true))
+            TapToPayEducationView(viewModel: .init(flow: .about, completion: { result in
+                switch result {
+                case .setUpTapToPay:
+                    viewModel.setUpTapped()
+                default:
+                    break
+                }
+            }))
         }
     }
 }

@@ -32,7 +32,8 @@ struct PointOfSaleItemListErrorView: View {
                     Text(error.buttonText)
                 })
                 .buttonStyle(POSPrimaryButtonStyle())
-                .frame(width: PointOfSaleItemListErrorLayout.buttonWidth)
+                .frame(maxWidth: PointOfSaleItemListErrorLayout.buttonWidth)
+                .padding([.leading, .trailing])
             }
             Spacer()
         }

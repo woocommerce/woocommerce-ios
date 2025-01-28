@@ -22,6 +22,8 @@ struct ChildItemList: View {
     var body: some View {
         VStack {
             switch state {
+            case .loaded([], _):
+                emptyView
             case .loading, .loaded, .inlineError:
                 listView
             case let .error(error):
@@ -31,7 +33,9 @@ struct ChildItemList: View {
         .background(Color.posPrimaryBackground)
         .toolbar(.hidden, for: .navigationBar)
         .refreshable {
-            await posModel.loadItems(base: .parent(parentItem))
+            await Task {
+                await posModel.loadItems(base: .parent(parentItem))
+            }.value
         }
         .task {
             guard state.items.isEmpty else {
@@ -66,6 +70,19 @@ private extension ChildItemList {
             ItemList(state: state,
                      node: .parent(parentItem))
                 .transition(.opacity)
+        }
+    }
+
+    @ViewBuilder
+    var emptyView: some View {
+        ZStack {
+            VStack {
+                headerView
+                Spacer()
+            }
+
+            PointOfSaleItemListEmptyView(base: .parent(parentItem))
+                .zIndex(1)
         }
     }
 
@@ -125,7 +142,8 @@ private extension ChildItemList {
                                                                 formattedPrice: "$5.75",
                                                                 price: "5.75",
                                                                 productID: 134,
-                                                                variationID: 256
+                                                                variationID: 256,
+                                                                parentProductName: parentProduct.name
                                                             )
                                                         ),
                                                         .variation(
@@ -135,7 +153,8 @@ private extension ChildItemList {
                                                                 formattedPrice: "$6.5",
                                                                 price: "6.5",
                                                                 productID: 134,
-                                                                variationID: 256
+                                                                variationID: 256,
+                                                                parentProductName: parentProduct.name
                                                             )
                                                         )
                                                     ], hasMoreItems: false)]))

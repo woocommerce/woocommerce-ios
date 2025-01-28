@@ -8,7 +8,8 @@ import struct Yosemite.PagedItems
 import struct Yosemite.POSVariableParentProduct
 
 final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
-    var items: [POSItem] = []
+    /// An array of pages of items, returned when other flags are not set.
+    var itemPages: [[POSItem]] = []
     var shouldThrowError = false
     var shouldReturnZeroItems = false
     var shouldSimulateTwoPages = false
@@ -23,11 +24,12 @@ final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
         if shouldReturnZeroItems {
             return .init(items: [], hasMorePages: false)
         }
-        if shouldSimulateTwoPages,
-            pageNumber > 1 {
-            return .init(items: MockPointOfSaleItemService.makeSecondPageItems(), hasMorePages: shouldSimulateMorePages)
+        if shouldSimulateTwoPages {
+            return pageNumber > 1 ?
+                .init(items: MockPointOfSaleItemService.makeSecondPageItems(), hasMorePages: shouldSimulateMorePages):
+                .init(items: MockPointOfSaleItemService.makeInitialItems(), hasMorePages: shouldSimulateTwoPages)
         }
-        return .init(items: MockPointOfSaleItemService.makeInitialItems(), hasMorePages: shouldSimulateTwoPages)
+        return .init(items: (itemPages[safe: pageNumber - 1] ?? []), hasMorePages: itemPages.count > pageNumber)
     }
 
     var shouldSimulateTwoPagesOfVariations = false
@@ -91,14 +93,16 @@ extension MockPointOfSaleItemService {
                                       formattedPrice: "$2.00",
                                       price: "2.00",
                                       productID: 1,
-                                      variationID: 1)
+                                      variationID: 1,
+                                      parentProductName: "Ice cream")
 
         let variation2 = POSVariation(id: fakeUUID2,
                                       name: "Vanilla",
                                       formattedPrice: "$2.00",
                                       price: "2.00",
                                       productID: 1,
-                                      variationID: 2)
+                                      variationID: 2,
+                                      parentProductName: "Ice cream")
         return [.variation(variation1), .variation(variation2)]
     }
 
@@ -111,14 +115,16 @@ extension MockPointOfSaleItemService {
                                       formattedPrice: "$2.00",
                                       price: "2.00",
                                       productID: 1,
-                                      variationID: 3)
+                                      variationID: 3,
+                                      parentProductName: "Ice cream")
 
         let variation4 = POSVariation(id: fakeUUID4,
                                       name: "Pistachio",
                                       formattedPrice: "$3.00",
                                       price: "2.00",
                                       productID: 1,
-                                      variationID: 4)
+                                      variationID: 4,
+                                      parentProductName: "Ice cream")
         return [.variation(variation3), .variation(variation4)]
     }
 

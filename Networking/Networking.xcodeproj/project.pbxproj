@@ -183,6 +183,7 @@
 		09885C8027C3FFD200910A62 /* product-variations-bulk-update.json in Resources */ = {isa = PBXBuildFile; fileRef = 09885C7F27C3FFD200910A62 /* product-variations-bulk-update.json */; };
 		09EA564B27C75FCE00407D40 /* ProductVariationsBulkUpdateMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09EA564A27C75FCE00407D40 /* ProductVariationsBulkUpdateMapper.swift */; };
 		204CBD2B2D43BDBB006FF89A /* wcpay-charge-error-site-credentials.json in Resources */ = {isa = PBXBuildFile; fileRef = 204CBD2A2D43BDBB006FF89A /* wcpay-charge-error-site-credentials.json */; };
+		207D816C2D4A30A30097012E /* products-load-simple-products-empty-price.json in Resources */ = {isa = PBXBuildFile; fileRef = 207D816B2D4A30A30097012E /* products-load-simple-products-empty-price.json */; };
 		209AD3C32AC196E300825D76 /* WooPaymentsPayoutsOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3C22AC196E300825D76 /* WooPaymentsPayoutsOverview.swift */; };
 		209AD3C52AC19E7500825D76 /* WooPaymentsDepositsOverviewMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3C42AC19E7500825D76 /* WooPaymentsDepositsOverviewMapper.swift */; };
 		20D210C32B1780CE0099E517 /* deposits-overview-all.json in Resources */ = {isa = PBXBuildFile; fileRef = 20D210C22B1780CE0099E517 /* deposits-overview-all.json */; };
@@ -1491,6 +1492,7 @@
 		09EA564A27C75FCE00407D40 /* ProductVariationsBulkUpdateMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationsBulkUpdateMapper.swift; sourceTree = "<group>"; };
 		14CE248C7246705417A41DE1 /* Pods-NetworkingWatchOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingWatchOS.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingWatchOS/Pods-NetworkingWatchOS.release.xcconfig"; sourceTree = "<group>"; };
 		204CBD2A2D43BDBB006FF89A /* wcpay-charge-error-site-credentials.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-charge-error-site-credentials.json"; sourceTree = "<group>"; };
+		207D816B2D4A30A30097012E /* products-load-simple-products-empty-price.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "products-load-simple-products-empty-price.json"; sourceTree = "<group>"; };
 		209AD3C22AC196E300825D76 /* WooPaymentsPayoutsOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsOverview.swift; sourceTree = "<group>"; };
 		209AD3C42AC19E7500825D76 /* WooPaymentsDepositsOverviewMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsOverviewMapper.swift; sourceTree = "<group>"; };
 		20D210C22B1780CE0099E517 /* deposits-overview-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "deposits-overview-all.json"; sourceTree = "<group>"; };
@@ -3579,6 +3581,7 @@
 				CE070A2F2BBC527900017578 /* gift-card-stats.json */,
 				CE070A332BBC52B200017578 /* gift-card-stats-without-data.json */,
 				68FBA53B2C290A5F0067B377 /* products-load-all-type-simple.json */,
+				207D816B2D4A30A30097012E /* products-load-simple-products-empty-price.json */,
 				68255E432C60C6AA00090EBD /* products-load-all-for-eligibility-criteria.json */,
 				CE21FB132C2AC87000303832 /* google-ads-reports-programs-without-data.json */,
 				CE21FB232C2C16DA00303832 /* google-ads-reports-programs.json */,
@@ -4593,6 +4596,7 @@
 				D8C11A5C22DFCF8100D4A88D /* order-stats-v4-year-alt.json in Resources */,
 				3158FE6426129B1300E566B9 /* wcpay-account-complete.json in Resources */,
 				20D210C52B1788E60099E517 /* deposits-overview-all-no-default-currency.json in Resources */,
+				207D816C2D4A30A30097012E /* products-load-simple-products-empty-price.json in Resources */,
 				B56C1EBA20EA7D2C00D749F9 /* sites.json in Resources */,
 				DEDA8DA52B1839320076BF0F /* theme-list-success.json in Resources */,
 				EE84D62B2B0B46E7008EA80A /* product-variation-subscription-incomplete.json in Resources */,

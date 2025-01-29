@@ -39,4 +39,11 @@ final class TotalsViewHelper {
             return false
         }
     }
+
+    func shouldShowCollectCashPaymentButton(orderState: PointOfSaleOrderState,
+                                            paymentState: PointOfSalePaymentState) -> Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.acceptCashForPointOfSale) &&
+        orderState != .syncing &&
+        (paymentState == .card(.idle) || paymentState == .card(.acceptingCard) || paymentState == .card(.validatingOrderError))
+    }
 }

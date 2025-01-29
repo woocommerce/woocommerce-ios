@@ -3,6 +3,8 @@ import SwiftUI
 struct WooShippingNormalizeAddressView: View {
     @Environment(\.dismiss) private var dismiss
 
+    @ObservedObject var viewModel: WooShippingNormalizeAddressViewModel
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
@@ -11,13 +13,12 @@ struct WooShippingNormalizeAddressView: View {
                     Text(Localization.selectAddressPrompt)
                 }
                 .bodyStyle()
-                // TODO: Replace static data with real data from view model
                 AddressView(label: Localization.enteredAddressLabel,
-                            address: "15 Algonkin St, Ticonderogaa, NY 12883-1487, US",
-                            isSelected: false)
+                            address: viewModel.enteredAddress.formattedPostalAddress ?? "",
+                            isSelected: viewModel.selectedAddress == .entered)
                 AddressView(label: Localization.suggestedAddressLabel,
-                            address: "15 ALGONKIN ST, TICONDEROGA, NY 12883-1487, US",
-                            isSelected: true)
+                            address: viewModel.suggestedAddress.formattedPostalAddress ?? "",
+                            isSelected: viewModel.selectedAddress == .suggested)
             }
             .padding()
         }
@@ -33,9 +34,15 @@ struct WooShippingNormalizeAddressView: View {
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: .zero) {
                 Divider().ignoresSafeArea(edges: [.horizontal])
-                Button(Localization.confirmSuggestedAddress) {
-                    // TODO: Update button label based on selected address
+                Button {
                     // TODO: Confirm selected address
+                } label: {
+                    switch viewModel.selectedAddress {
+                    case .entered:
+                        Text(Localization.confirmEnteredAddress)
+                    case .suggested:
+                        Text(Localization.confirmSuggestedAddress)
+                    }
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .padding()
@@ -108,7 +115,8 @@ private extension WooShippingNormalizeAddressView {
 
 #Preview {
     NavigationView {
-        WooShippingNormalizeAddressView()
+        WooShippingNormalizeAddressView(viewModel: .init(enteredAddress: WooShippingNormalizeAddressViewModel.sampleEnteredAddress,
+                                                         suggestedAddress: WooShippingNormalizeAddressViewModel.sampleSuggestedAddress))
     }
     .wooNavigationBarStyle()
 }

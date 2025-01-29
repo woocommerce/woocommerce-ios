@@ -2340,6 +2340,9 @@
 		CE6E110F2C91EF6800563DD4 /* View+RoundedBorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6E110E2C91EF6800563DD4 /* View+RoundedBorder.swift */; };
 		CE7269C82D11A99800D565C1 /* WooShippingAddPackageViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7269C72D11A99800D565C1 /* WooShippingAddPackageViewModelTests.swift */; };
 		CE755F712D4A4922002539F6 /* WooShippingNormalizeAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE755F702D4A4922002539F6 /* WooShippingNormalizeAddressView.swift */; };
+		CE755F732D4A5F9D002539F6 /* WooShippingNormalizeAddressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE755F722D4A5F96002539F6 /* WooShippingNormalizeAddressViewModel.swift */; };
+		CE755F752D4A6BF3002539F6 /* WooShippingNormalizeAddressViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE755F742D4A6BF3002539F6 /* WooShippingNormalizeAddressViewModelTests.swift */; };
+		CE755F772D4A79C8002539F6 /* WooShippingAddress+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE755F762D4A79C2002539F6 /* WooShippingAddress+Woo.swift */; };
 		CE7B4A582CA191FB00F764EB /* WooShippingItemRowViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7B4A572CA191F400F764EB /* WooShippingItemRowViewModelTests.swift */; };
 		CE7B4A5B2CA1BF9900F764EB /* WooShippingHazmat.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7B4A5A2CA1BF9900F764EB /* WooShippingHazmat.swift */; };
 		CE7CEC2D2C2EF0E50066FD53 /* GoogleAdsCampaignReportCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7CEC2C2C2EF0E50066FD53 /* GoogleAdsCampaignReportCardViewModelTests.swift */; };
@@ -5493,6 +5496,9 @@
 		CE6E110E2C91EF6800563DD4 /* View+RoundedBorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+RoundedBorder.swift"; sourceTree = "<group>"; };
 		CE7269C72D11A99800D565C1 /* WooShippingAddPackageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingAddPackageViewModelTests.swift; sourceTree = "<group>"; };
 		CE755F702D4A4922002539F6 /* WooShippingNormalizeAddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingNormalizeAddressView.swift; sourceTree = "<group>"; };
+		CE755F722D4A5F96002539F6 /* WooShippingNormalizeAddressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingNormalizeAddressViewModel.swift; sourceTree = "<group>"; };
+		CE755F742D4A6BF3002539F6 /* WooShippingNormalizeAddressViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingNormalizeAddressViewModelTests.swift; sourceTree = "<group>"; };
+		CE755F762D4A79C2002539F6 /* WooShippingAddress+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooShippingAddress+Woo.swift"; sourceTree = "<group>"; };
 		CE7B4A572CA191F400F764EB /* WooShippingItemRowViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingItemRowViewModelTests.swift; sourceTree = "<group>"; };
 		CE7B4A5A2CA1BF9900F764EB /* WooShippingHazmat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingHazmat.swift; sourceTree = "<group>"; };
 		CE7CEC2C2C2EF0E50066FD53 /* GoogleAdsCampaignReportCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignReportCardViewModelTests.swift; sourceTree = "<group>"; };
@@ -12139,6 +12145,7 @@
 		CE7FE6922D13249D000F9475 /* WooShippingAddresses */ = {
 			isa = PBXGroup;
 			children = (
+				CE755F762D4A79C2002539F6 /* WooShippingAddress+Woo.swift */,
 				CECAE7102D23168D000AE10B /* WooShippingOriginAddress+Woo.swift */,
 				CE7FE6932D1324BD000F9475 /* WooShippingOriginAddressListView.swift */,
 				CECAE70B2D22EF9B000AE10B /* WooShippingOriginAddressListViewModel.swift */,
@@ -12146,6 +12153,7 @@
 				CE5A9BBA2D3137ED00FBADDF /* WooShippingEditAddressViewModel.swift */,
 				CED9BCD02D412E1E00C063B8 /* WooShippingAddressField.swift */,
 				CE755F702D4A4922002539F6 /* WooShippingNormalizeAddressView.swift */,
+				CE755F722D4A5F96002539F6 /* WooShippingNormalizeAddressViewModel.swift */,
 			);
 			path = WooShippingAddresses;
 			sourceTree = "<group>";
@@ -12283,6 +12291,7 @@
 				CE7269C72D11A99800D565C1 /* WooShippingAddPackageViewModelTests.swift */,
 				CE56C01D2D2431C000EBDE24 /* WooShippingOriginAddressListViewModelTests.swift */,
 				CE5A9BBC2D315E0500FBADDF /* WooShippingEditAddressViewModelTests.swift */,
+				CE755F742D4A6BF3002539F6 /* WooShippingNormalizeAddressViewModelTests.swift */,
 			);
 			path = "WooShipping Create Shipping Labels";
 			sourceTree = "<group>";
@@ -16529,6 +16538,7 @@
 				DECEA4472C81778300C28C10 /* ProductImagePickerView.swift in Sources */,
 				26E0AE1926335AA900A5EB3B /* Survey.swift in Sources */,
 				0371C3682875E47B00277E2C /* FeatureAnnouncementCardViewModel.swift in Sources */,
+				CE755F732D4A5F9D002539F6 /* WooShippingNormalizeAddressViewModel.swift in Sources */,
 				B90D21782D15B72900ED60ED /* WooShippingCustomsFormViewModel.swift in Sources */,
 				03EF24FA28BF5D21006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift in Sources */,
 				016C6B972C74AB17000D86FD /* POSConnectivityView.swift in Sources */,
@@ -16711,6 +16721,7 @@
 				03FBDAF2263EE47C00ACE257 /* CouponListViewModel.swift in Sources */,
 				458BAC6E2C57CDA6009440EA /* ProductPasswordEligibilityUseCase.swift in Sources */,
 				DEE2152D2D113EF1004A11F3 /* EditStoreListView.swift in Sources */,
+				CE755F772D4A79C8002539F6 /* WooShippingAddress+Woo.swift in Sources */,
 				0388E1A829E04687007DF84D /* DeepLinkNavigator.swift in Sources */,
 				B6A10E9C292E5DEE00790797 /* AnalyticsTimeRangeCardViewModel.swift in Sources */,
 				26CCBE0B2523B3650073F94D /* RefundProductsTotalTableViewCell.swift in Sources */,
@@ -17554,6 +17565,7 @@
 				DE7E5E8A2B4D4015002E28D2 /* BlazeTargetDeviceViewModelTests.swift in Sources */,
 				02E4FD812306AA890049610C /* StatsTimeRangeBarViewModelTests.swift in Sources */,
 				262B442E2C77D9B000441FD5 /* OrderDetailsViewControllerTests.swift in Sources */,
+				CE755F752D4A6BF3002539F6 /* WooShippingNormalizeAddressViewModelTests.swift in Sources */,
 				CCCFFC5D2934F0BA006130AF /* StatsIntervalDataParserTests.swift in Sources */,
 				953728F82B23635300FDF1D1 /* UIAlertController+helpers.swift in Sources */,
 				02645D8A27BA2EDB0065DC68 /* NSAttributedString+AttributesTests.swift in Sources */,

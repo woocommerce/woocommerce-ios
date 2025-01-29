@@ -25,9 +25,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
         self.onCompletion = onCompletion
 
         itemsViewModels = order.items.map {
-            // TODO: Pass the origin country
-            WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "US", name: "United States"),
-                                            orderItem: $0, currencySymbol: currencySymbol(from: order))
+            WooShippingCustomsItemViewModel(orderItem: $0, currencySymbol: currencySymbol(from: order))
         }
 
         listenToItemsRequiredInformationValues()
@@ -53,7 +51,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
                                           value: Double($0.valuePerUnit) ?? 0,
                                           weight: Double($0.weightPerUnit) ?? 0,
                                           hsTariffNumber: $0.isValidTariffNumber ? $0.hsTariffNumber : "",
-                                          originCountry: $0.originCountry.name,
+                                          originCountry: $0.selectedCountry?.name ?? "",
                                           productID: $0.orderItem.productID)
             }
         )

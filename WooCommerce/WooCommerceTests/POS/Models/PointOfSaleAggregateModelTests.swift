@@ -463,6 +463,23 @@ struct PointOfSaleAggregateModelTests {
             }
         }
 
+        @Test func cancelThenCollectPayment_still_collects_payment_when_cancellation_fails() async throws {
+            // Given
+            orderController.orderStateToReturn = makeLoadedOrderState(cartTotal: "$1.00")
+            await orderController.syncOrder(for: [], retryHandler: {})
+
+            struct TestError: Error {}
+            cardPresentPaymentService.onCancelPaymentCalled = {
+                throw TestError()
+            }
+
+            // When
+            await sut.cancelThenCollectPayment()
+
+            // Then
+            #expect(cardPresentPaymentService.collectPaymentWasCalled)
+        }
+
         // MARK: Onboarding
         @Test func cardPresentPaymentOnboardingViewModel_is_non_nil_when_onboarding_is_required() async throws {
             // Given

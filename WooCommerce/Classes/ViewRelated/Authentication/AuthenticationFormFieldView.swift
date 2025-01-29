@@ -16,6 +16,8 @@ struct AuthenticationFormFieldViewModel {
     let errorMessage: String?
     /// Whether the content in the text field is focused.
     let isFocused: Bool
+    /// Autocapitalization behavior for the text field.
+    let autocapitalization: UITextAutocapitalizationType
 }
 
 /// A field in the account creation / authentication form.
@@ -50,6 +52,7 @@ struct AuthenticationFormFieldView: View {
                             SecureField(viewModel.placeholder, text: viewModel.text)
                         } else {
                             TextField(viewModel.placeholder, text: viewModel.text)
+                                .autocapitalization(viewModel.autocapitalization)
                         }
                     }
                     .font(.body)
@@ -80,6 +83,7 @@ struct AuthenticationFormFieldView: View {
                 TextField(viewModel.placeholder, text: viewModel.text)
                     .textFieldStyle(RoundedBorderTextFieldStyle(focused: viewModel.isFocused))
                     .keyboardType(viewModel.keyboardType)
+                    .autocapitalization(viewModel.autocapitalization)
             }
             if let errorMessage = viewModel.errorMessage {
                 Text(errorMessage)
@@ -105,7 +109,8 @@ struct AccountCreationFormField_Previews: PreviewProvider {
                                                       text: .constant(""),
                                                       isSecure: false,
                                                       errorMessage: nil,
-                                                      isFocused: true))
+                                                      isFocused: true,
+                                                      autocapitalization: .none))
         VStack {
             AuthenticationFormFieldView(viewModel: .init(header: "Choose a password",
                                                           placeholder: "Password",
@@ -113,7 +118,8 @@ struct AccountCreationFormField_Previews: PreviewProvider {
                                                           text: .constant("wwwwwwwwwwwwwwwwwwwwwwww"),
                                                           isSecure: true,
                                                           errorMessage: "Too simple",
-                                                          isFocused: false))
+                                                          isFocused: false,
+                                                          autocapitalization: .none))
             .environment(\.sizeCategory, .medium)
 
             AuthenticationFormFieldView(viewModel: .init(header: "Choose a password",
@@ -122,7 +128,8 @@ struct AccountCreationFormField_Previews: PreviewProvider {
                                                           text: .constant("wwwwwwwwwwwwwwwwwwwwwwww"),
                                                           isSecure: true,
                                                           errorMessage: "Too simple",
-                                                          isFocused: false))
+                                                          isFocused: false,
+                                                          autocapitalization: .none))
             .environment(\.sizeCategory, .extraExtraExtraLarge)
         }
     }

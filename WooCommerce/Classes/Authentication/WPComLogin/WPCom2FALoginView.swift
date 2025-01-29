@@ -75,7 +75,8 @@ struct WPCom2FALoginView: View {
                     text: $viewModel.verificationCode,
                     isSecure: false,
                     errorMessage: nil,
-                    isFocused: isFieldFocused
+                    isFocused: isFieldFocused,
+                    autocapitalization: .none
                 ))
                 .focused($isFieldFocused)
 

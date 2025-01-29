@@ -107,7 +107,7 @@ struct SiteCredentialLoginView: View {
                                                                   text: $viewModel.username,
                                                                   isSecure: false,
                                                                   errorMessage: nil,
-                                                                  isFocused: focusedField == .username))
+                                                                 isFocused: focusedField == .username, autocapitalization: .none))
                     .focused($focusedField, equals: .username)
                     .disabled(viewModel.isLoggingIn)
 
@@ -118,7 +118,8 @@ struct SiteCredentialLoginView: View {
                                                                   text: $viewModel.password,
                                                                   isSecure: true,
                                                                   errorMessage: nil,
-                                                                  isFocused: focusedField == .password))
+                                                                 isFocused: focusedField == .password,
+                                                                 autocapitalization: .none))
                     .focused($focusedField, equals: .password)
                     .disabled(viewModel.isLoggingIn)
 

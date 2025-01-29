@@ -218,10 +218,9 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     func cancelCashPayment() async {
+        paymentState = .card(.idle)
         if case .connected = cardReaderConnectionStatus {
             await collectCardPayment()
-        } else {
-            paymentState = .card(.idle)
         }
     }
 

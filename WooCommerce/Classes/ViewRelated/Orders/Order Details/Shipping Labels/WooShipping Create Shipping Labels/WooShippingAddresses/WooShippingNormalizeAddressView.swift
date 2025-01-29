@@ -41,7 +41,7 @@ struct WooShippingNormalizeAddressView: View {
             VStack(spacing: .zero) {
                 Divider().ignoresSafeArea(edges: [.horizontal])
                 Button {
-                    // TODO: Confirm selected address
+                    viewModel.confirmSelectedAddress()
                 } label: {
                     switch viewModel.selectedAddress {
                     case .entered:
@@ -123,7 +123,8 @@ private extension WooShippingNormalizeAddressView {
 #Preview {
     NavigationView {
         WooShippingNormalizeAddressView(viewModel: .init(enteredAddress: WooShippingNormalizeAddressViewModel.sampleEnteredAddress,
-                                                         suggestedAddress: WooShippingNormalizeAddressViewModel.sampleSuggestedAddress))
+                                                         suggestedAddress: WooShippingNormalizeAddressViewModel.sampleSuggestedAddress,
+                                                         onConfirm: { address in print(address) }))
     }
     .wooNavigationBarStyle()
 }

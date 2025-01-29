@@ -10,7 +10,7 @@ final class WooShippingNormalizeAddressViewModelTests: XCTestCase {
         let suggestedAddress = WooShippingNormalizeAddressViewModel.sampleSuggestedAddress
 
         // When
-        let viewModel = WooShippingNormalizeAddressViewModel(enteredAddress: enteredAddress, suggestedAddress: suggestedAddress)
+        let viewModel = WooShippingNormalizeAddressViewModel(enteredAddress: enteredAddress, suggestedAddress: suggestedAddress, onConfirm: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.enteredAddress, enteredAddress)
@@ -18,4 +18,20 @@ final class WooShippingNormalizeAddressViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedAddress, .suggested)
     }
 
+    func test_confirmSelectedAddress_calls_onConfirm_with_expected_address() {
+        // Given
+        let enteredAddress = WooShippingNormalizeAddressViewModel.sampleEnteredAddress
+        let suggestedAddress = WooShippingNormalizeAddressViewModel.sampleSuggestedAddress
+        var confirmedAddress: WooShippingAddress?
+        let viewModel = WooShippingNormalizeAddressViewModel(enteredAddress: enteredAddress, suggestedAddress: suggestedAddress, onConfirm: { address in
+            confirmedAddress = address
+        })
+
+        // When
+        viewModel.selectedAddress = .entered
+        viewModel.confirmSelectedAddress()
+
+        // Then
+        XCTAssertEqual(confirmedAddress, enteredAddress)
+    }
 }

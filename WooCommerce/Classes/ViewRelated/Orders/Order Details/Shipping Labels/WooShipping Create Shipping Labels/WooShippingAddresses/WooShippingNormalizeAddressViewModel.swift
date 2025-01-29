@@ -11,9 +11,21 @@ final class WooShippingNormalizeAddressViewModel: ObservableObject {
     /// Defaults to the suggested address.
     @Published var selectedAddress: WooShippingSelectedAddressType = .suggested
 
-    init(enteredAddress: WooShippingAddress, suggestedAddress: WooShippingAddress) {
+    /// Closure to perform when the address is confirmed.
+    var onConfirm: ((WooShippingAddress) -> Void)
+
+    init(enteredAddress: WooShippingAddress,
+         suggestedAddress: WooShippingAddress,
+         onConfirm: @escaping ((WooShippingAddress) -> Void)) {
         self.enteredAddress = enteredAddress
         self.suggestedAddress = suggestedAddress
+        self.onConfirm = onConfirm
+    }
+
+    /// Confirms the selected address.
+    func confirmSelectedAddress() {
+        let addressToConfirm = selectedAddress == .entered ? enteredAddress : suggestedAddress
+        onConfirm(addressToConfirm)
     }
 }
 

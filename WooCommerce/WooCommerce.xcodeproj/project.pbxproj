@@ -2339,6 +2339,7 @@
 		CE6E110D2C91E5FF00563DD4 /* WooShippingItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6E110C2C91E5FF00563DD4 /* WooShippingItems.swift */; };
 		CE6E110F2C91EF6800563DD4 /* View+RoundedBorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6E110E2C91EF6800563DD4 /* View+RoundedBorder.swift */; };
 		CE7269C82D11A99800D565C1 /* WooShippingAddPackageViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7269C72D11A99800D565C1 /* WooShippingAddPackageViewModelTests.swift */; };
+		CE755F712D4A4922002539F6 /* WooShippingNormalizeAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE755F702D4A4922002539F6 /* WooShippingNormalizeAddressView.swift */; };
 		CE7B4A582CA191FB00F764EB /* WooShippingItemRowViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7B4A572CA191F400F764EB /* WooShippingItemRowViewModelTests.swift */; };
 		CE7B4A5B2CA1BF9900F764EB /* WooShippingHazmat.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7B4A5A2CA1BF9900F764EB /* WooShippingHazmat.swift */; };
 		CE7CEC2D2C2EF0E50066FD53 /* GoogleAdsCampaignReportCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7CEC2C2C2EF0E50066FD53 /* GoogleAdsCampaignReportCardViewModelTests.swift */; };
@@ -5491,6 +5492,7 @@
 		CE6E110C2C91E5FF00563DD4 /* WooShippingItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingItems.swift; sourceTree = "<group>"; };
 		CE6E110E2C91EF6800563DD4 /* View+RoundedBorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+RoundedBorder.swift"; sourceTree = "<group>"; };
 		CE7269C72D11A99800D565C1 /* WooShippingAddPackageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingAddPackageViewModelTests.swift; sourceTree = "<group>"; };
+		CE755F702D4A4922002539F6 /* WooShippingNormalizeAddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingNormalizeAddressView.swift; sourceTree = "<group>"; };
 		CE7B4A572CA191F400F764EB /* WooShippingItemRowViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingItemRowViewModelTests.swift; sourceTree = "<group>"; };
 		CE7B4A5A2CA1BF9900F764EB /* WooShippingHazmat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingHazmat.swift; sourceTree = "<group>"; };
 		CE7CEC2C2C2EF0E50066FD53 /* GoogleAdsCampaignReportCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignReportCardViewModelTests.swift; sourceTree = "<group>"; };
@@ -12143,6 +12145,7 @@
 				CE852E1E2D2EDC4C00C7DBB6 /* WooShippingEditAddressView.swift */,
 				CE5A9BBA2D3137ED00FBADDF /* WooShippingEditAddressViewModel.swift */,
 				CED9BCD02D412E1E00C063B8 /* WooShippingAddressField.swift */,
+				CE755F702D4A4922002539F6 /* WooShippingNormalizeAddressView.swift */,
 			);
 			path = WooShippingAddresses;
 			sourceTree = "<group>";
@@ -15954,6 +15957,7 @@
 				0365986B29AFB11E00F297D3 /* SetUpTapToPayInformationViewController.swift in Sources */,
 				31316F9C25CB20FD00D9F129 /* OrderStatusListViewModel.swift in Sources */,
 				DE6906E727D74A1900735E3B /* WooSplitViewController.swift in Sources */,
+				CE755F712D4A4922002539F6 /* WooShippingNormalizeAddressView.swift in Sources */,
 				0386CFEB2852108B00134466 /* PaymentMethodsHostingController.swift in Sources */,
 				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
 				451750B224470CD5004FDA65 /* EnhancedTextView.swift in Sources */,

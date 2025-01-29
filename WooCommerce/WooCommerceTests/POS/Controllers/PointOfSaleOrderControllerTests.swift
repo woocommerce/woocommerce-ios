@@ -119,7 +119,7 @@ struct PointOfSaleOrderControllerTests {
         #expect(orderStates == [
             .idle,
             .syncing,
-            .loaded(.init(cartTotal: "$0.00", orderTotal: "", taxTotal: ""),
+            .loaded(.init(cartTotal: "$0.00", orderTotal: "", taxTotal: "", orderTotalDecimal: 0.0),
                     fakeOrder)
         ])
     }

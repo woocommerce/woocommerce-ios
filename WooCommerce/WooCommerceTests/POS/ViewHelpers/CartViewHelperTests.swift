@@ -18,7 +18,8 @@ struct CartViewHelperTests {
         let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
             cartTotal: "$10.00",
             orderTotal: "$12.00",
-            taxTotal: "$2.00"))
+            taxTotal: "$2.00",
+            orderTotalDecimal: 12.0))
 
         // When, Then
         #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
@@ -30,7 +31,8 @@ struct CartViewHelperTests {
         let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
             cartTotal: "$10.00",
             orderTotal: "$12.00",
-            taxTotal: "$2.00"))
+            taxTotal: "$2.00",
+            orderTotalDecimal: 12.0))
 
         // When, Then
         #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
@@ -42,7 +44,8 @@ struct CartViewHelperTests {
         let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
             cartTotal: "$10.00",
             orderTotal: "$12.00",
-            taxTotal: "$2.00"))
+            taxTotal: "$2.00",
+            orderTotalDecimal: 12.0))
 
         // When, Then
         #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
@@ -54,7 +57,8 @@ struct CartViewHelperTests {
         let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
             cartTotal: "$10.00",
             orderTotal: "$12.00",
-            taxTotal: "$2.00"))
+            taxTotal: "$2.00",
+            orderTotalDecimal: 12.0))
 
         // When, Then
         #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,

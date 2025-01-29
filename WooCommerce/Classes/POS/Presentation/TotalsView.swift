@@ -35,7 +35,7 @@ struct TotalsView: View {
                         .renderedIf(cardReaderViewLayout.topPadding == nil)
 
                     VStack(alignment: .center, spacing: 0) {
-                        if isShowingCardReaderStatus {
+                        if isShowingPaymentView {
                             paymentView
                                 .font(.title)
                                 .padding([.leading, .trailing],
@@ -58,25 +58,28 @@ struct TotalsView: View {
                                 .opacity(viewHelper.shouldShowTotalsFields(for: posModel.paymentState) ? 1 : 0)
                                 .layoutPriority(2)
                         }
-                        Button(action: {
-                            Task { @MainActor in
-                                await posModel.startCashPayment()
-                            }
-                        }, label: {
-                            Text(Localization.cashPaymentButtonTitle)
-                                .font(POSFontStyle.posBodyEmphasized)
-                                .foregroundColor(.posPrimaryText)
-                                .frame(height: Constants.buttonHeight)
-                                .minimumScaleFactor(0.5)
-                        })
-                        .buttonStyle(SecondaryButtonStyle())
-                        .padding(.horizontal, Constants.buttonHorizontalPadding)
-                        .renderedIf(shouldShowCollectCashPaymentButton)
                     }
                     .animation(.default, value: posModel.cardPresentPaymentInlineMessage)
+
                     Spacer()
+
+                    Button(action: {
+                        Task { @MainActor in
+                            await posModel.startCashPayment()
+                        }
+                    }, label: {
+                        Text(Localization.cashPaymentButtonTitle)
+                            .font(POSFontStyle.posBodyEmphasized)
+                            .foregroundColor(.posPrimaryText)
+                            .frame(height: Constants.buttonHeight)
+                            .minimumScaleFactor(0.5)
+                    })
+                    .buttonStyle(SecondaryButtonStyle())
+                    .padding(.horizontal, Constants.buttonHorizontalPadding)
+                    .padding(.bottom, Constants.cashButtonBottomPadding)
+                    .renderedIf(shouldShowCollectCashPaymentButton)
                 }
-                .animation(.default, value: isShowingCardReaderStatus)
+                .animation(.default, value: isShowingPaymentView)
             case .error(let viewModel):
                 PointOfSaleOrderSyncErrorMessageView(viewModel: viewModel)
                     .transition(.opacity)
@@ -280,7 +283,7 @@ private extension TotalsView {
         )
     }
 
-    private var isShowingCardReaderStatus: Bool {
+    private var isShowingPaymentView: Bool {
         guard posModel.orderState.isLoaded else {
             // When the order's being created or synced, we only show the shimmering totals.
             // Before the order exists, we don’t want to show the card payment status, as it will
@@ -290,7 +293,12 @@ private extension TotalsView {
 
         switch posModel.cardReaderConnectionStatus {
         case .connected, .disconnecting, .cancellingConnection:
-            return posModel.cardPresentPaymentInlineMessage != nil
+            switch posModel.paymentState {
+            case .card:
+                return posModel.cardPresentPaymentInlineMessage != nil
+            case .cash:
+                return true
+            }
         case .disconnected:
             // Since the reader is disconnected, this will show the "Connect your reader" CTA button view.
             return true
@@ -298,7 +306,7 @@ private extension TotalsView {
     }
 
     private var cardReaderViewLayout: PaymentViewLayout {
-        guard isShowingCardReaderStatus else {
+        guard isShowingPaymentView else {
             return .primary
         }
 
@@ -336,6 +344,7 @@ private extension TotalsView {
         static let verticalSpacing: CGFloat = 56
         static let buttonHeight: CGFloat = 56
         static let buttonHorizontalPadding: CGFloat = 48
+        static let cashButtonBottomPadding: CGFloat = 16
 
         static let totalsLineViewPadding: EdgeInsets = .init(top: 20, leading: 24, bottom: 20, trailing: 24)
         static let subtotalsVerticalSpacing: CGFloat = 8

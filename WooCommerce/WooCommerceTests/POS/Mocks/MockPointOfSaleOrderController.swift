@@ -15,8 +15,6 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     @Published var orderState: PointOfSaleInternalOrderState = .idle
     var orderStateToReturn: PointOfSaleInternalOrderState?
 
-    @Published var order: Order?
-
     var syncOrderWasCalled: Bool = false
     var spyCartProducts: [CartItem]?
     var spyRetryHandler: (() async -> Void)?
@@ -32,11 +30,6 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         }
 
         orderState = orderStateToReturn
-        guard case .loaded(_, let orderToReturn) = orderState else {
-            order = nil
-            return
-        }
-        order = orderToReturn
     }
 
     var clearOrderWasCalled: Bool = false

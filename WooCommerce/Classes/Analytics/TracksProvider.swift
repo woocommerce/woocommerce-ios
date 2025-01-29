@@ -12,6 +12,12 @@ public class TracksProvider: NSObject, AnalyticsProvider {
         tracksService.eventNamePrefix = Constants.eventNamePrefix
         return tracksService
     }()
+
+    private static var isPOSModeActive: Bool = false
+
+    public static func setPOSMode(_ active: Bool) {
+        isPOSModeActive = active
+    }
 }
 
 
@@ -28,6 +34,7 @@ public extension TracksProvider {
     }
 
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
+        let eventName = decorateEventNameForPOSIfNeeded(eventName)
         if let properties {
             guard Self.tracksService.trackEventName(eventName, withCustomProperties: properties) else {
                 return DDLogError("🔴 Error tracking \(eventName) with properties: \(properties)")
@@ -100,6 +107,14 @@ private extension TracksProvider {
             UserDefaults.standard[.analyticsUsername] = nil
             Self.tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
         }
+    }
+
+    private func decorateEventNameForPOSIfNeeded(_ eventName: String) -> String {
+        if Self.isPOSModeActive {
+            let prefix = "pos_"
+            return "\(prefix)\(eventName)"
+        }
+        return eventName
     }
 
     func refreshTracksMetadata() {

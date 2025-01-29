@@ -54,6 +54,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
     @Published private(set) var cart: [CartItem] = []
 
     @Published private(set) var orderState: PointOfSaleOrderState = .idle
+    @Published private var internalOrderState: PointOfSaleInternalOrderState = .idle
 
     private let itemsController: PointOfSaleItemsControllerProtocol
 
@@ -194,7 +195,9 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     private func collectCardPayment() async {
-        guard let order = orderController.order else {
+        guard case let .loaded(totals, order) = internalOrderState,
+              totals.orderTotalDecimal > 0.0
+        else {
             return
             // Should this throw?
         }
@@ -404,6 +407,8 @@ extension PointOfSaleAggregateModel {
         orderController.orderStatePublisher
             .map { $0.externalState }
             .assign(to: &$orderState)
+
+        orderController.orderStatePublisher.assign(to: &$internalOrderState)
     }
 }
 

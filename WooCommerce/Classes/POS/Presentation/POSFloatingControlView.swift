@@ -4,6 +4,7 @@ struct POSFloatingControlView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding private var showExitPOSModal: Bool
     @Binding private var showSupport: Bool
 
@@ -50,6 +51,7 @@ struct POSFloatingControlView: View {
                 .background(backgroundColor)
                 .cornerRadius(Constants.cornerRadius)
                 .disabled(posModel.paymentState.shownFullScreen)
+                .disabled(horizontalSizeClass != .regular)
         }
         .frame(height: Constants.size)
         .background(Color.clear)

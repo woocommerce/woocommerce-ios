@@ -11,24 +11,10 @@ struct WooShippingNormalizeAddressView: View {
                     Text(Localization.selectAddressPrompt)
                 }
                 .bodyStyle()
-                VStack(alignment: .leading, spacing: Constants.innerVerticalSpacing) {
-                    Text(Localization.enteredAddressLabel.localizedUppercase)
-                        .footnoteStyle()
-                    Text("1234 Main St\nSan Francisco, CA 94104")
-                        .font(.subheadline)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding()
-                        .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 0.5)
-                }
-                VStack(alignment: .leading, spacing: Constants.innerVerticalSpacing) {
-                    Text(Localization.suggestedAddressLabel.localizedUppercase)
-                        .footnoteStyle()
-                    Text("1234 Main St\nSan Francisco, CA 94104")
-                        .font(.subheadline)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding()
-                        .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 0.5)
-                }
+                AddressView(label: Localization.enteredAddressLabel,
+                            address: "15 Algonkin St, Ticonderogaa, NY 12883-1487, US")
+                AddressView(label: Localization.suggestedAddressLabel,
+                            address: "15 ALGONKIN ST, TICONDEROGA, NY 12883-1487, US")
             }
             .padding()
         }
@@ -52,6 +38,26 @@ struct WooShippingNormalizeAddressView: View {
                 .padding()
             }
             .background(Color(uiColor: .systemBackground))
+        }
+    }
+
+    private struct AddressView: View {
+        /// Label for the address
+        let label: String
+
+        /// Address to display, formatted in a string.
+        let address: String
+
+        var body: some View {
+            VStack(alignment: .leading, spacing: Constants.innerVerticalSpacing) {
+                Text(label.localizedUppercase)
+                    .footnoteStyle()
+                Text(address)
+                    .font(.subheadline)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+                    .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 0.5)
+            }
         }
     }
 }

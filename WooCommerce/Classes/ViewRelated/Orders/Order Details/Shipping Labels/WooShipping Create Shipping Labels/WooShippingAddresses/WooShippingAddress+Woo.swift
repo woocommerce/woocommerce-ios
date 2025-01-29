@@ -2,7 +2,6 @@ import Foundation
 import Contacts
 import Yosemite
 
-
 // Yosemite.WooShippingAddress Helper Methods
 //
 extension WooShippingAddress {

@@ -3,7 +3,6 @@ import XCTest
 import Yosemite
 
 final class WooShippingNormalizeAddressViewModelTests: XCTestCase {
-
     func test_it_inits_with_expected_values() {
         // Given
         let enteredAddress = WooShippingNormalizeAddressViewModel.sampleEnteredAddress

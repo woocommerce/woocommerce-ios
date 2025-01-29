@@ -92,7 +92,7 @@ struct AccountCreationForm: View {
                     .renderedIf(viewModel.currentField == .password)
 
                     // Terms of Service link.
-                    AttributedText(tosAttributedText, enablesLinkUnderline: true)
+                    AttributedText(tosAttributedText)
                         .attributedTextLinkColor(Color(.secondaryLabel))
                         .environment(\.customOpenURL) { url in
                             tosURL = url

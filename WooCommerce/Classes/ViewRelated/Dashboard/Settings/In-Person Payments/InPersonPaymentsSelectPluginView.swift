@@ -100,8 +100,13 @@ private enum Localization {
         "Choose your Payment Provider",
         comment: "Title for the screen to select the preferred provider for In-Person Payments")
     static let prompt = NSLocalizedString(
-        "In-Person Payments can be processed through either of these payment providers. Which provider would you like to use?",
-        comment: "Main prompt for the screen to select the preferred provider for In-Person Payments")
+        "In‑Person Payments can be processed through either of these payment providers. Which provider would you like to use?",
+        comment: """
+                 Main prompt for the screen to select the preferred provider for In-Person Payments
+                 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+                 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
+                 """
+    )
     static let confirm = NSLocalizedString(
         "Confirm Payment Method",
         comment: "Button to confirm the preferred provider for In-Person Payments")

@@ -1313,7 +1313,7 @@ private extension ProductsViewController {
                                             comment: "Action to add product on the placeholder overlay when there are no products on the Products tab")
         return EmptyStateViewController.Config.withButton(
             message: .init(string: message),
-            image: .emptyProductsTabImage,
+            image: .productBlouseImage,
             details: details,
             buttonTitle: buttonTitle,
             onTap: { [weak self] button in
@@ -1333,7 +1333,7 @@ private extension ProductsViewController {
                                             comment: "Action to add product on the placeholder overlay when no products match the filter on the Products tab")
         return EmptyStateViewController.Config.withButton(
             message: .init(string: message),
-            image: .emptyProductsTabImage,
+            image: .productBlouseImage,
             details: "",
             buttonTitle: buttonTitle,
             onTap: { [weak self] button in

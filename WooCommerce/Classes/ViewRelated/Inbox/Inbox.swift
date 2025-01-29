@@ -103,7 +103,7 @@ private extension Inbox {
         static let title = NSLocalizedString("Inbox", comment: "Title for the screen that shows inbox notes.")
         static let emptyStateTitle = NSLocalizedString("Congrats, you’ve read everything!",
                                                          comment: "Title displayed if there are no inbox notes in the inbox screen.")
-        static let emptyStateMessage = NSLocalizedString("Come back soon for more tips and insights on growing your store",
+        static let emptyStateMessage = NSLocalizedString("Come back soon for more tips and insights on growing your store.",
                                                          comment: "Message displayed if there are no inbox notes to display in the inbox screen.")
         static let dismissAllNotes = NSLocalizedString("Dismiss All",
                                                               comment: "Dismiss All button in Inbox Notes for dismissing all the notes.")

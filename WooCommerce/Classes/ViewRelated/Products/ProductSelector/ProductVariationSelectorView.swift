@@ -68,7 +68,7 @@ struct ProductVariationSelectorView: View {
                 .padding(.horizontal, insets: safeAreaInsets)
                 .background(Color(.listForeground(modal: false)).ignoresSafeArea())
             case .empty:
-                EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
+                EmptyState(title: Localization.emptyStateMessage, image: .productBlouseImage)
                     .frame(maxHeight: .infinity)
             case .firstPageSync:
                 List(viewModel.ghostRows) { rowViewModel in

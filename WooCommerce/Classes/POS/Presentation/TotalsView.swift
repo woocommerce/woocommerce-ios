@@ -221,21 +221,17 @@ private extension TotalsView {
 
     @ViewBuilder private var paymentView: some View {
         switch posModel.paymentState {
-        case .card:
-            switch posModel.cardReaderConnectionStatus {
-            case .connected, .disconnecting, .cancellingConnection:
-                if let inlinePaymentMessage = posModel.cardPresentPaymentInlineMessage {
-                    HStack(alignment: .center) {
-                        Spacer()
-                        PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
-                        Spacer()
-                    }
-                } else {
-                    EmptyView()
-                }
-            case .disconnected:
+        case .card(let cardPaymentState):
+            if TotalsViewHelper().shouldShowDisconnectedMessage(readerConnectionStatus: posModel.cardReaderConnectionStatus,
+                                                                paymentState: cardPaymentState) {
                 PointOfSaleCardPresentPaymentReaderDisconnectedMessageView {
                     posModel.connectCardReader()
+                }
+            } else if let inlinePaymentMessage = posModel.cardPresentPaymentInlineMessage {
+                HStack(alignment: .center) {
+                    Spacer()
+                    PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
+                    Spacer()
                 }
             }
         case .cash(let cashPaymentState):
@@ -319,19 +315,18 @@ private extension TotalsView {
                     .preparingReader,
                     .processingPayment,
                     .cardPaymentSuccessful:
-                break
+                if TotalsViewHelper().shouldShowDisconnectedMessage(readerConnectionStatus: posModel.cardReaderConnectionStatus,
+                                                                    paymentState: cardPaymentState) {
+                    return .outlined
+                } else {
+                    return .primary
+                }
             }
         case .cash:
             return PaymentViewLayout(backgroundColor: backgroundColor,
                                      topPadding: nil,
                                      bottomPadding: nil)
         }
-
-        if posModel.cardReaderConnectionStatus == .disconnected {
-            return .outlined
-        }
-
-        return .primary
     }
 }
 

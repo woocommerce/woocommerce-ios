@@ -1,5 +1,4 @@
 import WordPressShared
-import WordPressKit
 
 /// View Controller for login-specific screens
 open class LoginViewController: NUXViewController, LoginFacadeDelegate {

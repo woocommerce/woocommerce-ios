@@ -1,7 +1,5 @@
 import Foundation
 
-import WordPressKit
-
 @objc public protocol WordPressComOAuthClientFacadeProtocol {
 
     init(client: String, secret: String)

@@ -1,6 +1,6 @@
 #import "MediaServiceRemoteXMLRPC.h"
 #import "RemoteMedia.h"
-#import "WPKit-Swift.h"
+#import "WordPressAuthenticator-Swift.h"
 
 @import WordPressShared;
 @import NSObject_SafeExpectations;

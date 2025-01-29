@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
-#import <WordPressKit/TaxonomyServiceRemote.h>
-#import <WordPressKit/ServiceRemoteWordPressXMLRPC.h>
+#import <WordPressAuthenticator/TaxonomyServiceRemote.h>
+#import <WordPressAuthenticator/ServiceRemoteWordPressXMLRPC.h>
 
 @class RemoteCategory;
 

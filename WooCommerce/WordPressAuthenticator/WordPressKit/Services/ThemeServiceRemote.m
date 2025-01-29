@@ -1,7 +1,7 @@
 #import "ThemeServiceRemote.h"
 
 #import "RemoteTheme.h"
-#import "WPKit-Swift.h"
+#import "WordPressAuthenticator-Swift.h"
 @import NSObject_SafeExpectations;
 
 // Service dictionary keys

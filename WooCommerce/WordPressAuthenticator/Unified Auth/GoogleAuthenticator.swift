@@ -1,5 +1,4 @@
 import Foundation
-import WordPressKit
 import SVProgressHUD
 
 /// Contains delegate methods for Google authentication unified auth flow.

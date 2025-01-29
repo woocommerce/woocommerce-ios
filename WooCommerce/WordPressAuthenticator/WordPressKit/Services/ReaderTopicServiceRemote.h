@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import <WordPressKit/ServiceRemoteWordPressComREST.h>
+#import <WordPressAuthenticator/ServiceRemoteWordPressComREST.h>
 
 extern NSString * const WordPressComReaderEndpointURL;
 

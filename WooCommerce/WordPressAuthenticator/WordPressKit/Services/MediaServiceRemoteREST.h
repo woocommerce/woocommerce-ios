@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
-#import <WordPressKit/MediaServiceRemote.h>
-#import <WordPressKit/SiteServiceRemoteWordPressComREST.h>
+#import <WordPressAuthenticator/MediaServiceRemote.h>
+#import <WordPressAuthenticator/SiteServiceRemoteWordPressComREST.h>
 
 @interface MediaServiceRemoteREST : SiteServiceRemoteWordPressComREST <MediaServiceRemote>
 

@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
-#import <WordPressKit/CommentServiceRemote.h>
-#import <WordPressKit/SiteServiceRemoteWordPressComREST.h>
+#import <WordPressAuthenticator/CommentServiceRemote.h>
+#import <WordPressAuthenticator/SiteServiceRemoteWordPressComREST.h>
 
 @class RemoteUser;
 @class RemoteLikeUser;

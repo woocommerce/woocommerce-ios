@@ -2,7 +2,7 @@
 #import "BlogServiceRemoteREST.h"
 #import "NSMutableDictionary+Helpers.h"
 #import "RemotePostType.h"
-#import "WPKit-Swift.h"
+#import "WordPressAuthenticator-Swift.h"
 @import NSObject_SafeExpectations;
 @import WordPressShared;
 

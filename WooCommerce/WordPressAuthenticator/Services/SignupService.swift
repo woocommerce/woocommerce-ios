@@ -1,6 +1,5 @@
 import Foundation
 import WordPressShared
-import WordPressKit
 
 /// SignupService: Responsible for creating a new WPCom user and blog.
 ///

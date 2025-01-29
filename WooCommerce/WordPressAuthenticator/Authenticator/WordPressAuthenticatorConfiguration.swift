@@ -1,5 +1,3 @@
-import WordPressKit
-
 // MARK: - WordPressAuthenticator Configuration
 //
 public struct WordPressAuthenticatorConfiguration {

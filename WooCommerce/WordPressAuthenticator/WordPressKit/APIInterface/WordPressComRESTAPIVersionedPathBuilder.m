@@ -3,7 +3,7 @@
 #import "WordPressComRESTAPIVersionedPathBuilder.h"
 #import "WordPressComRESTAPIVersion.h"
 #else
-#import "WordPressKit/WordPressComRESTAPIVersionedPathBuilder.h"
+#import "WordPressAuthenticator/WordPressComRESTAPIVersionedPathBuilder.h"
 #endif
 
 static NSString* const WordPressComRESTApiVersionStringInvalid = @"invalid_api_version";

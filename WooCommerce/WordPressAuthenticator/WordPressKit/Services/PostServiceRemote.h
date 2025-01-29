@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import <WordPressKit/PostServiceRemoteOptions.h>
+#import <WordPressAuthenticator/PostServiceRemoteOptions.h>
 
 @class RemotePost;
 @class RemotePostUpdateParameters;

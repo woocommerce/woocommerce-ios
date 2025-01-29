@@ -1,5 +1,3 @@
-import WordPressKit
-
 public struct SocialUser {
 
     public let email: String

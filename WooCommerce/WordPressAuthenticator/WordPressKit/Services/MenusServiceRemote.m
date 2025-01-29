@@ -1,5 +1,5 @@
 #import "MenusServiceRemote.h"
-#import "WPKit-Swift.h"
+#import "WordPressAuthenticator-Swift.h"
 @import WordPressShared;
 @import NSObject_SafeExpectations;
 

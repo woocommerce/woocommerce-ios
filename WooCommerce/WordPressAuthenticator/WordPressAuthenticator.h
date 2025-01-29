@@ -19,3 +19,29 @@ FOUNDATION_EXPORT const unsigned char WordPressAuthenticatorVersionString[];
 #import <WordPressAuthenticator/WPNUXSecondaryButton.h>
 #import <WordPressAuthenticator/WPWalkthroughOverlayView.h>
 #import <WordPressAuthenticator/WPWalkthroughTextField.h>
+
+// From what was once WordPressKit
+#import <WordPressAuthenticator/AccountServiceRemoteREST.h>
+#import <WordPressAuthenticator/BlogServiceRemoteREST.h>
+#import <WordPressAuthenticator/CommentServiceRemoteREST.h>
+#import <WordPressAuthenticator/FilePart.h>
+#import <WordPressAuthenticator/NSString+MD5.h>
+#import <WordPressAuthenticator/PostServiceRemote.h>
+#import <WordPressAuthenticator/PostServiceRemoteREST.h>
+#import <WordPressAuthenticator/PostServiceRemoteXMLRPC.h>
+#import <WordPressAuthenticator/ReaderPostServiceRemote.h>
+#import <WordPressAuthenticator/ReaderTopicServiceRemote.h>
+#import <WordPressAuthenticator/RemotePost.h>
+#import <WordPressAuthenticator/RemotePostCategory.h>
+#import <WordPressAuthenticator/RemoteReaderPost.h>
+#import <WordPressAuthenticator/WPKitLogging.h>
+#import <WordPressAuthenticator/WordPressComServiceRemote.h>
+#import <WordPressAuthenticator/WordPressComRestApiErrorDomain.h>
+#import <WordPressAuthenticator/WordPressComRESTAPIVersionedPathBuilder.h>
+// Required for building
+#import <WordPressAuthenticator/BlogServiceRemote.h>
+#import <WordPressAuthenticator/PostServiceRemoteOptions.h>
+#import <WordPressAuthenticator/RemoteComment.h>
+#import <WordPressAuthenticator/RemoteMedia.h>
+#import <WordPressAuthenticator/SiteServiceRemoteWordPressComREST.h>
+#import <WordPressAuthenticator/ServiceRemoteWordPressXMLRPC.h>

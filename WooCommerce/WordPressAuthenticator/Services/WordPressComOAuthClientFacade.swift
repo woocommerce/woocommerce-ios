@@ -1,5 +1,4 @@
 import Foundation
-import WordPressKit
 
 @objc public class WordPressComOAuthClientFacade: NSObject, WordPressComOAuthClientFacadeProtocol {
 

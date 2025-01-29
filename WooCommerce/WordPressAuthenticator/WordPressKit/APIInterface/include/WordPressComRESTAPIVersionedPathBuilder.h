@@ -2,7 +2,7 @@
 #if SWIFT_PACKAGE
 #import "WordPressComRESTAPIVersion.h"
 #else
-#import <WordPressKit/WordPressComRESTAPIVersion.h>
+#import <WordPressAuthenticator/WordPressComRESTAPIVersion.h>
 #endif
 
 @interface WordPressComRESTAPIVersionedPathBuilder: NSObject

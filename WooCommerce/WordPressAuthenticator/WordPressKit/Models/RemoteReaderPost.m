@@ -1,6 +1,6 @@
 #import "RemoteReaderPost.h"
 #import "RemoteSourcePostAttribution.h"
-#import "WPKit-Swift.h"
+#import "WordPressAuthenticator-Swift.h"
 
 @import NSObject_SafeExpectations;
 @import WordPressShared;

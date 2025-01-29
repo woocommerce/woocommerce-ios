@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import <WordPressKit/RemoteComment.h>
+#import <WordPressAuthenticator/RemoteComment.h>
 
 
 // Used to determine which 'status' parameter to use when fetching Comments.

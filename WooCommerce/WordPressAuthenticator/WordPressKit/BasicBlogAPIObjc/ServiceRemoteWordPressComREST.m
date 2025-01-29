@@ -1,5 +1,5 @@
 #import "ServiceRemoteWordPressComREST.h"
-#import "WPKit-Swift.h"
+#import "WordPressAuthenticator-Swift.h"
 
 @implementation ServiceRemoteWordPressComREST
 

@@ -1,5 +1,4 @@
 import XCTest
-import WordPressKit
 @testable import WordPressAuthenticator
 
 final class SiteAddressViewModelTests: XCTestCase {

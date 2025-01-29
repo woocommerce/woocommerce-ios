@@ -58,6 +58,7 @@ DEPENDENCIES:
   - Gridicons (~> 1.2.0)
   - KeychainAccess (~> 4.2.2)
   - Kingfisher (~> 7.6.2)
+  - NSObject-SafeExpectations (~> 0.0.4)
   - OCMock (~> 3.4)
   - Sentry (~> 8.43.0)
   - Sourcery (~> 1.0.3)
@@ -65,12 +66,14 @@ DEPENDENCIES:
   - StripeTerminal (~> 3.9.1)
   - SVProgressHUD (= 2.2.5)
   - SwiftLint (= 0.54.0)
+  - UIDeviceIdentifier (~> 2.0)
   - WordPress-Editor-iOS (~> 1.19)
   - WordPressKit (~> 17.3)
   - WordPressShared (~> 2.1-beta)
   - WordPressUI (~> 1.15)
   - Wormholy (~> 1.6.6)
   - WPMediaPicker (~> 1.8)
+  - wpxmlrpc (~> 0.10)
   - ZendeskSupportSDK (~> 9.0.0)
 
 SPEC REPOS:
@@ -142,6 +145,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 281acf2bb731d2a67f913cfe653ed0da9f5b2f42
   ZendeskSupportSDK: b512cfc74b6bf8490e589f02cf52e27ed4f2bebe
 
-PODFILE CHECKSUM: 44cdbd5c8b55c2f58520bdd5a193bfc1df475279
+PODFILE CHECKSUM: 424547980dc5f5375ed48ac81fc011d930412eb6
 
 COCOAPODS: 1.16.2

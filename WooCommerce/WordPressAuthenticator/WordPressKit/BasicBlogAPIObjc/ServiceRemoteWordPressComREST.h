@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
-#import <WordPressKit/WordPressComRESTAPIInterfacing.h>
-#import <WordPressKit/WordPressComRESTAPIVersion.h>
+#import <WordPressAuthenticator/WordPressComRESTAPIInterfacing.h>
+#import <WordPressAuthenticator/WordPressComRESTAPIVersion.h>
 
 @class WordPressComRestApi;
 

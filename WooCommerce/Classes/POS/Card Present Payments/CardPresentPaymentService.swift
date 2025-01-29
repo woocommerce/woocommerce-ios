@@ -64,14 +64,12 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         self.connectedReaderPublisher = connectedReaderPublisher
 
         readerConnectionStatusPublisher = connectedReaderPublisher
-            .map({ reader -> CardPresentPaymentReaderConnectionStatus? in
-                if let reader {
-                    return .connected(reader)
-                } else {
-                    return nil
+            .map({ reader -> CardPresentPaymentReaderConnectionStatus in
+                guard let reader else {
+                    return .disconnected
                 }
+                return .connected(reader)
             })
-            .compactMap { $0 }
             .merge(with: paymentAlertsPresenterAdaptor.readerConnectionStatusPublisher)
             .merge(with: readerConnectionStatusSubject)
             .receive(on: DispatchQueue.main)

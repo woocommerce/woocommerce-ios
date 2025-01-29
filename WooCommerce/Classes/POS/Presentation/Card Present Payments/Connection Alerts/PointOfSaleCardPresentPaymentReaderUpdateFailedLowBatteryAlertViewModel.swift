@@ -4,10 +4,12 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlertViewModel: 
     let title: String = Localization.title
     let imageName = PointOfSaleAssets.readerConnectionLowBattery.imageName
     let batteryLevelInfo: String
+    let retrySearchButtonViewModel: CardPresentPaymentsModalButtonViewModel
     let cancelButtonViewModel: CardPresentPaymentsModalButtonViewModel
 
-    init(batteryLevel: Double?, cancelUpdateAction: @escaping () -> Void) {
+    init(batteryLevel: Double?, retrySearchAction: @escaping () -> Void, cancelUpdateAction: @escaping () -> Void) {
         self.cancelButtonViewModel = .init(title: Localization.cancel, actionHandler: cancelUpdateAction)
+        self.retrySearchButtonViewModel = .init(title: Localization.retry, actionHandler: retrySearchAction)
         self.batteryLevelInfo = {
             if let batteryLevel = batteryLevel {
                 return String(format: Localization.message, 100 * batteryLevel)
@@ -27,22 +29,28 @@ private extension PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlert
         )
 
         static let message = NSLocalizedString(
-            "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo",
-            value: "Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again.",
-            comment: "Button to dismiss the alert presented when an update fails because the reader is low on battery. " +
+            "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo.1",
+            value: "A reader update failed because the its battery is %.0f%% charged. Please charge the reader then try again.",
+            comment: "Message presented when an update fails because the reader is low on battery. " +
                 "Please leave the %.0f%% intact, as it represents the current percentage of charge."
         )
 
         static let messageNoBatteryLevel = NSLocalizedString(
-            "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo",
-            value: "Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again.",
-            comment: "Button to dismiss the alert presented when an update fails because the reader is low on battery."
+            "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo.1",
+            value: "A reader update failed because it is low on battery. Please charge the reader then try again.",
+            comment: "Message presented when an update fails because the reader is low on battery."
         )
 
         static let cancel = NSLocalizedString(
             "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title",
             value: "Cancel",
             comment: "Button to dismiss the alert presented when an update fails because the reader is low on battery."
+        )
+
+        static let retry = NSLocalizedString(
+            "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.retryButton.title",
+            value: "Try again",
+            comment: "Button to retry the reader search when an update fails because the reader is low on battery."
         )
     }
 }

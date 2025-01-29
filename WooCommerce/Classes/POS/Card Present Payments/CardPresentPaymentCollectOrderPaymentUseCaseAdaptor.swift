@@ -133,7 +133,7 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
             cancelUpdate?()
         case .updateFailed(_, let cancelUpdate),
                 .updateFailedNonRetryable(let cancelUpdate),
-                .updateFailedLowBattery(_, let cancelUpdate):
+                .updateFailedLowBattery(_, _, let cancelUpdate):
             cancelUpdate()
         case .connectingToReader:
             // We can't cancel an in-progress connection, but we've invalidated the payment orchestrator

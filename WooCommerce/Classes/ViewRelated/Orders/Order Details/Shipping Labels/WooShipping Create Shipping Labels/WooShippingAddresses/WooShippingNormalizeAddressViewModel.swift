@@ -36,7 +36,6 @@ enum WooShippingSelectedAddressType {
 }
 
 // MARK: - Sample Data for SwiftUI Previews
-#if DEBUG
 extension WooShippingNormalizeAddressViewModel {
     static var sampleEnteredAddress: WooShippingAddress {
         WooShippingAddress(company: "",
@@ -62,4 +61,3 @@ extension WooShippingNormalizeAddressViewModel {
                            postcode: "12883-1487")
     }
 }
-#endif

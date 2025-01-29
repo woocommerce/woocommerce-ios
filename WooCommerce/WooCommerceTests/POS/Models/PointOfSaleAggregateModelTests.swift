@@ -148,7 +148,7 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             let event = try #require(analyticsProvider.receivedEvents.first)
-            #expect(event == "pos_item_added_to_cart")
+            #expect(event == "item_added_to_cart")
         }
     }
 
@@ -508,7 +508,7 @@ struct PointOfSaleAggregateModelTests {
             sut.cancelCardPaymentsOnboarding()
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "pos_payments_onboarding_dismissed" }) != nil)
+            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "payments_onboarding_dismissed" }) != nil)
             let eventProperties = try #require(analyticsProvider.receivedProperties.first(where: { $0.keys.contains("onboarding_state")
             }))
             #expect(eventProperties["onboarding_state"] as? String == "no_connection_error")
@@ -521,7 +521,7 @@ struct PointOfSaleAggregateModelTests {
             sut.trackCardPaymentsOnboardingShown()
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "pos_payments_onboarding_shown" }) != nil)
+            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "payments_onboarding_shown" }) != nil)
         }
     }
 }

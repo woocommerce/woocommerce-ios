@@ -247,9 +247,13 @@ extension PointOfSaleAggregateModel {
     func cancelThenCollectPayment() {
         Task { [weak self] in
             guard let self else { return }
-            try await cardPresentPaymentService.cancelPayment()
-            await collectCardPayment()
+            await cancelThenCollectPayment()
         }
+    }
+
+    func cancelThenCollectPayment() async {
+        try? await cardPresentPaymentService.cancelPayment()
+        await collectCardPayment()
     }
 
     private func setupReaderReconnectionObservation() {

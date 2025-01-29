@@ -52,4 +52,10 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     func cancelPayment() {
         cancelPaymentCalled = true
     }
+
+    var onCancelPaymentCalled: (() async throws -> Void)?
+    func cancelPayment() async throws {
+        cancelPaymentCalled = true
+        try await onCancelPaymentCalled?()
+    }
 }

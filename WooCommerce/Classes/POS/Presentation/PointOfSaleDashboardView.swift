@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PointOfSaleDashboardView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
@@ -10,25 +11,31 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            switch posModel.itemsViewState.containerState {
-            case .loading:
-                PointOfSaleLoadingView()
+            if case .regular = horizontalSizeClass {
+                switch posModel.itemsViewState.containerState {
+                case .loading:
+                    PointOfSaleLoadingView()
+                        .transition(.opacity)
+                        .ignoresSafeArea()
+                case .empty:
+                    PointOfSaleItemListFullscreenView {
+                        PointOfSaleItemListEmptyView(base: .root)
+                    }
+                case .error(let errorContents):
+                    PointOfSaleItemListFullscreenErrorView(error: errorContents, onRetry: {
+                        Task {
+                            await posModel.loadItems(base: .root)
+                        }
+                    })
+                case .content:
+                    contentView
+                        .accessibilitySortPriority(2)
+                        .ignoresSafeArea(edges: .bottom)
+                }
+            } else {
+                PointOfSaleUnsupportedWidthView()
                     .transition(.opacity)
                     .ignoresSafeArea()
-            case .empty:
-                PointOfSaleItemListFullscreenView {
-                    PointOfSaleItemListEmptyView(base: .root)
-                }
-            case .error(let errorContents):
-                PointOfSaleItemListFullscreenErrorView(error: errorContents, onRetry: {
-                    Task {
-                        await posModel.loadItems(base: .root)
-                    }
-                })
-            case .content:
-                contentView
-                    .accessibilitySortPriority(2)
-                    .ignoresSafeArea(edges: .bottom)
             }
 
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,

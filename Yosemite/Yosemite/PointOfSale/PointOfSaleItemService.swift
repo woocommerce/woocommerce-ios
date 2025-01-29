@@ -75,7 +75,7 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                 return POSItem
                     .variation(.init(id: UUID(),
                                      name: variationName,
-                                     formattedPrice: currencyFormatter.formatAmount(variation.price) ?? "-",
+                                     formattedPrice: formatPrice(variation.price),
                                      price: variation.price,
                                      productImageSource: variation.image?.src,
                                      productID: variation.productID,
@@ -91,14 +91,13 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     // - Product thumbnail, if any.
     private func mapProductsToPOSItems(products: [Product]) -> [POSItem] {
         return products.compactMap { product in
-            let formattedPrice = currencyFormatter.formatAmount(product.price) ?? "-"
             let thumbnailSource = product.images.first?.src
 
             switch product.productType {
                 case .simple:
                     return .simpleProduct(POSSimpleProduct(id: UUID(),
                                                            name: product.name,
-                                                           formattedPrice: formattedPrice,
+                                                           formattedPrice: formatPrice(product.price),
                                                            productImageSource: thumbnailSource,
                                                            productID: product.productID,
                                                            price: product.price))
@@ -114,5 +113,10 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                     return nil
             }
         }
+    }
+
+    private func formatPrice(_ price: String) -> String {
+        let zeroOrPlaceholder = currencyFormatter.formatAmount("0") ?? "-"
+        return currencyFormatter.formatAmount(price) ?? zeroOrPlaceholder
     }
 }

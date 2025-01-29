@@ -10,35 +10,36 @@ struct WooShippingCustomsRow: View {
     @State private var showCustomsForm: Bool = false
 
     var body: some View {
-        AdaptiveStack {
-            Text(Localization.customsTitle)
-                .headlineStyle()
-                .foregroundColor(.primary)
+        Button {
+            showCustomsForm.toggle()
+        } label: {
+            AdaptiveStack {
+                Text(Localization.customsTitle)
+                    .headlineStyle()
+                    .foregroundColor(.primary)
 
-            Spacer()
+                Spacer()
 
-            Text(informationIsCompleted ? Localization.completedStatus : Localization.missingInfoStatus)
-                .foregroundColor(.black)
-                .captionStyle()
-                .padding(.horizontal, Layout.statusBadgeHorizontalPadding)
-                .padding(.vertical, Layout.statusBadgeVerticalPadding)
-                .background(
-                    RoundedRectangle(cornerRadius: Layout.statusBadgeCornerRadius)
-                        .fill(informationIsCompleted ?
-                              Color.withColorStudio(name: .green, shade: .shade5) :
-                                Color.withColorStudio(name: .red, shade: .shade10))
-                )
-                .padding(.horizontal, 10)
+                Text(informationIsCompleted ? Localization.completedStatus : Localization.missingInfoStatus)
+                    .foregroundColor(.black)
+                    .captionStyle()
+                    .padding(.horizontal, Layout.statusBadgeHorizontalPadding)
+                    .padding(.vertical, Layout.statusBadgeVerticalPadding)
+                    .background(
+                        RoundedRectangle(cornerRadius: Layout.statusBadgeCornerRadius)
+                            .fill(informationIsCompleted ?
+                                  Color.withColorStudio(name: .green, shade: .shade5) :
+                                    Color.withColorStudio(name: .red, shade: .shade10))
+                    )
+                    .padding(.horizontal, 10)
 
-            PencilEditButton {
-                showCustomsForm.toggle()
+                Image(systemName: "pencil")
             }
-            .accessibilityLabel(Text(Localization.editButtonAccessibilityLabel))
-        }
-        .padding(Layout.borderPadding)
-        .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderWidth)
-        .sheet(isPresented: $showCustomsForm) {
-            WooShippingCustomsForm(viewModel: customsFormViewModel)
+            .padding(Layout.borderPadding)
+            .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderWidth)
+            .sheet(isPresented: $showCustomsForm) {
+                WooShippingCustomsForm(viewModel: customsFormViewModel)
+            }
         }
     }
 }

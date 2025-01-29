@@ -16,9 +16,15 @@ struct WooShippingNormalizeAddressView: View {
                 AddressView(label: Localization.enteredAddressLabel,
                             address: viewModel.enteredAddress.formattedPostalAddress ?? "",
                             isSelected: viewModel.selectedAddress == .entered)
+                .onTapGesture {
+                    viewModel.selectedAddress = .entered
+                }
                 AddressView(label: Localization.suggestedAddressLabel,
                             address: viewModel.suggestedAddress.formattedPostalAddress ?? "",
                             isSelected: viewModel.selectedAddress == .suggested)
+                .onTapGesture {
+                    viewModel.selectedAddress = .suggested
+                }
             }
             .padding()
         }
@@ -73,6 +79,7 @@ struct WooShippingNormalizeAddressView: View {
                     .roundedBorder(cornerRadius: 8,
                                    lineColor: isSelected ? Color(.wooCommercePurple(.shade60)) : Color(.separator),
                                    lineWidth: isSelected ? 2 : 0.5)
+                    .contentShape(Rectangle())
             }
         }
     }

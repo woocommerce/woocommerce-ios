@@ -9,7 +9,7 @@ final class WooShippingNormalizeAddressViewModel: ObservableObject {
 
     /// The selected address type.
     /// Defaults to the suggested address.
-    @Published private(set) var selectedAddress: WooShippingSelectedAddressType = .suggested
+    @Published var selectedAddress: WooShippingSelectedAddressType = .suggested
 
     init(enteredAddress: WooShippingAddress, suggestedAddress: WooShippingAddress) {
         self.enteredAddress = enteredAddress

@@ -11,10 +11,13 @@ struct WooShippingNormalizeAddressView: View {
                     Text(Localization.selectAddressPrompt)
                 }
                 .bodyStyle()
+                // TODO: Replace static data with real data from view model
                 AddressView(label: Localization.enteredAddressLabel,
-                            address: "15 Algonkin St, Ticonderogaa, NY 12883-1487, US")
+                            address: "15 Algonkin St, Ticonderogaa, NY 12883-1487, US",
+                            isSelected: false)
                 AddressView(label: Localization.suggestedAddressLabel,
-                            address: "15 ALGONKIN ST, TICONDEROGA, NY 12883-1487, US")
+                            address: "15 ALGONKIN ST, TICONDEROGA, NY 12883-1487, US",
+                            isSelected: true)
             }
             .padding()
         }
@@ -48,6 +51,9 @@ struct WooShippingNormalizeAddressView: View {
         /// Address to display, formatted in a string.
         let address: String
 
+        /// Whether the address is selected.
+        var isSelected: Bool
+
         var body: some View {
             VStack(alignment: .leading, spacing: Constants.innerVerticalSpacing) {
                 Text(label.localizedUppercase)
@@ -56,7 +62,10 @@ struct WooShippingNormalizeAddressView: View {
                     .font(.subheadline)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
-                    .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 0.5)
+                    .background(isSelected ? Color(.wooCommercePurple(.shade0)) : nil)
+                    .roundedBorder(cornerRadius: 8,
+                                   lineColor: isSelected ? Color(.wooCommercePurple(.shade60)) : Color(.separator),
+                                   lineWidth: isSelected ? 2 : 0.5)
             }
         }
     }

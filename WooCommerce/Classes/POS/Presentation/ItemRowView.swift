@@ -5,11 +5,12 @@ struct ItemRowView: View {
     private let onItemRemoveTapped: (() -> Void)?
 
     @ScaledMetric private var scale: CGFloat = 1.0
-    @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
+    @Binding private var showProductImage: Bool
 
-    init(cartItem: CartItem, onItemRemoveTapped: (() -> Void)? = nil) {
+    init(cartItem: CartItem, showImage: Binding<Bool> = .constant(true), onItemRemoveTapped: (() -> Void)? = nil) {
         self.cartItem = cartItem
+        self._showProductImage = showImage
         self.onItemRemoveTapped = onItemRemoveTapped
     }
 
@@ -57,7 +58,7 @@ struct ItemRowView: View {
 
     @ViewBuilder
     private var productImage: some View {
-        if dynamicTypeSize >= .accessibility3 {
+        if !showProductImage {
             EmptyView()
         } else if let imageSource = cartItem.item.productImageSource {
             ProductImageThumbnail(productImageURL: URL(string: imageSource),

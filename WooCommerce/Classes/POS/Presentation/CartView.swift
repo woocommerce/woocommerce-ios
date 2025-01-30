@@ -14,6 +14,9 @@ struct CartView: View {
         posModel.cart.isNotEmpty && offSetPosition < 0
     }
 
+    @State private var shouldShowItemImages: Bool = false
+    @State private var cartListWidth: CGFloat = 0
+
     var body: some View {
         VStack {
             DynamicHStack(spacing: Constants.cartHeaderSpacing) {
@@ -70,6 +73,7 @@ struct CartView: View {
                         VStack(spacing: Constants.cartItemSpacing) {
                             ForEach(posModel.cart, id: \.id) { cartItem in
                                 ItemRowView(cartItem: cartItem,
+                                            showImage: $shouldShowItemImages,
                                             onItemRemoveTapped: posModel.orderStage == .building ? {
                                     posModel.remove(cartItem: cartItem)
                                 } : nil)
@@ -81,7 +85,18 @@ struct CartView: View {
                         .background(GeometryReader { geometry in
                             Color.clear.preference(key: ScrollOffSetPreferenceKey.self,
                                                    value: geometry.frame(in: coordinateSpace).origin.y)
+                            .onAppear {
+                                cartListWidth = geometry.size.width
+                                updateItemImageVisibility(width: geometry.size.width)
+                            }
+                            .onChange(of: geometry.size.width) {
+                                cartListWidth = $0
+                                updateItemImageVisibility(width: $0)
+                            }
                         })
+                        .onChange(of: dynamicTypeSize) {
+                            updateItemImageVisibility(dynamicTypeSize: $0)
+                        }
                         .onPreferenceChange(ScrollOffSetPreferenceKey.self) { position in
                             self.offSetPosition = position
                         }
@@ -155,6 +170,41 @@ private extension CartView {
         viewHelper.shouldShowClearCartButton(
             cart: posModel.cart,
             orderStage: posModel.orderStage)
+    }
+
+    func updateItemImageVisibility(dynamicTypeSize: DynamicTypeSize? = nil, width: CGFloat? = nil) {
+        let width = width ?? cartListWidth
+        let newVisibility = width >= minimumWidthToShowItemImages(with: dynamicTypeSize ?? self.dynamicTypeSize)
+        DDLogInfo("Item row width: \(cartListWidth)")
+        guard newVisibility != shouldShowItemImages else {
+            return
+        }
+        shouldShowItemImages = newVisibility
+    }
+
+    func minimumWidthToShowItemImages(with dynamicTypeSize: DynamicTypeSize) -> CGFloat {
+        switch dynamicTypeSize {
+        case .xSmall, .small:
+            240
+        case .medium:
+            260
+        case .large:
+            270
+        case .xLarge:
+            280
+        case .xxLarge, .xxxLarge:
+            300
+        case .accessibility1:
+            320
+        case .accessibility2:
+            400
+        case .accessibility3, .accessibility4:
+            420
+        case .accessibility5:
+            450
+        @unknown default:
+            450
+        }
     }
 }
 

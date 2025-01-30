@@ -155,13 +155,18 @@ struct WooShippingEditAddressView: View {
                     .font(.subheadline)
                     .foregroundStyle(viewModel.status == .verified ? Constants.green : Constants.red)
                     Button(Localization.Button.label(for: viewModel.status)) {
-                        if viewModel.status == .verified {
+                        switch viewModel.status {
+                        case .verified:
                             dismiss()
-                        } else {
-                            // TODO: Handle remote verification
+                        case .unverified:
+                            Task { @MainActor in
+                                await viewModel.remotelyValidateAddress()
+                            }
+                        case .missingInformation:
+                            break
                         }
                     }
-                    .buttonStyle(PrimaryButtonStyle())
+                    .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isRemotelyValidating))
                     .disabled(viewModel.status == .missingInformation)
                 }
                 .padding()

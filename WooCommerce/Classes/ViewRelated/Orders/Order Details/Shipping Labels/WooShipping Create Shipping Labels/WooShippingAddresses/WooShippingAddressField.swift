@@ -73,6 +73,12 @@ final class WooShippingAddressField: ObservableObject {
     func clearError() {
         errorMessage = nil
     }
+
+    /// Sets the current validation error.
+    /// This can be used to override the local validation, e.g. when remote validation fails.
+    func setError(_ message: String) {
+        errorMessage = message
+    }
 }
 
 /// Represents the types of fields in a WooCommerce Shipping address.

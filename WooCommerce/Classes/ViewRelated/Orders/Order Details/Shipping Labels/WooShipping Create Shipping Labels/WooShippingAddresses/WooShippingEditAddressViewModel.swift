@@ -79,7 +79,11 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     /// Label to describe the status of the address.
     var statusLabel: String {
-        Localization.Status.label(for: status)
+        if let remoteValidationError, hasChanges {
+            return remoteValidationError
+        } else {
+            return Localization.Status.label(for: status)
+        }
     }
 
     // MARK: State/Country
@@ -147,6 +151,9 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     /// View model for normalizing the address.
     @Published var normalizeAddressVM: WooShippingNormalizeAddressViewModel?
+
+    /// Error from remote validation, if any.
+    @Published private var remoteValidationError: String?
 
     init(type: AddressType,
          id: String,
@@ -269,8 +276,17 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
             let validation = try await remotelyValidateAddress(addressToValidate)
             normalizeAddressVM = WooShippingNormalizeAddressViewModel(enteredAddress: validation.originalAddress,
                                                                       suggestedAddress: validation.normalizedAddress)
+        } catch let error as WooShippingAddressValidationError {
+            if let nameError = error.nameError {
+                name.setError(nameError)
+            }
+            if let addressError = error.addressError {
+                address.setError(addressError)
+            }
+            if let generalError = error.generalError {
+                remoteValidationError = generalError
+            }
         } catch {
-            // TODO: Handle `WooShippingAddressValidationError` errors.
             DDLogError("⛔️ Error validating address for Woo Shipping label: \(error)")
         }
     }

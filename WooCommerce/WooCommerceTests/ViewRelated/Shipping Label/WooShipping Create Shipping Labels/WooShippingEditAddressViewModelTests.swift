@@ -805,6 +805,48 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(viewModel.normalizeAddressVM)
     }
+
+    @MainActor
+    func test_remotelyValidateAddress_sets_status_and_field_errors_on_validation_error() async {
+        // Given
+        let expectedNameError = "Either Name or Company is required"
+        let expectedAddressError = "House number is missing"
+        let expectedGeneralError = "Address not found"
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingEditAddressViewModel(type: .destination,
+                                                        id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: "",
+                                                        address: "",
+                                                        city: "",
+                                                        state: "",
+                                                        postalCode: "",
+                                                        email: "",
+                                                        phone: "",
+                                                        isDefaultAddress: true,
+                                                        showCompanyField: true,
+                                                        isVerified: true,
+                                                        phoneNumberRequired: true,
+                                                        stores: stores,
+                                                        debounceDelayInSeconds: 0)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            if case let .validateAddress(_, _, completion) = action {
+                completion(.failure(WooShippingAddressValidationError(addressError: expectedAddressError,
+                                                                      generalError: expectedGeneralError,
+                                                                      nameError: expectedNameError)))
+            }
+        }
+
+        // When
+        viewModel.address.value = "ALGONKIN ST"
+        await viewModel.remotelyValidateAddress()
+
+        // Then
+        XCTAssertEqual(viewModel.name.errorMessage, expectedNameError)
+        XCTAssertEqual(viewModel.address.errorMessage, expectedAddressError)
+        XCTAssertEqual(viewModel.statusLabel, expectedGeneralError)
+    }
 }
 
 private extension WooShippingEditAddressViewModel {

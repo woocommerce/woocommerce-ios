@@ -651,6 +651,38 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.invalidFieldTypes.contains(.name))
     }
+
+    func test_status_is_unverified_when_verified_address_has_changes() {
+        // Given
+        let storageManager = MockStorageManager()
+        let country = Country(code: "US", name: "United States", states: [StateOfACountry(code: "NY", name: "New York")])
+        storageManager.insertSampleCountries(readOnlyCountries: [country])
+        let viewModel = WooShippingEditAddressViewModel(type: .destination,
+                                                        id: "",
+                                                        name: "JANE DOE",
+                                                        company: "HEADQUARTERS",
+                                                        country: "US",
+                                                        address: "15 ALGONKIN ST STE 100",
+                                                        city: "TICONDEROGA",
+                                                        state: "NY",
+                                                        postalCode: "12883-1487",
+                                                        email: "TEST@EXAMPLE.COM",
+                                                        phone: "1-234-456-7890",
+                                                        isDefaultAddress: true,
+                                                        showCompanyField: true,
+                                                        isVerified: true,
+                                                        phoneNumberRequired: true,
+                                                        storageManager: storageManager)
+
+        // Check precondition
+        XCTAssertEqual(viewModel.status, .verified)
+
+        // When
+        viewModel.name.value = "JANE DOE SMITH"
+
+        // Then
+        XCTAssertEqual(viewModel.status, .unverified)
+    }
 }
 
 private extension WooShippingEditAddressViewModel {

@@ -46,11 +46,16 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     // MARK: Local requirements & validation
 
-    /// Whether the address has been remotely verified.
-    private var isVerified: Bool
+    /// Whether the original (unedited) address has been remotely verified.
+    private var originalAddressIsVerified: Bool
 
     /// Whether the address is locally validated (there are no validation errors).
     @Published private var isValid: Bool = false
+
+    /// Whether there are any local changes to the address fields.
+    var hasChanges: Bool {
+        allFields.contains { $0.hasChanges }
+    }
 
     var allFields: [WooShippingAddressField] {
         [name, company, country, address, city, state, postalCode, email, phone]
@@ -59,15 +64,15 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     /// Whether the phone number is required.
     private let phoneNumberRequired: Bool
 
-    // TODO: Set status to unverified if the address was verified remotely but there are unsaved changes.
     /// Status of the address, based on local validation and remote verification.
     var status: WooShippingAddressStatus {
-        switch (isVerified, isValid) {
-        case (true, true):
+        let isRemotelyVerified = originalAddressIsVerified && !hasChanges
+        switch (isRemotelyVerified, isValid) {
+        case (true, true): // Is a valid, remotely verified address.
             return .verified
-        case (false, true):
+        case (false, true): // Is a valid, unverified address.
             return .unverified
-        case (_, false):
+        case (_, false): // Is an invalid address.
             return .missingInformation
         }
     }
@@ -171,7 +176,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         self.phone = WooShippingAddressField(type: .phone, value: phone, required: phoneNumberRequired, validate: { _ in return nil})
         self.isDefaultAddress = isDefaultAddress
         self.showCompanyField = showCompanyField
-        self.isVerified = isVerified
+        self.originalAddressIsVerified = isVerified
         self.phoneNumberRequired = phoneNumberRequired
         self.stores = stores
         self.siteID = stores.sessionManager.defaultStoreID ?? Int64.min

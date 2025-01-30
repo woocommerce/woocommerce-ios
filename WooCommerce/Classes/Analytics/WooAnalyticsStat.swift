@@ -1268,9 +1268,9 @@ enum WooAnalyticsStat: String {
     case backgroundUpdatesDisabled = "background_updates_disabled"
 
     // MARK: Point of Sale events
-    case pointOfSaleAddItemToCart = "pos_item_added_to_cart"
-    case pointOfSalePaymentsOnboardingShown = "pos_payments_onboarding_shown"
-    case pointOfSalePaymentsOnboardingDismissed = "pos_payments_onboarding_dismissed"
+    case pointOfSaleAddItemToCart = "item_added_to_cart"
+    case pointOfSalePaymentsOnboardingShown = "payments_onboarding_shown"
+    case pointOfSalePaymentsOnboardingDismissed = "payments_onboarding_dismissed"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"

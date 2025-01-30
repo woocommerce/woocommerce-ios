@@ -17,12 +17,6 @@ struct TotalsView: View {
         viewHelper.shouldShowTotalsFields(for: posModel.paymentState)
     }
 
-    private var shouldShowCollectCashPaymentButton: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.acceptCashForPointOfSale) &&
-        posModel.orderState != .syncing &&
-        (posModel.paymentState == .card(.idle) || posModel.paymentState == .card(.acceptingCard))
-    }
-
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
 
@@ -77,7 +71,8 @@ struct TotalsView: View {
                     .buttonStyle(SecondaryButtonStyle())
                     .padding(.horizontal, Constants.buttonHorizontalPadding)
                     .padding(.bottom, Constants.cashButtonBottomPadding)
-                    .renderedIf(shouldShowCollectCashPaymentButton)
+                    .renderedIf(viewHelper.shouldShowCollectCashPaymentButton(orderState: posModel.orderState,
+                                                                              paymentState: posModel.paymentState))
                 }
                 .animation(.default, value: isShowingPaymentView)
             case .error(let viewModel):

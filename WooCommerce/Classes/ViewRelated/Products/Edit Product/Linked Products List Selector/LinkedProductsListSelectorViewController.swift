@@ -22,7 +22,7 @@ final class LinkedProductsListSelectorViewController: UIViewController {
         <LinkedProductListSelectorDataSource, Product, StorageProduct, ProductsTabProductTableViewCell> = {
             let viewProperties = PaginatedListSelectorViewProperties(navigationBarTitle: nil,
                                                                      noResultsPlaceholderText: Localization.noResultsPlaceholder,
-                                                                     noResultsPlaceholderImage: .emptyProductsImage,
+                                                                     noResultsPlaceholderImage: .groupedProductsImage,
                                                                      noResultsPlaceholderImageTintColor: .primary,
                                                                      tableViewStyle: .plain,
                                                                      separatorStyle: .none)

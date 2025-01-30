@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "Empty store picker - light.pdf",
+      "filename" : "woo-empty-store-picker-light.pdf",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "Empty store picker - dark.pdf",
+      "filename" : "woo-empty-store-picker-dark.pdf",
       "idiom" : "universal"
     }
   ],

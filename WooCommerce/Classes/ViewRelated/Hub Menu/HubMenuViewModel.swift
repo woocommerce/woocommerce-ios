@@ -228,6 +228,7 @@ final class HubMenuViewModel: ObservableObject {
 
     func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {
         updateInAppNotifications(isPointOfSaleActive)
+        updateTrackEventPrefix(isPointOfSaleActive)
     }
 
     func trackMenuItemTapEvent(menu: HubMenuItem) {
@@ -274,6 +275,12 @@ private extension HubMenuViewModel {
         } else {
             ServiceLocator.pushNotesManager.enableInAppNotifications()
         }
+    }
+
+    // Decorates track events with a different prefix when Point of Sale is active
+    //
+    func updateTrackEventPrefix(_ isPointOfSaleActive: Bool) {
+        TracksProvider.setPOSMode(isPointOfSaleActive)
     }
 }
 
@@ -678,7 +685,7 @@ extension HubMenuViewModel {
 
         let title: String = Localization.subscriptions
         let description: String = Localization.subscriptionsDescription
-        let icon: UIImage = .shoppingCartPurpleIcon
+        let icon: UIImage = .shoppingCartFilled
         let iconColor: UIColor = .primary
         let accessibilityIdentifier: String = "menu-subscriptions"
         let trackingOption: String = "upgrades"

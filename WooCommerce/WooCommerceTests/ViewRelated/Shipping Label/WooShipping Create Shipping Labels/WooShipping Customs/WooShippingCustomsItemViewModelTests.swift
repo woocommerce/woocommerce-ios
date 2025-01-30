@@ -6,8 +6,7 @@ class WooShippingCustomsItemViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        viewModel = WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "", name: "United States"),
-                                                    orderItem: MockOrderItem.sampleItem(), currencySymbol: "$")
+        viewModel = WooShippingCustomsItemViewModel(orderItem: MockOrderItem.sampleItem(), currencySymbol: "$")
     }
 
     func test_when_tariff_number_is_empty_then_it_is_valid() {
@@ -48,8 +47,7 @@ class WooShippingCustomsItemViewModelTests: XCTestCase {
     func test_hsTariffNumberTotalValue_when_currency_symbol_is_not_$_returns_nil() {
         // When
         let orderItem = MockOrderItem.sampleItem(quantity: 2)
-        viewModel = WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "", name: "United States"),
-                                                    orderItem: orderItem, currencySymbol: "$")
+        viewModel = WooShippingCustomsItemViewModel(orderItem: orderItem, currencySymbol: "$")
 
         // Then
         XCTAssertNil(viewModel.hsTariffNumberTotalValue)
@@ -59,8 +57,7 @@ class WooShippingCustomsItemViewModelTests: XCTestCase {
     func test_hsTariffNumberTotalValue_when_currency_symbol_is_$_but_hsTariffNumber_is_empty_returns_nil() {
         // When
         let orderItem = MockOrderItem.sampleItem(quantity: 2)
-        viewModel = WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "", name: "United States"),
-                                                    orderItem: orderItem, currencySymbol: "$")
+        viewModel = WooShippingCustomsItemViewModel(orderItem: orderItem, currencySymbol: "$")
         viewModel.valuePerUnit = "1000"
         viewModel.hsTariffNumber = ""
 
@@ -72,8 +69,7 @@ class WooShippingCustomsItemViewModelTests: XCTestCase {
     func test_hsTariffNumberTotalValue_when_currency_symbol_is_$_but_invalid_hs_tariff_number_returns_nil() {
         // When
         let orderItem = MockOrderItem.sampleItem(quantity: 2)
-        viewModel = WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "", name: "United States"),
-                                                    orderItem: orderItem, currencySymbol: "$")
+        viewModel = WooShippingCustomsItemViewModel(orderItem: orderItem, currencySymbol: "$")
         viewModel.hsTariffNumber = "123"
         viewModel.valuePerUnit = "1000"
 
@@ -85,8 +81,7 @@ class WooShippingCustomsItemViewModelTests: XCTestCase {
     func test_hsTariffNumberTotalValue_when_currency_symbol_is_$_and_value_is_more_than_2500_and_valid_hs_tariff_number_returns_values() {
         // When
         let orderItem = MockOrderItem.sampleItem(quantity: 2)
-        viewModel = WooShippingCustomsItemViewModel(originCountry: WooShippingCustomsCountry(code: "", name: "United States"),
-                                                    orderItem: orderItem, currencySymbol: "$")
+        viewModel = WooShippingCustomsItemViewModel(orderItem: orderItem, currencySymbol: "$")
         viewModel.valuePerUnit = "3000"
         viewModel.hsTariffNumber = "123456"
 

@@ -200,7 +200,7 @@ private extension BlazeCampaignListView {
         static let create = NSLocalizedString("Create", comment: "Title of the button to create a new campaign on the Blaze campaign list view")
         static let emptyStateTitle = NSLocalizedString("No campaigns yet", comment: "Title of the empty state of the Blaze campaign list view")
         static let emptyStateMessage = NSLocalizedString(
-            "Drive more sales to your store with Blaze",
+            "Drive more sales to your store with Blaze.",
             comment: "Subtitle of the empty state of the Blaze campaign list view"
         )
         static let done = NSLocalizedString("Done", comment: "Button to dismiss the Blaze campaign detail view")

@@ -1,17 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "card-reader-connecting.pdf",
-      "idiom" : "universal"
-    },
-    {
-      "appearances" : [
-        {
-          "appearance" : "luminosity",
-          "value" : "dark"
-        }
-      ],
-      "filename" : "card-reader-connecting-dark.pdf",
+      "filename" : "card-reader-connecting-light.pdf",
       "idiom" : "universal"
     }
   ],

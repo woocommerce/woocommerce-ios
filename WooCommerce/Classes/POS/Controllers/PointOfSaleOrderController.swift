@@ -15,9 +15,6 @@ import enum WooFoundation.CurrencyCode
 protocol PointOfSaleOrderControllerProtocol {
     var orderStatePublisher: AnyPublisher<PointOfSaleInternalOrderState, Never> { get }
 
-    @available(*, deprecated, message: "This property will be removed when possible. Use `orderState.loaded` instead.")
-    var order: Order? { get }
-
     func syncOrder(for cartProducts: [CartItem], retryHandler: @escaping () async -> Void) async
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
@@ -48,7 +45,7 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     private let stores: StoresManager
 
     @Published private var orderState: PointOfSaleInternalOrderState = .idle
-    private(set) var order: Order? = nil
+    private var order: Order? = nil
 
     @MainActor
     func syncOrder(for cartItems: [CartItem],
@@ -140,7 +137,8 @@ private extension PointOfSaleOrderController {
             cartTotal: formattedPrice(totalsCalculator.itemsTotal.stringValue,
                                       currency: order.currency) ?? "",
             orderTotal: formattedPrice(order.total, currency: order.currency) ?? "",
-            taxTotal: formattedPrice(order.totalTax, currency: order.currency) ?? "")
+            taxTotal: formattedPrice(order.totalTax, currency: order.currency) ?? "",
+            orderTotalDecimal: totalsCalculator.orderTotal.decimalValue)
     }
 
     func formattedPrice(_ price: String?, currency: String?) -> String? {

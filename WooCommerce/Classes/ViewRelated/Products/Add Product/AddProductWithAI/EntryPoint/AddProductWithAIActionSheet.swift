@@ -74,7 +74,7 @@ struct AddProductWithAIActionSheet: View {
                             .subheadlineStyle()
                         AdaptiveStack(horizontalAlignment: .leading) {
                             Text(Localization.CreateProductWithAI.legalText)
-                            Text(.init(Localization.CreateProductWithAI.learnMore)).underline()
+                            Text(.init(Localization.CreateProductWithAI.learnMore))
                         }
                         .environment(\.openURL, OpenURLAction { url in
                             legalURL = url

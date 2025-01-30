@@ -1,18 +1,9 @@
 {
   "images" : [
     {
-      "filename" : "prologue-light.pdf",
-      "idiom" : "universal"
-    },
-    {
-      "appearances" : [
-        {
-          "appearance" : "luminosity",
-          "value" : "dark"
-        }
-      ],
-      "filename" : "prologue-dark.pdf",
-      "idiom" : "universal"
+      "filename" : "prologue-illustration.pdf",
+      "idiom" : "universal",
+      "language-direction" : "left-to-right"
     }
   ],
   "info" : {
@@ -20,6 +11,7 @@
     "version" : 1
   },
   "properties" : {
+    "localizable" : true,
     "preserves-vector-representation" : true
   }
 }

@@ -37,7 +37,6 @@ class WooShippingCustomsFormViewModelTests: XCTestCase {
         viewModel.itemsViewModels.first?.valuePerUnit = "10"
         viewModel.itemsViewModels.first?.weightPerUnit = "5"
         viewModel.itemsViewModels.first?.hsTariffNumber = "123456"
-        viewModel.itemsViewModels.first?.originCountry = WooShippingCustomsCountry(code: "US", name: "United States")
 
         // When
         viewModel.onDismiss()
@@ -57,7 +56,6 @@ class WooShippingCustomsFormViewModelTests: XCTestCase {
         XCTAssertEqual(passedForm?.items.first?.value, Double(viewModel.itemsViewModels.first?.valuePerUnit ?? "0"))
         XCTAssertEqual(passedForm?.items.first?.weight, Double(viewModel.itemsViewModels.first?.weightPerUnit ?? "0"))
         XCTAssertEqual(passedForm?.items.first?.hsTariffNumber, viewModel.itemsViewModels.first?.hsTariffNumber)
-        XCTAssertEqual(passedForm?.items.first?.originCountry, viewModel.itemsViewModels.first?.originCountry.name)
     }
 
     func test_onDismiss_when_calls_onCompletion_with_invalid_hsTariffNumber_then_returns_empty() {

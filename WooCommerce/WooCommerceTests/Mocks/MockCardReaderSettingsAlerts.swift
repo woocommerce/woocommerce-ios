@@ -146,8 +146,15 @@ extension MockCardReaderSettingsAlerts: BluetoothReaderConnnectionAlertsProvidin
         return MockCardPresentPaymentsModalViewModel()
     }
 
-    func updatingFailedLowBattery(batteryLevel: Double?, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        close()
+    func updatingFailedLowBattery(batteryLevel: Double?,
+                                  retrySearch: @escaping () -> Void,
+                                  close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        if mode == .continueSearchingAfterConnectionFailure {
+            retrySearch()
+        }
+        if mode == .cancelSearchingAfterConnectionFailure {
+            close()
+        }
         return MockCardPresentPaymentsModalViewModel()
     }
 

@@ -35,9 +35,13 @@ private enum Localization {
     )
 
     static let message = NSLocalizedString(
-        "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. "
+        "The %1$@ extension is installed on your store, but needs to be updated for In‑Person Payments. "
             + "Please update it to the most recent version.",
-        comment: "Error message when a Card Present Payments extension is installed but the version is not supported"
+        comment: """
+                Error message when a Card Present Payments extension is installed but the version is not supported
+                The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+                If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+                """
     )
 
     static let primaryButton = NSLocalizedString(

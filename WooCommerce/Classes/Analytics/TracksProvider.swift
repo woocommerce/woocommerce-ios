@@ -110,6 +110,18 @@ private extension TracksProvider {
     }
 
     private func decorateEventNameForPOSIfNeeded(_ eventName: String) -> String {
+        // We do not want to track some events that might happen in POS mode as `pos_` events,
+        // for example, when backgrounding the app or finishing async work from the app side.
+        // Ref: https://github.com/woocommerce/woocommerce-ios/pull/15006#issuecomment-2622001706
+        let exemptedEvents: Set<String> = [
+            "application_opened",
+            "application_closed",
+            "dynamic_dashboard_card_data_loading_completed"
+        ]
+        if exemptedEvents.contains(eventName) {
+            return eventName
+        }
+
         if Self.isPOSModeActive {
             let prefix = "pos_"
             return "\(prefix)\(eventName)"

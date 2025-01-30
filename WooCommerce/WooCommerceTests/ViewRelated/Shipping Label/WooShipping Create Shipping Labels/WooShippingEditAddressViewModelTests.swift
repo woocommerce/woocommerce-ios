@@ -736,6 +736,9 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                    city: "TICONDEROGA",
                                                    postcode: "12883-1487")
         var receivedAddress: ShippingLabelAddress?
+        let storageManager = MockStorageManager()
+        let country = Country(code: "US", name: "United States", states: [StateOfACountry(code: "NY", name: "New York")])
+        storageManager.insertSampleCountries(readOnlyCountries: [country])
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             if case let .validateAddress(_, address, completion) = action {
@@ -759,6 +762,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         isVerified: true,
                                                         phoneNumberRequired: true,
                                                         stores: stores,
+                                                        storageManager: storageManager,
                                                         debounceDelayInSeconds: 0)
 
         // When

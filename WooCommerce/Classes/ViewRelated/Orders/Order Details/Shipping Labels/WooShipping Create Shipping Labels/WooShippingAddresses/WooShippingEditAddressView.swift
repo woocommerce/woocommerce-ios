@@ -173,6 +173,11 @@ struct WooShippingEditAddressView: View {
             }
             .background(Color(uiColor: .systemBackground))
         }
+        .sheet(item: $viewModel.normalizeAddressVM) { viewModel in
+            NavigationStack {
+                WooShippingNormalizeAddressView(viewModel: viewModel)
+            }
+        }
     }
 
     private struct AddressTextField: View {

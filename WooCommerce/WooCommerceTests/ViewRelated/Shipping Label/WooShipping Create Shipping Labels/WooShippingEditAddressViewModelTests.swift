@@ -56,6 +56,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.isDefaultAddress, saveAsDefault)
         XCTAssertEqual(viewModel.showCompanyField, showCompanyField)
         XCTAssertEqual(viewModel.status, .verified)
+        XCTAssertFalse(viewModel.isRemotelyValidating)
+        XCTAssertNil(viewModel.normalizeAddressVM)
     }
 
     func test_origin_address_inits_with_expected_values() {
@@ -682,6 +684,122 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.status, .unverified)
+    }
+
+    @MainActor
+    func test_isRemotelyValidating_set_during_and_after_remote_validation() async {
+        // Given
+        var isRemotelyValidatingDuringRemoteAction = false
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingEditAddressViewModel(type: .destination,
+                                                        id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: "",
+                                                        address: "",
+                                                        city: "",
+                                                        state: "",
+                                                        postalCode: "",
+                                                        email: "",
+                                                        phone: "",
+                                                        isDefaultAddress: true,
+                                                        showCompanyField: true,
+                                                        isVerified: true,
+                                                        phoneNumberRequired: true,
+                                                        stores: stores,
+                                                        debounceDelayInSeconds: 0)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            if case let .validateAddress(_, _, completion) = action {
+                isRemotelyValidatingDuringRemoteAction = viewModel.isRemotelyValidating
+                completion(.success(.init(normalizedAddress: .fake(), originalAddress: .fake(), isTrivialNormalization: true)))
+            }
+        }
+
+        // When
+        await viewModel.remotelyValidateAddress()
+
+        // Then
+        XCTAssertTrue(isRemotelyValidatingDuringRemoteAction)
+        XCTAssertFalse(viewModel.isRemotelyValidating)
+    }
+
+    @MainActor
+    func test_remotelyValidateAddress_sends_expected_address_to_validate() async {
+        // Given
+        let expectedAddress = ShippingLabelAddress(company: "HEADQUARTERS",
+                                                   name: "JANE DOE",
+                                                   phone: "1-234-456-7890",
+                                                   country: "US",
+                                                   state: "NY",
+                                                   address1: "15 ALGONKIN ST STE 100",
+                                                   address2: "",
+                                                   city: "TICONDEROGA",
+                                                   postcode: "12883-1487")
+        var receivedAddress: ShippingLabelAddress?
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            if case let .validateAddress(_, address, completion) = action {
+                receivedAddress = address
+                completion(.success(.init(normalizedAddress: .fake(), originalAddress: .fake(), isTrivialNormalization: true)))
+            }
+        }
+        let viewModel = WooShippingEditAddressViewModel(type: .destination,
+                                                        id: "",
+                                                        name: expectedAddress.name,
+                                                        company: expectedAddress.company,
+                                                        country: expectedAddress.country,
+                                                        address: expectedAddress.address1,
+                                                        city: expectedAddress.city,
+                                                        state: expectedAddress.state,
+                                                        postalCode: expectedAddress.postcode,
+                                                        email: "",
+                                                        phone: expectedAddress.phone,
+                                                        isDefaultAddress: true,
+                                                        showCompanyField: true,
+                                                        isVerified: true,
+                                                        phoneNumberRequired: true,
+                                                        stores: stores,
+                                                        debounceDelayInSeconds: 0)
+
+        // When
+        await viewModel.remotelyValidateAddress()
+
+        // Then
+        XCTAssertEqual(receivedAddress, expectedAddress)
+    }
+
+    @MainActor
+    func test_remotelyValidateAddress_sets_normalizeAddressVM_on_success() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingEditAddressViewModel(type: .destination,
+                                                        id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: "",
+                                                        address: "",
+                                                        city: "",
+                                                        state: "",
+                                                        postalCode: "",
+                                                        email: "",
+                                                        phone: "",
+                                                        isDefaultAddress: true,
+                                                        showCompanyField: true,
+                                                        isVerified: true,
+                                                        phoneNumberRequired: true,
+                                                        stores: stores,
+                                                        debounceDelayInSeconds: 0)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            if case let .validateAddress(_, _, completion) = action {
+                completion(.success(.init(normalizedAddress: .fake(), originalAddress: .fake(), isTrivialNormalization: true)))
+            }
+        }
+
+        // When
+        await viewModel.remotelyValidateAddress()
+
+        // Then
+        XCTAssertNotNil(viewModel.normalizeAddressVM)
     }
 }
 

@@ -143,9 +143,6 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     /// View model for normalizing the address.
     @Published var normalizeAddressVM: WooShippingNormalizeAddressViewModel?
 
-    /// Closure to perform when the address is done being edited.
-    var onAddressEdited: ((WooShippingAddress) -> Void)?
-
     init(type: AddressType,
          id: String,
          name: String,
@@ -163,8 +160,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
          phoneNumberRequired: Bool,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         debounceDelayInSeconds: Double = 1,
-         onAddressEdited: ((WooShippingAddress) -> Void)? = nil) {
+         debounceDelayInSeconds: Double = 1) {
         self.addressType = type
         self.id = id
         self.name = WooShippingAddressField(type: .name, value: name, required: company.isEmpty, validate: { _ in return nil })
@@ -249,8 +245,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                   isVerified: address.isVerified,
                   phoneNumberRequired: true,
                   stores: stores,
-                  storageManager: storageManager,
-                  onAddressEdited: onAddressEdited)
+                  storageManager: storageManager)
     }
 
     /// Validates the address remotely.
@@ -268,8 +263,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         do {
             let validation = try await remotelyValidateAddress(addressToValidate)
             normalizeAddressVM = WooShippingNormalizeAddressViewModel(enteredAddress: validation.originalAddress,
-                                                                      suggestedAddress: validation.normalizedAddress,
-                                                                      onConfirm: onAddressEdited)
+                                                                      suggestedAddress: validation.normalizedAddress)
         } catch {
             // TODO: Handle `WooShippingAddressValidationError` errors.
             DDLogError("⛔️ Error validating address for Woo Shipping label: \(error)")

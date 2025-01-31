@@ -32,7 +32,7 @@ struct ItemRowView: View {
                     .font(Constants.itemPriceFont)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.leading, showProductImage ? 0 : Constants.horizontalElementSpacing)
+            .padding(.leading, showProductImage ? 0 : Constants.cardContentHorizontalPadding)
             .accessibilityElement(children: .combine)
 
             if let onItemRemoveTapped {
@@ -43,7 +43,7 @@ struct ItemRowView: View {
                         .font(.posBodyRegular)
                 })
                 .accessibilityLabel(Localization.removeFromCartAccessibilityLabel)
-                .padding()
+                .padding(.trailing, Constants.cardContentHorizontalPadding)
                 .foregroundColor(Color.posTertiaryText)
             }
         }
@@ -107,6 +107,7 @@ private extension ItemRowView {
         static let cardOutlineWidth: CGFloat = 1
         static let horizontalPadding: CGFloat = 16
         static let horizontalElementSpacing: CGFloat = 16
+        static let cardContentHorizontalPadding: CGFloat = 16
         static let itemTitleAndPriceSpacing: CGFloat = 4
         static let itemTitleFont: POSFontStyle = .posDetailEmphasized
         static let itemSubtitleFont: POSFontStyle = .posDetailLight

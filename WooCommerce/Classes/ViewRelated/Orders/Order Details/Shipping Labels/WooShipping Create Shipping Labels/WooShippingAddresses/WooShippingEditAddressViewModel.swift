@@ -77,6 +77,15 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         }
     }
 
+    /// Label to describe the status of the address.
+    var statusLabel: String {
+        if let remoteValidationError, hasChanges {
+            return remoteValidationError
+        } else {
+            return Localization.Status.label(for: status)
+        }
+    }
+
     // MARK: State/Country
 
     /// ResultsController: Loads Countries from the Storage Layer.
@@ -143,6 +152,9 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     /// View model for normalizing the address.
     @Published var normalizeAddressVM: WooShippingNormalizeAddressViewModel?
+
+    /// Error from remote validation, if any.
+    @Published private var remoteValidationError: String?
 
     init(type: AddressType,
          id: String,
@@ -265,8 +277,17 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
             let validation = try await remotelyValidateAddress(addressToValidate)
             normalizeAddressVM = WooShippingNormalizeAddressViewModel(enteredAddress: validation.originalAddress,
                                                                       suggestedAddress: validation.normalizedAddress)
+        } catch let error as WooShippingAddressValidationError {
+            if let nameError = error.nameError {
+                name.setError(nameError)
+            }
+            if let addressError = error.addressError {
+                address.setError(addressError)
+            }
+            if let generalError = error.generalError {
+                remoteValidationError = generalError
+            }
         } catch {
-            // TODO: Handle `WooShippingAddressValidationError` errors.
             DDLogError("⛔️ Error validating address for Woo Shipping label: \(error)")
         }
     }
@@ -460,6 +481,28 @@ private extension WooShippingEditAddressViewModel {
             static let postalCode = NSLocalizedString("wooShipping.createLabels.editAddress.validation.postalCode",
                                                       value: "Please provide a valid postal code.",
                                                       comment: "Validation message when the postal code field is empty in the Woo Shipping label creation flow")
+        }
+
+        enum Status {
+            static func label(for status: WooShippingAddressStatus) -> String {
+                switch status {
+                case .verified:
+                    return verified
+                case .unverified:
+                    return unverified
+                case .missingInformation:
+                    return missingInformation
+                }
+            }
+            static let verified = NSLocalizedString("wooShipping.createLabels.editAddress.verified",
+                                                    value: "Address verified",
+                                                    comment: "Label when the address has been verified in the Woo Shipping label creation flow")
+            static let unverified = NSLocalizedString("wooShipping.createLabels.editAddress.unverified",
+                                                      value: "Unverified address",
+                                                      comment: "Label when the address is unverified in the Woo Shipping label creation flow")
+            static let missingInformation = NSLocalizedString("wooShipping.createLabels.editAddress.missingInformation",
+                                                              value: "Missing information",
+                                                              comment: "Label when the address is missing information in the Woo Shipping label creation flow")
         }
     }
 }

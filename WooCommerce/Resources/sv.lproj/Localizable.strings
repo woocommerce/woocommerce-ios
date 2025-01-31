@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-01-24 17:47:48+0000 */
+/* Translation-Revision-Date: 2025-01-28 14:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -1600,9 +1600,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Colombia" = "Colombia";
 
-/* Message displayed if there are no inbox notes to display in the inbox screen. */
-"Come back soon for more tips and insights on growing your store" = "Kom tillbaka snart för fler tips och insikter om hur du får din butik att växa";
-
 /* Country option for a site address. */
 "Comoros" = "Komorerna";
 
@@ -2425,9 +2422,6 @@ which should be translated separately and considered part of this sentence. */
 /* Drag and drop helper text above photo list in Product images screen */
 "Drag and drop to re-order photos" = "Dra och släpp för att ändra ordning på foton";
 
-/* Subtitle of the empty state of the Blaze campaign list view */
-"Drive more sales to your store with Blaze" = "Få mer försäljning i din butik med marknadsföring";
-
 /* Button title to duplicate a product in Product More Options Action Sheet */
 "Duplicate" = "Duplicera";
 
@@ -2882,9 +2876,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title to explore an extension that isn't installed */
 "Explore" = "Utforska";
-
-/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
-"Explore how you can increase your store sales" = "Utforska hur du kan öka din butiksförsäljning";
 
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "Extern";
@@ -7544,9 +7535,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description text for the product discount row informational tooltip */
 "To add a Product Discount, please remove all Coupons from your order" = "Ta bort alla rabattkoder från din beställning för att lägga till en produktrabatt";
 
-/* Subtitle on the variations list screen when there are no variations and attributes */
-"To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "För att lägga till en variation måste du först ange dess attribut (dvs. \"färg\", \"storlek\").";
-
 /* Error message displayed when unable to close user account due to having active atomic site. */
 "To close this account now, contact our support team." = "För att avsluta detta konto nu, kontakta vårt supportteam.";
 
@@ -9776,9 +9764,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message indicating no search result on the target location picker for campaign creation */
 "blazeTargetLocationPickerViewModel.noResult" = "Ingen plats hittades.\nFörsök igen.";
 
-/* Hint message to enter search query on the target location picker for campaign creation */
-"blazeTargetLocationPickerViewModel.searchViewHintMessage" = "Börja skriva land, delstat eller ort för att se tillgängliga alternativ";
-
 /* Title of the row to select all target location for Blaze campaign creation */
 "blazeTargetLocationSearchView.allTitle" = "Överallt";
 
@@ -9990,6 +9975,15 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Det totala beställningsbeloppet har ändrats sedan betalningen inleddes. Gå tillbaka och kontrollera att beställningen är korrekt och försök sedan betala igen.";
 
+/* Error message when the cash amount entered is less than the order total. */
+"collectcashviewhelper.cashpaymentamountnotenough.errormessage" = "Beloppet måste vara lika med eller högre än totalsumman.";
+
+/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue" = "Växel: %1$@";
+
+/* Error message when the system fails to collect a cash payment. */
+"collectcashviewhelper.failedtocollectcashpayment.errormessage" = "Det gick inte att behandla betalningen. Försök igen.";
+
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Välj produkter för Blaze-kampanj.";
 
@@ -10146,9 +10140,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text for button that's shown when the list is empty. */
 "customFieldsListHostingController.emptyStateButton" = "Lär dig mer";
 
-/* Message when the list is empty. */
-"customFieldsListHostingController.emptyStateDescription" = "Anpassade fält är valfria metadata för att visa extra information eller anpassa din butiks shoppingupplevelse.";
-
 /* Title for the message when the list is empty. */
 "customFieldsListHostingController.emptyStateTitle" = "Inga anpassade fält hittades";
 
@@ -10281,9 +10272,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title when there are no customers in the search results in the Customers list screen. */
 "customerList.emptySearchTitle" = "Inga kunder hittades";
 
-/* Message when there are no customers to show in the Customers list screen. */
-"customerList.emptyStateMessage" = "Skapa en beställning för att börja samla in kundinsikter";
-
 /* Title when there are no customers to show in the Customers list screen. */
 "customerList.emptyStateTitle" = "Inga kunder ännu";
 
@@ -10377,9 +10365,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label of the button to share the store */
 "dashboardView.shareStoreCard.shareButtonLabel" = "Dela din butik";
 
-/* Subtitle of the Share Your Store card */
-"dashboardView.shareStoreCard.subtitle" = "Använd e-post eller sociala medier för att sprida budskapet om din butik.";
-
 /* Title of the Share Your Store card */
 "dashboardView.shareStoreCard.title" = "Sprid budskapet.";
 
@@ -10457,6 +10442,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Edit Store List view */
 "editStoreListView.title" = "Synliga butiker";
+
+/* Footer of the Other Stores section on the Edit Store List view */
+"editStoreListView.unselectedStoresNote" = "Butiker som inte har valts exkluderas från butiksväljaren och får inga pushnotiser om nya beställningar eller produkter.";
 
 /* Title for button to view the feedback survey about adding shipping to an order */
 "editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "Dela din feedback";
@@ -10537,8 +10525,17 @@ which should be translated separately and considered part of this sentence. */
 /* Button to clear all history on the Filter History view */
 "filterHistoryView.clearHistory" = "Rensa historik";
 
+/* Message to confirm clearing all history on the Filter History view */
+"filterHistoryView.clearHistoryConfirmation" = "Är du säker på att du vill rensa all filterhistorik?";
+
+/* Label on the empty state of the Filter History view */
+"filterHistoryView.emptyState" = "Inga tidigare filter hittades";
+
 /* Header label of the Filter History view */
 "filterHistoryView.recent" = "Senaste";
+
+/* Title of the Filter History view */
+"filterHistoryView.title" = "Filterhistorik";
 
 /* Accessibility hint for the filter history button on the filter list screen */
 "filterListViewController.historyBarButtonItem.accessibilityHint" = "Filtrera historik";
@@ -10869,6 +10866,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.title" = "Öka din försäljning";
+
+/* Label indicating that the store is being synced in the Jetpack setup flow */
+"loginJetpackSetupCoordinator.syncingStore" = "Synkroniserar butik...";
 
 /* Subtitle displayed in the simplified prologue screen */
 "loginProloguePageType.getStartedText" = "Woo finns med dig hela vägen, från din första försäljning till miljoner i intäkter. Se varför handlare förlitar sig på oss för att driva 3.9 miljoner onlinebutiker.";
@@ -11464,6 +11464,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
 "pointOfSale.cardPresent.readerNotConnected.title" = "Läsare inte ansluten";
 
+/* Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected. */
+"pointOfSale.cardPresent.readerNotConnectedOrCash.instruction" = "För att behandla den här betalningen, anslut din läsare eller välj kontantbetalning.";
+
 /* Message shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.message" = "Kontrollerar beställning";
 
@@ -11662,6 +11665,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to mark a cash payment as completed */
 "pointOfSale.cashview.button.markpaymentcompleted.title" = "Markera betalning som slutförd";
 
+/* Error message when the system fails to collect a cash payment. */
+"pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "Det gick inte att behandla betalningen. Försök igen.";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Vänta";
 
@@ -11749,6 +11755,15 @@ which should be translated separately and considered part of this sentence. */
 /* Text for the button appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
 "pos.itemList.failedToLoadProductsNextPageButtonTitle" = "Försök igen";
 
+/* Text appearing on the item list screen as subtitle when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageSubtitle" = "Ett fel uppstod vid inläsning av produkter.";
+
+/* Text appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageTitle" = "Det gick inte att läsa in fler objekt";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading products. */
+"pos.itemList.failedToLoadProductsSubtitle" = "Vill du försöka igen?";
+
 /* Text appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadProductsTitle" = "Det gick inte ladda in produkter";
 
@@ -11758,8 +11773,17 @@ which should be translated separately and considered part of this sentence. */
 /* Text for the button appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
 "pos.itemList.failedToLoadVariationsNextPageButtonTitle" = "Försök igen";
 
+/* Text appearing on the item list screen as subtitle when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageSubtitle" = "Ett fel uppstod vid inläsning av variationer.";
+
+/* Text appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageTitle" = "Det gick inte att läsa in fler objekt";
+
 /* Text appearing on the item list screen as subtitle when there's an error loading variations. */
 "pos.itemList.failedToLoadVariationsSubtitle" = "Vill du försöka igen?";
+
+/* Text appearing on the item list screen when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsTitle" = "Ett fel uppstod vid inläsning av variationer";
 
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "Produkter";
@@ -11770,11 +11794,17 @@ which should be translated separately and considered part of this sentence. */
 /* Additional text within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.hint" = "Andra produkttyper, såsom variabel och virtuell, kommer att bli tillgängliga i framtida uppdateringar.";
 
+/* Additional text within the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.hint.simpleAndVariable" = "Andra produkttyper kommer att bli tillgängliga i framtida uppdateringar.";
+
 /* Link to more information within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.learnMoreHint" = "Lär dig mer";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.subtitle" = "Endast enkla fysiska produkter är tillgängliga med POS just nu.";
+
+/* Subtitle of the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.subtitle.simpleAndVariable" = "Endast enkla och variabla nedladdningsbara produkter kan användas med POS just nu.";
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title" = "Visar endast enkla produkter";
@@ -11797,17 +11827,35 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on screen when there are no products to load. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsTitle.1" = "Inga produkter som stöds hittades.";
 
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductHint" = "För att lägga till en, lämna POS och redigera produkten på fliken Produkter.";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductSubtitle" = "POS stöder endast aktiverade, icke-nedladdningsbara variationer.";
+
+/* Text appearing on screen when there are no variations to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle" = "Inga variationer som stöds hittades.";
+
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Skapa en beställning i butikshanteringen";
 
 /* Hint in the simple products information modal in POS */
 "pos.simpleProductsModal.hint" = "För att ta betalt för en icke-enkel produkt, lämna POS och skapa en ny beställning från fliken Beställningar.";
 
+/* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.hint.variableAndSimple" = "För att ta betalt för en produkt som inte stöds, lämna POS och skapa en ny beställning från fliken Beställningar.";
+
 /* Message in the simple products information modal in POS, explaining future plans */
 "pos.simpleProductsModal.message.future" = "Andra produkttyper, till exempel rörliga och virtuella, kommer att bli tillgängliga i framtida uppdateringar.";
 
+/* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.message.future.variableAndSimple" = "Andra produkttyper kommer att bli tillgängliga i framtida uppdateringar.";
+
 /* Message in the simple products information modal in POS */
 "pos.simpleProductsModal.message.issue" = "Endast enkla fysiska produkter kan användas med POS just nu.";
+
+/* Message in the simple products information modal in POS when variable products are supported */
+"pos.simpleProductsModal.message.issue.variableAndSimple" = "Endast enkla och variabla nedladdningsbara produkter kan användas med POS just nu.";
 
 /* Title for the OK button on the simple products information modal in POS */
 "pos.simpleProductsModal.ok.button.title" = "OK";
@@ -12942,6 +12990,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the country field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.country" = "Land";
 
+/* Label for the default address toggle in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.defaultAddress" = "Spara avsändaradressen som standard";
+
 /* Button to dismiss the keyboard */
 "wooShipping.createLabels.editAddress.done" = "Klar";
 
@@ -13098,6 +13149,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Content Details text field in the Shipping Customs Form */
 "wooShipping.customs.contentDetails" = "Innehållsdetaljer";
 
+/* Footnote for the Content Details text field in the Shipping Customs Form */
+"wooShipping.customs.contentDetailsFootnote" = "Beskriv vilken typ av gods detta paket innehåller";
+
 /* Title for the Content Type menu in the Shipping Customs Form */
 "wooShipping.customs.contentType" = "Innehållstyp";
 
@@ -13125,6 +13179,9 @@ which should be translated separately and considered part of this sentence. */
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "Mer information om ITN";
 
+/* Customs validation warning for the ITN field */
+"wooShipping.customs.itnValidation" = "Ange ett giltigt ITN.";
+
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "Produktdetaljer";
 
@@ -13143,6 +13200,12 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for shipping restriction type sanitary */
 "wooShipping.customs.restrictionType.sanitary" = "Sanitär\/fytosanitär inspektion";
 
+/* Title for the Content Details text field in the Shipping Customs Form */
+"wooShipping.customs.restrictionTypeDetails" = "Begränsningsdetaljer";
+
+/* Footnote for the Restriction Type text field in the Shipping Customs Form */
+"wooShipping.customs.restrictionTypeDetailsFootnote" = "Beskriv vilken typ av begränsningar detta paket måste ha";
+
 /* Info label for a toggle to return the package to a sender if necessary toggle */
 "wooShipping.customs.returnToSenderMessage" = "Returnera till avsändaren om paketet inte kan levereras";
 
@@ -13151,6 +13214,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Customs screen */
 "wooShipping.customs.title" = "Tull";
+
+/* Footnote when a required value is missing */
+"wooShipping.customs.valueRequiredWarning" = "Värde krävs";
 
 /* Title for the customs items description text field for customs items */
 "wooShipping.customsItems.description" = "Beskrivning";
@@ -13167,6 +13233,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the origin country text field */
 "wooShipping.customsItems.originCountry" = "Ursprungsland";
 
+/* Warning text when the shipping customs tariff number is not valid */
+"wooShipping.customsItems.tariffNumberRulesWarning" = "Tariffnumret måste vara mellan sex och tolv siffror långt";
+
 /* Title for the customs items value per unit text field for customs items */
 "wooShipping.customsItems.valuePerUnit" = "Värde per enhet";
 
@@ -13178,6 +13247,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Indicates that the address is the default origin address  on the shipping label creation screen */
 "wooShipping.originAddresses.defaultAddress" = "(standard)";
+
+/* Title for the edit origin address screen in the shipping label creation flow */
+"wooShipping.originAddresses.editOrigin" = "Redigera ursprung";
 
 /* Heading for the list of origin addresses to choose from on the shipping label creation screen */
 "wooShipping.originAddresses.shipFrom" = "Avsändare";

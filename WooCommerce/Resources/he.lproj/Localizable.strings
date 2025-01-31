@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-01-15 09:54:04+0000 */
+/* Translation-Revision-Date: 2025-01-28 14:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -1600,9 +1600,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Colombia" = "קולומביה";
 
-/* Message displayed if there are no inbox notes to display in the inbox screen. */
-"Come back soon for more tips and insights on growing your store" = "כדאי לחזור בקרוב כדי לקבל עצות ותובנות נוספות להגדלת החנות שלך";
-
 /* Country option for a site address. */
 "Comoros" = "איי קומורו";
 
@@ -2425,9 +2422,6 @@ which should be translated separately and considered part of this sentence. */
 /* Drag and drop helper text above photo list in Product images screen */
 "Drag and drop to re-order photos" = "לגרור ולשחרר כדי לשנות את הסדר של התמונות";
 
-/* Subtitle of the empty state of the Blaze campaign list view */
-"Drive more sales to your store with Blaze" = "להגביר מכירות בחנות שלך בעזרת Blaze";
-
 /* Button title to duplicate a product in Product More Options Action Sheet */
 "Duplicate" = "לשכפל";
 
@@ -2882,9 +2876,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title to explore an extension that isn't installed */
 "Explore" = "לעיין";
-
-/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
-"Explore how you can increase your store sales" = "כדאי לראות איך אפשר להגדיל את המכירות בחנות שלך";
 
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "חיצוני\/ממומן";
@@ -7544,9 +7535,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description text for the product discount row informational tooltip */
 "To add a Product Discount, please remove all Coupons from your order" = "כדי להוסיף הנחת מוצר, יש להסיר את כל הקופונים מההזמנה";
 
-/* Subtitle on the variations list screen when there are no variations and attributes */
-"To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "כדי להוסיף סוג, עליך קודם כל להגדיר את המאפיינים שלו (למשל, 'צבע', 'מידה')";
-
 /* Error message displayed when unable to close user account due to having active atomic site. */
 "To close this account now, contact our support team." = "לסגירת חשבון זה כעת, עליך לפנות לצוות התמיכה שלנו.";
 
@@ -9776,9 +9764,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message indicating no search result on the target location picker for campaign creation */
 "blazeTargetLocationPickerViewModel.noResult" = "לא נמצא מיקום.\nיש לנסות שוב.";
 
-/* Hint message to enter search query on the target location picker for campaign creation */
-"blazeTargetLocationPickerViewModel.searchViewHintMessage" = "יש להתחיל בהקלדת מדינה או עיר כדי להציג את האפשרויות הזמינות";
-
 /* Title of the row to select all target location for Blaze campaign creation */
 "blazeTargetLocationSearchView.allTitle" = "בכל מקום";
 
@@ -9990,6 +9975,15 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "סך כל ההזמנה שונה מתחילת תהליך התשלום. יש לחזור אחורה ולוודא שפרטי ההזמנה נכונים ולנסות לשלם שוב.";
 
+/* Error message when the cash amount entered is less than the order total. */
+"collectcashviewhelper.cashpaymentamountnotenough.errormessage" = "הסכום חייב להיות גדול או שווה לסך הכולל.";
+
+/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue" = "העודף הנדרש: %1$@";
+
+/* Error message when the system fails to collect a cash payment. */
+"collectcashviewhelper.failedtocollectcashpayment.errormessage" = "שגיאה בניסיון לעבד את התשלום. יש לנסות שוב.";
+
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "בוחר מוצר לקמפיין של Blaze.";
 
@@ -10146,9 +10140,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text for button that's shown when the list is empty. */
 "customFieldsListHostingController.emptyStateButton" = "למידע נוסף";
 
-/* Message when the list is empty. */
-"customFieldsListHostingController.emptyStateDescription" = "שדות מותאמים הם מטא-נתונים אופציונליים שיכולים להציג מידע נוסף או להתאים אישית את חוויית הקניות בחנות שלך";
-
 /* Title for the message when the list is empty. */
 "customFieldsListHostingController.emptyStateTitle" = "לא נמצאו שדות מותאמים";
 
@@ -10281,9 +10272,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title when there are no customers in the search results in the Customers list screen. */
 "customerList.emptySearchTitle" = "לא נמצאו לקוחות";
 
-/* Message when there are no customers to show in the Customers list screen. */
-"customerList.emptyStateMessage" = "יש ליצור הזמנה כדי להתחיל לאסוף תובנות על לקוחות";
-
 /* Title when there are no customers to show in the Customers list screen. */
 "customerList.emptyStateTitle" = "עדיין אין לקוחות";
 
@@ -10377,9 +10365,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label of the button to share the store */
 "dashboardView.shareStoreCard.shareButtonLabel" = "שיתוף החנות שלך";
 
-/* Subtitle of the Share Your Store card */
-"dashboardView.shareStoreCard.subtitle" = "אפשר להשתמש באימייל או ברשתות החברתיות כדי להפיץ את הבשורה לגבי החנות שלך";
-
 /* Title of the Share Your Store card */
 "dashboardView.shareStoreCard.title" = "להפיץ את הבשורה!";
 
@@ -10458,6 +10443,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Edit Store List view */
 "editStoreListView.title" = "חנויות זמינות לצפייה";
 
+/* Footer of the Other Stores section on the Edit Store List view */
+"editStoreListView.unselectedStoresNote" = "חנויות שלא נבחרו לא יוצגו בבוחר החנויות ולא יקבלו הודעות בדחיפה כשנרשמות הזמנות חדשות או כשנוספים מוצרים.";
+
 /* Title for button to view the feedback survey about adding shipping to an order */
 "editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "לשלוח את המשוב שלך";
 
@@ -10527,6 +10515,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the filter used to show only favorite products. */
 "favoriteProductsFilter.favoriteProducts" = "מוצרים מועדפים";
+
+/* Apply button on the Filter History view */
+"filterHistoryView.apply" = "להחיל";
+
+/* Cancel button on the Filter History view */
+"filterHistoryView.cancel" = "ביטול";
+
+/* Button to clear all history on the Filter History view */
+"filterHistoryView.clearHistory" = "למחוק את ההיסטוריה";
+
+/* Message to confirm clearing all history on the Filter History view */
+"filterHistoryView.clearHistoryConfirmation" = "האם ברצונך למחוק את היסטוריית המסננים במלואה?";
+
+/* Label on the empty state of the Filter History view */
+"filterHistoryView.emptyState" = "לא נמצאו מסננים שבהם השתמשת בעבר";
+
+/* Header label of the Filter History view */
+"filterHistoryView.recent" = "אחרונים";
+
+/* Title of the Filter History view */
+"filterHistoryView.title" = "היסטוריית מסננים";
 
 /* Accessibility hint for the filter history button on the filter list screen */
 "filterListViewController.historyBarButtonItem.accessibilityHint" = "היסטוריית מסננים";
@@ -10857,6 +10866,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.title" = "לשפר את המכירות";
+
+/* Label indicating that the store is being synced in the Jetpack setup flow */
+"loginJetpackSetupCoordinator.syncingStore" = "מסנכרן חנות...";
 
 /* Subtitle displayed in the simplified prologue screen */
 "loginProloguePageType.getStartedText" = "מהמכירה הראשונה עד מחזור רווחים של מיליונים, השירות של Woo עומד לצדך. כדאי להתרשם למה סוחרים סומכים עלינו בהפעלת 3.9 מיליון חנויות מקוונות.";
@@ -11452,6 +11464,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
 "pointOfSale.cardPresent.readerNotConnected.title" = "הקורא לא מחובר";
 
+/* Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected. */
+"pointOfSale.cardPresent.readerNotConnectedOrCash.instruction" = "כדי לעבד את התשלומים, יש לחבר את קורא הכרטיסים או לבחור בתשלום במזומן.";
+
 /* Message shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.message" = "בודק הזמנה";
 
@@ -11650,6 +11665,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to mark a cash payment as completed */
 "pointOfSale.cashview.button.markpaymentcompleted.title" = "לסמן את התשלום כ'הושלם'";
 
+/* Error message when the system fails to collect a cash payment. */
+"pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "שגיאה בניסיון לעבד את התשלום. יש לנסות שוב.";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "רק רגע";
 
@@ -11731,6 +11749,42 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "האם לצאת ממצב 'נקודת מכירה'?";
 
+/* Text for the button appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadProductsButtonTitle" = "לנסות שוב";
+
+/* Text for the button appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageButtonTitle" = "יש לנסות שוב";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageSubtitle" = "אירעה שגיאה בעת הטעינה של המוצרים.";
+
+/* Text appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageTitle" = "הטעינה של פריטים נוספים נכשלה";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading products. */
+"pos.itemList.failedToLoadProductsSubtitle" = "רוצה לנסות שוב?";
+
+/* Text appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadProductsTitle" = "שגיאה בטעינת המוצרים";
+
+/* Text for the button appearing on the item list screen when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsButtonTitle" = "לנסות שוב";
+
+/* Text for the button appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageButtonTitle" = "יש לנסות שוב";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageSubtitle" = "אירעה שגיאה בעת הטעינה של הסוגים.";
+
+/* Text appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageTitle" = "הטעינה של פריטים נוספים נכשלה";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsSubtitle" = "רוצה לנסות שוב?";
+
+/* Text appearing on the item list screen when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsTitle" = "שגיאה בטעינת הסוגים";
+
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "מוצרים";
 
@@ -11740,14 +11794,23 @@ which should be translated separately and considered part of this sentence. */
 /* Additional text within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.hint" = "סוגי מוצרים אחרים, כמו מוצרים עם סוגים או מוצרים וירטואליים, יהיו זמינים בעדכונים בעתיד.";
 
+/* Additional text within the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.hint.simpleAndVariable" = "סוגי מוצרים אחרים יהיו זמינים בעדכונים בעתיד.";
+
 /* Link to more information within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.learnMoreHint" = "למידע נוסף";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.subtitle" = "רק מוצרים פיזיים פשוטים זמינים עם POS כרגע.";
 
+/* Subtitle of the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.subtitle.simpleAndVariable" = "נכון לעכשיו, ניתן להשתמש ב-POS רק עבור מוצרים פיזיים פשוטים ומוצרים עם סוגים שאינם ניתנים להורדה.";
+
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title" = "מציג רק מוצרים פשוטים";
+
+/* Title of the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.title.simpleAndVariable" = "מציג רק מוצרים פשוטים ומוצרים עם סוגים";
 
 /* Title at the top of the Point of Sale product selector screen. */
 "pos.itemlistview.title" = "מוצרים";
@@ -11755,17 +11818,44 @@ which should be translated separately and considered part of this sentence. */
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "אפשרויות זמינות";
 
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "כדי להוסיף מוצר כזה, יש לצאת מ-POS ולעבור אל 'מוצרים'.";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1" = "האפשרות POS נתמכת כרגע במוצרים פשוטים ובמוצרים עם סוגים בלבד.";
+
+/* Text appearing on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsTitle.1" = "לא נמצאו מוצרים נתמכים.";
+
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductHint" = "כדי להוסיף מוצר כזה, יש לצאת מ-POS ולערוך את המוצר הזה ללשונית 'מוצרים'.";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductSubtitle" = "האפשרות POS נתמכת רק בסוגים מופעלים שלא ניתנים להורדה.";
+
+/* Text appearing on screen when there are no variations to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle" = "לא נמצאו סוגים נתמכים.";
+
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "ליצור הזמנה בניהול החנות";
 
 /* Hint in the simple products information modal in POS */
 "pos.simpleProductsModal.hint" = "כדי לגבות תשלום במוצר שאינו מוצר פשוט, יש לצאת מ-POS וליצור הזמנה חדשה מלשונית ההזמנות.";
 
+/* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.hint.variableAndSimple" = "כדי לגבות תשלום במוצר לא נתמך, יש לצאת מ-POS וליצור הזמנה חדשה מלשונית ההזמנות.";
+
 /* Message in the simple products information modal in POS, explaining future plans */
 "pos.simpleProductsModal.message.future" = "סוגי מוצרים אחרים, כמו מוצרים עם סוגים או מוצרים וירטואליים, יהיו זמינים בעדכונים בעתיד.";
 
+/* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.message.future.variableAndSimple" = "סוגי מוצרים אחרים יהיו זמינים בעדכונים בעתיד.";
+
 /* Message in the simple products information modal in POS */
 "pos.simpleProductsModal.message.issue" = "נכון לעכשיו, ניתן להשתמש ב-POS רק עבור מוצרים פיזיים פשוטים.";
+
+/* Message in the simple products information modal in POS when variable products are supported */
+"pos.simpleProductsModal.message.issue.variableAndSimple" = "נכון לעכשיו, ניתן להשתמש ב-POS רק עבור מוצרים פיזיים פשוטים ומוצרים עם סוגים שאינם ניתנים להורדה.";
 
 /* Title for the OK button on the simple products information modal in POS */
 "pos.simpleProductsModal.ok.button.title" = "אישור";
@@ -12876,6 +12966,90 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the total for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.total" = "סכום כולל";
 
+/* Button to add a company field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.addCompany" = "להוסיף חברה";
+
+/* Button label indicating the address is missing information for a Woo Shipping label */
+"wooShipping.createLabels.editAddress.addMissingInformation" = "להוסיף פרטים חסרים";
+
+/* Label for the address field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.address" = "כתובת";
+
+/* Button to cancel editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.cancel" = "ביטול";
+
+/* Label for the city field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.city" = "עיר";
+
+/* Button to close the address editing view in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.close" = "לסגור";
+
+/* Label for the company field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.company" = "חברה";
+
+/* Label for the country field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.country" = "ארץ";
+
+/* Label for the default address toggle in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.defaultAddress" = "לשמור ככתובת המוצא המשמשת כברירת מחדל";
+
+/* Button to dismiss the keyboard */
+"wooShipping.createLabels.editAddress.done" = "בוצע";
+
+/* Label for the email field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.email" = "כתובת אימייל";
+
+/* Label when the address is missing information in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.missingInformation" = "מידע חסר";
+
+/* Label for the name field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.name" = "שם";
+
+/* Text indicating that a field is optional */
+"wooShipping.createLabels.editAddress.optional" = "אופציונלי";
+
+/* Label for the phone field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.phone" = "טלפון";
+
+/* Label for the postal code field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.postalCode" = "מיקוד";
+
+/* Label for the state field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.state" = "מדינה";
+
+/* Label when the address is unverified in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.unverified" = "כתובת לא מאומתת";
+
+/* Button label indicating the address needs to be validated and saved for a Woo Shipping label */
+"wooShipping.createLabels.editAddress.validateAddress" = "לאמת ולשמור";
+
+/* Validation message when the address field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.address" = "יש לספק כתובת תקינה.";
+
+/* Validation message when the city field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.city" = "יש לספק עיר תקינה.";
+
+/* Validation message when the country field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.country" = "יש לבחור ארץ.";
+
+/* Validation message when the email field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.email" = "יש להזין כתובת אימייל תקפה.";
+
+/* Validation message when the name and company fields are empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.nameOrCompany" = "יש להזין שם או שם חברה תקין.";
+
+/* Validation message when the phone field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.phone" = "יש להזין מספר טלפון תקין.";
+
+/* Validation message when the postal code field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.postalCode" = "יש להזין מיקוד תקין.";
+
+/* Validation message when the state field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.state" = "יש להזין מדינה תקינה.";
+
+/* Label when the address has been verified in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.verified" = "הכתובת אושרה";
+
 /* Label for plural items to ship during shipping label creation. Reads like: '3 items' */
 "wooShipping.createLabels.items.count" = "%1$@ פריטים";
 
@@ -12972,6 +13146,12 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button in navigation bar to dismiss the screen */
 "wooShipping.customs.cancel" = "ביטול";
 
+/* Title for the Content Details text field in the Shipping Customs Form */
+"wooShipping.customs.contentDetails" = "פרטי תכולה";
+
+/* Footnote for the Content Details text field in the Shipping Customs Form */
+"wooShipping.customs.contentDetailsFootnote" = "עליך לתאר איזה סוג של סחורות החבילה הזאת מכילה";
+
 /* Title for the Content Type menu in the Shipping Customs Form */
 "wooShipping.customs.contentType" = "סוג התכולה";
 
@@ -12999,6 +13179,9 @@ which should be translated separately and considered part of this sentence. */
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "מידע נוסף על ITN";
 
+/* Customs validation warning for the ITN field */
+"wooShipping.customs.itnValidation" = "יש להזין כתובת ITN תקינה";
+
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "פרטי המוצר";
 
@@ -13017,6 +13200,12 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for shipping restriction type sanitary */
 "wooShipping.customs.restrictionType.sanitary" = "בדיקת תברואה\/בדיקה פיטוסניטרית";
 
+/* Title for the Content Details text field in the Shipping Customs Form */
+"wooShipping.customs.restrictionTypeDetails" = "פרטי הגבלה";
+
+/* Footnote for the Restriction Type text field in the Shipping Customs Form */
+"wooShipping.customs.restrictionTypeDetailsFootnote" = "עליך לתאר איזה סוג של הגבלות חייבות להיות מוחלות על החבילה הזאת";
+
 /* Info label for a toggle to return the package to a sender if necessary toggle */
 "wooShipping.customs.returnToSenderMessage" = "להחזיר לשולח אם לא ניתן לשלוח את החבילה";
 
@@ -13025,6 +13214,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Customs screen */
 "wooShipping.customs.title" = "מכס";
+
+/* Footnote when a required value is missing */
+"wooShipping.customs.valueRequiredWarning" = "ערך נדרש";
 
 /* Title for the customs items description text field for customs items */
 "wooShipping.customsItems.description" = "תיאור";
@@ -13041,6 +13233,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the origin country text field */
 "wooShipping.customsItems.originCountry" = "מדינת המוצא";
 
+/* Warning text when the shipping customs tariff number is not valid */
+"wooShipping.customsItems.tariffNumberRulesWarning" = "מספר התעריף חייב להיות באורך של 6 עד 12 ספרות";
+
 /* Title for the customs items value per unit text field for customs items */
 "wooShipping.customsItems.valuePerUnit" = "ערך ליחידה";
 
@@ -13052,6 +13247,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Indicates that the address is the default origin address  on the shipping label creation screen */
 "wooShipping.originAddresses.defaultAddress" = "(ברירת מחדל)";
+
+/* Title for the edit origin address screen in the shipping label creation flow */
+"wooShipping.originAddresses.editOrigin" = "לערוך את המוצא";
 
 /* Heading for the list of origin addresses to choose from on the shipping label creation screen */
 "wooShipping.originAddresses.shipFrom" = "מוצא למשלוח";

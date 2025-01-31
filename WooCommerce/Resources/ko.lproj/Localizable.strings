@@ -1600,9 +1600,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Colombia" = "콜롬비아";
 
-/* Message displayed if there are no inbox notes to display in the inbox screen. */
-"Come back soon for more tips and insights on growing your store" = "곧 다시 오셔서 더 많은 스토어 성장 팁과 인사이트를 확인하세요.";
-
 /* Country option for a site address. */
 "Comoros" = "코모로";
 
@@ -2425,9 +2422,6 @@ which should be translated separately and considered part of this sentence. */
 /* Drag and drop helper text above photo list in Product images screen */
 "Drag and drop to re-order photos" = "끌어 놓아서 사진 순서 변경";
 
-/* Subtitle of the empty state of the Blaze campaign list view */
-"Drive more sales to your store with Blaze" = "스토어에서 Blaze로 판매 증대 유도";
-
 /* Button title to duplicate a product in Product More Options Action Sheet */
 "Duplicate" = "복제";
 
@@ -2882,9 +2876,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title to explore an extension that isn't installed */
 "Explore" = "둘러보기";
-
-/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
-"Explore how you can increase your store sales" = "스토어 판매를 늘리는 방법을 살펴보세요.";
 
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "외부\/연계";
@@ -7544,9 +7535,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description text for the product discount row informational tooltip */
 "To add a Product Discount, please remove all Coupons from your order" = "제품 할인을 추가하려면 주문에서 쿠폰을 모두 제거하세요.";
 
-/* Subtitle on the variations list screen when there are no variations and attributes */
-"To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "변형을 추가하려면 속성(즉, \"색상\", \"사이즈\")을 먼저 설정해야 합니다.";
-
 /* Error message displayed when unable to close user account due to having active atomic site. */
 "To close this account now, contact our support team." = "이 계정을 지금 닫으려면, 지원 팀에 문의하세요.";
 
@@ -9776,9 +9764,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message indicating no search result on the target location picker for campaign creation */
 "blazeTargetLocationPickerViewModel.noResult" = "위치를 찾을 수 없습니다.\n다시 시도하세요.";
 
-/* Hint message to enter search query on the target location picker for campaign creation */
-"blazeTargetLocationPickerViewModel.searchViewHintMessage" = "국가, 광역시\/도 또는 시\/군\/구 입력을 시작하여 사용 가능한 옵션을 참조하세요.";
-
 /* Title of the row to select all target location for Blaze campaign creation */
 "blazeTargetLocationSearchView.allTitle" = "모든 위치";
 
@@ -10146,9 +10131,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text for button that's shown when the list is empty. */
 "customFieldsListHostingController.emptyStateButton" = "더 알아보기";
 
-/* Message when the list is empty. */
-"customFieldsListHostingController.emptyStateDescription" = "사용자 정의 필드는 추가 정보를 표시하고 매장의 쇼핑 환경을 사용자 정의할 수 있는 선택 사항 메타데이터입니다.";
-
 /* Title for the message when the list is empty. */
 "customFieldsListHostingController.emptyStateTitle" = "고객 필드를 찾을 수 없음";
 
@@ -10281,9 +10263,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title when there are no customers in the search results in the Customers list screen. */
 "customerList.emptySearchTitle" = "고객을 찾을 수 없음";
 
-/* Message when there are no customers to show in the Customers list screen. */
-"customerList.emptyStateMessage" = "고객 인사이트 수집을 시작할 주문 생성";
-
 /* Title when there are no customers to show in the Customers list screen. */
 "customerList.emptyStateTitle" = "아직 고객 없음";
 
@@ -10376,9 +10355,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label of the button to share the store */
 "dashboardView.shareStoreCard.shareButtonLabel" = "스토어 공유";
-
-/* Subtitle of the Share Your Store card */
-"dashboardView.shareStoreCard.subtitle" = "이메일이나 소셜 미디어를 사용하여 스토어에 대한 입소문을 퍼뜨리세요";
 
 /* Title of the Share Your Store card */
 "dashboardView.shareStoreCard.title" = "입소문을 퍼뜨리세요!";

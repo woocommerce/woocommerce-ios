@@ -26,6 +26,10 @@ class POSModalManager: ObservableObject {
         allowsInteractiveDismissal = allowed
     }
 
+    func onDisappear() {
+        reset()
+    }
+
     private func reset() {
         onDismiss = nil
         allowsInteractiveDismissal = true

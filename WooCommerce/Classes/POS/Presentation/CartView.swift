@@ -15,7 +15,6 @@ struct CartView: View {
     }
 
     @State private var shouldShowItemImages: Bool = false
-    @State private var cartListWidth: CGFloat = 0
 
     var body: some View {
         VStack {
@@ -86,17 +85,15 @@ struct CartView: View {
                             Color.clear.preference(key: ScrollOffSetPreferenceKey.self,
                                                    value: geometry.frame(in: coordinateSpace).origin.y)
                             .onAppear {
-                                cartListWidth = geometry.size.width
-                                updateItemImageVisibility(width: geometry.size.width)
+                                updateItemImageVisibility(cartListWidth: geometry.size.width)
                             }
                             .onChange(of: geometry.size.width) {
-                                cartListWidth = $0
-                                updateItemImageVisibility(width: $0)
+                                updateItemImageVisibility(cartListWidth: $0)
+                            }
+                            .onChange(of: dynamicTypeSize) {
+                                updateItemImageVisibility(dynamicTypeSize: $0, cartListWidth: geometry.size.width)
                             }
                         })
-                        .onChange(of: dynamicTypeSize) {
-                            updateItemImageVisibility(dynamicTypeSize: $0)
-                        }
                         .onPreferenceChange(ScrollOffSetPreferenceKey.self) { position in
                             self.offSetPosition = position
                         }
@@ -172,10 +169,9 @@ private extension CartView {
             orderStage: posModel.orderStage)
     }
 
-    func updateItemImageVisibility(dynamicTypeSize: DynamicTypeSize? = nil, width: CGFloat? = nil) {
-        let width = width ?? cartListWidth
-        let newVisibility = width >= minimumWidthToShowItemImages(with: dynamicTypeSize ?? self.dynamicTypeSize)
         DDLogInfo("Item row width: \(cartListWidth)")
+    func updateItemImageVisibility(dynamicTypeSize: DynamicTypeSize? = nil, cartListWidth: CGFloat) {
+        let newVisibility = cartListWidth >= minimumWidthToShowItemImages(with: dynamicTypeSize ?? self.dynamicTypeSize)
         guard newVisibility != shouldShowItemImages else {
             return
         }

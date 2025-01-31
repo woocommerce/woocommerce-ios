@@ -135,6 +135,15 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         statesOfSelectedCountry.isNotEmpty
     }
 
+    // MARK: Remote validation
+
+    /// Whether the address is being remotely validated.
+    /// This property is used to show a loading indicator while the remote validation is in progress.
+    @Published private(set) var isRemotelyValidating: Bool = false
+
+    /// View model for normalizing the address.
+    @Published var normalizeAddressVM: WooShippingNormalizeAddressViewModel?
+
     init(type: AddressType,
          id: String,
          name: String,
@@ -219,7 +228,8 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     convenience init(address: WooShippingOriginAddress,
                      stores: StoresManager = ServiceLocator.stores,
-                     storageManager: StorageManagerType = ServiceLocator.storageManager) {
+                     storageManager: StorageManagerType = ServiceLocator.storageManager,
+                     onAddressEdited: ((WooShippingAddress) -> Void)? = nil) {
         self.init(type: .origin,
                   id: address.id,
                   name: address.fullName,
@@ -237,6 +247,28 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                   phoneNumberRequired: true,
                   stores: stores,
                   storageManager: storageManager)
+    }
+
+    /// Validates the address remotely.
+    @MainActor
+    func remotelyValidateAddress() async {
+        let addressToValidate = ShippingLabelAddress(company: company.value,
+                                                     name: name.value,
+                                                     phone: phone.value,
+                                                     country: country.value,
+                                                     state: state.value,
+                                                     address1: address.value,
+                                                     address2: "",
+                                                     city: city.value,
+                                                     postcode: postalCode.value)
+        do {
+            let validation = try await remotelyValidateAddress(addressToValidate)
+            normalizeAddressVM = WooShippingNormalizeAddressViewModel(enteredAddress: validation.originalAddress,
+                                                                      suggestedAddress: validation.normalizedAddress)
+        } catch {
+            // TODO: Handle `WooShippingAddressValidationError` errors.
+            DDLogError("⛔️ Error validating address for Woo Shipping label: \(error)")
+        }
     }
 }
 
@@ -357,6 +389,26 @@ private extension WooShippingEditAddressViewModel {
         let stateCode = state.value
         selectedCountry = countries.first { $0.code == country.value }
         selectedState = statesOfSelectedCountry.first { $0.code == stateCode }
+    }
+
+    /// Remotely validates the provided address.
+    @MainActor
+    func remotelyValidateAddress(_ address: ShippingLabelAddress) async throws -> WooShippingAddressValidationSuccess {
+        try await withCheckedThrowingContinuation { continuation in
+            isRemotelyValidating = true
+            let action = WooShippingAction.validateAddress(siteID: siteID,
+                                                           address: address) { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case let .success(validation):
+                    continuation.resume(returning: validation)
+                case let .failure(error):
+                    continuation.resume(throwing: error)
+                }
+                self.isRemotelyValidating = false
+            }
+            stores.dispatch(action)
+        }
     }
 }
 

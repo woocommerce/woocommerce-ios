@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import SwiftUI
+import Yosemite
 
 class LearnMoreViewModel: ObservableObject {
 
@@ -90,17 +91,28 @@ private enum Localization {
 }
 
 extension LearnMoreViewModel {
-    static func inPersonPayments(source: WooAnalyticsEvent.InPersonPayments.LearnMoreLinkSource) -> LearnMoreViewModel {
-        LearnMoreViewModel(url: WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL(),
+    static func inPersonPayments(source: WooAnalyticsEvent.InPersonPayments.LearnMoreLinkSource,
+                                 paymentGateway: CardPresentPaymentsPlugin?) -> LearnMoreViewModel {
+        LearnMoreViewModel(url: Self.learnMoreLinkURL(for: paymentGateway),
                            linkText: Localization.learnMoreLink,
                            formatText: Localization.inPersonPaymentslearnMoreText,
                            tappedAnalyticEvent: .InPersonPayments.learnMoreTapped(source: source))
     }
 
-    static func tapToPay(source: WooAnalyticsEvent.InPersonPayments.LearnMoreLinkSource) -> LearnMoreViewModel {
-        LearnMoreViewModel(url: WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL(),
+    static func tapToPay(source: WooAnalyticsEvent.InPersonPayments.LearnMoreLinkSource,
+                         paymentGateway: CardPresentPaymentsPlugin?) -> LearnMoreViewModel {
+        LearnMoreViewModel(url: Self.learnMoreLinkURL(for: paymentGateway),
                            linkText: Localization.learnMoreLink,
                            formatText: Localization.tapToPayLearnMoreText,
                            tappedAnalyticEvent: .InPersonPayments.learnMoreTapped(source: source))
+    }
+
+    private static func learnMoreLinkURL(for paymentGateway: CardPresentPaymentsPlugin?) -> URL {
+        switch paymentGateway {
+        case .none, .wcPay:
+            return WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL()
+        case .stripe:
+            return WooConstants.URLs.inPersonPaymentsLearnMoreStripe.asURL()
+        }
     }
 }

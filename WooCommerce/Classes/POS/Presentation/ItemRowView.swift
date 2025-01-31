@@ -59,7 +59,8 @@ struct ItemRowView: View {
     @ViewBuilder
     private var productImage: some View {
         if !showProductImage {
-            EmptyView()
+            Spacer()
+                .frame(width: Constants.horizontalElementSpacing)
         } else if let imageSource = cartItem.item.productImageSource {
             ProductImageThumbnail(productImageURL: URL(string: imageSource),
                                   productImageSize: Constants.productCardSize,

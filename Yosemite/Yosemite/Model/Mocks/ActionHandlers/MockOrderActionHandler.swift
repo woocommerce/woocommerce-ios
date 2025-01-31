@@ -10,21 +10,37 @@ struct MockOrderActionHandler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-            case .fetchFilteredOrders(let siteID, _, _, _, _, _, _, let writeStrategy, _, let onCompletion):
-                fetchFilteredAndAllOrders(siteID: siteID,
-                                          writeStrategy: writeStrategy,
-                                          onCompletion: onCompletion)
-            case .retrieveOrder(let siteID, let orderID, let onCompletion):
-                onCompletion(objectGraph.order(forSiteId: siteID, orderId: orderID), nil)
-            default: unimplementedAction(action: action)
+        case .fetchFilteredOrders(let siteID, _, _, _, _, _, _, let writeStrategy, let pageSize, let onCompletion):
+            fetchFilteredAndAllOrders(siteID: siteID,
+                                      writeStrategy: writeStrategy,
+                                      pageSize: pageSize,
+                                      onCompletion: onCompletion)
+        case .retrieveOrder(let siteID, let orderID, let onCompletion):
+            onCompletion(objectGraph.order(forSiteId: siteID, orderId: orderID), nil)
+        case .checkIfStoreHasOrders(_, let onCompletion):
+            onCompletion(.success(true))
+        case .retrieveOrderRemotely(let siteId, let orderId, let onCompletion):
+            if let order = objectGraph.order(forSiteId: siteId, orderId: orderId) {
+                onCompletion(.success(order))
+            } else {
+                onCompletion(.failure(NSError(domain: "", code: 0)))
+            }
+        case .updateOrderStatus(let siteID, let orderID, let status, let onCompletion):
+            onCompletion(nil)
+
+        default: unimplementedAction(action: action)
         }
     }
 
     func fetchFilteredAndAllOrders(siteID: Int64,
                                    writeStrategy: OrderAction.OrdersStorageWriteStrategy,
+                                   pageSize: Int,
                                    onCompletion: @escaping (TimeInterval, Result<[Order], Error>) -> ()) {
         guard writeStrategy != .doNotSave else {
-            onCompletion(0, .success([]))
+            let sortedOrders = Array(objectGraph.orders(forSiteId: siteID)
+                .sorted(by: { $0.dateCreated > $1.dateCreated })
+                .prefix(pageSize))
+            onCompletion(0, .success(sortedOrders))
             return
         }
 
@@ -34,15 +50,9 @@ struct MockOrderActionHandler: MockActionHandler {
     }
 
     private func saveOrders(orders: [Order], onCompletion: @escaping () -> ()) {
-        let storage = storageManager.viewStorage
-
-        storage.perform {
+        storageManager.performAndSave({ storage in
             let updater = OrdersUpsertUseCase(storage: storage)
             updater.upsert(orders)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: storage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 }

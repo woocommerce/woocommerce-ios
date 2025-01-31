@@ -47,7 +47,10 @@ struct WooShippingServiceView: View {
                        tabsNameFont: .subheadline.bold(),
                        tabItemContentHorizontalPadding: 6,
                        tabItemContentVerticalPadding: 12)
+            .redacted(reason: viewModel.loadingState == .loading ? .placeholder : [])
+            .shimmering(active: viewModel.loadingState == .loading)
         }
+        .padding(.vertical)
     }
 }
 
@@ -75,8 +78,4 @@ private extension WooShippingServiceView {
                                               value: "Sort by",
                                               comment: "Label for the menu to select a sort order for shipping rates in the shipping label creation screen.")
     }
-}
-
-#Preview {
-    WooShippingServiceView(viewModel: .init())
 }

@@ -515,7 +515,8 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
             result = aResult
         }
         waitUntil {
-            createdVariationCount == 3
+            createdVariationCount == 3 &&
+            result != nil
         }
 
         // Then

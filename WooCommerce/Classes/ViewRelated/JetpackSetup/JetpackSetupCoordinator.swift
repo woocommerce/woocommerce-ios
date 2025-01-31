@@ -1,4 +1,5 @@
 import UIKit
+import Experiments
 import Yosemite
 import enum Networking.NetworkError
 import class Networking.AlamofireNetwork
@@ -14,8 +15,10 @@ final class JetpackSetupCoordinator {
     /// Whether Jetpack is installed and activated and only connection needs to be handled.
     private var requiresConnectionOnly: Bool
     private var jetpackConnectedEmail: String?
+    private let accountService: WordPressComAccountServiceProtocol
     private let stores: StoresManager
     private let analytics: Analytics
+    private let featureFlagService: FeatureFlagService
     private let dotcomAuthScheme: String
 
     private var loginNavigationController: LoginNavigationController?
@@ -24,8 +27,10 @@ final class JetpackSetupCoordinator {
     private lazy var emailLoginViewModel: WPComEmailLoginViewModel = {
         .init(siteURL: site.url,
               requiresConnectionOnly: requiresConnectionOnly,
+              allowAccountCreation: true,
+              accountService: accountService,
               onPasswordUIRequest: showPasswordUI(email:),
-              onMagicLinkUIRequest: showMagicLinkUI(email:),
+              onMagicLinkUIRequest: showMagicLinkUI,
               onError: { [weak self] message in
             self?.showAlert(message: message)
         })
@@ -39,14 +44,18 @@ final class JetpackSetupCoordinator {
     init(site: Site,
          dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme,
          rootViewController: UIViewController,
+         accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.site = site
         self.dotcomAuthScheme = dotcomAuthScheme
         self.requiresConnectionOnly = false // to be updated later after fetching Jetpack status
         self.rootViewController = rootViewController
+        self.accountService = accountService
         self.stores = stores
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
 
         /// the authenticator needs to be initialized with configs
         /// to be used for requesting authentication link and handle login later.
@@ -80,6 +89,17 @@ final class JetpackSetupCoordinator {
 
         startJetpackSetupFlow(authToken: authToken)
         return true
+    }
+
+    func startAuthentication(with email: String?) {
+        if let email {
+            Task { @MainActor in
+                analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress))
+                await emailLoginViewModel.checkWordPressComAccount(email: email)
+            }
+        } else {
+            showWPComEmailLogin()
+        }
     }
 }
 
@@ -152,17 +172,6 @@ private extension JetpackSetupCoordinator {
         /// confirms Jetpack plugin status by checking with the system plugin list.
         /// this is to avoid the edge case when Jetpack user is returned even though Jetpack plugin is not installed.
         requiresConnectionOnly = try await isJetpackInstalledAndActive()
-    }
-
-    func startAuthentication(with email: String?) {
-        if let email {
-            Task { @MainActor in
-                analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress))
-                await emailLoginViewModel.checkWordPressComAccount(email: email)
-            }
-        } else {
-            showWPComEmailLogin()
-        }
     }
 
     func displayAdminRoleRequiredError() {
@@ -242,15 +251,17 @@ private extension JetpackSetupCoordinator {
 
     func authenticateUserAndRefreshSite(with credentials: Credentials) {
         analytics.track(.jetpackSetupCompleted)
-        stores.sessionManager.deleteApplicationPassword()
+        let previousCredentials = stores.sessionManager.defaultCredentials
         stores.authenticate(credentials: credentials)
+
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.syncingData, message: ""))
         rootViewController.topmostPresentedViewController.present(progressView, animated: true)
 
-        let action = AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: site.url) { [weak self] result in
+        let resultHandler: (Result<Site, Error>) -> Void = { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let site):
+                self.stores.sessionManager.deleteApplicationPassword(using: previousCredentials)
                 self.stores.updateDefaultStore(storeID: site.siteID)
                 self.stores.synchronizeEntities { [weak self] in
                     self?.stores.updateDefaultStore(site)
@@ -260,6 +271,7 @@ private extension JetpackSetupCoordinator {
                         if site.isJetpackCPConnected {
                             self?.presentJCPJetpackInstallFlow()
                         }
+                        progressView.dismiss(animated: true)
                     })
                 }
 
@@ -268,12 +280,22 @@ private extension JetpackSetupCoordinator {
                 progressView.dismiss(animated: true, completion: { [weak self] in
                     self?.showAlert(message: Localization.errorFetchingSites, onRetry: {
                         self?.authenticateUserAndRefreshSite(with: credentials)
+                    }, onCancel: {
+                        // Revert the change to credentials
+                        if let previousCredentials {
+                            self?.stores.authenticate(credentials: previousCredentials)
+                        }
                     })
                 })
 
             }
         }
-        stores.dispatch(action)
+
+        if site.isJetpackCPConnected {
+            stores.dispatch(AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: site.url, onCompletion: resultHandler))
+        } else {
+            stores.dispatch(SiteAction.syncSiteByDomain(domain: site.url.trimHTTPScheme(), completion: resultHandler))
+        }
     }
 
     func registerForPushNotifications() {
@@ -340,19 +362,16 @@ private extension JetpackSetupCoordinator {
     func showWPComEmailLogin() {
         analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress))
         let emailLoginController = WPComEmailLoginHostingController(viewModel: emailLoginViewModel)
-        let loginNavigationController = LoginNavigationController(rootViewController: emailLoginController)
-        rootViewController.dismiss(animated: true) {
-            self.rootViewController.present(loginNavigationController, animated: true)
-        }
-        self.loginNavigationController = loginNavigationController
+        pushOrInitLoginViewController(emailLoginController)
     }
 
-    func showMagicLinkUI(email: String) {
-        analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink))
+    func showMagicLinkUI(email: String, isSignup: Bool) {
+        analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, isSignup: isSignup))
         let viewController = WPComMagicLinkHostingController(email: email,
                                                              title: loginViewTitle,
-                                                             isJetpackSetup: true)
-        loginNavigationController?.pushViewController(viewController, animated: true)
+                                                             isJetpackSetup: true,
+                                                             isSignup: isSignup)
+        pushOrInitLoginViewController(viewController)
     }
 
     func showPasswordUI(email: String) {
@@ -382,17 +401,7 @@ private extension JetpackSetupCoordinator {
             isJetpackSetup: true,
             viewModel: viewModel)
 
-        if let loginNavigationController {
-            loginNavigationController.pushViewController(viewController, animated: true)
-        } else {
-            /// If the user already is connected, the email screen is skipped.
-            /// The login flow starts here, so create the navigation controller if needed.
-            let loginNavigationController = LoginNavigationController(rootViewController: viewController)
-            rootViewController.dismiss(animated: true) {
-                self.rootViewController.present(loginNavigationController, animated: true)
-            }
-            self.loginNavigationController = loginNavigationController
-        }
+        pushOrInitLoginViewController(viewController)
     }
 
     func show2FALoginUI(with loginFields: LoginFields) {
@@ -400,6 +409,10 @@ private extension JetpackSetupCoordinator {
         guard let window = rootViewController.view.window else {
             logErrorAndExit("⛔️ Error finding window for security key login")
         }
+        guard let loginNavigationController else {
+            logErrorAndExit("⛔️ Error finding loginNavigationController for security key login")
+        }
+
         let viewModel = WPCom2FALoginViewModel(
             loginFields: loginFields,
             onAuthWindowRequest: { window },
@@ -414,7 +427,19 @@ private extension JetpackSetupCoordinator {
         let viewController = WPCom2FALoginHostingController(title: loginViewTitle,
                                                             isJetpackSetup: true,
                                                             viewModel: viewModel)
-        loginNavigationController?.pushViewController(viewController, animated: true)
+        loginNavigationController.pushViewController(viewController, animated: true)
+    }
+
+    func pushOrInitLoginViewController(_ viewController: UIViewController) {
+        if let loginNavigationController {
+            loginNavigationController.pushViewController(viewController, animated: true)
+        } else {
+            let loginNavigationController = LoginNavigationController(rootViewController: viewController)
+            rootViewController.dismiss(animated: true) {
+                self.rootViewController.present(loginNavigationController, animated: true)
+            }
+            self.loginNavigationController = loginNavigationController
+        }
     }
 }
 
@@ -424,7 +449,8 @@ private extension JetpackSetupCoordinator {
     /// Shows an error alert with a button to retry the failed action.
     ///
     func showAlert(message: String,
-                   onRetry: (() -> Void)? = nil) {
+                   onRetry: (() -> Void)? = nil,
+                   onCancel: (() -> Void)? = nil) {
         let alert = UIAlertController(title: message,
                                       message: nil,
                                       preferredStyle: .alert)
@@ -434,7 +460,9 @@ private extension JetpackSetupCoordinator {
             }
             alert.addAction(retryAction)
         }
-        let cancelAction = UIAlertAction(title: Localization.cancelButton, style: .cancel)
+        let cancelAction = UIAlertAction(title: Localization.cancelButton, style: .cancel) { _ in
+            onCancel?()
+        }
         alert.addAction(cancelAction)
         rootViewController.topmostPresentedViewController.present(alert, animated: true)
     }

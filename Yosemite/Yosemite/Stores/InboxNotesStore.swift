@@ -7,10 +7,6 @@ import Networking
 public class InboxNotesStore: Store {
     private let remote: InboxNotesRemote
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = InboxNotesRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -165,21 +161,16 @@ private extension InboxNotesStore {
                                             siteID: Int64,
                                             shouldDeleteExistingNotes: Bool,
                                             onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
+        storageManager.performAndSave({ [weak self] storage in
             guard let self = self else { return }
 
             if shouldDeleteExistingNotes {
-                self.deleteStoredInboxNotes(siteID: siteID, in: derivedStorage)
+                self.deleteStoredInboxNotes(siteID: siteID, in: storage)
             }
             self.upsertStoredInboxNotes(readOnlyInboxNotes: readOnlyInboxNotes,
-                                        in: derivedStorage,
+                                        in: storage,
                                         siteID: siteID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates or Inserts the specified Inbox Note entities
@@ -219,14 +210,9 @@ private extension InboxNotesStore {
     func deleteStoredInboxNoteInBackground(siteID: Int64,
                                            noteID: Int64,
                                            onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
-            derivedStorage.deleteInboxNote(siteID: siteID, id: noteID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ storage in
+            storage.deleteInboxNote(siteID: siteID, id: noteID)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Deletes all Inbox Notes Entities in a background thread
@@ -234,14 +220,9 @@ private extension InboxNotesStore {
     ///
     func deleteStoredInboxNotesInBackground(siteID: Int64,
                                             onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
-            derivedStorage.deleteInboxNotes(siteID: siteID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ storage in
+            storage.deleteInboxNotes(siteID: siteID)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Deletes all Storage.InboxNote with the specified `siteID`

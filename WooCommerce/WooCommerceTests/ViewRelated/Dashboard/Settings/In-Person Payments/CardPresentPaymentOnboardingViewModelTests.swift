@@ -150,4 +150,14 @@ final class CardPresentPaymentOnboardingViewModelTests: XCTestCase {
         // Then
         assertEqual(.isFalse, receivedShouldShow)
     }
+
+    func test_manual_equatable_conformance_number_of_properties_unchanged() {
+        // Given
+        let sut = CardPresentPaymentsOnboardingViewModel(useCase: onboardingUseCase)
+
+        // Then
+        XCTAssertPropertyCount(sut,
+                               expectedCount: 10,
+                               messageHint: "Please check that the manual equatable conformance includes new properties.")
+    }
 }

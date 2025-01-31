@@ -105,7 +105,7 @@ private extension ProductTagsViewController {
         navigationItem.setRightBarButton(UIBarButtonItem(title: Strings.saveButton,
                                                          style: .done,
                                                          target: self,
-                                                         action: #selector(addTagsRemotely)),
+                                                         action: #selector(confirmTags)),
                                          animated: true)
         navigationItem.rightBarButtonItem?.isEnabled = true
     }
@@ -207,7 +207,14 @@ extension ProductTagsViewController: KeyboardScrollable {
 //
 private extension ProductTagsViewController {
     func loadTags() {
-        displayGhostContent(over: tableView)
+        let cachedTags = self.fetchedTags
+        if cachedTags.isEmpty {
+            /// Display the loading state only cached items are unavailable.
+            displayGhostContent(over: tableView)
+        } else {
+            /// Otherwise, display cached items right away.
+            tagsLoaded(tags: cachedTags.map { $0.name } )
+        }
 
         let action = ProductTagAction.synchronizeAllProductTags(siteID: product.siteID) { [weak self] error in
             if let error = error {
@@ -232,12 +239,21 @@ private extension ProductTagsViewController {
                                            searchQuery: partialTag)
     }
 
-    @objc func addTagsRemotely() {
+    @objc func confirmTags() {
         ServiceLocator.analytics.track(.productTagSettingsDoneButtonTapped, withProperties: [
             "has_changed_data": hasUnsavedChanges()
         ])
 
         textView.resignFirstResponder()
+
+        guard allTags.isNotEmpty else {
+            return onCompletion([])
+        }
+
+        createNewTagsRemotely()
+    }
+
+    func createNewTagsRemotely() {
         configureRightBarButtonItemAsSpinner()
 
         let action = ProductTagAction.addProductTags(siteID: product.siteID, tags: allTags) { [weak self] (result) in

@@ -41,6 +41,7 @@ struct WooShippingItemRowViewModel: Identifiable {
     }
 
     init(item: ShippingLabelPackageItem,
+         currency: String,
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.imageUrl = item.imageURL
@@ -53,7 +54,7 @@ struct WooShippingItemRowViewModel: Identifiable {
         let weightUnit = shippingSettingsService.weightUnit ?? ""
         self.weightLabel = item.formatWeight(with: weightUnit)
 
-        self.priceLabel = item.formatPrice(with: currencySettings)
+        self.priceLabel = item.formatPrice(with: currencySettings, and: currency)
     }
 }
 
@@ -84,10 +85,10 @@ private extension ShippingLabelPackageItem {
 
     /// Formats the total item price (per-unit value x quantity) with the provided currency settings.
     ///
-    func formatPrice(with settings: CurrencySettings) -> String {
+    func formatPrice(with settings: CurrencySettings, and currency: String) -> String {
         let totalPrice = Decimal(value) * quantity
         let currencyFormatter = CurrencyFormatter(currencySettings: settings)
-        return currencyFormatter.formatAmount(totalPrice) ?? totalPrice.description
+        return currencyFormatter.formatAmount(totalPrice, with: currency) ?? totalPrice.description
     }
 
     enum Localization {

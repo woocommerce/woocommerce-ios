@@ -11,9 +11,9 @@ struct POSSecondaryButtonStyle: ButtonStyle {
         .font(.posBodyEmphasized)
         .background(
             RoundedRectangle(cornerRadius: POSButtonStyleConstants.framedButtonCornerRadius)
-                .stroke(Color.posPrimaryButtonBackground,
+                .stroke(Color.posSecondaryButtonForeground,
                         lineWidth: POSButtonStyleConstants.secondaryButtonBorderStrokeWidth)
                 .background(Color.posPrimaryBackground))
-        .foregroundColor(.posPrimaryButtonBackground)
+        .foregroundColor(.posSecondaryButtonForeground)
     }
 }

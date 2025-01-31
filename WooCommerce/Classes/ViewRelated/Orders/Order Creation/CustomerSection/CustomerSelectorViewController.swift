@@ -178,6 +178,7 @@ private extension CustomerSelectorViewController {
                                                         viewModel: addressFormViewModel)
         let rootViewController = UIHostingController(rootView: editOrderAddressForm)
         let navigationController = WooNavigationController(rootViewController: rootViewController)
+        navigationController.modalPresentationStyle = .fullScreen
 
         present(navigationController, animated: true, completion: nil)
     }
@@ -230,7 +231,7 @@ private extension CustomerSelectorViewController {
     func emptyStateConfiguration() -> EmptyStateViewController.Config {
         EmptyStateViewController.Config.withButton(
             message: .init(string: Localization.emptyStateMessage),
-            image: .emptySearchResultsImage,
+            image: .magnifyingGlassNotFound,
             details: Localization.emptyStateDetails,
             buttonTitle: Localization.emptyStateActionTitle
         ) { [weak self] _ in
@@ -241,7 +242,7 @@ private extension CustomerSelectorViewController {
     func emptyStateWithNoCreationConfiguration() -> EmptyStateViewController.Config {
         EmptyStateViewController.Config.simple(
             message: .init(string: Localization.emptyStateMessage),
-            image: .emptySearchResultsImage
+            image: .magnifyingGlassNotFound
         )
     }
 

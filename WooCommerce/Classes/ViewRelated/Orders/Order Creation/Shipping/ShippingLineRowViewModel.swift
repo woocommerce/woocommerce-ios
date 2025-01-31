@@ -37,11 +37,12 @@ struct ShippingLineRowViewModel: Identifiable {
     }
 
     init(shippingLine: ShippingLine,
+         currency: String? = nil,
          shippingMethods: [ShippingMethod],
          editable: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          onEditShippingLine: @escaping (Int64) -> Void = { _ in }) {
-        let formattedAmount = currencyFormatter.formatAmount(shippingLine.total) ?? shippingLine.total
+        let formattedAmount = currencyFormatter.formatAmount(shippingLine.total, with: currency) ?? shippingLine.total
         let shippingMethod = shippingMethods.first(where: { $0.methodID == shippingLine.methodID })?.title
 
         self.init(id: shippingLine.shippingID,

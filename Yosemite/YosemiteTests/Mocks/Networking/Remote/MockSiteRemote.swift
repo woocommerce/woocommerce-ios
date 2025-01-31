@@ -91,7 +91,16 @@ extension MockSiteRemote: SiteRemoteProtocol {
 
     func loadSite(siteID: Int64) async throws -> Site {
         guard let result = loadSiteResult else {
-            XCTFail("Could not find result for loading a site.")
+            XCTFail("Could not find result for loading a site with site ID.")
+            throw NetworkError.notFound()
+        }
+
+        return try result.get()
+    }
+
+    func loadSite(domain: String) async throws -> Site {
+        guard let result = loadSiteResult else {
+            XCTFail("Could not find result for loading a site with domain.")
             throw NetworkError.notFound()
         }
 

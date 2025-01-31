@@ -56,6 +56,8 @@ final class MockProductsRemote {
 
     private var searchProductsBySKUResultsBySKU = [String: Result<[Product], Error>]()
 
+    private var searchProductsByGlobalUniqueIdentifierResults = [String: Result<[Product], Error>]()
+
     private var fetchedStockResult: Result<[ProductStock], Error>?
     private var fetchedProductReports: Result<[ProductReport], Error>?
     private var fetchedVariationReports: Result<[ProductReport], Error>?
@@ -119,6 +121,13 @@ final class MockProductsRemote {
     func whenSearchingProductsBySKU(sku: String, thenReturn result: Result<[Product], Error>) {
         searchProductsBySKUResultsBySKU[sku] = result
     }
+
+    /// Set the value passed to the `completion` block if `searchProductsByGlobalUniqueIdentifier()` is called.
+    ///
+    func whenSearchingProductsByGlobalUniqueIdentifier(identifier: String, thenReturn result: Result<[Product], Error>) {
+        searchProductsByGlobalUniqueIdentifierResults[identifier] = result
+    }
+
 
     func whenFetchingStock(thenReturn result: Result<[ProductStock], Error>) {
         fetchedStockResult = result
@@ -257,6 +266,18 @@ extension MockProductsRemote: ProductsRemoteProtocol {
             completion(result)
         } else {
             XCTFail("\(String(describing: self)) Could not find result for SKU \(keyword)")
+        }
+    }
+
+    func searchProductsByGlobalUniqueIdentifier(for siteID: Int64,
+                             keyword: String,
+                             pageNumber: Int,
+                             pageSize: Int,
+                             completion: @escaping (Result<[Product], Error>) -> Void) {
+        if let result = searchProductsByGlobalUniqueIdentifierResults[keyword] {
+            completion(result)
+        } else {
+            XCTFail("\(String(describing: self)) Could not find result for Global Unique Identifier \(keyword)")
         }
     }
 

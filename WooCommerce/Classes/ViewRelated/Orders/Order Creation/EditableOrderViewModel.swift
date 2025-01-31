@@ -7,7 +7,7 @@ import enum Networking.DotcomError
 
 /// Encapsulates the item type an order can have, products or variations
 ///
-typealias OrderBaseItem = SKUSearchResult
+typealias OrderBaseItem = ItemIdentifierSearchResult
 
 /// View model used in Order Creation and Editing flows.
 ///
@@ -63,11 +63,11 @@ final class EditableOrderViewModel: ObservableObject {
     /// Indicates whether user has made any changes
     ///
     var hasChanges: Bool {
-        switch flow {
-        case .creation:
-            return orderSynchronizer.order != OrderFactory.emptyNewOrder
-        case .editing(let initialOrder):
-            return orderSynchronizer.order != initialOrder
+        if selectionSyncApproach == .onRecalculateButtonTap {
+            // In split view, we need to check whether the screen has changes that are not yet synced to the order.
+            return orderSynchronizer.orderHasBeenChanged || syncRequired
+        } else {
+            return orderSynchronizer.orderHasBeenChanged
         }
     }
 
@@ -111,7 +111,7 @@ final class EditableOrderViewModel: ObservableObject {
         !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
     }
 
-    var enableAddingCustomAmountViaOrderTotalPercentage: Bool {
+    var orderIsNotEmpty: Bool {
         orderSynchronizer.order.items.isNotEmpty || orderSynchronizer.order.fees.isNotEmpty
     }
 
@@ -149,7 +149,7 @@ final class EditableOrderViewModel: ObservableObject {
     /// When the value is non-nil, the bundle product configuration screen is shown.
     @Published var productToConfigureViewModel: ConfigurableBundleProductViewModel?
 
-    @Published private(set) var customAmountsSectionViewModel: OrderCustomAmountsSectionViewModel = .init()
+    @Published private(set) var customAmountsSectionViewModel: OrderCustomAmountsSectionViewModel
 
     // MARK: Status properties
 
@@ -191,10 +191,6 @@ final class EditableOrderViewModel: ObservableObject {
     /// Selected tax rate to apply to the order
     ///
     @Published private var storedTaxRate: TaxRate? = nil
-
-    /// Display the custom amount screen to edit it
-    ///
-    @Published var showEditCustomAmount: Bool = false
 
     /// Defines if the toggle to store the tax rate in the selector should be enabled by default
     ///
@@ -461,7 +457,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
-    private let barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder
+    private let barcodeScannerItemFinder: BarcodeScannerItemFinder
 
     private let quantityDebounceDuration: Double
 
@@ -489,8 +485,9 @@ final class EditableOrderViewModel: ObservableObject {
         self.permissionChecker = permissionChecker
         self.initialItem = initialItem
         self.initialCustomer = initialCustomer
-        self.barcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder(stores: stores)
+        self.barcodeScannerItemFinder = BarcodeScannerItemFinder(stores: stores)
         self.quantityDebounceDuration = quantityDebounceDuration
+        self.customAmountsSectionViewModel = OrderCustomAmountsSectionViewModel(currencySettings: currencySettings)
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.
@@ -943,7 +940,8 @@ final class EditableOrderViewModel: ObservableObject {
             paymentLink: order.paymentURL,
             total: order.total,
             formattedTotal: formattedTotal,
-            flow: .orderCreation)
+            flow: .orderCreation,
+            channel: .storeManagement)
 
         onFinishAndCollectPayment(order, collectPaymentViewModel)
     }
@@ -1025,8 +1023,11 @@ final class EditableOrderViewModel: ObservableObject {
     /// Starts the flow to add a custom amount.
     func addCustomAmount() {
         editingFee = nil
-        enableAddingCustomAmountViaOrderTotalPercentage ?
-        customAmountsSectionViewModel.showAddCustomAmountOptionsDialog.toggle() : customAmountsSectionViewModel.showAddCustomAmount.toggle()
+        if orderIsNotEmpty {
+            customAmountsSectionViewModel.showCustomAmountOptionsDialog = true
+        } else {
+            customAmountsSectionViewModel.showAddCustomAmount = true
+        }
     }
 
     func onCreateOrderTapped() {
@@ -1549,6 +1550,13 @@ private extension EditableOrderViewModel {
         syncRequired = false
     }
 
+    func isSyncRequired(products: [Product], variations: [ProductVariation]) -> Bool {
+        let addedItemsToSync = productInputAdditionsToSync(products: products, variations: variations)
+        let removedItemsToSync = productInputDeletionsToSync(products: products, variations: variations)
+
+        return (addedItemsToSync + removedItemsToSync).isNotEmpty
+    }
+
     /// Adds a selected product (from the product list) to the order.
     ///
     func changeSelectionStateForProduct(_ product: Product, to isSelected: Bool) {
@@ -1610,7 +1618,7 @@ private extension EditableOrderViewModel {
                                                     onEditCustomAmount: {
                         self.analytics.track(.orderCreationEditCustomAmountTapped)
                         self.editingFee = fee
-                        self.showEditCustomAmount = true
+                        self.customAmountsSectionViewModel.showCustomAmountOptionsDialog = true
                     })
                 }
             }
@@ -2011,7 +2019,7 @@ private extension EditableOrderViewModel {
         case .immediate:
             syncOrderItems(products: selectedProducts, variations: selectedProductVariations)
         case .onRecalculateButtonTap:
-            syncRequired = true
+            syncRequired = isSyncRequired(products: selectedProducts, variations: selectedProductVariations)
         case .onSelectorButtonTap:
             return
         }
@@ -2445,7 +2453,7 @@ extension EditableOrderViewModel {
     private func mapScannedBarcodetoBaseItem(barcode: ScannedBarcode, onCompletion: @escaping (Result<OrderBaseItem, Error>) -> Void) {
         Task {
             do {
-                let result = try await barcodeSKUScannerItemFinder.searchBySKU(from: barcode, siteID: siteID, source: .orderCreation)
+                let result = try await barcodeScannerItemFinder.searchByIdentifier(from: barcode, siteID: siteID, source: .orderCreation)
                 onCompletion(.success(result))
             } catch {
                 onCompletion(.failure(error))
@@ -2475,7 +2483,7 @@ extension EditableOrderViewModel {
         static func createProductNotFoundAfterSKUScanningErrorNotice(for error: Error,
                                                                      code: ScannedBarcode,
                                                                      withRetryAction action: @escaping () -> Void) -> Notice {
-            BarcodeSKUScannerErrorNoticeFactory.notice(for: error, code: code, actionHandler: action)
+            BarcodeScannerErrorNoticeFactory.notice(for: error, code: code, actionHandler: action)
         }
 
         /// Returns an order sync error notice.

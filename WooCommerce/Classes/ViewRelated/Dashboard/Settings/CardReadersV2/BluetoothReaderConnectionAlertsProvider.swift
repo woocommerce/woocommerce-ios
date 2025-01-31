@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 import UIKit
 
 struct BluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlertsProviding {
@@ -9,7 +10,12 @@ struct BluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlerts
 
     func scanningFailed(error: Error,
                         close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalScanningFailed(error: error, primaryAction: close)
+        switch error {
+        case CardReaderServiceError.bluetoothDenied, CardReaderServiceError.discovery(underlyingError: .bluetoothDenied):
+            return CardPresentModalBluetoothRequired(error: error, primaryAction: close)
+        default:
+            return CardPresentModalScanningFailed(error: error, primaryAction: close)
+        }
     }
 
     func connectingToReader() -> CardPresentPaymentsModalViewModel {
@@ -23,7 +29,7 @@ struct BluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlerts
     }
 
     func connectingFailedNonRetryable(error: Error, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalNonRetryableError(amount: "", error: error, onDismiss: close)
+        CardPresentModalNonRetryableErrorWithoutEmail(amount: "", error: error, onDismiss: close)
     }
 
     func connectingFailedIncompleteAddress(wcSettingsAdminURL: URL?,
@@ -75,8 +81,17 @@ struct BluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlerts
     }
 
     func updatingFailedLowBattery(batteryLevel: Double?,
+                                  retrySearch: @escaping () -> Void,
                                   close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalUpdateFailedLowBattery(batteryLevel: batteryLevel, close: close)
+        CardPresentModalUpdateFailedLowBattery(batteryLevel: batteryLevel, retrySearch: retrySearch, close: close)
     }
 
+    func locationRequestPreAlert(requestPermission: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalLocationPreAlert(requestPermission: requestPermission)
+    }
+
+    func locationRequired(dismiss: @escaping () -> Void,
+                          skip: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalLocationRequired(dismiss: dismiss)
+    }
 }

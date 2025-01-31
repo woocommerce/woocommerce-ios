@@ -27,10 +27,15 @@ extension Site {
     }
 
     /// Returns the plugin URL from wp-admin that handles pending tasks or requirements during onboarding.
-    /// Both WCPay and Stripe use the same URL.
     ///
-    func cardPresentPluginHasPendingTasksURL() -> String {
-        return adminURL + "admin.php?page=wc-admin&path=%2Fpayments%2Foverview"
+    func cardPresentPluginHasPendingTasksURL(plugin: CardPresentPaymentsPlugin) -> String {
+        switch plugin {
+        case .wcPay:
+            /// Payments Connect page was recommended by the web team over Payments Overview page in pdfdoF-5Bo-p2#comment-6655
+            return adminURL + "admin.php?page=wc-admin&path=%2Fpayments%2Fconnect"
+        case .stripe:
+            return pluginSettingsSectionURL(from: .stripe) + "&panel=settings"
+        }
     }
 
     /// Returns the WooCommerce admin URL, or attempts to construct it from the site URL.

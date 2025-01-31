@@ -98,8 +98,9 @@ class StoreOnboardingViewModel: ObservableObject {
         $noTasksAvailableForDisplay
             .combineLatest(defaults.publisher(for: \.completedAllStoreOnboardingTasks))
             .filter { [weak self] _ in
-                /// Upon logging out, `UserDefaults` is reset causing `completedAllStoreOnboardingTasks` to change value.
-                /// Checking the authentication state helps avoiding reloading data in the unauthenticated state.
+                /// Upon logging out, `CoreDataManager` clears the storage triggering data change.
+                /// Checking the authentication state helps avoiding reloading data
+                /// in the unauthenticated state.
                 guard let self, self.stores.isAuthenticated else {
                     return false
                 }

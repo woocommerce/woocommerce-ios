@@ -8,7 +8,7 @@ struct FreeTrialBannerViewModel {
     ///
     let message: String
 
-    init(sitePlan: WPComSitePlan, timeZone: TimeZone = .current) {
+    init(sitePlan: WPComSitePlan, timeZone: TimeZone = .current, calendar: Calendar = .current) {
 
         // Normalize dates in the same timezone.
         let today = Date().startOfDay(timezone: timeZone)
@@ -17,7 +17,7 @@ struct FreeTrialBannerViewModel {
             return
         }
 
-        let daysLeft = Calendar.current.dateComponents([.day], from: today, to: expiryDate).day ?? 0
+        let daysLeft = calendar.dateComponents([.day], from: today, to: expiryDate).day ?? 0
         switch daysLeft {
         case 1:
             message = NSLocalizedString("1 day left in your trial.", comment: "Message of the free trial banner when there is 1 day left")

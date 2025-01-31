@@ -213,7 +213,48 @@ final class OrderDetailsViewModelTests: XCTestCase {
         let viewModel = OrderDetailsViewModel(order: order)
 
         // Then
-        XCTAssertFalse(viewModel.editButtonIsEnabled)
+        XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.disabledForSyncing)
+    }
+
+    // Context: https://github.com/woocommerce/woocommerce-ios/issues/14304
+    func test_there_should_not_be_an_edit_order_action_if_order_currency_doesnt_match_site_currency() {
+        // Given
+        let gbp = CurrencySettings(currencyCode: .GBP,
+                                   currencyPosition: .left,
+                                   thousandSeparator: "",
+                                   decimalSeparator: ".",
+                                   numberOfDecimals: 2)
+        ServiceLocator.setCurrencySettings(gbp)
+
+        let usdOrder = Order.fake().copy(currency: "usd", total: "10.0")
+
+        let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
+
+        // When
+        let viewModel = OrderDetailsViewModel(order: usdOrder, syncStateController: syncStateController)
+
+        // Then
+        XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.showNoticeForCurrencyConflict)
+    }
+
+    func test_the_edit_order_action_should_be_enabled_when_the_order_is_synced_and_matches_site_currency() {
+        // Given
+        let usd = CurrencySettings(currencyCode: .USD,
+                                   currencyPosition: .left,
+                                   thousandSeparator: "",
+                                   decimalSeparator: ".",
+                                   numberOfDecimals: 2)
+        ServiceLocator.setCurrencySettings(usd)
+
+        let usdOrder = Order.fake().copy(currency: "usd", total: "10.0")
+
+        let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
+
+        // When
+        let viewModel = OrderDetailsViewModel(order: usdOrder, syncStateController: syncStateController)
+
+        // Then
+        XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.enabled)
     }
 
     func test_paymentMethodsViewModel_title_contains_formatted_order_amount() {

@@ -34,6 +34,19 @@ enum WooShippingCarrier: String, Comparable, CaseIterable {
         }
     }
 
+    var pickupURL: URL? {
+        switch self {
+        case .usps:
+            return URL(string: "https://tools.usps.com/schedule-pickup-steps.htm")
+        case .ups:
+            return URL(string: "https://wwwapps.ups.com/pickup/request")
+        case .dhlExpress:
+            return URL(string: "https://mydhl.express.dhl/us/en/schedule-pickup.html#/schedule-pickup#label-reference")
+        case .dhlEcommerce, .dhlEcommerceAsia:
+            return nil
+        }
+    }
+
     static func < (lhs: WooShippingCarrier, rhs: WooShippingCarrier) -> Bool {
         guard let lhsIndex = allCases.firstIndex(of: lhs),
               let rhsIndex = allCases.firstIndex(of: rhs) else {

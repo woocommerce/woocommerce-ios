@@ -1,21 +1,51 @@
 import XCTest
 @testable import WooCommerce
+import Yosemite
+import enum Networking.NetworkError
 
 final class WooShippingServiceViewModelTests: XCTestCase {
 
+    private var stores: MockStoresManager!
+
+    private var samplePackageID = "default_box"
+
+    override func setUp() {
+        super.setUp()
+        stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .loadLabelRates(_, _, _, _, _, completion):
+                completion(.success(self.sampleLabelRates()))
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
+    }
+
     func test_init_sets_expected_values() {
         // Given
-        let viewModel = WooShippingServiceViewModel()
+        let viewModel = WooShippingServiceViewModel(order: Order.fake(),
+                                                    originAddress: ShippingLabelAddress.fake(),
+                                                    destinationAddress: ShippingLabelAddress.fake())
 
         // Then
         XCTAssertNil(viewModel.selectedRate)
+        XCTAssertEqual(viewModel.loadingState, .empty)
     }
 
-    func test_generateServiceTabs_returns_expected_data() throws {
+    func test_loadLabelRates_generates_service_tabs_with_expected_data() throws {
         // Given
-        let viewModel = WooShippingServiceViewModel()
+        let viewModel = WooShippingServiceViewModel(order: Order.fake(),
+                                                    originAddress: ShippingLabelAddress.fake(),
+                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    stores: stores)
+
+        // When
+        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: self.samplePackageID))
 
         // Then
+        XCTAssertEqual(viewModel.loadingState, .loaded)
+
         XCTAssertEqual(viewModel.serviceTabs.count, 2)
         XCTAssertEqual(viewModel.serviceTabs[0].cards.count, 2)
         XCTAssertEqual(viewModel.serviceTabs[1].cards.count, 1)
@@ -63,34 +93,59 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertNil(rate3.adultSignatureRequiredLabel)
     }
 
-    func test_selecting_service_card_standard_rate_updates_expected_values() {
+    func test_when_loadLabelRates_receives_error_it_sets_error_state() {
         // Given
-        let viewModel = WooShippingServiceViewModel()
-        let card = viewModel.serviceTabs[0].cards[1]
-        XCTAssertNil(viewModel.selectedRate)
-        XCTAssertFalse(card.selected)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .loadLabelRates(_, _, _, _, _, completion):
+                completion(.failure(NetworkError.timeout()))
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
+        let viewModel = WooShippingServiceViewModel(order: Order.fake(),
+                                                    originAddress: ShippingLabelAddress.fake(),
+                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    stores: stores)
 
         // When
-        card.selectRate()
+        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake())
+
+        // Then
+        XCTAssertEqual(viewModel.loadingState, .error)
+        XCTAssertTrue(viewModel.serviceTabs.isEmpty)
+    }
+
+    func test_selecting_standard_rate_updates_expected_values() {
+        // Given
+        let standardRate = sampleStandardRates()[1]
+        let viewModel = WooShippingServiceViewModel(order: Order.fake(),
+                                                    originAddress: ShippingLabelAddress.fake(),
+                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    stores: stores)
+
+        // When
+        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
+        viewModel.selectRate(standardRate, signatureRate: nil, adultSignatureRate: nil)
 
         // Then
         XCTAssertNotNil(viewModel.selectedRate)
         XCTAssertNil(viewModel.selectedRate?.signatureRate)
         XCTAssertNil(viewModel.selectedRate?.adultSignatureRate)
-        XCTAssertEqual(viewModel.selectedRate?.rate.title, card.title)
+        XCTAssertEqual(viewModel.selectedRate?.rate.title, standardRate.title)
         XCTAssertEqual(viewModel.serviceTabs[0].cards[1].selected, true)
     }
 
     func test_selecting_service_card_signature_rate_updates_expected_values() {
         // Given
-        let viewModel = WooShippingServiceViewModel()
-        let card = viewModel.serviceTabs[0].cards[1]
-        XCTAssertNil(viewModel.selectedRate)
-        XCTAssertFalse(card.selected)
-
+        let viewModel = WooShippingServiceViewModel(order: Order.fake(),
+                                                    originAddress: ShippingLabelAddress.fake(),
+                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    stores: stores)
         // When
-        card.signatureRequirement = .signatureRequired
-        card.selectRate()
+        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
+        viewModel.selectRate(sampleStandardRates()[1], signatureRate: sampleSignatureRates().first, adultSignatureRate: nil)
 
         // Then
         XCTAssertNotNil(viewModel.selectedRate)
@@ -101,14 +156,14 @@ final class WooShippingServiceViewModelTests: XCTestCase {
 
     func test_selecting_service_card_adult_signature_rate_updates_expected_values() {
         // Given
-        let viewModel = WooShippingServiceViewModel()
-        let card = viewModel.serviceTabs[0].cards[1]
-        XCTAssertNil(viewModel.selectedRate)
-        XCTAssertFalse(card.selected)
+        let viewModel = WooShippingServiceViewModel(order: Order.fake(),
+                                                    originAddress: ShippingLabelAddress.fake(),
+                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    stores: stores)
 
         // When
-        card.signatureRequirement = .adultSignatureRequired
-        card.selectRate()
+        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
+        viewModel.selectRate(sampleStandardRates()[1], signatureRate: nil, adultSignatureRate: sampleAdultSignatureRates().first)
 
         // Then
         XCTAssertNotNil(viewModel.selectedRate)
@@ -117,11 +172,33 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.serviceTabs[0].cards[1].selected, true)
     }
 
-    func test_sortShipping_by_price_returns_sorted_list() {
+    func test_selecting_rate_calls_onSelectRate() {
         // Given
-        let viewModel = WooShippingServiceViewModel()
+        var selectedRate: WooShippingSelectedRate?
+        let viewModel = WooShippingServiceViewModel(order: Order.fake(),
+                                                    originAddress: ShippingLabelAddress.fake(),
+                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    stores: stores) { rate in
+            selectedRate = rate
+        }
 
         // When
+        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
+        viewModel.selectRate(sampleStandardRates()[1], signatureRate: nil, adultSignatureRate: nil)
+
+        // Then
+        XCTAssertEqual(selectedRate?.rate, sampleStandardRates()[1])
+    }
+
+    func test_sortShipping_by_price_returns_sorted_list() {
+        // Given
+        let viewModel = WooShippingServiceViewModel(order: Order.fake(),
+                                                    originAddress: ShippingLabelAddress.fake(),
+                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    stores: stores)
+
+        // When
+        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
         viewModel.sortShipping(by: .price)
 
         // Then
@@ -132,9 +209,13 @@ final class WooShippingServiceViewModelTests: XCTestCase {
 
     func test_shortShipping_by_deliveryDays_returns_sorted_list() {
         // Given
-        let viewModel = WooShippingServiceViewModel()
+        let viewModel = WooShippingServiceViewModel(order: Order.fake(),
+                                                    originAddress: ShippingLabelAddress.fake(),
+                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    stores: stores)
 
         // When
+        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
         viewModel.sortShipping(by: .deliveryTime)
 
         // Then
@@ -143,4 +224,87 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertEqual(uspsCards?.first?.title, "USPS - Parcel Select Mail")
     }
 
+}
+
+private extension WooShippingServiceViewModelTests {
+    func sampleLabelRates() -> [ShippingLabelCarriersAndRates] {
+        [ShippingLabelCarriersAndRates(packageID: samplePackageID,
+                                       defaultRates: sampleStandardRates(),
+                                       signatureRequired: sampleSignatureRates(),
+                                       adultSignatureRequired: sampleAdultSignatureRates())]
+    }
+
+    func sampleStandardRates() -> [ShippingLabelCarrierRate] {
+        [ShippingLabelCarrierRate(title: "USPS - Media Mail",
+                                  insurance: "100",
+                                  retailRate: 8,
+                                  rate: 7.53,
+                                  rateID: "rate_a8a29d5f34984722942f466c30ea27ef",
+                                  serviceID: "",
+                                  carrierID: "usps",
+                                  shipmentID: "",
+                                  hasTracking: true,
+                                  isSelected: false,
+                                  isPickupFree: true,
+                                  deliveryDays: 7,
+                                  deliveryDateGuaranteed: false),
+         ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
+                                  insurance: "100",
+                                  retailRate: 40.06,
+                                  rate: 40.06,
+                                  rateID: "rate_a8a29d5f34984722942f466c30ea27eh",
+                                  serviceID: "",
+                                  carrierID: "usps",
+                                  shipmentID: "",
+                                  hasTracking: true,
+                                  isSelected: false,
+                                  isPickupFree: true,
+                                  deliveryDays: 2,
+                                  deliveryDateGuaranteed: false),
+         ShippingLabelCarrierRate(title: "DHL - Next Day",
+                                  insurance: "100",
+                                  retailRate: 15,
+                                  rate: 14.22,
+                                  rateID: "rate_a8a29d5f34984722942f466c30ea27eg",
+                                  serviceID: "",
+                                  carrierID: "dhlexpress",
+                                  shipmentID: "",
+                                  hasTracking: true,
+                                  isSelected: false,
+                                  isPickupFree: true,
+                                  deliveryDays: 1,
+                                  deliveryDateGuaranteed: false)]
+    }
+
+    func sampleSignatureRates() -> [ShippingLabelCarrierRate] {
+        [ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
+                                  insurance: "100",
+                                  retailRate: 42.76,
+                                  rate: 42.76,
+                                  rateID: "rate_a8a29d5f34984722942f466c30ea27ei",
+                                  serviceID: "",
+                                  carrierID: "usps",
+                                  shipmentID: "",
+                                  hasTracking: true,
+                                  isSelected: false,
+                                  isPickupFree: true,
+                                  deliveryDays: 2,
+                                  deliveryDateGuaranteed: false)]
+    }
+
+    func sampleAdultSignatureRates() -> [ShippingLabelCarrierRate] {
+        [ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
+                                  insurance: "100",
+                                  retailRate: 46.96,
+                                  rate: 46.96,
+                                  rateID: "rate_a8a29d5f34984722942f466c30ea27ej",
+                                  serviceID: "",
+                                  carrierID: "usps",
+                                  shipmentID: "",
+                                  hasTracking: true,
+                                  isSelected: false,
+                                  isPickupFree: true,
+                                  deliveryDays: 2,
+                                  deliveryDateGuaranteed: false)]
+    }
 }

@@ -17,6 +17,8 @@
     <string>用于拍摄照片或视频来添加到您的产品中，扫描产品 SKU 的条形码或支持工单。</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>需要位置访问权限才能接受付款。</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Woo 使用麦克风，以便您在为商店的媒体库录制视频时捕捉音频。</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>用于保存相机中的照片以当作产品图像，或者将照片或视频添加到您的产品或支持工单。</string>
     <key>OpenOrdersAction.Title</key>

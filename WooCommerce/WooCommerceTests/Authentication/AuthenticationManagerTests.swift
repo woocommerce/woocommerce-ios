@@ -409,7 +409,8 @@ final class AuthenticationManagerTests: XCTestCase {
 
         // Then
         waitUntil {
-            navigationController.viewControllers.isNotEmpty
+            navigationController.viewControllers.isNotEmpty &&
+            navigationController.topViewController != nil
         }
         let topController = navigationController.topViewController
         XCTAssertTrue(topController is ULAccountMismatchViewController)

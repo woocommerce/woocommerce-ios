@@ -1,16 +1,16 @@
 import Foundation
 import Yosemite
 
-final class MockWooPaymentsDepositService: WooPaymentsDepositServiceProtocol {
-    var onFetchDepositsOverviewThenReturn: [WooPaymentsDepositsOverviewByCurrency] = []
-    var onFetchDepositsOverviewShouldThrow: Error? = nil
-    var spyDidCallFetchDepositsOverview = false
-    func fetchDepositsOverview() async throws -> [WooPaymentsDepositsOverviewByCurrency] {
-        spyDidCallFetchDepositsOverview = true
-        if let error = onFetchDepositsOverviewShouldThrow {
+final class MockWooPaymentsPayoutService: WooPaymentsPayoutServiceProtocol {
+    var onFetchPayoutsOverviewThenReturn: [WooPaymentsPayoutsOverviewByCurrency] = []
+    var onFetchPayoutsOverviewShouldThrow: Error? = nil
+    var spyDidCallFetchPayoutsOverview = false
+    func fetchPayoutsOverview() async throws -> [WooPaymentsPayoutsOverviewByCurrency] {
+        spyDidCallFetchPayoutsOverview = true
+        if let error = onFetchPayoutsOverviewShouldThrow {
             throw error
         } else {
-            return onFetchDepositsOverviewThenReturn
+            return onFetchPayoutsOverviewThenReturn
         }
     }
 }

@@ -88,7 +88,6 @@ final class OrderDetailsViewController: UIViewController {
         registerTableViewHeaderFooters()
         configureEntityListener()
         configureViewModel()
-        updateTopBannerView()
         trackGiftCardsShown()
         trackShippingShown()
     }
@@ -106,11 +105,6 @@ final class OrderDetailsViewController: UIViewController {
                 self?.tableView.refreshControl = self?.refreshControl
             }
         }
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        tableView.updateHeaderHeight()
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -159,9 +153,9 @@ private extension OrderDetailsViewController {
         let editButton = UIBarButtonItem(title: Localization.NavBar.editOrder,
                                          style: .plain,
                                          target: self,
-                                         action: #selector(editOrder))
+                                         action: #selector(editButtonTapped))
         editButton.accessibilityIdentifier = "order-details-edit-button"
-        editButton.isEnabled = viewModel.editButtonIsEnabled
+        editButton.isEnabled = viewModel.editButtonBehaviour != .disabledForSyncing
         navigationItem.rightBarButtonItems = [editButton] + orderNavigationRightBarButtonItems()
 
         navigationItem.largeTitleDisplayMode = .never
@@ -247,8 +241,6 @@ private extension OrderDetailsViewController {
         }
 
         tableView.reloadData()
-
-        updateTopBannerView()
     }
 
     /// Reloads the tableView's sections and data.
@@ -316,65 +308,6 @@ private extension OrderDetailsViewController {
     }
 }
 
-// MARK: - Top Banner
-//
-private extension OrderDetailsViewController {
-    func updateTopBannerView() {
-        let factory = ShippingLabelsTopBannerFactory(shouldShowShippingLabelCreation: viewModel.dataSource.shouldShowShippingLabelCreation,
-                                                     shippingLabels: viewModel.dataSource.shippingLabels)
-        let isExpanded = topBannerView?.isExpanded ?? false
-        factory.createTopBannerIfNeeded(isExpanded: isExpanded,
-                                        expandedStateChangeHandler: { [weak self] in
-                                            self?.tableView.updateHeaderHeight()
-                                        }, onGiveFeedbackButtonPressed: { [weak self] in
-                                            self?.presentShippingLabelsFeedbackSurvey()
-                                        }, onDismissButtonPressed: { [weak self] in
-                                            self?.dismissTopBanner()
-                                        }, onCompletion: { [weak self] topBannerView in
-                                            if let topBannerView = topBannerView {
-                                                self?.showTopBannerView(topBannerView)
-                                            } else {
-                                                self?.hideTopBannerView()
-                                            }
-                                        })
-    }
-
-    func showTopBannerView(_ topBannerView: TopBannerView) {
-        guard tableView.tableHeaderView == nil else {
-            return
-        }
-
-        self.topBannerView = topBannerView
-        // A frame-based container view is needed for table view's `tableHeaderView` and its height is recalculated in `viewDidLayoutSubviews`, so that the
-        // top banner view can be Auto Layout based with dynamic height.
-        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
-        headerContainer.addSubview(topBannerView)
-        headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
-        tableView.tableHeaderView = headerContainer
-        tableView.updateHeaderHeight()
-    }
-
-    func hideTopBannerView() {
-        guard tableView.tableHeaderView != nil else {
-            return
-        }
-
-        topBannerView?.removeFromSuperview()
-        topBannerView = nil
-        tableView.tableHeaderView = nil
-        tableView.updateHeaderHeight()
-    }
-
-    func presentShippingLabelsFeedbackSurvey() {
-        let navigationController = SurveyCoordinatingController(survey: .shippingLabelsRelease3Feedback)
-        present(navigationController, animated: true, completion: nil)
-    }
-
-    func dismissTopBanner() {
-        hideTopBannerView()
-    }
-}
-
 // MARK: - Action Handlers
 //
 private extension OrderDetailsViewController {
@@ -388,9 +321,21 @@ private extension OrderDetailsViewController {
         }
     }
 
+    @objc private func editButtonTapped() {
+        switch viewModel.editButtonBehaviour {
+        case .enabled:
+            editOrder()
+        case .showNoticeForCurrencyConflict:
+            viewModel.showNoticeForEditingWithCurrencyConflict(in: self)
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderEditButtonTappedWhileDisabledForCurrencyConflict())
+        case .disabledForSyncing:
+            return
+        }
+    }
+
     /// Presents the order edit form
     ///
-    @objc private func editOrder() {
+    private func editOrder() {
         let viewModel = EditableOrderViewModel(siteID: viewModel.order.siteID, flow: .editing(initialOrder: viewModel.order))
         let viewController = OrderFormHostingController(viewModel: viewModel)
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
@@ -716,6 +661,8 @@ private extension OrderDetailsViewController {
 
     @objc private func collectPaymentTapped() {
         collectPayment()
+
+        viewModel.markOrderPaymentPending()
 
         // Track tapped event
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.collectPaymentTapped(flow: .orderDetails))

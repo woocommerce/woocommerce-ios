@@ -11,7 +11,11 @@ steps:
   - label: Start Code Freeze
     plugins: [$CI_TOOLKIT]
     command: |
-      .buildkite/commands/configure-environment.sh
+      echo '--- :robot_face: Use bot for Git operations'
+      source use-bot-for-git
+
+      echo '--- :ruby: Setup Ruby Tools'
+      install_gems
 
       echo '--- :closed_lock_with_key: Access Secrets'
       bundle exec fastlane run configure_apply

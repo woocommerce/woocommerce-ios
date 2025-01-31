@@ -16,16 +16,24 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     private var sampleProduct: Product {
         .fake().copy(siteID: sampleSiteID,
                      productID: sampleProductID,
+                     name: "My Woo Product",
                      permalink: "Sample product url",
                      statusKey: (ProductStatus.published.rawValue),
+                     shortDescription: "Short description of My Woo Product",
                      images: [.fake().copy(imageID: 1)])
     }
 
     private let sampleImage = UIImage.gridicon(.calendar, size: .init(width: 600, height: 600))
 
-    private let sampleAISuggestions = [BlazeAISuggestion(siteName: "First suggested tagline", textSnippet: "First suggested description"),
-                                       BlazeAISuggestion(siteName: "Second suggested tagline", textSnippet: "Second suggested description"),
-                                       BlazeAISuggestion(siteName: "Third suggested tagline", textSnippet: "Third suggested description")]
+    private let sampleAISuggestions = [BlazeAISuggestion(siteName: "First suggested tagline",
+                                                         textSnippet: "First suggested description",
+                                                         ctaText: "Shop Now"),
+                                       BlazeAISuggestion(siteName: "Second suggested tagline",
+                                                         textSnippet: "Second suggested description",
+                                                         ctaText: "Buy Now"),
+                                       BlazeAISuggestion(siteName: "Third suggested tagline",
+                                                         textSnippet: "Third suggested description",
+                                                         ctaText: "Order Now")]
 
     /// Mock Storage: InMemory
     private var storageManager: StorageManagerType!
@@ -207,6 +215,39 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_onLoad_does_not_fetch_AI_suggestions_again() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockDownloadImage(sampleImage)
+        var triggeredFetchAISuggestions = false
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            switch action {
+            case let .fetchAISuggestions(_, _, completion):
+                triggeredFetchAISuggestions = true
+                completion(.failure(MockError()))
+            default:
+                break
+            }
+        }
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           onCompletion: {})
+
+        // Preload AI suggestions and reset the flag
+        await viewModel.onLoad()
+        triggeredFetchAISuggestions = false
+
+        // When
+        await viewModel.onLoad()
+
+        // Then
+        XCTAssertFalse(triggeredFetchAISuggestions)
+    }
+
+    @MainActor
     func test_onLoad_downloads_image() async throws {
         // Given
         insertProduct(sampleProduct)
@@ -326,7 +367,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(expectedProductID, sampleProductID)
     }
     @MainActor
-    func test_loadAISuggestions_sets_tagline_and_description_upon_success() async throws {
+    func test_loadAISuggestions_sets_tagline_description_and_ctaText_upon_success() async throws {
         // Given
         insertProduct(sampleProduct)
 
@@ -345,6 +386,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         let firstSuggestion = try XCTUnwrap(sampleAISuggestions.first)
         XCTAssertEqual(viewModel.tagline, firstSuggestion.siteName)
         XCTAssertEqual(viewModel.description, firstSuggestion.textSnippet)
+        XCTAssertEqual(viewModel.ctaText, firstSuggestion.ctaText)
     }
 
     @MainActor
@@ -445,7 +487,8 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Given
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess([BlazeAISuggestion(siteName: "", // Empty tagline
-                                                    textSnippet: "Description")])
+                                                    textSnippet: "Description",
+                                                    ctaText: "")])
         mockDownloadImage(sampleImage)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
@@ -470,7 +513,8 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Given
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess([BlazeAISuggestion(siteName: "Tagline",
-                                                   textSnippet: "")])  // Empty description
+                                                   textSnippet: "", // Empty description
+                                                    ctaText: "")])
         mockDownloadImage(sampleImage)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
@@ -855,6 +899,31 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
         let objective = try XCTUnwrap(eventProperties["objective"] as? String)
         XCTAssertEqual(objective, "sales")
+    }
+
+    @MainActor
+    func test_suggestion_request_failures_is_tracked() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsFailure(MockError())
+        mockDownloadImage(sampleImage)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           analytics: analytics,
+                                                           onCompletion: {})
+        await viewModel.downloadProductImage()
+
+        // When
+        await viewModel.loadAISuggestions()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_suggestions_loading_failed"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(eventProperties["error_code"] as? String, "1")
     }
 }
 

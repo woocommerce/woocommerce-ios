@@ -28,13 +28,6 @@ final class MarkOrderAsReadUseCaseTests: XCTestCase {
         storageManager = MockStorageManager()
         storesManager = MockStoresManager(sessionManager: .makeForTesting())
         network = MockNetwork()
-
-        NotificationStore.resetSharedDerivedStorage()
-    }
-
-    override func tearDown() {
-        NotificationStore.resetSharedDerivedStorage()
-        super.tearDown()
     }
 
     private func setupStoreManagerReceivingNotificationActions(for note: Yosemite.Note, noteStore: NotificationStore) {

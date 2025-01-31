@@ -254,6 +254,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         saveProduct(status: .published)
     }
 
+    @objc func dismissPresentedViewController() {
+        presentedViewController?.dismiss(animated: true, completion: nil)
+    }
+
     func saveProductAsDraft() {
         if viewModel.formType == .add {
             ServiceLocator.analytics.track(.addProductSaveAsDraftTapped, withProperties: ["product_type": product.productType.rawValue])
@@ -457,6 +461,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 eventLogger.logPriceSettingsTapped()
                 editPriceSettings()
             case .customFields:
+                ServiceLocator.analytics.track(.productDetailCustomFieldsTapped)
                 showCustomFields()
             case .reviews:
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
@@ -523,12 +528,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 ServiceLocator.analytics.track(.productDetailViewExternalProductLinkTapped)
                 editExternalLink()
                 break
-            case .sku(_, let isEditable):
+            case .simplifiedInventory(_, let isEditable):
                 guard isEditable else {
                     return
                 }
                 ServiceLocator.analytics.track(.productDetailViewSKUTapped)
-                editSKU()
+                editSimplifiedInventory()
                 break
             case .groupedProducts(_, let isEditable):
                 guard isEditable else {
@@ -945,9 +950,9 @@ private extension ProductFormViewController {
                                                                         case .editShortDescription:
                                                                             ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
                                                                             self?.editShortDescription()
-                                                                        case .editSKU:
+                                                                        case .editSimplifiedInventory:
                                                                             ServiceLocator.analytics.track(.productDetailViewSKUTapped)
-                                                                            self?.editSKU()
+                                                                            self?.editSimplifiedInventory()
                                                                         case .editLinkedProducts:
                                                                             ServiceLocator.analytics.track(.productDetailViewLinkedProductsTapped)
                                                                             self?.editLinkedProducts()
@@ -1041,7 +1046,21 @@ private extension ProductFormViewController {
         guard let url = URL(string: product.permalink) else {
             return
         }
-        WebviewHelper.launch(url, with: self)
+
+        let stores = ServiceLocator.stores
+        guard let site = stores.sessionManager.defaultSite,
+            stores.shouldAuthenticateAdminPage(for: site) else {
+            WebviewHelper.launch(url.absoluteString, with: self)
+            return
+        }
+
+        let viewModel = DefaultAuthenticatedWebViewModel(title: product.name, initialURL: url)
+        let controller = AuthenticatedWebViewController(viewModel: viewModel)
+        let navigationController = UINavigationController(rootViewController: controller)
+        controller.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
+                                                                      target: self,
+                                                                      action: #selector(dismissPresentedViewController))
+        present(navigationController, animated: true)
     }
 
     func displayShareProduct(from sourceView: UIBarButtonItem, analyticSource: WooAnalyticsEvent.ProductForm.ShareProductSource) {
@@ -1717,27 +1736,27 @@ private extension ProductFormViewController {
 // MARK: Action - Edit Product SKU
 //
 private extension ProductFormViewController {
-    func editSKU() {
+    func editSimplifiedInventory() {
         guard let product = product as? EditableProductModel else {
             return
         }
 
-        let viewController = ProductInventorySettingsViewController(product: product, formType: .sku) { [weak self] data in
-            self?.onEditSKUCompletion(sku: data.sku)
+        let viewController = ProductInventorySettingsViewController(product: product, formType: .onlyIdentifiers) { [weak self] data in
+            self?.onEditInventoryCompletion(sku: data.sku, globalUniqueIdentifier: data.globalUniqueIdentifier)
         }
         show(viewController, sender: self)
     }
 
-    func onEditSKUCompletion(sku: String?) {
+    func onEditInventoryCompletion(sku: String?, globalUniqueIdentifier: String?) {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        let hasChangedData = sku != product.sku
+        let hasChangedData = sku != product.sku || globalUniqueIdentifier != product.globalUniqueID
         ServiceLocator.analytics.track(.productSKUDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
         guard hasChangedData else {
             return
         }
-        viewModel.updateSKU(sku)
+        viewModel.updateIdentifiers(sku: sku, globalUniqueID: globalUniqueIdentifier)
     }
 }
 

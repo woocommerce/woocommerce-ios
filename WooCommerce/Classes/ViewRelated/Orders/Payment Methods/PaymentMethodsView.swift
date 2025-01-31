@@ -44,6 +44,16 @@ struct PaymentMethodsView: View {
 
                 VStack(alignment: .leading, spacing: 8) {
                     VStack(alignment: .leading, spacing: Layout.noSpacing) {
+                        if viewModel.showTapToPayRow {
+                            MethodRow(icon: .tapToPayOnIPhoneIcon,
+                                      title: Localization.tapToPay,
+                                      accessibilityID: Accessibility.tapToPayMethod) {
+                                viewModel.collectPayment(using: .localMobile, on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
+                            }
+
+                            Divider()
+                        }
+
                         MethodRow(icon: .priceImage, title: Localization.cash, accessibilityID: Accessibility.cashMethod) {
                             showingCashAlert = true
                             viewModel.trackCollectByCash()
@@ -54,16 +64,6 @@ struct PaymentMethodsView: View {
 
                             MethodRow(icon: .creditCardImage, title: Localization.card, accessibilityID: Accessibility.cardMethod) {
                                 viewModel.collectPayment(using: .bluetoothScan, on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
-                            }
-                        }
-
-                        if viewModel.showTapToPayRow {
-                            Divider()
-
-                            MethodRow(icon: .tapToPayOnIPhoneIcon,
-                                      title: Localization.tapToPay,
-                                      accessibilityID: Accessibility.tapToPayMethod) {
-                                viewModel.collectPayment(using: .localMobile, on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
                             }
                         }
 
@@ -243,21 +243,21 @@ extension PaymentMethodsView {
 struct PaymentMethodsView_Preview: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            PaymentMethodsView(viewModel: .init(total: "15.99", formattedTotal: "$15.99", flow: .orderPayment))
+            PaymentMethodsView(viewModel: .init(total: "15.99", formattedTotal: "$15.99", flow: .orderPayment, channel: .storeManagement))
                 .navigationBarTitleDisplayMode(.inline)
         }
         .environment(\.colorScheme, .light)
         .previewDisplayName("Light")
 
         NavigationView {
-            PaymentMethodsView(viewModel: .init(total: "15.99", formattedTotal: "$15.99", flow: .orderPayment))
+            PaymentMethodsView(viewModel: .init(total: "15.99", formattedTotal: "$15.99", flow: .orderPayment, channel: .storeManagement))
                 .navigationBarTitleDisplayMode(.inline)
         }
         .environment(\.colorScheme, .dark)
         .previewDisplayName("Dark")
 
         NavigationView {
-            PaymentMethodsView(viewModel: .init(total: "15.99", formattedTotal: "$15.99", flow: .orderPayment))
+            PaymentMethodsView(viewModel: .init(total: "15.99", formattedTotal: "$15.99", flow: .orderPayment, channel: .storeManagement))
                 .navigationBarTitleDisplayMode(.inline)
         }
         .environment(\.sizeCategory, .accessibilityExtraExtraLarge)

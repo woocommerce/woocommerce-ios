@@ -7,10 +7,6 @@ import Storage
 public final class CouponStore: Store {
     private let remote: CouponsRemoteProtocol
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
          network: Network,
@@ -340,20 +336,15 @@ private extension CouponStore {
                                          siteID: Int64,
                                          shouldClearExistingCoupons: Bool = false,
                                          onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            guard let self = self else { return }
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
             if shouldClearExistingCoupons {
-                derivedStorage.deleteCoupons(siteID: siteID)
+                storage.deleteCoupons(siteID: siteID)
             }
-            self.upsertStoredCoupons(readOnlyCoupons: readOnlyCoupons,
-                                      in: derivedStorage,
-                                      siteID: siteID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+            upsertStoredCoupons(readOnlyCoupons: readOnlyCoupons,
+                                in: storage,
+                                siteID: siteID)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates or Inserts the specified Coupon entities
@@ -361,10 +352,10 @@ private extension CouponStore {
     func upsertStoredCoupons(readOnlyCoupons: [Networking.Coupon],
                              in storage: StorageType,
                              siteID: Int64) {
+        let storedCoupons = storage.loadCoupons(siteID: siteID, with: readOnlyCoupons.map { $0.couponID })
         for coupon in readOnlyCoupons {
             let storageCoupon: Storage.Coupon = {
-                if let storedCoupon = storage.loadCoupon(siteID: siteID,
-                                                         couponID: coupon.couponID) {
+                if let storedCoupon = storedCoupons.first(where: { $0.couponID == coupon.couponID }) {
                     return storedCoupon
                 }
                 return storage.insertNewObject(ofType: Storage.Coupon.self)
@@ -378,28 +369,19 @@ private extension CouponStore {
     /// Triggers `onCompletion` on the main thread when done.
     ///
     func deleteStoredCoupon(siteID: Int64, couponID: Int64, onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
-            derivedStorage.deleteCoupon(siteID: siteID, couponID: couponID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ storage in
+            storage.deleteCoupon(siteID: siteID, couponID: couponID)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Upserts the Coupons, and associates them to the SearchResults Entity (in Background)
     ///
     func upsertSearchResultsInBackground(siteID: Int64, keyword: String, readOnlyCoupons: [Networking.Coupon], onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            self?.upsertStoredCoupons(readOnlyCoupons: readOnlyCoupons, in: derivedStorage, siteID: siteID)
-            self?.upsertStoredResults(siteID: siteID, keyword: keyword, readOnlyCoupons: readOnlyCoupons, in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
+            upsertStoredCoupons(readOnlyCoupons: readOnlyCoupons, in: storage, siteID: siteID)
+            upsertStoredResults(siteID: siteID, keyword: keyword, readOnlyCoupons: readOnlyCoupons, in: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Upserts the Coupons, and associates them to the Search Results Entity (in the specified Storage)
@@ -408,8 +390,9 @@ private extension CouponStore {
         let searchResult = storage.loadCouponSearchResult(keyword: keyword) ?? storage.insertNewObject(ofType: Storage.CouponSearchResult.self)
         searchResult.keyword = keyword
 
+        let storedCoupons = storage.loadCoupons(siteID: siteID, with: readOnlyCoupons.map { $0.couponID })
         for coupon in readOnlyCoupons {
-            guard let storedCoupon = storage.loadCoupon(siteID: siteID, couponID: coupon.couponID) else {
+            guard let storedCoupon = storedCoupons.first(where: { $0.couponID == coupon.couponID }) else {
                 continue
             }
 

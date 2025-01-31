@@ -5,14 +5,6 @@ public enum FeedbackType: String, Codable {
     ///
     case general
 
-    /// identifier for the shipping labels m3 feedback survey
-    ///
-    case shippingLabelsRelease3
-
-    /// Identifier for the coupon management feedback survey
-    ///
-    case couponManagement
-
     /// Identifier for the order form shipping lines feedback survey
     ///
     case orderFormShippingLines

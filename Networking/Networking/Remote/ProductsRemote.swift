@@ -37,6 +37,11 @@ public protocol ProductsRemoteProtocol {
                              pageNumber: Int,
                              pageSize: Int,
                              completion: @escaping (Result<[Product], Error>) -> Void)
+    func searchProductsByGlobalUniqueIdentifier(for siteID: Int64,
+                             keyword: String,
+                             pageNumber: Int,
+                             pageSize: Int,
+                             completion: @escaping (Result<[Product], Error>) -> Void)
     func searchSku(for siteID: Int64,
                    sku: String,
                    completion: @escaping (Result<String, Error>) -> Void)
@@ -192,20 +197,26 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Retrieves simple products for the Point of Sale
+    /// Retrieves products for the Point of Sale. Simple and variable products are loaded for WC version 9.6+, otherwise only simple products are loaded.
     ///
     /// - Parameters:
     /// - siteID: Site for which we'll fetch remote products.
+    /// - productTypes: A list of product types to be included in the results.
     /// - pageNumber: Number of page that should be retrieved.
     ///
-    public func loadSimpleProductsForPointOfSale(for siteID: Int64, pageNumber: Int = 1) async throws -> [Product] {
+    public func loadProductsForPointOfSale(for siteID: Int64,
+                                           productTypes: [ProductType] = [.simple],
+                                           pageNumber: Int = 1) async throws -> PagedItems<Product> {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: POSConstants.productsPerPage,
+            // When both productType and productTypes are provided, the productType is ignored in WC versions 9.6+.
             ParameterKey.productType: POSConstants.productType,
+            ParameterKey.productTypes: productTypes.map { $0.rawValue }.joined(separator: ","),
             ParameterKey.orderBy: OrderKey.name.value,
             ParameterKey.order: Order.ascending.value,
             ParameterKey.productStatus: POSConstants.productStatus,
+            ParameterKey.downloadable: String(false),
         ]
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,
@@ -214,7 +225,16 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
         let mapper = ProductListMapper(siteID: siteID)
-        return try await enqueue(request, mapper: mapper)
+
+        let (products, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+
+        // Extracts the total number of pages from the response headers.
+        // Response header names are case insensitive.
+        let totalPages = responseHeaders?.first(where: { $0.key.lowercased() == Remote.PaginationHeaderKey.totalPagesCount.lowercased() })
+            .flatMap { Int($0.value) }
+        let hasMorePages = totalPages.map { pageNumber < $0 } ?? true
+
+        return .init(items: products, hasMorePages: hasMorePages)
     }
 
     /// Retrieves a specific list of `Product`s by `productID`.
@@ -331,6 +351,23 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let parameters = [
             ParameterKey.sku: keyword,
             ParameterKey.partialSKUSearch: keyword,
+            ParameterKey.page: String(pageNumber),
+            ParameterKey.perPage: String(pageSize),
+            ParameterKey.contextKey: Default.context
+        ]
+        let path = Path.products
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
+        let mapper = ProductListMapper(siteID: siteID)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    public func searchProductsByGlobalUniqueIdentifier(for siteID: Int64,
+                             keyword: String,
+                             pageNumber: Int,
+                             pageSize: Int,
+                             completion: @escaping (Result<[Product], Error>) -> Void) {
+        let parameters = [
+            ParameterKey.globalUniqueID: keyword,
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.contextKey: Default.context
@@ -586,8 +623,10 @@ public extension ProductsRemote {
         static let order: String      = "order"
         static let sku: String        = "sku"
         static let partialSKUSearch: String = "search_sku"
+        static let globalUniqueID: String = "global_unique_id"
         static let productStatus: String = "status"
         static let productType: String = "type"
+        static let productTypes: String = "include_types"
         static let stockStatus: String = "stock_status"
         static let category: String   = "category"
         static let fields: String     = "_fields"
@@ -599,6 +638,7 @@ public extension ProductsRemote {
         static let before = "before"
         static let after = "after"
         static let extendedInfo = "extended_info"
+        static let downloadable = "downloadable"
     }
 
     private enum ParameterValues {
@@ -610,7 +650,7 @@ public extension ProductsRemote {
 
 private extension ProductsRemote {
     enum POSConstants {
-        static let productsPerPage = "100"
+        static let productsPerPage = "25"
         static let productType = "simple"
         static let productStatus = "publish"
     }

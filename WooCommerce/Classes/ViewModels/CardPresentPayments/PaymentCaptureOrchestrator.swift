@@ -17,6 +17,7 @@ protocol PaymentCaptureOrchestrating {
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [String],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
+                        channel: PaymentChannel,
                         onPreparingReader: @escaping () -> Void,
                         onWaitingForInput: @escaping (CardReaderInput) -> Void,
                         onProcessingMessage: @escaping () -> Void,
@@ -70,6 +71,7 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [String],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
+                        channel: PaymentChannel,
                         onPreparingReader: @escaping () -> Void,
                         onWaitingForInput: @escaping (CardReaderInput) -> Void,
                         onProcessingMessage: @escaping () -> Void,
@@ -88,7 +90,8 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                                            country: paymentGatewayAccount.country,
                                            statementDescriptor: paymentGatewayAccount.statementDescriptor,
                                            paymentMethodTypes: paymentMethodTypes,
-                                           stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier)
+                                           stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier,
+                                           channel: channel)
 
         /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
         /// reader begins to collect payment.
@@ -279,14 +282,16 @@ private extension PaymentCaptureOrchestrator {
                            country: String,
                            statementDescriptor: String?,
                            paymentMethodTypes: [String],
-                           stripeSmallestCurrencyUnitMultiplier: Decimal) -> PaymentParameters {
+                           stripeSmallestCurrencyUnitMultiplier: Decimal,
+                           channel: PaymentChannel) -> PaymentParameters {
         let metadata = PaymentIntent.initMetadata(
             store: stores.sessionManager.defaultSite?.name,
             customerName: buildCustomerNameFromBillingAddress(order.billingAddress),
             customerEmail: order.billingAddress?.email,
             siteURL: stores.sessionManager.defaultSite?.url,
             orderID: order.orderID,
-            paymentType: PaymentIntent.PaymentTypes.single
+            paymentType: PaymentIntent.PaymentTypes.single,
+            channel: channel
         )
 
         return PaymentParameters(amount: orderTotal as Decimal,

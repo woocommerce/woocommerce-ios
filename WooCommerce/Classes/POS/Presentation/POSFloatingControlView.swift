@@ -2,18 +2,22 @@ import SwiftUI
 
 struct POSFloatingControlView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
-    @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
+    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Binding private var showExitPOSModal: Bool
+    @Binding private var showSupport: Bool
 
-    init(viewModel: PointOfSaleDashboardViewModel) {
-        self.viewModel = viewModel
+    init(showExitPOSModal: Binding<Bool>, showSupport: Binding<Bool>) {
+        self._showExitPOSModal = showExitPOSModal
+        self._showSupport = showSupport
     }
 
     var body: some View {
         HStack {
             Menu {
                 Button {
-                    viewModel.showExitPOSModal = true
+                    showExitPOSModal = true
                 } label: {
                     Label(
                         title: { Text(Localization.exitPointOfSale) },
@@ -21,7 +25,7 @@ struct POSFloatingControlView: View {
                     )
                 }
                 Button {
-                    viewModel.showSupport = true
+                    showSupport = true
                 } label: {
                     Label(
                         title: { Text(Localization.getSupport) },
@@ -40,13 +44,14 @@ struct POSFloatingControlView: View {
             }
             .background(backgroundColor)
             .cornerRadius(Constants.cornerRadius)
-            .disabled(viewModel.isExitPOSDisabled)
+            .disabled(posModel.paymentState == .card(.processingPayment))
 
-            CardReaderConnectionStatusView(connectionViewModel: viewModel.cardReaderConnectionViewModel)
+            CardReaderConnectionStatusView()
                 .foregroundStyle(fontColor)
                 .background(backgroundColor)
                 .cornerRadius(Constants.cornerRadius)
-                .disabled(viewModel.isReaderDisconnectionDisabled)
+                .disabled(posModel.paymentState.shownFullScreen)
+                .disabled(horizontalSizeClass != .regular)
         }
         .frame(height: Constants.size)
         .background(Color.clear)

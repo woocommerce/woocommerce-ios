@@ -82,6 +82,7 @@ enum WooAnalyticsStat: String {
     case loginInvalidEmailScreenViewed = "login_invalid_email_screen_viewed"
     case whatIsWPComOnInvalidEmailScreenTapped = "what_is_wordpress_com_on_invalid_email_screen"
     case loginInsufficientRole = "login_insufficient_role"
+    case blackFlaggedWebsiteDetected = "black_flagged_website_detected"
 
     // MARK: REST API login
     //
@@ -235,6 +236,7 @@ enum WooAnalyticsStat: String {
     case blazeCampaignCreationSuccess = "blaze_campaign_creation_success"
     case blazeCampaignCreationFailed = "blaze_campaign_creation_failed"
     case blazeCampaignCreationFeedback = "blaze_campaign_creation_feedback"
+    case blazeSuggestionsLoadingFailed = "blaze_suggestions_loading_failed"
 
     // MARK: Store Onboarding Events
     //
@@ -257,6 +259,11 @@ enum WooAnalyticsStat: String {
     case sitePickerNewToWooTapped = "site_picker_new_to_woo_tapped"
     case sitePickerAddStoreTapped = "site_picker_add_a_store_tapped"
     case sitePickerConnectExistingStoreTapped = "site_picker_connect_existing_store_tapped"
+    case sitePickerEditButtonShown = "site_picker_edit_button_shown"
+    case sitePickerEditButtonTapped = "site_picker_edit_button_tapped"
+    case sitePickerListSaveButtonTapped = "site_picker_list_save_button_tapped"
+    case sitePickerListSavingSuccess = "site_picker_list_saving_success"
+    case sitePickerListSavingFailure = "site_picker_list_saving_failure"
 
     // MARK: Site creation
     //
@@ -345,15 +352,14 @@ enum WooAnalyticsStat: String {
     case cardReaderSelectTypeShown = "card_present_select_reader_type_shown"
     case cardReaderSelectTypeBuiltInTapped = "card_present_select_reader_type_built_in_tapped"
     case cardReaderSelectTypeBluetoothTapped = "card_present_select_reader_type_bluetooth_tapped"
-    case cardReaderDiscoveryTapped = "card_reader_discovery_tapped"
     case cardReaderDiscoveryFailed = "card_reader_discovery_failed"
-    case cardReaderDiscoveredReader = "card_reader_discovery_reader_discovered"
-    case cardReaderConnectionTapped = "card_reader_connection_tapped"
     case cardReaderConnectionFailed = "card_reader_connection_failed"
     case cardReaderConnectionSuccess = "card_reader_connection_success"
     case cardReaderDisconnectTapped = "card_reader_disconnect_tapped"
     case manageCardReadersBuiltInReaderAutoDisconnect = "manage_card_readers_automatic_disconnect_built_in_reader"
     case cardReaderAutomaticDisconnect = "card_reader_automatic_disconnect"
+    case cardReaderLocationPermissionPreAlertShown = "card_reader_location_permission_pre_alert_shown"
+    case cardReaderLocationPermissionRequiredShown = "card_reader_location_permission_required_shown"
 
     // MARK: Card Reader Software Update Events
     //
@@ -383,6 +389,13 @@ enum WooAnalyticsStat: String {
     case aboutTapToPayOrderCardReaderTapped = "about_tap_to_pay_order_card_reader_tapped"
     case tapToPayAutoRefundSuccess = "card_present_tap_to_pay_test_payment_refund_success"
     case tapToPayAutoRefundFailed = "card_present_tap_to_pay_test_payment_refund_failed"
+    case tapToPayAwarenessShown = "tap_to_pay_awareness_shown"
+    case tapToPayTermsOfServiceAccepted = "tap_to_pay_terms_of_service_accepted"
+
+    // MARK: Tap to Pay Education
+    case tapToPayEducationShown = "tap_to_pay_education_shown"
+    case tapToPayEducationDone = "tap_to_pay_education_done"
+    case tapToPayEducationSkipped = "tap_to_pay_education_skipped"
 
     // MARK: Cash on Delivery Enable events
     case enableCashOnDeliverySuccess = "enable_cash_on_delivery_success"
@@ -474,6 +487,7 @@ enum WooAnalyticsStat: String {
     case orderContactAction = "order_contact_action"
     case orderCustomerAdd = "order_customer_add"
     case orderEditButtonTapped = "order_edit_button_tapped"
+    case orderEditButtonTappedWhileDisabledForCurrencyConflict = "order_edit_button_tapped_while_disabled_for_currency_conflict"
     case ordersListFilter = "orders_list_filter"
     case ordersListSearch = "orders_list_search"
     case ordersListLoaded = "orders_list_loaded"
@@ -538,6 +552,13 @@ enum WooAnalyticsStat: String {
     //
     case orderListViewFilterOptionsTapped = "order_list_view_filter_options_tapped"
 
+    // MARK: Filter History
+    //
+    case filterHistoryButtonTapped = "filter_history_button_tapped"
+    case filterHistoryPastFilterApplied = "filter_history_past_filter_applied"
+    case filterHistoryPastFilterRemoved = "filter_history_past_filter_removed"
+    case filterHistoryCleared = "filter_history_cleared"
+
     // MARK: Barcode Scanning events
     //
     case orderCreationProductBarcodeScanningTapped = "order_creation_product_barcode_scanning_tapped"
@@ -545,6 +566,7 @@ enum WooAnalyticsStat: String {
     case barcodeScanningSuccess = "barcode_scanning_success"
     case barcodeScanningFailure = "barcode_scanning_failure"
     case orderProductSearchViaSKUSuccess = "product_search_via_sku_success"
+    case orderProductSearchViaGlobalUniqueIdentifierSuccess = "product_search_via_global_unique_identifier_success"
     case orderProductSearchViaSKUFailure = "product_search_via_sku_failure"
 
     // MARK: Tax Rate selector
@@ -753,6 +775,7 @@ enum WooAnalyticsStat: String {
     case productInventorySettingsSKUScanned = "product_inventory_settings_sku_scanned"
     case productInventorySettingsGlobalUniqueIDScannerButtonTapped = "product_inventory_settings_global_unique_id_scanner_button_tapped"
     case productInventorySettingsGlobalUniqueIDScanned = "product_inventory_settings_global_unique_id_scanned"
+    case productInventorySettingsGlobalUniqueIDFieldEdited = "product_inventory_settings_global_unique_identifier_field_edited"
     case productDetailPreviewTapped = "product_detail_preview_tapped"
     case productDetailPreviewFailed = "product_detail_preview_failed"
     case productDetailViewBundledProductsTapped = "product_detail_view_bundled_products_tapped"
@@ -1128,11 +1151,11 @@ enum WooAnalyticsStat: String {
     case inPersonPaymentsLearnMoreTapped = "in_person_payments_learn_more_tapped"
     case setUpTryOutTapToPayOnIPhoneTapped = "payments_hub_tap_to_pay_tapped"
     case aboutTapToPayOnIPhoneTapped = "payments_hub_tap_to_pay_about_tapped"
-    case paymentsMenuDepositSummaryShown = "payments_hub_deposit_summary_shown"
-    case paymentsMenuDepositSummaryError = "payments_hub_deposit_summary_error"
-    case paymentsMenuDepositSummaryExpanded = "payments_hub_deposit_summary_expanded"
-    case paymentsMenuDepositSummaryLearnMoreTapped = "payments_hub_deposit_summary_learn_more_clicked"
-    case paymentsMenuDepositSummaryCurrencySelected = "payments_hub_deposit_summary_currency_selected"
+    case paymentsMenuPayoutSummaryShown = "payments_hub_deposit_summary_shown"
+    case paymentsMenuPayoutSummaryError = "payments_hub_deposit_summary_error"
+    case paymentsMenuPayoutSummaryExpanded = "payments_hub_deposit_summary_expanded"
+    case paymentsMenuPayoutSummaryLearnMoreTapped = "payments_hub_deposit_summary_learn_more_clicked"
+    case paymentsMenuPayoutSummaryCurrencySelected = "payments_hub_deposit_summary_currency_selected"
 
     // MARK: Payments Menu
     case pluginsNotSyncedYet = "plugins_not_synced_yet"
@@ -1245,7 +1268,26 @@ enum WooAnalyticsStat: String {
     case backgroundUpdatesDisabled = "background_updates_disabled"
 
     // MARK: Point of Sale events
-    case pointOfSaleAddItemToCart = "pos_item_added_to_cart"
+    case pointOfSaleAddItemToCart = "item_added_to_cart"
+    case pointOfSalePaymentsOnboardingShown = "payments_onboarding_shown"
+    case pointOfSalePaymentsOnboardingDismissed = "payments_onboarding_dismissed"
+
+    // MARK: Custom Fields events
+    case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"
+
+    // Custom Fields List
+    case customFieldsListLoaded = "custom_fields_list_loaded"
+    case customFieldTapped = "custom_field_tapped"
+    case addCustomFieldTapped = "add_custom_field_tapped"
+    case saveCustomFieldTapped = "save_custom_field_tapped"
+    case customFieldsSavedSuccessfully = "custom_fields_saved_successfully"
+    case customFieldsSavingFailed = "custom_fields_saving failed"
+
+    // Custom Field Editor
+    case customFieldEditorLoaded = "custom_field_editor_loaded"
+    case customFieldEditorPickerTapped = "custom_field_editor_picker_tapped"
+    case customFieldEditorDeleteTapped = "custom_field_editor_delete_tapped"
+    case customFieldEditorDoneTapped = "custom_field_editor_done_tapped"
 }
 
 extension WooAnalyticsStat {

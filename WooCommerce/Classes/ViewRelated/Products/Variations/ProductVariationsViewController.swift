@@ -807,7 +807,7 @@ private extension ProductVariationsViewController {
     enum Localization {
         static let emptyStateTitle = NSLocalizedString("Create your first variation",
                                                        comment: "Title on the variations list screen when there are no variations")
-        static let emptyStateSubtitle = NSLocalizedString("To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first",
+        static let emptyStateSubtitle = NSLocalizedString("To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first.",
                                                           comment: "Subtitle on the variations list screen when there are no variations and attributes")
         static let addAttributesAction = NSLocalizedString("Add Attributes",
                                                            comment: "Title on empty state button when the product has no attributes and variations")

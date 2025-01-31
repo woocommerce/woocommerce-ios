@@ -1,10 +1,16 @@
 import SwiftUI
 
 struct POSHeaderTitleView: View {
-    var foregroundColor: Color = Color.posPrimaryText
+    private let title: String
+    private let foregroundColor: Color
+
+    init(title: String, foregroundColor: Color = .posPrimaryText) {
+        self.title = title
+        self.foregroundColor = foregroundColor
+    }
 
     var body: some View {
-        Text(Localization.productSelectorTitle)
+        Text(title)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(Constants.padding)
             .font(.posTitleEmphasized)
@@ -14,14 +20,6 @@ struct POSHeaderTitleView: View {
 }
 
 private extension POSHeaderTitleView {
-    enum Localization {
-        static let productSelectorTitle = NSLocalizedString(
-            "pos.headerTitleView.productSelectorTitle",
-            value: "Products",
-            comment: "Title at the top of the Point of Sale product selector screen."
-        )
-    }
-
     enum Constants {
         static let padding: EdgeInsets = .init(top: POSHeaderLayoutConstants.sectionVerticalPadding,
                                                leading: POSHeaderLayoutConstants.sectionHorizontalPadding,
@@ -31,5 +29,5 @@ private extension POSHeaderTitleView {
 }
 
 #Preview {
-    POSHeaderTitleView()
+    POSHeaderTitleView(title: "Products")
 }

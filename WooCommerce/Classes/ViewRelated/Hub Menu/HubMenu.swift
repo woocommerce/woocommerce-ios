@@ -31,15 +31,32 @@ struct HubMenu: View {
                 .onAppear {
                     viewModel.setupMenuElements()
                 }
+                .fullScreenCover(isPresented: $viewModel.showsPOS) {
+                    if let cardPresentPaymentService = viewModel.cardPresentPaymentService,
+                       let receiptService = POSReceiptService(siteID: viewModel.siteID,
+                                                              credentials: viewModel.credentials),
+                       let orderService = POSOrderService(siteID: viewModel.siteID,
+                                                          credentials: viewModel.credentials) {
+                        PointOfSaleEntryPointView(
+                            itemsController: PointOfSaleItemsController(itemProvider: viewModel.posItemProvider),
+                            onPointOfSaleModeActiveStateChange: { isEnabled in
+                                viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
+                            },
+                            cardPresentPaymentService: cardPresentPaymentService,
+                            orderController: PointOfSaleOrderController(orderService: orderService,
+                                                                        receiptService: receiptService))
+                    } else {
+                        // TODO: When we have a singleton for the card payment service, this should not be required.
+                        Text("Error creating card payment service")
+                    }
+                }
         }
     }
 
     /// Handle navigation when tapping a list menu row.
     ///
     private func handleTap(menu: HubMenuItem) {
-        ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [
-            Constants.trackingOptionKey: menu.trackingOption
-        ])
+        viewModel.trackMenuItemTapEvent(menu: menu)
 
         switch menu.id {
         case HubMenuViewModel.GoogleAds.id:
@@ -48,6 +65,8 @@ struct HubMenu: View {
             ServiceLocator.analytics.track(.hubMenuSettingsTapped)
         case HubMenuViewModel.Blaze.id:
             ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
+        case HubMenuViewModel.PointOfSaleEntryPoint.id:
+            viewModel.showsPOS = true
         default:
             break
         }
@@ -156,23 +175,6 @@ private extension HubMenu {
                 SubscriptionsView(viewModel: .init())
             case .customers:
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
-            case .pointOfSales:
-                if let cardPresentPaymentService = viewModel.cardPresentPaymentService,
-                   let orderService = POSOrderService(siteID: viewModel.siteID,
-                                                      credentials: viewModel.credentials) {
-                    PointOfSaleEntryPointView(
-                        itemProvider: viewModel.posItemProvider,
-                        onPointOfSaleModeActiveStateChange: { isEnabled in
-                            viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
-                        },
-                        cardPresentPaymentService: cardPresentPaymentService,
-                        orderService: orderService,
-                        currencyFormatter: .init(currencySettings: ServiceLocator.currencySettings),
-                        analytics: ServiceLocator.analytics)
-                } else {
-                    // TODO: When we have a singleton for the card payment service, this should not be required.
-                    Text("Error creating card payment service")
-                }
             case .reviewDetails(let parcel):
                 reviewDetailView(parcel: parcel)
             case .blazeCampaignDetails(let campaignID):
@@ -376,7 +378,6 @@ private extension HubMenu {
         static let avatarSize: CGFloat = 40
         static let chevronSize: CGFloat = 20
         static let iconSize: CGFloat = 20
-        static let trackingOptionKey = "option"
         static let dotBadgePadding = EdgeInsets(top: 6, leading: 0, bottom: 0, trailing: 2)
         static let dotBadgeSize: CGFloat = 6
 

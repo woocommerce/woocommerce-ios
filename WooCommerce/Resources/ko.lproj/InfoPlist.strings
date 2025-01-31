@@ -17,6 +17,8 @@
     <string>사진 또는 비디오를 촬영하여 상품, 상품 SKU 스캔 바코드 또는 지원 티켓에 추가하는 방법입니다.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>결제를 수락하려면 위치 접근 권한이 필요합니다.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Woo에서 스토어의 미디어 라이브러리에 사용할 비디오를 녹화할 때 마이크를 사용하여 오디오를 캡처할 수 있습니다.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>상품 이미지의 카메라 사진을 저장하거나 사진 또는 비디오를 상품 또는 지원 티켓에 추가하는 방법입니다.</string>
     <key>OpenOrdersAction.Title</key>

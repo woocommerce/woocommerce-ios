@@ -7,12 +7,6 @@ import Storage
 public class OrderNoteStore: Store {
     private let remote: OrdersRemote
 
-    /// Shared private StorageType for use during then entire OrderNotes sync process
-    ///
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = OrdersRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -85,42 +79,35 @@ extension OrderNoteStore {
     /// Updates (OR Inserts) the specified ReadOnly OrderNote Entity into the Storage Layer.
     ///
     func upsertStoredOrderNoteInBackground(readOnlyOrderNote: Networking.OrderNote, orderID: Int64, siteID: Int64, onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
-            self.saveNote(derivedStorage, readOnlyOrderNote, orderID, siteID: siteID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ [weak self] storage in
+            guard let storageOrder = storage.loadOrder(siteID: siteID, orderID: orderID) else {
+                DDLogWarn("⚠️ Could not persist the OrderNote with ID \(readOnlyOrderNote.noteID) — unable to retrieve stored order with ID \(orderID).")
+                return
+            }
+            self?.saveNote(storage, readOnlyOrderNote, storageOrder, siteID: siteID)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly OrderNote Entities into the Storage Layer.
     ///
     func upsertStoredOrderNotesInBackground(readOnlyOrderNotes: [Networking.OrderNote], orderID: Int64, siteID: Int64, onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
-            for readOnlyOrderNote in readOnlyOrderNotes {
-                self.saveNote(derivedStorage, readOnlyOrderNote, orderID, siteID: siteID)
+        storageManager.performAndSave({ [weak self] storage in
+            guard let storageOrder = storage.loadOrder(siteID: siteID, orderID: orderID) else {
+                DDLogWarn("⚠️ Could not persist the OrderNotes — unable to retrieve stored order with ID \(orderID).")
+                return
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+            for readOnlyOrderNote in readOnlyOrderNotes {
+                self?.saveNote(storage, readOnlyOrderNote, storageOrder, siteID: siteID)
+            }
+        }, completion: onCompletion, on: .main)
     }
 
     /// Using the provided StorageType, update or insert a Storage.OrderNote using the provided ReadOnly
     /// OrderNote. This func does *not* persist any unsaved changes to storage.
     ///
-    private func saveNote(_ storage: StorageType, _ readOnlyOrderNote: OrderNote, _ orderID: Int64, siteID: Int64) {
-        if let existingStorageNote = storage.loadOrderNote(noteID: readOnlyOrderNote.noteID) {
+    private func saveNote(_ storage: StorageType, _ readOnlyOrderNote: OrderNote, _ storageOrder: StorageOrder, siteID: Int64) {
+        if let existingStorageNote = storageOrder.notes?.first(where: { $0.noteID == readOnlyOrderNote.noteID }) {
             existingStorageNote.update(with: readOnlyOrderNote)
-            return
-        }
-
-        guard let storageOrder = storage.loadOrder(siteID: siteID, orderID: orderID) else {
-            DDLogWarn("⚠️ Could not persist the OrderNote with ID \(readOnlyOrderNote.noteID) — unable to retrieve stored order with ID \(orderID).")
             return
         }
 

@@ -34,10 +34,13 @@ struct OrderDetailView: View {
         .navigationTitle {
             Text(order.number)
                 .font(.body)
-                .foregroundStyle(Colors.wooPurple20)
+                .foregroundStyle(Color.withColorStudio(name: .wooCommercePurple, shade: .shade20))
         }
         .background(
-            LinearGradient(gradient: Gradient(colors: [Colors.wooPurpleBackground, .black]), startPoint: .top, endPoint: .bottom)
+            LinearGradient(gradient: Gradient(colors: [Color.withColorStudio(name: .wooCommercePurple, shade: .shade70),
+                                                       .black]),
+                           startPoint: .top,
+                           endPoint: .bottom)
         )
         .compatibleVerticalStyle()
         .onAppear() {
@@ -74,7 +77,7 @@ struct OrderDetailView: View {
 
                     Text(order.status)
                         .font(.footnote)
-                        .foregroundStyle(Colors.gray5)
+                        .foregroundStyle(Color.withColorStudio(name: .gray, shade: .shade5))
                 }
                 .padding(.bottom, Layout.mainSectionsPadding)
 
@@ -121,7 +124,7 @@ struct OrderDetailView: View {
                 // Item count
                 Text(item.count.formatted(.number))
                     .font(.caption2)
-                    .foregroundStyle(Colors.wooPurple20)
+                    .foregroundStyle(Color.withColorStudio(name: .wooCommercePurple, shade: .shade20))
                     .padding(Layout.itemCountPadding)
                     .background(Circle().fill(Colors.whiteTransparent))
                     .padding(.top, -5) // Offset the number a bit so it looks aligned to the other content
@@ -224,9 +227,6 @@ private extension OrderDetailView {
     }
 
     enum Colors {
-        static let wooPurpleBackground = Color(red: 79/255.0, green: 54/255.0, blue: 125/255.0)
-        static let gray5 = Color(red: 220/255.0, green: 220/255.0, blue: 222/255.0)
-        static let wooPurple20 = Color(red: 190/255.0, green: 160/255.0, blue: 242/255.0)
         static let whiteTransparent = Color(white: 1.0, opacity: 0.12)
     }
 }

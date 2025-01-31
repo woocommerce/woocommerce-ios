@@ -77,14 +77,17 @@ final class OrderDetailsViewControllerTests: XCTestCase {
     }
 
     @MainActor
-    func test_edit_order_button_is_visible_and_navigates_to_edit_order_screen() throws {
+    func test_edit_order_button_is_visible_and_navigates_to_edit_order_screen_when_order_synced() throws {
         // Given
         let presentationVerifier = PresentationVerifier()
         let storageManager = MockStorageManager()
         let order = MockOrders().sampleOrder()
         let storesManager = OrderDetailStoreManagerFactory.createManager(order: order)
 
-        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              storageManager: storageManager,
+                                              syncStateController: OrderDetailsSyncStateController(syncState: .synced))
         let viewController = OrderDetailsViewController(viewModel: viewModel)
 
         // When

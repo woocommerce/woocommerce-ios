@@ -1,6 +1,8 @@
 import UIKit
 
 /// Modal presented when the payment has been collected successfully
+/// No customer attached to order therefore an email receipt is not sent automatically
+/// Email receipt can be sent after payment
 final class CardPresentModalBuiltInSuccess: CardPresentPaymentsModalViewModel {
 
     /// Closure to execute when primary button is tapped
@@ -51,9 +53,7 @@ final class CardPresentModalBuiltInSuccess: CardPresentPaymentsModalViewModel {
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
-        viewController?.dismiss(animated: true, completion: { [weak self] in
-            self?.emailReceiptAction()
-        })
+        emailReceiptAction()
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {

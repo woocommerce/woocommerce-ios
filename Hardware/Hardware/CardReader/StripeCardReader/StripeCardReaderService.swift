@@ -16,6 +16,8 @@ public final class StripeCardReaderService: NSObject {
     private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
     private let readerEventsSubject = PassthroughSubject<CardReaderEvent, Never>()
     private let softwareUpdateSubject = CurrentValueSubject<CardReaderSoftwareUpdateState, Never>(.none)
+    private let builtInCardReaderAcceptToSSubject = PassthroughSubject<Void, Never>()
+
     private var connectionAttemptInvalidated: Bool = false
 
     /// Volatile, in-memory cache of discovered readers. It has to be cleared after we connect to a reader
@@ -60,6 +62,10 @@ extension StripeCardReaderService: CardReaderService {
 
     public var softwareUpdateEvents: AnyPublisher<CardReaderSoftwareUpdateState, Never> {
         softwareUpdateSubject.eraseToAnyPublisher()
+    }
+
+    public var builtInCardReaderAcceptToSEvents: AnyPublisher<Void, Never> {
+        builtInCardReaderAcceptToSSubject.eraseToAnyPublisher()
     }
 
     // MARK: - CardReaderService conformance. Commands
@@ -477,7 +483,7 @@ extension StripeCardReaderService: CardReaderService {
                         return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                     }
                 case .failure(let error):
-                    let underlyingError = UnderlyingError(with: error)
+                    let underlyingError = Self.logAndDecodeError(error)
                     return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                 }
             }
@@ -509,7 +515,7 @@ extension StripeCardReaderService: CardReaderService {
                         return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                     }
                 case .failure(let error):
-                    let underlyingError = UnderlyingError(with: error)
+                    let underlyingError = Self.logAndDecodeError(error)
                     return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                 }
             }
@@ -778,7 +784,7 @@ extension StripeCardReaderService {
                         self.refundCancellable = nil
                         if let error = processError {
                             promise(.failure(CardReaderServiceError.refundPayment(
-                                underlyingError: UnderlyingError(with: error),
+                                underlyingError: Self.logAndDecodeError(error),
                                 shouldRetry: self.shouldRetryRefund(after: error)
                             )))
                         } else if let refund = processedRefund {
@@ -988,6 +994,10 @@ extension StripeCardReaderService: LocalMobileReaderDelegate {
             connectedReadersSubject.send([CardReader(reader: reader)])
             softwareUpdateSubject.send(.none)
         }
+    }
+
+    public func localMobileReaderDidAcceptTermsOfService(_ reader: Reader) {
+        builtInCardReaderAcceptToSSubject.send(())
     }
 }
 

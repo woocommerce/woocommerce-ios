@@ -194,33 +194,9 @@ extension WooConstants {
         case inAppFeedback = "https://automattic.survey.fm/woo-app-general-feedback-user-survey"
 #endif
 
-        /// URL for the Tap to Pay first payment survey
-        ///
-#if DEBUG
-        case tapToPayFirstPaymentFeedback = "https://automattic.survey.fm/woo-app-tap-to-pay-survey"
-#else
-        case tapToPayFirstPaymentFeedback = "https://automattic.survey.fm/woo-app-–-first-ttp-survey"
-#endif
-
         /// URL for the products feedback survey
         ///
         case productsFeedback = "https://automattic.survey.fm/woo-app-feature-feedback-products"
-
-        /// URL for the store setup feedback survey
-        ///
-#if DEBUG
-        case storeSetupFeedback = "https://automattic.survey.fm/testing-debug-woo-mobile-–-store-setup-survey-2022"
-#else
-        case storeSetupFeedback = "https://automattic.survey.fm/woo-mobile-–-store-setup-survey-2022"
-#endif
-
-        /// URL for the shipping labels M3 feedback survey
-        ///
-#if DEBUG
-        case shippingLabelsRelease3Feedback = "https://automattic.survey.fm/woo-app-testing-feature-feedback-shipping-labels"
-#else
-        case shippingLabelsRelease3Feedback = "https://automattic.survey.fm/woo-app-feature-feedback-shipping-labels"
-#endif
 
         /// URL for the order add-on i1 feedback survey
         ///
@@ -228,14 +204,6 @@ extension WooConstants {
         case orderAddOnI1Feedback = "https://automattic.survey.fm/woo-app-addons-testing"
 #else
         case orderAddOnI1Feedback = "https://automattic.survey.fm/woo-app-addons-production"
-#endif
-
-        /// URL for the Product Creation with AI feedback survey
-        ///
-#if DEBUG
-        case productCreationAIFeedback = "https://automattic.survey.fm/testing-debug-product-creation-with-ai-dec-2023"
-#else
-        case productCreationAIFeedback = "https://automattic.survey.fm/product-creation-with-ai-dec-2023"
 #endif
 
         /// URL for shipping label creation information
@@ -286,11 +254,6 @@ extension WooConstants {
         case orderCreationFeedback = "https://automattic.survey.fm/woo-app-order-creation-production"
 #endif
 
-#if DEBUG
-        case couponManagementFeedback = "https://automattic.survey.fm/woo-app-coupon-management-testing"
-#else
-        case couponManagementFeedback = "https://automattic.survey.fm/woo-app-coupon-management-production"
-#endif
         /// URL for the Enable Cash on Delivery (or Pay in Person) onboarding step's learn more link using the Stripe plugin
         ///
         case stripeCashOnDeliveryLearnMore = "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/#section-8"
@@ -350,7 +313,7 @@ extension WooConstants {
 
         case wooCorePaymentOptions = "https://woocommerce.com/documentation/woocommerce/getting-started/sell-products/core-payment-options"
 
-        case wooPaymentsDepositSchedule = "https://woocommerce.com/document/woopayments/deposits/deposit-schedule/"
+        case wooPaymentsPayoutSchedule = "https://woocommerce.com/document/woopayments/payouts/payout-schedule/"
 
         /// URL to learn more about Jetpack Stats
         ///
@@ -365,6 +328,10 @@ extension WooConstants {
 #endif
 
         case ordersScreen = "https://woocommerce.com/mobile/orders"
+
+        case customFieldsProductLearnMore = "https://woocommerce.com/document/custom-product-fields/"
+        case customFieldsOrderLearnMore = "https://woocommerce.com/document/managing-orders/view-edit-or-add-an-order/#custom-fields"
+        case hsTariffURL = "https://woocommerce.com/document/woocommerce-shipping-and-tax/woocommerce-shipping/#section-29"
 
         /// Returns the URL version of the receiver
         ///

@@ -7,6 +7,7 @@ struct SelectableItemRow: View {
     private let selected: Bool
     private let displayMode: DisplayMode
     private let alignment: Alignment
+    private let verticalSpacing: CGFloat
     private let selectionStyle: SelectionStyle
     @Environment(\.isEnabled) private var isEnabled
 
@@ -15,12 +16,14 @@ struct SelectableItemRow: View {
          selected: Bool,
          displayMode: DisplayMode = .full,
          alignment: Alignment = .leading,
+         verticalSpacing: CGFloat = 16,
          selectionStyle: SelectionStyle = .checkmark) {
         self.title = title
         self.subtitle = subtitle
         self.selected = selected
         self.displayMode = displayMode
         self.alignment = alignment
+        self.verticalSpacing = verticalSpacing
         self.selectionStyle = selectionStyle
     }
     var body: some View {
@@ -29,14 +32,13 @@ struct SelectableItemRow: View {
                 selectionIcon
             }
 
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: verticalSpacing) {
                 Text(title)
                     .bodyStyle(isEnabled)
                     .multilineTextAlignment(.leading)
                 subtitle.map {
                     Text($0)
                         .footnoteStyle(isEnabled: isEnabled)
-                        .padding(.top, 8)
                 }
             }
             .padding(.leading, alignment.leadingSpace)

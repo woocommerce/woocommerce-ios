@@ -120,9 +120,9 @@ public enum FeatureFlag: Int {
     ///
     case giftCardInOrderForm
 
-    /// Enables the Woo Payments Deposits item in the Payments menu
+    /// Enables the Woo Payments Payouts item in the Payments menu
     ///
-    case wooPaymentsDepositsOverviewInPaymentsMenu
+    case wooPaymentsPayoutsOverviewInPaymentsMenu
 
     /// Enables Tap to Pay for UK Woo Payments stores
     ///
@@ -139,10 +139,6 @@ public enum FeatureFlag: Int {
     /// Enables the Scan to Update Inventory feature.
     ///
     case scanToUpdateInventory
-
-    /// Enables backend receipt generation for all payment methods
-    ///
-    case backendReceipts
 
     /// Displays the Products tab in a split view
     ///
@@ -193,7 +189,23 @@ public enum FeatureFlag: Int {
     ///
     case productGlobalUniqueIdentifierSupport
 
-    /// Supports Woo Payments onboarding in POS so that merchants who have not completed onboarding can access POS.
+    /// Adds support for  sending receipts after the payment for POS
     ///
-    case paymentsOnboardingInPointOfSale
+    case sendReceiptsForPointOfSale
+
+    /// Adds support for  accepting cash as payment for POS
+    ///
+    case acceptCashForPointOfSale
+
+    /// Supports variable products in POS.
+    ///
+    case variableProductsInPointOfSale
+
+    /// Supports hiding sites from the store picker
+    ///
+    case hideSitesInStorePicker
+
+    /// Supports managing filer history on order and product lists
+    ///
+    case filterHistoryOnOrderAndProductLists
 }

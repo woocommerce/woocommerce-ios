@@ -3,7 +3,6 @@ import CoreData
 @testable import Storage
 @testable import WooFoundation
 
-
 /// CoreDataManager Unit Tests
 ///
 final class CoreDataManagerTests: XCTestCase {
@@ -41,19 +40,6 @@ final class CoreDataManagerTests: XCTestCase {
         XCTAssertEqual(manager.viewStorage as? NSManagedObjectContext, manager.persistentContainer.viewContext)
     }
 
-    /// Verifies that derived context is instantiated correctly.
-    ///
-    func test_derived_storage_is_instantiated_correctly() {
-        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
-        let viewContext = (manager.viewStorage as? NSManagedObjectContext)
-        let derivedContext = (manager.writerDerivedStorage as? NSManagedObjectContext)
-
-        XCTAssertNotNil(viewContext)
-        XCTAssertNotNil(derivedContext)
-        XCTAssertNotEqual(derivedContext, viewContext)
-        XCTAssertNil(derivedContext?.parent)
-    }
-
     func test_resetting_CoreData_deletes_preexisting_objects() throws {
         // Arrange
         let modelsInventory = try makeModelsInventory()
@@ -66,8 +52,9 @@ final class CoreDataManagerTests: XCTestCase {
                 _ = storage.insertNewObject(ofType: ShippingLine.self)
             }, completion: {
                 XCTAssertEqual(viewContext.countObjects(ofType: ShippingLine.self), 1)
-                manager.reset()
-                expectation.fulfill()
+                manager.reset {
+                    expectation.fulfill()
+                }
             }, on: .main)
         }
 
@@ -148,13 +135,53 @@ final class CoreDataManagerTests: XCTestCase {
         }
     }
 
+    func test_performAndSave_resets_the_database_if_it_is_corrupted() throws {
+        // Given
+        let modelsInventory = try makeModelsInventory()
+        var manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
+
+        waitFor { promise in
+            manager.performAndSave({ storage in
+                self.insertAccount(to: storage)
+            }, completion: {
+                promise(())
+            }, on: .main)
+        }
+
+        XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
+
+        // When
+        corruptDatabaseFile()
+        manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: false)
+        manager.performAndSave({ storage in
+            self.insertAccount(to: storage)
+        }, completion: {
+            // no-op
+        }, on: .main)
+
+        // Then: wait to ensure the database is dropped before setting up the CoreData stack again.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            manager = try! self.makeManager(using: modelsInventory, deletingExistingStoreFiles: false)
+            XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 0)
+
+            // Clean up
+            let storeURL = CoreDataManager.storeURL(with: self.storageIdentifier)
+            try? self.deleteStoreFiles(at: storeURL)
+        }
+    }
+
     func test_when_the_model_is_incompatible_then_it_recovers_and_recreates_the_database() throws {
         // Given
         let modelsInventory = try makeModelsInventory()
         var manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
 
-        insertAccount(to: manager.viewStorage)
-        manager.viewStorage.saveIfNeeded()
+        waitFor { promise in
+            manager.performAndSave({ storage in
+                self.insertAccount(to: storage)
+            }, completion: {
+                promise(())
+            }, on: .main)
+        }
 
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
         XCTAssertNotNil(NSEntityDescription.entity(forEntityName: Note.entityName,
@@ -206,8 +233,13 @@ final class CoreDataManagerTests: XCTestCase {
 
         var manager = try makeManager(using: olderModelsInventory, deletingExistingStoreFiles: true)
 
-        insertAccount(to: manager.viewStorage)
-        manager.viewStorage.saveIfNeeded()
+        waitFor { promise in
+            manager.performAndSave({ storage in
+                self.insertAccount(to: storage)
+            }, completion: {
+                promise(())
+            }, on: .main)
+        }
 
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
         // The ShippineLineTax entity does not exist in Model 33.
@@ -242,8 +274,13 @@ final class CoreDataManagerTests: XCTestCase {
 
         var manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
 
-        insertAccount(to: manager.viewStorage)
-        manager.viewStorage.saveIfNeeded()
+        waitFor { promise in
+            manager.performAndSave({ storage in
+                self.insertAccount(to: storage)
+            }, completion: {
+                promise(())
+            }, on: .main)
+        }
 
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
         try assertThat(manager, isCompatibleWith: modelsInventory.currentModel)
@@ -280,13 +317,14 @@ private extension CoreDataManagerTests {
     }
 
     func makeManager(using modelsInventory: ManagedObjectModelsInventory,
-                     deletingExistingStoreFiles deleteStoreFiles: Bool) throws -> CoreDataManager {
+                     deletingExistingStoreFiles: Bool) throws -> CoreDataManager {
+        let storeURL = CoreDataManager.storeURL(with: storageIdentifier)
+        if deletingExistingStoreFiles {
+            try deleteStoreFiles(at: storeURL)
+        }
         let manager = CoreDataManager(name: storageIdentifier,
                                       crashLogger: MockCrashLogger(),
                                       modelsInventory: modelsInventory)
-        if deleteStoreFiles {
-            try self.deleteStoreFiles(at: manager.storeURL)
-        }
         return manager
     }
 
@@ -303,6 +341,27 @@ private extension CoreDataManagerTests {
             if fileManager.fileExists(atPath: fileURL.path) {
                 try fileManager.removeItem(at: fileURL)
             }
+        }
+    }
+
+    // Attempts corrupting the database file by overwriting the sqlite-wal file.
+    // Our CoreData stack uses the default WAL journal mechanism
+    // so updating this file would corrupt the database.
+    func corruptDatabaseFile() {
+        let storeURL = CoreDataManager.storeURL(with: storageIdentifier)
+        let walURL = storeURL.deletingPathExtension().appendingPathExtension("sqlite-wal")
+        do {
+            // Read the database file into memory
+            var data = try Data(contentsOf: walURL)
+            // Corrupt the data by overwriting random bytes
+            for i in 0..<min(100, data.count) {
+                data[i] = 0xFF // Overwrite with invalid data
+            }
+            // Write the corrupted data back to the file
+            try data.write(to: walURL)
+            print("Database corrupted successfully")
+        } catch {
+            print("Error corrupting database: \(error)")
         }
     }
 }

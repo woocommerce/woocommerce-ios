@@ -544,7 +544,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(customFieldSection)
     }
 
-    func test_custom_fields_button_is_hidden_when_order_contains_no_custom_fields_to_display() throws {
+    func test_custom_fields_button_is_visible_when_order_contains_no_custom_fields_to_display() throws {
         // Given
         let order = MockOrders().makeOrder(customFields: [])
         let dataSource = OrderDetailsDataSource(
@@ -557,7 +557,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let customFieldSection = section(withCategory: .customFields, from: dataSource)
-        XCTAssertNil(customFieldSection)
+        XCTAssertNotNil(customFieldSection)
     }
 
     func test_subscriptions_section_is_visible_when_order_has_associated_subscriptions() throws {
@@ -652,23 +652,6 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let giftCardsSection = section(withCategory: .giftCards, from: dataSource)
         XCTAssertNil(giftCardsSection)
-    }
-
-    func test_receipts_row_is_hidden_when_feature_flag_is_false() throws {
-        // Given
-        let order = Order.fake()
-        let dataSource = OrderDetailsDataSource(order: order,
-                                                storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                featureFlags: MockFeatureFlagService(isBackendReceiptsEnabled: false))
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
-        let receiptsRow = row(row: .seeReceipt, in: paymentSection)
-        XCTAssertNil(receiptsRow)
     }
 
     // MARK: Order Attribution

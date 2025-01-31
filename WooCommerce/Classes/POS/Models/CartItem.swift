@@ -1,14 +1,10 @@
 import Foundation
-import protocol Yosemite.POSItem
+import protocol Yosemite.POSOrderableItem
 
 struct CartItem {
     let id: UUID
-    let item: POSItem
+    let item: POSOrderableItem
+    let title: String
+    let subtitle: String?
     let quantity: Int
-
-    init(id: UUID, item: POSItem, quantity: Int) {
-        self.id = id
-        self.item = item
-        self.quantity = quantity
-    }
 }

@@ -10,8 +10,13 @@ public struct BlazeAISuggestion: Decodable, Equatable, GeneratedFakeable, Genera
     ///
     public let textSnippet: String
 
-    public init(siteName: String, textSnippet: String) {
+    /// Suggested CTA for the Blaze campaign.
+    ///
+    public let ctaText: String
+
+    public init(siteName: String, textSnippet: String, ctaText: String) {
         self.siteName = siteName
         self.textSnippet = textSnippet
+        self.ctaText = ctaText
     }
 }

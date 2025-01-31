@@ -28,13 +28,12 @@ struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlerts
         .processing
     }
 
-    func success(printReceipt: @escaping () -> Void,
-                 emailReceipt: @escaping () -> Void,
-                 noReceiptAction: @escaping () -> Void) -> CardPresentPaymentEventDetails {
-        .paymentSuccess(done: noReceiptAction)
+    func success(receiptState: CardReaderTransactionAlertReceiptState) -> CardPresentPaymentEventDetails {
+        .paymentSuccess(done: receiptState.noReceiptAction)
     }
 
     func error(error: any Error,
+               receiptState: CardReaderTransactionFailureAlertReceiptState,
                tryAgain: @escaping () -> Void,
                dismissCompletion: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .paymentError(error: error,
@@ -43,6 +42,7 @@ struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlerts
     }
 
     func nonRetryableError(error: any Error,
+                           receiptState: CardReaderTransactionFailureAlertReceiptState,
                            dismissCompletion: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .paymentError(error: error,
                       retryApproach: .dontRetry,

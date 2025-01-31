@@ -46,8 +46,8 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         setViewModelAndPresent(from: from, viewModel: connectingFailedCriticallyLowBattery(retrySearch: retrySearch, cancelSearch: cancelSearch))
     }
 
-    func updatingFailedLowBattery(from: UIViewController, batteryLevel: Double?, close: @escaping () -> Void) {
-        setViewModelAndPresent(from: from, viewModel: updatingFailedLowBattery(from: from, batteryLevel: batteryLevel, close: close))
+    func updatingFailedLowBattery(from: UIViewController, batteryLevel: Double?, retrySearch: @escaping () -> Void, close: @escaping () -> Void) {
+        setViewModelAndPresent(from: from, viewModel: updatingFailedLowBattery(from: from, batteryLevel: batteryLevel, retrySearch: retrySearch, close: close))
     }
 
     func updatingFailed(from: UIViewController, tryAgain: (() -> Void)?, close: @escaping () -> Void) {
@@ -176,7 +176,7 @@ private extension CardReaderSettingsAlerts {
 
     func scanningFailed(error: Error, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         switch error {
-        case CardReaderServiceError.bluetoothDenied:
+        case CardReaderServiceError.bluetoothDenied, CardReaderServiceError.discovery(underlyingError: .bluetoothDenied):
             return CardPresentModalBluetoothRequired(error: error, primaryAction: close)
         default:
             return CardPresentModalScanningFailed(error: error, primaryAction: close)
@@ -212,8 +212,11 @@ private extension CardReaderSettingsAlerts {
         return CardPresentModalConnectingFailedUpdatePostalCode(retrySearch: retrySearch, cancelSearch: cancelSearch)
     }
 
-    func updatingFailedLowBattery(from: UIViewController, batteryLevel: Double?, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalUpdateFailedLowBattery(batteryLevel: batteryLevel, close: close)
+    func updatingFailedLowBattery(from: UIViewController,
+                                  batteryLevel: Double?,
+                                  retrySearch: @escaping () -> Void,
+                                  close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalUpdateFailedLowBattery(batteryLevel: batteryLevel, retrySearch: retrySearch, close: close)
     }
 
     func updatingFailed(from: UIViewController, tryAgain: (() -> Void)?, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {

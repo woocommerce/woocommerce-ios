@@ -17,6 +17,8 @@
     <string>Ürünlerinize eklemek üzere fotoğraf veya video çekmek, Ürün SKU'su barkodunu veya destek biletlerini taramak için.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Ödemeleri kabul etmek için konum erişimi gereklidir.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Woo, mağazanızın ortam kütüphanesi için video kaydederken ses kaydı için mikrofonunuzu kullanır.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Ürün görselleri için kameradan fotoğraf kaydetmek veya Ürünlerinize ya da destek biletlerinize fotoğraf veya video eklemek için.</string>
     <key>OpenOrdersAction.Title</key>

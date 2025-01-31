@@ -376,7 +376,14 @@ extension OrderDetailsDataSource: UITableViewDataSource {
         guard indexPath.row >= 0 && indexPath.row < section.rows.count else {
             ServiceLocator.crashLogging.logMessage(
                 "Invalid row in cellForRowAtIndexPath in OrderDetailsDataSource",
-                properties: ["row": indexPath.section, "section": indexPath.section],
+                properties: [
+                    "row": indexPath.row,
+                    "section": indexPath.section,
+                    "actualRowCount": section.rows.count,
+                    "totalSections": sections.count,
+                    "sectionCategory": String(describing: section.category),
+                    "sectionTitle": section.title ?? "nil"
+                ],
                 level: .error
             )
             return UITableViewCell()
@@ -654,9 +661,6 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureSeeReceipt(cell: TwoColumnHeadlineFootnoteTableViewCell) {
-        guard featureFlags.isFeatureFlagEnabled(.backendReceipts) else {
-            return
-        }
         cell.setLeftTitleToLinkStyle(true)
         cell.leftText = Titles.seeReceipt
         cell.rightText = nil
@@ -737,21 +741,25 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureShippingLabelDetail(cell: WooBasicTableViewCell) {
-        cell.bodyLabel?.text = Footer.showShippingLabelDetails
+        cell.bodyLabel?.text = isEligibleForWooShipping ? Footer.viewShippingLabel : Footer.showShippingLabelDetails
         cell.applyPlainTextStyle()
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
 
         cell.accessibilityTraits = .button
-        cell.accessibilityLabel = NSLocalizedString(
-            "View Shipment Details",
-            comment: "Accessibility label for the 'View Shipment Details' button"
-        )
+        if isEligibleForWooShipping {
+            cell.accessibilityLabel = Footer.viewShippingLabel
+        } else {
+            cell.accessibilityLabel = NSLocalizedString(
+                "View Shipment Details",
+                comment: "Accessibility label for the 'View Shipment Details' button"
+            )
 
-        cell.accessibilityHint = NSLocalizedString(
-            "Show the shipment details for this shipping label.",
-            comment: "VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details."
-        )
+            cell.accessibilityHint = NSLocalizedString(
+                "Show the shipment details for this shipping label.",
+                comment: "VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details."
+            )
+        }
     }
 
     private func configureShippingLabelPrintingInfo(cell: ImageAndTitleAndTextTableViewCell) {
@@ -893,7 +901,19 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureCustomAmount(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
-        let customAmount = customAmounts[indexPath.row]
+        guard let customAmount = customAmounts[safe: indexPath.row] else {
+            ServiceLocator.crashLogging.logMessage(
+                "Invalid custom amount index in OrderDetailsDataSource",
+                properties: [
+                    "row": indexPath.row,
+                    "section": indexPath.section,
+                    "availableCustomAmountsCount": customAmounts.count
+                ],
+                level: .error
+            )
+            return
+        }
+
         cell.configure(customAmountViewModel: .init(customAmount: customAmount, currency: order.currency, currencyFormatter: currencyFormatter))
         cell.accessibilityIdentifier = "custom-amount-cell"
     }
@@ -1027,7 +1047,7 @@ private extension OrderDetailsDataSource {
 
     private func configureShippingLine(cell: HostingConfigurationTableViewCell<ShippingLineRowView>, at indexPath: IndexPath) {
         let shippingLine = shippingLines[indexPath.row]
-        let viewModel = ShippingLineRowViewModel(shippingLine: shippingLine, shippingMethods: siteShippingMethods, editable: false)
+        let viewModel = ShippingLineRowViewModel(shippingLine: shippingLine, currency: order.currency, shippingMethods: siteShippingMethods, editable: false)
         let view = ShippingLineRowView(viewModel: viewModel)
 
         // Reduce cell padding between rows
@@ -1233,10 +1253,6 @@ extension OrderDetailsDataSource {
         }()
 
         let customFields: Section? = {
-            guard order.customFields.isNotEmpty else {
-                return nil
-            }
-
             return Section(category: .customFields, row: .customFields)
         }()
 
@@ -1760,6 +1776,9 @@ extension OrderDetailsDataSource {
                                                    comment: "Button on bottom of Customer's information to show the billing details")
         static let showShippingLabelDetails = NSLocalizedString("View Shipment Details",
                                                                 comment: "Button on bottom of shipping label package card to show shipping details")
+        static let viewShippingLabel = NSLocalizedString("orderDetailsDataSource.shippingLabels.viewLabel",
+                                                         value: "View purchased shipping label",
+                                                         comment: "Button on bottom of shipping label card to view the shipping label")
     }
 
     enum Accessibility {

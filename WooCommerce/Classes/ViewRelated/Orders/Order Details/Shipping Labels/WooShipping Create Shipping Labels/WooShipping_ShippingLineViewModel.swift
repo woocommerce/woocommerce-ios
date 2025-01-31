@@ -13,9 +13,10 @@ struct WooShipping_ShippingLineViewModel: Identifiable {
     let formattedTotal: String
 
     init(shippingLine: ShippingLine,
+         currency: String,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         id = shippingLine.shippingID
         title = shippingLine.methodTitle
-        formattedTotal = currencyFormatter.formatAmount(shippingLine.total) ?? shippingLine.total
+        formattedTotal = currencyFormatter.formatAmount(shippingLine.total, with: currency) ?? shippingLine.total
     }
 }

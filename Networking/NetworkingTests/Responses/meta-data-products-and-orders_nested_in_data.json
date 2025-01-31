@@ -1,31 +1,52 @@
 {
-   "data":{
-      "meta_data":[
-         {
-            "id":1,
-            "key":"lorem_key_1",
-            "value":"Lorem ipsum"
-         },
-         {
-            "id":2,
-            "key":"ipsum_key_2",
-            "value":"dolor sit amet"
-         },
-         {
-            "id":3,
-            "key":"dolor_key_3",
-            "value":"consectetur adipiscing elit"
-         },
-         {
-            "id":4,
-            "key":"sit_key_4",
-            "value":"Nisi ut aliquip"
-         },
-         {
-            "id":5,
-            "key":"_internal_key",
-            "value":"In voluptate velit"
-         }
-      ]
-   }
+    "data":{
+        "meta_data":[
+            {
+                "id": 1,
+                "key": "text_field",
+                "value": "Lorem ipsum"
+            },
+            {
+                "id": 2,
+                "key": "json_field",
+                "value": {
+                    "key": "value"
+                }
+            },
+            {
+                "id": 3,
+                "key": "json_array_field",
+                "value": [
+                    {
+                        "key": "value"
+                    }
+                ]
+            },
+            {
+                "id": 4,
+                "key": "json_field_wrapped",
+                "value": "{\"key\":\"value\"}"
+            },
+            {
+                "id": 5,
+                "key": "boolean_field",
+                "value": true
+            },
+            {
+                "id": 6,
+                "key": "number_field",
+                "value": 42
+            },
+            {
+                "id": 7,
+                "key": "empty_field",
+                "value": ""
+            },
+            {
+                "id": 8,
+                "key": "_internal_key",
+                "value": "In voluptate velit"
+            }
+        ]
+    }
 }

@@ -11,7 +11,7 @@ extension Storage.MetaData: ReadOnlyConvertible {
     public func update(with metaData: Yosemite.MetaData) {
         metadataID = metaData.metadataID
         key = metaData.key
-        value = metaData.value
+        value = metaData.value.rawValue
     }
 
     /// Returns a ReadOnly version of the receiver.

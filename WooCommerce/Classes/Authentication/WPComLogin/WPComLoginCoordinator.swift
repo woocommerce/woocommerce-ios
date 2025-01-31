@@ -116,7 +116,8 @@ private extension WPComLoginCoordinator {
     func showMagicLinkForLogin(email: String) {
         let viewController = WPComMagicLinkHostingController(email: email,
                                                              title: title,
-                                                             isJetpackSetup: isJetpackSetup)
+                                                             isJetpackSetup: isJetpackSetup,
+                                                             isSignup: false)
         navigationController.show(viewController, sender: self)
     }
 
@@ -151,7 +152,10 @@ private extension WPComLoginCoordinator {
     @MainActor
     func requestAuthenticationLink(email: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
-            accountService.requestAuthenticationLink(for: email, jetpackLogin: false, success: {
+            accountService.requestAuthenticationLink(for: email,
+                                                     jetpackLogin: false,
+                                                     createAccountIfNotFound: false,
+                                                     success: {
                 continuation.resume()
             }, failure: { error in
                 continuation.resume(throwing: error)

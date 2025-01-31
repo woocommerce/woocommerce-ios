@@ -133,34 +133,56 @@ struct RoundedBorderedStyle: ButtonStyle {
     }
 }
 
-/// Adds a primary button style while showing a progress view on top of the button when required.
+/// Adds a primary button style while showing a progress view or checkmark on top of the button when required.
 ///
 struct PrimaryLoadingButtonStyle: PrimitiveButtonStyle {
-
-    /// Set it to true to show a progress view within the button.
+    /// Set to show a progress view or checkmark within the button.
     ///
-    let isLoading: Bool
+    enum State {
+        case loading
+        case success
+        case idle
+    }
+
+    var state: State = .idle
+
+    init(isLoading: Bool) {
+        if isLoading {
+            state = .loading
+        } else {
+            state = .idle
+        }
+    }
+
+    init(state: State) {
+        self.state = state
+    }
 
     /// Returns a `ProgressView` if the view is loading. Return nil otherwise
     ///
     private var progressViewOverlay: ProgressView<EmptyView, EmptyView>? {
-        isLoading ? ProgressView() : nil
+        state == .loading ? ProgressView() : nil
+    }
+
+    private var checkmark: some View {
+        state == .success ? Image(systemName: "checkmark.circle").font(.title2).foregroundStyle(Color(.primaryButtonBackground)) : nil
     }
 
     func makeBody(configuration: Configuration) -> some View {
         /// Only send trigger if the view is not loading.
         ///
         return Button(configuration)
-            .buttonStyle(PrimaryButtonStyle(hideContent: isLoading))
+            .buttonStyle(PrimaryButtonStyle(hideContent: state != .idle))
             .onTapGesture { dispatchTrigger(configuration) }
-            .disabled(isLoading)
+            .disabled(state != .idle)
             .overlay(progressViewOverlay)
+            .overlay(checkmark)
     }
 
     /// Only dispatch events while the view is not loading.
     ///
     private func dispatchTrigger(_ configuration: Configuration) {
-        guard !isLoading else { return }
+        guard state == .idle else { return }
         configuration.trigger()
     }
 }
@@ -173,8 +195,46 @@ struct HighlightButtonStyle: ButtonStyle {
     /// Background color when the button is pressed.
     let backgroundPressed: Color
 
+    /// Defines if the content should be hidden.
+    /// Useful for when we want to show an overlay on top of the bottom without hiding its decoration. Like showing a progress view.
+    ///
+    private(set) var hideContent = false
+
     func makeBody(configuration: Configuration) -> some View {
-        HighlightButton(configuration: configuration, background: background, backgroundPressed: backgroundPressed)
+        HighlightButton(configuration: configuration, background: background, backgroundPressed: backgroundPressed, hideContent: hideContent)
+    }
+}
+
+/// Adds a highlight button style while showing a progress view on top of the button when required.
+///
+struct HighlightLoadingButtonStyle: PrimitiveButtonStyle {
+    /// Set to `true` to show a progress view within the button.
+    var isLoading: Bool
+
+    /// Background color for the button.
+    let background: Color
+
+    /// Background color when the button is pressed.
+    let backgroundPressed: Color
+
+    /// Returns a `ProgressView` if the view is loading. Return nil otherwise
+    ///
+    private var progressViewOverlay: ProgressView<EmptyView, EmptyView>? {
+        isLoading ? ProgressView() : nil
+    }
+
+    func makeBody(configuration: Configuration) -> some View {
+        return Button(configuration)
+            .buttonStyle(HighlightButtonStyle(background: background, backgroundPressed: backgroundPressed, hideContent: isLoading))
+            .disabled(isLoading)
+            .overlay(progressViewOverlay.tint(Color(.primaryButtonTitle)))
+    }
+
+    /// Only dispatch events while the view is not loading.
+    ///
+    private func dispatchTrigger(_ configuration: Configuration) {
+        guard !isLoading else { return }
+        configuration.trigger()
     }
 }
 
@@ -459,8 +519,14 @@ private struct HighlightButton: View {
     /// Background color when the button is pressed.
     let backgroundPressed: Color
 
+    /// Defines if the content should be hidden.
+    /// Useful for when we want to show an overlay on top of the bottom without hiding its decoration. Like showing a progress view.
+    ///
+    private(set) var hideContent = false
+
     var body: some View {
         BaseButton(configuration: configuration)
+            .opacity(contentOpacity)
             .foregroundColor(Color(.primaryButtonTitle))
             .font(.headline)
             .background(
@@ -475,6 +541,10 @@ private struct HighlightButton: View {
         } else {
             return background
         }
+    }
+
+    var contentOpacity: Double {
+        hideContent ? 0.0 : 1.0
     }
 }
 

@@ -14,6 +14,7 @@ final class SetUpTapToPayInformationViewController: UIHostingController<SetUpTap
     private var viewModel: SetUpTapToPayInformationViewModel
 
     private lazy var alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: self)
+    private lazy var merchantEducationPresenter = BuiltInCardReaderMerchantEducationPresenter(rootViewController: self)
 
     /// Connection Controller (helps connect readers)
     ///
@@ -22,6 +23,7 @@ final class SetUpTapToPayInformationViewController: UIHostingController<SetUpTap
             forSiteID: viewModel.siteID,
             alertsPresenter: alertsPresenter,
             alertsProvider: BuiltInReaderConnectionAlertsProvider(),
+            merchantEducationPresenter: merchantEducationPresenter,
             configuration: viewModel.configuration,
             analyticsTracker: viewModel.connectionAnalyticsTracker)
     }()
@@ -104,9 +106,9 @@ struct SetUpTapToPayInformationView: View {
                     .padding()
 
                 VStack(spacing: Constants.hintSpacing) {
-                    PaymentSettingsFlowHint(title: Localization.hintOneTitle, text: Localization.hintOne)
-                    PaymentSettingsFlowHint(title: Localization.hintTwoTitle, text: Localization.hintTwo)
-                    PaymentSettingsFlowHint(title: Localization.hintThreeTitle, text: Localization.hintThree)
+                    PaymentSettingsFlowHint(number: 1, text: Localization.hintOne)
+                    PaymentSettingsFlowHint(number: 2, text: Localization.hintTwo)
+                    PaymentSettingsFlowHint(number: 3, text: Localization.hintThree)
                 }
                 .fixedSize(horizontal: false, vertical: true)
                 .layoutPriority(1)
@@ -134,7 +136,14 @@ struct SetUpTapToPayInformationView: View {
         .padding()
         .onAppear(perform: viewModel.viewDidAppear)
         .sheet(isPresented: $showingAboutTapToPay) {
-            AboutTapToPayViewInNavigationView(viewModel: AboutTapToPayViewModel(shouldAlwaysHideSetUpTapToPayButton: true))
+            TapToPayEducationView(viewModel: .init(flow: .about, completion: { result in
+                switch result {
+                case .setUpTapToPay:
+                    viewModel.setUpTapped()
+                default:
+                    break
+                }
+            }))
         }
     }
 }
@@ -157,31 +166,16 @@ private enum Localization {
         comment: "Settings > Set up Tap to Pay on iPhone > Prompt user to set up Tap to Pay on iPhone"
     )
 
-    static let hintOneTitle = NSLocalizedString(
-        "1",
-        comment: "Settings > Set up Tap to Pay on iPhone > Information > Help hint number 1"
-    )
-
     static let hintOne = NSLocalizedString(
         "Make sure you are signed in to iCloud, and have set a passcode.",
         comment: "Settings > Set up Tap to Pay on iPhone > Information > Hint to sign in to " +
         "iCloud and set a passcode on the device"
     )
 
-    static let hintTwoTitle = NSLocalizedString(
-        "2",
-        comment: "Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2"
-    )
-
     static let hintTwo = NSLocalizedString(
         "Accept the Terms of Service during set up.",
         comment: "Settings > Set up Tap to Pay on iPhone > Information > Hint to accept the " +
         "Terms of Service from Apple"
-    )
-
-    static let hintThreeTitle = NSLocalizedString(
-        "3",
-        comment: "Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3"
     )
 
     static let hintThree = NSLocalizedString(

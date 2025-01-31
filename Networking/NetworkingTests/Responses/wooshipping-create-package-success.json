@@ -1,0 +1,30 @@
+{
+    "data": {
+        "predefined": {
+            "usps": [
+                "small_flat_box",
+                "flat_envelope"
+            ]
+        },
+        "custom": [
+            {
+                "id": "69d7052f934a7c218329de9c1abe3858",
+                "name": "WCS&T Box",
+                "dimensions": "15 x 15 x 15",
+                "boxWeight": 0.25,
+                "max_weight": 0,
+                "type": "box",
+                "is_user_defined": true
+            },
+            {
+                "id": "517116d2f2d929115f6e081ba780b84e",
+                "name": "WCS&T Envelope",
+                "dimensions": "30 x 10 x 1",
+                "box_weight": 0.25,
+                "max_weight": 0,
+                "type": "envelope",
+                "is_user_defined": true
+            }
+        ]
+    }
+}

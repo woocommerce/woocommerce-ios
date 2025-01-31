@@ -188,12 +188,14 @@ private extension CardPresentPaymentsModalViewController {
         primaryButton.applyPrimaryButtonStyle()
         primaryButton.titleLabel?.adjustsFontSizeToFitWidth = true
         primaryButton.titleLabel?.minimumScaleFactor = 0.5
+        primaryButton.titleLabel?.lineBreakMode = .byClipping
     }
 
     func styleSecondaryButton() {
         secondaryButton.applyPaymentsModalCancelButtonStyle()
         secondaryButton.titleLabel?.adjustsFontSizeToFitWidth = true
         secondaryButton.titleLabel?.minimumScaleFactor = 0.5
+        secondaryButton.titleLabel?.lineBreakMode = .byClipping
     }
 
     func styleAuxiliaryButton() {
@@ -202,13 +204,16 @@ private extension CardPresentPaymentsModalViewController {
         }
         auxiliaryButton.titleLabel?.minimumScaleFactor = 0.5
         auxiliaryButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        auxiliaryButton.titleLabel?.lineBreakMode = .byClipping
     }
 
     func initializeContent() {
         topTitleLabel.text = ""
         topSubtitleLabel.text = ""
         bottomTitleLabel.text = ""
+        bottomTitleLabel.attributedText = nil
         bottomSubtitleLabel.text = ""
+        bottomSubtitleLabel.attributedText = nil
     }
 
     func populateContent() {
@@ -252,7 +257,11 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func configureBottomTitle() {
-        bottomTitleLabel.text = viewModel.bottomTitle
+        if let bottomAttributedTitle = viewModel.bottomAttributedTitle {
+            bottomTitleLabel.attributedText = bottomAttributedTitle
+        } else {
+            bottomTitleLabel.text = viewModel.bottomTitle
+        }
     }
 
     func configureBottomSubtitle() {
@@ -262,7 +271,12 @@ private extension CardPresentPaymentsModalViewController {
         }
 
         bottomSubtitleLabel.isHidden = false
-        bottomSubtitleLabel.text = viewModel.bottomSubtitle
+
+        if let bottomAttributedSubtitle = viewModel.bottomAttributedSubtitle {
+            bottomSubtitleLabel.attributedText = bottomAttributedSubtitle
+        } else {
+            bottomSubtitleLabel.text = viewModel.bottomSubtitle
+        }
     }
 
     func configureImageView() {

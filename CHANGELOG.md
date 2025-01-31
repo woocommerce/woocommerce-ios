@@ -1,6 +1,27 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 21.5
+Get ready for a smoother WooCommerce experience! This update brings smarter AI-powered product previews, instant dashboard stats, and improved email receipts for failed payments. We’ve also fine-tuned order creation, enhanced Jetpack setups, and enabled previews for coming-soon stores. Plus, we’ve addressed navigation, database recovery, and streamlined workflows.
+
+## 21.4
+This update introduces the ability to hide specific stores from the store picker, perfect for agencies managing multiple sites. We’ve also enhanced plugin info fetching to handle unexpected data types, ensuring smoother performance. Additionally, a bug on iPad causing order creation issues with custom amounts has been resolved. Enjoy a more focused and reliable experience!
+
+## 21.3
+
+This update brings enhanced reliability and clarity to your WooCommerce experience! Enjoy improved Jetpack setup, smoother media handling, and better product and payment workflows. We’ve also optimized storage and addressed key UI issues to elevate performance. Plus, Tap to Pay onboarding now guides you with ease!
+
+## 21.2
+In just two weeks, we've jam-packed this release. There's GTIN global product identifier support, and you can edit the call-to-action in Blaze campaigns.
+
+Store setup for in-person payments is faster, receipt sent confirmations clearer, and testing Tap to Pay on iPhone is smoother. Plus, we've improved dashboard statistics and squashed some bugs.
+
+## 21.1
+Dive into a smoother WooCommerce experience! We’ve fine-tuned the Watch app to showcase your order details flawlessly. Plus, we've added clearer error messages for payment reader connections. Update for an even better business pulse on your wrist and in your pocket.
+
+## 21.0
+Product and order management just got easier! You can now view and edit custom fields for products and orders right within the app. Also, we've smoothed out the payments onboarding process. It's now easier than ever to resolve errors setting up WooPayments or Stripe. Happy selling!
+
 ## 20.9
 We've tightened the nuts and bolts in our WooCommerce mobile app to serve you better. We've squashed a bug that could cause a crash when configuring the product scanner's camera swap button. The Tap to Pay feature has been enhanced for better performance and now requires minimum iOS 16.7. Also, we resolved an issue with the Google Ads dashboard card for smoother loading. Updating brings out the best in our app!
 

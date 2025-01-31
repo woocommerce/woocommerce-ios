@@ -119,3 +119,10 @@ extension NSRange {
         .init()
     }
 }
+
+extension UUID {
+    /// Returns a default UUID
+    static func fake() -> Self {
+        .init()
+    }
+}

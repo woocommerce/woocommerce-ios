@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct WooShippingHazmat: View {
+    /// Whether the interactions (navigation/setting selection) are enabled.
+    let enabled: Bool
+
     var body: some View {
         AdaptiveStack {
             Text(Localization.hazmatLabel)
@@ -8,10 +11,13 @@ struct WooShippingHazmat: View {
             Spacer()
             Text("No") // TODO: Replace with actual hazmat selection for package
                 .secondaryBodyStyle()
-            Image(uiImage: .chevronImage) // TODO: Replace with actual navigation to hazmat declaration screen
-                .secondaryBodyStyle()
+            if enabled {
+                Image(uiImage: .chevronImage) // TODO: Replace with actual navigation to hazmat declaration screen
+                    .secondaryBodyStyle()
+            }
         }
         .padding(.vertical, Layout.verticalPadding)
+        .disabled(!enabled)
     }
 }
 
@@ -29,6 +35,6 @@ private extension WooShippingHazmat {
 }
 
 #Preview {
-    WooShippingHazmat()
+    WooShippingHazmat(enabled: true)
         .padding()
 }

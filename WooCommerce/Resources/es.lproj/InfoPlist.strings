@@ -17,6 +17,8 @@
     <string>Para tomar fotos o videos para añadir a tus productos, escanear el código de barras para el SKU del producto, o tiques de soporte.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Se requiere acceso a la ubicación para aceptar pagos.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Woo usa tu micrófono para que puedas grabar audio a la vez que grabas vídeos para la biblioteca de medios de tu tienda.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Para guardar fotos de la cámara para las imágenes de los productos, o para añadir fotos o videos a tus productos o tiques de soporte.</string>
     <key>OpenOrdersAction.Title</key>

@@ -1,0 +1,155 @@
+{
+    "labels": [
+        {
+            "label_id": 4119,
+            "tracking": null,
+            "refundable_amount": 0,
+            "created": 1731599418086,
+            "carrier_id": null,
+            "service_name": "USPS - Ground Advantage",
+            "status": "PURCHASE_IN_PROGRESS",
+            "commercial_invoice_url": "",
+            "is_commercial_invoice_submitted_electronically": "",
+            "package_name": "Individual packaging",
+            "is_letter": false,
+            "product_names": [
+                "Beanie"
+            ],
+            "product_ids": [
+                19,
+                209
+            ],
+            "id": "0"
+        }
+    ],
+    "selected_rates": {
+        "shipment_0": {
+            "rate": {
+                "rateId": "rate_c84888134ca0453bad4d1b8a4493fac6",
+                "serviceId": "GroundAdvantage",
+                "carrierId": "usps",
+                "title": "USPS - Ground Advantage",
+                "rate": 7.24,
+                "retailRate": 11.8,
+                "listRate": 8.81,
+                "isSelected": false,
+                "tracking": true,
+                "insurance": 100,
+                "freePickup": true,
+                "shipmentId": "shp_33dd948486184ea09078a08be667f7b5",
+                "deliveryDays": 3,
+                "deliveryDateGuaranteed": false,
+                "deliveryDate": null
+            },
+            "parent": null
+        }
+    },
+    "selected_hazmat": {
+        "shipment_0": {
+            "isHazmat": false,
+            "category": ""
+        }
+    },
+    "selected_origin": {
+        "shipment_0": {
+            "company": "Test Store",
+            "name": "TEST MERCHANT",
+            "phone": "12345678901",
+            "country": "US",
+            "state": "CA",
+            "address": "60 29TH ST PMB 343",
+            "address_2": "",
+            "city": "SAN FRANCISCO",
+            "postcode": "94110-4929",
+            "id": "store_details",
+            "is_verified": true
+        }
+    },
+    "selected_destination": {
+        "shipment_0": {
+            "company": "",
+            "city": "ANYTOWN",
+            "state": "CA",
+            "postcode": "12345-6789",
+            "country": "US",
+            "phone": "",
+            "name": "TEST CUSTOMER",
+            "address": "1 MAIN STREET"
+        }
+    },
+    "customs_information": {
+        "shipment_0": {
+            "items": [
+                {
+                    "id": 3737,
+                    "subtotal": "20.00",
+                    "subtotal_tax": "0.00",
+                    "total": "20.00",
+                    "total_tax": "0.00",
+                    "price": "20.00",
+                    "quantity": 1,
+                    "tax_class": "clothing-20010",
+                    "name": "Beanie",
+                    "product_id": 19,
+                    "sku": "woo-beanie",
+                    "meta": {
+                        "customs_info": {
+                            "description": "Beanie",
+                            "hs_tariff_number": "392620",
+                            "origin_country": "US"
+                        }
+                    },
+                    "image": "https:\/\/example.com\/wp-content\/uploads\/2023\/01\/beanie.jpg",
+                    "weight": "1",
+                    "dimensions": {
+                        "length": "20",
+                        "width": "20",
+                        "height": "40"
+                    },
+                    "variation": [
+                        {
+                            "key": "logo",
+                            "value": "Yes",
+                            "display_key": "Logo",
+                            "display_value": "<p>Yes<\/p>\n"
+                        }
+                    ],
+                    "subItems": [
+                        {
+                            "id": "10-sub-0",
+                            "subtotal": "0.00",
+                            "subtotal_tax": "0.00",
+                            "total": "0.00",
+                            "total_tax": "0.00",
+                            "price": "0.00",
+                            "quantity": 1,
+                            "tax_class": "",
+                            "name": "Pin",
+                            "product_id": 209,
+                            "sku": "woo-pin",
+                            "meta": [],
+                            "image": "https:\/\/example.com\/wp-content\/uploads\/2023\/01\/pin.jpg",
+                            "weight": "",
+                            "dimensions": {
+                                "length": "",
+                                "width": "",
+                                "height": ""
+                            },
+                            "variation": [],
+                            "parentId": 19,
+                            "subItems": []
+                        }
+                    ],
+                    "description": "Beanie",
+                    "hsTariffNumber": "392620",
+                    "originCountry": "US"
+                }
+            ],
+            "contentsType": "merchandise",
+            "restrictionType": "none",
+            "isReturnToSender": false,
+            "itn": ""
+        }
+    },
+    "success": true
+}

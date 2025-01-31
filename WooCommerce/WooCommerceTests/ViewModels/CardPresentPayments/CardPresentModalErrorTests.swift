@@ -10,7 +10,8 @@ final class CardPresentModalErrorTests: XCTestCase {
         closures = Closures()
         viewModel = CardPresentModalError(errorDescription: Expectations.error.localizedDescription,
                                           transactionType: .collectPayment,
-                                          primaryAction: closures.primaryAction(),
+                                          tryAgainAction: closures.primaryAction(),
+                                          emailReceiptAction: closures.secondaryAction(),
                                           dismissCompletion: closures.dismissCompletion())
     }
 
@@ -40,6 +41,10 @@ final class CardPresentModalErrorTests: XCTestCase {
         XCTAssertNotNil(viewModel.secondaryButtonTitle)
     }
 
+    func test_auxiliary_button_title_is_not_nil() {
+        XCTAssertNotNil(viewModel.auxiliaryButtonTitle)
+    }
+
     func test_bottom_title_is_not_nil() {
         XCTAssertNotNil(viewModel.bottomTitle)
     }
@@ -66,11 +71,18 @@ private extension CardPresentModalErrorTests {
 
 private final class Closures {
     var didTapPrimary = false
+    var didTapSecondary = false
     var didDismiss = false
 
     func primaryAction() -> () -> Void {
         return {[weak self] in
             self?.didTapPrimary = true
+        }
+    }
+
+    func secondaryAction() -> () -> Void {
+        return {[weak self] in
+            self?.didTapSecondary = true
         }
     }
 

@@ -1,29 +1,30 @@
 @testable import WooCommerce
 import Experiments
 
-struct MockFeatureFlagService: FeatureFlagService {
-    private let isInboxOn: Bool
-    private let isShowInboxCTAEnabled: Bool
-    private let isUpdateOrderOptimisticallyOn: Bool
-    private let shippingLabelsOnboardingM1: Bool
-    private let isDomainSettingsEnabled: Bool
-    private let isSupportRequestEnabled: Bool
-    private let jetpackSetupWithApplicationPassword: Bool
-    private let betterCustomerSelectionInOrder: Bool
-    private let productBundlesInOrderForm: Bool
-    private let isScanToUpdateInventoryEnabled: Bool
-    private let isBackendReceiptsEnabled: Bool
-    private let sideBySideViewForOrderForm: Bool
-    private let isSubscriptionsInOrderCreationCustomersEnabled: Bool
-    private let isPointOfSaleEnabled: Bool
-    private let googleAdsCampaignCreationOnWebView: Bool
-    private let blazeEvergreenCampaigns: Bool
-    private let blazeCampaignObjective: Bool
-    private let revampedShippingLabelCreation: Bool
-    private let viewEditCustomFieldsInProductsAndOrders: Bool
-    private let favoriteProducts: Bool
-    private let paymentsOnboardingInPointOfSale: Bool
-    private let isProductGlobalUniqueIdentifierSupported: Bool
+final class MockFeatureFlagService: FeatureFlagService {
+    var isInboxOn: Bool
+    var isShowInboxCTAEnabled: Bool
+    var isUpdateOrderOptimisticallyOn: Bool
+    var shippingLabelsOnboardingM1: Bool
+    var isDomainSettingsEnabled: Bool
+    var isSupportRequestEnabled: Bool
+    var jetpackSetupWithApplicationPassword: Bool
+    var betterCustomerSelectionInOrder: Bool
+    var productBundlesInOrderForm: Bool
+    var isScanToUpdateInventoryEnabled: Bool
+    var sideBySideViewForOrderForm: Bool
+    var isSubscriptionsInOrderCreationCustomersEnabled: Bool
+    var isPointOfSaleEnabled: Bool
+    var googleAdsCampaignCreationOnWebView: Bool
+    var blazeEvergreenCampaigns: Bool
+    var blazeCampaignObjective: Bool
+    var revampedShippingLabelCreation: Bool
+    var viewEditCustomFieldsInProductsAndOrders: Bool
+    var favoriteProducts: Bool
+    var isProductGlobalUniqueIdentifierSupported: Bool
+    var receiptsForPOS: Bool
+    var hideSitesInStorePicker: Bool
+    var isVariableProductsInPOSEnabled: Bool
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
@@ -35,7 +36,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          betterCustomerSelectionInOrder: Bool = false,
          productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
-         isBackendReceiptsEnabled: Bool = false,
          sideBySideViewForOrderForm: Bool = false,
          isSubscriptionsInOrderCreationCustomersEnabled: Bool = false,
          isPointOfSaleEnabled: Bool = false,
@@ -45,8 +45,10 @@ struct MockFeatureFlagService: FeatureFlagService {
          revampedShippingLabelCreation: Bool = false,
          viewEditCustomFieldsInProductsAndOrders: Bool = false,
          favoriteProducts: Bool = false,
-         paymentsOnboardingInPointOfSale: Bool = false,
-         isProductGlobalUniqueIdentifierSupported: Bool = false) {
+         isProductGlobalUniqueIdentifierSupported: Bool = false,
+         receiptsForPOS: Bool = false,
+         hideSitesInStorePicker: Bool = false,
+         isVariableProductsInPOSEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -57,7 +59,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
         self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
-        self.isBackendReceiptsEnabled = isBackendReceiptsEnabled
         self.sideBySideViewForOrderForm = sideBySideViewForOrderForm
         self.isSubscriptionsInOrderCreationCustomersEnabled = isSubscriptionsInOrderCreationCustomersEnabled
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
@@ -67,8 +68,10 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.revampedShippingLabelCreation = revampedShippingLabelCreation
         self.viewEditCustomFieldsInProductsAndOrders = viewEditCustomFieldsInProductsAndOrders
         self.favoriteProducts = favoriteProducts
-        self.paymentsOnboardingInPointOfSale = paymentsOnboardingInPointOfSale
         self.isProductGlobalUniqueIdentifierSupported = isProductGlobalUniqueIdentifierSupported
+        self.receiptsForPOS = receiptsForPOS
+        self.hideSitesInStorePicker = hideSitesInStorePicker
+        self.isVariableProductsInPOSEnabled = isVariableProductsInPOSEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -93,8 +96,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return productBundlesInOrderForm
         case .scanToUpdateInventory:
             return isScanToUpdateInventoryEnabled
-        case .backendReceipts:
-            return isBackendReceiptsEnabled
         case .sideBySideViewForOrderForm:
             return sideBySideViewForOrderForm
         case .subscriptionsInOrderCreationCustomers:
@@ -113,10 +114,14 @@ struct MockFeatureFlagService: FeatureFlagService {
             return viewEditCustomFieldsInProductsAndOrders
         case .favoriteProducts:
             return favoriteProducts
-        case .paymentsOnboardingInPointOfSale:
-            return paymentsOnboardingInPointOfSale
         case .productGlobalUniqueIdentifierSupport:
             return isProductGlobalUniqueIdentifierSupported
+        case .sendReceiptsForPointOfSale:
+            return receiptsForPOS
+        case .hideSitesInStorePicker:
+            return hideSitesInStorePicker
+        case .variableProductsInPointOfSale:
+            return isVariableProductsInPOSEnabled
         default:
             return false
         }

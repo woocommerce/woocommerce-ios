@@ -10,12 +10,6 @@ public final class SiteStore: Store {
     // Keeps a strong reference to remote to keep requests alive.
     private let remote: SiteRemoteProtocol
 
-    /// Shared private StorageType for use when upserting sites into storage.
-    ///
-    private lazy var sharedDerivedStorage: StorageType = {
-        storageManager.writerDerivedStorage
-    }()
-
     public init(remote: SiteRemoteProtocol,
                 dispatcher: Dispatcher,
                 storageManager: StorageManagerType,
@@ -56,6 +50,8 @@ public final class SiteStore: Store {
             enableFreeTrial(siteID: siteID, completion: completion)
         case let .syncSite(siteID, completion):
             syncSite(siteID: siteID, completion: completion)
+        case let .syncSiteByDomain(domain, completion):
+            syncSite(domain: domain, completion: completion)
         case let .updateSiteTitle(siteID, title, completion):
             updateSiteTitle(siteID: siteID, title: title, completion: completion)
         case let .uploadStoreProfilerAnswers(siteID, answers, completion):
@@ -125,6 +121,21 @@ private extension SiteStore {
         }
     }
 
+    func syncSite(domain: String, completion: @escaping (Result<Site, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let site = try await remote.loadSite(domain: domain)
+                await upsertStoredSiteInBackground(readOnlySite: site)
+                guard let syncedSite = storageManager.viewStorage.loadSite(siteID: site.siteID)?.toReadOnly() else {
+                    return completion(.failure(SynchronizeSiteError.unknownSite))
+                }
+                completion(.success(syncedSite))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+
     func updateSiteTitle(siteID: Int64, title: String, completion: @escaping (Result<Void, Error>) -> Void) {
         Task { @MainActor in
             do {
@@ -153,30 +164,24 @@ private extension SiteStore {
 private extension SiteStore {
     func upsertStoredSiteInBackground(readOnlySite: Networking.Site) async {
         await withCheckedContinuation { continuation in
-            let derivedStorage = sharedDerivedStorage
-            derivedStorage.perform {
+            storageManager.performAndSave({ derivedStorage in
                 let storageSite = derivedStorage.loadSite(siteID: readOnlySite.siteID) ?? derivedStorage.insertNewObject(ofType: Storage.Site.self)
                 storageSite.update(with: readOnlySite)
-            }
-
-            storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-                DispatchQueue.main.async(execute: { continuation.resume() })
-            }
+            }, completion: {
+                continuation.resume()
+            }, on: .main)
         }
     }
 
     func upsertStoredSiteInBackground(siteID: Int64, name: String) async {
         await withCheckedContinuation { continuation in
-            let derivedStorage = sharedDerivedStorage
-            derivedStorage.perform {
+            storageManager.performAndSave({ derivedStorage in
                 if let storageSite = derivedStorage.loadSite(siteID: siteID) {
                     storageSite.name = name
                 }
-            }
-
-            storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-                DispatchQueue.main.async(execute: { continuation.resume() })
-            }
+            }, completion: {
+                continuation.resume()
+            }, on: .main)
         }
     }
 }
@@ -235,5 +240,72 @@ public enum SiteLaunchError: Error, Equatable {
             return
         }
         self = .alreadyLaunched
+    }
+}
+
+/// SiteLaunch errors strings used in `StoreOnboardingLaunchStoreView`
+///
+public extension SiteLaunchError {
+    var title: String {
+        switch self {
+        case .alreadyLaunched:
+            return NSLocalizedString(
+                "Could not launch your store",
+                comment: "Title of the alert when the site cannot be launched from store onboarding > launch store screen."
+            )
+        case .unexpected:
+            return NSLocalizedString(
+                "Unexpected error",
+                comment: "Title of the alert when the site cannot be launched from store onboarding > launch store screen."
+            )
+        }
+    }
+
+    var message: String {
+        switch self {
+        case .alreadyLaunched:
+            return NSLocalizedString(
+                "We found that the store has already launched.",
+                comment: "Message of the alert when the site cannot be launched from store onboarding > launch store screen."
+            )
+        case .unexpected:
+            return NSLocalizedString(
+                "Oops, some unexpected errors happened.",
+                comment: "Message of the alert when the site cannot be launched from store onboarding > launch store screen."
+            )
+        }
+    }
+
+    var dismissTitle: String {
+        switch self {
+        case .alreadyLaunched:
+            return NSLocalizedString("OK",
+                comment: "Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen."
+            )
+        case .unexpected:
+            return NSLocalizedString(
+                "Cancel",
+                comment: "Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen."
+            )
+        }
+    }
+
+    var retryTitle: String? {
+        switch self {
+        case .alreadyLaunched:
+            return nil
+        case .unexpected:
+            return NSLocalizedString(
+                "Try again",
+                comment: "Title of the try again action when the site cannot be launched from store onboarding > launch store screen."
+            )
+        }
+    }
+}
+
+/// Conformance to support listing in SwiftUI
+extension SiteLaunchError: Identifiable {
+    public var id: String {
+        title
     }
 }

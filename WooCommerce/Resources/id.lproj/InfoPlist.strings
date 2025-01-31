@@ -17,6 +17,8 @@
     <string>Diperlukan untuk mengambil foto atau merekam video untuk ditambahkan ke Produk, memindai barcode untuk SKU Produk, atau tiket dukungan.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Akses Lokasi diperlukan agar dapat menerima pembayaran.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Woo menggunakan mikrofon Anda agar Anda dapat mengabadikan audio saat merekam video untuk pustaka media toko Anda.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Diperlukan untuk menyimpan foto dari kamera untuk Gambar produk, atau menambahkan foto atau video ke Produk atau tiket dukungan.</string>
     <key>OpenOrdersAction.Title</key>

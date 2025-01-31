@@ -2,6 +2,7 @@
 // DO NOT EDIT
 import Codegen
 import Foundation
+import WooFoundation
 
 extension Networking.AIProduct {
     public func copy(
@@ -162,14 +163,17 @@ extension Networking.Announcement {
 extension Networking.BlazeAISuggestion {
     public func copy(
         siteName: CopiableProp<String> = .copy,
-        textSnippet: CopiableProp<String> = .copy
+        textSnippet: CopiableProp<String> = .copy,
+        ctaText: CopiableProp<String> = .copy
     ) -> Networking.BlazeAISuggestion {
         let siteName = siteName ?? self.siteName
         let textSnippet = textSnippet ?? self.textSnippet
+        let ctaText = ctaText ?? self.ctaText
 
         return Networking.BlazeAISuggestion(
             siteName: siteName,
-            textSnippet: textSnippet
+            textSnippet: textSnippet,
+            ctaText: ctaText
         )
     }
 }
@@ -579,7 +583,8 @@ extension Networking.CreateBlazeCampaign {
         targeting: NullableCopiableProp<BlazeTargetOptions> = .copy,
         targetUrn: CopiableProp<String> = .copy,
         type: CopiableProp<String> = .copy,
-        objective: NullableCopiableProp<String> = .copy
+        objective: NullableCopiableProp<String> = .copy,
+        ctaText: CopiableProp<String> = .copy
     ) -> Networking.CreateBlazeCampaign {
         let origin = origin ?? self.origin
         let originVersion = originVersion ?? self.originVersion
@@ -598,6 +603,7 @@ extension Networking.CreateBlazeCampaign {
         let targetUrn = targetUrn ?? self.targetUrn
         let type = type ?? self.type
         let objective = objective ?? self.objective
+        let ctaText = ctaText ?? self.ctaText
 
         return Networking.CreateBlazeCampaign(
             origin: origin,
@@ -616,7 +622,8 @@ extension Networking.CreateBlazeCampaign {
             targeting: targeting,
             targetUrn: targetUrn,
             type: type,
-            objective: objective
+            objective: objective,
+            ctaText: ctaText
         )
     }
 }
@@ -847,7 +854,7 @@ extension Networking.GoogleAdsCampaign {
         rawStatus: CopiableProp<String> = .copy,
         rawType: CopiableProp<String> = .copy,
         amount: CopiableProp<Double> = .copy,
-        country: CopiableProp<String> = .copy,
+        country: NullableCopiableProp<String> = .copy,
         targetedLocations: CopiableProp<[String]> = .copy
     ) -> Networking.GoogleAdsCampaign {
         let id = id ?? self.id
@@ -1153,7 +1160,7 @@ extension Networking.MetaData {
     public func copy(
         metadataID: CopiableProp<Int64> = .copy,
         key: CopiableProp<String> = .copy,
-        value: CopiableProp<String> = .copy
+        value: CopiableProp<MetaDataValue> = .copy
     ) -> Networking.MetaData {
         let metadataID = metadataID ?? self.metadataID
         let key = key ?? self.key
@@ -2853,6 +2860,42 @@ extension Networking.Refund {
     }
 }
 
+extension Networking.RemoteReaderLocation {
+    public func copy(
+        locationID: CopiableProp<String> = .copy,
+        city: NullableCopiableProp<String> = .copy,
+        country: CopiableProp<String> = .copy,
+        addressLine1: CopiableProp<String> = .copy,
+        addressLine2: NullableCopiableProp<String> = .copy,
+        postalCode: NullableCopiableProp<String> = .copy,
+        stateProvinceRegion: NullableCopiableProp<String> = .copy,
+        displayName: CopiableProp<String> = .copy,
+        liveMode: CopiableProp<Bool> = .copy
+    ) -> Networking.RemoteReaderLocation {
+        let locationID = locationID ?? self.locationID
+        let city = city ?? self.city
+        let country = country ?? self.country
+        let addressLine1 = addressLine1 ?? self.addressLine1
+        let addressLine2 = addressLine2 ?? self.addressLine2
+        let postalCode = postalCode ?? self.postalCode
+        let stateProvinceRegion = stateProvinceRegion ?? self.stateProvinceRegion
+        let displayName = displayName ?? self.displayName
+        let liveMode = liveMode ?? self.liveMode
+
+        return Networking.RemoteReaderLocation(
+            locationID: locationID,
+            city: city,
+            country: country,
+            addressLine1: addressLine1,
+            addressLine2: addressLine2,
+            postalCode: postalCode,
+            stateProvinceRegion: stateProvinceRegion,
+            displayName: displayName,
+            liveMode: liveMode
+        )
+    }
+}
+
 extension Networking.ShipmentTracking {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -3089,6 +3132,42 @@ extension Networking.ShippingLabelCustomsForm.Item {
             hsTariffNumber: hsTariffNumber,
             originCountry: originCountry,
             productID: productID
+        )
+    }
+}
+
+extension Networking.ShippingLabelPackageSelected {
+    public func copy(
+        id: CopiableProp<String> = .copy,
+        boxID: CopiableProp<String> = .copy,
+        length: CopiableProp<Double> = .copy,
+        width: CopiableProp<Double> = .copy,
+        height: CopiableProp<Double> = .copy,
+        weight: CopiableProp<Double> = .copy,
+        isLetter: CopiableProp<Bool> = .copy,
+        hazmatCategory: NullableCopiableProp<String> = .copy,
+        customsForm: NullableCopiableProp<ShippingLabelCustomsForm> = .copy
+    ) -> Networking.ShippingLabelPackageSelected {
+        let id = id ?? self.id
+        let boxID = boxID ?? self.boxID
+        let length = length ?? self.length
+        let width = width ?? self.width
+        let height = height ?? self.height
+        let weight = weight ?? self.weight
+        let isLetter = isLetter ?? self.isLetter
+        let hazmatCategory = hazmatCategory ?? self.hazmatCategory
+        let customsForm = customsForm ?? self.customsForm
+
+        return Networking.ShippingLabelPackageSelected(
+            id: id,
+            boxID: boxID,
+            length: length,
+            width: width,
+            height: height,
+            weight: weight,
+            isLetter: isLetter,
+            hazmatCategory: hazmatCategory,
+            customsForm: customsForm
         )
     }
 }
@@ -3804,22 +3883,22 @@ extension Networking.WCPayCharge {
     }
 }
 
-extension Networking.WooPaymentsAccountDepositSummary {
+extension Networking.WooPaymentsAccountPayoutSummary {
     public func copy(
-        depositsEnabled: CopiableProp<Bool> = .copy,
-        depositsBlocked: CopiableProp<Bool> = .copy,
-        depositsSchedule: CopiableProp<WooPaymentsDepositsSchedule> = .copy,
+        payoutsEnabled: CopiableProp<Bool> = .copy,
+        payoutsBlocked: CopiableProp<Bool> = .copy,
+        payoutsSchedule: CopiableProp<WooPaymentsPayoutsSchedule> = .copy,
         defaultCurrency: CopiableProp<String> = .copy
-    ) -> Networking.WooPaymentsAccountDepositSummary {
-        let depositsEnabled = depositsEnabled ?? self.depositsEnabled
-        let depositsBlocked = depositsBlocked ?? self.depositsBlocked
-        let depositsSchedule = depositsSchedule ?? self.depositsSchedule
+    ) -> Networking.WooPaymentsAccountPayoutSummary {
+        let payoutsEnabled = payoutsEnabled ?? self.payoutsEnabled
+        let payoutsBlocked = payoutsBlocked ?? self.payoutsBlocked
+        let payoutsSchedule = payoutsSchedule ?? self.payoutsSchedule
         let defaultCurrency = defaultCurrency ?? self.defaultCurrency
 
-        return Networking.WooPaymentsAccountDepositSummary(
-            depositsEnabled: depositsEnabled,
-            depositsBlocked: depositsBlocked,
-            depositsSchedule: depositsSchedule,
+        return Networking.WooPaymentsAccountPayoutSummary(
+            payoutsEnabled: payoutsEnabled,
+            payoutsBlocked: payoutsBlocked,
+            payoutsSchedule: payoutsSchedule,
             defaultCurrency: defaultCurrency
         )
     }
@@ -3858,35 +3937,50 @@ extension Networking.WooPaymentsCurrencyBalances {
     }
 }
 
-extension Networking.WooPaymentsCurrencyDeposits {
+extension Networking.WooPaymentsCurrencyPayouts {
     public func copy(
-        lastPaid: CopiableProp<[WooPaymentsDeposit]> = .copy,
-        lastManualDeposits: CopiableProp<[WooPaymentsManualDeposit]> = .copy
-    ) -> Networking.WooPaymentsCurrencyDeposits {
+        lastPaid: CopiableProp<[WooPaymentsPayout]> = .copy,
+        lastManualPayouts: CopiableProp<[WooPaymentsManualPayout]> = .copy
+    ) -> Networking.WooPaymentsCurrencyPayouts {
         let lastPaid = lastPaid ?? self.lastPaid
-        let lastManualDeposits = lastManualDeposits ?? self.lastManualDeposits
+        let lastManualPayouts = lastManualPayouts ?? self.lastManualPayouts
 
-        return Networking.WooPaymentsCurrencyDeposits(
+        return Networking.WooPaymentsCurrencyPayouts(
             lastPaid: lastPaid,
-            lastManualDeposits: lastManualDeposits
+            lastManualPayouts: lastManualPayouts
         )
     }
 }
 
-extension Networking.WooPaymentsDeposit {
+extension Networking.WooPaymentsManualPayout {
+    public func copy(
+        currency: CopiableProp<String> = .copy,
+        date: CopiableProp<Date> = .copy
+    ) -> Networking.WooPaymentsManualPayout {
+        let currency = currency ?? self.currency
+        let date = date ?? self.date
+
+        return Networking.WooPaymentsManualPayout(
+            currency: currency,
+            date: date
+        )
+    }
+}
+
+extension Networking.WooPaymentsPayout {
     public func copy(
         id: CopiableProp<String> = .copy,
         date: CopiableProp<Date> = .copy,
-        type: CopiableProp<WooPaymentsDepositType> = .copy,
+        type: CopiableProp<WooPaymentsPayoutType> = .copy,
         amount: CopiableProp<Int> = .copy,
-        status: CopiableProp<WooPaymentsDepositStatus> = .copy,
+        status: CopiableProp<WooPaymentsPayoutStatus> = .copy,
         bankAccount: NullableCopiableProp<String> = .copy,
         currency: CopiableProp<String> = .copy,
         automatic: CopiableProp<Bool> = .copy,
         fee: CopiableProp<Int> = .copy,
         feePercentage: CopiableProp<Int> = .copy,
         created: CopiableProp<Int> = .copy
-    ) -> Networking.WooPaymentsDeposit {
+    ) -> Networking.WooPaymentsPayout {
         let id = id ?? self.id
         let date = date ?? self.date
         let type = type ?? self.type
@@ -3899,7 +3993,7 @@ extension Networking.WooPaymentsDeposit {
         let feePercentage = feePercentage ?? self.feePercentage
         let created = created ?? self.created
 
-        return Networking.WooPaymentsDeposit(
+        return Networking.WooPaymentsPayout(
             id: id,
             date: date,
             type: type,
@@ -3915,17 +4009,17 @@ extension Networking.WooPaymentsDeposit {
     }
 }
 
-extension Networking.WooPaymentsDepositsOverview {
+extension Networking.WooPaymentsPayoutsOverview {
     public func copy(
-        deposit: CopiableProp<WooPaymentsCurrencyDeposits> = .copy,
+        deposit: CopiableProp<WooPaymentsCurrencyPayouts> = .copy,
         balance: CopiableProp<WooPaymentsCurrencyBalances> = .copy,
-        account: CopiableProp<WooPaymentsAccountDepositSummary> = .copy
-    ) -> Networking.WooPaymentsDepositsOverview {
+        account: CopiableProp<WooPaymentsAccountPayoutSummary> = .copy
+    ) -> Networking.WooPaymentsPayoutsOverview {
         let deposit = deposit ?? self.deposit
         let balance = balance ?? self.balance
         let account = account ?? self.account
 
-        return Networking.WooPaymentsDepositsOverview(
+        return Networking.WooPaymentsPayoutsOverview(
             deposit: deposit,
             balance: balance,
             account: account
@@ -3933,32 +4027,164 @@ extension Networking.WooPaymentsDepositsOverview {
     }
 }
 
-extension Networking.WooPaymentsDepositsSchedule {
+extension Networking.WooPaymentsPayoutsSchedule {
     public func copy(
         delayDays: CopiableProp<Int> = .copy,
-        interval: CopiableProp<WooPaymentsDepositInterval> = .copy
-    ) -> Networking.WooPaymentsDepositsSchedule {
+        interval: CopiableProp<WooPaymentsPayoutInterval> = .copy
+    ) -> Networking.WooPaymentsPayoutsSchedule {
         let delayDays = delayDays ?? self.delayDays
         let interval = interval ?? self.interval
 
-        return Networking.WooPaymentsDepositsSchedule(
+        return Networking.WooPaymentsPayoutsSchedule(
             delayDays: delayDays,
             interval: interval
         )
     }
 }
 
-extension Networking.WooPaymentsManualDeposit {
+extension Networking.WooShippingAccountSettings {
     public func copy(
-        currency: CopiableProp<String> = .copy,
-        date: CopiableProp<Date> = .copy
-    ) -> Networking.WooPaymentsManualDeposit {
-        let currency = currency ?? self.currency
-        let date = date ?? self.date
+        storeOptions: CopiableProp<ShippingLabelStoreOptions> = .copy,
+        accountSettings: CopiableProp<ShippingLabelAccountSettings> = .copy
+    ) -> Networking.WooShippingAccountSettings {
+        let storeOptions = storeOptions ?? self.storeOptions
+        let accountSettings = accountSettings ?? self.accountSettings
 
-        return Networking.WooPaymentsManualDeposit(
-            currency: currency,
-            date: date
+        return Networking.WooShippingAccountSettings(
+            storeOptions: storeOptions,
+            accountSettings: accountSettings
+        )
+    }
+}
+
+extension Networking.WooShippingCreatePackageResponse {
+    public func copy(
+        customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
+        predefinedOptions: CopiableProp<[WooShippingPredefinedSavedOption]> = .copy
+    ) -> Networking.WooShippingCreatePackageResponse {
+        let customPackages = customPackages ?? self.customPackages
+        let predefinedOptions = predefinedOptions ?? self.predefinedOptions
+
+        return Networking.WooShippingCreatePackageResponse(
+            customPackages: customPackages,
+            predefinedOptions: predefinedOptions
+        )
+    }
+}
+
+extension Networking.WooShippingCustomPackage {
+    public func copy(
+        id: CopiableProp<String> = .copy,
+        name: CopiableProp<String> = .copy,
+        rawType: CopiableProp<String> = .copy,
+        dimensions: CopiableProp<String> = .copy,
+        boxWeight: CopiableProp<Double> = .copy
+    ) -> Networking.WooShippingCustomPackage {
+        let id = id ?? self.id
+        let name = name ?? self.name
+        let rawType = rawType ?? self.rawType
+        let dimensions = dimensions ?? self.dimensions
+        let boxWeight = boxWeight ?? self.boxWeight
+
+        return Networking.WooShippingCustomPackage(
+            id: id,
+            name: name,
+            rawType: rawType,
+            dimensions: dimensions,
+            boxWeight: boxWeight
+        )
+    }
+}
+
+extension Networking.WooShippingOriginAddress {
+    public func copy(
+        id: CopiableProp<String> = .copy,
+        company: CopiableProp<String> = .copy,
+        address1: CopiableProp<String> = .copy,
+        address2: CopiableProp<String> = .copy,
+        city: CopiableProp<String> = .copy,
+        state: CopiableProp<String> = .copy,
+        postcode: CopiableProp<String> = .copy,
+        country: CopiableProp<String> = .copy,
+        phone: CopiableProp<String> = .copy,
+        firstName: CopiableProp<String> = .copy,
+        lastName: CopiableProp<String> = .copy,
+        email: CopiableProp<String> = .copy,
+        defaultAddress: CopiableProp<Bool> = .copy,
+        isVerified: CopiableProp<Bool> = .copy
+    ) -> Networking.WooShippingOriginAddress {
+        let id = id ?? self.id
+        let company = company ?? self.company
+        let address1 = address1 ?? self.address1
+        let address2 = address2 ?? self.address2
+        let city = city ?? self.city
+        let state = state ?? self.state
+        let postcode = postcode ?? self.postcode
+        let country = country ?? self.country
+        let phone = phone ?? self.phone
+        let firstName = firstName ?? self.firstName
+        let lastName = lastName ?? self.lastName
+        let email = email ?? self.email
+        let defaultAddress = defaultAddress ?? self.defaultAddress
+        let isVerified = isVerified ?? self.isVerified
+
+        return Networking.WooShippingOriginAddress(
+            id: id,
+            company: company,
+            address1: address1,
+            address2: address2,
+            city: city,
+            state: state,
+            postcode: postcode,
+            country: country,
+            phone: phone,
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            defaultAddress: defaultAddress,
+            isVerified: isVerified
+        )
+    }
+}
+
+extension Networking.WooShippingPackagePurchase {
+    public func copy(
+        shipmentID: CopiableProp<String> = .copy,
+        package: CopiableProp<ShippingLabelPackageSelected> = .copy,
+        rate: CopiableProp<ShippingLabelCarrierRate> = .copy,
+        productIDs: CopiableProp<[Int64]> = .copy
+    ) -> Networking.WooShippingPackagePurchase {
+        let shipmentID = shipmentID ?? self.shipmentID
+        let package = package ?? self.package
+        let rate = rate ?? self.rate
+        let productIDs = productIDs ?? self.productIDs
+
+        return Networking.WooShippingPackagePurchase(
+            shipmentID: shipmentID,
+            package: package,
+            rate: rate,
+            productIDs: productIDs
+        )
+    }
+}
+
+extension Networking.WooShippingPackagesResponse {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
+        savedPredefinedPackages: CopiableProp<[WooShippingSavedPredefinedPackage]> = .copy,
+        allPredefinedOptions: CopiableProp<[WooShippingCarrierPredefinedOptions]> = .copy
+    ) -> Networking.WooShippingPackagesResponse {
+        let siteID = siteID ?? self.siteID
+        let customPackages = customPackages ?? self.customPackages
+        let savedPredefinedPackages = savedPredefinedPackages ?? self.savedPredefinedPackages
+        let allPredefinedOptions = allPredefinedOptions ?? self.allPredefinedOptions
+
+        return Networking.WooShippingPackagesResponse(
+            siteID: siteID,
+            customPackages: customPackages,
+            savedPredefinedPackages: savedPredefinedPackages,
+            allPredefinedOptions: allPredefinedOptions
         )
     }
 }

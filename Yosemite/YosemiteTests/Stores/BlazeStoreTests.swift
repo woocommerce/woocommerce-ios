@@ -671,8 +671,8 @@ final class BlazeStoreTests: XCTestCase {
 
     func test_fetchAISuggestions_returns_suggestions_when_fetching_successfully() throws {
         // Given
-        let suggestions = [BlazeAISuggestion(siteName: "Name 1", textSnippet: "Description 1"),
-                           BlazeAISuggestion(siteName: "Name 2", textSnippet: "Description 2")]
+        let suggestions = [BlazeAISuggestion(siteName: "Name 1", textSnippet: "Description 1", ctaText: "CTA 1"),
+                           BlazeAISuggestion(siteName: "Name 2", textSnippet: "Description 2", ctaText: "CTA 2")]
         remote.whenFetchingAISuggestionsResult(thenReturn: .success(suggestions))
         let store = BlazeStore(dispatcher: Dispatcher(),
                                storageManager: storageManager,

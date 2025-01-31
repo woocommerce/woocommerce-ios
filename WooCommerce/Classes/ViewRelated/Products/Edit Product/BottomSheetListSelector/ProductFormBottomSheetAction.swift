@@ -8,7 +8,7 @@ enum ProductFormBottomSheetAction {
     case editCategories
     case editTags
     case editShortDescription
-    case editSKU
+    case editSimplifiedInventory
     case editLinkedProducts
     case editReviews
     case editDownloadableFiles
@@ -26,8 +26,8 @@ enum ProductFormBottomSheetAction {
             self = .editTags
         case .shortDescription:
             self = .editShortDescription
-        case .sku:
-            self = .editSKU
+        case .simplifiedInventory:
+            self = .editSimplifiedInventory
         case .linkedProducts:
             self = .editLinkedProducts
         case .reviews:
@@ -60,9 +60,9 @@ extension ProductFormBottomSheetAction {
         case .editShortDescription:
             return NSLocalizedString("Short description",
                                      comment: "Title of the product form bottom sheet action for editing short description.")
-        case .editSKU:
-            return NSLocalizedString("SKU",
-                                     comment: "Title of the product form bottom sheet action for editing short description.")
+        case .editSimplifiedInventory:
+            return NSLocalizedString("Inventory",
+                                     comment: "Title of the product form bottom sheet action for editing external inventory.")
         case .editLinkedProducts:
             return NSLocalizedString("Linked products",
                                      comment: "Title of the product form bottom sheet action for editing linked products.")
@@ -97,7 +97,7 @@ extension ProductFormBottomSheetAction {
         case .editShortDescription:
             return NSLocalizedString("A brief excerpt about your product",
                                      comment: "Subtitle of the product form bottom sheet action for editing short description.")
-        case .editSKU:
+        case .editSimplifiedInventory:
             return NSLocalizedString("Easily identify your products with unique codes",
                                      comment: "Subtitle of the product form bottom sheet action for editing SKU.")
         case .editLinkedProducts:

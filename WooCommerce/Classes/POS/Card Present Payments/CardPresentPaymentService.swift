@@ -4,6 +4,7 @@ import struct Yosemite.Order
 import struct Yosemite.CardPresentPaymentsConfiguration
 import struct Yosemite.CardReader
 import enum Yosemite.CardPresentPaymentAction
+import enum Yosemite.PaymentChannel
 import protocol Yosemite.StoresManager
 
 final class CardPresentPaymentService: CardPresentPaymentFacade {
@@ -63,14 +64,12 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         self.connectedReaderPublisher = connectedReaderPublisher
 
         readerConnectionStatusPublisher = connectedReaderPublisher
-            .map({ reader -> CardPresentPaymentReaderConnectionStatus? in
-                if let reader {
-                    return .connected(reader)
-                } else {
-                    return nil
+            .map({ reader -> CardPresentPaymentReaderConnectionStatus in
+                guard let reader else {
+                    return .disconnected
                 }
+                return .connected(reader)
             })
-            .compactMap { $0 }
             .merge(with: paymentAlertsPresenterAdaptor.readerConnectionStatusPublisher)
             .merge(with: readerConnectionStatusSubject)
             .receive(on: DispatchQueue.main)
@@ -103,7 +102,11 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     func disconnectReader() async {
         readerConnectionStatusSubject.send(.disconnecting)
 
-        cancelPayment()
+        do {
+            try await cancelPayment()
+        } catch {
+            DDLogError("Attempting to cancel the payment has failed \(error)")
+        }
 
         connectionControllerManager.knownReaderProvider.forgetCardReader()
 
@@ -124,7 +127,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     }
 
     @MainActor
-    func collectPayment(for order: Order, using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentResult {
+    func collectPayment(for order: Order, using connectionMethod: CardReaderConnectionMethod, channel: PaymentChannel) async throws -> CardPresentPaymentResult {
         paymentTask?.cancel()
 
         // What happens if `start` gets called while there's a connection ongoing but not finished?
@@ -142,7 +145,8 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             onboardingPresenter: onboardingAdaptor,
             configuration: cardPresentPaymentsConfiguration,
             alertsPresenter: paymentAlertsPresenterAdaptor,
-            paymentEventSubject: paymentEventSubject)
+            paymentEventSubject: paymentEventSubject,
+            channel: channel)
 
         self.paymentTask = paymentTask
 
@@ -158,6 +162,18 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
     func cancelPayment() {
         paymentTask?.cancel()
+    }
+
+    @MainActor
+    func cancelPayment() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            var nillableContinuation: CheckedContinuation<Void, any Error>? = continuation
+            let action = CardPresentPaymentAction.cancelPayment { result in
+                nillableContinuation?.resume(with: result)
+                nillableContinuation = nil
+            }
+            stores.dispatch(action)
+        }
     }
 }
 
@@ -211,4 +227,5 @@ enum CardPresentPaymentServiceError: Error {
     case invalidAmount
     case unknownPaymentError(underlyingError: Error)
     case incompleteAddressConnectionError
+    case couldNotCancelPayment
 }

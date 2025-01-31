@@ -118,7 +118,7 @@ final class StoreStatsPeriodViewModel {
     /// Useful for knowing when we are fetching data for the first time.
     ///
     var noDataFound: Bool {
-        siteStatsResultsController.isEmpty || orderStatsResultsController.isEmpty || siteStatsResultsController.isEmpty
+        siteStatsResultsController.isEmpty || orderStatsResultsController.isEmpty || summaryStatsResultsController.isEmpty
     }
 
     // MARK: - Configurations

@@ -291,6 +291,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                                 total: unformattedTotal,
                                 formattedTotal: total,
                                 flow: flow,
+                                channel: .storeManagement,
                                 dependencies: .init(
                                     presentNoticeSubject: presentNoticeSubject,
                                     stores: stores))

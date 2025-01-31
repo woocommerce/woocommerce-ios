@@ -1,60 +1,19 @@
 import Foundation
-import UIKit
-import WordPressAuthenticator
+import SwiftUI
 import Experiments
 import protocol WooFoundation.Analytics
 
 
 /// Displays the WooCommerce Prologue UI.
 ///
-final class LoginPrologueViewController: UIViewController {
-
-    private let analytics: Analytics
-    private let featureFlagService: FeatureFlagService
-
-    /// Background View, to be placed surrounding the bottom area.
-    ///
-    @IBOutlet private var backgroundView: UIView!
-
-    /// Container View: Holds up the Button + bottom legend.
-    ///
-    @IBOutlet private var containerView: UIView!
-
-    /// Curved Rectangle: Background shape with curved top edge
-    ///
-    @IBOutlet private weak var curvedRectangle: UIImageView!
-
-    /// The WooCommerce logo on top of the screen
-    @IBOutlet private weak var topLogoImageView: UIImageView!
-
-    // MARK: - Overridden Properties
-
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return .portrait
+final class LoginPrologueViewController: UIHostingController<LoginPrologueView> {
+    init() {
+        super.init(rootView: LoginPrologueView())
+        view.backgroundColor = .clear
     }
 
-
-    // MARK: - Overridden Methods
-
-    init(analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
-        self.analytics = analytics
-        self.featureFlagService = featureFlagService
-        super.init(nibName: nil, bundle: nil)
-    }
-
-    required init?(coder: NSCoder) {
+    @objc required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        setupMainView()
-        setupBackgroundView()
-        setupContainerView()
-        setupCurvedRectangle()
-        setupCarousel()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -63,50 +22,102 @@ final class LoginPrologueViewController: UIViewController {
     }
 }
 
+extension LoginPrologueViewController {
+    static let backgroundColor = UIColor(light: .wooCommercePurple(.shade70),
+                                         dark: .systemBackground)
 
-// MARK: - Initialization Methods
-//
-private extension LoginPrologueViewController {
-
-    func setupMainView() {
-        view.backgroundColor = .systemBackground
-    }
-
-    func setupBackgroundView() {
-        backgroundView.backgroundColor = .systemBackground
-    }
-
-    func setupContainerView() {
-        containerView.backgroundColor = .systemBackground
-    }
-
-    func setupCurvedRectangle() {
-        curvedRectangle.isHidden = true
-    }
-
-    /// Adds a carousel (slider) of screens to promote the main features of the app.
-    /// This is contained in a child view so that this view's background doesn't scroll.
-    ///
-    func setupCarousel() {
-        let pageTypes: [LoginProloguePageType] = [.getStarted]
-        let carousel = LoginProloguePageViewController(pageTypes: pageTypes, showsSubtitle: true)
-        carousel.view.translatesAutoresizingMaskIntoConstraints = false
-
-        addChild(carousel)
-        view.addSubview(carousel.view)
-        NSLayoutConstraint.activate([
-            carousel.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            carousel.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            carousel.view.topAnchor.constraint(equalTo: topLogoImageView.bottomAnchor, constant: Constants.spacingBetweenTopLogoAndCarousel),
-            carousel.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
-
-        view.bringSubviewToFront(topLogoImageView)
+    static var backgroundImage: UIImage {
+        .prologueBackgroundBubbles(tint: UIColor(light: .wooCommercePurple(.shade40),
+                                                 dark: .gray(.shade80)))
     }
 }
 
-private extension LoginPrologueViewController {
-    enum Constants {
-        static let spacingBetweenTopLogoAndCarousel: CGFloat = -16
+struct LoginPrologueView: View {
+    var body: some View {
+        GeometryReader { geometry in
+            ScrollView(.vertical) {
+                content
+                    .frame(minHeight: geometry.size.height)
+            }
+        }
+        .scrollBounceBasedOnSize()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    var content: some View {
+        VStack(alignment: .center) {
+            Image(uiImage: .wooLogoImage(withSize: Layout.wooLogoSize)!)
+                .padding(.top, Layout.topPadding)
+
+            VStack(spacing: Layout.stackSpacing) {
+                Spacer(minLength: 2 * Layout.stackSpacing)
+
+                Image(uiImage: .prologueWooMobileImage)
+                    .resizable()
+                    .scaledToFit()
+                    .fixedSize()
+                    .padding(.bottom, 4 * Layout.stackSpacing)
+
+                Text(Localization.title)
+                    .font(.title.bold())
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: Layout.textMaxWidth)
+
+                Text(Localization.subtitle)
+                    .font(.body)
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: Layout.textMaxWidth)
+
+                Spacer(minLength: 2 * Layout.stackSpacing)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .padding(Layout.mainContentPadding)
     }
 }
+
+private extension LoginPrologueView {
+    enum Layout {
+        static let wooLogoSize = CGSize(width: 100, height: 26)
+        static let topPadding: CGFloat = 54
+        static let stackSpacing: CGFloat = 8
+        static let textMaxWidth: CGFloat = 333
+        static let mainContentPadding: CGFloat = 16
+    }
+
+    enum Localization {
+        static let title = NSLocalizedString("loginPrologue.title",
+                                             value: "The ecommerce platform that grows with you",
+                                             comment: "Caption displayed in the simplified prologue screen")
+
+        static let subtitle = NSLocalizedString("loginPrologue.subtitle",
+                                                value: "From your first sale to millions in revenue, Woo is with you. " +
+                                                "See why merchants trust us to power 3.9 million stores.",
+                                                comment: "Subtitle displayed in the prologue screen")
+    }
+}
+
+private extension View {
+    func scrollBounceBasedOnSize() -> some View {
+        if #available(iOS 16.4, *) {
+            return self.scrollBounceBehavior(.basedOnSize)
+        } else {
+            return self
+        }
+    }
+}
+
+#if DEBUG
+struct LoginPrologueView_Previews: PreviewProvider {
+    static var previews: some View {
+        LoginPrologueView()
+            .background {
+                Image(uiImage: LoginPrologueViewController.backgroundImage)
+                    .resizable()
+            }
+            .background(Color(LoginPrologueViewController.backgroundColor))
+    }
+}
+#endif

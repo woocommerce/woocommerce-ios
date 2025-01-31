@@ -6,7 +6,10 @@ struct PointOfSaleItemListFullscreenView<Content: View>: View {
     var body: some View {
         ZStack {
             VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
-                POSHeaderTitleView(foregroundColor: .posSecondaryText)
+                POSHeaderTitleView(
+                    title: Localization.title,
+                    foregroundColor: .posSecondaryText
+                )
                 Spacer()
             }
 
@@ -14,6 +17,14 @@ struct PointOfSaleItemListFullscreenView<Content: View>: View {
                 .zIndex(1)
         }
     }
+}
+
+private enum Localization {
+    static let title = NSLocalizedString(
+        "pos.itemListFullscreen.title",
+        value: "Products",
+        comment: "Title at the top of the Point of Sale item list full screen."
+    )
 }
 
 #Preview {

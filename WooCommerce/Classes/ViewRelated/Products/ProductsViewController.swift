@@ -342,7 +342,7 @@ private extension ProductsViewController {
                     })), animated: true)
                 } catch {
                     self.trackScannedItemSearchFailure(error)
-                    let errorNotice = BarcodeSKUScannerErrorNoticeFactory.notice(for: error,
+                    let errorNotice = BarcodeScannerErrorNoticeFactory.notice(for: error,
                                                                                  code: scannedBarcode,
                                                                                  actionHandler: {
                         self.scanProducts()
@@ -1140,8 +1140,6 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let productIndex = resultsController.objectIndex(from: indexPath)
-
         // Preserve the Cell Height
         // Why: Because Autosizing Cells, upon reload, will need to be laid yout yet again. This might cause
         // UI glitches / unwanted animations. By preserving it, *then* the estimated will be extremely close to
@@ -1315,7 +1313,7 @@ private extension ProductsViewController {
                                             comment: "Action to add product on the placeholder overlay when there are no products on the Products tab")
         return EmptyStateViewController.Config.withButton(
             message: .init(string: message),
-            image: .emptyProductsTabImage,
+            image: .productBlouseImage,
             details: details,
             buttonTitle: buttonTitle,
             onTap: { [weak self] button in
@@ -1335,7 +1333,7 @@ private extension ProductsViewController {
                                             comment: "Action to add product on the placeholder overlay when no products match the filter on the Products tab")
         return EmptyStateViewController.Config.withButton(
             message: .init(string: message),
-            image: .emptyProductsTabImage,
+            image: .productBlouseImage,
             details: "",
             buttonTitle: buttonTitle,
             onTap: { [weak self] button in

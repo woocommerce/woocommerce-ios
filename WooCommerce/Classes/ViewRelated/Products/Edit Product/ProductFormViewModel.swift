@@ -440,8 +440,8 @@ extension ProductFormViewModel {
         product = EditableProductModel(product: product.product.copy(shortDescription: shortDescription))
     }
 
-    func updateSKU(_ sku: String?) {
-        product = EditableProductModel(product: product.product.copy(sku: sku))
+    func updateIdentifiers(sku: String?, globalUniqueID: String?) {
+        product = EditableProductModel(product: product.product.copy(sku: sku, globalUniqueID: globalUniqueID))
     }
 
     func updateGroupedProductIDs(_ groupedProductIDs: [Int64]) {

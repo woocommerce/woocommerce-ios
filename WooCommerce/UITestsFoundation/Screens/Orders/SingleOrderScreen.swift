@@ -68,15 +68,23 @@ public final class SingleOrderScreen: ScreenObject {
 
     public func tapCollectPaymentButton() throws -> PaymentMethodsScreen {
         let orderDetailTableView = app.tables["order-details-table-view"]
+
         while !collectPaymentButton.isFullyVisibleOnScreen() {
-            orderDetailTableView.swipeUp()
+            // Manually do a shorter swipe up here instead of using `.swipeUp` because on smaller screen,
+            // the swipe passes the Collect Payment Button.
+            let startCoord = orderDetailTableView.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.6))
+            let endCoord = orderDetailTableView.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.4))
+            startCoord.press(forDuration: 0.01, thenDragTo: endCoord)
         }
+
         collectPaymentButton.tap()
+
         return try PaymentMethodsScreen()
     }
 
     public func goBackToOrdersScreen() throws -> OrdersScreen {
         let orderDetailTableView = app.tables["order-details-table-view"]
+
         guard orderDetailTableView.horizontalSizeClass == .compact else {
             return try OrdersScreen()
         }

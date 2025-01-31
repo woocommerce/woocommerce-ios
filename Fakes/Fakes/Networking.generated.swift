@@ -162,7 +162,8 @@ extension Networking.BlazeAISuggestion {
     public static func fake() -> Networking.BlazeAISuggestion {
         .init(
             siteName: .fake(),
-            textSnippet: .fake()
+            textSnippet: .fake(),
+            ctaText: .fake()
         )
     }
 }
@@ -437,7 +438,8 @@ extension Networking.CreateBlazeCampaign {
             targeting: .fake(),
             targetUrn: .fake(),
             type: .fake(),
-            objective: .fake()
+            objective: .fake(),
+            ctaText: .fake()
         )
     }
 }
@@ -1747,6 +1749,23 @@ extension Networking.Refund {
         )
     }
 }
+extension Networking.RemoteReaderLocation {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.RemoteReaderLocation {
+        .init(
+            locationID: .fake(),
+            city: .fake(),
+            country: .fake(),
+            addressLine1: .fake(),
+            addressLine2: .fake(),
+            postalCode: .fake(),
+            stateProvinceRegion: .fake(),
+            displayName: .fake(),
+            liveMode: .fake()
+        )
+    }
+}
 extension Networking.ShipmentTracking {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -2618,14 +2637,14 @@ extension Networking.WCPayPaymentMethodType {
         .card
     }
 }
-extension Networking.WooPaymentsAccountDepositSummary {
+extension Networking.WooPaymentsAccountPayoutSummary {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooPaymentsAccountDepositSummary {
+    public static func fake() -> Networking.WooPaymentsAccountPayoutSummary {
         .init(
-            depositsEnabled: .fake(),
-            depositsBlocked: .fake(),
-            depositsSchedule: .fake(),
+            payoutsEnabled: .fake(),
+            payoutsBlocked: .fake(),
+            payoutsSchedule: .fake(),
             defaultCurrency: .fake()
         )
     }
@@ -2651,20 +2670,30 @@ extension Networking.WooPaymentsCurrencyBalances {
         )
     }
 }
-extension Networking.WooPaymentsCurrencyDeposits {
+extension Networking.WooPaymentsCurrencyPayouts {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooPaymentsCurrencyDeposits {
+    public static func fake() -> Networking.WooPaymentsCurrencyPayouts {
         .init(
             lastPaid: .fake(),
-            lastManualDeposits: .fake()
+            lastManualPayouts: .fake()
         )
     }
 }
-extension Networking.WooPaymentsDeposit {
+extension Networking.WooPaymentsManualPayout {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooPaymentsDeposit {
+    public static func fake() -> Networking.WooPaymentsManualPayout {
+        .init(
+            currency: .fake(),
+            date: .fake()
+        )
+    }
+}
+extension Networking.WooPaymentsPayout {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooPaymentsPayout {
         .init(
             id: .fake(),
             date: .fake(),
@@ -2680,31 +2709,31 @@ extension Networking.WooPaymentsDeposit {
         )
     }
 }
-extension Networking.WooPaymentsDepositInterval {
+extension Networking.WooPaymentsPayoutInterval {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooPaymentsDepositInterval {
+    public static func fake() -> Networking.WooPaymentsPayoutInterval {
         .daily
     }
 }
-extension Networking.WooPaymentsDepositStatus {
+extension Networking.WooPaymentsPayoutStatus {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooPaymentsDepositStatus {
+    public static func fake() -> Networking.WooPaymentsPayoutStatus {
         .estimated
     }
 }
-extension Networking.WooPaymentsDepositType {
+extension Networking.WooPaymentsPayoutType {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooPaymentsDepositType {
+    public static func fake() -> Networking.WooPaymentsPayoutType {
         .withdrawal
     }
 }
-extension Networking.WooPaymentsDepositsOverview {
+extension Networking.WooPaymentsPayoutsOverview {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooPaymentsDepositsOverview {
+    public static func fake() -> Networking.WooPaymentsPayoutsOverview {
         .init(
             deposit: .fake(),
             balance: .fake(),
@@ -2712,23 +2741,165 @@ extension Networking.WooPaymentsDepositsOverview {
         )
     }
 }
-extension Networking.WooPaymentsDepositsSchedule {
+extension Networking.WooPaymentsPayoutsSchedule {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooPaymentsDepositsSchedule {
+    public static func fake() -> Networking.WooPaymentsPayoutsSchedule {
         .init(
             delayDays: .fake(),
             interval: .fake()
         )
     }
 }
-extension Networking.WooPaymentsManualDeposit {
+extension Networking.WooShippingAccountSettings {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooPaymentsManualDeposit {
+    public static func fake() -> Networking.WooShippingAccountSettings {
         .init(
-            currency: .fake(),
-            date: .fake()
+            storeOptions: .fake(),
+            accountSettings: .fake()
+        )
+    }
+}
+extension Networking.WooShippingAddress {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingAddress {
+        .init(
+            company: .fake(),
+            name: .fake(),
+            phone: .fake(),
+            country: .fake(),
+            state: .fake(),
+            address1: .fake(),
+            address2: .fake(),
+            city: .fake(),
+            postcode: .fake()
+        )
+    }
+}
+extension Networking.WooShippingCarrierPredefinedOptions {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingCarrierPredefinedOptions {
+        .init(
+            carrierID: .fake(),
+            predefinedOptions: .fake()
+        )
+    }
+}
+extension Networking.WooShippingCreatePackageResponse {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingCreatePackageResponse {
+        .init(
+            customPackages: .fake(),
+            predefinedOptions: .fake()
+        )
+    }
+}
+extension Networking.WooShippingCustomPackage {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingCustomPackage {
+        .init(
+            id: .fake(),
+            name: .fake(),
+            rawType: .fake(),
+            dimensions: .fake(),
+            boxWeight: .fake()
+        )
+    }
+}
+extension Networking.WooShippingOriginAddress {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingOriginAddress {
+        .init(
+            id: .fake(),
+            company: .fake(),
+            address1: .fake(),
+            address2: .fake(),
+            city: .fake(),
+            state: .fake(),
+            postcode: .fake(),
+            country: .fake(),
+            phone: .fake(),
+            firstName: .fake(),
+            lastName: .fake(),
+            email: .fake(),
+            defaultAddress: .fake(),
+            isVerified: .fake()
+        )
+    }
+}
+extension Networking.WooShippingPackagePurchase {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingPackagePurchase {
+        .init(
+            shipmentID: .fake(),
+            package: .fake(),
+            rate: .fake(),
+            productIDs: .fake()
+        )
+    }
+}
+extension Networking.WooShippingPackagesResponse {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingPackagesResponse {
+        .init(
+            siteID: .fake(),
+            customPackages: .fake(),
+            savedPredefinedPackages: .fake(),
+            allPredefinedOptions: .fake()
+        )
+    }
+}
+extension Networking.WooShippingPredefinedOption {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingPredefinedOption {
+        .init(
+            title: .fake(),
+            providerID: .fake(),
+            predefinedPackages: .fake()
+        )
+    }
+}
+extension Networking.WooShippingPredefinedPackage {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingPredefinedPackage {
+        .init(
+            id: .fake(),
+            name: .fake(),
+            isLetter: .fake(),
+            dimensions: .fake(),
+            boxWeight: .fake(),
+            groupId: .fake()
+        )
+    }
+}
+extension Networking.WooShippingPredefinedSavedOption {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingPredefinedSavedOption {
+        .init(
+            id: .fake(),
+            predefinedPackageIDs: .fake()
+        )
+    }
+}
+extension Networking.WooShippingSavedPredefinedPackage {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingSavedPredefinedPackage {
+        .init(
+            groupTitle: .fake(),
+            providerID: .fake(),
+            package: .fake()
         )
     }
 }

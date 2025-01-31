@@ -143,9 +143,9 @@ struct CardReaderSettingsSearchingView: View {
                 .frame(height: isCompact ? 80 : 206)
                 .padding(.bottom, isCompact ? 16 : 32)
 
-            PaymentSettingsFlowHint(title: Localization.hintOneTitle, text: Localization.hintOne)
-            PaymentSettingsFlowHint(title: Localization.hintTwoTitle, text: Localization.hintTwo)
-            PaymentSettingsFlowHint(title: Localization.hintThreeTitle, text: Localization.hintThree)
+            PaymentSettingsFlowHint(number: 1, text: Localization.hintOne)
+            PaymentSettingsFlowHint(number: 2, text: Localization.hintTwo)
+            PaymentSettingsFlowHint(number: 3, text: Localization.hintThree)
 
             Spacer()
 
@@ -193,29 +193,14 @@ private enum Localization {
         comment: "Settings > Manage Card Reader > Prompt user to connect their first reader"
     )
 
-    static let hintOneTitle = NSLocalizedString(
-        "1",
-        comment: "Settings > Manage Card Reader > Connect > Help hint number 1"
-    )
-
     static let hintOne = NSLocalizedString(
         "Make sure card reader is charged",
         comment: "Settings > Manage Card Reader > Connect > Hint to charge card reader"
     )
 
-    static let hintTwoTitle = NSLocalizedString(
-        "2",
-        comment: "Settings > Manage Card Reader > Connect > Help hint number 2"
-    )
-
     static let hintTwo = NSLocalizedString(
         "Turn card reader on and place it next to mobile device",
         comment: "Settings > Manage Card Reader > Connect > Hint to power on reader"
-    )
-
-    static let hintThreeTitle = NSLocalizedString(
-        "3",
-        comment: "Settings > Manage Card Reader > Connect > Help hint number 3"
     )
 
     static let hintThree = NSLocalizedString(

@@ -45,14 +45,14 @@ private extension PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewMod
         )
 
         static let tryPaymentAgain =  NSLocalizedString(
-            "pointOfSale.cardPresent.paymentIntentCreationError.backToCheckout.button.title",
+            "pointOfSale.cardPresent.paymentIntentCreationError.tryPaymentAgain.button.title",
             value: "Try payment again",
             comment: "Button to try to collect a payment again. Presented to users after collecting a " +
             "payment intention creation fails on the Point of Sale Checkout"
         )
 
         static let backToCheckout =  NSLocalizedString(
-            "pointOfSale.cardPresent.paymentIntentCreationError.backToCheckout.button.title",
+            "pointOfSale.cardPresent.paymentIntentCreationError.checkout.button.title",
             value: "Edit order",
             comment: "Button to come back to order editing when a card payment fails. Presented to users after " +
             "payment intention creation fails on the Point of Sale Checkout"

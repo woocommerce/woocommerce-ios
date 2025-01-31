@@ -24,6 +24,7 @@ final class AppCoordinator {
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var authStatesSubscription: AnyCancellable?
+    private var localNotificationResponsesSubscription: AnyCancellable?
     private var isLoggedIn: Bool = false
     private let themeInstaller: ThemeInstaller
 
@@ -96,6 +97,9 @@ final class AppCoordinator {
                 self.isLoggedIn = isLoggedIn
             }
 
+        localNotificationResponsesSubscription = pushNotesManager.localNotificationUserResponses.sink { [weak self] response in
+            self?.handleLocalNotificationResponse(response)
+        }
         updateSitePropertiesIfNeeded()
     }
 }
@@ -116,6 +120,20 @@ private extension AppCoordinator {
             })
             stores.dispatch(action)
         }
+    }
+
+    func handleLocalNotificationResponse(_ response: UNNotificationResponse) {
+        let identifier = response.notification.request.identifier
+
+        let userInfo = response.notification.request.content.userInfo
+        guard response.actionIdentifier != UNNotificationDismissActionIdentifier else {
+            analytics.track(event: .LocalNotification.dismissed(type: LocalNotification.Scenario.identifierForAnalytics(identifier),
+                                                                userInfo: userInfo))
+            return
+        }
+
+        analytics.track(event: .LocalNotification.tapped(type: LocalNotification.Scenario.identifierForAnalytics(identifier),
+                                                         userInfo: userInfo))
     }
 }
 

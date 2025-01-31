@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
 @testable import Yosemite
+import WordPressAuthenticator
 
 final class JetpackSetupCoordinatorTests: XCTestCase {
 
@@ -155,7 +156,8 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
     func test_handleAuthenticationUrl_proceeds_to_authenticate_user_if_jetpack_is_already_connected() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
+        let siteURL = "https://example.com"
+        let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID, url: siteURL)
         let expectedScheme = "scheme"
         let coordinator = JetpackSetupCoordinator(site: testSite, dotcomAuthScheme: expectedScheme, rootViewController: navigationController, stores: stores)
         let url = try XCTUnwrap(URL(string: "scheme://magic-login?token=test"))
@@ -173,11 +175,18 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
             }
         }
 
-        let expectedSite = Site.fake().copy(siteID: 44, url: "https://example.com")
+        let expectedSite = Site.fake().copy(siteID: 44, url: siteURL)
+        stores.whenReceivingAction(ofType: SiteAction.self) { action in
+            switch action {
+            case let .syncSiteByDomain(domain, completion):
+                XCTAssertEqual(domain, "example.com")
+                completion(.success(expectedSite))
+            default:
+                break
+            }
+        }
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case .synchronizeSitesAndReturnSelectedSiteInfo(_, let onCompletion):
-                onCompletion(.success(expectedSite))
             case .synchronizeAccount(let onCompletion):
                 onCompletion(.success(expectedAccount))
             case .synchronizeAccountSettings(_, let onCompletion):
@@ -199,6 +208,72 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         }
         assertEqual(expectedSite.siteID, stores.sessionManager.defaultStoreID)
         assertEqual(expectedAccount, stores.sessionManager.defaultAccount)
+    }
+
+    func test_startAuthentication_proceeds_to_display_email_screen_when_email_is_not_found() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
+        let coordinator = JetpackSetupCoordinator(site: testSite,
+                                                  rootViewController: navigationController,
+                                                  stores: stores)
+
+        // When
+        coordinator.startAuthentication(with: nil)
+
+        // Then
+        waitUntil {
+            self.navigationController.topmostPresentedViewController is LoginNavigationController
+        }
+
+        let loginViewController = navigationController.topmostPresentedViewController as! LoginNavigationController
+        XCTAssertTrue(loginViewController.topViewController is WPComEmailLoginHostingController)
+    }
+
+    func test_startAuthentication_proceeds_to_display_password_screen_when_email_is_found() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
+        let mockAccountService = MockWordPressComAccountService()
+        mockAccountService.shouldReturnPasswordlessAccount = false
+        let coordinator = JetpackSetupCoordinator(site: testSite,
+                                                  rootViewController: navigationController,
+                                                  accountService: mockAccountService,
+                                                  stores: stores)
+
+        // When
+        coordinator.startAuthentication(with: "email@test.com")
+
+        // Then
+        waitUntil {
+            self.navigationController.topmostPresentedViewController is LoginNavigationController
+        }
+
+        let loginViewController = navigationController.topmostPresentedViewController as! LoginNavigationController
+        XCTAssertTrue(loginViewController.topViewController is WPComPasswordLoginHostingController)
+    }
+
+    func test_startAuthentication_proceeds_to_display_magic_link_screen_when_email_is_passwordless() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
+        let mockAccountService = MockWordPressComAccountService()
+        mockAccountService.shouldReturnPasswordlessAccount = true
+        let coordinator = JetpackSetupCoordinator(site: testSite,
+                                                  rootViewController: navigationController,
+                                                  accountService: mockAccountService,
+                                                  stores: stores)
+
+        // When
+        coordinator.startAuthentication(with: "email@test.com")
+
+        // Then
+        waitUntil {
+            self.navigationController.topmostPresentedViewController is LoginNavigationController
+        }
+
+        let loginViewController = navigationController.topmostPresentedViewController as! LoginNavigationController
+        XCTAssertTrue(loginViewController.topViewController is WPComMagicLinkHostingController)
     }
 }
 

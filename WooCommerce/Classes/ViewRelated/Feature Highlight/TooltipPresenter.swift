@@ -58,15 +58,18 @@ final class TooltipPresenter {
     }
 
     private var previousDeviceOrientation: UIDeviceOrientation?
+    private var animation: TooltipAnimation.Type
 
     init(containerView: UIView,
          tooltip: Tooltip,
          target: Target,
+         animation: TooltipAnimation.Type = UIView.self,
          primaryTooltipAction: (() -> Void)? = nil,
          secondaryTooltipAction: (() -> Void)? = nil
     ) {
         self.containerView = containerView
         self.tooltip = tooltip
+        self.animation = animation
         self.primaryTooltipAction = primaryTooltipAction
         self.secondaryTooltipAction = secondaryTooltipAction
         self.target = target
@@ -99,7 +102,7 @@ final class TooltipPresenter {
     }
 
     func dismissTooltip() {
-        UIView.animate(
+        animation.animate(
             withDuration: Constants.tooltipAnimationDuration,
             delay: 0,
             options: .curveEaseOut
@@ -125,20 +128,20 @@ final class TooltipPresenter {
     }
 
     private func animateTooltipIn() {
-        UIView.animate(
+        animation.animate(
             withDuration: Constants.tooltipAnimationDuration,
             delay: 0,
-            options: .curveEaseOut
-        ) {
-            guard let tooltipTopConstraint = self.tooltipTopConstraint else {
-                return
-            }
+            options: .curveEaseOut,
+            animations: {
+                guard let tooltipTopConstraint = self.tooltipTopConstraint else {
+                    return
+                }
 
-            self.tooltip.alpha = 1
-            tooltipTopConstraint.constant -= Constants.tooltipTopConstraintAnimationOffset
+                self.tooltip.alpha = 1
+                tooltipTopConstraint.constant -= Constants.tooltipTopConstraintAnimationOffset
 
-            self.containerView.layoutIfNeeded()
-        }
+                self.containerView.layoutIfNeeded()
+            }, completion: nil)
     }
 
     private func configureDismissal() {
@@ -202,7 +205,7 @@ final class TooltipPresenter {
     }
 
     @objc private func resetTooltipAndShow() {
-        UIView.animate(
+        animation.animate(
             withDuration: Constants.tooltipAnimationDuration,
             delay: 0,
             options: .curveEaseOut
@@ -273,3 +276,16 @@ final class TooltipPresenter {
         }
     }
 }
+
+// MARK: - TooltipAnimation
+
+/// Enable dependency injection for animation
+protocol TooltipAnimation: AnyObject {
+    static func animate(withDuration duration: TimeInterval,
+                        delay: TimeInterval,
+                        options: UIView.AnimationOptions,
+                        animations: @escaping () -> Void,
+                        completion: ((Bool) -> Void)?)
+}
+
+extension UIView: TooltipAnimation {}

@@ -184,15 +184,6 @@ public extension StorageType {
         }
     }
 
-    /// Deletes all of the stored `AddOnGroups` for a `siteID` that are not included in the provided `activeGroupIDs` array.
-    ///
-    func deleteStaleAddOnGroups(siteID: Int64, activeGroupIDs: [Int64]) {
-        let staleGroups = loadAddOnGroups(siteID: siteID).filter { !activeGroupIDs.contains($0.groupID) }
-        staleGroups.forEach {
-            deleteObject($0)
-        }
-    }
-
     /// Deletes all of the stored `SitePlugin` entities with a specified `siteID` whose name is not included in `installedPluginNames` array.
     ///
     func deleteStalePlugins(siteID: Int64, installedPluginNames: [String]) {

@@ -1,13 +1,17 @@
 import protocol Storage.StorageType
 import Yosemite
 
+protocol PushNotificationBackgroundSynchronizerProtocol {
+    func sync() async -> UIBackgroundFetchResult
+}
+
 /// Type that fetches the necessary resources when a push notification arrives in the background.
 /// Current it fetches:
 /// - Notifications (If needed)
 /// - Orders List (If needed)
 /// - Notification Order (If needed)
 ///
-struct PushNotificationBackgroundSynchronizer {
+struct PushNotificationBackgroundSynchronizer: PushNotificationBackgroundSynchronizerProtocol {
 
     /// Push notification user info
     ///

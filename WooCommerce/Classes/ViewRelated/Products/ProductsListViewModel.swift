@@ -21,7 +21,7 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
 
     private var wooSubscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
 
-    private let barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder
+    private let barcodeScannerItemFinder: BarcodeScannerItemFinder
     private let featureFlagService: FeatureFlagService
 
     private let favoriteProductsUseCase: FavoriteProductsUseCase
@@ -30,13 +30,13 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          favoriteProductsUseCase: FavoriteProductsUseCase? = nil,
-         barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder(),
+         barcodeScannerItemFinder: BarcodeScannerItemFinder = BarcodeScannerItemFinder(),
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID)
-        self.barcodeSKUScannerItemFinder = barcodeSKUScannerItemFinder
+        self.barcodeScannerItemFinder = barcodeScannerItemFinder
         self.favoriteProductsUseCase = favoriteProductsUseCase ?? DefaultFavoriteProductsUseCase(siteID: siteID)
 
         Task { @MainActor [weak self] in
@@ -182,9 +182,9 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
         wooSubscriptionProductsEligibilityChecker.isSiteEligible()
     }
 
-    func handleScannedBarcode(_ scannedBarcode: ScannedBarcode) async throws -> SKUSearchResult {
+    func handleScannedBarcode(_ scannedBarcode: ScannedBarcode) async throws -> ItemIdentifierSearchResult {
         do {
-            return try await barcodeSKUScannerItemFinder.searchBySKU(from: scannedBarcode,
+            return try await barcodeScannerItemFinder.searchByIdentifier(from: scannedBarcode,
                                                                      siteID: siteID,
                                                                      source: .scanToUpdateInventory)
         } catch {

@@ -28,7 +28,7 @@ protocol InventoryItem {
     func enableManageStock(stores: StoresManager) async throws -> InventoryItem
 }
 
-extension SKUSearchResult {
+extension ItemIdentifierSearchResult {
     var inventoryItem: InventoryItem {
         switch self {
         case .product(let product):

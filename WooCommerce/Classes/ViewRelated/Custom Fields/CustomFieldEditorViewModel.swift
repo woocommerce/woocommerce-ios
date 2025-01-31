@@ -27,6 +27,7 @@ final class CustomFieldEditorViewModel: ObservableObject {
         onDelete != nil
     }
 
+    let isReadOnlyValue: Bool
 
     var hasUnsavedChanges: Bool {
         key != initialKey || value != initialValue
@@ -37,15 +38,24 @@ final class CustomFieldEditorViewModel: ObservableObject {
         !key.isEmpty && keyErrorMessage == nil
     }
 
-    init(key: String,
-         value: String,
+    var isNewCreationMode: Bool {
+        initialKey == "" && initialValue == ""
+    }
+
+    init(customField: CustomFieldViewModel?,
          disallowedKeys: [String] = [],
          onSave: @escaping (String, String) -> Void,
          onDelete: (() -> Void)? = nil) {
-        self.key = key
+        self.key = customField?.key ?? ""
+        self.initialKey = customField?.key ?? ""
+        let value = if customField?.isJson == true, let value = customField?.value {
+            value.prettyPrint()
+        } else {
+            customField?.value ?? ""
+        }
         self.value = value
-        self.initialKey = key
         self.initialValue = value
+        self.isReadOnlyValue = customField?.isJson ?? false
         self.disallowedKeys = disallowedKeys
         self.onSave = onSave
         self.onDelete = onDelete
@@ -62,11 +72,46 @@ final class CustomFieldEditorViewModel: ObservableObject {
     }
 
     func saveChanges() {
+        ServiceLocator.analytics.track(
+            event: WooAnalyticsEvent.CustomFields.customFieldEditorDoneTapped()
+        )
         onSave(key, value)
     }
 
     func deleteField() {
+        ServiceLocator.analytics.track(
+            event: WooAnalyticsEvent.CustomFields.customFieldEditorDeleteTapped()
+        )
         onDelete?()
+    }
+
+    func trackEditorViewLoaded() {
+        ServiceLocator.analytics.track(
+            event: WooAnalyticsEvent.CustomFields.customFieldEditorLoaded(
+                editorType: isNewCreationMode ?
+                            WooAnalyticsEvent.CustomFields.EditorType.new :
+                            WooAnalyticsEvent.CustomFields.EditorType.edit
+            )
+        )
+    }
+
+    func trackEditorPickerTapped(showRichTextEditor: Bool) {
+        ServiceLocator.analytics.track(
+            event: WooAnalyticsEvent.CustomFields.customFieldEditorPickerTapped(
+                pickerType: showRichTextEditor ?
+                WooAnalyticsEvent.CustomFields.EditorPicker.aztec :
+                WooAnalyticsEvent.CustomFields.EditorPicker.text
+            )
+        )
+    }
+}
+
+private extension String {
+    func prettyPrint() -> String {
+        return (try? JSONSerialization.jsonObject(with: self.data(using: .utf8) ?? Data()))
+            .flatMap { try? JSONSerialization.data(withJSONObject: $0, options: .prettyPrinted) }
+            .flatMap { String(data: $0, encoding: .utf8) }
+            ?? self
     }
 }
 

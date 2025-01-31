@@ -1,7 +1,12 @@
 import SwiftUI
 
 struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
-    let viewModel: PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel
+    private let viewModel = PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel()
+    private let connectCardReader: () -> Void
+
+    init(connectCardReader: @escaping () -> Void) {
+        self.connectCardReader = connectCardReader
+    }
 
     var body: some View {
         VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.errorElementSpacing) {
@@ -18,8 +23,10 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
                     .foregroundStyle(Color.posPrimaryText)
             }
 
-            Button(action: viewModel.connectReaderButtonViewModel.actionHandler) {
-                Text(viewModel.connectReaderButtonViewModel.title)
+            Button {
+                connectCardReader()
+            } label: {
+                Text(viewModel.connectReaderButtonTitle)
             }
             .buttonStyle(POSPrimaryButtonStyle())
         }
@@ -28,9 +35,8 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
     }
 }
 
+#if DEBUG
 #Preview {
-    PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(
-        viewModel: PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel(
-            connectReaderAction: {})
-    )
+    PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(connectCardReader: {})
 }
+#endif

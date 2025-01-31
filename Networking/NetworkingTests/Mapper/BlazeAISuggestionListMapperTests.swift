@@ -9,11 +9,14 @@ final class BlazeAISuggestionListMapperTests: XCTestCase {
         // Then
         XCTAssertEqual(list, [
             .init(siteName: "Classic Fridge!",
-                  textSnippet: "Apartment Sized 7.5 cu. ft. Two Door Refrigerator with Retro Design and Low Energy Consumption. Click for more!"),
+                  textSnippet: "Apartment Sized 7.5 cu. ft. Two Door Refrigerator with Retro Design and Low Energy Consumption. Click for more!",
+                  ctaText: "Buy now!"),
             .init(siteName: "Funky Retro Fridge",
-                  textSnippet: "Epic Black Retro Refrigerator with Chrome handles, low energy consumption and lots of door storage. Buy now!"),
+                  textSnippet: "Epic Black Retro Refrigerator with Chrome handles, low energy consumption and lots of door storage. Buy now!",
+                  ctaText: "Shop now!"),
             .init(siteName: "Cool Vintage Refrigerator",
-                  textSnippet: "Automatic Defrost, Low Energy Consumption, 2L bottle Storage, 1 Year Warranty. Check it out!")
+                  textSnippet: "Automatic Defrost, Low Energy Consumption, 2L bottle Storage, 1 Year Warranty. Check it out!",
+                  ctaText: "Buy now!")
         ])
     }
 }

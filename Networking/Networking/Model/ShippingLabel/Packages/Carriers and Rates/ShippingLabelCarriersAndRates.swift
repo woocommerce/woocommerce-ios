@@ -21,7 +21,7 @@ public struct ShippingLabelCarriersAndRates: Equatable {
 }
 
 // MARK: Codable
-extension ShippingLabelCarriersAndRates: Codable {
+extension ShippingLabelCarriersAndRates: Decodable {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -42,8 +42,8 @@ extension ShippingLabelCarriersAndRates: Codable {
     private enum CodingKeys: String, CodingKey {
         case packageID
         case defaultRates = "default"
-        case signatureRequired = "signature_required"
-        case adultSignatureRequired = "adult_signature_required"
+        case signatureRequired
+        case adultSignatureRequired
     }
 }
 

@@ -185,12 +185,6 @@ private extension DashboardViewHostingController {
             updateStoreOnboardingCoordinatorIfNeeded(with: site)
             storeOnboardingCoordinator?.start()
         }
-
-        rootView.onboardingShareFeedbackAction = { [weak self] in
-            ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .onboarding))
-            let navigationController = SurveyCoordinatingController(survey: .storeSetup)
-            self?.present(navigationController, animated: true, completion: nil)
-        }
     }
 
     func updateStoreOnboardingCoordinatorIfNeeded(with site: Site) {

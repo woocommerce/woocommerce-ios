@@ -692,7 +692,7 @@ final class DashboardViewModelTests: XCTestCase {
         await viewModel.onViewAppear()
 
         // Then
-        waitUntil {
+        await until {
             scheduler.scheduleNoCampaignReminderCalled == true
         }
     }

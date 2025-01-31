@@ -56,10 +56,6 @@ public protocol StorageType: AnyObject {
     /// This will ensure that `NSFetchedResultsController` will not ever receive temporary IDs.
     func obtainPermanentIDs(for objects: [NSManagedObject]) throws
 
-    /// Persists unsaved changes, if needed.
-    ///
-    func saveIfNeeded()
-
     /// Asynchronously performs a given block on the StorageType's queue.
     ///
     func perform(_ closure: @escaping () -> Void)

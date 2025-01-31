@@ -20,7 +20,7 @@ enum ProductFormEditAction: Equatable {
     case shortDescription(editable: Bool)
     case linkedProducts(editable: Bool)
     // Affiliate products only
-    case sku(editable: Bool)
+    case simplifiedInventory(editable: Bool)
     case externalURL(editable: Bool)
     // Grouped products only
     case groupedProducts(editable: Bool)
@@ -198,7 +198,7 @@ private extension ProductFormActionsFactory {
     func allSettingsSectionActionsForAffiliateProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = product.reviewsAllowed
         let shouldShowExternalURLRow = editable || product.product.externalURL?.isNotEmpty == true
-        let shouldShowSKURow = editable || product.sku?.isNotEmpty == true
+        let shouldShowInventoryRow = editable || product.sku?.isNotEmpty == true || product.globalUniqueID?.isNotEmpty == true
         let canEditProductType = editable
         let shouldShowQuantityRulesRow = product.canEditQuantityRules
 
@@ -206,7 +206,7 @@ private extension ProductFormActionsFactory {
             .priceSettings(editable: editable, hideSeparator: false),
             shouldShowReviewsRow ? .reviews: nil,
             shouldShowExternalURLRow ? .externalURL(editable: editable): nil,
-            shouldShowSKURow ? .sku(editable: editable): nil,
+            shouldShowInventoryRow ? .simplifiedInventory(editable: editable): nil,
             shouldShowQuantityRulesRow ? .quantityRules : nil,
             .addOns(editable: editable),
             .categories(editable: editable),
@@ -221,14 +221,14 @@ private extension ProductFormActionsFactory {
 
     func allSettingsSectionActionsForGroupedProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = product.reviewsAllowed
-        let shouldShowSKURow = editable || product.sku?.isNotEmpty == true
+        let shouldShowInventoryRow = editable || product.sku?.isNotEmpty == true || product.globalUniqueID?.isNotEmpty == true
         let canEditProductType = editable
         let shouldShowQuantityRulesRow = product.canEditQuantityRules
 
         let actions: [ProductFormEditAction?] = [
             .groupedProducts(editable: editable),
             shouldShowReviewsRow ? .reviews: nil,
-            shouldShowSKURow ? .sku(editable: editable): nil,
+            shouldShowInventoryRow ? .simplifiedInventory(editable: editable): nil,
             shouldShowQuantityRulesRow ? .quantityRules : nil,
             .addOns(editable: editable),
             .categories(editable: editable),
@@ -461,8 +461,8 @@ private extension ProductFormActionsFactory {
         case .externalURL:
             // The external URL action is always visible in the settings section for an affiliate product.
             return true
-        case .sku:
-            return product.sku?.isNotEmpty == true
+        case .simplifiedInventory:
+            return product.sku?.isNotEmpty == true || product.globalUniqueID?.isNotEmpty == true
         // Grouped products only.
         case .groupedProducts:
             // The grouped products action is always visible in the settings section for a grouped product.

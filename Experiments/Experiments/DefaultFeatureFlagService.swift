@@ -52,7 +52,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .giftCardInOrderForm:
             return true
-        case .wooPaymentsDepositsOverviewInPaymentsMenu:
+        case .wooPaymentsPayoutsOverviewInPaymentsMenu:
             return true
         case .tapToPayOnIPhoneInUK:
             return true
@@ -62,14 +62,13 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .scanToUpdateInventory:
             return true
-        case .backendReceipts:
-            return true
         case .splitViewInProductsTab:
             return true
         case .subscriptionsInOrderCreationUI:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .subscriptionsInOrderCreationCustomers:
-            return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
+            // Feature paused pfoUAQ-zw-p2#comment-510.
+            return false
         case .pointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .googleAdsCampaignCreationOnWebView:
@@ -77,7 +76,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .backgroundTasks:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .viewEditCustomFieldsInProductsAndOrders:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .blazeEvergreenCampaigns:
             return true
         case .revampedShippingLabelCreation:
@@ -87,9 +86,17 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .favoriteProducts:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .productGlobalUniqueIdentifierSupport:
+            return true
+        case .sendReceiptsForPointOfSale:
+            return true
+        case .acceptCashForPointOfSale:
+            return true
+        case .variableProductsInPointOfSale:
+            return true
+        case .hideSitesInStorePicker:
+            return true
+        case .filterHistoryOnOrderAndProductLists:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .paymentsOnboardingInPointOfSale:
-            return buildConfig == .localDeveloper
         default:
             return true
         }

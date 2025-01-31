@@ -278,7 +278,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         XCTAssertEqual(viewModel.productModel.product.menuOrder, menuOrder)
     }
 
-    func testUpdatingSKU() {
+    func testUpdatingIdentifiers() {
         // Arrange
         let product = Product.fake().copy(sku: "")
         let model = EditableProductModel(product: product)
@@ -289,10 +289,12 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
 
         // Action
         let sku = "woooo"
-        viewModel.updateSKU(sku)
+        let globalUniqueID = "12345"
+        viewModel.updateIdentifiers(sku: sku, globalUniqueID: globalUniqueID)
 
         // Assert
         XCTAssertEqual(viewModel.productModel.sku, sku)
+        XCTAssertEqual(viewModel.productModel.globalUniqueID, globalUniqueID)
     }
 
     func testUpdatingExternalLink() {

@@ -1,0 +1,30 @@
+{
+    "data": {
+        "success": true,
+        "label": {
+            "label_id": 4145,
+            "tracking": "9449000106025109444563",
+            "refundable_amount": 6.13,
+            "created": 1732200776893,
+            "carrier_id": "usps",
+            "service_name": "USPS - Media Mail",
+            "status": "PURCHASED",
+            "commercial_invoice_url": "",
+            "is_commercial_invoice_submitted_electronically": false,
+            "package_name": "Custom Box",
+            "is_letter": false,
+            "product_names": [
+                "Beanie"
+            ],
+            "product_ids": [
+                19
+            ],
+            "receipt_item_id": 25040494,
+            "created_date": 1732200780000,
+            "expiry_date": 1747752780000,
+            "main_receipt_id": 20268581,
+            "rate": 6.13,
+            "currency": "USD"
+        }
+    }
+}

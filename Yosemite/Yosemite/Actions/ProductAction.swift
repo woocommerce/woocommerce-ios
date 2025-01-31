@@ -1,9 +1,16 @@
 import Foundation
 import Networking
 
-public enum SKUSearchResult {
+public enum ItemIdentifierSearchResult {
     case product(Product)
     case variation(ProductVariation)
+}
+
+/// Which property matched the looked identifier
+///
+public enum ItemIdentifierSearchResultSource {
+    case SKU
+    case globalUniqueIdentifier
 }
 
 /// ProductAction: Defines all of the Actions supported by the ProductStore.
@@ -70,9 +77,11 @@ public enum ProductAction: Action {
                           pageSize: Int = ProductsRemote.Default.pageSize,
                           onCompletion: (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
 
-    /// Retrieves the first Product with exact-match SKU
+    /// Retrieves the first Product or Variation with exact-match SKU or, if that search is empty, global unique identifier
     ///
-    case retrieveFirstPurchasableItemMatchFromSKU(siteID: Int64, sku: String, onCompletion: (Result<SKUSearchResult, Error>) -> Void)
+    case retrieveFirstPurchasableItemMatchFromIdentifier(siteID: Int64,
+                                                         identifier: String,
+                                                         onCompletion: (Result<(ItemIdentifierSearchResult, ItemIdentifierSearchResultSource), Error>) -> Void)
 
     /// Deletes all of the cached products.
     ///

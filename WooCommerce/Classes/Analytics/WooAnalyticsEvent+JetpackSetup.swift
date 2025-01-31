@@ -8,6 +8,7 @@ extension WooAnalyticsEvent {
             case requiresConnectionOnly = "requires_connection_only"
             case tap
             case step
+            case isSignup = "is_signup"
         }
 
         enum LoginFlow {
@@ -41,10 +42,16 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func loginFlow(step: LoginFlow.Step, tap: LoginFlow.TapTarget? = nil, failure: Error? = nil) -> WooAnalyticsEvent {
+        static func loginFlow(step: LoginFlow.Step,
+                              isSignup: Bool? = nil,
+                              tap: LoginFlow.TapTarget? = nil,
+                              failure: Error? = nil) -> WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [Key.step.rawValue: step.rawValue]
             if let tap {
                 properties[Key.tap.rawValue] = tap.rawValue
+            }
+            if let isSignup {
+                properties[Key.isSignup.rawValue] = isSignup
             }
             return .init(statName: .jetpackSetupLoginFlow, properties: properties, error: failure)
         }

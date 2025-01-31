@@ -22,7 +22,7 @@ final class PaymentsTests: XCTestCase {
     }
 
     func test_load_learn_more_link() throws {
-        try PaymentsScreen().tapLearnMoreIPPLink()
+        try PaymentsScreen().clickLearnMoreIPPLink()
             .verifyIPPDocumentationLoadedInWebView()
     }
 

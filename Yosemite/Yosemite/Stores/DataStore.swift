@@ -8,12 +8,6 @@ import Storage
 public final class DataStore: Store {
     private let remote: DataRemote
 
-    /// Shared private StorageType for use during then entire DataStore sync process
-    ///
-    private lazy var sharedDerivedStorage: StorageType = {
-        storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = DataRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -71,14 +65,9 @@ private extension DataStore {
     /// `onCompletion` will be called on the main thread!
     ///
     func insertCountriesInBackground(countries: [Country], onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            self?.insertCountries(countries: countries, in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ [weak self] storage in
+            self?.insertCountries(countries: countries, in: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Delete and re-inserts the specified readonly Country entities in the current thread.

@@ -160,10 +160,11 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
                         dependencies.dismissReaderConnectionModal()
                     })))
 
-        case .updateFailedLowBattery(let batteryLevel, let cancelUpdate):
+        case .updateFailedLowBattery(let batteryLevel, let retrySearch, let cancelUpdate):
             self = .alert(.updateFailedLowBattery(
                 viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlertViewModel(
                     batteryLevel: batteryLevel,
+                    retrySearchAction: retrySearch,
                     cancelUpdateAction: {
                         cancelUpdate()
                         dependencies.dismissReaderConnectionModal()
@@ -187,7 +188,7 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
                 viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel(
                     inputMethods: inputMethods)))
         case .paymentSuccess:
-            self = .message(.paymentSuccess(viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel(
+            self = .message(.paymentSuccess(viewModel: PointOfSalePaymentSuccessViewModel(
                 formattedOrderTotal: dependencies.formattedOrderTotalPrice)))
         case .paymentError(error: let error, retryApproach: let retryApproach, _):
             switch error {
@@ -243,6 +244,14 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
 
             /// Not-yet supported types
         case .selectSearchType:
+            return nil
+            /// Immediately request location permission until POS view is created
+        case .locationRequestPreAlert(let requestPermission):
+            requestPermission()
+            return nil
+            /// Skip location required step and rely on error during the payment process until POS view is created
+        case .locationRequired(_, let skip):
+            skip()
             return nil
         }
     }

@@ -784,7 +784,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     private func buildCustomFields() -> [[String: String]] {
         var customFieldsArray: [[String: String]] = []
         for customField in customFields {
-            customFieldsArray.append(["id": "\(customField.metadataID)", "key": customField.key, "value": customField.value])
+            customFieldsArray.append(["id": "\(customField.metadataID)", "key": customField.key, "value": customField.value.stringValue])
         }
         return customFieldsArray
     }

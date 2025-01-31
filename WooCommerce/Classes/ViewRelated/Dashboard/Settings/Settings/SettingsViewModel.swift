@@ -242,7 +242,8 @@ private extension SettingsViewModel {
             }
             var rows: [Row] = [.storeName]
 
-            if site.isJetpackCPConnected == true ||
+            if defaults.wpcomSiteSuspended == false,
+               site.isJetpackCPConnected == true ||
                 (site.isNonJetpackSite == true &&
                  featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)) {
                 rows.append(.installJetpack)

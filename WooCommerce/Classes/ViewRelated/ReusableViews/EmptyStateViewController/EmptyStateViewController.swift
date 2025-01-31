@@ -146,6 +146,9 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        stackView.setCustomSpacing(48, after: imageView)
+        stackView.setCustomSpacing(24, after: detailsLabel)
+
         view.backgroundColor = style.backgroundColor
         contentView.backgroundColor = style.backgroundColor
         NSLayoutConstraint.activate([stackView.centerYAnchor.constraint(equalTo: visiblyCenteredLayoutGuide.centerYAnchor)])

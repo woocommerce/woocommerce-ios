@@ -59,7 +59,14 @@ final class PluginListViewModel {
     /// Manually sync plugins.
     ///
     func syncPlugins(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let action = SitePluginAction.synchronizeSitePlugins(siteID: siteID, onCompletion: onCompletion)
+        let action = SystemStatusAction.synchronizeSystemInformation(siteID: siteID, onCompletion: { result in
+            switch result {
+            case .success:
+                onCompletion(.success(()))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        })
         storesManager.dispatch(action)
     }
 }

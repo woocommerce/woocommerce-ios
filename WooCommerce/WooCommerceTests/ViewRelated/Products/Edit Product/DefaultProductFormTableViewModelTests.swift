@@ -65,6 +65,41 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         XCTAssertNil(inventoryViewModel?.details)
     }
 
+    func test_variable_product_inventory_row_has_details_when_passing_global_unique_identifier() {
+        // Arrange
+        let globalUniqueID = "12345"
+        let product = Product.fake().copy(productTypeKey: ProductType.variable.rawValue,
+                                          sku: "",
+                                          globalUniqueID: globalUniqueID,
+                                          manageStock: false,
+                                          stockStatusKey: ProductStockStatus.onBackOrder.rawValue)
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+
+        // Action
+        let featureFlagService = MockFeatureFlagService(isProductGlobalUniqueIdentifierSupported: true)
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              isDescriptionAIEnabled: true,
+                                                              featureFlagService: featureFlagService)
+
+        // Assert
+        guard case let .settings(rows) = tableViewModel.sections[1] else {
+            XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
+            return
+        }
+        var inventoryViewModel: ProductFormSection.SettingsRow.ViewModel?
+        for row in rows {
+            if case let .inventory(viewModel, _) = row {
+                inventoryViewModel = viewModel
+                break
+            }
+        }
+        let expectedDetails = "GTIN, UPC, EAN, ISBN: \(globalUniqueID)"
+        XCTAssertEqual(inventoryViewModel?.details, expectedDetails)
+    }
+
     func test_variation_view_model_image_row_has_isVariation_true() {
         // Arrange
         let variation = ProductVariation.fake()

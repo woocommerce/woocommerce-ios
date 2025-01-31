@@ -1,32 +1,49 @@
 import SwiftUI
-import protocol Yosemite.POSItem
+import enum Yosemite.POSItem
+import protocol Yosemite.POSOrderableItem
 
 struct ItemListView: View {
-    @ObservedObject var viewModel: ItemListViewModel
-    @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    init(viewModel: ItemListViewModel) {
-        self.viewModel = viewModel
+    @EnvironmentObject var posModel: PointOfSaleAggregateModel
+
+    @State private var showSimpleProductsModal: Bool = false
+    private var itemListState: ItemListState {
+        posModel.itemsViewState.itemsStack.root
     }
 
+    @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
+    private var isHeaderBannerDismissed: Bool = false
+
     var body: some View {
-        VStack {
-            headerView
-            switch viewModel.state {
-            case .empty, .error:
-                // These cases are handled directly in the dashboard, we do not render
-                // a specific view within the ItemListView to handle them
-                EmptyView()
-            case .initialLoading, .loading, .loaded:
-                listView(viewModel.items)
+        NavigationStack {
+            VStack {
+                headerView
+                switch itemListState {
+                case .loading(let items),
+                        .loaded(let items, _),
+                        .inlineError(let items, _):
+                    listView(items)
+                case .error:
+                    // Currently unused, but this will show errors that are displayed inline with previously
+                    // loaded items, e.g. when loading a new page or refreshing.
+                    EmptyView()
+                }
             }
+            .navigationDestination(for: POSItem.self, destination: { item in
+                childListView(parentItem: item)
+            })
+            .background(Color.posPrimaryBackground)
         }
         .refreshable {
-            await viewModel.reload()
+            await Task {
+                await posModel.loadItems(base: .root)
+            }.value
         }
-        .background(Color.posPrimaryBackground)
         .accessibilityElement(children: .contain)
+        .posModal(isPresented: $showSimpleProductsModal) {
+            SimpleProductsOnlyInformation(isPresented: $showSimpleProductsModal)
+        }
     }
 }
 
@@ -37,11 +54,11 @@ private extension ItemListView {
     var headerView: some View {
         VStack {
             HStack {
-                POSHeaderTitleView()
-                if !viewModel.shouldShowHeaderBanner {
+                POSHeaderTitleView(title: Localization.title)
+                if !shouldShowHeaderBanner {
                     Spacer()
                     Button(action: {
-                        viewModel.simpleProductsInfoButtonTapped()
+                        showSimpleProductsModal = true
                     }, label: {
                         Image(systemName: "info.circle")
                             .font(.posTitleRegular)
@@ -50,7 +67,7 @@ private extension ItemListView {
                     .padding(.trailing, Constants.infoIconPadding)
                 }
             }
-            if !dynamicTypeSize.isAccessibilitySize, viewModel.shouldShowHeaderBanner {
+            if !dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
                     .padding(.horizontal, Constants.bannerCardPadding)
             }
@@ -71,11 +88,11 @@ private extension ItemListView {
                 Spacer()
             }
             VStack(alignment: .leading, spacing: Constants.bannerTitleSpacing) {
-                Text(Localization.headerBannerTitle)
+                Text(headerBannerTitle)
                     .font(Constants.bannerTitleFont)
                     .accessibilityAddTraits(.isHeader)
                 VStack(alignment: .leading, spacing: Constants.bannerTextSpacing) {
-                    Text(Localization.headerBannerSubtitle)
+                    Text(headerBannerSubtitle)
                     bannerHintAndLearnMoreText
                 }
                 .font(Constants.bannerSubtitleFont)
@@ -86,7 +103,7 @@ private extension ItemListView {
             .padding(.vertical, Constants.bannerVerticalPadding)
             VStack {
                 Button(action: {
-                    viewModel.dismissBanner()
+                    isHeaderBannerDismissed = true
                 }, label: {
                     Image(systemName: "xmark")
                         .font(.posBodyRegular)
@@ -104,13 +121,13 @@ private extension ItemListView {
         .shadow(color: Color.black.opacity(0.08), radius: 4, y: 2)
         .accessibilityAddTraits(.isButton)
         .onTapGesture {
-            viewModel.simpleProductsInfoButtonTapped()
+            showSimpleProductsModal = true
         }
         .padding(.bottom, Constants.bannerCardPadding)
     }
 
     private var bannerHintAndLearnMoreText: Text {
-        Text(Localization.headerBannerHint + " ") +
+        Text(headerBannerHint + " ") +
         Text(Localization.headerBannerLearnMoreHint)
             .font(POSFontStyle.posDetailEmphasized.font())
             .foregroundColor(Color(.accent))
@@ -118,37 +135,39 @@ private extension ItemListView {
 
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
-        ScrollView {
-            VStack {
-                if dynamicTypeSize.isAccessibilitySize, viewModel.shouldShowHeaderBanner {
-                    bannerCardView
-                }
-                ForEach(items, id: \.productID) { item in
-                    Button(action: {
-                        viewModel.select(item)
-                    }, label: {
-                        ItemCardView(item: item)
-                    })
-                }
-                GhostItemCardView()
-                    .renderedIf(viewModel.state == .loading)
+        ItemList(state: itemListState) {
+            if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
+                bannerCardView
             }
-            .padding(.bottom, floatingControlAreaSize.height)
-            .padding(.horizontal, Constants.itemListPadding)
-            .background(GeometryReader { proxy in
-                Color.clear
-                    .onChange(of: proxy.frame(in: .global).maxY) { maxY in
-                        if viewModel.state == .loading {
-                            return
-                        }
-                        let viewHeight = UIScreen.main.bounds.height
-                        if maxY < viewHeight {
-                            Task {
-                                await viewModel.loadNextItems()
-                            }
-                        }
-                    }
-            })
+        }
+    }
+
+    @ViewBuilder
+    func childListView(parentItem: POSItem) -> some View {
+        switch parentItem {
+        case let .variableParentProduct(parentProduct):
+            ChildItemList(parentItem: parentItem, title: parentProduct.name)
+        default:
+            EmptyView()
+        }
+    }
+}
+
+private extension ItemListView {
+    var shouldShowHeaderBanner: Bool {
+        itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
+    }
+}
+
+private extension ItemListState {
+    var eligibleToShowSimpleProductsBanner: Bool {
+        switch self {
+        case .loading,
+                .loaded,
+                .inlineError:
+            return true
+        case .error:
+            return false
         }
     }
 }
@@ -209,7 +228,33 @@ private extension ItemListView {
         static let bannerCardPadding: CGFloat = 16
     }
 
+    enum BannerState {
+        static let isSimpleProductsOnlyBannerDismissedKey = "isSimpleProductsOnlyBannerDismissed"
+    }
+
+    var variableProductsEnabled: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.variableProductsInPointOfSale)
+    }
+
+    var headerBannerTitle: String {
+        variableProductsEnabled ? Localization.headerBannerTitleSimpleAndVariable : Localization.headerBannerTitle
+    }
+
+    var headerBannerSubtitle: String {
+        variableProductsEnabled ? Localization.headerBannerSubtitleSimpleAndVariable : Localization.headerBannerSubtitle
+    }
+
+    var headerBannerHint: String {
+        variableProductsEnabled ? Localization.headerBannerHintSimpleAndVariable : Localization.headerBannerHint
+    }
+
     enum Localization {
+        static let title = NSLocalizedString(
+            "pos.itemlistview.title",
+            value: "Products",
+            comment: "Title at the top of the Point of Sale product selector screen."
+        )
+
         static let headerBannerTitle = NSLocalizedString(
             "pos.itemlistview.headerBanner.title",
             value: "Showing simple products only",
@@ -225,6 +270,24 @@ private extension ItemListView {
         static let headerBannerHint = NSLocalizedString(
             "pos.itemlistview.headerBanner.hint",
             value: "Other product types, such as variable and virtual, will become available in future updates.",
+            comment: "Additional text within the product selector header banner, which explains current POS limitations"
+        )
+
+        static let headerBannerTitleSimpleAndVariable = NSLocalizedString(
+            "pos.itemlistview.headerBanner.title.simpleAndVariable",
+            value: "Showing simple and variable products only",
+            comment: "Title of the product selector header banner, which explains current POS limitations"
+        )
+
+        static let headerBannerSubtitleSimpleAndVariable = NSLocalizedString(
+            "pos.itemlistview.headerBanner.subtitle.simpleAndVariable",
+            value: "Only simple and variable non-downloadable products can be used with POS right now.",
+            comment: "Subtitle of the product selector header banner, which explains current POS limitations"
+        )
+
+        static let headerBannerHintSimpleAndVariable = NSLocalizedString(
+            "pos.itemlistview.headerBanner.hint.simpleAndVariable",
+            value: "Other product types will become available in future updates.",
             comment: "Additional text within the product selector header banner, which explains current POS limitations"
         )
 
@@ -244,7 +307,27 @@ private extension ItemListView {
 }
 
 #if DEBUG
-#Preview {
-    ItemListView(viewModel: ItemListViewModel(itemProvider: POSItemProviderPreview()))
+
+#Preview("Loaded with all product types") {
+    let itemsController = PointOfSalePreviewItemsController()
+    Task { @MainActor in
+        await itemsController.loadItems(base: .root)
+    }
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: itemsController,
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
+    return ItemListView()
+        .environmentObject(posModel)
 }
+
+#Preview("Loading") {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
+    return ItemListView()
+        .environmentObject(posModel)
+}
+
 #endif

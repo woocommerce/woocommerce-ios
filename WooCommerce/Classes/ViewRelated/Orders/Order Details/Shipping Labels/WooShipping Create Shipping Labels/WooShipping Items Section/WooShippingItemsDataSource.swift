@@ -1,10 +1,12 @@
 import UIKit
 import Yosemite
 import protocol Storage.StorageManagerType
+import WooFoundation
 
 /// Provides data about items to ship for an order with the Woo Shipping extension.
 ///
 protocol WooShippingItemsDataSource {
+    var currency: String { get }
     var items: [ShippingLabelPackageItem] { get }
 }
 
@@ -12,6 +14,7 @@ final class DefaultWooShippingItemsDataSource: WooShippingItemsDataSource {
     private let order: Order
     private let storageManager: StorageManagerType
     private let stores: StoresManager
+    let currency: String
 
     /// Items to ship from an order.
     ///
@@ -65,6 +68,7 @@ final class DefaultWooShippingItemsDataSource: WooShippingItemsDataSource {
         self.order = order
         self.storageManager = storageManager
         self.stores = stores
+        self.currency = order.currency
 
         configureProductResultsController()
         configureProductVariationResultsController()

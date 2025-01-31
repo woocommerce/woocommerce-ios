@@ -140,10 +140,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     ///
     private var selectedOrderID: Int64?
 
-    /// Tracks if the swipe actions have been glanced to the user.
-    ///
-    private var swipeActionsGlanced = false
-
     /// Banner variation that will be shown as In-Person Payments feedback banner. If any.
     ///
     private var inPersonPaymentsSurveyVariation: SurveyViewController.Source?
@@ -414,16 +410,6 @@ extension OrderListViewController {
         /// Fires fulfillment action, observes its result and enqueue the appropriate notices.
         let presenter = OrderFulfillmentNoticePresenter(noticeConfiguration: noticeConfiguration)
         presenter.present(process: fulfillmentProcess)
-    }
-
-    /// Slightly reveal swipe actions of the first visible cell that contains at least one swipe action.
-    /// This action is performed only once, using `swipeActionsGlanced` as a control variable.
-    ///
-    private func glanceTrailingActionsIfNeeded() {
-        if !swipeActionsGlanced {
-            swipeActionsGlanced = true
-            tableView.glanceTrailingSwipeActions()
-        }
     }
 }
 
@@ -780,7 +766,7 @@ private extension OrderListViewController {
 
             analytics.track(event: .TestOrder.entryPointDisplayed())
             return .withButton(message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
-                               image: .emptyOrdersImage,
+                               image: .boxesImage,
                                details: Localization.createTestOrderDetail,
                                buttonTitle: Localization.tryTestOrder,
                                onTap: { [weak self] _ in
@@ -798,7 +784,7 @@ private extension OrderListViewController {
 
         /// Otherwise, show link to Woo blog.
         return .withLink(message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
-                         image: .emptyOrdersImage,
+                         image: .boxesImage,
                          details: Localization.allOrdersEmptyStateDetail,
                          linkTitle: Localization.learnMore,
                          linkURL: WooConstants.URLs.blog.asURL()) { [weak self] refreshControl in
@@ -816,7 +802,7 @@ private extension OrderListViewController {
 
         return EmptyStateViewController.Config.withButton(
             message: message,
-            image: .emptySearchResultsImage,
+            image: .magnifyingGlassNotFound,
             details: "",
             buttonTitle: Localization.clearButton,
             onTap: { [weak self] button in
@@ -928,7 +914,7 @@ private extension OrderListViewController {
         case .syncing:
             ensureFooterSpinnerIsStarted()
         case .results:
-            glanceTrailingActionsIfNeeded()
+            break
         }
     }
 
@@ -1014,7 +1000,7 @@ private extension OrderListViewController {
     enum Localization {
         static let allOrdersEmptyStateMessage = NSLocalizedString("Waiting for your first order",
                                                                   comment: "The message shown in the Orders → All Orders tab if the list is empty.")
-        static let allOrdersEmptyStateDetail = NSLocalizedString("Explore how you can increase your store sales",
+        static let allOrdersEmptyStateDetail = NSLocalizedString("Explore how you can increase your store sales.",
                                                                  comment: "The detailed message shown in the Orders → All Orders tab if the list is empty.")
         static let learnMore = NSLocalizedString("Learn more", comment: "Title of button shown in the Orders → All Orders tab if the list is empty.")
         static let createTestOrderDetail = NSLocalizedString(

@@ -7,10 +7,6 @@ import Storage
 public final class ShippingMethodStore: Store {
     private let remote: ShippingMethodsRemote
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public init(remote: ShippingMethodsRemote,
                 dispatcher: Dispatcher,
                 storageManager: StorageManagerType,
@@ -77,15 +73,10 @@ private extension ShippingMethodStore {
     /// Triggers `completion` on main thread.
     ///
     func upsertShippingMethodsInBackground(siteID: Int64, readOnlyMethods: [ShippingMethod], completion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
+        storageManager.performAndSave({ [weak self] storage in
             guard let self else { return }
-            self.upsertShippingMethods(siteID: siteID, readOnlyMethods: readOnlyMethods, in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: completion)
-        }
+            self.upsertShippingMethods(siteID: siteID, readOnlyMethods: readOnlyMethods, in: storage)
+        }, completion: completion, on: .main)
     }
 
     /// Updates or inserts Readonly `ShippingMethod` entities in specified storage.

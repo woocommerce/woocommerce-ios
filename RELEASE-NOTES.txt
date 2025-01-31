@@ -1,9 +1,103 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
+21.6
+-----
+- [*] Payments: improve retry handling when card reader updates fail due to low battery [https://github.com/woocommerce/woocommerce-ios/pull/14990]
+- [*] Payments: Improved error handling during card payments and refunds [https://github.com/woocommerce/woocommerce-ios/pull/14980]
+- [***] Updated the app look and feel to match the new WooCommerce branding [https://github.com/woocommerce/woocommerce-ios/pull/14825]
+
+21.5
+-----
+- [*] Blaze: if the AI is unable to provide suggestions in the creation form, the form will now automatically use product information to ensure all fields of the preview are populated. [https://github.com/woocommerce/woocommerce-ios/pull/14868]
+- [Internal] [*] Improved handling of the navigation to the Woo Installation screen post Jetpack setup [https://github.com/woocommerce/woocommerce-ios/pull/14837]
+- [*] Receipts: Email receipts can now be sent to customers after failed payments using WooCommerce Stripe 9.1.0+. [https://github.com/woocommerce/woocommerce-ios/pull/14864].
+- [*] Order Creation: orders are always created using the store's currency, not the user's [https://github.com/woocommerce/woocommerce-ios/pull/14907]
+- [*] Dashboard: Updated the drag gesture on the Performance chart to show stats instantly. [https://github.com/woocommerce/woocommerce-ios/pull/14906]
+- [*] Product Form: Support previewing products on coming-soon stores. [https://github.com/woocommerce/woocommerce-ios/pull/14931]
+- [*] Jetpack Setup: Fix issue setting up Jetpack for JCP sites when authenticated without WPCom and removing application password after completion [https://github.com/woocommerce/woocommerce-ios/pull/14929]
+- [Internal] Removed feedback survey for Store Setup feature [https://github.com/woocommerce/woocommerce-ios/pull/14888]
+- [Internal] Removed feedback survey for shipping label creation [https://github.com/woocommerce/woocommerce-ios/pull/14889]
+- [Internal] Removed feedback survey for product creation AI [https://github.com/woocommerce/woocommerce-ios/pull/14890]
+- [Internal] Removed feedback survey for coupons list [https://github.com/woocommerce/woocommerce-ios/pull/14891]
+- [Internal] Core Data: Attempt recovery from corrupted database [https://github.com/woocommerce/woocommerce-ios/pull/14961]
+- [*] Updated the Stripe Gateway setup URL to point to the appropriate settings page. [https://github.com/woocommerce/woocommerce-ios/pull/14964]
+
+21.4
+-----
+- [**] Store Picker: Sites can now be hidden from the list for a more focused experience for agencies. [https://github.com/woocommerce/woocommerce-ios/pull/14780]
+- [*] Fetching plugins info in the app (e.g. payments onboarding) is more resilient to unexpected types in unrelated fields in the system status response. This used to result in a decoding error. [https://github.com/woocommerce/woocommerce-ios/pull/14781]
+- [*] Fixed an issue on iPad where creating an order with a custom amount type failed after selecting and deselecting a product. [https://github.com/woocommerce/woocommerce-ios/pull/14789]
+
+21.3
+-----
+- [*] Jetpack Setup: Fixed an issue where the WordPress.com authentication fails when using a passwordless account that's already connected to Jetpack [https://github.com/woocommerce/woocommerce-ios/pull/14501]
+- [*] Jetpack Setup: Fixed an issue with magic link handling when the app is cold started. [https://github.com/woocommerce/woocommerce-ios/pull/14502]
+- [*] Product Tags: Improved the tag list screen by displaying the cached items on first load and fixed issue clearing all tags [https://github.com/woocommerce/woocommerce-ios/pull/14511]
+- [**] Media Library: On sites logged in with application password, when picking image from WordPress Media Library, all images will now load correctly. [https://github.com/woocommerce/woocommerce-ios/pull/14444]
+- [*] Payments onboarding: the custom background color of the "Choose your Payment Provider" UI when both WooPayments and Stripe Extension are available was removed to enable use cases with different container background colors. [https://github.com/woocommerce/woocommerce-ios/pull/14546]
+- [*] Reviews: Fix issue removing highlight from read reviews [https://github.com/woocommerce/woocommerce-ios/pull/14675]
+- [**] Products: Media upload will work for sites without XML-RPC. [https://github.com/woocommerce/woocommerce-ios/pull/14537]
+- [**] Products: Media library can now be loaded for sites without XML-RPC [https://github.com/woocommerce/woocommerce-ios/pull/14595]
+- [**] Products: Saving product images now works for sites without XML-RPC [https://github.com/woocommerce/woocommerce-ios/pull/14595]
+- [Internal] Updated CoreDataManager to be thread-safe [https://github.com/woocommerce/woocommerce-ios/pull/14534]
+- [Internal] Core Data: Migrate storage usage in SiteStore [https://github.com/woocommerce/woocommerce-ios/pull/14548]
+- [Internal] Updated storage usage in CouponStore [https://github.com/woocommerce/woocommerce-ios/pull/14530]
+- [Internal] Core Data: Optimize storage usage in CustomerStore [https://github.com/woocommerce/woocommerce-ios/pull/14552]
+- [Internal] Update storage usage for BlazeStore [https://github.com/woocommerce/woocommerce-ios/pull/14532]
+- [Internal] Updated storage usage in ProductShippingClassStore [https://github.com/woocommerce/woocommerce-ios/pull/14520]
+- [Internal] Updated storage usage in NotificationStore [https://github.com/woocommerce/woocommerce-ios/pull/14577]
+- [Internal] Updated storage usage in OrderNoteStore [https://github.com/woocommerce/woocommerce-ios/pull/14572]
+- [Internal] Updated storage usage in AddOnGroupStore [https://github.com/woocommerce/woocommerce-ios/pull/14576]
+- [Internal] Updated storage usage in InboxNoteStore [https://github.com/woocommerce/woocommerce-ios/pull/14574]
+- [Internal] Updated storage usage in DataStore [https://github.com/woocommerce/woocommerce-ios/pull/14575]
+- [Internal] Updated storage usage in PaymentGatewayStore [https://github.com/woocommerce/woocommerce-ios/pull/14570]
+- [Internal] updated storage usage in SettingStore [https://github.com/woocommerce/woocommerce-ios/pull/14569]
+- [Internal] Updated storage usage in ShippingMethodStore [https://github.com/woocommerce/woocommerce-ios/pull/14568]
+- [Internal] Updated storage usage in TaxStore [https://github.com/woocommerce/woocommerce-ios/pull/14567]
+- [Internal] Updated storage usage in SystemStatusStore [https://github.com/woocommerce/woocommerce-ios/pull/14559]
+- [Internal] Updated storage usage in SitePluginStore [https://github.com/woocommerce/woocommerce-ios/pull/14560]
+- [Internal] Updated storage usage in ShippingLabelStore [https://github.com/woocommerce/woocommerce-ios/pull/14566]
+- [Internal] Updated storage usage in MetaDataStore [https://github.com/woocommerce/woocommerce-ios/pull/14642]
+- [Internal] Prevent potential crashes for converting non-optional dates of deleted objects [https://github.com/woocommerce/woocommerce-ios/pull/14664]
+- [*] Fixed: Improved the error message displayed when Bluetooth permission is denied during the card reader connection process. [https://github.com/woocommerce/woocommerce-ios/pull/14561]
+- [*] Payments: error details are now displayed for more Stripe errors, instead of a generic error message. [https://github.com/woocommerce/woocommerce-ios/pull/14583]
+- [Internal] Updated transformable attribute types from Swift Array to NSArray [https://github.com/woocommerce/woocommerce-ios/pull/14611]
+- [Internal] Updated the storage layer to enforce write operations in the background. [https://github.com/woocommerce/woocommerce-ios/pull/14644]
+- [*] Order Creation: fixed layout of custom amount type selection drawer. [https://github.com/woocommerce/woocommerce-ios/pull/14619]
+- [*] Payments: Improved the Tap to Pay connection process by introducing a location permission pre-alert and earlier location request, ensuring greater clarity for users. [https://github.com/woocommerce/woocommerce-ios/pull/14660]
+- [*] Widgets: Show revenue compact amount in widgets, instead of $123,456,789 (and being truncated) we show $123,5m. [https://github.com/woocommerce/woocommerce-ios/pull/14634]
+- [*] Google Ads: Fix issue displaying campaign list for stores with existing campaigns from the hub menu entry point [https://github.com/woocommerce/woocommerce-ios/pull/14661]
+- [*] Payments: Improved the card reader connection process by introducing a location permission pre-alert and earlier location request, ensuring greater clarity for users. [https://github.com/woocommerce/woocommerce-ios/pull/14672]
+- [*] Payments: Tap to Pay is now the first payment method for eligible merchants. [https://github.com/woocommerce/woocommerce-ios/pull/14717]
+- [**] Payments: Tap to Pay onboarding now includes detailed guidelines for accepting payments with Tap to Pay on iPhone and educating customers on using contactless payments. [https://github.com/woocommerce/woocommerce-ios/pull/14731]
+- [**] Receipts: Email receipts can now be sent to customers after both successful and failed payments. This feature is available for merchants using WooCommerce version 9.5+ and WooPayments 8.6+. [https://github.com/woocommerce/woocommerce-ios/pull/14731].
+
+21.2
+-----
+- [*] Order editing: disable editing orders in other currencies, due to risk of showing incorrect information [https://github.com/woocommerce/woocommerce-ios/pull/14345]
+- [Internal] Update Zendesk SDK to 9.0.0 [https://github.com/woocommerce/woocommerce-ios/pull/14360]
+- [*] Payments > About Tap To Pay > Set Up Tap To Pay on iPhone > Try a Payment: it used to be no-op with a spinner, now it navigates to a test payment for testing Tap To Pay. [https://github.com/woocommerce/woocommerce-ios/pull/14340]
+- [*] Payments onboarding: for two onboarding errors that show a wp-admin Payments setup URL in a webview ("Payments plugin not setup" and "Stripe overdue" errors that can occur to both WooPayments and Stripe Extension), the webview is now set to Payments Connect instead of Payments Overview. [https://github.com/woocommerce/woocommerce-ios/pull/14297]
+- [*] Blaze: merchants can now select the text for the CTA on their campaigns [https://github.com/woocommerce/woocommerce-ios/issues/14355]
+- [*] Fixed: crash for missing NSMicrophoneUsageDescription [https://github.com/woocommerce/woocommerce-ios/pull/14386]
+- [***] Implemented support for the new Global Unique Identifier (GTIN) for products [https://github.com/woocommerce/woocommerce-ios/pull/14396]
+- [internal] Allow login for WPCOM suspended sites [https://github.com/woocommerce/woocommerce-ios/pull/14257]
+- [*] Menu tab > Payments: in the "deposits" summary view at the top, all mentions of "deposits/deposit/deposited" have been renamed to "payouts/payout/paid out" respectively to match the renaming in web. [https://github.com/woocommerce/woocommerce-ios/pull/14402]
+- [*] Receipts: Added message confirming receipt sent to customer after successful payment. [https://github.com/woocommerce/woocommerce-ios/pull/14390]
+- [internal] Simplifies App Icon by only using a single image for all supported platforms. [https://github.com/woocommerce/woocommerce-ios/pull/14429]
+- [*] Dashboard: Performance card now shows cached Visitors and Conversion data correctly. [https://github.com/woocommerce/woocommerce-ios/pull/14438]
+- [internal] Updated WooCommerceScreenshot to make it work again for generating screenshots. [https://github.com/woocommerce/woocommerce-ios/pull/14335]
+- [*] Jetpack Setup: Added support for WordPress.com account creation. [https://github.com/woocommerce/woocommerce-ios/pull/14471]
+
+21.1
+-----
+- [internal] Updated Xcode version to 16.1 [https://github.com/woocommerce/woocommerce-ios/pull/14225]
+- [**] Fixed: properly open and show order details in Watch app [https://github.com/woocommerce/woocommerce-ios/pull/14306]
+- [*] Payments: Improved error messages for reader connections when using site credentials for login [https://github.com/woocommerce/woocommerce-ios/pull/14336]
 
 21.0
 -----
-
+- [***] Merchants can now view and edit custom fields of their products and orders from the app [https://github.com/woocommerce/woocommerce-ios/issues/13493]
 
 20.9
 -----

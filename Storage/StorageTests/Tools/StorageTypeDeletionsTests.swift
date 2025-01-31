@@ -99,22 +99,6 @@ final class StorageTypeDeletionsTests: XCTestCase {
         XCTAssertEqual(storedCoupons, [otherCoupon])
     }
 
-    func test_deleteStaleAddOnGroups_does_not_delete_active_addOns() throws {
-        // Given
-        let initialGroups: [AddOnGroup] = [
-            createAddOnGroup(groupID: 123, name: "AAA"),
-            createAddOnGroup(groupID: 1234, name: "BBB"),
-            createAddOnGroup(groupID: 12345, name: "CCC")
-        ]
-
-        // When
-        storage.deleteStaleAddOnGroups(siteID: sampleSiteID, activeGroupIDs: [123, 1234])
-
-        // Then
-        let activeGroups = storage.loadAddOnGroups(siteID: sampleSiteID)
-        XCTAssertEqual(activeGroups, initialGroups.dropLast())
-    }
-
     func test_deleteStalePlugins_deletes_plugins_not_included_in_installedPluginNames() throws {
         // Given
         let plugin1 = createPlugin(name: "AAA")

@@ -110,7 +110,7 @@ struct ZendeskProvider {
 final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     /// Indicates if Zendesk is Enabled (or not)
     ///
-    private (set) var zendeskEnabled = false {
+    private(set) var zendeskEnabled = false {
         didSet {
             DDLogInfo("Zendesk Enabled: \(zendeskEnabled)")
         }

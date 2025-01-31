@@ -2,6 +2,7 @@
 
 Closes: #
 <!-- Id number of the GitHub issue this PR addresses. -->
+<!-- Part of: # -> use this if your PR is one of many related to one issue -->
 
 ## Description
 <!-- Take the time to write a good summary. Why is it needed? What does it do? When fixing bugs try to avoid just writing “See original issue” – clarify what the problem was and how you’ve fixed it. -->

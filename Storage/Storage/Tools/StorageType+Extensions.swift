@@ -545,6 +545,62 @@ public extension StorageType {
         return firstObject(ofType: ShippingLabelSettings.self, matching: predicate)
     }
 
+    // MARK: - Woo Shipping
+
+    /// Returns all stored Woo Shipping packages for a site.
+    ///
+    func loadPackages(siteID: Int64) -> WooShippingPackagesResponse? {
+        let predicate = \WooShippingPackagesResponse.siteID == siteID
+        return firstObject(ofType: WooShippingPackagesResponse.self, matching: predicate)
+    }
+
+    /// Returns all stored Woo Shipping carrier predefined options for a given `WooShippingPackagesResponse`.
+    ///
+    func loadAllPredefinedOptions(packagesResponse: WooShippingPackagesResponse) -> [WooShippingCarrierPredefinedOptions] {
+        let predicate = \WooShippingCarrierPredefinedOptions.packagesResponse == packagesResponse
+        let descriptor = NSSortDescriptor(keyPath: \WooShippingCarrierPredefinedOptions.carrierID, ascending: true)
+        return allObjects(ofType: WooShippingCarrierPredefinedOptions.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Returns all stored Woo Shipping predefined options for a given `WooShippingCarrierPredefinedOptions`.
+    ///
+    func predefinedOptions(carrier: WooShippingCarrierPredefinedOptions) -> [WooShippingPredefinedOption] {
+        let predicate = \WooShippingPredefinedOption.carrier == carrier
+        let descriptor = NSSortDescriptor(keyPath: \WooShippingPredefinedOption.title, ascending: true)
+        return allObjects(ofType: WooShippingPredefinedOption.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Returns all stored Woo Shipping predefined packages for a given `WooShippingPredefinedOption`.
+    ///
+    func predefinedPackages(predefinedOption: WooShippingPredefinedOption) -> [WooShippingPredefinedPackage] {
+        let predicate = \WooShippingPredefinedPackage.predefinedOption == predefinedOption
+        let descriptor = NSSortDescriptor(keyPath: \WooShippingPredefinedPackage.id, ascending: true)
+        return allObjects(ofType: WooShippingPredefinedPackage.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Returns all stored Woo Shipping saved predefined packages for a given `WooShippingPackagesResponse`.
+    ///
+    func loadSavedPredefinedPackages(packagesResponse: WooShippingPackagesResponse) -> [WooShippingSavedPredefinedPackage] {
+        let predicate = \WooShippingSavedPredefinedPackage.packagesResponse == packagesResponse
+        let descriptor = NSSortDescriptor(keyPath: \WooShippingSavedPredefinedPackage.providerID, ascending: true)
+        return allObjects(ofType: WooShippingSavedPredefinedPackage.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Returns stored Woo Shipping predefined package for a given `WooShippingSavedPredefinedPackage`.
+    ///
+    func loadPredefinedPackage(savedPredefinedPackage: WooShippingSavedPredefinedPackage) -> WooShippingPredefinedPackage? {
+        let predicate = \WooShippingPredefinedPackage.savedPredefinedPackage == savedPredefinedPackage
+        return firstObject(ofType: WooShippingPredefinedPackage.self, matching: predicate)
+    }
+
+    /// Returns all stored Woo Shipping custom packages for a given `WooShippingPackagesResponse`.
+    ///
+    func loadCustomPackages(packagesResponse: WooShippingPackagesResponse) -> [WooShippingCustomPackage] {
+        let predicate = \WooShippingCustomPackage.packagesResponse == packagesResponse
+        let descriptor = NSSortDescriptor(keyPath: \WooShippingCustomPackage.id, ascending: true)
+        return allObjects(ofType: WooShippingCustomPackage.self, matching: predicate, sortedBy: [descriptor])
+    }
+
     // MARK: - BlazeCampaignListItem
 
     /// Returns a single BlazeCampaignListItem given a `siteID` and `campaignID`
@@ -558,6 +614,13 @@ public extension StorageType {
     ///
     func loadAllBlazeCampaignListItems(siteID: Int64) -> [BlazeCampaignListItem] {
         let predicate = \BlazeCampaignListItem.siteID == siteID
+        return allObjects(ofType: BlazeCampaignListItem.self, matching: predicate, sortedBy: nil)
+    }
+
+    /// Returns stored BlazeCampaignListItem s for a site matching the given IDs
+    ///
+    func loadBlazeCampaignListItems(siteID: Int64, with campaignIDs: [String]) -> [BlazeCampaignListItem] {
+        let predicate = NSPredicate(format: "siteID == %lld && campaignID in %@", siteID, campaignIDs)
         return allObjects(ofType: BlazeCampaignListItem.self, matching: predicate, sortedBy: nil)
     }
 
@@ -613,6 +676,13 @@ public extension StorageType {
     ///
     func loadAllCoupons(siteID: Int64) -> [Coupon] {
         let predicate = \Coupon.siteID == siteID
+        return allObjects(ofType: Coupon.self, matching: predicate, sortedBy: nil)
+    }
+
+    /// Returns all stored coupons for a site
+    ///
+    func loadCoupons(siteID: Int64, with couponIDs: [Int64]) -> [Coupon] {
+        let predicate = NSPredicate(format: "siteID == %lld && couponID in %@", siteID, couponIDs)
         return allObjects(ofType: Coupon.self, matching: predicate, sortedBy: nil)
     }
 
@@ -696,6 +766,13 @@ public extension StorageType {
         return allObjects(ofType: Customer.self, matching: predicate, sortedBy: [])
     }
 
+    /// Returns stored Customers given a `siteID` matching `customerIDs`
+    ///
+    func loadCustomers(siteID: Int64, matching customerIDs: [Int64]) -> [Customer] {
+        let predicate = NSPredicate(format: "siteID == %lld && customerID in %@", siteID, customerIDs)
+        return allObjects(ofType: Customer.self, matching: predicate, sortedBy: [])
+    }
+
     /// Returns a CustomerSearchResult given a `siteID` and a `keyword`
     ///
     func loadCustomerSearchResult(siteID: Int64, keyword: String) -> CustomerSearchResult? {
@@ -717,6 +794,13 @@ public extension StorageType {
         return allObjects(ofType: WCAnalyticsCustomer.self, matching: predicate, sortedBy: [])
     }
 
+    /// Returns stored WCAnalyticsCustomer given a `siteID` matching `customerIDs`
+    ///
+    func loadWCAnalyticsCustomers(siteID: Int64, matching customerIDs: [Int64]) -> [WCAnalyticsCustomer] {
+        let predicate = NSPredicate(format: "siteID == %lld && customerID in %@", siteID, customerIDs)
+        return allObjects(ofType: WCAnalyticsCustomer.self, matching: predicate, sortedBy: [])
+    }
+
     /// Returns a WCAnalyticsCustomerSearchResult given a `siteID` and a `keyword`
     ///
     func loadWCAnalyticsCustomerSearchResult(siteID: Int64, keyword: String) -> WCAnalyticsCustomerSearchResult? {
@@ -730,6 +814,14 @@ public extension StorageType {
     ///
     func loadSystemPlugins(siteID: Int64) -> [SystemPlugin] {
         let predicate = \SystemPlugin.siteID == siteID
+        let descriptor = NSSortDescriptor(keyPath: \SystemPlugin.name, ascending: true)
+        return allObjects(ofType: SystemPlugin.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Returns stored system plugins for a provided `siteID` matching the given `names`
+    ///
+    func loadSystemPlugins(siteID: Int64, matching names: [String]) -> [SystemPlugin] {
+        let predicate = NSPredicate(format: "siteID == %lld && name in %@", siteID, names)
         let descriptor = NSSortDescriptor(keyPath: \SystemPlugin.name, ascending: true)
         return allObjects(ofType: SystemPlugin.self, matching: predicate, sortedBy: [descriptor])
     }

@@ -36,6 +36,11 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             updateIsUsingAISuggestions()
         }
     }
+    @Published private(set) var ctaText: String = "" {
+        didSet {
+            updateIsUsingAISuggestions()
+        }
+    }
 
     // Whether the campaign should have no end date
     private var isEvergreen: Bool
@@ -83,16 +88,19 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     var editAdViewModel: BlazeEditAdViewModel {
         let adData = BlazeEditAdData(image: image,
                                      tagline: tagline,
-                                     description: description)
+                                     description: description,
+                                     ctaText: ctaText)
         return BlazeEditAdViewModel(siteID: siteID,
                                     productID: productID,
                                     adData: adData,
                                     suggestions: suggestions,
+                                    isUsingAISuggestions: isUsingAISuggestions,
                                     onSave: { [weak self] adData in
             guard let self else { return }
             self.image = adData.image
             self.tagline = adData.tagline
             self.description = adData.description
+            self.ctaText = adData.ctaText
         })
     }
 
@@ -260,7 +268,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                             targeting: targetOptions,
                             targetUrn: targetUrn,
                             type: Constants.campaignType,
-                            objective: campaignObjective?.id)
+                            objective: campaignObjective?.id,
+                            ctaText: ctaText)
     }
 
     private let locale: Locale
@@ -315,7 +324,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     func onLoad() async {
         await withTaskGroup(of: Void.self) { group in
-            if suggestions.isEmpty {
+            // Make sure AI Suggestions are called just if suggestions are empty, and we didn't already populated tagline, description and ctaText.
+            if suggestions.isEmpty && tagline.isEmpty && description.isEmpty && ctaText.isEmpty {
                 group.addTask {
                     await self.loadAISuggestions()
                 }
@@ -344,9 +354,16 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             if let firstSuggestion = suggestions.first {
                 tagline = firstSuggestion.siteName
                 description = firstSuggestion.textSnippet
+                ctaText = firstSuggestion.ctaText
             }
         } catch {
+            if let productName = product?.name, let productDescription = product?.shortDescription ?? product?.fullDescription {
+                tagline = productName
+                description = productDescription
+                ctaText = Localization.shopNow
+            }
             DDLogError("⛔️ Error fetching Blaze AI suggestions: \(error)")
+            analytics.track(event: .Blaze.CreationForm.suggestionLoadingFailed(error: error))
             self.error = .failedToLoadAISuggestions
         }
 
@@ -429,10 +446,10 @@ private extension BlazeCampaignCreationFormViewModel {
     // Updates the `isUsingAISuggestions` property based on whether the current
     // `tagline` and `description` match any of the provided AI suggestions.
     // The property will be set to `true` if there is at least one suggestion
-    // that matches both the `tagline` and `description`, and the suggestions list is not empty.
+    // that matches both the `tagline` and `description`.
     func updateIsUsingAISuggestions() {
         isUsingAISuggestions = suggestions.contains { element in
-            element.siteName == tagline && element.textSnippet == description && !suggestions.isEmpty
+            element.siteName == tagline && element.textSnippet == description && element.ctaText == ctaText
         }
     }
 
@@ -555,6 +572,11 @@ private extension BlazeCampaignCreationFormViewModel {
             value: "%1$@, %2$d day from %3$@",
             comment: "Blaze campaign budget details with duration in singular form. " +
             "Reads like: $35, 1 day from Dec 31"
+        )
+        static let shopNow = NSLocalizedString(
+            "blazeCampaignCreationForm.shopNow",
+            value: "Shop Now",
+            comment: "Button to shop on the Blaze ad preview"
         )
         static let budgetMultipleDays = NSLocalizedString(
             "blazeCampaignCreationFormViewModel.budgetMultipleDays",

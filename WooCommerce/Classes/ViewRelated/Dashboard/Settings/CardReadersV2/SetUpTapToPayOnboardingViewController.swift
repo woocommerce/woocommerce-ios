@@ -64,6 +64,7 @@ struct SetUpTapToPayOnboardingView: View {
 
             onboardingView
         }
+        .toolbar(.hidden)
     }
 }
 

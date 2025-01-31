@@ -1,15 +1,15 @@
 import SwiftUI
 
 struct PaymentSettingsFlowHint: View {
-    let title: String
+    let number: Int
     let text: String
 
     var body: some View {
         HStack {
-            Text(title)
+            Text(number, format: .number)
                 .font(.callout)
                 .padding(.all, 12)
-                .background(Color(UIColor.systemGray6))
+                .background(Color(.init(light: .systemGray6, dark: .darkGray)))
                 .clipShape(Circle())
             Text(text)
                 .font(.callout)
@@ -17,14 +17,16 @@ struct PaymentSettingsFlowHint: View {
             Spacer()
         }
         .padding(.horizontal, 8)
+        .accessibilityElement()
+        .accessibilityLabel("\(number). \(text)")
     }
 }
 
 struct PaymentSettingsFlowHint_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            PaymentSettingsFlowHint(title: "0", text: "This is some text that acts as a hint.")
-            PaymentSettingsFlowHint(title: "1", text: "This is a hint in Dark Mode.")
+            PaymentSettingsFlowHint(number: 0, text: "This is some text that acts as a hint.")
+            PaymentSettingsFlowHint(number: 1, text: "This is a hint in Dark Mode.")
                 .preferredColorScheme(.dark)
         }
         .previewLayout(.sizeThatFits)

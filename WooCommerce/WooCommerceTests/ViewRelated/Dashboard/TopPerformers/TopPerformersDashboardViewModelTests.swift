@@ -9,7 +9,7 @@ final class TopPerformersDashboardViewModelTests: XCTestCase {
     @MainActor
     func test_dates_for_custom_range_are_correct_for_non_custom_time_range() throws {
         // Given
-        let viewModel = TopPerformersDashboardViewModel(siteID: 123, usageTracksEventEmitter: .init())
+        let viewModel = TopPerformersDashboardViewModel(siteID: 123, siteTimezone: .current, usageTracksEventEmitter: .init())
 
         // When
         viewModel.didSelectTimeRange(.thisWeek)

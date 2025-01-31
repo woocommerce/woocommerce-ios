@@ -163,6 +163,9 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     /// Error from remote validation, if any.
     @Published private var remoteValidationError: String?
 
+    /// Closure called when the address is done being edited and the changes are confirmed.
+    private(set) var onAddressEdited: ((WooShippingEditableAddress) -> Void)?
+
     init(id: String,
          name: String,
          company: String,
@@ -180,7 +183,8 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
          originalAddress: WooShippingEditableAddress,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         debounceDelayInSeconds: Double = 1) {
+         debounceDelayInSeconds: Double = 1,
+         onAddressEdited: ((WooShippingEditableAddress) -> Void)? = nil) {
         self.id = id
         self.name = WooShippingAddressField(type: .name, value: name, required: company.isEmpty, validate: { _ in return nil })
         self.company = WooShippingAddressField(type: .company, value: company, required: name.isEmpty, validate: { _ in return nil })
@@ -210,6 +214,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         self.siteID = stores.sessionManager.defaultStoreID ?? Int64.min
         self.storageManager = storageManager
         self.debounceDelay = debounceDelayInSeconds
+        self.onAddressEdited = onAddressEdited
 
         // Set validation rules for fields that rely on instance properties.
         self.name.validate = { [weak self] newName in
@@ -248,7 +253,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     convenience init(address: WooShippingOriginAddress,
                      stores: StoresManager = ServiceLocator.stores,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
-                     onAddressEdited: ((WooShippingAddress) -> Void)? = nil) {
+                     onAddressEdited: ((WooShippingEditableAddress) -> Void)? = nil) {
         self.init(id: address.id,
                   name: address.fullName,
                   company: address.company,
@@ -265,7 +270,8 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                   phoneNumberRequired: true,
                   originalAddress: WooShippingEditableAddress(originAddress: address, destinationAddress: nil, addressType: .origin),
                   stores: stores,
-                  storageManager: storageManager)
+                  storageManager: storageManager,
+                  onAddressEdited: onAddressEdited)
     }
 
     /// Validates the address remotely.
@@ -285,7 +291,8 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
             normalizeAddressVM = WooShippingNormalizeAddressViewModel(siteID: siteID,
                                                                       originalAddress: originalAddress,
                                                                       enteredAddress: validation.originalAddress,
-                                                                      suggestedAddress: validation.normalizedAddress)
+                                                                      suggestedAddress: validation.normalizedAddress,
+                                                                      onConfirm: onAddressEdited)
         } catch let error as WooShippingAddressValidationError {
             if let nameError = error.nameError {
                 name.setError(nameError)

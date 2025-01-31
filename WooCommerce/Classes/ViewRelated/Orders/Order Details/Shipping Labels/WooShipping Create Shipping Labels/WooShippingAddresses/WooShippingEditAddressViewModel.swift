@@ -5,7 +5,7 @@ import protocol Storage.StorageManagerType
 import Combine
 
 /// Represents an editable Woo Shipping address, for either the shipping label origin or destination.
-struct WooShippingEditableAddress {
+struct WooShippingEditableAddress: Equatable {
     enum AddressType {
         case origin
         case destination
@@ -282,7 +282,9 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                                                      postcode: postalCode.value)
         do {
             let validation = try await remotelyValidateAddress(addressToValidate)
-            normalizeAddressVM = WooShippingNormalizeAddressViewModel(enteredAddress: validation.originalAddress,
+            normalizeAddressVM = WooShippingNormalizeAddressViewModel(siteID: siteID,
+                                                                      originalAddress: originalAddress,
+                                                                      enteredAddress: validation.originalAddress,
                                                                       suggestedAddress: validation.normalizedAddress)
         } catch let error as WooShippingAddressValidationError {
             if let nameError = error.nameError {

@@ -41,7 +41,9 @@ struct WooShippingNormalizeAddressView: View {
             VStack(spacing: .zero) {
                 Divider().ignoresSafeArea(edges: [.horizontal])
                 Button {
-                    viewModel.confirmSelectedAddress()
+                    Task { @MainActor in
+                        await viewModel.confirmSelectedAddress()
+                    }
                 } label: {
                     switch viewModel.selectedAddress {
                     case .entered:
@@ -50,7 +52,7 @@ struct WooShippingNormalizeAddressView: View {
                         Text(Localization.confirmSuggestedAddress)
                     }
                 }
-                .buttonStyle(PrimaryButtonStyle())
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isRemotelyUpdating))
                 .padding()
             }
             .background(Color(uiColor: .systemBackground))
@@ -122,7 +124,9 @@ private extension WooShippingNormalizeAddressView {
 
 #Preview {
     NavigationView {
-        WooShippingNormalizeAddressView(viewModel: .init(enteredAddress: WooShippingNormalizeAddressViewModel.sampleEnteredAddress,
+        WooShippingNormalizeAddressView(viewModel: .init(siteID: 12345,
+                                                         originalAddress: .init(originAddress: nil, destinationAddress: nil, addressType: .origin),
+                                                         enteredAddress: WooShippingNormalizeAddressViewModel.sampleEnteredAddress,
                                                          suggestedAddress: WooShippingNormalizeAddressViewModel.sampleSuggestedAddress,
                                                          onConfirm: { address in print(address) }))
     }

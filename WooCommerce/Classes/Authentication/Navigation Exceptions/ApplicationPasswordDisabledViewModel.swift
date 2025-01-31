@@ -37,7 +37,6 @@ struct ApplicationPasswordDisabledViewModel: ULErrorViewModel {
     let secondaryButtonTitle = Localization.secondaryButtonTitle
 
     func viewDidLoad(_ viewController: UIViewController?) {
-        // TODO: add tracks if necessary
     }
 
     // Navigates back to the third last view controller in the stack if possible,

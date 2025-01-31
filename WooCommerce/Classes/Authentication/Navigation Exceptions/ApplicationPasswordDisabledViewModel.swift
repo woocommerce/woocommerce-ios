@@ -13,7 +13,7 @@ struct ApplicationPasswordDisabledViewModel: ULErrorViewModel {
 
     let siteURL: String
     let authentication: Authentication
-    let image: UIImage = .errorImage // TODO: update this if needed
+    let image: UIImage = .errorImage
 
     var text: NSAttributedString {
         let font: UIFont = .body
@@ -40,11 +40,16 @@ struct ApplicationPasswordDisabledViewModel: ULErrorViewModel {
         // TODO: add tracks if necessary
     }
 
+    // Navigates back to the third last view controller in the stack if possible,
+    // otherwise it navigates to the root view controller.
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        guard let viewController else {
-            return
+        guard let navigationController = viewController?.navigationController else { return }
+        let viewControllers = navigationController.viewControllers
+        if viewControllers.count >= 3 {
+            navigationController.popToViewController(viewControllers[viewControllers.count - 3], animated: true)
+        } else {
+            navigationController.popToRootViewController(animated: true)
         }
-        WordPressAuthenticator.showLoginForJustWPCom(from: viewController)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
@@ -79,6 +84,11 @@ private extension ApplicationPasswordDisabledViewModel {
             "Reads like: It seems that your site google.com has Application Password disabled. " +
             "Please enable it to use the WooCommerce app."
         )
+        static let primaryButtonTitle = NSLocalizedString(
+            "applicationPasswordDisabled.retry.buttonTitle",
+            value: "Retry",
+            comment: "Button to retry fetching application password authorization if application password is disabled"
+        )
         static let secondaryButtonTitle = NSLocalizedString(
             "Log In With Another Account",
             comment: "Action button that will restart the login flow."
@@ -87,10 +97,6 @@ private extension ApplicationPasswordDisabledViewModel {
         static let auxiliaryButtonTitle = NSLocalizedString(
             "What is Application Password?",
             comment: "Button that will navigate to a web page explaining Application Password"
-        )
-        static let primaryButtonTitle = NSLocalizedString(
-            "Log in with WordPress.com",
-            comment: "Button that will navigate to the authentication flow with WP.com"
         )
         static let helpButtonTitle = NSLocalizedString(
             "Help",

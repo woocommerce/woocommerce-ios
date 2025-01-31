@@ -109,7 +109,7 @@ final class CardReaderSettingsSearchingViewModel: PaymentSettingsFlowPresentedVi
         let loadLearnMoreUrlAction = CardPresentPaymentAction
             .loadActivePaymentGatewayExtension() { [weak self] result in
                 switch result {
-                case .wcpay:
+                case .wcPay:
                     self?.learnMoreURL = WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL()
                 case .stripe:
                     self?.learnMoreURL = WooConstants.URLs.inPersonPaymentsLearnMoreStripe.asURL()

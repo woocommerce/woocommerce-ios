@@ -175,7 +175,9 @@ struct WooShippingEditAddressView: View {
         }
         .sheet(item: $viewModel.normalizeAddressVM) { viewModel in
             NavigationStack {
-                WooShippingNormalizeAddressView(viewModel: viewModel)
+                WooShippingNormalizeAddressView(viewModel: viewModel) {
+                    dismiss()
+                }
             }
         }
     }

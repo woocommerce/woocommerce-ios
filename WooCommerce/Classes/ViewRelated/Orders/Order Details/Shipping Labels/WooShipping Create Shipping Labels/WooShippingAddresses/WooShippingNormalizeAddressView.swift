@@ -5,6 +5,9 @@ struct WooShippingNormalizeAddressView: View {
 
     @ObservedObject var viewModel: WooShippingNormalizeAddressViewModel
 
+    /// Closure to perform when the user successfully confirms the selected address.
+    var onConfirm: () -> Void
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
@@ -45,6 +48,7 @@ struct WooShippingNormalizeAddressView: View {
                         do {
                             try await viewModel.confirmSelectedAddress()
                             dismiss()
+                            onConfirm()
                         } catch {
                             // TODO: Display error notice if remote update fails.
                         }
@@ -133,7 +137,8 @@ private extension WooShippingNormalizeAddressView {
                                                          originalAddress: .init(originAddress: nil, destinationAddress: nil, addressType: .origin),
                                                          enteredAddress: WooShippingNormalizeAddressViewModel.sampleEnteredAddress,
                                                          suggestedAddress: WooShippingNormalizeAddressViewModel.sampleSuggestedAddress,
-                                                         onConfirm: { address in print(address) }))
+                                                         onConfirm: { address in print(address) }),
+                                        onConfirm: {})
     }
     .wooNavigationBarStyle()
 }

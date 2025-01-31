@@ -4,6 +4,18 @@ import Yosemite
 import protocol Storage.StorageManagerType
 import Combine
 
+/// Represents an editable Woo Shipping address, for either the shipping label origin or destination.
+struct WooShippingEditableAddress {
+    enum AddressType {
+        case origin
+        case destination
+    }
+
+    let originAddress: WooShippingOriginAddress?
+    let destinationAddress: ShippingLabelAddress?
+    let addressType: AddressType
+}
+
 /// View model for editing an address in the Woo Shipping label flow.
 final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     private let siteID: Int64
@@ -12,13 +24,8 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     private let debounceDelay: Double
     private var cancellables: Set<AnyCancellable> = []
 
-    enum AddressType {
-        case origin
-        case destination
-    }
-
-    /// Type of address being edited.
-    private let addressType: AddressType
+    /// Original address being edited.
+    private let originalAddress: WooShippingEditableAddress
 
     // MARK: Address properties
 
@@ -38,7 +45,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     /// Whether to show the "save as default" toggle, to save the address as the default origin address.
     var showSaveAsDefault: Bool {
-        addressType == .origin
+        originalAddress.addressType == .origin
     }
 
     /// Whether to show the company field by default.
@@ -121,7 +128,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     /// List of countries that can be used as an origin address.
     var countries: [Country] {
-        switch addressType {
+        switch originalAddress.addressType {
         case .origin:
             resultsController.fetchedObjects.filter { Constants.acceptedUSPSCountries.contains($0.code) }
         case .destination:
@@ -156,8 +163,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     /// Error from remote validation, if any.
     @Published private var remoteValidationError: String?
 
-    init(type: AddressType,
-         id: String,
+    init(id: String,
          name: String,
          company: String,
          country: String,
@@ -171,10 +177,10 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
          showCompanyField: Bool,
          isVerified: Bool,
          phoneNumberRequired: Bool,
+         originalAddress: WooShippingEditableAddress,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          debounceDelayInSeconds: Double = 1) {
-        self.addressType = type
         self.id = id
         self.name = WooShippingAddressField(type: .name, value: name, required: company.isEmpty, validate: { _ in return nil })
         self.company = WooShippingAddressField(type: .company, value: company, required: name.isEmpty, validate: { _ in return nil })
@@ -199,6 +205,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         self.showCompanyField = showCompanyField
         self.originalAddressIsVerified = isVerified
         self.phoneNumberRequired = phoneNumberRequired
+        self.originalAddress = originalAddress
         self.stores = stores
         self.siteID = stores.sessionManager.defaultStoreID ?? Int64.min
         self.storageManager = storageManager
@@ -242,8 +249,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                      stores: StoresManager = ServiceLocator.stores,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      onAddressEdited: ((WooShippingAddress) -> Void)? = nil) {
-        self.init(type: .origin,
-                  id: address.id,
+        self.init(id: address.id,
                   name: address.fullName,
                   company: address.company,
                   country: address.country,
@@ -257,6 +263,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                   showCompanyField: address.company.isNotEmpty,
                   isVerified: address.isVerified,
                   phoneNumberRequired: true,
+                  originalAddress: WooShippingEditableAddress(originAddress: address, destinationAddress: nil, addressType: .origin),
                   stores: stores,
                   storageManager: storageManager)
     }

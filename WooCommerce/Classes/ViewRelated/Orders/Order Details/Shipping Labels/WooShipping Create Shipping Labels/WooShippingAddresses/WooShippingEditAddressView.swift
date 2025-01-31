@@ -416,8 +416,7 @@ private extension WooShippingEditAddressView {
 }
 
 #Preview("Without Company") {
-    WooShippingEditAddressView(viewModel: .init(type: .origin,
-                                                id: UUID().uuidString,
+    WooShippingEditAddressView(viewModel: .init(id: UUID().uuidString,
                                                 name: "HEADQUARTERS",
                                                 company: "",
                                                 country: "UNITED STATES",
@@ -430,12 +429,12 @@ private extension WooShippingEditAddressView {
                                                 isDefaultAddress: true,
                                                 showCompanyField: false,
                                                 isVerified: true,
-                                                phoneNumberRequired: true))
+                                                phoneNumberRequired: true,
+                                                originalAddress: .init(originAddress: nil, destinationAddress: nil, addressType: .origin)))
 }
 
 #Preview("With Company") {
-    WooShippingEditAddressView(viewModel: .init(type: .destination,
-                                                id: UUID().uuidString,
+    WooShippingEditAddressView(viewModel: .init(id: UUID().uuidString,
                                                 name: "HEADQUARTERS",
                                                 company: "COMPANY",
                                                 country: "UNITED STATES",
@@ -448,5 +447,6 @@ private extension WooShippingEditAddressView {
                                                 isDefaultAddress: false,
                                                 showCompanyField: true,
                                                 isVerified: false,
-                                                phoneNumberRequired: true))
+                                                phoneNumberRequired: true,
+                                                originalAddress: .init(originAddress: nil, destinationAddress: nil, addressType: .destination)))
 }

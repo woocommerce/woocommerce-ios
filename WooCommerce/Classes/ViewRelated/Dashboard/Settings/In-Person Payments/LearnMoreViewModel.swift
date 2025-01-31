@@ -4,9 +4,6 @@ import SwiftUI
 import Yosemite
 
 class LearnMoreViewModel: ObservableObject {
-
-    static let learnMoreURL = URL(string: "woocommerce://in-person-payments/learn-more")!
-
     let url: URL
     let linkText: String
     let formatText: String

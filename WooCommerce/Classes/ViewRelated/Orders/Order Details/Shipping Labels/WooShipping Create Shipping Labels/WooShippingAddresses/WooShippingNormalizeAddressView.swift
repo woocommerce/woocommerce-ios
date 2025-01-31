@@ -42,7 +42,12 @@ struct WooShippingNormalizeAddressView: View {
                 Divider().ignoresSafeArea(edges: [.horizontal])
                 Button {
                     Task { @MainActor in
-                        await viewModel.confirmSelectedAddress()
+                        do {
+                            try await viewModel.confirmSelectedAddress()
+                            dismiss()
+                        } catch {
+                            // TODO: Display error notice if remote update fails.
+                        }
                     }
                 } label: {
                     switch viewModel.selectedAddress {

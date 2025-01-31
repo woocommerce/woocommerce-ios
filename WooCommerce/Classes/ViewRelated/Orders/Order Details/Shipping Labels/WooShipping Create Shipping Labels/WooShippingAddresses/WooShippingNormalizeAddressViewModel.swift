@@ -43,7 +43,7 @@ final class WooShippingNormalizeAddressViewModel: ObservableObject, Identifiable
 
     /// Confirms the selected address.
     @MainActor
-    func confirmSelectedAddress() async {
+    func confirmSelectedAddress() async throws {
         let addressToConfirm = selectedAddress == .entered ? enteredAddress : suggestedAddress
         do {
             if let originAddress = originalAddress.originAddress {
@@ -54,8 +54,8 @@ final class WooShippingNormalizeAddressViewModel: ObservableObject, Identifiable
                 onConfirm?(updatedEditableAddress)
             }
         } catch {
-            // TODO: Display error notice if remote update fails.
             DDLogError("⛔️ Error updating origin address for Woo Shipping label: \(error)")
+            throw error
         }
     }
 }

@@ -32,6 +32,7 @@ struct ItemRowView: View {
                     .font(Constants.itemPriceFont)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.leading, showProductImage ? 0 : Constants.horizontalElementSpacing)
             .accessibilityElement(children: .combine)
 
             if let onItemRemoveTapped {
@@ -59,8 +60,7 @@ struct ItemRowView: View {
     @ViewBuilder
     private var productImage: some View {
         if !showProductImage {
-            Spacer()
-                .frame(width: Constants.horizontalElementSpacing)
+            EmptyView()
         } else if let imageSource = cartItem.item.productImageSource {
             ProductImageThumbnail(productImageURL: URL(string: imageSource),
                                   productImageSize: Constants.productCardSize,

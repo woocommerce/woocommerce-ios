@@ -41,6 +41,9 @@ final class WooShippingOriginAddressListViewModel: ObservableObject {
             }
             addresses.remove(at: index)
             addresses.insert(editedAddress, at: index)
+            if selectedAddressID == editedAddress.id {
+                onSelect?(editedAddress)
+            }
         })
     }
 }

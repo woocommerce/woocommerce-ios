@@ -23,7 +23,7 @@ struct ApplicationPasswordDisabledViewModel: ULErrorViewModel {
                                                  attributes: [.font: boldFont])
         let message = NSMutableAttributedString(string: Localization.errorMessage)
 
-        message.replaceFirstOccurrence(of: "%@", with: boldSiteAddress)
+        message.replaceFirstOccurrence(of: "%1$@", with: boldSiteAddress)
 
         return message
     }
@@ -79,7 +79,8 @@ struct ApplicationPasswordDisabledViewModel: ULErrorViewModel {
 private extension ApplicationPasswordDisabledViewModel {
     enum Localization {
         static let errorMessage = NSLocalizedString(
-            "It seems that your site %@ has Application Password disabled. Please enable it to use the WooCommerce app.",
+            "applicationPasswordDisabled.errorMessage",
+            value: "It seems that your site %1$@ has Application Password disabled. Please enable it to use the WooCommerce app.",
             comment: "An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. " +
             "Reads like: It seems that your site google.com has Application Password disabled. " +
             "Please enable it to use the WooCommerce app."
@@ -90,16 +91,19 @@ private extension ApplicationPasswordDisabledViewModel {
             comment: "Button to retry fetching application password authorization if application password is disabled"
         )
         static let secondaryButtonTitle = NSLocalizedString(
-            "Log In With Another Account",
+            "applicationPasswordDisabled.secondaryButtonTitle",
+            value: "Log In With Another Account",
             comment: "Action button that will restart the login flow."
             + "Presented when the user tries to log in to the app with site credentials but has application password disabled."
         )
         static let auxiliaryButtonTitle = NSLocalizedString(
-            "What is Application Password?",
+            "applicationPasswordDisabled.auxiliaryButtonTitle",
+            value: "What is Application Password?",
             comment: "Button that will navigate to a web page explaining Application Password"
         )
         static let helpButtonTitle = NSLocalizedString(
-            "Help",
+            "applicationPasswordDisabled.helpButtonTitle",
+            value: "Help",
             comment: "Button that will navigate to the support area"
         )
     }

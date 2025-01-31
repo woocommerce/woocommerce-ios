@@ -36,7 +36,8 @@ struct InPersonPaymentsOnboardingError: View {
                     .buttonStyle(SecondaryButtonStyle())
             }
             if learnMore {
-                InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel(tappedAnalyticEvent: learnMoreAnalyticEvent))
+                InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel(paymentGateway: plugin ?? .wcPay,
+                                                                        tappedAnalyticEvent: learnMoreAnalyticEvent))
                     .padding(.vertical, 8)
             }
         }.padding()

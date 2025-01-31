@@ -12,7 +12,7 @@ class LearnMoreViewModel: ObservableObject {
     let formatText: String
     let tappedAnalyticEvent: WooAnalyticsEvent?
 
-    init(url: URL = learnMoreURL,
+    init(url: URL,
          linkText: String = Localization.learnMoreLink,
          formatText: String = Localization.learnMoreText,
          tappedAnalyticEvent: WooAnalyticsEvent? = nil) {
@@ -20,6 +20,17 @@ class LearnMoreViewModel: ObservableObject {
         self.linkText = linkText
         self.formatText = formatText
         self.tappedAnalyticEvent = tappedAnalyticEvent
+    }
+
+    convenience init(paymentGateway: CardPresentPaymentsPlugin,
+                     linkText: String = Localization.learnMoreLink,
+                     formatText: String = Localization.learnMoreText,
+                     tappedAnalyticEvent: WooAnalyticsEvent? = nil) {
+        let url = Self.learnMoreLinkURL(for: paymentGateway)
+        self.init(url: url,
+                  linkText: linkText,
+                  formatText: formatText,
+                  tappedAnalyticEvent: tappedAnalyticEvent)
     }
 
     var learnMoreAttributedString: NSAttributedString {

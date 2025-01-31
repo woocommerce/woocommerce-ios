@@ -6,7 +6,7 @@ final class CardReaderSettingsSearchingViewModel: PaymentSettingsFlowPresentedVi
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
     var didUpdate: (() -> Void)?
-    var learnMoreURL: URL? = nil
+    var learnMoreURL: URL
 
     private(set) var noConnectedReader: CardReaderSettingsTriState = .isUnknown {
         didSet {
@@ -43,6 +43,7 @@ final class CardReaderSettingsSearchingViewModel: PaymentSettingsFlowPresentedVi
         self.knownReaderProvider = knownReaderProvider
         self.configuration = configuration
         self.cardReaderConnectionAnalyticsTracker = cardReaderConnectionAnalyticsTracker
+        self.learnMoreURL = CardPresentPaymentsPlugin.wcPay.setUpTapToPayLearnMoreURL
 
         beginKnownReaderObservation()
         beginConnectedReaderObservation()
@@ -108,12 +109,7 @@ final class CardReaderSettingsSearchingViewModel: PaymentSettingsFlowPresentedVi
     private func updateLearnMoreUrl(stores: StoresManager) {
         let loadLearnMoreUrlAction = CardPresentPaymentAction
             .loadActivePaymentGatewayExtension() { [weak self] result in
-                switch result {
-                case .wcPay:
-                    self?.learnMoreURL = WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL()
-                case .stripe:
-                    self?.learnMoreURL = WooConstants.URLs.inPersonPaymentsLearnMoreStripe.asURL()
-                }
+                result.manageCardReaderLearnMoreURL
             }
         stores.dispatch(loadLearnMoreUrlAction)
     }

@@ -169,7 +169,6 @@ private extension CartView {
             orderStage: posModel.orderStage)
     }
 
-        DDLogInfo("Item row width: \(cartListWidth)")
     func updateItemImageVisibility(dynamicTypeSize: DynamicTypeSize? = nil, cartListWidth: CGFloat) {
         let newVisibility = cartListWidth >= minimumWidthToShowItemImages(with: dynamicTypeSize ?? self.dynamicTypeSize)
         guard newVisibility != shouldShowItemImages else {

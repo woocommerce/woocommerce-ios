@@ -3,7 +3,7 @@
 
 21.7
 -----
-- [*] Better error messages if Application Password login is disabled on user's website.
+- [*] Better error messages if Application Password login is disabled on user's website. [https://github.com/woocommerce/woocommerce-ios/pull/15031]
 
 21.6
 -----

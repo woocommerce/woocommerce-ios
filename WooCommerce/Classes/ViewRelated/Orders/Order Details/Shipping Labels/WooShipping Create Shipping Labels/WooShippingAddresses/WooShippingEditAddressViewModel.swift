@@ -138,6 +138,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     // MARK: Remote validation
 
     /// Whether the address is being remotely validated.
+    /// This property is used to show a loading indicator while the remote validation is in progress.
     @Published private(set) var isRemotelyValidating: Bool = false
 
     /// View model for normalizing the address.

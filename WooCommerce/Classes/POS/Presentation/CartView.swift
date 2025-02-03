@@ -206,6 +206,7 @@ private extension CartView {
     var checkoutButton: some View {
         Button {
             Task { @MainActor in
+                ServiceLocator.analytics.track(.pointOfSaleCheckoutTapped)
                 await posModel.checkOut()
             }
         } label: {
@@ -221,6 +222,7 @@ private extension CartView {
             EmptyView()
         case .finalizing:
             Button {
+                ServiceLocator.analytics.track(.pointOfSaleBackToCartTapped)
                 posModel.addMoreToCart()
             } label: {
                 Image(systemName: Constants.backButtonSymbol)

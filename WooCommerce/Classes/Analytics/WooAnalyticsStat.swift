@@ -1270,6 +1270,8 @@ enum WooAnalyticsStat: String {
     // MARK: Point of Sale events
     case pointOfSaleAddItemToCart = "item_added_to_cart"
     case pointOfSaleItemRemovedFromCart = "item_removed_from_cart"
+    case pointOfSaleCheckoutTapped = "checkout_tapped"
+    case pointOfSaleBackToCartTapped = "back_to_cart_tapped"
     case pointOfSaleCreateNewOrderTapped = "create_new_order_tapped"
     case pointOfSaleEmailReceiptTapped = "email_receipt_tapped"
     case pointOfSaleEmailReceiptSendTapped = "email_receipt_send_tapped"

@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
+21.7
+-----
+- [*] Orders: Improved accessibility UI for Tax Rates related views [https://github.com/woocommerce/woocommerce-ios/pull/15043]
+
 21.6
 -----
 - [*] Payments: improve retry handling when card reader updates fail due to low battery [https://github.com/woocommerce/woocommerce-ios/pull/14990]

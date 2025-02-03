@@ -85,11 +85,6 @@ private extension ProductImagesCollectionViewDataSource {
             cell?.imageView.image = image
         }
         cell.coverTagView.isHidden = !isFirstImage
-        cell.tagLabel.text = NSLocalizedString(
-            "productImagesCollectionViewDataSource.tagLabel.text",
-            value: "Cover",
-            comment: "Label indicating the cover image of a product"
-        )
     }
 
     func configureUploadingImageCell(_ cell: UICollectionViewCell, asset: PHAsset) {

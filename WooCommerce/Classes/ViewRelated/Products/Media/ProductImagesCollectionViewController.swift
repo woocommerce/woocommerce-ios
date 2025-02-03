@@ -72,7 +72,8 @@ extension ProductImagesCollectionViewController {
         let productImageStatus = productImageStatuses[indexPath.row]
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: productImageStatus.cellReuseIdentifier,
                                                       for: indexPath)
-        configureCell(cell, productImageStatus: productImageStatus)
+        let isFirstImage = indexPath.row == 0
+        configureCell(cell, productImageStatus: productImageStatus, isFirstImage: isFirstImage)
         return cell
     }
 }
@@ -80,10 +81,10 @@ extension ProductImagesCollectionViewController {
 // MARK: Cell configurations
 //
 private extension ProductImagesCollectionViewController {
-    func configureCell(_ cell: UICollectionViewCell, productImageStatus: ProductImageStatus) {
+    func configureCell(_ cell: UICollectionViewCell, productImageStatus: ProductImageStatus, isFirstImage: Bool) {
         switch productImageStatus {
         case .remote(let image):
-            configureRemoteImageCell(cell, productImage: image)
+            configureRemoteImageCell(cell, productImage: image, isFirstImage: isFirstImage)
         case .uploading(let asset):
             switch asset {
                 case .phAsset(let asset):
@@ -94,7 +95,7 @@ private extension ProductImagesCollectionViewController {
         }
     }
 
-    func configureRemoteImageCell(_ cell: UICollectionViewCell, productImage: ProductImage) {
+    func configureRemoteImageCell(_ cell: UICollectionViewCell, productImage: ProductImage, isFirstImage: Bool) {
         guard let cell = cell as? ProductImageCollectionViewCell else {
             fatalError()
         }
@@ -116,6 +117,7 @@ private extension ProductImagesCollectionViewController {
             cell.imageView.contentMode = .scaleAspectFit
             cell.imageView.image = image
         }
+        cell.coverTagView.isHidden = !isFirstImage
     }
 
     func configureUploadingImageCell(_ cell: UICollectionViewCell, asset: PHAsset) {

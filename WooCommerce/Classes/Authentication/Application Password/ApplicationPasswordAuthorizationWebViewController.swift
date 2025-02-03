@@ -281,13 +281,6 @@ extension ApplicationPasswordAuthorizationWebViewController: WKNavigationDelegat
     }
 }
 
-extension ApplicationPasswordAuthorizationWebViewController: UIAdaptivePresentationControllerDelegate {
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        // This will be called when the error UI is dismissed
-        navigationController?.dismiss(animated: true)
-    }
-}
-
 private extension ApplicationPasswordAuthorizationWebViewController {
     enum Constants {
         static let successURL = "woocommerce://application-password"

@@ -129,6 +129,9 @@ private extension NewTaxRateSelectorView {
                 Image(systemName: "info.circle")
                     .foregroundColor(Color(.wooCommercePurple(.shade60)))
                 Text(Localization.infoText)
+                    .minimumScaleFactor(0.75)
+                    .allowsTightening(true)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .padding(Layout.generalPadding)
         }

@@ -264,29 +264,14 @@ which should be translated separately and considered part of this sentence. */
 /* Disclaimer regarding some of the features related to payments. */
 "1. Available as standard in WooCommerce Payments (restrictions apply).Additional extensions may be required for other payment providers." = "1. Disponible par défaut dans WooCommerce Payments (des restrictions sont d’application). Des extensions supplémentaires peuvent être requises pour d’autres Fournisseurs de paiement.";
 
-/* Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment */
-"1. Create an order" = "1. Créer une commande";
-
 /* Disclaimer regarding some of the features related to shipping. */
 "2. Only available in the U.S. – an additional extension will be required for other countries." = "2. Uniquement disponible aux États-Unis : une extension supplémentaire est requise pour les autres pays.";
-
-/* Step 2 of the 'How it works' list, instructing the merchant to how to select Tap to Pay payments */
-"2. Tap “Collect Payment” and choose “Tap to Pay on iPhone”." = "2. Appuyez sur « Percevoir le paiement » et choisissez « Appuyez pour payer sur iPhone ».";
-
-/* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
-"3. Present your iPhone to the customer." = "3. Présentez votre iPhone au client.";
 
 /* Tutorial steps on the application password tutorial screen */
 "3. When the connection is complete, you will be logged in to your store." = "3. Une fois la connexion établie, vous serez connecté(e) à votre boutique.";
 
 /* Estimated setup time text shown on the Woo payments setup instructions screen. */
 "4-6 minutes" = "4-6 minutes";
-
-/* Step 4 of the 'How it works' list, informing the merchant of how a shopper should present their card */
-"4. Your customer holds their card horizontally at the top of your iPhone, over the contactless symbol." = "4. Votre client présente sa carte horizontalement par-dessus votre iPhone, au niveau du symbole sans contact.";
-
-/* Step 5 of the 'How it works' list, instructing the merchant to wait until processing is complete. */
-"5. After you see the “Done” checkmark, your store will process the payment, and the transaction will be complete." = "5. Quand vous verrez la coche « Effectué », votre boutique traitera le paiement et la transaction sera achevée.";
 
 /* Content of one of the features of the Paid plans, pointing to gigabytes of site storage. */
 "50 GB" = "50 GO";
@@ -342,12 +327,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "Abandoned cart recovery" = "Récupération de panier abandonné";
-
-/* Title for the webview used by merchants to view more details about Tap to Pay on iPhone */
-"About Tap to Pay" = "À propos d’Appuyer pour payer";
-
-/* Navigation title for the About Tap to Pay on iPhone Screen. */
-"About Tap to Pay on iPhone" = "À propos d’Appuyer pour payer sur iPhone";
 
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "À propos de l’application";
@@ -1600,6 +1579,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Colombia" = "Colombie";
 
+/* Message displayed if there are no inbox notes to display in the inbox screen. */
+"Come back soon for more tips and insights on growing your store." = "Revenez bientôt pour découvrir d’autres conseils et idées sur le développement de votre boutique.";
+
 /* Country option for a site address. */
 "Comoros" = "Comores";
 
@@ -2323,7 +2305,6 @@ which should be translated separately and considered part of this sentence. */
    Done button on the Allowed Emails screen
    Done button on the Jetpack Install Progress screen.
    Done button on the screen that is shown after a successful plan upgrade.
-   Done navigation button in About Tap to Pay on iPhone screen, when presented from the set up flow
    Done navigation button in Inbox Notes webview
    Done navigation button in selection list screens
    Done navigation button in Shipping Label add payment webview
@@ -2421,6 +2402,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Drag and drop helper text above photo list in Product images screen */
 "Drag and drop to re-order photos" = "Glisser-déposer pour réorganiser les photos";
+
+/* Subtitle of the empty state of the Blaze campaign list view */
+"Drive more sales to your store with Blaze." = "Améliorer le trafic sur votre site avec Blaze";
 
 /* Button title to duplicate a product in Product More Options Action Sheet */
 "Duplicate" = "Dupliquer";
@@ -2876,6 +2860,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title to explore an extension that isn't installed */
 "Explore" = "Explorer";
+
+/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
+"Explore how you can increase your store sales." = "Découvrez comment augmenter vos ventes";
 
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "Externe\/Affiliation";
@@ -3385,9 +3372,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "Comment nous améliorer ?";
 
-/* Headline for the 'How it works' section on the About Tap to Pay on iPhone screen, which describes the steps required to take a payment. */
-"How it works" = "Comment ça marche ?";
-
 /* Country option for a site address. */
 "Hungary" = "Hongrie";
 
@@ -3467,16 +3451,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to In-Person Payments screen */
 "In-Person Payments" = "Paiements en personne";
-
-/* Main prompt for the screen to select the preferred provider for In-Person Payments */
-"In-Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "Les paiements en personne peuvent être traités à partir de ces fournisseurs de paiement. Quel fournisseur souhaitez-vous utiliser ?";
-
-/* Title for the error screen when the merchant's payment account is restricted because it's under reviw
-   Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
-"In-Person Payments is currently unavailable" = "Les paiements en personne ne sont actuellement pas disponibles.";
-
-/* Title for the error screen when the merchant's payment account has been rejected. */
-"In-Person Payments isn't available for this store" = "Les paiements en personne ne sont pas disponibles pour cette boutique.";
 
 /* Cell title on beta features screen to enable in-app purchases */
 "In-app purchases" = "Achats intégrés à l’application";
@@ -3642,6 +3616,24 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing external inventory.
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Stock";
+
+/* Main prompt for the screen to select the preferred provider for In-Person Payments
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"In‑Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "Les paiements en personne peuvent être traités à partir de ces fournisseurs de paiement. Quel fournisseur souhaitez-vous utiliser ?";
+
+/* Title for the error screen when the merchant's payment account is restricted because it's under reviw
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
+   Title for the error screen when the Stripe account is restricted because there are overdue requirements.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"In‑Person Payments is currently unavailable" = "Les paiements en personne ne sont actuellement pas disponibles.";
+
+/* Title for the error screen when the merchant's payment account has been rejected.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"In‑Person Payments isn't available for this store" = "Les paiements en personne ne sont pas disponibles pour cette boutique.";
 
 /* Country option for a site address. */
 "Iran" = "Iran";
@@ -4276,9 +4268,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Mongolia" = "Mongolie";
-
-/* Caption displayed in promotional screens shown during the login flow. */
-"Monitor and approve your product reviews" = "Surveillez et approuvez les avis sur vos produits";
 
 /* Country option for a site address. */
 "Montenegro" = "Monténégro";
@@ -5848,9 +5837,6 @@ which should be translated separately and considered part of this sentence. */
    Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "Obligatoire";
 
-/* Requirements for Tap to Pay on iPhone, and other small print shown on the About Tap to Pay on iPhone screen. %1$@ will be replaced with the relevant iOS version number. */
-"Requires iPhone XS or later with iOS %1$@ or later. The Contactless Symbol is a trademark owned by and used with permission of EMVCo, LLC." = "Nécessite un iPhone XS ou plus récent exécutant iOS %1$@ ou une version ultérieure. Le symbole du sans contact est une marque déposée et utilisée avec l’autorisation de EMVCo, LLC.";
-
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Réinitialiser le journal d'activité";
 
@@ -6276,8 +6262,7 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the tax rate selector */
 "Set Tax Rate" = "Définir un taux de taxe";
 
-/* Button title for the main CTA on the About Tap to Pay on iPhone screen. The button opens the Set Up Tap to Pay on iPhone flow.
-   Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
+/* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
 "Set Up Tap to Pay on iPhone" = "Configurer la fonctionnalité Appuyer pour payer sur iPhone";
 
 /* Title for the button to add a new tax ratewhen there is a tax rate stored */
@@ -6922,9 +6907,6 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of Tap to Pay on iPhone collection readiness. Presented to users when payment collection starts */
 "Tap to Pay on iPhone is ready" = "Appuyer pour payer sur iPhone est prêt";
 
-/* Description of Tap to Pay on iPhone shown on the About Tap to Pay on iPhone screen, as an intro. */
-"Tap to Pay on iPhone lets you accept all types of contactless payments – from physical debit and credit cards, to Apple Pay and other digital wallets – without the need to purchase a physical card reader." = "Appuyer pour payer sur iPhone vous permet d’accepter tout type de paiement sans contact – des cartes de débit et de crédit traditionnelles à Apple Pay et autres portefeuilles numériques – sans avoir à acheter un lecteur de carte.";
-
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "Appuyer pour insérer une règle horizontale";
 
@@ -7090,14 +7072,20 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "That username is not allowed." = "Cet identifiant n’est pas autorisé.";
 
-/* Error message when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
-"The %1$@ extension cannot be in test mode for In-Person Payments. Please disable test mode." = "L’extension %1$@ ne peut pas être en mode test pour les paiements en personne. Veuillez désactiver le mode test.";
+/* Error message when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"The %1$@ extension cannot be in test mode for In‑Person Payments. Please disable test mode." = "L’extension %1$@ ne peut pas être en mode test pour les paiements en personne. Veuillez désactiver le mode test.";
 
-/* Error message when a Card Present Payments extension is not activated */
-"The %1$@ extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "L’extension %1$@ est installée sur votre boutique, mais elle n’est pas activée. Veuillez l’activer afin d’accepter les paiements en personne";
+/* Error message when a Card Present Payments extension is not activated
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"The %1$@ extension is installed on your store but not activated. Please activate it to accept In‑Person Payments" = "L’extension %1$@ est installée sur votre boutique, mais elle n’est pas activée. Veuillez l’activer afin d’accepter les paiements en personne";
 
-/* Error message when a Card Present Payments extension is installed but the version is not supported */
-"The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "L’extension %1$@ est installée sur votre boutique, mais doit être mise à jour pour les paiements en personne. Veuillez la mettre à jour vers la version la plus récente.";
+/* Error message when a Card Present Payments extension is installed but the version is not supported
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
+"The %1$@ extension is installed on your store, but needs to be updated for In‑Person Payments. Please update it to the most recent version." = "L’extension %1$@ est installée sur votre boutique, mais doit être mise à jour pour les paiements en personne. Veuillez la mettre à jour vers la version la plus récente.";
 
 /* Error message when the card reader loses its Bluetooth connection to the card reader. */
 "The Bluetooth connection to the card reader disconnected unexpectedly." = "La connexion Bluetooth au lecteur de cartes a pris fin de façon inattendue";
@@ -7206,9 +7194,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Footnote about the domain credit banner in domain settings. */
 "The domain purchased will redirect users to your primary address." = "Le domaine acheté redirigera les utilisateurs vers votre adresse principale.";
-
-/* Caption displayed in the simplified prologue screen */
-"The ecommerce platform that grows with you" = "La plateforme d’eCommerce qui grandit avec vous";
 
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "Lors de la première utilisation de la fonctionnalité Appuyer pour payer sur iPhone, vous devrez peut-être accepter les conditions d’utilisation d’Apple.";
@@ -7336,11 +7321,17 @@ which should be translated separately and considered part of this sentence. */
 /* The error message shown if the app can't show a theme demo. */
 "ThemesPreviewView.errorLoadingThemeDemo" = "Impossible d'afficher la démo pour ce thème. Veuillez essayer un autre thème.";
 
-/* Error message when because there are pending requirements in the merchant's In-Person Payments account. %1$d will contain the localized deadline (e.g. August 11, 2021) */
-"There are pending requirements for your account. Please complete those requirements by %1$@ to keep accepting In-Person Payments." = "Il y a des prérequis en attente d’une action dans votre compte. Veuillez effectuer les actions demandées avant le %1$@ afin de pouvoir continuer à accepter les paiements en personne.";
+/* Error message when because there are pending requirements in the merchant's
+In-Person Payments account.
+%1$d will contain the localized deadline (e.g. August 11, 2021)
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"There are pending requirements for your account. Please complete those requirements by %1$@ to keep accepting In‑Person Payments." = "Il y a des prérequis en attente d’une action dans votre compte. Veuillez effectuer les actions demandées avant le %1$@ afin de pouvoir continuer à accepter les paiements en personne.";
 
-/* Error message when there are pending requirements in the merchant's payment account (without a known deadline) */
-"There are pending requirements for your account. Please complete those requirements to keep accepting In-Person Payments." = "Il y a des prérequis en attente d’une action dans votre compte. Veuillez effectuer les actions demandées afin de pouvoir continuer à accepter les paiements en personne.";
+/* Error message when there are pending requirements in the merchant's payment account (without a known deadline)
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"There are pending requirements for your account. Please complete those requirements to keep accepting In‑Person Payments." = "Il y a des prérequis en attente d’une action dans votre compte. Veuillez effectuer les actions demandées afin de pouvoir continuer à accepter les paiements en personne.";
 
 /* The info on the Error Loading Data banner when there was a Jetpack connection error. */
 "There is a problem with your store's Jetpack connection. Please reconnect Jetpack or reach out to us and we'll be happy to assist you!" = "Un problème est survenu avec la connexion de Jetpack pour votre boutique. Retentez la connexion de Jetpack ou contactez-nous ; nous nous ferons un plaisir de vous aider !";
@@ -7534,6 +7525,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description text for the product discount row informational tooltip */
 "To add a Product Discount, please remove all Coupons from your order" = "Pour ajouter une remise sur le produit, veuillez supprimer tous les codes promo sur votre commande";
+
+/* Subtitle on the variations list screen when there are no variations and attributes */
+"To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first." = "Pour ajouter une variante, vous devrez d’abord configurer ses attributs (couleur, dimensions, etc.)";
 
 /* Error message displayed when unable to close user account due to having active atomic site. */
 "To close this account now, contact our support team." = "Pour fermer ce compte maintenant, contactez notre équipe d’assistance.";
@@ -7981,8 +7975,10 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when unable to bulk update price of the variations */
 "Unable to update price" = "Impossible de mettre le prix à jour";
 
-/* Title for the error screen when In-Person Payments is unavailable */
-"Unable to verify In-Person Payments for this store" = "Impossible de vérifier les paiements en personne pour cette boutique";
+/* Title for the error screen when In-Person Payments is unavailable
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"Unable to verify In‑Person Payments for this store" = "Impossible de vérifier les paiements en personne pour cette boutique";
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "Impossible de vérifier l’adresse e-mail. Veuillez réessayer ultérieurement.";
@@ -8370,8 +8366,10 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Wallis and Futuna" = "Wallis-et-Futuna";
 
-/* Error message when the merchant's payment account has been rejected */
-"We are sorry but we can't support In-Person Payments for this store." = "Malheureusement, nous ne pouvons pas prendre en charge les paiements en personne pour cette boutique.";
+/* Error message when the merchant's payment account has been rejected
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We are sorry but we can't support In‑Person Payments for this store." = "Malheureusement, nous ne pouvons pas prendre en charge les paiements en personne pour cette boutique.";
 
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "Nous travaillons pour faciliter l’affichage des modules produit (Product Add-ons) sur votre appareil ! Pour l’instant, vous pouvez voir les modules de vos commandes. Vous pouvez créer et modifier ces modules dans votre tableau de bord Web.";
@@ -8413,17 +8411,25 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users when updating the card reader software fails */
 "We couldn’t update your reader’s software" = "Nous n’avons pas pu mettre à jour le logiciel de votre lecteur";
 
-/* Title for the error screen when In-Person Payments is not supported in a specific country */
-"We don’t support In-Person Payments in %1$@" = "Nous ne prenons pas en charge les paiements en personne dans le pays suivant : %1$@.";
+/* Title for the error screen when In-Person Payments is not supported in a specific country
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We don’t support In‑Person Payments in %1$@" = "Nous ne prenons pas en charge les paiements en personne dans le pays suivant : %1$@.";
 
-/* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
-"We don’t support In-Person Payments in your country" = "Nous ne prenons pas en charge les paiements en personne dans votre pays";
+/* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We don’t support In‑Person Payments in your country" = "Nous ne prenons pas en charge les paiements en personne dans votre pays";
 
-/* Title for the error screen when In-Person Payments is not supported in a specific country */
-"We don’t support In-Person Payments with Stripe in %1$@" = "Nous ne prenons pas en charge les paiements en personne avec Stripe dans le pays suivant : %1$@";
+/* Title for the error screen when In-Person Payments is not supported in a specific country
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We don’t support In‑Person Payments with Stripe in %1$@" = "Nous ne prenons pas en charge les paiements en personne avec Stripe dans le pays suivant : %1$@";
 
-/* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
-"We don’t support In-Person Payments with Stripe in your country" = "Nous ne prenons pas en charge les paiements en personne avec Stripe dans votre pays";
+/* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We don’t support In‑Person Payments with Stripe in your country" = "Nous ne prenons pas en charge les paiements en personne avec Stripe dans votre pays";
 
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "We enable you to process them effortlessly." = "Nous vous permettons de les traiter en toute simplicité.";
@@ -8497,8 +8503,10 @@ which should be translated separately and considered part of this sentence. */
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "Désolé, il n’y a aucun résultat pour « %@ »";
 
-/* Generic error message when In-Person Payments is unavailable */
-"We're sorry, we were unable to verify In-Person Payments for this store." = "Désolé, nous n’avons pas pu vérifier les paiements en personne pour cette boutique.";
+/* Generic error message when In-Person Payments is unavailable
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We're sorry, we were unable to verify In‑Person Payments for this store." = "Désolé, nous n’avons pas pu vérifier les paiements en personne pour cette boutique.";
 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Nous vous avons envoyé un lien d’inscription pour créer votre nouveau compte WordPress.com. Consultez vos e-mails sur cet appareil et appuyez sur le lien dans l’e-mail que vous avez reçu de WordPress.com.";
@@ -8542,9 +8550,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "What is Jetpack?" = "Qu'est-ce que Jetpack ?";
-
-/* Main heading for the About Tap to Pay on iPhone screen */
-"What is Tap to Pay on iPhone?" = "Qu’est-ce qu’Appuyer pour payer sur iPhone ?";
 
 /* Shipping Labels: info title about WooCommerce Services discount */
 "What is WooCommerce Services discount?" = "Qu’est-ce que la remise WooCommerce Services ?";
@@ -8751,8 +8756,10 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "Une nouvelle commande a été passée sur votre site ! 🎉";
 
-/* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
-"You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "Votre compte comporte au moins un prérequis en attente. Veuillez y remédier afin de reprendre les paiements en personne.";
+/* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"You have at least one overdue requirement on your account. Please take care of that to resume In‑Person Payments." = "Votre compte comporte au moins un prérequis en attente. Veuillez y remédier afin de reprendre les paiements en personne.";
 
 /* Error message for a short value in Description row in Customs screen of Shipping Label flow */
 "You must provide a clear, specific description for every item." = "Vous devez fournir une description claire et précise de chaque article.";
@@ -8766,8 +8773,10 @@ which should be translated separately and considered part of this sentence. */
 /* Error messaged show when a mobile plugin is redirecting traffict to their site, DudaMobile in particular */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Il semble que vous ayez installé une extension mobile à partir de DudaMobile qui empêche l'application de se connecter à votre blog";
 
-/* Error message when the merchant's payment account is under review */
-"You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "Vous pourrez accepter des paiements en personne dès que nous aurons passé votre compte en revue.";
+/* Error message when the merchant's payment account is under review
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"You'll be able to accept In‑Person Payments as soon as we finish reviewing your account." = "Vous pourrez accepter des paiements en personne dès que nous aurons passé votre compte en revue.";
 
 /* Title for the Upgrades summary card, informing the merchant they're on a Free Trial site. */
 "You're in a free trial" = "Vous profitez actuellement d’une période d’essai.";
@@ -8872,14 +8881,18 @@ which should be translated separately and considered part of this sentence. */
 /* Message of the free trial banner when there are no days left */
 "Your trial has ended." = "Votre essai est terminé.";
 
-/* Error message when WooCommerce Payments is not installed */
-"You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "Vous devrez installer l’extension gratuite WooCommerce Payments sur votre boutique afin d’accepter les paiements en personne.";
+/* Error message when WooCommerce Payments is not installed
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
+"You’ll need to install the free WooCommerce Payments extension on your store to accept In‑Person Payments." = "Vous devrez installer l’extension gratuite WooCommerce Payments sur votre boutique afin d’accepter les paiements en personne.";
 
 /* Title for the progress screen shown after an In-App Purchase for a Woo Express plan, while we upgrade the site. */
 "You’re almost there" = "Vous y êtes presque";
 
-/* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name. */
-"You’re almost there! Please finish setting up %1$@ to start accepting In-Person Payments." = "Vous y êtes presque ! Veuillez terminer de configurer %1$@ pour commencer à accepter les paiements en personne.";
+/* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"You’re almost there! Please finish setting up %1$@ to start accepting In‑Person Payments." = "Vous y êtes presque ! Veuillez terminer de configurer %1$@ pour commencer à accepter les paiements en personne.";
 
 /* Country option for a site address. */
 "Zambia" = "Zambie";
@@ -9764,6 +9777,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message indicating no search result on the target location picker for campaign creation */
 "blazeTargetLocationPickerViewModel.noResult" = "Aucun lieu trouvé.\nVeuillez réessayer.";
 
+/* Hint message to enter search query on the target location picker for campaign creation */
+"blazeTargetLocationPickerViewModel.searchViewHintMessage" = "Saisir les premières lettres du pays, de l’État\/la région ou de la ville pour voir les options disponibles";
+
 /* Title of the row to select all target location for Blaze campaign creation */
 "blazeTargetLocationSearchView.allTitle" = "Partout";
 
@@ -10140,6 +10156,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text for button that's shown when the list is empty. */
 "customFieldsListHostingController.emptyStateButton" = "Lire la suite";
 
+/* Message when the list is empty. */
+"customFieldsListHostingController.emptyStateDescription" = "Les champs personnalisés sont des métadonnées facultatives pour afficher des informations supplémentaires ou personnaliser l’expérience d’achat sur votre boutique";
+
 /* Title for the message when the list is empty. */
 "customFieldsListHostingController.emptyStateTitle" = "Aucun champ personnalisé trouvé";
 
@@ -10272,6 +10291,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title when there are no customers in the search results in the Customers list screen. */
 "customerList.emptySearchTitle" = "Aucun client";
 
+/* Message when there are no customers to show in the Customers list screen. */
+"customerList.emptyStateMessage" = "Créer une commande pour commencer à collecter des tendances clients";
+
 /* Title when there are no customers to show in the Customers list screen. */
 "customerList.emptyStateTitle" = "Aucun client pour le moment";
 
@@ -10364,6 +10386,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label of the button to share the store */
 "dashboardView.shareStoreCard.shareButtonLabel" = "Partager votre boutique";
+
+/* Subtitle of the Share Your Store card */
+"dashboardView.shareStoreCard.subtitle" = "Utilisez les e-mails ou les réseaux sociaux pour faire connaître votre boutique";
 
 /* Title of the Share Your Store card */
 "dashboardView.shareStoreCard.title" = "Faites passer le mot !";
@@ -10869,9 +10894,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label indicating that the store is being synced in the Jetpack setup flow */
 "loginJetpackSetupCoordinator.syncingStore" = "Synchronisation de la boutique…";
-
-/* Subtitle displayed in the simplified prologue screen */
-"loginProloguePageType.getStartedText" = "Woo vous accompagne, de votre toute première vente au développement colossal de votre chiffre d’affaires. Découvrez pourquoi les commerçants nous font confiance pour faire fonctionner 3,9 millions de boutiques en ligne.";
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "remboursement manuel";
@@ -11425,12 +11447,6 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.title" = "Traitement du paiement";
 
-/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.cardPresent.paymentSuccessful.message" = "Un paiement de %1$@ a bien été effectué";
-
-/* Title shown to users when payment is made successfully. */
-"pointOfSale.cardPresent.paymentSuccessful.title" = "Paiement réussi !";
-
 /* Message shown on the Point of Sale checkout while the reader is being prepared. */
 "pointOfSale.cardPresent.preparingForPayment.message" = "Préparation de la carte pour le paiement";
 
@@ -11608,14 +11624,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users when updating the card reader software fails */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "Nous n’avons pas pu mettre à jour le logiciel de votre lecteur";
 
-/* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo" = "La mise à jour du logiciel du lecteur a échoué car la batterie du lecteur est chargée à %.0f%%. Veuillez charger le lecteur au-dessus de 50 %% avant de réessayer.";
-
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "Annuler";
-
-/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo" = "La mise à jour du logiciel du lecteur a échoué car la batterie du lecteur est faible. Veuillez charger le lecteur au-dessus de 50 \\u0025 avant de réessayer.";
 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.title" = "Veuillez charger le lecteur";

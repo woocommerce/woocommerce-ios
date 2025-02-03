@@ -685,9 +685,10 @@ private extension AuthenticationManager {
 
     /// Web view to authorize application password for a given site.
     ///
-    func applicationPasswordWebView(for siteURL: String) -> UIViewController {
+    func applicationPasswordWebView(for siteURL: String, previousVC: UIViewController?) -> UIViewController {
         let viewModel = ApplicationPasswordAuthorizationViewModel(siteURL: siteURL)
         let controller = ApplicationPasswordAuthorizationWebViewController(viewModel: viewModel,
+                                                                           previousViewController: previousVC,
                                                                            onSuccess: { [weak self] applicationPassword, navigationController in
             guard let navigationController else {
                 DDLogInfo("⚠️ No navigation controller found")
@@ -806,7 +807,7 @@ private extension AuthenticationManager {
     /// Presents app password site login using a web view.
     ///
     private func presentApplicationPasswordWebView(for siteURL: String, in viewController: UIViewController) {
-        let webViewController = applicationPasswordWebView(for: siteURL)
+        let webViewController = applicationPasswordWebView(for: siteURL, previousVC: viewController)
         viewController.navigationController?.pushViewController(webViewController, animated: true)
     }
 }

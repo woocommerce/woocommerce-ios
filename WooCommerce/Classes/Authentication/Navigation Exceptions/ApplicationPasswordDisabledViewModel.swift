@@ -6,14 +6,19 @@ import WordPressAuthenticator
 ///
 struct ApplicationPasswordDisabledViewModel: ULErrorViewModel {
     init(siteURL: String,
+         previousViewController: UIViewController?,
          authentication: Authentication = ServiceLocator.authenticationManager) {
         self.siteURL = siteURL
+        self.previousViewController = previousViewController
         self.authentication = authentication
     }
 
     let siteURL: String
     let authentication: Authentication
     let image: UIImage = .errorImage
+
+    // The VC that was showing before the application password flow. This is used to navigate back without guesswork.
+    let previousViewController: UIViewController?
 
     var text: NSAttributedString {
         let font: UIFont = .body
@@ -39,13 +44,11 @@ struct ApplicationPasswordDisabledViewModel: ULErrorViewModel {
     func viewDidLoad(_ viewController: UIViewController?) {
     }
 
-    // Navigates back to the third last view controller in the stack if possible,
-    // otherwise it navigates to the root view controller.
+    // Pop to the previous VC
     func didTapPrimaryButton(in viewController: UIViewController?) {
         guard let navigationController = viewController?.navigationController else { return }
-        let viewControllers = navigationController.viewControllers
-        if viewControllers.count >= 3 {
-            navigationController.popToViewController(viewControllers[viewControllers.count - 3], animated: true)
+        if let previousViewController = previousViewController {
+            navigationController.popToViewController(previousViewController, animated: true)
         } else {
             navigationController.popToRootViewController(animated: true)
         }

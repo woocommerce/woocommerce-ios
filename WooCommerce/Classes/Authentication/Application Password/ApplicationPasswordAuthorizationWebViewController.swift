@@ -34,6 +34,9 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
         return indicator
     }()
 
+    /// The view controller that was presenting the application password flow.
+    private weak var previousViewController: UIViewController?
+
     /// WP Core requires that the UUID has lowercased letters.
     private let appID = UUID().uuidString.lowercased()
 
@@ -50,9 +53,11 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
     private var authorizationURL: String?
 
     init(viewModel: ApplicationPasswordAuthorizationViewModel,
+         previousViewController: UIViewController?,
          analytics: Analytics = ServiceLocator.analytics,
          onSuccess: @escaping (ApplicationPassword, UINavigationController?) -> Void) {
         self.viewModel = viewModel
+        self.previousViewController = previousViewController
         self.onSuccess = onSuccess
         self.analytics = analytics
         super.init(nibName: nil, bundle: nil)
@@ -159,12 +164,12 @@ private extension ApplicationPasswordAuthorizationWebViewController {
                     analytics.track(.applicationPasswordAuthorizationURLNotAvailable)
 
                     let errorUI = applicationPasswordDisabledUI(for: viewModel.siteURL)
-                    // When the error view controller is popped, also pop the web view
+                    // When the error view controller is popped, navigate to previous VC
                     errorUI.navigationItem.leftBarButtonItem = UIBarButtonItem(
                         image: UIImage(systemName: "chevron.backward"),
                         style: .plain,
                         target: self,
-                        action: #selector(popBothControllers)
+                        action: #selector(navigateToPreviousViewController)
                     )
 
                     // Push instead of present
@@ -184,10 +189,13 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         }
     }
 
-    @objc private func popBothControllers() {
-        // Pop back two view controllers to remove both error and web view
-        navigationController?.popViewController(animated: false)
-        navigationController?.popViewController(animated: true)
+    /// Pops to the previous view controller (if provided) or pops one level otherwise.
+    @objc private func navigateToPreviousViewController() {
+        if let previous = previousViewController, let nav = navigationController {
+            nav.popToViewController(previous, animated: true)
+        } else {
+            navigationController?.popViewController(animated: true)
+        }
     }
 
     func loadAuthorizationPage(url: URL) {
@@ -244,7 +252,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
     /// with application password disabled.
     ///
     func applicationPasswordDisabledUI(for siteURL: String) -> UIViewController {
-        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: siteURL)
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: siteURL, previousViewController: previousViewController)
         return ULErrorViewController(viewModel: viewModel)
     }
 }

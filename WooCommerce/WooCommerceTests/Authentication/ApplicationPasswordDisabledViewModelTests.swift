@@ -28,7 +28,8 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_image() {
         // Given
-        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL)
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL,
+                                                             previousViewController: nil)
 
         // When
         let image = viewModel.image
@@ -39,7 +40,8 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_error_message() {
         // Given
-        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL)
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL,
+                                                             previousViewController: nil)
         let expectation = Expectations.errorMessage.replacingOccurrences(of: "%1$@", with: "test.com")
 
         // When
@@ -51,7 +53,8 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_visibility_for_auxiliary_button() {
         // Given
-        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL)
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL,
+                                                             previousViewController: nil)
 
         // When
         let isHidden = viewModel.isAuxiliaryButtonHidden
@@ -62,7 +65,8 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_title_for_auxiliary_button() {
         // Given
-        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL)
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL,
+                                                             previousViewController: nil)
 
         // When
         let auxiliaryButtonTitle = viewModel.auxiliaryButtonTitle
@@ -73,7 +77,8 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_visibility_for_primary_button() {
         // Given
-        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL)
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL,
+                                                             previousViewController: nil)
 
         // When
         let isHidden = viewModel.isPrimaryButtonHidden
@@ -84,7 +89,8 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_title_for_primary_button() {
         // Given
-        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL)
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL,
+                                                             previousViewController: nil)
 
         // When
         let primaryButtonTitle = viewModel.primaryButtonTitle
@@ -95,7 +101,8 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_visibility_for_secondary_button() {
         // Given
-        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL)
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL,
+                                                             previousViewController: nil)
 
         // When
         let isHidden = viewModel.isSecondaryButtonHidden
@@ -106,7 +113,8 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_title_for_secondary_button() {
         // Given
-        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL)
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL,
+                                                             previousViewController: nil)
 
         // When
         let secondaryButtonTitle = viewModel.secondaryButtonTitle
@@ -117,7 +125,8 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
 
     func test_didTapAuxiliaryButton_presents_a_web_view() {
         // Given
-        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL)
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL,
+                                                             previousViewController: nil)
 
         // When
         viewModel.didTapAuxiliaryButton(in: navigationController)
@@ -131,7 +140,6 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
 
     func test_didTapPrimaryButton_navigates_to_correct_view_controller() {
         // Given
-        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL)
         let viewController1 = UIViewController()
         let viewController2 = UIViewController()
         let viewController3 = UIViewController()
@@ -139,6 +147,9 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
         navigationController.viewControllers = [viewController1, viewController2, viewController3]
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
+
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL,
+                                                             previousViewController: viewController1)
 
         XCTAssertEqual(viewController3.navigationController, navigationController, "viewController3 should be part of the navigationController's stack")
 

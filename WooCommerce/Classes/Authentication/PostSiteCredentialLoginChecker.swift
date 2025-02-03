@@ -56,8 +56,9 @@ private extension PostSiteCredentialLoginChecker {
                 analytics.track(event: .ApplicationPassword.applicationPasswordGenerationFailed(scenario: .generation, error: error))
                 switch error {
                 case ApplicationPasswordUseCaseError.applicationPasswordsDisabled:
-                    // show application password disabled error
-                    let errorUI = applicationPasswordDisabledUI(for: siteURL)
+                    // show application password disabled error, and catch the last view controller that was showing before the Application Password flow.
+                    let previousViewController = navigationController.viewControllers.dropLast().last
+                    let errorUI = applicationPasswordDisabledUI(for: siteURL, previousViewController: previousViewController)
                     navigationController.show(errorUI, sender: nil)
                 case ApplicationPasswordUseCaseError.unauthorizedRequest:
                     showAlert(message: Localization.unauthorizedForAppPassword, in: navigationController)
@@ -179,8 +180,8 @@ private extension PostSiteCredentialLoginChecker {
     /// The error screen to be displayed when the user tries to log in with site credentials
     /// with application password disabled.
     ///
-    func applicationPasswordDisabledUI(for siteURL: String) -> UIViewController {
-        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: siteURL)
+    func applicationPasswordDisabledUI(for siteURL: String, previousViewController: UIViewController?) -> UIViewController {
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: siteURL, previousViewController: previousViewController)
         return ULErrorViewController(viewModel: viewModel)
     }
 }

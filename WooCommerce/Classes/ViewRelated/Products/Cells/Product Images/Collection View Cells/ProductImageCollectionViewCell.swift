@@ -15,18 +15,16 @@ final class ProductImageCollectionViewCell: UICollectionViewCell {
         containerView.layer.cornerRadius = Constants.tagCornerRadius
         containerView.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(tagLabel)
-        containerView.pinSubviewToAllEdges(tagLabel, insets: UIEdgeInsets(top: Constants.tagPadding,
-                                                                          left: Constants.tagPadding,
-                                                                          bottom: Constants.tagPadding,
-                                                                          right: Constants.tagPadding))
+        containerView.pinSubviewToAllEdges(tagLabel, insets: Constants.tagEdgeInsets)
         return containerView
     }()
 
-    private(set) lazy var tagLabel: UILabel = {
+    private lazy var tagLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.applyCaption1Style()
         label.textColor = UIColor(light: .white, dark: .black)
+        label.text = Localization.tagLabel
         return label
     }()
 
@@ -86,8 +84,9 @@ private extension ProductImageCollectionViewCell {
     enum Constants {
         static let cornerRadius = CGFloat(2.0)
         static let borderWidth = CGFloat(0.5)
-        static let tagPadding: CGFloat = 4
-        static let tagCornerRadius: CGFloat = 4
+        static let tagPadding = CGFloat(8)
+        static let tagCornerRadius = CGFloat(4)
+        static let tagEdgeInsets = UIEdgeInsets(top: 2, left: 4, bottom: 2, right: 4)
     }
 
     enum Colors {
@@ -98,5 +97,13 @@ private extension ProductImageCollectionViewCell {
         static let clipToBounds = true
         static let imageContentMode = ContentMode.center
         static let maskToBounds = true
+    }
+
+    enum Localization {
+        static let tagLabel = NSLocalizedString(
+            "productImageCollectionViewCell.tagLabel.text",
+            value: "Cover",
+            comment: "Label indicating the cover image of a product"
+        )
     }
 }

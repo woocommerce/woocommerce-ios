@@ -4,7 +4,7 @@ import XCTest
 public final class PrologueScreen: ScreenObject {
 
     private let titleLabelGetter: (XCUIApplication) -> XCUIElement = {
-        $0.staticTexts["The ecommerce platform that grows with you"]
+        $0.staticTexts["prologue-title-label"]
     }
 
     private let continueButtonGetter: (XCUIApplication) -> XCUIElement = {

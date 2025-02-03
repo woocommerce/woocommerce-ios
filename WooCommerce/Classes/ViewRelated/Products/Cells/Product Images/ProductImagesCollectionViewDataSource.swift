@@ -38,7 +38,8 @@ private extension ProductImagesCollectionViewDataSource {
     func configure(collectionView: UICollectionView, _ cell: UICollectionViewCell, for item: ProductImagesItem, at indexPath: IndexPath) {
         switch item {
         case .image(let status):
-            configureImageCell(cell, productImageStatus: status)
+            let isFirstImage = indexPath.item == 0
+            configureImageCell(cell, productImageStatus: status, isFirstImage: isFirstImage)
         case .extendedAddImage(let isVariation):
             if let cell = cell as? ExtendedAddProductImageCollectionViewCell {
                 cell.configurePlaceholderLabelForProductImages(isVariation: isVariation)
@@ -48,10 +49,10 @@ private extension ProductImagesCollectionViewDataSource {
         }
     }
 
-    func configureImageCell(_ cell: UICollectionViewCell, productImageStatus: ProductImageStatus) {
+    func configureImageCell(_ cell: UICollectionViewCell, productImageStatus: ProductImageStatus, isFirstImage: Bool) {
         switch productImageStatus {
         case .remote(let image):
-            configureRemoteImageCell(cell, productImage: image)
+            configureRemoteImageCell(cell, productImage: image, isFirstImage: isFirstImage)
         case .uploading(let asset):
             switch asset {
                 case .phAsset(let asset):
@@ -62,7 +63,7 @@ private extension ProductImagesCollectionViewDataSource {
         }
     }
 
-    func configureRemoteImageCell(_ cell: UICollectionViewCell, productImage: ProductImage) {
+    func configureRemoteImageCell(_ cell: UICollectionViewCell, productImage: ProductImage, isFirstImage: Bool) {
         guard let cell = cell as? ProductImageCollectionViewCell else {
             fatalError()
         }
@@ -83,6 +84,12 @@ private extension ProductImagesCollectionViewDataSource {
             cell?.imageView.contentMode = .scaleAspectFit
             cell?.imageView.image = image
         }
+        cell.coverTagView.isHidden = !isFirstImage
+        cell.tagLabel.text = NSLocalizedString(
+            "productImagesCollectionViewDataSource.tagLabel.text",
+            value: "Cover",
+            comment: "Label indicating the cover image of a product"
+        )
     }
 
     func configureUploadingImageCell(_ cell: UICollectionViewCell, asset: PHAsset) {

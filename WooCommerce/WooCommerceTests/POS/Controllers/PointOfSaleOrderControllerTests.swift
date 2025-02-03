@@ -5,6 +5,7 @@ import Foundation
 @testable import WooCommerce
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
+import enum Yosemite.OrderAction
 import class WooFoundation.CurrencySettings
 
 struct PointOfSaleOrderControllerTests {
@@ -191,6 +192,48 @@ struct PointOfSaleOrderControllerTests {
             // Then
             #expect(error == .noOrder)
         }
+    }
+
+    @MainActor
+    @Test func collectCashPayment_when_successful_calls_celebrate() async throws {
+        // Given
+        let sampleSiteID: Int64 = 1234
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        mockStores.sessionManager.setStoreId(sampleSiteID)
+        let mockPaymentCelebration = MockPaymentCaptureCelebration()
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptService: mockReceiptService,
+                                             stores: mockStores,
+                                             celebration: mockPaymentCelebration)
+
+        let orderItem = OrderItem.fake()
+        let fakeOrder = Order.fake().copy(items: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+        await sut.syncOrder(for: [makeItem()], retryHandler: {})
+
+        // When
+        let completionResult: Bool = await withCheckedContinuation { continuation in
+            mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateOrder(siteID, order, _, _, onCompletion):
+                    onCompletion(.success(order))
+                    continuation.resume(returning: true)
+                default:
+                    #expect(Bool(false), "Unexpected action \(action)")
+                }
+            }
+            Task { @MainActor in
+                do {
+                    try await sut.collectCashPayment()
+                } catch {
+                    continuation.resume(returning: false)
+                }
+            }
+        }
+
+        // Then
+        #expect(completionResult == true)
+        #expect(mockPaymentCelebration.celebrationWasCalled == true)
     }
 }
 

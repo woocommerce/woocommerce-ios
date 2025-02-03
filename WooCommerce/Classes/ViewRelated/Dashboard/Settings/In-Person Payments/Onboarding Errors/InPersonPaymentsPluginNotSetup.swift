@@ -47,8 +47,10 @@ struct InPersonPaymentsPluginNotSetup: View {
             .buttonStyle(SecondaryButtonStyle())
             .padding(.bottom, 24.0)
 
-            InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel(tappedAnalyticEvent: learnMoreAnalyticEvent))
-                .padding(.vertical, 8)
+            InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel(
+                paymentGateway: plugin,
+                tappedAnalyticEvent: learnMoreAnalyticEvent))
+            .padding(.vertical, 8)
         }
         .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
     }

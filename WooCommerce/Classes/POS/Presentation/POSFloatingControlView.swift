@@ -17,6 +17,7 @@ struct POSFloatingControlView: View {
         HStack {
             Menu {
                 Button {
+                    ServiceLocator.analytics.track(.pointOfSaleExitMenuItemTapped)
                     showExitPOSModal = true
                 } label: {
                     Label(

@@ -3,6 +3,7 @@ import SwiftUI
 import UIKit
 import Yosemite
 import Experiments
+import MapKit
 
 /// Hosting controller that wraps an `EditOrderAddressForm`.
 ///
@@ -231,12 +232,17 @@ struct SingleAddressForm: View {
     ///
     @State private var titleWidth: CGFloat? = nil
 
+    @State private var showingMapPicker = false
+
     var body: some View {
         content
             .onPreferenceChange(MaxWidthPreferenceKey.self) { value in
                 if let value = value {
                     titleWidth = value
                 }
+            }
+            .sheet(isPresented: $showingMapPicker) {
+                AddressMapPickerView(fields: $fields)
             }
     }
 
@@ -311,6 +317,20 @@ struct SingleAddressForm: View {
             .padding(.horizontal, insets: safeAreaInsets)
             .accessibility(addTraits: .isHeader)
         VStack(spacing: 0) {
+            Button(action: {
+                showingMapPicker = true
+            }) {
+                HStack {
+                    Image(systemName: "map")
+                    Text(Localization.pickOnMap)
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+            }
+            .buttonStyle(.bordered)
+            .padding(.horizontal)
+            .padding(.vertical, 8)
+
             Group {
                 TitleAndTextFieldRow(title: Localization.companyField,
                                      titleWidth: $titleWidth,
@@ -460,6 +480,8 @@ private enum Localization {
 
     static let hintOptional = NSLocalizedString("Optional", comment: "Text field placeholder in Edit Address Form")
     static let hintSelectOption = NSLocalizedString("Select an option", comment: "Text field placeholder in Edit Address Form")
+
+    static let pickOnMap = NSLocalizedString("Pick on Map", comment: "Button to open map address picker")
 }
 
 #if DEBUG

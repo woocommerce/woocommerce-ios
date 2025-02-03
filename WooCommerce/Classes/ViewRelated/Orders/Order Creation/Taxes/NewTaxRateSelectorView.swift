@@ -2,9 +2,6 @@ import SwiftUI
 import WooFoundation
 
 struct NewTaxRateSelectorView: View {
-    /// Scale of the view based on accessibility changes
-    @ScaledMetric private var scale: CGFloat = 1.0
-
     @Environment(\.dismiss) var dismiss
 
     @StateObject var viewModel: NewTaxRateSelectorViewModel

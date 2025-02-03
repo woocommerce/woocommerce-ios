@@ -1,6 +1,7 @@
 import SwiftUI
 import class WordPressShared.EmailFormatValidator
 
+@available(iOS 17.0, *)
 struct POSSendReceiptView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
@@ -114,6 +115,7 @@ struct POSSendReceiptView: View {
     }
 }
 
+@available(iOS 17.0, *)
 private extension POSSendReceiptView {
     enum Constants {
         static let buttonSpacing: CGFloat = 12
@@ -134,6 +136,7 @@ private extension POSSendReceiptView {
     }
 }
 
+@available(iOS 17.0, *)
 private extension POSSendReceiptView {
     struct Localization {
         static let buttonTitle = NSLocalizedString(
@@ -160,6 +163,7 @@ private extension POSSendReceiptView {
 }
 
 #if DEBUG
+@available(iOS 17.0, *)
 #Preview {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),

@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(iOS 17.0, *)
 struct TotalsView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     private let viewHelper = TotalsViewHelper()
@@ -104,6 +105,7 @@ struct TotalsView: View {
     }
 }
 
+@available(iOS 17.0, *)
 private extension TotalsView {
     var totalsFieldsView: some View {
         HStack(alignment: .center) {
@@ -215,6 +217,7 @@ private extension TotalsView {
     }
 }
 
+@available(iOS 17.0, *)
 private extension TotalsView {
 
     @ViewBuilder private var paymentView: some View {
@@ -255,6 +258,7 @@ private extension TotalsView {
     }
 }
 
+@available(iOS 17.0, *)
 private extension TotalsView {
     struct PaymentViewLayout {
         let backgroundColor: Color
@@ -336,6 +340,7 @@ private extension TotalsView {
     }
 }
 
+@available(iOS 17.0, *)
 private extension TotalsView {
     enum Constants {
         static let pricesIdealWidth: CGFloat = 382
@@ -420,6 +425,7 @@ private extension View {
 }
 
 #if DEBUG
+@available(iOS 17.0, *)
 #Preview {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),

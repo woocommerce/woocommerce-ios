@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-01-14 09:54:10+0000 */
+/* Translation-Revision-Date: 2025-01-28 12:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -1600,9 +1600,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Colombia" = "Kolombia";
 
-/* Message displayed if there are no inbox notes to display in the inbox screen. */
-"Come back soon for more tips and insights on growing your store" = "Segera kembali untuk belajar lebih banyak tips dan wawasan untuk mengembangkan toko Anda";
-
 /* Country option for a site address. */
 "Comoros" = "Komoro";
 
@@ -2425,9 +2422,6 @@ which should be translated separately and considered part of this sentence. */
 /* Drag and drop helper text above photo list in Product images screen */
 "Drag and drop to re-order photos" = "Tarik dan lepas untuk mengurutkan foto";
 
-/* Subtitle of the empty state of the Blaze campaign list view */
-"Drive more sales to your store with Blaze" = "Tingkatkan penjualan toko Anda dengan Blaze";
-
 /* Button title to duplicate a product in Product More Options Action Sheet */
 "Duplicate" = "Duplikat";
 
@@ -2882,9 +2876,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title to explore an extension that isn't installed */
 "Explore" = "Telusuri";
-
-/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
-"Explore how you can increase your store sales" = "Cari tahu bagaimana Anda dapat meningkatkan penjualan toko Anda";
 
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "Eksternal\/Afiliasi";
@@ -7544,9 +7535,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description text for the product discount row informational tooltip */
 "To add a Product Discount, please remove all Coupons from your order" = "Untuk menambahkan Diskon Produk, silakan hapus semua Kupon dari pesanan Anda";
 
-/* Subtitle on the variations list screen when there are no variations and attributes */
-"To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "Untuk menambahkan variasi, Anda perlu mengatur atributnya (yaitu \"Warna\", \"Ukuran\") terlebih dahulu";
-
 /* Error message displayed when unable to close user account due to having active atomic site. */
 "To close this account now, contact our support team." = "Untuk menutup akun ini sekarang juga, hubungi tim dukungan kami.";
 
@@ -9776,9 +9764,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message indicating no search result on the target location picker for campaign creation */
 "blazeTargetLocationPickerViewModel.noResult" = "Lokasi tidak ditemukan.\nCoba lagi.";
 
-/* Hint message to enter search query on the target location picker for campaign creation */
-"blazeTargetLocationPickerViewModel.searchViewHintMessage" = "Mulai ketik negara, provinsi, atau kota untuk melihat pilihan yang tersedia";
-
 /* Title of the row to select all target location for Blaze campaign creation */
 "blazeTargetLocationSearchView.allTitle" = "Semua lokasi";
 
@@ -9990,6 +9975,15 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Total pesanan telah berubah sejak awal pembayaran. Silakan kembali dan periksa apakah pesanan sudah benar, lalu coba pembayaran lagi.";
 
+/* Error message when the cash amount entered is less than the order total. */
+"collectcashviewhelper.cashpaymentamountnotenough.errormessage" = "Jumlah harus lebih dari atau sama dengan jumlah total.";
+
+/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue" = "Kembalian terutang: %1$@";
+
+/* Error message when the system fails to collect a cash payment. */
+"collectcashviewhelper.failedtocollectcashpayment.errormessage" = "Terjadi error saat memproses pembayaran. Coba lagi.";
+
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Pilih produk untuk kampanye Blaze.";
 
@@ -10146,9 +10140,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text for button that's shown when the list is empty. */
 "customFieldsListHostingController.emptyStateButton" = "Baca selengkapnya";
 
-/* Message when the list is empty. */
-"customFieldsListHostingController.emptyStateDescription" = "Kolom khusus merupakan metadata opsional untuk menampilkan informasi tambahan atau menyesuaikan pengalaman berbelanja di toko Anda";
-
 /* Title for the message when the list is empty. */
 "customFieldsListHostingController.emptyStateTitle" = "Kolom khusus tidak ditemukan";
 
@@ -10281,9 +10272,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title when there are no customers in the search results in the Customers list screen. */
 "customerList.emptySearchTitle" = "Pelanggan tidak ditemukan";
 
-/* Message when there are no customers to show in the Customers list screen. */
-"customerList.emptyStateMessage" = "Buat pesanan untuk mulai mendapatkan wawasan pelanggan";
-
 /* Title when there are no customers to show in the Customers list screen. */
 "customerList.emptyStateTitle" = "Belum ada pelanggan";
 
@@ -10377,9 +10365,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label of the button to share the store */
 "dashboardView.shareStoreCard.shareButtonLabel" = "Bagikan Toko Anda";
 
-/* Subtitle of the Share Your Store card */
-"dashboardView.shareStoreCard.subtitle" = "Gunakan email atau media sosial untuk memberitakan tentang toko Anda!";
-
 /* Title of the Share Your Store card */
 "dashboardView.shareStoreCard.title" = "Kabarkan kepada banyak orang!";
 
@@ -10458,6 +10443,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Edit Store List view */
 "editStoreListView.title" = "Toko yang Dapat Dilihat";
 
+/* Footer of the Other Stores section on the Edit Store List view */
+"editStoreListView.unselectedStoresNote" = "Toko yang tidak dipilih tidak akan muncul di pemilih toko dan tidak akan mendapat pemberitahuan pesanan baru atau ulasan produk.";
+
 /* Title for button to view the feedback survey about adding shipping to an order */
 "editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "Bagikan feedback Anda";
 
@@ -10527,6 +10515,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the filter used to show only favorite products. */
 "favoriteProductsFilter.favoriteProducts" = "Produk Favorit";
+
+/* Apply button on the Filter History view */
+"filterHistoryView.apply" = "Terapkan";
+
+/* Cancel button on the Filter History view */
+"filterHistoryView.cancel" = "Batalkan";
+
+/* Button to clear all history on the Filter History view */
+"filterHistoryView.clearHistory" = "Bersihkan Riwayat";
+
+/* Message to confirm clearing all history on the Filter History view */
+"filterHistoryView.clearHistoryConfirmation" = "Anda yakin ingin menghapus semua riwayat filter?";
+
+/* Label on the empty state of the Filter History view */
+"filterHistoryView.emptyState" = "Tidak ada filter sebelumnya";
+
+/* Header label of the Filter History view */
+"filterHistoryView.recent" = "Terbaru";
+
+/* Title of the Filter History view */
+"filterHistoryView.title" = "Riwayat Filter";
 
 /* Accessibility hint for the filter history button on the filter list screen */
 "filterListViewController.historyBarButtonItem.accessibilityHint" = "Riwayat penyaringan";
@@ -10857,6 +10866,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.title" = "Tingkatkan penjualan Anda";
+
+/* Label indicating that the store is being synced in the Jetpack setup flow */
+"loginJetpackSetupCoordinator.syncingStore" = "Menyinkronkan toko ...";
 
 /* Subtitle displayed in the simplified prologue screen */
 "loginProloguePageType.getStartedText" = "Woo siap mendukung Anda melalui seluruh proses bisnis Anda. Inilah alasan kami dipercaya para penjual untuk mendukung 3,9 juta toko online mereka.";
@@ -11452,6 +11464,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
 "pointOfSale.cardPresent.readerNotConnected.title" = "Pembaca tidak terhubung";
 
+/* Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected. */
+"pointOfSale.cardPresent.readerNotConnectedOrCash.instruction" = "Untuk memproses pembayaran ini, hubungkan ke perangkat pembaca kartu atau pilih tunai.";
+
 /* Message shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.message" = "Memeriksa pesanan";
 
@@ -11650,6 +11665,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to mark a cash payment as completed */
 "pointOfSale.cashview.button.markpaymentcompleted.title" = "Tandai pembayaran selesai";
 
+/* Error message when the system fails to collect a cash payment. */
+"pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "Terjadi error saat memproses pembayaran. Coba lagi.";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Harap tunggu";
 
@@ -11731,6 +11749,42 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Keluar dari mode Point of Sale?";
 
+/* Text for the button appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadProductsButtonTitle" = "Coba lagi";
+
+/* Text for the button appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageButtonTitle" = "Coba lagi";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageSubtitle" = "Terjadi error saat memuat produk.";
+
+/* Text appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageTitle" = "Gagal memuat item lain";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading products. */
+"pos.itemList.failedToLoadProductsSubtitle" = "Ingin mencoba sekali lagi?";
+
+/* Text appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadProductsTitle" = "Terjadi error saat memuat produk";
+
+/* Text for the button appearing on the item list screen when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsButtonTitle" = "Coba lagi";
+
+/* Text for the button appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageButtonTitle" = "Coba lagi";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageSubtitle" = "Terjadi error saat memuat variasi.";
+
+/* Text appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageTitle" = "Gagal memuat item lain";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsSubtitle" = "Ingin mencoba sekali lagi?";
+
+/* Text appearing on the item list screen when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsTitle" = "Error saat memuat variasi";
+
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "Produk";
 
@@ -11740,14 +11794,23 @@ which should be translated separately and considered part of this sentence. */
 /* Additional text within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.hint" = "Jenis produk lain, seperti variabel dan virtual, akan tersedia dalam pembaruan mendatang.";
 
+/* Additional text within the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.hint.simpleAndVariable" = "Jenis produk lain akan tersedia dalam pembaruan mendatang.";
+
 /* Link to more information within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.learnMoreHint" = "Baca selengkapnya";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.subtitle" = "Hanya produk fisik sederhana yang tersedia dengan POS saat ini.";
 
+/* Subtitle of the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.subtitle.simpleAndVariable" = "Saat ini, hanya produk sederhana dan bukan unduhan yang dapat menggunakan POS.";
+
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title" = "Menunjukkan produk sederhana saja";
+
+/* Title of the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.title.simpleAndVariable" = "Hanya menampilkan produk sederhana dan bervariasi";
 
 /* Title at the top of the Point of Sale product selector screen. */
 "pos.itemlistview.title" = "Produk";
@@ -11755,17 +11818,44 @@ which should be translated separately and considered part of this sentence. */
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Pilihan tersedia";
 
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "Untuk menambahkan produk, keluar dari POS dan buka Produk.";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1" = "POS saat ini hanya mendukung produk sederhana dan bervariasi.";
+
+/* Text appearing on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsTitle.1" = "Tidak ada produk yang didukung.";
+
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductHint" = "Untuk menambahkan produk, keluar dari POS, kemudian edit produk ini di tab Produk.";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductSubtitle" = "POS hanya mendukung variasi bukan unduhan yang sudah diaktifkan.";
+
+/* Text appearing on screen when there are no variations to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle" = "Tidak ada variasi yang didukung.";
+
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Buat pesanan di manajemen toko";
 
 /* Hint in the simple products information modal in POS */
 "pos.simpleProductsModal.hint" = "Untuk memproses pembayaran atas produk non-sederhana, keluar dari POS, kemudian buat pesanan baru dari tab pesanan.";
 
+/* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.hint.variableAndSimple" = "Untuk memproses pembayaran atas produk yang tidak didukung, keluar dari POS, kemudian buat pesanan baru dari tab pesanan.";
+
 /* Message in the simple products information modal in POS, explaining future plans */
 "pos.simpleProductsModal.message.future" = "Jenis produk lain, seperti variabel dan virtual, akan tersedia dalam pembaruan mendatang.";
 
+/* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.message.future.variableAndSimple" = "Jenis produk lain akan tersedia dalam pembaruan mendatang.";
+
 /* Message in the simple products information modal in POS */
 "pos.simpleProductsModal.message.issue" = "Saat ini, hanya produk fisik sederhana yang dapat menggunakan POS.";
+
+/* Message in the simple products information modal in POS when variable products are supported */
+"pos.simpleProductsModal.message.issue.variableAndSimple" = "Saat ini, hanya produk sederhana dan bukan unduhan yang dapat menggunakan POS.";
 
 /* Title for the OK button on the simple products information modal in POS */
 "pos.simpleProductsModal.ok.button.title" = "Oke";
@@ -12876,6 +12966,90 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the total for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.total" = "Total";
 
+/* Button to add a company field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.addCompany" = "Tambahkan perusahaan";
+
+/* Button label indicating the address is missing information for a Woo Shipping label */
+"wooShipping.createLabels.editAddress.addMissingInformation" = "Tambahkan Informasi yang Kurang";
+
+/* Label for the address field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.address" = "Alamat";
+
+/* Button to cancel editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.cancel" = "Batalkan";
+
+/* Label for the city field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.city" = "Kota";
+
+/* Button to close the address editing view in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.close" = "Tutup";
+
+/* Label for the company field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.company" = "Perusahaan";
+
+/* Label for the country field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.country" = "Negara";
+
+/* Label for the default address toggle in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.defaultAddress" = "Simpan sebagai alamat asal default";
+
+/* Button to dismiss the keyboard */
+"wooShipping.createLabels.editAddress.done" = "Selesai";
+
+/* Label for the email field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.email" = "Alamat Email";
+
+/* Label when the address is missing information in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.missingInformation" = "Informasi kurang";
+
+/* Label for the name field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.name" = "Nama";
+
+/* Text indicating that a field is optional */
+"wooShipping.createLabels.editAddress.optional" = "Opsional";
+
+/* Label for the phone field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.phone" = "Telepon";
+
+/* Label for the postal code field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.postalCode" = "Kode pos";
+
+/* Label for the state field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.state" = "Negara bagian";
+
+/* Label when the address is unverified in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.unverified" = "Alamat tidak terverifikasi";
+
+/* Button label indicating the address needs to be validated and saved for a Woo Shipping label */
+"wooShipping.createLabels.editAddress.validateAddress" = "Lakukan Validasi dan Simpan";
+
+/* Validation message when the address field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.address" = "Sertakan alamat yang valid.";
+
+/* Validation message when the city field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.city" = "Sertakan kota yang valid.";
+
+/* Validation message when the country field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.country" = "Harap pilih negara.";
+
+/* Validation message when the email field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.email" = "Sertakan alamat email yang valid.";
+
+/* Validation message when the name and company fields are empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.nameOrCompany" = "Sertakan nama atau nama perusahaan yang valid.";
+
+/* Validation message when the phone field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.phone" = "Sertakan nomor telepon yang valid.";
+
+/* Validation message when the postal code field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.postalCode" = "Sertakan kode pos yang valid.";
+
+/* Validation message when the state field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.state" = "Sertakan negara bagian yang valid.";
+
+/* Label when the address has been verified in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.verified" = "Alamat terverifikasi";
+
 /* Label for plural items to ship during shipping label creation. Reads like: '3 items' */
 "wooShipping.createLabels.items.count" = "%1$@ item";
 
@@ -12972,6 +13146,12 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button in navigation bar to dismiss the screen */
 "wooShipping.customs.cancel" = "Batal";
 
+/* Title for the Content Details text field in the Shipping Customs Form */
+"wooShipping.customs.contentDetails" = "Detail Isi";
+
+/* Footnote for the Content Details text field in the Shipping Customs Form */
+"wooShipping.customs.contentDetailsFootnote" = "Mohon jelaskan jenis barang yang dimuat paket ini";
+
 /* Title for the Content Type menu in the Shipping Customs Form */
 "wooShipping.customs.contentType" = "Jenis Isi";
 
@@ -12999,6 +13179,9 @@ which should be translated separately and considered part of this sentence. */
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "Info selengkapnya tentang ITN";
 
+/* Customs validation warning for the ITN field */
+"wooShipping.customs.itnValidation" = "Masukkan ITN yang valid";
+
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "Rincian Produk";
 
@@ -13017,6 +13200,12 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for shipping restriction type sanitary */
 "wooShipping.customs.restrictionType.sanitary" = "Pemeriksaan Sanitasi\/Fitosanitasi";
 
+/* Title for the Content Details text field in the Shipping Customs Form */
+"wooShipping.customs.restrictionTypeDetails" = "Detail Batasan";
+
+/* Footnote for the Restriction Type text field in the Shipping Customs Form */
+"wooShipping.customs.restrictionTypeDetailsFootnote" = "Mohon jelaskan jenis batasan untuk paket ini";
+
 /* Info label for a toggle to return the package to a sender if necessary toggle */
 "wooShipping.customs.returnToSenderMessage" = "Kembalikan ke pengirim jika paket dapat diantar";
 
@@ -13025,6 +13214,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Customs screen */
 "wooShipping.customs.title" = "Bea cukai";
+
+/* Footnote when a required value is missing */
+"wooShipping.customs.valueRequiredWarning" = "Nilai wajib diisi";
 
 /* Title for the customs items description text field for customs items */
 "wooShipping.customsItems.description" = "Deskripsi";
@@ -13041,6 +13233,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the origin country text field */
 "wooShipping.customsItems.originCountry" = "Negara Asal";
 
+/* Warning text when the shipping customs tariff number is not valid */
+"wooShipping.customsItems.tariffNumberRulesWarning" = "Nomor tarif harus terdiri atas 6 hingga 12 digit";
+
 /* Title for the customs items value per unit text field for customs items */
 "wooShipping.customsItems.valuePerUnit" = "Nilai per unit";
 
@@ -13052,6 +13247,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Indicates that the address is the default origin address  on the shipping label creation screen */
 "wooShipping.originAddresses.defaultAddress" = "(default)";
+
+/* Title for the edit origin address screen in the shipping label creation flow */
+"wooShipping.originAddresses.editOrigin" = "Edit Alamat Asal";
 
 /* Heading for the list of origin addresses to choose from on the shipping label creation screen */
 "wooShipping.originAddresses.shipFrom" = "Dikirim Dari";

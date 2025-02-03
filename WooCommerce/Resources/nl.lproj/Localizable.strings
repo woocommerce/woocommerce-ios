@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-01-15 09:54:04+0000 */
+/* Translation-Revision-Date: 2025-01-28 16:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -1594,9 +1594,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Colombia" = "Colombia";
 
-/* Message displayed if there are no inbox notes to display in the inbox screen. */
-"Come back soon for more tips and insights on growing your store" = "We zien je snel weer terug voor meer tips en kennis over hoe je je winkel kunt laten groeien";
-
 /* Country option for a site address. */
 "Comoros" = "Comoren";
 
@@ -2419,9 +2416,6 @@ which should be translated separately and considered part of this sentence. */
 /* Drag and drop helper text above photo list in Product images screen */
 "Drag and drop to re-order photos" = "Slepen om foto's opnieuw te ordenen";
 
-/* Subtitle of the empty state of the Blaze campaign list view */
-"Drive more sales to your store with Blaze" = "Boost je verkoopcijfers met Blaze";
-
 /* Button title to duplicate a product in Product More Options Action Sheet */
 "Duplicate" = "Dupliceer";
 
@@ -2876,9 +2870,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title to explore an extension that isn't installed */
 "Explore" = "Verkennen";
-
-/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
-"Explore how you can increase your store sales" = "Bekijk hoe je de verkoop van je winkel kunt verhogen";
 
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "Extern\/affiliate";
@@ -7538,9 +7529,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description text for the product discount row informational tooltip */
 "To add a Product Discount, please remove all Coupons from your order" = "Verwijder alle Coupons om een Productkorting toe te voegen";
 
-/* Subtitle on the variations list screen when there are no variations and attributes */
-"To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "Om een variatie toe te voegen moet je de eigenschappen (bv. 'kleur', 'maat') eerst instellen";
-
 /* Error message displayed when unable to close user account due to having active atomic site. */
 "To close this account now, contact our support team." = "Om dit account direct te sluiten, kun je contact opnemen met ons ondersteuningsteam.";
 
@@ -9770,9 +9758,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message indicating no search result on the target location picker for campaign creation */
 "blazeTargetLocationPickerViewModel.noResult" = "Geen locatie gevonden.\nProbeer het opnieuw.";
 
-/* Hint message to enter search query on the target location picker for campaign creation */
-"blazeTargetLocationPickerViewModel.searchViewHintMessage" = "Begin met het typen van land, provincie of plaats om de beschikbare opties te bekijken";
-
 /* Title of the row to select all target location for Blaze campaign creation */
 "blazeTargetLocationSearchView.allTitle" = "Overal";
 
@@ -9984,6 +9969,15 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Het totale aantal bestellingen is veranderd sinds de start van het betaalproces. Ga terug en controleer of de bestelling juist is. Probeer daarna opnieuw te betalen.";
 
+/* Error message when the cash amount entered is less than the order total. */
+"collectcashviewhelper.cashpaymentamountnotenough.errormessage" = "Bedrag moet groter dan of gelijk aan totaal zijn.";
+
+/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue" = "Wijziging als gevolg van: %1$@";
+
+/* Error message when the system fails to collect a cash payment. */
+"collectcashviewhelper.failedtocollectcashpayment.errormessage" = "Fout bij verwerken van betaling. Probeer het opnieuw.";
+
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Selecteert producten voor Blaze-campagne.";
 
@@ -10140,9 +10134,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text for button that's shown when the list is empty. */
 "customFieldsListHostingController.emptyStateButton" = "Meer informatie";
 
-/* Message when the list is empty. */
-"customFieldsListHostingController.emptyStateDescription" = "Aangepaste velden zijn optionele metadata om extra informatie weer te geven of de winkelervaring voor je winkel aan te passen";
-
 /* Title for the message when the list is empty. */
 "customFieldsListHostingController.emptyStateTitle" = "Geen aangepaste velden gevonden";
 
@@ -10275,9 +10266,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title when there are no customers in the search results in the Customers list screen. */
 "customerList.emptySearchTitle" = "Geen klanten gevonden";
 
-/* Message when there are no customers to show in the Customers list screen. */
-"customerList.emptyStateMessage" = "Maak een bestelling aan om klantinzichten te verzamelen";
-
 /* Title when there are no customers to show in the Customers list screen. */
 "customerList.emptyStateTitle" = "Nog geen klanten";
 
@@ -10371,9 +10359,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label of the button to share the store */
 "dashboardView.shareStoreCard.shareButtonLabel" = "Deel je winkel";
 
-/* Subtitle of the Share Your Store card */
-"dashboardView.shareStoreCard.subtitle" = "Gebruik e-mail of social media om je winkel bekend te maken";
-
 /* Title of the Share Your Store card */
 "dashboardView.shareStoreCard.title" = "Verspreid de boodschap!";
 
@@ -10452,6 +10437,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Edit Store List view */
 "editStoreListView.title" = "Zichtbare winkels";
 
+/* Footer of the Other Stores section on the Edit Store List view */
+"editStoreListView.unselectedStoresNote" = "Niet-geselecteerde winkels worden niet in de sitekiezer van de winkel weergegeven en ontvangen geen pushberichten voor nieuwe bestellingen of producten.";
+
 /* Title for button to view the feedback survey about adding shipping to an order */
 "editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "Deel je feedback";
 
@@ -10521,6 +10509,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the filter used to show only favorite products. */
 "favoriteProductsFilter.favoriteProducts" = "Favoriete producten";
+
+/* Apply button on the Filter History view */
+"filterHistoryView.apply" = "Toepassen";
+
+/* Cancel button on the Filter History view */
+"filterHistoryView.cancel" = "Annuleren";
+
+/* Button to clear all history on the Filter History view */
+"filterHistoryView.clearHistory" = "Wis geschiedenis";
+
+/* Message to confirm clearing all history on the Filter History view */
+"filterHistoryView.clearHistoryConfirmation" = "Weet je zeker dat je je hele zoekgeschiedenis wilt wissen?";
+
+/* Label on the empty state of the Filter History view */
+"filterHistoryView.emptyState" = "Geen eerdere filters gevonden";
+
+/* Header label of the Filter History view */
+"filterHistoryView.recent" = "Recent";
+
+/* Title of the Filter History view */
+"filterHistoryView.title" = "Filtergeschiedenis";
 
 /* Accessibility hint for the filter history button on the filter list screen */
 "filterListViewController.historyBarButtonItem.accessibilityHint" = "Filtergeschiedenis";
@@ -10851,6 +10860,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.title" = "Verhoog je omzet";
+
+/* Label indicating that the store is being synced in the Jetpack setup flow */
+"loginJetpackSetupCoordinator.syncingStore" = "Winkel synchroniseren...";
 
 /* Subtitle displayed in the simplified prologue screen */
 "loginProloguePageType.getStartedText" = "Vanaf je eerste verkoop tot miljoenen in omzet, Woo is bij je. Zie waarom handelaren ons vertrouwen met het mogelijk maken van 3,9 miljoen webwinkels.";
@@ -11446,6 +11458,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
 "pointOfSale.cardPresent.readerNotConnected.title" = "Lezer niet verbonden";
 
+/* Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected. */
+"pointOfSale.cardPresent.readerNotConnectedOrCash.instruction" = "Kies voor contant geld of sluit je lezer aan om deze betaling te verwerken.";
+
 /* Message shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.message" = "Bestelling controleren";
 
@@ -11644,6 +11659,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to mark a cash payment as completed */
 "pointOfSale.cashview.button.markpaymentcompleted.title" = "Betaling markeren als voltooid";
 
+/* Error message when the system fails to collect a cash payment. */
+"pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "Fout bij verwerken van betaling. Probeer het opnieuw.";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Een moment geduld";
 
@@ -11725,6 +11743,42 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Verkooppuntmodus afsluiten?";
 
+/* Text for the button appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadProductsButtonTitle" = "Opnieuw proberen";
+
+/* Text for the button appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageButtonTitle" = "Opnieuw proberen";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageSubtitle" = "Er is een fout opgetreden tijdens het laden van producten.";
+
+/* Text appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageTitle" = "Meer items laden mislukt";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading products. */
+"pos.itemList.failedToLoadProductsSubtitle" = "Nog een keer proberen?";
+
+/* Text appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadProductsTitle" = "Fout bij laden van producten";
+
+/* Text for the button appearing on the item list screen when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsButtonTitle" = "Opnieuw proberen";
+
+/* Text for the button appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageButtonTitle" = "Opnieuw proberen";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageSubtitle" = "Er is een fout opgetreden tijdens het laden van variaties.";
+
+/* Text appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageTitle" = "Meer items laden mislukt";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsSubtitle" = "Nog een keertje proberen?";
+
+/* Text appearing on the item list screen when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsTitle" = "Fout bij laden van variaties";
+
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "Producten";
 
@@ -11734,14 +11788,23 @@ which should be translated separately and considered part of this sentence. */
 /* Additional text within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.hint" = "Andere producttypen, zoals variabel en virtueel, worden in toekomstige updates beschikbaar.";
 
+/* Additional text within the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.hint.simpleAndVariable" = "Andere producttypen worden in toekomstige updates beschikbaar gemaakt.";
+
 /* Link to more information within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.learnMoreHint" = "Meer weten";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.subtitle" = "Alleen simpele fysieke producten zijn momenteel beschikbaar met POS.";
 
+/* Subtitle of the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.subtitle.simpleAndVariable" = "Alleen simpele en variabele niet-downloadbare producten zijn momenteel beschikbaar met POS.";
+
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title" = "Alleen simpele producten weergeven";
+
+/* Title of the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.title.simpleAndVariable" = "Alleen simpele en variabele producten worden weergeven";
 
 /* Title at the top of the Point of Sale product selector screen. */
 "pos.itemlistview.title" = "Producten";
@@ -11749,17 +11812,44 @@ which should be translated separately and considered part of this sentence. */
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Beschikbare opties";
 
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "Verlaat POS en ga naar Producten om er een toe te voegen.";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1" = "POS ondersteunt momenteel alleen simpele en variabele producten.";
+
+/* Text appearing on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsTitle.1" = "Geen ondersteunde producten gevonden.";
+
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductHint" = "Om er een toe te voegen, verlaat je POS en bewerk je dit product in het tabblad Producten.";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductSubtitle" = "POS ondersteunt alleen ingeschakelde, niet-downloadbare variaties.";
+
+/* Text appearing on screen when there are no variations to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle" = "Geen ondersteunde variaties gevonden.";
+
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Maak een bestelling aan in het winkelbeheer";
 
 /* Hint in the simple products information modal in POS */
 "pos.simpleProductsModal.hint" = "Verlaat POS en maak een nieuwe bestelling aan vanuit het tabblad Bestellingen om betalingen te ontvangen voor een niet-simpel product.";
 
+/* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.hint.variableAndSimple" = "Verlaat POS en maak een nieuwe bestelling aan vanuit het tabblad Bestellingen om betalingen te ontvangen voor een niet-ondersteund product.";
+
 /* Message in the simple products information modal in POS, explaining future plans */
 "pos.simpleProductsModal.message.future" = "Andere producttypen, zoals variabel en virtueel, worden in toekomstige updates beschikbaar.";
 
+/* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.message.future.variableAndSimple" = "Andere producttypen worden in toekomstige updates beschikbaar gemaakt.";
+
 /* Message in the simple products information modal in POS */
 "pos.simpleProductsModal.message.issue" = "Alleen simpele fysieke producten zijn momenteel beschikbaar met POS.";
+
+/* Message in the simple products information modal in POS when variable products are supported */
+"pos.simpleProductsModal.message.issue.variableAndSimple" = "Alleen simpele en variabele niet-downloadbare producten zijn momenteel beschikbaar met POS.";
 
 /* Title for the OK button on the simple products information modal in POS */
 "pos.simpleProductsModal.ok.button.title" = "OK";
@@ -12870,6 +12960,90 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the total for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.total" = "Totaal";
 
+/* Button to add a company field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.addCompany" = "Bedrijf toevoegen";
+
+/* Button label indicating the address is missing information for a Woo Shipping label */
+"wooShipping.createLabels.editAddress.addMissingInformation" = "Ontbrekende informatie toevoegen";
+
+/* Label for the address field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.address" = "Adres";
+
+/* Button to cancel editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.cancel" = "Annuleren";
+
+/* Label for the city field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.city" = "Plaats";
+
+/* Button to close the address editing view in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.close" = "Sluiten";
+
+/* Label for the company field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.company" = "Bedrijf";
+
+/* Label for the country field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.country" = "Land";
+
+/* Label for the default address toggle in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.defaultAddress" = "Opslaan als standaardadres van oorsprong";
+
+/* Button to dismiss the keyboard */
+"wooShipping.createLabels.editAddress.done" = "Gereed";
+
+/* Label for the email field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.email" = "E-mailadres";
+
+/* Label when the address is missing information in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.missingInformation" = "Ontbrekende informatie";
+
+/* Label for the name field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.name" = "Naam";
+
+/* Text indicating that a field is optional */
+"wooShipping.createLabels.editAddress.optional" = "Optioneel";
+
+/* Label for the phone field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.phone" = "Telefoon";
+
+/* Label for the postal code field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.postalCode" = "Postcode";
+
+/* Label for the state field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.state" = "Provincie";
+
+/* Label when the address is unverified in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.unverified" = "Niet-geverifieerd adres";
+
+/* Button label indicating the address needs to be validated and saved for a Woo Shipping label */
+"wooShipping.createLabels.editAddress.validateAddress" = "Valideren en opslaan";
+
+/* Validation message when the address field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.address" = "Voer een geldig adres in.";
+
+/* Validation message when the city field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.city" = "Voer een geldige plaats in.";
+
+/* Validation message when the country field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.country" = "Selecteer een land.";
+
+/* Validation message when the email field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.email" = "Voeg een geldig e-mailadres in.";
+
+/* Validation message when the name and company fields are empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.nameOrCompany" = "Voer een geldige naam of bedrijfsnaam in.";
+
+/* Validation message when the phone field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.phone" = "Voer een geldig telefoonnummer in.";
+
+/* Validation message when the postal code field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.postalCode" = "Voer een geldige postcode in.";
+
+/* Validation message when the state field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.state" = "Voer een geldige provincie in.";
+
+/* Label when the address has been verified in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.verified" = "Adres geverifieerd";
+
 /* Label for plural items to ship during shipping label creation. Reads like: '3 items' */
 "wooShipping.createLabels.items.count" = "%1$@ artikelen";
 
@@ -12966,6 +13140,12 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button in navigation bar to dismiss the screen */
 "wooShipping.customs.cancel" = "Annuleren";
 
+/* Title for the Content Details text field in the Shipping Customs Form */
+"wooShipping.customs.contentDetails" = "Inhouddetails";
+
+/* Footnote for the Content Details text field in the Shipping Customs Form */
+"wooShipping.customs.contentDetailsFootnote" = "Omschrijf welk soort goederen dit pakket bevat";
+
 /* Title for the Content Type menu in the Shipping Customs Form */
 "wooShipping.customs.contentType" = "Type content";
 
@@ -12993,6 +13173,9 @@ which should be translated separately and considered part of this sentence. */
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "Meer informatie over ITN";
 
+/* Customs validation warning for the ITN field */
+"wooShipping.customs.itnValidation" = "Voer een geldig ITN-nummer in";
+
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "Productgegevens";
 
@@ -13011,6 +13194,12 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for shipping restriction type sanitary */
 "wooShipping.customs.restrictionType.sanitary" = "Sanitaire\/fytosanitaire inspectie";
 
+/* Title for the Content Details text field in the Shipping Customs Form */
+"wooShipping.customs.restrictionTypeDetails" = "Beperkingdetails";
+
+/* Footnote for the Restriction Type text field in the Shipping Customs Form */
+"wooShipping.customs.restrictionTypeDetailsFootnote" = "Omschrijf welk soort beperkingen dit pakket moet hebben";
+
 /* Info label for a toggle to return the package to a sender if necessary toggle */
 "wooShipping.customs.returnToSenderMessage" = "Terugsturen naar afzender als het pakket niet kan worden geleverd";
 
@@ -13019,6 +13208,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Customs screen */
 "wooShipping.customs.title" = "Douane";
+
+/* Footnote when a required value is missing */
+"wooShipping.customs.valueRequiredWarning" = "Waarde vereist";
 
 /* Title for the customs items description text field for customs items */
 "wooShipping.customsItems.description" = "Omschrijving";
@@ -13035,6 +13227,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the origin country text field */
 "wooShipping.customsItems.originCountry" = "Land van herkomst";
 
+/* Warning text when the shipping customs tariff number is not valid */
+"wooShipping.customsItems.tariffNumberRulesWarning" = "Het tariefnummer moet tussen de 6 en 12 cijfers lang zijn";
+
 /* Title for the customs items value per unit text field for customs items */
 "wooShipping.customsItems.valuePerUnit" = "Waarde per eenheid";
 
@@ -13046,6 +13241,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Indicates that the address is the default origin address  on the shipping label creation screen */
 "wooShipping.originAddresses.defaultAddress" = "(standaard)";
+
+/* Title for the edit origin address screen in the shipping label creation flow */
+"wooShipping.originAddresses.editOrigin" = "Origineel bewerken";
 
 /* Heading for the list of origin addresses to choose from on the shipping label creation screen */
 "wooShipping.originAddresses.shipFrom" = "Verzenden van";

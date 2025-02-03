@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-01-14 11:54:04+0000 */
+/* Translation-Revision-Date: 2025-01-28 16:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -1600,9 +1600,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Colombia" = "Kolumbien";
 
-/* Message displayed if there are no inbox notes to display in the inbox screen. */
-"Come back soon for more tips and insights on growing your store" = "In Kürze bekommst du weitere Tipps und Einsichten zum Ausbau deines Shops";
-
 /* Country option for a site address. */
 "Comoros" = "Komoren";
 
@@ -2425,9 +2422,6 @@ which should be translated separately and considered part of this sentence. */
 /* Drag and drop helper text above photo list in Product images screen */
 "Drag and drop to re-order photos" = "Nutze Drag-and-Drop zum Umsortieren der Fotos";
 
-/* Subtitle of the empty state of the Blaze campaign list view */
-"Drive more sales to your store with Blaze" = "Steigere mit Blaze die Umsätze deines Shops";
-
 /* Button title to duplicate a product in Product More Options Action Sheet */
 "Duplicate" = "Duplizieren";
 
@@ -2882,9 +2876,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title to explore an extension that isn't installed */
 "Explore" = "Erkunden";
-
-/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
-"Explore how you can increase your store sales" = "Erkundige dich, wie du deine Verkäufe im Store steigern kannst.";
 
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "Extern\/Affiliate";
@@ -7544,9 +7535,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description text for the product discount row informational tooltip */
 "To add a Product Discount, please remove all Coupons from your order" = "Wenn du einen Rabatt auf ein Produkt hinzufügen möchtest, entferne bitte alle Gutscheine aus deiner Bestellung";
 
-/* Subtitle on the variations list screen when there are no variations and attributes */
-"To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "Um eine Variation hinzuzufügen, musst du zuerst deren Attribute festlegen (d. h. Farbe, Größe).";
-
 /* Error message displayed when unable to close user account due to having active atomic site. */
 "To close this account now, contact our support team." = "Kontaktiere unser Support-Team, um dieses Konto jetzt zu schließen.";
 
@@ -9776,9 +9764,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message indicating no search result on the target location picker for campaign creation */
 "blazeTargetLocationPickerViewModel.noResult" = "Kein Ort gefunden.\nBitte versuche es erneut.";
 
-/* Hint message to enter search query on the target location picker for campaign creation */
-"blazeTargetLocationPickerViewModel.searchViewHintMessage" = "Beginne mit der Eingabe des Landes, Bundeslandes oder der Stadt, um verfügbare Optionen anzuzeigen";
-
 /* Title of the row to select all target location for Blaze campaign creation */
 "blazeTargetLocationSearchView.allTitle" = "Überall";
 
@@ -9990,6 +9975,15 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Die Gesamtbestellsumme hat sich seit Beginn deiner Zahlung geändert. Gehe zurück und überprüfe, ob deine Bestellung korrekt ist. Versuche dann erneut, die Zahlung vorzunehmen.";
 
+/* Error message when the cash amount entered is less than the order total. */
+"collectcashviewhelper.cashpaymentamountnotenough.errormessage" = "Der Betrag muss größer oder gleich der Gesamtsumme sein.";
+
+/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue" = "Fälliges Wechselgeld: %1$@";
+
+/* Error message when the system fails to collect a cash payment. */
+"collectcashviewhelper.failedtocollectcashpayment.errormessage" = "Fehler beim Verarbeiten der Zahlung. Versuche es erneut.";
+
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Wählt ein Produkt für die Blaze-Kampagne aus.";
 
@@ -10146,9 +10140,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text for button that's shown when the list is empty. */
 "customFieldsListHostingController.emptyStateButton" = "Weitere Informationen";
 
-/* Message when the list is empty. */
-"customFieldsListHostingController.emptyStateDescription" = "Individuelle Felder sind optionale Metadaten, die zusätzliche Informationen beinhalten oder das individuelle Einkaufserlebnis in deinem Shop optimieren können";
-
 /* Title for the message when the list is empty. */
 "customFieldsListHostingController.emptyStateTitle" = "Keine individuellen Felder gefunden";
 
@@ -10281,9 +10272,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title when there are no customers in the search results in the Customers list screen. */
 "customerList.emptySearchTitle" = "Keine Kunden gefunden";
 
-/* Message when there are no customers to show in the Customers list screen. */
-"customerList.emptyStateMessage" = "Erstelle eine Bestellung, um erste Kundeneinsichten zu erhalten";
-
 /* Title when there are no customers to show in the Customers list screen. */
 "customerList.emptyStateTitle" = "Noch keine Kunden";
 
@@ -10377,9 +10365,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label of the button to share the store */
 "dashboardView.shareStoreCard.shareButtonLabel" = "Teile deinen Shop";
 
-/* Subtitle of the Share Your Store card */
-"dashboardView.shareStoreCard.subtitle" = "Verbreite Neuigkeiten zu deinem Shop per E-Mail oder über die sozialen Medien";
-
 /* Title of the Share Your Store card */
 "dashboardView.shareStoreCard.title" = "Verbreite die Neuigkeiten!";
 
@@ -10458,6 +10443,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Edit Store List view */
 "editStoreListView.title" = "Sichtbare Shops";
 
+/* Footer of the Other Stores section on the Edit Store List view */
+"editStoreListView.unselectedStoresNote" = "Nicht ausgewählte Shops werden nicht in der Shop-Auswahl angezeigt. Bei neuen Bestellungen oder Produkten in diesen Shops gehen keine Push-Benachrichtigungen ein.";
+
 /* Title for button to view the feedback survey about adding shipping to an order */
 "editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "Feedback teilen";
 
@@ -10527,6 +10515,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the filter used to show only favorite products. */
 "favoriteProductsFilter.favoriteProducts" = "Produktfavoriten";
+
+/* Apply button on the Filter History view */
+"filterHistoryView.apply" = "Übernehmen";
+
+/* Cancel button on the Filter History view */
+"filterHistoryView.cancel" = "Abbrechen";
+
+/* Button to clear all history on the Filter History view */
+"filterHistoryView.clearHistory" = "Verlauf löschen";
+
+/* Message to confirm clearing all history on the Filter History view */
+"filterHistoryView.clearHistoryConfirmation" = "Bist du sicher, dass du den gesamten Filterverlauf wirklich löschen willst?";
+
+/* Label on the empty state of the Filter History view */
+"filterHistoryView.emptyState" = "Keine vorherigen Filter gefunden";
+
+/* Header label of the Filter History view */
+"filterHistoryView.recent" = "Neueste";
+
+/* Title of the Filter History view */
+"filterHistoryView.title" = "Filterverlauf";
 
 /* Accessibility hint for the filter history button on the filter list screen */
 "filterListViewController.historyBarButtonItem.accessibilityHint" = "Filterverlauf";
@@ -10857,6 +10866,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.title" = "Deine Verkaufszahlen erhöhen";
+
+/* Label indicating that the store is being synced in the Jetpack setup flow */
+"loginJetpackSetupCoordinator.syncingStore" = "Shop wird synchronisiert …";
 
 /* Subtitle displayed in the simplified prologue screen */
 "loginProloguePageType.getStartedText" = "Vom ersten Verkauf bis zu Millionen an Einnahmen – Woo ist immer bei dir. Erfahre, warum Verkäufer beim Betreiben von 3.9 Millionen Onlineshops auf uns vertrauen.";
@@ -11452,6 +11464,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
 "pointOfSale.cardPresent.readerNotConnected.title" = "Lesegerät nicht verbunden";
 
+/* Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected. */
+"pointOfSale.cardPresent.readerNotConnectedOrCash.instruction" = "Verbinde deinen Leser oder wähle Barzahlung aus, um diese Zahlung verarbeiten zu können.";
+
 /* Message shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.message" = "Bestellung wird überprüft";
 
@@ -11650,6 +11665,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to mark a cash payment as completed */
 "pointOfSale.cashview.button.markpaymentcompleted.title" = "Zahlung als abgeschlossen kennzeichnen";
 
+/* Error message when the system fails to collect a cash payment. */
+"pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "Fehler beim Verarbeiten der Zahlung. Versuche es erneut.";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Bitte warten";
 
@@ -11731,6 +11749,42 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Modus „Verkaufsort“ (POS) beenden?";
 
+/* Text for the button appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadProductsButtonTitle" = "Erneut versuchen";
+
+/* Text for the button appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageButtonTitle" = "Erneut versuchen";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageSubtitle" = "Beim Laden der Produkte ist ein Fehler aufgetreten.";
+
+/* Text appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageTitle" = "Beim Laden weiterer Artikel ist ein Fehler aufgetreten";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading products. */
+"pos.itemList.failedToLoadProductsSubtitle" = "Noch einmal versuchen?";
+
+/* Text appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadProductsTitle" = "Fehler beim Laden der Produkte";
+
+/* Text for the button appearing on the item list screen when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsButtonTitle" = "Erneut versuchen";
+
+/* Text for the button appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageButtonTitle" = "Erneut versuchen";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageSubtitle" = "Beim Laden der Varianten ist ein Fehler aufgetreten.";
+
+/* Text appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageTitle" = "Beim Laden weiterer Artikel ist ein Fehler aufgetreten";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsSubtitle" = "Noch einmal versuchen?";
+
+/* Text appearing on the item list screen when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsTitle" = "Beim Laden der Varianten ist ein Fehler aufgetreten";
+
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "Produkte";
 
@@ -11740,14 +11794,23 @@ which should be translated separately and considered part of this sentence. */
 /* Additional text within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.hint" = "Weitere Produkttypen, wie variable und virtuelle, werden in künftigen Updates bereitgestellt.";
 
+/* Additional text within the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.hint.simpleAndVariable" = "Weitere Produkttypen werden in künftigen Updates bereitgestellt.";
+
 /* Link to more information within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.learnMoreHint" = "Weitere Informationen";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.subtitle" = "Derzeit sind nur einfache physische Produkte für POS verfügbar.";
 
+/* Subtitle of the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.subtitle.simpleAndVariable" = "Derzeit können nur einfache und variable, nicht herunterladbare Produkte mit POS verwendet werden.";
+
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title" = "Es werden nur einfache Produkte angezeigt";
+
+/* Title of the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.title.simpleAndVariable" = "Es werden nur einfache und variable Produkte angezeigt";
 
 /* Title at the top of the Point of Sale product selector screen. */
 "pos.itemlistview.title" = "Produkte";
@@ -11755,17 +11818,44 @@ which should be translated separately and considered part of this sentence. */
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Verfügbare Optionen";
 
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "Wenn du eins hinzufügen möchtest, beende POS und gehe zu „Produkte“.";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1" = "POS unterstützt derzeit nur einfache und variable Produkte.";
+
+/* Text appearing on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsTitle.1" = "Keine unterstützten Produkte gefunden.";
+
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductHint" = "Wenn du eins hinzufügen möchtest, beende POS und bearbeite dieses Produkt über den Tab „Produkt“.";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductSubtitle" = "POS unterstützt nur aktivierte, nicht herunterladbare Varianten.";
+
+/* Text appearing on screen when there are no variations to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle" = "Keine unterstützten Varianten gefunden.";
+
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Eine Bestellung im Shop-Management erstellen";
 
 /* Hint in the simple products information modal in POS */
 "pos.simpleProductsModal.hint" = "Um die Zahlung für ein nicht einfaches Produkt entgegenzunehmen, beende POS und erstelle eine neue Bestellung über den Tab „Bestellungen“.";
 
+/* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.hint.variableAndSimple" = "Um die Zahlung für ein nicht unterstütztes Produkt entgegenzunehmen, beende POS und erstelle eine neue Bestellung über den Tab „Bestellungen“.";
+
 /* Message in the simple products information modal in POS, explaining future plans */
 "pos.simpleProductsModal.message.future" = "Weitere Produkttypen, wie variable und virtuelle, werden in künftigen Updates bereitgestellt.";
 
+/* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.message.future.variableAndSimple" = "Weitere Produkttypen werden in künftigen Updates bereitgestellt.";
+
 /* Message in the simple products information modal in POS */
 "pos.simpleProductsModal.message.issue" = "Derzeit können nur einfache physische Produkte mit POS verwendet werden.";
+
+/* Message in the simple products information modal in POS when variable products are supported */
+"pos.simpleProductsModal.message.issue.variableAndSimple" = "Derzeit können nur einfache und variable, nicht herunterladbare Produkte mit POS verwendet werden.";
 
 /* Title for the OK button on the simple products information modal in POS */
 "pos.simpleProductsModal.ok.button.title" = "OK";
@@ -12876,6 +12966,90 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the total for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.total" = "Gesamtsumme";
 
+/* Button to add a company field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.addCompany" = "Unternehmen hinzufügen";
+
+/* Button label indicating the address is missing information for a Woo Shipping label */
+"wooShipping.createLabels.editAddress.addMissingInformation" = "Fehlende Informationen hinzufügen";
+
+/* Label for the address field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.address" = "Adresse";
+
+/* Button to cancel editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.cancel" = "Abbrechen";
+
+/* Label for the city field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.city" = "Stadt";
+
+/* Button to close the address editing view in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.close" = "Schließen";
+
+/* Label for the company field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.company" = "Unternehmen";
+
+/* Label for the country field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.country" = "Land";
+
+/* Label for the default address toggle in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.defaultAddress" = "Als Standardabsenderadresse speichern";
+
+/* Button to dismiss the keyboard */
+"wooShipping.createLabels.editAddress.done" = "Fertig";
+
+/* Label for the email field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.email" = "E-Mail-Adresse";
+
+/* Label when the address is missing information in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.missingInformation" = "Fehlende Informationen";
+
+/* Label for the name field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.name" = "Name";
+
+/* Text indicating that a field is optional */
+"wooShipping.createLabels.editAddress.optional" = "Optional";
+
+/* Label for the phone field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.phone" = "Telefon";
+
+/* Label for the postal code field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.postalCode" = "Postleitzahl";
+
+/* Label for the state field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.state" = "Bundesland\/Bundesstaat";
+
+/* Label when the address is unverified in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.unverified" = "Nicht verifizierte Adresse";
+
+/* Button label indicating the address needs to be validated and saved for a Woo Shipping label */
+"wooShipping.createLabels.editAddress.validateAddress" = "Bestätigen und speichern";
+
+/* Validation message when the address field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.address" = "Bitte gib eine gültige Adresse an.";
+
+/* Validation message when the city field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.city" = "Bitte gib eine gültige Stadt an.";
+
+/* Validation message when the country field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.country" = "Bitte wähle ein Land aus.";
+
+/* Validation message when the email field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.email" = "Bitte gib eine gültige E-Mail-Adresse an.";
+
+/* Validation message when the name and company fields are empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.nameOrCompany" = "Bitte gib einen gültigen Namen oder Firmennamen an.";
+
+/* Validation message when the phone field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.phone" = "Bitte gib eine gültige Telefonnummer an.";
+
+/* Validation message when the postal code field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.postalCode" = "Bitte gib eine gültige Postleitzahl an.";
+
+/* Validation message when the state field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.state" = "Bitte gib ein gültiges Bundesland\/einen gültigen Bundesstaat an.";
+
+/* Label when the address has been verified in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.verified" = "Adresse verifiziert";
+
 /* Label for plural items to ship during shipping label creation. Reads like: '3 items' */
 "wooShipping.createLabels.items.count" = "%1$@ Artikel";
 
@@ -12972,6 +13146,12 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button in navigation bar to dismiss the screen */
 "wooShipping.customs.cancel" = "Abbrechen";
 
+/* Title for the Content Details text field in the Shipping Customs Form */
+"wooShipping.customs.contentDetails" = "Details zu Inhalten";
+
+/* Footnote for the Content Details text field in the Shipping Customs Form */
+"wooShipping.customs.contentDetailsFootnote" = "Beschreibe bitte, welche Art von Waren dieses Paket enthält";
+
 /* Title for the Content Type menu in the Shipping Customs Form */
 "wooShipping.customs.contentType" = "Inhaltstyp";
 
@@ -12999,6 +13179,9 @@ which should be translated separately and considered part of this sentence. */
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "Weitere Informationen zur ITN";
 
+/* Customs validation warning for the ITN field */
+"wooShipping.customs.itnValidation" = "Bitte gib eine gültige ITN ein";
+
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "Produktdetails";
 
@@ -13017,6 +13200,12 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for shipping restriction type sanitary */
 "wooShipping.customs.restrictionType.sanitary" = "Sanitäre\/phytosanitäre Inspektion";
 
+/* Title for the Content Details text field in the Shipping Customs Form */
+"wooShipping.customs.restrictionTypeDetails" = "Details zur Einschränkung";
+
+/* Footnote for the Restriction Type text field in the Shipping Customs Form */
+"wooShipping.customs.restrictionTypeDetailsFootnote" = "Beschreibe bitte, welche Art von Einschränkungen für dieses Paket gelten müssen";
+
 /* Info label for a toggle to return the package to a sender if necessary toggle */
 "wooShipping.customs.returnToSenderMessage" = "An Absender zurückschicken, wenn Paket nicht zugestellt werden kann";
 
@@ -13025,6 +13214,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Customs screen */
 "wooShipping.customs.title" = "Zoll";
+
+/* Footnote when a required value is missing */
+"wooShipping.customs.valueRequiredWarning" = "Wert erforderlich";
 
 /* Title for the customs items description text field for customs items */
 "wooShipping.customsItems.description" = "Beschreibung";
@@ -13041,6 +13233,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the origin country text field */
 "wooShipping.customsItems.originCountry" = "Ursprungsland";
 
+/* Warning text when the shipping customs tariff number is not valid */
+"wooShipping.customsItems.tariffNumberRulesWarning" = "Die Tarifnummer muss zwischen 6 und 12 Ziffern lang sein";
+
 /* Title for the customs items value per unit text field for customs items */
 "wooShipping.customsItems.valuePerUnit" = "Wert pro Einheit";
 
@@ -13052,6 +13247,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Indicates that the address is the default origin address  on the shipping label creation screen */
 "wooShipping.originAddresses.defaultAddress" = "(standard)";
+
+/* Title for the edit origin address screen in the shipping label creation flow */
+"wooShipping.originAddresses.editOrigin" = "Absender bearbeiten";
 
 /* Heading for the list of origin addresses to choose from on the shipping label creation screen */
 "wooShipping.originAddresses.shipFrom" = "Versenden von";

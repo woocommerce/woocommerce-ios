@@ -22,46 +22,47 @@ struct NewTaxRateSelectorView: View {
 
     var body: some View {
         NavigationView {
-            VStack(alignment: .leading, spacing: 0) {
+            ScrollView {
                 taxRateSelectorHeaderView
 
-                switch viewModel.syncState {
+                VStack(alignment: .leading, spacing: 0) {
+                    switch viewModel.syncState {
                     case .results:
-                    Text(Localization.taxRatesSectionTitle.uppercased())
-                        .footnoteStyle()
-                        .multilineTextAlignment(.leading)
-                        .padding([.leading, .trailing], Layout.generalPadding)
-                        .padding([.top, .bottom], Layout.taxRatesSectionTitleVerticalPadding)
+                        Text(Localization.taxRatesSectionTitle.uppercased())
+                            .footnoteStyle()
+                            .multilineTextAlignment(.leading)
+                            .padding([.leading, .trailing], Layout.generalPadding)
+                            .padding([.top, .bottom], Layout.taxRatesSectionTitleVerticalPadding)
 
-                    Divider()
+                        Divider()
 
-                    ScrollView {
-                        LazyVStack(spacing: 0) {
-                            ForEach(Array(viewModel.taxRateViewModels.enumerated()), id: \.offset) { index, taxRateViewModel in
-                                TaxRateRow(viewModel: taxRateViewModel) {
-                                    viewModel.onRowSelected(with: index, storeSelectedTaxRate: storeSelectedTaxRate)
-                                    dismiss()
+                        ScrollView {
+                            LazyVStack(spacing: 0) {
+                                ForEach(Array(viewModel.taxRateViewModels.enumerated()), id: \.offset) { index, taxRateViewModel in
+                                    TaxRateRow(viewModel: taxRateViewModel) {
+                                        viewModel.onRowSelected(with: index, storeSelectedTaxRate: storeSelectedTaxRate)
+                                        dismiss()
+                                    }
+
+                                    Divider()
                                 }
+                                .background(Color(.listForeground(modal: false)))
 
-                                Divider()
+                                resultsListFooter
+                                    .renderedIf(!viewModel.shouldShowBottomActivityIndicator)
+
+                                InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
+                                    .padding(.top, Layout.generalPadding)
+                                    .onAppear {
+                                        viewModel.onLoadNextPageAction()
+                                    }
                             }
-                            .background(Color(.listForeground(modal: false)))
-
-                            resultsListFooter
-                                .renderedIf(!viewModel.shouldShowBottomActivityIndicator)
-
-                            InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
-                                .padding(.top, Layout.generalPadding)
-                                .onAppear {
-                                    viewModel.onLoadNextPageAction()
-                                }
                         }
-                    }
 
-                    storeTaxRateBottomView
+                        storeTaxRateBottomView
 
                     case .empty:
-                    EmptyState(title: Localization.emptyStateTitle,
+                        EmptyState(title: Localization.emptyStateTitle,
                                    description: Localization.emptyStateDescription,
                                    image: .emptyTaxRatesImage)
                         .padding(Layout.generalPadding)
@@ -90,6 +91,7 @@ struct NewTaxRateSelectorView: View {
                             }
                         }
                         .background(Color(.listForeground(modal: false)))
+                    }
                 }
             }
             .onAppear {

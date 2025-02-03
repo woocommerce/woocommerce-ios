@@ -71,6 +71,7 @@ struct CartView: View {
                             ForEach(posModel.cart, id: \.id) { cartItem in
                                 ItemRowView(cartItem: cartItem,
                                             onItemRemoveTapped: posModel.orderStage == .building ? {
+                                    ServiceLocator.analytics.track(.pointOfSaleItemRemovedFromCart)
                                     posModel.remove(cartItem: cartItem)
                                 } : nil)
                                 .id(cartItem.id)

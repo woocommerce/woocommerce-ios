@@ -60,6 +60,7 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         }
 
         orderState = .syncing
+        let isNewOrder = order == nil
 
         do {
             let syncedOrder = try await orderService.syncOrder(cart: posCartItems,
@@ -67,9 +68,16 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
                                                                currency: storeCurrency)
             self.order = syncedOrder
             orderState = .loaded(totals(for: syncedOrder), syncedOrder)
-            DDLogInfo("🟢 [POS] Synced order: \(syncedOrder)")
+            if isNewOrder {
+                ServiceLocator.analytics.track(.orderCreationSuccess)
+            }
         } catch {
-            DDLogError("🔴 [POS] Error syncing order: \(error)")
+            if isNewOrder {
+                ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(
+                    usesGiftCard: false,
+                    errorContext: String(describing: error),
+                    errorDescription: error.localizedDescription))
+            }
             setOrderStateToError(error, retryHandler: retryHandler)
         }
     }

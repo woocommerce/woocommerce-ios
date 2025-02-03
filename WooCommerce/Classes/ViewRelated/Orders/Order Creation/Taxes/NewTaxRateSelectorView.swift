@@ -203,21 +203,46 @@ extension NewTaxRateSelectorView {
         static let fixedBottomPanelVerticalSpace: CGFloat = 4
     }
     enum Localization {
-        static let navigationTitle = NSLocalizedString("Set Tax Rate", comment: "Navigation title for the tax rate selector")
-        static let cancelButton = NSLocalizedString("Cancel", comment: "Cancel button title for the tax rate selector")
-        static let infoText = NSLocalizedString("This will change the customer’s address to the location of the tax rate you select.",
-                                                comment: "Explanatory text for the tax rate selector")
-        static let taxRatesSectionTitle = NSLocalizedString("Select a tax rate", comment: "Title for the tax rate selector section")
-        static let editTaxRatesInWpAdminButtonTitle = NSLocalizedString("Edit tax rates in admin",
-                                                                         comment: "Title of the button that prompts the user to edit tax rates in the web")
-        static let emptyStateTitle = NSLocalizedString("We couldn’t find any tax rates", comment: "Title for the empty state on the Tax Rates selector screen")
-        static let emptyStateDescription = NSLocalizedString("Add tax rates in admin. Only tax rates with location information will be shown here.",
-                                                             comment: "Description for the empty state on the Tax Rates selector screen")
-        static let listFooterResultsSectionTitle = NSLocalizedString("Can’t find the rate you’re looking for?",
-                                                                         comment: "Text to prompt the user to edit tax rates in the web")
-        static let fixedBottomPanelBody = NSLocalizedString("Add this rate to all created orders", comment: "Body for the action to store selected tax rate")
-        static let fixedBottomPanelFootnote = NSLocalizedString("This will not affect online orders",
-                                                                comment: "Footnote for the action to store selected tax rate")
+        static let navigationTitle = NSLocalizedString(
+            "newTaxRateSelectorView.navigationTitle",
+            value:"Set Tax Rate",
+            comment: "Navigation title for the tax rate selector")
+        static let cancelButton = NSLocalizedString(
+            "newTaxRateSelectorView.cancelButton",
+            value: "Cancel",
+            comment: "Cancel button title for the tax rate selector")
+        static let infoText = NSLocalizedString(
+            "newTaxRateSelectorView.infoText",
+            value: "This will change the customer’s address to the location of the tax rate you select.",
+            comment: "Explanatory text for the tax rate selector")
+        static let taxRatesSectionTitle = NSLocalizedString(
+            "newTaxRateSelectorView.taxRatesSectionTitle",
+            value: "Select a tax rate",
+            comment: "Title for the tax rate selector section")
+        static let editTaxRatesInWpAdminButtonTitle = NSLocalizedString(
+            "newTaxRateSelectorView.editTaxRatesInWpAdminButtonTitle",
+            value: "Edit tax rates in admin",
+            comment: "Title of the button that prompts the user to edit tax rates in the web")
+        static let emptyStateTitle = NSLocalizedString(
+            "newTaxRateSelectorView.emptyStateTitle",
+            value: "We couldn’t find any tax rates",
+            comment: "Title for the empty state on the Tax Rates selector screen")
+        static let emptyStateDescription = NSLocalizedString(
+            "newTaxRateSelectorView.emptyStateDescription",
+            value: "Add tax rates in admin. Only tax rates with location information will be shown here.",
+            comment: "Description for the empty state on the Tax Rates selector screen")
+        static let listFooterResultsSectionTitle = NSLocalizedString(
+            "newTaxRateSelectorView.listFooterResultsSectionTitle",
+            value: "Can’t find the rate you’re looking for?",
+            comment: "Text to prompt the user to edit tax rates in the web")
+        static let fixedBottomPanelBody = NSLocalizedString(
+            "newTaxRateSelectorView.taxRfixedBottomPanelBodyatesSectionTitle",
+            value: "Add this rate to all created orders",
+            comment: "Body for the action to store selected tax rate")
+        static let fixedBottomPanelFootnote = NSLocalizedString(
+            "newTaxRateSelectorView.fixedBottomPanelFootnote",
+            value: "This will not affect online orders",
+            comment: "Footnote for the action to store selected tax rate")
     }
 }
 

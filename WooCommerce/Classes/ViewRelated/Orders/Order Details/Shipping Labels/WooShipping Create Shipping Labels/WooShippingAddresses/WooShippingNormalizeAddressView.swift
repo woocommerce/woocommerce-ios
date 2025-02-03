@@ -5,9 +5,6 @@ struct WooShippingNormalizeAddressView: View {
 
     @ObservedObject var viewModel: WooShippingNormalizeAddressViewModel
 
-    /// Closure to perform when the user successfully confirms the selected address.
-    var onConfirm: () -> Void
-
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
@@ -44,15 +41,8 @@ struct WooShippingNormalizeAddressView: View {
             VStack(spacing: .zero) {
                 Divider().ignoresSafeArea(edges: [.horizontal])
                 Button {
-                    Task { @MainActor in
-                        do {
-                            try await viewModel.confirmSelectedAddress()
-                            dismiss()
-                            onConfirm()
-                        } catch {
-                            // TODO: Display error notice if remote update fails.
-                        }
-                    }
+                    viewModel.confirmSelectedAddress()
+                    dismiss()
                 } label: {
                     switch viewModel.selectedAddress {
                     case .entered:
@@ -61,7 +51,7 @@ struct WooShippingNormalizeAddressView: View {
                         Text(Localization.confirmSuggestedAddress)
                     }
                 }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isRemotelyUpdating))
+                .buttonStyle(PrimaryButtonStyle())
                 .padding()
             }
             .background(Color(uiColor: .systemBackground))
@@ -133,12 +123,9 @@ private extension WooShippingNormalizeAddressView {
 
 #Preview {
     NavigationView {
-        WooShippingNormalizeAddressView(viewModel: .init(siteID: 12345,
-                                                         originalAddress: .init(originAddress: nil, destinationAddress: nil, addressType: .origin),
-                                                         enteredAddress: WooShippingNormalizeAddressViewModel.sampleEnteredAddress,
+        WooShippingNormalizeAddressView(viewModel: .init(enteredAddress: WooShippingNormalizeAddressViewModel.sampleEnteredAddress,
                                                          suggestedAddress: WooShippingNormalizeAddressViewModel.sampleSuggestedAddress,
-                                                         onConfirm: { address in print(address) }),
-                                        onConfirm: {})
+                                                         onConfirm: { address in print(address) }))
     }
     .wooNavigationBarStyle()
 }

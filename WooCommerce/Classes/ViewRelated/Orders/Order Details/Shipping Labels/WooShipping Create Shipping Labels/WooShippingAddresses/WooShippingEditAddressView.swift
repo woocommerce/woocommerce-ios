@@ -166,7 +166,7 @@ struct WooShippingEditAddressView: View {
                             break
                         }
                     }
-                    .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isRemotelyValidating))
+                    .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
                     .disabled(viewModel.status == .missingInformation)
                 }
                 .padding()
@@ -175,9 +175,7 @@ struct WooShippingEditAddressView: View {
         }
         .sheet(item: $viewModel.normalizeAddressVM) { viewModel in
             NavigationStack {
-                WooShippingNormalizeAddressView(viewModel: viewModel) {
-                    dismiss()
-                }
+                WooShippingNormalizeAddressView(viewModel: viewModel)
             }
         }
     }
@@ -418,7 +416,8 @@ private extension WooShippingEditAddressView {
 }
 
 #Preview("Without Company") {
-    WooShippingEditAddressView(viewModel: .init(id: UUID().uuidString,
+    WooShippingEditAddressView(viewModel: .init(type: .origin,
+                                                id: UUID().uuidString,
                                                 name: "HEADQUARTERS",
                                                 company: "",
                                                 country: "UNITED STATES",
@@ -431,12 +430,12 @@ private extension WooShippingEditAddressView {
                                                 isDefaultAddress: true,
                                                 showCompanyField: false,
                                                 isVerified: true,
-                                                phoneNumberRequired: true,
-                                                originalAddress: .init(originAddress: nil, destinationAddress: nil, addressType: .origin)))
+                                                phoneNumberRequired: true))
 }
 
 #Preview("With Company") {
-    WooShippingEditAddressView(viewModel: .init(id: UUID().uuidString,
+    WooShippingEditAddressView(viewModel: .init(type: .destination,
+                                                id: UUID().uuidString,
                                                 name: "HEADQUARTERS",
                                                 company: "COMPANY",
                                                 country: "UNITED STATES",
@@ -449,6 +448,5 @@ private extension WooShippingEditAddressView {
                                                 isDefaultAddress: false,
                                                 showCompanyField: true,
                                                 isVerified: false,
-                                                phoneNumberRequired: true,
-                                                originalAddress: .init(originAddress: nil, destinationAddress: nil, addressType: .destination)))
+                                                phoneNumberRequired: true))
 }

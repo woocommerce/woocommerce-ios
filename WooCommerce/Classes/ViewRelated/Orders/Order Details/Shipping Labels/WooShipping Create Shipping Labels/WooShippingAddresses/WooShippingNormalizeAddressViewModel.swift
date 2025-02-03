@@ -1,19 +1,13 @@
 import Yosemite
 
 final class WooShippingNormalizeAddressViewModel: ObservableObject, Identifiable {
-    private let siteID: Int64
-    private let stores: StoresManager
-
-    /// Original address to update.
-    private let originalAddress: WooShippingEditableAddress
-
     /// Unique ID for the view model.
     let id = UUID()
 
-    /// The new address entered by the merchant.
+    /// The address entered by the merchant.
     let enteredAddress: WooShippingAddress
 
-    /// The suggested (normalized) new address.
+    /// The suggested (normalized) address.
     let suggestedAddress: WooShippingAddress
 
     /// The selected address type.
@@ -21,75 +15,20 @@ final class WooShippingNormalizeAddressViewModel: ObservableObject, Identifiable
     @Published var selectedAddress: WooShippingSelectedAddressType = .suggested
 
     /// Closure to perform when the address is confirmed.
-    var onConfirm: ((WooShippingEditableAddress) -> Void)?
+    var onConfirm: ((WooShippingAddress) -> Void)?
 
-    /// Whether the address is being remotely updated.
-    /// This property is used to show a loading indicator while the remote update is in progress.
-    @Published private(set) var isRemotelyUpdating: Bool = false
-
-    init(siteID: Int64,
-         originalAddress: WooShippingEditableAddress,
-         enteredAddress: WooShippingAddress,
+    init(enteredAddress: WooShippingAddress,
          suggestedAddress: WooShippingAddress,
-         stores: StoresManager = ServiceLocator.stores,
-         onConfirm: ((WooShippingEditableAddress) -> Void)? = nil) {
-        self.siteID = siteID
-        self.stores = stores
-        self.originalAddress = originalAddress
+         onConfirm: ((WooShippingAddress) -> Void)? = nil) {
         self.enteredAddress = enteredAddress
         self.suggestedAddress = suggestedAddress
         self.onConfirm = onConfirm
     }
 
     /// Confirms the selected address.
-    @MainActor
-    func confirmSelectedAddress() async throws {
+    func confirmSelectedAddress() {
         let addressToConfirm = selectedAddress == .entered ? enteredAddress : suggestedAddress
-        do {
-            if let originAddress = originalAddress.originAddress {
-                let updatedOriginAddress = try await updateOriginAddress(originAddress, with: addressToConfirm)
-                let updatedEditableAddress = WooShippingEditableAddress(originAddress: updatedOriginAddress,
-                                                                        destinationAddress: originalAddress.destinationAddress,
-                                                                        addressType: originalAddress.addressType)
-                onConfirm?(updatedEditableAddress)
-            }
-        } catch {
-            DDLogError("⛔️ Error updating origin address for Woo Shipping label: \(error)")
-            throw error
-        }
-    }
-}
-
-// MARK: Remote
-private extension WooShippingNormalizeAddressViewModel {
-    /// Updates an origin address remotely.
-    @MainActor
-    func updateOriginAddress(_ originAddress: WooShippingOriginAddress, with address: WooShippingAddress) async throws -> WooShippingOriginAddress {
-        let updatedAddress = originAddress.copy(company: address.company,
-                                                address1: address.address1,
-                                                address2: address.address2,
-                                                city: address.city,
-                                                state: address.state,
-                                                postcode: address.postcode,
-                                                country: address.country,
-                                                phone: address.phone,
-                                                firstName: address.name)
-        return try await withCheckedThrowingContinuation { continuation in
-            isRemotelyUpdating = true
-            let action = WooShippingAction.updateOriginAddress(siteID: siteID,
-                                                               address: updatedAddress,
-                                                               isVerified: updatedAddress.isVerified) { [weak self] result in
-                guard let self else { return }
-                switch result {
-                case let .success(result):
-                    continuation.resume(returning: result.address)
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-                isRemotelyUpdating = false
-            }
-            stores.dispatch(action)
-        }
+        onConfirm?(addressToConfirm)
     }
 }
 

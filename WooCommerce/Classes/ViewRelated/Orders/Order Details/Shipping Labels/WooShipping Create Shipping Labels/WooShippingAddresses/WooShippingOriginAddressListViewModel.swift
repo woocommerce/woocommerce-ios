@@ -32,6 +32,8 @@ final class WooShippingOriginAddressListViewModel: ObservableObject {
         onSelect?(address)
     }
 
+    /// Sets the `addressToEdit` property for editing the provided address.
+    /// After the address is edited, the updated address is replaced in the list of addresses.
     func editAddress(_ address: WooShippingOriginAddress) {
         addressToEdit = WooShippingEditAddressViewModel(address: address, onAddressEdited: { [weak self] editedAddress in
             guard let self,
@@ -41,9 +43,11 @@ final class WooShippingOriginAddressListViewModel: ObservableObject {
             }
             addresses.remove(at: index)
             addresses.insert(editedAddress, at: index)
+            // If the edited address was the selected address, update the selected address.
             if selectedAddressID == editedAddress.id {
                 onSelect?(editedAddress)
             }
+            addressToEdit = nil // Dismisses address edit screen
         })
     }
 }

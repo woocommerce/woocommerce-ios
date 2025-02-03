@@ -23,19 +23,7 @@ struct NewTaxRateSelectorView: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .leading, spacing: 0) {
-                Group {
-                    HStack(alignment: .top, spacing: Layout.explanatoryBoxHorizontalSpacing) {
-                        Image(systemName: "info.circle")
-                            .foregroundColor(Color(.wooCommercePurple(.shade60)))
-                        Text(Localization.infoText)
-                    }
-                    .padding(Layout.generalPadding)
-                }
-                .overlay(
-                    RoundedRectangle(cornerRadius: Layout.explanatoryBoxCornerRadius)
-                        .stroke(Color(.separator), lineWidth: 1)
-                )
-                .padding(Layout.generalPadding)
+                taxRateSelectorHeaderView
 
                 switch viewModel.syncState {
                     case .results:
@@ -132,8 +120,26 @@ struct NewTaxRateSelectorView: View {
             showingWPAdminWebView = false
         })
     }
+}
 
-    private var resultsListFooter: some View {
+private extension NewTaxRateSelectorView {
+    var taxRateSelectorHeaderView: some View {
+        Group {
+            HStack(alignment: .top, spacing: Layout.explanatoryBoxHorizontalSpacing) {
+                Image(systemName: "info.circle")
+                    .foregroundColor(Color(.wooCommercePurple(.shade60)))
+                Text(Localization.infoText)
+            }
+            .padding(Layout.generalPadding)
+        }
+        .overlay(
+            RoundedRectangle(cornerRadius: Layout.explanatoryBoxCornerRadius)
+                .stroke(Color(.separator), lineWidth: 1)
+        )
+        .padding(Layout.generalPadding)
+    }
+
+    var resultsListFooter: some View {
         Group {
             Text(Localization.listFooterResultsSectionTitle)
                 .foregroundColor(Color(.textSubtle))
@@ -158,10 +164,9 @@ struct NewTaxRateSelectorView: View {
         }
     }
 
-    private var storeTaxRateBottomView: some View {
+    var storeTaxRateBottomView: some View {
         VStack {
             Divider()
-
             Toggle(isOn: $storeSelectedTaxRate) {
                 VStack(alignment: .leading, spacing: Layout.fixedBottomPanelVerticalSpace) {
                     Text(Localization.fixedBottomPanelBody)

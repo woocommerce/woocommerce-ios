@@ -5,6 +5,7 @@
 -----
 - [*] Better error messages if Application Password login is disabled on user's website. [https://github.com/woocommerce/woocommerce-ios/pull/15031]
 - [*] Now, usernames and emails in text fields across multiple login views are no longer capitalized. [https://github.com/woocommerce/woocommerce-ios/pull/15002]
+- [*] Payments: Update learn more links to open Stripe-specific docs when using that gateway [https://github.com/woocommerce/woocommerce-ios/pull/15035]
 
 21.6
 -----

@@ -97,6 +97,12 @@ final class PaymentMethodsViewModel: ObservableObject {
 
     private let currencySettings: CurrencySettings
 
+    private var cardPaymentGateway: CardPresentPaymentsPlugin?
+
+    var learnMoreViewModel: LearnMoreViewModel {
+        LearnMoreViewModel.inPersonPayments(source: .paymentMethods, paymentGateway: cardPaymentGateway)
+    }
+
     /// Stored orders.
     /// We need to fetch this from our storage layer because we are only provide IDs as dependencies
     /// To keep previews/UIs decoupled from our business logic.
@@ -172,6 +178,7 @@ final class PaymentMethodsViewModel: ObservableObject {
         featureFlagService = dependencies.featureFlagService
         currencySettings = dependencies.currencySettings
         title = String(format: Localization.title, formattedTotal)
+        cardPaymentGateway = nil
 
         bindStoreCPPState()
         updateCardPaymentVisibility()
@@ -459,6 +466,12 @@ private extension PaymentMethodsViewModel {
             }
 
         stores.dispatch(action)
+    }
+
+    private func updatePaymentGateway() {
+        CardPresentPaymentAction.loadActivePaymentGatewayExtension { paymentGateway in
+            self.cardPaymentGateway = paymentGateway
+        }
     }
 
     func updateOrderAsynchronously() {

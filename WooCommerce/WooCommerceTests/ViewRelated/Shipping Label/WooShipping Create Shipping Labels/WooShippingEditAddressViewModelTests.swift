@@ -852,23 +852,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
     func test_isLoading_set_during_and_after_remote_origin_address_update() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = WooShippingEditAddressViewModel(type: .origin,
-                                                        id: "",
-                                                        name: "",
-                                                        company: "",
-                                                        country: "",
-                                                        address: "",
-                                                        city: "",
-                                                        state: "",
-                                                        postalCode: "",
-                                                        email: "",
-                                                        phone: "",
-                                                        isDefaultAddress: true,
-                                                        showCompanyField: true,
-                                                        isVerified: true,
-                                                        phoneNumberRequired: true,
-                                                        stores: stores,
-                                                        debounceDelayInSeconds: 0)
+        let viewModel = WooShippingEditAddressViewModel(address: .fake(), stores: stores)
 
         // When
         let isLoadingDuringRemoteAction: Bool = await waitForAsync { promise in
@@ -897,7 +881,6 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
     func test_origin_address_update_sends_expected_origin_address_to_remote() async {
         // Given
         let originAddress = WooShippingOriginAddress.fake().copy(id: "origin",
-                                                                 company: "COMPANY",
                                                                  phone: "123-456-7890",
                                                                  firstName: "JANE",
                                                                  lastName: "DOE",
@@ -912,23 +895,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                   city: "TICONDEROGA",
                                                   postcode: "12883-1487")
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = WooShippingEditAddressViewModel(type: .origin,
-                                                        id: originAddress.id,
-                                                        name: originAddress.fullName,
-                                                        company: originAddress.company,
-                                                        country: originAddress.country,
-                                                        address: originAddress.combinedAddress,
-                                                        city: originAddress.city,
-                                                        state: originAddress.state,
-                                                        postalCode: originAddress.postcode,
-                                                        email: originAddress.email,
-                                                        phone: originAddress.phone,
-                                                        isDefaultAddress: originAddress.defaultAddress,
-                                                        showCompanyField: true,
-                                                        isVerified: originAddress.isVerified,
-                                                        phoneNumberRequired: true,
-                                                        stores: stores,
-                                                        debounceDelayInSeconds: 0)
+        let viewModel = WooShippingEditAddressViewModel(address: originAddress, stores: stores)
 
         // When
         let receivedAddress: WooShippingOriginAddress = await waitForAsync { promise in
@@ -963,6 +930,34 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                        defaultAddress: originAddress.defaultAddress,
                                                        isVerified: true)
         XCTAssertEqual(receivedAddress, expectedAddress)
+    }
+
+    @MainActor
+    func test_origin_address_update_calls_onOriginAddressEdited_closure() async {
+        // Given
+        let expectedAddress = WooShippingOriginAddress.fake().copy(id: "origin")
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let editedAddress: WooShippingOriginAddress = await waitForAsync { promise in
+            stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+                switch action {
+                case let .validateAddress(_, _, completion):
+                    completion(.success(.init(normalizedAddress: .fake(), originalAddress: .fake(), isTrivialNormalization: true)))
+                case let .updateOriginAddress(_, _, _, completion):
+                    completion(.success(WooShippingOriginAddressUpdate(address: expectedAddress, isVerified: true)))
+                default:
+                    XCTFail("Unexpected action received: \(action)")
+                }
+            }
+            // When
+            let viewModel = WooShippingEditAddressViewModel(address: .fake(), stores: stores) { address in
+                promise(address)
+            }
+            await viewModel.remotelyValidateAddress()
+            viewModel.normalizeAddressVM?.confirmSelectedAddress()
+        }
+
+        // Then
+        XCTAssertEqual(editedAddress, expectedAddress)
     }
 }
 

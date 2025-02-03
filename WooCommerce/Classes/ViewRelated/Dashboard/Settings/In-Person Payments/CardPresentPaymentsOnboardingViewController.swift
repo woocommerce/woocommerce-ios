@@ -97,10 +97,6 @@ struct CardPresentPaymentsOnboardingView: View {
             switch url {
             case InPersonPaymentsSupportLink.supportURL:
                 viewModel.showSupport?()
-            case LearnMoreViewModel.learnMoreURL:
-                if let url = viewModel.learnMoreURL {
-                    viewModel.showURL?(url)
-                }
             default:
                 viewModel.showURL?(url)
             }

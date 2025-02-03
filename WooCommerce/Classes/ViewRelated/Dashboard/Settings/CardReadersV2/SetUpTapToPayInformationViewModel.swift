@@ -50,7 +50,8 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
         self.connectionAnalyticsTracker = connectionAnalyticsTracker
         self.connectivityObserver = connectivityObserver
         self.onboardingStatePublisher = onboardingStatePublisher
-        self.learnMoreURL = Self.learnMoreURL(for: .wcPay) // this will be updated when the onboarding state is known
+        /// The `learnMoreURL` will be updated when the onboarding state is known
+        self.learnMoreURL = CardPresentPaymentsPlugin.wcPay.setUpTapToPayLearnMoreURL
         self.tapToPayAwarenessMomentDeterminer = tapToPayAwarenessMomentDeterminer
 
         beginOnboardingStateObservation()
@@ -68,7 +69,7 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
             guard case .completed(let plugin) = onboardingState else {
                 return
             }
-            self?.learnMoreURL = Self.learnMoreURL(for: plugin.preferred)
+            self?.learnMoreURL = plugin.preferred.setUpTapToPayLearnMoreURL
         }.store(in: &subscriptions)
     }
 
@@ -149,17 +150,6 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
         if didChange {
             shouldShow = newShouldShow
             didChangeShouldShow?(shouldShow)
-        }
-    }
-
-    /// Choose learn more url based on the active Payment Gateway extension
-    ///
-    private static func learnMoreURL(for paymentGateway: CardPresentPaymentsPlugin) -> URL {
-        switch paymentGateway {
-        case .wcPay:
-            return WooConstants.URLs.inPersonPaymentsLearnMoreWCPayTapToPay.asURL()
-        case .stripe:
-            return WooConstants.URLs.inPersonPaymentsLearnMoreStripe.asURL()
         }
     }
 }

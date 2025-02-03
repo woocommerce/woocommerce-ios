@@ -2,7 +2,7 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 21.7
 -----
-
+- [x] Now, usernames and emails in text fields across multiple login views are no longer capitalized. [https://github.com/woocommerce/woocommerce-ios/pull/15002]
 
 21.6
 -----

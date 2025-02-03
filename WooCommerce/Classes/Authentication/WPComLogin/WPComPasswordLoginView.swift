@@ -90,7 +90,8 @@ struct WPComPasswordLoginView: View {
                     text: $viewModel.password,
                     isSecure: true,
                     errorMessage: nil,
-                    isFocused: isPasswordFieldFocused
+                    isFocused: isPasswordFieldFocused,
+                    autocapitalization: .none
                 ))
                 .focused($isPasswordFieldFocused)
 

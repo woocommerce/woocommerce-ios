@@ -210,3 +210,13 @@ extension NewTaxRateSelectorView {
                                                                 comment: "Footnote for the action to store selected tax rate")
     }
 }
+
+#Preview {
+    let viewModel = NewTaxRateSelectorViewModel(siteID: 123, onTaxRateSelected: { _ in })
+    let taxEduViewModel = TaxEducationalDialogViewModel(orderTaxLines: [], taxBasedOnSetting: nil)
+
+    NewTaxRateSelectorView(viewModel: viewModel,
+                                  taxEducationalDialogViewModel: taxEduViewModel,
+                                  onDismissWpAdminWebView: { },
+                                  storeSelectedTaxRate: false)
+}

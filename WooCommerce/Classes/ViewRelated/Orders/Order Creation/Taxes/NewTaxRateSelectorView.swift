@@ -202,7 +202,7 @@ extension NewTaxRateSelectorView {
     enum Localization {
         static let navigationTitle = NSLocalizedString(
             "newTaxRateSelectorView.navigationTitle",
-            value:"Set Tax Rate",
+            value: "Set Tax Rate",
             comment: "Navigation title for the tax rate selector")
         static let cancelButton = NSLocalizedString(
             "newTaxRateSelectorView.cancelButton",

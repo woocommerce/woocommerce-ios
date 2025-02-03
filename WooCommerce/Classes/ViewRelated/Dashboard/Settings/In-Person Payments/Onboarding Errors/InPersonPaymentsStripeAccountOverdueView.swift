@@ -56,13 +56,21 @@ private extension InPersonPaymentsStripeAccountOverdue {
 
 private enum Localization {
      static let title = NSLocalizedString(
-         "In-Person Payments is currently unavailable",
-         comment: "Title for the error screen when the Stripe account is restricted because there are overdue requirements."
+         "In‑Person Payments is currently unavailable",
+         comment: """
+                  Title for the error screen when the Stripe account is restricted because there are overdue requirements.
+                  The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+                  If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
+                  """
      )
 
      static let message = NSLocalizedString(
-         "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments.",
-         comment: "Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements"
+         "You have at least one overdue requirement on your account. Please take care of that to resume In‑Person Payments.",
+         comment: """
+                  Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements
+                  The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+                  If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
+                  """
      )
 
     static let primaryButtonTitle = NSLocalizedString(

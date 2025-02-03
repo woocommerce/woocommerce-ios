@@ -8,12 +8,11 @@ class PointOfSalePreviewOrderController: PointOfSaleOrderControllerProtocol {
         .loaded(
             .init(cartTotal: "$10.50",
                   orderTotal: "$12.00",
-                  taxTotal: "$1.50"),
+                  taxTotal: "$1.50",
+                  orderTotalDecimal: 12.00),
             OrderFactory.newOrder(currency: .USD)
         )
     ).eraseToAnyPublisher()
-
-    var order: Yosemite.Order?
 
     func syncOrder(for cartProducts: [CartItem],
                    retryHandler: @escaping () async -> Void) async { }

@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "payments-cards-light.pdf",
+      "filename" : "woo-payments-card-light.pdf",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "payments-cards-dark.pdf",
+      "filename" : "woo-payments-card-dark.pdf",
       "idiom" : "universal"
     }
   ],

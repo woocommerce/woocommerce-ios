@@ -766,7 +766,7 @@ private extension OrderListViewController {
 
             analytics.track(event: .TestOrder.entryPointDisplayed())
             return .withButton(message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
-                               image: .emptyOrdersImage,
+                               image: .boxesImage,
                                details: Localization.createTestOrderDetail,
                                buttonTitle: Localization.tryTestOrder,
                                onTap: { [weak self] _ in
@@ -784,7 +784,7 @@ private extension OrderListViewController {
 
         /// Otherwise, show link to Woo blog.
         return .withLink(message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
-                         image: .emptyOrdersImage,
+                         image: .boxesImage,
                          details: Localization.allOrdersEmptyStateDetail,
                          linkTitle: Localization.learnMore,
                          linkURL: WooConstants.URLs.blog.asURL()) { [weak self] refreshControl in
@@ -802,7 +802,7 @@ private extension OrderListViewController {
 
         return EmptyStateViewController.Config.withButton(
             message: message,
-            image: .emptySearchResultsImage,
+            image: .magnifyingGlassNotFound,
             details: "",
             buttonTitle: Localization.clearButton,
             onTap: { [weak self] button in
@@ -1000,7 +1000,7 @@ private extension OrderListViewController {
     enum Localization {
         static let allOrdersEmptyStateMessage = NSLocalizedString("Waiting for your first order",
                                                                   comment: "The message shown in the Orders → All Orders tab if the list is empty.")
-        static let allOrdersEmptyStateDetail = NSLocalizedString("Explore how you can increase your store sales",
+        static let allOrdersEmptyStateDetail = NSLocalizedString("Explore how you can increase your store sales.",
                                                                  comment: "The detailed message shown in the Orders → All Orders tab if the list is empty.")
         static let learnMore = NSLocalizedString("Learn more", comment: "Title of button shown in the Orders → All Orders tab if the list is empty.")
         static let createTestOrderDetail = NSLocalizedString(

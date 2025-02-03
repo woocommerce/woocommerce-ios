@@ -94,7 +94,7 @@ final class ProductSearchUICommand: SearchUICommand {
         let message = NSMutableAttributedString(string: format)
         message.replaceFirstOccurrence(of: "%@", with: boldSearchKeyword)
 
-        viewController.configure(.simple(message: message, image: .emptySearchResultsImage))
+        viewController.configure(.simple(message: message, image: .magnifyingGlassNotFound))
     }
 
     func createCellViewModel(model: Product) -> ProductsTabProductViewModel {

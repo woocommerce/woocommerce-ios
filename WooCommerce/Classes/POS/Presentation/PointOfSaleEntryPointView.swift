@@ -3,6 +3,7 @@ import SwiftUI
 struct PointOfSaleEntryPointView: View {
     @StateObject private var posModel: PointOfSaleAggregateModel
     @StateObject private var posModalManager = POSModalManager()
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
 
@@ -29,6 +30,7 @@ struct PointOfSaleEntryPointView: View {
         }
         .onDisappear {
             onPointOfSaleModeActiveStateChange(false)
+            posModalManager.onDisappear()
         }
     }
 }

@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "magnifying-glass-not-found.pdf",
+      "filename" : "not-found-light.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "not-found-dark.pdf",
       "idiom" : "universal"
     }
   ],

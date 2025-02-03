@@ -5,7 +5,7 @@ import SwiftUI
 struct MostActiveCouponsEmptyView: View {
     var body: some View {
         VStack(alignment: .center, spacing: Layout.defaultSpacing) {
-            Image(uiImage: .emptyCouponsImage)
+            Image(uiImage: .couponsImage)
             Text(Localization.text)
                 .subheadlineStyle()
         }

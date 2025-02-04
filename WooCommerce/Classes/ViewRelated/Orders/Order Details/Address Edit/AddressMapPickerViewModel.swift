@@ -25,9 +25,10 @@ final class AddressMapPickerViewModel: NSObject {
         selectedPlace != nil
     }
 
+    private(set) var selectedPlaceAddress: String = ""
+
     private let (searchQueryStream, searchQueryContinuation) = AsyncStream.makeStream(of: String.self)
     private let searchCompleter: MKLocalSearchCompleter = .init()
-
     private var selectedPlace: CLPlacemark?
 
     init(fields: AddressFormFields) {
@@ -35,6 +36,44 @@ final class AddressMapPickerViewModel: NSObject {
         configureLocationServices()
         configureSearchCompleter()
         configureMap(with: fields)
+    }
+
+    private func formatAddressString(
+        address1: String = "",
+        address2: String = "",
+        city: String = "",
+        state: String = "",
+        postcode: String = "",
+        country: String = ""
+    ) -> String {
+        [address1, address2, city, state, postcode, country]
+            .filter { !$0.isEmpty }
+            .joined(separator: ", ")
+    }
+
+    private func formatPlacemarkAddress(_ placemark: MKPlacemark) -> String {
+        var components: [String] = []
+        if let street = placemark.thoroughfare {
+            if let number = placemark.subThoroughfare {
+                components.append("\(number) \(street)")
+            } else {
+                components.append(street)
+            }
+        }
+        if let city = placemark.locality {
+            components.append(city)
+        }
+        if let state = placemark.administrativeArea {
+            components.append(state)
+        }
+        if let postalCode = placemark.postalCode {
+            components.append(postalCode)
+        }
+        if let country = placemark.country {
+            components.append(country)
+        }
+
+        return components.joined(separator: ", ")
     }
 
     private func configureLocationServices() {
@@ -60,20 +99,27 @@ final class AddressMapPickerViewModel: NSObject {
                 fields.postcode,
                 fields.country
             ].filter { !$0.isEmpty }.joined(separator: ", ")
-            
+
             CLGeocoder().geocodeAddressString(addressString) { [weak self] placemarks, error in
-                guard let self = self,
+                guard let self,
                       let location = placemarks?.first?.location else {
                     return
                 }
-                
+
                 DispatchQueue.main.async {
                     self.region = MKCoordinateRegion(
                         center: location.coordinate,
                         span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
                     )
                     self.annotations = [MapAnnotation(coordinate: location.coordinate)]
-                    self.selectedPlace = placemarks?.first
+                    self.selectedPlaceAddress = self.formatAddressString(
+                        address1: fields.address1,
+                        address2: fields.address2,
+                        city: fields.city,
+                        state: fields.state,
+                        postcode: fields.postcode,
+                        country: fields.country
+                    )
                 }
             }
         }
@@ -115,6 +161,7 @@ final class AddressMapPickerViewModel: NSObject {
             )
             self.annotations = [MapAnnotation(coordinate: placemark.coordinate)]
             self.selectedPlace = placemark
+            self.selectedPlaceAddress = formatPlacemarkAddress(placemark)
         }
     }
 

@@ -15,7 +15,6 @@ struct AddressMapPickerView: View {
     }
 
     var body: some View {
-        let _ = Self._printChanges()
         NavigationStack {
             ZStack(alignment: .top) {
                 Map(coordinateRegion: $viewModel.region,
@@ -45,6 +44,15 @@ struct AddressMapPickerView: View {
                                 }
                             }
                         }
+                    } else if viewModel.selectedPlaceAddress.isNotEmpty {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(viewModel.selectedPlaceAddress)
+                                .font(.body)
+                                .foregroundColor(.primary)
+                                .padding()
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(.ultraThinMaterial)
                     }
                 }
             }

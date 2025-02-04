@@ -6,6 +6,7 @@ import Foundation
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
 import class WooFoundation.CurrencySettings
+import protocol WooFoundation.Analytics
 
 struct PointOfSaleOrderControllerTests {
     let sut: PointOfSaleOrderController
@@ -13,7 +14,8 @@ struct PointOfSaleOrderControllerTests {
     let mockReceiptService = MockReceiptService()
 
     init() {
-        self.sut = PointOfSaleOrderController(orderService: mockOrderService, receiptService: mockReceiptService)
+        self.sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                              receiptService: mockReceiptService)
     }
 
     @Test func syncOrder_without_items_doesnt_call_orderService() async throws {
@@ -27,12 +29,19 @@ struct PointOfSaleOrderControllerTests {
     }
 
     @Test func syncOrder_with_cart_matching_order_doesnt_call_orderService() async throws {
+        let mockAnalyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: mockAnalyticsProvider)
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptService: mockReceiptService,
+                                             analytics: analytics)
         // Given
         let orderItem = OrderItem.fake().copy(quantity: 1)
         let fakeOrder = Order.fake().copy(items: [orderItem])
         let cartItem = makeItem(orderItemsToMatch: [orderItem])
         mockOrderService.orderToReturn = fakeOrder
         await sut.syncOrder(for: [cartItem], retryHandler: {})
+        #expect(mockAnalyticsProvider.receivedEvents.first(where: { $0 == "order_creation_success" }) != nil)
+
         mockOrderService.syncOrderWasCalled = false
 
         // When
@@ -126,6 +135,11 @@ struct PointOfSaleOrderControllerTests {
 
     @Test func syncOrder_with_order_sync_failure_sets_orderState_syncing_then_error() async throws {
         // Given
+        let mockAnalyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: mockAnalyticsProvider)
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptService: mockReceiptService,
+                                             analytics: analytics)
         mockOrderService.orderToReturn = nil
 
         var cancellables = Set<AnyCancellable>()
@@ -151,6 +165,7 @@ struct PointOfSaleOrderControllerTests {
                 message: MockPOSOrderServiceError.noOrderToReturn.localizedDescription,
                 handler: {}))
         ])
+        #expect(mockAnalyticsProvider.receivedEvents.first(where: { $0 == "order_creation_failed" }) != nil)
     }
 
     @Test func sendReceipt_when_there_is_no_order_then_will_not_trigger() async throws {

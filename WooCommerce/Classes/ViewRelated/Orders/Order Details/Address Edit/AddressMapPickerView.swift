@@ -11,7 +11,7 @@ struct AddressMapPickerView: View {
 
     init(fields: Binding<AddressFormFields>) {
         self._fields = fields
-        self.viewModel = AddressMapPickerViewModel()
+        self.viewModel = AddressMapPickerViewModel(fields: fields.wrappedValue)
     }
 
     var body: some View {

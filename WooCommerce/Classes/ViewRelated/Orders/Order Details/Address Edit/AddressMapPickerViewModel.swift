@@ -2,6 +2,7 @@ import MapKit
 import Observation
 import SwiftUI
 import AsyncAlgorithms
+import CoreLocation
 
 @available(iOS 17, *)
 @Observable
@@ -29,10 +30,11 @@ final class AddressMapPickerViewModel: NSObject {
 
     private var selectedPlace: CLPlacemark?
 
-    override init() {
+    init(fields: AddressFormFields) {
         super.init()
         configureLocationServices()
         configureSearchCompleter()
+        configureMap(with: fields)
     }
 
     private func configureLocationServices() {
@@ -45,6 +47,36 @@ final class AddressMapPickerViewModel: NSObject {
     private func configureSearchCompleter() {
         searchCompleter.resultTypes = .address
         searchCompleter.delegate = self
+    }
+
+    private func configureMap(with fields: AddressFormFields) {
+        // Try to geocode the address if we have enough information
+        if !fields.address1.isEmpty && !fields.city.isEmpty {
+            let addressString = [
+                fields.address1,
+                fields.address2,
+                fields.city,
+                fields.state,
+                fields.postcode,
+                fields.country
+            ].filter { !$0.isEmpty }.joined(separator: ", ")
+            
+            CLGeocoder().geocodeAddressString(addressString) { [weak self] placemarks, error in
+                guard let self = self,
+                      let location = placemarks?.first?.location else {
+                    return
+                }
+                
+                DispatchQueue.main.async {
+                    self.region = MKCoordinateRegion(
+                        center: location.coordinate,
+                        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                    )
+                    self.annotations = [MapAnnotation(coordinate: location.coordinate)]
+                    self.selectedPlace = placemarks?.first
+                }
+            }
+        }
     }
 
     @MainActor

@@ -755,13 +755,15 @@ private extension AuthenticationManager {
         ) else {
             return assertionFailure("⛔️ Error creating application password use case")
         }
-        checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController)
+        checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController, previousViewController: nil)
     }
 
     func checkSiteCredentialLogin(to siteURL: String,
                                   with useCase: ApplicationPasswordUseCase,
-                                  in navigationController: UINavigationController) {
-        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase)
+                                  in navigationController: UINavigationController,
+                                  previousViewController: UIViewController? = nil) {
+        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase,
+                                                     previousViewController: previousViewController)
         checker.checkEligibility(for: siteURL, from: navigationController) { [weak self] in
             guard let self else { return }
             // Tracking `signedIn` after the user logged in using site creds & application password is created

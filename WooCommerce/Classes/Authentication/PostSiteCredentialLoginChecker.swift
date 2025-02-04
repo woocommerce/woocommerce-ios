@@ -14,15 +14,18 @@ final class PostSiteCredentialLoginChecker {
     private let applicationPasswordUseCase: ApplicationPasswordUseCase
     private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
     private let analytics: Analytics
+    private let previousViewController: UIViewController?
 
     init(applicationPasswordUseCase: ApplicationPasswordUseCase,
          roleEligibilityUseCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase(stores: ServiceLocator.stores),
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         previousViewController: UIViewController?) {
         self.applicationPasswordUseCase = applicationPasswordUseCase
         self.roleEligibilityUseCase = roleEligibilityUseCase
         self.stores = stores
         self.analytics = analytics
+        self.previousViewController = previousViewController
     }
 
     /// Checks whether the user is eligible to use the app.
@@ -56,8 +59,7 @@ private extension PostSiteCredentialLoginChecker {
                 analytics.track(event: .ApplicationPassword.applicationPasswordGenerationFailed(scenario: .generation, error: error))
                 switch error {
                 case ApplicationPasswordUseCaseError.applicationPasswordsDisabled:
-                    // show application password disabled error, and catch the last view controller that was showing before the Application Password flow.
-                    let previousViewController = navigationController.viewControllers.dropLast().last
+                    // show application password disabled error, and use the previous view controller.
                     let errorUI = applicationPasswordDisabledUI(for: siteURL, previousViewController: previousViewController)
                     navigationController.show(errorUI, sender: nil)
                 case ApplicationPasswordUseCaseError.unauthorizedRequest:

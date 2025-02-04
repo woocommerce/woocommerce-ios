@@ -419,7 +419,7 @@ private extension AppDelegate {
     func setupWormholy() {
         #if DEBUG
         /// We want to activate it programmatically, not using the shake.
-        Wormholy.shakeEnabled = false
+        Wormholy.shakeEnabled = true
         #endif
     }
 

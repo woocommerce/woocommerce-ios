@@ -230,11 +230,11 @@ struct SingleAddressForm: View {
     ///
     @State private var showStateSelector = false
 
+    @State private var showMapPicker = false
+
     /// Stores shared value derived from max title width among all the fields.
     ///
     @State private var titleWidth: CGFloat? = nil
-
-    @State private var showingMapPicker = false
 
     var body: some View {
         content
@@ -243,7 +243,7 @@ struct SingleAddressForm: View {
                     titleWidth = value
                 }
             }
-            .sheet(isPresented: $showingMapPicker) {
+            .sheet(isPresented: $showMapPicker) {
                 if #available(iOS 17, *) {
                     AddressMapPickerView(fields: $fields)
                 }
@@ -323,7 +323,7 @@ struct SingleAddressForm: View {
         VStack(spacing: 0) {
             if #available(iOS 17, *) {
                 Button(action: {
-                    showingMapPicker = true
+                    showMapPicker = true
                 }) {
                     HStack {
                         Image(systemName: "map")

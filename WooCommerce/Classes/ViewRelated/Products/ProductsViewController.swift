@@ -160,6 +160,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     private let imageService: ImageService = ServiceLocator.imageService
     private let imageUploader = ServiceLocator.productImageUploader
+    private var activeUploadIds: [Int64] = []
 
     private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
         didSet {
@@ -1018,7 +1019,20 @@ private extension ProductsViewController {
     func observePendingImageUploads() {
         imageUploader.activeUploads
             .sink { [weak self] keys in
-                self?.tableView.reloadData()
+                guard let self else { return }
+                let oldIDs = activeUploadIds
+                activeUploadIds = keys
+                    .filter { $0.siteID == self.siteID }
+                    .map { $0.productOrVariationID.id }
+    
+                var indexPathsToReload: [IndexPath] = []
+                for (index, object) in resultsController.fetchedObjects.enumerated() {
+                    if activeUploadIds.contains(object.productID) != oldIDs.contains(object.productID) {
+                        indexPathsToReload.append(IndexPath(row: index, section: 0))
+                    }
+                }
+
+                tableView.reloadRows(at: indexPathsToReload, with: .none)
             }
             .store(in: &subscriptions)
     }
@@ -1105,7 +1119,7 @@ extension ProductsViewController: UITableViewDataSource {
         let viewModel = ProductsTabProductViewModel(product: product)
         cell.update(viewModel: viewModel, imageService: imageService)
 
-        let hasPendingUploads = imageUploader.hasActiveUploads(siteID: product.siteID, productID: product.productID)
+        let hasPendingUploads = activeUploadIds.contains(where: { $0 == product.productID })
         cell.updateSyncingStatus(isSyncing: hasPendingUploads)
 
         return cell

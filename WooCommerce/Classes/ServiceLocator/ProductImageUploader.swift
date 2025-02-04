@@ -87,10 +87,6 @@ protocol ProductImageUploaderProtocol {
     ///   - originalImages: the image statuses before any edits.
     func hasUnsavedChangesOnImages(key: ProductImageUploaderKey, originalImages: [ProductImage]) -> Bool
 
-    /// Determines whether there are active uploads for a product of a given site.
-    ///
-    func hasActiveUploads(siteID: Int64, productID: Int64) -> Bool
-
     /// Resets all internal states and tracking of image uploads for connected stores.
     /// Called when the user is logged out.
     func reset()
@@ -226,11 +222,6 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
                                                                     productOrVariationID: key.productOrVariationID,
                                                                     images: handler.productImageStatuses.images)
         }
-    }
-
-    func hasActiveUploads(siteID: Int64, productID: Int64) -> Bool {
-        let key = ProductImageUploaderKey(siteID: siteID, productOrVariationID: .product(id: productID), isLocalID: false)
-        return activeUploadsPublisher.contains(where: { $0 == key })
     }
 
     func reset() {

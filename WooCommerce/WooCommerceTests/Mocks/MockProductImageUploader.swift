@@ -34,12 +34,7 @@ final class MockProductImageUploader {
 }
 
 extension MockProductImageUploader: ProductImageUploaderProtocol {
-    
-    func hasActiveUploads(siteID: Int64, productID: Int64) -> Bool {
-        let key = ProductImageUploaderKey(siteID: siteID, productOrVariationID: .product(id: productID), isLocalID: false)
-        return activeUploadsKeys.contains(where: { $0 == key })
-    }
-    
+
     func replaceLocalID(siteID: Int64, localID: ProductOrVariationID, remoteID: Int64) {
         replaceLocalIDWasCalled = true
     }

@@ -242,11 +242,12 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         validateAddress()
     }
 
-    convenience init(address: WooShippingLabelAddress,
+    convenience init(type: AddressType,
+                     address: WooShippingLabelAddress,
                      stores: StoresManager = ServiceLocator.stores,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      onAddressEdited: ((WooShippingLabelAddress) -> Void)? = nil) {
-        self.init(type: .origin,
+        self.init(type: type,
                   id: address.id,
                   name: address.fullName,
                   company: address.company,
@@ -260,7 +261,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                   isDefaultAddress: address.defaultAddress,
                   showCompanyField: address.company.isNotEmpty,
                   isVerified: address.isVerified,
-                  phoneNumberRequired: true,
+                  phoneNumberRequired: type == .origin, // TODO: Handle case where destination address requires phone number (has customs form).
                   stores: stores,
                   storageManager: storageManager,
                   onAddressEdited: onAddressEdited)

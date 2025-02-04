@@ -82,7 +82,9 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                               isVerified: false)
 
         // When
-        let viewModel = WooShippingEditAddressViewModel(address: address, storageManager: storageManager)
+        let viewModel = WooShippingEditAddressViewModel(type:.origin,
+                                                        address: address,
+                                                        storageManager: storageManager)
 
         // Then
         XCTAssertEqual(viewModel.id, address.id)
@@ -852,7 +854,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
     func test_isLoading_set_during_and_after_remote_origin_address_update() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = WooShippingEditAddressViewModel(address: .fake(), stores: stores)
+        let viewModel = WooShippingEditAddressViewModel(type: .origin, address: .fake(), stores: stores)
 
         // When
         let isLoadingDuringRemoteAction: Bool = await waitForAsync { promise in
@@ -896,7 +898,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                   postcode: "12883-1487",
                                                   email: "TEST@EXAMPLE.COM")
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = WooShippingEditAddressViewModel(address: originAddress, stores: stores)
+        let viewModel = WooShippingEditAddressViewModel(type: .origin, address: originAddress, stores: stores)
 
         // When
         let receivedAddress: WooShippingLabelAddress = await waitForAsync { promise in
@@ -950,7 +952,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                 }
             }
             // When
-            let viewModel = WooShippingEditAddressViewModel(address: .fake(), stores: stores) { address in
+            let viewModel = WooShippingEditAddressViewModel(type: .origin, address: .fake(), stores: stores) { address in
                 promise(address)
             }
             await viewModel.remotelyValidateAddress()

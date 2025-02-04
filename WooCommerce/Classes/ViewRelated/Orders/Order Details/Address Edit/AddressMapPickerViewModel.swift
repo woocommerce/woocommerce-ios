@@ -31,6 +31,7 @@ final class AddressMapPickerViewModel: NSObject {
 
     override init() {
         super.init()
+        searchCompleter.resultTypes = .address
         searchCompleter.delegate = self
 
         // Request location authorization when needed

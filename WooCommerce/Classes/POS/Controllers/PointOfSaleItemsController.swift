@@ -40,12 +40,12 @@ protocol PointOfSaleItemsControllerProtocol {
 
     @MainActor
     private func loadRootItems() async {
-        let currentItems = itemsViewState.itemsStack.root.items
-        let currentItemStates = itemsViewState.itemsStack.itemStates
-        let containerState: ItemsContainerState = currentItems.isEmpty ? .loading : .content
-        itemsViewState.containerState = containerState
-        itemsViewState.itemsStack = ItemsStackState(root: .loading(currentItems),
-                                                    itemStates: currentItemStates)
+        let items = itemsViewState.itemsStack.root.items
+        if items.isEmpty {
+            itemsViewState.containerState = .loading
+        } else {
+            itemsViewState.itemsStack.root = .loading(items)
+        }
 
         do {
             try await paginationTracker.resync { [weak self] pageNumber in
@@ -219,6 +219,6 @@ private extension PointOfSaleItemsController {
             states[parent] = state
             return states
         }()
-        itemsViewState.itemsStack = viewState.itemsStack.copy(itemStates: itemStates)
+        itemsViewState.itemsStack.itemStates = itemStates
     }
 }

@@ -42,9 +42,9 @@ protocol PointOfSaleItemsControllerProtocol {
         let currentItems = itemsViewState.itemsStack.root.items
         let currentItemStates = itemsViewState.itemsStack.itemStates
         let containerState: ItemsContainerState = currentItems.isEmpty ? .loading : .content
-        itemsViewState = .init(containerState: containerState,
-                               itemsStack: ItemsStackState(root: .loading(currentItems),
-                                                           itemStates: currentItemStates))
+        itemsViewState.containerState = containerState
+        itemsViewState.itemsStack = ItemsStackState(root: .loading(currentItems),
+                                                    itemStates: currentItemStates)
 
         do {
             try await paginationTracker.resync { [weak self] pageNumber in
@@ -52,9 +52,9 @@ protocol PointOfSaleItemsControllerProtocol {
                 return try await fetchItems(pageNumber: pageNumber, appendToExistingItems: false)
             }
         } catch {
-            itemsViewState = .init(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
-                                   itemsStack: ItemsStackState(root: .loaded([], hasMoreItems: false),
-                                                               itemStates: [:]))
+            itemsViewState.containerState = .error(PointOfSaleErrorState.errorOnLoadingProducts())
+            itemsViewState.itemsStack = ItemsStackState(root: .loaded([], hasMoreItems: false),
+                                                       itemStates: [:])
         }
     }
 
@@ -75,18 +75,19 @@ protocol PointOfSaleItemsControllerProtocol {
         }
         let currentItems = itemsViewState.itemsStack.root.items
         let currentItemStates = itemsViewState.itemsStack.itemStates
-        itemsViewState = .init(containerState: .content, itemsStack: ItemsStackState(root: .loading(currentItems),
-                                                                                     itemStates: currentItemStates))
+        itemsViewState.containerState = .content
+        itemsViewState.itemsStack = ItemsStackState(root: .loading(currentItems),
+                                                   itemStates: currentItemStates)
         do {
             _ = try await paginationTracker.ensureNextPageIsSynced { [weak self] pageNumber in
                 guard let self else { return true }
                 return try await fetchItems(pageNumber: pageNumber)
             }
         } catch {
-            itemsViewState = .init(containerState: .content,
-                                   itemsStack: ItemsStackState(root: .inlineError(currentItems,
-                                                                                  error: .errorOnLoadingProductsNextPage()),
-                                                               itemStates: currentItemStates))
+            itemsViewState.containerState = .content
+            itemsViewState.itemsStack = ItemsStackState(root: .inlineError(currentItems,
+                                                                           error: .errorOnLoadingProductsNextPage()),
+                                                        itemStates: currentItemStates)
         }
     }
 
@@ -169,15 +170,15 @@ private extension PointOfSaleItemsController {
         }
         allItems.append(contentsOf: uniqueNewItems)
         if allItems.isEmpty {
-            itemsViewState = .init(containerState: .empty,
-                                   itemsStack: ItemsStackState(root: .loaded([], hasMoreItems: false),
-                                                               itemStates: [:]))
+            itemsViewState.containerState = .empty
+            itemsViewState.itemsStack = ItemsStackState(root: .loaded([], hasMoreItems: false),
+                                                               itemStates: [:])
         } else {
             let itemStates = itemsViewState.itemsStack.itemStates
                 .filter { allItems.contains($0.key) }
-            itemsViewState = .init(containerState: .content,
-                                   itemsStack: ItemsStackState(root: .loaded(allItems, hasMoreItems: pagedItems.hasMorePages),
-                                                               itemStates: itemStates))
+            itemsViewState.containerState = .content
+            itemsViewState.itemsStack = ItemsStackState(root: .loaded(allItems, hasMoreItems: pagedItems.hasMorePages),
+                                                        itemStates: itemStates)
         }
         return pagedItems.hasMorePages
     }
@@ -217,6 +218,6 @@ private extension PointOfSaleItemsController {
             states[parent] = state
             return states
         }()
-        itemsViewState = viewState.copy(itemsStack: viewState.itemsStack.copy(itemStates: itemStates))
+        itemsViewState.itemsStack = viewState.itemsStack.copy(itemStates: itemStates)
     }
 }

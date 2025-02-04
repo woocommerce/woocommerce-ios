@@ -2,8 +2,8 @@ import Foundation
 import Codegen
 
 struct ItemsViewState {
-    let containerState: ItemsContainerState
-    let itemsStack: ItemsStackState
+    var containerState: ItemsContainerState
+    var itemsStack: ItemsStackState
 }
 
 extension ItemsViewState: GeneratedCopiable, Equatable {}

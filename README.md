@@ -1,6 +1,6 @@
 
 
-<h1 align="center"><img src="docs/images/logo-woocommerce.svg" width="300"><br>for iOS</h1>
+<h1 align="center"><img src="https://github.com/user-attachments/assets/67305452-eff1-48c0-b3b0-9dc3069c7e39" width="300"><br>for iOS</h1>
 
 <p align="center">A Jetpack-powered companion app for WooCommerce.</p>
 

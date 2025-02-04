@@ -37,6 +37,7 @@ struct ItemListView: View {
         }
         .refreshable {
             await Task {
+                ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
                 await posModel.loadItems(base: .root)
             }.value
         }

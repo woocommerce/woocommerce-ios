@@ -1,26 +1,23 @@
 import Foundation
-import Combine
+import Observation
 import enum Yosemite.POSItem
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
 
 protocol PointOfSaleItemsControllerProtocol {
-    var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { get }
+    var itemsViewState: ItemsViewState { get }
     /// Loads the first page of items for a given base item.
     func loadItems(base: ItemListBaseItem) async
     /// Loads the next page of items for a given base item.
     func loadNextItems(base: ItemListBaseItem) async
 }
 
-class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
-    var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> {
-        $itemsViewState.eraseToAnyPublisher()
-    }
-    @Published private var itemsViewState: ItemsViewState =
-    ItemsViewState(containerState: .loading,
-                   itemsStack: ItemsStackState(root: .loading([]),
-                                               itemStates: [:]))
+@available(iOS 17.0, *)
+@Observable final class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
+    var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
+                                                        itemsStack: ItemsStackState(root: .loading([]),
+                                                                                    itemStates: [:]))
     private let paginationTracker: AsyncPaginationTracker
     private var childPaginationTrackers: [POSItem: AsyncPaginationTracker] = [:]
     private let itemProvider: PointOfSaleItemServiceProtocol
@@ -155,6 +152,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     }
 }
 
+@available(iOS 17.0, *)
 private extension PointOfSaleItemsController {
     /// Fetches items given a page number and appends new unique items to the `allItems` array.
     /// - Parameter pageNumber: Page number to fetch items from.
@@ -210,7 +208,7 @@ private extension PointOfSaleItemsController {
 }
 
 // MARK: - ItemsViewState Updates
-
+@available(iOS 17.0, *)
 private extension PointOfSaleItemsController {
     func updateState(for parent: POSItem, to state: ItemListState) {
         let viewState = itemsViewState

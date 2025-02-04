@@ -4,7 +4,9 @@ import Combine
 import enum Yosemite.POSItem
 
 final class MockPointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
-    var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> = Empty()
+    var itemsViewState: ItemsViewState = .init(containerState: .empty,
+                                               itemsStack: .init(root: .loaded([], hasMoreItems: false),
+                                                                 itemStates: [:]))
 
     func loadItems(base: ItemListBaseItem) async { }
 

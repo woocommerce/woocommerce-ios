@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 21.6
+Experience a refreshed WooCommerce app with an updated look that aligns with our new branding! We’ve also improved payment reliability—card reader updates now handle low battery issues better, and errors during payments and refunds are managed more smoothly. Enjoy a more seamless and polished experience in every transaction.
+
 ## 21.5
 Get ready for a smoother WooCommerce experience! This update brings smarter AI-powered product previews, instant dashboard stats, and improved email receipts for failed payments. We’ve also fine-tuned order creation, enhanced Jetpack setups, and enabled previews for coming-soon stores. Plus, we’ve addressed navigation, database recovery, and streamlined workflows.
 

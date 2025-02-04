@@ -361,7 +361,7 @@ struct PointOfSaleAggregateModelTests {
                 Issue.record("Expected cardPresentPaymentInlineMessage to be paymentSuccess")
                 return
             }
-            #expect(viewModel.message == "A payment of $52.30 was successfully made")
+            #expect(viewModel.message == "A card payment of $52.30 was successfully made")
         }
 
         @Test func paymentIntentCreationErrorMessage_when_paymentIntentCreationError_tryAgain_cancels_payment() async throws {

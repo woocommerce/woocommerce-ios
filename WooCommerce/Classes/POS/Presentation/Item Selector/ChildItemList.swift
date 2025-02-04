@@ -34,9 +34,7 @@ struct ChildItemList: View {
         .background(Color.posPrimaryBackground)
         .toolbar(.hidden, for: .navigationBar)
         .refreshable {
-            await Task {
-                await posModel.loadItems(base: .parent(parentItem))
-            }.value
+            await posModel.loadItems(base: .parent(parentItem))
         }
         .task {
             guard state.items.isEmpty else {

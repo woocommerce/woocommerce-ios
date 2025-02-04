@@ -37,9 +37,7 @@ struct ItemListView: View {
             .background(Color.posPrimaryBackground)
         }
         .refreshable {
-            await Task {
-                await posModel.loadItems(base: .root)
-            }.value
+            await posModel.loadItems(base: .root)
         }
         .accessibilityElement(children: .contain)
         .posModal(isPresented: $showSimpleProductsModal) {

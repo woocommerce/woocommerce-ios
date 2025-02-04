@@ -66,20 +66,20 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         let state = StateOfACountry(code: "NY", name: "New York")
         let countries = [Country(code: "US", name: "United States", states: [state]), Country(code: "CA", name: "Canada", states: [])]
         storageManager.insertSampleCountries(readOnlyCountries: countries)
-        let address = WooShippingOriginAddress(id: "default_address",
-                                               company: "HEADQUARTERS",
-                                               address1: "15 ALGONKIN ST",
-                                               address2: "STE 100",
-                                               city: "TICONDEROGA",
-                                               state: "NY",
-                                               postcode: "12883-1487",
-                                               country: "US",
-                                               phone: "223-456-7890",
-                                               firstName: "JANE",
-                                               lastName: "DOE",
-                                               email: "TEST@EXAMPLE.COM",
-                                               defaultAddress: true,
-                                               isVerified: false)
+        let address = WooShippingLabelAddress(id: "default_address",
+                                              company: "HEADQUARTERS",
+                                              address1: "15 ALGONKIN ST",
+                                              address2: "STE 100",
+                                              city: "TICONDEROGA",
+                                              state: "NY",
+                                              postcode: "12883-1487",
+                                              country: "US",
+                                              phone: "223-456-7890",
+                                              firstName: "JANE",
+                                              lastName: "DOE",
+                                              email: "TEST@EXAMPLE.COM",
+                                              defaultAddress: true,
+                                              isVerified: false)
 
         // When
         let viewModel = WooShippingEditAddressViewModel(address: address, storageManager: storageManager)
@@ -880,7 +880,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
     @MainActor
     func test_origin_address_update_sends_expected_origin_address_to_remote() async {
         // Given
-        let originAddress = WooShippingOriginAddress.fake().copy(id: "origin",
+        let originAddress = WooShippingLabelAddress.fake().copy(id: "origin",
                                                                  phone: "123-456-7890",
                                                                  firstName: "JANE",
                                                                  lastName: "DOE",
@@ -893,12 +893,13 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                   address1: "15 ALGONKIN ST STE 100",
                                                   address2: "",
                                                   city: "TICONDEROGA",
-                                                  postcode: "12883-1487")
+                                                  postcode: "12883-1487",
+                                                  email: "TEST@EXAMPLE.COM")
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = WooShippingEditAddressViewModel(address: originAddress, stores: stores)
 
         // When
-        let receivedAddress: WooShippingOriginAddress = await waitForAsync { promise in
+        let receivedAddress: WooShippingLabelAddress = await waitForAsync { promise in
             stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
                 switch action {
                 case let .validateAddress(_, _, completion):
@@ -915,29 +916,29 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         }
 
         // Then
-        let expectedAddress = WooShippingOriginAddress(id: originAddress.id,
-                                                       company: suggestedAddress.company,
-                                                       address1: suggestedAddress.address1,
-                                                       address2: suggestedAddress.address2,
-                                                       city: suggestedAddress.city,
-                                                       state: suggestedAddress.state,
-                                                       postcode: suggestedAddress.postcode,
-                                                       country: suggestedAddress.country,
-                                                       phone: originAddress.phone,
-                                                       firstName: suggestedAddress.name,
-                                                       lastName: "",
-                                                       email: originAddress.email,
-                                                       defaultAddress: originAddress.defaultAddress,
-                                                       isVerified: true)
+        let expectedAddress = WooShippingLabelAddress(id: originAddress.id,
+                                                      company: suggestedAddress.company,
+                                                      address1: suggestedAddress.address1,
+                                                      address2: suggestedAddress.address2,
+                                                      city: suggestedAddress.city,
+                                                      state: suggestedAddress.state,
+                                                      postcode: suggestedAddress.postcode,
+                                                      country: suggestedAddress.country,
+                                                      phone: originAddress.phone,
+                                                      firstName: suggestedAddress.name,
+                                                      lastName: "",
+                                                      email: originAddress.email,
+                                                      defaultAddress: originAddress.defaultAddress,
+                                                      isVerified: true)
         XCTAssertEqual(receivedAddress, expectedAddress)
     }
 
     @MainActor
     func test_origin_address_update_calls_onOriginAddressEdited_closure() async {
         // Given
-        let expectedAddress = WooShippingOriginAddress.fake().copy(id: "origin")
+        let expectedAddress = WooShippingLabelAddress.fake().copy(id: "origin")
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let editedAddress: WooShippingOriginAddress = await waitForAsync { promise in
+        let editedAddress: WooShippingLabelAddress = await waitForAsync { promise in
             stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
                 switch action {
                 case let .validateAddress(_, _, completion):

@@ -55,7 +55,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private(set) var originAddresses = WooShippingOriginAddressListViewModel(addresses: [])
 
     /// Address to ship from (store address).
-    @Published private var selectedOriginAddress: WooShippingOriginAddress?
+    @Published private var selectedOriginAddress: WooShippingLabelAddress?
 
     /// Address to ship from (store address), formatted for display.
     @Published private(set) var originAddress: String = ""
@@ -148,7 +148,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Initialize the view model without an existing shipping label.
     init(order: Order,
-         selectedOriginAddress: WooShippingOriginAddress? = nil,
+         selectedOriginAddress: WooShippingLabelAddress? = nil,
          selectedPackage: WooShippingPackageDataRepresentable? = nil,
          selectedRate: WooShippingSelectedRate? = nil,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
@@ -454,14 +454,14 @@ private extension WooShippingCreateLabelsViewModel {
     }
 }
 
-private extension WooShippingOriginAddress {
+private extension WooShippingLabelAddress {
     /// Converts the origin address to a `ShippingLabelAddress`.
     ///
     /// This prepares the address for use in e.g. fetching available shipping rates or purchasing the label.
     ///
     func toShippingLabelAddress() -> ShippingLabelAddress {
         ShippingLabelAddress(company: company,
-                             name: fullName ?? "",
+                             name: fullName,
                              phone: phone,
                              country: country,
                              state: state,

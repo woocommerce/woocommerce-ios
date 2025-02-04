@@ -1,14 +1,14 @@
 import Foundation
 
 struct WooShippingOriginAddressesMapper: Mapper {
-    /// (Attempts) to convert a dictionary into WooShippingOriginAddress array.
+    /// (Attempts) to convert a dictionary into WooShippingLabelAddress array.
     ///
-    func map(response: Data) throws -> [WooShippingOriginAddress] {
+    func map(response: Data) throws -> [WooShippingLabelAddress] {
         let decoder = JSONDecoder()
         if hasDataEnvelope(in: response) {
             return try decoder.decode(WooShippingOriginAddressesMapperEnvelope.self, from: response).data
         } else {
-            return try decoder.decode([WooShippingOriginAddress].self, from: response)
+            return try decoder.decode([WooShippingLabelAddress].self, from: response)
         }
     }
 }
@@ -18,7 +18,7 @@ struct WooShippingOriginAddressesMapper: Mapper {
 /// This entity allows us to do parse all the things with JSONDecoder.
 ///
 private struct WooShippingOriginAddressesMapperEnvelope: Decodable {
-    let data: [WooShippingOriginAddress]
+    let data: [WooShippingLabelAddress]
 
     private enum CodingKeys: String, CodingKey {
         case data = "data"

@@ -1,7 +1,8 @@
 import Foundation
 import Codegen
 
-public struct WooShippingOriginAddress: Identifiable, Equatable, GeneratedFakeable, GeneratedCopiable {
+/// Represents an origin or destination address for a shipping label with the Woo Shipping extension.
+public struct WooShippingLabelAddress: Identifiable, Equatable, GeneratedFakeable, GeneratedCopiable {
     public let id: String
     public let company: String
     public let address1: String
@@ -50,7 +51,7 @@ public struct WooShippingOriginAddress: Identifiable, Equatable, GeneratedFakeab
 }
 
 // MARK: Decodable
-extension WooShippingOriginAddress: Codable {
+extension WooShippingLabelAddress: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 

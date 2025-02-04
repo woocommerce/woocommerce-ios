@@ -561,13 +561,13 @@ final class WooShippingStoreTests: XCTestCase {
 
     func test_loadOriginAddresses_returns_addresses_on_success() {
         // Given
-        let expectedAddresses: [WooShippingOriginAddress] = [WooShippingOriginAddress.fake()]
+        let expectedAddresses: [WooShippingLabelAddress] = [WooShippingLabelAddress.fake()]
         let remote = MockWooShippingRemote()
         remote.whenOriginAddresses(siteID: sampleSiteID, thenReturn: .success(expectedAddresses))
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let addresses: [WooShippingOriginAddress] = waitFor { promise in
+        let addresses: [WooShippingLabelAddress] = waitFor { promise in
             let action = WooShippingAction.loadOriginAddresses(siteID: self.sampleSiteID) { result in
                 guard let printData = try? result.get() else {
                     XCTFail("Error loading origin addresses for shipping label: \(String(describing: result.failure))")
@@ -656,14 +656,14 @@ final class WooShippingStoreTests: XCTestCase {
     func test_updateOriginAddress_returns_success_response() throws {
         // Given
         let remote = MockWooShippingRemote()
-        let expectedAddressUpdate = WooShippingOriginAddressUpdate(address: WooShippingOriginAddress.fake(), isVerified: true)
+        let expectedAddressUpdate = WooShippingOriginAddressUpdate(address: WooShippingLabelAddress.fake(), isVerified: true)
         remote.whenUpdatingOriginAddress(siteID: sampleSiteID, thenReturn: .success(expectedAddressUpdate))
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
         let result: Result<WooShippingOriginAddressUpdate, Error> = waitFor { promise in
             let action = WooShippingAction.updateOriginAddress(siteID: self.sampleSiteID,
-                                                               address: WooShippingOriginAddress.fake(),
+                                                               address: WooShippingLabelAddress.fake(),
                                                                isVerified: false) { result in
                 promise(result)
             }
@@ -685,7 +685,7 @@ final class WooShippingStoreTests: XCTestCase {
         // When
         let result: Result<WooShippingOriginAddressUpdate, Error> = waitFor { promise in
             let action = WooShippingAction.updateOriginAddress(siteID: self.sampleSiteID,
-                                                               address: WooShippingOriginAddress.fake(),
+                                                               address: WooShippingLabelAddress.fake(),
                                                                isVerified: false) { result in
                 promise(result)
             }

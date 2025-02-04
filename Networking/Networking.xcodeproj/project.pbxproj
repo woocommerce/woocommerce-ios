@@ -976,7 +976,7 @@
 		DAA259AD2CEC86BE0035F028 /* wooshipping-get-packages-success.json in Resources */ = {isa = PBXBuildFile; fileRef = DAA259AC2CEC86BE0035F028 /* wooshipping-get-packages-success.json */; };
 		DAA259AF2CECF4AF0035F028 /* WooShippingAccountSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA259AE2CECF4A70035F028 /* WooShippingAccountSettings.swift */; };
 		DAA259B12CECF5720035F028 /* WooShippingAccountSettingsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA259B02CECF56B0035F028 /* WooShippingAccountSettingsMapper.swift */; };
-		DAEE64282D1048A00031DCDC /* WooShippingOriginAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAEE64272D1048930031DCDC /* WooShippingOriginAddress.swift */; };
+		DAEE64282D1048A00031DCDC /* WooShippingLabelAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAEE64272D1048930031DCDC /* WooShippingLabelAddress.swift */; };
 		DAEE642A2D104B7C0031DCDC /* WooShippingOriginAddressesMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAEE64292D104B720031DCDC /* WooShippingOriginAddressesMapper.swift */; };
 		DAF367A22CE75B9E00D1B327 /* WooShippingPackagesMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAF367A12CE75B9D00D1B327 /* WooShippingPackagesMapper.swift */; };
 		DAF367A42CE75C1B00D1B327 /* WooShippingPredefinedPackage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAF367A32CE75C1900D1B327 /* WooShippingPredefinedPackage.swift */; };
@@ -2183,7 +2183,7 @@
 		DAA259AC2CEC86BE0035F028 /* wooshipping-get-packages-success.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wooshipping-get-packages-success.json"; sourceTree = "<group>"; };
 		DAA259AE2CECF4A70035F028 /* WooShippingAccountSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingAccountSettings.swift; sourceTree = "<group>"; };
 		DAA259B02CECF56B0035F028 /* WooShippingAccountSettingsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingAccountSettingsMapper.swift; sourceTree = "<group>"; };
-		DAEE64272D1048930031DCDC /* WooShippingOriginAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingOriginAddress.swift; sourceTree = "<group>"; };
+		DAEE64272D1048930031DCDC /* WooShippingLabelAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingLabelAddress.swift; sourceTree = "<group>"; };
 		DAEE64292D104B720031DCDC /* WooShippingOriginAddressesMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingOriginAddressesMapper.swift; sourceTree = "<group>"; };
 		DAF367A12CE75B9D00D1B327 /* WooShippingPackagesMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingPackagesMapper.swift; sourceTree = "<group>"; };
 		DAF367A32CE75C1900D1B327 /* WooShippingPredefinedPackage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingPredefinedPackage.swift; sourceTree = "<group>"; };
@@ -2619,7 +2619,7 @@
 				CEC7D5902CDD0C1C00111B79 /* WooShippingCreatePackageResponse.swift */,
 				DAF367A72CE75C5B00D1B327 /* WooShippingPackagesResponse.swift */,
 				CE1EA4BE2CEBA0AF0039F477 /* WooShippingPackagePurchase.swift */,
-				DAEE64272D1048930031DCDC /* WooShippingOriginAddress.swift */,
+				DAEE64272D1048930031DCDC /* WooShippingLabelAddress.swift */,
 				CED9BCCC2D3FE1E600C063B8 /* WooShippingOriginAddressUpdate.swift */,
 				451A97C82609FF050059D135 /* ShippingLabelPackagesResponse.swift */,
 				451A97CC260A01A40059D135 /* ShippingLabelStoreOptions.swift */,
@@ -5292,7 +5292,7 @@
 				74D522B62113607F00042831 /* StatGranularity.swift in Sources */,
 				02C2549A25636E1500A04423 /* ShippingLabelAddress.swift in Sources */,
 				03DCB786262739D200C8953D /* CouponMapper.swift in Sources */,
-				DAEE64282D1048A00031DCDC /* WooShippingOriginAddress.swift in Sources */,
+				DAEE64282D1048A00031DCDC /* WooShippingLabelAddress.swift in Sources */,
 				B518662220A097C200037A38 /* Network.swift in Sources */,
 				B572F69A21AC475C003EEFF0 /* DevicesRemote.swift in Sources */,
 				3192F220260D33BB0067FEF9 /* WCPayAccount.swift in Sources */,

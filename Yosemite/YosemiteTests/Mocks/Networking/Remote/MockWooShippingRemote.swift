@@ -37,7 +37,7 @@ final class MockWooShippingRemote {
     private var printLabel = [ResultKey: Result<ShippingLabelPrintData, Error>]()
 
     /// The results to return based on the given arguments in `loadOriginAddresses`
-    private var loadOriginAddresses = [ResultKey: Result<[WooShippingOriginAddress], Error>]()
+    private var loadOriginAddresses = [ResultKey: Result<[WooShippingLabelAddress], Error>]()
 
     /// The results to return based on the given arguments in `addressValidation`
     private var addressValidation = [ResultKey: Result<WooShippingAddressValidationSuccess, Error>]()
@@ -103,7 +103,7 @@ final class MockWooShippingRemote {
 
     /// Set the value passed to the `completion` block if `loadOriginAddresses` is called.
     func whenOriginAddresses(siteID: Int64,
-                             thenReturn result: Result<[WooShippingOriginAddress], Error>) {
+                             thenReturn result: Result<[WooShippingLabelAddress], Error>) {
         let key = ResultKey(siteID: siteID)
         loadOriginAddresses[key] = result
     }
@@ -253,7 +253,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
     }
 
     func loadOriginAddresses(siteID: Int64,
-                             completion: @escaping (Result<[Networking.WooShippingOriginAddress], any Error>) -> Void) {
+                             completion: @escaping (Result<[Networking.WooShippingLabelAddress], any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
 
@@ -282,7 +282,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
     }
 
     func updateOriginAddress(siteID: Int64,
-                             address: WooShippingOriginAddress,
+                             address: WooShippingLabelAddress,
                              isVerified: Bool,
                              completion: @escaping (Result<WooShippingOriginAddressUpdate, any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in

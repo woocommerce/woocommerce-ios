@@ -390,7 +390,7 @@ final class WooShippingRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "address/origins", filename: "wooshipping-get-origin-addresses-success")
 
         // When
-        let result: Result<[WooShippingOriginAddress], Error> = waitFor { promise in
+        let result: Result<[WooShippingLabelAddress], Error> = waitFor { promise in
             remote.loadOriginAddresses(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -408,7 +408,7 @@ final class WooShippingRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "address/origins", filename: "generic_error")
 
         // When
-        let result: Result<[WooShippingOriginAddress], Error> = waitFor { promise in
+        let result: Result<[WooShippingLabelAddress], Error> = waitFor { promise in
             remote.loadOriginAddresses(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -485,7 +485,7 @@ final class WooShippingRemoteTests: XCTestCase {
         // When
         let result: Result<WooShippingOriginAddressUpdate, Error> = waitFor { promise in
             remote.updateOriginAddress(siteID: self.sampleSiteID,
-                                       address: WooShippingOriginAddress.fake(),
+                                       address: WooShippingLabelAddress.fake(),
                                        isVerified: true) { result in
                 promise(result)
             }
@@ -505,7 +505,7 @@ final class WooShippingRemoteTests: XCTestCase {
         // When
         let result: Result<WooShippingOriginAddressUpdate, Error> = waitFor { promise in
             remote.updateOriginAddress(siteID: self.sampleSiteID,
-                                       address: WooShippingOriginAddress.fake(),
+                                       address: WooShippingLabelAddress.fake(),
                                        isVerified: true) { result in
                 promise(result)
             }
@@ -541,8 +541,8 @@ private extension WooShippingRemoteTests {
                                  boxWeight: 0.01)
     }
 
-    func sampleOriginAddress() -> WooShippingOriginAddress {
-        WooShippingOriginAddress(id: "store_details",
+    func sampleOriginAddress() -> WooShippingLabelAddress {
+        WooShippingLabelAddress(id: "store_details",
                                  company: "Superlative Centaur",
                                  address1: "60 29TH ST PMB 343",
                                  address2: "",

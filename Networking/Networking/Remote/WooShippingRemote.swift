@@ -34,12 +34,12 @@ public protocol WooShippingRemoteProtocol {
                     completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void)
 
     func loadOriginAddresses(siteID: Int64,
-                             completion: @escaping (Result<[WooShippingOriginAddress], Error>) -> Void)
+                             completion: @escaping (Result<[WooShippingLabelAddress], Error>) -> Void)
     func addressValidation(siteID: Int64,
                            address: ShippingLabelAddress,
                            completion: @escaping (Result<WooShippingAddressValidationSuccess, Error>) -> Void)
     func updateOriginAddress(siteID: Int64,
-                             address: WooShippingOriginAddress,
+                             address: WooShippingLabelAddress,
                              isVerified: Bool,
                              completion: @escaping (Result<WooShippingOriginAddressUpdate, Error>) -> Void)
 }
@@ -283,7 +283,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     /// - Parameters:
     ///   - siteID: Remote ID of the site.
     ///   - completion: Closure to be executed upon completion.
-    public func loadOriginAddresses(siteID: Int64, completion: @escaping (Result<[WooShippingOriginAddress], any Error>) -> Void) {
+    public func loadOriginAddresses(siteID: Int64, completion: @escaping (Result<[WooShippingLabelAddress], any Error>) -> Void) {
         let request = JetpackRequest(wooApiVersion: .wooShipping,
                                      method: .get,
                                      siteID: siteID,
@@ -328,7 +328,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     ///   - isVerified: Whether the address has been remotely verified.
     ///   - completion: Closure to be executed upon completion.
     public func updateOriginAddress(siteID: Int64,
-                                    address: WooShippingOriginAddress,
+                                    address: WooShippingLabelAddress,
                                     isVerified: Bool,
                                     completion: @escaping (Result<WooShippingOriginAddressUpdate, Error>) -> Void) {
         do {

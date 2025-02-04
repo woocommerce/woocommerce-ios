@@ -7,7 +7,7 @@ final class WooShippingOriginAddressListViewModelTests: XCTestCase {
     func test_it_inits_with_expected_addresses() {
         // Given
         let selectedAddressID = "1"
-        let addresses = [WooShippingOriginAddress.fake().copy(id: selectedAddressID), WooShippingOriginAddress.fake()]
+        let addresses = [WooShippingLabelAddress.fake().copy(id: selectedAddressID), WooShippingLabelAddress.fake()]
 
         // When
         let viewModel = WooShippingOriginAddressListViewModel(addresses: addresses, selectedAddressID: selectedAddressID)
@@ -20,8 +20,8 @@ final class WooShippingOriginAddressListViewModelTests: XCTestCase {
 
     func test_isSelected_returns_expected_value_for_selected_address() {
         // Given
-        let selectedAddress = WooShippingOriginAddress.fake().copy(id: "1")
-        let addresses = [selectedAddress, WooShippingOriginAddress.fake().copy(id: "2")]
+        let selectedAddress = WooShippingLabelAddress.fake().copy(id: "1")
+        let addresses = [selectedAddress, WooShippingLabelAddress.fake().copy(id: "2")]
         let viewModel = WooShippingOriginAddressListViewModel(addresses: addresses, selectedAddressID: selectedAddress.id)
 
         // When
@@ -33,8 +33,8 @@ final class WooShippingOriginAddressListViewModelTests: XCTestCase {
 
     func test_isSelected_returns_expected_value_for_unselected_address() {
         // Given
-        let unselectedAddress = WooShippingOriginAddress.fake().copy(id: "1")
-        let addresses = [unselectedAddress, WooShippingOriginAddress.fake().copy(id: "2")]
+        let unselectedAddress = WooShippingLabelAddress.fake().copy(id: "1")
+        let addresses = [unselectedAddress, WooShippingLabelAddress.fake().copy(id: "2")]
         let viewModel = WooShippingOriginAddressListViewModel(addresses: addresses, selectedAddressID: nil)
 
         // When
@@ -46,8 +46,8 @@ final class WooShippingOriginAddressListViewModelTests: XCTestCase {
 
     func test_select_sets_selectedAddressID() {
         // Given
-        let addressToSelect = WooShippingOriginAddress.fake().copy(id: "1")
-        let addresses = [addressToSelect, WooShippingOriginAddress.fake().copy(id: "2")]
+        let addressToSelect = WooShippingLabelAddress.fake().copy(id: "1")
+        let addresses = [addressToSelect, WooShippingLabelAddress.fake().copy(id: "2")]
         let viewModel = WooShippingOriginAddressListViewModel(addresses: addresses, selectedAddressID: nil)
 
         // When
@@ -59,8 +59,8 @@ final class WooShippingOriginAddressListViewModelTests: XCTestCase {
 
     func test_select_calls_onSelect_closure() {
         // Given
-        let addressToSelect = WooShippingOriginAddress.fake().copy(id: "1")
-        let addresses = [addressToSelect, WooShippingOriginAddress.fake().copy(id: "2")]
+        let addressToSelect = WooShippingLabelAddress.fake().copy(id: "1")
+        let addresses = [addressToSelect, WooShippingLabelAddress.fake().copy(id: "2")]
         let viewModel = WooShippingOriginAddressListViewModel(addresses: addresses, selectedAddressID: nil)
 
         // When
@@ -77,7 +77,7 @@ final class WooShippingOriginAddressListViewModelTests: XCTestCase {
 
     func test_editAddress_sets_addressToEdit_view_model() throws {
         // Given
-        let addressToEdit = WooShippingOriginAddress.fake()
+        let addressToEdit = WooShippingLabelAddress.fake()
         let viewModel = WooShippingOriginAddressListViewModel(addresses: [addressToEdit])
 
         // When

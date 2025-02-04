@@ -37,7 +37,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
     func test_customsFormRequired_when_origin_and_destination_in_US_then_returns_false() {
         // Given
-        let originAddress = WooShippingOriginAddress(id: "default_address",
+        let originAddress = WooShippingLabelAddress(id: "default_address",
                                                company: "HEADQUARTERS",
                                                address1: "15 ALGONKIN ST",
                                                address2: "STE 100",
@@ -64,7 +64,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
     func test_customsFormRequired_when_origin_address_is_US_military_then_returns_true() {
         // Given
-        let originAddress = WooShippingOriginAddress(id: "default_address",
+        let originAddress = WooShippingLabelAddress(id: "default_address",
                                                company: "HEADQUARTERS",
                                                address1: "15 ALGONKIN ST",
                                                address2: "STE 100",
@@ -91,7 +91,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
     func test_customsFormRequired_when_destination_address_is_US_military_then_returns_true() {
         // Given
-        let originAddress = WooShippingOriginAddress(id: "default_address",
+        let originAddress = WooShippingLabelAddress(id: "default_address",
                                                company: "HEADQUARTERS",
                                                address1: "15 ALGONKIN ST",
                                                address2: "STE 100",
@@ -118,7 +118,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
     func test_customsFormRequired_when_destination_address_is_not_in_US_then_returns_true() {
         // Given
-        let originAddress = WooShippingOriginAddress(id: "default_address",
+        let originAddress = WooShippingLabelAddress(id: "default_address",
                                                company: "HEADQUARTERS",
                                                address1: "15 ALGONKIN ST",
                                                address2: "STE 100",
@@ -145,7 +145,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
     func test_origin_addresses_fetched_and_converted_to_originAddresses_view_model() {
         // Given
-        let originAddress = WooShippingOriginAddress.fake().copy(id: "default", defaultAddress: true)
+        let originAddress = WooShippingLabelAddress.fake().copy(id: "default", defaultAddress: true)
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             if case let .loadOriginAddresses(_, completion) = action {
@@ -163,8 +163,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
     func test_default_origin_address_fetched_and_converted_to_formatted_originAddress() {
         // Given
-        let originAddresses = [WooShippingOriginAddress.fake(),
-                               WooShippingOriginAddress.fake().copy(address1: "123 Main Street",
+        let originAddresses = [WooShippingLabelAddress.fake(),
+                               WooShippingLabelAddress.fake().copy(address1: "123 Main Street",
                                                                     city: "San Francisco",
                                                                     state: "CA",
                                                                     postcode: "12345",
@@ -234,7 +234,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // When
         let markOrderComplete: Bool = waitFor { promise in
             let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
-                                                             selectedOriginAddress: WooShippingOriginAddress.fake(),
+                                                             selectedOriginAddress: WooShippingLabelAddress.fake(),
                                                              selectedPackage: self.samplePackageData(),
                                                              selectedRate: self.sampleSelectedRate(),
                                                              stores: stores) { complete in
@@ -265,7 +265,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // When
         let markOrderComplete: Bool = waitFor { promise in
             let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
-                                                             selectedOriginAddress: WooShippingOriginAddress.fake(),
+                                                             selectedOriginAddress: WooShippingLabelAddress.fake(),
                                                              selectedPackage: self.samplePackageData(),
                                                              selectedRate: self.sampleSelectedRate(),
                                                              stores: stores) { complete in
@@ -282,7 +282,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     func test_isPurchaseButtonEnabled_true_when_required_fields_are_set() throws {
         // Given
         let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
-                                                         selectedOriginAddress: WooShippingOriginAddress.fake(),
+                                                         selectedOriginAddress: WooShippingLabelAddress.fake(),
                                                          selectedPackage: samplePackageData(),
                                                          selectedRate: sampleSelectedRate())
 
@@ -345,7 +345,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         let expectedShippingLabel = ShippingLabel.fake().copy(carrierID: "usps", trackingNumber: "1234567890")
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
-                                                         selectedOriginAddress: WooShippingOriginAddress.fake(),
+                                                         selectedOriginAddress: WooShippingLabelAddress.fake(),
                                                          selectedPackage: samplePackageData(),
                                                          selectedRate: sampleSelectedRate(),
                                                          stores: stores)
@@ -372,7 +372,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         var isPurchasingLabelDuringPurchase = false
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
-                                                         selectedOriginAddress: WooShippingOriginAddress.fake(),
+                                                         selectedOriginAddress: WooShippingLabelAddress.fake(),
                                                          selectedPackage: samplePackageData(),
                                                          selectedRate: sampleSelectedRate(),
                                                          stores: stores)
@@ -427,7 +427,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         let expectedWeight = 2.5
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
-                                                         selectedOriginAddress: WooShippingOriginAddress.fake(),
+                                                         selectedOriginAddress: WooShippingLabelAddress.fake(),
                                                          selectedPackage: samplePackageData(),
                                                          stores: stores,
                                                          itemsDataSource: MockItemsDataSource(),

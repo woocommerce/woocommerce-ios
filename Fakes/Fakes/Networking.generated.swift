@@ -2811,10 +2811,10 @@ extension Networking.WooShippingCustomPackage {
         )
     }
 }
-extension Networking.WooShippingOriginAddress {
+extension Networking.WooShippingLabelAddress {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooShippingOriginAddress {
+    public static func fake() -> Networking.WooShippingLabelAddress {
         .init(
             id: .fake(),
             company: .fake(),

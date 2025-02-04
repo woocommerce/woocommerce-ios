@@ -191,7 +191,7 @@ private extension WooShippingStore {
     }
 
     func loadOriginAddresses(siteID: Int64,
-                             completion: @escaping (Result<[WooShippingOriginAddress], Error>) -> Void) {
+                             completion: @escaping (Result<[WooShippingLabelAddress], Error>) -> Void) {
         remote.loadOriginAddresses(siteID: siteID, completion: completion)
     }
 }
@@ -262,7 +262,7 @@ private extension WooShippingStore {
     }
 
     func updateOriginAddress(siteID: Int64,
-                             address: WooShippingOriginAddress,
+                             address: WooShippingLabelAddress,
                              isVerified: Bool,
                              completion: @escaping (Result<WooShippingOriginAddressUpdate, Error>) -> Void) {
         remote.updateOriginAddress(siteID: siteID, address: address, isVerified: isVerified, completion: completion)

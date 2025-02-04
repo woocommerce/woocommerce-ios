@@ -4096,7 +4096,7 @@ extension Networking.WooShippingCustomPackage {
     }
 }
 
-extension Networking.WooShippingOriginAddress {
+extension Networking.WooShippingLabelAddress {
     public func copy(
         id: CopiableProp<String> = .copy,
         company: CopiableProp<String> = .copy,
@@ -4112,7 +4112,7 @@ extension Networking.WooShippingOriginAddress {
         email: CopiableProp<String> = .copy,
         defaultAddress: CopiableProp<Bool> = .copy,
         isVerified: CopiableProp<Bool> = .copy
-    ) -> Networking.WooShippingOriginAddress {
+    ) -> Networking.WooShippingLabelAddress {
         let id = id ?? self.id
         let company = company ?? self.company
         let address1 = address1 ?? self.address1
@@ -4128,7 +4128,7 @@ extension Networking.WooShippingOriginAddress {
         let defaultAddress = defaultAddress ?? self.defaultAddress
         let isVerified = isVerified ?? self.isVerified
 
-        return Networking.WooShippingOriginAddress(
+        return Networking.WooShippingLabelAddress(
             id: id,
             company: company,
             address1: address1,

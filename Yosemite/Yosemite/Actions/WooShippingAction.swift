@@ -55,7 +55,7 @@ public enum WooShippingAction: Action {
     /// Fetch list of origin addresses.
     ///
     case loadOriginAddresses(siteID: Int64,
-                             completion: (Result<[WooShippingOriginAddress], Error>) -> Void)
+                             completion: (Result<[WooShippingLabelAddress], Error>) -> Void)
 
     /// Validate a shipping address.
     ///
@@ -66,7 +66,7 @@ public enum WooShippingAction: Action {
     /// Update an origin address.
     ///
     case updateOriginAddress(siteID: Int64,
-                             address: WooShippingOriginAddress,
+                             address: WooShippingLabelAddress,
                              isVerified: Bool,
                              completion: (Result<WooShippingOriginAddressUpdate, Error>) -> Void)
 }

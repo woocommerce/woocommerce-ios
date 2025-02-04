@@ -3,9 +3,9 @@ import Contacts
 import Yosemite
 
 
-// Yosemite.WooShippingOriginAddress Helper Methods
+// Yosemite.WooShippingLabelAddress Helper Methods
 //
-extension WooShippingOriginAddress {
+extension WooShippingLabelAddress {
 
     /// Returns the `name` and `company` (on a new line). If either the `name` or `company` is empty,
     /// then a single line is returned containing the other value.
@@ -38,7 +38,7 @@ extension WooShippingOriginAddress {
     }
 }
 
-private extension WooShippingOriginAddress {
+private extension WooShippingLabelAddress {
 
     /// Returns a CNPostalAddress with the receiver's properties
     ///

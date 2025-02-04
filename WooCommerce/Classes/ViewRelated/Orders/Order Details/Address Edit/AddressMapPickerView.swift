@@ -5,7 +5,7 @@ import Observation
 @available(iOS 17, *)
 struct AddressMapPickerView: View {
     @Environment(\.dismiss) private var dismiss
-    @Bindable private var viewModel: AddressMapPickerViewModel
+    @State private var viewModel: AddressMapPickerViewModel
     @Binding var fields: AddressFormFields
     @FocusState private var isSearchFocused: Bool
 
@@ -53,6 +53,7 @@ struct AddressMapPickerView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.close) {
+                        viewModel.cleanup()
                         dismiss()
                     }
                 }
@@ -60,11 +61,15 @@ struct AddressMapPickerView: View {
                     Button(Localization.useThisAddress) {
                         isSearchFocused = false
                         viewModel.updateFields(&fields)
+                        viewModel.cleanup()
                         dismiss()
                     }
                     .disabled(!viewModel.hasValidSelection)
                 }
             }
+        }
+        .task {
+            await viewModel.startStream()
         }
     }
 

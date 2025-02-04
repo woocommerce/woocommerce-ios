@@ -1,4 +1,3 @@
-import Combine
 import MapKit
 import Observation
 import SwiftUI
@@ -8,8 +7,8 @@ import AsyncAlgorithms
 @Observable
 final class AddressMapPickerViewModel: NSObject {
     var searchQuery = "" {
-        didSet {
-            debounceSearch()
+        willSet {
+            searchQueryContinuation.yield(newValue)
         }
     }
     var searchResults: [MKLocalSearchCompletion] = []
@@ -25,53 +24,37 @@ final class AddressMapPickerViewModel: NSObject {
         selectedPlace != nil
     }
 
+    private var (searchQueryStream, searchQueryContinuation) = AsyncStream.makeStream(of: String.self)
+
     private var selectedPlace: CLPlacemark?
-    private let searchCompleter = MKLocalSearchCompleter()
-    private var searchStream: AsyncStream<String>?
-    private var searchStreamContinuation: AsyncStream<String>.Continuation?
-    private var searchTask: Task<Void, Never>?
+    private var searchCompleter: MKLocalSearchCompleter?
 
     override init() {
         super.init()
-        searchCompleter.resultTypes = .address
-        searchCompleter.delegate = self
-
-        // Request location authorization when needed
-        let locationManager = CLLocationManager()
-        switch locationManager.authorizationStatus {
-        case .notDetermined:
-            locationManager.requestWhenInUseAuthorization()
-        default:
-            break
-        }
-
-        setupSearchStream()
+        setupLocationServices()
+        searchCompleter = MKLocalSearchCompleter()
+        searchCompleter?.resultTypes = .address
+        searchCompleter?.delegate = self
     }
 
-    private func setupSearchStream() {
-        let (stream, continuation) = AsyncStream.makeStream(of: String.self)
-        searchStream = stream
-        searchStreamContinuation = continuation
+    private func setupLocationServices() {
+        let locationManager = CLLocationManager()
+        if locationManager.authorizationStatus == .notDetermined {
+            locationManager.requestWhenInUseAuthorization()
+        }
+    }
 
-        // Start processing the debounced search queries
-        searchTask = Task {
-            for await query in stream.debounce(for: .milliseconds(300)) {
-                if Task.isCancelled { break }
-                if query.isEmpty {
-                    await MainActor.run {
-                        searchResults = []
-                    }
-                } else {
-                    await MainActor.run {
-                        searchCompleter.queryFragment = query
-                    }
-                }
+    @MainActor
+    func startStream() async {
+        for await query in searchQueryStream.debounce(for: .seconds(0.3)) {
+            print("Debounced \(query)")
+
+            if query.isEmpty {
+                self.searchResults = []
+            } else {
+                self.searchCompleter?.queryFragment = query
             }
         }
-    }
-
-    private func debounceSearch() {
-        searchStreamContinuation?.yield(searchQuery)
     }
 
     @MainActor
@@ -90,7 +73,8 @@ final class AddressMapPickerViewModel: NSObject {
 
     @MainActor
     private func onSelectedPlacemark(_ placemark: MKPlacemark, result: MKLocalSearchCompletion) {
-        withAnimation {
+        withAnimation { [weak self] in
+            guard let self else { return }
             self.searchResults = []
             self.region = MKCoordinateRegion(
                 center: placemark.coordinate,
@@ -115,11 +99,7 @@ final class AddressMapPickerViewModel: NSObject {
     }
 
     func cleanup() {
-        searchTask?.cancel()
-        searchTask = nil
-        searchStreamContinuation?.finish()
-        searchStreamContinuation = nil
-        searchStream = nil
+        searchCompleter?.delegate = nil
     }
 
     deinit {

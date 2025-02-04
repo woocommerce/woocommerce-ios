@@ -66,6 +66,9 @@ struct AddressMapPickerView: View {
                 }
             }
         }
+        .onAppear {
+            isSearchFocused = true
+        }
         .task {
             await viewModel.startStream()
         }

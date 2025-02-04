@@ -530,6 +530,7 @@
 		02C27BD0282CDF9E0065471A /* CardPresentPaymentReceiptEmailCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C27BCF282CDF9E0065471A /* CardPresentPaymentReceiptEmailCoordinatorTests.swift */; };
 		02C34C732D50F370004BFB50 /* AddressMapPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C34C722D50F370004BFB50 /* AddressMapPickerView.swift */; };
 		02C34C752D50F4C3004BFB50 /* AddressMapPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C34C742D50F4C3004BFB50 /* AddressMapPickerViewModel.swift */; };
+		02C34C782D51CEB6004BFB50 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 02C34C772D51CEB6004BFB50 /* AsyncAlgorithms */; };
 		02C37B7B2967096800F0CF9E /* DomainSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C37B7A2967096800F0CF9E /* DomainSettingsView.swift */; };
 		02C37B7D2967B72A00F0CF9E /* FreeStagingDomainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C37B7C2967B72A00F0CF9E /* FreeStagingDomainView.swift */; };
 		02C3FACE282A93020095440A /* WooAnalyticsEvent+Dashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C3FACD282A93020095440A /* WooAnalyticsEvent+Dashboard.swift */; };
@@ -6302,6 +6303,7 @@
 				B5C3B5E720D189ED0072CB9D /* Yosemite.framework in Frameworks */,
 				DEA6BCA92BC6A7050017D671 /* DGCharts in Frameworks */,
 				B5C3B5E520D189EA0072CB9D /* Storage.framework in Frameworks */,
+				02C34C782D51CEB6004BFB50 /* AsyncAlgorithms in Frameworks */,
 				B9151B3F2840EB330036180F /* WooFoundation.framework in Frameworks */,
 				202496642B0B9E0D00EE527D /* ScrollViewSectionKit in Frameworks */,
 				B5C3B5E320D189E60072CB9D /* Networking.framework in Frameworks */,
@@ -14186,6 +14188,7 @@
 				202496632B0B9E0D00EE527D /* ScrollViewSectionKit */,
 				DEA6BCA82BC6A7050017D671 /* DGCharts */,
 				DEA6BCAB2BC6A7C30017D671 /* Algorithms */,
+				02C34C772D51CEB6004BFB50 /* AsyncAlgorithms */,
 			);
 			productName = WooCommerce;
 			productReference = B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */;
@@ -14373,6 +14376,7 @@
 				DEA6BCAA2BC6A7C30017D671 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 				2621D1F22C81085D00654C4C /* XCRemoteSwiftPackageReference "ViewInspector" */,
 				2621D1F52C810DB800654C4C /* XCRemoteSwiftPackageReference "ViewControllerPresentationSpy" */,
+				02C34C762D51CEB6004BFB50 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
 			);
 			productRefGroup = B56DB3C72049BFAA00D4AA8E /* Products */;
 			projectDirPath = "";
@@ -18927,6 +18931,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		02C34C762D51CEB6004BFB50 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-async-algorithms.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.0.3;
+			};
+		};
 		174CA86827D90A6200126524 /* XCRemoteSwiftPackageReference "AutomatticAbout-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/automattic/AutomatticAbout-swift";
@@ -19034,6 +19046,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		02C34C772D51CEB6004BFB50 /* AsyncAlgorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 02C34C762D51CEB6004BFB50 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */;
+			productName = AsyncAlgorithms;
+		};
 		174CA86927D90A6200126524 /* AutomatticAbout */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 174CA86827D90A6200126524 /* XCRemoteSwiftPackageReference "AutomatticAbout-swift" */;

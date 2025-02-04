@@ -2,6 +2,7 @@ import Combine
 import MapKit
 import Observation
 import SwiftUI
+import AsyncAlgorithms
 
 @available(iOS 17, *)
 @Observable
@@ -26,8 +27,9 @@ final class AddressMapPickerViewModel: NSObject {
 
     private var selectedPlace: CLPlacemark?
     private let searchCompleter = MKLocalSearchCompleter()
+    private var searchStream: AsyncStream<String>?
+    private var searchStreamContinuation: AsyncStream<String>.Continuation?
     private var searchTask: Task<Void, Never>?
-    private var cancellables = Set<AnyCancellable>()
 
     override init() {
         super.init()
@@ -42,30 +44,34 @@ final class AddressMapPickerViewModel: NSObject {
         default:
             break
         }
+
+        setupSearchStream()
+    }
+
+    private func setupSearchStream() {
+        let (stream, continuation) = AsyncStream.makeStream(of: String.self)
+        searchStream = stream
+        searchStreamContinuation = continuation
+
+        // Start processing the debounced search queries
+        searchTask = Task {
+            for await query in stream.debounce(for: .milliseconds(300)) {
+                if Task.isCancelled { break }
+                if query.isEmpty {
+                    await MainActor.run {
+                        searchResults = []
+                    }
+                } else {
+                    await MainActor.run {
+                        searchCompleter.queryFragment = query
+                    }
+                }
+            }
+        }
     }
 
     private func debounceSearch() {
-        // Cancel any existing search task
-        searchTask?.cancel()
-        
-        // Create a new search task
-        searchTask = Task { @MainActor in
-            do {
-                try await Task.sleep(for: .milliseconds(300))
-                
-                // Check if the task was cancelled during the sleep
-                try Task.checkCancellation()
-                
-                if searchQuery.isEmpty {
-                    searchResults = []
-                } else {
-                    searchCompleter.queryFragment = searchQuery
-                }
-            } catch {
-                // Task was cancelled or other error occurred
-                return
-            }
-        }
+        searchStreamContinuation?.yield(searchQuery)
     }
 
     @MainActor
@@ -106,6 +112,18 @@ final class AddressMapPickerViewModel: NSObject {
         fields.state = place.administrativeArea ?? ""
         fields.postcode = place.postalCode ?? ""
         fields.country = place.isoCountryCode ?? ""
+    }
+
+    func cleanup() {
+        searchTask?.cancel()
+        searchTask = nil
+        searchStreamContinuation?.finish()
+        searchStreamContinuation = nil
+        searchStream = nil
+    }
+
+    deinit {
+        cleanup()
     }
 }
 

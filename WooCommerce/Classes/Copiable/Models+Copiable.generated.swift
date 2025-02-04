@@ -65,6 +65,7 @@ extension WooCommerce.ItemsStackState {
     }
 }
 
+@available(iOS 17.0, *)
 extension WooCommerce.ItemsViewState {
     func copy(
         containerState: CopiableProp<ItemsContainerState> = .copy,

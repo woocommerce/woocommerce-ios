@@ -10,6 +10,7 @@ import struct Yosemite.POSCartItem
 import enum Yosemite.POSItem
 import enum Yosemite.SystemStatusAction
 
+@available(iOS 17.0, *)
 protocol PointOfSaleAggregateModelProtocol {
     var orderStage: PointOfSaleOrderStage { get }
 

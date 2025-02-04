@@ -5,6 +5,7 @@ import protocol Yosemite.PointOfSaleItemServiceProtocol
 import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
 
+@available(iOS 17.0, *)
 protocol PointOfSaleItemsControllerProtocol {
     var itemsViewState: ItemsViewState { get }
     /// Loads the first page of items for a given base item.

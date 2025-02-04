@@ -1,24 +1,39 @@
 import MapKit
 import SwiftUI
+import Observation
 
+@available(iOS 17, *)
 struct AddressMapPickerView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = AddressMapPickerViewModel()
+    @Bindable private var viewModel: AddressMapPickerViewModel
     @Binding var fields: AddressFormFields
+    @FocusState private var isSearchFocused: Bool
+
+    init(fields: Binding<AddressFormFields>) {
+        self._fields = fields
+        self.viewModel = AddressMapPickerViewModel()
+    }
 
     var body: some View {
         let _ = Self._printChanges()
         NavigationStack {
             ZStack(alignment: .top) {
-                if viewModel.showingSearchResults {
-                    // Search results list
-                    VStack(spacing: 0) {
-                        searchBar
-                            .padding()
-                            .background(Color(.systemBackground))
+                Map(coordinateRegion: $viewModel.region,
+                    showsUserLocation: true,
+                    annotationItems: viewModel.annotations) { item in
+                    MapMarker(coordinate: item.coordinate)
+                }
 
+                // Search results list
+                VStack(spacing: 0) {
+                    searchBar
+                        .padding()
+                        .background(Color(.systemBackground))
+
+                    if viewModel.showingSearchResults {
                         List(viewModel.searchResults, id: \.self) { result in
                             Button(action: {
+                                isSearchFocused = false
                                 viewModel.selectLocation(result)
                             }) {
                                 VStack(alignment: .leading, spacing: 4) {
@@ -29,18 +44,6 @@ struct AddressMapPickerView: View {
                                         .foregroundColor(.secondary)
                                 }
                             }
-                        }
-                    }
-                } else {
-                    // Map view
-                    VStack(spacing: 0) {
-                        searchBar
-                            .padding()
-
-                        Map(coordinateRegion: $viewModel.region,
-                            showsUserLocation: true,
-                            annotationItems: viewModel.annotations) { item in
-                            MapMarker(coordinate: item.coordinate)
                         }
                     }
                 }
@@ -55,6 +58,7 @@ struct AddressMapPickerView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button(Localization.useThisAddress) {
+                        isSearchFocused = false
                         viewModel.updateFields(&fields)
                         dismiss()
                     }
@@ -74,6 +78,7 @@ struct AddressMapPickerView: View {
                 .textFieldStyle(.plain)
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.never)
+                .focused($isSearchFocused)
 
             if !viewModel.searchQuery.isEmpty {
                 Button(action: {
@@ -90,6 +95,7 @@ struct AddressMapPickerView: View {
     }
 }
 
+@available(iOS 17, *)
 private extension AddressMapPickerView {
     enum Localization {
         static let mapPickerTitle = NSLocalizedString("Pick Address", comment: "Title for the map address picker view")
@@ -100,6 +106,10 @@ private extension AddressMapPickerView {
     }
 }
 
-//#Preview {
-//    AddressMapPickerView(fields: <#Binding<AddressFormFields>#>)
-//}
+#Preview {
+    if #available(iOS 17, *) {
+        AddressMapPickerView(fields: .constant(.init()))
+    } else {
+        EmptyView()
+    }
+}

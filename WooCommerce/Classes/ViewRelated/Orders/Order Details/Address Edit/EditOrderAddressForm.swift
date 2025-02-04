@@ -97,6 +97,8 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
     @State private var showingCustomerSearch: Bool = false
 
+    @State private var showingMapPicker = false
+
     var body: some View {
         Group {
             ScrollView {
@@ -242,7 +244,9 @@ struct SingleAddressForm: View {
                 }
             }
             .sheet(isPresented: $showingMapPicker) {
-                AddressMapPickerView(fields: $fields)
+                if #available(iOS 17, *) {
+                    AddressMapPickerView(fields: $fields)
+                }
             }
     }
 
@@ -317,19 +321,21 @@ struct SingleAddressForm: View {
             .padding(.horizontal, insets: safeAreaInsets)
             .accessibility(addTraits: .isHeader)
         VStack(spacing: 0) {
-            Button(action: {
-                showingMapPicker = true
-            }) {
-                HStack {
-                    Image(systemName: "map")
-                    Text(Localization.pickOnMap)
+            if #available(iOS 17, *) {
+                Button(action: {
+                    showingMapPicker = true
+                }) {
+                    HStack {
+                        Image(systemName: "map")
+                        Text(Localization.pickOnMap)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
                 }
-                .frame(maxWidth: .infinity)
-                .padding()
+                .buttonStyle(.bordered)
+                .padding(.horizontal)
+                .padding(.vertical, 8)
             }
-            .buttonStyle(.bordered)
-            .padding(.horizontal)
-            .padding(.vertical, 8)
 
             Group {
                 TitleAndTextFieldRow(title: Localization.companyField,

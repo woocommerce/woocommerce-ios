@@ -24,35 +24,36 @@ final class AddressMapPickerViewModel: NSObject {
         selectedPlace != nil
     }
 
-    private var (searchQueryStream, searchQueryContinuation) = AsyncStream.makeStream(of: String.self)
+    private let (searchQueryStream, searchQueryContinuation) = AsyncStream.makeStream(of: String.self)
+    private let searchCompleter: MKLocalSearchCompleter = .init()
 
     private var selectedPlace: CLPlacemark?
-    private var searchCompleter: MKLocalSearchCompleter?
 
     override init() {
         super.init()
-        setupLocationServices()
-        searchCompleter = MKLocalSearchCompleter()
-        searchCompleter?.resultTypes = .address
-        searchCompleter?.delegate = self
+        configureLocationServices()
+        configureSearchCompleter()
     }
 
-    private func setupLocationServices() {
+    private func configureLocationServices() {
         let locationManager = CLLocationManager()
         if locationManager.authorizationStatus == .notDetermined {
             locationManager.requestWhenInUseAuthorization()
         }
     }
 
+    private func configureSearchCompleter() {
+        searchCompleter.resultTypes = .address
+        searchCompleter.delegate = self
+    }
+
     @MainActor
     func startStream() async {
         for await query in searchQueryStream.debounce(for: .seconds(0.3)) {
-            print("Debounced \(query)")
-
             if query.isEmpty {
-                self.searchResults = []
+                searchResults = []
             } else {
-                self.searchCompleter?.queryFragment = query
+                searchCompleter.queryFragment = query
             }
         }
     }
@@ -99,7 +100,7 @@ final class AddressMapPickerViewModel: NSObject {
     }
 
     func cleanup() {
-        searchCompleter?.delegate = nil
+        searchCompleter.delegate = nil
     }
 
     deinit {

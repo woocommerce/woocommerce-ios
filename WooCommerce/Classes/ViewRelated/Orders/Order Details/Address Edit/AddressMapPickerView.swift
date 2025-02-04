@@ -53,7 +53,6 @@ struct AddressMapPickerView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.close) {
-                        viewModel.cleanup()
                         dismiss()
                     }
                 }
@@ -61,7 +60,6 @@ struct AddressMapPickerView: View {
                     Button(Localization.useThisAddress) {
                         isSearchFocused = false
                         viewModel.updateFields(&fields)
-                        viewModel.cleanup()
                         dismiss()
                     }
                     .disabled(!viewModel.hasValidSelection)

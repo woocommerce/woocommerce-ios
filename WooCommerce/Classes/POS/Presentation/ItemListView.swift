@@ -58,6 +58,7 @@ private extension ItemListView {
                 if !shouldShowHeaderBanner {
                     Spacer()
                     Button(action: {
+                        ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
                         showSimpleProductsModal = true
                     }, label: {
                         Image(systemName: "info.circle")

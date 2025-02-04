@@ -129,11 +129,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         } else {
             actionHandler = ProductImageActionHandler(siteID: key.siteID, productID: key.productOrVariationID, imageStatuses: originalStatuses, stores: stores)
             actionHandlersByProduct[key] = actionHandler
-            observeStatusUpdatesForErrors(key: key, actionHandler: actionHandler)
-        }
-
-        if !activeUploadsPublisher.contains(key) {
-            activeUploadsPublisher.append(key)
+            observeStatusUpdates(key: key, actionHandler: actionHandler)
         }
 
         return actionHandler
@@ -189,12 +185,10 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         // The product has to exist remotely in order to save its images remotely.
         // In product creation, this save function should be called after a new product is saved remotely for the first time.
         guard key.isLocalID == false else {
-            activeUploadsPublisher.removeAll(where: { $0 == key })
             return onProductSave(.failure(ProductImageUploaderError.noRemoteProductIDFound))
         }
 
         guard let handler = actionHandlersByProduct[key] else {
-            activeUploadsPublisher.removeAll(where: { $0 == key })
             return onProductSave(.failure(ProductImageUploaderError.noActionHandlerFound))
         }
 
@@ -248,11 +242,16 @@ private extension ProductImageUploader {
         }
     }
 
-    private func observeStatusUpdatesForErrors(key: Key, actionHandler: ProductImageActionHandler) {
+    private func observeStatusUpdates(key: Key, actionHandler: ProductImageActionHandler) {
         let observationToken = actionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else { return }
 
+            if !activeUploadsPublisher.contains(key), productImageStatuses.hasPendingUpload {
+                activeUploadsPublisher.append(key)
+            }
+
             if let error = error, self.statusUpdatesExcludedProductKeys.contains(key) == false {
+                activeUploadsPublisher.removeAll(where: { $0 == key })
                 self.errorsSubject.send(.init(siteID: key.siteID,
                                               productOrVariationID: key.productOrVariationID,
                                               productImageStatuses: productImageStatuses,

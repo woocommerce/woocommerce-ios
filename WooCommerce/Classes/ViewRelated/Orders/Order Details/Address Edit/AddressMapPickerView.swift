@@ -1,6 +1,7 @@
 import MapKit
 import SwiftUI
 import Observation
+import struct Yosemite.Country
 
 @available(iOS 17, *)
 struct AddressMapPickerView: View {
@@ -9,9 +10,9 @@ struct AddressMapPickerView: View {
     @Binding var fields: AddressFormFields
     @FocusState private var isSearchFocused: Bool
 
-    init(fields: Binding<AddressFormFields>) {
+    init(fields: Binding<AddressFormFields>, countryByCode: @escaping (_ countryCode: String) -> Country?) {
         self._fields = fields
-        self.viewModel = AddressMapPickerViewModel(fields: fields.wrappedValue)
+        self.viewModel = AddressMapPickerViewModel(fields: fields.wrappedValue, countryByCode: countryByCode)
     }
 
     var body: some View {
@@ -122,7 +123,7 @@ private extension AddressMapPickerView {
 
 #Preview {
     if #available(iOS 17, *) {
-        AddressMapPickerView(fields: .constant(.init()))
+        AddressMapPickerView(fields: .constant(.init()), countryByCode: { _ in nil })
     } else {
         EmptyView()
     }

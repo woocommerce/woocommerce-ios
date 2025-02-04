@@ -105,6 +105,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                 SingleAddressForm(fields: $viewModel.fields,
                                   countryViewModelClosure: viewModel.createCountryViewModel,
                                   stateViewModelClosure: viewModel.createStateViewModel,
+                                  countryByCode: viewModel.findCountry(by:),
                                   sectionTitle: viewModel.sectionTitle,
                                   showEmailField: viewModel.showEmailField,
                                   showPhoneCountryCodeField: viewModel.showPhoneCountryCodeField,
@@ -135,6 +136,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                     SingleAddressForm(fields: $viewModel.secondaryFields,
                                       countryViewModelClosure: viewModel.createSecondaryCountryViewModel,
                                       stateViewModelClosure: viewModel.createSecondaryStateViewModel,
+                                      countryByCode: viewModel.findCountry(by:),
                                       sectionTitle: viewModel.secondarySectionTitle,
                                       showEmailField: false,
                                       showPhoneCountryCodeField: viewModel.showPhoneCountryCodeField,
@@ -216,6 +218,7 @@ struct SingleAddressForm: View {
 
     let countryViewModelClosure: () -> CountrySelectorViewModel
     let stateViewModelClosure: () -> StateSelectorViewModel
+    let countryByCode: (_ countryCode: String) -> Country?
 
     let sectionTitle: String
     let showEmailField: Bool
@@ -245,7 +248,7 @@ struct SingleAddressForm: View {
             }
             .sheet(isPresented: $showMapPicker) {
                 if #available(iOS 17, *) {
-                    AddressMapPickerView(fields: $fields)
+                    AddressMapPickerView(fields: $fields, countryByCode: countryByCode)
                 }
             }
     }

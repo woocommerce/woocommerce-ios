@@ -3,6 +3,7 @@ import Observation
 import SwiftUI
 import AsyncAlgorithms
 import CoreLocation
+import struct Yosemite.Country
 
 @available(iOS 17, *)
 @Observable
@@ -29,9 +30,12 @@ final class AddressMapPickerViewModel: NSObject {
 
     private let (searchQueryStream, searchQueryContinuation) = AsyncStream.makeStream(of: String.self)
     private let searchCompleter: MKLocalSearchCompleter = .init()
-    private var selectedPlace: CLPlacemark?
+    private var selectedPlace: MKPlacemark?
 
-    init(fields: AddressFormFields) {
+    private let countryByCode: (_ countryCode: String) -> Country?
+
+    init(fields: AddressFormFields, countryByCode: @escaping (_ countryCode: String) -> Country?) {
+        self.countryByCode = countryByCode
         super.init()
         configureLocationServices()
         configureSearchCompleter()
@@ -173,9 +177,19 @@ final class AddressMapPickerViewModel: NSObject {
             .joined(separator: " ")
 
         fields.city = place.locality ?? ""
-        fields.state = place.administrativeArea ?? ""
         fields.postcode = place.postalCode ?? ""
         fields.country = place.isoCountryCode ?? ""
+        if let country = countryByCode(place.isoCountryCode ?? "") {
+            fields.selectedCountry = country
+            if let state = country.states.first(where: { $0.code == place.administrativeArea }) {
+                fields.selectedState = state
+            } else {
+                fields.state = place.administrativeArea ?? ""
+            }
+        } else {
+            fields.country = place.isoCountryCode ?? ""
+            fields.state = place.administrativeArea ?? ""
+        }
     }
 
     deinit {

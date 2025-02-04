@@ -41,6 +41,7 @@ struct DomainContactInfoForm: View {
                 SingleAddressForm(fields: $viewModel.fields,
                                   countryViewModelClosure: viewModel.createCountryViewModel,
                                   stateViewModelClosure: viewModel.createStateViewModel,
+                                  countryByCode: viewModel.findCountry(by:),
                                   sectionTitle: viewModel.sectionTitle,
                                   showEmailField: viewModel.showEmailField,
                                   showPhoneCountryCodeField: viewModel.showPhoneCountryCodeField,

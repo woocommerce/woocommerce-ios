@@ -39,7 +39,7 @@ protocol PointOfSaleAggregateModelProtocol {
 }
 
 @available(iOS 17.0, *)
-@Observable final class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProtocol {
+@Observable final class PointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     private(set) var orderStage: PointOfSaleOrderStage = .building
 
     private(set) var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected

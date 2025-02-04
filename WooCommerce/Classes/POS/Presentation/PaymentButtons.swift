@@ -2,7 +2,7 @@ import SwiftUI
 
 @available(iOS 17.0, *)
 struct PaymentsActionButtons: View {
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Binding var isShowingSendReceiptView: Bool
     @Binding private(set) var isShowingReceiptNotEligibleBanner: Bool
 
@@ -112,6 +112,6 @@ private extension PaymentsActionButtons {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
     PaymentsActionButtons(isShowingSendReceiptView: .constant(false), isShowingReceiptNotEligibleBanner: .constant(true))
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 #endif

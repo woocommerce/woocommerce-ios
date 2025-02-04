@@ -3,7 +3,7 @@ import class WordPressShared.EmailFormatValidator
 
 @available(iOS 17.0, *)
 struct POSSendReceiptView: View {
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @State private var textFieldInput: String = ""
     @State private var isLoading: Bool = false
@@ -170,6 +170,6 @@ private extension POSSendReceiptView {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
     POSSendReceiptView(isShowingSendReceiptView: .constant(true))
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 #endif

@@ -1268,6 +1268,7 @@ enum WooAnalyticsStat: String {
     case backgroundUpdatesDisabled = "background_updates_disabled"
 
     // MARK: Point of Sale events
+    case pointOfSaleLoaded = "pos_loaded"
     case pointOfSaleProductsPullToRefresh = "products_pull_to_refresh"
     case pointOfSaleVariationsPullToRefresh = "variations_pull_to_refresh"
     case pointOfSaleAddItemToCart = "item_added_to_cart"

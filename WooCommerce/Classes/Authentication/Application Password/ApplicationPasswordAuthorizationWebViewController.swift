@@ -191,7 +191,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
 
     /// Pops to the previous view controller (if provided) or pops one level otherwise.
     @objc private func navigateToPreviousViewController() {
-        if let previous = previousViewController, let nav = navigationController {
+        if let previousViewController, let navigationController {
             nav.popToViewController(previous, animated: true)
         } else {
             navigationController?.popViewController(animated: true)

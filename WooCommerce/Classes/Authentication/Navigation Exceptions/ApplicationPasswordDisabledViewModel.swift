@@ -47,7 +47,7 @@ struct ApplicationPasswordDisabledViewModel: ULErrorViewModel {
     // Pop to the previous VC
     func didTapPrimaryButton(in viewController: UIViewController?) {
         guard let navigationController = viewController?.navigationController else { return }
-        if let previousViewController = previousViewController {
+        if let previousViewController {
             navigationController.popToViewController(previousViewController, animated: true)
         } else {
             navigationController.popToRootViewController(animated: true)

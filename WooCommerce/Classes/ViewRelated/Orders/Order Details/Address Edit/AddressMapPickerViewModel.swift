@@ -99,12 +99,8 @@ final class AddressMapPickerViewModel: NSObject {
         fields.country = place.isoCountryCode ?? ""
     }
 
-    func cleanup() {
-        searchCompleter.delegate = nil
-    }
-
     deinit {
-        cleanup()
+        searchCompleter.delegate = nil
     }
 }
 

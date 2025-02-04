@@ -26,6 +26,7 @@ struct POSFloatingControlView: View {
                     )
                 }
                 Button {
+                    ServiceLocator.analytics.track(.pointOfSaleGetSupportTapped)
                     showSupport = true
                 } label: {
                     Label(

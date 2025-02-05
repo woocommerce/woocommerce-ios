@@ -59,6 +59,7 @@ struct LoginPrologueView: View {
                     .padding(.bottom, 4 * Layout.stackSpacing)
 
                 Text(Localization.title)
+                    .accessibilityIdentifier("prologue-title-label")
                     .font(.title.bold())
                     .multilineTextAlignment(.center)
                     .foregroundColor(.white)

@@ -42,6 +42,7 @@ struct WooShippingNormalizeAddressView: View {
                 Divider().ignoresSafeArea(edges: [.horizontal])
                 Button {
                     viewModel.confirmSelectedAddress()
+                    dismiss()
                 } label: {
                     switch viewModel.selectedAddress {
                     case .entered:

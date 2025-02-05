@@ -74,6 +74,7 @@ class GetMocks {
             let total = updatedData[index].total
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = .decimal
+            numberFormatter.locale = Locale(identifier: "en_US")
 
             let formattedNumber = numberFormatter.string(from: NSNumber(value: Double(total)!))
             updatedData[index].total = formattedNumber!

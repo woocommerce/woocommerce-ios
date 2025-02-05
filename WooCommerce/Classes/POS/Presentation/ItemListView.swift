@@ -2,6 +2,7 @@ import SwiftUI
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 
+@available(iOS 17.0, *)
 struct ItemListView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -49,6 +50,7 @@ struct ItemListView: View {
 
 /// View Helpers
 ///
+@available(iOS 17.0, *)
 private extension ItemListView {
     @ViewBuilder
     var headerView: some View {
@@ -153,6 +155,7 @@ private extension ItemListView {
     }
 }
 
+@available(iOS 17.0, *)
 private extension ItemListView {
     var shouldShowHeaderBanner: Bool {
         itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
@@ -213,6 +216,7 @@ private extension GhostItemCardView {
 
 /// Constants
 ///
+@available(iOS 17.0, *)
 private extension ItemListView {
     enum Constants {
         static let bannerTitleFont: POSFontStyle = .posBodyEmphasized
@@ -308,6 +312,7 @@ private extension ItemListView {
 
 #if DEBUG
 
+@available(iOS 17.0, *)
 #Preview("Loaded with all product types") {
     let itemsController = PointOfSalePreviewItemsController()
     Task { @MainActor in
@@ -321,6 +326,7 @@ private extension ItemListView {
         .environmentObject(posModel)
 }
 
+@available(iOS 17.0, *)
 #Preview("Loading") {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),

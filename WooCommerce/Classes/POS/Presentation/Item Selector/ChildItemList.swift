@@ -2,6 +2,7 @@ import SwiftUI
 import Yosemite
 
 /// Displays a scrollable list of child items in POS.
+@available(iOS 17.0, *)
 struct ChildItemList: View {
     private let parentItem: POSItem
     private let title: String
@@ -46,6 +47,7 @@ struct ChildItemList: View {
     }
 }
 
+@available(iOS 17.0, *)
 private extension ChildItemList {
     @ViewBuilder var headerView: some View {
         HStack {
@@ -104,6 +106,7 @@ private extension ChildItemList {
     }
 }
 
+@available(iOS 17.0, *)
 private extension ChildItemList {
     enum Localization {
         static let back = NSLocalizedString(
@@ -120,6 +123,7 @@ private extension ChildItemList {
 
 #if DEBUG
 
+@available(iOS 17.0, *)
 #Preview("Variable product child items") {
     let parentProduct = POSVariableParentProduct(
         id: .init(),
@@ -166,6 +170,7 @@ private extension ChildItemList {
         .environmentObject(posModel)
 }
 
+@available(iOS 17.0, *)
 #Preview("Variable items load error") {
     let parentProduct = POSVariableParentProduct(
         id: .init(),

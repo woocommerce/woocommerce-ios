@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(iOS 17.0, *)
 struct PointOfSalePaymentSuccessView: View {
     let viewModel: PointOfSalePaymentSuccessViewModel
     @Environment(\.colorScheme) var colorScheme
@@ -88,6 +89,7 @@ struct PointOfSalePaymentSuccessView: View {
     }
 }
 
+@available(iOS 17.0, *)
 private extension PointOfSalePaymentSuccessView {
     enum Constants {
         static let imageName: String = "checkmark"
@@ -102,6 +104,7 @@ private extension PointOfSalePaymentSuccessView {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
     return PointOfSalePaymentSuccessView(
         viewModel: PointOfSalePaymentSuccessViewModel(formattedOrderTotal: "$3.00",

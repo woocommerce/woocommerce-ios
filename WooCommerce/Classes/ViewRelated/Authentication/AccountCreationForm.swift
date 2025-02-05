@@ -70,7 +70,8 @@ struct AccountCreationForm: View {
                                                                  text: $viewModel.email,
                                                                  isSecure: false,
                                                                  errorMessage: viewModel.emailErrorMessage,
-                                                                 isFocused: isFocused))
+                                                                 isFocused: isFocused,
+                                                                 autocapitalization: .none))
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
                     .focused($isFocused)
@@ -84,7 +85,8 @@ struct AccountCreationForm: View {
                                                                  text: $viewModel.password,
                                                                  isSecure: true,
                                                                  errorMessage: viewModel.passwordErrorMessage,
-                                                                 isFocused: isFocused))
+                                                                 isFocused: isFocused,
+                                                                 autocapitalization: .none))
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
                     .focused($isFocused)
@@ -92,7 +94,7 @@ struct AccountCreationForm: View {
                     .renderedIf(viewModel.currentField == .password)
 
                     // Terms of Service link.
-                    AttributedText(tosAttributedText, enablesLinkUnderline: true)
+                    AttributedText(tosAttributedText)
                         .attributedTextLinkColor(Color(.secondaryLabel))
                         .environment(\.customOpenURL) { url in
                             tosURL = url

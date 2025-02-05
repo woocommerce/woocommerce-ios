@@ -189,7 +189,8 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
                     inputMethods: inputMethods)))
         case .paymentSuccess:
             self = .message(.paymentSuccess(viewModel: PointOfSalePaymentSuccessViewModel(
-                formattedOrderTotal: dependencies.formattedOrderTotalPrice)))
+                formattedOrderTotal: dependencies.formattedOrderTotalPrice,
+                paymentMethod: .card)))
         case .paymentError(error: let error, retryApproach: let retryApproach, _):
             switch error {
             case CollectOrderPaymentUseCaseError.couldNotRefreshOrder,

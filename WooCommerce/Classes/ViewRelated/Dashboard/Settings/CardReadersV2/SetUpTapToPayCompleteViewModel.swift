@@ -18,12 +18,15 @@ final class SetUpTapToPayCompleteViewModel: PaymentSettingsFlowPresentedViewMode
     private let analytics: Analytics = ServiceLocator.analytics
 
     private var subscriptions = Set<AnyCancellable>()
+    private(set) var learnMoreURL: URL
 
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?,
          connectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker,
          stores: StoresManager = ServiceLocator.stores) {
         self.didChangeShouldShow = didChangeShouldShow
         self.connectionAnalyticsTracker = connectionAnalyticsTracker
+        /// The `learnMoreURL` will be updated when a reader connects
+        self.learnMoreURL = CardPresentPaymentsPlugin.wcPay.setUpTapToPayLearnMoreURL
         self.stores = stores
 
         beginConnectedReaderObservation()
@@ -34,11 +37,10 @@ final class SetUpTapToPayCompleteViewModel: PaymentSettingsFlowPresentedViewMode
     private func beginConnectedReaderObservation() {
         // This completion should be called repeatedly as the list of connected readers changes
         let connectedAction = CardPresentPaymentAction.observeConnectedReaders() { [weak self] readers in
-            guard let self = self else {
-                return
-            }
-            self.connectedReader = readers.isNotEmpty ? .isTrue : .isFalse
-            self.reevaluateShouldShow()
+            guard let self else { return }
+            connectedReader = readers.isNotEmpty ? .isTrue : .isFalse
+            reevaluateShouldShow()
+            updateLearnMoreURL()
         }
         stores.dispatch(connectedAction)
     }
@@ -61,6 +63,13 @@ final class SetUpTapToPayCompleteViewModel: PaymentSettingsFlowPresentedViewMode
             shouldShow = newShouldShow
             didChangeShouldShow?(shouldShow)
         }
+    }
+
+    private func updateLearnMoreURL() {
+        let action = CardPresentPaymentAction.loadActivePaymentGatewayExtension { [weak self] paymentGateway in
+            self?.learnMoreURL = paymentGateway.setUpTapToPayLearnMoreURL
+        }
+        stores.dispatch(action)
     }
 
     func doneTapped() {

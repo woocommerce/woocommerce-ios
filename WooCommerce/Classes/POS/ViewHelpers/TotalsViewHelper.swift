@@ -20,4 +20,30 @@ final class TotalsViewHelper {
             return false
         }
     }
+
+    func shouldShowDisconnectedMessage(readerConnectionStatus: CardPresentPaymentReaderConnectionStatus,
+                                       paymentState: PointOfSaleCardPaymentState) -> Bool {
+        guard readerConnectionStatus == .disconnected else {
+            return false
+        }
+        switch paymentState {
+        case .idle,
+                .acceptingCard,
+                .preparingReader:
+            return true
+        case .validatingOrder,
+                .validatingOrderError,
+                .processingPayment,
+                .paymentError,
+                .cardPaymentSuccessful:
+            return false
+        }
+    }
+
+    func shouldShowCollectCashPaymentButton(orderState: PointOfSaleOrderState,
+                                            paymentState: PointOfSalePaymentState) -> Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.acceptCashForPointOfSale) &&
+        orderState != .syncing &&
+        (paymentState == .card(.idle) || paymentState == .card(.acceptingCard) || paymentState == .card(.validatingOrderError))
+    }
 }

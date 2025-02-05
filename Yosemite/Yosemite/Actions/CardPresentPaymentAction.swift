@@ -14,7 +14,7 @@ public enum CardPresentPaymentAction: Action {
 
     /// Retrieves the current configuration for IPP.
     ///
-    case loadActivePaymentGatewayExtension(onCompletion: (CardPresentPaymentGatewayExtension) -> Void)
+    case loadActivePaymentGatewayExtension(onCompletion: (CardPresentPaymentsPlugin) -> Void)
 
     /// Retrieves and stores payment gateway account(s) for the provided `siteID`
     /// We support payment gateway accounts for both the WooCommerce Payments extension AND

@@ -47,8 +47,10 @@ struct InPersonPaymentsPluginNotSetup: View {
             .buttonStyle(SecondaryButtonStyle())
             .padding(.bottom, 24.0)
 
-            InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel(tappedAnalyticEvent: learnMoreAnalyticEvent))
-                .padding(.vertical, 8)
+            InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel(
+                paymentGateway: plugin,
+                tappedAnalyticEvent: learnMoreAnalyticEvent))
+            .padding(.vertical, 8)
         }
         .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
     }
@@ -69,8 +71,12 @@ private enum Localization {
     )
 
     static let message = NSLocalizedString(
-        "You’re almost there! Please finish setting up %1$@ to start accepting In-Person Payments.",
-        comment: "Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name."
+        "You’re almost there! Please finish setting up %1$@ to start accepting In‑Person Payments.",
+        comment: """
+                 Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name.
+                 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+                 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
+                 """
     )
 
     static let primaryButton = NSLocalizedString(

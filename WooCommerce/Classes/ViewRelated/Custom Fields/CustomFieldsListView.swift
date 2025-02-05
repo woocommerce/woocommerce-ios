@@ -353,7 +353,7 @@ extension CustomFieldsListHostingController {
         static let emptyStateDescription = NSLocalizedString(
             "customFieldsListHostingController.emptyStateDescription",
             value: "Custom fields are optional metadata to display extra information or customize "
-            + "your store's shopping experience",
+            + "your store's shopping experience.",
             comment: "Message when the list is empty."
         )
         static let emptyStateButton = NSLocalizedString(

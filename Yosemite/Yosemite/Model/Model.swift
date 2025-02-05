@@ -181,6 +181,7 @@ public typealias TopEarnerStats = Networking.TopEarnerStats
 public typealias TopEarnerStatsItem = Networking.TopEarnerStatsItem
 public typealias User = Networking.User
 public typealias WooAPIVersion = Networking.WooAPIVersion
+public typealias WooShippingAddress = Networking.WooShippingAddress
 public typealias WooShippingAddressValidationSuccess = Networking.WooShippingAddressValidationSuccess
 public typealias WooShippingAddressValidationError = Networking.WooShippingAddressValidationError
 public typealias WooShippingCustomPackage = Networking.WooShippingCustomPackage

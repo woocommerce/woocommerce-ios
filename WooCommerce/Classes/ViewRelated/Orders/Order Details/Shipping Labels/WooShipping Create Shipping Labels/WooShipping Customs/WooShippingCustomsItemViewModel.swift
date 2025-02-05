@@ -3,18 +3,12 @@ import SwiftUI
 import Combine
 import protocol Storage.StorageManagerType
 
-struct WooShippingCustomsCountry: Hashable {
-    let code: String
-    let name: String
-}
-
 final class WooShippingCustomsItemViewModel: ObservableObject {
     @Published var title: String
     @Published var description: String = ""
     @Published var hsTariffNumber: String = ""
     @Published var valuePerUnit: String = ""
     @Published var weightPerUnit: String = ""
-    @Published var originCountry: WooShippingCustomsCountry
     // Useful to determine externally if the shipping requires an ITN
     @Published var hsTariffNumberTotalValue: (String, Decimal)?
 
@@ -31,13 +25,19 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
         return ResultsController(storageManager: storageManager, matching: nil, sortedBy: [descriptor])
     }()
 
-    var countries: [WooShippingCustomsCountry] {
-        let countries = resultsController.fetchedObjects
+    @Published private(set) var selectedCountry: Country?
 
-        // This removes the states property because:
-        // - It's not necessary to display the list
-        // - As we retrieve a different order on the states array property from the ResultsController, it might mess the Equality comparison
-        return countries.map { WooShippingCustomsCountry(code: $0.code, name: $0.name) }
+    var countries: [Country] {
+        resultsController.fetchedObjects
+    }
+
+    /// View model for selecting a country from a list.
+    var countrySelectorVM: CountrySelectorViewModel {
+        let selectedCountryBinding = Binding<AreaSelectorCommandProtocol?>(
+            get: { self.selectedCountry },
+            set: { self.selectedCountry = $0 as? Country }
+        )
+        return CountrySelectorViewModel(countries: countries, selected: selectedCountryBinding)
     }
 
     var isValidTariffNumber: Bool {
@@ -58,13 +58,11 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
 
-    init(originCountry: WooShippingCustomsCountry,
-         orderItem: OrderItem,
+    init(orderItem: OrderItem,
          currencySymbol: String,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores) {
         self.title = orderItem.name
-        self.originCountry = originCountry
         self.orderItem = orderItem
         self.currencySymbol = currencySymbol
         self.storageManager = storageManager
@@ -94,9 +92,9 @@ private extension WooShippingCustomsItemViewModel {
     }
 
     func combineRequiredInformationIsEntered() {
-        Publishers.CombineLatest3($description, $valuePerUnit, $weightPerUnit)
-            .sink { [weak self] description, valuePerUnit, weightPerUnit in
-                self?.requiredInformationIsEntered = description.isNotEmpty && valuePerUnit.isNotEmpty && weightPerUnit.isNotEmpty
+        Publishers.CombineLatest4($description, $valuePerUnit, $weightPerUnit, $selectedCountry)
+            .sink { [weak self] description, valuePerUnit, weightPerUnit, selectedCountry in
+                self?.requiredInformationIsEntered = description.isNotEmpty && valuePerUnit.isNotEmpty && weightPerUnit.isNotEmpty && selectedCountry != nil
             }
             .store(in: &cancellables)
     }

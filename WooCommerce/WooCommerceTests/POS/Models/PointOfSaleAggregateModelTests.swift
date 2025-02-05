@@ -148,7 +148,7 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             let event = try #require(analyticsProvider.receivedEvents.first)
-            #expect(event == "pos_item_added_to_cart")
+            #expect(event == "item_added_to_cart")
         }
     }
 
@@ -206,7 +206,7 @@ struct PointOfSaleAggregateModelTests {
         @Test func when_collectPayment_is_called_channel_is_set_to_pos() async throws {
             // Given
             cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
-            orderController.orderStateToReturn = makeLoadedOrderState(cartTotal: "$0.00")
+            orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$1.00", orderTotalDecimal: 1)
 
             // When
             await sut.checkOut()
@@ -350,6 +350,7 @@ struct PointOfSaleAggregateModelTests {
             // Note that orderTotal is used, but the Order values are given for test robustness.
             orderController.orderState = makeLoadedOrderState(
                 orderTotal: "$52.30",
+                orderTotalDecimal: 52.3,
                 order: Order.fake().copy(currency: "$", total: "52.30"))
 
             // When
@@ -360,7 +361,7 @@ struct PointOfSaleAggregateModelTests {
                 Issue.record("Expected cardPresentPaymentInlineMessage to be paymentSuccess")
                 return
             }
-            #expect(viewModel.message == "A payment of $52.30 was successfully made")
+            #expect(viewModel.message == "A card payment of $52.30 was successfully made")
         }
 
         @Test func paymentIntentCreationErrorMessage_when_paymentIntentCreationError_tryAgain_cancels_payment() async throws {
@@ -410,7 +411,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             cardPresentPaymentService.connectedReader = nil
 
-            orderController.orderStateToReturn = makeLoadedOrderState()
+            orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$1.00", orderTotalDecimal: 1)
             await sut.checkOut()
             cardPresentPaymentService.collectPaymentWasCalled = false
 
@@ -428,10 +429,10 @@ struct PointOfSaleAggregateModelTests {
             }
         }
 
-        @Test func checkOut_when_reader_is_already_connected_collectPayment_called() async throws {
+        @Test func checkOut_when_reader_is_already_connected_and_order_more_than_zero_collectPayment_called() async throws {
             // Given
             cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
-            orderController.orderStateToReturn = makeLoadedOrderState()
+            orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$0.01", orderTotalDecimal: 0.01)
 
             // When
             await sut.checkOut()
@@ -440,11 +441,23 @@ struct PointOfSaleAggregateModelTests {
             #expect(cardPresentPaymentService.collectPaymentWasCalled)
         }
 
+        @Test func checkOut_when_reader_is_already_connected_and_order_is_free_collectPayment_is_not_called() async throws {
+            // Given
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+            orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$0.00", orderTotalDecimal: 0.0)
+
+            // When
+            await sut.checkOut()
+
+            // Then
+            #expect(!cardPresentPaymentService.collectPaymentWasCalled)
+        }
+
         @Test func after_disconnection_when_reader_reconnects_collectPayment_called() async throws {
             // Given
             cardPresentPaymentService.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
 
-            orderController.orderStateToReturn = makeLoadedOrderState()
+            orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$1.00", orderTotalDecimal: 1)
             await sut.checkOut()
             await cardPresentPaymentService.disconnectReader()
             cardPresentPaymentService.collectPaymentWasCalled = false
@@ -461,6 +474,23 @@ struct PointOfSaleAggregateModelTests {
                 try await Task.sleep(for: .milliseconds(1))
                 try #require(.now < timeout)
             }
+        }
+
+        @Test func cancelThenCollectPayment_still_collects_payment_when_cancellation_fails() async throws {
+            // Given
+            orderController.orderStateToReturn = makeLoadedOrderState(cartTotal: "$1.00")
+            await orderController.syncOrder(for: [], retryHandler: {})
+
+            struct TestError: Error {}
+            cardPresentPaymentService.onCancelPaymentCalled = {
+                throw TestError()
+            }
+
+            // When
+            await sut.cancelThenCollectPayment()
+
+            // Then
+            #expect(cardPresentPaymentService.collectPaymentWasCalled)
         }
 
         // MARK: Onboarding
@@ -508,7 +538,7 @@ struct PointOfSaleAggregateModelTests {
             sut.cancelCardPaymentsOnboarding()
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "pos_payments_onboarding_dismissed" }) != nil)
+            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "payments_onboarding_dismissed" }) != nil)
             let eventProperties = try #require(analyticsProvider.receivedProperties.first(where: { $0.keys.contains("onboarding_state")
             }))
             #expect(eventProperties["onboarding_state"] as? String == "no_connection_error")
@@ -521,7 +551,7 @@ struct PointOfSaleAggregateModelTests {
             sut.trackCardPaymentsOnboardingShown()
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "pos_payments_onboarding_shown" }) != nil)
+            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "payments_onboarding_shown" }) != nil)
         }
     }
 }
@@ -538,9 +568,10 @@ private func makeItem(name: String = "") -> POSItem {
 private func makeLoadedOrderState(cartTotal: String = "",
                                   orderTotal: String = "",
                                   taxTotal: String = "",
+                                  orderTotalDecimal: Decimal = 0,
                                   order: Order = .fake()) -> PointOfSaleInternalOrderState {
     PointOfSaleInternalOrderState.loaded(
-        PointOfSaleOrderTotals(cartTotal: cartTotal, orderTotal: orderTotal, taxTotal: taxTotal),
+        PointOfSaleOrderTotals(cartTotal: cartTotal, orderTotal: orderTotal, taxTotal: taxTotal, orderTotalDecimal: orderTotalDecimal),
         order
     )
 }

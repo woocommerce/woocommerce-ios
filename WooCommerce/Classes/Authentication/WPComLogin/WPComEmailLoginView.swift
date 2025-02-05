@@ -79,7 +79,8 @@ struct WPComEmailLoginView: View {
                     text: $viewModel.emailAddress,
                     isSecure: false,
                     errorMessage: nil,
-                    isFocused: isEmailFieldFocused
+                    isFocused: isEmailFieldFocused,
+                    autocapitalization: .none
                 ))
                 .focused($isEmailFieldFocused)
 

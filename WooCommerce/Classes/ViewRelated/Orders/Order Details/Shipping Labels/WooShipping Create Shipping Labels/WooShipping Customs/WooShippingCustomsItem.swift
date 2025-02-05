@@ -43,7 +43,12 @@ struct WooShippingCustomsItem: View {
                             .renderedIf(viewModel.hsTariffNumber.isNotEmpty)
                     }
                     HStack(spacing: Layout.collapsedUnitsHorizontalSpacing) {
-                        Text(viewModel.originCountry.name)
+                        if let countryName = viewModel.selectedCountry?.name {
+                            Text(countryName)
+                        } else {
+                            emptyValuePlaceholder
+                        }
+
                         Spacer()
 
                         if viewModel.weightPerUnit.isEmpty {
@@ -190,14 +195,21 @@ struct WooShippingCustomsItem: View {
                     isShowingCountries = true
                 } label: {
                     HStack {
-                        Text(viewModel.originCountry.name)
+                        Text(viewModel.selectedCountry?.name ?? "")
                             .bodyStyle()
                         Spacer()
                         Image(systemName: "chevron.up.chevron.down")
                     }
                     .padding()
                 }
-                .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderLineWidth)
+                .roundedBorder(cornerRadius: Layout.borderCornerRadius,
+                               lineColor: viewModel.selectedCountry == nil ? warningRedColor : Color(.separator),
+                               lineWidth: Layout.borderLineWidth)
+
+                Text(Localization.valueRequiredWarningText)
+                    .foregroundColor(warningRedColor)
+                    .footnoteStyle()
+                    .renderedIf(viewModel.selectedCountry == nil)
             }
             .padding(.leading, Layout.extraPadding)
             .padding(.trailing, Layout.extraPadding)
@@ -207,10 +219,18 @@ struct WooShippingCustomsItem: View {
         .safariSheet(isPresented: $isShowingHSTarrifInfoWebView, url: viewModel.hsTariffURL)
         .sheet(isPresented: $isShowingCountries, content: {
             NavigationStack {
-                SingleSelectionList(title: Localization.originCountryTitle,
-                                    items: viewModel.countries,
-                                    contentKeyPath: \.name,
-                                    selected: $viewModel.originCountry)
+                FilterListSelector(viewModel: viewModel.countrySelectorVM)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button {
+                                isShowingCountries = false
+                            } label: {
+                                Text(Localization.done)
+                                    .bold()
+                            }
+                        }
+                    }
             }
             .wooNavigationBarStyle()
         })
@@ -280,6 +300,9 @@ extension WooShippingCustomsItem {
         static let originCountryTitle = NSLocalizedString("wooShipping.customsItems.originCountry",
                                               value: "Origin Country",
                                               comment: "Title for the origin country text field")
+        static let done = NSLocalizedString("wooShipping.customsItems.countries.done",
+                                            value: "Done",
+                                            comment: "Button to dismiss the countries menu")
     }
 
     enum Layout {

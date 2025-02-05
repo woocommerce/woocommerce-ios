@@ -20,7 +20,7 @@ final class BlazeTargetLocationPickerViewModel: ObservableObject {
         if searchQuery.count < Constants.minimumQueryLength {
             .searchImage
         } else {
-            .searchNoResultImage
+            .magnifyingGlassNotFound
         }
     }
 
@@ -132,7 +132,7 @@ extension BlazeTargetLocationPickerViewModel {
     enum Localization {
         static let searchViewHintMessage = NSLocalizedString(
             "blazeTargetLocationPickerViewModel.searchViewHintMessage",
-            value: "Start typing country, state or city to see available options",
+            value: "Start typing country, state or city to see available options.",
             comment: "Hint message to enter search query on the target location picker for campaign creation"
         )
         static let longerQuery = NSLocalizedString(

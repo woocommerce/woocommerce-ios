@@ -133,7 +133,7 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.cart.isEmpty)
         }
 
-        @Test func removeAllItemsFromCart_tracks_event() {
+        @Test func removeAllItemsFromCart_when_tapped_then_tracks_event() {
             // Given/When
             sut.removeAllItemsFromCart()
 
@@ -562,7 +562,7 @@ struct PointOfSaleAggregateModelTests {
             #expect(analyticsProvider.receivedEvents.first(where: { $0 == "payments_onboarding_shown" }) != nil)
         }
 
-        @Test func connectCardReader_tracks_event() {
+        @Test func connectCardReader_when_tapped_then_tracks_event() {
             // Given/When
             sut.connectCardReader()
 
@@ -570,7 +570,7 @@ struct PointOfSaleAggregateModelTests {
             #expect(analyticsProvider.receivedEvents.first(where: { $0 == "card_reader_connection_tapped" }) != nil)
         }
 
-        @Test func disconnectCardReader_tracks_event() {
+        @Test func disconnectCardReader_when_tapped_then_tracks_event() {
             // Given/When
             sut.disconnectCardReader()
 

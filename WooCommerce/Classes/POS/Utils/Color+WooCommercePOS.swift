@@ -32,7 +32,7 @@ extension Color {
         Color(
             UIColor(
                 light: .white,
-                dark: .tertiarySystemBackground
+                dark: UIColor(red: 44.0 / 255.0, green: 44.0 / 255.0, blue: 46.0 / 255.0, alpha: 1.0)
             )
         )
     }

@@ -1,5 +1,4 @@
 import Foundation
-import Codegen
 import Observation
 
 @available(iOS 17.0, *)
@@ -14,7 +13,7 @@ import Observation
 }
 
 @available(iOS 17.0, *)
-extension ItemsViewState: GeneratedCopiable, Equatable {
+extension ItemsViewState: Equatable {
     static func == (lhs: ItemsViewState, rhs: ItemsViewState) -> Bool {
         return lhs.containerState == rhs.containerState
         && lhs.itemsStack == rhs.itemsStack

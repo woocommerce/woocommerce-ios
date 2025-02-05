@@ -1,5 +1,4 @@
 import Foundation
-import Codegen
 import enum Yosemite.POSItem
 import Observation
 
@@ -15,7 +14,7 @@ import Observation
 }
 
 @available(iOS 17.0, *)
-extension ItemsStackState: Equatable, GeneratedCopiable {
+extension ItemsStackState: Equatable {
     static func == (lhs: ItemsStackState, rhs: ItemsStackState) -> Bool {
         return lhs.root == rhs.root
         && lhs.itemStates == rhs.itemStates

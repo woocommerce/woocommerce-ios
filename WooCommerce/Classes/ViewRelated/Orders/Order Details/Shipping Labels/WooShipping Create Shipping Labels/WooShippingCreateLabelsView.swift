@@ -37,9 +37,6 @@ struct WooShippingCreateLabelsView: View {
     /// Whether the origin address list sheet is presented.
     @State private var isOriginAddressListPresented = false
 
-    /// Whether the address verification notice is displayed.
-    @State private var isAddressVerificationNoticePresented = true
-
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -82,9 +79,7 @@ struct WooShippingCreateLabelsView: View {
                                 Text(Localization.BottomSheet.shipmentDetails)
                                     .foregroundStyle(Color(.primary))
                                     .bold()
-                                // TODO: Only display the notice if the address is unverified, or
-                                // if the address was just verified (and then auto-dismiss it after a couple seconds).
-                                if isAddressVerificationNoticePresented {
+                                if viewModel.showAddressVerificationNotice {
                                     addressVerificationNotice
                                         .onTapGesture {
                                             // TODO: Start address editing/verification flow if needed (if destination address is unverified).
@@ -301,7 +296,7 @@ private extension WooShippingCreateLabelsView {
                 .frame(maxWidth: .infinity, alignment: .leading)
             Button {
                 withAnimation {
-                    isAddressVerificationNoticePresented = false
+                    viewModel.showAddressVerificationNotice = false
                 }
             } label: {
                 Image(systemName: "xmark")

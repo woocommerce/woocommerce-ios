@@ -69,6 +69,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Whether the destination address is verified.
     @Published private(set) var isDestinationAddressVerified: Bool = false
 
+    // TODO: Set to false if the destination address is already verified.
+    // TODO: Set to true for a couple seconds after the destination address is verified.
+    /// Whether the destination address verification notice is displayed.
+    @Published var showAddressVerificationNotice = true
+
     /// Shipping lines for the order, with formatted amount.
     let shippingLines: [WooShipping_ShippingLineViewModel]
 

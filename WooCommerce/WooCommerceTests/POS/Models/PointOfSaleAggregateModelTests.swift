@@ -133,6 +133,14 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.cart.isEmpty)
         }
 
+        @Test func removeAllItemsFromCart_tracks_event() {
+            // Given/When
+            sut.removeAllItemsFromCart()
+
+            // Then
+            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "clear_cart_tapped" }) != nil)
+        }
+
         @Test(.disabled(
             """
             This test doesn't currently work; analytics extensions are not thread-safe,

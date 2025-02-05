@@ -129,6 +129,7 @@ extension PointOfSaleAggregateModel {
 
     func removeAllItemsFromCart() {
         cart.removeAll()
+        analytics.track(.pointOfSaleClearCartTapped)
     }
 
     func addMoreToCart() {

@@ -561,6 +561,22 @@ struct PointOfSaleAggregateModelTests {
             // Then
             #expect(analyticsProvider.receivedEvents.first(where: { $0 == "payments_onboarding_shown" }) != nil)
         }
+
+        @Test func connectCardReader_tracks_event() {
+            // Given/When
+            sut.connectCardReader()
+
+            // Then
+            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "card_reader_connection_tapped" }) != nil)
+        }
+
+        @Test func disconnectCardReader_tracks_event() {
+            // Given/When
+            sut.disconnectCardReader()
+
+            // Then
+            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "card_reader_disconnect_tapped" }) != nil)
+        }
     }
 }
 

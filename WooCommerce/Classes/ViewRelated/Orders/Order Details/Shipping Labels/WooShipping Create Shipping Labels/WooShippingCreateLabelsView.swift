@@ -75,9 +75,17 @@ struct WooShippingCreateLabelsView: View {
                 }) {
                     VStack {
                         if !isShipmentDetailsExpanded {
-                            Text(Localization.BottomSheet.shipmentDetails)
-                                .foregroundStyle(Color(.primary))
-                                .bold()
+                            VStack {
+                                Text(Localization.BottomSheet.shipmentDetails)
+                                    .foregroundStyle(Color(.primary))
+                                    .bold()
+                                // TODO: Only display the notice if the address is unverified, or
+                                // if the address was just verified (and then auto-dismiss it after a couple seconds).
+                                addressVerificationNotice
+                                    .onTapGesture {
+                                        // TODO: Start address editing/verification flow if needed (if destination address is unverified).
+                                    }
+                            }
                         }
                         if !viewModel.canViewLabel {
                             if isiPhonePortrait {
@@ -278,6 +286,28 @@ private extension WooShippingCreateLabelsView {
         .font(.subheadline)
         .foregroundStyle(viewModel.isDestinationAddressVerified ? Layout.green : Layout.red)
     }
+
+    /// View showing a notice about the address verification status.
+    var addressVerificationNotice: some View {
+        HStack(spacing: 8) {
+            Image(systemName: viewModel.isDestinationAddressVerified ? "checkmark.circle" : "exclamationmark.circle")
+            Text(viewModel.isDestinationAddressVerified
+                 ? Localization.AddressVerification.destinationVerified : Localization.AddressVerification.destinationUnverified)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Button {
+                // TODO: Dismiss the notice.
+            } label: {
+                Image(systemName: "xmark")
+                    .renderedIf(!viewModel.isDestinationAddressVerified)
+            }
+        }
+        .font(.subheadline)
+        .foregroundStyle(viewModel.isDestinationAddressVerified ? Layout.green : Layout.red)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
+            .fill(Color(uiColor: viewModel.isDestinationAddressVerified ? .withColorStudio(.green, shade: .shade0) : .withColorStudio(.red, shade: .shade0))))
+    }
 }
 
 // MARK: Store Options
@@ -379,6 +409,12 @@ private extension WooShippingCreateLabelsView {
             static let unverified = NSLocalizedString("wooShipping.createLabels.addressVerification.unverified",
                                                       value: "Unverified address",
                                                       comment: "Label when an address is unverified on the shipping label creation screen")
+            static let destinationVerified = NSLocalizedString("wooShipping.createLabels.addressVerification.destinationVerified",
+                                                          value: "Verified destination address",
+                                                          comment: "Notice when a destination address is verified on the shipping label creation screen")
+            static let destinationUnverified = NSLocalizedString("wooShipping.createLabels.addressVerification.destinationUnverified",
+                                                            value: "Destination address unverified",
+                                                            comment: "Notice when a destination address is unverified on the shipping label creation screen")
         }
     }
 }

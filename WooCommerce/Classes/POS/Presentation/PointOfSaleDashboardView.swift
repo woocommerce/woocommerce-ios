@@ -88,6 +88,9 @@ struct PointOfSaleDashboardView: View {
             HStack {
                 if posModel.orderStage == .building {
                     ItemListView()
+                        .refreshable {
+                            await posModel.loadItems(base: .root)
+                        }
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .leading))
                 }

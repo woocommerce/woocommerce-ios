@@ -36,9 +36,6 @@ struct ItemListView: View {
             })
             .background(Color.posPrimaryBackground)
         }
-        .refreshable {
-            await posModel.loadItems(base: .root)
-        }
         .accessibilityElement(children: .contain)
         .posModal(isPresented: $showSimpleProductsModal) {
             SimpleProductsOnlyInformation(isPresented: $showSimpleProductsModal)
@@ -147,6 +144,9 @@ private extension ItemListView {
         switch parentItem {
         case let .variableParentProduct(parentProduct):
             ChildItemList(parentItem: parentItem, title: parentProduct.name)
+                .refreshable {
+                    await posModel.loadItems(base: .parent(parentItem))
+                }
         default:
             EmptyView()
         }

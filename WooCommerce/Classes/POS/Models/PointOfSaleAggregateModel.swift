@@ -185,7 +185,7 @@ extension PointOfSaleAggregateModel {
                     }
                 }
                 .removeDuplicates()
-                .sink { _ in
+                .sink { [weak self] _ in
                     Task { @MainActor [weak self] in
                         await self?.collectCardPayment()
                     }

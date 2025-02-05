@@ -246,7 +246,9 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         }()
 
         // Shipping labels
-        let shippingLabels = try container.decodeIfPresent([ShippingLabel].self, forKey: .shippingLabels) ?? []
+        /// This will be an empty array by default because it's not directly parsed from the Order details, so it won't be decoded.
+        /// It's fetched with a specific API request, while at the same time it has a relationship in Core Data with Order.
+        let shippingLabels: [ShippingLabel] = []
 
         self.init(siteID: siteID,
                   orderID: orderID,

@@ -1024,7 +1024,7 @@ private extension ProductsViewController {
                 activeUploadIds = keys
                     .filter { $0.siteID == self.siteID }
                     .map { $0.productOrVariationID.id }
-    
+
                 var indexPathsToReload: [IndexPath] = []
                 for (index, object) in resultsController.fetchedObjects.enumerated() {
                     if activeUploadIds.contains(object.productID) != oldIDs.contains(object.productID) {

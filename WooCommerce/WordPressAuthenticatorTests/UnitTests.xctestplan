@@ -1,0 +1,32 @@
+{
+  "configurations" : [
+    {
+      "id" : "D97A5016-3F23-4D19-9CEB-C10A9AC3591F",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "environmentVariableEntries" : [
+
+    ],
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:WordPressAuthenticator.xcodeproj",
+      "identifier" : "B5ED78F3207E976500A8FD8C",
+      "name" : "WordPressAuthenticator"
+    },
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:WooCommerce.xcodeproj",
+        "identifier" : "3F0904072D26A40800D8ACCE",
+        "name" : "WordPressAuthenticatorTests"
+      }
+    }
+  ],
+  "version" : 1
+}

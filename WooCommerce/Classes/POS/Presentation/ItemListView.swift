@@ -36,8 +36,8 @@ struct ItemListView: View {
             .background(Color.posPrimaryBackground)
         }
         .refreshable {
+            ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
             await Task {
-                ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
                 await posModel.loadItems(base: .root)
             }.value
         }

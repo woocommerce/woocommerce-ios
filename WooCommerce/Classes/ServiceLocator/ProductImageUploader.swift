@@ -224,9 +224,11 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
     func reset() {
         statusUpdatesExcludedProductKeys = []
         statusUpdatesSubscriptions = []
+        activeUploadsPublisher = []
 
         actionHandlersByProduct = [:]
         imagesSaverByProduct = [:]
+        initialStatusesByProduct = [:]
     }
 }
 

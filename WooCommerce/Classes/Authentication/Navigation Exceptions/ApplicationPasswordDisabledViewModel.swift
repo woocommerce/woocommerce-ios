@@ -50,7 +50,7 @@ struct ApplicationPasswordDisabledViewModel: ULErrorViewModel {
         if let previousViewController {
             navigationController.popToViewController(previousViewController, animated: true)
         } else {
-            navigationController.popToRootViewController(animated: true)
+            navigationController.popViewController(animated: true)
         }
     }
 

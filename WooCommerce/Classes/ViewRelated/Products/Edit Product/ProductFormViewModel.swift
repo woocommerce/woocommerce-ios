@@ -601,6 +601,12 @@ extension ProductFormViewModel {
                 }
             }
         case .edit:
+            guard hasChangesExcludingImageUploads() else {
+                /// Skip product update if there are no changes
+                saveProductImagesWhenNoneIsPendingUploadAnymore()
+                onCompletion(.success(product))
+                return
+            }
             remoteActionUseCase.editProduct(product: productModelToSave,
                                               originalProduct: originalProduct,
                                               password: password,
@@ -621,6 +627,13 @@ extension ProductFormViewModel {
         case .readonly:
             assertionFailure("Trying to save a product remotely in readonly mode")
         }
+    }
+
+    func hasChangesExcludingImageUploads() -> Bool {
+        let hasProductChanges = product.product.copy(images: []) != originalProduct.product.copy(images: [])
+        let hasUploadedImageChanges = product.images.map(\.imageID) != originalProduct.images.map(\.imageID)
+        return hasProductChanges || hasUploadedImageChanges || password != originalPassword || isNewTemplateProduct()
+
     }
 
     func duplicateProduct(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void) {

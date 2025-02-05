@@ -3,6 +3,7 @@ import Foundation
 @testable import WooCommerce
 import struct Yosemite.POSVariableParentProduct
 import enum Yosemite.POSItem
+import Observation
 
 final class PointOfSaleItemsControllerTests {
     @available(iOS 17.0, *)
@@ -139,7 +140,6 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(itemProvider: itemProvider)
 
-        let initialItems = MockPointOfSaleItemService.makeInitialItems()
         itemProvider.shouldSimulateTwoPages = true
         await sut.loadItems(base: .root)
 
@@ -177,7 +177,6 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(itemProvider: itemProvider)
 
-        let initialItems = MockPointOfSaleItemService.makeInitialItems()
         itemProvider.shouldSimulateTwoPages = true
         itemProvider.shouldSimulateMorePages = true
         await sut.loadItems(base: .root)
@@ -406,15 +405,21 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadItems(base: .root)
         try #require(sut.itemsViewState.itemsStack.root.items == initialItems)
 
-        // When
-        await sut.loadItems(base: .root)
+        await confirmation() { confirmation in
+            withObservationTracking {
+                _ = sut.itemsViewState.itemsStack.root
+            } onChange: {
+                // Then
+                Task { @MainActor in
+                    // Dispatched in a task because `onChange` is called with `willSet` semantics 🙄
+                    #expect(sut.itemsViewState.itemsStack.root == .loading(initialItems))
+                    confirmation()
+                }
+            }
 
-        // Then
-        guard case .loading(let items) = sut.itemsViewState.itemsStack.root else {
-            Issue.record("Expected loading ItemList state, but got \(sut.itemsViewState)")
-            return
+            // When
+            await sut.loadItems(base: .root)
         }
-        #expect(items == initialItems)
     }
 
     @available(iOS 17.0, *)
@@ -424,18 +429,22 @@ final class PointOfSaleItemsControllerTests {
         let sut = PointOfSaleItemsController(itemProvider: itemProvider)
 
         itemProvider.shouldReturnZeroItems = true
-        await sut.loadItems(base: .root)
-        try #require(sut.itemsViewState.itemsStack.root.items == [])
 
-        // When
-        await sut.loadItems(base: .root)
+        await confirmation() { confirmation in
+            withObservationTracking {
+                _ = sut.itemsViewState.containerState
+            } onChange: {
+                // Then
+                Task { @MainActor in
+                    #expect(sut.itemsViewState.containerState == .loading)
+                    #expect(sut.itemsViewState.itemsStack.root == .loading([]))
+                    confirmation()
+                }
+            }
 
-        // Then
-        guard case .loading(let items) = sut.itemsViewState.itemsStack.root else {
-            Issue.record("Expected loading ItemList state, but got \(sut.itemsViewState)")
-            return
+            // When
+            await sut.loadItems(base: .root)
         }
-        #expect(items == [])
     }
 
     @available(iOS 17.0, *)
@@ -481,14 +490,19 @@ final class PointOfSaleItemsControllerTests {
         let initialChildItems = sut.itemsViewState.itemsStack.itemStates[parentItem]?.items ?? []
         try #require(!initialChildItems.isEmpty)
 
-        // When
-        await sut.loadItems(base: baseItem)
+        await confirmation() { confirmation in
+            withObservationTracking {
+                _ = sut.itemsViewState.itemsStack.itemStates[parentItem]
+            } onChange: {
+                // Then
+                Task { @MainActor in
+                    #expect(sut.itemsViewState.itemsStack.itemStates[parentItem] == .loading(initialChildItems))
+                    confirmation()
+                }
+            }
 
-        // Then
-        guard case .loading(let items) = sut.itemsViewState.itemsStack.itemStates[parentItem] else {
-            Issue.record("Expected loading ItemList state, but got \(sut.itemsViewState)")
-            return
+            // When
+            await sut.loadItems(base: baseItem)
         }
-        #expect(items == initialChildItems)
     }
 }

@@ -37,6 +37,9 @@ struct WooShippingCreateLabelsView: View {
     /// Whether the origin address list sheet is presented.
     @State private var isOriginAddressListPresented = false
 
+    /// Whether the address verification notice is displayed.
+    @State private var isAddressVerificationNoticePresented = true
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -81,10 +84,12 @@ struct WooShippingCreateLabelsView: View {
                                     .bold()
                                 // TODO: Only display the notice if the address is unverified, or
                                 // if the address was just verified (and then auto-dismiss it after a couple seconds).
-                                addressVerificationNotice
-                                    .onTapGesture {
-                                        // TODO: Start address editing/verification flow if needed (if destination address is unverified).
-                                    }
+                                if isAddressVerificationNoticePresented {
+                                    addressVerificationNotice
+                                        .onTapGesture {
+                                            // TODO: Start address editing/verification flow if needed (if destination address is unverified).
+                                        }
+                                }
                             }
                         }
                         if !viewModel.canViewLabel {
@@ -295,7 +300,9 @@ private extension WooShippingCreateLabelsView {
                  ? Localization.AddressVerification.destinationVerified : Localization.AddressVerification.destinationUnverified)
                 .frame(maxWidth: .infinity, alignment: .leading)
             Button {
-                // TODO: Dismiss the notice.
+                withAnimation {
+                    isAddressVerificationNoticePresented = false
+                }
             } label: {
                 Image(systemName: "xmark")
                     .renderedIf(!viewModel.isDestinationAddressVerified)

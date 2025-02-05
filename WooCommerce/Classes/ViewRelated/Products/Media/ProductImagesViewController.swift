@@ -371,7 +371,10 @@ private extension ProductImagesViewController {
         static let replacePhoto = NSLocalizedString("Replace Photo", comment: "Action to replace one photo on the Product images screen")
         static let variableProductHelperText = NSLocalizedString("Only one photo can be displayed by variation",
                                                                  comment: "Helper text above photo list in Product images screen")
-        static let dragAndDropHelperText = NSLocalizedString("Drag and drop to re-order photos",
-                                                             comment: "Drag and drop helper text above photo list in Product images screen")
+        static let dragAndDropHelperText = NSLocalizedString(
+            "productImagesViewController.dragAndDropHelperText",
+            value: "Drag and drop to re-order photos. The first photo will be set as the cover.",
+            comment: "Drag and drop helper text above photo list in Product images screen"
+        )
     }
 }

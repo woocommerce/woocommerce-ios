@@ -6,7 +6,7 @@ struct InPersonPaymentsLearnMore: View {
     @ObservedObject private var viewModel: LearnMoreViewModel
     private let showInfoIcon: Bool
 
-    init(viewModel: LearnMoreViewModel = LearnMoreViewModel(),
+    init(viewModel: LearnMoreViewModel,
          showInfoIcon: Bool = true) {
         self.viewModel = viewModel
         self.showInfoIcon = showInfoIcon
@@ -40,7 +40,9 @@ struct InPersonPaymentsLearnMore: View {
 
 struct InPersonPaymentsLearnMore_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsLearnMore()
+        InPersonPaymentsLearnMore(viewModel: .inPersonPayments(source: .paymentMethods,
+                                                               paymentGateway: .wcPay),
+                                  showInfoIcon: true)
             .padding()
     }
 }

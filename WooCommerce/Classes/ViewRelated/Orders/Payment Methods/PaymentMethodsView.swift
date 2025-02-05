@@ -24,8 +24,6 @@ struct PaymentMethodsView: View {
 
     @State private var showingScanToPayView = false
 
-    private let learnMoreViewModel = LearnMoreViewModel.inPersonPayments(source: .paymentMethods)
-
     ///   Environment safe areas
     ///
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
@@ -88,12 +86,12 @@ struct PaymentMethodsView: View {
                     .padding(.horizontal)
                     .background(Color(.listForeground(modal: false)))
 
-                    NavigationLink(destination: WebView(isPresented: .constant(true), url: learnMoreViewModel.url)
+                    NavigationLink(destination: WebView(isPresented: .constant(true), url: viewModel.learnMoreViewModel.url)
                                                 .onAppear {
-                                                    learnMoreViewModel.learnMoreTapped()
+                                                    viewModel.learnMoreViewModel.learnMoreTapped()
                                                 }
                     ) {
-                        AttributedText(learnMoreViewModel.learnMoreAttributedString)
+                        AttributedText(viewModel.learnMoreViewModel.learnMoreAttributedString)
                     }.padding(.horizontal)
 
                     NavigationLink(isActive: $showingCashAlert) {

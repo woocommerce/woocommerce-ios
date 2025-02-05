@@ -146,15 +146,17 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     // MARK: Remote validation
 
-    /// Whether the address is being remotely validated.
-    /// This property is used to show a loading indicator while the remote validation is in progress.
-    @Published private(set) var isRemotelyValidating: Bool = false
+    /// Whether a remote action is in progress.
+    @Published private(set) var isLoading: Bool = false
 
     /// View model for normalizing the address.
     @Published var normalizeAddressVM: WooShippingNormalizeAddressViewModel?
 
     /// Error from remote validation, if any.
     @Published private var remoteValidationError: String?
+
+    /// Closure called when an origin address is done being edited and the changes are confirmed.
+    private(set) var onOriginAddressEdited: ((WooShippingOriginAddress) -> Void)?
 
     init(type: AddressType,
          id: String,
@@ -173,7 +175,8 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
          phoneNumberRequired: Bool,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         debounceDelayInSeconds: Double = 1) {
+         debounceDelayInSeconds: Double = 1,
+         onOriginAddressEdited: ((WooShippingOriginAddress) -> Void)? = nil) {
         self.addressType = type
         self.id = id
         self.name = WooShippingAddressField(type: .name, value: name, required: company.isEmpty, validate: { _ in return nil })
@@ -203,6 +206,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         self.siteID = stores.sessionManager.defaultStoreID ?? Int64.min
         self.storageManager = storageManager
         self.debounceDelay = debounceDelayInSeconds
+        self.onOriginAddressEdited = onOriginAddressEdited
 
         // Set validation rules for fields that rely on instance properties.
         self.name.validate = { [weak self] newName in
@@ -241,7 +245,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     convenience init(address: WooShippingOriginAddress,
                      stores: StoresManager = ServiceLocator.stores,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
-                     onAddressEdited: ((WooShippingAddress) -> Void)? = nil) {
+                     onAddressEdited: ((WooShippingOriginAddress) -> Void)? = nil) {
         self.init(type: .origin,
                   id: address.id,
                   name: address.fullName,
@@ -258,7 +262,8 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                   isVerified: address.isVerified,
                   phoneNumberRequired: true,
                   stores: stores,
-                  storageManager: storageManager)
+                  storageManager: storageManager,
+                  onOriginAddressEdited: onAddressEdited)
     }
 
     /// Validates the address remotely.
@@ -276,7 +281,13 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         do {
             let validation = try await remotelyValidateAddress(addressToValidate)
             normalizeAddressVM = WooShippingNormalizeAddressViewModel(enteredAddress: validation.originalAddress,
-                                                                      suggestedAddress: validation.normalizedAddress)
+                                                                      suggestedAddress: validation.normalizedAddress,
+                                                                      onConfirm: { [weak self] confirmedAddress in
+                guard let self else { return }
+                if addressType == .origin {
+                    updateConfirmedOriginAddress(confirmedAddress)
+                }
+            })
         } catch let error as WooShippingAddressValidationError {
             if let nameError = error.nameError {
                 name.setError(nameError)
@@ -288,7 +299,41 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                 remoteValidationError = generalError
             }
         } catch {
+            // TODO: Display error if validation request fails.
             DDLogError("⛔️ Error validating address for Woo Shipping label: \(error)")
+        }
+    }
+
+    /// Updates the origin address remotely with the provided (normalized) address and other edits.
+    private func updateConfirmedOriginAddress(_ address: WooShippingAddress) {
+        guard addressType == .origin else {
+            return
+        }
+
+        // Merge the provided (normalized) address with the edited address fields.
+        let address = WooShippingOriginAddress(id: id,
+                                               company: address.company,
+                                               address1: address.address1,
+                                               address2: address.address2,
+                                               city: address.city,
+                                               state: address.state,
+                                               postcode: address.postcode,
+                                               country: address.country,
+                                               phone: address.phone,
+                                               firstName: name.value,
+                                               lastName: "",
+                                               email: email.value,
+                                               defaultAddress: isDefaultAddress,
+                                               isVerified: true)
+
+        Task { @MainActor in
+            do {
+                let updatedOriginAddress = try await updateOriginAddress(with: address)
+                onOriginAddressEdited?(updatedOriginAddress)
+            } catch {
+                // TODO: Display error if origin address update fails.
+                DDLogError("⛔️ Error updating origin address for Woo Shipping label: \(error)")
+            }
         }
     }
 }
@@ -416,7 +461,7 @@ private extension WooShippingEditAddressViewModel {
     @MainActor
     func remotelyValidateAddress(_ address: ShippingLabelAddress) async throws -> WooShippingAddressValidationSuccess {
         try await withCheckedThrowingContinuation { continuation in
-            isRemotelyValidating = true
+            isLoading = true
             let action = WooShippingAction.validateAddress(siteID: siteID,
                                                            address: address) { [weak self] result in
                 guard let self else { return }
@@ -426,7 +471,28 @@ private extension WooShippingEditAddressViewModel {
                 case let .failure(error):
                     continuation.resume(throwing: error)
                 }
-                self.isRemotelyValidating = false
+                isLoading = false
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    /// Updates an origin address remotely.
+    @MainActor
+    func updateOriginAddress(with address: WooShippingOriginAddress) async throws -> WooShippingOriginAddress {
+        return try await withCheckedThrowingContinuation { continuation in
+            isLoading = true
+            let action = WooShippingAction.updateOriginAddress(siteID: siteID,
+                                                               address: address,
+                                                               isVerified: address.isVerified) { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case let .success(result):
+                    continuation.resume(returning: result.address)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+                isLoading = false
             }
             stores.dispatch(action)
         }

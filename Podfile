@@ -37,7 +37,11 @@ def tracks
 end
 
 def wordpress_shared
-  pod 'WordPressShared', '~> 2.1'
+  pod 'WordPressShared', '~> 2.1-beta'
+end
+
+def svprogresshud
+  pod 'SVProgressHUD', '2.2.5'
 end
 
 def keychain
@@ -76,6 +80,16 @@ def networking_watch_os_pods
   keychain
 end
 
+def gridicons
+  pod 'Gridicons', '~> 1.2.0'
+end
+
+def wordpress_ui
+  pod 'WordPressUI', '~> 1.15'
+  # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
+  # pod 'WordPressUI', git: 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', commit: ''
+end
+
 # Main Target!
 # ============
 #
@@ -88,19 +102,10 @@ target 'WooCommerce' do
 
   tracks
 
-  pod 'Gridicons', '~> 1.2.0'
-
-  # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressAuthenticator', '~> 9.10.2'
-  # pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', branch: ''
-  # pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', commit: 'e5247b2d9bdb522c5d210dd6b66d58a4013eed99'
-  # pod 'WordPressAuthenticator', path: '../WordPressAuthenticator-iOS'
+  gridicons
 
   wordpress_shared
-
-  pod 'WordPressUI', '~> 1.15'
-  # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
-  # pod 'WordPressUI', git: 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', commit: ''
+  wordpress_ui
 
   aztec
 
@@ -322,6 +327,37 @@ end
 target 'ExperimentsTests' do
   project 'Experiments/Experiments.xcodeproj'
   experiments_pods
+end
+
+# WordPressAuthenticator
+# ==========
+#
+def wordpress_authenticator_pods
+  svprogresshud
+  gridicons
+  wordpress_ui
+  wordpress_shared
+  pod 'NSObject-SafeExpectations', '~> 0.0.4'
+  pod 'wpxmlrpc', '~> 0.10'
+  pod 'UIDeviceIdentifier', '~> 2.0'
+end
+
+target 'WordPressAuthenticator' do
+  project 'WooCommerce/WooCommerce.xcodeproj'
+  wordpress_authenticator_pods
+end
+
+target 'WordPressAuthenticatorTests' do
+  project 'WooCommerce/WooCommerce.xcodeproj'
+  wordpress_authenticator_pods
+
+  alamofire
+  pod 'OCMock', '~> 3.4'
+  pod 'Expecta', '1.0.6'
+  pod 'Specta', '1.0.7'
+  pod 'OHHTTPStubs', '~> 9.0'
+  pod 'OHHTTPStubs/Swift', '~> 9.0'
+  pod 'OCMock', '~> 3.4'
 end
 
 # Tools

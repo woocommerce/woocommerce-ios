@@ -19,7 +19,8 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
     var isEligible: AnyPublisher<Bool, Never> {
         // Conditions that are fixed for its lifetime.
         let isTablet = userInterfaceIdiom == .pad
-        guard isTablet else {
+        guard isTablet,
+              #available(iOS 17.0, *) else {
             return Just(false)
                 .eraseToAnyPublisher()
         }

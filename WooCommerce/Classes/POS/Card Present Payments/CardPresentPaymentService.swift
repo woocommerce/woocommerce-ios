@@ -108,6 +108,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             DDLogError("Attempting to cancel the payment has failed \(error)")
         }
 
+        paymentTask?.cancel()
         connectionControllerManager.knownReaderProvider.forgetCardReader()
 
         return await withCheckedContinuation { continuation in

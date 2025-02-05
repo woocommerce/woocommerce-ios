@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-01-24 17:47:48+0000 */
+/* Translation-Revision-Date: 2025-02-03 14:23:49+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -264,29 +264,14 @@ which should be translated separately and considered part of this sentence. */
 /* Disclaimer regarding some of the features related to payments. */
 "1. Available as standard in WooCommerce Payments (restrictions apply).Additional extensions may be required for other payment providers." = "1. Tillgänglig som standard i WooCommerce Payments (begränsningar gäller). Ytterligare utökningar kan vara obligatoriska för andra betalningsleverantörer.";
 
-/* Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment */
-"1. Create an order" = "1. Skapa en beställning";
-
 /* Disclaimer regarding some of the features related to shipping. */
 "2. Only available in the U.S. – an additional extension will be required for other countries." = "2. Endast tillgängligt i USA – en ytterligare utökning kommer vara obligatoriskt för andra länder.";
-
-/* Step 2 of the 'How it works' list, instructing the merchant to how to select Tap to Pay payments */
-"2. Tap “Collect Payment” and choose “Tap to Pay on iPhone”." = "2. Tryck på \"Ta emot betalning\" och välj \"Tryck för att betala på iPhone\".";
-
-/* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
-"3. Present your iPhone to the customer." = "3. Håll fram din iPhone till kunden.";
 
 /* Tutorial steps on the application password tutorial screen */
 "3. When the connection is complete, you will be logged in to your store." = "3. När anslutningen är klar kommer du att loggas in i din butik.";
 
 /* Estimated setup time text shown on the Woo payments setup instructions screen. */
 "4-6 minutes" = "4-6 minuter";
-
-/* Step 4 of the 'How it works' list, informing the merchant of how a shopper should present their card */
-"4. Your customer holds their card horizontally at the top of your iPhone, over the contactless symbol." = "4. Din kund håller sitt kort horisontellt högst upp på din iPhone över symbolen för kontaktlös betalning.";
-
-/* Step 5 of the 'How it works' list, instructing the merchant to wait until processing is complete. */
-"5. After you see the “Done” checkmark, your store will process the payment, and the transaction will be complete." = "5. När du ser \"Klar\"-markeringen kommer din butik att behandla betalningen och transaktionen är slutförd.";
 
 /* Content of one of the features of the Paid plans, pointing to gigabytes of site storage. */
 "50 GB" = "50 GB";
@@ -342,12 +327,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "Abandoned cart recovery" = "Återställning av övergiven varukorg";
-
-/* Title for the webview used by merchants to view more details about Tap to Pay on iPhone */
-"About Tap to Pay" = "Om Tryck för att betala";
-
-/* Navigation title for the About Tap to Pay on iPhone Screen. */
-"About Tap to Pay on iPhone" = "Om Tryck för att betala på iPhone";
 
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Om appen";
@@ -1601,7 +1580,7 @@ which should be translated separately and considered part of this sentence. */
 "Colombia" = "Colombia";
 
 /* Message displayed if there are no inbox notes to display in the inbox screen. */
-"Come back soon for more tips and insights on growing your store" = "Kom tillbaka snart för fler tips och insikter om hur du får din butik att växa";
+"Come back soon for more tips and insights on growing your store." = "Kom tillbaka snart för fler tips och insikter om hur du får din butik att växa";
 
 /* Country option for a site address. */
 "Comoros" = "Komorerna";
@@ -2326,7 +2305,6 @@ which should be translated separately and considered part of this sentence. */
    Done button on the Allowed Emails screen
    Done button on the Jetpack Install Progress screen.
    Done button on the screen that is shown after a successful plan upgrade.
-   Done navigation button in About Tap to Pay on iPhone screen, when presented from the set up flow
    Done navigation button in Inbox Notes webview
    Done navigation button in selection list screens
    Done navigation button in Shipping Label add payment webview
@@ -2426,7 +2404,7 @@ which should be translated separately and considered part of this sentence. */
 "Drag and drop to re-order photos" = "Dra och släpp för att ändra ordning på foton";
 
 /* Subtitle of the empty state of the Blaze campaign list view */
-"Drive more sales to your store with Blaze" = "Få mer försäljning i din butik med marknadsföring";
+"Drive more sales to your store with Blaze." = "Få mer försäljning i din butik med marknadsföring";
 
 /* Button title to duplicate a product in Product More Options Action Sheet */
 "Duplicate" = "Duplicera";
@@ -2884,7 +2862,7 @@ which should be translated separately and considered part of this sentence. */
 "Explore" = "Utforska";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
-"Explore how you can increase your store sales" = "Utforska hur du kan öka din butiksförsäljning";
+"Explore how you can increase your store sales." = "Utforska hur du kan öka din butiksförsäljning";
 
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "Extern";
@@ -3394,9 +3372,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "Hur kan vi förbättra?";
 
-/* Headline for the 'How it works' section on the About Tap to Pay on iPhone screen, which describes the steps required to take a payment. */
-"How it works" = "Hur det fungerar";
-
 /* Country option for a site address. */
 "Hungary" = "Ungern";
 
@@ -3476,16 +3451,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to In-Person Payments screen */
 "In-Person Payments" = "Personliga betalningar";
-
-/* Main prompt for the screen to select the preferred provider for In-Person Payments */
-"In-Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "Personliga betalningar kan behandlas via båda dessa betalningsleverantörer. Vilken leverantör vill du använda?";
-
-/* Title for the error screen when the merchant's payment account is restricted because it's under reviw
-   Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
-"In-Person Payments is currently unavailable" = "Personliga betalningar är för närvarande inte tillgängliga";
-
-/* Title for the error screen when the merchant's payment account has been rejected. */
-"In-Person Payments isn't available for this store" = "Personliga betalningar är inte tillgängliga för den här butiken";
 
 /* Cell title on beta features screen to enable in-app purchases */
 "In-app purchases" = "Köp i appen";
@@ -3651,6 +3616,24 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing external inventory.
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Lagersaldo";
+
+/* Main prompt for the screen to select the preferred provider for In-Person Payments
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"In‑Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "Personliga betalningar kan behandlas via båda dessa betalningsleverantörer. Vilken leverantör vill du använda?";
+
+/* Title for the error screen when the merchant's payment account is restricted because it's under reviw
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
+   Title for the error screen when the Stripe account is restricted because there are overdue requirements.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"In‑Person Payments is currently unavailable" = "Personliga betalningar är för närvarande inte tillgängliga";
+
+/* Title for the error screen when the merchant's payment account has been rejected.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"In‑Person Payments isn't available for this store" = "Personliga betalningar är inte tillgängliga för den här butiken";
 
 /* Country option for a site address. */
 "Iran" = "Iran";
@@ -4285,9 +4268,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Mongolia" = "Mongoliet";
-
-/* Caption displayed in promotional screens shown during the login flow. */
-"Monitor and approve your product reviews" = "Övervaka och godkänn dina produktrecensioner";
 
 /* Country option for a site address. */
 "Montenegro" = "Montenegro";
@@ -5857,9 +5837,6 @@ which should be translated separately and considered part of this sentence. */
    Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "Obligatoriskt";
 
-/* Requirements for Tap to Pay on iPhone, and other small print shown on the About Tap to Pay on iPhone screen. %1$@ will be replaced with the relevant iOS version number. */
-"Requires iPhone XS or later with iOS %1$@ or later. The Contactless Symbol is a trademark owned by and used with permission of EMVCo, LLC." = "Kräver iPhone XS eller senare med iOS %1$@ eller senare. Contactless Symbol är ett varumärke som ägs av och används med tillåtelse av EMVCo, LLC.";
-
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Återställ aktivitetslogg";
 
@@ -6285,8 +6262,7 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the tax rate selector */
 "Set Tax Rate" = "Ange momssats";
 
-/* Button title for the main CTA on the About Tap to Pay on iPhone screen. The button opens the Set Up Tap to Pay on iPhone flow.
-   Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
+/* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
 "Set Up Tap to Pay on iPhone" = "Konfigurera Tryck för att betala på iPhone";
 
 /* Title for the button to add a new tax ratewhen there is a tax rate stored */
@@ -6931,9 +6907,6 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of Tap to Pay on iPhone collection readiness. Presented to users when payment collection starts */
 "Tap to Pay on iPhone is ready" = "Tryck för att betala på iPhone är redo";
 
-/* Description of Tap to Pay on iPhone shown on the About Tap to Pay on iPhone screen, as an intro. */
-"Tap to Pay on iPhone lets you accept all types of contactless payments – from physical debit and credit cards, to Apple Pay and other digital wallets – without the need to purchase a physical card reader." = "Med Tryck för att betala på iPhone kan du ta emot alla typer av kontaktlösa betalningar, från fysiska betal- och kreditkort till Apple Pay och andra digitala plånböcker, utan att behöva köpa en fysisk kortläsare.";
-
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "Tryck för att infoga en vågrät linjal";
 
@@ -7099,14 +7072,20 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "That username is not allowed." = "Det användarnamnet är inte tillåtet.";
 
-/* Error message when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
-"The %1$@ extension cannot be in test mode for In-Person Payments. Please disable test mode." = "Utökningen %1$@ kan inte vara i testläge för personliga betalningar. Inaktivera testläget.";
+/* Error message when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"The %1$@ extension cannot be in test mode for In‑Person Payments. Please disable test mode." = "Utökningen %1$@ kan inte vara i testläge för personliga betalningar. Inaktivera testläget.";
 
-/* Error message when a Card Present Payments extension is not activated */
-"The %1$@ extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "Utökningen %1$@ är installerat i din butik men inte aktiverat. Aktivera den för att acceptera personliga betalningar";
+/* Error message when a Card Present Payments extension is not activated
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"The %1$@ extension is installed on your store but not activated. Please activate it to accept In‑Person Payments" = "Utökningen %1$@ är installerat i din butik men inte aktiverat. Aktivera den för att acceptera personliga betalningar";
 
-/* Error message when a Card Present Payments extension is installed but the version is not supported */
-"The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "%1$@-utökningen är installerad för din butik, men behöver uppdateras för att ta emot personliga betalningar. Uppdatera den till den senaste versionen.";
+/* Error message when a Card Present Payments extension is installed but the version is not supported
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
+"The %1$@ extension is installed on your store, but needs to be updated for In‑Person Payments. Please update it to the most recent version." = "%1$@-utökningen är installerad för din butik, men behöver uppdateras för att ta emot personliga betalningar. Uppdatera den till den senaste versionen.";
 
 /* Error message when the card reader loses its Bluetooth connection to the card reader. */
 "The Bluetooth connection to the card reader disconnected unexpectedly." = "Bluetooth-anslutningen till kortläsaren kopplades oväntat från";
@@ -7215,9 +7194,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Footnote about the domain credit banner in domain settings. */
 "The domain purchased will redirect users to your primary address." = "Den köpta domänen kommer att omdirigera användare till din primära adress.";
-
-/* Caption displayed in the simplified prologue screen */
-"The ecommerce platform that grows with you" = "E-handelsplattformen som växer tillsammans med dig";
 
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "Första gången du använder Tryck för att betala på iPhone kan du bli ombedd att godkänna Apples användarvillkor.";
@@ -7345,11 +7321,17 @@ which should be translated separately and considered part of this sentence. */
 /* The error message shown if the app can't show a theme demo. */
 "ThemesPreviewView.errorLoadingThemeDemo" = "Det gick inte att rendera demon för det här temat. Prova med ett annat tema.";
 
-/* Error message when because there are pending requirements in the merchant's In-Person Payments account. %1$d will contain the localized deadline (e.g. August 11, 2021) */
-"There are pending requirements for your account. Please complete those requirements by %1$@ to keep accepting In-Person Payments." = "Det finns krav som inväntar granskning för ditt konto. Slutför dessa krav senast den %1$@ för att fortsätta ta emot personliga betalningar.";
+/* Error message when because there are pending requirements in the merchant's
+In-Person Payments account.
+%1$d will contain the localized deadline (e.g. August 11, 2021)
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"There are pending requirements for your account. Please complete those requirements by %1$@ to keep accepting In‑Person Payments." = "Det finns krav som inväntar granskning för ditt konto. Slutför dessa krav senast den %1$@ för att fortsätta ta emot personliga betalningar.";
 
-/* Error message when there are pending requirements in the merchant's payment account (without a known deadline) */
-"There are pending requirements for your account. Please complete those requirements to keep accepting In-Person Payments." = "Det finns krav som inväntar granskning för ditt konto. Slutför dessa krav för att fortsätta ta emot personliga betalningar.";
+/* Error message when there are pending requirements in the merchant's payment account (without a known deadline)
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"There are pending requirements for your account. Please complete those requirements to keep accepting In‑Person Payments." = "Det finns krav som inväntar granskning för ditt konto. Slutför dessa krav för att fortsätta ta emot personliga betalningar.";
 
 /* The info on the Error Loading Data banner when there was a Jetpack connection error. */
 "There is a problem with your store's Jetpack connection. Please reconnect Jetpack or reach out to us and we'll be happy to assist you!" = "Det har uppstått ett problem med din butiks Jetpack-anslutning. Försök att återansluta Jetpack eller kontakta oss så hjälper vi dig gärna.";
@@ -7545,7 +7527,7 @@ which should be translated separately and considered part of this sentence. */
 "To add a Product Discount, please remove all Coupons from your order" = "Ta bort alla rabattkoder från din beställning för att lägga till en produktrabatt";
 
 /* Subtitle on the variations list screen when there are no variations and attributes */
-"To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "För att lägga till en variation måste du först ange dess attribut (dvs. \"färg\", \"storlek\").";
+"To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first." = "För att lägga till en variation måste du först ange dess attribut (dvs. \"färg\", \"storlek\").";
 
 /* Error message displayed when unable to close user account due to having active atomic site. */
 "To close this account now, contact our support team." = "För att avsluta detta konto nu, kontakta vårt supportteam.";
@@ -7993,8 +7975,10 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when unable to bulk update price of the variations */
 "Unable to update price" = "Kan inte uppdatera pris";
 
-/* Title for the error screen when In-Person Payments is unavailable */
-"Unable to verify In-Person Payments for this store" = "Det gick inte att verifiera personliga betalningar för den här butiken.";
+/* Title for the error screen when In-Person Payments is unavailable
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"Unable to verify In‑Person Payments for this store" = "Det gick inte att verifiera personliga betalningar för den här butiken.";
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "Kunde inte verifiera e-postadressen. Försök igen senare.";
@@ -8382,8 +8366,10 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Wallis and Futuna" = "Wallis- och Futunaöarna";
 
-/* Error message when the merchant's payment account has been rejected */
-"We are sorry but we can't support In-Person Payments for this store." = "Tyvärr kan vi inte erbjuda personliga betalningar för den här butiken.";
+/* Error message when the merchant's payment account has been rejected
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We are sorry but we can't support In‑Person Payments for this store." = "Tyvärr kan vi inte erbjuda personliga betalningar för den här butiken.";
 
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "Vi arbetar på att göra det enklare för dig att se produkttillägg från din enhet! För tillfället kan du endast se tilläggen för dina beställningar. Du kan skapa och redigera dessa tillägg i din webbadminpanel.";
@@ -8425,17 +8411,25 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users when updating the card reader software fails */
 "We couldn’t update your reader’s software" = "Vi kunde inte uppdatera din läsares programvara";
 
-/* Title for the error screen when In-Person Payments is not supported in a specific country */
-"We don’t support In-Person Payments in %1$@" = "Vi stöder inte personliga betalningar i %1$@";
+/* Title for the error screen when In-Person Payments is not supported in a specific country
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We don’t support In‑Person Payments in %1$@" = "Vi stöder inte personliga betalningar i %1$@";
 
-/* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
-"We don’t support In-Person Payments in your country" = "Vi stöder inte personliga betalningar i ditt land";
+/* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We don’t support In‑Person Payments in your country" = "Vi stöder inte personliga betalningar i ditt land";
 
-/* Title for the error screen when In-Person Payments is not supported in a specific country */
-"We don’t support In-Person Payments with Stripe in %1$@" = "Vi stöder inte personliga betalningar med Stripe i %1$@";
+/* Title for the error screen when In-Person Payments is not supported in a specific country
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We don’t support In‑Person Payments with Stripe in %1$@" = "Vi stöder inte personliga betalningar med Stripe i %1$@";
 
-/* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
-"We don’t support In-Person Payments with Stripe in your country" = "Vi stöder inte personliga betalningar med Stripe i ditt land";
+/* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We don’t support In‑Person Payments with Stripe in your country" = "Vi stöder inte personliga betalningar med Stripe i ditt land";
 
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "We enable you to process them effortlessly." = "Vi gör det möjligt för dig att bearbeta betalningar på ett enkelt och smidigt sätt";
@@ -8509,8 +8503,10 @@ which should be translated separately and considered part of this sentence. */
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "Vi kunde inte hitta resultat för ”%@”";
 
-/* Generic error message when In-Person Payments is unavailable */
-"We're sorry, we were unable to verify In-Person Payments for this store." = "Vi kunde inte verifiera personliga betalningar för den här butiken.";
+/* Generic error message when In-Person Payments is unavailable
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We're sorry, we were unable to verify In‑Person Payments for this store." = "Vi kunde inte verifiera personliga betalningar för den här butiken.";
 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Vi har skickat en registreringslänk till dig via e-post, så att du kan skapa ditt nya WordPress.com-konto. Kontrollera din e-post på den här enheten och tryck på länken i e-postmeddelandet som du får från WordPress.com.";
@@ -8554,9 +8550,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "What is Jetpack?" = "Vad är Jetpack?";
-
-/* Main heading for the About Tap to Pay on iPhone screen */
-"What is Tap to Pay on iPhone?" = "Vad är Tryck för att betala på iPhone?";
 
 /* Shipping Labels: info title about WooCommerce Services discount */
 "What is WooCommerce Services discount?" = "Vad innebär rabatt på WooCommerce-tjänster?";
@@ -8763,8 +8756,10 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "Du har en ny beställning! 🎉";
 
-/* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
-"You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "Du har minst ett försenat krav i ditt konto. Ta hand om det för att återuppta personliga betalningar.";
+/* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"You have at least one overdue requirement on your account. Please take care of that to resume In‑Person Payments." = "Du har minst ett försenat krav i ditt konto. Ta hand om det för att återuppta personliga betalningar.";
 
 /* Error message for a short value in Description row in Customs screen of Shipping Label flow */
 "You must provide a clear, specific description for every item." = "Du måste ange en tydlig, specifik beskrivning för varje vara.";
@@ -8778,8 +8773,10 @@ which should be translated separately and considered part of this sentence. */
 /* Error messaged show when a mobile plugin is redirecting traffict to their site, DudaMobile in particular */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Det verkar som att du har installerat ett mobiltillägg från DudaMobile som förhindrar att appen ansluter till din blogg";
 
-/* Error message when the merchant's payment account is under review */
-"You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "Du kommer att kunna ta emot personliga betalningar så snart vi har slutfört granskningen av ditt konto.";
+/* Error message when the merchant's payment account is under review
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"You'll be able to accept In‑Person Payments as soon as we finish reviewing your account." = "Du kommer att kunna ta emot personliga betalningar så snart vi har slutfört granskningen av ditt konto.";
 
 /* Title for the Upgrades summary card, informing the merchant they're on a Free Trial site. */
 "You're in a free trial" = "Du är i en gratis provperiod";
@@ -8884,14 +8881,18 @@ which should be translated separately and considered part of this sentence. */
 /* Message of the free trial banner when there are no days left */
 "Your trial has ended." = "Din provperiod har avslutats.";
 
-/* Error message when WooCommerce Payments is not installed */
-"You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "Du måste installera den kostnadsfria utökningen WooCommerce Payments för din butik för att ta emot personliga betalningar.";
+/* Error message when WooCommerce Payments is not installed
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
+"You’ll need to install the free WooCommerce Payments extension on your store to accept In‑Person Payments." = "Du måste installera den kostnadsfria utökningen WooCommerce Payments för din butik för att ta emot personliga betalningar.";
 
 /* Title for the progress screen shown after an In-App Purchase for a Woo Express plan, while we upgrade the site. */
 "You’re almost there" = "Du är nästan där";
 
-/* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name. */
-"You’re almost there! Please finish setting up %1$@ to start accepting In-Person Payments." = "Du är nästan där! Slutför konfigurationen av %1$@ för att börja ta emot personliga betalningar.";
+/* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"You’re almost there! Please finish setting up %1$@ to start accepting In‑Person Payments." = "Du är nästan där! Slutför konfigurationen av %1$@ för att börja ta emot personliga betalningar.";
 
 /* Country option for a site address. */
 "Zambia" = "Zambia";
@@ -9872,6 +9873,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.builtIn.modalCheckingDeviceSupport.title" = "Kontrollerar enhet";
 
+/* Button title to retry the card reader software update when the reader is low on battery. */
+"cardPresent.modal.updateFailed.lowBattery.retry.button.title" = "Försök igen";
+
 /* Label for a cancel button */
 "cardPresent.modalScanningForReader.cancelButton" = "Avbryt";
 
@@ -9989,6 +9993,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Det totala beställningsbeloppet har ändrats sedan betalningen inleddes. Gå tillbaka och kontrollera att beställningen är korrekt och försök sedan betala igen.";
+
+/* Error message when the cash amount entered is less than the order total. */
+"collectcashviewhelper.cashpaymentamountnotenough.errormessage" = "Beloppet måste vara lika med eller högre än totalsumman.";
+
+/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue" = "Växel: %1$@";
+
+/* Error message when the system fails to collect a cash payment. */
+"collectcashviewhelper.failedtocollectcashpayment.errormessage" = "Det gick inte att behandla betalningen. Försök igen.";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Välj produkter för Blaze-kampanj.";
@@ -10458,6 +10471,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Edit Store List view */
 "editStoreListView.title" = "Synliga butiker";
 
+/* Footer of the Other Stores section on the Edit Store List view */
+"editStoreListView.unselectedStoresNote" = "Butiker som inte har valts exkluderas från butiksväljaren och får inga pushnotiser om nya beställningar eller produkter.";
+
 /* Title for button to view the feedback survey about adding shipping to an order */
 "editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "Dela din feedback";
 
@@ -10537,8 +10553,17 @@ which should be translated separately and considered part of this sentence. */
 /* Button to clear all history on the Filter History view */
 "filterHistoryView.clearHistory" = "Rensa historik";
 
+/* Message to confirm clearing all history on the Filter History view */
+"filterHistoryView.clearHistoryConfirmation" = "Är du säker på att du vill rensa all filterhistorik?";
+
+/* Label on the empty state of the Filter History view */
+"filterHistoryView.emptyState" = "Inga tidigare filter hittades";
+
 /* Header label of the Filter History view */
 "filterHistoryView.recent" = "Senaste";
+
+/* Title of the Filter History view */
+"filterHistoryView.title" = "Filterhistorik";
 
 /* Accessibility hint for the filter history button on the filter list screen */
 "filterListViewController.historyBarButtonItem.accessibilityHint" = "Filtrera historik";
@@ -10870,8 +10895,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.title" = "Öka din försäljning";
 
-/* Subtitle displayed in the simplified prologue screen */
-"loginProloguePageType.getStartedText" = "Woo finns med dig hela vägen, från din första försäljning till miljoner i intäkter. Se varför handlare förlitar sig på oss för att driva 3.9 miljoner onlinebutiker.";
+/* Label indicating that the store is being synced in the Jetpack setup flow */
+"loginJetpackSetupCoordinator.syncingStore" = "Synkroniserar butik...";
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "manuell återbetalning";
@@ -11425,12 +11450,6 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.title" = "Behandlar betalning";
 
-/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.cardPresent.paymentSuccessful.message" = "En betalning på %1$@ genomfördes utan problem";
-
-/* Title shown to users when payment is made successfully. */
-"pointOfSale.cardPresent.paymentSuccessful.title" = "Betalning lyckades!";
-
 /* Message shown on the Point of Sale checkout while the reader is being prepared. */
 "pointOfSale.cardPresent.preparingForPayment.message" = "Förbereder kort för betalning";
 
@@ -11463,6 +11482,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
 "pointOfSale.cardPresent.readerNotConnected.title" = "Läsare inte ansluten";
+
+/* Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected. */
+"pointOfSale.cardPresent.readerNotConnectedOrCash.instruction" = "För att behandla den här betalningen, anslut din läsare eller välj kontantbetalning.";
 
 /* Message shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.message" = "Kontrollerar beställning";
@@ -11605,14 +11627,11 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users when updating the card reader software fails */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "Vi kunde inte uppdatera din läsares programvara";
 
-/* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo" = "Uppdateringen av läsarprogramvaran misslyckades, eftersom läsarens batteri endast är laddat till %.0f%%. Ladda läsaren till över 50 %% innan du försöker igen.";
-
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "Avbryt";
 
-/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo" = "Uppdateringen av läsarprogramvaran misslyckades, eftersom batterinivån i läsaren är låg. Ladda läsaren till över 50 \\u0025 innan du försöker igen.";
+/* Button to retry the reader search when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.retryButton.title" = "Försök igen";
 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.title" = "Ladda läsare";
@@ -11662,6 +11681,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to mark a cash payment as completed */
 "pointOfSale.cashview.button.markpaymentcompleted.title" = "Markera betalning som slutförd";
 
+/* Error message when the system fails to collect a cash payment. */
+"pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "Det gick inte att behandla betalningen. Försök igen.";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Vänta";
 
@@ -11691,6 +11713,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Det gick inte att hämta summor.";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message" = "En betalning på %1$@ gjordes";
 
 /* Button title for sending a receipt */
 "pointOfSale.sendreceipt.button.title" = "Skicka";
@@ -11749,6 +11774,15 @@ which should be translated separately and considered part of this sentence. */
 /* Text for the button appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
 "pos.itemList.failedToLoadProductsNextPageButtonTitle" = "Försök igen";
 
+/* Text appearing on the item list screen as subtitle when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageSubtitle" = "Ett fel uppstod vid inläsning av produkter.";
+
+/* Text appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageTitle" = "Det gick inte att läsa in fler objekt";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading products. */
+"pos.itemList.failedToLoadProductsSubtitle" = "Vill du försöka igen?";
+
 /* Text appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadProductsTitle" = "Det gick inte ladda in produkter";
 
@@ -11758,8 +11792,17 @@ which should be translated separately and considered part of this sentence. */
 /* Text for the button appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
 "pos.itemList.failedToLoadVariationsNextPageButtonTitle" = "Försök igen";
 
+/* Text appearing on the item list screen as subtitle when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageSubtitle" = "Ett fel uppstod vid inläsning av variationer.";
+
+/* Text appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageTitle" = "Det gick inte att läsa in fler objekt";
+
 /* Text appearing on the item list screen as subtitle when there's an error loading variations. */
 "pos.itemList.failedToLoadVariationsSubtitle" = "Vill du försöka igen?";
+
+/* Text appearing on the item list screen when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsTitle" = "Ett fel uppstod vid inläsning av variationer";
 
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "Produkter";
@@ -11770,11 +11813,17 @@ which should be translated separately and considered part of this sentence. */
 /* Additional text within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.hint" = "Andra produkttyper, såsom variabel och virtuell, kommer att bli tillgängliga i framtida uppdateringar.";
 
+/* Additional text within the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.hint.simpleAndVariable" = "Andra produkttyper kommer att bli tillgängliga i framtida uppdateringar.";
+
 /* Link to more information within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.learnMoreHint" = "Lär dig mer";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.subtitle" = "Endast enkla fysiska produkter är tillgängliga med POS just nu.";
+
+/* Subtitle of the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.subtitle.simpleAndVariable" = "Endast enkla och variabla nedladdningsbara produkter kan användas med POS just nu.";
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title" = "Visar endast enkla produkter";
@@ -11797,17 +11846,35 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on screen when there are no products to load. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsTitle.1" = "Inga produkter som stöds hittades.";
 
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductHint" = "För att lägga till en, lämna POS och redigera produkten på fliken Produkter.";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductSubtitle" = "POS stöder endast aktiverade, icke-nedladdningsbara variationer.";
+
+/* Text appearing on screen when there are no variations to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle" = "Inga variationer som stöds hittades.";
+
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Skapa en beställning i butikshanteringen";
 
 /* Hint in the simple products information modal in POS */
 "pos.simpleProductsModal.hint" = "För att ta betalt för en icke-enkel produkt, lämna POS och skapa en ny beställning från fliken Beställningar.";
 
+/* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.hint.variableAndSimple" = "För att ta betalt för en produkt som inte stöds, lämna POS och skapa en ny beställning från fliken Beställningar.";
+
 /* Message in the simple products information modal in POS, explaining future plans */
 "pos.simpleProductsModal.message.future" = "Andra produkttyper, till exempel rörliga och virtuella, kommer att bli tillgängliga i framtida uppdateringar.";
 
+/* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.message.future.variableAndSimple" = "Andra produkttyper kommer att bli tillgängliga i framtida uppdateringar.";
+
 /* Message in the simple products information modal in POS */
 "pos.simpleProductsModal.message.issue" = "Endast enkla fysiska produkter kan användas med POS just nu.";
+
+/* Message in the simple products information modal in POS when variable products are supported */
+"pos.simpleProductsModal.message.issue.variableAndSimple" = "Endast enkla och variabla nedladdningsbara produkter kan användas med POS just nu.";
 
 /* Title for the OK button on the simple products information modal in POS */
 "pos.simpleProductsModal.ok.button.title" = "OK";
@@ -12942,6 +13009,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the country field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.country" = "Land";
 
+/* Label for the default address toggle in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.defaultAddress" = "Spara avsändaradressen som standard";
+
 /* Button to dismiss the keyboard */
 "wooShipping.createLabels.editAddress.done" = "Klar";
 
@@ -13098,6 +13168,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Content Details text field in the Shipping Customs Form */
 "wooShipping.customs.contentDetails" = "Innehållsdetaljer";
 
+/* Footnote for the Content Details text field in the Shipping Customs Form */
+"wooShipping.customs.contentDetailsFootnote" = "Beskriv vilken typ av gods detta paket innehåller";
+
 /* Title for the Content Type menu in the Shipping Customs Form */
 "wooShipping.customs.contentType" = "Innehållstyp";
 
@@ -13125,6 +13198,9 @@ which should be translated separately and considered part of this sentence. */
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "Mer information om ITN";
 
+/* Customs validation warning for the ITN field */
+"wooShipping.customs.itnValidation" = "Ange ett giltigt ITN.";
+
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "Produktdetaljer";
 
@@ -13143,6 +13219,12 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for shipping restriction type sanitary */
 "wooShipping.customs.restrictionType.sanitary" = "Sanitär\/fytosanitär inspektion";
 
+/* Title for the Content Details text field in the Shipping Customs Form */
+"wooShipping.customs.restrictionTypeDetails" = "Begränsningsdetaljer";
+
+/* Footnote for the Restriction Type text field in the Shipping Customs Form */
+"wooShipping.customs.restrictionTypeDetailsFootnote" = "Beskriv vilken typ av begränsningar detta paket måste ha";
+
 /* Info label for a toggle to return the package to a sender if necessary toggle */
 "wooShipping.customs.returnToSenderMessage" = "Returnera till avsändaren om paketet inte kan levereras";
 
@@ -13151,6 +13233,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Customs screen */
 "wooShipping.customs.title" = "Tull";
+
+/* Footnote when a required value is missing */
+"wooShipping.customs.valueRequiredWarning" = "Värde krävs";
+
+/* Button to dismiss the countries menu */
+"wooShipping.customsItems.countries.done" = "Klart";
 
 /* Title for the customs items description text field for customs items */
 "wooShipping.customsItems.description" = "Beskrivning";
@@ -13167,6 +13255,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the origin country text field */
 "wooShipping.customsItems.originCountry" = "Ursprungsland";
 
+/* Warning text when the shipping customs tariff number is not valid */
+"wooShipping.customsItems.tariffNumberRulesWarning" = "Tariffnumret måste vara mellan sex och tolv siffror långt";
+
 /* Title for the customs items value per unit text field for customs items */
 "wooShipping.customsItems.valuePerUnit" = "Värde per enhet";
 
@@ -13176,8 +13267,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the customs items weight per unit text field for customs items */
 "wooShipping.customsItems.weightPerUnit" = "Vikt per enhet";
 
+/* Button to cancel normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.cancel" = "Avbryt";
+
+/* Button to confirm the entered address for a Woo Shipping label */
+"wooShipping.normalizeAddress.confirmEnteredAddress" = "Bekräfta angiven adress";
+
+/* Button to confirm the suggested address for a Woo Shipping label */
+"wooShipping.normalizeAddress.confirmSuggestedAddress" = "Bekräfta föreslagen adress";
+
+/* Label for the address the merchant entered when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.enteredAddressLabel" = "Vad du angav";
+
+/* Label for the suggested address when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.suggestedAddressLabel" = "Föreslagen";
+
+/* Title for the address normalization screen for a Woo Shipping label */
+"wooShipping.normalizeAddress.title" = "Bekräfta adress";
+
 /* Indicates that the address is the default origin address  on the shipping label creation screen */
 "wooShipping.originAddresses.defaultAddress" = "(standard)";
+
+/* Title for the edit origin address screen in the shipping label creation flow */
+"wooShipping.originAddresses.editOrigin" = "Redigera ursprung";
 
 /* Heading for the list of origin addresses to choose from on the shipping label creation screen */
 "wooShipping.originAddresses.shipFrom" = "Avsändare";

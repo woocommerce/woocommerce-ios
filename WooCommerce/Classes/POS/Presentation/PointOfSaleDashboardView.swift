@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(iOS 17.0, *)
 struct PointOfSaleDashboardView: View {
     @EnvironmentObject private var posModel: PointOfSaleAggregateModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -109,6 +110,7 @@ struct PointOfSaleDashboardView: View {
     }
 }
 
+@available(iOS 17.0, *)
 private extension PointOfSaleDashboardView {
     var supportForm: some View {
         NavigationView {
@@ -151,6 +153,7 @@ extension EnvironmentValues {
     }
 }
 
+@available(iOS 17.0, *)
 private extension PointOfSaleDashboardView {
     enum Constants {
         // For the moment we're just considering landscape for the POS mode
@@ -172,6 +175,7 @@ private extension PointOfSaleDashboardView {
 }
 
 #if DEBUG
+@available(iOS 17.0, *)
 #Preview {
     return NavigationStack {
         PointOfSaleDashboardView()

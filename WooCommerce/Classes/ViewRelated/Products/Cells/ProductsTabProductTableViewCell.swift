@@ -243,7 +243,7 @@ private extension ProductsTabProductTableViewCell {
         }
 
         let view = UIView(frame: .zero)
-        view.backgroundColor = .lightGray.withAlphaComponent(0.5)
+        view.backgroundColor = .darkGray.withAlphaComponent(0.5)
         view.translatesAutoresizingMaskIntoConstraints = false
         let activityIndicatorView = UIActivityIndicatorView(style: .medium)
         activityIndicatorView.startAnimating()

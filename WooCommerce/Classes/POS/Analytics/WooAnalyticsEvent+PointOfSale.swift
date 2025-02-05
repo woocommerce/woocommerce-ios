@@ -12,7 +12,6 @@ extension WooAnalyticsEvent {
             static let paymentsOnboardingState = "onboarding_state"
             static let itemType = "product_type"
             static let itemsInCart = "items_in_cart"
-            static let elapsedTime = "milliseconds_time_elapsed_in_splash_screen"
         }
 
         static func paymentsOnboardingShown() -> WooAnalyticsEvent {
@@ -31,11 +30,6 @@ extension WooAnalyticsEvent {
         static func checkoutTapped(_ itemsInCart: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleCheckoutTapped,
                               properties: [Key.itemsInCart: itemsInCart])
-        }
-
-        static func pointOfSaleInitialLoadingTime(_ elapsedTime: Double) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleLoaded,
-                              properties: [Key.elapsedTime: elapsedTime])
         }
     }
 }

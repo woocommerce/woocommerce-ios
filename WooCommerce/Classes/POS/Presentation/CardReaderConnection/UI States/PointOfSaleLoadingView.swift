@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleLoadingView: View {
-    @State private var appearTimeInMilliseconds: TimeInterval?
+    @State private var waitingTimeTracker: WaitingTimeTracker?
 
     var body: some View {
         HStack(alignment: .center) {
@@ -26,13 +26,12 @@ struct PointOfSaleLoadingView: View {
 
 private extension PointOfSaleLoadingView {
     func trackTimeOnAppear() {
-        appearTimeInMilliseconds = Date().timeIntervalSince1970 * Constants.toMilliseconds
+        waitingTimeTracker = WaitingTimeTracker(trackScenario: .pointOfSaleLoaded, analyticsService: ServiceLocator.analytics)
     }
 
     func trackElapsedTimeOnDisappear() {
-        if let appearTimeInMilliseconds = appearTimeInMilliseconds {
-            let elapsedTimeInMilliseconds = (Date().timeIntervalSince1970 * Constants.toMilliseconds) - appearTimeInMilliseconds
-            ServiceLocator.analytics.track(event: .PointOfSale.pointOfSaleInitialLoadingTime(elapsedTimeInMilliseconds))
+        if let waitingTimeTracker = waitingTimeTracker {
+            waitingTimeTracker.end()
         }
     }
 }

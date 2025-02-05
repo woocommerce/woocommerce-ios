@@ -7,10 +7,14 @@ struct POSFloatingControlView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding private var showExitPOSModal: Bool
     @Binding private var showSupport: Bool
+    @Binding private var showDocumentation: Bool
 
-    init(showExitPOSModal: Binding<Bool>, showSupport: Binding<Bool>) {
+    init(showExitPOSModal: Binding<Bool>,
+         showSupport: Binding<Bool>,
+         showDocumentation: Binding<Bool>) {
         self._showExitPOSModal = showExitPOSModal
         self._showSupport = showSupport
+        self._showDocumentation = showDocumentation
     }
 
     var body: some View {
@@ -32,6 +36,14 @@ struct POSFloatingControlView: View {
                     Label(
                         title: { Text(Localization.getSupport) },
                         icon: { Image(systemName: "questionmark.circle") }
+                    )
+                }
+                Button {
+                    showDocumentation = true
+                } label: {
+                    Label(
+                        title: { Text(Localization.learnMore) },
+                        icon: { Image(systemName: "info.circle") }
                     )
                 }
             } label: {
@@ -89,7 +101,7 @@ extension POSFloatingControlView {
 
 private extension POSFloatingControlView {
     enum Constants {
-        static let size: CGFloat = 56
+        static let size: CGFloat = 80
         static let cornerRadius: CGFloat = 8
     }
 
@@ -106,5 +118,25 @@ private extension POSFloatingControlView {
             value: "Get Support",
             comment: "The title of the floating button to get support for Point of Sale, shown in a popover menu."
         )
+
+        static let learnMore = NSLocalizedString(
+            "pointOfSale.floatingButtons.learnMore.button.title",
+            value: "Learn More",
+            comment: "The title of the floating button to read Point of Sale documentation, shown in a popover menu."
+        )
     }
 }
+
+#if DEBUG
+#Preview {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
+
+    POSFloatingControlView(showExitPOSModal: .constant(false),
+                           showSupport: .constant(false),
+                           showDocumentation: .constant(false))
+    .environmentObject(posModel)
+}
+#endif

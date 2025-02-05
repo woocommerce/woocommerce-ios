@@ -132,8 +132,8 @@
         "repositoryURL": "https://github.com/buildkite/test-collector-swift",
         "state": {
           "branch": null,
-          "revision": "77c7f492f5c1c9ca159f73d18f56bbd1186390b0",
-          "version": "0.3.0"
+          "revision": "631a2400dbe876141a3ef8c7400885907fec7f89",
+          "version": "0.4.1"
         }
       },
       {

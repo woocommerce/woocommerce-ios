@@ -30,18 +30,12 @@ struct PointOfSaleOrderControllerTests {
     }
 
     @Test func syncOrder_with_cart_matching_order_doesnt_call_orderService() async throws {
-        let mockAnalyticsProvider = MockAnalyticsProvider()
-        let analytics = WooAnalytics(analyticsProvider: mockAnalyticsProvider)
-        let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptService: mockReceiptService,
-                                             analytics: analytics)
         // Given
         let orderItem = OrderItem.fake().copy(quantity: 1)
         let fakeOrder = Order.fake().copy(items: [orderItem])
         let cartItem = makeItem(orderItemsToMatch: [orderItem])
         mockOrderService.orderToReturn = fakeOrder
         await sut.syncOrder(for: [cartItem], retryHandler: {})
-        #expect(mockAnalyticsProvider.receivedEvents.first(where: { $0 == "order_creation_success" }) != nil)
 
         mockOrderService.syncOrderWasCalled = false
 
@@ -136,11 +130,6 @@ struct PointOfSaleOrderControllerTests {
 
     @Test func syncOrder_with_order_sync_failure_sets_orderState_syncing_then_error() async throws {
         // Given
-        let mockAnalyticsProvider = MockAnalyticsProvider()
-        let analytics = WooAnalytics(analyticsProvider: mockAnalyticsProvider)
-        let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptService: mockReceiptService,
-                                             analytics: analytics)
         mockOrderService.orderToReturn = nil
 
         var cancellables = Set<AnyCancellable>()
@@ -166,7 +155,6 @@ struct PointOfSaleOrderControllerTests {
                 message: MockPOSOrderServiceError.noOrderToReturn.localizedDescription,
                 handler: {}))
         ])
-        #expect(mockAnalyticsProvider.receivedEvents.first(where: { $0 == "order_creation_failed" }) != nil)
     }
 
     @Test func sendReceipt_when_there_is_no_order_then_will_not_trigger() async throws {
@@ -249,6 +237,57 @@ struct PointOfSaleOrderControllerTests {
         // Then
         #expect(completionResult == true)
         #expect(mockPaymentCelebration.celebrationWasCalled == true)
+    }
+
+    struct AnalyticsTests {
+        private let analytics: WooAnalytics
+        private let analyticsProvider = MockAnalyticsProvider()
+        private let orderService = MockPOSOrderService()
+        private let receiptService = MockReceiptService()
+        private let sut: PointOfSaleOrderController
+
+        init() {
+            analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+            sut = PointOfSaleOrderController(orderService: orderService,
+                                             receiptService: receiptService,
+                                             analytics: analytics)
+        }
+
+        @Test func syncOrder_when_create_order_then_tracks_order_creation_success_event() async throws {
+            // Given
+            let fakeOrderItem = OrderItem.fake().copy(quantity: 1)
+            let fakeOrder = Order.fake()
+            let fakeCartItem = makeItem(orderItemsToMatch: [fakeOrderItem])
+            orderService.orderToReturn = fakeOrder
+
+            // When
+            await sut.syncOrder(for: [fakeCartItem], retryHandler: { })
+
+            // Then
+            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "order_creation_success" }) != nil)
+        }
+
+        @Test func syncOrder_when_create_order_fails_with_order_service_error_then_tracks_order_creation_failure_event() async throws {
+            // Given
+            // 3 states are expected to be confirmed before returning orderState: .idle, .syncing. .error
+            let confirmationOrderStates = 3
+            var cancellables = Set<AnyCancellable>()
+            orderService.orderToReturn = nil
+
+            await confirmation() { confirmation in
+                sut.orderStatePublisher.collect(confirmationOrderStates)
+                    .sink { orderState in
+                        confirmation()
+                    }
+                    .store(in: &cancellables)
+
+                // When
+                await sut.syncOrder(for: [makeItem()], retryHandler: {})
+            }
+
+            // Then
+            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "order_creation_failed" }) != nil)
+        }
     }
 }
 

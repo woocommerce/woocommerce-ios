@@ -110,6 +110,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 
     private var actionHandlersByProduct: [Key: ProductImageActionHandler] = [:]
     private var imagesSaverByProduct: [Key: ProductImagesSaver] = [:]
+    private var initialStatusesByProduct: [Key: [ProductImageStatus]] = [:]
 
     @Published private var activeUploadsPublisher: [ProductImageUploaderKey] = []
 
@@ -185,12 +186,12 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         // The product has to exist remotely in order to save its images remotely.
         // In product creation, this save function should be called after a new product is saved remotely for the first time.
         guard key.isLocalID == false else {
-            activeUploadsPublisher.removeAll(where: { $0 == key })
+            removeProductFromActiveUploads(key: key)
             return onProductSave(.failure(ProductImageUploaderError.noRemoteProductIDFound))
         }
 
         guard let handler = actionHandlersByProduct[key] else {
-            activeUploadsPublisher.removeAll(where: { $0 == key })
+            removeProductFromActiveUploads(key: key)
             return onProductSave(.failure(ProductImageUploaderError.noActionHandlerFound))
         }
 
@@ -206,7 +207,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 
         imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: handler) { [weak self] result in
             guard let self = self else { return }
-            activeUploadsPublisher.removeAll(where: { $0 == key })
+            removeProductFromActiveUploads(key: key)
             onProductSave(result)
             if case let .failure(error) = result {
                 self.errorsSubject.send(.init(siteID: key.siteID,
@@ -244,23 +245,37 @@ private extension ProductImageUploader {
         }
     }
 
-    private func observeStatusUpdates(key: Key, actionHandler: ProductImageActionHandler) {
+    func observeStatusUpdates(key: Key, actionHandler: ProductImageActionHandler) {
         let observationToken = actionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else { return }
 
-            if !activeUploadsPublisher.contains(key), productImageStatuses.hasPendingUpload {
-                activeUploadsPublisher.append(key)
+            if initialStatusesByProduct[key] == nil {
+                initialStatusesByProduct[key] = productImageStatuses
             }
 
-            if let error = error, self.statusUpdatesExcludedProductKeys.contains(key) == false {
-                activeUploadsPublisher.removeAll(where: { $0 == key })
-                self.errorsSubject.send(.init(siteID: key.siteID,
-                                              productOrVariationID: key.productOrVariationID,
-                                              productImageStatuses: productImageStatuses,
-                                              error: .failedUploadingImage(error: error)))
+            if !activeUploadsPublisher.contains(key), productImageStatuses.hasPendingUpload {
+                activeUploadsPublisher.append(key)
+            } else if let initialStatuses = initialStatusesByProduct[key],
+                initialStatuses == productImageStatuses,
+                activeUploadsPublisher.contains(key) {
+                /// When upload is reset, remove the key from active uploads
+                removeProductFromActiveUploads(key: key)
+            }
+
+            if let error = error, statusUpdatesExcludedProductKeys.contains(key) == false {
+                removeProductFromActiveUploads(key: key)
+                errorsSubject.send(.init(siteID: key.siteID,
+                                         productOrVariationID: key.productOrVariationID,
+                                         productImageStatuses: productImageStatuses,
+                                         error: .failedUploadingImage(error: error)))
             }
         }
         statusUpdatesSubscriptions.insert(observationToken)
+    }
+
+    func removeProductFromActiveUploads(key: Key) {
+        activeUploadsPublisher.removeAll(where: { $0 == key })
+        initialStatusesByProduct.removeValue(forKey: key)
     }
 }
 

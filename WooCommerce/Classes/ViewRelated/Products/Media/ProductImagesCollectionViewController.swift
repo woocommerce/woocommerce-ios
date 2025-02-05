@@ -72,7 +72,8 @@ extension ProductImagesCollectionViewController {
         let productImageStatus = productImageStatuses[indexPath.row]
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: productImageStatus.cellReuseIdentifier,
                                                       for: indexPath)
-        configureCell(cell, productImageStatus: productImageStatus)
+        let isFirstImage = indexPath.row == 0
+        configureCell(cell, productImageStatus: productImageStatus, isFirstImage: isFirstImage)
         return cell
     }
 }
@@ -80,10 +81,10 @@ extension ProductImagesCollectionViewController {
 // MARK: Cell configurations
 //
 private extension ProductImagesCollectionViewController {
-    func configureCell(_ cell: UICollectionViewCell, productImageStatus: ProductImageStatus) {
+    func configureCell(_ cell: UICollectionViewCell, productImageStatus: ProductImageStatus, isFirstImage: Bool) {
         switch productImageStatus {
         case .remote(let image):
-            configureRemoteImageCell(cell, productImage: image)
+            configureRemoteImageCell(cell, productImage: image, isFirstImage: isFirstImage)
         case .uploading(let asset):
             switch asset {
                 case .phAsset(let asset):
@@ -94,7 +95,7 @@ private extension ProductImagesCollectionViewController {
         }
     }
 
-    func configureRemoteImageCell(_ cell: UICollectionViewCell, productImage: ProductImage) {
+    func configureRemoteImageCell(_ cell: UICollectionViewCell, productImage: ProductImage, isFirstImage: Bool) {
         guard let cell = cell as? ProductImageCollectionViewCell else {
             fatalError()
         }
@@ -116,6 +117,7 @@ private extension ProductImagesCollectionViewController {
             cell.imageView.contentMode = .scaleAspectFit
             cell.imageView.image = image
         }
+        cell.coverTagView.isHidden = !isFirstImage
     }
 
     func configureUploadingImageCell(_ cell: UICollectionViewCell, asset: PHAsset) {
@@ -254,7 +256,9 @@ extension ProductImagesCollectionViewController: UICollectionViewDragDelegate, U
         }, completion: { [weak self] _ in
             // [Workaround] Reload the collection view if there are more than
             // one type of cells, for example, when there are any pending upload.
-            self?.reloadCollectionViewIfNeeded()
+            // Reloading is also necessary when the first image is updated.
+            let firstImageUpdated = item.sourceIndexPath?.item == 0 || destinationIndexPath.item == 0
+            self?.reloadCollectionViewIfNeeded(firstImageUpdated: firstImageUpdated)
         })
 
         coordinator.drop(item.dragItem, toItemAt: destinationIndexPath)
@@ -264,9 +268,10 @@ extension ProductImagesCollectionViewController: UICollectionViewDragDelegate, U
     /// Reloads collection view only if there is any pending upload.
     /// This makes sure that cells for pending uploads are reloaded properly
     /// to remove their overlays after uploading is done.
+    /// If the first image is updated, reloading is also necessary to update the Cover tag.
     ///
-    private func reloadCollectionViewIfNeeded() {
-        if productImageStatuses.hasPendingUpload {
+    private func reloadCollectionViewIfNeeded(firstImageUpdated: Bool) {
+        if firstImageUpdated || productImageStatuses.hasPendingUpload {
             collectionView.reloadData()
         }
     }

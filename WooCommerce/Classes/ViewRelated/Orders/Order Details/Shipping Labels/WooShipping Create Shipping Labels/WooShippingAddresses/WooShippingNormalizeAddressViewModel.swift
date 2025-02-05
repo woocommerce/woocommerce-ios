@@ -1,6 +1,9 @@
 import Yosemite
 
-final class WooShippingNormalizeAddressViewModel: ObservableObject {
+final class WooShippingNormalizeAddressViewModel: ObservableObject, Identifiable {
+    /// Unique ID for the view model.
+    let id = UUID()
+
     /// The address entered by the merchant.
     let enteredAddress: WooShippingAddress
 
@@ -12,11 +15,11 @@ final class WooShippingNormalizeAddressViewModel: ObservableObject {
     @Published var selectedAddress: WooShippingSelectedAddressType = .suggested
 
     /// Closure to perform when the address is confirmed.
-    var onConfirm: ((WooShippingAddress) -> Void)
+    var onConfirm: ((WooShippingAddress) -> Void)?
 
     init(enteredAddress: WooShippingAddress,
          suggestedAddress: WooShippingAddress,
-         onConfirm: @escaping ((WooShippingAddress) -> Void)) {
+         onConfirm: ((WooShippingAddress) -> Void)? = nil) {
         self.enteredAddress = enteredAddress
         self.suggestedAddress = suggestedAddress
         self.onConfirm = onConfirm
@@ -25,7 +28,7 @@ final class WooShippingNormalizeAddressViewModel: ObservableObject {
     /// Confirms the selected address.
     func confirmSelectedAddress() {
         let addressToConfirm = selectedAddress == .entered ? enteredAddress : suggestedAddress
-        onConfirm(addressToConfirm)
+        onConfirm?(addressToConfirm)
     }
 }
 

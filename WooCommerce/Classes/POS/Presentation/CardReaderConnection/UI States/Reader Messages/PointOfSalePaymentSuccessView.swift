@@ -104,6 +104,7 @@ private extension PointOfSalePaymentSuccessView {
 
 #Preview {
     return PointOfSalePaymentSuccessView(
-        viewModel: PointOfSalePaymentSuccessViewModel(formattedOrderTotal: "$3.00")
+        viewModel: PointOfSalePaymentSuccessViewModel(formattedOrderTotal: "$3.00",
+                                                      paymentMethod: .card)
     )
 }

@@ -27,13 +27,15 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
          receiptService: POSReceiptServiceProtocol,
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
         self.orderService = orderService
         self.receiptService = receiptService
         self.stores = stores
         self.storeCurrency = currencySettings.currencyCode
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
+        self.celebration = celebration
     }
 
     var orderStatePublisher: AnyPublisher<PointOfSaleInternalOrderState, Never> {
@@ -44,6 +46,7 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     private let receiptService: POSReceiptServiceProtocol
 
     private let currencyFormatter: CurrencyFormatter
+    private let celebration: PaymentCaptureCelebrationProtocol
     private let storeCurrency: CurrencyCode
     private let analytics: Analytics
     private let stores: StoresManager
@@ -110,6 +113,10 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         orderState = .idle
     }
 
+    private func celebrate() {
+        celebration.celebrate()
+    }
+
     @MainActor
     func collectCashPayment() async throws {
         guard let siteID = stores.sessionManager.defaultStoreID else {
@@ -132,7 +139,11 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
                                                  order: updatedOrder,
                                                  giftCard: nil,
                                                  fields: fieldsToUpdate,
-                                                 onCompletion: { result in
+                                                 onCompletion: { [weak self] result in
+                guard let self = self else { return }
+                if case .success = result {
+                    self.celebrate()
+                }
                 continuation.resume(with: result)
             })
             stores.dispatch(action)

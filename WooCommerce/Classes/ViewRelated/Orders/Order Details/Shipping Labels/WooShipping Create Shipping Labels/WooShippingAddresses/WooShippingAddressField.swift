@@ -4,6 +4,9 @@ import SwiftUI
 final class WooShippingAddressField: ObservableObject {
     let type: WooShippingAddressFieldType
 
+    /// The original value for the field.
+    private let originalValue: String
+
     /// The value for the field.
     @Published var value: String
 
@@ -25,12 +28,18 @@ final class WooShippingAddressField: ObservableObject {
     /// Number of seconds to wait before validating new value input.
     private let validationDelay: Double
 
+    /// Whether the field has changes from the original value.
+    var hasChanges: Bool {
+        value != originalValue
+    }
+
     init(type: WooShippingAddressFieldType,
          value: String,
          required: Bool,
          validationDelayInSeconds: Double = 1,
          validate: @escaping (String) -> String?) {
         self.type = type
+        self.originalValue = value
         self.value = value
         self.required = required
         self.validationDelay = validationDelayInSeconds
@@ -63,6 +72,12 @@ final class WooShippingAddressField: ObservableObject {
     /// This can be used to reset an error for later re-validation.
     func clearError() {
         errorMessage = nil
+    }
+
+    /// Sets the current validation error.
+    /// This can be used to override the local validation, e.g. when remote validation fails.
+    func setError(_ message: String) {
+        errorMessage = message
     }
 }
 

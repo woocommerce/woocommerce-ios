@@ -8,7 +8,7 @@ import Observation
     var root: ItemListState
     var itemStates: [POSItem: ItemListState]
 
-    init(root: ItemListState, itemStates: [POSItem : ItemListState]) {
+    init(root: ItemListState, itemStates: [POSItem: ItemListState]) {
         self.root = root
         self.itemStates = itemStates
     }

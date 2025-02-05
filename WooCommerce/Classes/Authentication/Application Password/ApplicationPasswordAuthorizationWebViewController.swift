@@ -35,7 +35,7 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
     }()
 
     /// The view controller that was presenting the application password flow.
-    private weak var previousViewController: UIViewController?
+    private var previousViewController: UIViewController?
 
     /// WP Core requires that the UUID has lowercased letters.
     private let appID = UUID().uuidString.lowercased()

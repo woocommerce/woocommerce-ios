@@ -26,12 +26,12 @@ public final class CardPresentPaymentStore: Store {
     }
 
     /// Which backend is the store using? Default to WCPay until told otherwise
-    private var usingBackend: CardPresentPaymentGatewayExtension {
+    private var usingBackend: CardPresentPaymentsPlugin {
         guard let paymentGatewayAccount = paymentGatewayAccount else {
-            return .wcpay
+            return .wcPay
         }
 
-        return paymentGatewayAccount.isWCPay ? .wcpay : .stripe
+        return paymentGatewayAccount.isWCPay ? .wcPay : .stripe
     }
 
     private let remote: WCPayRemote
@@ -160,7 +160,7 @@ private extension CardPresentPaymentStore {
 
     func prepareConfigProvider(siteID: Int64) {
         switch usingBackend {
-        case .wcpay:
+        case .wcPay:
             commonReaderConfigProvider.setContext(siteID: siteID, remote: self.remote)
         case .stripe:
             commonReaderConfigProvider.setContext(siteID: siteID, remote: self.stripeRemote)
@@ -435,7 +435,7 @@ private extension CardPresentPaymentStore {
         self.paymentGatewayAccount = paymentGatewayAccount
     }
 
-    func loadActivePaymentGateway(onCompletion: (CardPresentPaymentGatewayExtension) -> Void) {
+    func loadActivePaymentGateway(onCompletion: (CardPresentPaymentsPlugin) -> Void) {
         onCompletion(usingBackend)
     }
 
@@ -526,7 +526,7 @@ private extension CardPresentPaymentStore {
                                    paymentIntent: PaymentIntent) -> AnyPublisher<Result<Void, Error>, Never> {
         let captureOrderPaymentPublisher: AnyPublisher<Result<RemotePaymentIntent, Error>, Never>
         switch usingBackend {
-        case .wcpay:
+        case .wcPay:
             captureOrderPaymentPublisher = remote.captureOrderPayment(for: siteID, orderID: orderID, paymentIntentID: paymentIntent.id)
         case .stripe:
             captureOrderPaymentPublisher = stripeRemote.captureOrderPayment(for: siteID, orderID: orderID, paymentIntentID: paymentIntent.id)
@@ -550,7 +550,7 @@ private extension CardPresentPaymentStore {
 
     func fetchCharge(siteID: Int64, chargeID: String, completion: @escaping (Result<WCPayCharge, Error>) -> Void) {
         switch usingBackend {
-        case .wcpay:
+        case .wcPay:
             remote.fetchCharge(for: siteID, chargeID: chargeID) { result in
                 switch result {
                 case .success(let charge):

@@ -83,6 +83,7 @@ struct SetUpTapToPayCompleteView: View {
 
             InPersonPaymentsLearnMore(
                 viewModel: LearnMoreViewModel(
+                    url: viewModel.learnMoreURL,
                     formatText: Localization.learnMore,
                     tappedAnalyticEvent: .InPersonPayments.learnMoreTapped(source: .tapToPaySummary)))
             .padding(.vertical, Constants.learnMorePadding)

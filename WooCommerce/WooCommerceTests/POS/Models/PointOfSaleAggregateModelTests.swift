@@ -148,7 +148,7 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             let event = try #require(analyticsProvider.receivedEvents.first)
-            #expect(event == "pos_item_added_to_cart")
+            #expect(event == "item_added_to_cart")
         }
     }
 
@@ -361,7 +361,7 @@ struct PointOfSaleAggregateModelTests {
                 Issue.record("Expected cardPresentPaymentInlineMessage to be paymentSuccess")
                 return
             }
-            #expect(viewModel.message == "A payment of $52.30 was successfully made")
+            #expect(viewModel.message == "A card payment of $52.30 was successfully made")
         }
 
         @Test func paymentIntentCreationErrorMessage_when_paymentIntentCreationError_tryAgain_cancels_payment() async throws {
@@ -538,7 +538,7 @@ struct PointOfSaleAggregateModelTests {
             sut.cancelCardPaymentsOnboarding()
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "pos_payments_onboarding_dismissed" }) != nil)
+            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "payments_onboarding_dismissed" }) != nil)
             let eventProperties = try #require(analyticsProvider.receivedProperties.first(where: { $0.keys.contains("onboarding_state")
             }))
             #expect(eventProperties["onboarding_state"] as? String == "no_connection_error")
@@ -551,7 +551,7 @@ struct PointOfSaleAggregateModelTests {
             sut.trackCardPaymentsOnboardingShown()
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "pos_payments_onboarding_shown" }) != nil)
+            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "payments_onboarding_shown" }) != nil)
         }
     }
 }

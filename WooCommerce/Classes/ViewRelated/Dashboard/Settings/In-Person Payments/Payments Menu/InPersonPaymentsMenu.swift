@@ -142,7 +142,8 @@ struct InPersonPaymentsMenu: View {
                         Text(Localization.cardReaderSectionTitle.uppercased())
                             .accessibilityAddTraits(.isHeader)
                     } footer: {
-                        InPersonPaymentsLearnMore(viewModel: .inPersonPayments(source: .paymentsMenu),
+                        InPersonPaymentsLearnMore(viewModel: .inPersonPayments(source: .paymentsMenu,
+                                                                               paymentGateway: viewModel.selectedPaymentGatewayPlugin),
                                                   showInfoIcon: false)
                         .customOpenURL(binding: $viewModel.safariSheetURL)
                     }

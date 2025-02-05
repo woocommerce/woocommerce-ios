@@ -787,6 +787,8 @@
 		200BA1592CF092280006DC5B /* PointOfSaleItemsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200BA1582CF092280006DC5B /* PointOfSaleItemsController.swift */; };
 		200BA15B2CF0A2130006DC5B /* MockPointOfSaleItemsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200BA15A2CF0A2130006DC5B /* MockPointOfSaleItemsService.swift */; };
 		200BA15E2CF0A9EB0006DC5B /* PointOfSaleItemsControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200BA15D2CF0A9EB0006DC5B /* PointOfSaleItemsControllerTests.swift */; };
+		20134CE62D4D1BDF00076A80 /* LearnMoreViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20134CE52D4D1BDF00076A80 /* LearnMoreViewModelTests.swift */; };
+		20134CE82D4D38E000076A80 /* CardPresentPaymentPlugin+SetUpTapToPay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20134CE72D4D38E000076A80 /* CardPresentPaymentPlugin+SetUpTapToPay.swift */; };
 		20203AB22B31EEF1009D0C11 /* ExpandableBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20203AB12B31EEF1009D0C11 /* ExpandableBottomSheet.swift */; };
 		2023E2AE2C21D8EA00FC365A /* PointOfSaleCardPresentPaymentInLineMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2023E2AD2C21D8EA00FC365A /* PointOfSaleCardPresentPaymentInLineMessage.swift */; };
 		202496642B0B9E0D00EE527D /* ScrollViewSectionKit in Frameworks */ = {isa = PBXBuildFile; productRef = 202496632B0B9E0D00EE527D /* ScrollViewSectionKit */; };
@@ -859,6 +861,7 @@
 		2084B7AE2C77845C00EFBD2E /* PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2084B7AD2C77845C00EFBD2E /* PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModelTests.swift */; };
 		208628742D48E4CB003F45DC /* TotalsViewHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 208628732D48E4CB003F45DC /* TotalsViewHelperTests.swift */; };
 		20897C9E2D4A68C5008AD16C /* PointOfSaleUnsupportedWidthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20897C9D2D4A68C5008AD16C /* PointOfSaleUnsupportedWidthView.swift */; };
+		209566252D4CF00100977124 /* PointOfSalePaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209566242D4CF00100977124 /* PointOfSalePaymentMethod.swift */; };
 		209AD3D02AC1EDDA00825D76 /* WooPaymentsPayoutsCurrencyOverviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3CF2AC1EDDA00825D76 /* WooPaymentsPayoutsCurrencyOverviewViewModel.swift */; };
 		209AD3D22AC1EDF600825D76 /* WooPaymentsPayoutsCurrencyOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3D12AC1EDF600825D76 /* WooPaymentsPayoutsCurrencyOverviewView.swift */; };
 		209B15672AD85F070094152A /* OperatingSystemVersion+Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209B15662AD85F070094152A /* OperatingSystemVersion+Localization.swift */; };
@@ -3973,6 +3976,8 @@
 		200BA1582CF092280006DC5B /* PointOfSaleItemsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleItemsController.swift; sourceTree = "<group>"; };
 		200BA15A2CF0A2130006DC5B /* MockPointOfSaleItemsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPointOfSaleItemsService.swift; sourceTree = "<group>"; };
 		200BA15D2CF0A9EB0006DC5B /* PointOfSaleItemsControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleItemsControllerTests.swift; sourceTree = "<group>"; };
+		20134CE52D4D1BDF00076A80 /* LearnMoreViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnMoreViewModelTests.swift; sourceTree = "<group>"; };
+		20134CE72D4D38E000076A80 /* CardPresentPaymentPlugin+SetUpTapToPay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardPresentPaymentPlugin+SetUpTapToPay.swift"; sourceTree = "<group>"; };
 		20203AB12B31EEF1009D0C11 /* ExpandableBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableBottomSheet.swift; sourceTree = "<group>"; };
 		2023E2AD2C21D8EA00FC365A /* PointOfSaleCardPresentPaymentInLineMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentInLineMessage.swift; sourceTree = "<group>"; };
 		202496692B0CC97100EE527D /* MockWooPaymentsDepositService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWooPaymentsDepositService.swift; sourceTree = "<group>"; };
@@ -4045,6 +4050,7 @@
 		208628732D48E4CB003F45DC /* TotalsViewHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalsViewHelperTests.swift; sourceTree = "<group>"; };
 		20897C9D2D4A68C5008AD16C /* PointOfSaleUnsupportedWidthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleUnsupportedWidthView.swift; sourceTree = "<group>"; };
 		20929C9DFB2CE5CB264C27EC /* Pods-Woo Watch App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Woo Watch App.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Woo Watch App/Pods-Woo Watch App.debug.xcconfig"; sourceTree = "<group>"; };
+		209566242D4CF00100977124 /* PointOfSalePaymentMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSalePaymentMethod.swift; sourceTree = "<group>"; };
 		209AD3CF2AC1EDDA00825D76 /* WooPaymentsPayoutsCurrencyOverviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsCurrencyOverviewViewModel.swift; sourceTree = "<group>"; };
 		209AD3D12AC1EDF600825D76 /* WooPaymentsPayoutsCurrencyOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsCurrencyOverviewView.swift; sourceTree = "<group>"; };
 		209B15662AD85F070094152A /* OperatingSystemVersion+Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OperatingSystemVersion+Localization.swift"; sourceTree = "<group>"; };
@@ -7869,6 +7875,7 @@
 				03B9E52A2A1505A7005C77F5 /* TapToPayReconnectionControllerTests.swift */,
 				019130202CF5B0FF008C0C88 /* TapToPayEducationViewModelTests.swift */,
 				019630B72D0211F400219D80 /* TapToPayAwarenessMomentDeterminerTests.swift */,
+				20134CE52D4D1BDF00076A80 /* LearnMoreViewModelTests.swift */,
 			);
 			path = "In-Person Payments";
 			sourceTree = "<group>";
@@ -8788,6 +8795,7 @@
 				31EF399B26430C6D0093C6F6 /* PaymentSettingsFlowPrioritizedViewModelsProvider.swift */,
 				31B19B66263B5E580099DAA6 /* CardReaderSettingsSearchingViewModel.swift */,
 				0365986829AFB0C100F297D3 /* SetUpTapToPayInformationViewModel.swift */,
+				20134CE72D4D38E000076A80 /* CardPresentPaymentPlugin+SetUpTapToPay.swift */,
 				038BC37C29C37AA400EAF565 /* SetUpTapToPayCompleteViewModel.swift */,
 				038BC38029C4B8AC00EAF565 /* SetUpTapToPayTryPaymentPromptViewModel.swift */,
 				317F679726420E9D00BA2A7A /* CardReaderSettingsViewModelsOrderedList.swift */,
@@ -9727,6 +9735,7 @@
 				2044158E2CE6181E0070BF54 /* PointOfSaleOrderState.swift */,
 				204415902CE622BA0070BF54 /* PointOfSaleOrderTotals.swift */,
 				209B7A672CEB6742003BDEF0 /* PointOfSalePaymentState.swift */,
+				209566242D4CF00100977124 /* PointOfSalePaymentMethod.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -15927,6 +15936,7 @@
 				023D1DD124AB2D05002B03A3 /* ProductListSelectorViewController.swift in Sources */,
 				2004E2D02C077D2800D62521 /* CardPresentPaymentTransaction.swift in Sources */,
 				0206483A23FA4160008441BB /* OrdersRootViewController.swift in Sources */,
+				209566252D4CF00100977124 /* PointOfSalePaymentMethod.swift in Sources */,
 				022BF7FD23B9D708000A1DFB /* InProgressViewController.swift in Sources */,
 				EEB4E2D629B2063800371C3C /* StoreOnboardingTaskViewModel.swift in Sources */,
 				CED9BCD12D412E2400C063B8 /* WooShippingAddressField.swift in Sources */,
@@ -16298,6 +16308,7 @@
 				2667BFE1252FA117008099D4 /* RefundItemQuantityListSelectorCommand.swift in Sources */,
 				261AA30C2753119E009530FE /* PaymentMethodsViewModel.swift in Sources */,
 				68E674AD2A4DAC010034BA1E /* CurrentPlanDetailsView.swift in Sources */,
+				20134CE82D4D38E000076A80 /* CardPresentPaymentPlugin+SetUpTapToPay.swift in Sources */,
 				DE68B81F26F86B1700C86CFB /* OfflineBannerView.swift in Sources */,
 				B90D21802D1ED1F300ED60ED /* WooShippingCustomsItemOriginCountryInfoDialog.swift in Sources */,
 				D8610BCC256F284700A5DF27 /* ULErrorViewModel.swift in Sources */,
@@ -17159,6 +17170,7 @@
 				E17E3BFB266917E20009D977 /* CardPresentModalBluetoothRequiredTests.swift in Sources */,
 				CCD2E68925DD52C100BD975D /* ProductVariationsViewModelTests.swift in Sources */,
 				EEB221A729B9B5B300662A12 /* CouponLineDetailsViewModelTests.swift in Sources */,
+				20134CE62D4D1BDF00076A80 /* LearnMoreViewModelTests.swift in Sources */,
 				026D684B2A0E0A9600D8C22C /* LocalNotificationSchedulerTests.swift in Sources */,
 				02038C612AF222D600CD36D9 /* ConfigurableVariableBundleAttributePickerViewModelTests.swift in Sources */,
 				CE56C01E2D2431C000EBDE24 /* WooShippingOriginAddressListViewModelTests.swift in Sources */,

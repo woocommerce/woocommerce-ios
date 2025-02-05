@@ -7,11 +7,33 @@ final class ProductImageCollectionViewCell: UICollectionViewCell {
 
     var cancellableTask: Task<Void, Never>?
 
+    private(set) lazy var coverTagView: UIView = {
+        let containerView = UIView(frame: .zero)
+        containerView.backgroundColor = UIColor.primary
+        containerView.clipsToBounds = true
+        containerView.isHidden = true
+        containerView.layer.cornerRadius = Constants.tagCornerRadius
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(tagLabel)
+        containerView.pinSubviewToAllEdges(tagLabel, insets: Constants.tagEdgeInsets)
+        return containerView
+    }()
+
+    private lazy var tagLabel: UILabel = {
+        let label = UILabel(frame: .zero)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.applyCaption1Style()
+        label.textColor = UIColor(light: .white, dark: .black)
+        label.text = Localization.tagLabel
+        return label
+    }()
+
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBackground()
         configureImageView()
         configureCellAppearance()
+        configureCoverTagView()
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -46,6 +68,14 @@ private extension ProductImageCollectionViewCell {
         contentView.layer.borderColor = Colors.borderColor.cgColor
         contentView.layer.masksToBounds = Settings.maskToBounds
     }
+
+    func configureCoverTagView() {
+        contentView.addSubview(coverTagView)
+        NSLayoutConstraint.activate([
+            contentView.leadingAnchor.constraint(equalTo: coverTagView.leadingAnchor, constant: -Constants.tagPadding),
+            contentView.topAnchor.constraint(equalTo: coverTagView.topAnchor, constant: -Constants.tagPadding),
+        ])
+    }
 }
 
 /// Constants
@@ -54,6 +84,9 @@ private extension ProductImageCollectionViewCell {
     enum Constants {
         static let cornerRadius = CGFloat(2.0)
         static let borderWidth = CGFloat(0.5)
+        static let tagPadding = CGFloat(8)
+        static let tagCornerRadius = CGFloat(4)
+        static let tagEdgeInsets = UIEdgeInsets(top: 2, left: 4, bottom: 2, right: 4)
     }
 
     enum Colors {
@@ -64,5 +97,13 @@ private extension ProductImageCollectionViewCell {
         static let clipToBounds = true
         static let imageContentMode = ContentMode.center
         static let maskToBounds = true
+    }
+
+    enum Localization {
+        static let tagLabel = NSLocalizedString(
+            "productImageCollectionViewCell.tagLabel.text",
+            value: "Cover",
+            comment: "Label indicating the cover image of a product"
+        )
     }
 }

@@ -143,6 +143,7 @@ struct WooShippingCreateLabelsView: View {
                                                 line.bold()
                                             }
                                     }
+                                    addressVerificationLabel
                                 }
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             }
@@ -266,6 +267,17 @@ private extension WooShippingCreateLabelsView {
         .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isPurchasingLabel))
         .disabled(!viewModel.isPurchaseButtonEnabled)
     }
+
+    /// View showing the address verification status.
+    var addressVerificationLabel: some View {
+        HStack(spacing: 4) {
+            Image(systemName: viewModel.isDestinationAddressVerified ? "checkmark.circle" : "exclamationmark.circle")
+            Text(viewModel.isDestinationAddressVerified
+                 ? Localization.AddressVerification.verified : Localization.AddressVerification.unverified)
+        }
+        .font(.subheadline)
+        .foregroundStyle(viewModel.isDestinationAddressVerified ? Layout.green : Layout.red)
+    }
 }
 
 // MARK: Store Options
@@ -294,6 +306,10 @@ private extension WooShippingCreateLabelsView {
         static let ellipsisWidth: CGFloat = 22
         static let bottomSheetSpacing: CGFloat = 16
         static let bottomSheetPadding: CGFloat = 16
+        static let green = Color(UIColor(light: .withColorStudio(.green, shade: .shade60),
+                                         dark: .withColorStudio(.green, shade: .shade40)))
+        static let red = Color(UIColor(light: .withColorStudio(.red, shade: .shade60),
+                                       dark: .withColorStudio(.red, shade: .shade40)))
     }
 
     enum Localization {
@@ -354,6 +370,15 @@ private extension WooShippingCreateLabelsView {
                                                           value: "Purchase Label · %1$@",
                                                           comment: "Label for button to purchase the shipping label on the shipping label creation screen, " +
                                                           "including the label price. Reads like: 'Purchase Label · $7.63'")
+        }
+
+        enum AddressVerification {
+            static let verified = NSLocalizedString("wooShipping.createLabels.addressVerification.verified",
+                                                    value: "Address verified",
+                                                    comment: "Label when an address is verified on the shipping label creation screen")
+            static let unverified = NSLocalizedString("wooShipping.createLabels.addressVerification.unverified",
+                                                      value: "Unverified address",
+                                                      comment: "Label when an address is unverified on the shipping label creation screen")
         }
     }
 }

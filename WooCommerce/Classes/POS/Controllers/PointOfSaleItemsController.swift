@@ -11,6 +11,8 @@ protocol PointOfSaleItemsControllerProtocol {
     var itemsViewState: ItemsViewState { get }
     /// Loads the first page of items for a given base item.
     func loadItems(base: ItemListBaseItem) async
+    /// Refreshes the items for a given base item – will result in showing only the first page.
+    func refreshItems(base: ItemListBaseItem) async
     /// Loads the next page of items for a given base item.
     func loadNextItems(base: ItemListBaseItem) async
 }
@@ -31,6 +33,16 @@ protocol PointOfSaleItemsControllerProtocol {
 
     @MainActor
     func loadItems(base: ItemListBaseItem) async {
+        setLoadingState(base: base)
+        await loadFirstPage(base: base)
+    }
+
+    @MainActor func refreshItems(base: ItemListBaseItem) async {
+        await loadFirstPage(base: base)
+    }
+
+    @MainActor
+    private func loadFirstPage(base: ItemListBaseItem) async {
         switch base {
         case .root:
             await loadRootItems()
@@ -41,13 +53,6 @@ protocol PointOfSaleItemsControllerProtocol {
 
     @MainActor
     private func loadRootItems() async {
-        let items = itemsViewState.itemsStack.root.items
-        if items.isEmpty {
-            itemsViewState.containerState = .loading
-        } else {
-            itemsViewState.itemsStack.root = .loading(items)
-        }
-
         do {
             try await paginationTracker.resync { [weak self] pageNumber in
                 guard let self else { return true }
@@ -95,9 +100,6 @@ protocol PointOfSaleItemsControllerProtocol {
 
     @MainActor
     private func loadChildItems(for parent: POSItem) async {
-        let items = itemsViewState.itemsStack.itemStates[parent]?.items ?? []
-        updateState(for: parent, to: .loading(items))
-
         let paginationTracker = paginationTracker(for: parent)
         do {
             try await paginationTracker.resync { [weak self] pageNumber in
@@ -152,6 +154,32 @@ protocol PointOfSaleItemsControllerProtocol {
             childPaginationTrackers[parent] = newChildPaginationTracker
             return newChildPaginationTracker
         }
+    }
+}
+
+@available(iOS 17.0, *)
+private extension PointOfSaleItemsController {
+    func setLoadingState(base: ItemListBaseItem) {
+        switch base {
+        case .root:
+            setRootLoadingState()
+        case .parent(let parent):
+            setChildLoadingState(for: parent)
+        }
+    }
+
+    func setRootLoadingState() {
+        let items = itemsViewState.itemsStack.root.items
+        if items.isEmpty {
+            itemsViewState.containerState = .loading
+        } else {
+            itemsViewState.itemsStack.root = .loading(items)
+        }
+    }
+
+    func setChildLoadingState(for parent: POSItem) {
+        let items = itemsViewState.itemsStack.itemStates[parent]?.items ?? []
+        updateState(for: parent, to: .loading(items))
     }
 }
 

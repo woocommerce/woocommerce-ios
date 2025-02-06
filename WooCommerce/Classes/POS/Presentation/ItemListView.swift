@@ -147,7 +147,7 @@ private extension ItemListView {
             ChildItemList(parentItem: parentItem, title: parentProduct.name)
                 .refreshable {
                     ServiceLocator.analytics.track(.pointOfSaleVariationsPullToRefresh)
-                    await posModel.loadItems(base: .parent(parentItem))
+                    await posModel.refreshItems(base: .parent(parentItem))
                 }
         default:
             EmptyView()

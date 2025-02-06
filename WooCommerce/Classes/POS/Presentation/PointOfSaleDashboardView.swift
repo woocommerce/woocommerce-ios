@@ -90,7 +90,7 @@ struct PointOfSaleDashboardView: View {
                     ItemListView()
                         .refreshable {
                             ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
-                            await posModel.loadItems(base: .root)
+                            await posModel.refreshItems(base: .root)
                         }
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .leading))

@@ -166,7 +166,7 @@ struct WooShippingEditAddressView: View {
                             break
                         }
                     }
-                    .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isRemotelyValidating))
+                    .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
                     .disabled(viewModel.status == .missingInformation)
                 }
                 .padding()

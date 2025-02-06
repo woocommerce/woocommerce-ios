@@ -728,6 +728,7 @@ struct PointOfSaleAggregateModelTests {
         @available(iOS 17.0, *)
         @Test func connectCardReader_when_tapped_then_tracks_event() {
             // Given
+            let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
@@ -744,6 +745,7 @@ struct PointOfSaleAggregateModelTests {
         @available(iOS 17.0, *)
         @Test func disconnectCardReader_when_tapped_then_tracks_event() {
             // Given
+            let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,

@@ -11,6 +11,11 @@ class WaitingTimeTracker {
     private let analyticsService: Analytics
     private let waitingStartedTimestamp: TimeInterval
 
+    enum TrackingUnit {
+        case seconds
+        case milliseconds
+    }
+
     init(trackScenario: WooAnalyticsEvent.WaitingTime.Scenario,
          analyticsService: Analytics = ServiceLocator.analytics,
          currentTimestampSeconds: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 }
@@ -21,21 +26,27 @@ class WaitingTimeTracker {
         waitingStartedTimestamp = currentTimestampSeconds()
     }
 
-    /// End the waiting time by evaluating the elapsed time from the init,
-    /// and sending it as an analytics event, in seconds.
+    /// Default `end()` method to preserve interface compatibility. By default, tracks in `.seconds`
     ///
     func end() {
-        let elapsedTime = currentTimestampSeconds() - waitingStartedTimestamp
+        end(using: .seconds)
+    }
+
+    /// End the waiting time by evaluating the elapsed time from the init,
+    /// and sending it as an analytics event.
+    ///
+    /// - Parameter trackingUnit: Defines whether the elapsed time should be tracked in `.seconds` or `.milliseconds` (default is `.seconds`).
+    ///
+    func end(using trackingUnit: TrackingUnit = .seconds) {
+        let elapsedTime = calculateElapsedTime(in: trackingUnit)
         let analyticsEvent = WooAnalyticsEvent.WaitingTime.waitingFinished(scenario: trackScenario, elapsedTime: elapsedTime)
         analyticsService.track(event: analyticsEvent)
     }
 
-    /// End the waiting time by evaluating the elapsed time from the init,
-    /// and sending it as an analytics event, in milliseconds
+    /// Calculates elapsed time in the specified tracking unit.
     ///
-    func endInMilliseconds() {
-        let elapsedTimeMs = (currentTimestampSeconds() - waitingStartedTimestamp) * 1000
-        let analyticsEvent = WooAnalyticsEvent.WaitingTime.waitingFinished(scenario: trackScenario, elapsedTime: elapsedTimeMs)
-        analyticsService.track(event: analyticsEvent)
+    private func calculateElapsedTime(in trackingUnit: TrackingUnit) -> TimeInterval {
+        let elapsedTime = currentTimestampSeconds() - waitingStartedTimestamp
+        return trackingUnit == .milliseconds ? elapsedTime * 1000 : elapsedTime
     }
 }

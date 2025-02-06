@@ -140,6 +140,9 @@ private extension PointOfSaleDashboardView {
         .onAppear {
             posModel.trackCardPaymentsOnboardingShown()
         }
+        .onDisappear {
+            onboardingViewModel.showSupport = nil
+        }
     }
 }
 

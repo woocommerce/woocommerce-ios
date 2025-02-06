@@ -55,15 +55,6 @@ extension Color {
         )
     }
 
-    static var posOverlayFillInverted: Color {
-        Color(
-            UIColor(
-                light: .black,
-                dark: .white
-            )
-        )
-    }
-
     // An ugly duckling; intended for use for borders where the bordered view has
     // `.posSecondaryBackground` in light mode, even though it's on another `.posSecondaryBackground` view. Does not adapt
     static var posCartItemOutline: Color {

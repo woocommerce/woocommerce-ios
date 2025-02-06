@@ -76,10 +76,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// The current destination address status.
     @Published private(set) var destinationAddressStatus: DestinationAddressStatus = .unverified
 
-    // TODO: Set to false if the destination address is already verified.
-    // TODO: Set to true for a couple seconds after the destination address is verified.
-    /// Whether the destination address verification notice is displayed.
-    @Published var showAddressVerificationNotice = true
+    /// This property can be set to display a notice with the provided label about the destination address status.
+    @Published var destinationAddressStatusNoticeLabel: String?
 
     /// Shipping lines for the order, with formatted amount.
     let shippingLines: [WooShipping_ShippingLineViewModel]
@@ -191,6 +189,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         destinationAddressStatus = destinationAddressLines == nil ? .missing : .unverified
 
         observeSelectedOriginAddress()
+        observeDestinationAddressStatus()
         observeSelectedPackage()
         observeForLabelRates()
         loadStoreOptions()
@@ -341,6 +340,30 @@ private extension WooShippingCreateLabelsViewModel {
             .store(in: &subscriptions)
     }
 
+    /// Observes the destination address status and updates the notice label.
+    func observeDestinationAddressStatus() {
+        /// Set the notice when the destination address status changes.
+        $destinationAddressStatus
+            .map { status in
+                switch status {
+                case .verified:
+                    return Localization.DestinationAddressStatus.verified
+                case .unverified:
+                    return Localization.DestinationAddressStatus.unverified
+                case .missing:
+                    return Localization.DestinationAddressStatus.missing
+                }
+            }
+            .assign(to: &$destinationAddressStatusNoticeLabel)
+
+        /// Clear the notice after a delay when the address is verified.
+        $destinationAddressStatusNoticeLabel
+            .filter { $0 == Localization.DestinationAddressStatus.verified }
+            .delay(for: .seconds(2), scheduler: RunLoop.current)
+            .map { _ in nil }
+            .assign(to: &$destinationAddressStatusNoticeLabel)
+    }
+
     /// Observes the selected package and shipment weight and requests the available shipping rates.
     func observeForLabelRates() {
         $shipmentWeight
@@ -461,6 +484,18 @@ private extension WooShippingCreateLabelsViewModel {
                                                               value: "Adult Signature Required",
                                                               comment: "Label for row showing the additional cost to require an adult signature " +
                                                               "on the shipping label creation screen")
+
+        enum DestinationAddressStatus {
+            static let verified = NSLocalizedString("wooShipping.createLabels.addressVerification.destinationVerified",
+                                                               value: "Verified destination address",
+                                                               comment: "Notice when a destination address is verified on the shipping label creation screen")
+            static let unverified = NSLocalizedString("wooShipping.createLabels.addressVerification.destinationUnverified",
+                                                                 value: "Destination address unverified",
+                                                                 comment: "Notice when a destination address is unverified on the shipping label creation screen")
+            static let missing = NSLocalizedString("wooShipping.createLabels.addressVerification.destinationMissing",
+                                                              value: "Destination address missing",
+                                                              comment: "Notice when a destination address is missing on the shipping label creation screen")
+        }
     }
 
     enum Constants {

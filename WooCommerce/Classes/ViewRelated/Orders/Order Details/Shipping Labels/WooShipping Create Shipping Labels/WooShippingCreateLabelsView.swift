@@ -148,12 +148,10 @@ private extension WooShippingCreateLabelsView {
             Text(Localization.BottomSheet.shipmentDetails)
                 .foregroundStyle(Color(.primary))
                 .bold()
-            if viewModel.showAddressVerificationNotice {
-                addressVerificationNotice
-                    .onTapGesture {
-                        // TODO: Start address editing/verification flow if needed (if destination address is unverified).
-                    }
-            }
+            addressVerificationNotice(with: viewModel.destinationAddressStatusNoticeLabel)
+                .onTapGesture {
+                    // TODO: Start address editing/verification flow if needed (if destination address is unverified).
+                }
         }
     }
 
@@ -314,26 +312,29 @@ private extension WooShippingCreateLabelsView {
     }
 
     /// View showing a notice about the destination address verification status.
-    var addressVerificationNotice: some View {
-        HStack(spacing: 8) {
-            Image(systemName: isDestinationAddressVerified ? "checkmark.circle" : "exclamationmark.circle")
-            Text(Localization.AddressVerification.noticeLabel(for: viewModel.destinationAddressStatus))
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Button {
-                withAnimation {
-                    viewModel.showAddressVerificationNotice = false
+    @ViewBuilder
+    func addressVerificationNotice(with label: String?) -> some View {
+        if let label = viewModel.destinationAddressStatusNoticeLabel {
+            HStack(spacing: 8) {
+                Image(systemName: isDestinationAddressVerified ? "checkmark.circle" : "exclamationmark.circle")
+                Text(label)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Button {
+                    withAnimation {
+                        viewModel.destinationAddressStatusNoticeLabel = nil
+                    }
+                } label: {
+                    Image(systemName: "xmark")
+                        .renderedIf(!isDestinationAddressVerified)
                 }
-            } label: {
-                Image(systemName: "xmark")
-                    .renderedIf(!isDestinationAddressVerified)
             }
+            .font(.subheadline)
+            .foregroundStyle(isDestinationAddressVerified ? Layout.green : Layout.red)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                .fill(Color(uiColor: isDestinationAddressVerified ? .withColorStudio(.green, shade: .shade0) : .withColorStudio(.red, shade: .shade0))))
         }
-        .font(.subheadline)
-        .foregroundStyle(isDestinationAddressVerified ? Layout.green : Layout.red)
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-        .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
-            .fill(Color(uiColor: isDestinationAddressVerified ? .withColorStudio(.green, shade: .shade0) : .withColorStudio(.red, shade: .shade0))))
     }
 }
 
@@ -449,25 +450,6 @@ private extension WooShippingCreateLabelsView {
             static let missing = NSLocalizedString("wooShipping.createLabels.addressVerification.missing",
                                                    value: "Missing address",
                                                    comment: "Label when an address is missing on the shipping label creation screen")
-            static func noticeLabel(for status: WooShippingCreateLabelsViewModel.DestinationAddressStatus) -> String {
-                switch status {
-                case .verified:
-                    return destinationVerified
-                case .unverified:
-                    return destinationUnverified
-                case .missing:
-                    return destinationMissing
-                }
-            }
-            static let destinationVerified = NSLocalizedString("wooShipping.createLabels.addressVerification.destinationVerified",
-                                                          value: "Verified destination address",
-                                                          comment: "Notice when a destination address is verified on the shipping label creation screen")
-            static let destinationUnverified = NSLocalizedString("wooShipping.createLabels.addressVerification.destinationUnverified",
-                                                            value: "Destination address unverified",
-                                                            comment: "Notice when a destination address is unverified on the shipping label creation screen")
-            static let destinationMissing = NSLocalizedString("wooShipping.createLabels.addressVerification.destinationMissing",
-                                                            value: "Destination address missing",
-                                                            comment: "Notice when a destination address is missing on the shipping label creation screen")
         }
     }
 }

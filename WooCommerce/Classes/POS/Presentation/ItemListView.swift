@@ -158,7 +158,6 @@ private extension ItemListView {
 @available(iOS 17.0, *)
 private extension ItemListView {
     var shouldShowHeaderBanner: Bool {
-        return true
         itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
     }
 }

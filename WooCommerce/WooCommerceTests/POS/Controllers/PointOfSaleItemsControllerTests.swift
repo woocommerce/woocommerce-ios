@@ -3,6 +3,7 @@ import Foundation
 @testable import WooCommerce
 import struct Yosemite.POSVariableParentProduct
 import enum Yosemite.POSItem
+import enum Yosemite.PointOfSaleItemServiceError
 import Observation
 
 final class PointOfSaleItemsControllerTests {
@@ -238,7 +239,7 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadItems(base: .root)
         await sut.loadItems(base: baseItem)
 
-        itemProvider.shouldThrowError = true
+        itemProvider.errorToThrow = MockError.requestFailed
 
         // When
         await sut.loadNextItems(base: baseItem)
@@ -275,7 +276,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(itemProvider: itemProvider)
 
-        itemProvider.shouldThrowError = true
+        itemProvider.errorToThrow = MockError.requestFailed
         let expectedError = PointOfSaleErrorState(title: "Error loading products",
                                                   subtitle: "Give it another go?",
                                                   buttonText: "Retry")
@@ -299,7 +300,7 @@ final class PointOfSaleItemsControllerTests {
         itemProvider.shouldSimulateTwoPages = true
         await sut.loadItems(base: .root)
 
-        itemProvider.shouldThrowError = true
+        itemProvider.errorToThrow = MockError.requestFailed
 
         // When
         await sut.loadNextItems(base: .root)
@@ -316,6 +317,57 @@ final class PointOfSaleItemsControllerTests {
     }
 
     @available(iOS 17.0, *)
+    @Test func loadItems_when_request_is_cancelled_then_state_is_loaded() async throws {
+        // Given
+        let itemProvider = MockPointOfSaleItemService()
+        let sut = PointOfSaleItemsController(itemProvider: itemProvider)
+
+        itemProvider.errorToThrow = PointOfSaleItemServiceError.requestCancelled
+        try #require(sut.itemsViewState.containerState == .loading)
+
+        // When
+        await sut.loadItems(base: .root)
+
+        // Then
+        guard case .loaded(let items, let hasMoreItems) = sut.itemsViewState.itemsStack.root else {
+            Issue.record("Expected loaded ItemList state, but got \(sut.itemsViewState.itemsStack.root)")
+            return
+        }
+        #expect(items.count == 0)
+        #expect(hasMoreItems)
+    }
+
+    @available(iOS 17.0, *)
+    @Test func loadNextItems_when_request_is_cancelled_then_state_is_loaded() async throws {
+        // Given
+        let itemProvider = MockPointOfSaleItemService()
+        let sut = PointOfSaleItemsController(itemProvider: itemProvider)
+
+        itemProvider.shouldSimulateTwoPages = true
+        await sut.loadItems(base: .root)
+
+        guard case .loaded = sut.itemsViewState.itemsStack.root else {
+            Issue.record("Expected loaded ItemList state, but got \(sut.itemsViewState.itemsStack.root)")
+            return
+        }
+
+        itemProvider.errorToThrow = PointOfSaleItemServiceError.requestCancelled
+
+        // When
+        await sut.loadNextItems(base: .root)
+
+        // Then
+        #expect(sut.itemsViewState.containerState == .content)
+
+        guard case .loaded(let items, let hasMoreItems) = sut.itemsViewState.itemsStack.root else {
+            Issue.record("Expected loaded ItemList state, but got \(sut.itemsViewState.itemsStack.root)")
+            return
+        }
+        #expect(items.count == 2)
+        #expect(hasMoreItems)
+    }
+
+    @available(iOS 17.0, *)
     @Test func loadNextItems_after_itemProvider_throws_error_then_the_same_page_is_requested_next() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
@@ -324,7 +376,7 @@ final class PointOfSaleItemsControllerTests {
         itemProvider.shouldSimulateTwoPages = true
         await sut.loadItems(base: .root)
 
-        itemProvider.shouldThrowError = true
+        itemProvider.errorToThrow = MockError.requestFailed
         await sut.loadNextItems(base: .root)
         try #require(itemProvider.spyLastRequestedPageNumber == 2)
         itemProvider.spyLastRequestedPageNumber = 0
@@ -504,5 +556,68 @@ final class PointOfSaleItemsControllerTests {
             // When
             await sut.loadItems(base: baseItem)
         }
+    }
+
+    @available(iOS 17.0, *)
+    @Test func loadChildItems_when_request_is_cancelled_then_state_is_loaded() async throws {
+        // Given
+        let itemProvider = MockPointOfSaleItemService()
+        let sut = PointOfSaleItemsController(itemProvider: itemProvider)
+
+        let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: UUID(),
+                                                                              name: "Parent product",
+                                                                              productImageSource: nil,
+                                                                              productID: 125))
+        let baseItem = ItemListBaseItem.parent(parentItem)
+
+        itemProvider.errorToThrow = PointOfSaleItemServiceError.requestCancelled
+        try #require(sut.itemsViewState.containerState == .loading)
+
+        // When
+        await sut.loadItems(base: baseItem)
+
+        // Then
+        guard case .loaded(let items, let hasMoreItems) = sut.itemsViewState.itemsStack.itemStates[parentItem] else {
+            Issue.record("Expected loaded ItemList state, but got \(String(describing: sut.itemsViewState.itemsStack.itemStates[parentItem]))")
+            return
+        }
+        #expect(items.count == 0)
+        #expect(hasMoreItems)
+    }
+
+    @available(iOS 17.0, *)
+    @Test func loadNextChildItems_when_request_is_cancelled_then_state_is_loaded() async throws {
+        // Given
+        let itemProvider = MockPointOfSaleItemService()
+        let sut = PointOfSaleItemsController(itemProvider: itemProvider)
+
+        let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: UUID(),
+                                                                              name: "Parent product",
+                                                                              productImageSource: nil,
+                                                                              productID: 125))
+        let baseItem = ItemListBaseItem.parent(parentItem)
+
+        itemProvider.shouldSimulateTwoPagesOfVariations = true
+        await sut.loadItems(base: baseItem)
+
+        itemProvider.errorToThrow = PointOfSaleItemServiceError.requestCancelled
+
+        // When
+        await sut.loadNextItems(base: baseItem)
+
+        // Then
+        #expect(sut.itemsViewState.containerState == .content)
+
+        guard case .loaded(let items, let hasMoreItems) = sut.itemsViewState.itemsStack.itemStates[parentItem] else {
+            Issue.record("Expected loaded ItemList state, but got \(String(describing: sut.itemsViewState.itemsStack.itemStates[parentItem]))")
+            return
+        }
+        #expect(items.count == 2)
+        #expect(hasMoreItems)
+    }
+
+
+    enum MockError: Error {
+        case requestFailed
     }
 }

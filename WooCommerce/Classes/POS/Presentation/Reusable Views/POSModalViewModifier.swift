@@ -14,7 +14,7 @@ struct POSRootModalViewModifier: ViewModifier {
                 .accessibilityElement(children: modalManager.isPresented ? .ignore : .contain)
 
             if modalManager.isPresented {
-                Color.posSurfaceContainerLowest
+                Color.posSurfaceContainerLowest.opacity(0.6)
                     .edgesIgnoringSafeArea(.all)
                     .onTapGesture {
                         if modalManager.allowsInteractiveDismissal {

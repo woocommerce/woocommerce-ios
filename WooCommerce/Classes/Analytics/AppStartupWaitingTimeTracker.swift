@@ -22,7 +22,7 @@ class AppStartupWaitingTimeTracker: WaitingTimeTracker {
 
     init(analyticsService: Analytics = ServiceLocator.analytics,
          currentTimeInMillis: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 }) {
-        super.init(trackScenario: .appStartup, analyticsService: analyticsService, currentTimeInMillis: currentTimeInMillis)
+        super.init(trackScenario: .appStartup, analyticsService: analyticsService, currentTime: currentTimeInMillis)
     }
 
     /// Ends the waiting time for the provided startup action.

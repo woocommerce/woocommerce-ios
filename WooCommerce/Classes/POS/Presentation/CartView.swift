@@ -151,7 +151,7 @@ private struct ScrollOffSetPreferenceKey: PreferenceKey {
 @available(iOS 17.0, *)
 private extension CartView {
     var backgroundColor: Color {
-        Color.posSurfaceBright
+        .posSurfaceBright
     }
 
     var shouldPreventCartEditing: Bool {

@@ -65,14 +65,14 @@ private extension POSFloatingControlView {
     var backgroundColor: Color {
         switch backgroundAppearance {
         case .primary:
-            Color.posSurfaceContainerLow
+            .posSurfaceContainerLow
         case .secondary:
             colorScheme == .light ? Color(.wooCommercePurple(.shade80)) : Color(.wooCommercePurple(.shade20))
         }
     }
 
     var fontColor: Color {
-        Color.posOnSurface
+        .posOnSurface
     }
 }
 

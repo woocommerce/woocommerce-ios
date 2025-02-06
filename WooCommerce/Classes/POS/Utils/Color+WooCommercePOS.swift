@@ -67,7 +67,7 @@ extension Color {
 // MARK: - Non-adaptive colors
 
 extension Color {
-    static var posLightGray: Color {
+    private static var posLightGray: Color {
         return .init(red: 60.0 / 255.0, green: 60.0 / 255.0, blue: 67.0 / 255.0)
     }
 

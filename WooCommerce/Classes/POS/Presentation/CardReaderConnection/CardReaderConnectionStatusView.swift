@@ -28,7 +28,7 @@ struct CardReaderConnectionStatusView: View {
                     }
                 } label: {
                     HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                        circleIcon(with: Color(.wooCommerceEmerald(.shade40)))
+                        circleIcon(with: Color.posSuccess)
                         Text(Localization.readerConnected)
                             .foregroundColor(connectedFontColor)
                     }
@@ -97,7 +97,7 @@ private extension CardReaderConnectionStatusView {
     var disconnectedFontColor: Color {
         switch backgroundAppearance {
         case .primary:
-            Color(.wooCommercePurple(.shade60))
+            .posPrimaryText
         case .secondary:
             POSFloatingControlView.secondaryFontColor
         }
@@ -163,8 +163,14 @@ private extension CardReaderConnectionStatusView {
 
 @available(iOS 17.0, *)
 #Preview {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController()
+    )
     VStack {
         CardReaderConnectionStatusView()
+            .environmentObject(posModel)
     }
 }
 

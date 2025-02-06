@@ -6,7 +6,7 @@ import protocol Yosemite.POSOrderableItem
 struct ItemListView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    @EnvironmentObject var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
 
     @State private var showSimpleProductsModal: Bool = false
     private var itemListState: ItemListState {
@@ -323,7 +323,7 @@ private extension ItemListView {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
     return ItemListView()
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 
 @available(iOS 17.0, *)
@@ -333,7 +333,7 @@ private extension ItemListView {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
     return ItemListView()
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 
 #endif

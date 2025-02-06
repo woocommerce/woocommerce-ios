@@ -2,7 +2,7 @@ import SwiftUI
 
 @available(iOS 17.0, *)
 struct CartView: View {
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     private let viewHelper = CartViewHelper()
 
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
@@ -311,6 +311,6 @@ private extension CartView {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
     return CartView()
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 #endif

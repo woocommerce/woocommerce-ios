@@ -138,7 +138,7 @@ private extension PointOfSaleDashboardView {
     }
 
     var documentationView: some View {
-        SafariView(url: URL(string: WooConstants.URLs.helpCenter.rawValue)!)
+        SafariView(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
     }
 
     func paymentsOnboardingView(from onboardingViewModel: CardPresentPaymentsOnboardingViewModel) -> some View {

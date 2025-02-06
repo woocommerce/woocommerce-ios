@@ -43,7 +43,7 @@ struct POSFloatingControlView: View {
                     showDocumentation = true
                 } label: {
                     Label(
-                        title: { Text(Localization.learnMore) },
+                        title: { Text(Localization.viewDocumentation) },
                         icon: { Image(systemName: "info.circle") }
                     )
                 }
@@ -123,15 +123,16 @@ private extension POSFloatingControlView {
             comment: "The title of the floating button to get support for Point of Sale, shown in a popover menu."
         )
 
-        static let learnMore = NSLocalizedString(
-            "pointOfSale.floatingButtons.learnMore.button.title",
-            value: "Learn More",
+        static let viewDocumentation = NSLocalizedString(
+            "pointOfSale.floatingButtons.viewDocumentation.button.title",
+            value: "View Documentation",
             comment: "The title of the floating button to read Point of Sale documentation, shown in a popover menu."
         )
     }
 }
 
 #if DEBUG
+@available(iOS 17.0, *)
 #Preview {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
@@ -141,6 +142,6 @@ private extension POSFloatingControlView {
     POSFloatingControlView(showExitPOSModal: .constant(false),
                            showSupport: .constant(false),
                            showDocumentation: .constant(false))
-    .environmentObject(posModel)
+    .environment(posModel)
 }
 #endif

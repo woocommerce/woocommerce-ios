@@ -28,6 +28,7 @@ private extension PaymentsActionButtons {
     var sendReceiptButton: some View {
         Button(action: {
             Task { @MainActor in
+                ServiceLocator.analytics.track(.pointOfSaleEmailReceiptTapped)
                 await handleSendReceiptAction()
             }
         }, label: {
@@ -48,6 +49,7 @@ private extension PaymentsActionButtons {
 
     var newOrderButton: some View {
         Button(action: {
+            ServiceLocator.analytics.track(.pointOfSaleCreateNewOrderTapped)
             posModel.startNewCart()
         }, label: {
             HStack(spacing: Constants.buttonSpacing) {

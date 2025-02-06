@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUICore
 
 enum PointOfSaleItemListCardConstants {
     static let productCardSize: CGFloat = 112
@@ -11,4 +12,5 @@ enum PointOfSaleItemListCardConstants {
     static let itemDetailFont: POSFontStyle = .posLargeDetailRegular
     static let accessoryButtonMaxWidth: CGFloat = 136
     static let accessoryButtonPadding: CGFloat = 16
+    static let backgroundColor: Color = .posSurfaceContainerLowest
 }

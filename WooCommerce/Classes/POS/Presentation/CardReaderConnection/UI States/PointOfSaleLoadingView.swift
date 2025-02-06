@@ -26,12 +26,12 @@ struct PointOfSaleLoadingView: View {
 
 private extension PointOfSaleLoadingView {
     func trackTimeOnAppear() {
-        waitingTimeTracker = WaitingTimeTracker(trackScenario: .pointOfSaleLoaded, analyticsService: ServiceLocator.analytics)
+        waitingTimeTracker = WaitingTimeTracker(trackScenario: .pointOfSaleLoaded)
     }
 
     func trackElapsedTimeOnDisappear() {
         if let waitingTimeTracker = waitingTimeTracker {
-            waitingTimeTracker.end()
+            waitingTimeTracker.endInMilliseconds()
         }
     }
 }

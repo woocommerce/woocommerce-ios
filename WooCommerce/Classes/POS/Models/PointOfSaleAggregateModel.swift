@@ -167,14 +167,14 @@ extension PointOfSaleAggregateModel {
     }
 
     func connectCardReader() {
-        Task { @MainActor in
-            _ = try await cardPresentPaymentService.connectReader(using: .bluetooth)
+        Task { @MainActor [weak self] in
+            _ = try await self?.cardPresentPaymentService.connectReader(using: .bluetooth)
         }
     }
 
     func disconnectCardReader() {
-        Task { @MainActor in
-            await cardPresentPaymentService.disconnectReader()
+        Task { @MainActor [weak self] in
+            await self?.cardPresentPaymentService.disconnectReader()
         }
     }
 

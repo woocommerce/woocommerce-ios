@@ -1,7 +1,8 @@
 import SwiftUI
 
+@available(iOS 17.0, *)
 struct CartView: View {
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     private let viewHelper = CartViewHelper()
 
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
@@ -13,6 +14,8 @@ struct CartView: View {
     private var shouldApplyHeaderBottomShadow: Bool {
         posModel.cart.isNotEmpty && offSetPosition < 0
     }
+
+    @State private var shouldShowItemImages: Bool = false
 
     var body: some View {
         VStack {
@@ -70,6 +73,7 @@ struct CartView: View {
                         VStack(spacing: Constants.cartItemSpacing) {
                             ForEach(posModel.cart, id: \.id) { cartItem in
                                 ItemRowView(cartItem: cartItem,
+                                            showImage: $shouldShowItemImages,
                                             onItemRemoveTapped: posModel.orderStage == .building ? {
                                     ServiceLocator.analytics.track(.pointOfSaleItemRemovedFromCart)
                                     posModel.remove(cartItem: cartItem)
@@ -82,6 +86,15 @@ struct CartView: View {
                         .background(GeometryReader { geometry in
                             Color.clear.preference(key: ScrollOffSetPreferenceKey.self,
                                                    value: geometry.frame(in: coordinateSpace).origin.y)
+                            .onAppear {
+                                updateItemImageVisibility(cartListWidth: geometry.size.width)
+                            }
+                            .onChange(of: geometry.size.width) {
+                                updateItemImageVisibility(cartListWidth: $0)
+                            }
+                            .onChange(of: dynamicTypeSize) {
+                                updateItemImageVisibility(dynamicTypeSize: $0, cartListWidth: geometry.size.width)
+                            }
                         })
                         .onPreferenceChange(ScrollOffSetPreferenceKey.self) { position in
                             self.offSetPosition = position
@@ -136,6 +149,7 @@ private struct ScrollOffSetPreferenceKey: PreferenceKey {
     }
 }
 
+@available(iOS 17.0, *)
 private extension CartView {
     var backgroundColor: Color {
         switch colorScheme {
@@ -157,8 +171,42 @@ private extension CartView {
             cart: posModel.cart,
             orderStage: posModel.orderStage)
     }
+
+    func updateItemImageVisibility(dynamicTypeSize: DynamicTypeSize? = nil, cartListWidth: CGFloat) {
+        let newVisibility = cartListWidth >= minimumWidthToShowItemImages(with: dynamicTypeSize ?? self.dynamicTypeSize)
+        guard newVisibility != shouldShowItemImages else {
+            return
+        }
+        shouldShowItemImages = newVisibility
+    }
+
+    func minimumWidthToShowItemImages(with dynamicTypeSize: DynamicTypeSize) -> CGFloat {
+        switch dynamicTypeSize {
+        case .xSmall, .small:
+            240
+        case .medium:
+            260
+        case .large:
+            270
+        case .xLarge:
+            280
+        case .xxLarge, .xxxLarge:
+            300
+        case .accessibility1:
+            320
+        case .accessibility2:
+            400
+        case .accessibility3, .accessibility4:
+            420
+        case .accessibility5:
+            450
+        @unknown default:
+            450
+        }
+    }
 }
 
+@available(iOS 17.0, *)
 private extension CartView {
     enum Constants {
         static let primaryFont: POSFontStyle = .posTitleEmphasized
@@ -202,6 +250,7 @@ private extension CartView {
 
 /// View sub-components
 ///
+@available(iOS 17.0, *)
 private extension CartView {
     var checkoutButton: some View {
         Button {
@@ -256,6 +305,7 @@ private extension CartView {
     }
 }
 
+@available(iOS 17.0, *)
 private extension CartView {
     func trackCheckoutTapped() {
         let itemsInCart = posModel.cart.count
@@ -264,6 +314,7 @@ private extension CartView {
 }
 
 #if DEBUG
+@available(iOS 17.0, *)
 #Preview {
     let itemsController = PointOfSalePreviewItemsController()
     let posModel = PointOfSaleAggregateModel(
@@ -271,6 +322,6 @@ private extension CartView {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
     return CartView()
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 #endif

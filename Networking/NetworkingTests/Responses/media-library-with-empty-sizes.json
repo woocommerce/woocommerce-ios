@@ -1,0 +1,137 @@
+[
+    {
+        "slug" : "image-copy",
+        "date_gmt" : "2025-02-04t16:08:31",
+        "id" : 13,
+        "media_details" : {
+            "filesize" : 1343,
+            "sizes" : [
+                
+            ],
+            "image_meta" : {
+                "caption" : "",
+                "orientation" : "1",
+                "aperture" : "0",
+                "focal_length" : "0",
+                "title" : "",
+                "credit" : "",
+                "camera" : "",
+                "keywords" : [
+                    
+                ],
+                "created_timestamp" : "0",
+                "shutter_speed" : "0",
+                "copyright" : "",
+                "iso" : "0"
+            },
+            "width" : 4,
+            "height" : 2,
+            "file" : "2025/02/image-copy.jpg"
+        },
+        "title" : {
+            "rendered" : "image copy"
+        },
+        "alt_text" : "",
+        "mime_type" : "image/jpeg",
+        "source_url" : "https://example.com/wp-content/uploads/image-copy.jpeg"
+    },
+    {
+        "slug" : "woocommerce-placeholder",
+        "date_gmt" : "2025-02-04t16:04:33",
+        "id" : 4,
+        "media_details" : {
+            "filesize" : 48149,
+            "sizes" : {
+                "medium" : {
+                    "filesize" : 12321,
+                    "mime_type" : "image/png",
+                    "source_url" : "https://example.com/wp-content/uploads/woocommerce-placeholder-300x300.jpeg",
+                    "file" : "woocommerce-placeholder-300x300.png",
+                    "width" : 300,
+                    "height" : 300
+                },
+                "woocommerce_single" : {
+                    "filesize" : 38159,
+                    "mime_type" : "image/png",
+                    "source_url" : "https://example.com/wp-content/uploads/woocommerce-placeholder-600x600.jpeg",
+                    "file" : "woocommerce-placeholder-600x600.png",
+                    "width" : 600,
+                    "height" : 600
+                },
+                "large" : {
+                    "filesize" : 90808,
+                    "mime_type" : "image/png",
+                    "source_url" : "https://example.com/wp-content/uploads/woocommerce-placeholder-1024x1024.jpeg",
+                    "file" : "woocommerce-placeholder-1024x1024.png",
+                    "width" : 1024,
+                    "height" : 1024
+                },
+                "thumbnail" : {
+                    "filesize" : 4209,
+                    "mime_type" : "image/png",
+                    "source_url" : "https://example.com/wp-content/uploads/woocommerce-placeholder-150x150.jpeg",
+                    "file" : "woocommerce-placeholder-150x150.png",
+                    "width" : 150,
+                    "height" : 150
+                },
+                "medium_large" : {
+                    "filesize" : 56643,
+                    "mime_type" : "image/png",
+                    "source_url" : "https://example.com/wp-content/uploads/woocommerce-placeholder-768x768.jpeg",
+                    "file" : "woocommerce-placeholder-768x768.png",
+                    "width" : 768,
+                    "height" : 768
+                },
+                "woocommerce_gallery_thumbnail" : {
+                    "filesize" : 2330,
+                    "mime_type" : "image/png",
+                    "source_url" : "https://example.com/wp-content/uploads/woocommerce-placeholder-100x100.jpeg",
+                    "file" : "woocommerce-placeholder-100x100.png",
+                    "width" : 100,
+                    "height" : 100
+                },
+                "woocommerce_thumbnail" : {
+                    "height" : 300,
+                    "source_url" : "https://example.com/wp-content/uploads/woocommerce-placeholder-300x300.jpeg",
+                    "filesize" : 12321,
+                    "file" : "woocommerce-placeholder-300x300.png",
+                    "width" : 300,
+                    "uncropped" : false,
+                    "mime_type" : "image/png"
+                },
+                "full" : {
+                    "mime_type" : "image/png",
+                    "source_url" : "https://example.com/wp-content/uploads/woocommerce-placeholder.jpeg",
+                    "file" : "woocommerce-placeholder.png",
+                    "width" : 1200,
+                    "height" : 1200
+                }
+            },
+            "image_meta" : {
+                "caption" : "",
+                "orientation" : "0",
+                "aperture" : "0",
+                "focal_length" : "0",
+                "title" : "",
+                "credit" : "",
+                "camera" : "",
+                "keywords" : [
+                    
+                ],
+                "created_timestamp" : "0",
+                "shutter_speed" : "0",
+                "copyright" : "",
+                "iso" : "0"
+            },
+            "width" : 1200,
+            "height" : 1200,
+            "file" : "woocommerce-placeholder.png"
+        },
+        "title" : {
+            "rendered" : "woocommerce-placeholder"
+        },
+        "alt_text" : "",
+        "mime_type" : "image/png",
+        "source_url" : "https://example.com/wp-content/uploads/woocommerce-placeholder.jpeg"
+    }
+]

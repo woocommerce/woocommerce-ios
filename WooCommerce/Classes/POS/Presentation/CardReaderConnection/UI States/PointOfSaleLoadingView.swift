@@ -26,12 +26,12 @@ struct PointOfSaleLoadingView: View {
 
 private extension PointOfSaleLoadingView {
     func trackTimeOnAppear() {
-        waitingTimeTracker = WaitingTimeTracker(trackScenario: .pointOfSaleLoaded, analyticsService: ServiceLocator.analytics)
+        waitingTimeTracker = WaitingTimeTracker(trackScenario: .pointOfSaleLoaded)
     }
 
     func trackElapsedTimeOnDisappear() {
         if let waitingTimeTracker = waitingTimeTracker {
-            waitingTimeTracker.end()
+            waitingTimeTracker.endInMilliseconds()
         }
     }
 }
@@ -40,9 +40,6 @@ private extension PointOfSaleLoadingView {
     enum Layout {
         static let textSpacing: CGFloat = 16
         static let progressViewSpacing: CGFloat = 72
-    }
-    enum Constants {
-        static let toMilliseconds: Double = 1000.0
     }
 }
 

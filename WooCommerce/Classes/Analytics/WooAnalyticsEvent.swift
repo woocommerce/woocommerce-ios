@@ -2491,7 +2491,7 @@ extension WooAnalyticsEvent {
 
         private enum Keys {
             static let waitingTime = "waiting_time"
-            static let milliseconds_time_elapsed = "milliseconds_time_elapsed_in_splash_screen"
+            static let millisecondsTimeElapsedInSplashScreen = "milliseconds_time_elapsed_in_splash_screen"
         }
 
         static func waitingFinished(scenario: Scenario, elapsedTime: TimeInterval) -> WooAnalyticsEvent {
@@ -2507,7 +2507,7 @@ extension WooAnalyticsEvent {
             case .appStartup:
                 return WooAnalyticsEvent(statName: .applicationOpenedWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
             case .pointOfSaleLoaded:
-                return WooAnalyticsEvent(statName: .pointOfSaleLoaded, properties: [Keys.milliseconds_time_elapsed: elapsedTime])
+                return WooAnalyticsEvent(statName: .pointOfSaleLoaded, properties: [Keys.millisecondsTimeElapsedInSplashScreen: elapsedTime])
             }
         }
     }

@@ -36,7 +36,8 @@ struct HubMenu: View {
                        let receiptService = POSReceiptService(siteID: viewModel.siteID,
                                                               credentials: viewModel.credentials),
                        let orderService = POSOrderService(siteID: viewModel.siteID,
-                                                          credentials: viewModel.credentials) {
+                                                          credentials: viewModel.credentials),
+                       #available(iOS 17.0, *) {
                         PointOfSaleEntryPointView(
                             itemsController: PointOfSaleItemsController(itemProvider: viewModel.posItemProvider),
                             onPointOfSaleModeActiveStateChange: { isEnabled in

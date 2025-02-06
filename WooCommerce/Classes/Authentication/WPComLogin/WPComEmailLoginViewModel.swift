@@ -2,8 +2,6 @@ import Combine
 import UIKit
 import WordPressAuthenticator
 import protocol WooFoundation.Analytics
-import enum WordPressKit.WordPressAPIError
-import struct WordPressKit.WordPressComRestApiEndpointError
 
 /// A protocol used to mock `WordPressComAccountService` for unit tests.
 protocol WordPressComAccountServiceProtocol {

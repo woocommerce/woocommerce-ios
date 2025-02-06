@@ -1,8 +1,9 @@
 import SwiftUI
 
+@available(iOS 17.0, *)
 struct POSFloatingControlView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding private var showExitPOSModal: Bool
@@ -73,6 +74,7 @@ struct POSFloatingControlView: View {
     }
 }
 
+@available(iOS 17.0, *)
 private extension POSFloatingControlView {
     var backgroundColor: Color {
         switch backgroundAppearance {
@@ -93,12 +95,14 @@ private extension POSFloatingControlView {
     }
 }
 
+@available(iOS 17.0, *)
 extension POSFloatingControlView {
     static var secondaryFontColor: Color {
         return .posDarkGray.opacity(0.6)
     }
 }
 
+@available(iOS 17.0, *)
 private extension POSFloatingControlView {
     enum Constants {
         static let size: CGFloat = 80

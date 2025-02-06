@@ -65,9 +65,16 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         (destinationAddress?.formattedPostalAddress)?.components(separatedBy: .newlines)
     }()
 
-    // TODO: Add support for checking if the destination address is verified.
-    /// Whether the destination address is verified.
-    @Published private(set) var isDestinationAddressVerified: Bool = false
+    /// Possible statuses for a Woo Shipping destination address.
+    enum DestinationAddressStatus {
+        case verified
+        case unverified
+        case missing
+    }
+
+    // TODO: Add support for updating the destination address status when it is edited or verified remotely.
+    /// The current destination address status.
+    @Published private(set) var destinationAddressStatus: DestinationAddressStatus = .unverified
 
     // TODO: Set to false if the destination address is already verified.
     // TODO: Set to true for a couple seconds after the destination address is verified.
@@ -180,6 +187,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.stores = stores
         self.debounceDuration = debounceDuration
 
+        // TODO: Check remotely to see if the destination address is verified.
+        destinationAddressStatus = destinationAddressLines == nil ? .missing : .unverified
+
         observeSelectedOriginAddress()
         observeSelectedPackage()
         observeForLabelRates()
@@ -202,6 +212,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
         self.originAddress = shippingLabel.originAddress.formattedPostalAddress?.replacingOccurrences(of: "\n", with: ", ") ?? ""
         self.destinationAddress = shippingLabel.destinationAddress
+        self.destinationAddressStatus = .verified
         self.onLabelPurchase = nil
         self.stores = stores
     }

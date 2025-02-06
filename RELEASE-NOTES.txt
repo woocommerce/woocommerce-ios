@@ -2,6 +2,7 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 21.7
 -----
+- [**] Fixed an issue with the WordPress Media Library not loading due to a decoding error in media details sizes. [https://github.com/woocommerce/woocommerce-ios/pull/15056]
 - [*] Orders: Improved accessibility UI for Tax Rates related views [https://github.com/woocommerce/woocommerce-ios/pull/15043]
 - [*] Product Details: Display cover tag on the first product image [https://github.com/woocommerce/woocommerce-ios/pull/15041]
 - [*] Payments: Update learn more links to open Stripe-specific docs when using that gateway [https://github.com/woocommerce/woocommerce-ios/pull/15035]

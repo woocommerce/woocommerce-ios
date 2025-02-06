@@ -1,5 +1,5 @@
 import Foundation
-import Combine
+import Observation
 import protocol Yosemite.StoresManager
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol

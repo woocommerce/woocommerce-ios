@@ -1,5 +1,5 @@
 import Testing
-import Combine
+import Observation
 import Foundation
 
 @testable import WooCommerce

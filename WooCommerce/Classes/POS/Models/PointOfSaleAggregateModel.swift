@@ -54,8 +54,8 @@ protocol PointOfSaleAggregateModelProtocol {
 
     private(set) var cart: [CartItem] = []
 
-    private(set) var orderState: PointOfSaleOrderState = .idle
-    private var internalOrderState: PointOfSaleInternalOrderState = .idle
+    var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
+    private var internalOrderState: PointOfSaleInternalOrderState { orderController.orderState }
 
     private let itemsController: PointOfSaleItemsControllerProtocol
 
@@ -80,7 +80,6 @@ protocol PointOfSaleAggregateModelProtocol {
         self.paymentState = paymentState
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
-        publishOrderState()
         setupReaderReconnectionObservation()
     }
 }
@@ -428,21 +427,6 @@ extension PointOfSaleAggregateModel {
             await self?.checkOut()
         })
         await startPaymentWhenCardReaderConnected()
-    }
-
-    func publishOrderState() {
-        orderController.orderStatePublisher
-            .map { $0.externalState }
-            .sink(receiveValue: { [weak self] orderState in
-                self?.orderState = orderState
-            })
-            .store(in: &cancellables)
-
-        orderController.orderStatePublisher
-            .sink(receiveValue: { [weak self] internalOrderState in
-                self?.internalOrderState = internalOrderState
-            })
-            .store(in: &cancellables)
     }
 }
 

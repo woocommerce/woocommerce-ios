@@ -61,8 +61,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     @Published private(set) var originAddress: String = ""
 
     /// Address to ship to (customer address), formatted for display and split into separate lines to allow additional formatting.
-    private(set) lazy var destinationAddressLines: [String] = {
-        (destinationAddress?.formattedPostalAddress ?? "").components(separatedBy: .newlines)
+    private(set) lazy var destinationAddressLines: [String]? = {
+        (destinationAddress?.formattedPostalAddress)?.components(separatedBy: .newlines)
     }()
 
     // TODO: Add support for checking if the destination address is verified.

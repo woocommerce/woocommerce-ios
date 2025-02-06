@@ -305,6 +305,7 @@ private extension CartView {
     }
 }
 
+@available(iOS 17.0, *)
 private extension CartView {
     func trackCheckoutTapped() {
         let itemsInCart = posModel.cart.count

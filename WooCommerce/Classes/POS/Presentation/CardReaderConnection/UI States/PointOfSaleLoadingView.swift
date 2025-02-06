@@ -41,9 +41,6 @@ private extension PointOfSaleLoadingView {
         static let textSpacing: CGFloat = 16
         static let progressViewSpacing: CGFloat = 72
     }
-    enum Constants {
-        static let toMilliseconds: Double = 1000.0
-    }
 }
 
 #Preview {

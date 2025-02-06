@@ -36,11 +36,6 @@ struct ItemListView: View {
             })
             .background(Color.posPrimaryBackground)
         }
-        .refreshable {
-            await Task {
-                await posModel.loadItems(base: .root)
-            }.value
-        }
         .accessibilityElement(children: .contain)
         .posModal(isPresented: $showSimpleProductsModal) {
             SimpleProductsOnlyInformation(isPresented: $showSimpleProductsModal)
@@ -60,6 +55,7 @@ private extension ItemListView {
                 if !shouldShowHeaderBanner {
                     Spacer()
                     Button(action: {
+                        ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
                         showSimpleProductsModal = true
                     }, label: {
                         Image(systemName: "info.circle")
@@ -149,6 +145,10 @@ private extension ItemListView {
         switch parentItem {
         case let .variableParentProduct(parentProduct):
             ChildItemList(parentItem: parentItem, title: parentProduct.name)
+                .refreshable {
+                    ServiceLocator.analytics.track(.pointOfSaleVariationsPullToRefresh)
+                    await posModel.loadItems(base: .parent(parentItem))
+                }
         default:
             EmptyView()
         }

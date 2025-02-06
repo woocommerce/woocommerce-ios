@@ -10,6 +10,7 @@ import struct Yosemite.POSCartItem
 import enum Yosemite.POSItem
 import enum Yosemite.SystemStatusAction
 
+@available(iOS 17.0, *)
 protocol PointOfSaleAggregateModelProtocol {
     var orderStage: PointOfSaleOrderStage { get }
 
@@ -49,9 +50,7 @@ protocol PointOfSaleAggregateModelProtocol {
     var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
     private var onOnboardingCancellation: (() -> Void)?
 
-    private(set) var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
-                                                                     itemsStack: ItemsStackState(root: .loading([]),
-                                                                                                 itemStates: [:]))
+    var itemsViewState: ItemsViewState { itemsController.itemsViewState }
 
     private(set) var cart: [CartItem] = []
 
@@ -79,7 +78,6 @@ protocol PointOfSaleAggregateModelProtocol {
         self.orderController = orderController
         self.analytics = analytics
         self.paymentState = paymentState
-        publishItemsViewState()
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
         publishOrderState()
@@ -90,13 +88,6 @@ protocol PointOfSaleAggregateModelProtocol {
 // MARK: - ItemList
 @available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
-    private func publishItemsViewState() {
-        itemsController.itemsViewStatePublisher.sink { [weak self] state in
-            self?.itemsViewState = state
-        }
-        .store(in: &cancellables)
-    }
-
     @MainActor
     func loadItems(base: ItemListBaseItem) async {
         await itemsController.loadItems(base: base)
@@ -136,6 +127,7 @@ extension PointOfSaleAggregateModel {
 
     func removeAllItemsFromCart() {
         cart.removeAll()
+        analytics.track(.pointOfSaleClearCartTapped)
     }
 
     func addMoreToCart() {
@@ -167,12 +159,14 @@ extension PointOfSaleAggregateModel {
     }
 
     func connectCardReader() {
+        analytics.track(.pointOfSaleCardReaderConnectionTapped)
         Task { @MainActor [weak self] in
             _ = try await self?.cardPresentPaymentService.connectReader(using: .bluetooth)
         }
     }
 
     func disconnectCardReader() {
+        analytics.track(.cardReaderDisconnectTapped)
         Task { @MainActor [weak self] in
             await self?.cardPresentPaymentService.disconnectReader()
         }

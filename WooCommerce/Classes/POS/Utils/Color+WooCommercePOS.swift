@@ -74,15 +74,6 @@ extension Color {
 
     // MARK: - Text
 
-    static var posPrimaryTextInverted: Color {
-        Color(
-            UIColor(
-                light: UIColor(.white),
-                dark: UIColor(.black)
-            )
-        )
-    }
-
     private static var posGray: Color {
         return Color(
             UIColor(

@@ -57,7 +57,7 @@ private extension PaymentsActionButtons {
             .frame(minWidth: UIScreen.main.bounds.width / 2)
         })
         .padding(Constants.buttonPadding)
-        .foregroundColor(Color.posPrimaryTextInverted)
+        .foregroundColor(Color.posOnInverseSurface)
         .background(Color.posPrimaryButtonBackground)
         .cornerRadius(Constants.buttonCornerRadius)
     }

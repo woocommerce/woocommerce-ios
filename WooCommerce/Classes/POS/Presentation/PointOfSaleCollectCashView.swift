@@ -77,7 +77,7 @@ struct PointOfSaleCollectCashView: View {
                         if isLoading {
                             ProgressView()
                                 .progressViewStyle(CircularProgressViewStyle())
-                                .tint(Color.posPrimaryTextInverted)
+                                .tint(Color.posOnInverseSurface)
                         } else {
                             Text(Localization.markPaymentCompletedButtonTitle)
                                 .font(Constants.buttonFont)

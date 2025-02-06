@@ -185,12 +185,7 @@ private extension PointOfSaleCollectCashView {
     }
 
     private var backgroundColor: Color {
-        switch colorScheme {
-        case .dark:
-            return Color.posSecondaryBackground
-        default:
-            return .clear
-        }
+        .posSurface
     }
 
     private var navigationForegroundColor: Color {

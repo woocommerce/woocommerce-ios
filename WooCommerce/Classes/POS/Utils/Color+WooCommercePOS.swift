@@ -19,15 +19,6 @@ extension Color {
      * Secondary and tertiary colors are layered on top of the main background, when needed.
      */
 
-    static var posSecondaryBackground: Color {
-        Color(
-            UIColor(
-                light: .white,
-                dark: UIColor(red: 44.0 / 255.0, green: 44.0 / 255.0, blue: 46.0 / 255.0, alpha: 1.0)
-            )
-        )
-    }
-
     static var posTertiaryBackground: Color {
         Color(
             UIColor(

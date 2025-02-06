@@ -108,7 +108,8 @@ private extension WooShippingServiceView {
                                                                  comment: "Title displayed when no destination address is provided " +
                                                                  "in the shipping label creation screen.")
         static let noDestinationAddressMessage = NSLocalizedString("wooShipping.createLabels.rates.noDestinationAddressMessage",
-                                                                 value: "We need to know where this package is going before we can show the available shipping rates.",
+                                                                 value: "We need to know where this package is going " +
+                                                                   "before we can show the available shipping rates.",
                                                                  comment: "Message displayed when no destination address is provided " +
                                                                    "in the shipping label creation screen.")
     }

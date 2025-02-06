@@ -14,7 +14,7 @@ struct POSRootModalViewModifier: ViewModifier {
                 .accessibilityElement(children: modalManager.isPresented ? .ignore : .contain)
 
             if modalManager.isPresented {
-                Color.posOverlayFill
+                Color.posSurfaceContainerLowest
                     .edgesIgnoringSafeArea(.all)
                     .onTapGesture {
                         if modalManager.allowsInteractiveDismissal {
@@ -25,7 +25,7 @@ struct POSRootModalViewModifier: ViewModifier {
                     .animation(nil, value: modalManager.isPresented)
                 ZStack {
                     modalManager.getContent()
-                        .background(Color.posSurface)
+                        .background(Color.posSurfaceBright)
                         .cornerRadius(24)
                         .shadow(color: Color.black.opacity(0.08), radius: 24, x: 0, y: 8)
                         .padding()

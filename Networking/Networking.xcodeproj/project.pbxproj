@@ -423,6 +423,8 @@
 		450106852399A7CB00E24722 /* TaxClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106842399A7CB00E24722 /* TaxClass.swift */; };
 		4501068F2399B19500E24722 /* TaxRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4501068E2399B19500E24722 /* TaxRemote.swift */; };
 		450106912399B2C800E24722 /* TaxClassListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106902399B2C800E24722 /* TaxClassListMapper.swift */; };
+		450BFA6B2D52777500C2D1D7 /* WordPressMediaMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450BFA6A2D52777500C2D1D7 /* WordPressMediaMapperTests.swift */; };
+		450BFA6D2D52790E00C2D1D7 /* media-library-with-empty-sizes.json in Resources */ = {isa = PBXBuildFile; fileRef = 450BFA6C2D52790200C2D1D7 /* media-library-with-empty-sizes.json */; };
 		451274A625276C82009911FF /* product-variation.json in Resources */ = {isa = PBXBuildFile; fileRef = 451274A525276C82009911FF /* product-variation.json */; };
 		4513382027A8227F00AE5E78 /* InboxNotesRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4513381F27A8227F00AE5E78 /* InboxNotesRemote.swift */; };
 		4513382227A8409000AE5E78 /* InboxNotesRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4513382127A8409000AE5E78 /* InboxNotesRemoteTests.swift */; };
@@ -1621,6 +1623,8 @@
 		450106842399A7CB00E24722 /* TaxClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClass.swift; sourceTree = "<group>"; };
 		4501068E2399B19500E24722 /* TaxRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxRemote.swift; sourceTree = "<group>"; };
 		450106902399B2C800E24722 /* TaxClassListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassListMapper.swift; sourceTree = "<group>"; };
+		450BFA6A2D52777500C2D1D7 /* WordPressMediaMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressMediaMapperTests.swift; sourceTree = "<group>"; };
+		450BFA6C2D52790200C2D1D7 /* media-library-with-empty-sizes.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "media-library-with-empty-sizes.json"; sourceTree = "<group>"; };
 		451274A525276C82009911FF /* product-variation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variation.json"; sourceTree = "<group>"; };
 		4513381F27A8227F00AE5E78 /* InboxNotesRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxNotesRemote.swift; sourceTree = "<group>"; };
 		4513382127A8409000AE5E78 /* InboxNotesRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxNotesRemoteTests.swift; sourceTree = "<group>"; };
@@ -3319,6 +3323,7 @@
 				93D8BBFE226BC1DA00AD2EB3 /* me-settings.json */,
 				EEDADD272B7C6A5E00F7302B /* media.json */,
 				02AF07EB27492FDD00B2D81E /* media-library.json */,
+				450BFA6C2D52790200C2D1D7 /* media-library-with-empty-sizes.json */,
 				EECB7EE7286555180028C888 /* media-update-product-id.json */,
 				B58D10C92114D22E00107ED4 /* new-order-note.json */,
 				022902D322E2436400059692 /* no_stats_permission_error.json */,
@@ -3908,6 +3913,7 @@
 				EEA1E2012AC18CD700A37ADD /* AIProductMapperTests.swift */,
 				EE078D922AD2F1E500C1199E /* JWTokenMapperTests.swift */,
 				EE065ACF2B8E56C2009848CB /* BlazeCampaignListItemsMapperTests.swift */,
+				450BFA6A2D52777500C2D1D7 /* WordPressMediaMapperTests.swift */,
 				DEDA8DA62B18399D0076BF0F /* WordPressThemeListMapperTests.swift */,
 				DEDA8DB82B187EC90076BF0F /* WordPressThemeMapperTests.swift */,
 				DEA493762B39987B00EED015 /* BlazeTargetOptionMapperTests.swift */,
@@ -4752,6 +4758,7 @@
 				EE065ACE2B8E51AD009848CB /* blaze-campaigns-list-success.json in Resources */,
 				45A4B85625D2E75300776FB4 /* shipping-label-address-validation-success.json in Resources */,
 				DEB3878F2C2D71A10025256E /* gla-campaign-list-without-data-envelope.json in Resources */,
+				450BFA6D2D52790E00C2D1D7 /* media-library-with-empty-sizes.json in Resources */,
 				457FC68C2382B2FD00B41B02 /* product-update.json in Resources */,
 				CE71E2292A4C35C900DB5376 /* reports-products.json in Resources */,
 				CE19CB11222486A600E8AF7A /* order-statuses.json in Resources */,
@@ -5629,6 +5636,7 @@
 				B5C6FCCD20A34B8300A4F8E4 /* OrderListMapperTests.swift in Sources */,
 				B518663520A0A2E800037A38 /* Constants.swift in Sources */,
 				EEA658422966C41A00112DF0 /* ProductIDMapperTests.swift in Sources */,
+				450BFA6B2D52777500C2D1D7 /* WordPressMediaMapperTests.swift in Sources */,
 				CE12AE9D29F2AD1C0056DD17 /* SubscriptionMapperTests.swift in Sources */,
 				D8FBFF1E22D51F39006E3336 /* OrderStatsMapperV4Tests.swift in Sources */,
 				02E7FFCB256218F600C53030 /* ShippingLabelRemoteTests.swift in Sources */,

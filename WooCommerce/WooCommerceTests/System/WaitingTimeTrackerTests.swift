@@ -91,6 +91,36 @@ class WaitingTimeTrackerTests: XCTestCase {
         XCTAssertEqual(testAnalytics.lastReceivedEventName, WooAnalyticsStat.applicationOpenedWaitingTimeLoaded.rawValue)
     }
 
+    func test_timeElapsed_evaluation_in_milliseconds_is_correct() {
+        // Given
+        var currentTimeCallCounter = 0.0
+        let expectedReceivedWaitingTime = 10_000.0 // 10s * 1000 ms
+        let waitingTracker = WaitingTimeTracker(trackScenario: .orderDetails,
+                                                analyticsService: testAnalytics) {
+            currentTimeCallCounter += 1
+            return currentTimeCallCounter * 10
+        }
+
+        // When
+        waitingTracker.end(using: .milliseconds)
+
+        // Then
+        XCTAssertEqual(testAnalytics.lastReceivedWaitingTime, expectedReceivedWaitingTime)
+    }
+
+    func test_track_scenario_triggers_expected_analytics_stat_in_milliseconds() {
+        // Given
+        let waitingTracker = WaitingTimeTracker(trackScenario: .pointOfSaleLoaded,
+                                                analyticsService: testAnalytics,
+                                                currentTimestampSeconds: { 0 })
+
+        // When
+        waitingTracker.end(using: .milliseconds)
+
+        // Then
+        XCTAssertEqual(testAnalytics.lastReceivedEventName, WooAnalyticsStat.pointOfSaleLoaded.rawValue)
+    }
+
     class TestAnalytics: Analytics {
         var lastReceivedEventName: String? = nil
         var lastReceivedWaitingTime: TimeInterval? = nil

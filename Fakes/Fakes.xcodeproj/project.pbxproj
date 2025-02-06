@@ -17,7 +17,6 @@
 		26EEDC8D26FE1C1C00D5BA0E /* Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EEDC8C26FE1C1C00D5BA0E /* Yosemite.framework */; };
 		26EEDC9026FE1C7B00D5BA0E /* Networking.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26EEDC8E26FE1C7B00D5BA0E /* Networking.generated.swift */; };
 		26EEDC9126FE1C7B00D5BA0E /* Yosemite.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26EEDC8F26FE1C7B00D5BA0E /* Yosemite.generated.swift */; };
-		3FA7DA012D547F2600CE5611 /* Fakes.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 3FA7DA002D547F2600CE5611 /* Fakes.xcconfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -188,7 +187,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3FA7DA012D547F2600CE5611 /* Fakes.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

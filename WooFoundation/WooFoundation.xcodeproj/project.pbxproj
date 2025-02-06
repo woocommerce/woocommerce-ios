@@ -45,7 +45,6 @@
 		26AF1F5628B8362800937BA9 /* UIColor+SystemColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F5228B8362800937BA9 /* UIColor+SystemColors.swift */; };
 		26AF1F5928B9011100937BA9 /* WooStyleModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F5828B9011100937BA9 /* WooStyleModifiers.swift */; };
 		397702D42D32EAEEEA3B29FC /* Pods_WooFoundationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 532D4D63493CE8FA6F13C85B /* Pods_WooFoundationTests.framework */; };
-		3FA7D9FF2D547EDC00CE5611 /* WooFoundation.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 3FA7D9FE2D547EDC00CE5611 /* WooFoundation.xcconfig */; };
 		686BE912288EE0D300967C86 /* TypedPredicates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686BE911288EE0D300967C86 /* TypedPredicates.swift */; };
 		686BE915288EE2CA00967C86 /* TypedPredicateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686BE914288EE2CA00967C86 /* TypedPredicateTests.swift */; };
 		6874E81428998AD300074A97 /* LogErrorAndExit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6874E81328998AD300074A97 /* LogErrorAndExit.swift */; };
@@ -589,7 +588,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				265C99D828B93F04005E6117 /* ColorPalette.xcassets in Resources */,
-				3FA7D9FF2D547EDC00CE5611 /* WooFoundation.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

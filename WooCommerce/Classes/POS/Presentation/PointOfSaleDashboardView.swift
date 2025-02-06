@@ -177,8 +177,13 @@ private extension PointOfSaleDashboardView {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
     return NavigationStack {
         PointOfSaleDashboardView()
     }
+    .environmentObject(posModel)
 }
 #endif

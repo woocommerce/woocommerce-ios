@@ -1,10 +1,22 @@
 import Foundation
-import Codegen
 import enum Yosemite.POSItem
+import Observation
 
-struct ItemsStackState {
-    let root: ItemListState
-    let itemStates: [POSItem: ItemListState]
+@available(iOS 17.0, *)
+@Observable final class ItemsStackState {
+    var root: ItemListState
+    var itemStates: [POSItem: ItemListState]
+
+    init(root: ItemListState, itemStates: [POSItem: ItemListState]) {
+        self.root = root
+        self.itemStates = itemStates
+    }
 }
 
-extension ItemsStackState: Equatable, GeneratedCopiable {}
+@available(iOS 17.0, *)
+extension ItemsStackState: Equatable {
+    static func == (lhs: ItemsStackState, rhs: ItemsStackState) -> Bool {
+        return lhs.root == rhs.root
+        && lhs.itemStates == rhs.itemStates
+    }
+}

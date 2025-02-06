@@ -25,7 +25,7 @@ struct POSRootModalViewModifier: ViewModifier {
                     .animation(nil, value: modalManager.isPresented)
                 ZStack {
                     modalManager.getContent()
-                        .background(Color.posPrimaryBackground)
+                        .background(Color.posSurface)
                         .cornerRadius(24)
                         .shadow(color: Color.black.opacity(0.08), radius: 24, x: 0, y: 8)
                         .padding()

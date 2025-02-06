@@ -31,7 +31,7 @@ struct ChildItemList: View {
                 errorView(error: error)
             }
         }
-        .background(Color.posPrimaryBackground)
+        .background(Color.posSurface)
         .toolbar(.hidden, for: .navigationBar)
         .refreshable {
             await Task {

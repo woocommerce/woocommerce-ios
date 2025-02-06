@@ -34,7 +34,7 @@ struct ItemListView: View {
             .navigationDestination(for: POSItem.self, destination: { item in
                 childListView(parentItem: item)
             })
-            .background(Color.posPrimaryBackground)
+            .background(Color.posSurface)
         }
         .refreshable {
             await Task {

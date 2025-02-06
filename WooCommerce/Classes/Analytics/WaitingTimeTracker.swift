@@ -7,25 +7,25 @@ import protocol WooFoundation.Analytics
 ///
 class WaitingTimeTracker {
     private let trackScenario: WooAnalyticsEvent.WaitingTime.Scenario
-    private let currentTime: () -> TimeInterval
+    private let currentTimestampSeconds: () -> TimeInterval
     private let analyticsService: Analytics
     private let waitingStartedTimestamp: TimeInterval
 
     init(trackScenario: WooAnalyticsEvent.WaitingTime.Scenario,
          analyticsService: Analytics = ServiceLocator.analytics,
-         currentTime: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 }
+         currentTimestampSeconds: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 }
     ) {
         self.trackScenario = trackScenario
         self.analyticsService = analyticsService
-        self.currentTime = currentTime
-        waitingStartedTimestamp = currentTime()
+        self.currentTimestampSeconds = currentTimestampSeconds
+        waitingStartedTimestamp = currentTimestampSeconds()
     }
 
     /// End the waiting time by evaluating the elapsed time from the init,
     /// and sending it as an analytics event, in seconds.
     ///
     func end() {
-        let elapsedTime = currentTime() - waitingStartedTimestamp
+        let elapsedTime = currentTimestampSeconds() - waitingStartedTimestamp
         let analyticsEvent = WooAnalyticsEvent.WaitingTime.waitingFinished(scenario: trackScenario, elapsedTime: elapsedTime)
         analyticsService.track(event: analyticsEvent)
     }
@@ -34,7 +34,7 @@ class WaitingTimeTracker {
     /// and sending it as an analytics event, in milliseconds
     ///
     func endInMilliseconds() {
-        let elapsedTimeMs = (currentTime() - waitingStartedTimestamp) * 1000
+        let elapsedTimeMs = (currentTimestampSeconds() - waitingStartedTimestamp) * 1000
         let analyticsEvent = WooAnalyticsEvent.WaitingTime.waitingFinished(scenario: trackScenario, elapsedTime: elapsedTimeMs)
         analyticsService.track(event: analyticsEvent)
     }

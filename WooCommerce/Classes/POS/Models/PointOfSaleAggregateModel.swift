@@ -37,6 +37,7 @@ protocol PointOfSaleAggregateModelProtocol {
     func checkOut() async
 }
 
+@available(iOS 17.0, *)
 class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProtocol {
     @Published private(set) var orderStage: PointOfSaleOrderStage = .building
 
@@ -86,6 +87,7 @@ class PointOfSaleAggregateModel: ObservableObject, PointOfSaleAggregateModelProt
 }
 
 // MARK: - ItemList
+@available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
     private func publishItemsViewState() {
         itemsController.itemsViewStatePublisher.assign(to: &$itemsViewState)
@@ -117,6 +119,7 @@ private extension POSItem {
     }
 }
 
+@available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
     func addToCart(_ item: POSItem) {
         guard let cartItem = item.cartItem else { return }
@@ -149,7 +152,7 @@ extension PointOfSaleAggregateModel {
 }
 
 // MARK: - Card payments
-
+@available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
     private func publishCardReaderConnectionStatus() {
         // When adopting Observable, we can use `assign(to: on:)` here instead
@@ -184,7 +187,7 @@ extension PointOfSaleAggregateModel {
                     }
                 }
                 .removeDuplicates()
-                .sink { _ in
+                .sink { [weak self] _ in
                     Task { @MainActor [weak self] in
                         await self?.collectCardPayment()
                     }
@@ -305,6 +308,7 @@ extension PointOfSaleAggregateModel {
     }
 }
 
+@available(iOS 17.0, *)
 private extension PointOfSaleAggregateModel {
     func publishPaymentMessages() {
         cardPresentPaymentService.paymentEventPublisher
@@ -395,7 +399,7 @@ private extension PointOfSaleAggregateModel {
 }
 
 // MARK: - Order syncing
-
+@available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
     @MainActor
     func checkOut() async {
@@ -415,6 +419,7 @@ extension PointOfSaleAggregateModel {
     }
 }
 
+@available(iOS 17.0, *)
 private extension PointOfSaleAggregateModel {
     enum Constants {
         static let initialPage: Int = 1

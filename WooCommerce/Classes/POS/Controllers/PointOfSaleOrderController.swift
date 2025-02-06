@@ -11,6 +11,7 @@ import enum Yosemite.OrderUpdateField
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 import enum WooFoundation.CurrencyCode
+import protocol WooFoundation.Analytics
 
 protocol PointOfSaleOrderControllerProtocol {
     var orderStatePublisher: AnyPublisher<PointOfSaleInternalOrderState, Never> { get }
@@ -26,12 +27,14 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
          receiptService: POSReceiptServiceProtocol,
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         analytics: Analytics = ServiceLocator.analytics,
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
         self.orderService = orderService
         self.receiptService = receiptService
         self.stores = stores
         self.storeCurrency = currencySettings.currencyCode
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.analytics = analytics
         self.celebration = celebration
     }
 
@@ -45,6 +48,7 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     private let currencyFormatter: CurrencyFormatter
     private let celebration: PaymentCaptureCelebrationProtocol
     private let storeCurrency: CurrencyCode
+    private let analytics: Analytics
     private let stores: StoresManager
 
     @Published private var orderState: PointOfSaleInternalOrderState = .idle
@@ -63,6 +67,7 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         }
 
         orderState = .syncing
+        let isNewOrder = order == nil
 
         do {
             let syncedOrder = try await orderService.syncOrder(cart: posCartItems,
@@ -70,9 +75,16 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
                                                                currency: storeCurrency)
             self.order = syncedOrder
             orderState = .loaded(totals(for: syncedOrder), syncedOrder)
-            DDLogInfo("🟢 [POS] Synced order: \(syncedOrder)")
+            if isNewOrder {
+                analytics.track(.orderCreationSuccess)
+            }
         } catch {
-            DDLogError("🔴 [POS] Error syncing order: \(error)")
+            if isNewOrder {
+                analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(
+                    usesGiftCard: false,
+                    errorContext: String(describing: error),
+                    errorDescription: error.localizedDescription))
+            }
             setOrderStateToError(error, retryHandler: retryHandler)
         }
     }

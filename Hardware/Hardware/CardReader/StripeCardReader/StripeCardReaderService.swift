@@ -430,7 +430,13 @@ extension StripeCardReaderService: CardReaderService {
             }
 
             paymentCancellable.cancel({ [weak self] error in
-                if error == nil {
+                // If the action could not be canceled,
+                // e.g. it has already completed, the completion block will be called with an
+                // error. Otherwise, the completion block will be called with nil.
+                if let error {
+                    let underlyingError = Self.logAndDecodeError(error)
+                    promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: underlyingError)))
+                } else {
                     self?.paymentCancellable = nil
                     cancelPaymentIntent()
                 }

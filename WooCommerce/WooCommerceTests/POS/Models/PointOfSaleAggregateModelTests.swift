@@ -159,6 +159,21 @@ struct PointOfSaleAggregateModelTests {
         }
 
         @available(iOS 17.0, *)
+        @Test func removeAllItemsFromCart_when_tapped_then_tracks_event() {
+            // Given
+            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+                                            cardPresentPaymentService: MockCardPresentPaymentService(),
+                                            orderController: MockPointOfSaleOrderController(),
+                                            analytics: analytics)
+
+            //When
+            sut.removeAllItemsFromCart()
+
+            // Then
+            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "clear_cart_tapped" }) != nil)
+        }
+
+        @available(iOS 17.0, *)
         @Test(.disabled(
             """
             This test doesn't currently work; analytics extensions are not thread-safe,
@@ -687,6 +702,38 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             #expect(analyticsProvider.receivedEvents.first(where: { $0 == "payments_onboarding_shown" }) != nil)
+        }
+
+        @available(iOS 17.0, *)
+        @Test func connectCardReader_when_tapped_then_tracks_event() {
+            // Given
+            let sut = PointOfSaleAggregateModel(
+                itemsController: itemsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                analytics: analytics)
+
+            //When
+            sut.connectCardReader()
+
+            // Then
+            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "card_reader_connection_tapped" }) != nil)
+        }
+
+        @available(iOS 17.0, *)
+        @Test func disconnectCardReader_when_tapped_then_tracks_event() {
+            // Given
+            let sut = PointOfSaleAggregateModel(
+                itemsController: itemsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                analytics: analytics)
+
+            //When
+            sut.disconnectCardReader()
+
+            // Then
+            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "card_reader_disconnect_tapped" }) != nil)
         }
     }
 }

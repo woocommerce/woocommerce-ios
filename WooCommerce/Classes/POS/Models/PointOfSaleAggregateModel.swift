@@ -136,6 +136,7 @@ extension PointOfSaleAggregateModel {
 
     func removeAllItemsFromCart() {
         cart.removeAll()
+        analytics.track(.pointOfSaleClearCartTapped)
     }
 
     func addMoreToCart() {
@@ -167,12 +168,14 @@ extension PointOfSaleAggregateModel {
     }
 
     func connectCardReader() {
+        analytics.track(.pointOfSaleCardReaderConnectionTapped)
         Task { @MainActor in
             _ = try await cardPresentPaymentService.connectReader(using: .bluetooth)
         }
     }
 
     func disconnectCardReader() {
+        analytics.track(.cardReaderDisconnectTapped)
         Task { @MainActor in
             await cardPresentPaymentService.disconnectReader()
         }

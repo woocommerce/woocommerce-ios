@@ -26,7 +26,7 @@ class WaitingTimeTrackerTests: XCTestCase {
 
     func testOrderDetailsTrackScenarioTriggersExpectedAnalyticsStat() {
         // Given
-        let waitingTracker = WaitingTimeTracker(trackScenario: .orderDetails, analyticsService: testAnalytics, currentTimeInMillis: { 0 })
+        let waitingTracker = WaitingTimeTracker(trackScenario: .orderDetails, analyticsService: testAnalytics, currentTime: { 0 })
 
         // When
         waitingTracker.end()
@@ -39,7 +39,7 @@ class WaitingTimeTrackerTests: XCTestCase {
         // Given
         let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardTopPerformers,
                                                 analyticsService: testAnalytics,
-                                                currentTimeInMillis: { 0 }
+                                                currentTime: { 0 }
         )
 
         // When
@@ -53,7 +53,7 @@ class WaitingTimeTrackerTests: XCTestCase {
         // Given
         let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats,
                                                 analyticsService: testAnalytics,
-                                                currentTimeInMillis: { 0 }
+                                                currentTime: { 0 }
         )
 
         // When
@@ -67,7 +67,7 @@ class WaitingTimeTrackerTests: XCTestCase {
         // Given
         let waitingTracker = WaitingTimeTracker(trackScenario: .analyticsHub,
                                                 analyticsService: testAnalytics,
-                                                currentTimeInMillis: { 0 }
+                                                currentTime: { 0 }
         )
 
         // When
@@ -81,7 +81,7 @@ class WaitingTimeTrackerTests: XCTestCase {
         // Given
         let waitingTracker = WaitingTimeTracker(trackScenario: .appStartup,
                                                 analyticsService: testAnalytics,
-                                                currentTimeInMillis: { 0 }
+                                                currentTime: { 0 }
         )
 
         // When

@@ -34,6 +34,7 @@ struct ChildItemList: View {
         .background(Color.posPrimaryBackground)
         .toolbar(.hidden, for: .navigationBar)
         .refreshable {
+            ServiceLocator.analytics.track(.pointOfSaleVariationsPullToRefresh)
             await Task {
                 await posModel.loadItems(base: .parent(parentItem))
             }.value

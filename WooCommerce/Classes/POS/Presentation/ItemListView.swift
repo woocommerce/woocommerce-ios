@@ -37,6 +37,7 @@ struct ItemListView: View {
             .background(Color.posPrimaryBackground)
         }
         .refreshable {
+            ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
             await Task {
                 await posModel.loadItems(base: .root)
             }.value
@@ -60,6 +61,7 @@ private extension ItemListView {
                 if !shouldShowHeaderBanner {
                     Spacer()
                     Button(action: {
+                        ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
                         showSimpleProductsModal = true
                     }, label: {
                         Image(systemName: "info.circle")

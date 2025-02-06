@@ -105,7 +105,7 @@ extension POSFloatingControlView {
 @available(iOS 17.0, *)
 private extension POSFloatingControlView {
     enum Constants {
-        static let size: CGFloat = 80
+        static let size: CGFloat = 56
         static let cornerRadius: CGFloat = 8
     }
 

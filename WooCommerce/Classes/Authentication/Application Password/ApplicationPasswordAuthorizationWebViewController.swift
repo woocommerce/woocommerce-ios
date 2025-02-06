@@ -162,28 +162,14 @@ private extension ApplicationPasswordAuthorizationWebViewController {
                 guard let url = try await viewModel.fetchAuthURL() else {
                     DDLogError("⛔️ No authorization URL found for application passwords")
                     analytics.track(.applicationPasswordAuthorizationURLNotAvailable)
-
-                    let errorUI = applicationPasswordDisabledUI(for: viewModel.siteURL)
-                    // When the error view controller is popped, navigate to previous VC
-                    errorUI.navigationItem.leftBarButtonItem = UIBarButtonItem(
-                        image: UIImage(systemName: "chevron.backward"),
-                        style: .plain,
-                        target: self,
-                        action: #selector(navigateToPreviousViewController)
-                    )
-
-                    // Push instead of present
-                    navigationController?.pushViewController(errorUI, animated: true)
-
+                    navigateToErrorUI()
                     return
                 }
                 loadAuthorizationPage(url: url)
             } catch {
                 DDLogError("⛔️ Error fetching authorization URL for application passwords \(error)")
                 analytics.track(.applicationPasswordAuthorizationURLFetchFailed, withError: error)
-                showErrorAlert(message: Localization.errorFetchingAuthURL, onRetry: { [weak self] in
-                    self?.fetchAuthorizationURL()
-                })
+                navigateToErrorUI()
             }
             activityIndicator.stopAnimating()
         }
@@ -196,6 +182,19 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         } else {
             navigationController?.popViewController(animated: true)
         }
+    }
+
+    private func navigateToErrorUI() {
+        let errorUI = applicationPasswordDisabledUI(for: viewModel.siteURL)
+        // When the error view controller is popped, navigate to previous VC
+        errorUI.navigationItem.leftBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "chevron.backward"),
+            style: .plain,
+            target: self,
+            action: #selector(navigateToPreviousViewController)
+        )
+        // Push instead of present
+        navigationController?.pushViewController(errorUI, animated: true)
     }
 
     func loadAuthorizationPage(url: URL) {
@@ -316,10 +315,6 @@ private extension ApplicationPasswordAuthorizationWebViewController {
             "Unable to log in because application passwords are disabled on your site.",
             comment: "Error message displayed when application password authorization fails " +
             "during login due to the feature being disabled on the input site."
-        )
-        static let errorFetchingAuthURL = NSLocalizedString(
-            "Failed to fetch the authorization URL for application passwords. Please try again.",
-            comment: "Error message displayed when failed to fetch application password authorization URL during login"
         )
     }
 }

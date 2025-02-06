@@ -162,7 +162,7 @@ private extension PointOfSaleItemsController {
     /// - Parameter appendToExistingItems: Default true – set this to false when refreshing to make the new page the only page.
     /// - Returns: A boolean that indicates whether there is next page for the paginated items.
     @MainActor
-    func fetchItems(pageNumber: Int,appendToExistingItems: Bool = true) async throws -> Bool {
+    func fetchItems(pageNumber: Int, appendToExistingItems: Bool = true) async throws -> Bool {
         do {
             let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
             let newItems = pagedItems.items

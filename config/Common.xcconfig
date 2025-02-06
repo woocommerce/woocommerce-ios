@@ -1,3 +1,5 @@
+// This file is shared by all the projects in the WooCommerce workspace by
+// means of each project having a top-level xcconfig file that includes this.
 IPHONEOS_DEPLOYMENT_TARGET = 16.0
 MACOSX_DEPLOYMENT_TARGET = 14.0
 WATCHOS_DEPLOYMENT_TARGET = 9.0

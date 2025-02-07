@@ -31,7 +31,7 @@ private extension PointOfSaleLoadingView {
 
     func trackElapsedTimeOnDisappear() {
         if let waitingTimeTracker = waitingTimeTracker {
-            waitingTimeTracker.endInMilliseconds()
+            waitingTimeTracker.end(using: .milliseconds)
         }
     }
 }

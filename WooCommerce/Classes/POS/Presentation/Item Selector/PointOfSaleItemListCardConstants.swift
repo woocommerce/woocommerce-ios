@@ -1,5 +1,5 @@
 import Foundation
-import SwiftUICore
+import SwiftUI
 
 enum PointOfSaleItemListCardConstants {
     static let productCardSize: CGFloat = 112

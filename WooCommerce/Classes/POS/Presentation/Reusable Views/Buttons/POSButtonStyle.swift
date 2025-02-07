@@ -41,6 +41,8 @@ struct POSButtonStyle: ButtonStyle {
         // Makes the entire area tappable, otherwise the area with clear background is not tappable.
         .contentShape(Rectangle())
         .cornerRadius(POSButtonStyleConstants.framedButtonCornerRadius)
+        .opacity(configuration.isPressed ? 0.7 : 1.0)
+        .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
     }
     
     private var backgroundColor: Color {

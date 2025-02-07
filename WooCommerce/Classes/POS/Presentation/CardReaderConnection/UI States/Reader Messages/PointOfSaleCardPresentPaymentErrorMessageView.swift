@@ -30,7 +30,7 @@ struct PointOfSaleCardPresentPaymentErrorMessageView: View {
                 if let backToCheckoutButtonViewModel = viewModel.backToCheckoutButtonViewModel {
                     Button(backToCheckoutButtonViewModel.title,
                            action: backToCheckoutButtonViewModel.actionHandler)
-                    .buttonStyle(POSSecondaryButtonStyle())
+                    .buttonStyle(POSButtonStyle(variant: .outlined, size: .normal))
                 }
             }
         }

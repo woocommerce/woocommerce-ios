@@ -30,7 +30,7 @@ struct PointOfSaleCardPresentPaymentIntentCreationErrorMessageView: View {
                 if let editOrderButtonViewModel = viewModel.editOrderButtonViewModel {
                     Button(editOrderButtonViewModel.title,
                            action: editOrderButtonViewModel.actionHandler)
-                    .buttonStyle(POSSecondaryButtonStyle())
+                    .buttonStyle(POSButtonStyle(variant: .outlined, size: .normal))
                 }
             }
         }

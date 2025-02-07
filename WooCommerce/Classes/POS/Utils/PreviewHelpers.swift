@@ -75,6 +75,10 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
         }
     }
 
+    func refreshItems(base: ItemListBaseItem) async {
+        await loadItems(base: base)
+    }
+
     func loadNextItems(base: ItemListBaseItem) async {
         itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loading(mockItems),
                                                                                               itemStates: [:]))

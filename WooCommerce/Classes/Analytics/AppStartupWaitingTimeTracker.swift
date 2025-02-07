@@ -5,7 +5,7 @@ import protocol WooFoundation.Analytics
 /// Tracks the waiting time for app startup, allowing to evaluate as analytics
 /// how much time in seconds it took between the init and the final `end(action:)` function call.
 ///
-class AppStartupWaitingTimeTracker: WaitingTimeTracker {
+final class AppStartupWaitingTimeTracker: WaitingTimeTracker {
 
     /// All actions tracked in the app startup waiting time.
     ///
@@ -21,8 +21,8 @@ class AppStartupWaitingTimeTracker: WaitingTimeTracker {
     private(set) var startupActionsPending = StartupAction.allCases
 
     init(analyticsService: Analytics = ServiceLocator.analytics,
-         currentTimeInMillis: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 }) {
-        super.init(trackScenario: .appStartup, analyticsService: analyticsService, currentTime: currentTimeInMillis)
+         currentTimestampSeconds: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 }) {
+        super.init(trackScenario: .appStartup, analyticsService: analyticsService, currentTimestampSeconds: currentTimestampSeconds)
     }
 
     /// Ends the waiting time for the provided startup action.

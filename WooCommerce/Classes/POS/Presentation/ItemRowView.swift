@@ -5,7 +5,6 @@ struct ItemRowView: View {
     private let onItemRemoveTapped: (() -> Void)?
 
     @ScaledMetric private var scale: CGFloat = 1.0
-    @Environment(\.colorScheme) var colorScheme
     @Binding private var showProductImage: Bool
 
     private var dimension: CGFloat {
@@ -24,15 +23,15 @@ struct ItemRowView: View {
 
             VStack(alignment: .leading, spacing: Constants.itemTitleAndPriceSpacing * (1 / scale)) {
                 Text(cartItem.title)
-                    .foregroundColor(Color.posPrimaryText)
+                    .foregroundColor(PointOfSaleItemListCardConstants.titleColor)
                     .font(Constants.itemTitleFont)
                 if let subtitle = cartItem.subtitle {
                     Text(subtitle)
-                        .foregroundColor(Color.posSecondaryText)
+                        .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
                         .font(Constants.itemSubtitleFont)
                 }
                 Text(cartItem.item.formattedPrice)
-                    .foregroundColor(Color.posSecondaryText)
+                    .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
                     .font(Constants.itemPriceFont)
             }
             .frame(maxWidth: .infinity, alignment: .leading)

@@ -1,5 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
+
+21.8
+-----
+- [*] Improved image loading in Blaze Campaign Creation: displays a redacted and shimmering effects when loading product image and falls back to a placeholder if no image is available. [https://github.com/woocommerce/woocommerce-ios/pull/15098]
+
 21.7
 -----
 - [**] Fixed an issue with the WordPress Media Library not loading due to a decoding error in media details sizes. [https://github.com/woocommerce/woocommerce-ios/pull/15056]

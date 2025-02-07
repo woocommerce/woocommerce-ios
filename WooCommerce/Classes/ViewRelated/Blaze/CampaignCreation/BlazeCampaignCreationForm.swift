@@ -331,10 +331,11 @@ private extension BlazeCampaignCreationForm {
                     Image(uiImage: .sparklesImage)
                         .renderingMode(.template)
                         .resizable()
-                        .foregroundColor(Color(uiColor: .textSubtle))
+                        .foregroundColor(colorScheme == .dark ? Color(.textInverted) : Color(.textSubtle))
                         .frame(width: Layout.sparkleIconSize * scale, height: Layout.sparkleIconSize * scale)
 
                     Text(Localization.suggestedByAI)
+                        .foregroundColor(colorScheme == .dark ? Color(.textInverted) : Color(.textSubtle))
                         .subheadlineStyle()
 
                     Spacer()
@@ -601,6 +602,12 @@ private extension BlazeCampaignCreationForm {
 
 struct BlazeCampaignCreationForm_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeCampaignCreationForm(viewModel: .init(siteID: 123, productID: 123, onCompletion: {}))
+        Group {
+            BlazeCampaignCreationForm(viewModel: .init(siteID: 123, productID: 123, onCompletion: {}))
+                .preferredColorScheme(.light)
+
+            BlazeCampaignCreationForm(viewModel: .init(siteID: 123, productID: 123, onCompletion: {}))
+                .preferredColorScheme(.dark)
+        }
     }
 }

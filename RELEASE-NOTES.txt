@@ -7,6 +7,7 @@
 - [*] Product Details: Display cover tag on the first product image [https://github.com/woocommerce/woocommerce-ios/pull/15041]
 - [*] Payments: Update learn more links to open Stripe-specific docs when using that gateway [https://github.com/woocommerce/woocommerce-ios/pull/15035]
 - [*] Now, usernames and emails in text fields across multiple login views are no longer capitalized. [https://github.com/woocommerce/woocommerce-ios/pull/15002]
+- [*] Now "Suggested by AI" label is visible in dark mode in Blaze campaign creation flow.
 
 21.6
 -----

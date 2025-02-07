@@ -118,6 +118,7 @@
 		021080FA2D5441CE0054C78D /* POSColorPalette.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 021080F92D5441CE0054C78D /* POSColorPalette.xcassets */; };
 		021080FC2D544B3E0054C78D /* Color+POSColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021080FB2D544B3E0054C78D /* Color+POSColorPalette.swift */; };
 		0210A2472D55EC250054C78D /* POSButtonStylesPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0210A2462D55EC250054C78D /* POSButtonStylesPreview.swift */; };
+		0210A2492D55F0530054C78D /* POSButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0210A2482D55F0530054C78D /* POSButtonStyle.swift */; };
 		0210D8692A7BEEF700846F8C /* WooAnalyticsEvent+ProductListFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0210D8682A7BEEF700846F8C /* WooAnalyticsEvent+ProductListFilter.swift */; };
 		0211252825773F220075AD2A /* Models+Copiable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0211252725773F220075AD2A /* Models+Copiable.generated.swift */; };
 		0211252E25773FB00075AD2A /* MockAggregateOrderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0211252D25773FB00075AD2A /* MockAggregateOrderItem.swift */; };
@@ -3327,6 +3328,7 @@
 		021080F92D5441CE0054C78D /* POSColorPalette.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = POSColorPalette.xcassets; sourceTree = "<group>"; };
 		021080FB2D544B3E0054C78D /* Color+POSColorPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+POSColorPalette.swift"; sourceTree = "<group>"; };
 		0210A2462D55EC250054C78D /* POSButtonStylesPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSButtonStylesPreview.swift; sourceTree = "<group>"; };
+		0210A2482D55F0530054C78D /* POSButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSButtonStyle.swift; sourceTree = "<group>"; };
 		0210D8682A7BEEF700846F8C /* WooAnalyticsEvent+ProductListFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+ProductListFilter.swift"; sourceTree = "<group>"; };
 		0211252725773F220075AD2A /* Models+Copiable.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Models+Copiable.generated.swift"; sourceTree = "<group>"; };
 		0211252D25773FB00075AD2A /* MockAggregateOrderItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAggregateOrderItem.swift; sourceTree = "<group>"; };
@@ -6656,6 +6658,7 @@
 		0210A2452D55EC140054C78D /* Buttons */ = {
 			isa = PBXGroup;
 			children = (
+				0210A2482D55F0530054C78D /* POSButtonStyle.swift */,
 				0210A2462D55EC250054C78D /* POSButtonStylesPreview.swift */,
 			);
 			path = Buttons;
@@ -16284,6 +16287,7 @@
 				CE2DF92E2CC16C95001AA394 /* WooShippingServiceCardView.swift in Sources */,
 				0247F512286F73EA009C177E /* WooAnalyticsEvent+ImageUpload.swift in Sources */,
 				202D2A5A2AC5933100E4ABC0 /* TopTabView.swift in Sources */,
+				0210A2492D55F0530054C78D /* POSButtonStyle.swift in Sources */,
 				B57C744A20F5649300EEFC87 /* EmptyStoresTableViewCell.swift in Sources */,
 				45DB70602614C7E80064A6CF /* ShippingLabelPackageDetailsResultsControllers.swift in Sources */,
 				B9F148982AD5541C008FC795 /* AddCustomAmountViewModel.swift in Sources */,

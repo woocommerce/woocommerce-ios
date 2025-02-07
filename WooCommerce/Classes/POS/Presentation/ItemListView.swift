@@ -138,6 +138,10 @@ private extension ItemListView {
                 bannerCardView
             }
         }
+        .refreshable {
+            ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
+            await posModel.refreshItems(base: .root)
+        }
     }
 
     @ViewBuilder
@@ -145,10 +149,6 @@ private extension ItemListView {
         switch parentItem {
         case let .variableParentProduct(parentProduct):
             ChildItemList(parentItem: parentItem, title: parentProduct.name)
-                .refreshable {
-                    ServiceLocator.analytics.track(.pointOfSaleVariationsPullToRefresh)
-                    await posModel.loadItems(base: .parent(parentItem))
-                }
         default:
             EmptyView()
         }

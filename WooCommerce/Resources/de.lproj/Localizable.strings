@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-01-28 16:54:04+0000 */
+/* Translation-Revision-Date: 2025-02-05 13:54:13+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -9873,6 +9873,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.builtIn.modalCheckingDeviceSupport.title" = "Gerät wird überprüft";
 
+/* Button title to retry the card reader software update when the reader is low on battery. */
+"cardPresent.modal.updateFailed.lowBattery.retry.button.title" = "Erneut versuchen";
+
 /* Label for a cancel button */
 "cardPresent.modalScanningForReader.cancelButton" = "Abbrechen";
 
@@ -10895,6 +10898,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label indicating that the store is being synced in the Jetpack setup flow */
 "loginJetpackSetupCoordinator.syncingStore" = "Shop wird synchronisiert …";
 
+/* Subtitle displayed in the prologue screen */
+"loginPrologue.subtitle" = "Vom ersten Verkauf bis zu Millionen an Einnahmen – Woo ist immer bei dir. Erfahre, warum Verkäufer beim Betreiben von 3,9 Millionen Shops auf uns vertrauen.";
+
+/* Caption displayed in the simplified prologue screen */
+"loginPrologue.title" = "Die E-Commerce-Plattform, die mit dir mitwächst";
+
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "Manuelle Rückerstattung";
 
@@ -11489,6 +11498,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.title" = "Vorbereitung läuft";
 
+/* Error message when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.description" = "Die Gesamtsumme der Bestellung liegt unter der Mindestsumme, mit der eine Karte belastet werden kann. Die Mindestsumme beträgt %1$@. Du kannst stattdessen eine Barzahlung entgegennehmen.";
+
+/* Error title when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.title" = "Kartenzahlung nicht möglich";
+
 /* Button title to retry order validation. */
 "pointOfSale.cardPresent.validatingOrderError.retry" = "Erneut versuchen";
 
@@ -11624,8 +11639,17 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users when updating the card reader software fails */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "Die Software deines Kartenlesegeräts konnte nicht aktualisiert werden";
 
+/* Message presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo.1" = "Ein Update am Lesegerät ist fehlgeschlagen, weil der Akkustand des Geräts nur %.0f%% beträgt. Bitte lade das Kartenlesegerät und versuche es erneut.";
+
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "Abbrechen";
+
+/* Message presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo.1" = "Ein Update am Lesegerät ist fehlgeschlagen, weil der Akkustand des Geräts zu niedrig ist. Bitte lade das Kartenlesegerät und versuche es erneut.";
+
+/* Button to retry the reader search when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.retryButton.title" = "Erneut versuchen";
 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.title" = "Lade bitte den Akku deines Kartenlesegeräts auf";
@@ -11707,6 +11731,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Gesamtbeträge konnten nicht geladen werden";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message" = "Eine Zahlung in Höhe von %1$@ wurde erfolgreich durchgeführt";
+
+/* Title shown to users when payment is made successfully. */
+"pointOfSale.paymentSuccessful.title" = "Zahlung erfolgreich";
 
 /* Button title for sending a receipt */
 "pointOfSale.sendreceipt.button.title" = "Senden";
@@ -11893,6 +11923,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for total amount field */
 "pos.totalsView.total" = "Gesamt";
+
+/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.detail" = "Bitte passe deine Bildschirmaufteilung an, damit genügend Platz für den Verkaufsort (POS) zur Verfügung steht.";
+
+/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.title" = "Verkaufsort (POS) wird bei dieser Bildschirmbreite nicht unterstützt.";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Schließen";
@@ -13228,6 +13264,9 @@ which should be translated separately and considered part of this sentence. */
 /* Footnote when a required value is missing */
 "wooShipping.customs.valueRequiredWarning" = "Wert erforderlich";
 
+/* Button to dismiss the countries menu */
+"wooShipping.customsItems.countries.done" = "Fertig";
+
 /* Title for the customs items description text field for customs items */
 "wooShipping.customsItems.description" = "Beschreibung";
 
@@ -13254,6 +13293,30 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the customs items weight per unit text field for customs items */
 "wooShipping.customsItems.weightPerUnit" = "Gewicht pro Einheit";
+
+/* Button to cancel normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.cancel" = "Abbrechen";
+
+/* Button to confirm the entered address for a Woo Shipping label */
+"wooShipping.normalizeAddress.confirmEnteredAddress" = "Eingegebene Adresse bestätigen";
+
+/* Button to confirm the suggested address for a Woo Shipping label */
+"wooShipping.normalizeAddress.confirmSuggestedAddress" = "Vorgeschlagene Adresse bestätigen";
+
+/* Label for the address the merchant entered when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.enteredAddressLabel" = "Deine Eingabe";
+
+/* Informational text when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.modifiedAddressInfo" = "Wir haben die eingegebene Adresse leicht verändert.";
+
+/* Prompt to select the suggested address when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.selectAddressPrompt" = "Wenn die vorgeschlagene Adresse korrekt ist, verwende diese bitte, um eine korrekte Zustellung sicherzustellen.";
+
+/* Label for the suggested address when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.suggestedAddressLabel" = "Vorgeschlagen";
+
+/* Title for the address normalization screen for a Woo Shipping label */
+"wooShipping.normalizeAddress.title" = "Adresse bestätigen";
 
 /* Indicates that the address is the default origin address  on the shipping label creation screen */
 "wooShipping.originAddresses.defaultAddress" = "(standard)";

@@ -2,7 +2,7 @@ import SwiftUI
 
 @available(iOS 17.0, *)
 struct CartView: View {
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     private let viewHelper = CartViewHelper()
 
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
@@ -75,6 +75,7 @@ struct CartView: View {
                                 ItemRowView(cartItem: cartItem,
                                             showImage: $shouldShowItemImages,
                                             onItemRemoveTapped: posModel.orderStage == .building ? {
+                                    ServiceLocator.analytics.track(.pointOfSaleItemRemovedFromCart)
                                     posModel.remove(cartItem: cartItem)
                                 } : nil)
                                 .id(cartItem.id)
@@ -254,6 +255,7 @@ private extension CartView {
     var checkoutButton: some View {
         Button {
             Task { @MainActor in
+                trackCheckoutTapped()
                 await posModel.checkOut()
             }
         } label: {
@@ -269,6 +271,7 @@ private extension CartView {
             EmptyView()
         case .finalizing:
             Button {
+                ServiceLocator.analytics.track(.pointOfSaleBackToCartTapped)
                 posModel.addMoreToCart()
             } label: {
                 Image(systemName: Constants.backButtonSymbol)
@@ -302,6 +305,14 @@ private extension CartView {
     }
 }
 
+@available(iOS 17.0, *)
+private extension CartView {
+    func trackCheckoutTapped() {
+        let itemsInCart = posModel.cart.count
+        ServiceLocator.analytics.track(event: .PointOfSale.checkoutTapped(itemsInCart))
+    }
+}
+
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview {
@@ -311,6 +322,6 @@ private extension CartView {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
     return CartView()
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 #endif

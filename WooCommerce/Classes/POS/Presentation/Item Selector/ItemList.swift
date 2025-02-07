@@ -7,7 +7,7 @@ import struct Yosemite.POSVariableParentProduct
 @available(iOS 17.0, *)
 struct ItemList<HeaderView: View>: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
-    @EnvironmentObject var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
     let state: ItemListState
@@ -80,7 +80,7 @@ private enum Constants {
 private struct ItemListRow: View {
     let item: POSItem
     let analytics: Analytics = ServiceLocator.analytics
-    @EnvironmentObject var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
 
     var body: some View {
         switch item {
@@ -156,7 +156,7 @@ private extension ItemListRow {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
     ItemList(state: .loading([]))
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 
 #endif

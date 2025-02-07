@@ -1,26 +1,25 @@
 import Foundation
-import Combine
+import Observation
 import enum Yosemite.POSItem
 import protocol Yosemite.PointOfSaleItemServiceProtocol
+import enum Yosemite.PointOfSaleItemServiceError
 import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
 
+@available(iOS 17.0, *)
 protocol PointOfSaleItemsControllerProtocol {
-    var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { get }
+    var itemsViewState: ItemsViewState { get }
     /// Loads the first page of items for a given base item.
     func loadItems(base: ItemListBaseItem) async
     /// Loads the next page of items for a given base item.
     func loadNextItems(base: ItemListBaseItem) async
 }
 
-class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
-    var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> {
-        $itemsViewState.eraseToAnyPublisher()
-    }
-    @Published private var itemsViewState: ItemsViewState =
-    ItemsViewState(containerState: .loading,
-                   itemsStack: ItemsStackState(root: .loading([]),
-                                               itemStates: [:]))
+@available(iOS 17.0, *)
+@Observable final class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
+    var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
+                                                        itemsStack: ItemsStackState(root: .loading([]),
+                                                                                    itemStates: [:]))
     private let paginationTracker: AsyncPaginationTracker
     private var childPaginationTrackers: [POSItem: AsyncPaginationTracker] = [:]
     private let itemProvider: PointOfSaleItemServiceProtocol
@@ -42,12 +41,12 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
 
     @MainActor
     private func loadRootItems() async {
-        let currentItems = itemsViewState.itemsStack.root.items
-        let currentItemStates = itemsViewState.itemsStack.itemStates
-        let containerState: ItemsContainerState = currentItems.isEmpty ? .loading : .content
-        itemsViewState = .init(containerState: containerState,
-                               itemsStack: ItemsStackState(root: .loading(currentItems),
-                                                           itemStates: currentItemStates))
+        let items = itemsViewState.itemsStack.root.items
+        if items.isEmpty {
+            itemsViewState.containerState = .loading
+        } else {
+            itemsViewState.itemsStack.root = .loading(items)
+        }
 
         do {
             try await paginationTracker.resync { [weak self] pageNumber in
@@ -55,9 +54,9 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
                 return try await fetchItems(pageNumber: pageNumber, appendToExistingItems: false)
             }
         } catch {
-            itemsViewState = .init(containerState: .error(PointOfSaleErrorState.errorOnLoadingProducts()),
-                                   itemsStack: ItemsStackState(root: .loaded([], hasMoreItems: false),
-                                                               itemStates: [:]))
+            itemsViewState.containerState = .error(PointOfSaleErrorState.errorOnLoadingProducts())
+            itemsViewState.itemsStack = ItemsStackState(root: .loaded([], hasMoreItems: false),
+                                                       itemStates: [:])
         }
     }
 
@@ -78,18 +77,19 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
         }
         let currentItems = itemsViewState.itemsStack.root.items
         let currentItemStates = itemsViewState.itemsStack.itemStates
-        itemsViewState = .init(containerState: .content, itemsStack: ItemsStackState(root: .loading(currentItems),
-                                                                                     itemStates: currentItemStates))
+        itemsViewState.containerState = .content
+        itemsViewState.itemsStack = ItemsStackState(root: .loading(currentItems),
+                                                   itemStates: currentItemStates)
         do {
             _ = try await paginationTracker.ensureNextPageIsSynced { [weak self] pageNumber in
                 guard let self else { return true }
                 return try await fetchItems(pageNumber: pageNumber)
             }
         } catch {
-            itemsViewState = .init(containerState: .content,
-                                   itemsStack: ItemsStackState(root: .inlineError(currentItems,
-                                                                                  error: .errorOnLoadingProductsNextPage()),
-                                                               itemStates: currentItemStates))
+            itemsViewState.containerState = .content
+            itemsViewState.itemsStack = ItemsStackState(root: .inlineError(currentItems,
+                                                                           error: .errorOnLoadingProductsNextPage()),
+                                                        itemStates: currentItemStates)
         }
     }
 
@@ -155,6 +155,7 @@ class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     }
 }
 
+@available(iOS 17.0, *)
 private extension PointOfSaleItemsController {
     /// Fetches items given a page number and appends new unique items to the `allItems` array.
     /// - Parameter pageNumber: Page number to fetch items from.
@@ -162,26 +163,33 @@ private extension PointOfSaleItemsController {
     /// - Returns: A boolean that indicates whether there is next page for the paginated items.
     @MainActor
     func fetchItems(pageNumber: Int, appendToExistingItems: Bool = true) async throws -> Bool {
-        let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
-        let newItems = pagedItems.items
-        var allItems = appendToExistingItems ? itemsViewState.itemsStack.root.items : []
-        let uniqueNewItems = newItems.filter { newItem in
-            // Note that this uniquing won't currently work, as POSItem has a UUID.
-            !allItems.contains(newItem)
+        do {
+            let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
+            let newItems = pagedItems.items
+            var allItems = appendToExistingItems ? itemsViewState.itemsStack.root.items : []
+            let uniqueNewItems = newItems.filter { newItem in
+                // Note that this uniquing won't currently work, as POSItem has a UUID.
+                !allItems.contains(newItem)
+            }
+            allItems.append(contentsOf: uniqueNewItems)
+            if allItems.isEmpty {
+                itemsViewState.containerState = .empty
+                itemsViewState.itemsStack = ItemsStackState(root: .loaded([], hasMoreItems: false),
+                                                            itemStates: [:])
+            } else {
+                let itemStates = itemsViewState.itemsStack.itemStates
+                    .filter { allItems.contains($0.key) }
+                itemsViewState.containerState = .content
+                itemsViewState.itemsStack = ItemsStackState(root: .loaded(allItems, hasMoreItems: pagedItems.hasMorePages),
+                                                            itemStates: itemStates)
+            }
+            return pagedItems.hasMorePages
+        } catch PointOfSaleItemServiceError.requestCancelled {
+            itemsViewState.containerState = .content
+            itemsViewState.itemsStack.root = .loaded(itemsViewState.itemsStack.root.items, hasMoreItems: true)
+            // Assume that we have more pages since we'd made a request, and it was cancelled
+            return true
         }
-        allItems.append(contentsOf: uniqueNewItems)
-        if allItems.isEmpty {
-            itemsViewState = .init(containerState: .empty,
-                                   itemsStack: ItemsStackState(root: .loaded([], hasMoreItems: false),
-                                                               itemStates: [:]))
-        } else {
-            let itemStates = itemsViewState.itemsStack.itemStates
-                .filter { allItems.contains($0.key) }
-            itemsViewState = .init(containerState: .content,
-                                   itemsStack: ItemsStackState(root: .loaded(allItems, hasMoreItems: pagedItems.hasMorePages),
-                                                               itemStates: itemStates))
-        }
-        return pagedItems.hasMorePages
     }
 
     /// Fetches variation items given a page number and appends new unique items to the existing items array.
@@ -192,25 +200,33 @@ private extension PointOfSaleItemsController {
                                      parentItem: POSItem,
                                      pageNumber: Int,
                                      appendToExistingItems: Bool = true) async throws -> Bool {
-        let pagedItems = try await itemProvider.providePointOfSaleVariationItems(
-            for: parentProduct,
-            pageNumber: pageNumber
-        )
-        let newItems = pagedItems.items
-        var allItems: [POSItem] = appendToExistingItems ? (itemsViewState.itemsStack.itemStates[parentItem]?.items ?? []) : []
-        let uniqueNewItems = newItems.filter { newItem in
-            // Note that this uniquing won't currently work, as POSItem has a UUID.
-            !allItems.contains(newItem)
-        }
-        allItems.append(contentsOf: uniqueNewItems)
+        do {
+            let pagedItems = try await itemProvider.providePointOfSaleVariationItems(
+                for: parentProduct,
+                pageNumber: pageNumber
+            )
+            let newItems = pagedItems.items
+            var allItems: [POSItem] = appendToExistingItems ? (itemsViewState.itemsStack.itemStates[parentItem]?.items ?? []) : []
+            let uniqueNewItems = newItems.filter { newItem in
+                // Note that this uniquing won't currently work, as POSItem has a UUID.
+                !allItems.contains(newItem)
+            }
+            allItems.append(contentsOf: uniqueNewItems)
 
-        updateState(for: parentItem, to: .loaded(allItems, hasMoreItems: pagedItems.hasMorePages))
-        return pagedItems.hasMorePages
+            updateState(for: parentItem, to: .loaded(allItems, hasMoreItems: pagedItems.hasMorePages))
+            return pagedItems.hasMorePages
+        } catch PointOfSaleItemServiceError.requestCancelled {
+            itemsViewState.containerState = .content
+            updateState(for: parentItem, to: .loaded(itemsViewState.itemsStack.itemStates[parentItem]?.items ?? [],
+                                                     hasMoreItems: true))
+            // Assume that we have more pages since we'd made a request, and it was cancelled
+            return true
+        }
     }
 }
 
 // MARK: - ItemsViewState Updates
-
+@available(iOS 17.0, *)
 private extension PointOfSaleItemsController {
     func updateState(for parent: POSItem, to state: ItemListState) {
         let viewState = itemsViewState
@@ -219,6 +235,6 @@ private extension PointOfSaleItemsController {
             states[parent] = state
             return states
         }()
-        itemsViewState = viewState.copy(itemsStack: viewState.itemsStack.copy(itemStates: itemStates))
+        itemsViewState.itemsStack.itemStates = itemStates
     }
 }

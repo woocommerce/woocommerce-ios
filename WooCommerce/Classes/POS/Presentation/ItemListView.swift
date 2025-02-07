@@ -6,7 +6,7 @@ import protocol Yosemite.POSOrderableItem
 struct ItemListView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    @EnvironmentObject var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
 
     @State private var showSimpleProductsModal: Bool = false
     private var itemListState: ItemListState {
@@ -36,11 +36,6 @@ struct ItemListView: View {
             })
             .background(Color.posPrimaryBackground)
         }
-        .refreshable {
-            await Task {
-                await posModel.loadItems(base: .root)
-            }.value
-        }
         .accessibilityElement(children: .contain)
         .posModal(isPresented: $showSimpleProductsModal) {
             SimpleProductsOnlyInformation(isPresented: $showSimpleProductsModal)
@@ -60,6 +55,7 @@ private extension ItemListView {
                 if !shouldShowHeaderBanner {
                     Spacer()
                     Button(action: {
+                        ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
                         showSimpleProductsModal = true
                     }, label: {
                         Image(systemName: "info.circle")
@@ -149,6 +145,10 @@ private extension ItemListView {
         switch parentItem {
         case let .variableParentProduct(parentProduct):
             ChildItemList(parentItem: parentItem, title: parentProduct.name)
+                .refreshable {
+                    ServiceLocator.analytics.track(.pointOfSaleVariationsPullToRefresh)
+                    await posModel.loadItems(base: .parent(parentItem))
+                }
         default:
             EmptyView()
         }
@@ -323,7 +323,7 @@ private extension ItemListView {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
     return ItemListView()
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 
 @available(iOS 17.0, *)
@@ -333,7 +333,7 @@ private extension ItemListView {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
     return ItemListView()
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 
 #endif

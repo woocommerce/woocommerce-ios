@@ -47,7 +47,7 @@ struct POSButtonStyle: ButtonStyle {
         .overlay(borderOverlay)
         // Makes the entire area tappable, otherwise the area with clear background is not tappable.
         .contentShape(Rectangle())
-        .cornerRadius(POSButtonStyleConstants.framedButtonCornerRadius)
+        .cornerRadius(Constants.cornerRadius)
         .opacity(configuration.isPressed ? 0.7 : 1.0)
         .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
     }
@@ -79,10 +79,19 @@ struct POSButtonStyle: ButtonStyle {
     @ViewBuilder
     private var borderOverlay: some View {
         if variant == .outlined {
-            RoundedRectangle(cornerRadius: POSButtonStyleConstants.framedButtonCornerRadius)
+            RoundedRectangle(cornerRadius: Constants.cornerRadius)
                 .stroke(isEnabled ? Color.posInverseSurface : .posDisabledContainer,
-                        lineWidth: 2)
+                        lineWidth: Constants.borderStrokeWidth)
         }
+    }
+}
+
+// MARK: - POSButtonStyle Constants
+
+private extension POSButtonStyle {
+    enum Constants {
+        static let cornerRadius: CGFloat = 8.0
+        static let borderStrokeWidth: CGFloat = 2.0
     }
 }
 

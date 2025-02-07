@@ -38,6 +38,8 @@ struct POSButtonStyle: ButtonStyle {
         .background(backgroundColor)
         .foregroundColor(foregroundColor)
         .overlay(borderOverlay)
+        // Makes the entire area tappable, otherwise the area with clear background is not tappable.
+        .contentShape(Rectangle())
         .cornerRadius(POSButtonStyleConstants.framedButtonCornerRadius)
     }
     

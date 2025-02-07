@@ -170,7 +170,7 @@ private extension CardReaderConnectionStatusView {
     )
     VStack {
         CardReaderConnectionStatusView()
-            .environmentObject(posModel)
+            .environment(posModel)
     }
 }
 

@@ -188,7 +188,8 @@ private extension PointOfSaleDashboardView {
         orderController: PointOfSalePreviewOrderController())
     return NavigationStack {
         PointOfSaleDashboardView()
+            .environment(posModel)
+            .environmentObject(POSModalManager())
     }
-    .environmentObject(posModel)
 }
 #endif

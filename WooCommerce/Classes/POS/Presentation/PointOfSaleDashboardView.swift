@@ -2,7 +2,7 @@ import SwiftUI
 
 @available(iOS 17.0, *)
 struct PointOfSaleDashboardView: View {
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @State private var showExitPOSModal: Bool = false
@@ -11,6 +11,7 @@ struct PointOfSaleDashboardView: View {
     @State private var floatingSize: CGSize = .zero
 
     var body: some View {
+        @Bindable var posModel = posModel
         ZStack(alignment: .bottomLeading) {
             if case .regular = horizontalSizeClass {
                 switch posModel.itemsViewState.containerState {
@@ -87,6 +88,10 @@ struct PointOfSaleDashboardView: View {
             HStack {
                 if posModel.orderStage == .building {
                     ItemListView()
+                        .refreshable {
+                            ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
+                            await posModel.loadItems(base: .root)
+                        }
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .leading))
                 }

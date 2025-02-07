@@ -3,7 +3,7 @@ import SwiftUI
 @available(iOS 17.0, *)
 struct POSFloatingControlView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding private var showExitPOSModal: Bool
@@ -18,6 +18,7 @@ struct POSFloatingControlView: View {
         HStack {
             Menu {
                 Button {
+                    ServiceLocator.analytics.track(.pointOfSaleExitMenuItemTapped)
                     showExitPOSModal = true
                 } label: {
                     Label(
@@ -26,6 +27,7 @@ struct POSFloatingControlView: View {
                     )
                 }
                 Button {
+                    ServiceLocator.analytics.track(.pointOfSaleGetSupportTapped)
                     showSupport = true
                 } label: {
                     Label(

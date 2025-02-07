@@ -116,6 +116,8 @@ private extension TracksProvider {
         let exemptedEvents: Set<String> = [
             "application_opened",
             "application_closed",
+            "orders_add_new",
+            "support_new_request_viewed",
             "dynamic_dashboard_card_data_loading_completed"
         ]
         if exemptedEvents.contains(eventName) {

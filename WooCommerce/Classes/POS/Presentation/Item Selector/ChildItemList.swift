@@ -6,7 +6,7 @@ import Yosemite
 struct ChildItemList: View {
     private let parentItem: POSItem
     private let title: String
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.dismiss) private var dismiss
 
     private var state: ItemListState {
@@ -33,11 +33,6 @@ struct ChildItemList: View {
         }
         .background(Color.posSurface)
         .toolbar(.hidden, for: .navigationBar)
-        .refreshable {
-            await Task {
-                await posModel.loadItems(base: .parent(parentItem))
-            }.value
-        }
         .task {
             guard state.items.isEmpty else {
                 return
@@ -167,7 +162,7 @@ private extension ChildItemList {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
     return ChildItemList(parentItem: parentItem, title: parentProduct.name)
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 
 @available(iOS 17.0, *)
@@ -191,7 +186,7 @@ private extension ChildItemList {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
     return ChildItemList(parentItem: parentItem, title: parentProduct.name)
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 
 #endif

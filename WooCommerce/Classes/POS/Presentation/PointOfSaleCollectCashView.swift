@@ -4,7 +4,7 @@ import SwiftUI
 struct PointOfSaleCollectCashView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @FocusState private var isTextFieldFocused: Bool
 
     private let viewHelper = CollectCashViewHelper()
@@ -225,6 +225,6 @@ private extension PointOfSaleCollectCashView {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
     PointOfSaleCollectCashView(orderTotal: "$1.23")
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 #endif

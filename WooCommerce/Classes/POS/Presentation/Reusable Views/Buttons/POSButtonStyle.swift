@@ -27,10 +27,17 @@ struct POSButtonStyle: ButtonStyle {
     }
     
     func makeBody(configuration: Configuration) -> some View {
-        HStack {
-            Spacer()
-            configuration.label
-            Spacer()
+        Group {
+            switch size {
+            case .normal:
+                HStack {
+                    Spacer()
+                    configuration.label
+                    Spacer()
+                }
+            case .extraSmall:
+                configuration.label
+            }
         }
         .padding(.vertical, size.padding.vertical)
         .padding(.horizontal, size.padding.horizontal)

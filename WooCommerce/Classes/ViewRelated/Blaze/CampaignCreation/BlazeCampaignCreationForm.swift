@@ -324,6 +324,7 @@ private extension BlazeCampaignCreationForm {
                     radius: Layout.shadowRadius,
                     x: 0,
                     y: Layout.shadowYOffset)
+            .environment(\.colorScheme, .light)
 
             VStack(spacing: Layout.contentPadding) {
                 // Label "Suggested by AI"
@@ -331,11 +332,11 @@ private extension BlazeCampaignCreationForm {
                     Image(uiImage: .sparklesImage)
                         .renderingMode(.template)
                         .resizable()
-                        .foregroundColor(colorScheme == .dark ? Color(.textInverted) : Color(.textSubtle))
+                        .foregroundColor(Color(.textSubtle))
                         .frame(width: Layout.sparkleIconSize * scale, height: Layout.sparkleIconSize * scale)
 
                     Text(Localization.suggestedByAI)
-                        .foregroundColor(colorScheme == .dark ? Color(.textInverted) : Color(.textSubtle))
+                        .foregroundColor(Color(.textSubtle))
                         .subheadlineStyle()
 
                     Spacer()
@@ -357,7 +358,6 @@ private extension BlazeCampaignCreationForm {
                 .shimmering(active: !viewModel.canEditAd)
             }
         }
-        .environment(\.colorScheme, .light)
         .padding(Layout.contentPadding)
         .background(Color(light: .init(uiColor: .systemGray6),
                           dark: .init(uiColor: .tertiarySystemBackground)))

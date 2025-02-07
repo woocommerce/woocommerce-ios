@@ -16,16 +16,16 @@ enum POSButtonSize {
 struct POSButtonStyle: ButtonStyle {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.isEnabled) var isEnabled
-    
+
     let variant: POSButtonVariant
     let size: POSButtonSize
-    
+
     init(variant: POSButtonVariant = .filled,
          size: POSButtonSize = .normal) {
         self.variant = variant
         self.size = size
     }
-    
+
     func makeBody(configuration: Configuration) -> some View {
         Group {
             switch size {
@@ -51,7 +51,7 @@ struct POSButtonStyle: ButtonStyle {
         .opacity(configuration.isPressed ? 0.7 : 1.0)
         .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
     }
-    
+
     private var backgroundColor: Color {
         switch (variant, isEnabled) {
         case (.filled, true):
@@ -62,7 +62,7 @@ struct POSButtonStyle: ButtonStyle {
                 .clear
         }
     }
-    
+
     private var foregroundColor: Color {
         switch (variant, isEnabled) {
         case (.filled, true):
@@ -75,7 +75,7 @@ struct POSButtonStyle: ButtonStyle {
                 .posOnDisabledContainer
         }
     }
-    
+
     @ViewBuilder
     private var borderOverlay: some View {
         if variant == .outlined {
@@ -97,7 +97,7 @@ private extension POSButtonSize {
             (vertical: 8, horizontal: 16)
         }
     }
-    
+
     var font: POSFontStyle {
         switch self {
         case .normal:
@@ -118,24 +118,24 @@ struct POSButtonStyle_Previews: View {
             VStack(alignment: .leading, spacing: 32) {
                 previewSection(title: "Filled Buttons - Normal",
                                variant: .filled, size: .normal)
-                
+
                 previewSection(title: "Filled Buttons - Extra Small",
                                variant: .filled, size: .extraSmall)
-                
+
                 previewSection(title: "Outlined Buttons - Normal",
                                variant: .outlined, size: .normal)
-                
+
                 previewSection(title: "Outlined Buttons - Extra Small",
                                variant: .outlined, size: .extraSmall)
-                
+
                 // Example with long text
                 VStack(alignment: .leading, spacing: 16) {
                     Text("Long Text Examples")
                         .font(.headline)
-                    
+
                     Button("This is a very long button text that might wrap to multiple lines") {}
                         .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
-                    
+
                     Button("Long text in small size button that might need to wrap") {}
                         .buttonStyle(POSButtonStyle(variant: .outlined, size: .extraSmall))
                 }
@@ -143,15 +143,15 @@ struct POSButtonStyle_Previews: View {
             .padding()
         }
     }
-    
+
     private func previewSection(title: String, variant: POSButtonVariant, size: POSButtonSize) -> some View {
         VStack(alignment: .leading, spacing: 16) {
             Text(title)
                 .font(.headline)
-            
+
             Button("Enabled Button") {}
                 .buttonStyle(POSButtonStyle(variant: variant, size: size))
-            
+
             Button("Disabled Button") {}
                 .buttonStyle(POSButtonStyle(variant: variant, size: size))
                 .disabled(true)

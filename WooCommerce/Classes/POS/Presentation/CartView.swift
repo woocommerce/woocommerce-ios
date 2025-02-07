@@ -256,7 +256,7 @@ private extension CartView {
         } label: {
             Text(Localization.checkoutButtonTitle)
         }
-        .buttonStyle(POSPrimaryButtonStyle())
+        .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
     }
 
     @ViewBuilder

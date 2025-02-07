@@ -25,7 +25,7 @@ struct PointOfSaleCardPresentPaymentIntentCreationErrorMessageView: View {
             VStack(spacing: PointOfSaleCardPresentPaymentLayout.buttonSpacing) {
                 Button(viewModel.tryAgainButtonViewModel.title,
                        action: viewModel.tryAgainButtonViewModel.actionHandler)
-                .buttonStyle(POSPrimaryButtonStyle())
+                .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
 
                 if let editOrderButtonViewModel = viewModel.editOrderButtonViewModel {
                     Button(editOrderButtonViewModel.title,

@@ -19,14 +19,6 @@ extension Color {
      * Secondary and tertiary colors are layered on top of the main background, when needed.
      */
 
-    // An ugly duckling; intended for use for borders where the bordered view has
-    // `.posSecondaryBackground` in light mode, even though it's on another `.posSecondaryBackground` view. Does not adapt
-    static var posCartItemOutline: Color {
-        Color(
-            UIColor(red: 220.0/255.0, green: 220.0/255.0, blue: 222.0/255.0, alpha: 1.0)
-        )
-    }
-
     // MARK: - Text
 
     private static var posGray: Color {

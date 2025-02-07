@@ -133,8 +133,8 @@ private extension PointOfSaleDashboardView {
     }
 
     func paymentsOnboardingView(from onboardingViewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
-        onboardingViewModel.showSupport = {
-            posModel.cancelCardPaymentsOnboarding()
+        onboardingViewModel.showSupport = { [weak posModel] in
+            posModel?.cancelCardPaymentsOnboarding()
             showSupport = true
         }
         return PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(onboardingViewModel: onboardingViewModel,

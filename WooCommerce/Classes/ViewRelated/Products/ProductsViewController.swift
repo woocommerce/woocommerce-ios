@@ -1120,7 +1120,6 @@ extension ProductsViewController: UITableViewDataSource {
         let viewModel = ProductsTabProductViewModel(product: product, hasPendingUploads: hasPendingUploads)
         cell.update(viewModel: viewModel, imageService: imageService)
 
-
         return cell
     }
 }

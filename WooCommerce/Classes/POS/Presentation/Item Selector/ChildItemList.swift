@@ -67,6 +67,10 @@ private extension ChildItemList {
             ItemList(state: state,
                      node: .parent(parentItem))
                 .transition(.opacity)
+                .refreshable {
+                    ServiceLocator.analytics.track(.pointOfSaleVariationsPullToRefresh)
+                    await posModel.refreshItems(base: .parent(parentItem))
+                }
         }
     }
 

@@ -37,7 +37,8 @@ protocol PointOfSaleItemsControllerProtocol {
         await loadFirstPage(base: base)
     }
 
-    @MainActor func refreshItems(base: ItemListBaseItem) async {
+    @MainActor
+    func refreshItems(base: ItemListBaseItem) async {
         await loadFirstPage(base: base)
     }
 

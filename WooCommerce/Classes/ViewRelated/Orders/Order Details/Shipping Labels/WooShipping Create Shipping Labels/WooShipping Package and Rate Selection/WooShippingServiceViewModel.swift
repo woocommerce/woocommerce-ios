@@ -20,7 +20,7 @@ final class WooShippingServiceViewModel: ObservableObject {
     @Published private(set) var selectedRate: WooShippingSelectedRate?
 
     /// State of loading shipping rates.
-    private(set) var loadingState: LabelRatesState = .empty
+    @Published private(set) var loadingState: LabelRatesState = .empty
 
     /// Available standard shipping rates.
     private var standardRates: [ShippingLabelCarrierRate] = []

@@ -1116,11 +1116,10 @@ extension ProductsViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
         let product = resultsController.object(at: indexPath)
 
-        let viewModel = ProductsTabProductViewModel(product: product)
+        let hasPendingUploads = activeUploadIds.contains(where: { $0 == product.productID })
+        let viewModel = ProductsTabProductViewModel(product: product, hasPendingUploads: hasPendingUploads)
         cell.update(viewModel: viewModel, imageService: imageService)
 
-        let hasPendingUploads = activeUploadIds.contains(where: { $0 == product.productID })
-        cell.updateSyncingStatus(isSyncing: hasPendingUploads)
 
         return cell
     }

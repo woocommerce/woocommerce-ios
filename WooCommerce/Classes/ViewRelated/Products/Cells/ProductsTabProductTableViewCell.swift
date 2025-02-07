@@ -73,19 +73,18 @@ extension ProductsTabProductTableViewCell: SearchResultCell {
 }
 
 extension ProductsTabProductTableViewCell {
-    func updateSyncingStatus(isSyncing: Bool) {
-        if isSyncing {
-            configureSyncingOverlayView()
-        } else {
-            syncingOverlayView?.removeFromSuperview()
-            syncingOverlayView = nil
-        }
-    }
 
     func update(viewModel: ProductsTabProductViewModel, imageService: ImageService) {
         nameLabel.text = viewModel.createNameLabel()
         detailsLabel.attributedText = viewModel.detailsAttributedString
         accessibilityIdentifier = viewModel.createNameLabel()
+
+        if viewModel.hasPendingUploads {
+            configureSyncingOverlayView()
+        } else {
+            syncingOverlayView?.removeFromSuperview()
+            syncingOverlayView = nil
+        }
 
         productImageView.contentMode = .center
         if viewModel.isDraggable {
@@ -295,8 +294,9 @@ private struct ProductsTabProductTableViewCellRepresentable: UIViewRepresentable
 }
 
 struct ProductsTabProductTableViewCell_Previews: PreviewProvider {
-    private static var nonSelectedViewModel = ProductsTabProductViewModel(product: Product.swiftUIPreviewSample(), isSelected: false)
+    private static var nonSelectedViewModel = ProductsTabProductViewModel(product: Product.swiftUIPreviewSample(), hasPendingUploads: false, isSelected: false)
     private static var selectedViewModel = ProductsTabProductViewModel(product: Product.swiftUIPreviewSample().copy(statusKey: ProductStatus.pending.rawValue),
+                                                                       hasPendingUploads: false,
                                                                        isSelected: true)
 
     private static func makeStack() -> some View {

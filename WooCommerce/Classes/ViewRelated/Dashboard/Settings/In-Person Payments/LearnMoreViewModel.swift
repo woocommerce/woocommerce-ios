@@ -1,17 +1,15 @@
 import Foundation
 import UIKit
 import SwiftUI
+import Yosemite
 
 class LearnMoreViewModel: ObservableObject {
-
-    static let learnMoreURL = URL(string: "woocommerce://in-person-payments/learn-more")!
-
     let url: URL
     let linkText: String
     let formatText: String
     let tappedAnalyticEvent: WooAnalyticsEvent?
 
-    init(url: URL = learnMoreURL,
+    init(url: URL,
          linkText: String = Localization.learnMoreLink,
          formatText: String = Localization.learnMoreText,
          tappedAnalyticEvent: WooAnalyticsEvent? = nil) {
@@ -19,6 +17,17 @@ class LearnMoreViewModel: ObservableObject {
         self.linkText = linkText
         self.formatText = formatText
         self.tappedAnalyticEvent = tappedAnalyticEvent
+    }
+
+    convenience init(paymentGateway: CardPresentPaymentsPlugin,
+                     linkText: String = Localization.learnMoreLink,
+                     formatText: String = Localization.learnMoreText,
+                     tappedAnalyticEvent: WooAnalyticsEvent? = nil) {
+        let url = Self.learnMoreLinkURL(for: paymentGateway)
+        self.init(url: url,
+                  linkText: linkText,
+                  formatText: formatText,
+                  tappedAnalyticEvent: tappedAnalyticEvent)
     }
 
     var learnMoreAttributedString: NSAttributedString {
@@ -90,17 +99,28 @@ private enum Localization {
 }
 
 extension LearnMoreViewModel {
-    static func inPersonPayments(source: WooAnalyticsEvent.InPersonPayments.LearnMoreLinkSource) -> LearnMoreViewModel {
-        LearnMoreViewModel(url: WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL(),
+    static func inPersonPayments(source: WooAnalyticsEvent.InPersonPayments.LearnMoreLinkSource,
+                                 paymentGateway: CardPresentPaymentsPlugin?) -> LearnMoreViewModel {
+        LearnMoreViewModel(url: Self.learnMoreLinkURL(for: paymentGateway),
                            linkText: Localization.learnMoreLink,
                            formatText: Localization.inPersonPaymentslearnMoreText,
                            tappedAnalyticEvent: .InPersonPayments.learnMoreTapped(source: source))
     }
 
-    static func tapToPay(source: WooAnalyticsEvent.InPersonPayments.LearnMoreLinkSource) -> LearnMoreViewModel {
-        LearnMoreViewModel(url: WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL(),
+    static func tapToPay(source: WooAnalyticsEvent.InPersonPayments.LearnMoreLinkSource,
+                         paymentGateway: CardPresentPaymentsPlugin?) -> LearnMoreViewModel {
+        LearnMoreViewModel(url: Self.learnMoreLinkURL(for: paymentGateway),
                            linkText: Localization.learnMoreLink,
                            formatText: Localization.tapToPayLearnMoreText,
                            tappedAnalyticEvent: .InPersonPayments.learnMoreTapped(source: source))
+    }
+
+    private static func learnMoreLinkURL(for paymentGateway: CardPresentPaymentsPlugin?) -> URL {
+        switch paymentGateway {
+        case .none, .wcPay:
+            return WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL()
+        case .stripe:
+            return WooConstants.URLs.inPersonPaymentsLearnMoreStripe.asURL()
+        }
     }
 }

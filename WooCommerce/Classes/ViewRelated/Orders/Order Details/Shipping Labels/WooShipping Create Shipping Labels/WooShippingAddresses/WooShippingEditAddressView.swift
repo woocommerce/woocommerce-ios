@@ -150,23 +150,33 @@ struct WooShippingEditAddressView: View {
                 VStack(spacing: Constants.verticalSpacing) {
                     HStack {
                         Image(systemName: viewModel.status == .verified ? "checkmark.circle" : "exclamationmark.circle")
-                        Text(Localization.Status.label(for: viewModel.status))
+                        Text(viewModel.statusLabel)
                     }
                     .font(.subheadline)
                     .foregroundStyle(viewModel.status == .verified ? Constants.green : Constants.red)
                     Button(Localization.Button.label(for: viewModel.status)) {
-                        if viewModel.status == .verified {
+                        switch viewModel.status {
+                        case .verified:
                             dismiss()
-                        } else {
-                            // TODO: Handle remote verification
+                        case .unverified:
+                            Task { @MainActor in
+                                await viewModel.remotelyValidateAddress()
+                            }
+                        case .missingInformation:
+                            break
                         }
                     }
-                    .buttonStyle(PrimaryButtonStyle())
+                    .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
                     .disabled(viewModel.status == .missingInformation)
                 }
                 .padding()
             }
             .background(Color(uiColor: .systemBackground))
+        }
+        .sheet(item: $viewModel.normalizeAddressVM) { viewModel in
+            NavigationStack {
+                WooShippingNormalizeAddressView(viewModel: viewModel)
+            }
         }
     }
 
@@ -380,28 +390,6 @@ private extension WooShippingEditAddressView {
         static let done = NSLocalizedString("wooShipping.createLabels.editAddress.done",
                                             value: "Done",
                                             comment: "Button to dismiss the keyboard")
-
-        enum Status {
-            static func label(for status: WooShippingAddressStatus) -> String {
-                switch status {
-                case .verified:
-                    return verified
-                case .unverified:
-                    return unverified
-                case .missingInformation:
-                    return missingInformation
-                }
-            }
-            static let verified = NSLocalizedString("wooShipping.createLabels.editAddress.verified",
-                                                    value: "Address verified",
-                                                    comment: "Label when the address has been verified in the Woo Shipping label creation flow")
-            static let unverified = NSLocalizedString("wooShipping.createLabels.editAddress.unverified",
-                                                      value: "Unverified address",
-                                                      comment: "Label when the address is unverified in the Woo Shipping label creation flow")
-            static let missingInformation = NSLocalizedString("wooShipping.createLabels.editAddress.missingInformation",
-                                                              value: "Missing information",
-                                                              comment: "Label when the address is missing information in the Woo Shipping label creation flow")
-        }
 
         enum Button {
             static func label(for status: WooShippingAddressStatus) -> String {

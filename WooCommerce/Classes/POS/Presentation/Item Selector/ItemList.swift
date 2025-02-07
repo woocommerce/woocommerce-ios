@@ -4,9 +4,10 @@ import protocol WooFoundation.Analytics
 import struct Yosemite.POSVariableParentProduct
 
 /// Displays a list of POS items or placeholder card based on the given state.
+@available(iOS 17.0, *)
 struct ItemList<HeaderView: View>: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
-    @EnvironmentObject var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
     let state: ItemListState
@@ -75,10 +76,11 @@ private enum Constants {
     static let itemSpacing: CGFloat = 16
 }
 
+@available(iOS 17.0, *)
 private struct ItemListRow: View {
     let item: POSItem
     let analytics: Analytics = ServiceLocator.analytics
-    @EnvironmentObject var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
 
     var body: some View {
         switch item {
@@ -106,6 +108,7 @@ private struct ItemListRow: View {
     }
 }
 
+@available(iOS 17.0, *)
 private extension ItemListRow {
     enum Localization {
         static let variationsAvailable = NSLocalizedString(
@@ -117,7 +120,7 @@ private extension ItemListRow {
 }
 
 #if DEBUG
-
+@available(iOS 17.0, *)
 #Preview("Loaded with items") {
     ItemList(
         state:
@@ -146,13 +149,14 @@ private extension ItemListRow {
     )
 }
 
+@available(iOS 17.0, *)
 #Preview("Loading") {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
     ItemList(state: .loading([]))
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 
 #endif

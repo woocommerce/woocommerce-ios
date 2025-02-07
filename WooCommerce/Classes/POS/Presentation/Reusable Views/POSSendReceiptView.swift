@@ -1,8 +1,9 @@
 import SwiftUI
 import class WordPressShared.EmailFormatValidator
 
+@available(iOS 17.0, *)
 struct POSSendReceiptView: View {
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @State private var textFieldInput: String = ""
     @State private var isLoading: Bool = false
@@ -93,6 +94,7 @@ struct POSSendReceiptView: View {
     }
 
     private func sendReceipt() {
+        ServiceLocator.analytics.track(.pointOfSaleEmailReceiptSendTapped)
         Task { @MainActor in
             guard isEmailValid else {
                 errorMessage = Localization.emailValidationErrorText
@@ -114,6 +116,7 @@ struct POSSendReceiptView: View {
     }
 }
 
+@available(iOS 17.0, *)
 private extension POSSendReceiptView {
     enum Constants {
         static let buttonSpacing: CGFloat = 12
@@ -134,6 +137,7 @@ private extension POSSendReceiptView {
     }
 }
 
+@available(iOS 17.0, *)
 private extension POSSendReceiptView {
     struct Localization {
         static let buttonTitle = NSLocalizedString(
@@ -160,12 +164,13 @@ private extension POSSendReceiptView {
 }
 
 #if DEBUG
+@available(iOS 17.0, *)
 #Preview {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
     POSSendReceiptView(isShowingSendReceiptView: .constant(true))
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 #endif

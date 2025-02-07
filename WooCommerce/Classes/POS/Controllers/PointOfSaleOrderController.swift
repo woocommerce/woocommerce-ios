@@ -11,6 +11,7 @@ import enum Yosemite.OrderUpdateField
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 import enum WooFoundation.CurrencyCode
+import protocol WooFoundation.Analytics
 
 protocol PointOfSaleOrderControllerProtocol {
     var orderStatePublisher: AnyPublisher<PointOfSaleInternalOrderState, Never> { get }
@@ -25,12 +26,16 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     init(orderService: POSOrderServiceProtocol,
          receiptService: POSReceiptServiceProtocol,
          stores: StoresManager = ServiceLocator.stores,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         analytics: Analytics = ServiceLocator.analytics,
+         celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
         self.orderService = orderService
         self.receiptService = receiptService
         self.stores = stores
         self.storeCurrency = currencySettings.currencyCode
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.analytics = analytics
+        self.celebration = celebration
     }
 
     var orderStatePublisher: AnyPublisher<PointOfSaleInternalOrderState, Never> {
@@ -41,7 +46,9 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     private let receiptService: POSReceiptServiceProtocol
 
     private let currencyFormatter: CurrencyFormatter
+    private let celebration: PaymentCaptureCelebrationProtocol
     private let storeCurrency: CurrencyCode
+    private let analytics: Analytics
     private let stores: StoresManager
 
     @Published private var orderState: PointOfSaleInternalOrderState = .idle
@@ -60,6 +67,7 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         }
 
         orderState = .syncing
+        let isNewOrder = order == nil
 
         do {
             let syncedOrder = try await orderService.syncOrder(cart: posCartItems,
@@ -67,9 +75,16 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
                                                                currency: storeCurrency)
             self.order = syncedOrder
             orderState = .loaded(totals(for: syncedOrder), syncedOrder)
-            DDLogInfo("🟢 [POS] Synced order: \(syncedOrder)")
+            if isNewOrder {
+                analytics.track(.orderCreationSuccess)
+            }
         } catch {
-            DDLogError("🔴 [POS] Error syncing order: \(error)")
+            if isNewOrder {
+                analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(
+                    usesGiftCard: false,
+                    errorContext: String(describing: error),
+                    errorDescription: error.localizedDescription))
+            }
             setOrderStateToError(error, retryHandler: retryHandler)
         }
     }
@@ -98,6 +113,10 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         orderState = .idle
     }
 
+    private func celebrate() {
+        celebration.celebrate()
+    }
+
     @MainActor
     func collectCashPayment() async throws {
         guard let siteID = stores.sessionManager.defaultStoreID else {
@@ -120,7 +139,11 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
                                                  order: updatedOrder,
                                                  giftCard: nil,
                                                  fields: fieldsToUpdate,
-                                                 onCompletion: { result in
+                                                 onCompletion: { [weak self] result in
+                guard let self = self else { return }
+                if case .success = result {
+                    self.celebrate()
+                }
                 continuation.resume(with: result)
             })
             stores.dispatch(action)

@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(iOS 17.0, *)
 struct PointOfSaleCardPresentPaymentInLineMessage: View {
     private let messageType: PointOfSaleCardPresentPaymentMessageType
 
@@ -45,6 +46,7 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
     private var animation: POSCardPresentPaymentInLineMessageAnimation { .init(namespace: namespace) }
 }
 
+@available(iOS 17.0, *)
 #Preview {
     PointOfSaleCardPresentPaymentInLineMessage(messageType: .processing(
         viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel()))

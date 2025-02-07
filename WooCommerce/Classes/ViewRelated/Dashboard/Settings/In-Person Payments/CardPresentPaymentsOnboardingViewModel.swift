@@ -33,7 +33,9 @@ final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSet
                 self?.updateLearnMoreURL(state: result)
                 self?.reevaluateShouldShow(onboardingState: result)
             })
-            .handleEvents(receiveOutput: trackState(_:))
+            .handleEvents(receiveOutput: { [weak self] state in
+                self?.trackState(state)
+            })
             .assign(to: &$state)
     }
 

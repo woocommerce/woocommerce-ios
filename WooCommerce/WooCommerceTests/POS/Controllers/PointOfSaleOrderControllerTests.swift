@@ -5,7 +5,9 @@ import Foundation
 @testable import WooCommerce
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
+import enum Yosemite.OrderAction
 import class WooFoundation.CurrencySettings
+import protocol WooFoundation.Analytics
 
 struct PointOfSaleOrderControllerTests {
     let sut: PointOfSaleOrderController
@@ -13,7 +15,8 @@ struct PointOfSaleOrderControllerTests {
     let mockReceiptService = MockReceiptService()
 
     init() {
-        self.sut = PointOfSaleOrderController(orderService: mockOrderService, receiptService: mockReceiptService)
+        self.sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                              receiptService: mockReceiptService)
     }
 
     @Test func syncOrder_without_items_doesnt_call_orderService() async throws {
@@ -33,6 +36,7 @@ struct PointOfSaleOrderControllerTests {
         let cartItem = makeItem(orderItemsToMatch: [orderItem])
         mockOrderService.orderToReturn = fakeOrder
         await sut.syncOrder(for: [cartItem], retryHandler: {})
+
         mockOrderService.syncOrderWasCalled = false
 
         // When
@@ -190,6 +194,99 @@ struct PointOfSaleOrderControllerTests {
         } catch let error as PointOfSaleOrderController.PointOfSaleOrderControllerError {
             // Then
             #expect(error == .noOrder)
+        }
+    }
+
+    @MainActor
+    @Test func collectCashPayment_when_successful_calls_celebrate() async throws {
+        // Given
+        let sampleSiteID: Int64 = 1234
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        mockStores.sessionManager.setStoreId(sampleSiteID)
+        let mockPaymentCelebration = MockPaymentCaptureCelebration()
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptService: mockReceiptService,
+                                             stores: mockStores,
+                                             celebration: mockPaymentCelebration)
+
+        let orderItem = OrderItem.fake()
+        let fakeOrder = Order.fake().copy(items: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+        await sut.syncOrder(for: [makeItem()], retryHandler: {})
+
+        // When
+        let completionResult: Bool = await withCheckedContinuation { continuation in
+            mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateOrder(siteID, order, _, _, onCompletion):
+                    onCompletion(.success(order))
+                    continuation.resume(returning: true)
+                default:
+                    #expect(Bool(false), "Unexpected action \(action)")
+                }
+            }
+            Task { @MainActor in
+                do {
+                    try await sut.collectCashPayment()
+                } catch {
+                    continuation.resume(returning: false)
+                }
+            }
+        }
+
+        // Then
+        #expect(completionResult == true)
+        #expect(mockPaymentCelebration.celebrationWasCalled == true)
+    }
+
+    struct AnalyticsTests {
+        private let analytics: WooAnalytics
+        private let analyticsProvider = MockAnalyticsProvider()
+        private let orderService = MockPOSOrderService()
+        private let receiptService = MockReceiptService()
+        private let sut: PointOfSaleOrderController
+
+        init() {
+            analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+            sut = PointOfSaleOrderController(orderService: orderService,
+                                             receiptService: receiptService,
+                                             analytics: analytics)
+        }
+
+        @Test func syncOrder_when_create_order_then_tracks_order_creation_success_event() async throws {
+            // Given
+            let fakeOrderItem = OrderItem.fake().copy(quantity: 1)
+            let fakeOrder = Order.fake()
+            let fakeCartItem = makeItem(orderItemsToMatch: [fakeOrderItem])
+            orderService.orderToReturn = fakeOrder
+
+            // When
+            await sut.syncOrder(for: [fakeCartItem], retryHandler: { })
+
+            // Then
+            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "order_creation_success" }) != nil)
+        }
+
+        @Test func syncOrder_when_create_order_fails_with_order_service_error_then_tracks_order_creation_failure_event() async throws {
+            // Given
+            // 3 states are expected to be confirmed before returning orderState: .idle, .syncing. .error
+            let confirmationOrderStates = 3
+            var cancellables = Set<AnyCancellable>()
+            orderService.orderToReturn = nil
+
+            await confirmation() { confirmation in
+                sut.orderStatePublisher.collect(confirmationOrderStates)
+                    .sink { orderState in
+                        confirmation()
+                    }
+                    .store(in: &cancellables)
+
+                // When
+                await sut.syncOrder(for: [makeItem()], retryHandler: {})
+            }
+
+            // Then
+            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "order_creation_failed" }) != nil)
         }
     }
 }

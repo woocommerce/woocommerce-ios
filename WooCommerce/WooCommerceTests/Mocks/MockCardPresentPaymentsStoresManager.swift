@@ -17,7 +17,7 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     private var failUpdate: Bool
     private var failConnection: Bool
     private var softwareUpdateSubject: CurrentValueSubject<CardReaderSoftwareUpdateState, Never> = .init(.none)
-    private var paymentExtension: CardPresentPaymentGatewayExtension
+    private var paymentExtension: CardPresentPaymentsPlugin
 
     var receivedActions: [CardPresentPaymentAction] = []
 
@@ -28,7 +28,7 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
          failDiscovery: Bool = false,
          failUpdate: Bool = false,
          failConnection: Bool = false,
-         paymentExtension: CardPresentPaymentGatewayExtension = .wcpay
+         paymentExtension: CardPresentPaymentsPlugin = .wcPay
     ) {
         self.connectedReaders = connectedReaders
         self.discoveredReaders = discoveredReaders

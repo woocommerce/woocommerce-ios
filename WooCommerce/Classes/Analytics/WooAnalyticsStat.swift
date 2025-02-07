@@ -1268,9 +1268,24 @@ enum WooAnalyticsStat: String {
     case backgroundUpdatesDisabled = "background_updates_disabled"
 
     // MARK: Point of Sale events
+    case pointOfSaleLoaded = "pos_loaded"
+    case pointOfSaleProductsPullToRefresh = "products_pull_to_refresh"
+    case pointOfSaleVariationsPullToRefresh = "variations_pull_to_refresh"
     case pointOfSaleAddItemToCart = "item_added_to_cart"
+    case pointOfSaleItemRemovedFromCart = "item_removed_from_cart"
+    case pointOfSaleCheckoutTapped = "checkout_tapped"
+    case pointOfSaleBackToCartTapped = "back_to_cart_tapped"
+    case pointOfSaleClearCartTapped = "clear_cart_tapped"
+    case pointOfSaleExitMenuItemTapped = "exit_pos_menu_item_tapped"
+    case pointOfSaleExitConfirmed = "exit_pos_confirmed"
+    case pointOfSaleGetSupportTapped = "get_support_tapped"
+    case pointOfSaleSimpleProductsExplanationDialogShown = "simple_products_explanation_dialog_shown"
+    case pointOfSaleCreateNewOrderTapped = "create_new_order_tapped"
+    case pointOfSaleEmailReceiptTapped = "email_receipt_tapped"
+    case pointOfSaleEmailReceiptSendTapped = "email_receipt_send_tapped"
     case pointOfSalePaymentsOnboardingShown = "payments_onboarding_shown"
     case pointOfSalePaymentsOnboardingDismissed = "payments_onboarding_dismissed"
+    case pointOfSaleCardReaderConnectionTapped = "card_reader_connection_tapped"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"

@@ -6,10 +6,6 @@ import SwiftUI
 struct POSButtonStylesPreview: View {
     var body: some View {
         VStack(spacing: 20) {
-            // Primary Button
-            Button("Primary Button") {}
-                .buttonStyle(POSPrimaryButtonStyle())
-
             // Secondary Button
             Button("Secondary Button") {}
                 .buttonStyle(POSSecondaryButtonStyle())
@@ -24,9 +20,6 @@ struct POSButtonStylesPreview: View {
 
             // Disabled state examples
             Group {
-                Button("Disabled Primary") {}
-                    .buttonStyle(POSPrimaryButtonStyle())
-                    .disabled(true)
                 Button("Disabled Secondary") {}
                     .buttonStyle(POSSecondaryButtonStyle())
                     .disabled(true)

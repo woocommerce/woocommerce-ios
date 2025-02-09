@@ -85,7 +85,20 @@ private struct OrderShippingLabelListData: Decodable {
 
         // Shipping labels.
         let formData = try container.decode(OrderShippingLabelListFormData.self, forKey: .formData)
-        let shippingLabelsWithoutAddresses = try container.decode([ShippingLabel].self, forKey: .labelsData)
+
+        // Decode the labelsData as an array of dictionaries,
+        // and filter out labels that have an "error" key
+        // then convert the filtered array of dictionaries to JSON data.
+        // This match the web behavior that doesn't display shipping labels error, that are sent together in `labelsdata` array.
+        var labelsData = try container.decode([[String: AnyCodable]].self, forKey: .labelsData)
+        labelsData = labelsData.filter { $0["error"] == nil }
+        // Convert AnyCodable dictionary to regular dictionary with underlying values
+        let regularDictArray = labelsData.map { dict in
+            dict.mapValues { ($0 as AnyCodable).value }
+        }
+        let filteredLabelsData = try JSONSerialization.data(withJSONObject: regularDictArray, options: [])
+
+        let shippingLabelsWithoutAddresses = try JSONDecoder().decode([ShippingLabel].self, from: filteredLabelsData)
         // Filters only labels with a tracking number and status `.purchased`.
         // Then populates each shipping label's `originAddress` and `destinationAddress` from `formData` because they are not available
         // in each shipping label response.

@@ -2,7 +2,7 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 21.8
 -----
-
+- [**] Shipping Labels: resolved issue preventing shipping labels from displaying in some orders when an error occurred during label creation. [https://github.com/woocommerce/woocommerce-ios/pull/15101]
 
 21.7
 -----

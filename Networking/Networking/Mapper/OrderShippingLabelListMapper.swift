@@ -98,7 +98,14 @@ private struct OrderShippingLabelListData: Decodable {
         }
         let filteredLabelsData = try JSONSerialization.data(withJSONObject: regularDictArray, options: [])
 
-        let shippingLabelsWithoutAddresses = try JSONDecoder().decode([ShippingLabel].self, from: filteredLabelsData)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .millisecondsSince1970
+        decoder.userInfo = [
+            .siteID: siteID,
+            .orderID: orderID
+        ]
+        let shippingLabelsWithoutAddresses = try decoder.decode([ShippingLabel].self, from: filteredLabelsData)
+        
         // Filters only labels with a tracking number and status `.purchased`.
         // Then populates each shipping label's `originAddress` and `destinationAddress` from `formData` because they are not available
         // in each shipping label response.

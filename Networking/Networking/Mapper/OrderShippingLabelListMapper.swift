@@ -89,7 +89,7 @@ private struct OrderShippingLabelListData: Decodable {
         // Decode the labelsData as an array of dictionaries,
         // and filter out labels that have an "error" key
         // then convert the filtered array of dictionaries to JSON data.
-        // This match the web behavior that doesn't display shipping labels error, that are sent together in `labelsdata` array.
+        // This match the web behavior that doesn't display shipping labels error, that are sent together in `labelsData` array.
         var labelsData = try container.decode([[String: AnyCodable]].self, forKey: .labelsData)
         labelsData = labelsData.filter { $0["error"] == nil }
         // Convert AnyCodable dictionary to regular dictionary with underlying values

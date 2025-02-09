@@ -105,7 +105,7 @@ private struct OrderShippingLabelListData: Decodable {
             .orderID: orderID
         ]
         let shippingLabelsWithoutAddresses = try decoder.decode([ShippingLabel].self, from: filteredLabelsData)
-        
+
         // Filters only labels with a tracking number and status `.purchased`.
         // Then populates each shipping label's `originAddress` and `destinationAddress` from `formData` because they are not available
         // in each shipping label response.

@@ -88,4 +88,16 @@ final class OrderShippingLabelListMapperTests: XCTestCase {
         XCTAssertEqual(response.settings, .init(siteID: sampleSiteID, orderID: sampleOrderID, paperSize: .label))
         XCTAssertEqual(response.shippingLabels.count, 1)
     }
+
+    func test_order_shipping_labels_and_settings_are_properly_parsed_if_labelsData_contains_an_error() throws {
+        // Given
+        let jsonData = try XCTUnwrap(Loader.contentsOf("order-shipping-labels-with-error-in-labelsData"))
+
+        // When
+        let response = try OrderShippingLabelListMapper(siteID: sampleSiteID, orderID: sampleOrderID).map(response: jsonData)
+
+        // Then
+        XCTAssertEqual(response.settings, .init(siteID: sampleSiteID, orderID: sampleOrderID, paperSize: .label))
+        XCTAssertEqual(response.shippingLabels.count, 3)
+    }
 }

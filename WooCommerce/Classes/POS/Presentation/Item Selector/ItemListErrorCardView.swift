@@ -39,7 +39,7 @@ struct ItemListErrorCardView: View {
             .padding(Constants.accessoryButtonPadding * (1 / scale))
         }
         .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
-        .background(Color.posSecondaryBackground)
+        .background(Constants.backgroundColor)
         .posItemCardBorderStyles()
     }
 }

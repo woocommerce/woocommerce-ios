@@ -59,8 +59,10 @@ extension ProductImageStatus {
 
     private var cellClass: UICollectionViewCell.Type {
         switch self {
-        case .uploading, .uploadFailure:
+        case .uploading:
             return InProgressProductImageCollectionViewCell.self
+        case .uploadFailure:
+            return FailedProductImageCollectionViewCell.self
         case .remote:
             return ProductImageCollectionViewCell.self
         }

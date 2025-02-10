@@ -93,12 +93,11 @@ private extension ProductImagesCollectionViewController {
                     configureUploadingImageCell(cell, image: image)
             }
         case let .uploadFailure(asset, _):
-            // TODO: update cell
             switch asset {
                 case .phAsset(let asset):
-                    configureUploadingImageCell(cell, asset: asset)
+                    configureFailedImageCell(cell, asset: asset)
                 case .uiImage(let image, _, _):
-                    configureUploadingImageCell(cell, image: image)
+                    configureFailedImageCell(cell, image: image)
             }
         }
     }
@@ -144,6 +143,29 @@ private extension ProductImagesCollectionViewController {
 
     func configureUploadingImageCell(_ cell: UICollectionViewCell, image: UIImage) {
         guard let cell = cell as? InProgressProductImageCollectionViewCell else {
+            fatalError()
+        }
+
+        cell.imageView.contentMode = .scaleAspectFit
+        cell.imageView.image = image
+    }
+
+    func configureFailedImageCell(_ cell: UICollectionViewCell, asset: PHAsset) {
+        guard let cell = cell as? FailedProductImageCollectionViewCell else {
+            fatalError()
+        }
+
+        cell.imageView.contentMode = .center
+        cell.imageView.image = .productsTabProductCellPlaceholderImage
+
+        productUIImageLoader.requestImage(asset: asset, targetSize: cell.bounds.size) { [weak cell] image in
+            cell?.imageView.contentMode = .scaleAspectFit
+            cell?.imageView.image = image
+        }
+    }
+
+    func configureFailedImageCell(_ cell: UICollectionViewCell, image: UIImage) {
+        guard let cell = cell as? FailedProductImageCollectionViewCell else {
             fatalError()
         }
 
@@ -302,6 +324,8 @@ private extension ProductImagesCollectionViewController {
                                 forCellWithReuseIdentifier: ProductImageCollectionViewCell.reuseIdentifier)
         collectionView.register(InProgressProductImageCollectionViewCell.loadNib(),
                                 forCellWithReuseIdentifier: InProgressProductImageCollectionViewCell.reuseIdentifier)
+        collectionView.register(FailedProductImageCollectionViewCell.loadNib(),
+                                forCellWithReuseIdentifier: FailedProductImageCollectionViewCell.reuseIdentifier)
     }
 }
 

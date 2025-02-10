@@ -179,7 +179,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
         productImageUploadsSubscription = productImageActionHandler.addAssetUploadObserver(self) { [weak self] asset, result in
             guard let self else { return }
-            if case .failure(let error) = result {
+            if case .failure = result {
                 let title = NSLocalizedString("Cannot upload image", comment: "The title of the alert when there is an error uploading an image")
                 let message = NSLocalizedString("Please try again.", comment: "The message of the alert when there is an error uploading an image")
                 displayErrorAlert(title: title, message: message)

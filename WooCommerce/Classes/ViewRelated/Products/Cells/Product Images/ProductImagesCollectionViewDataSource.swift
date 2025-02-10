@@ -61,12 +61,11 @@ private extension ProductImagesCollectionViewDataSource {
                     configureUploadingImageCell(cell, image: image)
             }
         case let .uploadFailure(asset, _):
-            // TODO: update cell
             switch asset {
                 case .phAsset(let asset):
-                    configureUploadingImageCell(cell, asset: asset)
+                    configureFailedImageCell(cell, asset: asset)
                 case .uiImage(let image, _, _):
-                    configureUploadingImageCell(cell, image: image)
+                    configureFailedImageCell(cell, image: image)
             }
         }
     }
@@ -117,6 +116,29 @@ private extension ProductImagesCollectionViewDataSource {
         cell.imageView.contentMode = .scaleAspectFit
         cell.imageView.image = image
     }
+
+    func configureFailedImageCell(_ cell: UICollectionViewCell, asset: PHAsset) {
+        guard let cell = cell as? FailedProductImageCollectionViewCell else {
+            fatalError()
+        }
+
+        cell.imageView.contentMode = .center
+        cell.imageView.image = .productsTabProductCellPlaceholderImage
+
+        productUIImageLoader.requestImage(asset: asset, targetSize: cell.bounds.size) { [weak cell] image in
+            cell?.imageView.contentMode = .scaleAspectFit
+            cell?.imageView.image = image
+        }
+    }
+
+    func configureFailedImageCell(_ cell: UICollectionViewCell, image: UIImage) {
+        guard let cell = cell as? FailedProductImageCollectionViewCell else {
+            fatalError()
+        }
+
+        cell.imageView.contentMode = .scaleAspectFit
+        cell.imageView.image = image
+    }
 }
 
 enum ProductImagesItem {
@@ -130,8 +152,10 @@ enum ProductImagesItem {
             switch status {
             case .remote:
                 return ProductImageCollectionViewCell.reuseIdentifier
-            case .uploading, .uploadFailure:
+            case .uploading:
                 return InProgressProductImageCollectionViewCell.reuseIdentifier
+            case .uploadFailure:
+                return FailedProductImageCollectionViewCell.reuseIdentifier
             }
         case .addImage:
             return AddProductImageCollectionViewCell.reuseIdentifier

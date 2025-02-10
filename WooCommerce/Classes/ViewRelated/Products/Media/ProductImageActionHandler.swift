@@ -172,7 +172,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
                 return
             }
 
-            let imageStatuses = [.uploading(asset: asset)] + self.productImageStatuses
+            productImageStatuses = [.uploading(asset: asset)] + self.productImageStatuses
 
             self.uploadMediaAssetToSiteMediaLibrary(asset: asset) { [weak self] result in
                                                 self?.queue.async { [weak self] in

@@ -90,7 +90,7 @@ private extension PaymentsActionButtons {
     enum Constants {
         static let buttonSpacing: CGFloat = 12
         static let buttonPadding: CGFloat = 32
-        static let buttonFont: POSFontStyle = .posBodyEmphasized
+        static let buttonFont: POSFontStyle = .posBodyLargeEmphasized
         static let buttonCornerRadius: CGFloat = 8
     }
 

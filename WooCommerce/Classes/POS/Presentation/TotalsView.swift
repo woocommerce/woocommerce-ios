@@ -64,7 +64,7 @@ struct TotalsView: View {
                         }
                     }, label: {
                         Text(Localization.cashPaymentButtonTitle)
-                            .font(POSFontStyle.posBodyEmphasized)
+                            .font(POSFontStyle.posBodyLargeEmphasized)
                             .foregroundColor(.posPrimaryText)
                             .frame(height: Constants.buttonHeight)
                             .minimumScaleFactor(0.5)

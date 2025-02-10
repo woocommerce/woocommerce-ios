@@ -6,7 +6,7 @@ enum POSFontStyle {
     case posTitleRegular
     case posTitleEmphasized
     case posBodyLargeRegular
-    case posBodyEmphasized
+    case posBodyLargeEmphasized
     case posLargeDetailEmphasized
     case posLargeDetailRegular
     case posDetailLight
@@ -22,7 +22,7 @@ enum POSFontStyle {
             Font.system(size: scaledValue(FontSize.heading, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge), weight: .bold)
         case .posBodyLargeRegular:
             Font.system(size: scaledValue(FontSize.bodyLarge, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
-        case .posBodyEmphasized:
+        case .posBodyLargeEmphasized:
             Font.system(size: scaledValue(FontSize.bodyLarge, maximumContentSizeCategory: maximumContentSizeCategory), weight: .bold)
         case .posLargeDetailEmphasized:
             Font.system(size: scaledValue(FontSize.bodyMedium, maximumContentSizeCategory: maximumContentSizeCategory), weight: .semibold)
@@ -91,10 +91,10 @@ extension View {
                     .font(.posTitleRegular)
                 Text("Title Emphasized")
                     .font(.posTitleEmphasized)
-                Text("Body Regular")
+                Text("Body Large Regular")
                     .font(.posBodyLargeRegular)
-                Text("Body Emphasized")
-                    .font(.posBodyEmphasized)
+                Text("Body Large Emphasized")
+                    .font(.posBodyLargeEmphasized)
                 Text("Large Detail Emphasized")
                     .font(.posLargeDetailEmphasized)
             }

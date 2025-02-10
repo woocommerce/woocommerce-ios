@@ -219,7 +219,7 @@ private extension GhostItemCardView {
 @available(iOS 17.0, *)
 private extension ItemListView {
     enum Constants {
-        static let bannerTitleFont: POSFontStyle = .posBodyEmphasized
+        static let bannerTitleFont: POSFontStyle = .posBodyLargeEmphasized
         static let bannerSubtitleFont: POSFontStyle = .posDetailRegular
         static let bannerCornerRadius: CGFloat = 8
         static let bannerVerticalPadding: CGFloat = 26

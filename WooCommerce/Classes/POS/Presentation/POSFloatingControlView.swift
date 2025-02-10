@@ -39,7 +39,7 @@ struct POSFloatingControlView: View {
                 VStack {
                     Spacer()
                     Image(systemName: "ellipsis")
-                        .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
+                        .font(.posBodyLargeEmphasized, maximumContentSizeCategory: .accessibilityLarge)
                         .foregroundStyle(fontColor)
                     Spacer()
                 }

@@ -125,7 +125,7 @@ private extension POSFloatingControlView {
 
         static let viewDocumentation = NSLocalizedString(
             "pointOfSale.floatingButtons.viewDocumentation.button.title",
-            value: "View Documentation",
+            value: "Documentation",
             comment: "The title of the floating button to read Point of Sale documentation, shown in a popover menu."
         )
     }

@@ -59,7 +59,7 @@ private extension ItemListView {
                         showSimpleProductsModal = true
                     }, label: {
                         Image(systemName: "info.circle")
-                            .font(.posTitleRegular)
+                            .font(.posButtonSymbol)
                     })
                     .foregroundColor(.posPrimaryText)
                     .padding(.trailing, Constants.infoIconPadding)
@@ -93,7 +93,7 @@ private extension ItemListView {
                     Text(headerBannerSubtitle)
                     bannerHintAndLearnMoreText
                 }
-                .font(POSFontStyle.posBodySmallEmphasized.font())
+                .font(POSFontStyle.posBodySmallRegular.font())
                 .lineSpacing(Constants.bannerTextSpacing)
                 .accessibilityElement(children: .combine)
             }

@@ -8,10 +8,14 @@ struct POSFloatingControlView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding private var showExitPOSModal: Bool
     @Binding private var showSupport: Bool
+    @Binding private var showDocumentation: Bool
 
-    init(showExitPOSModal: Binding<Bool>, showSupport: Binding<Bool>) {
+    init(showExitPOSModal: Binding<Bool>,
+         showSupport: Binding<Bool>,
+         showDocumentation: Binding<Bool>) {
         self._showExitPOSModal = showExitPOSModal
         self._showSupport = showSupport
+        self._showDocumentation = showDocumentation
     }
 
     var body: some View {
@@ -33,6 +37,14 @@ struct POSFloatingControlView: View {
                     Label(
                         title: { Text(Localization.getSupport) },
                         icon: { Image(systemName: "questionmark.circle") }
+                    )
+                }
+                Button {
+                    showDocumentation = true
+                } label: {
+                    Label(
+                        title: { Text(Localization.viewDocumentation) },
+                        icon: { Image(systemName: "info.circle") }
                     )
                 }
             } label: {
@@ -67,19 +79,14 @@ private extension POSFloatingControlView {
     var backgroundColor: Color {
         switch backgroundAppearance {
         case .primary:
-            colorScheme == .light ? .posSecondaryBackground : .posTertiaryBackground
+            .posSurfaceContainerLow
         case .secondary:
             colorScheme == .light ? Color(.wooCommercePurple(.shade80)) : Color(.wooCommercePurple(.shade20))
         }
     }
 
     var fontColor: Color {
-        switch backgroundAppearance {
-        case .primary:
-            .posPrimaryText
-        case .secondary:
-            Self.secondaryFontColor
-        }
+        .posOnSurface
     }
 }
 
@@ -110,5 +117,26 @@ private extension POSFloatingControlView {
             value: "Get Support",
             comment: "The title of the floating button to get support for Point of Sale, shown in a popover menu."
         )
+
+        static let viewDocumentation = NSLocalizedString(
+            "pointOfSale.floatingButtons.viewDocumentation.button.title",
+            value: "Documentation",
+            comment: "The title of the floating button to read Point of Sale documentation, shown in a popover menu."
+        )
     }
 }
+
+#if DEBUG
+@available(iOS 17.0, *)
+#Preview {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
+
+    POSFloatingControlView(showExitPOSModal: .constant(false),
+                           showSupport: .constant(false),
+                           showDocumentation: .constant(false))
+    .environment(posModel)
+}
+#endif

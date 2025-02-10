@@ -44,11 +44,11 @@ struct ItemRowView: View {
                 })
                 .accessibilityLabel(Localization.removeFromCartAccessibilityLabel)
                 .padding(.trailing, Constants.cardContentHorizontalPadding)
-                .foregroundColor(Color.posTertiaryText)
+                .foregroundColor(Color.posOnSurfaceVariantLowest)
             }
         }
         .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
-        .background(backgroundColor)
+        .background(Color.posSurfaceContainerLowest)
         .overlay {
             RoundedRectangle(cornerRadius: Constants.productCardCornerRadius)
                 .stroke(Color.posCartItemOutline, lineWidth: cardOutlineWidth)
@@ -86,15 +86,6 @@ private extension ItemRowView {
             return 0
         default:
             return Constants.cardOutlineWidth
-        }
-    }
-
-    var backgroundColor: Color {
-        switch colorScheme {
-        case .dark:
-            return Color.posTertiaryBackground
-        default:
-            return Color.posSecondaryBackground
         }
     }
 }

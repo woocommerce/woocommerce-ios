@@ -152,12 +152,7 @@ private struct ScrollOffSetPreferenceKey: PreferenceKey {
 @available(iOS 17.0, *)
 private extension CartView {
     var backgroundColor: Color {
-        switch colorScheme {
-        case .dark:
-            return Color.posSecondaryBackground
-        default:
-            return posModel.cart.isEmpty ? Color.posTertiaryBackground : Color.posSecondaryBackground
-        }
+        .posSurfaceBright
     }
 
     var shouldPreventCartEditing: Bool {

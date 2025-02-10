@@ -75,13 +75,9 @@ struct POSSendReceiptView: View {
                 }
                 .frame(maxWidth: .infinity)
             })
+            .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
             .dynamicTypeSize(...DynamicTypeSize.accessibility3)
-            .padding(conditionalPadding(Constants.buttonPadding))
             .frame(maxWidth: .infinity)
-            .foregroundColor(Color.posOnInverseSurface)
-            .background(isEmailValid ? Color.posPrimaryButtonBackground : Color.posBackgroundButtonDisabled)
-            .cornerRadius(Constants.buttonCornerRadius)
-            .contentShape(Rectangle())
             .disabled(isLoading)
 
             Spacer()

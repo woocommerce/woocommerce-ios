@@ -88,10 +88,6 @@ struct PointOfSaleDashboardView: View {
             HStack {
                 if posModel.orderStage == .building {
                     ItemListView()
-                        .refreshable {
-                            ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
-                            await posModel.loadItems(base: .root)
-                        }
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .leading))
                 }
@@ -133,8 +129,8 @@ private extension PointOfSaleDashboardView {
     }
 
     func paymentsOnboardingView(from onboardingViewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
-        onboardingViewModel.showSupport = {
-            posModel.cancelCardPaymentsOnboarding()
+        onboardingViewModel.showSupport = { [weak posModel] in
+            posModel?.cancelCardPaymentsOnboarding()
             showSupport = true
         }
         return PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(onboardingViewModel: onboardingViewModel,

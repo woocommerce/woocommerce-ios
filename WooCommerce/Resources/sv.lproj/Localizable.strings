@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-02-03 14:23:49+0000 */
+/* Translation-Revision-Date: 2025-02-06 10:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -10898,6 +10898,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label indicating that the store is being synced in the Jetpack setup flow */
 "loginJetpackSetupCoordinator.syncingStore" = "Synkroniserar butik...";
 
+/* Subtitle displayed in the prologue screen */
+"loginPrologue.subtitle" = "Woo finns med dig hela vägen, från din första försäljning till miljoner i intäkter. Se varför handlare förlitar sig på oss för att driva 3,9 miljoner butiker.";
+
+/* Caption displayed in the simplified prologue screen */
+"loginPrologue.title" = "E-handelsplattformen som växer tillsammans med dig";
+
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "manuell återbetalning";
 
@@ -11492,6 +11498,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.title" = "Förbereder";
 
+/* Error message when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.description" = "Det totala beställningsbeloppet understiger minimibeloppet för kortdebitering, vilket är %1$@. Du kan ta emot en kontantbetalning istället.";
+
+/* Error title when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.title" = "Kunde inte ta emot kortbetalning";
+
 /* Button title to retry order validation. */
 "pointOfSale.cardPresent.validatingOrderError.retry" = "Försök igen";
 
@@ -11627,8 +11639,14 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users when updating the card reader software fails */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "Vi kunde inte uppdatera din läsares programvara";
 
+/* Message presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo.1" = "En läsaruppdatering misslyckades eftersom läsarens batteri endast är laddat till %.0f%%. Ladda läsaren och försök sedan igen.";
+
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "Avbryt";
+
+/* Message presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo.1" = "En läsaruppdatering misslyckades eftersom läsarens batterinivå är låg. Ladda läsaren och försök sedan igen.";
 
 /* Button to retry the reader search when an update fails because the reader is low on battery. */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.retryButton.title" = "Försök igen";
@@ -11716,6 +11734,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
 "pointOfSale.paymentSuccessful.message" = "En betalning på %1$@ gjordes";
+
+/* Title shown to users when payment is made successfully. */
+"pointOfSale.paymentSuccessful.title" = "Betalning lyckades";
 
 /* Button title for sending a receipt */
 "pointOfSale.sendreceipt.button.title" = "Skicka";
@@ -11902,6 +11923,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for total amount field */
 "pos.totalsView.total" = "Totalt";
+
+/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.detail" = "Justera din skärmdelning för att ge Försäljningsplats mer utrymme.";
+
+/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.title" = "Försäljningsplats stöds inte med den här skärmbredden.";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Stäng";
@@ -13278,6 +13305,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the address the merchant entered when normalizing an address for a Woo Shipping label */
 "wooShipping.normalizeAddress.enteredAddressLabel" = "Vad du angav";
+
+/* Informational text when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.modifiedAddressInfo" = "Vi har ändrat den adress du angav en aning.";
+
+/* Prompt to select the suggested address when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.selectAddressPrompt" = "Använd den föreslagna adressen om den stämmer för att försäkra tillfredsställande leverans.";
 
 /* Label for the suggested address when normalizing an address for a Woo Shipping label */
 "wooShipping.normalizeAddress.suggestedAddressLabel" = "Föreslagen";

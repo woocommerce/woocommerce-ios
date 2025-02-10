@@ -80,7 +80,6 @@ struct PointOfSaleCollectCashView: View {
                                 .tint(Color.posOnInverseSurface)
                         } else {
                             Text(Localization.markPaymentCompletedButtonTitle)
-                                .font(Constants.buttonFont)
                         }
                     }
                     .frame(maxWidth: .infinity, minHeight: Constants.buttonMinHeight)
@@ -175,7 +174,6 @@ private extension PointOfSaleCollectCashView {
         static let buttonMinHeight: CGFloat = 32
         static let navigationButtonSpacing: CGFloat = 8
         static let navigationHeaderTopPadding: CGFloat = 8
-        static let buttonFont: POSFontStyle = .posBodyLargeEmphasized
         static let buttonCornerRadius: CGFloat = 8
         static let errorMessagePadding: CGFloat = 8
     }

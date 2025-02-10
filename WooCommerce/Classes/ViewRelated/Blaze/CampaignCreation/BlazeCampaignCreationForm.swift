@@ -274,6 +274,8 @@ private extension BlazeCampaignCreationForm {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .cornerRadius(Layout.cornerRadius)
+                    .redacted(reason: viewModel.isLoadingProductImage ? .placeholder : [])
+                    .shimmering(active: viewModel.isLoadingProductImage)
 
                 // Tagline
                 Text(viewModel.isLoadingAISuggestions ? "Placeholder tagline" : viewModel.tagline)

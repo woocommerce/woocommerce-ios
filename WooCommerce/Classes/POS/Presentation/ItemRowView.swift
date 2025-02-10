@@ -101,8 +101,8 @@ private extension ItemRowView {
         static let cardContentHorizontalPadding: CGFloat = 16
         static let itemTitleAndPriceSpacing: CGFloat = 4
         static let itemTitleFont: POSFontStyle = .posBodySmallEmphasized
-        static let itemSubtitleFont: POSFontStyle = .posBodySmallLight
-        static let itemPriceFont: POSFontStyle = .posBodySmallLight
+        static let itemSubtitleFont: POSFontStyle = .posBodySmallRegular
+        static let itemPriceFont: POSFontStyle = .posBodySmallRegular
     }
 
     enum Localization {

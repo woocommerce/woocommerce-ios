@@ -9,7 +9,6 @@ enum POSFontStyle {
     case posBodyLargeEmphasized
     case posBodyMediumEmphasized
     case posBodyMediumRegular
-    case posBodySmallLight
     case posBodySmallRegular
     case posBodySmallEmphasized
     case posButtonSymbol
@@ -28,10 +27,8 @@ enum POSFontStyle {
             Font.system(size: scaledValue(FontSize.bodyMedium, maximumContentSizeCategory: maximumContentSizeCategory), weight: .semibold)
         case .posBodyMediumRegular:
             Font.system(size: scaledValue(FontSize.bodyMedium, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
-        case .posBodySmallLight:
-            Font.system(size: scaledValue(FontSize.bodySmall, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
         case .posBodySmallRegular:
-            Font.system(size: scaledValue(FontSize.bodySmall, maximumContentSizeCategory: maximumContentSizeCategory), weight: .medium)
+            Font.system(size: scaledValue(FontSize.bodySmall, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
         case .posBodySmallEmphasized:
             Font.system(size: scaledValue(FontSize.bodySmall, maximumContentSizeCategory: maximumContentSizeCategory), weight: .semibold)
         case .posButtonSymbol:
@@ -99,8 +96,6 @@ extension View {
                     .font(.posBodyMediumRegular)
                 Text("Body Medium Emphasized")
                     .font(.posBodyMediumEmphasized)
-                Text("Body Small Light")
-                    .font(.posBodySmallLight)
                 Text("Body Small Regular")
                     .font(.posBodySmallRegular)
                 Text("Body Small Emphasized")

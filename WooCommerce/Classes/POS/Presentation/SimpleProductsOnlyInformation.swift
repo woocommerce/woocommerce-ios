@@ -28,13 +28,13 @@ struct SimpleProductsOnlyInformation: View {
 
                 VStack(spacing: Constants.textSpacing) {
                     Text(hintMessage)
-                        .font(.posBodySmallLight)
+                        .font(.posBodySmallRegular)
 
                     Button {
                         deepLinkNavigator?.navigate(to: OrdersDestination.createOrder)
                     } label: {
                         Label(Localization.modalAction, systemImage: "plus")
-                            .font(.posBodySmallLight)
+                            .font(.posBodySmallRegular)
                     }
                 }
                 .frame(maxWidth: .infinity)

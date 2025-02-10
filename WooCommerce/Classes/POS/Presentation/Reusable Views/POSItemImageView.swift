@@ -11,16 +11,16 @@ struct POSItemImageView: View {
             ProductImageThumbnail(productImageURL: URL(string: imageSource),
                                   productImageSize: imageSize,
                                   scale: scale,
-                                  foregroundColor: Constants.placeholderColor,
+                                  foregroundColor: Constants.placeholderIconColor,
                                   cachesOriginalImage: true)
         } else {
             Rectangle()
-                .foregroundColor(.posSurfaceContainerLowest)
+                .foregroundColor(Constants.placeholderBackgroundColor)
                 .overlay {
                     Image(systemName: "archivebox")
                         .resizable()
-                        .frame(width: Constants.placeholderDimension, height: Constants.placeholderDimension)
-                        .foregroundColor(Constants.placeholderColor)
+                        .frame(width: Constants.placeholderIconDimension, height: Constants.placeholderIconDimension)
+                        .foregroundColor(Constants.placeholderIconColor)
                 }
         }
     }
@@ -28,8 +28,9 @@ struct POSItemImageView: View {
 
 private extension POSItemImageView {
     enum Constants {
-        static let placeholderDimension: CGFloat = 48
-        static let placeholderColor: Color = .posOnDisabledContainer
+        static let placeholderIconDimension: CGFloat = 38
+        static let placeholderIconColor: Color = .posOnSurfaceVariantLowest
+        static let placeholderBackgroundColor: Color = .posSurfaceDim
     }
 }
 

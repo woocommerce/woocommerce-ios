@@ -59,6 +59,10 @@ struct POSFloatingControlView: View {
         .frame(height: Constants.size)
         .background(Color.clear)
         .animation(.default, value: backgroundAppearance)
+        .shadow(color: Color.posShadow.opacity(0.05), radius: 43, y: 50)
+        .shadow(color: Color.posShadow.opacity(0.10), radius: 36, y: 30)
+        .shadow(color: Color.posShadow.opacity(0.18), radius: 27, y: 15)
+        .shadow(color: Color.posShadow.opacity(0.20), radius: 15, y: 5)
     }
 }
 

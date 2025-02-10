@@ -42,7 +42,6 @@ struct PointOfSaleDashboardView: View {
 
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
                                    showSupport: $showSupport)
-            .shadow(color: Color.black.opacity(0.12), radius: 4, y: 2)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)

@@ -70,3 +70,37 @@ extension View {
         return self.modifier(POSScaledFont(style: style, maximumContentSizeCategory: maximumContentSizeCategory))
     }
 }
+
+// MARK: - Preview
+#Preview {
+    ScrollView {
+        VStack(alignment: .leading, spacing: 20) {
+            Group {
+                Text("Title Regular")
+                    .font(.posTitleRegular)
+                Text("Title Emphasized")
+                    .font(.posTitleEmphasized)
+                Text("Body Regular")
+                    .font(.posBodyRegular)
+                Text("Body Emphasized")
+                    .font(.posBodyEmphasized)
+                Text("Large Detail Emphasized")
+                    .font(.posLargeDetailEmphasized)
+            }
+            
+            Group {
+                Text("Large Detail Regular")
+                    .font(.posLargeDetailRegular)
+                Text("Detail Light")
+                    .font(.posDetailLight)
+                Text("Detail Regular")
+                    .font(.posDetailRegular)
+                Text("Detail Emphasized")
+                    .font(.posDetailEmphasized)
+                Text("Button Symbol")
+                    .font(.posButtonSymbol)
+            }
+        }
+        .padding()
+    }
+}

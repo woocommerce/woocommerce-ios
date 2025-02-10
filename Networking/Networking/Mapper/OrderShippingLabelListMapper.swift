@@ -92,11 +92,9 @@ private struct OrderShippingLabelListData: Decodable {
         // This match the web behavior that doesn't display shipping labels error, that are sent together in `labelsData` array.
         var labelsData = try container.decode([[String: AnyCodable]].self, forKey: .labelsData)
         labelsData = labelsData.filter { $0["error"] == nil }
-        // Convert AnyCodable dictionary to regular dictionary with underlying values
-        let regularDictArray = labelsData.map { dict in
-            dict.mapValues { ($0 as AnyCodable).value }
-        }
-        let filteredLabelsData = try JSONSerialization.data(withJSONObject: regularDictArray, options: [])
+
+        let encoder = JSONEncoder()
+        let filteredLabelsData = try encoder.encode(labelsData)
 
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .millisecondsSince1970

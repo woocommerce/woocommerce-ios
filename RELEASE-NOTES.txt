@@ -1,5 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
+
+21.8
+-----
+- [*] Now "Suggested by AI" label is visible in dark mode in Blaze campaign creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/15088]
+
 21.7
 -----
 - [**] Fixed an issue with the WordPress Media Library not loading due to a decoding error in media details sizes. [https://github.com/woocommerce/woocommerce-ios/pull/15056]
@@ -7,7 +12,6 @@
 - [*] Product Details: Display cover tag on the first product image [https://github.com/woocommerce/woocommerce-ios/pull/15041]
 - [*] Payments: Update learn more links to open Stripe-specific docs when using that gateway [https://github.com/woocommerce/woocommerce-ios/pull/15035]
 - [*] Now, usernames and emails in text fields across multiple login views are no longer capitalized. [https://github.com/woocommerce/woocommerce-ios/pull/15002]
-- [*] Now "Suggested by AI" label is visible in dark mode in Blaze campaign creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/15088]
 
 21.6
 -----

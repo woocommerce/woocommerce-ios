@@ -15,7 +15,7 @@ struct POSReceiptEligibilityBanner: View {
                 .foregroundColor(Color.posPrimaryText)
         }
         .padding()
-        .background(Color.posPrimaryBackground)
+        .background(Color.posSurface)
         .cornerRadius(Constants.cornerRadius)
         .padding(.horizontal, Constants.bannerPadding)
         .onTapGesture {

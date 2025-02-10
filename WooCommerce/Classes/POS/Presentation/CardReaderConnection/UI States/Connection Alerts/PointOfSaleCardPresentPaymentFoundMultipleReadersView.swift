@@ -27,7 +27,7 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
             List(readerIDs, id: \.self) { readerID in
                 readerRow(readerID: readerID)
                 .listRowSeparator(.hidden)
-                .listRowBackground(Color.posPrimaryBackground)
+                .listRowBackground(Color.posSurface)
             }
             .listStyle(.plain)
 

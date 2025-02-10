@@ -77,7 +77,7 @@ struct PointOfSaleCollectCashView: View {
                         if isLoading {
                             ProgressView()
                                 .progressViewStyle(CircularProgressViewStyle())
-                                .tint(Color.posPrimaryTextInverted)
+                                .tint(Color.posOnInverseSurface)
                         } else {
                             Text(Localization.markPaymentCompletedButtonTitle)
                                 .font(Constants.buttonFont)
@@ -185,12 +185,7 @@ private extension PointOfSaleCollectCashView {
     }
 
     private var backgroundColor: Color {
-        switch colorScheme {
-        case .dark:
-            return Color.posSecondaryBackground
-        default:
-            return .clear
-        }
+        .posSurface
     }
 
     private var navigationForegroundColor: Color {

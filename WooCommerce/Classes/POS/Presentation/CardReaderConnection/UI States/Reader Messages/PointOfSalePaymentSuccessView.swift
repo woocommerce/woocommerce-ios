@@ -75,7 +75,7 @@ struct PointOfSalePaymentSuccessView: View {
                 .frame(width: Constants.imageSize.width, height: Constants.imageSize.height)
                 .shadow(color: Color(.wooCommerceEmerald(.shade80)).opacity(Constants.shadowOpacity),
                         radius: Constants.shadowRadius, x: Constants.shadowSize.width, y: Constants.shadowSize.height)
-                .foregroundColor(.posSuccessColor)
+                .foregroundColor(.posSuccess)
             Image(PointOfSaleAssets.successCheck.imageName)
                 .renderingMode(.template)
                 .foregroundColor(checkmarkColor)
@@ -85,7 +85,7 @@ struct PointOfSalePaymentSuccessView: View {
     }
 
     private var checkmarkColor: Color {
-        Color.primary
+        .posOnSuccess
     }
 }
 

@@ -7,6 +7,11 @@ final class WooShippingServiceViewModel: ObservableObject {
     private let destinationAddress: ShippingLabelAddress?
     private let stores: StoresManager
 
+    /// Whether the destination address is present and with non-empty fields.
+    var hasDestinationAddress: Bool {
+        destinationAddress?.formattedPostalAddress != nil
+    }
+
     /// List of tabs to display for the shipping services.
     /// Contains the data about available shipping rates, grouped by carrier.
     @Published private(set) var serviceTabs: [WooShippingServiceTab] = []
@@ -15,7 +20,7 @@ final class WooShippingServiceViewModel: ObservableObject {
     @Published private(set) var selectedRate: WooShippingSelectedRate?
 
     /// State of loading shipping rates.
-    private(set) var loadingState: LabelRatesState = .empty
+    @Published private(set) var loadingState: LabelRatesState = .empty
 
     /// Available standard shipping rates.
     private var standardRates: [ShippingLabelCarrierRate] = []
@@ -59,7 +64,7 @@ final class WooShippingServiceViewModel: ObservableObject {
 
     /// Retrieves shipping label rates for this shipment from remote.
     func loadLabelRates(for selectedPackage: ShippingLabelPackageSelected) {
-        guard let originAddress, let destinationAddress else {
+        guard let originAddress, let destinationAddress, hasDestinationAddress else {
             return updateLoadingState(to: .error)
         }
         updateLoadingState(to: .loading)

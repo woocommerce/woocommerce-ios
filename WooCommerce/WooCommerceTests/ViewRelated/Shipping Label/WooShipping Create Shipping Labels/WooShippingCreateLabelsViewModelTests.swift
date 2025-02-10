@@ -426,7 +426,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // Given
         let expectedWeight = 2.5
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
+        let address = Address.fake().copy(address1: "1 Main Street", city: "San Francisco", state: "CA", postcode: "12345", country: "US")
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: address),
                                                          selectedOriginAddress: WooShippingOriginAddress.fake(),
                                                          selectedPackage: samplePackageData(),
                                                          stores: stores,

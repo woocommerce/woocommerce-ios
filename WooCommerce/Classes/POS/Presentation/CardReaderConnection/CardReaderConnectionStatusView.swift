@@ -40,24 +40,22 @@ struct CardReaderConnectionStatusView: View {
             case .cancellingConnection:
                 progressIndicatingCardReaderStatus(title: Localization.pleaseWait)
             case .disconnected:
-                Button {
-                    posModel.connectCardReader()
-                } label: {
+                HStack(spacing: Constants.horizontalPadding) {
                     HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                        circleIcon(with: Color(.wooCommerceAmber(.shade60)))
+                        circleIcon(with: Color.posAlert)
                         Text(Localization.readerDisconnected)
                             .foregroundColor(disconnectedFontColor)
                     }
-                    .padding(.horizontal, Constants.overlayInnerHorizontalPadding)
-                    .frame(maxHeight: .infinity)
-                    .overlay {
-                        RoundedRectangle(cornerRadius: Constants.overlayRadius)
-                            .stroke(Constants.overlayColor, lineWidth: Constants.overlayLineWidth)
+
+                    Button {
+                        posModel.connectCardReader()
+                    } label: {
+                        Text(Localization.connectReader)
                     }
-                    .padding(.horizontal, Constants.overlayOuterHorizontalPadding)
-                    .padding(.vertical, Constants.overlayOuterVerticalPadding)
-                    .frame(maxHeight: .infinity)
+                    .buttonStyle(POSButtonStyle(variant: .filled, size: .extraSmall))
                 }
+                .padding(.horizontal, Constants.horizontalPadding)
+                .frame(maxHeight: .infinity)
             }
         }
         .font(Constants.font, maximumContentSizeCategory: .accessibilityLarge)
@@ -97,7 +95,7 @@ private extension CardReaderConnectionStatusView {
     var disconnectedFontColor: Color {
         switch backgroundAppearance {
         case .primary:
-            .posPrimaryText
+            .posOnSurface
         case .secondary:
             POSFloatingControlView.secondaryFontColor
         }
@@ -107,18 +105,12 @@ private extension CardReaderConnectionStatusView {
 @available(iOS 17.0, *)
 private extension CardReaderConnectionStatusView {
     enum Constants {
-        static let buttonImageAndTextSpacing: CGFloat = 12
+        static let buttonImageAndTextSpacing: CGFloat = 16
         static let imageDimension: CGFloat = 12
         static let progressIndicatorDimension: CGFloat = 10
         static let progressIndicatorLineWidth: CGFloat = 2
         static let font = POSFontStyle.posDetailEmphasized
         static let horizontalPadding: CGFloat = 24
-        static let overlayRadius: CGFloat = 4
-        static let overlayLineWidth: CGFloat = 2
-        static let overlayColor: Color = Color.init(uiColor: .wooCommercePurple(.shade60))
-        static let overlayInnerHorizontalPadding: CGFloat =  16 + Self.overlayLineWidth
-        static let overlayOuterHorizontalPadding: CGFloat = 8 + Self.overlayLineWidth
-        static let overlayOuterVerticalPadding: CGFloat = 8 + Self.overlayLineWidth
     }
 }
 
@@ -132,9 +124,15 @@ private extension CardReaderConnectionStatusView {
         )
 
         static let readerDisconnected = NSLocalizedString(
-            "pointOfSale.floatingButtons.readerDisconnected.title",
-            value: "Connect your reader",
+            "pointOfSale.floatingButtons.readerNotConnected.title",
+            value: "Reader not connected",
             comment: "The title of the floating button to indicate that reader is disconnected and prompt connect after tapping."
+        )
+
+        static let connectReader = NSLocalizedString(
+            "pointOfSale.floatingButtons.connectCardReader.button.title",
+            value: "Connect",
+            comment: "The title of the menu button to connect a card reader."
         )
 
         static let readerDisconnecting = NSLocalizedString(

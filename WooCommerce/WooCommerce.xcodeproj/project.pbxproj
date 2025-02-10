@@ -4408,7 +4408,7 @@
 		33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
 		3F0904012D26A40700D8ACCE /* WordPressAuthenticator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WordPressAuthenticator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F0904082D26A40800D8ACCE /* WordPressAuthenticatorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WordPressAuthenticatorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		3F096E462D23F50800D8ACCE /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
+		3F096E462D23F50800D8ACCE /* WooCommerce.common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = WooCommerce.common.xcconfig; sourceTree = "<group>"; };
 		3F09A3FC2D243D3F00D8ACCE /* WordPressAuthenticator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WordPressAuthenticator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F1FA84028B60125009E246C /* StoreWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = StoreWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F1FA84128B60125009E246C /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
@@ -10315,7 +10315,7 @@
 		8CA4F6DC220B24EB00A47B5D /* config */ = {
 			isa = PBXGroup;
 			children = (
-				3F096E462D23F50800D8ACCE /* Common.xcconfig */,
+				3F096E462D23F50800D8ACCE /* WooCommerce.common.xcconfig */,
 				8CA4F6E1220B259100A47B5D /* Version.Public.xcconfig */,
 				8CA4F6DD220B257000A47B5D /* WooCommerce.debug.xcconfig */,
 				3F64F76C2C06A3A50085DEEF /* WooCommerce.release-alpha.xcconfig */,
@@ -18151,7 +18151,6 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALID_ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = "Release-Alpha";
 		};
@@ -18307,7 +18306,6 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				VALID_ARCHS = "$(ARCHS_STANDARD)";
-				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Debug;
 		};
@@ -18344,7 +18342,6 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				VALID_ARCHS = "$(ARCHS_STANDARD)";
-				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Release;
 		};
@@ -18381,7 +18378,6 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				VALID_ARCHS = "$(ARCHS_STANDARD)";
-				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = "Release-Alpha";
 		};
@@ -18424,7 +18420,6 @@
 				SYSTEM_FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				TARGETED_DEVICE_FAMILY = 4;
 				VALID_ARCHS = "$(ARCHS_STANDARD) ";
-				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Debug;
 		};
@@ -18465,7 +18460,6 @@
 				SYSTEM_FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				TARGETED_DEVICE_FAMILY = 4;
 				VALID_ARCHS = "$(ARCHS_STANDARD) ";
-				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Release;
 		};
@@ -18506,7 +18500,6 @@
 				SYSTEM_FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				TARGETED_DEVICE_FAMILY = 4;
 				VALID_ARCHS = "$(ARCHS_STANDARD) ";
-				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = "Release-Alpha";
 		};
@@ -19085,7 +19078,6 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALID_ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Debug;
 		};
@@ -19115,7 +19107,6 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALID_ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Release;
 		};

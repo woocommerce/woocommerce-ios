@@ -93,7 +93,7 @@ private extension ItemListView {
                     Text(headerBannerSubtitle)
                     bannerHintAndLearnMoreText
                 }
-                .font(Constants.bannerSubtitleFont)
+                .font(POSFontStyle.posBodySmallEmphasized.font())
                 .lineSpacing(Constants.bannerTextSpacing)
                 .accessibilityElement(children: .combine)
             }
@@ -127,7 +127,7 @@ private extension ItemListView {
     private var bannerHintAndLearnMoreText: Text {
         Text(headerBannerHint + " ") +
         Text(Localization.headerBannerLearnMoreHint)
-            .font(POSFontStyle.posDetailEmphasized.font())
+            .font(POSFontStyle.posBodySmallEmphasized.font())
             .foregroundColor(Color(.accent))
     }
 
@@ -220,7 +220,7 @@ private extension GhostItemCardView {
 private extension ItemListView {
     enum Constants {
         static let bannerTitleFont: POSFontStyle = .posBodyLargeEmphasized
-        static let bannerSubtitleFont: POSFontStyle = .posDetailRegular
+        static let bannerSubtitleFont: POSFontStyle = .posBodySmallRegular
         static let bannerCornerRadius: CGFloat = 8
         static let bannerVerticalPadding: CGFloat = 26
         static let bannerTextSpacing: CGFloat = 4

@@ -7,11 +7,11 @@ enum POSFontStyle {
     case posTitleEmphasized
     case posBodyLargeRegular
     case posBodyLargeEmphasized
-    case posLargeDetailEmphasized
-    case posLargeDetailRegular
-    case posDetailLight
-    case posDetailRegular
-    case posDetailEmphasized
+    case posBodyMediumEmphasized
+    case posBodyMediumRegular
+    case posBodySmallLight
+    case posBodySmallRegular
+    case posBodySmallEmphasized
     case posButtonSymbol
 
     func font(maximumContentSizeCategory: UIContentSizeCategory? = nil) -> Font {
@@ -24,15 +24,15 @@ enum POSFontStyle {
             Font.system(size: scaledValue(FontSize.bodyLarge, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
         case .posBodyLargeEmphasized:
             Font.system(size: scaledValue(FontSize.bodyLarge, maximumContentSizeCategory: maximumContentSizeCategory), weight: .bold)
-        case .posLargeDetailEmphasized:
+        case .posBodyMediumEmphasized:
             Font.system(size: scaledValue(FontSize.bodyMedium, maximumContentSizeCategory: maximumContentSizeCategory), weight: .semibold)
-        case .posLargeDetailRegular:
+        case .posBodyMediumRegular:
             Font.system(size: scaledValue(FontSize.bodyMedium, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
-        case .posDetailLight:
+        case .posBodySmallLight:
             Font.system(size: scaledValue(FontSize.bodySmall, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
-        case .posDetailRegular:
+        case .posBodySmallRegular:
             Font.system(size: scaledValue(FontSize.bodySmall, maximumContentSizeCategory: maximumContentSizeCategory), weight: .medium)
-        case .posDetailEmphasized:
+        case .posBodySmallEmphasized:
             Font.system(size: scaledValue(FontSize.bodySmall, maximumContentSizeCategory: maximumContentSizeCategory), weight: .semibold)
         case .posButtonSymbol:
             Font.system(size: scaledValue(32, maximumContentSizeCategory: maximumContentSizeCategory), weight: .medium)
@@ -95,19 +95,16 @@ extension View {
                     .font(.posBodyLargeRegular)
                 Text("Body Large Emphasized")
                     .font(.posBodyLargeEmphasized)
-                Text("Large Detail Emphasized")
-                    .font(.posLargeDetailEmphasized)
-            }
-
-            Group {
-                Text("Large Detail Regular")
-                    .font(.posLargeDetailRegular)
-                Text("Detail Light")
-                    .font(.posDetailLight)
-                Text("Detail Regular")
-                    .font(.posDetailRegular)
-                Text("Detail Emphasized")
-                    .font(.posDetailEmphasized)
+                Text("Body Medium Regular")
+                    .font(.posBodyMediumRegular)
+                Text("Body Medium Emphasized")
+                    .font(.posBodyMediumEmphasized)
+                Text("Body Small Light")
+                    .font(.posBodySmallLight)
+                Text("Body Small Regular")
+                    .font(.posBodySmallRegular)
+                Text("Body Small Emphasized")
+                    .font(.posBodySmallEmphasized)
                 Text("Button Symbol")
                     .font(.posButtonSymbol)
             }

@@ -40,7 +40,7 @@ struct SimpleProductsOnlyInformation: View {
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, Constants.hintVerticalPadding)
                 .padding(.horizontal, Constants.hintHorizontalPadding)
-                .background(Color(.quaternarySystemFill))
+                .background(Color(.posSurfaceDim))
                 .clipShape(RoundedRectangle(cornerRadius: Constants.hintBackgroundCornerRadius))
             }
             .multilineTextAlignment(.center)

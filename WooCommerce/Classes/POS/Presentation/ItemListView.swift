@@ -104,7 +104,7 @@ private extension ItemListView {
                     isHeaderBannerDismissed = true
                 }, label: {
                     Image(systemName: "xmark")
-                        .font(.posBodyRegular)
+                        .font(.posBodyLargeRegular)
                         .foregroundColor(Color.posOnSurfaceVariantLowest)
                         .accessibilityLabel(Localization.dismissBannerAccessibilityLabel)
                 })

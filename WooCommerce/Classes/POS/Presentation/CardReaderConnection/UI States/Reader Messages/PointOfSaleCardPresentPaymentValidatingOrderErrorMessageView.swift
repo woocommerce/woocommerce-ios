@@ -18,7 +18,7 @@ struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView: View {
 
                 Text(viewModel.message)
                     .foregroundStyle(Color.posPrimaryText)
-                    .font(.posBodyRegular)
+                    .font(.posBodyLargeRegular)
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
 

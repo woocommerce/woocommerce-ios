@@ -24,7 +24,7 @@ struct SimpleProductsOnlyInformation: View {
                     Text(futureMessage)
                         .padding(.bottom, Constants.textToModalBottomPadding)
                 }
-                .font(.posBodyRegular)
+                .font(.posBodyLargeRegular)
 
                 VStack(spacing: Constants.textSpacing) {
                     Text(hintMessage)

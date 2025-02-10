@@ -23,7 +23,7 @@ struct PointOfSaleItemListErrorView: View {
                     .padding(.bottom, PointOfSaleItemListErrorLayout.verticalPadding)
                 Text(error.subtitle)
                     .foregroundStyle(Color.posPrimaryText)
-                    .font(.posBodyRegular)
+                    .font(.posBodyLargeRegular)
                     .padding([.leading, .trailing])
                     .padding(.bottom, PointOfSaleItemListErrorLayout.verticalPadding)
                 Button(action: {

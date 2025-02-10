@@ -24,7 +24,7 @@ struct PointOfSaleExitPosAlertView: View {
                 .font(.posTitleEmphasized)
                 .padding(.bottom, Constants.titleBottomPadding)
             Text(Localization.exitBody)
-                .font(.posBodyRegular)
+                .font(.posBodyLargeRegular)
                 .padding(.bottom, Constants.bodyBottomPadding)
             Button {
                 ServiceLocator.analytics.track(.pointOfSaleExitConfirmed)

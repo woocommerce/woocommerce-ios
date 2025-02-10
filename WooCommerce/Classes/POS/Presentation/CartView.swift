@@ -205,7 +205,7 @@ private extension CartView {
 private extension CartView {
     enum Constants {
         static let primaryFont: POSFontStyle = .posTitleEmphasized
-        static let secondaryFont: POSFontStyle = .posBodyRegular
+        static let secondaryFont: POSFontStyle = .posBodyLargeRegular
         static let itemsFont: POSFontStyle = .posDetailRegular
         static let clearButtonFont: POSFontStyle = .posDetailEmphasized
         static let clearButtonCornerRadius: CGFloat = 4

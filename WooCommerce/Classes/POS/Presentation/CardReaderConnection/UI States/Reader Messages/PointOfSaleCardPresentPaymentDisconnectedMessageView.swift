@@ -19,7 +19,7 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
                     .accessibilityAddTraits(.isHeader)
 
                 Text(viewModel.instruction)
-                    .font(.posBodyRegular)
+                    .font(.posBodyLargeRegular)
                     .foregroundStyle(Color.posPrimaryText)
             }
 

@@ -23,7 +23,7 @@ struct PointOfSaleCardPresentPaymentScanningForReadersView: View {
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(viewModel.instruction)
-                    .font(POSFontStyle.posBodyRegular)
+                    .font(POSFontStyle.posBodyLargeRegular)
                     .fixedSize(horizontal: false, vertical: true)
                     .matchedGeometryEffect(id: animation.contentTransitionId, in: animation.namespace, properties: .position)
             }

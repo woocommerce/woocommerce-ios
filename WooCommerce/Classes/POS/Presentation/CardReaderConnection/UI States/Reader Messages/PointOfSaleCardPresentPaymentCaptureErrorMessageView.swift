@@ -25,7 +25,7 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
                     Text(viewModel.message)
                     Text(viewModel.nextStep)
                 }
-                .font(.posBodyRegular)
+                .font(.posBodyLargeRegular)
                 .foregroundStyle(Color.posPrimaryText)
                 .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }

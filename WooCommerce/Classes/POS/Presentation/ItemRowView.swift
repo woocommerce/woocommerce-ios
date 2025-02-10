@@ -40,7 +40,7 @@ struct ItemRowView: View {
                     onItemRemoveTapped()
                 }, label: {
                     Image(systemName: "xmark.circle")
-                        .font(.posBodyRegular)
+                        .font(.posBodyLargeRegular)
                 })
                 .accessibilityLabel(Localization.removeFromCartAccessibilityLabel)
                 .padding(.trailing, Constants.cardContentHorizontalPadding)

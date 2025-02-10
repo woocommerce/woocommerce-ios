@@ -6,7 +6,7 @@ struct POSTextButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.posBodyRegular)
+            .font(.posBodyLargeRegular)
             .contentShape(Rectangle())
             .foregroundColor(foregroundColor(for: configuration))
             .background(Color(.clear))

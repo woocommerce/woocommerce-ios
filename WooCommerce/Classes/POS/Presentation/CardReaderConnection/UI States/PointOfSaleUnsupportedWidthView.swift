@@ -20,7 +20,7 @@ struct PointOfSaleUnsupportedWidthView: View {
                         .font(.posBodyEmphasized)
                         .accessibilityAddTraits(.isHeader)
                     Text(Localization.detail)
-                        .font(.posBodyRegular)
+                        .font(.posBodyLargeRegular)
                 }
                 .foregroundStyle(Color.posPrimaryText)
                 .fixedSize(horizontal: false, vertical: true)

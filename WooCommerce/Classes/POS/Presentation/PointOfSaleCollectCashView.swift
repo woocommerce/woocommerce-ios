@@ -179,7 +179,7 @@ private extension PointOfSaleCollectCashView {
     }
 
     private var navigationForegroundColor: Color {
-        isLoading ? .posBackgroundButtonDisabled : .primary
+        isLoading ? .posDisabledContainer : .primary
     }
 
     enum Localization {

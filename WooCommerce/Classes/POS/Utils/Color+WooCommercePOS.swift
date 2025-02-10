@@ -37,31 +37,6 @@ extension Color {
             )
         )
     }
-
-    // MARK: - Buttons
-
-    static var posPrimaryButtonBackground: Color = .posAccent
-
-    static var posSecondaryButtonForeground: Color = .posAccent
-
-    static var posTextButtonForeground: Color = .posAccent
-
-    static var posTextButtonForegroundPressed: Color {
-        return Color(
-            UIColor(
-                light: .withColorStudio(.wooCommercePurple, shade: .shade60),
-                dark: .withColorStudio(.wooCommercePurple, shade: .shade40)
-            )
-        )
-    }
-
-    static var posTextButtonDisabled: Color {
-        return .posGray
-    }
-
-    static var posBackgroundButtonDisabled: Color {
-        return .init(red: 195.0 / 255.0, green: 196.0 / 255.0, blue: 199.0 / 255.0)
-    }
 }
 
 // MARK: - Non-adaptive colors

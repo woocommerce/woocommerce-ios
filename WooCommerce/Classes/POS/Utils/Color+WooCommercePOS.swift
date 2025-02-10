@@ -11,14 +11,6 @@ extension Color {
         )
     }
 
-    // MARK: - Background
-
-    /* POS Background colors are defined in a similar philosophy as system background colors:
-     *
-     * The first color is intended to be the main background, farthest back.
-     * Secondary and tertiary colors are layered on top of the main background, when needed.
-     */
-
     // MARK: - Text
 
     private static var posGray: Color {

@@ -111,3 +111,42 @@ private extension POSFloatingControlView {
         )
     }
 }
+
+#if DEBUG
+
+@available(iOS 17.0, *)
+#Preview("Reader Disconnected") {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
+    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false))
+        .environment(\.posBackgroundAppearance, .primary)
+        .environment(posModel)
+}
+
+@available(iOS 17.0, *)
+#Preview("Reader Connected") {
+    let paymentService = CardPresentPaymentPreviewService()
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: paymentService,
+        orderController: PointOfSalePreviewOrderController())
+    paymentService.readerConnectionStatus = .connected(.init(name: "", batteryLevel: 0.6))
+    return POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false))
+        .environment(\.posBackgroundAppearance, .primary)
+        .environment(posModel)
+}
+
+@available(iOS 17.0, *)
+#Preview("Secondary/disabled Background") {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
+    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false))
+        .environment(\.posBackgroundAppearance, .secondary)
+        .environment(posModel)
+}
+
+#endif

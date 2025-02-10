@@ -5,11 +5,14 @@ import struct Yosemite.Order
 
 #if DEBUG
 
-struct CardPresentPaymentPreviewService: CardPresentPaymentFacade {
+final class CardPresentPaymentPreviewService: CardPresentPaymentFacade {
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never> = Just(.idle).eraseToAnyPublisher()
 
-    let readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never> = Just(.disconnected)
-        .eraseToAnyPublisher()
+    @Published var readerConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
+
+    var readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never> {
+        $readerConnectionStatus.eraseToAnyPublisher()
+    }
 
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult {
         .connected(CardPresentPaymentCardReader(name: "Test reader", batteryLevel: 0.85))

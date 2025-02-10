@@ -17,23 +17,23 @@ enum POSFontStyle {
     func font(maximumContentSizeCategory: UIContentSizeCategory? = nil) -> Font {
         switch self {
         case .posTitleRegular:
-            Font.system(size: scaledValue(36, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge), weight: .medium)
+            Font.system(size: scaledValue(FontSize.heading, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge), weight: .medium)
         case .posTitleEmphasized:
-            Font.system(size: scaledValue(36, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge), weight: .bold)
+            Font.system(size: scaledValue(FontSize.heading, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge), weight: .bold)
         case .posBodyRegular:
-            Font.system(size: scaledValue(24, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
+            Font.system(size: scaledValue(FontSize.bodyLarge, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
         case .posBodyEmphasized:
-            Font.system(size: scaledValue(24, maximumContentSizeCategory: maximumContentSizeCategory), weight: .bold)
+            Font.system(size: scaledValue(FontSize.bodyLarge, maximumContentSizeCategory: maximumContentSizeCategory), weight: .bold)
         case .posLargeDetailEmphasized:
-            Font.system(size: scaledValue(20, maximumContentSizeCategory: maximumContentSizeCategory), weight: .semibold)
+            Font.system(size: scaledValue(FontSize.bodyMedium, maximumContentSizeCategory: maximumContentSizeCategory), weight: .semibold)
         case .posLargeDetailRegular:
-            Font.system(size: scaledValue(20, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
+            Font.system(size: scaledValue(FontSize.bodyMedium, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
         case .posDetailLight:
-            Font.system(size: scaledValue(16, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
+            Font.system(size: scaledValue(FontSize.bodySmall, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
         case .posDetailRegular:
-            Font.system(size: scaledValue(16, maximumContentSizeCategory: maximumContentSizeCategory), weight: .medium)
+            Font.system(size: scaledValue(FontSize.bodySmall, maximumContentSizeCategory: maximumContentSizeCategory), weight: .medium)
         case .posDetailEmphasized:
-            Font.system(size: scaledValue(16, maximumContentSizeCategory: maximumContentSizeCategory), weight: .semibold)
+            Font.system(size: scaledValue(FontSize.bodySmall, maximumContentSizeCategory: maximumContentSizeCategory), weight: .semibold)
         case .posButtonSymbol:
             Font.system(size: scaledValue(32, maximumContentSizeCategory: maximumContentSizeCategory), weight: .medium)
         }
@@ -49,6 +49,17 @@ enum POSFontStyle {
         let maximumScaledValue = metrics.scaledValue(for: value, compatibleWith: .init(preferredContentSizeCategory: maximumContentSizeCategory))
 
         return min(scaledValue, maximumScaledValue)
+    }
+}
+
+private extension POSFontStyle {
+    enum FontSize {
+        static let heading: CGFloat = 36
+        static let bodyXLarge: CGFloat = 30
+        static let bodyLarge: CGFloat = 24
+        static let bodyMedium: CGFloat = 20
+        static let bodySmall: CGFloat = 16
+        static let caption: CGFloat = 14
     }
 }
 
@@ -87,7 +98,7 @@ extension View {
                 Text("Large Detail Emphasized")
                     .font(.posLargeDetailEmphasized)
             }
-            
+
             Group {
                 Text("Large Detail Regular")
                     .font(.posLargeDetailRegular)

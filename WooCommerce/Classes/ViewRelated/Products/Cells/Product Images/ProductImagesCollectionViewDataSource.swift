@@ -60,6 +60,14 @@ private extension ProductImagesCollectionViewDataSource {
                 case .uiImage(let image, _, _):
                     configureUploadingImageCell(cell, image: image)
             }
+        case let .uploadFailure(asset, _):
+            // TODO: update cell
+            switch asset {
+                case .phAsset(let asset):
+                    configureUploadingImageCell(cell, asset: asset)
+                case .uiImage(let image, _, _):
+                    configureUploadingImageCell(cell, image: image)
+            }
         }
     }
 
@@ -122,7 +130,7 @@ enum ProductImagesItem {
             switch status {
             case .remote:
                 return ProductImageCollectionViewCell.reuseIdentifier
-            case .uploading:
+            case .uploading, .uploadFailure:
                 return InProgressProductImageCollectionViewCell.reuseIdentifier
             }
         case .addImage:

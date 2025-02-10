@@ -3,7 +3,7 @@ import Yosemite
 
 /// The status of a Product image.
 ///
-enum ProductImageStatus: Equatable {
+enum ProductImageStatus {
     /// An image asset is being uploaded.
     ///
     case uploading(asset: ProductImageAssetType)
@@ -11,6 +11,10 @@ enum ProductImageStatus: Equatable {
     /// The Product image exists remotely.
     ///
     case remote(image: ProductImage)
+
+    /// An image asset upload failed.
+    ///
+    case uploadFailure(asset: ProductImageAssetType, error: Error)
 }
 
 /// The type of product image asset.
@@ -55,7 +59,7 @@ extension ProductImageStatus {
 
     private var cellClass: UICollectionViewCell.Type {
         switch self {
-        case .uploading:
+        case .uploading, .uploadFailure:
             return InProgressProductImageCollectionViewCell.self
         case .remote:
             return ProductImageCollectionViewCell.self
@@ -74,6 +78,8 @@ extension ProductImageStatus {
                 case .uiImage:
                     return UUID().uuidString
             }
+        case .uploadFailure:
+            return UUID().uuidString
         case .remote(let image):
             return "\(image.imageID)"
         }

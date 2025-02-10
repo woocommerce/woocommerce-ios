@@ -92,6 +92,14 @@ private extension ProductImagesCollectionViewController {
                 case .uiImage(let image, _, _):
                     configureUploadingImageCell(cell, image: image)
             }
+        case let .uploadFailure(asset, _):
+            // TODO: update cell
+            switch asset {
+                case .phAsset(let asset):
+                    configureUploadingImageCell(cell, asset: asset)
+                case .uiImage(let image, _, _):
+                    configureUploadingImageCell(cell, image: image)
+            }
         }
     }
 

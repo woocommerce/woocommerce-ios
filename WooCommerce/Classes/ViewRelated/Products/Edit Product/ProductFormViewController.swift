@@ -73,6 +73,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private var updateEnabledSubscription: AnyCancellable?
     private var newVariationsPriceSubscription: AnyCancellable?
     private var productImageStatusesSubscription: AnyCancellable?
+    private var productImageUploadsSubscription: AnyCancellable?
     private var blazeEligibilitySubscription: AnyCancellable?
 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
@@ -167,20 +168,22 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         observeVariationsPriceChanges()
         observeUpdateBlazeEligibility()
 
-        productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
+        productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { [weak self] productImageStatuses in
             guard let self = self else {
                 return
             }
 
-            if error != nil {
+            self.onImageStatusesUpdated(statuses: productImageStatuses)
+            self.viewModel.updateImages(productImageStatuses.images)
+        }
+
+        productImageUploadsSubscription = productImageActionHandler.addAssetUploadObserver(self) { [weak self] asset, result in
+            guard let self else { return }
+            if case .failure(let error) = result {
                 let title = NSLocalizedString("Cannot upload image", comment: "The title of the alert when there is an error uploading an image")
                 let message = NSLocalizedString("Please try again.", comment: "The message of the alert when there is an error uploading an image")
-                self.displayErrorAlert(title: title, message: message)
+                displayErrorAlert(title: title, message: message)
             }
-
-            self.onImageStatusesUpdated(statuses: productImageStatuses)
-
-            self.viewModel.updateImages(productImageStatuses.images)
         }
 
         productImageUploader.stopEmittingErrors(key: .init(siteID: viewModel.productModel.siteID,

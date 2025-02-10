@@ -115,7 +115,7 @@ final class ProductImagesViewController: UIViewController {
         super.viewWillAppear(animated)
 
         if hasCheckedInitialProductImageStatuses == false {
-            initialProductImageStatusesObservationToken = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
+            initialProductImageStatusesObservationToken = productImageActionHandler.addUpdateObserver(self) { [weak self] productImageStatuses in
                 guard let self else {
                     return
                 }
@@ -188,7 +188,7 @@ private extension ProductImagesViewController {
     }
 
     func configureProductImagesObservation() {
-        productImageStatusesObservationToken = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
+        productImageStatusesObservationToken = productImageActionHandler.addUpdateObserver(self) { [weak self] productImageStatuses in
             guard let self = self else {
                 return
             }

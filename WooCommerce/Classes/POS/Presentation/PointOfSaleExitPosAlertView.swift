@@ -63,3 +63,9 @@ private extension PointOfSaleExitPosAlertView {
         )
     }
 }
+
+#if DEBUG
+#Preview {
+    PointOfSaleExitPosAlertView(isPresented: .constant(true))
+}
+#endif

@@ -8,6 +8,8 @@ final class ProductsTabProductTableViewCell: UITableViewCell {
 
     private var selectedProductImageOverlayView: UIView?
 
+    private var syncingOverlayView: UIView?
+
     /// ProductImageView.width == 0.1*Cell.width
     private var productImageViewRelationalWidthConstraint: NSLayoutConstraint?
 
@@ -71,10 +73,18 @@ extension ProductsTabProductTableViewCell: SearchResultCell {
 }
 
 extension ProductsTabProductTableViewCell {
+
     func update(viewModel: ProductsTabProductViewModel, imageService: ImageService) {
         nameLabel.text = viewModel.createNameLabel()
         detailsLabel.attributedText = viewModel.detailsAttributedString
         accessibilityIdentifier = viewModel.createNameLabel()
+
+        if viewModel.hasPendingUploads {
+            configureSyncingOverlayView()
+        } else {
+            syncingOverlayView?.removeFromSuperview()
+            syncingOverlayView = nil
+        }
 
         productImageView.contentMode = .center
         if viewModel.isDraggable {
@@ -221,6 +231,26 @@ private extension ProductsTabProductTableViewCell {
         view.addSubview(checkmarkImageView)
         view.pinSubviewAtCenter(checkmarkImageView)
         selectedProductImageOverlayView = view
+
+        productImageView.addSubview(view)
+        productImageView.pinSubviewToAllEdges(view)
+    }
+
+    func configureSyncingOverlayView() {
+        guard syncingOverlayView == nil else {
+            return
+        }
+
+        let view = UIView(frame: .zero)
+        view.backgroundColor = .white.withAlphaComponent(0.7)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        let activityIndicatorView = UIActivityIndicatorView(style: .medium)
+        activityIndicatorView.color = .black
+        activityIndicatorView.startAnimating()
+        activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(activityIndicatorView)
+        view.pinSubviewAtCenter(activityIndicatorView)
+        syncingOverlayView = view
 
         productImageView.addSubview(view)
         productImageView.pinSubviewToAllEdges(view)

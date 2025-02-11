@@ -32,7 +32,7 @@ struct PointOfSaleExitPosAlertView: View {
             } label: {
                 Text(Localization.exitButton)
             }
-            .buttonStyle(POSPrimaryButtonStyle())
+            .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
         }
         .padding(Constants.padding)
     }

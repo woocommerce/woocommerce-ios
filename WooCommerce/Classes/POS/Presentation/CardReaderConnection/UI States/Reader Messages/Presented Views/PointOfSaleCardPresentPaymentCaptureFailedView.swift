@@ -25,7 +25,7 @@ struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
                    action: {
                 isPresented = false
             })
-            .buttonStyle(POSPrimaryButtonStyle())
+            .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
         }
         .multilineTextAlignment(.center)
         .padding(Layout.contentPadding)

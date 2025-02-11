@@ -35,7 +35,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedView: View {
 
             Button(viewModel.retryButtonViewModel.title,
                    action: viewModel.retryButtonViewModel.actionHandler)
-            .buttonStyle(POSPrimaryButtonStyle())
+            .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
         .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,

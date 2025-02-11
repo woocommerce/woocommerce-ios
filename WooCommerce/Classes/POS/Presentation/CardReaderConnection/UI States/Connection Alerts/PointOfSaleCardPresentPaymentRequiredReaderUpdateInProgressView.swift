@@ -45,7 +45,7 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView: View {
                     cancelReaderUpdate()
                 }
             })
-            .buttonStyle(POSSecondaryButtonStyle())
+            .buttonStyle(POSButtonStyle(variant: .outlined, size: .normal))
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
         .multilineTextAlignment(.center)

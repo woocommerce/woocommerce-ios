@@ -13,4 +13,6 @@ enum PointOfSaleItemListCardConstants {
     static let accessoryButtonMaxWidth: CGFloat = 136
     static let accessoryButtonPadding: CGFloat = 16
     static let backgroundColor: Color = .posSurfaceContainerLowest
+    static let titleColor: Color = .posOnSurface
+    static let detailColor: Color = .posOnSurfaceVariantHighest
 }

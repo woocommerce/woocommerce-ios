@@ -29,11 +29,11 @@ struct PointOfSaleCardPresentPaymentFoundReaderView: View {
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
                 Button(viewModel.connectButton.title,
                        action: viewModel.connectButton.actionHandler)
-                .buttonStyle(POSPrimaryButtonStyle())
+                .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
 
                 Button(viewModel.continueSearchButton.title,
                        action: viewModel.continueSearchButton.actionHandler)
-                .buttonStyle(POSSecondaryButtonStyle())
+                .buttonStyle(POSButtonStyle(variant: .outlined, size: .normal))
             }
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }

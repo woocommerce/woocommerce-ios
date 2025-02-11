@@ -11,6 +11,8 @@ enum POSFontStyle {
     case posBodyMediumRegular
     case posBodySmallBold
     case posBodySmallRegular
+    case posCaptionBold
+    case posCaptionRegular
     case posButtonSymbol
 
     func font(maximumContentSizeCategory: UIContentSizeCategory? = nil) -> Font {
@@ -34,6 +36,10 @@ enum POSFontStyle {
             Font.system(size: scaledValue(FontSize.bodySmall, maximumContentSizeCategory: maximumContentSizeCategory), weight: .bold)
         case .posBodySmallRegular:
             Font.system(size: scaledValue(FontSize.bodySmall, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
+        case .posCaptionBold:
+            Font.system(size: scaledValue(FontSize.caption, maximumContentSizeCategory: maximumContentSizeCategory), weight: .bold)
+        case .posCaptionRegular:
+            Font.system(size: scaledValue(FontSize.caption, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
         case .posButtonSymbol:
             Font.system(size: scaledValue(32, maximumContentSizeCategory: maximumContentSizeCategory), weight: .medium)
         }
@@ -103,6 +109,10 @@ extension View {
                     .font(.posBodySmallBold)
                 Text("Body Small Regular")
                     .font(.posBodySmallRegular)
+                Text("Caption Bold")
+                    .font(.posCaptionBold)
+                Text("Caption Regular")
+                    .font(.posCaptionRegular)
                 Text("Button Symbol")
                     .font(.posButtonSymbol)
             }

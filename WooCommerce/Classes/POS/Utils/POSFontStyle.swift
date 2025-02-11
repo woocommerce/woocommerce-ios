@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// iOS type style definitions for POS
-/// TfaZ4LUkEwEGrxfnEFzvJj-fi-3385_18076
+/// 1qcjzXitBHU7xPnpCOWnNM-fi-23_7310
 enum POSFontStyle {
     case posHeading
     case posBodyXLarge

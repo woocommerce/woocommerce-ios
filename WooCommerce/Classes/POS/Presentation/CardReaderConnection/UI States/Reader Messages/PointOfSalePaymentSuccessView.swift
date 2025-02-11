@@ -42,14 +42,12 @@ struct PointOfSalePaymentSuccessView: View {
                             }
                         }
 
-                        GeometryReader { geometry in
-                            PaymentsActionButtons(isShowingSendReceiptView: $isShowingSendReceiptView,
-                                               isShowingReceiptNotEligibleBanner: $isShowingReceiptNotEligibleBanner)
-                                .frame(width: geometry.size.width / 2)
-                                .frame(maxWidth: .infinity, alignment: .center)
-                                .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
-                                .opacity(isViewLoaded ? 1 : 0)
-                        }
+                        PaymentsActionButtons(isShowingSendReceiptView: $isShowingSendReceiptView,
+                                              isShowingReceiptNotEligibleBanner: $isShowingReceiptNotEligibleBanner)
+                        .containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: 0)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
+                        .opacity(isViewLoaded ? 1 : 0)
                     }
                     .multilineTextAlignment(.center)
 

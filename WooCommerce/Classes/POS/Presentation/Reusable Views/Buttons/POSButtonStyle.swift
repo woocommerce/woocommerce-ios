@@ -110,7 +110,7 @@ private extension POSButtonSize {
     var font: POSFontStyle {
         switch self {
         case .normal:
-                .posBodyLargeEmphasized
+                .posBodyLargeBold
         case .extraSmall:
                 .posBodyMediumEmphasized
         }

@@ -110,7 +110,7 @@ private extension PointOfSaleCollectCashView {
     var navigationHeader: some View {
         HStack(alignment: .top) {
             Image(systemName: "chevron.backward")
-                .font(.posBodyLargeEmphasized, maximumContentSizeCategory: .accessibilityLarge)
+                .font(.posBodyLargeBold, maximumContentSizeCategory: .accessibilityLarge)
             DynamicVStack(horizontalAlignment: .leading, spacing: Constants.navigationButtonSpacing) {
                 Text(Localization.backNavigationTitle)
                     .font(.posHeading)

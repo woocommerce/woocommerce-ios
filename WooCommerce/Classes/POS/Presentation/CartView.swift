@@ -258,7 +258,7 @@ private extension CartView {
                 posModel.addMoreToCart()
             } label: {
                 Image(systemName: Constants.backButtonSymbol)
-                    .font(.posBodyLargeEmphasized, maximumContentSizeCategory: .accessibilityLarge)
+                    .font(.posBodyLargeBold, maximumContentSizeCategory: .accessibilityLarge)
                     .foregroundColor(.posOnSurface)
             }
         }

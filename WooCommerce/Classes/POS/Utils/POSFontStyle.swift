@@ -5,12 +5,12 @@ import SwiftUI
 enum POSFontStyle {
     case posHeading
     case posBodyXLarge
-    case posBodyLargeRegular
     case posBodyLargeBold
+    case posBodyLargeRegular
     case posBodyMediumEmphasized
     case posBodyMediumRegular
-    case posBodySmallRegular
     case posBodySmallEmphasized
+    case posBodySmallRegular
     case posButtonSymbol
 
     func font(maximumContentSizeCategory: UIContentSizeCategory? = nil) -> Font {
@@ -22,10 +22,10 @@ enum POSFontStyle {
                 size: scaledValue(FontSize.bodyXLarge, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge),
                 weight: .semibold
             )
-        case .posBodyLargeRegular:
-            Font.system(size: scaledValue(FontSize.bodyLarge, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
         case .posBodyLargeBold:
             Font.system(size: scaledValue(FontSize.bodyLarge, maximumContentSizeCategory: maximumContentSizeCategory), weight: .bold)
+        case .posBodyLargeRegular:
+            Font.system(size: scaledValue(FontSize.bodyLarge, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
         case .posBodyMediumEmphasized:
             Font.system(size: scaledValue(FontSize.bodyMedium, maximumContentSizeCategory: maximumContentSizeCategory), weight: .semibold)
         case .posBodyMediumRegular:

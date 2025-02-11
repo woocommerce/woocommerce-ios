@@ -12,39 +12,47 @@ enum POSButtonSize {
     case extraSmall
 }
 
-/// A unified button style for POS that supports different variants and sizes.
-struct POSButtonStyle: ButtonStyle {
-    @Environment(\.colorScheme) var colorScheme
-    @Environment(\.isEnabled) var isEnabled
-
-    private let variant: POSButtonVariant
+/// Filled button style in POS that can show a loading indicator.
+struct POSFilledButtonStyle: ButtonStyle {
     private let size: POSButtonSize
-    private let showsProgressView: Bool
+    private let isLoading: Bool
 
-    init(variant: POSButtonVariant = .filled,
-         size: POSButtonSize = .normal) {
-        self.variant = variant
+    init(size: POSButtonSize, isLoading: Bool = false) {
         self.size = size
-        self.showsProgressView = false
-    }
-
-    fileprivate init(size: POSButtonSize = .normal, showsProgressView: Bool) {
-        self.variant = .filled
-        self.size = size
-        self.showsProgressView = showsProgressView
+        self.isLoading = isLoading
     }
 
     func makeBody(configuration: Configuration) -> some View {
+        POSButton(configuration: configuration, variant: .filled, size: size, isLoading: isLoading)
+    }
+}
+
+/// Button style in POS that has variants for filled and outlined buttons and different sizes.
+struct POSButtonStyle: ButtonStyle {
+    let variant: POSButtonVariant
+    let size: POSButtonSize
+
+    func makeBody(configuration: Configuration) -> some View {
+        POSButton(configuration: configuration, variant: variant, size: size, isLoading: false)
+    }
+}
+
+private struct POSButton: View {
+    @Environment(\.isEnabled) var isEnabled
+
+    let configuration: ButtonStyleConfiguration
+    let variant: POSButtonVariant
+    let size: POSButtonSize
+    let isLoading: Bool
+
+    var body: some View {
         Group {
-            switch size {
-            case .normal:
-                HStack {
-                    Spacer()
+            containerView {
+                if isLoading {
+                    progressView
+                } else {
                     configuration.label
-                    Spacer()
                 }
-            case .extraSmall:
-                configuration.label
             }
         }
         .padding(.vertical, size.padding.vertical)
@@ -60,12 +68,39 @@ struct POSButtonStyle: ButtonStyle {
         .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
     }
 
+    @ViewBuilder
+    private func containerView(@ViewBuilder content: () -> some View) -> some View {
+        switch size {
+        case .normal:
+            HStack {
+                Spacer()
+                content()
+                Spacer()
+            }
+        case .extraSmall:
+            content()
+        }
+    }
+
+    private var progressView: some View {
+        ProgressView()
+            .progressViewStyle(POSButtonProgressViewStyle(size: size.progressViewDimensions.size, lineWidth: size.progressViewDimensions.lineWidth))
+            .padding(
+                .init(
+                    top: size.additionalPadding.vertical,
+                    leading: size.additionalPadding.horizontal,
+                    bottom: size.additionalPadding.vertical,
+                    trailing: size.additionalPadding.horizontal
+                )
+            )
+    }
+
     private var backgroundColor: Color {
         switch (variant, isEnabled) {
         case (.filled, true):
                 .posPrimaryContainer
         case (.filled, false):
-                .posDisabledContainer
+                isLoading ? .posPrimaryContainer : .posDisabledContainer
         case (.outlined, _):
                 .clear
         }
@@ -94,30 +129,9 @@ struct POSButtonStyle: ButtonStyle {
     }
 }
 
-/// A button style for POS that shows a loading indicator.
-struct POSLoadingButtonStyle: ButtonStyle {
-    let size: POSButtonSize
+// MARK: - POSButton Constants
 
-    func makeBody(configuration: Configuration) -> some View {
-        Button(action: {}) {
-            ProgressView()
-            .progressViewStyle(POSButtonProgressViewStyle(size: size.progressViewDimensions.size, lineWidth: size.progressViewDimensions.lineWidth))
-            .padding(
-                .init(
-                    top: size.additionalPadding.vertical,
-                    leading: size.additionalPadding.horizontal,
-                    bottom: size.additionalPadding.vertical,
-                    trailing: size.additionalPadding.horizontal
-                )
-            )
-        }
-        .buttonStyle(POSButtonStyle(variant: .filled, size: size))
-    }
-}
-
-// MARK: - POSButtonStyle Constants
-
-private extension POSButtonStyle {
+private extension POSButton {
     enum Constants {
         static let cornerRadius: CGFloat = 8.0
         static let borderStrokeWidth: CGFloat = 2.0
@@ -188,11 +202,9 @@ struct POSButtonStyle_Previews: View {
                 previewSection(title: "Outlined Buttons - Extra Small",
                                variant: .outlined, size: .extraSmall)
 
-                Button("Loading Buttons - Normal") {}
-                    .buttonStyle(POSLoadingButtonStyle(size: .normal))
+                loadingPreviewSection(title: "Loading Buttons - Normal", size: .normal)
 
-                Button("Loading Buttons - Extra Small") {}
-                    .buttonStyle(POSLoadingButtonStyle(size: .extraSmall))
+                loadingPreviewSection(title: "Loading Buttons - Extra Small", size: .extraSmall)
 
                 // Example with long text
                 VStack(alignment: .leading, spacing: 16) {
@@ -220,6 +232,20 @@ struct POSButtonStyle_Previews: View {
 
             Button("Disabled Button") {}
                 .buttonStyle(POSButtonStyle(variant: variant, size: size))
+                .disabled(true)
+        }
+    }
+
+    private func loadingPreviewSection(title: String, size: POSButtonSize) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text(title)
+                .font(.headline)
+
+            Button("Enabled Button") {}
+                .buttonStyle(POSFilledButtonStyle(size: size, isLoading: true))
+
+            Button("Disabled Button") {}
+                .buttonStyle(POSFilledButtonStyle(size: size, isLoading: true))
                 .disabled(true)
         }
     }

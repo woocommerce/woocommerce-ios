@@ -17,9 +17,8 @@ struct POSItemImageView: View {
             Rectangle()
                 .foregroundColor(Constants.placeholderBackgroundColor)
                 .overlay {
-                    Image(systemName: "archivebox")
-                        .resizable()
-                        .frame(width: Constants.placeholderIconDimension, height: Constants.placeholderIconDimension)
+                    Text(Image(systemName: "archivebox"))
+                        .font(.posButtonSymbol)
                         .foregroundColor(Constants.placeholderIconColor)
                 }
         }

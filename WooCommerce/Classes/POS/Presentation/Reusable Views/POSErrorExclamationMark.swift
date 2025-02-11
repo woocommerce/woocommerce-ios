@@ -3,15 +3,10 @@ import SwiftUI
 struct POSErrorExclamationMark: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    private let size: CGFloat
-    init(size: CGFloat = PointOfSaleCardPresentPaymentLayout.errorIconSize) {
-        self.size = size
-    }
-
     var body: some View {
-        Image(systemName: "exclamationmark.circle.fill")
-            .font(.system(size: size))
-            .foregroundStyle(Color(.wooCommerceAmber(.shade60)))
+        Text(Image(systemName: "exclamationmark.circle.fill"))
+            .font(.posButtonSymbolLarge)
+            .foregroundStyle(Color.posAlert)
             .accessibilityHidden(true)
             .renderedIf(!dynamicTypeSize.isAccessibilitySize)
     }

@@ -13,6 +13,7 @@ enum POSFontStyle {
     case posDetailRegular
     case posDetailEmphasized
     case posButtonSymbolSmall
+    case posButtonSymbolMedium
     case posButtonSymbolLarge
 
     func font(maximumContentSizeCategory: UIContentSizeCategory? = nil) -> Font {
@@ -37,6 +38,8 @@ enum POSFontStyle {
             Font.system(size: scaledValue(16, maximumContentSizeCategory: maximumContentSizeCategory), weight: .semibold)
         case .posButtonSymbolSmall:
             Font.system(size: scaledValue(32, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
+        case .posButtonSymbolMedium:
+            Font.system(size: scaledValue(40, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
         case .posButtonSymbolLarge:
             Font.system(size: scaledValue(48, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
         }

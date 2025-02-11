@@ -51,14 +51,8 @@ struct CartView: View {
                     } label: {
                         Text(Localization.clearButtonTitle)
                             .font(Constants.clearButtonFont)
-                            .padding(Constants.clearButtonTextPadding)
-                            .foregroundColor(Color.init(uiColor: .wooCommercePurple(.shade60)))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: Constants.clearButtonCornerRadius)
-                                    .stroke(Color.init(uiColor: .wooCommercePurple(.shade60)), lineWidth: Constants.clearButtonBorderWidth)
-                            )
                     }
-                    .padding(.leading, Constants.itemHorizontalPadding)
+                    .buttonStyle(POSButtonStyle(variant: .outlined, size: .extraSmall))
                     .renderedIf(shouldShowClearCartButton)
                 }
             }
@@ -208,9 +202,6 @@ private extension CartView {
         static let secondaryFont: POSFontStyle = .posBodyRegular
         static let itemsFont: POSFontStyle = .posDetailRegular
         static let clearButtonFont: POSFontStyle = .posDetailEmphasized
-        static let clearButtonCornerRadius: CGFloat = 4
-        static let clearButtonBorderWidth: CGFloat = 2
-        static let clearButtonTextPadding = EdgeInsets(top: 8, leading: 24, bottom: 8, trailing: 24)
         static let itemHorizontalPadding: CGFloat = 8
         static let shoppingBagImageSize: CGFloat = 104
         static let scrollViewCoordinateSpaceIdentifier: String = "CartScrollView"
@@ -256,7 +247,7 @@ private extension CartView {
         } label: {
             Text(Localization.checkoutButtonTitle)
         }
-        .buttonStyle(POSPrimaryButtonStyle())
+        .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
     }
 
     @ViewBuilder
@@ -311,7 +302,6 @@ private extension CartView {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview {
-    let itemsController = PointOfSalePreviewItemsController()
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),

@@ -21,7 +21,7 @@ struct PointOfSaleOrderSyncErrorMessageView: View {
                 }
                 Spacer()
                 Button(viewModel.actionModel.title, action: viewModel.actionModel.handler)
-                    .buttonStyle(POSPrimaryButtonStyle())
+                    .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
                     .padding([.leading, .trailing], Constants.buttonSidePadding)
                     .padding([.bottom], Constants.buttonBottomPadding)
             }

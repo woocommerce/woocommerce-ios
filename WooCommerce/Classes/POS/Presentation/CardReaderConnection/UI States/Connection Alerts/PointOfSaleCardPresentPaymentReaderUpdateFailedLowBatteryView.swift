@@ -37,10 +37,10 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryView: View {
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
                 Button(viewModel.retrySearchButtonViewModel.title,
                        action: viewModel.retrySearchButtonViewModel.actionHandler)
-                .buttonStyle(POSPrimaryButtonStyle())
+                .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
                 Button(viewModel.cancelButtonViewModel.title,
                        action: viewModel.cancelButtonViewModel.actionHandler)
-                .buttonStyle(POSSecondaryButtonStyle())
+                .buttonStyle(POSButtonStyle(variant: .outlined, size: .normal))
             }
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }

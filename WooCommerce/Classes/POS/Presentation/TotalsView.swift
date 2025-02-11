@@ -65,11 +65,9 @@ struct TotalsView: View {
                     }, label: {
                         Text(Localization.cashPaymentButtonTitle)
                             .font(POSFontStyle.posBodyEmphasized)
-                            .foregroundColor(.posPrimaryText)
-                            .frame(height: Constants.buttonHeight)
                             .minimumScaleFactor(0.5)
                     })
-                    .buttonStyle(SecondaryButtonStyle())
+                    .buttonStyle(POSButtonStyle(variant: .outlined, size: .normal))
                     .padding(.horizontal, Constants.buttonHorizontalPadding)
                     .padding(.bottom, Constants.cashButtonBottomPadding)
                     .renderedIf(viewHelper.shouldShowCollectCashPaymentButton(orderState: posModel.orderState,
@@ -345,7 +343,6 @@ private extension TotalsView {
     enum Constants {
         static let pricesIdealWidth: CGFloat = 382
         static let verticalSpacing: CGFloat = 56
-        static let buttonHeight: CGFloat = 56
         static let buttonHorizontalPadding: CGFloat = 48
         static let cashButtonBottomPadding: CGFloat = 16
 

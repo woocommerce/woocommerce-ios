@@ -6,7 +6,7 @@ import protocol Yosemite.POSOrderableItem
 struct ItemListView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    @EnvironmentObject var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
 
     @State private var showSimpleProductsModal: Bool = false
     private var itemListState: ItemListState {
@@ -34,12 +34,7 @@ struct ItemListView: View {
             .navigationDestination(for: POSItem.self, destination: { item in
                 childListView(parentItem: item)
             })
-            .background(Color.posPrimaryBackground)
-        }
-        .refreshable {
-            await Task {
-                await posModel.loadItems(base: .root)
-            }.value
+            .background(Color.posSurface)
         }
         .accessibilityElement(children: .contain)
         .posModal(isPresented: $showSimpleProductsModal) {
@@ -60,6 +55,7 @@ private extension ItemListView {
                 if !shouldShowHeaderBanner {
                     Spacer()
                     Button(action: {
+                        ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
                         showSimpleProductsModal = true
                     }, label: {
                         Image(systemName: "info.circle")
@@ -85,7 +81,7 @@ private extension ItemListView {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: Constants.bannerInfoIconSize, height: Constants.bannerInfoIconSize)
                     .padding(Constants.iconPadding)
-                    .foregroundColor(Color(uiColor: .wooCommercePurple(.shade30)))
+                    .foregroundColor(Color.posOnSurface)
                     .accessibilityHidden(true)
                 Spacer()
             }
@@ -109,7 +105,7 @@ private extension ItemListView {
                 }, label: {
                     Image(systemName: "xmark")
                         .font(.posBodyRegular)
-                        .foregroundColor(Color.posTertiaryText)
+                        .foregroundColor(Color.posOnSurfaceVariantLowest)
                         .accessibilityLabel(Localization.dismissBannerAccessibilityLabel)
                 })
                 .padding(Constants.iconPadding)
@@ -118,7 +114,7 @@ private extension ItemListView {
         }
         .frame(maxWidth: .infinity)
         .fixedSize(horizontal: false, vertical: true)
-        .background(Color.posSecondaryBackground)
+        .background(Color.posSurfaceBright)
         .cornerRadius(Constants.bannerCornerRadius)
         .shadow(color: Color.black.opacity(0.08), radius: 4, y: 2)
         .accessibilityAddTraits(.isButton)
@@ -141,6 +137,10 @@ private extension ItemListView {
             if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
             }
+        }
+        .refreshable {
+            ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
+            await posModel.refreshItems(base: .root)
         }
     }
 
@@ -323,7 +323,7 @@ private extension ItemListView {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
     return ItemListView()
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 
 @available(iOS 17.0, *)
@@ -333,7 +333,7 @@ private extension ItemListView {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
     return ItemListView()
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 
 #endif

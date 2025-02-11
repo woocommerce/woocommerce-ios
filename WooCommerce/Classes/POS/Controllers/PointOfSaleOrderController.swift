@@ -1,5 +1,5 @@
 import Foundation
-import Combine
+import Observation
 import protocol Yosemite.StoresManager
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
@@ -11,9 +11,10 @@ import enum Yosemite.OrderUpdateField
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 import enum WooFoundation.CurrencyCode
+import protocol WooFoundation.Analytics
 
 protocol PointOfSaleOrderControllerProtocol {
-    var orderStatePublisher: AnyPublisher<PointOfSaleInternalOrderState, Never> { get }
+    var orderState: PointOfSaleInternalOrderState { get }
 
     func syncOrder(for cartProducts: [CartItem], retryHandler: @escaping () async -> Void) async
     func sendReceipt(recipientEmail: String) async throws
@@ -21,22 +22,21 @@ protocol PointOfSaleOrderControllerProtocol {
     func collectCashPayment() async throws
 }
 
-final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
+@available(iOS 17.0, *)
+@Observable final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     init(orderService: POSOrderServiceProtocol,
          receiptService: POSReceiptServiceProtocol,
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         analytics: Analytics = ServiceLocator.analytics,
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
         self.orderService = orderService
         self.receiptService = receiptService
         self.stores = stores
         self.storeCurrency = currencySettings.currencyCode
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.analytics = analytics
         self.celebration = celebration
-    }
-
-    var orderStatePublisher: AnyPublisher<PointOfSaleInternalOrderState, Never> {
-        $orderState.eraseToAnyPublisher()
     }
 
     private let orderService: POSOrderServiceProtocol
@@ -45,9 +45,10 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     private let currencyFormatter: CurrencyFormatter
     private let celebration: PaymentCaptureCelebrationProtocol
     private let storeCurrency: CurrencyCode
+    private let analytics: Analytics
     private let stores: StoresManager
 
-    @Published private var orderState: PointOfSaleInternalOrderState = .idle
+    private(set) var orderState: PointOfSaleInternalOrderState = .idle
     private var order: Order? = nil
 
     @MainActor
@@ -63,6 +64,7 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         }
 
         orderState = .syncing
+        let isNewOrder = order == nil
 
         do {
             let syncedOrder = try await orderService.syncOrder(cart: posCartItems,
@@ -70,9 +72,16 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
                                                                currency: storeCurrency)
             self.order = syncedOrder
             orderState = .loaded(totals(for: syncedOrder), syncedOrder)
-            DDLogInfo("🟢 [POS] Synced order: \(syncedOrder)")
+            if isNewOrder {
+                analytics.track(.orderCreationSuccess)
+            }
         } catch {
-            DDLogError("🔴 [POS] Error syncing order: \(error)")
+            if isNewOrder {
+                analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(
+                    usesGiftCard: false,
+                    errorContext: String(describing: error),
+                    errorDescription: error.localizedDescription))
+            }
             setOrderStateToError(error, retryHandler: retryHandler)
         }
     }
@@ -139,7 +148,7 @@ final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     }
 }
 
-
+@available(iOS 17.0, *)
 private extension PointOfSaleOrderController {
     func totals(for order: Order) -> PointOfSaleOrderTotals {
         let totalsCalculator = OrderTotalsCalculator(for: order,
@@ -210,6 +219,7 @@ extension PointOfSaleInternalOrderState: Equatable {
     }
 }
 
+@available(iOS 17.0, *)
 extension PointOfSaleOrderController {
     enum Localization {
         static let cashPaymentMethodTitle = NSLocalizedString(

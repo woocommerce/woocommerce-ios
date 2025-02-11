@@ -2,15 +2,17 @@ import SwiftUI
 
 @available(iOS 17.0, *)
 struct PointOfSaleDashboardView: View {
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
+    @State private var showDocumentation: Bool = false
 
     @State private var floatingSize: CGSize = .zero
 
     var body: some View {
+        @Bindable var posModel = posModel
         ZStack(alignment: .bottomLeading) {
             if case .regular = horizontalSizeClass {
                 switch posModel.itemsViewState.containerState {
@@ -40,7 +42,8 @@ struct PointOfSaleDashboardView: View {
             }
 
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
-                                   showSupport: $showSupport)
+                                   showSupport: $showSupport,
+                                   showDocumentation: $showDocumentation)
             .shadow(color: Color.black.opacity(0.12), radius: 4, y: 2)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .trackSize(size: $floatingSize)
@@ -54,7 +57,7 @@ struct PointOfSaleDashboardView: View {
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .environment(\.posBackgroundAppearance, posModel.paymentState != .card(.processingPayment) ? .primary : .secondary)
         .animation(.easeInOut, value: posModel.itemsViewState.containerState == .loading)
-        .background(Color.posPrimaryBackground)
+        .background(Color.posSurface)
         .navigationBarBackButtonHidden(true)
         .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
             posModel.cancelCardPaymentsOnboarding()
@@ -75,6 +78,9 @@ struct PointOfSaleDashboardView: View {
         .posRootModal()
         .sheet(isPresented: $showSupport) {
             supportForm
+        }
+        .sheet(isPresented: $showDocumentation) {
+            documentationView
         }
         .task {
             await posModel.loadItems(base: .root)
@@ -127,9 +133,13 @@ private extension PointOfSaleDashboardView {
         .navigationViewStyle(.stack)
     }
 
+    var documentationView: some View {
+        SafariView(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
+    }
+
     func paymentsOnboardingView(from onboardingViewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
-        onboardingViewModel.showSupport = {
-            posModel.cancelCardPaymentsOnboarding()
+        onboardingViewModel.showSupport = { [weak posModel] in
+            posModel?.cancelCardPaymentsOnboarding()
             showSupport = true
         }
         return PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(onboardingViewModel: onboardingViewModel,
@@ -177,8 +187,14 @@ private extension PointOfSaleDashboardView {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
     return NavigationStack {
         PointOfSaleDashboardView()
+            .environment(posModel)
+            .environmentObject(POSModalManager())
     }
 }
 #endif

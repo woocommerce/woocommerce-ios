@@ -37,7 +37,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         // Given
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
                                                     originAddress: ShippingLabelAddress.fake(),
-                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
                                                     stores: stores)
 
         // When
@@ -106,7 +106,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         }
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
                                                     originAddress: ShippingLabelAddress.fake(),
-                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
                                                     stores: stores)
 
         // When
@@ -122,7 +122,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         let standardRate = sampleStandardRates()[1]
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
                                                     originAddress: ShippingLabelAddress.fake(),
-                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
                                                     stores: stores)
 
         // When
@@ -141,7 +141,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         // Given
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
                                                     originAddress: ShippingLabelAddress.fake(),
-                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
                                                     stores: stores)
         // When
         viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
@@ -158,7 +158,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         // Given
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
                                                     originAddress: ShippingLabelAddress.fake(),
-                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
                                                     stores: stores)
 
         // When
@@ -177,7 +177,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         var selectedRate: WooShippingSelectedRate?
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
                                                     originAddress: ShippingLabelAddress.fake(),
-                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
                                                     stores: stores) { rate in
             selectedRate = rate
         }
@@ -194,7 +194,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         // Given
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
                                                     originAddress: ShippingLabelAddress.fake(),
-                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
                                                     stores: stores)
 
         // When
@@ -211,7 +211,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         // Given
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
                                                     originAddress: ShippingLabelAddress.fake(),
-                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
                                                     stores: stores)
 
         // When
@@ -224,6 +224,27 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertEqual(uspsCards?.first?.title, "USPS - Parcel Select Mail")
     }
 
+    func test_hasDestinationAddress_true_when_destination_address_is_complete() {
+        // Given
+        let viewModel = WooShippingServiceViewModel(order: Order.fake(),
+                                                    originAddress: ShippingLabelAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
+                                                    stores: stores)
+
+        // Then
+        XCTAssertTrue(viewModel.hasDestinationAddress)
+    }
+
+    func test_hasDestinationAddress_false_when_destination_address_is_empty() {
+        // Given
+        let viewModel = WooShippingServiceViewModel(order: Order.fake(),
+                                                    originAddress: ShippingLabelAddress.fake(),
+                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    stores: stores)
+
+        // Then
+        XCTAssertFalse(viewModel.hasDestinationAddress)
+    }
 }
 
 private extension WooShippingServiceViewModelTests {
@@ -306,5 +327,17 @@ private extension WooShippingServiceViewModelTests {
                                   isPickupFree: true,
                                   deliveryDays: 2,
                                   deliveryDateGuaranteed: false)]
+    }
+
+    func sampleDestinationAddress() -> ShippingLabelAddress {
+        ShippingLabelAddress(company: "HEADQUARTERS",
+                             name: "JANE DOE",
+                             phone: "1-234-456-7890",
+                             country: "US",
+                             state: "NY",
+                             address1: "15 ALGONKIN ST STE 100",
+                             address2: "",
+                             city: "TICONDEROGA",
+                             postcode: "12883-1487")
     }
 }

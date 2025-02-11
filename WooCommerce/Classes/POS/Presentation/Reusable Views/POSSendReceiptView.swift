@@ -3,7 +3,7 @@ import class WordPressShared.EmailFormatValidator
 
 @available(iOS 17.0, *)
 struct POSSendReceiptView: View {
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @State private var textFieldInput: String = ""
     @State private var isLoading: Bool = false
@@ -78,7 +78,7 @@ struct POSSendReceiptView: View {
             .dynamicTypeSize(...DynamicTypeSize.accessibility3)
             .padding(conditionalPadding(Constants.buttonPadding))
             .frame(maxWidth: .infinity)
-            .foregroundColor(Color.posPrimaryTextInverted)
+            .foregroundColor(Color.posOnInverseSurface)
             .background(isEmailValid ? Color.posPrimaryButtonBackground : Color.posBackgroundButtonDisabled)
             .cornerRadius(Constants.buttonCornerRadius)
             .contentShape(Rectangle())
@@ -94,6 +94,7 @@ struct POSSendReceiptView: View {
     }
 
     private func sendReceipt() {
+        ServiceLocator.analytics.track(.pointOfSaleEmailReceiptSendTapped)
         Task { @MainActor in
             guard isEmailValid else {
                 errorMessage = Localization.emailValidationErrorText
@@ -170,6 +171,6 @@ private extension POSSendReceiptView {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
     POSSendReceiptView(isShowingSendReceiptView: .constant(true))
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 #endif

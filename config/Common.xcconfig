@@ -1,5 +1,5 @@
+// This file is shared by all the projects in the WooCommerce workspace by
+// means of each project having a top-level xcconfig file that includes this.
 IPHONEOS_DEPLOYMENT_TARGET = 16.0
-
-// This is App Store account id.
-// Build configurations that need the Enterprise account should override in their dedicated xcconfig.
-DEVELOPMENT_TEAM = PZYM8XX95Q
+MACOSX_DEPLOYMENT_TARGET = 14.0
+WATCHOS_DEPLOYMENT_TARGET = 9.0

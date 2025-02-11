@@ -4,7 +4,7 @@ import SwiftUI
 struct PointOfSaleCollectCashView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @FocusState private var isTextFieldFocused: Bool
 
     private let viewHelper = CollectCashViewHelper()
@@ -77,7 +77,7 @@ struct PointOfSaleCollectCashView: View {
                         if isLoading {
                             ProgressView()
                                 .progressViewStyle(CircularProgressViewStyle())
-                                .tint(Color.posPrimaryTextInverted)
+                                .tint(Color.posOnInverseSurface)
                         } else {
                             Text(Localization.markPaymentCompletedButtonTitle)
                                 .font(Constants.buttonFont)
@@ -185,12 +185,7 @@ private extension PointOfSaleCollectCashView {
     }
 
     private var backgroundColor: Color {
-        switch colorScheme {
-        case .dark:
-            return Color.posSecondaryBackground
-        default:
-            return .clear
-        }
+        .posSurface
     }
 
     private var navigationForegroundColor: Color {
@@ -230,6 +225,6 @@ private extension PointOfSaleCollectCashView {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
     PointOfSaleCollectCashView(orderTotal: "$1.23")
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 #endif

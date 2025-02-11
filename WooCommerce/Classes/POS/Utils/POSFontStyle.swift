@@ -3,8 +3,8 @@ import SwiftUI
 /// iOS type style definitions for POS
 /// TfaZ4LUkEwEGrxfnEFzvJj-fi-3385_18076
 enum POSFontStyle {
-    case posTitleRegular
     case posHeading
+    case posBodyXLarge
     case posBodyLargeRegular
     case posBodyLargeEmphasized
     case posBodyMediumEmphasized
@@ -15,10 +15,13 @@ enum POSFontStyle {
 
     func font(maximumContentSizeCategory: UIContentSizeCategory? = nil) -> Font {
         switch self {
-        case .posTitleRegular:
-            Font.system(size: scaledValue(FontSize.heading, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge), weight: .medium)
         case .posHeading:
             Font.system(size: scaledValue(FontSize.heading, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge), weight: .bold)
+        case .posBodyXLarge:
+            Font.system(
+                size: scaledValue(FontSize.bodyXLarge, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge),
+                weight: .semibold
+            )
         case .posBodyLargeRegular:
             Font.system(size: scaledValue(FontSize.bodyLarge, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
         case .posBodyLargeEmphasized:
@@ -84,10 +87,10 @@ extension View {
     ScrollView {
         VStack(alignment: .leading, spacing: 20) {
             Group {
-                Text("Title Regular")
-                    .font(.posTitleRegular)
                 Text("Title Emphasized")
                     .font(.posHeading)
+                Text("Body Extra Large")
+                    .font(.posBodyXLarge)
                 Text("Body Large Regular")
                     .font(.posBodyLargeRegular)
                 Text("Body Large Emphasized")

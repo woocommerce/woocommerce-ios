@@ -17,13 +17,21 @@ struct POSButtonStyle: ButtonStyle {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.isEnabled) var isEnabled
 
-    let variant: POSButtonVariant
-    let size: POSButtonSize
+    private let variant: POSButtonVariant
+    private let size: POSButtonSize
+    private let showsProgressView: Bool
 
     init(variant: POSButtonVariant = .filled,
          size: POSButtonSize = .normal) {
         self.variant = variant
         self.size = size
+        self.showsProgressView = false
+    }
+
+    fileprivate init(size: POSButtonSize = .normal, showsProgressView: Bool) {
+        self.variant = .filled
+        self.size = size
+        self.showsProgressView = showsProgressView
     }
 
     func makeBody(configuration: Configuration) -> some View {
@@ -86,6 +94,27 @@ struct POSButtonStyle: ButtonStyle {
     }
 }
 
+/// A button style for POS that shows a loading indicator.
+struct POSLoadingButtonStyle: ButtonStyle {
+    let size: POSButtonSize
+
+    func makeBody(configuration: Configuration) -> some View {
+        Button(action: {}) {
+            ProgressView()
+            .progressViewStyle(POSButtonProgressViewStyle(size: size.progressViewDimensions.size, lineWidth: size.progressViewDimensions.lineWidth))
+            .padding(
+                .init(
+                    top: size.additionalPadding.vertical,
+                    leading: size.additionalPadding.horizontal,
+                    bottom: size.additionalPadding.vertical,
+                    trailing: size.additionalPadding.horizontal
+                )
+            )
+        }
+        .buttonStyle(POSButtonStyle(variant: .filled, size: size))
+    }
+}
+
 // MARK: - POSButtonStyle Constants
 
 private extension POSButtonStyle {
@@ -117,6 +146,28 @@ private extension POSButtonSize {
     }
 }
 
+private extension POSButtonSize {
+    var progressViewDimensions: (size: CGFloat, lineWidth: CGFloat) {
+        switch self {
+        case .normal:
+            (size: 32, lineWidth: 10)
+        case .extraSmall:
+            (size: 20, lineWidth: 6)
+        }
+    }
+
+    /// The internal use of `IndefiniteCircularProgressViewStyle` progress style results in half of the line width drawn outside of the progress view.
+    /// This additional padding is thus adjusted by the partial line width to achieve the expected padding in design.
+    var additionalPadding: (vertical: CGFloat, horizontal: CGFloat) {
+        switch self {
+        case .normal:
+            (vertical: progressViewDimensions.lineWidth * 0.5, horizontal: progressViewDimensions.lineWidth * 0.5)
+        case .extraSmall:
+            (vertical: 2 + progressViewDimensions.lineWidth * 0.5, horizontal: 16 + progressViewDimensions.lineWidth * 0.5)
+        }
+    }
+}
+
 // MARK: - Preview
 
 #if DEBUG
@@ -136,6 +187,12 @@ struct POSButtonStyle_Previews: View {
 
                 previewSection(title: "Outlined Buttons - Extra Small",
                                variant: .outlined, size: .extraSmall)
+
+                Button("Loading Buttons - Normal") {}
+                    .buttonStyle(POSLoadingButtonStyle(size: .normal))
+
+                Button("Loading Buttons - Extra Small") {}
+                    .buttonStyle(POSLoadingButtonStyle(size: .extraSmall))
 
                 // Example with long text
                 VStack(alignment: .leading, spacing: 16) {

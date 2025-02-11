@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import Yosemite
 
@@ -34,6 +35,9 @@ protocol SearchUICommand {
     /// Sometimes we don't need it, as the table view adjust automatically its height thanks to the superview constraits.
     ///
     var adjustTableViewBottomInsetWhenKeyboardIsShown: Bool { get }
+
+    /// Stream of UI reload request - necessary when the search list need to be refreshed manually.
+    var reloadUIRequests: AnyPublisher<Void, Never> { get }
 
     /// A closure to resynchronize models if the data source might change (e.g. when the filter changes in products search).
     /// Set externally to enable resyncing the models when needed. Otherwise, an empty closure can be set by default.
@@ -181,6 +185,12 @@ extension SearchUICommand {
 // MARK: - SearchUICommand using EmptySearchResultsViewController
 
 extension SearchUICommand {
+
+    /// Default value for the optional property
+    ///
+    var reloadUIRequests: AnyPublisher<Void, Never> {
+        Empty<Void, Never>().eraseToAnyPublisher()
+    }
 
     /// Creates an instance of `EmptySearchResultsViewController`
     ///

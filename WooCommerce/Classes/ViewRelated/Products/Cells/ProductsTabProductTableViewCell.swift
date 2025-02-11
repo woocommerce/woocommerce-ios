@@ -58,6 +58,14 @@ final class ProductsTabProductTableViewCell: UITableViewCell {
         super.updateConfiguration(using: state)
         updateDefaultBackgroundConfiguration(using: state)
     }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        syncingOverlayView?.removeFromSuperview()
+        selectedProductImageOverlayView?.removeFromSuperview()
+        syncingOverlayView = nil
+        selectedProductImageOverlayView = nil
+    }
 }
 
 extension ProductsTabProductTableViewCell: SearchResultCell {

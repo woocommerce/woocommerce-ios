@@ -112,7 +112,7 @@ private extension POSButtonSize {
         case .normal:
                 .posBodyLargeBold
         case .extraSmall:
-                .posBodyMediumEmphasized
+                .posBodyMediumBold
         }
     }
 }

@@ -7,7 +7,7 @@ enum POSFontStyle {
     case posBodyXLarge
     case posBodyLargeBold
     case posBodyLargeRegular
-    case posBodyMediumEmphasized
+    case posBodyMediumBold
     case posBodyMediumRegular
     case posBodySmallEmphasized
     case posBodySmallRegular
@@ -26,7 +26,7 @@ enum POSFontStyle {
             Font.system(size: scaledValue(FontSize.bodyLarge, maximumContentSizeCategory: maximumContentSizeCategory), weight: .bold)
         case .posBodyLargeRegular:
             Font.system(size: scaledValue(FontSize.bodyLarge, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
-        case .posBodyMediumEmphasized:
+        case .posBodyMediumBold:
             Font.system(size: scaledValue(FontSize.bodyMedium, maximumContentSizeCategory: maximumContentSizeCategory), weight: .semibold)
         case .posBodyMediumRegular:
             Font.system(size: scaledValue(FontSize.bodyMedium, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
@@ -91,14 +91,14 @@ extension View {
                     .font(.posHeading)
                 Text("Body Extra Large")
                     .font(.posBodyXLarge)
-                Text("Body Large Regular")
-                    .font(.posBodyLargeRegular)
                 Text("Body Large Bold")
                     .font(.posBodyLargeBold)
+                Text("Body Large Regular")
+                    .font(.posBodyLargeRegular)
+                Text("Body Medium Bold")
+                    .font(.posBodyMediumBold)
                 Text("Body Medium Regular")
                     .font(.posBodyMediumRegular)
-                Text("Body Medium Emphasized")
-                    .font(.posBodyMediumEmphasized)
                 Text("Body Small Regular")
                     .font(.posBodySmallRegular)
                 Text("Body Small Emphasized")

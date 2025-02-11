@@ -43,9 +43,11 @@ struct PointOfSalePaymentSuccessView: View {
                         }
 
                         PaymentsActionButtons(isShowingSendReceiptView: $isShowingSendReceiptView,
-                                           isShowingReceiptNotEligibleBanner: $isShowingReceiptNotEligibleBanner)
-                            .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
-                            .opacity(isViewLoaded ? 1 : 0)
+                                              isShowingReceiptNotEligibleBanner: $isShowingReceiptNotEligibleBanner)
+                        .containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: 0)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
+                        .opacity(isViewLoaded ? 1 : 0)
                     }
                     .multilineTextAlignment(.center)
 
@@ -75,7 +77,7 @@ struct PointOfSalePaymentSuccessView: View {
                 .frame(width: Constants.imageSize.width, height: Constants.imageSize.height)
                 .shadow(color: Color(.wooCommerceEmerald(.shade80)).opacity(Constants.shadowOpacity),
                         radius: Constants.shadowRadius, x: Constants.shadowSize.width, y: Constants.shadowSize.height)
-                .foregroundColor(.posSuccessColor)
+                .foregroundColor(.posSuccess)
             Image(PointOfSaleAssets.successCheck.imageName)
                 .renderingMode(.template)
                 .foregroundColor(checkmarkColor)
@@ -85,7 +87,7 @@ struct PointOfSalePaymentSuccessView: View {
     }
 
     private var checkmarkColor: Color {
-        Color.primary
+        .posOnSuccess
     }
 }
 
@@ -104,10 +106,17 @@ private extension PointOfSalePaymentSuccessView {
     }
 }
 
+#if DEBUG
 @available(iOS 17.0, *)
 #Preview {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
     return PointOfSalePaymentSuccessView(
         viewModel: PointOfSalePaymentSuccessViewModel(formattedOrderTotal: "$3.00",
                                                       paymentMethod: .card)
     )
+    .environment(posModel)
 }
+#endif

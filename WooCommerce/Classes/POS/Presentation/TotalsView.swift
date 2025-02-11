@@ -65,11 +65,9 @@ struct TotalsView: View {
                     }, label: {
                         Text(Localization.cashPaymentButtonTitle)
                             .font(POSFontStyle.posBodyEmphasized)
-                            .foregroundColor(.posPrimaryText)
-                            .frame(height: Constants.buttonHeight)
                             .minimumScaleFactor(0.5)
                     })
-                    .buttonStyle(SecondaryButtonStyle())
+                    .buttonStyle(POSButtonStyle(variant: .outlined, size: .normal))
                     .padding(.horizontal, Constants.buttonHorizontalPadding)
                     .padding(.bottom, Constants.cashButtonBottomPadding)
                     .renderedIf(viewHelper.shouldShowCollectCashPaymentButton(orderState: posModel.orderState,
@@ -94,11 +92,11 @@ struct TotalsView: View {
     private var backgroundColor: Color {
         switch posModel.paymentState {
         case .card(.cardPaymentSuccessful), .cash(.paymentSuccess):
-            .posSecondaryBackground
+            .posSurfaceContainerLowest
         case .card(.processingPayment):
-            colorScheme == .light ? Color(.wooCommercePurple(.shade70)) : Color(.wooCommercePurple(.shade10))
+            .posPrimary
         case .cash(.collectingCash):
-            colorScheme == .light ? .clear : Color.posSecondaryBackground
+            .posSurface
         default:
             .clear
         }
@@ -345,7 +343,6 @@ private extension TotalsView {
     enum Constants {
         static let pricesIdealWidth: CGFloat = 382
         static let verticalSpacing: CGFloat = 56
-        static let buttonHeight: CGFloat = 56
         static let buttonHorizontalPadding: CGFloat = 48
         static let cashButtonBottomPadding: CGFloat = 16
 
@@ -357,7 +354,7 @@ private extension TotalsView {
         static let subtotalAmountFont: POSFontStyle = .posBodyRegular
         static let totalTitleFont: POSFontStyle = .posTitleRegular
         static let totalAmountFont: POSFontStyle = .posTitleEmphasized
-        static let separatorColor: Color = Color(.systemGray3)
+        static let separatorColor: Color = Color.posOutlineVariant
 
         static let shimmeringCornerRadius: CGFloat = 4
         static let shimmeringWidth: CGFloat = 334

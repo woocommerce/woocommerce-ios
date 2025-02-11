@@ -36,6 +36,10 @@ struct ProductImageUploaderKey: Equatable, Hashable {
 
 /// Handles product image upload to support background image upload.
 protocol ProductImageUploaderProtocol {
+
+    /// Emits active image uploads
+    var activeUploads: AnyPublisher<[ProductImageUploaderKey], Never> { get }
+
     /// Emits product image upload errors.
     var errors: AnyPublisher<ProductImageUploadErrorInfo, Never> { get }
 
@@ -94,6 +98,10 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         errorsSubject.eraseToAnyPublisher()
     }
 
+    var activeUploads: AnyPublisher<[ProductImageUploaderKey], Never> {
+        $activeUploadsPublisher.eraseToAnyPublisher()
+    }
+
     typealias Key = ProductImageUploaderKey
 
     private let errorsSubject: PassthroughSubject<ProductImageUploadErrorInfo, Never> = .init()
@@ -102,6 +110,10 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 
     private var actionHandlersByProduct: [Key: ProductImageActionHandler] = [:]
     private var imagesSaverByProduct: [Key: ProductImagesSaver] = [:]
+    private var initialStatusesByProduct: [Key: [ProductImageStatus]] = [:]
+
+    @Published private var activeUploadsPublisher: [ProductImageUploaderKey] = []
+
     private let stores: StoresManager
     private let imagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol
 
@@ -118,8 +130,10 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         } else {
             actionHandler = ProductImageActionHandler(siteID: key.siteID, productID: key.productOrVariationID, imageStatuses: originalStatuses, stores: stores)
             actionHandlersByProduct[key] = actionHandler
-            observeStatusUpdatesForErrors(key: key, actionHandler: actionHandler)
+            initialStatusesByProduct[key] = originalStatuses
+            observeStatusUpdates(key: key, actionHandler: actionHandler)
         }
+
         return actionHandler
     }
 
@@ -173,10 +187,12 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         // The product has to exist remotely in order to save its images remotely.
         // In product creation, this save function should be called after a new product is saved remotely for the first time.
         guard key.isLocalID == false else {
+            removeProductFromActiveUploads(key: key)
             return onProductSave(.failure(ProductImageUploaderError.noRemoteProductIDFound))
         }
 
         guard let handler = actionHandlersByProduct[key] else {
+            removeProductFromActiveUploads(key: key)
             return onProductSave(.failure(ProductImageUploaderError.noActionHandlerFound))
         }
 
@@ -192,6 +208,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 
         imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: handler) { [weak self] result in
             guard let self = self else { return }
+            removeProductFromActiveUploads(key: key)
             onProductSave(result)
             if case let .failure(error) = result {
                 self.errorsSubject.send(.init(siteID: key.siteID,
@@ -208,9 +225,11 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
     func reset() {
         statusUpdatesExcludedProductKeys = []
         statusUpdatesSubscriptions = []
+        activeUploadsPublisher = []
 
         actionHandlersByProduct = [:]
         imagesSaverByProduct = [:]
+        initialStatusesByProduct = [:]
     }
 }
 
@@ -229,18 +248,33 @@ private extension ProductImageUploader {
         }
     }
 
-    private func observeStatusUpdatesForErrors(key: Key, actionHandler: ProductImageActionHandler) {
+    func observeStatusUpdates(key: Key, actionHandler: ProductImageActionHandler) {
         let observationToken = actionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else { return }
 
-            if let error = error, self.statusUpdatesExcludedProductKeys.contains(key) == false {
-                self.errorsSubject.send(.init(siteID: key.siteID,
-                                              productOrVariationID: key.productOrVariationID,
-                                              productImageStatuses: productImageStatuses,
-                                              error: .failedUploadingImage(error: error)))
+            if !activeUploadsPublisher.contains(key), productImageStatuses.hasPendingUpload {
+                activeUploadsPublisher.append(key)
+            } else if let initialStatuses = initialStatusesByProduct[key],
+                initialStatuses == productImageStatuses,
+                activeUploadsPublisher.contains(key) {
+                /// When upload is reset, remove the key from active uploads
+                removeProductFromActiveUploads(key: key)
+            }
+
+            if let error = error, statusUpdatesExcludedProductKeys.contains(key) == false {
+                removeProductFromActiveUploads(key: key)
+                errorsSubject.send(.init(siteID: key.siteID,
+                                         productOrVariationID: key.productOrVariationID,
+                                         productImageStatuses: productImageStatuses,
+                                         error: .failedUploadingImage(error: error)))
             }
         }
         statusUpdatesSubscriptions.insert(observationToken)
+    }
+
+    func removeProductFromActiveUploads(key: Key) {
+        activeUploadsPublisher.removeAll(where: { $0 == key })
+        initialStatusesByProduct.removeValue(forKey: key)
     }
 }
 

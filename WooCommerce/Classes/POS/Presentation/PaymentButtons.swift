@@ -36,15 +36,8 @@ private extension PaymentsActionButtons {
                 Text(Localization.sendReceipt)
                     .font(Constants.buttonFont)
             }
-            .frame(minWidth: UIScreen.main.bounds.width / 2)
         })
-        .padding(Constants.buttonPadding)
-        .foregroundColor(Color.posPrimaryText)
-        .background(Color.clear)
-        .overlay {
-            RoundedRectangle(cornerRadius: Constants.buttonCornerRadius)
-                        .stroke(Color.posPrimaryText, lineWidth: 1.0)
-        }
+        .buttonStyle(POSButtonStyle(variant: .outlined, size: .normal))
     }
 
     var newOrderButton: some View {
@@ -56,12 +49,8 @@ private extension PaymentsActionButtons {
                 Text(Localization.newOrder)
                     .font(Constants.buttonFont)
             }
-            .frame(minWidth: UIScreen.main.bounds.width / 2)
         })
-        .padding(Constants.buttonPadding)
-        .foregroundColor(Color.posPrimaryTextInverted)
-        .background(Color.posPrimaryButtonBackground)
-        .cornerRadius(Constants.buttonCornerRadius)
+        .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
     }
 }
 
@@ -89,9 +78,7 @@ private extension PaymentsActionButtons {
 private extension PaymentsActionButtons {
     enum Constants {
         static let buttonSpacing: CGFloat = 12
-        static let buttonPadding: CGFloat = 32
         static let buttonFont: POSFontStyle = .posBodyEmphasized
-        static let buttonCornerRadius: CGFloat = 8
     }
 
     enum Localization {

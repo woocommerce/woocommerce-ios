@@ -75,13 +75,9 @@ struct POSSendReceiptView: View {
                 }
                 .frame(maxWidth: .infinity)
             })
+            .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
             .dynamicTypeSize(...DynamicTypeSize.accessibility3)
-            .padding(conditionalPadding(Constants.buttonPadding))
             .frame(maxWidth: .infinity)
-            .foregroundColor(Color.posPrimaryTextInverted)
-            .background(isEmailValid ? Color.posPrimaryButtonBackground : Color.posBackgroundButtonDisabled)
-            .cornerRadius(Constants.buttonCornerRadius)
-            .contentShape(Rectangle())
             .disabled(isLoading)
 
             Spacer()
@@ -120,9 +116,7 @@ struct POSSendReceiptView: View {
 private extension POSSendReceiptView {
     enum Constants {
         static let buttonSpacing: CGFloat = 12
-        static let buttonPadding: CGFloat = 32
         static let buttonFont: POSFontStyle = .posBodyEmphasized
-        static let buttonCornerRadius: CGFloat = 8
         static let errorMessagePadding: CGFloat = 8
     }
 

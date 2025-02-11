@@ -20,7 +20,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
             if let primaryButtonViewModel = viewModel.primaryButtonViewModel {
                 Button(primaryButtonViewModel.title,
                        action: primaryButtonViewModel.actionHandler)
-                .buttonStyle(POSPrimaryButtonStyle())
+                .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
                 .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
             }
         }

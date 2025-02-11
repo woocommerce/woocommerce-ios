@@ -73,24 +73,17 @@ struct PointOfSaleCollectCashView: View {
                         await submitCashAmount()
                     }
                 }, label: {
-                    ZStack {
-                        if isLoading {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle())
-                                .tint(Color.posPrimaryTextInverted)
-                        } else {
-                            Text(Localization.markPaymentCompletedButtonTitle)
-                                .font(Constants.buttonFont)
-                        }
+                    if isLoading {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
+                            .tint(Color.posOnInverseSurface)
+                    } else {
+                        Text(Localization.markPaymentCompletedButtonTitle)
+                            .font(Constants.buttonFont)
                     }
-                    .frame(maxWidth: .infinity, minHeight: Constants.buttonMinHeight)
                 })
-                .adaptiveButtonPadding(Constants.buttonPadding)
+                .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
                 .frame(maxWidth: .infinity)
-                .foregroundColor(colorScheme == .light ? Color.white : Color.black)
-                .background(Color.posPrimaryButtonBackground)
-                .cornerRadius(Constants.buttonCornerRadius)
-                .contentShape(Rectangle())
                 .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                 .disabled(isLoading)
 
@@ -170,13 +163,10 @@ private extension PointOfSaleCollectCashView {
 @available(iOS 17.0, *)
 private extension PointOfSaleCollectCashView {
     enum Constants {
-        static let buttonSpacing: CGFloat = 12
-        static let buttonPadding: CGFloat = 32
         static let buttonMinHeight: CGFloat = 32
         static let navigationButtonSpacing: CGFloat = 8
         static let navigationHeaderTopPadding: CGFloat = 8
         static let buttonFont: POSFontStyle = .posBodyEmphasized
-        static let buttonCornerRadius: CGFloat = 8
         static let errorMessagePadding: CGFloat = 8
     }
 
@@ -185,16 +175,11 @@ private extension PointOfSaleCollectCashView {
     }
 
     private var backgroundColor: Color {
-        switch colorScheme {
-        case .dark:
-            return Color.posSecondaryBackground
-        default:
-            return .clear
-        }
+        .posSurface
     }
 
     private var navigationForegroundColor: Color {
-        isLoading ? .posBackgroundButtonDisabled : .primary
+        isLoading ? .posDisabledContainer : .primary
     }
 
     enum Localization {

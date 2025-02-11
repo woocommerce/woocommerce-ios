@@ -19,7 +19,7 @@ struct PointOfSaleItemListErrorView: View {
                 Text(error.title)
                     .accessibilityAddTraits(.isHeader)
                     .foregroundStyle(Color.posPrimaryText)
-                    .font(.posTitleEmphasized)
+                    .font(.posHeading)
                     .padding(.bottom, PointOfSaleItemListErrorLayout.verticalPadding)
                 Text(error.subtitle)
                     .foregroundStyle(Color.posPrimaryText)

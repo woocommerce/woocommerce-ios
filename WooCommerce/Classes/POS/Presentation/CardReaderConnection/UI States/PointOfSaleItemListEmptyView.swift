@@ -17,7 +17,7 @@ struct PointOfSaleItemListEmptyView: View {
                 .foregroundColor(.posSecondaryText)
             Text(title)
                 .foregroundStyle(Color.posSecondaryText)
-                .font(.posTitleEmphasized)
+                .font(.posHeading)
             Text(subtitle)
                 .foregroundStyle(Color.posSecondaryText)
                 .font(.posBodyLargeRegular)

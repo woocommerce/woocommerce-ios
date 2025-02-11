@@ -113,7 +113,7 @@ private extension PointOfSaleCollectCashView {
                 .font(.posBodyLargeEmphasized, maximumContentSizeCategory: .accessibilityLarge)
             DynamicVStack(horizontalAlignment: .leading, spacing: Constants.navigationButtonSpacing) {
                 Text(Localization.backNavigationTitle)
-                    .font(.posTitleEmphasized)
+                    .font(.posHeading)
                     .accessibilityAddTraits(.isHeader)
                 if dynamicTypeSize.isAccessibilitySize {
                     Spacer()

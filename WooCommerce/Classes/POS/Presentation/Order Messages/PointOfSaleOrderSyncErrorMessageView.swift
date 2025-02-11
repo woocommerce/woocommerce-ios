@@ -12,7 +12,7 @@ struct PointOfSaleOrderSyncErrorMessageView: View {
                 VStack(alignment: .center, spacing: Constants.textSpacing) {
                     Text(viewModel.title)
                         .foregroundStyle(Color.posPrimaryText)
-                        .font(.posTitleEmphasized)
+                        .font(.posHeading)
 
                     Text(viewModel.message)
                         .foregroundStyle(Color.posPrimaryText)

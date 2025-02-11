@@ -352,8 +352,8 @@ private extension TotalsView {
         static let totalsHorizontalSpacing: CGFloat = 24
         static let subtotalTitleFont: POSFontStyle = .posBodyLargeRegular
         static let subtotalAmountFont: POSFontStyle = .posBodyLargeRegular
-        static let totalTitleFont: POSFontStyle = .posTitleEmphasized
-        static let totalAmountFont: POSFontStyle = .posTitleEmphasized
+        static let totalTitleFont: POSFontStyle = .posHeading
+        static let totalAmountFont: POSFontStyle = .posHeading
         static let separatorColor: Color = Color.posOutlineVariant
 
         static let shimmeringCornerRadius: CGFloat = 4

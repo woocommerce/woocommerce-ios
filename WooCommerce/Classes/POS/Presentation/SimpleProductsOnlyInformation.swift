@@ -17,7 +17,7 @@ struct SimpleProductsOnlyInformation: View {
         VStack(spacing: Constants.contentBlockSpacing) {
             VStack(spacing: Constants.textSpacing) {
                 Text(Localization.modalTitle)
-                    .font(.posTitleEmphasized)
+                    .font(.posHeading)
 
                 Group {
                     Text(issueMessage)

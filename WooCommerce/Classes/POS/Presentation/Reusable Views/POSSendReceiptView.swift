@@ -29,7 +29,7 @@ struct POSSendReceiptView: View {
                         Image(systemName: "chevron.backward")
                         Text(Localization.emailReceiptNavigationText)
                     }
-                    .font(.posTitleEmphasized)
+                    .font(.posHeading)
                     .foregroundColor(.posPrimaryText)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility3)
                     .accessibilityAddTraits(.isHeader)

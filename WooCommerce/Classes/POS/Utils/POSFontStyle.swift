@@ -4,7 +4,7 @@ import SwiftUI
 /// TfaZ4LUkEwEGrxfnEFzvJj-fi-3385_18076
 enum POSFontStyle {
     case posTitleRegular
-    case posTitleEmphasized
+    case posHeading
     case posBodyLargeRegular
     case posBodyLargeEmphasized
     case posBodyMediumEmphasized
@@ -17,7 +17,7 @@ enum POSFontStyle {
         switch self {
         case .posTitleRegular:
             Font.system(size: scaledValue(FontSize.heading, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge), weight: .medium)
-        case .posTitleEmphasized:
+        case .posHeading:
             Font.system(size: scaledValue(FontSize.heading, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge), weight: .bold)
         case .posBodyLargeRegular:
             Font.system(size: scaledValue(FontSize.bodyLarge, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
@@ -87,7 +87,7 @@ extension View {
                 Text("Title Regular")
                     .font(.posTitleRegular)
                 Text("Title Emphasized")
-                    .font(.posTitleEmphasized)
+                    .font(.posHeading)
                 Text("Body Large Regular")
                     .font(.posBodyLargeRegular)
                 Text("Body Large Emphasized")

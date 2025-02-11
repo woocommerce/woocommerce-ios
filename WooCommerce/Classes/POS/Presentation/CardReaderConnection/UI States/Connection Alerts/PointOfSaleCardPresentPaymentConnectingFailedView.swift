@@ -18,7 +18,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedView: View {
 
                 VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
                     Text(viewModel.title)
-                        .font(POSFontStyle.posTitleEmphasized)
+                        .font(POSFontStyle.posHeading)
                         .accessibilityAddTraits(.isHeader)
                         .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 

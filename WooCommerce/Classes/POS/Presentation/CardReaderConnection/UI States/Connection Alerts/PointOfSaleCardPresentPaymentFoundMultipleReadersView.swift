@@ -18,7 +18,7 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
     var body: some View {
         VStack {
             Text(Localization.headline)
-                .font(.posTitleEmphasized)
+                .font(.posHeading)
                 .padding(Layout.headerPadding)
                 .accessibilityAddTraits(.isHeader)
 

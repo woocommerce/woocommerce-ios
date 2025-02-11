@@ -51,7 +51,7 @@ private extension ChildItemList {
             } label: {
                 Image(systemName: "chevron.backward")
                     .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
-                    .foregroundColor(.primary)
+                    .foregroundColor(.posOnSurface)
             }
             POSHeaderTitleView(title: title)
             Spacer()

@@ -7,7 +7,6 @@ struct CartView: View {
 
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
-    @Environment(\.colorScheme) var colorScheme
 
     @State private var offSetPosition: CGFloat = 0.0
     private var coordinateSpace: CoordinateSpace = .named(Constants.scrollViewCoordinateSpaceIdentifier)
@@ -36,7 +35,7 @@ struct CartView: View {
                         if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: posModel.cart.count) {
                             Text(itemsInCartLabel)
                                 .font(Constants.itemsFont)
-                                .foregroundColor(Color.posSecondaryText)
+                                .foregroundColor(Color.posOnSurfaceVariantLowest)
                         }
                     }
                     .accessibilityElement(children: .combine)
@@ -262,7 +261,7 @@ private extension CartView {
             } label: {
                 Image(systemName: Constants.backButtonSymbol)
                     .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
-                    .foregroundColor(.primary)
+                    .foregroundColor(.posOnSurface)
             }
         }
     }
@@ -306,6 +305,21 @@ private extension CartView {
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
+    return CartView()
+        .environment(posModel)
+}
+
+@available(iOS 17.0, *)
+#Preview("Cart with one item") {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
+    posModel.addToCart(.simpleProduct(.init(id: UUID(),
+                                            name: "Sample Product",
+                                            formattedPrice: "$10.00",
+                                            productID: 6,
+                                            price: "10")))
     return CartView()
         .environment(posModel)
 }

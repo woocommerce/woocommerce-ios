@@ -61,9 +61,23 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     @Published private(set) var originAddress: String = ""
 
     /// Address to ship to (customer address), formatted for display and split into separate lines to allow additional formatting.
-    private(set) lazy var destinationAddressLines: [String] = {
-        (destinationAddress?.formattedPostalAddress ?? "").components(separatedBy: .newlines)
+    private(set) lazy var destinationAddressLines: [String]? = {
+        (destinationAddress?.formattedPostalAddress)?.components(separatedBy: .newlines)
     }()
+
+    /// Possible statuses for a Woo Shipping destination address.
+    enum DestinationAddressStatus {
+        case verified
+        case unverified
+        case missing
+    }
+
+    // TODO: Add support for updating the destination address status when it is edited or verified remotely.
+    /// The current destination address status.
+    @Published private(set) var destinationAddressStatus: DestinationAddressStatus = .unverified
+
+    /// This property can be set to display a notice with the provided label about the destination address status.
+    @Published var destinationAddressStatusNoticeLabel: String?
 
     /// Shipping lines for the order, with formatted amount.
     let shippingLines: [WooShipping_ShippingLineViewModel]
@@ -171,7 +185,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.stores = stores
         self.debounceDuration = debounceDuration
 
+        // TODO: Check remotely to see if the destination address is verified.
+        destinationAddressStatus = destinationAddressLines == nil ? .missing : .unverified
+
         observeSelectedOriginAddress()
+        observeDestinationAddressStatus()
         observeSelectedPackage()
         observeForLabelRates()
         loadStoreOptions()
@@ -193,6 +211,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
         self.originAddress = shippingLabel.originAddress.formattedPostalAddress?.replacingOccurrences(of: "\n", with: ", ") ?? ""
         self.destinationAddress = shippingLabel.destinationAddress
+        self.destinationAddressStatus = .verified
         self.onLabelPurchase = nil
         self.stores = stores
     }
@@ -321,6 +340,30 @@ private extension WooShippingCreateLabelsViewModel {
             .store(in: &subscriptions)
     }
 
+    /// Observes the destination address status and updates the notice label.
+    func observeDestinationAddressStatus() {
+        /// Set the notice when the destination address status changes.
+        $destinationAddressStatus
+            .map { status in
+                switch status {
+                case .verified:
+                    return Localization.DestinationAddressStatus.verified
+                case .unverified:
+                    return Localization.DestinationAddressStatus.unverified
+                case .missing:
+                    return Localization.DestinationAddressStatus.missing
+                }
+            }
+            .assign(to: &$destinationAddressStatusNoticeLabel)
+
+        /// Clear the notice after a delay when the address is verified.
+        $destinationAddressStatusNoticeLabel
+            .filter { $0 == Localization.DestinationAddressStatus.verified }
+            .delay(for: .seconds(2), scheduler: RunLoop.current)
+            .map { _ in nil }
+            .assign(to: &$destinationAddressStatusNoticeLabel)
+    }
+
     /// Observes the selected package and shipment weight and requests the available shipping rates.
     func observeForLabelRates() {
         $shipmentWeight
@@ -441,6 +484,18 @@ private extension WooShippingCreateLabelsViewModel {
                                                               value: "Adult Signature Required",
                                                               comment: "Label for row showing the additional cost to require an adult signature " +
                                                               "on the shipping label creation screen")
+
+        enum DestinationAddressStatus {
+            static let verified = NSLocalizedString("wooShipping.createLabels.addressVerification.destinationVerified",
+                                                               value: "Verified destination address",
+                                                               comment: "Notice when a destination address is verified on the shipping label creation screen")
+            static let unverified = NSLocalizedString("wooShipping.createLabels.addressVerification.destinationUnverified",
+                                                                 value: "Destination address unverified",
+                                                                 comment: "Notice when a destination address is unverified on the shipping label creation screen")
+            static let missing = NSLocalizedString("wooShipping.createLabels.addressVerification.destinationMissing",
+                                                              value: "Destination address missing",
+                                                              comment: "Notice when a destination address is missing on the shipping label creation screen")
+        }
     }
 
     enum Constants {

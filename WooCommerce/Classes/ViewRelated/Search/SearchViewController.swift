@@ -158,6 +158,7 @@ where Cell.SearchModel == Command.CellViewModel {
         configureResultsController()
         configureStarterViewController()
         configureSearchResync()
+        configureUIReload()
         observeSelectedObjectAndDataLoadedStateToUpdateSelectedRow()
 
         if searchUICommand.adjustTableViewBottomInsetWhenKeyboardIsShown {
@@ -441,6 +442,14 @@ private extension SearchViewController {
             guard let self = self else { return }
             self.synchronizeSearchResults(with: self.searchQuery)
         }
+    }
+
+    func configureUIReload() {
+        searchUICommand.reloadUIRequests
+            .sink { [weak self] in
+                self?.tableView.reloadData()
+            }
+            .store(in: &subscriptions)
     }
 
     func observeSelectedObjectAndDataLoadedStateToUpdateSelectedRow() {

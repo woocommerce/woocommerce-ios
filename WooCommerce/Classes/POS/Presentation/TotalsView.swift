@@ -2,7 +2,7 @@ import SwiftUI
 
 @available(iOS 17.0, *)
 struct TotalsView: View {
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     private let viewHelper = TotalsViewHelper()
 
     /// Used together with .matchedGeometryEffect to synchronize the animations of shimmeringLineView and text fields.
@@ -94,11 +94,11 @@ struct TotalsView: View {
     private var backgroundColor: Color {
         switch posModel.paymentState {
         case .card(.cardPaymentSuccessful), .cash(.paymentSuccess):
-            .posSecondaryBackground
+            .posSurfaceContainerLowest
         case .card(.processingPayment):
-            colorScheme == .light ? Color(.wooCommercePurple(.shade70)) : Color(.wooCommercePurple(.shade10))
+            .posPrimary
         case .cash(.collectingCash):
-            colorScheme == .light ? .clear : Color.posSecondaryBackground
+            .posSurface
         default:
             .clear
         }
@@ -357,7 +357,7 @@ private extension TotalsView {
         static let subtotalAmountFont: POSFontStyle = .posBodyRegular
         static let totalTitleFont: POSFontStyle = .posTitleRegular
         static let totalAmountFont: POSFontStyle = .posTitleEmphasized
-        static let separatorColor: Color = Color(.systemGray3)
+        static let separatorColor: Color = Color.posOutlineVariant
 
         static let shimmeringCornerRadius: CGFloat = 4
         static let shimmeringWidth: CGFloat = 334
@@ -432,6 +432,6 @@ private extension View {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
     TotalsView()
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 #endif

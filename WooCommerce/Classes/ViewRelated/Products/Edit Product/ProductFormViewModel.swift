@@ -629,13 +629,6 @@ extension ProductFormViewModel {
         }
     }
 
-    func hasChangesExcludingImageUploads() -> Bool {
-        let hasProductChanges = product.product.copy(images: []) != originalProduct.product.copy(images: [])
-        let hasUploadedImageChanges = product.images.map(\.imageID) != originalProduct.images.map(\.imageID)
-        return hasProductChanges || hasUploadedImageChanges || password != originalPassword || isNewTemplateProduct()
-
-    }
-
     func duplicateProduct(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void) {
 
         remoteActionUseCase.duplicateProduct(originalProduct: product,
@@ -668,6 +661,14 @@ extension ProductFormViewModel {
 // MARK: Background image upload
 //
 private extension ProductFormViewModel {
+
+    func hasChangesExcludingImageUploads() -> Bool {
+        let hasProductChanges = product.product.copy(images: []) != originalProduct.product.copy(images: [])
+        let hasUploadedImageChanges = product.images.map(\.imageID) != originalProduct.images.map(\.imageID)
+        return hasProductChanges || hasUploadedImageChanges || password != originalPassword || isNewTemplateProduct()
+
+    }
+
     func replaceProductID(productIDBeforeSave: Int64) {
         productImagesUploader.replaceLocalID(siteID: product.siteID,
                                              localID: .product(id: productIDBeforeSave),

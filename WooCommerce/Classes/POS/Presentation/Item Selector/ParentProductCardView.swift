@@ -41,7 +41,7 @@ struct ParentProductCardView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity, idealHeight: dimension)
-        .background(Color.posSecondaryBackground)
+        .background(Constants.backgroundColor)
         .posItemCardBorderStyles()
     }
 }

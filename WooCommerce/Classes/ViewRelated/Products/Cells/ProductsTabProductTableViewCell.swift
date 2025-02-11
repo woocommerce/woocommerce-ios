@@ -73,19 +73,18 @@ extension ProductsTabProductTableViewCell: SearchResultCell {
 }
 
 extension ProductsTabProductTableViewCell {
-    func updateSyncingStatus(isSyncing: Bool) {
-        if isSyncing {
-            configureSyncingOverlayView()
-        } else {
-            syncingOverlayView?.removeFromSuperview()
-            syncingOverlayView = nil
-        }
-    }
 
     func update(viewModel: ProductsTabProductViewModel, imageService: ImageService) {
         nameLabel.text = viewModel.createNameLabel()
         detailsLabel.attributedText = viewModel.detailsAttributedString
         accessibilityIdentifier = viewModel.createNameLabel()
+
+        if viewModel.hasPendingUploads {
+            configureSyncingOverlayView()
+        } else {
+            syncingOverlayView?.removeFromSuperview()
+            syncingOverlayView = nil
+        }
 
         productImageView.contentMode = .center
         if viewModel.isDraggable {

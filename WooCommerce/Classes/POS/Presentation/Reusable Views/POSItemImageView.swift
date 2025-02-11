@@ -6,21 +6,27 @@ struct POSItemImageView: View {
     let imageSize: CGFloat
     let scale: CGFloat
 
+    private var placeholderView: some View {
+        Rectangle()
+            .foregroundColor(Constants.placeholderBackgroundColor)
+            .overlay {
+                Text(Image(systemName: "archivebox"))
+                    .font(.posButtonSymbol)
+                    .foregroundColor(Constants.placeholderIconColor)
+            }
+    }
+
     var body: some View {
         if let imageSource {
             ProductImageThumbnail(productImageURL: URL(string: imageSource),
                                   productImageSize: imageSize,
                                   scale: scale,
                                   foregroundColor: Constants.placeholderIconColor,
-                                  cachesOriginalImage: true)
+                                  cachesOriginalImage: true) {
+                placeholderView
+            }
         } else {
-            Rectangle()
-                .foregroundColor(Constants.placeholderBackgroundColor)
-                .overlay {
-                    Text(Image(systemName: "archivebox"))
-                        .font(.posButtonSymbol)
-                        .foregroundColor(Constants.placeholderIconColor)
-                }
+            placeholderView
         }
     }
 }

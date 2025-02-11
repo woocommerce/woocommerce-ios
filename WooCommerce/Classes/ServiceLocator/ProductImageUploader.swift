@@ -125,7 +125,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 
     func actionHandler(key: ProductImageUploaderKey, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler {
         let actionHandler: ProductImageActionHandler
-        if let handler = actionHandlersByProduct[key], handler.productImageStatuses.hasPendingUpload {
+        if let handler = actionHandlersByProduct[key] {
             actionHandler = handler
         } else {
             actionHandler = ProductImageActionHandler(siteID: key.siteID, productID: key.productOrVariationID, imageStatuses: originalStatuses, stores: stores)

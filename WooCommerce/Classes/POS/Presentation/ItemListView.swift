@@ -58,8 +58,8 @@ private extension ItemListView {
                         ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
                         showSimpleProductsModal = true
                     }, label: {
-                        Image(systemName: "info.circle")
-                            .font(.posTitleRegular)
+                        Text(Image(systemName: "info.circle"))
+                            .font(.posButtonSymbolSmall)
                     })
                     .foregroundColor(.posPrimaryText)
                     .padding(.trailing, Constants.infoIconPadding)
@@ -76,10 +76,8 @@ private extension ItemListView {
         HStack(alignment: .top, spacing: 0) {
             VStack {
                 Spacer()
-                Image(systemName: "info.circle")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: Constants.bannerInfoIconSize, height: Constants.bannerInfoIconSize)
+                Text(Image(systemName: "info.circle"))
+                    .font(.posButtonSymbolLarge)
                     .padding(Constants.iconPadding)
                     .foregroundColor(Color.posOnSurface)
                     .accessibilityHidden(true)
@@ -103,8 +101,8 @@ private extension ItemListView {
                 Button(action: {
                     isHeaderBannerDismissed = true
                 }, label: {
-                    Image(systemName: "xmark")
-                        .font(.posBodyRegular)
+                    Text(Image(systemName: "xmark"))
+                        .font(.posButtonSymbolSmall)
                         .foregroundColor(Color.posOnSurfaceVariantLowest)
                         .accessibilityLabel(Localization.dismissBannerAccessibilityLabel)
                 })
@@ -226,7 +224,6 @@ private extension ItemListView {
         static let bannerTextSpacing: CGFloat = 4
         static let bannerTitleSpacing: CGFloat = 8
         static let infoIconPadding: CGFloat = 16
-        static let bannerInfoIconSize: CGFloat = 44
         static let iconPadding: CGFloat = 26
         static let itemListPadding: CGFloat = 16
         static let bannerCardPadding: CGFloat = 16

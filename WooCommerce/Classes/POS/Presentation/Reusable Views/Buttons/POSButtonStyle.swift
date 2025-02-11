@@ -80,8 +80,8 @@ struct POSButtonStyle: ButtonStyle {
     private var borderOverlay: some View {
         if variant == .outlined {
             RoundedRectangle(cornerRadius: Constants.cornerRadius)
-                .stroke(isEnabled ? Color.posInverseSurface : .posDisabledContainer,
-                        lineWidth: Constants.borderStrokeWidth)
+                .strokeBorder(isEnabled ? Color.posInverseSurface : .posDisabledContainer,
+                              lineWidth: Constants.borderStrokeWidth)
         }
     }
 }

@@ -321,7 +321,6 @@ private extension CartView {
 
 @available(iOS 17.0, *)
 #Preview("Cart with one item") {
-    let itemsController = PointOfSalePreviewItemsController()
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),

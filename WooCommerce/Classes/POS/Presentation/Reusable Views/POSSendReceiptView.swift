@@ -63,19 +63,10 @@ struct POSSendReceiptView: View {
             Button(action: {
                 sendReceipt()
             }, label: {
-                HStack(spacing: Constants.buttonSpacing) {
-                    if isLoading {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle())
-                            .tint(Color.posPrimaryText)
-                    } else {
-                        Text(Localization.buttonTitle)
-                            .font(Constants.buttonFont)
-                    }
-                }
-                .frame(maxWidth: .infinity)
+                Text(Localization.buttonTitle)
+                    .font(Constants.buttonFont)
             })
-            .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
+            .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
             .dynamicTypeSize(...DynamicTypeSize.accessibility3)
             .frame(maxWidth: .infinity)
             .disabled(isLoading)

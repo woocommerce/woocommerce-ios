@@ -11,30 +11,33 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="6bQ-pQ-pPf" customClass="FailedProductImageCollectionViewCell" customModule="WooCommerce" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+            <rect key="frame" x="0.0" y="0.0" width="229" height="199"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Ugl-WK-kVN">
-                <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                <rect key="frame" x="0.0" y="0.0" width="229" height="199"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Wxb-SP-8eM">
-                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                        <rect key="frame" x="0.0" y="0.0" width="229" height="199"/>
                     </imageView>
                     <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AfW-fi-jBR">
-                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                        <rect key="frame" x="0.0" y="0.0" width="229" height="199"/>
                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Wvy-yO-E8M">
-                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                            <rect key="frame" x="0.0" y="0.0" width="229" height="199"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         </view>
                         <blurEffect style="regular"/>
                     </visualEffectView>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="exclamationmark.circle.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="imw-fJ-OtJ">
-                        <rect key="frame" x="0.0" y="15.666666666666664" width="50" height="19"/>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="imw-fJ-OtJ">
+                        <rect key="frame" x="76.666666666666657" y="61.666666666666664" width="75.666666666666657" height="75.666666666666686"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="imw-fJ-OtJ" secondAttribute="height" id="XhB-KK-7Vn"/>
+                        </constraints>
                     </imageView>
                 </subviews>
                 <constraints>
                     <constraint firstItem="imw-fJ-OtJ" firstAttribute="centerX" secondItem="Ugl-WK-kVN" secondAttribute="centerX" id="2Wj-uU-uUQ"/>
-                    <constraint firstItem="imw-fJ-OtJ" firstAttribute="width" secondItem="Ugl-WK-kVN" secondAttribute="width" id="5fK-xi-gEI"/>
+                    <constraint firstItem="imw-fJ-OtJ" firstAttribute="width" secondItem="Ugl-WK-kVN" secondAttribute="width" multiplier="0.33" id="5fK-xi-gEI"/>
                     <constraint firstAttribute="trailing" secondItem="Wxb-SP-8eM" secondAttribute="trailing" id="9e4-04-4yc"/>
                     <constraint firstItem="AfW-fi-jBR" firstAttribute="leading" secondItem="Wxb-SP-8eM" secondAttribute="leading" id="AzL-LI-Aks"/>
                     <constraint firstItem="Wxb-SP-8eM" firstAttribute="leading" secondItem="Ugl-WK-kVN" secondAttribute="leading" id="CGG-Ge-V3j"/>
@@ -46,15 +49,13 @@
                     <constraint firstItem="imw-fJ-OtJ" firstAttribute="centerY" secondItem="Ugl-WK-kVN" secondAttribute="centerY" id="mxu-uB-gwv"/>
                 </constraints>
             </collectionViewCellContentView>
+            <size key="customSize" width="229" height="199"/>
             <connections>
                 <outlet property="effectView" destination="AfW-fi-jBR" id="0AI-1b-8sf"/>
                 <outlet property="errorImageView" destination="imw-fJ-OtJ" id="5ri-Tl-vxU"/>
                 <outlet property="imageView" destination="Wxb-SP-8eM" id="M2h-nc-rPC"/>
             </connections>
-            <point key="canvasLocation" x="65.648854961832058" y="19.718309859154932"/>
+            <point key="canvasLocation" x="-70.992366412213741" y="72.183098591549296"/>
         </collectionViewCell>
     </objects>
-    <resources>
-        <image name="exclamationmark.circle.fill" catalog="system" width="128" height="123"/>
-    </resources>
 </document>

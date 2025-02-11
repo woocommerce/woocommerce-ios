@@ -33,7 +33,8 @@ private extension FailedProductImageCollectionViewCell {
     }
 
     func configureErrorImageView() {
-        errorImageView.tintColor = UIColor.error
+        errorImageView.image = UIImage(systemName: "arrow.counterclockwise")
+        errorImageView.tintColor = .white
     }
 
     func configureCellAppearance() {

@@ -37,7 +37,7 @@ private extension PaymentsActionButtons {
                     .font(Constants.buttonFont)
             }
         })
-        .buttonStyle(POSButtonStyle(variant: .outlined, size: .normal))
+        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
     }
 
     var newOrderButton: some View {

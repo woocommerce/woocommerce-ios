@@ -33,7 +33,7 @@ struct PointOfSaleCardPresentPaymentFoundReaderView: View {
 
                 Button(viewModel.continueSearchButton.title,
                        action: viewModel.continueSearchButton.actionHandler)
-                .buttonStyle(POSButtonStyle(variant: .outlined, size: .normal))
+                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             }
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }

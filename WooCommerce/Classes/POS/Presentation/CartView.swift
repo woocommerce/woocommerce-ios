@@ -51,7 +51,7 @@ struct CartView: View {
                         Text(Localization.clearButtonTitle)
                             .font(Constants.clearButtonFont)
                     }
-                    .buttonStyle(POSButtonStyle(variant: .outlined, size: .extraSmall))
+                    .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
                     .renderedIf(shouldShowClearCartButton)
                 }
             }

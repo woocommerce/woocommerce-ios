@@ -67,7 +67,7 @@ struct TotalsView: View {
                             .font(POSFontStyle.posBodyEmphasized)
                             .minimumScaleFactor(0.5)
                     })
-                    .buttonStyle(POSButtonStyle(variant: .outlined, size: .normal))
+                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                     .padding(.horizontal, Constants.buttonHorizontalPadding)
                     .padding(.bottom, Constants.cashButtonBottomPadding)
                     .renderedIf(viewHelper.shouldShowCollectCashPaymentButton(orderState: posModel.orderState,

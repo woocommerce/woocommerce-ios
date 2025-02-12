@@ -228,7 +228,7 @@ struct POSButtonStyle_Previews: View {
                         .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
 
                     Button("Long text in small size button that might need to wrap") {}
-                        .buttonStyle(POSButtonStyle(variant: .outlined, size: .extraSmall))
+                        .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
                 }
             }
             .padding()

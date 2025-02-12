@@ -36,7 +36,7 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
             }) {
                 Text(Localization.cancel)
             }
-            .buttonStyle(POSButtonStyle(variant: .outlined, size: .normal))
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             .padding(Layout.buttonPadding)
         }
         .padding(Layout.padding)
@@ -53,7 +53,7 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
             Button(Localization.connect) {
                 connect(readerID)
             }
-            .buttonStyle(POSButtonStyle(variant: .outlined, size: .extraSmall))
+            .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
         }
         .padding(.vertical, Layout.rowVerticalPadding)
     }

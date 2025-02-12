@@ -38,7 +38,7 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
                 Button(action: viewModel.newOrderButtonViewModel.actionHandler) {
                     Label(viewModel.newOrderButtonViewModel.title, systemImage: "arrow.uturn.backward")
                 }
-                .buttonStyle(POSButtonStyle(variant: .outlined, size: .normal))
+                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             }
         }
         .multilineTextAlignment(.center)

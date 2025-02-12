@@ -34,7 +34,7 @@ struct ItemListErrorCardView: View {
                 Text(errorState.buttonText)
                     .font(Constants.itemTitleFont)
             }
-            .buttonStyle(POSButtonStyle(variant: .outlined, size: .normal))
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             .frame(maxWidth: Constants.accessoryButtonMaxWidth * scale)
             .padding(Constants.accessoryButtonPadding * (1 / scale))
         }

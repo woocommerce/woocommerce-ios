@@ -89,7 +89,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
         let expectedStatusUpdates: [[ProductImageStatus]] = [
             mockRemoteProductImageStatuses,
             [.uploading(asset: .phAsset(asset: mockAsset))] + mockRemoteProductImageStatuses,
-            mockRemoteProductImageStatuses
+            [.uploadFailure(asset: .phAsset(asset: mockAsset), error: MediaActionError.unknown)] + mockRemoteProductImageStatuses
         ]
 
         let expectation = self.expectation(description: "Wait for image upload")

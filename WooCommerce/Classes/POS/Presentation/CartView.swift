@@ -50,7 +50,7 @@ struct CartView: View {
                     } label: {
                         Text(Localization.clearButtonTitle)
                     }
-                    .buttonStyle(POSButtonStyle(variant: .outlined, size: .extraSmall))
+                    .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
                     .renderedIf(shouldShowClearCartButton)
                 }
             }
@@ -244,7 +244,7 @@ private extension CartView {
         } label: {
             Text(Localization.checkoutButtonTitle)
         }
-        .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
+        .buttonStyle(POSFilledButtonStyle(size: .normal))
     }
 
     @ViewBuilder

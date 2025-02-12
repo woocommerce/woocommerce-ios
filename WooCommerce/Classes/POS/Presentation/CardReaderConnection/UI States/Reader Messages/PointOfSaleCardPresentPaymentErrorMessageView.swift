@@ -25,12 +25,12 @@ struct PointOfSaleCardPresentPaymentErrorMessageView: View {
             VStack(spacing: PointOfSaleCardPresentPaymentLayout.buttonSpacing) {
                 Button(viewModel.tryAgainButtonViewModel.title,
                        action: viewModel.tryAgainButtonViewModel.actionHandler)
-                .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
 
                 if let backToCheckoutButtonViewModel = viewModel.backToCheckoutButtonViewModel {
                     Button(backToCheckoutButtonViewModel.title,
                            action: backToCheckoutButtonViewModel.actionHandler)
-                    .buttonStyle(POSButtonStyle(variant: .outlined, size: .normal))
+                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                 }
             }
         }

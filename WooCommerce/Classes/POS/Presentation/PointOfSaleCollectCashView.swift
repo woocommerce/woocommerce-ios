@@ -73,15 +73,9 @@ struct PointOfSaleCollectCashView: View {
                         await submitCashAmount()
                     }
                 }, label: {
-                    if isLoading {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle())
-                            .tint(Color.posOnInverseSurface)
-                    } else {
-                        Text(Localization.markPaymentCompletedButtonTitle)
-                    }
+                    Text(Localization.markPaymentCompletedButtonTitle)
                 })
-                .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
+                .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
                 .frame(maxWidth: .infinity)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                 .disabled(isLoading)

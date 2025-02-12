@@ -8,6 +8,8 @@ extension Color {
     static var posOnPrimaryContainer: Color { Color(.posOnPrimaryContainer) }
 
     // MARK: - Secondary Container Colors
+    static var posSecondary: Color { Color(.posSecondary) }
+    static var posOnSecondary: Color { Color(.posOnSecondary) }
     static var posSecondaryContainer: Color { Color(.posSecondaryContainer) }
     static var posOnSecondaryContainer: Color { Color(.posOnSecondaryContainer) }
 

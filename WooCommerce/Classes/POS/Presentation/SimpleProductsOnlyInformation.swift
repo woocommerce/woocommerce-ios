@@ -50,7 +50,7 @@ struct SimpleProductsOnlyInformation: View {
             }) {
                 Text(Localization.okButtonTitle)
             }
-            .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
+            .buttonStyle(POSFilledButtonStyle(size: .normal))
         }
         .padding(Constants.modalContentPadding)
         .frame(width: Constants.modalFrameWidth)

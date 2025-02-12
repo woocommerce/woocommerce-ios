@@ -36,7 +36,7 @@ private extension PaymentsActionButtons {
                 Text(Localization.sendReceipt)
             }
         })
-        .buttonStyle(POSButtonStyle(variant: .outlined, size: .normal))
+        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
     }
 
     var newOrderButton: some View {
@@ -48,7 +48,7 @@ private extension PaymentsActionButtons {
                 Text(Localization.newOrder)
             }
         })
-        .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
+        .buttonStyle(POSFilledButtonStyle(size: .normal))
     }
 }
 

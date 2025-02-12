@@ -25,7 +25,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableView: View {
 
             Button(viewModel.cancelButtonViewModel.title,
                    action: viewModel.cancelButtonViewModel.actionHandler)
-            .buttonStyle(POSButtonStyle(variant: .outlined, size: .normal))
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
         .multilineTextAlignment(.center)

@@ -27,7 +27,7 @@ struct CartView: View {
                     HStack {
                         Text(Localization.cartTitle)
                             .font(Constants.primaryFont)
-                            .foregroundColor(posModel.cart.isEmpty ? .posSecondaryText : .posOnSurface)
+                            .foregroundColor(.posOnSurface)
                             .accessibilityAddTraits(.isHeader)
 
                         Spacer()

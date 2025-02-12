@@ -58,6 +58,7 @@ final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
     }
 }
 
+@available(iOS 17.0, *)
 final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtocol {
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                                    itemsStack: ItemsStackState(root: .loading([]),
@@ -72,6 +73,10 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
         case .parent(let parent):
             await loadInitialChildItems(for: parent)
         }
+    }
+
+    func refreshItems(base: ItemListBaseItem) async {
+        await loadItems(base: base)
     }
 
     func loadNextItems(base: ItemListBaseItem) async {

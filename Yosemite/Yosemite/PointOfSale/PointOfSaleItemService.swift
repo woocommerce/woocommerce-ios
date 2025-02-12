@@ -4,11 +4,13 @@ import protocol Networking.ProductVariationsRemoteProtocol
 import class Networking.ProductsRemote
 import class Networking.ProductVariationsRemote
 import class Networking.AlamofireNetwork
+import enum Alamofire.AFError
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
 public enum PointOfSaleItemServiceError: Error, Equatable {
     case requestFailed
+    case requestCancelled
     case unknown
 }
 
@@ -47,43 +49,51 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     public func providePointOfSaleItems(pageNumber: Int = 1) async throws -> PagedItems<POSItem> {
         let productTypes: [ProductType] = isVariableProductsFeatureEnabled ?
         [.simple, .variable] : [.simple]
-        let pagedProducts = try await productsRemote.loadProductsForPointOfSale(for: siteID, productTypes: productTypes, pageNumber: pageNumber)
-        let products = pagedProducts.items
+        do {
+            let pagedProducts = try await productsRemote.loadProductsForPointOfSale(for: siteID, productTypes: productTypes, pageNumber: pageNumber)
+            let products = pagedProducts.items
 
-        if pageNumber != 1 && products.count == 0 {
-            return .init(items: [], hasMorePages: false)
+            if pageNumber != 1 && products.count == 0 {
+                return .init(items: [], hasMorePages: false)
+            }
+
+            return .init(items: mapProductsToPOSItems(products: products), hasMorePages: pagedProducts.hasMorePages)
+        } catch AFError.explicitlyCancelled {
+            throw PointOfSaleItemServiceError.requestCancelled
         }
-
-        return .init(items: mapProductsToPOSItems(products: products), hasMorePages: pagedProducts.hasMorePages)
     }
 
     public func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
-        let pagedVariations = try await variationRemote
-            .loadVariationsForPointOfSale(for: siteID,
-                                          parentProductID: parentProduct.productID,
-                                          pageNumber: pageNumber)
-        let variations = pagedVariations.items
+        do {
+            let pagedVariations = try await variationRemote
+                .loadVariationsForPointOfSale(for: siteID,
+                                              parentProductID: parentProduct.productID,
+                                              pageNumber: pageNumber)
+            let variations = pagedVariations.items
             // Remove this when WC version 9.7 has significant adoption in POS stores.
-            .filter { !$0.downloadable }
-        return .init(
-            items: variations.compactMap({ variation in
-                let variationName = ProductVariationFormatter().generateNameWithAttributeNames(
-                    for: variation,
-                    from: parentProduct.allAttributes,
-                    separator: ", "
-                )
-                return POSItem
-                    .variation(.init(id: UUID(),
-                                     name: variationName,
-                                     formattedPrice: formatPrice(variation.price),
-                                     price: variation.price,
-                                     productImageSource: variation.image?.src,
-                                     productID: variation.productID,
-                                     variationID: variation.productVariationID,
-                                     parentProductName: parentProduct.name))
-            }),
-            hasMorePages: pagedVariations.hasMorePages
-        )
+                .filter { !$0.downloadable }
+            return .init(
+                items: variations.compactMap({ variation in
+                    let variationName = ProductVariationFormatter().generateNameWithAttributeNames(
+                        for: variation,
+                        from: parentProduct.allAttributes,
+                        separator: ", "
+                    )
+                    return POSItem
+                        .variation(.init(id: UUID(),
+                                         name: variationName,
+                                         formattedPrice: formatPrice(variation.price),
+                                         price: variation.price,
+                                         productImageSource: variation.image?.src,
+                                         productID: variation.productID,
+                                         variationID: variation.productVariationID,
+                                         parentProductName: parentProduct.name))
+                }),
+                hasMorePages: pagedVariations.hasMorePages
+            )
+        } catch AFError.explicitlyCancelled {
+            throw PointOfSaleItemServiceError.requestCancelled
+        }
     }
 
     // Maps result to POSItem, and populate the output with:

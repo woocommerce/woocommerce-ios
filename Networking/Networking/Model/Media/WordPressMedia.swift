@@ -71,6 +71,20 @@ public extension WordPressMedia {
             case fileName = "file"
             case sizes
         }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            width = try container.decodeIfPresent(Double.self, forKey: .width)
+            height = try container.decodeIfPresent(Double.self, forKey: .height)
+            fileName = try container.decodeIfPresent(String.self, forKey: .fileName)
+
+            do {
+                sizes = try container.decodeIfPresent([String: MediaSizeDetails].self, forKey: .sizes)
+            } catch {
+                // Handle the case where sizes is an empty array. Ref: https://github.com/woocommerce/woocommerce-ios/issues/14516
+                sizes = nil
+            }
+        }
     }
 
     /// Details about a size of WordPress site media (e.g. `thumbnail`, `medium`, `2048x2048`).

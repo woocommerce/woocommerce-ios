@@ -130,6 +130,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         } else {
             actionHandler = ProductImageActionHandler(siteID: key.siteID, productID: key.productOrVariationID, imageStatuses: originalStatuses, stores: stores)
             actionHandlersByProduct[key] = actionHandler
+            initialStatusesByProduct[key] = originalStatuses
             observeStatusUpdates(key: key, actionHandler: actionHandler)
         }
 
@@ -250,10 +251,6 @@ private extension ProductImageUploader {
     func observeStatusUpdates(key: Key, actionHandler: ProductImageActionHandler) {
         let observationToken = actionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else { return }
-
-            if initialStatusesByProduct[key] == nil {
-                initialStatusesByProduct[key] = productImageStatuses
-            }
 
             if !activeUploadsPublisher.contains(key), productImageStatuses.hasPendingUpload {
                 activeUploadsPublisher.append(key)

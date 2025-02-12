@@ -17,30 +17,30 @@ struct SimpleProductsOnlyInformation: View {
         VStack(spacing: Constants.contentBlockSpacing) {
             VStack(spacing: Constants.textSpacing) {
                 Text(Localization.modalTitle)
-                    .font(.posTitleEmphasized)
+                    .font(.posHeading)
 
                 Group {
                     Text(issueMessage)
                     Text(futureMessage)
                         .padding(.bottom, Constants.textToModalBottomPadding)
                 }
-                .font(.posBodyRegular)
+                .font(.posBodyLargeRegular())
 
                 VStack(spacing: Constants.textSpacing) {
                     Text(hintMessage)
-                        .font(.posDetailLight)
+                        .font(.posBodySmallRegular())
 
                     Button {
                         deepLinkNavigator?.navigate(to: OrdersDestination.createOrder)
                     } label: {
                         Label(Localization.modalAction, systemImage: "plus")
-                            .font(.posDetailLight)
+                            .font(.posBodySmallRegular())
                     }
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, Constants.hintVerticalPadding)
                 .padding(.horizontal, Constants.hintHorizontalPadding)
-                .background(Color(.quaternarySystemFill))
+                .background(Color(.posSurfaceDim))
                 .clipShape(RoundedRectangle(cornerRadius: Constants.hintBackgroundCornerRadius))
             }
             .multilineTextAlignment(.center)
@@ -50,7 +50,7 @@ struct SimpleProductsOnlyInformation: View {
             }) {
                 Text(Localization.okButtonTitle)
             }
-            .buttonStyle(POSSecondaryButtonStyle())
+            .buttonStyle(POSFilledButtonStyle(size: .normal))
         }
         .padding(Constants.modalContentPadding)
         .frame(width: Constants.modalFrameWidth)

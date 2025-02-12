@@ -1120,6 +1120,12 @@ extension UIImage {
         return UIImage(named: "icon-widgets")!.withRenderingMode(.alwaysTemplate)
     }
 
+    /// Woo Shipping - Placeholder image for shipping rates
+    ///
+    static var wooShippingRatesPlaceholder: UIImage {
+        return UIImage(named: "woo-shipping-rates-placeholder")!
+    }
+
     /// Variations Icon
     ///
     static var variationsImage: UIImage {

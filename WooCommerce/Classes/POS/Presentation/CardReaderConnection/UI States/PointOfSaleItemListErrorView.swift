@@ -19,11 +19,11 @@ struct PointOfSaleItemListErrorView: View {
                 Text(error.title)
                     .accessibilityAddTraits(.isHeader)
                     .foregroundStyle(Color.posPrimaryText)
-                    .font(.posTitleEmphasized)
+                    .font(.posHeading)
                     .padding(.bottom, PointOfSaleItemListErrorLayout.verticalPadding)
                 Text(error.subtitle)
                     .foregroundStyle(Color.posPrimaryText)
-                    .font(.posBodyRegular)
+                    .font(.posBodyLargeRegular())
                     .padding([.leading, .trailing])
                     .padding(.bottom, PointOfSaleItemListErrorLayout.verticalPadding)
                 Button(action: {
@@ -31,7 +31,7 @@ struct PointOfSaleItemListErrorView: View {
                 }, label: {
                     Text(error.buttonText)
                 })
-                .buttonStyle(POSPrimaryButtonStyle())
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
                 .frame(maxWidth: PointOfSaleItemListErrorLayout.buttonWidth)
                 .padding([.leading, .trailing])
             }

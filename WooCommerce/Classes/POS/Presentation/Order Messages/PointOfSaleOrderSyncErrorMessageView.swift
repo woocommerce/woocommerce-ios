@@ -12,16 +12,16 @@ struct PointOfSaleOrderSyncErrorMessageView: View {
                 VStack(alignment: .center, spacing: Constants.textSpacing) {
                     Text(viewModel.title)
                         .foregroundStyle(Color.posPrimaryText)
-                        .font(.posTitleEmphasized)
+                        .font(.posHeading)
 
                     Text(viewModel.message)
                         .foregroundStyle(Color.posPrimaryText)
-                        .font(.posBodyRegular)
+                        .font(.posBodyLargeRegular())
                         .padding([.leading, .trailing])
                 }
                 Spacer()
                 Button(viewModel.actionModel.title, action: viewModel.actionModel.handler)
-                    .buttonStyle(POSPrimaryButtonStyle())
+                    .buttonStyle(POSFilledButtonStyle(size: .normal))
                     .padding([.leading, .trailing], Constants.buttonSidePadding)
                     .padding([.bottom], Constants.buttonBottomPadding)
             }

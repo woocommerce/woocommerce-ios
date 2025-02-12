@@ -111,7 +111,7 @@ private extension CardReaderConnectionStatusView {
         static let imageDimension: CGFloat = 12
         static let progressIndicatorDimension: CGFloat = 10
         static let progressIndicatorLineWidth: CGFloat = 2
-        static let font = POSFontStyle.posBodyMediumRegular
+        static let font = POSFontStyle.posBodyMediumRegular()
         static let horizontalPadding: CGFloat = 24
         static let overlayRadius: CGFloat = 4
         static let overlayLineWidth: CGFloat = 2

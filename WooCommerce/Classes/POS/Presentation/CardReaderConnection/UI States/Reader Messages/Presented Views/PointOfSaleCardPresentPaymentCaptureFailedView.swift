@@ -17,7 +17,7 @@ struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
                     Text(Localization.message)
                     Text(Localization.nextSteps)
                 }
-                .font(.posBodyLargeRegular)
+                .font(.posBodyLargeRegular())
                 .foregroundStyle(Color.posPrimaryText)
             }
 

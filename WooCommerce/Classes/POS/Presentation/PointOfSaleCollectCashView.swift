@@ -57,13 +57,13 @@ struct PointOfSaleCollectCashView: View {
 
                 if let changeDue = changeDueMessage {
                     Text(changeDue)
-                        .font(.posBodyLargeRegular)
+                        .font(.posBodyLargeRegular())
                         .foregroundColor(.posSecondaryText)
                 }
 
                 if let errorMessage = errorMessage {
                     Text(errorMessage)
-                        .font(POSFontStyle.posBodyLargeRegular)
+                        .font(POSFontStyle.posBodyLargeRegular())
                         .foregroundColor(.red)
                         .padding(.bottom, Constants.errorMessagePadding)
                 }
@@ -119,7 +119,7 @@ private extension PointOfSaleCollectCashView {
                     Spacer()
                 }
                 Text(formattedOrderTotal)
-                    .font(.posBodyLargeRegular)
+                    .font(.posBodyLargeRegular())
             }
             .padding(.top, -Constants.navigationButtonSpacing)
         }

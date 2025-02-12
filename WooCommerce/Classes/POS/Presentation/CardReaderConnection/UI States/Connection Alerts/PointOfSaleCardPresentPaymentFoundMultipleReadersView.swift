@@ -48,7 +48,7 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
     @ViewBuilder func readerRow(readerID: String) -> some View {
         HStack {
             Text(readerID)
-                .font(.posBodyLargeRegular)
+                .font(.posBodyLargeRegular())
             Spacer()
             Button(Localization.connect) {
                 connect(readerID)
@@ -64,7 +64,7 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
             ProgressView()
                 .progressViewStyle(POSProgressViewStyle(size: 20, lineWidth: 4))
             Text(Localization.scanningLabel)
-                .font(.posBodyLargeRegular)
+                .font(.posBodyLargeRegular())
             Spacer()
         }
     }

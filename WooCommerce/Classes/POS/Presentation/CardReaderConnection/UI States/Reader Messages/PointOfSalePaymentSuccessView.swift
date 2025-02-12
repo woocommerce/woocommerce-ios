@@ -35,7 +35,7 @@ struct PointOfSalePaymentSuccessView: View {
 
                             if let message = viewModel.message {
                                 Text(message)
-                                    .font(.posBodyLargeRegular)
+                                    .font(.posBodyLargeRegular())
                                     .foregroundStyle(Color.posPrimaryText)
                                     .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
                                     .opacity(isViewLoaded ? 1 : 0)

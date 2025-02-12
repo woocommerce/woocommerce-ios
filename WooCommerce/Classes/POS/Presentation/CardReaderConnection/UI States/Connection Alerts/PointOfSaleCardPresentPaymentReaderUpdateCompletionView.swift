@@ -25,7 +25,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateCompletionView: View {
 
                 Text(viewModel.progressTitle)
                     .fixedSize(horizontal: false, vertical: true)
-                    .font(POSFontStyle.posBodyLargeRegular)
+                    .font(POSFontStyle.posBodyLargeRegular())
                     .matchedGeometryEffect(id: animation.contentTransitionId, in: animation.namespace, properties: .position)
             }
         }

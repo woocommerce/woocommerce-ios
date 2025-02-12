@@ -23,7 +23,7 @@ struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertView: View {
                         .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                     Text(viewModel.errorDetails)
-                        .font(POSFontStyle.posBodyLargeRegular)
+                        .font(POSFontStyle.posBodyLargeRegular())
                         .matchedGeometryEffect(id: animation.contentTransitionId, in: animation.namespace, properties: .position)
                 }
                 .fixedSize(horizontal: false, vertical: true)

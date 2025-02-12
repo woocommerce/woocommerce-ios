@@ -20,11 +20,11 @@ struct PointOfSaleItemListEmptyView: View {
                 .font(.posHeading)
             Text(subtitle)
                 .foregroundStyle(Color.posSecondaryText)
-                .font(.posBodyLargeRegular)
+                .font(.posBodyLargeRegular())
                 .padding([.leading, .trailing])
             Text(hint)
                 .foregroundStyle(Color.posSecondaryText)
-                .font(.posBodyLargeRegular)
+                .font(.posBodyLargeRegular())
                 .padding([.leading, .trailing])
             Spacer()
         }

@@ -17,7 +17,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedNonRetryableView: View {
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(viewModel.errorDetails)
-                    .font(POSFontStyle.posBodyLargeRegular)
+                    .font(POSFontStyle.posBodyLargeRegular())
                     .fixedSize(horizontal: false, vertical: true)
                     .matchedGeometryEffect(id: animation.contentTransitionId, in: animation.namespace, properties: .position)
             }

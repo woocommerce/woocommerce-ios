@@ -17,7 +17,7 @@ struct PointOfSaleCardPresentPaymentIntentCreationErrorMessageView: View {
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(viewModel.message)
-                    .font(.posBodyLargeRegular)
+                    .font(.posBodyLargeRegular())
                     .foregroundStyle(Color.posPrimaryText)
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }

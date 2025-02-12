@@ -197,8 +197,8 @@ private extension CartView {
 private extension CartView {
     enum Constants {
         static let primaryFont: POSFontStyle = .posHeading
-        static let secondaryFont: POSFontStyle = .posBodyLargeRegular
-        static let itemsFont: POSFontStyle = .posBodySmallRegular
+        static let secondaryFont: POSFontStyle = .posBodyLargeRegular()
+        static let itemsFont: POSFontStyle = .posBodySmallRegular()
         static let itemHorizontalPadding: CGFloat = 8
         static let shoppingBagImageSize: CGFloat = 104
         static let scrollViewCoordinateSpaceIdentifier: String = "CartScrollView"

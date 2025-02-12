@@ -24,17 +24,17 @@ struct SimpleProductsOnlyInformation: View {
                     Text(futureMessage)
                         .padding(.bottom, Constants.textToModalBottomPadding)
                 }
-                .font(.posBodyLargeRegular)
+                .font(.posBodyLargeRegular())
 
                 VStack(spacing: Constants.textSpacing) {
                     Text(hintMessage)
-                        .font(.posBodySmallRegular)
+                        .font(.posBodySmallRegular())
 
                     Button {
                         deepLinkNavigator?.navigate(to: OrdersDestination.createOrder)
                     } label: {
                         Label(Localization.modalAction, systemImage: "plus")
-                            .font(.posBodySmallRegular)
+                            .font(.posBodySmallRegular())
                     }
                 }
                 .frame(maxWidth: .infinity)

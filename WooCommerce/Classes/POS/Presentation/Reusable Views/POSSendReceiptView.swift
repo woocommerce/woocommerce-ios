@@ -55,7 +55,7 @@ struct POSSendReceiptView: View {
 
             if let errorMessage = errorMessage {
                 Text(errorMessage)
-                    .font(POSFontStyle.posBodyLargeRegular)
+                    .font(POSFontStyle.posBodyLargeRegular())
                     .foregroundColor(.red)
                     .padding(.bottom, Constants.errorMessagePadding)
             }

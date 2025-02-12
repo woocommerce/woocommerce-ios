@@ -51,10 +51,11 @@ private struct POSButton: View {
     var body: some View {
         Group {
             containerView {
-                if isLoading {
-                    progressView
-                } else {
+                ZStack(alignment: .center) {
                     configuration.label
+                        .opacity(isLoading ? 0 : 1)
+                    progressView
+                        .renderedIf(isLoading)
                 }
             }
         }

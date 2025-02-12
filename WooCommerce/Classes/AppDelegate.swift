@@ -2,6 +2,7 @@ import UIKit
 import Combine
 import Storage
 import class Networking.UserAgent
+import class Networking.BackgroundURLSessionManager
 import Experiments
 import class WidgetKit.WidgetCenter
 import protocol WooFoundation.Analytics
@@ -264,6 +265,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let size = os_proc_available_memory()
         DDLogDebug("Received memory warning: Available memory - \(size)")
         ServiceLocator.imageService.clearMemoryCache()
+    }
+
+    func application(_ application: UIApplication,
+                     handleEventsForBackgroundURLSession identifier: String,
+                     completionHandler: @escaping () -> Void) {
+        if identifier == ServiceLocator.backgroundURLSessionManager.backgroundSessionIdentifier {
+            ServiceLocator.backgroundURLSessionManager.handleBackgroundSessionCompletion(completionHandler)
+        }
     }
 }
 

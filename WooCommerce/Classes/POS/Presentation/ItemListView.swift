@@ -59,7 +59,7 @@ private extension ItemListView {
                         showSimpleProductsModal = true
                     }, label: {
                         Image(systemName: "info.circle")
-                            .font(.posTitleRegular)
+                            .font(.posButtonSymbol)
                     })
                     .foregroundColor(.posPrimaryText)
                     .padding(.trailing, Constants.infoIconPadding)
@@ -104,7 +104,7 @@ private extension ItemListView {
                     isHeaderBannerDismissed = true
                 }, label: {
                     Image(systemName: "xmark")
-                        .font(.posBodyRegular)
+                        .font(.posBodyLargeRegular())
                         .foregroundColor(Color.posOnSurfaceVariantLowest)
                         .accessibilityLabel(Localization.dismissBannerAccessibilityLabel)
                 })
@@ -127,7 +127,7 @@ private extension ItemListView {
     private var bannerHintAndLearnMoreText: Text {
         Text(headerBannerHint + " ") +
         Text(Localization.headerBannerLearnMoreHint)
-            .font(POSFontStyle.posDetailEmphasized.font())
+            .font(POSFontStyle.posBodySmallBold.font())
             .foregroundColor(Color(.accent))
     }
 
@@ -219,8 +219,8 @@ private extension GhostItemCardView {
 @available(iOS 17.0, *)
 private extension ItemListView {
     enum Constants {
-        static let bannerTitleFont: POSFontStyle = .posBodyEmphasized
-        static let bannerSubtitleFont: POSFontStyle = .posDetailRegular
+        static let bannerTitleFont: POSFontStyle = .posBodyLargeBold
+        static let bannerSubtitleFont: POSFontStyle = .posBodySmallRegular()
         static let bannerCornerRadius: CGFloat = 8
         static let bannerVerticalPadding: CGFloat = 26
         static let bannerTextSpacing: CGFloat = 4

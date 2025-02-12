@@ -8,10 +8,10 @@ struct PointOfSaleUnsupportedWidthView: View {
             Spacer()
 
             VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
-                Text(Image(systemName: "ipad.landscape.badge.exclamationmark"))
-                    .font(.posButtonSymbolLarge)
+                Image(systemName: "ipad.landscape.badge.exclamationmark")
                     .symbolRenderingMode(.palette)
-                    .foregroundStyle(Color.posAlert, Color.posOnAlert)
+                    .foregroundStyle(Color.posAlert, Color.posAlert)
+                    .font(.system(size: Constants.iconSize))
                     .accessibilityHidden(true)
                     .renderedIf(!dynamicTypeSize.isAccessibilitySize)
 
@@ -47,6 +47,10 @@ private extension PointOfSaleUnsupportedWidthView {
             value: "Please adjust your screen split to give Point of Sale more space.",
             comment: "Detail for an error shown when the Point of Sale is used in iOS split view, but with not " +
             "enough horizontal space.")
+    }
+
+    enum Constants {
+        static let iconSize: CGFloat = 64
     }
 }
 

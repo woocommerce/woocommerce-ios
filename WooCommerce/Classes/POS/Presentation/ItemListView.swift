@@ -59,7 +59,7 @@ private extension ItemListView {
                         showSimpleProductsModal = true
                     }, label: {
                         Text(Image(systemName: "info.circle"))
-                            .font(.posButtonSymbolSmall)
+                            .font(.posButtonSymbolLarge)
                     })
                     .foregroundColor(.posPrimaryText)
                     .padding(.trailing, Constants.infoIconPadding)

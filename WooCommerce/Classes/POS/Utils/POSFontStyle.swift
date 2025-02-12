@@ -37,11 +37,11 @@ enum POSFontStyle {
         case .posDetailEmphasized:
             Font.system(size: scaledValue(16, maximumContentSizeCategory: maximumContentSizeCategory), weight: .semibold)
         case .posButtonSymbolSmall:
-            Font.system(size: scaledValue(32, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
+            Font.system(size: scaledValue(20, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
         case .posButtonSymbolMedium:
-            Font.system(size: scaledValue(40, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
+            Font.system(size: scaledValue(24, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
         case .posButtonSymbolLarge:
-            Font.system(size: scaledValue(48, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
+            Font.system(size: scaledValue(30, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
         }
     }
 

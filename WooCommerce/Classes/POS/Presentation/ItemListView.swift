@@ -93,7 +93,7 @@ private extension ItemListView {
                     Text(headerBannerSubtitle)
                     bannerHintAndLearnMoreText
                 }
-                .font(POSFontStyle.posBodySmallRegular().font())
+                .font(Constants.bannerSubtitleFont)
                 .lineSpacing(Constants.bannerTextSpacing)
                 .accessibilityElement(children: .combine)
             }

@@ -15,11 +15,11 @@ struct PointOfSaleCardPresentPaymentActivityIndicatingMessageView: View {
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
                 Text(title)
                     .foregroundStyle(Color(.neutral(.shade40)))
-                    .font(.posBodyRegular)
+                    .font(.posBodyLargeRegular())
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(message)
-                    .font(.posTitleEmphasized)
+                    .font(.posHeading)
                     .foregroundStyle(Color(.neutral(.shade60)))
                     .accessibilityAddTraits(.isHeader)
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)

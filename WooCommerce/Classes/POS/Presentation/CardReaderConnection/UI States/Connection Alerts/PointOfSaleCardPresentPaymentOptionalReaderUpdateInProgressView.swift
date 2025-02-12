@@ -20,17 +20,17 @@ struct PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressView: View {
 
                 VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
                     Text(viewModel.title)
-                        .font(POSFontStyle.posTitleEmphasized)
+                        .font(POSFontStyle.posHeading)
                         .fixedSize(horizontal: false, vertical: true)
                         .accessibilityAddTraits(.isHeader)
                         .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                     VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
                         Text(viewModel.progressTitle)
-                            .font(POSFontStyle.posBodyRegular)
+                            .font(POSFontStyle.posBodyLargeRegular())
                             .fixedSize(horizontal: false, vertical: true)
                         Text(viewModel.progressSubtitle)
-                            .font(POSFontStyle.posBodyRegular)
+                            .font(POSFontStyle.posBodyLargeRegular())
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     .matchedGeometryEffect(id: animation.contentTransitionId, in: animation.namespace, properties: .position)

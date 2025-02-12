@@ -57,13 +57,13 @@ struct PointOfSaleCollectCashView: View {
 
                 if let changeDue = changeDueMessage {
                     Text(changeDue)
-                        .font(.posBodyRegular)
+                        .font(.posBodyLargeRegular())
                         .foregroundColor(.posSecondaryText)
                 }
 
                 if let errorMessage = errorMessage {
                     Text(errorMessage)
-                        .font(POSFontStyle.posBodyRegular)
+                        .font(POSFontStyle.posBodyLargeRegular())
                         .foregroundColor(.red)
                         .padding(.bottom, Constants.errorMessagePadding)
                 }
@@ -79,7 +79,6 @@ struct PointOfSaleCollectCashView: View {
                             .tint(Color.posOnInverseSurface)
                     } else {
                         Text(Localization.markPaymentCompletedButtonTitle)
-                            .font(Constants.buttonFont)
                     }
                 })
                 .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
@@ -111,16 +110,16 @@ private extension PointOfSaleCollectCashView {
     var navigationHeader: some View {
         HStack(alignment: .top) {
             Image(systemName: "chevron.backward")
-                .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
+                .font(.posBodyLargeBold, maximumContentSizeCategory: .accessibilityLarge)
             DynamicVStack(horizontalAlignment: .leading, spacing: Constants.navigationButtonSpacing) {
                 Text(Localization.backNavigationTitle)
-                    .font(.posTitleEmphasized)
+                    .font(.posHeading)
                     .accessibilityAddTraits(.isHeader)
                 if dynamicTypeSize.isAccessibilitySize {
                     Spacer()
                 }
                 Text(formattedOrderTotal)
-                    .font(.posBodyRegular)
+                    .font(.posBodyLargeRegular())
             }
             .padding(.top, -Constants.navigationButtonSpacing)
         }
@@ -166,7 +165,6 @@ private extension PointOfSaleCollectCashView {
         static let buttonMinHeight: CGFloat = 32
         static let navigationButtonSpacing: CGFloat = 8
         static let navigationHeaderTopPadding: CGFloat = 8
-        static let buttonFont: POSFontStyle = .posBodyEmphasized
         static let errorMessagePadding: CGFloat = 8
     }
 

@@ -34,7 +34,6 @@ private extension PaymentsActionButtons {
         }, label: {
             HStack(spacing: Constants.buttonSpacing) {
                 Text(Localization.sendReceipt)
-                    .font(Constants.buttonFont)
             }
         })
         .buttonStyle(POSButtonStyle(variant: .outlined, size: .normal))
@@ -47,7 +46,6 @@ private extension PaymentsActionButtons {
         }, label: {
             HStack(spacing: Constants.buttonSpacing) {
                 Text(Localization.newOrder)
-                    .font(Constants.buttonFont)
             }
         })
         .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
@@ -78,7 +76,6 @@ private extension PaymentsActionButtons {
 private extension PaymentsActionButtons {
     enum Constants {
         static let buttonSpacing: CGFloat = 12
-        static let buttonFont: POSFontStyle = .posBodyEmphasized
     }
 
     enum Localization {

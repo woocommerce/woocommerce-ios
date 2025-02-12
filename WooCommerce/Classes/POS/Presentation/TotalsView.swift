@@ -64,7 +64,7 @@ struct TotalsView: View {
                         }
                     }, label: {
                         Text(Localization.cashPaymentButtonTitle)
-                            .font(POSFontStyle.posBodyEmphasized)
+                            .font(POSFontStyle.posBodyLargeBold)
                             .minimumScaleFactor(0.5)
                     })
                     .buttonStyle(POSButtonStyle(variant: .outlined, size: .normal))
@@ -350,10 +350,10 @@ private extension TotalsView {
         static let subtotalsVerticalSpacing: CGFloat = 8
         static let totalVerticalSpacing: CGFloat = 16
         static let totalsHorizontalSpacing: CGFloat = 24
-        static let subtotalTitleFont: POSFontStyle = .posBodyRegular
-        static let subtotalAmountFont: POSFontStyle = .posBodyRegular
-        static let totalTitleFont: POSFontStyle = .posTitleRegular
-        static let totalAmountFont: POSFontStyle = .posTitleEmphasized
+        static let subtotalTitleFont: POSFontStyle = .posBodyLargeRegular()
+        static let subtotalAmountFont: POSFontStyle = .posBodyLargeRegular()
+        static let totalTitleFont: POSFontStyle = .posHeading
+        static let totalAmountFont: POSFontStyle = .posHeading
         static let separatorColor: Color = Color.posOutlineVariant
 
         static let shimmeringCornerRadius: CGFloat = 4

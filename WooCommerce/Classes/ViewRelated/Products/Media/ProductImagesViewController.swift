@@ -48,6 +48,9 @@ final class ProductImagesViewController: UIViewController {
             imageStatuses: productImageStatuses,
             isDeletionEnabled: isDeletionEnabled,
             productUIImageLoader: productUIImageLoader,
+            onFailedUploadSelected: { [weak self] asset, error in
+                self?.displayImageUploadErrorAlert(error: error, for: asset)
+            },
             onDeletion: { [weak self] productImage in
                 self?.onDeletion(productImage: productImage)
             },
@@ -262,6 +265,24 @@ private extension ProductImagesViewController {
         hasMovedAnyImages = true
         productImageActionHandler.updateProductImageStatusesAfterReordering(reorderedProductImageStatuses)
     }
+
+    func displayImageUploadErrorAlert(error: Error, for asset: ProductImageAssetType) {
+        let alert = UIAlertController(title: Localization.ImageUploadError.title,
+                                      message: error.localizedDescription,
+                                      preferredStyle: .alert)
+        let discard = UIAlertAction(title: Localization.ImageUploadError.discard, style: .destructive, handler: { [weak self] _ in
+            self?.productImageActionHandler.discardUpload(asset: asset)
+        })
+        alert.addAction(discard)
+
+        let retry = UIAlertAction(title: Localization.ImageUploadError.retry, style: .default, handler: { [weak self] _ in
+            self?.productImageActionHandler.discardUpload(asset: asset)
+            self?.productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        })
+        alert.addAction(retry)
+
+        present(alert, animated: true, completion: nil)
+    }
 }
 
 // MARK: - Navigation actions handling
@@ -376,5 +397,23 @@ private extension ProductImagesViewController {
             value: "Drag and drop to re-order photos. The first photo will be set as the cover.",
             comment: "Drag and drop helper text above photo list in Product images screen"
         )
+
+        enum ImageUploadError {
+            static let title = NSLocalizedString(
+                "productImagesViewController.imageUploadError.title",
+                value: "Cannot upload image",
+                comment: "Title of the alert when there is an error uploading an image of a product."
+            )
+            static let discard = NSLocalizedString(
+                "productImagesViewController.imageUploadError.discard",
+                value: "Discard",
+                comment: "Button on the alert when there is an error uploading an image of a product. Tapping the button should discard the upload."
+            )
+            static let retry = NSLocalizedString(
+                "productImagesViewController.imageUploadError.retry",
+                value: "Retry",
+                comment: "Button on the alert when there is an error uploading an image of a product. Tapping the button should retry the upload."
+            )
+        }
     }
 }

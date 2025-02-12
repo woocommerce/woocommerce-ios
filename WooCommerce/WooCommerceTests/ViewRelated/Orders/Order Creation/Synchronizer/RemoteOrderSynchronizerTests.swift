@@ -1533,7 +1533,7 @@ private extension RemoteOrderSynchronizerTests {
     }
 }
 
-extension OrderSyncState: @retroactive Equatable {
+extension OrderSyncState: Equatable {
     public static func == (lhs: OrderSyncState, rhs: OrderSyncState) -> Bool {
         switch (lhs, rhs) {
         case (.syncing(let lhsBlocking), .syncing(let rhsBlocking)):
@@ -1541,7 +1541,7 @@ extension OrderSyncState: @retroactive Equatable {
         case (.synced, .synced):
             return true
         case (.error(let error1, let usesGiftCard1), .error(let error2, let usesGiftCard2)):
-            return error1 == error2 && usesGiftCard1 == usesGiftCard2
+            return error1 as NSError == error2 as NSError && usesGiftCard1 == usesGiftCard2
         default:
             return false
         }

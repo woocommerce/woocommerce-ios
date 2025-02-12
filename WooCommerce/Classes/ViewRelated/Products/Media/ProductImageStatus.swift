@@ -23,7 +23,7 @@ enum ProductImageStatus: Equatable {
         case let (.remote(lImage), .remote(image: rImage)):
             lImage == rImage
         case let (.uploadFailure(lAsset, lError), .uploadFailure(rAsset, rError)):
-            lAsset == rAsset && lError == rError
+            lAsset == rAsset && (lError as NSError) == (rError as NSError)
         default:
             false
         }

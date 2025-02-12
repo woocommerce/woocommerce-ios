@@ -661,3 +661,16 @@ extension ProductImageUploadErrorInfo: @retroactive Equatable {
         lhs.error == rhs.error
     }
 }
+
+extension ProductImageUploaderError: @retroactive Equatable {
+    public static func == (lhs: ProductImageUploaderError, rhs: ProductImageUploaderError) -> Bool {
+        switch (lhs, rhs) {
+        case let (.failedUploadingImage(lAsset, lhsError), .failedUploadingImage(rAsset, rhsError)):
+            return lhsError as NSError == rhsError as NSError && lAsset == rAsset
+        case (.failedSavingProductAfterImageUpload(let lhsError), .failedSavingProductAfterImageUpload(let rhsError)):
+            return lhsError as NSError == rhsError as NSError
+        default:
+            return false
+        }
+    }
+}

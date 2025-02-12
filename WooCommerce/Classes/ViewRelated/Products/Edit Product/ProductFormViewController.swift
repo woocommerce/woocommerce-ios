@@ -179,10 +179,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
         productImageUploadsSubscription = productImageActionHandler.addAssetUploadObserver(self) { [weak self] asset, result in
             guard let self else { return }
-            if case .failure = result {
-                let title = NSLocalizedString("Cannot upload image", comment: "The title of the alert when there is an error uploading an image")
-                let message = NSLocalizedString("Please try again.", comment: "The message of the alert when there is an error uploading an image")
-                displayErrorAlert(title: title, message: message)
+            if case .failure(let error) = result {
+                displayImageUploadErrorAlert(error: error, for: asset)
             }
         }
 
@@ -1041,6 +1039,24 @@ private extension ProductFormViewController {
             comment: "Dismiss button on the alert when there is an error updating the product"
         ), style: .cancel, handler: nil)
         alert.addAction(cancel)
+
+        present(alert, animated: true, completion: nil)
+    }
+
+    func displayImageUploadErrorAlert(error: Error, for asset: ProductImageAssetType) {
+        let alert = UIAlertController(title: Localization.ImageUploadError.title,
+                                      message: error.localizedDescription,
+                                      preferredStyle: .alert)
+        let discard = UIAlertAction(title: Localization.ImageUploadError.discard, style: .destructive, handler: { [weak self] _ in
+            self?.productImageActionHandler.discardUpload(asset: asset)
+        })
+        alert.addAction(discard)
+
+        let retry = UIAlertAction(title: Localization.ImageUploadError.retry, style: .default, handler: { [weak self] _ in
+            self?.productImageActionHandler.discardUpload(asset: asset)
+            self?.productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        })
+        alert.addAction(retry)
 
         present(alert, animated: true, completion: nil)
     }
@@ -2134,6 +2150,24 @@ private enum Localization {
                                                comment: "The message for the Write with AI tooltip")
         static let gotIt = NSLocalizedString("Got it",
                                              comment: "Button title that dismisses the Write with AI tooltip")
+    }
+
+    enum ImageUploadError {
+        static let title = NSLocalizedString(
+            "imageUploadError.title",
+            value: "Cannot upload image",
+            comment: "Title of the alert when there is an error uploading an image of a product."
+        )
+        static let discard = NSLocalizedString(
+            "imageUploadError.discard",
+            value: "Discard",
+            comment: "Button on the alert when there is an error uploading an image of a product. Tapping the button should discard the upload."
+        )
+        static let retry = NSLocalizedString(
+            "imageUploadError.retry",
+            value: "Retry",
+            comment: "Button on the alert when there is an error uploading an image of a product. Tapping the button should retry the upload."
+        )
     }
 }
 

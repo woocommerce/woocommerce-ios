@@ -24,7 +24,7 @@ struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView: View {
 
             if let tryAgainButtonViewModel = viewModel.tryAgainButtonViewModel {
                 Button(tryAgainButtonViewModel.title, action: tryAgainButtonViewModel.actionHandler)
-                    .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
+                    .buttonStyle(POSFilledButtonStyle(size: .normal))
             }
         }
         .padding(.horizontal, PointOfSaleCardPresentPaymentLayout.horizontalPadding)

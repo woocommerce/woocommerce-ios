@@ -33,7 +33,7 @@ struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertView: View {
 
             Button(viewModel.openSettingsButtonViewModel.title,
                    action: viewModel.openSettingsButtonViewModel.actionHandler)
-            .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
+            .buttonStyle(POSFilledButtonStyle(size: .normal))
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
         .posModalCloseButton(action: viewModel.dismissButtonViewModel.actionHandler,

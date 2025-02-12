@@ -33,7 +33,7 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
             VStack(spacing: PointOfSaleCardPresentPaymentLayout.buttonSpacing) {
                 Button(viewModel.tryAgainButtonViewModel.title,
                        action: viewModel.tryAgainButtonViewModel.actionHandler)
-                .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
 
                 Button(action: viewModel.newOrderButtonViewModel.actionHandler) {
                     Label(viewModel.newOrderButtonViewModel.title, systemImage: "arrow.uturn.backward")

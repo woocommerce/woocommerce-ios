@@ -40,16 +40,6 @@ struct POSOutlinedButtonStyle: ButtonStyle {
     }
 }
 
-/// Button style in POS that has variants for filled and outlined buttons and different sizes.
-struct POSButtonStyle: ButtonStyle {
-    let variant: POSButtonVariant
-    let size: POSButtonSize
-
-    func makeBody(configuration: Configuration) -> some View {
-        POSButton(configuration: configuration, variant: variant, size: size, isLoading: false)
-    }
-}
-
 private struct POSButton: View {
     @Environment(\.isEnabled) var isEnabled
 
@@ -225,7 +215,7 @@ struct POSButtonStyle_Previews: View {
                         .font(.headline)
 
                     Button("This is a very long button text that might wrap to multiple lines") {}
-                        .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
+                        .buttonStyle(POSFilledButtonStyle(size: .normal))
 
                     Button("Long text in small size button that might need to wrap") {}
                         .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
@@ -240,12 +230,22 @@ struct POSButtonStyle_Previews: View {
             Text(title)
                 .font(.headline)
 
-            Button("Enabled Button") {}
-                .buttonStyle(POSButtonStyle(variant: variant, size: size))
+            switch variant {
+            case .filled:
+                Button("Enabled Button") {}
+                    .buttonStyle(POSFilledButtonStyle(size: size))
 
-            Button("Disabled Button") {}
-                .buttonStyle(POSButtonStyle(variant: variant, size: size))
-                .disabled(true)
+                Button("Disabled Button") {}
+                    .buttonStyle(POSFilledButtonStyle(size: size))
+                    .disabled(true)
+            case .outlined:
+                Button("Enabled Button") {}
+                    .buttonStyle(POSOutlinedButtonStyle(size: size))
+
+                Button("Disabled Button") {}
+                    .buttonStyle(POSOutlinedButtonStyle(size: size))
+                    .disabled(true)
+            }
         }
     }
 
@@ -254,10 +254,10 @@ struct POSButtonStyle_Previews: View {
             Text(title)
                 .font(.headline)
 
-            Button("Enabled Button") {}
+            Button("Enabled Loading Button") {}
                 .buttonStyle(POSFilledButtonStyle(size: size, isLoading: true))
 
-            Button("Disabled Button") {}
+            Button("Disabled Loading Button") {}
                 .buttonStyle(POSFilledButtonStyle(size: size, isLoading: true))
                 .disabled(true)
         }

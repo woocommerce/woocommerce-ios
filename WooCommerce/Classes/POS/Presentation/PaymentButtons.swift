@@ -50,7 +50,7 @@ private extension PaymentsActionButtons {
                     .font(Constants.buttonFont)
             }
         })
-        .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
+        .buttonStyle(POSFilledButtonStyle(size: .normal))
     }
 }
 

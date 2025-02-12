@@ -37,7 +37,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryView: View {
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
                 Button(viewModel.retrySearchButtonViewModel.title,
                        action: viewModel.retrySearchButtonViewModel.actionHandler)
-                .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
                 Button(viewModel.cancelButtonViewModel.title,
                        action: viewModel.cancelButtonViewModel.actionHandler)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))

@@ -14,7 +14,7 @@ enum POSFontStyle {
     case posCaptionBold
     case posCaptionRegular
     case posButtonSymbol
-    
+
     func font(maximumContentSizeCategory: UIContentSizeCategory? = nil) -> Font {
         switch self {
         case .posHeading:
@@ -44,16 +44,16 @@ enum POSFontStyle {
             Font.system(size: scaledValue(32, maximumContentSizeCategory: maximumContentSizeCategory), weight: .medium)
         }
     }
-    
+
     private func scaledValue(_ value: CGFloat, maximumContentSizeCategory: UIContentSizeCategory?) -> CGFloat {
         let metrics = UIFontMetrics.default
         let scaledValue = metrics.scaledValue(for: value)
         guard let maximumContentSizeCategory = maximumContentSizeCategory else {
             return scaledValue
         }
-        
+
         let maximumScaledValue = metrics.scaledValue(for: value, compatibleWith: .init(preferredContentSizeCategory: maximumContentSizeCategory))
-        
+
         return min(scaledValue, maximumScaledValue)
     }
 }
@@ -76,7 +76,7 @@ private struct POSScaledFont: ViewModifier {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     var style: POSFontStyle
     var maximumContentSizeCategory: UIContentSizeCategory? = nil
-    
+
     func body(content: Content) -> some View {
         content
             .font(style.font(maximumContentSizeCategory: maximumContentSizeCategory))
@@ -84,7 +84,7 @@ private struct POSScaledFont: ViewModifier {
                 view.underline()
             }
     }
-    
+
     private func shouldUnderline() -> Bool {
         switch style {
         case .posBodyLargeRegular(let underline),

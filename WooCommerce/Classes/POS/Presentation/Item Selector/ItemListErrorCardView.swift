@@ -8,7 +8,7 @@ struct ItemListErrorCardView: View {
 
     var body: some View {
         HStack(spacing: Constants.cardSpacing) {
-            POSErrorExclamationMark()
+            POSErrorExclamationMark(size: 48)
             .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
                    height: Constants.productCardSize * scale)
 

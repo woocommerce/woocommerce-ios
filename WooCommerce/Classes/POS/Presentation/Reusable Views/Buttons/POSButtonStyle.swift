@@ -27,6 +27,19 @@ struct POSFilledButtonStyle: ButtonStyle {
     }
 }
 
+/// Outlined button style in POS.
+struct POSOutlinedButtonStyle: ButtonStyle {
+    private let size: POSButtonSize
+
+    init(size: POSButtonSize) {
+        self.size = size
+    }
+
+    func makeBody(configuration: Configuration) -> some View {
+        POSButton(configuration: configuration, variant: .outlined, size: size, isLoading: false)
+    }
+}
+
 /// Button style in POS that has variants for filled and outlined buttons and different sizes.
 struct POSButtonStyle: ButtonStyle {
     let variant: POSButtonVariant

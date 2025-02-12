@@ -32,16 +32,16 @@ public final class BackgroundURLSessionManager: NSObject {
     weak var delegate: BackgroundURLSessionManagerDelegate?
 
     public init(sessionIdentifier: String = "com.automattic.woocommerce.background.upload") {
-            self.backgroundSessionIdentifier = sessionIdentifier
-            super.init()
-        }
+        self.backgroundSessionIdentifier = sessionIdentifier
+        super.init()
+    }
 
     public func uploadMedia(request: URLRequest,
-                          siteID: Int64,
-                          productID: Int64,
-                          mediaItem: UploadableMedia,
-                          uploadID: String,
-                          completion: @escaping (Result<Media, Error>) -> Void) {
+                            siteID: Int64,
+                            productID: Int64,
+                            mediaItem: UploadableMedia,
+                            uploadID: String,
+                            completion: @escaping (Result<Media, Error>) -> Void) {
         completionHandlers[uploadID] = completion
 
         guard let httpBody = request.httpBody else {
@@ -79,6 +79,7 @@ public final class BackgroundURLSessionManager: NSObject {
     }
 }
 
+//TODO: cleanup all prints added for debug reason.
 extension BackgroundURLSessionManager: URLSessionDataDelegate {
     public func urlSession(_ session: URLSession,
                            dataTask: URLSessionDataTask,

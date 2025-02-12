@@ -3,7 +3,7 @@ import Yosemite
 
 /// The status of a Product image.
 ///
-enum ProductImageStatus {
+enum ProductImageStatus: Equatable {
     /// An image asset is being uploaded.
     ///
     case uploading(asset: ProductImageAssetType)
@@ -15,6 +15,19 @@ enum ProductImageStatus {
     /// An image asset upload failed.
     ///
     case uploadFailure(asset: ProductImageAssetType, error: Error)
+
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        switch (lhs, rhs) {
+        case let (.uploading(lAsset), .uploading(rAsset)):
+            lAsset == rAsset
+        case let (.remote(lImage), .remote(image: rImage)):
+            lImage == rImage
+        case let (.uploadFailure(lAsset, lError), .uploadFailure(rAsset, rError)):
+            lAsset == rAsset && lError == rError
+        default:
+            false
+        }
+    }
 }
 
 /// The type of product image asset.

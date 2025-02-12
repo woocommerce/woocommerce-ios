@@ -5,11 +5,11 @@ import struct Yosemite.Media
 import struct Yosemite.ProductImage
 
 final class MockProductImageActionHandler: ProductImageActionHandlerProtocol {
-    typealias AllStatuses = (productImageStatuses: [ProductImageStatus], error: Error?)
+    typealias AllStatuses = [ProductImageStatus]
     typealias OnAssetUpload = (ProductImageAssetType, Result<ProductImage, Error>) -> Void
 
     var productImageStatuses: [ProductImageStatus] {
-        allStatuses.productImageStatuses
+        allStatuses
     }
 
     // Can be set externally to be emitted in `addUpdateObserver`.
@@ -19,7 +19,7 @@ final class MockProductImageActionHandler: ProductImageActionHandlerProtocol {
     @Published var assetUploadResults: (asset: ProductImageAssetType, result: Result<ProductImage, Error>)?
 
     init(productImageStatuses: [ProductImageStatus]) {
-        self.allStatuses = (productImageStatuses: productImageStatuses, error: nil)
+        self.allStatuses = productImageStatuses
     }
 
     func addUpdateObserver<T>(_ observer: T, onUpdate: @escaping OnAllStatusesUpdate) -> AnyCancellable where T: AnyObject {

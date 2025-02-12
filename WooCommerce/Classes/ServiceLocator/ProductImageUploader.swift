@@ -132,6 +132,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
             actionHandlersByProduct[key] = actionHandler
             initialStatusesByProduct[key] = originalStatuses
             observeStatusUpdates(key: key, actionHandler: actionHandler)
+            observeImageUploads(key: key, actionHandler: actionHandler)
         }
 
         return actionHandler
@@ -224,6 +225,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
     func reset() {
         statusUpdatesExcludedProductKeys = []
         statusUpdatesSubscriptions = []
+        imageUploadSubscriptions = []
         activeUploadsPublisher = []
 
         actionHandlersByProduct = [:]
@@ -268,7 +270,6 @@ private extension ProductImageUploader {
             guard let self else { return }
 
             if case .failure(let error) = result {
-                removeProductFromActiveUploads(key: key)
                 let infoError = ProductImageUploadErrorInfo(siteID: key.siteID,
                                                             productOrVariationID: key.productOrVariationID,
                                                             error: .failedUploadingImage(asset: asset, error: error))

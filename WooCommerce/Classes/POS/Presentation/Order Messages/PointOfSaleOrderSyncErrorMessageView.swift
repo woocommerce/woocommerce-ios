@@ -39,3 +39,8 @@ private extension PointOfSaleOrderSyncErrorMessageView {
         static let buttonBottomPadding: CGFloat = 16
     }
 }
+
+#Preview {
+    PointOfSaleOrderSyncErrorMessageView(viewModel: PointOfSaleOrderSyncErrorMessageViewModel(message: "An error happened!",
+                                                                                              handler: {}))
+}

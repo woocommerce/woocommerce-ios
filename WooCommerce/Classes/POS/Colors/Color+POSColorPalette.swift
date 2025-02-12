@@ -46,9 +46,6 @@ extension Color {
     static var posAlert: Color { Color(.posAlert) }
     static var posOnAlert: Color { Color(.posOnAlert) }
 
-    // MARK: - Text Colors
-    static var posTertiaryText: Color { Color(.posTertiaryText) }
-
     // MARK: - Other
     static var posShadow: Color { Color(.posShadow) }
 }

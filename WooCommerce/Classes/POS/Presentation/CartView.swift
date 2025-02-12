@@ -273,7 +273,7 @@ private extension CartView {
             // avoids issues when the text size is changed through dynamic type.
             Text(Localization.addItemsToCartHint)
                 .font(Constants.secondaryFont)
-                .foregroundColor(Color.posTertiaryText)
+                .foregroundColor(Color.posOnSurfaceVariantLowest)
                 .multilineTextAlignment(.center)
                 .overlay(alignment: .top) {
                     Image(decorative: PointOfSaleAssets.shoppingBags.imageName)

@@ -15,7 +15,7 @@ struct ItemListErrorCardView: View {
             VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 Text(errorState.title)
                     .lineLimit(2)
-                    .foregroundStyle(Color.posPrimaryText)
+                    .foregroundStyle(Color.posOnSurface)
                     .multilineTextAlignment(.leading)
                     .font(Constants.itemTitleFont)
 

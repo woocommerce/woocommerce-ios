@@ -17,7 +17,7 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
                     .accessibilityAddTraits(.isHeader)
-                    .foregroundStyle(Color.posPrimaryText)
+                    .foregroundStyle(Color.posOnSurface)
                     .font(.posHeading)
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
@@ -26,7 +26,7 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
                     Text(viewModel.nextStep)
                 }
                 .font(.posBodyLargeRegular())
-                .foregroundStyle(Color.posPrimaryText)
+                .foregroundStyle(Color.posOnSurface)
                 .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
 

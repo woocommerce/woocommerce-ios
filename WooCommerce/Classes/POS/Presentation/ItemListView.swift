@@ -61,7 +61,7 @@ private extension ItemListView {
                         Image(systemName: "info.circle")
                             .font(.posButtonSymbol)
                     })
-                    .foregroundColor(.posPrimaryText)
+                    .foregroundColor(.posOnSurface)
                     .padding(.trailing, Constants.infoIconPadding)
                 }
             }

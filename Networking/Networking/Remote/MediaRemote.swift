@@ -30,7 +30,6 @@ public protocol MediaRemoteProtocol {
 /// Media: Remote Endpoints
 ///
 public class MediaRemote: Remote, MediaRemoteProtocol {
-
     /// Loads media from the site's WP Media library
     /// API reference - https://developer.wordpress.org/rest-api/reference/media/#retrieve-a-media-item
     ///
@@ -178,28 +177,29 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
         let boundary = UUID().uuidString
         let path = "sites/\(siteID)/media"
 
-        var request = try DotcomRequest(wordpressApiVersion: .wpMark2,
-                                        method: .post,
-                                        path: path,
-                                        parameters: nil,
-                                        availableAsRESTRequest: true)
-            .asURLRequest()
+        let dotcomRequest = try DotcomRequest(wordpressApiVersion: .wpMark2,
+                                            method: .post,
+                                            path: path,
+                                            parameters: nil,
+                                            availableAsRESTRequest: true)
 
         guard let network = network as? AlamofireNetwork else {
             throw NetworkError.unacceptableStatusCode(statusCode: 500, response: nil)
         }
 
-        let credentials = network.credentials
-        switch credentials {
-        case let .wpcom(_, authToken, _):
-            request = AuthenticatedDotcomRequest(authToken: authToken, request: request).asURLRequest()
-        case .applicationPassword:
+        let converter = RequestConverter(credentials: network.credentials)
+        var request = try converter.convert(dotcomRequest).asURLRequest()
+
+        // Authenticate the request if we have credentials
+        if let credentials = network.credentials {
             request = try DefaultRequestAuthenticator(credentials: credentials).authenticate(request)
-        default:
+        } else {
             throw NetworkError.unacceptableStatusCode(statusCode: 401, response: nil)
         }
+
         // Add multipart content type
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+
         // Add form data
         var body = Data()
         func append(_ string: String) {
@@ -211,12 +211,14 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
             ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
             ParameterKey.wordPressAltText: mediaItem.altText ?? ""
         ]
+
         //Add parameters
         for (key, value) in params {
             append("--\(boundary)\r\n")
             append("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n")
             append("\(value)\r\n")
         }
+
         // Add file data
         append("--\(boundary)\r\n")
         append("Content-Disposition: form-data; name=\"file\"; filename=\"\(mediaItem.filename)\"\r\n")

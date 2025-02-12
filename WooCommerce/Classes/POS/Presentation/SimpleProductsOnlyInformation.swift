@@ -17,24 +17,24 @@ struct SimpleProductsOnlyInformation: View {
         VStack(spacing: Constants.contentBlockSpacing) {
             VStack(spacing: Constants.textSpacing) {
                 Text(Localization.modalTitle)
-                    .font(.posTitleEmphasized)
+                    .font(.posHeading)
 
                 Group {
                     Text(issueMessage)
                     Text(futureMessage)
                         .padding(.bottom, Constants.textToModalBottomPadding)
                 }
-                .font(.posBodyRegular)
+                .font(.posBodyLargeRegular())
 
                 VStack(spacing: Constants.textSpacing) {
                     Text(hintMessage)
-                        .font(.posDetailLight)
+                        .font(.posBodySmallRegular())
 
                     Button {
                         deepLinkNavigator?.navigate(to: OrdersDestination.createOrder)
                     } label: {
                         Label(Localization.modalAction, systemImage: "plus")
-                            .font(.posDetailLight)
+                            .font(.posBodySmallRegular())
                     }
                 }
                 .frame(maxWidth: .infinity)

@@ -18,12 +18,12 @@ struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertView: View {
 
                 VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
                     Text(viewModel.title)
-                        .font(POSFontStyle.posTitleEmphasized)
+                        .font(POSFontStyle.posHeading)
                         .accessibilityAddTraits(.isHeader)
                         .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                     Text(viewModel.errorDetails)
-                        .font(POSFontStyle.posBodyRegular)
+                        .font(POSFontStyle.posBodyLargeRegular())
                         .matchedGeometryEffect(id: animation.contentTransitionId, in: animation.namespace, properties: .position)
                 }
                 .fixedSize(horizontal: false, vertical: true)

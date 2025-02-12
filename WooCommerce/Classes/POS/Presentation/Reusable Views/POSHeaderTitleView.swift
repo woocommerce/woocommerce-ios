@@ -13,7 +13,7 @@ struct POSHeaderTitleView: View {
         Text(title)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(Constants.padding)
-            .font(.posTitleEmphasized)
+            .font(.posHeading)
             .foregroundColor(foregroundColor)
             .accessibilityAddTraits(.isHeader)
     }

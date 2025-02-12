@@ -18,7 +18,7 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
     var body: some View {
         VStack {
             Text(Localization.headline)
-                .font(.posTitleEmphasized)
+                .font(.posHeading)
                 .padding(Layout.headerPadding)
                 .accessibilityAddTraits(.isHeader)
 
@@ -48,7 +48,7 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
     @ViewBuilder func readerRow(readerID: String) -> some View {
         HStack {
             Text(readerID)
-                .font(.posBodyRegular)
+                .font(.posBodyLargeRegular())
             Spacer()
             Button(Localization.connect) {
                 connect(readerID)
@@ -64,7 +64,7 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
             ProgressView()
                 .progressViewStyle(POSProgressViewStyle(size: 20, lineWidth: 4))
             Text(Localization.scanningLabel)
-                .font(.posBodyRegular)
+                .font(.posBodyLargeRegular())
             Spacer()
         }
     }

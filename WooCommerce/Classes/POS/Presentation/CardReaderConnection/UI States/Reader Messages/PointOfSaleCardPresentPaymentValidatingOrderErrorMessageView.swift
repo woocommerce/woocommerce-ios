@@ -12,13 +12,13 @@ struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView: View {
             VStack(alignment: .center, spacing: Constants.textSpacing) {
                 Text(viewModel.title)
                     .foregroundStyle(Color.posPrimaryText)
-                    .font(.posTitleEmphasized)
+                    .font(.posHeading)
                     .accessibilityAddTraits(.isHeader)
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(viewModel.message)
                     .foregroundStyle(Color.posPrimaryText)
-                    .font(.posBodyRegular)
+                    .font(.posBodyLargeRegular())
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
 

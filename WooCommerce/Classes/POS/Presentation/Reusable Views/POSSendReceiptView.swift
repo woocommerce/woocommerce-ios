@@ -29,7 +29,7 @@ struct POSSendReceiptView: View {
                         Image(systemName: "chevron.backward")
                         Text(Localization.emailReceiptNavigationText)
                     }
-                    .font(.posTitleEmphasized)
+                    .font(.posHeading)
                     .foregroundColor(.posPrimaryText)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility3)
                     .accessibilityAddTraits(.isHeader)
@@ -45,7 +45,7 @@ struct POSSendReceiptView: View {
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .multilineTextAlignment(.center)
-                .font(POSFontStyle.posTitleRegular)
+                .font(POSFontStyle.posBodyXLarge)
                 .focused()
                 .focused($isTextFieldFocused)
                 .padding()
@@ -55,7 +55,7 @@ struct POSSendReceiptView: View {
 
             if let errorMessage = errorMessage {
                 Text(errorMessage)
-                    .font(POSFontStyle.posBodyRegular)
+                    .font(POSFontStyle.posBodyLargeRegular())
                     .foregroundColor(.red)
                     .padding(.bottom, Constants.errorMessagePadding)
             }
@@ -64,7 +64,6 @@ struct POSSendReceiptView: View {
                 sendReceipt()
             }, label: {
                 Text(Localization.buttonTitle)
-                    .font(Constants.buttonFont)
             })
             .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
             .dynamicTypeSize(...DynamicTypeSize.accessibility3)
@@ -107,7 +106,6 @@ struct POSSendReceiptView: View {
 private extension POSSendReceiptView {
     enum Constants {
         static let buttonSpacing: CGFloat = 12
-        static let buttonFont: POSFontStyle = .posBodyEmphasized
         static let errorMessagePadding: CGFloat = 8
     }
 

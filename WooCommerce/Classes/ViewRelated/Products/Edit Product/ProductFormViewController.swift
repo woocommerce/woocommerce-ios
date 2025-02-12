@@ -1347,14 +1347,16 @@ private extension ProductFormViewController {
             UIAlertController.presentDiscardNewProductActionSheet(viewController: viewControllerToPresentAlert,
                                                                   onSaveDraft: { [weak self] in
                 self?.saveProductAsDraft()
-            }, onDiscard: {
+            }, onDiscard: { [weak self] in
+                self?.resetProductImages()
                 exitForm()
             }, onCancel: {
                 onCancel()
             })
         case .edit:
             UIAlertController.presentDiscardChangesActionSheet(viewController: viewControllerToPresentAlert,
-                                                               onDiscard: {
+                                                               onDiscard: { [weak self] in
+                self?.resetProductImages()
                 exitForm()
             }, onCancel: {
                 onCancel()
@@ -1362,6 +1364,10 @@ private extension ProductFormViewController {
         case .readonly:
             break
         }
+    }
+
+    func resetProductImages() {
+        productImageActionHandler.resetProductImages(to: viewModel.productModel)
     }
 }
 

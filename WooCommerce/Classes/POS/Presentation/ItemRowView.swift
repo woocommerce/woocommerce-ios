@@ -43,7 +43,7 @@ struct ItemRowView: View {
                     onItemRemoveTapped()
                 }, label: {
                     Image(systemName: "xmark.circle")
-                        .font(.posBodyRegular)
+                        .font(.posBodyLargeRegular())
                 })
                 .accessibilityLabel(Localization.removeFromCartAccessibilityLabel)
                 .padding(.trailing, Constants.cardContentHorizontalPadding)
@@ -77,9 +77,9 @@ private extension ItemRowView {
         static let horizontalElementSpacing: CGFloat = 16
         static let cardContentHorizontalPadding: CGFloat = 16
         static let itemTitleAndPriceSpacing: CGFloat = 4
-        static let itemTitleFont: POSFontStyle = .posDetailEmphasized
-        static let itemSubtitleFont: POSFontStyle = .posDetailLight
-        static let itemPriceFont: POSFontStyle = .posDetailLight
+        static let itemTitleFont: POSFontStyle = .posBodySmallBold
+        static let itemSubtitleFont: POSFontStyle = .posBodySmallRegular()
+        static let itemPriceFont: POSFontStyle = .posBodySmallRegular()
     }
 
     enum Localization {

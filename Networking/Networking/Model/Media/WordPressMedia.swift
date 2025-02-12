@@ -111,3 +111,27 @@ private extension WordPressMedia {
         case title
     }
 }
+
+extension WordPressMedia {
+    /// Converts a `WordPressMedia` to `Media`.
+    public func toMedia() -> Media {
+        .init(mediaID: mediaID,
+              date: date,
+              fileExtension: fileExtension,
+              filename: details?.fileName ?? title?.rendered ?? slug,
+              mimeType: mimeType,
+              src: src,
+              thumbnailURL: details?.sizes?["thumbnail"]?.src,
+              name: slug,
+              alt: alt,
+              height: details?.height,
+              width: details?.width)
+    }
+
+    private var fileExtension: String {
+        guard let fileName = details?.fileName else {
+            return ""
+        }
+        return URL(fileURLWithPath: fileName).pathExtension
+    }
+}

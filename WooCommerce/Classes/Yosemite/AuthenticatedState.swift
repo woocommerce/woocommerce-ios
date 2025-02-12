@@ -46,7 +46,7 @@ class AuthenticatedState: StoresManagerState {
             InboxNotesStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             JetpackSettingsStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             JustInTimeMessageStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            MediaStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            MediaStore(dispatcher: dispatcher, storageManager: storageManager, network: network, backgroundUploader: ServiceLocator.backgroundURLSessionManager),
             NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationCountStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
             OrderCardPresentPaymentEligibilityStore(dispatcher: dispatcher, storageManager: storageManager, network: network),

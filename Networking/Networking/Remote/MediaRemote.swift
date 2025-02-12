@@ -1,4 +1,5 @@
 import Foundation
+import Alamofire
 
 /// Protocol for `MediaRemote` mainly used for mocking.
 public protocol MediaRemoteProtocol {
@@ -19,11 +20,17 @@ public protocol MediaRemoteProtocol {
                          productID: Int64,
                          mediaID: Int64,
                          completion: @escaping (Result<WordPressMedia, Error>) -> Void)
+
+    /// Creates a URLRequest for uploading media in background
+    func uploadMediaRequest(siteID: Int64,
+                            productID: Int64,
+                            mediaItem: UploadableMedia) async throws -> URLRequest
 }
 
 /// Media: Remote Endpoints
 ///
 public class MediaRemote: Remote, MediaRemoteProtocol {
+
     /// Loads media from the site's WP Media library
     /// API reference - https://developer.wordpress.org/rest-api/reference/media/#retrieve-a-media-item
     ///
@@ -162,6 +169,65 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
         } catch {
             completion(.failure(error))
         }
+    }
+
+    public func uploadMediaRequest(siteID: Int64,
+                                   productID: Int64,
+                                   mediaItem: UploadableMedia) async throws -> URLRequest {
+
+        let boundary = UUID().uuidString
+        let path = "sites/\(siteID)/media"
+
+        var request = try DotcomRequest(wordpressApiVersion: .wpMark2,
+                                        method: .post,
+                                        path: path,
+                                        parameters: nil,
+                                        availableAsRESTRequest: true)
+            .asURLRequest()
+
+        guard let network = network as? AlamofireNetwork else {
+            throw NetworkError.unacceptableStatusCode(statusCode: 500, response: nil)
+        }
+
+        let credentials = network.credentials
+        switch credentials {
+        case let .wpcom(_, authToken, _):
+            request = AuthenticatedDotcomRequest(authToken: authToken, request: request).asURLRequest()
+        case .applicationPassword:
+            request = try DefaultRequestAuthenticator(credentials: credentials).authenticate(request)
+        default:
+            throw NetworkError.unacceptableStatusCode(statusCode: 401, response: nil)
+        }
+        // Add multipart content type
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        // Add form data
+        var body = Data()
+        func append(_ string: String) {
+            body.append(string.data(using: .utf8)!)
+        }
+
+        let params: [String: String] = [
+            ParameterKey.wordPressMediaPostID: "\(productID)",
+            ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
+            ParameterKey.wordPressAltText: mediaItem.altText ?? ""
+        ]
+        //Add parameters
+        for (key, value) in params {
+            append("--\(boundary)\r\n")
+            append("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n")
+            append("\(value)\r\n")
+        }
+        // Add file data
+        append("--\(boundary)\r\n")
+        append("Content-Disposition: form-data; name=\"file\"; filename=\"\(mediaItem.filename)\"\r\n")
+        append("Content-Type: \(mediaItem.mimeType)\r\n\r\n")
+        body.append(try Data(contentsOf: mediaItem.localURL))
+        append("\r\n")
+        append("--\(boundary)--\r\n")
+
+        request.httpBody = body
+        request.httpMethod = "POST"
+        return request
     }
 }
 

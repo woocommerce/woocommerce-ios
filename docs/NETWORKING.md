@@ -37,6 +37,15 @@ There are three implementations of this protocol:
 * [`WordPressOrgNetwork`](../Networking/Networking/Network/WordPressOrgNetwork.swift) also uses Alamofire to manage network requests, but with cookie-based authentication for working with the WordPress.org REST API.
 * [`MockNetwork`](../Networking/Networking/Network/MockNetwork.swift): a mock networking stack that does not actually hit the network, to be used in the unit tests.
 
+## Background Uploads
+The [`BackgroundURLSessionManager`](../Networking/Networking/Network/BackgroundURLSession/BackgroundURLSessionManager.swift) provides support for background upload tasks that continue even when the app is suspended or terminated.
+
+Key features:
+* Uses URLSession background configuration 
+* Handles upload completion/failure after app relaunch
+* Provides delegate callbacks for upload status
+* Integrates with MediaRemote for WordPress media uploads
+
 ## `URLRequestConvertible`
 A protocol the abstracts the actual URL requests. 
 

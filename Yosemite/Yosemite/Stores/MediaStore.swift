@@ -6,32 +6,48 @@ import Storage
 //
 public final class MediaStore: Store {
     private let remote: MediaRemoteProtocol
+    private let backgroundUploader: BackgroundURLSessionManager
     private lazy var mediaExportService: MediaExportService = DefaultMediaExportService()
 
     public convenience override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = MediaRemote(network: network)
-        self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let backgroundUploader = BackgroundURLSessionManager()
+        self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote, backgroundUploader: backgroundUploader)
     }
 
-    init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: MediaRemoteProtocol) {
+    init(dispatcher: Dispatcher,
+         storageManager: StorageManagerType,
+         network: Network,
+         remote: MediaRemoteProtocol,
+         backgroundUploader: BackgroundURLSessionManager) {
         self.remote = remote
+        self.backgroundUploader = backgroundUploader
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
+
+    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, backgroundUploader: BackgroundURLSessionManager) {
+        self.remote = MediaRemote(network: network)
+        self.backgroundUploader = backgroundUploader
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
     convenience init(mediaExportService: MediaExportService,
-         dispatcher: Dispatcher,
-         storageManager: StorageManagerType,
-         network: Network) {
+                     dispatcher: Dispatcher,
+                     storageManager: StorageManagerType,
+                     network: Network,
+                     backgroundUploader: BackgroundURLSessionManager) {
         let remote = MediaRemote(network: network)
-        self.init(mediaExportService: mediaExportService, dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        self.init(mediaExportService: mediaExportService, dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote, backgroundUploader: backgroundUploader)
     }
 
     init(mediaExportService: MediaExportService,
          dispatcher: Dispatcher,
          storageManager: StorageManagerType,
          network: Network,
-         remote: MediaRemoteProtocol) {
+         remote: MediaRemoteProtocol,
+         backgroundUploader: BackgroundURLSessionManager) {
         self.remote = remote
+        self.backgroundUploader = backgroundUploader
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
         self.mediaExportService = mediaExportService
     }
@@ -64,6 +80,15 @@ public final class MediaStore: Store {
                                  onCompletion: onCompletion)
         case .uploadMedia(let siteID, let productID, let mediaAsset, let altText, let filename, let onCompletion):
             uploadMedia(siteID: siteID, productID: productID, mediaAsset: mediaAsset, altText: altText, filename: filename, onCompletion: onCompletion)
+        case .uploadMediaInBackground(let siteID, let productID, let mediaAsset, let altText, let filename, let uploadID, let onCompletion):
+            uploadMediaInBackground(siteID: siteID,
+                                    productID: productID,
+                                    mediaAsset: mediaAsset,
+                                    altText: altText,
+                                    filename: filename,
+                                    uploadID: uploadID,
+                                    shouldRemoveFileUponCompletion: true,
+                                    onCompletion: onCompletion)
         case let .uploadFile(siteID, productID, localURL, altText, onCompletion):
             uploadFile(siteID: siteID,
                        productID: productID,
@@ -190,6 +215,47 @@ private extension MediaStore {
             onCompletion(result.map { $0.toMedia() })
         }
     }
+
+    /// Uploads an exportable media asset to the site's WP Media Library using background URLSession
+    ///
+    private func uploadMediaInBackground(siteID: Int64,
+                                         productID: Int64,
+                                         mediaAsset: ExportableAsset,
+                                         altText: String?,
+                                         filename: String?,
+                                         uploadID: String,
+                                         shouldRemoveFileUponCompletion: Bool = true,
+                                         onCompletion: @escaping (Result<Media, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let uploadableMedia = try await mediaExportService.export(mediaAsset, filename: filename, altText: altText)
+
+                let request = try await remote.uploadMediaRequest(siteID: siteID,
+                                                                  productID: productID,
+                                                                  mediaItem: uploadableMedia)
+
+                // Start background upload
+                backgroundUploader.uploadMedia(request: request,
+                                                               siteID: siteID,
+                                                               productID: productID,
+                                                               mediaItem: uploadableMedia,
+                                                               uploadID: uploadID) { result in
+                    // Removes local media after the upload API request.
+                    if shouldRemoveFileUponCompletion {
+                        do {
+                            try MediaFileManager().removeLocalMedia(at: uploadableMedia.localURL)
+                        } catch {
+                            onCompletion(.failure(error))
+                            return
+                        }
+                    }
+                    onCompletion(result)
+                }
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
 }
 
 // MARK: Helpers
@@ -211,28 +277,4 @@ private extension MediaStore {
 public enum MediaActionError: Error {
     case unexpectedMediaCount(count: Int)
     case unknown
-}
-
-extension WordPressMedia {
-    /// Converts a `WordPressMedia` to `Media`.
-    func toMedia() -> Media {
-        .init(mediaID: mediaID,
-              date: date,
-              fileExtension: fileExtension,
-              filename: details?.fileName ?? title?.rendered ?? slug,
-              mimeType: mimeType,
-              src: src,
-              thumbnailURL: details?.sizes?["thumbnail"]?.src,
-              name: slug,
-              alt: alt,
-              height: details?.height,
-              width: details?.width)
-    }
-
-    private var fileExtension: String {
-        guard let fileName = details?.fileName else {
-            return ""
-        }
-        return URL(fileURLWithPath: fileName).pathExtension
-    }
 }

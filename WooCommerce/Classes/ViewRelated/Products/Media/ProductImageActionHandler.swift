@@ -213,21 +213,25 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             let action: MediaAction
+            let uploadID = UUID().uuidString
+
             switch asset {
                 case .phAsset(let asset):
-                    action = MediaAction.uploadMedia(siteID: self.siteID,
-                                                     productID: self.productOrVariationID.id,
-                                                     mediaAsset: asset,
-                                                     altText: nil,
-                                                     filename: nil,
-                                                     onCompletion: onCompletion)
+                    action = MediaAction.uploadMediaInBackground(siteID: self.siteID,
+                                                              productID: self.productOrVariationID.id,
+                                                              mediaAsset: asset,
+                                                              altText: nil,
+                                                              filename: nil,
+                                                              uploadID: uploadID,
+                                                              onCompletion: onCompletion)
                 case .uiImage(let image, let filename, let altText):
-                    action = MediaAction.uploadMedia(siteID: self.siteID,
-                                                     productID: self.productOrVariationID.id,
-                                                     mediaAsset: image,
-                                                     altText: altText,
-                                                     filename: filename,
-                                                     onCompletion: onCompletion)
+                    action = MediaAction.uploadMediaInBackground(siteID: self.siteID,
+                                                              productID: self.productOrVariationID.id,
+                                                              mediaAsset: image,
+                                                              altText: altText,
+                                                              filename: filename,
+                                                              uploadID: uploadID,
+                                                              onCompletion: onCompletion)
             }
             self.stores.dispatch(action)
         }

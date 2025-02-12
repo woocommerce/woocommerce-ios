@@ -4,6 +4,7 @@ import Experiments
 import Storage
 import Yosemite
 import Hardware
+import class Networking.BackgroundURLSessionManager
 import WooFoundation
 import WordPressShared
 
@@ -96,6 +97,10 @@ final class ServiceLocator {
     /// Storage for general app settings
     ///
     private static var _generalAppSettings: GeneralAppSettingsStorage = GeneralAppSettingsStorage()
+
+    /// Background image service
+    ///
+    private static var _backgroundURLSessionManager = BackgroundURLSessionManager()
 
     private static var _cardPresentPaymentsOnboardingIPPUsersRefresher: CardPresentPaymentsOnboardingIPPUsersRefresher =
     CardPresentPaymentsOnboardingIPPUsersRefresher()
@@ -265,6 +270,12 @@ final class ServiceLocator {
     ///
     static var startupWaitingTimeTracker: AppStartupWaitingTimeTracker {
         _startupWaitingTimeTracker
+    }
+
+    /// Provides access point to the `BackgroundURLSessionManager`.
+    ///
+    static var backgroundURLSessionManager: BackgroundURLSessionManager {
+        return _backgroundURLSessionManager
     }
 }
 

@@ -20,7 +20,7 @@ struct ItemListErrorCardView: View {
                     .font(Constants.itemTitleFont)
 
                 Text(errorState.subtitle)
-                    .foregroundStyle(Color.posSecondaryText)
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
                     .font(Constants.itemDetailFont)
             }
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))

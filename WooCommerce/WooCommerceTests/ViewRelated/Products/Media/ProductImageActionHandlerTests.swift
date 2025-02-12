@@ -326,6 +326,61 @@ final class ProductImageActionHandlerTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
         XCTAssertEqual(productImageActionHandler.productImageStatuses, expectedProductImageStatuses)
     }
+
+    // MARK: - discardUpload
+
+    func test_productImageStatuses_are_updated_correctly_after_discard_upload() {
+        // Given
+        let mockStoresManager = MockStoresManager(sessionManager: .testingInstance)
+        ServiceLocator.setStores(mockStoresManager)
+
+        let uploadError = MediaActionError.unknown
+        mockStoresManager.whenReceivingAction(ofType: MediaAction.self) { action in
+            guard case let .uploadMedia(_, _, _, _, _, completion) = action else {
+                return XCTFail("Unexpected media action: \(action)")
+            }
+            completion(.failure(uploadError))
+        }
+
+        let model = EditableProductModel(product: .fake())
+        let productImageActionHandler = ProductImageActionHandler(siteID: 123,
+                                                                  product: model)
+
+        let expectation = self.expectation(description: "Wait for status update")
+        expectation.expectedFulfillmentCount = 1
+
+        let mockAsset = PHAsset()
+        let expectedStatusUpdates: [[ProductImageStatus]] = [
+            [],
+            [.uploading(asset: .phAsset(asset: mockAsset))],
+            [.uploadFailure(asset: .phAsset(asset: mockAsset), error: MediaActionError.unknown)],
+        ]
+
+        var observedProductImageStatusChanges: [[ProductImageStatus]] = []
+        productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { productImageStatuses in
+            XCTAssertTrue(Thread.current.isMainThread)
+            observedProductImageStatusChanges.append(productImageStatuses)
+            if observedProductImageStatusChanges.count == expectedStatusUpdates.count {
+                expectation.fulfill()
+            }
+        }
+
+        // When
+        let phAsset = ProductImageAssetType.phAsset(asset: mockAsset)
+        productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: phAsset)
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+
+        // Then
+        XCTAssertEqual(productImageActionHandler.productImageStatuses, expectedStatusUpdates.last)
+
+        // When
+        productImageActionHandler.discardUpload(asset: phAsset)
+
+        // Then
+        waitUntil {
+            productImageActionHandler.productImageStatuses == []
+        }
+    }
 }
 
 private extension ProductImageActionHandlerTests {
